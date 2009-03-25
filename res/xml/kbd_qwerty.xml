@@ -32,8 +32,12 @@
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="@string/alternates_for_e"
         />
-        <Key android:codes="114" android:keyLabel="r"/>
-        <Key android:codes="116" android:keyLabel="t"/>
+        <Key android:codes="114" android:keyLabel="r"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="@string/alternates_for_r"/>
+        <Key android:codes="116" android:keyLabel="t"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="@string/alternates_for_t"/>
         <Key android:codes="121" android:keyLabel="y"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="@string/alternates_for_y"
@@ -62,7 +66,9 @@
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="@string/alternates_for_s"
         />
-        <Key android:codes="100" android:keyLabel="d"/>
+        <Key android:codes="100" android:keyLabel="d"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="@string/alternates_for_d"/>
         <Key android:codes="102" android:keyLabel="f"/>
         <Key android:codes="103" android:keyLabel="g"/>
         <Key android:codes="104" android:keyLabel="h"/>
@@ -76,7 +82,9 @@
                 android:keyWidth="15%p" android:isModifier="true"
                 android:iconPreview="@drawable/sym_keyboard_feedback_shift"
                 android:isSticky="true" android:keyEdgeFlags="left"/>
-        <Key android:codes="122" android:keyLabel="z"/>
+        <Key android:codes="122" android:keyLabel="z"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="@string/alternates_for_z"/>
         <Key android:codes="120" android:keyLabel="x"/>
         <Key android:codes="99" android:keyLabel="c"
                 android:popupKeyboard="@xml/kbd_popup_template"
