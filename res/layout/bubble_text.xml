@@ -24,4 +24,5 @@
     android:textSize="14sp"
     android:textColor="?android:attr/textColorPrimary"
     android:minWidth="32dip"
+    android:gravity="center"
     />

@@ -190,6 +190,7 @@ public class LatinIME extends InputMethodService
         }
         if (!mTutorialShownBefore && mTutorial != null) {
             mTutorial.close(false);
+            mTutorial = null;
         }
         super.onConfigurationChanged(conf);
     }
@@ -299,13 +300,24 @@ public class LatinIME extends InputMethodService
         if (mSuggest != null) {
             mSuggest.setCorrectionMode(mCorrectionMode);
         }
-        if (!mTutorialShownBefore && mTutorial == null) {
-            mHandler.sendEmptyMessageDelayed(MSG_CHECK_TUTORIAL, 1000);
-        }
         mPredictionOn = mPredictionOn && mCorrectionMode > 0;
+        if (!mTutorialShownBefore && mTutorial == null) {
+            mHandler.sendEmptyMessageDelayed(MSG_CHECK_TUTORIAL, 
+                    mInputView.isShown() ? 100 : 3000);
+        }
         if (TRACE) Debug.startMethodTracing("latinime");
     }
 
+    @Override
+    public void onWindowShown() {
+        super.onWindowShown();
+        // Bring the tutorial up faster, if window just shown
+        if (!mTutorialShownBefore && mTutorial == null) {
+            mHandler.removeMessages(MSG_CHECK_TUTORIAL);
+            mHandler.sendEmptyMessageDelayed(MSG_CHECK_TUTORIAL, 1000);
+        }
+    }
+    
     @Override
     public void onFinishInput() {
         super.onFinishInput();
@@ -313,9 +325,10 @@ public class LatinIME extends InputMethodService
         if (mInputView != null) {
             mInputView.closing();
         }
-        if (!mTutorialShownBefore && mTutorial != null) {
-            mTutorial.close(false);
-        }        
+//        if (!mTutorialShownBefore && mTutorial != null) {
+//            mTutorial.close(false);
+//            mTutorial = null;
+//        }        
     }
 
     @Override
@@ -346,6 +359,10 @@ public class LatinIME extends InputMethodService
     @Override
     public void hideWindow() {
         if (TRACE) Debug.stopMethodTracing();
+        if (!mTutorialShownBefore && mTutorial != null) {
+            mTutorial.close(false);
+            mTutorial = null;
+        }
         super.hideWindow();
         TextEntryState.endSession();
     }

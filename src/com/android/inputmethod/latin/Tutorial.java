@@ -168,22 +168,22 @@ public class Tutorial {
                 R.string.tip_dismiss,
                 false, true);
         mBubbles.add(b0);
-        Bubble b1 = new Bubble(context, inputView, 
-                R.drawable.dialog_bubble_step03, 
-                (int) (inputWidth * 0.85) + mBubblePointerOffset, inputHeight / 5, 
-                (int) (inputWidth * 0.45),
-                Gravity.TOP | Gravity.RIGHT,
-                R.string.tip_long_press,
-                true, false);
-        mBubbles.add(b1);
-        Bubble b2 = new Bubble(inputView.getContext(), inputView, 
-                R.drawable.dialog_bubble_step04, 
-                inputWidth / 10 - mBubblePointerOffset, inputHeight - inputHeight / 5,
-                (int) (inputWidth * 0.45),
-                Gravity.BOTTOM | Gravity.LEFT,
-                R.string.tip_access_symbols,
-                true, false);
-        mBubbles.add(b2);
+//        Bubble b1 = new Bubble(context, inputView, 
+//                R.drawable.dialog_bubble_step03, 
+//                (int) (inputWidth * 0.85) + mBubblePointerOffset, inputHeight / 5, 
+//                (int) (inputWidth * 0.45),
+//                Gravity.TOP | Gravity.RIGHT,
+//                R.string.tip_long_press,
+//                true, false);
+//        mBubbles.add(b1);
+//        Bubble b2 = new Bubble(inputView.getContext(), inputView, 
+//                R.drawable.dialog_bubble_step04, 
+//                inputWidth / 10 - mBubblePointerOffset, inputHeight - inputHeight / 5,
+//                (int) (inputWidth * 0.45),
+//                Gravity.BOTTOM | Gravity.LEFT,
+//                R.string.tip_access_symbols,
+//                true, false);
+//        mBubbles.add(b2);
         mInputView = inputView;
     }
     
