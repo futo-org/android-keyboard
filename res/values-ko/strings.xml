@@ -15,52 +15,35 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for english_ime_name (7252517407088836577) -->
-    <skip />
-    <!-- no translation found for english_ime_settings (6661589557206947774) -->
-    <skip />
+    <string name="english_ime_name">"Android 키보드"</string>
+    <string name="english_ime_settings">"Android 키보드 설정"</string>
     <string name="vibrate_on_keypress">"키를 누를 때 진동 발생"</string>
     <string name="sound_on_keypress">"버튼을 누를 때 소리 발생"</string>
-    <!-- no translation found for hit_correction (4855351009261318389) -->
-    <skip />
-    <!-- no translation found for hit_correction_summary (8761701873008070796) -->
-    <skip />
-    <!-- no translation found for hit_correction_land (2567691684825205448) -->
-    <skip />
-    <!-- no translation found for hit_correction_land_summary (4076803842198368328) -->
-    <skip />
-    <!-- no translation found for auto_correction (7911639788808958255) -->
-    <skip />
-    <!-- no translation found for auto_correction_summary (6881047311475758267) -->
-    <skip />
-    <!-- no translation found for prediction (466220283138359837) -->
-    <skip />
-    <!-- no translation found for prediction_category (7027100625580696660) -->
-    <skip />
-    <!-- no translation found for prediction_summary (459788228830873110) -->
-    <skip />
-    <!-- no translation found for auto_complete_dialog_title (2172048590607201920) -->
-    <skip />
-    <!-- no translation found for prediction_landscape (4874601565593216183) -->
-    <skip />
-    <!-- no translation found for prediction_landscape_summary (6736551095997839472) -->
-    <skip />
-    <!-- no translation found for auto_cap (1719746674854628252) -->
-    <skip />
-    <!-- no translation found for auto_cap_summary (3260681697600786825) -->
-    <skip />
+    <string name="hit_correction">"입력 오류 수정"</string>
+    <string name="hit_correction_summary">"입력 오류 수정 사용"</string>
+    <string name="hit_correction_land">"가로 입력 오류"</string>
+    <string name="hit_correction_land_summary">"입력 오류 수정 사용"</string>
+    <string name="auto_correction">"단어 추천"</string>
+    <string name="auto_correction_summary">"이전 단어를 자동으로 수정"</string>
+    <string name="prediction">"단어 추천"</string>
+    <string name="prediction_category">"단어 추천 설정"</string>
+    <string name="prediction_summary">"입력할 때 자동 완성 사용"</string>
+    <string name="auto_complete_dialog_title">"자동 완성"</string>
+    <string name="prediction_landscape">"입력란 크기 늘리기"</string>
+    <string name="prediction_landscape_summary">"가로 보기에서 단어 추천 숨기기"</string>
+    <string name="auto_cap">"자동 대문자화"</string>
+    <string name="auto_cap_summary">"문장의 첫 글자를 대문자로 표시"</string>
     <string name="auto_punctuate">"자동 구두점 입력"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <!-- no translation found for prediction_modes:0 (4870266572388153286) -->
-    <!-- no translation found for prediction_modes:1 (1669461741568287396) -->
-    <!-- no translation found for prediction_modes:2 (4894328801530136615) -->
-    <!-- no translation found for prediction_none (2472795101338047944) -->
-    <skip />
-    <!-- no translation found for prediction_basic (8407291081834155558) -->
-    <skip />
-    <!-- no translation found for prediction_full (3765102052052510268) -->
-    <skip />
+  <string-array name="prediction_modes">
+    <item>"없음"</item>
+    <item>"기본"</item>
+    <item>"고급"</item>
+  </string-array>
+    <string name="prediction_none">"0"</string>
+    <string name="prediction_basic">"1"</string>
+    <string name="prediction_full">"2"</string>
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
@@ -76,28 +59,16 @@
     <string name="alternates_for_y">"ýÿ"</string>
     <!-- no translation found for alternates_for_z (8206774143334512268) -->
     <skip />
-    <!-- no translation found for tip_long_press (6101270866284343344) -->
-    <skip />
-    <!-- no translation found for tip_dismiss (7585579046862204381) -->
-    <skip />
-    <!-- no translation found for tip_access_symbols (6344098517525531652) -->
-    <skip />
-    <!-- no translation found for tip_add_to_dictionary (1487293888469227817) -->
-    <skip />
-    <!-- no translation found for label_go_key (1635148082137219148) -->
-    <skip />
-    <!-- no translation found for label_next_key (362972844525672568) -->
-    <skip />
-    <!-- no translation found for label_done_key (2441578748772529288) -->
-    <skip />
-    <!-- no translation found for label_send_key (2815056534433717444) -->
-    <skip />
-    <!-- no translation found for label_symbol_key (6175820506864489453) -->
-    <skip />
-    <!-- no translation found for label_phone_key (4275497665515080551) -->
-    <skip />
-    <!-- no translation found for label_alpha_key (8864943487292437456) -->
-    <skip />
-    <!-- no translation found for label_alt_key (2846315350346694811) -->
-    <skip />
+    <string name="tip_long_press">"키를 길게 누르면 악센트(ø, ö 등)가 표시됩니다."</string>
+    <string name="tip_dismiss">"키보드를 닫으려면 언제든지 뒤로 키(↶)를 누르세요."</string>
+    <string name="tip_access_symbols">"숫자 및 기호 액세스"</string>
+    <string name="tip_add_to_dictionary">"맨 왼쪽에 있는 단어를 길게 누르면 사전에 추가됩니다."</string>
+    <string name="label_go_key">"이동"</string>
+    <string name="label_next_key">"다음"</string>
+    <string name="label_done_key">"완료"</string>
+    <string name="label_send_key">"전송"</string>
+    <string name="label_symbol_key">"?123"</string>
+    <string name="label_phone_key">"123"</string>
+    <string name="label_alpha_key">"ABC"</string>
+    <string name="label_alt_key">"ALT"</string>
 </resources>

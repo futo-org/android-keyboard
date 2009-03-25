@@ -15,52 +15,35 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for english_ime_name (7252517407088836577) -->
-    <skip />
-    <!-- no translation found for english_ime_settings (6661589557206947774) -->
-    <skip />
+    <string name="english_ime_name">"Klávesnice Android"</string>
+    <string name="english_ime_settings">"Nastavení klávesnice Android"</string>
     <string name="vibrate_on_keypress">"Při stisku klávesy vibrovat"</string>
     <string name="sound_on_keypress">"Zvuk při stisku klávesy"</string>
-    <!-- no translation found for hit_correction (4855351009261318389) -->
-    <skip />
-    <!-- no translation found for hit_correction_summary (8761701873008070796) -->
-    <skip />
-    <!-- no translation found for hit_correction_land (2567691684825205448) -->
-    <skip />
-    <!-- no translation found for hit_correction_land_summary (4076803842198368328) -->
-    <skip />
-    <!-- no translation found for auto_correction (7911639788808958255) -->
-    <skip />
-    <!-- no translation found for auto_correction_summary (6881047311475758267) -->
-    <skip />
-    <!-- no translation found for prediction (466220283138359837) -->
-    <skip />
-    <!-- no translation found for prediction_category (7027100625580696660) -->
-    <skip />
-    <!-- no translation found for prediction_summary (459788228830873110) -->
-    <skip />
-    <!-- no translation found for auto_complete_dialog_title (2172048590607201920) -->
-    <skip />
-    <!-- no translation found for prediction_landscape (4874601565593216183) -->
-    <skip />
-    <!-- no translation found for prediction_landscape_summary (6736551095997839472) -->
-    <skip />
-    <!-- no translation found for auto_cap (1719746674854628252) -->
-    <skip />
-    <!-- no translation found for auto_cap_summary (3260681697600786825) -->
-    <skip />
+    <string name="hit_correction">"Opravovat překlepy"</string>
+    <string name="hit_correction_summary">"Povolit opravu chyb vstupu"</string>
+    <string name="hit_correction_land">"Chyby vstupu v zobrazení na šířku"</string>
+    <string name="hit_correction_land_summary">"Povolit opravu chyb vstupu"</string>
+    <string name="auto_correction">"Návrhy slov"</string>
+    <string name="auto_correction_summary">"Automaticky opravit předchozí slovo"</string>
+    <string name="prediction">"Návrhy slov"</string>
+    <string name="prediction_category">"Nastavení návrhů slov"</string>
+    <string name="prediction_summary">"Povolit automatické dokončování při psaní"</string>
+    <string name="auto_complete_dialog_title">"Automatické dokončování"</string>
+    <string name="prediction_landscape">"Zvětšit textové pole"</string>
+    <string name="prediction_landscape_summary">"Skrýt návrhy slov v zobrazení na šířku"</string>
+    <string name="auto_cap">"Velká písmena automaticky"</string>
+    <string name="auto_cap_summary">"Zahájit větu velkým písmenem"</string>
     <string name="auto_punctuate">"Automatická interpunkce"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <!-- no translation found for prediction_modes:0 (4870266572388153286) -->
-    <!-- no translation found for prediction_modes:1 (1669461741568287396) -->
-    <!-- no translation found for prediction_modes:2 (4894328801530136615) -->
-    <!-- no translation found for prediction_none (2472795101338047944) -->
-    <skip />
-    <!-- no translation found for prediction_basic (8407291081834155558) -->
-    <skip />
-    <!-- no translation found for prediction_full (3765102052052510268) -->
-    <skip />
+  <string-array name="prediction_modes">
+    <item>"Není"</item>
+    <item>"Základní"</item>
+    <item>"Pokročilé"</item>
+  </string-array>
+    <string name="prediction_none">"0"</string>
+    <string name="prediction_basic">"1"</string>
+    <string name="prediction_full">"2"</string>
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
@@ -76,28 +59,16 @@
     <string name="alternates_for_y">"ýÿ"</string>
     <!-- no translation found for alternates_for_z (8206774143334512268) -->
     <skip />
-    <!-- no translation found for tip_long_press (6101270866284343344) -->
-    <skip />
-    <!-- no translation found for tip_dismiss (7585579046862204381) -->
-    <skip />
-    <!-- no translation found for tip_access_symbols (6344098517525531652) -->
-    <skip />
-    <!-- no translation found for tip_add_to_dictionary (1487293888469227817) -->
-    <skip />
-    <!-- no translation found for label_go_key (1635148082137219148) -->
-    <skip />
-    <!-- no translation found for label_next_key (362972844525672568) -->
-    <skip />
-    <!-- no translation found for label_done_key (2441578748772529288) -->
-    <skip />
-    <!-- no translation found for label_send_key (2815056534433717444) -->
-    <skip />
-    <!-- no translation found for label_symbol_key (6175820506864489453) -->
-    <skip />
-    <!-- no translation found for label_phone_key (4275497665515080551) -->
-    <skip />
-    <!-- no translation found for label_alpha_key (8864943487292437456) -->
-    <skip />
-    <!-- no translation found for label_alt_key (2846315350346694811) -->
-    <skip />
+    <string name="tip_long_press">"Podržením klávesy zobrazíte diakritiku (ž, á atd.)"</string>
+    <string name="tip_dismiss">"Stisknutím klávesy Zpět ↶ můžete klávesnici kdykoli zavřít"</string>
+    <string name="tip_access_symbols">"Přístup k číslům a symbolům"</string>
+    <string name="tip_add_to_dictionary">"Stisknutím a podržením slova zcela vlevo toto slovo přidáte do slovníku"</string>
+    <string name="label_go_key">"Přejít"</string>
+    <string name="label_next_key">"Další"</string>
+    <string name="label_done_key">"Hotovo"</string>
+    <string name="label_send_key">"Odeslat"</string>
+    <string name="label_symbol_key">"?123"</string>
+    <string name="label_phone_key">"123"</string>
+    <string name="label_alpha_key">"ABC"</string>
+    <string name="label_alt_key">"Alt"</string>
 </resources>

@@ -15,43 +15,32 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for english_ime_name (7252517407088836577) -->
-    <skip />
-    <!-- no translation found for english_ime_settings (6661589557206947774) -->
-    <skip />
+    <string name="english_ime_name">"Skjermtastatur"</string>
+    <string name="english_ime_settings">"Innstillinger for skjermtastatur"</string>
     <string name="vibrate_on_keypress">"Vibrer ved tastetrykk"</string>
     <string name="sound_on_keypress">"Lyd ved tastetrykk"</string>
-    <!-- no translation found for hit_correction (4855351009261318389) -->
-    <skip />
-    <!-- no translation found for hit_correction_summary (8761701873008070796) -->
-    <skip />
-    <!-- no translation found for hit_correction_land (2567691684825205448) -->
-    <skip />
-    <!-- no translation found for hit_correction_land_summary (4076803842198368328) -->
-    <skip />
-    <!-- no translation found for auto_correction (7911639788808958255) -->
-    <skip />
-    <string name="auto_correction_summary">"Autokorriger forrige ord ved mellomrom eller linjeskift"</string>
-    <!-- no translation found for prediction (466220283138359837) -->
-    <skip />
-    <!-- no translation found for prediction_category (7027100625580696660) -->
-    <skip />
-    <!-- no translation found for prediction_summary (459788228830873110) -->
-    <skip />
-    <!-- no translation found for auto_complete_dialog_title (2172048590607201920) -->
-    <skip />
-    <!-- no translation found for prediction_landscape (4874601565593216183) -->
-    <skip />
-    <!-- no translation found for prediction_landscape_summary (6736551095997839472) -->
-    <skip />
+    <string name="hit_correction">"Rett opp skrivefeil"</string>
+    <string name="hit_correction_summary">"Slå på retting av skrivefeil"</string>
+    <string name="hit_correction_land">"Rett opp skrivefeil i breddeformat"</string>
+    <string name="hit_correction_land_summary">"Slå på retting av skrivefeil"</string>
+    <string name="auto_correction">"Autokorrektur"</string>
+    <string name="auto_correction_summary">"Autokorriger forrige ord"</string>
+    <string name="prediction">"Ordforslag"</string>
+    <string name="prediction_category">"Innstillinger for ordforslag"</string>
+    <string name="prediction_summary">"Skru på autofullføring under skriving"</string>
+    <string name="auto_complete_dialog_title">"Autofullfør"</string>
+    <string name="prediction_landscape">"Større tekstfelt"</string>
+    <string name="prediction_landscape_summary">"Skjul ordforslag i breddeformat"</string>
     <string name="auto_cap">"Stor forbokstav"</string>
     <string name="auto_cap_summary">"Start automatisk setninger med stor bokstav"</string>
     <string name="auto_punctuate">"Automatisk punktum"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <!-- no translation found for prediction_modes:0 (4870266572388153286) -->
-    <!-- no translation found for prediction_modes:1 (1669461741568287396) -->
-    <!-- no translation found for prediction_modes:2 (4894328801530136615) -->
+  <string-array name="prediction_modes">
+    <item>"Ingen"</item>
+    <item>"Grunnleggende"</item>
+    <item>"Avansert"</item>
+  </string-array>
     <!-- no translation found for prediction_none (2472795101338047944) -->
     <skip />
     <!-- no translation found for prediction_basic (8407291081834155558) -->
@@ -73,18 +62,13 @@
     <string name="alternates_for_y">"ýÿ"</string>
     <!-- no translation found for alternates_for_z (8206774143334512268) -->
     <skip />
-    <!-- no translation found for tip_long_press (6101270866284343344) -->
-    <skip />
-    <!-- no translation found for tip_dismiss (7585579046862204381) -->
-    <skip />
-    <!-- no translation found for tip_access_symbols (6344098517525531652) -->
-    <skip />
+    <string name="tip_long_press">"Hold en tast nede for å se aksenterte tegn (ø, ö, osv.)"</string>
+    <string name="tip_dismiss">"Trykk tilbakeknappen, ↶, for å lukke tastaturet"</string>
+    <string name="tip_access_symbols">"Få tilgang til tall og symboler"</string>
     <string name="tip_add_to_dictionary">"Trykk lenge på ordet lengst til venstre for å legge det til i ordlisten"</string>
     <string name="label_go_key">"Gå"</string>
-    <!-- no translation found for label_next_key (362972844525672568) -->
-    <skip />
-    <!-- no translation found for label_done_key (2441578748772529288) -->
-    <skip />
+    <string name="label_next_key">"Neste"</string>
+    <string name="label_done_key">"Utfør"</string>
     <!-- no translation found for label_send_key (2815056534433717444) -->
     <skip />
     <string name="label_symbol_key">"?123"</string>
