@@ -17,38 +17,38 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.opengl.Visibility;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.preference.PreferenceManager;
 import android.text.Layout;
+import android.text.SpannableStringBuilder;
 import android.text.StaticLayout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Tutorial {
+public class Tutorial implements OnTouchListener {
     
     private List<Bubble> mBubbles = new ArrayList<Bubble>();
     private long mStartTime;
     private static final long MINIMUM_TIME = 6000;
     private static final long MAXIMUM_TIME = 20000;
     private View mInputView;
+    private LatinIME mIme;
     private int[] mLocation = new int[2];
     private int mBubblePointerOffset;
     
     private static final int MSG_SHOW_BUBBLE = 0;
-    private static final int MSG_HIDE_ALL = 1;
+    
+    private int mBubbleIndex;
     
     Handler mHandler = new Handler() {
         @Override
@@ -58,8 +58,6 @@ public class Tutorial {
                     Bubble bubba = (Bubble) msg.obj;
                     bubba.show(mLocation[0], mLocation[1]);
                     break;
-                case MSG_HIDE_ALL:
-                    close(true);
             }
         }
     };
@@ -70,7 +68,7 @@ public class Tutorial {
         int y;
         int width;
         int gravity;
-        String text;
+        CharSequence text;
         boolean dismissOnTouch;
         boolean dismissOnClose;
         PopupWindow window;
@@ -78,16 +76,18 @@ public class Tutorial {
         View inputView;
         
         Bubble(Context context, View inputView,
-                int backgroundResource, int bx, int by, int bw, int gravity, int textResource,
-                boolean dismissOnTouch, boolean dismissOnClose) {
+                int backgroundResource, int bx, int by, int textResource1, int textResource2) {
             bubbleBackground = context.getResources().getDrawable(backgroundResource);
-            x = bx; 
+            x = bx;
             y = by;
-            width = bw;
-            this.gravity = gravity;
-            text = context.getResources().getString(textResource);
-            this.dismissOnTouch = dismissOnTouch;
-            this.dismissOnClose = dismissOnClose;
+            width = (int) (inputView.getWidth() * 0.9);
+            this.gravity = Gravity.TOP | Gravity.LEFT;
+            text = new SpannableStringBuilder()
+                .append(context.getResources().getText(textResource1))
+                .append("\n") 
+                .append(context.getResources().getText(textResource2));
+            this.dismissOnTouch = true;
+            this.dismissOnClose = false;
             this.inputView = inputView;
             window = new PopupWindow(context);
             window.setBackgroundDrawable(null);
@@ -97,19 +97,20 @@ public class Tutorial {
             textView = (TextView) inflate.inflate(R.layout.bubble_text, null);
             textView.setBackgroundDrawable(bubbleBackground);
             textView.setText(text);
+            //textView.setText(textResource1);
             window.setContentView(textView);
             window.setFocusable(false);
             window.setTouchable(true);
             window.setOutsideTouchable(false);
             textView.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View view, MotionEvent me) {
-                    Tutorial.this.touched();
+                    Tutorial.this.next();
                     return true;
                 }
             });
         }
 
-        private void chooseSize(PopupWindow pop, View parentView, CharSequence text, TextView tv) {
+        private int chooseSize(PopupWindow pop, View parentView, CharSequence text, TextView tv) {
             int wid = tv.getPaddingLeft() + tv.getPaddingRight();
             int ht = tv.getPaddingTop() + tv.getPaddingBottom();
 
@@ -131,10 +132,12 @@ public class Tutorial {
              */
             pop.setWidth(width);
             pop.setHeight(ht + l.getHeight());
+            return l.getHeight();
         }
 
         void show(int offx, int offy) {
-            chooseSize(window, inputView, text, textView);
+            int textHeight = chooseSize(window, inputView, text, textView);
+            offy -= textView.getPaddingTop() + textHeight;
             if (inputView.getVisibility() == View.VISIBLE 
                     && inputView.getWindowVisibility() == View.VISIBLE) {
                 try {
@@ -155,72 +158,83 @@ public class Tutorial {
         }
     }
     
-    public Tutorial(LatinKeyboardView inputView) {
+    public Tutorial(LatinIME ime, LatinKeyboardView inputView) {
         Context context = inputView.getContext();
-        int inputHeight = inputView.getHeight();
+        mIme = ime;
         int inputWidth = inputView.getWidth();
+        final int x = inputWidth / 20; // Half of 1/10th
         mBubblePointerOffset = inputView.getContext().getResources()
             .getDimensionPixelOffset(R.dimen.bubble_pointer_offset);
-        Bubble b0 = new Bubble(context, inputView, 
-                R.drawable.dialog_bubble_step02, 0, 0, 
-                inputWidth,
-                Gravity.BOTTOM | Gravity.LEFT,
-                R.string.tip_dismiss,
-                false, true);
-        mBubbles.add(b0);
-//        Bubble b1 = new Bubble(context, inputView, 
-//                R.drawable.dialog_bubble_step03, 
-//                (int) (inputWidth * 0.85) + mBubblePointerOffset, inputHeight / 5, 
-//                (int) (inputWidth * 0.45),
-//                Gravity.TOP | Gravity.RIGHT,
-//                R.string.tip_long_press,
-//                true, false);
-//        mBubbles.add(b1);
-//        Bubble b2 = new Bubble(inputView.getContext(), inputView, 
-//                R.drawable.dialog_bubble_step04, 
-//                inputWidth / 10 - mBubblePointerOffset, inputHeight - inputHeight / 5,
-//                (int) (inputWidth * 0.45),
-//                Gravity.BOTTOM | Gravity.LEFT,
-//                R.string.tip_access_symbols,
-//                true, false);
-//        mBubbles.add(b2);
+        Bubble bWelcome = new Bubble(context, inputView, 
+                R.drawable.dialog_bubble_step02, x, 0, 
+                R.string.tip_to_open_keyboard, R.string.touch_to_continue);
+        mBubbles.add(bWelcome);
+        Bubble bAccents = new Bubble(context, inputView, 
+                R.drawable.dialog_bubble_step02, x, 0, 
+                R.string.tip_to_view_accents, R.string.touch_to_continue);
+        mBubbles.add(bAccents);
+        Bubble b123 = new Bubble(context, inputView, 
+                R.drawable.dialog_bubble_step07, x, 0, 
+                R.string.tip_to_open_symbols, R.string.touch_to_continue);
+        mBubbles.add(b123);
+        Bubble bABC = new Bubble(context, inputView, 
+                R.drawable.dialog_bubble_step07, x, 0, 
+                R.string.tip_to_close_symbols, R.string.touch_to_continue);
+        mBubbles.add(bABC);
+        Bubble bSettings = new Bubble(context, inputView, 
+                R.drawable.dialog_bubble_step07, x, 0, 
+                R.string.tip_to_launch_settings, R.string.touch_to_continue);
+        mBubbles.add(bSettings);
+        Bubble bDone = new Bubble(context, inputView, 
+                R.drawable.dialog_bubble_step02, x, 0, 
+                R.string.tip_to_start_typing, R.string.touch_to_finish);
+        mBubbles.add(bDone);
         mInputView = inputView;
     }
     
     void start() {
         mInputView.getLocationInWindow(mLocation);
-        long delayMillis = 0;
-        for (int i = 0; i < mBubbles.size(); i++) {
-            mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_SHOW_BUBBLE, mBubbles.get(i)), delayMillis);
-            delayMillis += 2000;
+        mBubbleIndex = -1;
+        mInputView.setOnTouchListener(this);
+        next();
+    }
+
+    boolean next() {
+        if (mBubbleIndex >= 0) {
+            mBubbles.get(mBubbleIndex).hide();
         }
-        //mHandler.sendEmptyMessageDelayed(MSG_HIDE_ALL, MAXIMUM_TIME);
-        mStartTime = SystemClock.uptimeMillis();
+        mBubbleIndex++;
+        if (mBubbleIndex >= mBubbles.size()) {
+            mInputView.setOnTouchListener(null);
+            mIme.sendDownUpKeyEvents(-1); // Inform the setupwizard that tutorial is in last bubble
+            mIme.tutorialDone();
+            return false;
+        }
+        if (mBubbleIndex == 3 || mBubbleIndex == 4) {
+            mIme.mKeyboardSwitcher.toggleSymbols();
+        }
+        mHandler.sendMessageDelayed(
+                mHandler.obtainMessage(MSG_SHOW_BUBBLE, mBubbles.get(mBubbleIndex)), 200);
+        return true;
     }
     
-    void touched() {
-        if (SystemClock.uptimeMillis() - mStartTime < MINIMUM_TIME) {
-            return;
-        }
-        for (int i = 0; i < mBubbles.size(); i++) {
-            Bubble bubba = mBubbles.get(i);
-            if (bubba.dismissOnTouch) {
-                bubba.hide();
-            }
-        }
-    }
-    
-    void close(boolean completed) {
-        mHandler.removeMessages(MSG_SHOW_BUBBLE);
+    void hide() {
         for (int i = 0; i < mBubbles.size(); i++) {
             mBubbles.get(i).hide();
         }
-        if (completed) {
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(
-                    mInputView.getContext());
-            Editor editor = sp.edit();
-            editor.putBoolean(LatinIME.PREF_TUTORIAL_RUN, true);
-            editor.commit();
+        mInputView.setOnTouchListener(null);
+    }
+
+    boolean close() {
+        mHandler.removeMessages(MSG_SHOW_BUBBLE);
+        hide();
+        return true;
+    }
+
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            next();
         }
+        return true;
     }
 }

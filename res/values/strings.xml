@@ -70,6 +70,21 @@
     <!-- Description for auto punctuate -->
     <string name="auto_punctuate_summary"></string>
     
+    <!-- Option to enable quick fixes -->
+    <string name="quick_fixes">Quick fixes</string>
+    <!-- Description for quick fixes -->
+    <string name="quick_fixes_summary">Corrects commonly typed mistakes</string>
+    
+    <!-- Option to enable showing suggestions -->
+    <string name="show_suggestions">Show suggestions</string>
+    <!-- Description for show suggestions -->
+    <string name="show_suggestions_summary">Display suggested words while typing</string>
+    
+    <!-- Option to enable auto completion -->
+    <string name="auto_complete">Auto-complete</string>
+    <!-- Description for auto completion -->
+    <string name="auto_complete_summary">Spacebar and punctuation automatically insert highlighted word</string>
+    
     <!-- Array of prediction modes -->
     <string-array name="prediction_modes">
         <item>None</item>
@@ -122,7 +137,33 @@
     <!-- Tip to long press on typed word to add to dictionary -->
     <string name="tip_add_to_dictionary">Press and hold the left-most word to add it to the dictionary
         </string>
-
+        
+    <!-- Instruction to touch the bubble to continue -->
+    <string name="touch_to_continue">Touch this hint to continue »</string>
+    
+    <!-- Instruction to touch the bubble to start typing -->
+    <string name="touch_to_finish">Touch here to close this hint and start typing!</string>
+    
+    <!-- Tutorial tip 1 - The keyboard opens any time you touch a text field -->
+    <string name="tip_to_open_keyboard"><b>The keyboard opens any time you touch a text field</b></string>
+    
+    <!-- Tutorial tip 2 - Touch and hold a key to view accents (examples) -->
+    <string name="tip_to_view_accents"><b>Touch &amp; hold a key to view accents\n(ø, ö, ô, ó, and so on)</b>
+    </string>
+    
+    <!-- Tutorial tip 3 - How to switch to number/symbol keyboard -->
+    <string name="tip_to_open_symbols"><b>Switch to numbers and symbols by touching this key</b></string>
+    
+    <!-- Tutorial tip 4 - How to switch back to alphabet keyboard -->
+    <string name="tip_to_close_symbols"><b>Go back to letters by touching this key again</b></string>
+    
+    <!-- Tutorial tip 5 - How to launch keyboard settings -->
+    <string name="tip_to_launch_settings"><b>Touch &amp; hold this key to change keyboard settings, like auto complete</b></string>
+    
+    <!-- Tutorial tip 6 - Done with the tutorial -->
+    <string name="tip_to_start_typing"><b>Try it!</b></string>
+    
+    
     <!-- Label for soft enter key when it performs GO action.  Must be short to fit on key! -->
     <string name="label_go_key">Go</string>
     <!-- Label for soft enter key when it performs NEXT action.  Must be short to fit on key! -->

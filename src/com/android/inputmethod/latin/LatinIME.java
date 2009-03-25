@@ -23,7 +23,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
@@ -35,6 +34,7 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.text.AutoText;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -64,14 +64,13 @@ public class LatinIME extends InputMethodService
     
     private static final String PREF_VIBRATE_ON = "vibrate_on";
     private static final String PREF_SOUND_ON = "sound_on";
-    private static final String PREF_PROXIMITY_CORRECTION = "hit_correction";
-    private static final String PREF_PREDICTION = "prediction_mode";
-    private static final String PREF_PREDICTION_LANDSCAPE = "prediction_landscape";
     private static final String PREF_AUTO_CAP = "auto_cap";
-    static final String PREF_TUTORIAL_RUN = "tutorial_run";
+    private static final String PREF_QUICK_FIXES = "quick_fixes";
+    private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
+    private static final String PREF_AUTO_COMPLETE = "auto_complete";
 
     private static final int MSG_UPDATE_SUGGESTIONS = 0;
-    private static final int MSG_CHECK_TUTORIAL = 1;
+    private static final int MSG_START_TUTORIAL = 1;
     
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
@@ -93,7 +92,7 @@ public class LatinIME extends InputMethodService
     
     private AlertDialog mOptionsDialog;
     
-    private KeyboardSwitcher mKeyboardSwitcher;
+    KeyboardSwitcher mKeyboardSwitcher;
     
     private UserDictionary mUserDictionary;
     
@@ -106,20 +105,17 @@ public class LatinIME extends InputMethodService
     private CharSequence mBestWord;
     private boolean mPredictionOn;
     private boolean mCompletionOn;
-    private boolean mPasswordMode;
     private boolean mAutoSpace;
     private boolean mAutoCorrectOn;
     private boolean mCapsLock;
-    private long    mLastShiftTime;
     private boolean mVibrateOn;
     private boolean mSoundOn;
-    private boolean mProximityCorrection;
-    private int     mCorrectionMode;
     private boolean mAutoCap;
-    private boolean mAutoPunctuate;
-    private boolean mTutorialShownBefore;
+    private boolean mQuickFixes;
+    private boolean mShowSuggestions;
+    private boolean mAutoComplete;
+    private int     mCorrectionMode;
     // Indicates whether the suggestion strip is to be on in landscape
-    private boolean mShowSuggestInLand;
     private boolean mJustAccepted;
     private CharSequence mJustRevertedSeparator;
     private int mDeleteCount;
@@ -144,10 +140,15 @@ public class LatinIME extends InputMethodService
                 case MSG_UPDATE_SUGGESTIONS:
                     updateSuggestions();
                     break;
-                case MSG_CHECK_TUTORIAL:
-                    if (!mTutorialShownBefore) {
-                        mTutorial = new Tutorial(mInputView);
-                        mTutorial.start();
+                case MSG_START_TUTORIAL:
+                    if (mTutorial == null) {
+                        if (mInputView.isShown()) {
+                            mTutorial = new Tutorial(LatinIME.this, mInputView);
+                            mTutorial.start();
+                        } else {
+                            // Try again soon if the view is not yet showing
+                            sendMessageDelayed(obtainMessage(MSG_START_TUTORIAL), 100);
+                        }
                     }
                     break;
             }
@@ -187,10 +188,6 @@ public class LatinIME extends InputMethodService
     public void onConfigurationChanged(Configuration conf) {
         if (!TextUtils.equals(conf.locale.toString(), mLocale)) {
             initSuggest(conf.locale.toString());
-        }
-        if (!mTutorialShownBefore && mTutorial != null) {
-            mTutorial.close(false);
-            mTutorial = null;
         }
         super.onConfigurationChanged(conf);
     }
@@ -253,10 +250,7 @@ public class LatinIME extends InputMethodService
                 int variation = attribute.inputType &  EditorInfo.TYPE_MASK_VARIATION;
                 if (variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD ||
                         variation == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ) {
-                    mPasswordMode = true;
                     mPredictionOn = false;
-                } else {
-                    mPasswordMode = false;
                 }
                 if (variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                         || variation == EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME) {
@@ -296,28 +290,15 @@ public class LatinIME extends InputMethodService
         setCandidatesViewShown(false);
         if (mCandidateView != null) mCandidateView.setSuggestions(null, false, false, false);
         loadSettings();
-        mInputView.setProximityCorrectionEnabled(mProximityCorrection);
+        mInputView.setProximityCorrectionEnabled(true);
         if (mSuggest != null) {
             mSuggest.setCorrectionMode(mCorrectionMode);
         }
         mPredictionOn = mPredictionOn && mCorrectionMode > 0;
-        if (!mTutorialShownBefore && mTutorial == null) {
-            mHandler.sendEmptyMessageDelayed(MSG_CHECK_TUTORIAL, 
-                    mInputView.isShown() ? 100 : 3000);
-        }
+        checkTutorial(attribute.privateImeOptions);
         if (TRACE) Debug.startMethodTracing("latinime");
     }
 
-    @Override
-    public void onWindowShown() {
-        super.onWindowShown();
-        // Bring the tutorial up faster, if window just shown
-        if (!mTutorialShownBefore && mTutorial == null) {
-            mHandler.removeMessages(MSG_CHECK_TUTORIAL);
-            mHandler.sendEmptyMessageDelayed(MSG_CHECK_TUTORIAL, 1000);
-        }
-    }
-    
     @Override
     public void onFinishInput() {
         super.onFinishInput();
@@ -325,10 +306,6 @@ public class LatinIME extends InputMethodService
         if (mInputView != null) {
             mInputView.closing();
         }
-//        if (!mTutorialShownBefore && mTutorial != null) {
-//            mTutorial.close(false);
-//            mTutorial = null;
-//        }        
     }
 
     @Override
@@ -359,8 +336,12 @@ public class LatinIME extends InputMethodService
     @Override
     public void hideWindow() {
         if (TRACE) Debug.stopMethodTracing();
-        if (!mTutorialShownBefore && mTutorial != null) {
-            mTutorial.close(false);
+        if (mOptionsDialog != null && mOptionsDialog.isShowing()) {
+            mOptionsDialog.dismiss();
+            mOptionsDialog = null;
+        }
+        if (mTutorial != null) {
+            mTutorial.close();
             mTutorial = null;
         }
         super.hideWindow();
@@ -417,9 +398,19 @@ public class LatinIME extends InputMethodService
                 if (event.getRepeatCount() == 0 && mInputView != null) {
                     if (mInputView.handleBack()) {
                         return true;
-                    } else if (!mTutorialShownBefore && mTutorial != null) {
-                        mTutorial.close(true);
+                    } else if (mTutorial != null) {
+                        mTutorial.close();
+                        mTutorial = null;
                     }
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_DOWN:
+            case KeyEvent.KEYCODE_DPAD_UP:
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+                // If tutorial is visible, don't allow dpad to work
+                if (mTutorial != null) {
+                    return true;
                 }
                 break;
         }
@@ -433,6 +424,10 @@ public class LatinIME extends InputMethodService
             case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_DPAD_LEFT:
             case KeyEvent.KEYCODE_DPAD_RIGHT:
+                // If tutorial is visible, don't allow dpad to work
+                if (mTutorial != null) {
+                    return true;
+                }
                 // Enable shift key and DPAD to do selections
                 if (mInputView != null && mInputView.isShown() && mInputView.isShifted()) {
                     event = new KeyEvent(event.getDownTime(), event.getEventTime(), 
@@ -596,9 +591,7 @@ public class LatinIME extends InputMethodService
                 ic.deleteSurroundingText(1, 0);
             }
         } else {
-            //getCurrentInputConnection().deleteSurroundingText(1, 0);
             deleteChar = true;
-            //sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
         }
         updateShiftKeyState(getCurrentInputEditorInfo());
         TextEntryState.backspace();
@@ -697,9 +690,6 @@ public class LatinIME extends InputMethodService
     
     private void handleClose() {
         commitTyped(getCurrentInputConnection());
-        if (!mTutorialShownBefore && mTutorial != null) {
-            mTutorial.close(true);
-        }
         requestHideSelf(0);
         mInputView.closing();
         TextEntryState.endSession();
@@ -730,11 +720,7 @@ public class LatinIME extends InputMethodService
     }
     
     private boolean isCandidateStripVisible() {
-        boolean visible = isPredictionOn() &&
-                (!isFullscreenMode() ||
-                 mCorrectionMode == Suggest.CORRECTION_FULL ||
-                 mShowSuggestInLand);
-        return visible;
+        return isPredictionOn() && mShowSuggestions;
     }
 
     private void updateSuggestions() {
@@ -901,14 +887,6 @@ public class LatinIME extends InputMethodService
                 mInputView.startPlaying(text.toString());
             }
         }
-//        if (mAutoCorrectOn) {
-//            commitTyped(getCurrentInputConnection());
-//        } else if (mPredicting) {
-//            pickDefaultSuggestion();
-//        }
-//        if (mAutoSpace) {
-//            sendSpace();
-//        }
     }
     
     public void swipeLeft() {
@@ -987,6 +965,27 @@ public class LatinIME extends InputMethodService
         mVibrator.vibrate(mVibrateDuration);
     }
 
+    private void checkTutorial(String privateImeOptions) {
+        if (privateImeOptions == null) return;
+        if (privateImeOptions.equals("com.android.setupwizard:ShowTutorial")) {
+            if (mTutorial == null) startTutorial();
+        } else if (privateImeOptions.equals("com.android.setupwizard:HideTutorial")) {
+            if (mTutorial != null) {
+                if (mTutorial.close()) {
+                    mTutorial = null;
+                }
+            }
+        }
+    }
+    
+    private void startTutorial() {
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_START_TUTORIAL), 500);
+    }
+
+    void tutorialDone() {
+        mTutorial = null;
+    }
+    
     private void launchSettings() {
         handleClose();
         Intent intent = new Intent();
@@ -998,24 +997,17 @@ public class LatinIME extends InputMethodService
     private void loadSettings() {
         // Get the settings preferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mProximityCorrection = sp.getBoolean(PREF_PROXIMITY_CORRECTION, true);
         mVibrateOn = sp.getBoolean(PREF_VIBRATE_ON, false);
         mSoundOn = sp.getBoolean(PREF_SOUND_ON, false);
-        String predictionBasic = getString(R.string.prediction_basic);
-        String mode = sp.getString(PREF_PREDICTION, predictionBasic);
-        if (mode.equals(getString(R.string.prediction_full))) {
-            mCorrectionMode = 2;
-        } else if (mode.equals(predictionBasic)) {
-            mCorrectionMode = 1;
-        } else {
-            mCorrectionMode = 0;
-        }
-        mAutoCorrectOn = mSuggest != null && mCorrectionMode > 0;
-        
         mAutoCap = sp.getBoolean(PREF_AUTO_CAP, true);
-        //mAutoPunctuate = sp.getBoolean(PREF_AUTO_PUNCTUATE, mCorrectionMode > 0);
-        mShowSuggestInLand = !sp.getBoolean(PREF_PREDICTION_LANDSCAPE, false);
-        mTutorialShownBefore = sp.getBoolean(PREF_TUTORIAL_RUN, false);
+        mQuickFixes = sp.getBoolean(PREF_QUICK_FIXES, true);
+        // If there is no auto text data, then quickfix is forced to "on", so that the other options
+        // will continue to work
+        if (AutoText.getSize(mInputView) < 1) mQuickFixes = true;
+        mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true) & mQuickFixes;
+        mAutoComplete = sp.getBoolean(PREF_AUTO_COMPLETE, true) & mShowSuggestions;
+        mAutoCorrectOn = mSuggest != null && (mAutoComplete || mQuickFixes);
+        mCorrectionMode = mAutoComplete ? 2 : (mQuickFixes ? 1 : 0);
     }
 
     private void showOptionsMenu() {
@@ -1079,11 +1071,7 @@ public class LatinIME extends InputMethodService
         p.println("  mSoundOn=" + mSoundOn);
         p.println("  mVibrateOn=" + mVibrateOn);
     }
-    
-    
-    private static final int[] KEY_SPACE = { KEYCODE_SPACE };
-    
-    
+
     // Characters per second measurement
     
     private static final boolean PERF_DEBUG = false;
