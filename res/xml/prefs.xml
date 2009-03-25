@@ -21,7 +21,6 @@
     <CheckBoxPreference
             android:key="vibrate_on"
             android:title="@string/vibrate_on_keypress"
-            android:defaultValue="true"
             android:persistent="true"
             />
 

@@ -982,7 +982,7 @@ public class LatinIME extends InputMethodService
         // Get the settings preferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mProximityCorrection = sp.getBoolean(PREF_PROXIMITY_CORRECTION, true);
-        mVibrateOn = sp.getBoolean(PREF_VIBRATE_ON, true);
+        mVibrateOn = sp.getBoolean(PREF_VIBRATE_ON, false);
         mSoundOn = sp.getBoolean(PREF_SOUND_ON, false);
         String predictionBasic = getString(R.string.prediction_basic);
         String mode = sp.getString(PREF_PREDICTION, predictionBasic);
