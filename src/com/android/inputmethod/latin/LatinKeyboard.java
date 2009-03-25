@@ -195,6 +195,10 @@ public class LatinKeyboard extends Keyboard {
         public LatinKey(Resources res, Keyboard.Row parent, int x, int y, 
                 XmlResourceParser parser) {
             super(res, parent, x, y, parser);
+            if (popupCharacters != null && popupCharacters.length() == 0) {
+                // If there is a keyboard with no keys specified in popupCharacters
+                popupResId = 0;
+            }
         }
         
         void enableShiftLock() {
