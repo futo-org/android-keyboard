@@ -25,4 +25,6 @@
     android:textColor="?android:attr/textColorPrimary"
     android:minWidth="32dip"
     android:gravity="center"
+    android:shadowRadius="2.75"
+    android:shadowColor="#BB000000"
     />

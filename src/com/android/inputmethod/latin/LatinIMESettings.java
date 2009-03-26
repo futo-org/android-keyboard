@@ -16,60 +16,38 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
+import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
+import android.text.AutoText;
 
-public class LatinIMESettings extends PreferenceActivity 
-        implements OnSharedPreferenceChangeListener{
+public class LatinIMESettings extends PreferenceActivity {
     
-    private static final String CORRECTION_MODE_KEY = "prediction_mode";
+    private static final String QUICK_FIXES_KEY = "quick_fixes";
+    private static final String SHOW_SUGGESTIONS_KEY = "show_suggestions";
     private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
-    private static final String PREDICTION_LANDSCAPE_KEY = "prediction_landscape";
     
-    private ListPreference mCorrectionMode;
-    private PreferenceGroup mPredictionSettings;
-    private Preference mPredictionLandscape;
+    private CheckBoxPreference mQuickFixes;
+    private CheckBoxPreference mShowSuggestions;
     
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs);
-        mCorrectionMode = (ListPreference) findPreference(CORRECTION_MODE_KEY);
-        mPredictionSettings = (PreferenceGroup) findPreference(PREDICTION_SETTINGS_KEY);
-        mPredictionLandscape = findPreference(PREDICTION_LANDSCAPE_KEY);
-        updatePredictionSettings();
-        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
-    }
-    
-    @Override
-    protected void onDestroy() {
-        getPreferenceScreen().getSharedPreferences()
-                .unregisterOnSharedPreferenceChangeListener(this);
-        super.onDestroy();
-    }
-    
-    private void updatePredictionSettings() {
-        if (mCorrectionMode != null && mPredictionSettings != null) {
-            String correctionMode = mCorrectionMode.getValue();
-            if (correctionMode.equals(getResources().getString(R.string.prediction_none))) {
-                mPredictionSettings.setEnabled(false);
-            } else {
-                mPredictionSettings.setEnabled(true);
-                boolean suggestionsInLandscape = 
-                    !correctionMode.equals(getResources().getString(R.string.prediction_full));
-                mPredictionLandscape.setEnabled(suggestionsInLandscape);
-            }
-        }
+        mQuickFixes = (CheckBoxPreference) findPreference(QUICK_FIXES_KEY);
+        mShowSuggestions = (CheckBoxPreference) findPreference(SHOW_SUGGESTIONS_KEY);
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-        if (key.equals(CORRECTION_MODE_KEY)) {
-            updatePredictionSettings();
+    @Override
+    protected void onResume() {
+        super.onResume();
+        int autoTextSize = AutoText.getSize(getListView());
+        if (autoTextSize < 1) {
+            ((PreferenceGroup) findPreference(PREDICTION_SETTINGS_KEY))
+                .removePreference(mQuickFixes);
+        } else {
+            mShowSuggestions.setDependency(QUICK_FIXES_KEY);
         }
     }
 }

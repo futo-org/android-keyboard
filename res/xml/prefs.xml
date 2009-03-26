@@ -37,43 +37,33 @@
             android:defaultValue="true"
             />
 
-    <!--CheckBoxPreference
-            android:key="auto_punctuate"
-            android:title="@string/auto_punctuate"
-            android:persistent="true"
-            android:defaultValue="true"
-            android:visible="false"
-            /-->
-
-    <ListPreference
-            android:key="prediction_mode"
-            android:title="@string/prediction"
-            android:dialogTitle="@string/auto_complete_dialog_title"
-            android:summary="@string/prediction_summary"
-            android:persistent="true" 
-            android:entries="@array/prediction_modes"
-            android:entryValues="@array/prediction_modes_values"
-            android:defaultValue="@string/prediction_basic"
-            />
-
     <PreferenceCategory
             android:title="@string/prediction_category"
             android:key="prediction_settings">
-            
+
         <CheckBoxPreference
-            android:key="hit_correction"
-            android:title="@string/hit_correction"
-            android:summary="@string/hit_correction_summary"
-            android:persistent="true" 
+            android:key="quick_fixes"
+            android:title="@string/quick_fixes"
+            android:summary="@string/quick_fixes_summary"
+            android:persistent="true"
             android:defaultValue="true"
             />
 
         <CheckBoxPreference
-            android:key="prediction_landscape"
-            android:title="@string/prediction_landscape"
-            android:summary="@string/prediction_landscape_summary"
+            android:key="show_suggestions"
+            android:title="@string/show_suggestions"
+            android:summary="@string/show_suggestions_summary"
+            android:persistent="true"
+            android:defaultValue="true"
+            />
+
+        <CheckBoxPreference
+            android:key="auto_complete"
+            android:title="@string/auto_complete"
+            android:summary="@string/auto_complete_summary"
             android:persistent="true" 
-            android:defaultValue="false"
+            android:defaultValue="true"
+            android:dependency="show_suggestions"
             />
             
     </PreferenceCategory>            
