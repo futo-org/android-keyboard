@@ -102,12 +102,6 @@ public class Tutorial implements OnTouchListener {
             window.setFocusable(false);
             window.setTouchable(true);
             window.setOutsideTouchable(false);
-            textView.setOnTouchListener(new View.OnTouchListener() {
-                public boolean onTouch(View view, MotionEvent me) {
-                    Tutorial.this.next();
-                    return true;
-                }
-            });
         }
 
         private int chooseSize(PopupWindow pop, View parentView, CharSequence text, TextView tv) {
@@ -143,6 +137,12 @@ public class Tutorial implements OnTouchListener {
                 try {
                     if ((gravity & Gravity.BOTTOM) == Gravity.BOTTOM) offy -= window.getHeight();
                     if ((gravity & Gravity.RIGHT) == Gravity.RIGHT) offx -= window.getWidth();
+                    textView.setOnTouchListener(new View.OnTouchListener() {
+                        public boolean onTouch(View view, MotionEvent me) {
+                            Tutorial.this.next();
+                            return true;
+                        }
+                    });
                     window.showAtLocation(inputView, Gravity.NO_GRAVITY, x + offx, y + offy);
                 } catch (Exception e) {
                     // Input view is not valid
@@ -151,10 +151,14 @@ public class Tutorial implements OnTouchListener {
         }
         
         void hide() {
-            textView.setOnTouchListener(null);
             if (window.isShowing()) {
+                textView.setOnTouchListener(null);
                 window.dismiss();
             }
+        }
+        
+        boolean isShowing() {
+            return window.isShowing();
         }
     }
     
@@ -201,7 +205,14 @@ public class Tutorial implements OnTouchListener {
 
     boolean next() {
         if (mBubbleIndex >= 0) {
-            mBubbles.get(mBubbleIndex).hide();
+            // If the bubble is not yet showing, don't move to the next.
+            if (!mBubbles.get(mBubbleIndex).isShowing()) {
+                return true;
+            }
+            // Hide all previous bubbles as well, as they may have had a delayed show
+            for (int i = 0; i <= mBubbleIndex; i++) {
+                mBubbles.get(i).hide();
+            }
         }
         mBubbleIndex++;
         if (mBubbleIndex >= mBubbles.size()) {
@@ -214,7 +225,7 @@ public class Tutorial implements OnTouchListener {
             mIme.mKeyboardSwitcher.toggleSymbols();
         }
         mHandler.sendMessageDelayed(
-                mHandler.obtainMessage(MSG_SHOW_BUBBLE, mBubbles.get(mBubbleIndex)), 200);
+                mHandler.obtainMessage(MSG_SHOW_BUBBLE, mBubbles.get(mBubbleIndex)), 500);
         return true;
     }
     
@@ -232,7 +243,7 @@ public class Tutorial implements OnTouchListener {
     }
 
     public boolean onTouch(View v, MotionEvent event) {
-        if (event.getAction() == MotionEvent.ACTION_UP) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
             next();
         }
         return true;
