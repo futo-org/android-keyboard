@@ -85,10 +85,14 @@ int
 Dictionary::getAddress(int *pos)
 {
     int address = 0;
-    address += (mDict[*pos] & 0x7F) << 16;
-    address += (mDict[*pos + 1] & 0xFF) << 8;
-    address += (mDict[*pos + 2] & 0xFF);
-    *pos += 3;
+    if ((mDict[*pos] & FLAG_ADDRESS_MASK) == 0) {
+        *pos += 1;
+    } else {
+        address += (mDict[*pos] & (ADDRESS_MASK >> 16)) << 16;
+        address += (mDict[*pos + 1] & 0xFF) << 8;
+        address += (mDict[*pos + 2] & 0xFF);
+        *pos += 3;
+    }
     return address;
 }
 
@@ -193,7 +197,8 @@ Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int s
         unsigned short lowerC = toLowerCase(c, depth);
         bool terminal = getTerminal(&pos);
         int childrenAddress = getAddress(&pos);
-        int freq = getFreq(&pos);
+        int freq = 1;
+        if (terminal) freq = getFreq(&pos);
         // If we are only doing completions, no need to look at the typed characters.
         if (completion) {
             mWord[depth] = c;
@@ -266,7 +271,9 @@ Dictionary::isValidWordRec(int pos, unsigned short *word, int offset, int length
                 }
             }
         }
-        getFreq(&pos);
+        if (terminal) {
+            getFreq(&pos);
+        }
         // There could be two instances of each alphabet - upper and lower case. So continue
         // looking ...
     }
