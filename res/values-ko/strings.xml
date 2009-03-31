@@ -36,6 +36,18 @@
     <string name="auto_punctuate">"자동 구두점 입력"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
+    <!-- no translation found for quick_fixes (5353213327680897927) -->
+    <skip />
+    <!-- no translation found for quick_fixes_summary (3405028402510332373) -->
+    <skip />
+    <!-- no translation found for show_suggestions (507074425254289133) -->
+    <skip />
+    <!-- no translation found for show_suggestions_summary (1989672863935759654) -->
+    <skip />
+    <!-- no translation found for auto_complete (1103196318775486023) -->
+    <skip />
+    <!-- no translation found for auto_complete_summary (6113149638718274624) -->
+    <skip />
   <string-array name="prediction_modes">
     <item>"없음"</item>
     <item>"기본"</item>
@@ -63,6 +75,22 @@
     <string name="tip_dismiss">"키보드를 닫으려면 언제든지 뒤로 키(↶)를 누르세요."</string>
     <string name="tip_access_symbols">"숫자 및 기호 액세스"</string>
     <string name="tip_add_to_dictionary">"맨 왼쪽에 있는 단어를 길게 누르면 사전에 추가됩니다."</string>
+    <!-- no translation found for touch_to_continue (7869803257948414531) -->
+    <skip />
+    <!-- no translation found for touch_to_finish (7990196086480585789) -->
+    <skip />
+    <!-- no translation found for tip_to_open_keyboard (6821200275486950452) -->
+    <skip />
+    <!-- no translation found for tip_to_view_accents (5433158573693308501) -->
+    <skip />
+    <!-- no translation found for tip_to_open_symbols (7345139325622444880) -->
+    <skip />
+    <!-- no translation found for tip_to_close_symbols (5227724217206927185) -->
+    <skip />
+    <!-- no translation found for tip_to_launch_settings (8402961128983196128) -->
+    <skip />
+    <!-- no translation found for tip_to_start_typing (7213843601369174313) -->
+    <skip />
     <string name="label_go_key">"이동"</string>
     <string name="label_next_key">"다음"</string>
     <string name="label_done_key">"완료"</string>
