@@ -148,16 +148,17 @@ public class CandidateView extends View {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
                     float distanceX, float distanceY) {
+                final int width = getWidth();
                 mScrolled = true;
-                mScrollX += distanceX;
+                mScrollX += (int) distanceX;
                 if (mScrollX < 0) {
                     mScrollX = 0;
                 }
-                if (mScrollX + getWidth() > mTotalWidth) {                    
-                    mScrollX -= distanceX;
+                if (distanceX > 0 && mScrollX + width > mTotalWidth) {                    
+                    mScrollX -= (int) distanceX;
                 }
                 mTargetScrollX = mScrollX;
-                showPreview(OUT_OF_BOUNDS, null);
+                hidePreview();
                 invalidate();
                 return true;
             }
@@ -236,7 +237,8 @@ public class CandidateView extends View {
 
             mWordX[i] = x;
 
-            if (touchX + scrollX >= x && touchX + scrollX < x + wordWidth && !scrolled) {
+            if (touchX + scrollX >= x && touchX + scrollX < x + wordWidth && !scrolled &&
+                    touchX != OUT_OF_BOUNDS) {
                 if (canvas != null) {
                     canvas.translate(x, 0);
                     mSelectionHighlight.setBounds(0, bgPadding.top, wordWidth, height);
@@ -399,7 +401,7 @@ public class CandidateView extends View {
             mSelectedString = null;
             mSelectedIndex = -1;
             removeHighlight();
-            showPreview(OUT_OF_BOUNDS, null);
+            hidePreview();
             requestLayout();
             break;
         }
@@ -425,16 +427,21 @@ public class CandidateView extends View {
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_REMOVE_THROUGH_PREVIEW), 200);
     }
 
+    private void hidePreview() {
+        mCurrentWordIndex = OUT_OF_BOUNDS;
+        if (mPreviewPopup.isShowing()) {
+            mHandler.sendMessageDelayed(mHandler
+                    .obtainMessage(MSG_REMOVE_PREVIEW), 60);
+        }
+    }
+    
     private void showPreview(int wordIndex, String altText) {
         int oldWordIndex = mCurrentWordIndex;
         mCurrentWordIndex = wordIndex;
         // If index changed or changing text
         if (oldWordIndex != mCurrentWordIndex || altText != null) {
             if (wordIndex == OUT_OF_BOUNDS) {
-                if (mPreviewPopup.isShowing()) {
-                    mHandler.sendMessageDelayed(mHandler
-                            .obtainMessage(MSG_REMOVE_PREVIEW), 60);
-                }
+                hidePreview();
             } else {
                 CharSequence word = altText != null? altText : mSuggestions.get(wordIndex);
                 mPreviewText.setText(word);
@@ -474,5 +481,11 @@ public class CandidateView extends View {
         if (mService.addWordToDictionary(word.toString())) {
             showPreview(0, getContext().getResources().getString(R.string.added_word, word));
         }
+    }
+    
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        hidePreview();
     }
 }
