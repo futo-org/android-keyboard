@@ -36,18 +36,12 @@
     <string name="auto_punctuate">"Automatická interpunkce"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <!-- no translation found for quick_fixes (5353213327680897927) -->
-    <skip />
-    <!-- no translation found for quick_fixes_summary (3405028402510332373) -->
-    <skip />
-    <!-- no translation found for show_suggestions (507074425254289133) -->
-    <skip />
-    <!-- no translation found for show_suggestions_summary (1989672863935759654) -->
-    <skip />
-    <!-- no translation found for auto_complete (1103196318775486023) -->
-    <skip />
-    <!-- no translation found for auto_complete_summary (6113149638718274624) -->
-    <skip />
+    <string name="quick_fixes">"Rychlé opravy"</string>
+    <string name="quick_fixes_summary">"Opravuje běžné překlepy"</string>
+    <string name="show_suggestions">"Zobrazovat návrhy"</string>
+    <string name="show_suggestions_summary">"Při psaní zobrazovat návrhy slov"</string>
+    <string name="auto_complete">"Automatické dokončování"</string>
+    <string name="auto_complete_summary">"Stisknutí mezerníku nebo interpunkce automaticky vloží zvýrazněné slovo"</string>
   <string-array name="prediction_modes">
     <item>"Není"</item>
     <item>"Základní"</item>
@@ -75,22 +69,14 @@
     <string name="tip_dismiss">"Stisknutím klávesy Zpět ↶ můžete klávesnici kdykoli zavřít"</string>
     <string name="tip_access_symbols">"Přístup k číslům a symbolům"</string>
     <string name="tip_add_to_dictionary">"Stisknutím a podržením slova zcela vlevo toto slovo přidáte do slovníku"</string>
-    <!-- no translation found for touch_to_continue (7869803257948414531) -->
-    <skip />
-    <!-- no translation found for touch_to_finish (7990196086480585789) -->
-    <skip />
-    <!-- no translation found for tip_to_open_keyboard (6821200275486950452) -->
-    <skip />
-    <!-- no translation found for tip_to_view_accents (5433158573693308501) -->
-    <skip />
-    <!-- no translation found for tip_to_open_symbols (7345139325622444880) -->
-    <skip />
-    <!-- no translation found for tip_to_close_symbols (5227724217206927185) -->
-    <skip />
-    <!-- no translation found for tip_to_launch_settings (8402961128983196128) -->
-    <skip />
-    <!-- no translation found for tip_to_start_typing (7213843601369174313) -->
-    <skip />
+    <string name="touch_to_continue">"Chcete-li pokračovat, dotkněte se této rady »"</string>
+    <string name="touch_to_finish">"Chcete-li tuto radu zavřít a začít psát, dotkněte se zde."</string>
+    <string name="tip_to_open_keyboard"><b>"Klávesnice se zobrazí, kdykoli se dotknete textového pole."</b></string>
+    <string name="tip_to_view_accents"><b>"Stisknutím a podržením klávesy zobrazíte diakritiku"\n"(ó, ø, ö, ô atd.)"</b></string>
+    <string name="tip_to_open_symbols"><b>"Stisknutím této klávesy přejdete do režimu číslic a symbolů"</b></string>
+    <string name="tip_to_close_symbols"><b>"Opětovným stisknutím této klávesy se vrátíte zpět do režimu písmen"</b></string>
+    <string name="tip_to_launch_settings"><b>"Chcete-li změnit nastavení klávesnice, jako například automatické dokončování, stiskněte tuto klávesu a podržte ji."</b></string>
+    <string name="tip_to_start_typing"><b>"Zkuste to."</b></string>
     <string name="label_go_key">"Přejít"</string>
     <string name="label_next_key">"Další"</string>
     <string name="label_done_key">"Hotovo"</string>

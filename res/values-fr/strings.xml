@@ -17,8 +17,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name">"Clavier Android"</string>
     <string name="english_ime_settings">"Paramètres du clavier Android"</string>
-    <string name="vibrate_on_keypress">"Vibrer à chaque touche enfoncée"</string>
-    <string name="sound_on_keypress">"Son à chaque touche enfoncée"</string>
+    <string name="vibrate_on_keypress">"Vibrer à chaque touche"</string>
+    <string name="sound_on_keypress">"Son à chaque touche"</string>
     <string name="hit_correction">"Corriger les fautes de frappe"</string>
     <string name="hit_correction_summary">"Activer la correction des erreurs de saisie"</string>
     <string name="hit_correction_land">"Erreurs de saisie en mode paysage"</string>
@@ -31,23 +31,17 @@
     <string name="auto_complete_dialog_title">"Saisie semi-automatique"</string>
     <string name="prediction_landscape">"Agrandir le champ de texte"</string>
     <string name="prediction_landscape_summary">"Masquer la saisie prédictive en mode paysage"</string>
-    <string name="auto_cap">"Mise en majuscules automatique"</string>
+    <string name="auto_cap">"Majuscules automatiques"</string>
     <string name="auto_cap_summary">"Mettre en majuscule la première lettre de chaque phrase"</string>
     <string name="auto_punctuate">"Ponctuation automatique"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <!-- no translation found for quick_fixes (5353213327680897927) -->
-    <skip />
-    <!-- no translation found for quick_fixes_summary (3405028402510332373) -->
-    <skip />
-    <!-- no translation found for show_suggestions (507074425254289133) -->
-    <skip />
-    <!-- no translation found for show_suggestions_summary (1989672863935759654) -->
-    <skip />
-    <!-- no translation found for auto_complete (1103196318775486023) -->
-    <skip />
-    <!-- no translation found for auto_complete_summary (6113149638718274624) -->
-    <skip />
+    <string name="quick_fixes">"Corrections rapides"</string>
+    <string name="quick_fixes_summary">"Corrige les fautes de frappe courantes"</string>
+    <string name="show_suggestions">"Afficher les suggestions"</string>
+    <string name="show_suggestions_summary">"Afficher les suggestions de terme lors de la saisie"</string>
+    <string name="auto_complete">"Saisie semi-automatique"</string>
+    <string name="auto_complete_summary">"La barre d\'espace et la ponctuation insèrent automatiquement les termes en surbrillance."</string>
   <string-array name="prediction_modes">
     <item>"Aucun"</item>
     <item>"Simple"</item>
@@ -75,22 +69,14 @@
     <string name="tip_dismiss">"Appuyez sur la touche Retour ↶ pour fermer le clavier à tout moment."</string>
     <string name="tip_access_symbols">"Accéder aux chiffres et symboles"</string>
     <string name="tip_add_to_dictionary">"Appuyer et maintenir le doigt sur le mot le plus à gauche pour l\'ajouter au dictionnaire"</string>
-    <!-- no translation found for touch_to_continue (7869803257948414531) -->
-    <skip />
-    <!-- no translation found for touch_to_finish (7990196086480585789) -->
-    <skip />
-    <!-- no translation found for tip_to_open_keyboard (6821200275486950452) -->
-    <skip />
-    <!-- no translation found for tip_to_view_accents (5433158573693308501) -->
-    <skip />
-    <!-- no translation found for tip_to_open_symbols (7345139325622444880) -->
-    <skip />
-    <!-- no translation found for tip_to_close_symbols (5227724217206927185) -->
-    <skip />
-    <!-- no translation found for tip_to_launch_settings (8402961128983196128) -->
-    <skip />
-    <!-- no translation found for tip_to_start_typing (7213843601369174313) -->
-    <skip />
+    <string name="touch_to_continue">"Appuyez sur ce conseil pour continuer »"</string>
+    <string name="touch_to_finish">"Appuyez ici pour fermer ce conseil et commencer à saisir votre texte."</string>
+    <string name="tip_to_open_keyboard"><b>"Le clavier s\'affiche à chaque fois que vous appuyez sur une zone de texte."</b></string>
+    <string name="tip_to_view_accents"><b>"Maintenez une touche enfoncée pour afficher les accents"\n"(ø, ö, ô, ó, etc.)"</b></string>
+    <string name="tip_to_open_symbols"><b>"Appuyez sur cette touche pour basculer vers les chiffres et les symboles."</b></string>
+    <string name="tip_to_close_symbols"><b>"Retourner au clavier en appuyant de nouveau sur cette touche"</b></string>
+    <string name="tip_to_launch_settings"><b>"Maintenez cette touche enfoncée afin de modifier les paramètres du clavier, tels que la saisie semi-automatique."</b></string>
+    <string name="tip_to_start_typing"><b>"Essayez !"</b></string>
     <string name="label_go_key">"OK"</string>
     <string name="label_next_key">"Suivant"</string>
     <string name="label_done_key">"Terminé"</string>
