@@ -18,7 +18,7 @@
     <string name="english_ime_name">"Androidキーボード"</string>
     <string name="english_ime_settings">"Androidキーボードの設定"</string>
     <string name="vibrate_on_keypress">"キーのバイブレーション"</string>
-    <string name="sound_on_keypress">"キーを押したときの音"</string>
+    <string name="sound_on_keypress">"キー操作音"</string>
     <string name="hit_correction">"入力エラー修正"</string>
     <string name="hit_correction_summary">"入力エラーを推測修正する"</string>
     <string name="hit_correction_land">"横表示での入力修正"</string>
