@@ -17,8 +17,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name">"Tastiera Android"</string>
     <string name="english_ime_settings">"Impostazioni tastiera Android"</string>
-    <string name="vibrate_on_keypress">"Vibra quando premi un tasto"</string>
-    <string name="sound_on_keypress">"Suona quando premi un tasto"</string>
+    <string name="vibrate_on_keypress">"Vibra se premi un tasto"</string>
+    <string name="sound_on_keypress">"Suona se premi un tasto"</string>
     <string name="hit_correction">"Correggi errori di digitazione"</string>
     <string name="hit_correction_summary">"Attiva la correzione degli errori di inserimento"</string>
     <string name="hit_correction_land">"Errori di inserimento in visualizzazione orizzontale"</string>
@@ -33,7 +33,7 @@
     <string name="prediction_landscape_summary">"Nascondi i suggerimenti delle parole in visualizzazione orizzontale"</string>
     <string name="auto_cap">"Maiuscole automatiche"</string>
     <string name="auto_cap_summary">"Rendi maiuscole le iniziali delle frasi"</string>
-    <string name="auto_punctuate">"Punteggiatura automatica"</string>
+    <string name="auto_punctuate">"Punteggiatura automat."</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
     <string name="quick_fixes">"Correzioni veloci"</string>

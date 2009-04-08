@@ -17,7 +17,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name">"Android-Tastatur"</string>
     <string name="english_ime_settings">"Android-Tastatureinstellungen"</string>
-    <string name="vibrate_on_keypress">"Vibrieren auf Tastendruck"</string>
+    <string name="vibrate_on_keypress">"Vibrieren bei Tastendruck"</string>
     <string name="sound_on_keypress">"Sound bei Tastendruck"</string>
     <string name="hit_correction">"Eingabefehler korrigieren"</string>
     <string name="hit_correction_summary">"Korrektur von Eingabefehlern aktivieren"</string>

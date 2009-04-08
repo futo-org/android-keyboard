@@ -18,7 +18,7 @@
     <string name="english_ime_name">"Teclado de Android"</string>
     <string name="english_ime_settings">"Configuración del teclado de Android"</string>
     <string name="vibrate_on_keypress">"Vibrar al pulsar tecla"</string>
-    <string name="sound_on_keypress">"Sonido al pulsar una tecla"</string>
+    <string name="sound_on_keypress">"Sonido al pulsar tecla"</string>
     <string name="hit_correction">"Corregir errores de escritura"</string>
     <string name="hit_correction_summary">"Habilitar la introducción de corrección de errores"</string>
     <string name="hit_correction_land">"Errores de introducción de datos en vista horizontal"</string>
@@ -31,7 +31,7 @@
     <string name="auto_complete_dialog_title">"Autocompletar"</string>
     <string name="prediction_landscape">"Aumentar el tamaño del campo de texto"</string>
     <string name="prediction_landscape_summary">"Ocultar sugerencias de palabras en la vista horizontal"</string>
-    <string name="auto_cap">"Uso de mayúsculas automático"</string>
+    <string name="auto_cap">"Uso de mayúsculas auto."</string>
     <string name="auto_cap_summary">"Escribir en mayúscula el principio de la frase"</string>
     <string name="auto_punctuate">"Puntuación automática"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
