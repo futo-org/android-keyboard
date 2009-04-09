@@ -28,7 +28,7 @@
     <string name="prediction">"Wortvorschläge"</string>
     <string name="prediction_category">"Einstellungen für Wortvorschläge"</string>
     <string name="prediction_summary">"Automatische Vervollständigung während der Eingabe aktivieren"</string>
-    <string name="auto_complete_dialog_title">"Automatische Vervollständigung"</string>
+    <string name="auto_complete_dialog_title">"Autom. vervollständigen"</string>
     <string name="prediction_landscape">"Textfeld vergrößern"</string>
     <string name="prediction_landscape_summary">"Wortvorschläge in Querformat ausblenden"</string>
     <string name="auto_cap">"Automatische Groß-/Kleinschreibung"</string>
@@ -40,8 +40,8 @@
     <string name="quick_fixes_summary">"Korrigiert gängige Tippfehler"</string>
     <string name="show_suggestions">"Vorschläge anzeigen"</string>
     <string name="show_suggestions_summary">"Vorgeschlagene Wörter während des Tippens anzeigen"</string>
-    <string name="auto_complete">"Automatische Vervollständigung"</string>
-    <string name="auto_complete_summary">"Leertaste und Interpunktion fügen automatisch ein hervorgehobenes Wort ein"</string>
+    <string name="auto_complete">"Autom. vervollständigen"</string>
+    <string name="auto_complete_summary">"Leertaste und Interpunktion fügen autom. ein markiertes Wort ein"</string>
   <string-array name="prediction_modes">
     <item>"Keine"</item>
     <item>"Standard"</item>
