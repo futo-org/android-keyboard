@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Mantén pulsada una tecla para ver los caracteres acentuados (ø, ö, etc.)."</string>
     <string name="tip_dismiss">"Pulsa la tecla \"Atrás\" ↶ para cerrar el teclado en cualquier momento."</string>
     <string name="tip_access_symbols">"Acceso a números y símbolos"</string>

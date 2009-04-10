@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"キー長押しでアクセント文字を表示（ø、öなど）"</string>
     <string name="tip_dismiss">"戻るキーでキーボードを閉じます"</string>
     <string name="tip_access_symbols">"数字と記号"</string>

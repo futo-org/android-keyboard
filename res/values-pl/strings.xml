@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Przytrzymaj klawisz, aby wyświetlić znaki akcentowane (ø, ö itp.)"</string>
     <string name="tip_dismiss">"Naciśnij klawisz cofania ↶, aby zamknąć klawiaturę w dowolnym momencie"</string>
     <string name="tip_access_symbols">"Przejdź do cyfr i symboli"</string>

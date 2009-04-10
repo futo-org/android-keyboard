@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Tieni premuto un tasto per vedere le lettere con segni diacritici (ø, ö etc.)"</string>
     <string name="tip_dismiss">"Premi il tasto Indietro ↶ per chiudere la tastiera in qualsiasi punto"</string>
     <string name="tip_access_symbols">"Accedi a numeri e simboli"</string>

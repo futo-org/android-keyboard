@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"키를 길게 누르면 악센트(ø, ö 등)가 표시됩니다."</string>
     <string name="tip_dismiss">"키보드를 닫으려면 언제든지 뒤로 키(↶)를 누르세요."</string>
     <string name="tip_access_symbols">"숫자 및 기호 액세스"</string>

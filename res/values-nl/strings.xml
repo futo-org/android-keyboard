@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Houd een toets ingedrukt om diakritische tekens weer te geven (ø, ö, enzovoort)"</string>
     <string name="tip_dismiss">"Druk op elk gewenst moment op de toets Terug ↶ om het toetsenbord te sluiten"</string>
     <string name="tip_access_symbols">"Toegang tot cijfers en symbolen"</string>

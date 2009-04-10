@@ -72,8 +72,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Hold en tast nede for å se aksenterte tegn (ø, ö, osv.)"</string>
     <string name="tip_dismiss">"Trykk tilbakeknappen, ↶, for å lukke tastaturet"</string>
     <string name="tip_access_symbols">"Få tilgang til tall og symboler"</string>

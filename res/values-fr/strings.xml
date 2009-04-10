@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Maintenir une touche enfoncée pour afficher les accents (à, é, etc.)"</string>
     <string name="tip_dismiss">"Appuyez sur la touche Retour ↶ pour fermer le clavier à tout moment."</string>
     <string name="tip_access_symbols">"Accéder aux chiffres et symboles"</string>

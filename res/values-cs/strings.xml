@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ňñ"</string>
     <string name="alternates_for_c">"čç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Podržením klávesy zobrazíte diakritiku (ž, á atd.)"</string>
     <string name="tip_dismiss">"Stisknutím klávesy Zpět ↶ můžete klávesnici kdykoli zavřít"</string>
     <string name="tip_access_symbols">"Přístup k číslům a symbolům"</string>

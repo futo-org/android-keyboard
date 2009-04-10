@@ -69,8 +69,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"按住某个键可以查看重音符号（ø、ö 等）"</string>
     <string name="tip_dismiss">"随时可以通过按后退键 ↶ 关闭键盘"</string>
     <string name="tip_access_symbols">"访问数字和符号"</string>
