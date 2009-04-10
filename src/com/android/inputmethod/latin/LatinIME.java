@@ -1005,7 +1005,8 @@ public class LatinIME extends InputMethodService
         // will continue to work
         if (AutoText.getSize(mInputView) < 1) mQuickFixes = true;
         mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true) & mQuickFixes;
-        mAutoComplete = sp.getBoolean(PREF_AUTO_COMPLETE, true) & mShowSuggestions;
+        mAutoComplete = sp.getBoolean(PREF_AUTO_COMPLETE, 
+                getResources().getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
         mAutoCorrectOn = mSuggest != null && (mAutoComplete || mQuickFixes);
         mCorrectionMode = mAutoComplete ? 2 : (mQuickFixes ? 1 : 0);
     }
