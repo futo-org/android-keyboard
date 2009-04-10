@@ -17,10 +17,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name">"Androidキーボード"</string>
     <string name="english_ime_settings">"Androidキーボードの設定"</string>
-    <string name="vibrate_on_keypress">"キーのバイブレーション"</string>
+    <string name="vibrate_on_keypress">"キー操作バイブ"</string>
     <string name="sound_on_keypress">"キー操作音"</string>
-    <string name="hit_correction">"入力エラー修正"</string>
-    <string name="hit_correction_summary">"入力エラーを推測修正する"</string>
+    <string name="hit_correction">"入力ミス補正"</string>
+    <string name="hit_correction_summary">"入力間違いを自動修正する"</string>
     <string name="hit_correction_land">"横表示での入力修正"</string>
     <string name="hit_correction_land_summary">"入力間違いを自動修正する"</string>
     <string name="auto_correction">"入力候補表示"</string>
@@ -32,7 +32,7 @@
     <string name="prediction_landscape">"入力作業スペースを広げる"</string>
     <string name="prediction_landscape_summary">"横表示では入力候補を表示しない"</string>
     <string name="auto_cap">"自動大文字変換"</string>
-    <string name="auto_cap_summary">"先頭文字を大文字に変換する"</string>
+    <string name="auto_cap_summary">"英字入力で文頭文字を大文字にする"</string>
     <string name="auto_punctuate">"句読点を自動入力"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
@@ -68,7 +68,7 @@
     <string name="tip_long_press">"キー長押しでアクセント文字を表示（ø、öなど）"</string>
     <string name="tip_dismiss">"戻るキーでキーボードを閉じます"</string>
     <string name="tip_access_symbols">"数字と記号"</string>
-    <string name="tip_add_to_dictionary">"一番左の語句を長押しすると辞書に追加されます"</string>
+    <string name="tip_add_to_dictionary">"一番左の単語を長押しすると辞書に追加されます"</string>
     <string name="touch_to_continue">"続けるにはヒントをタッチ &gt;&gt;"</string>
     <string name="touch_to_finish">"タッチしてこのヒントを終了し、入力を開始してください。"</string>
     <string name="tip_to_open_keyboard"><b>"テキストフィールドを選択するとキーボードが表示されます"</b></string>
