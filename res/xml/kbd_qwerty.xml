@@ -74,7 +74,10 @@
         <Key android:codes="104" android:keyLabel="h"/>
         <Key android:codes="106" android:keyLabel="j"/>
         <Key android:codes="107" android:keyLabel="k"/>
-        <Key android:codes="108" android:keyLabel="l" android:keyEdgeFlags="right"/>
+        <Key android:codes="108" android:keyLabel="l" 
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="@string/alternates_for_l"
+                android:keyEdgeFlags="right"/>
     </Row>
     
     <Row>
