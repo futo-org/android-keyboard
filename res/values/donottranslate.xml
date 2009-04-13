@@ -28,4 +28,8 @@
     <string name="alternates_for_r"></string>
     <!-- Accented characters related to "t" -->
     <string name="alternates_for_t"></string>
+    <!-- Accented characters related to "z" -->
+    <string name="alternates_for_z"></string>
+    <!-- Accented characters related to "l" -->
+    <string name="alternates_for_l"></string>
 </resources>
