@@ -62,7 +62,7 @@
             android:title="@string/auto_complete"
             android:summary="@string/auto_complete_summary"
             android:persistent="true" 
-            android:defaultValue="true"
+            android:defaultValue="@bool/enable_autocorrect"
             android:dependency="show_suggestions"
             />
             
