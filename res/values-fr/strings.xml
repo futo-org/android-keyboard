@@ -31,7 +31,7 @@
     <string name="auto_complete_dialog_title">"Saisie semi-automatique"</string>
     <string name="prediction_landscape">"Agrandir le champ de texte"</string>
     <string name="prediction_landscape_summary">"Masquer la saisie prédictive en mode paysage"</string>
-    <string name="auto_cap">"Majuscules automatiques"</string>
+    <string name="auto_cap">"Majuscules auto"</string>
     <string name="auto_cap_summary">"Mettre en majuscule la première lettre de chaque phrase"</string>
     <string name="auto_punctuate">"Ponctuation automatique"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
@@ -41,7 +41,7 @@
     <string name="show_suggestions">"Afficher les suggestions"</string>
     <string name="show_suggestions_summary">"Afficher les suggestions de terme lors de la saisie"</string>
     <string name="auto_complete">"Saisie semi-automatique"</string>
-    <string name="auto_complete_summary">"La barre d\'espace et la ponctuation insèrent les termes en surbrillance."</string>
+    <string name="auto_complete_summary">"La barre d\'espace et la ponctuation insèrent auto. le terme en surbrillance."</string>
   <string-array name="prediction_modes">
     <item>"Aucun"</item>
     <item>"Simple"</item>
@@ -67,9 +67,9 @@
     <string name="tip_dismiss">"Appuyez sur la touche Retour ↶ pour fermer le clavier à tout moment."</string>
     <string name="tip_access_symbols">"Accéder aux chiffres et symboles"</string>
     <string name="tip_add_to_dictionary">"Appuyer et maintenir le doigt sur le mot le plus à gauche pour l\'ajouter au dictionnaire"</string>
-    <string name="touch_to_continue">"Appuyez sur ce conseil pour continuer »"</string>
-    <string name="touch_to_finish">"Appuyez ici pour fermer ce conseil et commencer à saisir votre texte."</string>
-    <string name="tip_to_open_keyboard"><b>"Le clavier s\'affiche à chaque fois que vous appuyez sur une zone de texte."</b></string>
+    <string name="touch_to_continue">"Touchez ce conseil pour continuer »"</string>
+    <string name="touch_to_finish">"Touchez ici pour fermer ce conseil et commencer à saisir votre texte."</string>
+    <string name="tip_to_open_keyboard"><b>"Le clavier s\'affiche à chaque fois que vous touchez une zone de texte."</b></string>
     <string name="tip_to_view_accents"><b>"Maintenez une touche enfoncée pour afficher les accents"\n"(ø, ö, ô, ó, etc.)"</b></string>
     <string name="tip_to_open_symbols"><b>"Appuyez sur cette touche pour basculer vers les chiffres et les symboles."</b></string>
     <string name="tip_to_close_symbols"><b>"Retourner au clavier en appuyant de nouveau sur cette touche"</b></string>
@@ -77,7 +77,7 @@
     <string name="tip_to_start_typing"><b>"Essayez !"</b></string>
     <string name="label_go_key">"OK"</string>
     <string name="label_next_key">"Suivant"</string>
-    <string name="label_done_key">"Terminé"</string>
+    <string name="label_done_key">"OK"</string>
     <string name="label_send_key">"Envoyer"</string>
     <string name="label_symbol_key">"?123"</string>
     <string name="label_phone_key">"123"</string>

@@ -70,7 +70,7 @@
     <string name="touch_to_continue">"Raak deze tip aan om door te gaan »"</string>
     <string name="touch_to_finish">"Raak dit punt aan om deze tip te sluiten en te beginnen met typen."</string>
     <string name="tip_to_open_keyboard"><b>"Het toetsenbord wordt geopend wanneer u een tekstveld aanraakt"</b></string>
-    <string name="tip_to_view_accents"><b>"Blijf een toets aanraken om diakritische tekens weer te geven"\n" (ø, ö, ô, ó, enzovoort)"</b></string>
+    <string name="tip_to_view_accents"><b>"Blijf een toets aanraken om diakritische tekens weer te geven"\n"(ø, ö, ô, ó, enzovoort)"</b></string>
     <string name="tip_to_open_symbols"><b>"Schakel over naar cijfers en symbolen door deze toets aan te raken"</b></string>
     <string name="tip_to_close_symbols"><b>"Ga terug naar letters door deze toets nogmaals aan te raken"</b></string>
     <string name="tip_to_launch_settings"><b>"Blijf deze toets aanraken om toetsenbordinstellingen te wijzigen, zoals auto-aanvullen"</b></string>

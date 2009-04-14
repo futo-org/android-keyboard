@@ -54,15 +54,19 @@
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : Gespeichert"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
-    <string name="alternates_for_e">"èéêë"</string>
-    <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
-    <string name="alternates_for_u">"ùúûü"</string>
+    <string name="alternates_for_a">"ä"</string>
+    <!-- no translation found for alternates_for_e (3900510936875547555) -->
+    <skip />
+    <!-- no translation found for alternates_for_i (7097915268629342242) -->
+    <skip />
+    <string name="alternates_for_o">"ö"</string>
+    <string name="alternates_for_u">"ü"</string>
     <string name="alternates_for_s">"§ß"</string>
     <string name="alternates_for_n">"ñ"</string>
-    <string name="alternates_for_c">"ç"</string>
-    <string name="alternates_for_y">"ýÿ"</string>
+    <!-- no translation found for alternates_for_c (151699780720639892) -->
+    <skip />
+    <!-- no translation found for alternates_for_y (1722776806607271199) -->
+    <skip />
     <string name="tip_long_press">"Zur Anzeige von Umlauten (ä, ö usw.) Taste gedrückt halten"</string>
     <string name="tip_dismiss">"Zum Schließen der Tastatur ↶ drücken"</string>
     <string name="tip_access_symbols">"Auf Zahlen und Symbole zugreifen"</string>
