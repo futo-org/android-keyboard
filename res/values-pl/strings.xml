@@ -69,11 +69,11 @@
     <string name="tip_add_to_dictionary">"Naciśnij i przytrzymaj słowo po lewej stronie w celu dodania go do słownika"</string>
     <string name="touch_to_continue">"Dotknij tej podpowiedzi, aby kontynuować »"</string>
     <string name="touch_to_finish">"Dotknij tutaj, aby zamknąć tę podpowiedź i zacząć pisać!"</string>
-    <string name="tip_to_open_keyboard"><b>"Klawiatura jest otwierana po każdym dotknięciu pola tekstowego"</b></string>
-    <string name="tip_to_view_accents"><b>"Dotknij i przytrzymaj klawisz, aby wyświetlić znaki akcentowane"\n"(ø, ö, ô, ó itd.)"</b></string>
-    <string name="tip_to_open_symbols"><b>"Przełącz na cyfry i symbole, dotykając tego klawisza"</b></string>
-    <string name="tip_to_close_symbols"><b>"Wróć do trybu liter, dotykając ponownie tego klawisza"</b></string>
-    <string name="tip_to_launch_settings"><b>"Dotknij i przytrzymaj ten klawisz, aby zmienić ustawienia klawiatury, takie jak autouzupełnianie"</b></string>
+    <string name="tip_to_open_keyboard"><b>"Klawiatura jest otwierana po każdym dotknięciu pola tekstowego."</b></string>
+    <string name="tip_to_view_accents"><b>"Dotknij i przytrzymaj klawisz, aby wyświetlić znaki akcentowane"\n"(ø, ö, ô, ó itd.)."</b></string>
+    <string name="tip_to_open_symbols"><b>"Przełącz na cyfry i symbole, dotykając tego klawisza."</b></string>
+    <string name="tip_to_close_symbols"><b>"Wróć do trybu liter, dotykając ponownie tego klawisza."</b></string>
+    <string name="tip_to_launch_settings"><b>"Dotknij i przytrzymaj ten klawisz, aby zmienić ustawienia klawiatury, takie jak autouzupełnianie."</b></string>
     <string name="tip_to_start_typing"><b>"Wypróbuj!"</b></string>
     <string name="label_go_key">"Przejdź"</string>
     <string name="label_next_key">"Dalej"</string>

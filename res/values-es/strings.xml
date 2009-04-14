@@ -76,7 +76,7 @@
     <string name="tip_to_launch_settings"><b>"Mantén pulsada esta tecla para cambiar la configuración del teclado como, por ejemplo, la opción de autocompletar"</b>"."</string>
     <string name="tip_to_start_typing"><b>"¡Pruébalo!"</b></string>
     <string name="label_go_key">"Ir"</string>
-    <string name="label_next_key">"Siguiente"</string>
+    <string name="label_next_key">"Sig."</string>
     <string name="label_done_key">"Hecho"</string>
     <string name="label_send_key">"Enviar"</string>
     <string name="label_symbol_key">"?123"</string>
