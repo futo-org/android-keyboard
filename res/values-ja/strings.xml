@@ -41,7 +41,7 @@
     <string name="show_suggestions">"入力候補を表示"</string>
     <string name="show_suggestions_summary">"入力時に入力候補を表示します"</string>
     <string name="auto_complete">"オートコンプリート"</string>
-    <string name="auto_complete_summary">"スペースまたは句読点キーを押すと、ハイライトされたキーワードが自動入力されます"</string>
+    <string name="auto_complete_summary">"スペースまたは句読点キーで反転表示されている変換候補を挿入する"</string>
   <string-array name="prediction_modes">
     <item>"なし"</item>
     <item>"基本"</item>

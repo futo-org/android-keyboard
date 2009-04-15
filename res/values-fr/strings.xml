@@ -41,7 +41,7 @@
     <string name="show_suggestions">"Afficher les suggestions"</string>
     <string name="show_suggestions_summary">"Afficher les suggestions de terme lors de la saisie"</string>
     <string name="auto_complete">"Saisie semi-automatique"</string>
-    <string name="auto_complete_summary">"La barre d\'espace et la ponctuation insèrent auto. le terme en surbrillance."</string>
+    <string name="auto_complete_summary">"La barre d\'espace/ponctuation insèrent auto. le terme surligné."</string>
   <string-array name="prediction_modes">
     <item>"Aucun"</item>
     <item>"Simple"</item>
