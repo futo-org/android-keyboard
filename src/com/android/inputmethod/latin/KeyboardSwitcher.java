@@ -16,9 +16,8 @@
 
 package com.android.inputmethod.latin;
 
-import android.inputmethodservice.Keyboard;
-
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class KeyboardSwitcher {
 
@@ -37,31 +36,28 @@ public class KeyboardSwitcher {
     public static final int KEYBOARDMODE_URL = R.id.mode_url;
     public static final int KEYBOARDMODE_EMAIL = R.id.mode_email;
     public static final int KEYBOARDMODE_IM = R.id.mode_im;
-    
 
     LatinKeyboardView mInputView;
     LatinIME mContext;
     
-    private LatinKeyboard mPhoneKeyboard;
-    private LatinKeyboard mPhoneSymbolsKeyboard;
-    private LatinKeyboard mSymbolsKeyboard;
-    private LatinKeyboard mSymbolsShiftedKeyboard;
-    private LatinKeyboard mQwertyKeyboard;
-    private LatinKeyboard mAlphaKeyboard;
-    private LatinKeyboard mUrlKeyboard;
-    private LatinKeyboard mEmailKeyboard;
-    private LatinKeyboard mIMKeyboard;
-    
-    List<Keyboard> mKeyboards;
+    private KeyboardId mSymbolsId;
+    private KeyboardId mSymbolsShiftedId;
+
+    private KeyboardId mCurrentId;
+    private Map<KeyboardId, LatinKeyboard> mKeyboards;
     
     private int mMode;
     private int mImeOptions;
     private int mTextMode = MODE_TEXT_QWERTY;
+    private boolean mIsSymbols;
 
     private int mLastDisplayWidth;
 
     KeyboardSwitcher(LatinIME context) {
         mContext = context;
+        mKeyboards = new HashMap<KeyboardId, LatinKeyboard>();
+        mSymbolsId = new KeyboardId(R.xml.kbd_symbols);
+        mSymbolsShiftedId = new KeyboardId(R.xml.kbd_symbols_shift);
     }
 
     void setInputView(LatinKeyboardView inputView) {
@@ -72,92 +68,106 @@ public class KeyboardSwitcher {
         // Configuration change is coming after the keyboard gets recreated. So don't rely on that.
         // If keyboards have already been made, check if we have a screen width change and 
         // create the keyboard layouts again at the correct orientation
-        if (mKeyboards != null) {
-            int displayWidth = mContext.getMaxWidth();
-            if (displayWidth == mLastDisplayWidth) return;
-            mLastDisplayWidth = displayWidth;
+        int displayWidth = mContext.getMaxWidth();
+        if (displayWidth == mLastDisplayWidth) return;
+        mLastDisplayWidth = displayWidth;
+        mKeyboards.clear();
+    }
+
+    /**
+     * Represents the parameters necessary to construct a new LatinKeyboard,
+     * which also serve as a unique identifier for each keyboard type.
+     */
+    private static class KeyboardId {
+        public int mXml;
+        public int mMode;
+        public boolean mEnableShiftLock;
+
+        public KeyboardId(int xml, int mode, boolean enableShiftLock) {
+            this.mXml = xml;
+            this.mMode = mode;
+            this.mEnableShiftLock = enableShiftLock;
         }
-        // Delayed creation when keyboard mode is set.
-        mQwertyKeyboard = null;
-        mAlphaKeyboard = null;
-        mUrlKeyboard = null;
-        mEmailKeyboard = null;
-        mIMKeyboard = null;
-        mPhoneKeyboard = null;
-        mPhoneSymbolsKeyboard = null;
-        mSymbolsKeyboard = null;
-        mSymbolsShiftedKeyboard = null;
+
+        public KeyboardId(int xml) {
+            this(xml, 0, false);
+        }
+
+        public boolean equals(Object other) {
+            return other instanceof KeyboardId && equals((KeyboardId) other);
+        }
+
+        public boolean equals(KeyboardId other) {
+            return other.mXml == this.mXml && other.mMode == this.mMode;
+        }
+
+        public int hashCode() {
+            return (mXml + 1) * (mMode + 1) * (mEnableShiftLock ? 2 : 1);
+        }
     }
 
     void setKeyboardMode(int mode, int imeOptions) {
+        setKeyboardMode(mode, imeOptions, false);
+    }
+
+    void setKeyboardMode(int mode, int imeOptions, boolean isSymbols) {
         mMode = mode;
         mImeOptions = imeOptions;
-        LatinKeyboard keyboard = (LatinKeyboard) mInputView.getKeyboard();
         mInputView.setPreviewEnabled(true);
-        switch (mode) {
-            case MODE_TEXT:
-                if (mTextMode == MODE_TEXT_QWERTY) {
-                    if (mQwertyKeyboard == null) {
-                        mQwertyKeyboard = new LatinKeyboard(mContext, R.xml.kbd_qwerty,
-                                KEYBOARDMODE_NORMAL);
-                        mQwertyKeyboard.enableShiftLock();
-                    }
-                    keyboard = mQwertyKeyboard;
-                } else if (mTextMode == MODE_TEXT_ALPHA) {
-                    if (mAlphaKeyboard == null) {
-                        mAlphaKeyboard = new LatinKeyboard(mContext, R.xml.kbd_alpha,
-                                KEYBOARDMODE_NORMAL);
-                        mAlphaKeyboard.enableShiftLock();
-                    }
-                    keyboard = mAlphaKeyboard;
-                }
-                break;
-            case MODE_SYMBOLS:
-                if (mSymbolsKeyboard == null) {
-                    mSymbolsKeyboard = new LatinKeyboard(mContext, R.xml.kbd_symbols);
-                }
-                if (mSymbolsShiftedKeyboard == null) {
-                    mSymbolsShiftedKeyboard = new LatinKeyboard(mContext, R.xml.kbd_symbols_shift);
-                }
-                keyboard = mSymbolsKeyboard;
-                break;
-            case MODE_PHONE:
-                if (mPhoneKeyboard == null) {
-                    mPhoneKeyboard = new LatinKeyboard(mContext, R.xml.kbd_phone);
-                }
-                mInputView.setPhoneKeyboard(mPhoneKeyboard);
-                if (mPhoneSymbolsKeyboard == null) {
-                    mPhoneSymbolsKeyboard = new LatinKeyboard(mContext, R.xml.kbd_phone_symbols);
-                }
-                keyboard = mPhoneKeyboard;
-                mInputView.setPreviewEnabled(false);
-                break;
-            case MODE_URL:
-                if (mUrlKeyboard == null) {
-                    mUrlKeyboard = new LatinKeyboard(mContext, R.xml.kbd_qwerty, KEYBOARDMODE_URL);
-                    mUrlKeyboard.enableShiftLock();
-                }
-                keyboard = mUrlKeyboard;
-                break;
-            case MODE_EMAIL:
-                if (mEmailKeyboard == null) {
-                    mEmailKeyboard = new LatinKeyboard(mContext, R.xml.kbd_qwerty, KEYBOARDMODE_EMAIL);
-                    mEmailKeyboard.enableShiftLock();
-                }
-                keyboard = mEmailKeyboard;
-                break;
-            case MODE_IM:
-                if (mIMKeyboard == null) {
-                    mIMKeyboard = new LatinKeyboard(mContext, R.xml.kbd_qwerty, KEYBOARDMODE_IM);
-                    mIMKeyboard.enableShiftLock();
-                }
-                keyboard = mIMKeyboard;
-                break;
+        KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
+        LatinKeyboard keyboard = getKeyboard(id);
+
+        if (mode == MODE_PHONE) {
+            mInputView.setPhoneKeyboard(keyboard);
+            mInputView.setPreviewEnabled(false);
         }
+
+        mCurrentId = id;
         mInputView.setKeyboard(keyboard);
         keyboard.setShifted(false);
         keyboard.setShiftLocked(keyboard.isShiftLocked());
         keyboard.setImeOptions(mContext.getResources(), mMode, imeOptions);
+
+    }
+
+    private LatinKeyboard getKeyboard(KeyboardId id) {
+        if (!mKeyboards.containsKey(id)) {
+            LatinKeyboard keyboard = new LatinKeyboard(
+                mContext, id.mXml, id.mMode);
+            if (id.mEnableShiftLock) {
+                keyboard.enableShiftLock();
+            }
+            mKeyboards.put(id, keyboard);
+        }
+        return mKeyboards.get(id);
+    }
+
+    private KeyboardId getKeyboardId(int mode, int imeOptions, boolean isSymbols) {
+        if (isSymbols) {
+            return (mode == MODE_PHONE)
+                ? new KeyboardId(R.xml.kbd_phone_symbols) : new KeyboardId(R.xml.kbd_symbols);
+        }
+
+        switch (mode) {
+            case MODE_TEXT:
+                if (mTextMode == MODE_TEXT_QWERTY) {
+                    return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_NORMAL, true);
+                } else if (mTextMode == MODE_TEXT_ALPHA) {
+                    return new KeyboardId(R.xml.kbd_alpha, KEYBOARDMODE_NORMAL, true);
+                }
+                break;
+            case MODE_SYMBOLS:
+                return new KeyboardId(R.xml.kbd_symbols);
+            case MODE_PHONE:
+                return new KeyboardId(R.xml.kbd_phone);
+            case MODE_URL:
+                return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_URL, true);
+            case MODE_EMAIL:
+                return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_EMAIL, true);
+            case MODE_IM:
+                return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_IM, true);
+        }
+        return null;
     }
 
     int getKeyboardMode() {
@@ -186,56 +196,35 @@ public class KeyboardSwitcher {
     }
 
     boolean isAlphabetMode() {
-        Keyboard current = mInputView.getKeyboard();
-        if (current == mQwertyKeyboard
-                || current == mAlphaKeyboard
-                || current == mUrlKeyboard
-                || current == mIMKeyboard
-                || current == mEmailKeyboard) {
-            return true;
-        }
-        return false;
+        KeyboardId current = mCurrentId;
+        return current.mMode == KEYBOARDMODE_NORMAL
+            || current.mMode == KEYBOARDMODE_URL
+            || current.mMode == KEYBOARDMODE_EMAIL
+            || current.mMode == KEYBOARDMODE_IM;
     }
 
     void toggleShift() {
-        Keyboard currentKeyboard = mInputView.getKeyboard();
-        if (currentKeyboard == mSymbolsKeyboard) {
-            mSymbolsKeyboard.setShifted(true);
-            mInputView.setKeyboard(mSymbolsShiftedKeyboard);
-            mSymbolsShiftedKeyboard.setShifted(true);
-            mSymbolsShiftedKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
-        } else if (currentKeyboard == mSymbolsShiftedKeyboard) {
-            mSymbolsShiftedKeyboard.setShifted(false);
-            mInputView.setKeyboard(mSymbolsKeyboard);
-            mSymbolsKeyboard.setShifted(false);
-            mSymbolsKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
+        if (mCurrentId.equals(mSymbolsId)) {
+            LatinKeyboard symbolsKeyboard = getKeyboard(mSymbolsId);
+            LatinKeyboard symbolsShiftedKeyboard = getKeyboard(mSymbolsShiftedId);
+            symbolsKeyboard.setShifted(true);
+            mCurrentId = mSymbolsShiftedId;
+            mInputView.setKeyboard(symbolsShiftedKeyboard);
+            symbolsShiftedKeyboard.setShifted(true);
+            symbolsShiftedKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
+        } else if (mCurrentId.equals(mSymbolsShiftedId)) {
+            LatinKeyboard symbolsKeyboard = getKeyboard(mSymbolsId);
+            LatinKeyboard symbolsShiftedKeyboard = getKeyboard(mSymbolsShiftedId);
+            symbolsShiftedKeyboard.setShifted(false);
+            mCurrentId = mSymbolsId;
+            mInputView.setKeyboard(getKeyboard(mSymbolsId));
+            symbolsKeyboard.setShifted(false);
+            symbolsKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
         }
     }
 
     void toggleSymbols() {
-        Keyboard current = mInputView.getKeyboard();
-        if (mSymbolsKeyboard == null) {
-            mSymbolsKeyboard = new LatinKeyboard(mContext, R.xml.kbd_symbols);
-        }
-        if (mSymbolsShiftedKeyboard == null) {
-            mSymbolsShiftedKeyboard = new LatinKeyboard(mContext, R.xml.kbd_symbols_shift);
-        }
-        if (current == mSymbolsKeyboard || current == mSymbolsShiftedKeyboard) {
-            setKeyboardMode(mMode, mImeOptions); // Could be qwerty, alpha, url, email or im
-            return;
-        } else if (current == mPhoneKeyboard) {
-            current = mPhoneSymbolsKeyboard;
-            mPhoneSymbolsKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
-        } else if (current == mPhoneSymbolsKeyboard) {
-            current = mPhoneKeyboard;
-            mPhoneKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
-        } else {
-            current = mSymbolsKeyboard;
-            mSymbolsKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
-        }
-        mInputView.setKeyboard(current);
-        if (current == mSymbolsKeyboard) {
-            current.setShifted(false);
-        }
+        mIsSymbols = !mIsSymbols;
+        setKeyboardMode(mMode, mImeOptions, mIsSymbols);
     }
 }
