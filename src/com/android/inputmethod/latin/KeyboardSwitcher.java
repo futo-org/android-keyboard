@@ -72,6 +72,8 @@ public class KeyboardSwitcher {
         if (displayWidth == mLastDisplayWidth) return;
         mLastDisplayWidth = displayWidth;
         mKeyboards.clear();
+        mSymbolsId = new KeyboardId(R.xml.kbd_symbols);
+        mSymbolsShiftedId = new KeyboardId(R.xml.kbd_symbols_shift);
     }
 
     /**
