@@ -115,6 +115,7 @@ public class KeyboardSwitcher {
     void setKeyboardMode(int mode, int imeOptions, boolean isSymbols) {
         mMode = mode;
         mImeOptions = imeOptions;
+        mIsSymbols = isSymbols;
         mInputView.setPreviewEnabled(true);
         KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
         LatinKeyboard keyboard = getKeyboard(id);
@@ -226,7 +227,6 @@ public class KeyboardSwitcher {
     }
 
     void toggleSymbols() {
-        mIsSymbols = !mIsSymbols;
-        setKeyboardMode(mMode, mImeOptions, mIsSymbols);
+        setKeyboardMode(mMode, mImeOptions, !mIsSymbols);
     }
 }
