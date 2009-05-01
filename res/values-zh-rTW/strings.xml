@@ -17,8 +17,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name">"Android 鍵盤"</string>
     <string name="english_ime_settings">"Android 鍵盤設定"</string>
-    <string name="vibrate_on_keypress">"按下按鍵時振動"</string>
-    <string name="sound_on_keypress">"按下按鍵時播放音效"</string>
+    <string name="vibrate_on_keypress">"按鍵時震動"</string>
+    <string name="sound_on_keypress">"按鍵時播放音效"</string>
     <string name="hit_correction">"修正輸入錯誤"</string>
     <string name="hit_correction_summary">"啟用輸入錯誤修正功能"</string>
     <string name="hit_correction_land">"橫向輸入錯誤"</string>
