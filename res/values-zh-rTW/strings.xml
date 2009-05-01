@@ -41,7 +41,7 @@
     <string name="show_suggestions">"顯示建議"</string>
     <string name="show_suggestions_summary">"打字時顯示建議字詞"</string>
     <string name="auto_complete">"自動完成"</string>
-    <string name="auto_complete_summary">"會在反白顯示的字詞處自動插入空白鍵和標點符號鍵盤"</string>
+    <string name="auto_complete_summary">"在反白顯示的字詞處自動插入空白鍵和標點符號鍵盤"</string>
   <string-array name="prediction_modes">
     <item>"無"</item>
     <item>"基本模式"</item>
@@ -69,13 +69,13 @@
     <string name="tip_dismiss">"隨時可以透過按後退鍵 ↶ 關閉鍵盤"</string>
     <string name="tip_access_symbols">"使用數字和符號"</string>
     <string name="tip_add_to_dictionary">"按住最左邊的字詞，將其新增到字典中"</string>
-    <string name="touch_to_continue">"觸碰此提示以繼續 »"</string>
-    <string name="touch_to_finish">"觸碰此處以關閉此提示，並開始打字！"</string>
-    <string name="tip_to_open_keyboard"><b>"觸碰文字欄位時即會開啟鍵盤"</b></string>
-    <string name="tip_to_view_accents"><b>"觸碰並按住某個鍵以查看聲調"\n"(ø、ö、ô、ó 等)"</b></string>
-    <string name="tip_to_open_symbols"><b>"觸碰此鍵即可切換到數字和符號鍵盤"</b></string>
-    <string name="tip_to_close_symbols"><b>"再次觸碰此鍵即可返回到字母鍵盤"</b></string>
-    <string name="tip_to_launch_settings"><b>"觸碰並按住此鍵以變更鍵盤設定，例如自動完成"</b></string>
+    <string name="touch_to_continue">"輕觸此提示繼續 »"</string>
+    <string name="touch_to_finish">"輕觸此處以關閉提示，並開始打字！"</string>
+    <string name="tip_to_open_keyboard"><b>"輕觸文字欄位時即會開啟鍵盤"</b></string>
+    <string name="tip_to_view_accents"><b>"輕觸並按住某個鍵即可查看聲調"\n"(ø、ö、ô、ó 等)"</b></string>
+    <string name="tip_to_open_symbols"><b>"輕觸此鍵即可切換到數字和符號鍵盤"</b></string>
+    <string name="tip_to_close_symbols"><b>"再次輕觸此鍵即可返回到字母鍵盤"</b></string>
+    <string name="tip_to_launch_settings"><b>"輕觸並按住此鍵即可變更鍵盤設定，例如自動完成"</b></string>
     <string name="tip_to_start_typing"><b>"試試看！"</b></string>
     <string name="label_go_key">"開始"</string>
     <string name="label_next_key">"下一步"</string>
