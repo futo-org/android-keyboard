@@ -33,7 +33,7 @@ public class LatinKeyboardView extends KeyboardView {
 
     static final int KEYCODE_OPTIONS = -100;
     static final int KEYCODE_SHIFT_LONGPRESS = -101;
-    
+
     private Keyboard mPhoneKeyboard;
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
@@ -43,11 +43,11 @@ public class LatinKeyboardView extends KeyboardView {
     public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
-    
+
     public void setPhoneKeyboard(Keyboard phoneKeyboard) {
         mPhoneKeyboard = phoneKeyboard;
     }
-    
+
     @Override
     protected boolean onLongPress(Key key) {
         if (key.codes[0] == Keyboard.KEYCODE_MODE_CHANGE) {
@@ -55,7 +55,7 @@ public class LatinKeyboardView extends KeyboardView {
             return true;
         } else if (key.codes[0] == Keyboard.KEYCODE_SHIFT) {
             getOnKeyboardActionListener().onKey(KEYCODE_SHIFT_LONGPRESS, null);
-            invalidate();
+            invalidateAllKeys();
             return true;
         } else if (key.codes[0] == '0' && getKeyboard() == mPhoneKeyboard) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
