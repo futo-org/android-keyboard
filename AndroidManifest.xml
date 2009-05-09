@@ -6,6 +6,10 @@
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
 
     <application android:label="@string/english_ime_name">
+        <supports-density android:density="120" />
+        <supports-density android:density="160" />
+        <supports-density android:density="240" />
+
         <service android:name="LatinIME"
                 android:label="@string/english_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
