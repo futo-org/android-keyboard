@@ -6,9 +6,11 @@
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
 
     <application android:label="@string/english_ime_name">
+<!-- TODO: enable before donut release
         <supports-density android:density="120" />
         <supports-density android:density="160" />
         <supports-density android:density="240" />
+-->
 
         <service android:name="LatinIME"
                 android:label="@string/english_ime_name"
