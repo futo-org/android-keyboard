@@ -49,11 +49,8 @@ Dictionary::~Dictionary()
 }
 
 int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
-        int maxWordLength, int maxWords, int maxAlternatives)
+        int maxWordLength, int maxWords, int maxAlternatives, int skipPos)
 {
-    memset(frequencies, 0, maxWords * sizeof(*frequencies));
-    memset(outWords, 0, maxWords * maxWordLength * sizeof(*outWords));
-
     mFrequencies = frequencies;
     mOutputChars = outWords;
     mInputCodes = codes;
@@ -62,6 +59,7 @@ int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWor
     mMaxWordLength = maxWordLength;
     mMaxWords = maxWords;
     mWords = 0;
+    mSkipPos = skipPos;
 
     getWordsRec(0, 0, mInputLength * 3, false, 1, 0);
 
@@ -209,9 +207,9 @@ Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int s
                 getWordsRec(childrenAddress, depth + 1, maxDepth,
                             completion, snr, inputIndex);
             }
-        } else if (c == QUOTE && currentChars[0] != QUOTE) {
-            // Skip the ' and continue deeper
-            mWord[depth] = QUOTE;
+        } else if (c == QUOTE && currentChars[0] != QUOTE || mSkipPos == depth) {
+            // Skip the ' or other letter and continue deeper
+            mWord[depth] = c;
             if (childrenAddress != 0) {
                 getWordsRec(childrenAddress, depth + 1, maxDepth, false, snr, inputIndex);
             }
@@ -239,6 +237,7 @@ Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int s
                     }
                 }
                 j++;
+                if (mSkipPos >= 0) break;
             }
         }
     }

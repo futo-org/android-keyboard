@@ -32,6 +32,7 @@ public class BinaryDictionary extends Dictionary {
     private static final int MAX_WORDS = 16;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
+    private static final boolean ENABLE_MISSED_CHARACTERS = true;
 
     private int mNativeDict;
     private int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_ALTERNATIVES];
@@ -64,7 +65,7 @@ public class BinaryDictionary extends Dictionary {
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize, 
             char[] outputChars, int[] frequencies,
-            int maxWordLength, int maxWords, int maxAlternatives);
+            int maxWordLength, int maxWords, int maxAlternatives, int skipPos);
     private native void setParamsNative(int typedLetterMultiplier,
             int fullWordMultiplier);
 
@@ -88,9 +89,24 @@ public class BinaryDictionary extends Dictionary {
                     Math.min(alternatives.length, MAX_ALTERNATIVES));
         }
         Arrays.fill(mOutputChars, (char) 0);
+        Arrays.fill(mFrequencies, 0);
 
-        int count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize, mOutputChars, mFrequencies,
-                MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES);
+        int count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize,
+                mOutputChars, mFrequencies,
+                MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, -1);
+
+        // If there aren't sufficient suggestions, search for words by allowing wild cards at
+        // the different character positions. This feature is not ready for prime-time as we need
+        // to figure out the best ranking for such words compared to proximity corrections and
+        // completions.
+        if (ENABLE_MISSED_CHARACTERS && count < 5) {
+            for (int skip = 0; skip < codesSize; skip++) {
+                count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize,
+                        mOutputChars, mFrequencies,
+                        MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, skip);
+                if (count > 0) break;
+            }
+        }
 
         for (int j = 0; j < count; j++) {
             if (mFrequencies[j] < 1) break;
@@ -111,7 +127,7 @@ public class BinaryDictionary extends Dictionary {
         char[] chars = word.toString().toLowerCase().toCharArray();
         return isValidWordNative(mNativeDict, chars, chars.length);
     }
-    
+
     public synchronized void close() {
         if (mNativeDict != 0) {
             closeNative(mNativeDict);

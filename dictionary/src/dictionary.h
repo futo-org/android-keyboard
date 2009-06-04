@@ -32,7 +32,7 @@ class Dictionary {
 public:
     Dictionary(void *dict, int typedLetterMultipler, int fullWordMultiplier);
     int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
-        int maxWordLength, int maxWords, int maxAlternatives);
+        int maxWordLength, int maxWords, int maxAlternatives, int skipPos);
     bool isValidWord(unsigned short *word, int length);
     void setAsset(void *asset) { mAsset = asset; }
     void *getAsset() { return mAsset; }
@@ -66,6 +66,7 @@ private:
     int mInputLength;
     int mMaxAlternatives;
     unsigned short mWord[128];
+    int mSkipPos;
 
     int mFullWordMultiplier;
     int mTypedLetterMultiplier;
