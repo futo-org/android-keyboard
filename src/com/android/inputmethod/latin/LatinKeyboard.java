@@ -213,19 +213,19 @@ public class LatinKeyboard extends Keyboard {
                 pressed = !pressed;
             }
         }
-        
+
         /**
          * Overriding this method so that we can reduce the target area for certain keys.
          */
         @Override
         public boolean isInside(int x, int y) {
-            if ((edgeFlags & Keyboard.EDGE_BOTTOM) != 0 ||
-                    codes[0] == KEYCODE_SHIFT ||
-                    codes[0] == KEYCODE_DELETE) {
+            final int code = codes[0];
+            if (code == KEYCODE_SHIFT ||
+                    code == KEYCODE_DELETE) {
                 y -= height / 10;
+                if (code == KEYCODE_SHIFT) x += width / 6;
+                if (code == KEYCODE_DELETE) x -= width / 6;
             }
-            if (codes[0] == KEYCODE_SHIFT) x += width / 6;
-            if (codes[0] == KEYCODE_DELETE) x -= width / 6;
             return super.isInside(x, y);
         }
     }
