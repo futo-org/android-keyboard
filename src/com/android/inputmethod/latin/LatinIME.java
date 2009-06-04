@@ -113,7 +113,6 @@ public class LatinIME extends InputMethodService
     private boolean mAutoCap;
     private boolean mQuickFixes;
     private boolean mShowSuggestions;
-    private boolean mAutoComplete;
     private int     mCorrectionMode;
     // Indicates whether the suggestion strip is to be on in landscape
     private boolean mJustAccepted;
@@ -223,9 +222,10 @@ public class LatinIME extends InputMethodService
         }
 
         mKeyboardSwitcher.makeKeyboards();
-        
+
         TextEntryState.newSession(this);
-        
+
+        boolean disableAutoCorrect = false;
         mPredictionOn = false;
         mCompletionOn = false;
         mCompletions = null;
@@ -271,6 +271,12 @@ public class LatinIME extends InputMethodService
                             attribute.imeOptions);
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_FILTER) {
                     mPredictionOn = false;
+                } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
+                    // If it's a browser edit field and auto correct is not ON explicitly, then
+                    // disable auto correction, but keep suggestions on.
+                    if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
+                        disableAutoCorrect = true;
+                    }
                 }
                 if ((attribute.inputType&EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
                     mPredictionOn = false;
@@ -290,6 +296,13 @@ public class LatinIME extends InputMethodService
         setCandidatesViewShown(false);
         if (mCandidateView != null) mCandidateView.setSuggestions(null, false, false, false);
         loadSettings();
+        // Override auto correct
+        if (disableAutoCorrect) {
+            mAutoCorrectOn = false;
+            if (mCorrectionMode == Suggest.CORRECTION_FULL) {
+                mCorrectionMode = Suggest.CORRECTION_BASIC;
+            }
+        }
         mInputView.setProximityCorrectionEnabled(true);
         if (mSuggest != null) {
             mSuggest.setCorrectionMode(mCorrectionMode);
@@ -1005,10 +1018,12 @@ public class LatinIME extends InputMethodService
         // will continue to work
         if (AutoText.getSize(mInputView) < 1) mQuickFixes = true;
         mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true) & mQuickFixes;
-        mAutoComplete = sp.getBoolean(PREF_AUTO_COMPLETE, 
+        boolean autoComplete = sp.getBoolean(PREF_AUTO_COMPLETE,
                 getResources().getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
-        mAutoCorrectOn = mSuggest != null && (mAutoComplete || mQuickFixes);
-        mCorrectionMode = mAutoComplete ? 2 : (mQuickFixes ? 1 : 0);
+        mAutoCorrectOn = mSuggest != null && (autoComplete || mQuickFixes);
+        mCorrectionMode = autoComplete
+                ? Suggest.CORRECTION_FULL
+                : (mQuickFixes ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
     }
 
     private void showOptionsMenu() {
