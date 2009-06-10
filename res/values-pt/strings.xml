@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_name">"Teclado Android"</string>
+    <string name="english_ime_settings">"Configurações de teclado Android"</string>
+    <string name="vibrate_on_keypress">"Vibrar ao pressionar a tecla"</string>
+    <string name="sound_on_keypress">"Som ao pressionar a tecla"</string>
+    <string name="hit_correction">"Corrigir erros de digitação"</string>
+    <string name="hit_correction_summary">"Ativar a correção de erro de entrada"</string>
+    <string name="hit_correction_land">"Erros de entrada de paisagem"</string>
+    <string name="hit_correction_land_summary">"Ativar a correção de erro de entrada"</string>
+    <string name="auto_correction">"Sugestões de palavra"</string>
+    <string name="auto_correction_summary">"Corrigir automaticamente a palavra anterior"</string>
+    <string name="prediction">"Sugestões de palavra"</string>
+    <string name="prediction_category">"Configurações de sugestão de palavra"</string>
+    <string name="prediction_summary">"Ativar a conclusão automática durante a digitação"</string>
+    <string name="auto_complete_dialog_title">"Conclusão automática"</string>
+    <string name="prediction_landscape">"Aumentar o tamanho do arquivo de texto"</string>
+    <string name="prediction_landscape_summary">"Ocultar sugestões de palavra na visualização da paisagem"</string>
+    <string name="auto_cap">"Capitalização automática"</string>
+    <string name="auto_cap_summary">"Colocar em maiúscula o início de uma frase"</string>
+    <string name="auto_punctuate">"Pontuação automática"</string>
+    <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
+    <skip />
+    <string name="quick_fixes">"Reparos rápidos"</string>
+    <string name="quick_fixes_summary">"Corrige erros comuns de digitação"</string>
+    <string name="show_suggestions">"Mostrar sugestões"</string>
+    <string name="show_suggestions_summary">"Exibir sugestões de palavras durante a digitação"</string>
+    <string name="auto_complete">"Conclusão automática"</string>
+    <string name="auto_complete_summary">"A barra de espaço e pontuação inserem automaticamente a palavra destacada"</string>
+  <string-array name="prediction_modes">
+    <item>"Nenhum"</item>
+    <item>"Básico"</item>
+    <item>"Avançado"</item>
+  </string-array>
+    <string name="prediction_none">"0"</string>
+    <string name="prediction_basic">"1"</string>
+    <string name="prediction_full">"2"</string>
+    <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
+    <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
+    <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
+    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : Salvo"</string>
+    <string name="alternates_for_a">"àáâãäåæ"</string>
+    <string name="alternates_for_e">"èéêë"</string>
+    <string name="alternates_for_i">"ìíîï"</string>
+    <string name="alternates_for_o">"òóôõöœø"</string>
+    <string name="alternates_for_u">"ùúûü"</string>
+    <string name="alternates_for_s">"§ß"</string>
+    <string name="alternates_for_n">"ñ"</string>
+    <string name="alternates_for_c">"ç"</string>
+    <string name="alternates_for_y">"ýÿ"</string>
+    <string name="tip_long_press">"Segure uma tecla pressionada para ver os acentos (ø, ö, etc.)"</string>
+    <string name="tip_dismiss">"Apertar a tecla voltar ↶ para fechar o teclado, em qualquer ponto"</string>
+    <string name="tip_access_symbols">"Acessar números e símbolos"</string>
+    <string name="tip_add_to_dictionary">"Pressione e segure a palavra mais à esquerda para adicioná-la ao dicionário"</string>
+    <string name="touch_to_continue">"Toque nesta dica para continuar »"</string>
+    <string name="touch_to_finish">"Toque aqui para fechar esta dica e começar a digitar!"</string>
+    <string name="tip_to_open_keyboard"><b>"O teclado abre toda vez que você tocar em um arquivo de texto"</b></string>
+    <string name="tip_to_view_accents"><b>"Tocar e segurar a tecla para visualizar acentos"\n"(ø, ö, ô, ó e assim por diante)"</b></string>
+    <string name="tip_to_open_symbols"><b>"Alternar para números e símbolos tocando nessa tecla"</b></string>
+    <string name="tip_to_close_symbols"><b>"Voltar às letras tocando novamente nessa tecla"</b></string>
+    <string name="tip_to_launch_settings"><b>"Tocar e segurar esta tecla para alterar as configurações do teclado, como a conclusão automática"</b></string>
+    <string name="tip_to_start_typing"><b>"Experimente!"</b></string>
+    <string name="label_go_key">"Ir"</string>
+    <string name="label_next_key">"Próximo"</string>
+    <string name="label_done_key">"Concluído"</string>
+    <string name="label_send_key">"Enviar"</string>
+    <string name="label_symbol_key">"?123"</string>
+    <string name="label_phone_key">"123"</string>
+    <string name="label_alpha_key">"ABC"</string>
+    <string name="label_alt_key">"ALT"</string>
+</resources>
