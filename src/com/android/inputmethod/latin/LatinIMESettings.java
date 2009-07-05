@@ -16,14 +16,17 @@
 
 package com.android.inputmethod.latin;
 
+import android.backup.BackupManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.text.AutoText;
 
-public class LatinIMESettings extends PreferenceActivity {
-    
+public class LatinIMESettings extends PreferenceActivity
+    implements SharedPreferences.OnSharedPreferenceChangeListener {
+
     private static final String QUICK_FIXES_KEY = "quick_fixes";
     private static final String SHOW_SUGGESTIONS_KEY = "show_suggestions";
     private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
@@ -37,6 +40,8 @@ public class LatinIMESettings extends PreferenceActivity {
         addPreferencesFromResource(R.xml.prefs);
         mQuickFixes = (CheckBoxPreference) findPreference(QUICK_FIXES_KEY);
         mShowSuggestions = (CheckBoxPreference) findPreference(SHOW_SUGGESTIONS_KEY);
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(
+                this);
     }
 
     @Override
@@ -49,5 +54,17 @@ public class LatinIMESettings extends PreferenceActivity {
         } else {
             mShowSuggestions.setDependency(QUICK_FIXES_KEY);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(
+                this);
+        super.onDestroy();
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+            String key) {
+        (new BackupManager(this)).dataChanged();
     }
 }
