@@ -17,8 +17,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name">"Klawiatura Android"</string>
     <string name="english_ime_settings">"Ustawienia klawiatury Android"</string>
-    <string name="vibrate_on_keypress">"Wibruj przy naciśnięciu klawisza"</string>
-    <string name="sound_on_keypress">"Dźwięk przy naciśnięciu klawisza"</string>
+    <string name="vibrate_on_keypress">"Wibracja przy naciśnięciu"</string>
+    <string name="sound_on_keypress">"Dźwięk przy naciśnięciu"</string>
     <string name="hit_correction">"Popraw błędy pisowni"</string>
     <string name="hit_correction_summary">"Włącz poprawianie błędów wprowadzania"</string>
     <string name="hit_correction_land">"Błędy wprowadzania w orientacji poziomej"</string>
@@ -31,7 +31,7 @@
     <string name="auto_complete_dialog_title">"Autouzupełnianie"</string>
     <string name="prediction_landscape">"Zwiększ rozmiar pola tekstowego"</string>
     <string name="prediction_landscape_summary">"Wyłącz propozycje słów w orientacji poziomej"</string>
-    <string name="auto_cap">"Automatyczna zamiana na wielkie litery"</string>
+    <string name="auto_cap">"Wstawiaj wielkie litery"</string>
     <string name="auto_cap_summary">"Zamieniaj na wielką pierwszą literę zdania"</string>
     <string name="auto_punctuate">"Automatyczna interpunkcja"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
@@ -41,7 +41,7 @@
     <string name="show_suggestions">"Pokaż sugestie"</string>
     <string name="show_suggestions_summary">"Wyświetl sugerowane słowa podczas wpisywania"</string>
     <string name="auto_complete">"Autouzupełnianie"</string>
-    <string name="auto_complete_summary">"Spacja i znaki przestankowe automatycznie wstawiają wyróżnione słowo"</string>
+    <string name="auto_complete_summary">"Spacja i znaki przestankowe wstawiają wyróżnione słowo"</string>
   <string-array name="prediction_modes">
     <item>"Brak"</item>
     <item>"Podstawowy"</item>
@@ -54,28 +54,26 @@
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : Zapisano"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
-    <string name="alternates_for_e">"èéêë"</string>
+    <string name="alternates_for_a">"ą"</string>
+    <string name="alternates_for_e">"ę"</string>
     <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
+    <string name="alternates_for_o">"ó"</string>
     <string name="alternates_for_u">"ùúûü"</string>
-    <string name="alternates_for_s">"§ß"</string>
-    <string name="alternates_for_n">"ñ"</string>
-    <string name="alternates_for_c">"ç"</string>
+    <string name="alternates_for_s">"ś"</string>
+    <string name="alternates_for_n">"ń"</string>
+    <string name="alternates_for_c">"ć"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
-    <string name="tip_long_press">"Przytrzymaj klawisz, aby wyświetlić znaki akcentowane (ø, ö itp.)"</string>
+    <string name="tip_long_press">"Przytrzymaj klawisz, aby wyświetlić znaki akcentowane (ą, ó itp.)"</string>
     <string name="tip_dismiss">"Naciśnij klawisz cofania ↶, aby zamknąć klawiaturę w dowolnym momencie"</string>
     <string name="tip_access_symbols">"Przejdź do cyfr i symboli"</string>
     <string name="tip_add_to_dictionary">"Naciśnij i przytrzymaj słowo po lewej stronie w celu dodania go do słownika"</string>
     <string name="touch_to_continue">"Dotknij tej podpowiedzi, aby kontynuować »"</string>
     <string name="touch_to_finish">"Dotknij tutaj, aby zamknąć tę podpowiedź i zacząć pisać!"</string>
-    <string name="tip_to_open_keyboard"><b>"Klawiatura jest otwierana po każdym dotknięciu pola tekstowego"</b></string>
-    <string name="tip_to_view_accents"><b>"Dotknij i przytrzymaj klawisz, aby wyświetlić znaki akcentowane"\n"(ø, ö, ô, ó itd.)"</b></string>
-    <string name="tip_to_open_symbols"><b>"Przełącz na cyfry i symbole, dotykając tego klawisza"</b></string>
-    <string name="tip_to_close_symbols"><b>"Wróć do trybu liter, dotykając ponownie tego klawisza"</b></string>
-    <string name="tip_to_launch_settings"><b>"Dotknij i przytrzymaj ten klawisz, aby zmienić ustawienia klawiatury, takie jak autouzupełnianie"</b></string>
+    <string name="tip_to_open_keyboard"><b>"Klawiatura jest otwierana po każdym dotknięciu pola tekstowego."</b></string>
+    <string name="tip_to_view_accents"><b>"Dotknij i przytrzymaj klawisz, aby wyświetlić znaki akcentowane"\n"(ą, ę, ł, ó itd.)."</b></string>
+    <string name="tip_to_open_symbols"><b>"Przełącz na cyfry i symbole, dotykając tego klawisza."</b></string>
+    <string name="tip_to_close_symbols"><b>"Wróć do trybu liter, dotykając ponownie tego klawisza."</b></string>
+    <string name="tip_to_launch_settings"><b>"Dotknij i przytrzymaj ten klawisz, aby zmienić ustawienia klawiatury, takie jak autouzupełnianie."</b></string>
     <string name="tip_to_start_typing"><b>"Wypróbuj!"</b></string>
     <string name="label_go_key">"Przejdź"</string>
     <string name="label_next_key">"Dalej"</string>
@@ -85,4 +83,8 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <string name="open_the_keyboard"><font size="17"><b>"Otwórz klawiaturę"\n</b></font><font size="3">\n</font>"Dotknij dowolnego pola tekstowego."</string>
+    <string name="close_the_keyboard"><font size="17"><b>"Zamknij klawiaturę"\n</b></font><font size="3">\n</font>"Naciśnij klawisz Wróć."</string>
+    <string name="touch_and_hold"><font size="17"><b>"Dotknij klawisza i przytrzymaj go, aby wyświetlić opcje"\n</b></font><font size="3">\n</font>"Dostęp do znaków przestankowych i akcentowanych."</string>
+    <string name="keyboard_settings"><font size="17"><b>"Ustawienia klawiatury"\n</b></font><font size="3">\n</font>"Dotknij klawisza "<b>"?123"</b>" i przytrzymaj go."</string>
 </resources>

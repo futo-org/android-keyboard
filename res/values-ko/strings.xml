@@ -37,7 +37,7 @@
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
     <string name="quick_fixes">"빠른 수정"</string>
-    <string name="quick_fixes_summary">"일반적인 오타를 수정합니다."</string>
+    <string name="quick_fixes_summary">"자주 발생하는 오타를 수정합니다."</string>
     <string name="show_suggestions">"추천 단어 표시"</string>
     <string name="show_suggestions_summary">"글자를 입력하는 동안 추천 단어를 표시합니다."</string>
     <string name="auto_complete">"자동 완성"</string>
@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"키를 길게 누르면 악센트(ø, ö 등)가 표시됩니다."</string>
     <string name="tip_dismiss">"키보드를 닫으려면 언제든지 뒤로 키(↶)를 누르세요."</string>
     <string name="tip_access_symbols">"숫자 및 기호 액세스"</string>
@@ -76,7 +74,7 @@
     <string name="tip_to_open_symbols"><b>"이 키를 터치하면 숫자 및 기호 자판으로 변경됩니다."</b></string>
     <string name="tip_to_close_symbols"><b>"이 키를 다시 터치하면 키보드가 표시됩니다."</b></string>
     <string name="tip_to_launch_settings"><b>"자동 완성과 같은 키보드 설정을 변경하려면 이 키를 길게 누르세요."</b></string>
-    <string name="tip_to_start_typing"><b>"사용해 보세요."</b></string>
+    <string name="tip_to_start_typing"><b>"이제 직접 사용해 보세요!"</b></string>
     <string name="label_go_key">"이동"</string>
     <string name="label_next_key">"다음"</string>
     <string name="label_done_key">"완료"</string>
@@ -85,4 +83,12 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
+    <skip />
+    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
+    <skip />
+    <!-- no translation found for touch_and_hold (6154166367273010534) -->
+    <skip />
+    <!-- no translation found for keyboard_settings (4585753477617374032) -->
+    <skip />
 </resources>

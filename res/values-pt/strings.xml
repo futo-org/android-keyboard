@@ -83,4 +83,12 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
+    <skip />
+    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
+    <skip />
+    <!-- no translation found for touch_and_hold (6154166367273010534) -->
+    <skip />
+    <!-- no translation found for keyboard_settings (4585753477617374032) -->
+    <skip />
 </resources>

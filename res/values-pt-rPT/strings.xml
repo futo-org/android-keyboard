@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_name">"Teclado do Android"</string>
+    <string name="english_ime_settings">"Definições de teclado do Android"</string>
+    <string name="vibrate_on_keypress">"Vibrar quando se prime as teclas"</string>
+    <string name="sound_on_keypress">"Som ao premir as teclas"</string>
+    <string name="hit_correction">"Corrigir erros de escrita"</string>
+    <string name="hit_correction_summary">"Activar a correcção de erros de entrada"</string>
+    <string name="hit_correction_land">"Erros de entrada na horizontal"</string>
+    <string name="hit_correction_land_summary">"Activar a correcção de erros de entrada"</string>
+    <string name="auto_correction">"Sugestões de palavras"</string>
+    <string name="auto_correction_summary">"Corrigir automaticamente a palavra anterior"</string>
+    <string name="prediction">"Sugestões de palavras"</string>
+    <string name="prediction_category">"Definições de sugestão de palavras"</string>
+    <string name="prediction_summary">"Activar a conclusão automática durante a escrita"</string>
+    <string name="auto_complete_dialog_title">"Conclusão automática"</string>
+    <string name="prediction_landscape">"Aumentar o tamanho do campo de texto"</string>
+    <string name="prediction_landscape_summary">"Ocultar sugestões de palavras na vista horizontal"</string>
+    <string name="auto_cap">"Uso automático de maiúsculas"</string>
+    <string name="auto_cap_summary">"Colocar inicial maiúscula no início de uma frase"</string>
+    <string name="auto_punctuate">"Pontuação automática"</string>
+    <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
+    <skip />
+    <string name="quick_fixes">"Correcções rápidas"</string>
+    <string name="quick_fixes_summary">"Corrige os erros de escrita comuns"</string>
+    <string name="show_suggestions">"Mostrar sugestões"</string>
+    <string name="show_suggestions_summary">"Apresentar palavras sugeridas durante a escrita"</string>
+    <string name="auto_complete">"Conclusão automática"</string>
+    <string name="auto_complete_summary">"A barra de espaços e a pontuação inserem automaticamente uma palavra realçada"</string>
+  <string-array name="prediction_modes">
+    <item>"Nenhum"</item>
+    <item>"Básico"</item>
+    <item>"Avançados"</item>
+  </string-array>
+    <string name="prediction_none">"0"</string>
+    <string name="prediction_basic">"1"</string>
+    <string name="prediction_full">"2"</string>
+    <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
+    <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
+    <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
+    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g>: Guardada"</string>
+    <string name="alternates_for_a">"àáâãäåæ"</string>
+    <string name="alternates_for_e">"èéêë"</string>
+    <string name="alternates_for_i">"ìíîï"</string>
+    <string name="alternates_for_o">"òóôõöœø"</string>
+    <string name="alternates_for_u">"ùúûü"</string>
+    <string name="alternates_for_s">"§ß"</string>
+    <string name="alternates_for_n">"ñ"</string>
+    <string name="alternates_for_c">"ç"</string>
+    <string name="alternates_for_y">"ýÿ"</string>
+    <string name="tip_long_press">"Mantenha uma tecla premida para ver os acentos (ø, ö, etc.)"</string>
+    <string name="tip_dismiss">"Prima a tecla de retrocesso ↶ para fechar o teclado a qualquer momento"</string>
+    <string name="tip_access_symbols">"Aceder a números e símbolos"</string>
+    <string name="tip_add_to_dictionary">"Prima e mantenha premida a palavra mais à esquerda para a adicionar ao dicionário"</string>
+    <string name="touch_to_continue">"Toque nesta sugestão para continuar »"</string>
+    <string name="touch_to_finish">"Toque aqui para fechar esta sugestão e começar a escrever!"</string>
+    <string name="tip_to_open_keyboard"><b>"O teclado abre quando tocar num campo de texto"</b></string>
+    <string name="tip_to_view_accents"><b>"Toque e mantenha premida uma tecla para ver os acentos"\n"(ø, ö, ô, ó, etc.)"</b></string>
+    <string name="tip_to_open_symbols"><b>"Mude para números e símbolos tocando nesta tecla"</b></string>
+    <string name="tip_to_close_symbols"><b>"Regresse às letras tocando novamente nesta tecla"</b></string>
+    <string name="tip_to_launch_settings"><b>"Toque e mantenha premida esta tecla para alterar definições do teclado, tais como a conclusão automática"</b></string>
+    <string name="tip_to_start_typing"><b>"Experimente!"</b></string>
+    <string name="label_go_key">"Ir"</string>
+    <string name="label_next_key">"Seguinte"</string>
+    <string name="label_done_key">"Concluído"</string>
+    <string name="label_send_key">"Enviar"</string>
+    <string name="label_symbol_key">"?123"</string>
+    <string name="label_phone_key">"123"</string>
+    <string name="label_alpha_key">"ABC"</string>
+    <string name="label_alt_key">"ALT"</string>
+    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
+    <skip />
+    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
+    <skip />
+    <!-- no translation found for touch_and_hold (6154166367273010534) -->
+    <skip />
+    <!-- no translation found for keyboard_settings (4585753477617374032) -->
+    <skip />
+</resources>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_name">"Android klavyesi"</string>
+    <string name="english_ime_settings">"Android klavye ayarları"</string>
+    <string name="vibrate_on_keypress">"Tuşa basıldığında titret"</string>
+    <string name="sound_on_keypress">"Tuşa basıldığında ses çıkar"</string>
+    <string name="hit_correction">"Yazım hatalarını düzelt"</string>
+    <string name="hit_correction_summary">"Giriş hatası düzeltmeyi etkinleştir"</string>
+    <string name="hit_correction_land">"Yatay giriş hataları"</string>
+    <string name="hit_correction_land_summary">"Giriş hatası düzeltmeyi etkinleştir"</string>
+    <string name="auto_correction">"Kelime önerileri"</string>
+    <string name="auto_correction_summary">"Önceki kelimeyi otomatik olarak düzelt"</string>
+    <string name="prediction">"Kelime önerileri"</string>
+    <string name="prediction_category">"Kelime önerme ayarları"</string>
+    <string name="prediction_summary">"Yazarken otomatik tamamlamayı etkinleştir"</string>
+    <string name="auto_complete_dialog_title">"Otomatik tamamlama"</string>
+    <string name="prediction_landscape">"Metin alanı boyutunu artır"</string>
+    <string name="prediction_landscape_summary">"Yatay görünümde kelime önerilerini gizle"</string>
+    <string name="auto_cap">"Otomatik olarak büyük harf yapma"</string>
+    <string name="auto_cap_summary">"Cümlenin baş harfini büyük yap"</string>
+    <string name="auto_punctuate">"Otomatik noktalama"</string>
+    <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
+    <skip />
+    <string name="quick_fixes">"Hızlı onarımlar"</string>
+    <string name="quick_fixes_summary">"Yaygın olarak yapılan yazım hatalarını düzeltir"</string>
+    <string name="show_suggestions">"Önerileri göster"</string>
+    <string name="show_suggestions_summary">"Yazarken önerilen kelimeleri görüntüle"</string>
+    <string name="auto_complete">"Otomatik tamamlama"</string>
+    <string name="auto_complete_summary">"Boşluk tuşu ve noktalama vurgulanan kelimeyi otomatik ekler"</string>
+  <string-array name="prediction_modes">
+    <item>"Yok"</item>
+    <item>"Temel"</item>
+    <item>"Gelişmiş"</item>
+  </string-array>
+    <string name="prediction_none">"0"</string>
+    <string name="prediction_basic">"1"</string>
+    <string name="prediction_full">"2"</string>
+    <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
+    <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
+    <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
+    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : Kaydedildi"</string>
+    <string name="alternates_for_a">"àáâãäåæ"</string>
+    <string name="alternates_for_e">"èéêë"</string>
+    <string name="alternates_for_i">"ıìíîï"</string>
+    <string name="alternates_for_o">"öòóôõœø"</string>
+    <string name="alternates_for_u">"üùúû"</string>
+    <string name="alternates_for_s">"§ß"</string>
+    <string name="alternates_for_n">"ñ"</string>
+    <string name="alternates_for_c">"ç"</string>
+    <string name="alternates_for_y">"ýÿ"</string>
+    <string name="tip_long_press">"Vurguları görmek için bir tuşu basılı tutun (ø, ö, v.b.)"</string>
+    <string name="tip_dismiss">"Klavyeyi herhangi bir anda kapatmak için geri tuşuna ↶ basın"</string>
+    <string name="tip_access_symbols">"Sayılara ve simgelere erişin"</string>
+    <string name="tip_add_to_dictionary">"Sözlüğe eklemek için en soldaki kelimeye basın ve basılı tutun"</string>
+    <string name="touch_to_continue">"Devam etmek için bu ipucuna dokunun »"</string>
+    <string name="touch_to_finish">"Bu ipucunu kapatmak için buraya dokunun ve yazmaya başlayın!"</string>
+    <string name="tip_to_open_keyboard"><b>"Bir metin alanına dokunduğunuzda klavye açılır"</b></string>
+    <string name="tip_to_view_accents"><b>"Vurguları görüntülemek için bir tuşa basın ve basılı tutun"\n"(ø, ö, ô, ó v.b.)"</b></string>
+    <string name="tip_to_open_symbols"><b>"Bu tuşa dokunarak sayılar ve simgeler arasında geçiş yap"</b></string>
+    <string name="tip_to_close_symbols"><b>"Bu tuşa tekrar dokunarak harflere geri dönün"</b></string>
+    <string name="tip_to_launch_settings"><b>"Otomatik tamamlama gibi klavye ayarlarını değiştirmek için bu tuşa basın ve basılı tutun"</b></string>
+    <string name="tip_to_start_typing"><b>"Deneyin!"</b></string>
+    <string name="label_go_key">"Git"</string>
+    <string name="label_next_key">"İleri"</string>
+    <string name="label_done_key">"Bitti"</string>
+    <string name="label_send_key">"Gönder"</string>
+    <string name="label_symbol_key">"?123"</string>
+    <string name="label_phone_key">"123"</string>
+    <string name="label_alpha_key">"ABC"</string>
+    <string name="label_alt_key">"ALT"</string>
+    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
+    <skip />
+    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
+    <skip />
+    <!-- no translation found for touch_and_hold (6154166367273010534) -->
+    <skip />
+    <!-- no translation found for keyboard_settings (4585753477617374032) -->
+    <skip />
+</resources>

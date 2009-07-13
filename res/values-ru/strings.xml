@@ -31,17 +31,17 @@
     <string name="auto_complete_dialog_title">"Автоматическое завершение"</string>
     <string name="prediction_landscape">"Увеличить размер текстового поля"</string>
     <string name="prediction_landscape_summary">"Скрывать предложение слов в горизонтальной ориентации"</string>
-    <string name="auto_cap">"Автоматический перевод в верхний регистр"</string>
+    <string name="auto_cap">"Заглавные автоматически"</string>
     <string name="auto_cap_summary">"Делать заглавной первую букву предложения"</string>
     <string name="auto_punctuate">"Автоматическая пунктуация"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
     <string name="quick_fixes">"Быстрое исправление"</string>
-    <string name="quick_fixes_summary">"Исправляет распространенные опечатки"</string>
+    <string name="quick_fixes_summary">"Исправлять распространенные опечатки"</string>
     <string name="show_suggestions">"Предлагать варианты"</string>
     <string name="show_suggestions_summary">"Предлагать варианты во время ввода"</string>
     <string name="auto_complete">"Автозавершение"</string>
-    <string name="auto_complete_summary">"При вводе пробела или знака препинания выделенное слово вставляется автоматически"</string>
+    <string name="auto_complete_summary">"Пробел или знак препинания автоматически вставляют выделенное слово"</string>
   <string-array name="prediction_modes">
     <item>"Нет"</item>
     <item>"Основной"</item>
@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Удерживайте клавишу, чтобы увидеть варианты с диакритическими знаками (ø, ö и т.д.)"</string>
     <string name="tip_dismiss">"Нажмите клавишу \"Назад\" ↶, чтобы закрыть клавиатуру в любой момент"</string>
     <string name="tip_access_symbols">"Открыть цифры и символы"</string>
@@ -73,7 +71,7 @@
     <string name="touch_to_finish">"Нажмите здесь, чтобы закрыть подсказку и начать вводить текст."</string>
     <string name="tip_to_open_keyboard"><b>"Клавиатура появляется автоматически при касании текстового поля"</b></string>
     <string name="tip_to_view_accents"><b>"Нажмите и удерживайте клавишу, чтобы появились спецсимволы "\n"(ø, ö, ô, ó и т. п.)"</b></string>
-    <string name="tip_to_open_symbols"><b>"Чтобы перейти к вводу цифр и символов, нажмите на эту клавишу"</b></string>
+    <string name="tip_to_open_symbols"><b>"Чтобы переключаться между вводом цифр и символов, используйте эту клавишу"</b></string>
     <string name="tip_to_close_symbols"><b>"Чтобы вернуться к буквенной клавиатуре, снова нажмите на эту клавишу"</b></string>
     <string name="tip_to_launch_settings"><b>"Чтобы сменить настройки клавиатуры (такие как автозавершение), нажмите и удерживайте эту клавишу"</b></string>
     <string name="tip_to_start_typing"><b>"Попробуйте!"</b></string>
@@ -85,4 +83,12 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"АБВ"</string>
     <string name="label_alt_key">"ALT"</string>
+    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
+    <skip />
+    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
+    <skip />
+    <!-- no translation found for touch_and_hold (6154166367273010534) -->
+    <skip />
+    <!-- no translation found for keyboard_settings (4585753477617374032) -->
+    <skip />
 </resources>

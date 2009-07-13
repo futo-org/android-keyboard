@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"按住按鍵可查看重音符號 (ø、ö 等)"</string>
     <string name="tip_dismiss">"隨時可以透過按後退鍵 ↶ 關閉鍵盤"</string>
     <string name="tip_access_symbols">"使用數字和符號"</string>
@@ -85,4 +83,8 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <string name="open_the_keyboard"><font size="17"><b>"開啟鍵盤"\n</b></font><font size="3">\n</font>"輕觸任何文字欄位。"</string>
+    <string name="close_the_keyboard"><font size="17"><b>"關閉鍵盤"\n</b></font><font size="3">\n</font>"按下 Back 鍵。"</string>
+    <string name="touch_and_hold"><font size="17"><b>\n"輕觸並按住按鍵開啟選項"</b></font><font size="3">\n</font>"輸入標點與輕重音。"</string>
+    <string name="keyboard_settings"><font size="17"><b>"鍵盤設定"\n</b></font><font size="3">\n</font>"輕觸並按住 "<b>"?123"</b>" 鍵。"</string>
 </resources>

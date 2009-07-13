@@ -63,8 +63,6 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Houd een toets ingedrukt om diakritische tekens weer te geven (ø, ö, enzovoort)"</string>
     <string name="tip_dismiss">"Druk op elk gewenst moment op de toets Terug ↶ om het toetsenbord te sluiten"</string>
     <string name="tip_access_symbols">"Toegang tot cijfers en symbolen"</string>
@@ -72,7 +70,7 @@
     <string name="touch_to_continue">"Raak deze tip aan om door te gaan »"</string>
     <string name="touch_to_finish">"Raak dit punt aan om deze tip te sluiten en te beginnen met typen."</string>
     <string name="tip_to_open_keyboard"><b>"Het toetsenbord wordt geopend wanneer u een tekstveld aanraakt"</b></string>
-    <string name="tip_to_view_accents"><b>"Blijf een toets aanraken om diakritische tekens weer te geven"\n" (ø, ö, ô, ó, enzovoort)"</b></string>
+    <string name="tip_to_view_accents"><b>"Blijf een toets aanraken om diakritische tekens weer te geven"\n"(ø, ö, ô, ó, enzovoort)"</b></string>
     <string name="tip_to_open_symbols"><b>"Schakel over naar cijfers en symbolen door deze toets aan te raken"</b></string>
     <string name="tip_to_close_symbols"><b>"Ga terug naar letters door deze toets nogmaals aan te raken"</b></string>
     <string name="tip_to_launch_settings"><b>"Blijf deze toets aanraken om toetsenbordinstellingen te wijzigen, zoals auto-aanvullen"</b></string>
@@ -85,4 +83,8 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"Alt"</string>
+    <string name="open_the_keyboard"><font size="17"><b>"Het toetsenbord openen"\n</b></font><font size="3">\n</font>"Raak een tekstveld aan."</string>
+    <string name="close_the_keyboard"><font size="17"><b>"Het toetsenbord sluiten"\n</b></font><font size="3">\n</font>"Druk op de terugtoets."</string>
+    <string name="touch_and_hold"><font size="17"><b>"Een toets blijven aanraken voor opties"\n</b></font><font size="3">\n</font>"Toegang tot interpunctie en diakritische tekens."</string>
+    <string name="keyboard_settings"><font size="17"><b>"Toetsenbordinstellingen"\n</b></font><font size="3">\n</font>"Blijf de toets "<b>"?123"</b>" aanraken."</string>
 </resources>

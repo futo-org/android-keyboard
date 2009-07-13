@@ -18,7 +18,7 @@
     <string name="english_ime_name">"Teclado de Android"</string>
     <string name="english_ime_settings">"Configuración del teclado de Android"</string>
     <string name="vibrate_on_keypress">"Vibrar al pulsar tecla"</string>
-    <string name="sound_on_keypress">"Sonido al pulsar una tecla"</string>
+    <string name="sound_on_keypress">"Sonido al pulsar tecla"</string>
     <string name="hit_correction">"Corregir errores de escritura"</string>
     <string name="hit_correction_summary">"Habilitar la introducción de corrección de errores"</string>
     <string name="hit_correction_land">"Errores de introducción de datos en vista horizontal"</string>
@@ -31,7 +31,7 @@
     <string name="auto_complete_dialog_title">"Autocompletar"</string>
     <string name="prediction_landscape">"Aumentar el tamaño del campo de texto"</string>
     <string name="prediction_landscape_summary">"Ocultar sugerencias de palabras en la vista horizontal"</string>
-    <string name="auto_cap">"Uso de mayúsculas automático"</string>
+    <string name="auto_cap">"Uso de mayúsculas auto."</string>
     <string name="auto_cap_summary">"Escribir en mayúscula el principio de la frase"</string>
     <string name="auto_punctuate">"Puntuación automática"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
@@ -54,17 +54,15 @@
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : Guardada"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
-    <string name="alternates_for_e">"èéêë"</string>
+    <string name="alternates_for_a">"á"</string>
+    <string name="alternates_for_e">"é"</string>
     <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
+    <string name="alternates_for_o">"ó"</string>
     <string name="alternates_for_u">"ùúûü"</string>
     <string name="alternates_for_s">"§ß"</string>
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Mantén pulsada una tecla para ver los caracteres acentuados (ø, ö, etc.)."</string>
     <string name="tip_dismiss">"Pulsa la tecla \"Atrás\" ↶ para cerrar el teclado en cualquier momento."</string>
     <string name="tip_access_symbols">"Acceso a números y símbolos"</string>
@@ -78,11 +76,15 @@
     <string name="tip_to_launch_settings"><b>"Mantén pulsada esta tecla para cambiar la configuración del teclado como, por ejemplo, la opción de autocompletar"</b>"."</string>
     <string name="tip_to_start_typing"><b>"¡Pruébalo!"</b></string>
     <string name="label_go_key">"Ir"</string>
-    <string name="label_next_key">"Siguiente"</string>
+    <string name="label_next_key">"Sig."</string>
     <string name="label_done_key">"Hecho"</string>
     <string name="label_send_key">"Enviar"</string>
     <string name="label_symbol_key">"?123"</string>
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <string name="open_the_keyboard"><font size="17"><b>"Abrir el teclado"\n</b></font><font size="3">\n</font>"Pulsa cualquier campo de texto."</string>
+    <string name="close_the_keyboard"><font size="17"><b>"Cerrar el teclado"\n</b></font><font size="3">\n</font>"Pulsa la tecla \"Atrás\"."</string>
+    <string name="touch_and_hold"><font size="17"><b>"Mantén pulsada una tecla para acceder a las opciones."\n</b></font><font size="3">\n</font>"Accede a los signos de puntuación y a los acentos."</string>
+    <string name="keyboard_settings"><font size="17"><b>"Configuración del teclado"\n</b></font><font size="3">\n</font>"Mantén pulsada la tecla "<b>"?123"</b>"."</string>
 </resources>

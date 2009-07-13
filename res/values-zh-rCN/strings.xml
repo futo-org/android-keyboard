@@ -19,7 +19,7 @@
     <string name="english_ime_settings">"Android 键盘设置"</string>
     <string name="vibrate_on_keypress">"按键时振动"</string>
     <string name="sound_on_keypress">"按键时发出声音"</string>
-    <string name="hit_correction">"纠正键入错误"</string>
+    <string name="hit_correction">"纠正输入错误"</string>
     <string name="hit_correction_summary">"启用输入错误纠正"</string>
     <string name="hit_correction_land">"横向输入错误"</string>
     <string name="hit_correction_land_summary">"启用输入错误纠正"</string>
@@ -27,7 +27,7 @@
     <string name="auto_correction_summary">"自动纠正之前的字词"</string>
     <string name="prediction">"字词建议"</string>
     <string name="prediction_category">"字词建议设置"</string>
-    <string name="prediction_summary">"键入时启用自动完成"</string>
+    <string name="prediction_summary">"输入时启用自动完成"</string>
     <string name="auto_complete_dialog_title">"自动完成"</string>
     <string name="prediction_landscape">"增加文本域的大小"</string>
     <string name="prediction_landscape_summary">"在横向视图中隐藏字词建议"</string>
@@ -36,18 +36,12 @@
     <string name="auto_punctuate">"自动加标点"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <!-- no translation found for quick_fixes (5353213327680897927) -->
-    <skip />
-    <!-- no translation found for quick_fixes_summary (3405028402510332373) -->
-    <skip />
-    <!-- no translation found for show_suggestions (507074425254289133) -->
-    <skip />
-    <!-- no translation found for show_suggestions_summary (1989672863935759654) -->
-    <skip />
-    <!-- no translation found for auto_complete (1103196318775486023) -->
-    <skip />
-    <!-- no translation found for auto_complete_summary (6113149638718274624) -->
-    <skip />
+    <string name="quick_fixes">"快速纠正"</string>
+    <string name="quick_fixes_summary">"纠正常见的输入错误"</string>
+    <string name="show_suggestions">"显示建议"</string>
+    <string name="show_suggestions_summary">"输入时显示建议的字词"</string>
+    <string name="auto_complete">"自动输入"</string>
+    <string name="auto_complete_summary">"按空格和标点会自动插入突出显示的字词"</string>
   <string-array name="prediction_modes">
     <item>"无"</item>
     <item>"基本模式"</item>
@@ -69,28 +63,18 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"按住某个键可以查看重音符号（ø、ö 等）"</string>
     <string name="tip_dismiss">"随时可以通过按后退键 ↶ 关闭键盘"</string>
     <string name="tip_access_symbols">"访问数字和符号"</string>
     <string name="tip_add_to_dictionary">"按住最左侧的字词可以将其添加到字典中"</string>
-    <!-- no translation found for touch_to_continue (7869803257948414531) -->
-    <skip />
-    <!-- no translation found for touch_to_finish (7990196086480585789) -->
-    <skip />
-    <!-- no translation found for tip_to_open_keyboard (6821200275486950452) -->
-    <skip />
-    <!-- no translation found for tip_to_view_accents (5433158573693308501) -->
-    <skip />
-    <!-- no translation found for tip_to_open_symbols (7345139325622444880) -->
-    <skip />
-    <!-- no translation found for tip_to_close_symbols (5227724217206927185) -->
-    <skip />
-    <!-- no translation found for tip_to_launch_settings (8402961128983196128) -->
-    <skip />
-    <!-- no translation found for tip_to_start_typing (7213843601369174313) -->
-    <skip />
+    <string name="touch_to_continue">"轻触此提示继续 »"</string>
+    <string name="touch_to_finish">"轻触此处可关闭该提示，然后便可开始输入内容！"</string>
+    <string name="tip_to_open_keyboard"><b>"轻触文本字段即可打开键盘"</b></string>
+    <string name="tip_to_view_accents"><b>"轻触并按住某个键可以查看重音符号"\n"（?, ?, ?, ó 等）"</b></string>
+    <string name="tip_to_open_symbols"><b>"轻触该键可切换到数字和符号输入模式"</b></string>
+    <string name="tip_to_close_symbols"><b>"再次轻触该键可返回字母输入模式"</b></string>
+    <string name="tip_to_launch_settings"><b>"轻触并按住该键可以更改键盘设置，例如自动输入"</b></string>
+    <string name="tip_to_start_typing"><b>"试试吧！"</b></string>
     <string name="label_go_key">"开始"</string>
     <string name="label_next_key">"下一步"</string>
     <string name="label_done_key">"完成"</string>
@@ -99,4 +83,12 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
+    <skip />
+    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
+    <skip />
+    <!-- no translation found for touch_and_hold (6154166367273010534) -->
+    <skip />
+    <!-- no translation found for keyboard_settings (4585753477617374032) -->
+    <skip />
 </resources>

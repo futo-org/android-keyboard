@@ -36,18 +36,12 @@
     <string name="auto_punctuate">"Puntuación automática"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <!-- no translation found for quick_fixes (5353213327680897927) -->
-    <skip />
-    <!-- no translation found for quick_fixes_summary (3405028402510332373) -->
-    <skip />
-    <!-- no translation found for show_suggestions (507074425254289133) -->
-    <skip />
-    <!-- no translation found for show_suggestions_summary (1989672863935759654) -->
-    <skip />
-    <!-- no translation found for auto_complete (1103196318775486023) -->
-    <skip />
-    <!-- no translation found for auto_complete_summary (6113149638718274624) -->
-    <skip />
+    <string name="quick_fixes">"Arreglos rápidos"</string>
+    <string name="quick_fixes_summary">"Corrige errores de escritura comunes"</string>
+    <string name="show_suggestions">"Mostrar sugerencias"</string>
+    <string name="show_suggestions_summary">"Mostrar palabras sugeridas mientras escribe"</string>
+    <string name="auto_complete">"Completar automáticamente"</string>
+    <string name="auto_complete_summary">"La barra espaciadora o la puntuación insertan automáticamente la palabra resaltada."</string>
   <string-array name="prediction_modes">
     <item>"Ninguno"</item>
     <item>"Básico"</item>
@@ -69,28 +63,18 @@
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Mantén una tecla presionada para ver los acentos (ø, ö, etc.)"</string>
     <string name="tip_dismiss">"Pulsa la tecla hacia atrás ↶ para cerrar el teclado en cualquier momento"</string>
     <string name="tip_access_symbols">"Acceder a números y símbolos"</string>
     <string name="tip_add_to_dictionary">"Presiona y mantén presionada la palabra de la izquierda para agregarla al diccionario"</string>
-    <!-- no translation found for touch_to_continue (7869803257948414531) -->
-    <skip />
-    <!-- no translation found for touch_to_finish (7990196086480585789) -->
-    <skip />
-    <!-- no translation found for tip_to_open_keyboard (6821200275486950452) -->
-    <skip />
-    <!-- no translation found for tip_to_view_accents (5433158573693308501) -->
-    <skip />
-    <!-- no translation found for tip_to_open_symbols (7345139325622444880) -->
-    <skip />
-    <!-- no translation found for tip_to_close_symbols (5227724217206927185) -->
-    <skip />
-    <!-- no translation found for tip_to_launch_settings (8402961128983196128) -->
-    <skip />
-    <!-- no translation found for tip_to_start_typing (7213843601369174313) -->
-    <skip />
+    <string name="touch_to_continue">"Toca esta sugerencia para continuar »"</string>
+    <string name="touch_to_finish">"Toca aquí para cerrar esta sugerencia y comenzar a escribir."</string>
+    <string name="tip_to_open_keyboard"><b>"El teclado se abre cada vez que tocas un campo de texto."</b></string>
+    <string name="tip_to_view_accents"><b>"Toca y mantén presionada una tecla para ver los acentos"\n"(ø, ö, ô, ó, y así sucesivamente)."</b></string>
+    <string name="tip_to_open_symbols"><b>"Cambia de números a símbolos tocando esta tecla."</b></string>
+    <string name="tip_to_close_symbols"><b>"Vuelve a letras tocando esta tecla nuevamente."</b></string>
+    <string name="tip_to_launch_settings"><b>"Toca &amp;amp y mantén presionada esta tecla para cambiar la configuración del teclado, como completar automáticamente."</b></string>
+    <string name="tip_to_start_typing"><b>"¡Pruébalo!"</b></string>
     <string name="label_go_key">"Ir"</string>
     <string name="label_next_key">"Siguiente"</string>
     <string name="label_done_key">"Finalizado"</string>
@@ -99,4 +83,12 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
+    <skip />
+    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
+    <skip />
+    <!-- no translation found for touch_and_hold (6154166367273010534) -->
+    <skip />
+    <!-- no translation found for keyboard_settings (4585753477617374032) -->
+    <skip />
 </resources>

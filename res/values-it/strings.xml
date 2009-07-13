@@ -17,8 +17,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name">"Tastiera Android"</string>
     <string name="english_ime_settings">"Impostazioni tastiera Android"</string>
-    <string name="vibrate_on_keypress">"Vibra quando premi un tasto"</string>
-    <string name="sound_on_keypress">"Suona quando premi un tasto"</string>
+    <string name="vibrate_on_keypress">"Vibra se premi un tasto"</string>
+    <string name="sound_on_keypress">"Suona se premi un tasto"</string>
     <string name="hit_correction">"Correggi errori di digitazione"</string>
     <string name="hit_correction_summary">"Attiva la correzione degli errori di inserimento"</string>
     <string name="hit_correction_land">"Errori di inserimento in visualizzazione orizzontale"</string>
@@ -33,15 +33,15 @@
     <string name="prediction_landscape_summary">"Nascondi i suggerimenti delle parole in visualizzazione orizzontale"</string>
     <string name="auto_cap">"Maiuscole automatiche"</string>
     <string name="auto_cap_summary">"Rendi maiuscole le iniziali delle frasi"</string>
-    <string name="auto_punctuate">"Punteggiatura automatica"</string>
+    <string name="auto_punctuate">"Punteggiatura automat."</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
     <string name="quick_fixes">"Correzioni veloci"</string>
     <string name="quick_fixes_summary">"Corregge gli errori di digitazione più comuni"</string>
     <string name="show_suggestions">"Mostra suggerimenti"</string>
     <string name="show_suggestions_summary">"Visualizza le parole suggerite durante la digitazione"</string>
-    <string name="auto_complete">"Completamento automatico"</string>
-    <string name="auto_complete_summary">"La barra spaziatrice e la punteggiatura inseriscono automaticamente la parola evidenziata"</string>
+    <string name="auto_complete">"Completamento autom."</string>
+    <string name="auto_complete_summary">"Barra spaziatrice e punteggiatura inseriscono la parola evidenziata"</string>
   <string-array name="prediction_modes">
     <item>"Nessuna"</item>
     <item>"Base"</item>
@@ -54,19 +54,17 @@
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : parola salvata"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
-    <string name="alternates_for_e">"èéêë"</string>
+    <string name="alternates_for_a">"àá"</string>
+    <string name="alternates_for_e">"èé"</string>
     <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
+    <string name="alternates_for_o">"òó"</string>
     <string name="alternates_for_u">"ùúûü"</string>
-    <string name="alternates_for_s">"§ß"</string>
+    <string name="alternates_for_s">"§"</string>
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Tieni premuto un tasto per vedere le lettere con segni diacritici (ø, ö etc.)"</string>
-    <string name="tip_dismiss">"Premi il tasto Indietro ↶ per chiudere la tastiera in qualsiasi punto"</string>
+    <string name="tip_dismiss">"Premi il tasto Indietro ↶ per chiudere la tastiera"</string>
     <string name="tip_access_symbols">"Accedi a numeri e simboli"</string>
     <string name="tip_add_to_dictionary">"Tieni premuto sulla parola all\'estrema sinistra per aggiungerla al dizionario"</string>
     <string name="touch_to_continue">"Tocca questo suggerimento per continuare »"</string>
@@ -85,4 +83,8 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <string name="open_the_keyboard"><font size="17"><b>"Apertura tastiera"\n</b></font><font size="3">\n</font>"Tocca qualsiasi campo di testo."</string>
+    <string name="close_the_keyboard"><font size="17"><b>"Chiusura tastiera"\n</b></font><font size="3">\n</font>"Premi il tasto Indietro."</string>
+    <string name="touch_and_hold"><font size="17"><b>"Tocca e tieni premuto un tasto per le opzioni"\n</b></font><font size="3">\n</font>"Accesso a punteggiatura e accenti."</string>
+    <string name="keyboard_settings"><font size="17"><b>"Impostazioni tastiera"\n</b></font><font size="3">\n</font>"Tocca e tieni premuto il tasto "<b>"?123"</b>"."</string>
 </resources>

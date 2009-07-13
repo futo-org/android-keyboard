@@ -17,7 +17,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name">"Android-Tastatur"</string>
     <string name="english_ime_settings">"Android-Tastatureinstellungen"</string>
-    <string name="vibrate_on_keypress">"Vibrieren auf Tastendruck"</string>
+    <string name="vibrate_on_keypress">"Vibrieren bei Tastendruck"</string>
     <string name="sound_on_keypress">"Sound bei Tastendruck"</string>
     <string name="hit_correction">"Eingabefehler korrigieren"</string>
     <string name="hit_correction_summary">"Korrektur von Eingabefehlern aktivieren"</string>
@@ -28,7 +28,7 @@
     <string name="prediction">"Wortvorschläge"</string>
     <string name="prediction_category">"Einstellungen für Wortvorschläge"</string>
     <string name="prediction_summary">"Automatische Vervollständigung während der Eingabe aktivieren"</string>
-    <string name="auto_complete_dialog_title">"Automatische Vervollständigung"</string>
+    <string name="auto_complete_dialog_title">"Autom. vervollständigen"</string>
     <string name="prediction_landscape">"Textfeld vergrößern"</string>
     <string name="prediction_landscape_summary">"Wortvorschläge in Querformat ausblenden"</string>
     <string name="auto_cap">"Automatische Groß-/Kleinschreibung"</string>
@@ -40,8 +40,8 @@
     <string name="quick_fixes_summary">"Korrigiert gängige Tippfehler"</string>
     <string name="show_suggestions">"Vorschläge anzeigen"</string>
     <string name="show_suggestions_summary">"Vorgeschlagene Wörter während des Tippens anzeigen"</string>
-    <string name="auto_complete">"Automatische Vervollständigung"</string>
-    <string name="auto_complete_summary">"Leertaste und Interpunktion fügen automatisch ein hervorgehobenes Wort ein"</string>
+    <string name="auto_complete">"Autom. vervollständigen"</string>
+    <string name="auto_complete_summary">"Leertaste und Interpunktion fügen autom. ein markiertes Wort ein"</string>
   <string-array name="prediction_modes">
     <item>"Keine"</item>
     <item>"Standard"</item>
@@ -54,17 +54,15 @@
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : Gespeichert"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
+    <string name="alternates_for_a">"ä"</string>
     <string name="alternates_for_e">"èéêë"</string>
     <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
+    <string name="alternates_for_o">"ö"</string>
     <string name="alternates_for_u">"ùúûü"</string>
     <string name="alternates_for_s">"§ß"</string>
     <string name="alternates_for_n">"ñ"</string>
     <string name="alternates_for_c">"ç"</string>
     <string name="alternates_for_y">"ýÿ"</string>
-    <!-- no translation found for alternates_for_z (8206774143334512268) -->
-    <skip />
     <string name="tip_long_press">"Zur Anzeige von Umlauten (ä, ö usw.) Taste gedrückt halten"</string>
     <string name="tip_dismiss">"Zum Schließen der Tastatur ↶ drücken"</string>
     <string name="tip_access_symbols">"Auf Zahlen und Symbole zugreifen"</string>
@@ -85,4 +83,8 @@
     <string name="label_phone_key">"123"</string>
     <string name="label_alpha_key">"ABC"</string>
     <string name="label_alt_key">"ALT"</string>
+    <string name="open_the_keyboard"><font size="17"><b>"Tastatur öffnen"\n</b></font><font size="3">\n</font>"Berühren Sie ein beliebiges Textfeld."</string>
+    <string name="close_the_keyboard"><font size="17"><b>"Tastatur schließen"\n</b></font><font size="3">\n</font>"Drücken Sie die Taste \"Zurück\"."</string>
+    <string name="touch_and_hold"><font size="17"><b>"Eine Taste für Optionen berühren und gedrückt halten"\n</b></font><font size="3">\n</font>"Greifen Sie auf Satzzeichen und Akzente zu."</string>
+    <string name="keyboard_settings"><font size="17"><b>"Tastatureinstellungen"\n</b></font><font size="3">\n</font>"Berühren und halten Sie die Taste "<b>"?123"</b>" gedrückt."</string>
 </resources>
