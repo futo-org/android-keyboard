@@ -101,10 +101,11 @@ public class BinaryDictionary extends Dictionary {
         // completions.
         if (ENABLE_MISSED_CHARACTERS && count < 5) {
             for (int skip = 0; skip < codesSize; skip++) {
-                count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize,
+                int tempCount = getSuggestionsNative(mNativeDict, mInputCodes, codesSize,
                         mOutputChars, mFrequencies,
                         MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, skip);
-                if (count > 0) break;
+                count = Math.max(count, tempCount);
+                if (tempCount > 0) break;
             }
         }
 

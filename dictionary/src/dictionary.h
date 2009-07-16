@@ -51,7 +51,7 @@ private:
     bool addWord(unsigned short *word, int length, int frequency);
     unsigned short toLowerCase(unsigned short c, int depth);
     void getWordsRec(int pos, int depth, int maxDepth, bool completion, int frequency,
-            int inputIndex);
+            int inputIndex, int diffs);
     bool isValidWordRec(int pos, unsigned short *word, int offset, int length);
 
     unsigned char *mDict;
@@ -67,6 +67,7 @@ private:
     int mMaxAlternatives;
     unsigned short mWord[128];
     int mSkipPos;
+    int mMaxEditDistance;
 
     int mFullWordMultiplier;
     int mTypedLetterMultiplier;
