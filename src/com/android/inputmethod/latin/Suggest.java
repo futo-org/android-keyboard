@@ -36,13 +36,15 @@ public class Suggest implements Dictionary.WordCallback {
     public static final int CORRECTION_NONE = 0;
     public static final int CORRECTION_BASIC = 1;
     public static final int CORRECTION_FULL = 2;
-    
+
     private Dictionary mMainDict;
-    
+
     private Dictionary mUserDictionary;
-    
+
+    private Dictionary mAutoDictionary;
+
     private int mPrefMaxSuggestions = 12;
-    
+
     private int[] mPriorities = new int[mPrefMaxSuggestions];
     private List<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     private boolean mIncludeTypedWordIfValid;
@@ -63,11 +65,11 @@ public class Suggest implements Dictionary.WordCallback {
             mStringPool.add(sb);
         }
     }
-    
+
     public int getCorrectionMode() {
         return mCorrectionMode;
     }
-    
+
     public void setCorrectionMode(int mode) {
         mCorrectionMode = mode;
     }
@@ -78,6 +80,10 @@ public class Suggest implements Dictionary.WordCallback {
      */
     public void setUserDictionary(Dictionary userDictionary) {
         mUserDictionary = userDictionary;
+    }
+    
+    public void setAutoDictionary(Dictionary autoDictionary) {
+        mAutoDictionary = autoDictionary;
     }
 
     /**
@@ -256,7 +262,8 @@ public class Suggest implements Dictionary.WordCallback {
         }
         return (mCorrectionMode == CORRECTION_FULL && mMainDict.isValidWord(word)) 
                 || (mCorrectionMode > CORRECTION_NONE && 
-                    (mUserDictionary != null && mUserDictionary.isValidWord(word)));
+                    ((mUserDictionary != null && mUserDictionary.isValidWord(word)))
+                     || (mAutoDictionary != null && mAutoDictionary.isValidWord(word)));
     }
     
     private void collectGarbage() {

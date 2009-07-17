@@ -95,6 +95,7 @@ public class LatinIME extends InputMethodService
     KeyboardSwitcher mKeyboardSwitcher;
     
     private UserDictionary mUserDictionary;
+    private ExpandableDictionary mAutoDictionary;
     
     private String mLocale;
 
@@ -172,7 +173,9 @@ public class LatinIME extends InputMethodService
         mSuggest = new Suggest(this, R.raw.main);
         mSuggest.setCorrectionMode(mCorrectionMode);
         mUserDictionary = new UserDictionary(this);
+        mAutoDictionary = new AutoDictionary(this);
         mSuggest.setUserDictionary(mUserDictionary);
+        mSuggest.setAutoDictionary(mAutoDictionary);
         mWordSeparators = getResources().getString(R.string.word_separators);
         mSentenceSeparators = getResources().getString(R.string.sentence_separators);
     }
@@ -465,6 +468,7 @@ public class LatinIME extends InputMethodService
                 }
                 mCommittedLength = mComposing.length();
                 TextEntryState.acceptedTyped(mComposing);
+                mAutoDictionary.addWord(mComposing.toString(), 1);
             }
             updateSuggestions();
         }
@@ -820,6 +824,10 @@ public class LatinIME extends InputMethodService
         if (ic != null) {
             ic.commitText(suggestion, 1);
         }
+        // Add the word to the auto dictionary if it's not a known word
+        if (mAutoDictionary.isValidWord(suggestion) || !mSuggest.isValidWord(suggestion)) {
+            mAutoDictionary.addWord(suggestion.toString(), 1);
+        }
         mPredicting = false;
         mCommittedLength = suggestion.length();
         if (mCandidateView != null) {
@@ -998,7 +1006,12 @@ public class LatinIME extends InputMethodService
     void tutorialDone() {
         mTutorial = null;
     }
-    
+
+    void promoteToUserDictionary(String word, int frequency) {
+        if (mUserDictionary.isValidWord(word)) return;
+        mUserDictionary.addWord(word, frequency);
+    }
+
     private void launchSettings() {
         handleClose();
         Intent intent = new Intent();
@@ -1107,7 +1120,29 @@ public class LatinIME extends InputMethodService
         for (int i = 0; i < CPS_BUFFER_SIZE; i++) total += mCpsIntervals[i];
         System.out.println("CPS = " + ((CPS_BUFFER_SIZE * 1000f) / total));
     }
-    
+
+    class AutoDictionary extends ExpandableDictionary {
+        private static final int VALIDITY_THRESHOLD = 3;
+        private static final int PROMOTION_THRESHOLD = 6;
+
+        public AutoDictionary(Context context) {
+            super(context);
+        }
+
+        @Override
+        public boolean isValidWord(CharSequence word) {
+            final int frequency = getWordFrequency(word);
+            return frequency > VALIDITY_THRESHOLD;
+        }
+
+        @Override
+        public void addWord(String word, int frequency) {
+            super.addWord(word, 1);
+            if (getWordFrequency(word) > PROMOTION_THRESHOLD) {
+                LatinIME.this.promoteToUserDictionary(word, frequency);
+            }
+        }
+    }
 }
 
 
