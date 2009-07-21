@@ -37,6 +37,10 @@ public class KeyboardSwitcher {
     public static final int KEYBOARDMODE_EMAIL = R.id.mode_email;
     public static final int KEYBOARDMODE_IM = R.id.mode_im;
 
+    private static final int SYMBOLS_MODE_STATE_NONE = 0;
+    private static final int SYMBOLS_MODE_STATE_BEGIN = 1;
+    private static final int SYMBOLS_MODE_STATE_SYMBOL = 2;
+
     LatinKeyboardView mInputView;
     LatinIME mContext;
     
@@ -50,6 +54,7 @@ public class KeyboardSwitcher {
     private int mImeOptions;
     private int mTextMode = MODE_TEXT_QWERTY;
     private boolean mIsSymbols;
+    private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
 
     private int mLastDisplayWidth;
 
@@ -228,5 +233,28 @@ public class KeyboardSwitcher {
 
     void toggleSymbols() {
         setKeyboardMode(mMode, mImeOptions, !mIsSymbols);
+        if (mIsSymbols) {
+            mSymbolsModeState = SYMBOLS_MODE_STATE_BEGIN;
+        } else {
+            mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
+        }
+    }
+
+    /**
+     * Updates state machine to figure out when to automatically switch back to alpha mode.
+     * Returns true if the keyboard needs to switch back 
+     */
+    boolean onKey(int key) {
+        // Switch back to alpha mode if user types one or more non-space characters followed by
+        // a space.
+        switch (mSymbolsModeState) {
+            case SYMBOLS_MODE_STATE_BEGIN:
+                if (key != ' ' && key > 0) mSymbolsModeState = SYMBOLS_MODE_STATE_SYMBOL;
+                break;
+            case SYMBOLS_MODE_STATE_SYMBOL:
+                if (key == ' ') return true;
+                break;
+        }
+        return false;
     }
 }

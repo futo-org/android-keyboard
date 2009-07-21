@@ -115,6 +115,8 @@ public class LatinIME extends InputMethodService
     private boolean mQuickFixes;
     private boolean mShowSuggestions;
     private int     mCorrectionMode;
+    private int     mOrientation;
+
     // Indicates whether the suggestion strip is to be on in landscape
     private boolean mJustAccepted;
     private CharSequence mJustRevertedSeparator;
@@ -159,10 +161,12 @@ public class LatinIME extends InputMethodService
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
         mKeyboardSwitcher = new KeyboardSwitcher(this);
-        initSuggest(getResources().getConfiguration().locale.toString());
-        
+        final Configuration conf = getResources().getConfiguration();
+        initSuggest(conf.locale.toString());
+        mOrientation = conf.orientation;
+
         mVibrateDuration = getResources().getInteger(R.integer.vibrate_duration_ms);
-        
+
         // register to receive ringer mode changes for silent mode
         IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mReceiver, filter);
@@ -191,9 +195,14 @@ public class LatinIME extends InputMethodService
         if (!TextUtils.equals(conf.locale.toString(), mLocale)) {
             initSuggest(conf.locale.toString());
         }
+        // If orientation changed while predicting, commit the change
+        if (conf.orientation != mOrientation) {
+            commitTyped(getCurrentInputConnection());
+            mOrientation = conf.orientation;
+        }
         super.onConfigurationChanged(conf);
     }
-    
+
     @Override
     public View onCreateInputView() {
         mInputView = (LatinKeyboardView) getLayoutInflater().inflate(
@@ -574,6 +583,9 @@ public class LatinIME extends InputMethodService
                 }
                 // Cancel the just reverted state
                 mJustRevertedSeparator = null;
+        }
+        if (mKeyboardSwitcher.onKey(primaryCode)) {
+            changeKeyboardMode();
         }
     }
     
