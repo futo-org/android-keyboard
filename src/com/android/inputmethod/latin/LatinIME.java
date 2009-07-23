@@ -71,6 +71,7 @@ public class LatinIME extends InputMethodService
 
     private static final int MSG_UPDATE_SUGGESTIONS = 0;
     private static final int MSG_START_TUTORIAL = 1;
+    private static final int MSG_UPDATE_SHIFT_STATE = 2;
     
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
@@ -152,6 +153,9 @@ public class LatinIME extends InputMethodService
                             sendMessageDelayed(obtainMessage(MSG_START_TUTORIAL), 100);
                         }
                     }
+                    break;
+                case MSG_UPDATE_SHIFT_STATE:
+                    updateShiftKeyState(getCurrentInputEditorInfo());
                     break;
             }
         }
@@ -321,7 +325,7 @@ public class LatinIME extends InputMethodService
         }
         mPredictionOn = mPredictionOn && mCorrectionMode > 0;
         checkTutorial(attribute.privateImeOptions);
-        if (TRACE) Debug.startMethodTracing("latinime");
+        if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
     @Override
@@ -622,7 +626,8 @@ public class LatinIME extends InputMethodService
         } else {
             deleteChar = true;
         }
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SHIFT_STATE), 300);
         TextEntryState.backspace();
         if (TextEntryState.getState() == TextEntryState.STATE_UNDO_COMMIT) {
             revertLastWord(deleteChar);
@@ -772,7 +777,9 @@ public class LatinIME extends InputMethodService
         if (mCorrectionMode == Suggest.CORRECTION_FULL) {
             correctionAvailable |= typedWordValid;
         }
-        
+        // Don't auto-correct words with multiple capital letter
+        correctionAvailable &= !mWord.isMostlyCaps();
+
         mCandidateView.setSuggestions(stringList, false, typedWordValid, correctionAvailable); 
         if (stringList.size() > 0) {
             if (correctionAvailable && !typedWordValid && stringList.size() > 1) {

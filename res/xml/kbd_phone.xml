@@ -51,7 +51,7 @@
     <Row android:rowEdgeFlags="bottom">
         <Key android:codes="-2" android:keyIcon="@drawable/sym_keyboard_numalt"
                 android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters=""
+                android:popupCharacters="_"
                 android:iconPreview="@drawable/sym_keyboard_feedback_numalt"/>
 
         <Key android:codes="48" android:keyIcon="@drawable/sym_keyboard_num0"/>

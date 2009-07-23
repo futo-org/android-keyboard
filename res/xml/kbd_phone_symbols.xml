@@ -55,6 +55,8 @@
     
     <Row android:rowEdgeFlags="bottom">
         <Key android:codes="-2" android:keyLabel="@string/label_phone_key" 
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="_"
                 android:keyEdgeFlags="left"/>
         <Key android:keyLabel="+"/>
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" 
