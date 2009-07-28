@@ -103,6 +103,7 @@ public class LatinIME extends InputMethodService
     KeyboardSwitcher mKeyboardSwitcher;
     
     private UserDictionary mUserDictionary;
+    private ContactsDictionary mContactsDictionary;
     private ExpandableDictionary mAutoDictionary;
     
     private String mLocale;
@@ -188,8 +189,10 @@ public class LatinIME extends InputMethodService
         mSuggest = new Suggest(this, R.raw.main);
         mSuggest.setCorrectionMode(mCorrectionMode);
         mUserDictionary = new UserDictionary(this);
+        mContactsDictionary = new ContactsDictionary(this);
         mAutoDictionary = new AutoDictionary(this);
         mSuggest.setUserDictionary(mUserDictionary);
+        mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);
         mWordSeparators = getResources().getString(R.string.word_separators);
         mSentenceSeparators = getResources().getString(R.string.sentence_separators);
@@ -197,6 +200,7 @@ public class LatinIME extends InputMethodService
     
     @Override public void onDestroy() {
         mUserDictionary.close();
+        mContactsDictionary.close();
         unregisterReceiver(mReceiver);
         super.onDestroy();
     }
