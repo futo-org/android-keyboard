@@ -76,10 +76,17 @@ public class LatinIME extends InputMethodService
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
     // Key events coming any faster than this are long-presses.
-    private static final int QUICK_PRESS = 200; 
+    private static final int QUICK_PRESS = 200;
+    // Weight added to a user picking a new word from the suggestion strip
+    static final int FREQUENCY_FOR_PICKED = 3;
+    // Weight added to a user typing a new word that doesn't get corrected (or is reverted)
+    static final int FREQUENCY_FOR_TYPED = 1;
+    // A word that is frequently typed and get's promoted to the user dictionary, uses this
+    // frequency.
+    static final int FREQUENCY_FOR_AUTO_ADD = 250;
     
-    private static final int KEYCODE_ENTER = 10;
-    private static final int KEYCODE_SPACE = ' ';
+    static final int KEYCODE_ENTER = '\n';
+    static final int KEYCODE_SPACE = ' ';
 
     // Contextual menu positions
     private static final int POS_SETTINGS = 0;
@@ -481,7 +488,7 @@ public class LatinIME extends InputMethodService
                 }
                 mCommittedLength = mComposing.length();
                 TextEntryState.acceptedTyped(mComposing);
-                mAutoDictionary.addWord(mComposing.toString(), 1);
+                mAutoDictionary.addWord(mComposing.toString(), FREQUENCY_FOR_TYPED);
             }
             updateSuggestions();
         }
@@ -845,7 +852,7 @@ public class LatinIME extends InputMethodService
         }
         // Add the word to the auto dictionary if it's not a known word
         if (mAutoDictionary.isValidWord(suggestion) || !mSuggest.isValidWord(suggestion)) {
-            mAutoDictionary.addWord(suggestion.toString(), 1);
+            mAutoDictionary.addWord(suggestion.toString(), FREQUENCY_FOR_PICKED);
         }
         mPredicting = false;
         mCommittedLength = suggestion.length();
@@ -1141,8 +1148,10 @@ public class LatinIME extends InputMethodService
     }
 
     class AutoDictionary extends ExpandableDictionary {
-        private static final int VALIDITY_THRESHOLD = 3;
-        private static final int PROMOTION_THRESHOLD = 6;
+        // If the user touches a typed word 2 times or more, it will become valid.
+        private static final int VALIDITY_THRESHOLD = 2 * FREQUENCY_FOR_PICKED;
+        // If the user touches a typed word 5 times or more, it will be added to the user dict.
+        private static final int PROMOTION_THRESHOLD = 5 * FREQUENCY_FOR_PICKED;
 
         public AutoDictionary(Context context) {
             super(context);
@@ -1155,10 +1164,11 @@ public class LatinIME extends InputMethodService
         }
 
         @Override
-        public void addWord(String word, int frequency) {
-            super.addWord(word, 1);
-            if (getWordFrequency(word) > PROMOTION_THRESHOLD) {
-                LatinIME.this.promoteToUserDictionary(word, frequency);
+        public void addWord(String word, int addFrequency) {
+            super.addWord(word, addFrequency);
+            final int freq = getWordFrequency(word);
+            if (freq > PROMOTION_THRESHOLD) {
+                LatinIME.this.promoteToUserDictionary(word, FREQUENCY_FOR_AUTO_ADD);
             }
         }
     }

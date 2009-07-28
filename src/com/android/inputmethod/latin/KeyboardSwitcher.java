@@ -245,14 +245,16 @@ public class KeyboardSwitcher {
      * Returns true if the keyboard needs to switch back 
      */
     boolean onKey(int key) {
-        // Switch back to alpha mode if user types one or more non-space characters followed by
-        // a space.
+        // Switch back to alpha mode if user types one or more non-space/enter characters
+        // followed by a space/enter
         switch (mSymbolsModeState) {
             case SYMBOLS_MODE_STATE_BEGIN:
-                if (key != ' ' && key > 0) mSymbolsModeState = SYMBOLS_MODE_STATE_SYMBOL;
+                if (key != LatinIME.KEYCODE_SPACE && key != LatinIME.KEYCODE_ENTER && key > 0) {
+                    mSymbolsModeState = SYMBOLS_MODE_STATE_SYMBOL;
+                }
                 break;
             case SYMBOLS_MODE_STATE_SYMBOL:
-                if (key == ' ') return true;
+                if (key == LatinIME.KEYCODE_ENTER || key == LatinIME.KEYCODE_SPACE) return true;
                 break;
         }
         return false;
