@@ -7,11 +7,6 @@
 
     <application android:label="@string/english_ime_name"
             android:backupAgent="LatinIMEBackupAgent">
-<!-- TODO: enable before donut release
-        <supports-density android:density="120" />
-        <supports-density android:density="160" />
-        <supports-density android:density="240" />
--->
 
         <service android:name="LatinIME"
                 android:label="@string/english_ime_name"
