@@ -102,7 +102,10 @@ public class ExpandableDictionary extends Dictionary {
     public void getWords(final WordComposer codes, final WordCallback callback) {
         mInputLength = codes.size();
         mMaxDepth = mInputLength * 3;
-        getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1.0f, 0, callback);
+        getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1.0f, 0, -1, callback);
+        for (int i = 0; i < mInputLength; i++) {
+            getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1.0f, 0, i, callback);
+        }
     }
 
     @Override
@@ -163,7 +166,7 @@ public class ExpandableDictionary extends Dictionary {
      * @param callback the callback class for adding a word
      */
     protected void getWordsRec(List<Node> roots, final WordComposer codes, final char[] word, 
-            final int depth, boolean completion, float snr, int inputIndex,
+            final int depth, boolean completion, float snr, int inputIndex, int skipPos,
             WordCallback callback) {
         final int count = roots.size();
         final int codeSize = mInputLength;
@@ -193,18 +196,20 @@ public class ExpandableDictionary extends Dictionary {
                     }
                 }
                 if (children != null) {
-                    getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex, 
-                            callback);
+                    getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex,
+                            skipPos, callback);
                 }
-            } else if (c == QUOTE && currentChars[0] != QUOTE) {
+            } else if ((c == QUOTE && currentChars[0] != QUOTE) || depth == skipPos) {
                 // Skip the ' and continue deeper
-                word[depth] = QUOTE;
+                word[depth] = c;
                 if (children != null) {
                     getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex, 
-                            callback);
+                            skipPos, callback);
                 }
             } else {
-                for (int j = 0; j < currentChars.length; j++) {
+                // Don't use alternatives if we're looking for missing characters
+                final int alternativesSize = skipPos >= 0? 1 : currentChars.length;
+                for (int j = 0; j < alternativesSize; j++) {
                     float addedAttenuation = (j > 0 ? 1f : 3f);
                     if (currentChars[j] == -1) {
                         break;
@@ -223,11 +228,13 @@ public class ExpandableDictionary extends Dictionary {
                             }
                             if (children != null) {
                                 getWordsRec(children, codes, word, depth + 1, 
-                                        true, snr * addedAttenuation, inputIndex + 1, callback);
+                                        true, snr * addedAttenuation, inputIndex + 1,
+                                        skipPos, callback);
                             }
                         } else if (children != null) {
                             getWordsRec(children, codes, word, depth + 1, 
-                                    false, snr * addedAttenuation, inputIndex + 1, callback);
+                                    false, snr * addedAttenuation, inputIndex + 1,
+                                    skipPos, callback);
                         }
                     }
                 }

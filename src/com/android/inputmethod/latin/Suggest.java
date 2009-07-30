@@ -113,24 +113,34 @@ public class Suggest implements Dictionary.WordCallback {
             mStringPool.add(sb);
         }
     }
-    
+
     private boolean haveSufficientCommonality(String original, CharSequence suggestion) {
-        final int len = Math.min(original.length(), suggestion.length());
-        if (len <= 2) return true;
+        final int originalLength = original.length();
+        final int suggestionLength = suggestion.length();
+        final int minLength = Math.min(originalLength, suggestionLength);
+        if (minLength <= 2) return true;
         int matching = 0;
-        for (int i = 0; i < len; i++) {
-            if (ExpandableDictionary.toLowerCase(original.charAt(i)) 
-                    == ExpandableDictionary.toLowerCase(suggestion.charAt(i))) {
+        int lessMatching = 0; // Count matches if we skip one character
+        int i;
+        for (i = 0; i < minLength; i++) {
+            final char origChar = ExpandableDictionary.toLowerCase(original.charAt(i));
+            if (origChar == ExpandableDictionary.toLowerCase(suggestion.charAt(i))) {
                 matching++;
+                lessMatching++;
+            } else if (i + 1 < suggestionLength
+                    && origChar == ExpandableDictionary.toLowerCase(suggestion.charAt(i + 1))) {
+                lessMatching++;
             }
         }
-        if (len <= 4) {
+        matching = Math.max(matching, lessMatching);
+
+        if (minLength <= 4) {
             return matching >= 2;
         } else {
-            return matching > len / 2;
+            return matching > minLength / 2;
         }
     }
-    
+
     /**
      * Returns a list of words that match the list of character codes passed in.
      * This list will be overwritten the next time this function is called.
