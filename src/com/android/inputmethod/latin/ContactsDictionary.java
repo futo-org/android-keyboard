@@ -90,28 +90,31 @@ public class ContactsDictionary extends ExpandableDictionary {
         if (cursor.moveToFirst()) {
             while (!cursor.isAfterLast()) {
                 String name = cursor.getString(INDEX_NAME);
-                int len = name.length();
 
-                // TODO: Better tokenization for non-Latin writing systems
-                for (int i = 0; i < len; i++) {
-                    if (Character.isLetter(name.charAt(i))) {
-                        int j;
-                        for (j = i + 1; j < len; j++) {
-                            char c = name.charAt(j);
+                if (name != null) {
+                    int len = name.length();
 
-                            if (!(c == '-' || c == '\'' ||
-                                  Character.isLetter(c))) {
-                                break;
+                    // TODO: Better tokenization for non-Latin writing systems
+                    for (int i = 0; i < len; i++) {
+                        if (Character.isLetter(name.charAt(i))) {
+                            int j;
+                            for (j = i + 1; j < len; j++) {
+                                char c = name.charAt(j);
+
+                                if (!(c == '-' || c == '\'' ||
+                                      Character.isLetter(c))) {
+                                    break;
+                                }
                             }
-                        }
 
-                        String word = name.substring(i, j);
-                        i = j - 1;
+                            String word = name.substring(i, j);
+                            i = j - 1;
 
-                        // Safeguard against adding really long words. Stack
-                        // may overflow due to recursion
-                        if (word.length() < maxWordLength) {
-                            super.addWord(word, 128);
+                            // Safeguard against adding really long words. Stack
+                            // may overflow due to recursion
+                            if (word.length() < maxWordLength) {
+                                super.addWord(word, 128);
+                            }
                         }
                     }
                 }
