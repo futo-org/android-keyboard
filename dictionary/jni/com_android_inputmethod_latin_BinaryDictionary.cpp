@@ -100,9 +100,9 @@ static int latinime_BinaryDictionary_getSuggestions(
     int count = dictionary->getSuggestions(inputCodes, arraySize, (unsigned short*) outputChars, frequencies,
             maxWordLength, maxWords, maxAlternatives);
     
-    env->ReleaseIntArrayElements(frequencyArray, frequencies, JNI_COMMIT);
+    env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
-    env->ReleaseCharArrayElements(outputArray, outputChars, JNI_COMMIT);
+    env->ReleaseCharArrayElements(outputArray, outputChars, 0);
     
     return count;
 }
