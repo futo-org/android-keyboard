@@ -15,76 +15,76 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name">"Teclado de Android"</string>
-    <string name="english_ime_settings">"Configuración del teclado de Android"</string>
-    <string name="vibrate_on_keypress">"Vibrar al pulsar tecla"</string>
-    <string name="sound_on_keypress">"Sonido al pulsar tecla"</string>
-    <string name="hit_correction">"Corregir errores de escritura"</string>
-    <string name="hit_correction_summary">"Habilitar la introducción de corrección de errores"</string>
-    <string name="hit_correction_land">"Errores de introducción de datos en vista horizontal"</string>
-    <string name="hit_correction_land_summary">"Habilitar la introducción de corrección de errores"</string>
-    <string name="auto_correction">"Sugerencias de palabras"</string>
-    <string name="auto_correction_summary">"Corregir automáticamente la palabra anterior"</string>
-    <string name="prediction">"Sugerencias de palabras"</string>
-    <string name="prediction_category">"Configuración de sugerencia de palabras"</string>
-    <string name="prediction_summary">"Habilitar Autocompletar al escribir"</string>
-    <string name="auto_complete_dialog_title">"Autocompletar"</string>
-    <string name="prediction_landscape">"Aumentar el tamaño del campo de texto"</string>
-    <string name="prediction_landscape_summary">"Ocultar sugerencias de palabras en la vista horizontal"</string>
-    <string name="auto_cap">"Uso de mayúsculas auto."</string>
-    <string name="auto_cap_summary">"Escribir en mayúscula el principio de la frase"</string>
-    <string name="auto_punctuate">"Puntuación automática"</string>
+    <string name="english_ime_name" msgid="7252517407088836577">"Teclado de Android"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Configuración del teclado de Android"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar tecla"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al pulsar tecla"</string>
+    <string name="hit_correction" msgid="4855351009261318389">"Corregir errores de escritura"</string>
+    <string name="hit_correction_summary" msgid="8761701873008070796">"Habilitar la introducción de corrección de errores"</string>
+    <string name="hit_correction_land" msgid="2567691684825205448">"Errores de introducción de datos en vista horizontal"</string>
+    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Habilitar la introducción de corrección de errores"</string>
+    <string name="auto_correction" msgid="7911639788808958255">"Sugerencias de palabras"</string>
+    <string name="auto_correction_summary" msgid="6881047311475758267">"Corregir automáticamente la palabra anterior"</string>
+    <string name="prediction" msgid="466220283138359837">"Sugerencias de palabras"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"Configuración de sugerencia de palabras"</string>
+    <string name="prediction_summary" msgid="459788228830873110">"Habilitar Autocompletar al escribir"</string>
+    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Autocompletar"</string>
+    <string name="prediction_landscape" msgid="4874601565593216183">"Aumentar el tamaño del campo de texto"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Ocultar sugerencias de palabras en la vista horizontal"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Uso de mayúsculas auto."</string>
+    <string name="auto_cap_summary" msgid="3260681697600786825">"Escribir en mayúscula el principio de la frase"</string>
+    <string name="auto_punctuate" msgid="7276672334264521751">"Puntuación automática"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <string name="quick_fixes">"Correcciones rápidas"</string>
-    <string name="quick_fixes_summary">"Corrige los errores tipográficos que se cometen con más frecuencia."</string>
-    <string name="show_suggestions">"Mostrar sugerencias"</string>
-    <string name="show_suggestions_summary">"Muestra las palabras sugeridas mientras se escribe."</string>
-    <string name="auto_complete">"Autocompletar"</string>
-    <string name="auto_complete_summary">"La barra espaciadora y los signos de puntuación insertan automáticamente la palabra resaltada."</string>
+    <string name="quick_fixes" msgid="5353213327680897927">"Correcciones rápidas"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrige los errores tipográficos que se cometen con más frecuencia."</string>
+    <string name="show_suggestions" msgid="507074425254289133">"Mostrar sugerencias"</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"Muestra las palabras sugeridas mientras se escribe."</string>
+    <string name="auto_complete" msgid="1103196318775486023">"Autocompletar"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"La barra espaciadora y los signos de puntuación insertan automáticamente la palabra resaltada."</string>
   <string-array name="prediction_modes">
-    <item>"Ninguno"</item>
-    <item>"Básico"</item>
-    <item>"Avanzado"</item>
+    <item msgid="4870266572388153286">"Ninguno"</item>
+    <item msgid="1669461741568287396">"Básico"</item>
+    <item msgid="4894328801530136615">"Avanzado"</item>
   </string-array>
-    <string name="prediction_none">"0"</string>
-    <string name="prediction_basic">"1"</string>
-    <string name="prediction_full">"2"</string>
+    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
+    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
+    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
-    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : Guardada"</string>
-    <string name="alternates_for_a">"á"</string>
-    <string name="alternates_for_e">"é"</string>
-    <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"ó"</string>
-    <string name="alternates_for_u">"ùúûü"</string>
-    <string name="alternates_for_s">"§ß"</string>
-    <string name="alternates_for_n">"ñ"</string>
-    <string name="alternates_for_c">"ç"</string>
-    <string name="alternates_for_y">"ýÿ"</string>
-    <string name="tip_long_press">"Mantén pulsada una tecla para ver los caracteres acentuados (ø, ö, etc.)."</string>
-    <string name="tip_dismiss">"Pulsa la tecla \"Atrás\" ↶ para cerrar el teclado en cualquier momento."</string>
-    <string name="tip_access_symbols">"Acceso a números y símbolos"</string>
-    <string name="tip_add_to_dictionary">"Mantén pulsada la palabra situada más a la izquierda para añadirla al diccionario."</string>
-    <string name="touch_to_continue">"Toca esta sugerencia para continuar »"</string>
-    <string name="touch_to_finish">"Toca aquí para cerrar la sugerencia y comenzar a escribir."</string>
-    <string name="tip_to_open_keyboard"><b>"El teclado se abre cada vez que tocas un campo de texto"</b>"."</string>
-    <string name="tip_to_view_accents"><b>"Mantén pulsada una tecla para ver los caracteres acentuados "\n"(ø, ö, ô, ó, etc.)"</b></string>
-    <string name="tip_to_open_symbols"><b>"Toca esta tecla para cambiar al teclado de números y símbolos"</b>"."</string>
-    <string name="tip_to_close_symbols"><b>"Toca esta tecla de nuevo para volver a las letras"</b></string>
-    <string name="tip_to_launch_settings"><b>"Mantén pulsada esta tecla para cambiar la configuración del teclado como, por ejemplo, la opción de autocompletar"</b>"."</string>
-    <string name="tip_to_start_typing"><b>"¡Pruébalo!"</b></string>
-    <string name="label_go_key">"Ir"</string>
-    <string name="label_next_key">"Sig."</string>
-    <string name="label_done_key">"Hecho"</string>
-    <string name="label_send_key">"Enviar"</string>
-    <string name="label_symbol_key">"?123"</string>
-    <string name="label_phone_key">"123"</string>
-    <string name="label_alpha_key">"ABC"</string>
-    <string name="label_alt_key">"ALT"</string>
-    <string name="open_the_keyboard"><font size="17"><b>"Abrir el teclado"\n</b></font><font size="3">\n</font>"Pulsa cualquier campo de texto."</string>
-    <string name="close_the_keyboard"><font size="17"><b>"Cerrar el teclado"\n</b></font><font size="3">\n</font>"Pulsa la tecla \"Atrás\"."</string>
-    <string name="touch_and_hold"><font size="17"><b>"Mantén pulsada una tecla para acceder a las opciones."\n</b></font><font size="3">\n</font>"Accede a los signos de puntuación y a los acentos."</string>
-    <string name="keyboard_settings"><font size="17"><b>"Configuración del teclado"\n</b></font><font size="3">\n</font>"Mantén pulsada la tecla "<b>"?123"</b>"."</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Guardada"</string>
+    <string name="alternates_for_a" msgid="2566516493365324765">"á"</string>
+    <string name="alternates_for_e" msgid="3900510936875547555">"é"</string>
+    <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
+    <string name="alternates_for_o" msgid="6151402748321267776">"ó"</string>
+    <string name="alternates_for_u" msgid="5899096818189442934">"ùúûü"</string>
+    <string name="alternates_for_s" msgid="348762530927662188">"§ß"</string>
+    <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
+    <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
+    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="tip_long_press" msgid="6101270866284343344">"Mantén pulsada una tecla para ver los caracteres acentuados (ø, ö, etc.)."</string>
+    <string name="tip_dismiss" msgid="7585579046862204381">"Pulsa la tecla \"Atrás\" ↶ para cerrar el teclado en cualquier momento."</string>
+    <string name="tip_access_symbols" msgid="6344098517525531652">"Acceso a números y símbolos"</string>
+    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Mantén pulsada la palabra situada más a la izquierda para añadirla al diccionario."</string>
+    <string name="touch_to_continue" msgid="7869803257948414531">"Toca esta sugerencia para continuar »"</string>
+    <string name="touch_to_finish" msgid="7990196086480585789">"Toca aquí para cerrar la sugerencia y comenzar a escribir."</string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"El teclado se abre cada vez que tocas un campo de texto"</b>"."</string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Mantén pulsada una tecla para ver los caracteres acentuados "\n"(ø, ö, ô, ó, etc.)"</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Toca esta tecla para cambiar al teclado de números y símbolos"</b>"."</string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Toca esta tecla de nuevo para volver a las letras"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Mantén pulsada esta tecla para cambiar la configuración del teclado como, por ejemplo, la opción de autocompletar"</b>"."</string>
+    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"¡Pruébalo!"</b></string>
+    <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Sig."</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Hecho"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Enviar"</string>
+    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
+    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Abrir el teclado"\n</b></font><font size="3">\n</font>"Pulsa cualquier campo de texto."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Cerrar el teclado"\n</b></font><font size="3">\n</font>"Pulsa la tecla \"Atrás\"."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Mantén pulsada una tecla para acceder a las opciones."\n</b></font><font size="3">\n</font>"Accede a los signos de puntuación y a los acentos."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Configuración del teclado"\n</b></font><font size="3">\n</font>"Mantén pulsada la tecla "<b>"?123"</b>"."</string>
 </resources>

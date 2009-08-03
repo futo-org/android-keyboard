@@ -15,76 +15,76 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name">"Clavier Android"</string>
-    <string name="english_ime_settings">"Paramètres du clavier Android"</string>
-    <string name="vibrate_on_keypress">"Vibrer à chaque touche"</string>
-    <string name="sound_on_keypress">"Son à chaque touche"</string>
-    <string name="hit_correction">"Corriger les fautes de frappe"</string>
-    <string name="hit_correction_summary">"Activer la correction des erreurs de saisie"</string>
-    <string name="hit_correction_land">"Erreurs de saisie en mode paysage"</string>
-    <string name="hit_correction_land_summary">"Activer la correction des erreurs de saisie"</string>
-    <string name="auto_correction">"Saisie prédictive"</string>
-    <string name="auto_correction_summary">"Corriger automatiquement le mot précédent"</string>
-    <string name="prediction">"Saisie prédictive"</string>
-    <string name="prediction_category">"Paramètres de la saisie prédictive"</string>
-    <string name="prediction_summary">"Activer la saisie semi-automatique"</string>
-    <string name="auto_complete_dialog_title">"Saisie semi-automatique"</string>
-    <string name="prediction_landscape">"Agrandir le champ de texte"</string>
-    <string name="prediction_landscape_summary">"Masquer la saisie prédictive en mode paysage"</string>
-    <string name="auto_cap">"Majuscules auto"</string>
-    <string name="auto_cap_summary">"Mettre en majuscule la première lettre de chaque phrase"</string>
-    <string name="auto_punctuate">"Ponctuation automatique"</string>
+    <string name="english_ime_name" msgid="7252517407088836577">"Clavier Android"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Paramètres du clavier Android"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer à chaque touche"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Son à chaque touche"</string>
+    <string name="hit_correction" msgid="4855351009261318389">"Corriger les fautes de frappe"</string>
+    <string name="hit_correction_summary" msgid="8761701873008070796">"Activer la correction des erreurs de saisie"</string>
+    <string name="hit_correction_land" msgid="2567691684825205448">"Erreurs de saisie en mode paysage"</string>
+    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Activer la correction des erreurs de saisie"</string>
+    <string name="auto_correction" msgid="7911639788808958255">"Saisie prédictive"</string>
+    <string name="auto_correction_summary" msgid="6881047311475758267">"Corriger automatiquement le mot précédent"</string>
+    <string name="prediction" msgid="466220283138359837">"Saisie prédictive"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"Paramètres de la saisie prédictive"</string>
+    <string name="prediction_summary" msgid="459788228830873110">"Activer la saisie semi-automatique"</string>
+    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Saisie semi-automatique"</string>
+    <string name="prediction_landscape" msgid="4874601565593216183">"Agrandir le champ de texte"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Masquer la saisie prédictive en mode paysage"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Majuscules auto"</string>
+    <string name="auto_cap_summary" msgid="3260681697600786825">"Mettre en majuscule la première lettre de chaque phrase"</string>
+    <string name="auto_punctuate" msgid="7276672334264521751">"Ponctuation automatique"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <string name="quick_fixes">"Corrections rapides"</string>
-    <string name="quick_fixes_summary">"Corrige les fautes de frappe courantes"</string>
-    <string name="show_suggestions">"Afficher les suggestions"</string>
-    <string name="show_suggestions_summary">"Afficher les suggestions de terme lors de la saisie"</string>
-    <string name="auto_complete">"Saisie semi-automatique"</string>
-    <string name="auto_complete_summary">"La barre d\'espace/ponctuation insèrent auto. le terme surligné."</string>
+    <string name="quick_fixes" msgid="5353213327680897927">"Corrections rapides"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrige les fautes de frappe courantes"</string>
+    <string name="show_suggestions" msgid="507074425254289133">"Afficher les suggestions"</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"Afficher les suggestions de terme lors de la saisie"</string>
+    <string name="auto_complete" msgid="1103196318775486023">"Saisie semi-automatique"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"La barre d\'espace/ponctuation insèrent auto. le terme surligné."</string>
   <string-array name="prediction_modes">
-    <item>"Aucun"</item>
-    <item>"Simple"</item>
-    <item>"Avancé"</item>
+    <item msgid="4870266572388153286">"Aucun"</item>
+    <item msgid="1669461741568287396">"Simple"</item>
+    <item msgid="4894328801530136615">"Avancé"</item>
   </string-array>
-    <string name="prediction_none">"0"</string>
-    <string name="prediction_basic">"1"</string>
-    <string name="prediction_full">"2"</string>
+    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
+    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
+    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
-    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g> : enregistré"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
-    <string name="alternates_for_e">"èéêë"</string>
-    <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
-    <string name="alternates_for_u">"ùúûü"</string>
-    <string name="alternates_for_s">"§ß"</string>
-    <string name="alternates_for_n">"ñ"</string>
-    <string name="alternates_for_c">"ç"</string>
-    <string name="alternates_for_y">"ýÿ"</string>
-    <string name="tip_long_press">"Maintenir une touche enfoncée pour afficher les accents (à, é, etc.)"</string>
-    <string name="tip_dismiss">"Appuyez sur la touche Retour ↶ pour fermer le clavier à tout moment."</string>
-    <string name="tip_access_symbols">"Accéder aux chiffres et symboles"</string>
-    <string name="tip_add_to_dictionary">"Appuyer et maintenir le doigt sur le mot le plus à gauche pour l\'ajouter au dictionnaire"</string>
-    <string name="touch_to_continue">"Touchez ce conseil pour continuer »"</string>
-    <string name="touch_to_finish">"Touchez ici pour fermer ce conseil et commencer à saisir votre texte."</string>
-    <string name="tip_to_open_keyboard"><b>"Le clavier s\'affiche à chaque fois que vous touchez une zone de texte."</b></string>
-    <string name="tip_to_view_accents"><b>"Maintenez une touche enfoncée pour afficher les accents"\n"(ø, ö, ô, ó, etc.)"</b></string>
-    <string name="tip_to_open_symbols"><b>"Appuyez sur cette touche pour basculer vers les chiffres et les symboles."</b></string>
-    <string name="tip_to_close_symbols"><b>"Retourner au clavier en appuyant de nouveau sur cette touche"</b></string>
-    <string name="tip_to_launch_settings"><b>"Maintenez cette touche enfoncée afin de modifier les paramètres du clavier, tels que la saisie semi-automatique."</b></string>
-    <string name="tip_to_start_typing"><b>"Essayez !"</b></string>
-    <string name="label_go_key">"OK"</string>
-    <string name="label_next_key">"Suivant"</string>
-    <string name="label_done_key">"OK"</string>
-    <string name="label_send_key">"Envoyer"</string>
-    <string name="label_symbol_key">"?123"</string>
-    <string name="label_phone_key">"123"</string>
-    <string name="label_alpha_key">"ABC"</string>
-    <string name="label_alt_key">"ALT"</string>
-    <string name="open_the_keyboard"><font size="17"><b>"Ouvrir le clavier"\n</b></font><font size="3">\n</font>"Appuyez sur un champ de texte."</string>
-    <string name="close_the_keyboard"><font size="17"><b>"Fermer le clavier"\n</b></font><font size="3">\n</font>"Appuyez sur la touche Retour."</string>
-    <string name="touch_and_hold"><font size="17"><b>"Appuyer sur une touche de manière prolongée pour accéder aux options"\n</b></font><font size="3">\n</font>"Accédez aux signes de ponctuation et aux accents."</string>
-    <string name="keyboard_settings"><font size="17"><b>"Paramètres du clavier"\n</b></font><font size="3">\n</font>"Appuyez sur la touche "<b>"?123"</b>" de manière prolongée."</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : enregistré"</string>
+    <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
+    <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
+    <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
+    <string name="alternates_for_o" msgid="6151402748321267776">"òóôõöœø"</string>
+    <string name="alternates_for_u" msgid="5899096818189442934">"ùúûü"</string>
+    <string name="alternates_for_s" msgid="348762530927662188">"§ß"</string>
+    <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
+    <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
+    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="tip_long_press" msgid="6101270866284343344">"Maintenir une touche enfoncée pour afficher les accents (à, é, etc.)"</string>
+    <string name="tip_dismiss" msgid="7585579046862204381">"Appuyez sur la touche Retour ↶ pour fermer le clavier à tout moment."</string>
+    <string name="tip_access_symbols" msgid="6344098517525531652">"Accéder aux chiffres et symboles"</string>
+    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Appuyer et maintenir le doigt sur le mot le plus à gauche pour l\'ajouter au dictionnaire"</string>
+    <string name="touch_to_continue" msgid="7869803257948414531">"Touchez ce conseil pour continuer »"</string>
+    <string name="touch_to_finish" msgid="7990196086480585789">"Touchez ici pour fermer ce conseil et commencer à saisir votre texte."</string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Le clavier s\'affiche à chaque fois que vous touchez une zone de texte."</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Maintenez une touche enfoncée pour afficher les accents"\n"(ø, ö, ô, ó, etc.)"</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Appuyez sur cette touche pour basculer vers les chiffres et les symboles."</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Retourner au clavier en appuyant de nouveau sur cette touche"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Maintenez cette touche enfoncée afin de modifier les paramètres du clavier, tels que la saisie semi-automatique."</b></string>
+    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Essayez !"</b></string>
+    <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Suivant"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"OK"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Envoyer"</string>
+    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
+    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Ouvrir le clavier"\n</b></font><font size="3">\n</font>"Appuyez sur un champ de texte."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Fermer le clavier"\n</b></font><font size="3">\n</font>"Appuyez sur la touche Retour."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Appuyer sur une touche de manière prolongée pour accéder aux options"\n</b></font><font size="3">\n</font>"Accédez aux signes de ponctuation et aux accents."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Paramètres du clavier"\n</b></font><font size="3">\n</font>"Appuyez sur la touche "<b>"?123"</b>" de manière prolongée."</string>
 </resources>

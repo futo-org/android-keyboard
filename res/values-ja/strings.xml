@@ -15,80 +15,76 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name">"Androidキーボード"</string>
-    <string name="english_ime_settings">"Androidキーボードの設定"</string>
-    <string name="vibrate_on_keypress">"キー操作バイブ"</string>
-    <string name="sound_on_keypress">"キー操作音"</string>
-    <string name="hit_correction">"入力ミス補正"</string>
-    <string name="hit_correction_summary">"入力間違いを自動修正する"</string>
-    <string name="hit_correction_land">"横表示での入力修正"</string>
-    <string name="hit_correction_land_summary">"入力間違いを自動修正する"</string>
-    <string name="auto_correction">"入力候補表示"</string>
-    <string name="auto_correction_summary">"前の単語を自動修正する"</string>
-    <string name="prediction">"入力候補表示"</string>
-    <string name="prediction_category">"入力候補の設定"</string>
-    <string name="prediction_summary">"オートコンプリートを使用する"</string>
-    <string name="auto_complete_dialog_title">"オートコンプリート"</string>
-    <string name="prediction_landscape">"入力作業スペースを広げる"</string>
-    <string name="prediction_landscape_summary">"横表示では入力候補を表示しない"</string>
-    <string name="auto_cap">"自動大文字変換"</string>
-    <string name="auto_cap_summary">"英字入力で文頭文字を大文字にする"</string>
-    <string name="auto_punctuate">"句読点を自動入力"</string>
+    <string name="english_ime_name" msgid="7252517407088836577">"Androidキーボード"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Androidキーボードの設定"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"キー操作バイブ"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"キー操作音"</string>
+    <string name="hit_correction" msgid="4855351009261318389">"入力ミス補正"</string>
+    <string name="hit_correction_summary" msgid="8761701873008070796">"入力間違いを自動修正する"</string>
+    <string name="hit_correction_land" msgid="2567691684825205448">"横表示での入力修正"</string>
+    <string name="hit_correction_land_summary" msgid="4076803842198368328">"入力間違いを自動修正する"</string>
+    <string name="auto_correction" msgid="7911639788808958255">"入力候補表示"</string>
+    <string name="auto_correction_summary" msgid="6881047311475758267">"前の単語を自動修正する"</string>
+    <string name="prediction" msgid="466220283138359837">"入力候補表示"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"入力候補の設定"</string>
+    <string name="prediction_summary" msgid="459788228830873110">"オートコンプリートを使用する"</string>
+    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"オートコンプリート"</string>
+    <string name="prediction_landscape" msgid="4874601565593216183">"入力作業スペースを広げる"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"横表示では入力候補を表示しない"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"自動大文字変換"</string>
+    <string name="auto_cap_summary" msgid="3260681697600786825">"英字入力で文頭文字を大文字にする"</string>
+    <string name="auto_punctuate" msgid="7276672334264521751">"句読点を自動入力"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <string name="quick_fixes">"クイックフィックス"</string>
-    <string name="quick_fixes_summary">"よくある誤字・脱字を修正します"</string>
-    <string name="show_suggestions">"入力候補を表示"</string>
-    <string name="show_suggestions_summary">"入力時に入力候補を表示します"</string>
-    <string name="auto_complete">"オートコンプリート"</string>
-    <string name="auto_complete_summary">"スペースまたは句読点キーで反転表示されている変換候補を挿入する"</string>
+    <string name="quick_fixes" msgid="5353213327680897927">"クイックフィックス"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"よくある誤字・脱字を修正します"</string>
+    <string name="show_suggestions" msgid="507074425254289133">"入力候補を表示"</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"入力時に入力候補を表示します"</string>
+    <string name="auto_complete" msgid="1103196318775486023">"オートコンプリート"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"スペースまたは句読点キーで反転表示されている変換候補を挿入する"</string>
   <string-array name="prediction_modes">
-    <item>"なし"</item>
-    <item>"基本"</item>
-    <item>"高度"</item>
+    <item msgid="4870266572388153286">"なし"</item>
+    <item msgid="1669461741568287396">"基本"</item>
+    <item msgid="4894328801530136615">"高度"</item>
   </string-array>
-    <string name="prediction_none">"0"</string>
-    <string name="prediction_basic">"1"</string>
-    <string name="prediction_full">"2"</string>
+    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
+    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
+    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
-    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g>:保存しました"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
-    <string name="alternates_for_e">"èéêë"</string>
-    <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
-    <string name="alternates_for_u">"ùúûü"</string>
-    <string name="alternates_for_s">"§ß"</string>
-    <string name="alternates_for_n">"ñ"</string>
-    <string name="alternates_for_c">"ç"</string>
-    <string name="alternates_for_y">"ýÿ"</string>
-    <string name="tip_long_press">"キー長押しでアクセント文字を表示（ø、öなど）"</string>
-    <string name="tip_dismiss">"戻るキーでキーボードを閉じます"</string>
-    <string name="tip_access_symbols">"数字と記号"</string>
-    <string name="tip_add_to_dictionary">"一番左の単語を長押しすると辞書に追加されます"</string>
-    <string name="touch_to_continue">"続けるにはここをタッチ"</string>
-    <string name="touch_to_finish">"タッチしてこのヒントを終了し、入力を開始してください。"</string>
-    <string name="tip_to_open_keyboard"><b>"テキストフィールドを選択するとキーボードが表示されます"</b></string>
-    <string name="tip_to_view_accents"><b>"キーを長押しするとアクセント付き文字"\n"（ø、ö、ô、óなど）が表示されます"</b></string>
-    <string name="tip_to_open_symbols"><b>"このキーを押すと、数字/記号入力に切り替わります"</b></string>
-    <string name="tip_to_close_symbols"><b>"このキーを押すと、文字入力に再度切り替わります"</b></string>
-    <string name="tip_to_launch_settings"><b>"オートコンプリートなどのキーボードの設定を変更するには、このキーを長押しします"</b></string>
-    <string name="tip_to_start_typing"><b>"試してみてください。"</b></string>
-    <string name="label_go_key">"実行"</string>
-    <string name="label_next_key">"次へ"</string>
-    <string name="label_done_key">"完了"</string>
-    <string name="label_send_key">"送信"</string>
-    <string name="label_symbol_key">"?123"</string>
-    <string name="label_phone_key">"123"</string>
-    <string name="label_alpha_key">"ABC"</string>
-    <string name="label_alt_key">"ALT"</string>
-    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
-    <skip />
-    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
-    <skip />
-    <!-- no translation found for touch_and_hold (6154166367273010534) -->
-    <skip />
-    <!-- no translation found for keyboard_settings (4585753477617374032) -->
-    <skip />
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>:保存しました"</string>
+    <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
+    <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
+    <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
+    <string name="alternates_for_o" msgid="6151402748321267776">"òóôõöœø"</string>
+    <string name="alternates_for_u" msgid="5899096818189442934">"ùúûü"</string>
+    <string name="alternates_for_s" msgid="348762530927662188">"§ß"</string>
+    <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
+    <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
+    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="tip_long_press" msgid="6101270866284343344">"キー長押しでアクセント文字を表示（ø、öなど）"</string>
+    <string name="tip_dismiss" msgid="7585579046862204381">"戻るキーでキーボードを閉じます"</string>
+    <string name="tip_access_symbols" msgid="6344098517525531652">"数字と記号"</string>
+    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"一番左の単語を長押しすると辞書に追加されます"</string>
+    <string name="touch_to_continue" msgid="7869803257948414531">"続けるにはここをタッチ"</string>
+    <string name="touch_to_finish" msgid="7990196086480585789">"タッチしてこのヒントを終了し、入力を開始してください。"</string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"テキストフィールドを選択するとキーボードが表示されます"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"キーを長押しするとアクセント付き文字"\n"（ø、ö、ô、óなど）が表示されます"</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"このキーを押すと、数字/記号入力に切り替わります"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"このキーを押すと、文字入力に再度切り替わります"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"オートコンプリートなどのキーボードの設定を変更するには、このキーを長押しします"</b></string>
+    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"試してみてください。"</b></string>
+    <string name="label_go_key" msgid="1635148082137219148">"実行"</string>
+    <string name="label_next_key" msgid="362972844525672568">"次へ"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"完了"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"送信"</string>
+    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
+    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"キーボードを開く"\n</b></font><font size="3">\n</font>"テキストフィールドをタップします。"</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"キーボードを閉じる"\n</b></font><font size="3">\n</font>"[戻る]キーを押します。"</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"キーを長押しして選択する"\n</b></font><font size="3">\n</font>"句読点キーとアクセント文字を表示します。"</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"キーボードの設定"\n</b></font><font size="3">\n</font>"["<b>"?123"</b>"]キーを長押しします。"</string>
 </resources>

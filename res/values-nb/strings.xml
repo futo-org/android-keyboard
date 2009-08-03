@@ -15,37 +15,37 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name">"Skjermtastatur"</string>
-    <string name="english_ime_settings">"Innstillinger for skjermtastatur"</string>
-    <string name="vibrate_on_keypress">"Vibrer ved tastetrykk"</string>
-    <string name="sound_on_keypress">"Lyd ved tastetrykk"</string>
-    <string name="hit_correction">"Rett opp skrivefeil"</string>
-    <string name="hit_correction_summary">"Slå på retting av skrivefeil"</string>
-    <string name="hit_correction_land">"Rett opp skrivefeil i breddeformat"</string>
-    <string name="hit_correction_land_summary">"Slå på retting av skrivefeil"</string>
-    <string name="auto_correction">"Autokorrektur"</string>
-    <string name="auto_correction_summary">"Autokorriger forrige ord"</string>
-    <string name="prediction">"Ordforslag"</string>
-    <string name="prediction_category">"Innstillinger for ordforslag"</string>
-    <string name="prediction_summary">"Skru på autofullføring under skriving"</string>
-    <string name="auto_complete_dialog_title">"Autofullfør"</string>
-    <string name="prediction_landscape">"Større tekstfelt"</string>
-    <string name="prediction_landscape_summary">"Skjul ordforslag i breddeformat"</string>
-    <string name="auto_cap">"Stor forbokstav"</string>
-    <string name="auto_cap_summary">"Start automatisk setninger med stor bokstav"</string>
-    <string name="auto_punctuate">"Automatisk punktum"</string>
+    <string name="english_ime_name" msgid="7252517407088836577">"Skjermtastatur"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Innstillinger for skjermtastatur"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer ved tastetrykk"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Lyd ved tastetrykk"</string>
+    <string name="hit_correction" msgid="4855351009261318389">"Rett opp skrivefeil"</string>
+    <string name="hit_correction_summary" msgid="8761701873008070796">"Slå på retting av skrivefeil"</string>
+    <string name="hit_correction_land" msgid="2567691684825205448">"Rett opp skrivefeil i breddeformat"</string>
+    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Slå på retting av skrivefeil"</string>
+    <string name="auto_correction" msgid="7911639788808958255">"Autokorrektur"</string>
+    <string name="auto_correction_summary" msgid="6881047311475758267">"Autokorriger forrige ord"</string>
+    <string name="prediction" msgid="466220283138359837">"Ordforslag"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"Innstillinger for ordforslag"</string>
+    <string name="prediction_summary" msgid="459788228830873110">"Skru på autofullføring under skriving"</string>
+    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Autofullfør"</string>
+    <string name="prediction_landscape" msgid="4874601565593216183">"Større tekstfelt"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Skjul ordforslag i breddeformat"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Stor forbokstav"</string>
+    <string name="auto_cap_summary" msgid="3260681697600786825">"Start automatisk setninger med stor bokstav"</string>
+    <string name="auto_punctuate" msgid="7276672334264521751">"Automatisk punktum"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <string name="quick_fixes">"Autokorrektur"</string>
-    <string name="quick_fixes_summary">"Retter vanlige stavefeil"</string>
-    <string name="show_suggestions">"Vis forslag"</string>
-    <string name="show_suggestions_summary">"Vis foreslåtte ord under skriving"</string>
-    <string name="auto_complete">"Autokomplettering"</string>
-    <string name="auto_complete_summary">"Mellomrom og punktum setter automatisk inn valgt ord"</string>
+    <string name="quick_fixes" msgid="5353213327680897927">"Autokorrektur"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"Retter vanlige stavefeil"</string>
+    <string name="show_suggestions" msgid="507074425254289133">"Vis forslag"</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"Vis foreslåtte ord under skriving"</string>
+    <string name="auto_complete" msgid="1103196318775486023">"Autokomplettering"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"Mellomrom og punktum setter automatisk inn valgt ord"</string>
   <string-array name="prediction_modes">
-    <item>"Ingen"</item>
-    <item>"Grunnleggende"</item>
-    <item>"Avansert"</item>
+    <item msgid="4870266572388153286">"Ingen"</item>
+    <item msgid="1669461741568287396">"Grunnleggende"</item>
+    <item msgid="4894328801530136615">"Avansert"</item>
   </string-array>
     <!-- no translation found for prediction_none (2472795101338047944) -->
     <skip />
@@ -56,42 +56,38 @@
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
-    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g>: Lagret"</string>
-    <string name="alternates_for_a">"åæáàâãä"</string>
-    <string name="alternates_for_e">"éèêë"</string>
-    <string name="alternates_for_i">"íìîï"</string>
-    <string name="alternates_for_o">"ôóòöõœø"</string>
-    <string name="alternates_for_u">"üùúû"</string>
-    <string name="alternates_for_s">"ß§"</string>
-    <string name="alternates_for_n">"ñ"</string>
-    <string name="alternates_for_c">"ç"</string>
-    <string name="alternates_for_y">"ýÿ"</string>
-    <string name="tip_long_press">"Hold en tast nede for å se aksenterte tegn (ø, ö, osv.)"</string>
-    <string name="tip_dismiss">"Trykk tilbakeknappen, ↶, for å lukke tastaturet"</string>
-    <string name="tip_access_symbols">"Få tilgang til tall og symboler"</string>
-    <string name="tip_add_to_dictionary">"Trykk lenge på ordet lengst til venstre for å legge det til i ordlisten"</string>
-    <string name="touch_to_continue">"Trykk på dette hintet for å forsette »"</string>
-    <string name="touch_to_finish">"Trykk her for å lukke dette hintet og begynne å skrive!"</string>
-    <string name="tip_to_open_keyboard"><b>"Tastaturet åpnes når du tar på et tekstfelt"</b></string>
-    <string name="tip_to_view_accents"><b>"Trykk på og hold nede en tast for å se aksenter"\n"(ø, ö, ô, ó, osv.)"</b></string>
-    <string name="tip_to_open_symbols"><b>"Bytt til tall og symboler ved å trykke på denne tasten"</b></string>
-    <string name="tip_to_close_symbols"><b>"Gå tilbake til bokstaver igjen ved å trykke på denne tasten"</b></string>
-    <string name="tip_to_launch_settings"><b>"Trykk på og hold nede denne tasten for å endre tastaturinnstillinger, som autofullføring"</b></string>
-    <string name="tip_to_start_typing"><b>"Prøv det!"</b></string>
-    <string name="label_go_key">"Gå"</string>
-    <string name="label_next_key">"Neste"</string>
-    <string name="label_done_key">"Utfør"</string>
-    <string name="label_send_key">"Send"</string>
-    <string name="label_symbol_key">"?123"</string>
-    <string name="label_phone_key">"123"</string>
-    <string name="label_alpha_key">"ABC"</string>
-    <string name="label_alt_key">"ALT"</string>
-    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
-    <skip />
-    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
-    <skip />
-    <!-- no translation found for touch_and_hold (6154166367273010534) -->
-    <skip />
-    <!-- no translation found for keyboard_settings (4585753477617374032) -->
-    <skip />
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Lagret"</string>
+    <string name="alternates_for_a" msgid="2566516493365324765">"åæáàâãä"</string>
+    <string name="alternates_for_e" msgid="3900510936875547555">"éèêë"</string>
+    <string name="alternates_for_i" msgid="7097915268629342242">"íìîï"</string>
+    <string name="alternates_for_o" msgid="6151402748321267776">"ôóòöõœø"</string>
+    <string name="alternates_for_u" msgid="5899096818189442934">"üùúû"</string>
+    <string name="alternates_for_s" msgid="348762530927662188">"ß§"</string>
+    <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
+    <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
+    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="tip_long_press" msgid="6101270866284343344">"Hold en tast nede for å se aksenterte tegn (ø, ö, osv.)"</string>
+    <string name="tip_dismiss" msgid="7585579046862204381">"Trykk tilbakeknappen, ↶, for å lukke tastaturet"</string>
+    <string name="tip_access_symbols" msgid="6344098517525531652">"Få tilgang til tall og symboler"</string>
+    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Trykk lenge på ordet lengst til venstre for å legge det til i ordlisten"</string>
+    <string name="touch_to_continue" msgid="7869803257948414531">"Trykk på dette hintet for å forsette »"</string>
+    <string name="touch_to_finish" msgid="7990196086480585789">"Trykk her for å lukke dette hintet og begynne å skrive!"</string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Tastaturet åpnes når du tar på et tekstfelt"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Trykk på og hold nede en tast for å se aksenter"\n"(ø, ö, ô, ó, osv.)"</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Bytt til tall og symboler ved å trykke på denne tasten"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Gå tilbake til bokstaver igjen ved å trykke på denne tasten"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Trykk på og hold nede denne tasten for å endre tastaturinnstillinger, som autofullføring"</b></string>
+    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Prøv det!"</b></string>
+    <string name="label_go_key" msgid="1635148082137219148">"Gå"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Neste"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Utfør"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Send"</string>
+    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
+    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Åpne tastaturet"\n</b></font><font size="3">\n</font>"Trykk på et tekstfelt."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Lukk tastaturet"\n</b></font><font size="3">\n</font>"Trykk tilbake-knappen."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Trykk og hold nede en tast for flere valg"\n</b></font><font size="3">\n</font>"Få tilgang til skilletegn og aksenter."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Tastaturinnstillinger"\n</b></font><font size="3">\n</font>"Trykk og hold nede "<b>"?123"</b>"-knappen."</string>
 </resources>

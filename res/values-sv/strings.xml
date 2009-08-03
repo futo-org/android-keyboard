@@ -15,74 +15,74 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name">"Androids tangentbord"</string>
-    <string name="english_ime_settings">"Inställningar för Androids tangentbord"</string>
-    <string name="vibrate_on_keypress">"Vibrera vid tangenttryck"</string>
-    <string name="sound_on_keypress">"Knappljud"</string>
-    <string name="hit_correction">"Rätta skrivfel"</string>
-    <string name="hit_correction_summary">"Aktivera rättning av felaktiga inmatningar"</string>
-    <string name="hit_correction_land">"Inmatningsfel i liggande vy"</string>
-    <string name="hit_correction_land_summary">"Aktivera rättning av felaktiga inmatningar"</string>
-    <string name="auto_correction">"Ordförslag"</string>
-    <string name="auto_correction_summary">"Rätta automatiskt föregående ord"</string>
-    <string name="prediction">"Ordförslag"</string>
-    <string name="prediction_category">"Inställningar för ordförslag"</string>
-    <string name="prediction_summary">"Aktivera Komplettera automatiskt när du skriver"</string>
-    <string name="auto_complete_dialog_title">"Komplettera automatiskt"</string>
-    <string name="prediction_landscape">"Gör textfältet större"</string>
-    <string name="prediction_landscape_summary">"Dölj ordförslag i liggande vy"</string>
-    <string name="auto_cap">"Automatiska versaler"</string>
-    <string name="auto_cap_summary">"Använd versal i början av mening"</string>
-    <string name="auto_punctuate">"Automatiska punkter"</string>
+    <string name="english_ime_name" msgid="7252517407088836577">"Androids tangentbord"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Inställningar för Androids tangentbord"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrera vid tangenttryck"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Knappljud"</string>
+    <string name="hit_correction" msgid="4855351009261318389">"Rätta skrivfel"</string>
+    <string name="hit_correction_summary" msgid="8761701873008070796">"Aktivera rättning av felaktiga inmatningar"</string>
+    <string name="hit_correction_land" msgid="2567691684825205448">"Inmatningsfel i liggande vy"</string>
+    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Aktivera rättning av felaktiga inmatningar"</string>
+    <string name="auto_correction" msgid="7911639788808958255">"Ordförslag"</string>
+    <string name="auto_correction_summary" msgid="6881047311475758267">"Rätta automatiskt föregående ord"</string>
+    <string name="prediction" msgid="466220283138359837">"Ordförslag"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"Inställningar för ordförslag"</string>
+    <string name="prediction_summary" msgid="459788228830873110">"Aktivera Komplettera automatiskt när du skriver"</string>
+    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Komplettera automatiskt"</string>
+    <string name="prediction_landscape" msgid="4874601565593216183">"Gör textfältet större"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Dölj ordförslag i liggande vy"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Automatiska versaler"</string>
+    <string name="auto_cap_summary" msgid="3260681697600786825">"Använd versal i början av mening"</string>
+    <string name="auto_punctuate" msgid="7276672334264521751">"Automatiska punkter"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <string name="quick_fixes">"Snabba lösningar"</string>
-    <string name="quick_fixes_summary">"Åtgärdar automatiskt vanliga misstag"</string>
-    <string name="show_suggestions">"Visa förslag"</string>
-    <string name="show_suggestions_summary">"Visar ordförslag när du skriver"</string>
-    <string name="auto_complete">"Komplettera automatiskt"</string>
-    <string name="auto_complete_summary">"Blanksteg och punkt infogar automatiskt markerat ord"</string>
+    <string name="quick_fixes" msgid="5353213327680897927">"Snabba lösningar"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"Åtgärdar automatiskt vanliga misstag"</string>
+    <string name="show_suggestions" msgid="507074425254289133">"Visa förslag"</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"Visar ordförslag när du skriver"</string>
+    <string name="auto_complete" msgid="1103196318775486023">"Komplettera automatiskt"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"Blanksteg och punkt infogar automatiskt markerat ord"</string>
   <string-array name="prediction_modes">
-    <item>"Inget"</item>
-    <item>"Grundinställningar"</item>
-    <item>"Avancerade"</item>
+    <item msgid="4870266572388153286">"Inget"</item>
+    <item msgid="1669461741568287396">"Grundinställningar"</item>
+    <item msgid="4894328801530136615">"Avancerade"</item>
   </string-array>
-    <string name="prediction_none">"0"</string>
-    <string name="prediction_basic">"1"</string>
-    <string name="prediction_full">"2"</string>
+    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
+    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
+    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
-    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g>: sparat"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
-    <string name="alternates_for_e">"èéêë"</string>
-    <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
-    <string name="alternates_for_u">"ùúûü"</string>
-    <string name="alternates_for_s">"§ß"</string>
-    <string name="alternates_for_n">"ñ"</string>
-    <string name="alternates_for_c">"ç"</string>
-    <string name="alternates_for_y">"ýÿ"</string>
-    <string name="tip_long_press">"Håll nere en tangent om du vill visa accenter (ø, ö, etc.)"</string>
-    <string name="tip_dismiss">"Tryck på Tillbaka ↶ om du vill stänga tangentbordet"</string>
-    <string name="tip_access_symbols">"För siffror och symboler"</string>
-    <string name="tip_add_to_dictionary">"Tryck och håll ned ordet längst till vänster om du vill lägga till det i ordlistan"</string>
-    <string name="touch_to_continue">"Tryck på tipset för att fortsätta »"</string>
-    <string name="touch_to_finish">"Trycka här om du vill stänga tipset och börja skriva!"</string>
-    <string name="tip_to_open_keyboard"><b>"Tangentbordet öppnas när du trycker på ett textfält"</b></string>
-    <string name="tip_to_view_accents"><b>"Tryck och håll ned en tangent om du vill visa accenter"\n"(ø, ö, ô, ó och så vidare)"</b></string>
-    <string name="tip_to_open_symbols"><b>"Växla till siffror och symboler med den här tangenten"</b></string>
-    <string name="tip_to_close_symbols"><b>"Återgå till bokstäver genom att trycka på tangenten en gång till"</b></string>
-    <string name="tip_to_launch_settings"><b>"Tryck och håll ned tangenten om du vill ändra inställningarna för tangentbordet, till exempel Komplettera automatiskt"</b></string>
-    <string name="tip_to_start_typing"><b>"Testa!"</b></string>
-    <string name="label_go_key">"Kör"</string>
-    <string name="label_next_key">"Nästa"</string>
-    <string name="label_done_key">"Färdig"</string>
-    <string name="label_send_key">"Skicka"</string>
-    <string name="label_symbol_key">"?123"</string>
-    <string name="label_phone_key">"123"</string>
-    <string name="label_alpha_key">"ABC"</string>
-    <string name="label_alt_key">"ALT"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: sparat"</string>
+    <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
+    <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
+    <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
+    <string name="alternates_for_o" msgid="6151402748321267776">"òóôõöœø"</string>
+    <string name="alternates_for_u" msgid="5899096818189442934">"ùúûü"</string>
+    <string name="alternates_for_s" msgid="348762530927662188">"§ß"</string>
+    <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
+    <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
+    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="tip_long_press" msgid="6101270866284343344">"Håll nere en tangent om du vill visa accenter (ø, ö, etc.)"</string>
+    <string name="tip_dismiss" msgid="7585579046862204381">"Tryck på Tillbaka ↶ om du vill stänga tangentbordet"</string>
+    <string name="tip_access_symbols" msgid="6344098517525531652">"För siffror och symboler"</string>
+    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Tryck och håll ned ordet längst till vänster om du vill lägga till det i ordlistan"</string>
+    <string name="touch_to_continue" msgid="7869803257948414531">"Tryck på tipset för att fortsätta »"</string>
+    <string name="touch_to_finish" msgid="7990196086480585789">"Tryck här om du vill stänga tipset och börja skriva!"</string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Tangentbordet öppnas när du trycker på ett textfält"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Tryck och håll ned en tangent om du vill visa accenter"\n"(ø, ö, ô, ó och så vidare)"</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Växla till siffror och symboler med den här tangenten"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Återgå till bokstäver genom att trycka på tangenten en gång till"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Tryck och håll ned tangenten om du vill ändra inställningarna för tangentbordet, till exempel Komplettera automatiskt"</b></string>
+    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Testa!"</b></string>
+    <string name="label_go_key" msgid="1635148082137219148">"Kör"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Nästa"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Färdig"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Skicka"</string>
+    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
+    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
     <!-- no translation found for open_the_keyboard (2215920976029260466) -->
     <skip />
     <!-- no translation found for close_the_keyboard (6251022259044940103) -->

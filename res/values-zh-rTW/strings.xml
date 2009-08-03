@@ -15,76 +15,76 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name">"Android 鍵盤"</string>
-    <string name="english_ime_settings">"Android 鍵盤設定"</string>
-    <string name="vibrate_on_keypress">"按鍵時震動"</string>
-    <string name="sound_on_keypress">"按鍵時播放音效"</string>
-    <string name="hit_correction">"修正輸入錯誤"</string>
-    <string name="hit_correction_summary">"啟用輸入錯誤修正功能"</string>
-    <string name="hit_correction_land">"橫向輸入錯誤"</string>
-    <string name="hit_correction_land_summary">"啟用輸入錯誤修正功能"</string>
-    <string name="auto_correction">"字詞建議"</string>
-    <string name="auto_correction_summary">"自動修正前一個字詞"</string>
-    <string name="prediction">"字詞建議"</string>
-    <string name="prediction_category">"字詞建議設定"</string>
-    <string name="prediction_summary">"輸入時啟用自動完成"</string>
-    <string name="auto_complete_dialog_title">"自動完成"</string>
-    <string name="prediction_landscape">"放大文字欄位大小"</string>
-    <string name="prediction_landscape_summary">"在橫向檢視模式中隱藏字詞建議"</string>
-    <string name="auto_cap">"自動大寫"</string>
-    <string name="auto_cap_summary">"句首字母大寫"</string>
-    <string name="auto_punctuate">"自動標點"</string>
+    <string name="english_ime_name" msgid="7252517407088836577">"Android 鍵盤"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Android 鍵盤設定"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"按鍵時震動"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"按鍵時播放音效"</string>
+    <string name="hit_correction" msgid="4855351009261318389">"修正輸入錯誤"</string>
+    <string name="hit_correction_summary" msgid="8761701873008070796">"啟用輸入錯誤修正功能"</string>
+    <string name="hit_correction_land" msgid="2567691684825205448">"橫向輸入錯誤"</string>
+    <string name="hit_correction_land_summary" msgid="4076803842198368328">"啟用輸入錯誤修正功能"</string>
+    <string name="auto_correction" msgid="7911639788808958255">"字詞建議"</string>
+    <string name="auto_correction_summary" msgid="6881047311475758267">"自動修正前一個字詞"</string>
+    <string name="prediction" msgid="466220283138359837">"字詞建議"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"字詞建議設定"</string>
+    <string name="prediction_summary" msgid="459788228830873110">"輸入時啟用自動完成"</string>
+    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"自動完成"</string>
+    <string name="prediction_landscape" msgid="4874601565593216183">"放大文字欄位大小"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"在橫向檢視模式中隱藏字詞建議"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"自動大寫"</string>
+    <string name="auto_cap_summary" msgid="3260681697600786825">"句首字母大寫"</string>
+    <string name="auto_punctuate" msgid="7276672334264521751">"自動標點"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
-    <string name="quick_fixes">"快速修正"</string>
-    <string name="quick_fixes_summary">"修正一般打字錯誤"</string>
-    <string name="show_suggestions">"顯示建議"</string>
-    <string name="show_suggestions_summary">"打字時顯示建議字詞"</string>
-    <string name="auto_complete">"自動完成"</string>
-    <string name="auto_complete_summary">"在反白顯示的字詞處自動插入空白鍵和標點符號鍵盤"</string>
+    <string name="quick_fixes" msgid="5353213327680897927">"快速修正"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"修正一般打字錯誤"</string>
+    <string name="show_suggestions" msgid="507074425254289133">"顯示建議"</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"打字時顯示建議字詞"</string>
+    <string name="auto_complete" msgid="1103196318775486023">"自動完成"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"在反白顯示的字詞處自動插入空白鍵和標點符號鍵盤"</string>
   <string-array name="prediction_modes">
-    <item>"無"</item>
-    <item>"基本模式"</item>
-    <item>"進階模式"</item>
+    <item msgid="4870266572388153286">"無"</item>
+    <item msgid="1669461741568287396">"基本模式"</item>
+    <item msgid="4894328801530136615">"進階模式"</item>
   </string-array>
-    <string name="prediction_none">"0"</string>
-    <string name="prediction_basic">"1"</string>
-    <string name="prediction_full">"2"</string>
+    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
+    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
+    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
-    <string name="added_word">"<xliff:g id="WORD">%s</xliff:g>：已儲存"</string>
-    <string name="alternates_for_a">"àáâãäåæ"</string>
-    <string name="alternates_for_e">"èéêë"</string>
-    <string name="alternates_for_i">"ìíîï"</string>
-    <string name="alternates_for_o">"òóôõöœø"</string>
-    <string name="alternates_for_u">"ùúûü"</string>
-    <string name="alternates_for_s">"§ß"</string>
-    <string name="alternates_for_n">"ñ"</string>
-    <string name="alternates_for_c">"ç"</string>
-    <string name="alternates_for_y">"ýÿ"</string>
-    <string name="tip_long_press">"按住按鍵可查看重音符號 (ø、ö 等)"</string>
-    <string name="tip_dismiss">"隨時可以透過按後退鍵 ↶ 關閉鍵盤"</string>
-    <string name="tip_access_symbols">"使用數字和符號"</string>
-    <string name="tip_add_to_dictionary">"按住最左邊的字詞，將其新增到字典中"</string>
-    <string name="touch_to_continue">"輕觸此提示繼續 »"</string>
-    <string name="touch_to_finish">"輕觸此處以關閉提示，並開始打字！"</string>
-    <string name="tip_to_open_keyboard"><b>"輕觸文字欄位時即會開啟鍵盤"</b></string>
-    <string name="tip_to_view_accents"><b>"輕觸並按住某個鍵即可查看聲調"\n"(ø、ö、ô、ó 等)"</b></string>
-    <string name="tip_to_open_symbols"><b>"輕觸此鍵即可切換到數字和符號鍵盤"</b></string>
-    <string name="tip_to_close_symbols"><b>"再次輕觸此鍵即可返回到字母鍵盤"</b></string>
-    <string name="tip_to_launch_settings"><b>"輕觸並按住此鍵即可變更鍵盤設定，例如自動完成"</b></string>
-    <string name="tip_to_start_typing"><b>"試試看！"</b></string>
-    <string name="label_go_key">"開始"</string>
-    <string name="label_next_key">"下一步"</string>
-    <string name="label_done_key">"完成"</string>
-    <string name="label_send_key">"傳送"</string>
-    <string name="label_symbol_key">"?123"</string>
-    <string name="label_phone_key">"123"</string>
-    <string name="label_alpha_key">"ABC"</string>
-    <string name="label_alt_key">"ALT"</string>
-    <string name="open_the_keyboard"><font size="17"><b>"開啟鍵盤"\n</b></font><font size="3">\n</font>"輕觸任何文字欄位。"</string>
-    <string name="close_the_keyboard"><font size="17"><b>"關閉鍵盤"\n</b></font><font size="3">\n</font>"按下 Back 鍵。"</string>
-    <string name="touch_and_hold"><font size="17"><b>\n"輕觸並按住按鍵開啟選項"</b></font><font size="3">\n</font>"輸入標點與輕重音。"</string>
-    <string name="keyboard_settings"><font size="17"><b>"鍵盤設定"\n</b></font><font size="3">\n</font>"輕觸並按住 "<b>"?123"</b>" 鍵。"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已儲存"</string>
+    <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
+    <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
+    <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
+    <string name="alternates_for_o" msgid="6151402748321267776">"òóôõöœø"</string>
+    <string name="alternates_for_u" msgid="5899096818189442934">"ùúûü"</string>
+    <string name="alternates_for_s" msgid="348762530927662188">"§ß"</string>
+    <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
+    <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
+    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="tip_long_press" msgid="6101270866284343344">"按住按鍵可查看重音符號 (ø、ö 等)"</string>
+    <string name="tip_dismiss" msgid="7585579046862204381">"隨時可以透過按後退鍵 ↶ 關閉鍵盤"</string>
+    <string name="tip_access_symbols" msgid="6344098517525531652">"使用數字和符號"</string>
+    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"按住最左邊的字詞，將其新增到字典中"</string>
+    <string name="touch_to_continue" msgid="7869803257948414531">"輕觸此提示繼續 »"</string>
+    <string name="touch_to_finish" msgid="7990196086480585789">"輕觸此處以關閉提示，並開始打字！"</string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"輕觸文字欄位時即會開啟鍵盤"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"輕觸並按住某個鍵即可查看聲調"\n"(ø、ö、ô、ó 等)"</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"輕觸此鍵即可切換到數字和符號鍵盤"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"再次輕觸此鍵即可返回到字母鍵盤"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"輕觸並按住此鍵即可變更鍵盤設定，例如自動完成"</b></string>
+    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"試試看！"</b></string>
+    <string name="label_go_key" msgid="1635148082137219148">"開始"</string>
+    <string name="label_next_key" msgid="362972844525672568">"下一步"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"完成"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"傳送"</string>
+    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
+    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"開啟鍵盤"\n</b></font><font size="3">\n</font>"輕觸任何文字欄位。"</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"關閉鍵盤"\n</b></font><font size="3">\n</font>"按下 Back 鍵。"</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>\n"輕觸並按住按鍵開啟選項"</b></font><font size="3">\n</font>"輸入標點與輕重音。"</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"鍵盤設定"\n</b></font><font size="3">\n</font>"輕觸並按住 "<b>"?123"</b>" 鍵。"</string>
 </resources>
