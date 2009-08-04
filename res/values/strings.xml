@@ -125,7 +125,10 @@
     <string name="alternates_for_c">ç</string>
     <!-- Accented forms of "y" -->
     <string name="alternates_for_y">ýÿ</string>
-    
+
+    <!-- Label to display on the "i" key -->
+    <string name="key_i">i</string>
+ 
     <!-- Tip to long press on keys -->
     <string name="tip_long_press">Hold a key down to see accents (ø, ö, etc.)</string>
     <!-- Tip to dismiss keyboard -->
