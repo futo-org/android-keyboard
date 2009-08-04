@@ -1169,6 +1169,9 @@ public class LatinIME extends InputMethodService
 
         @Override
         public void addWord(String word, int addFrequency) {
+            final int length = word.length();
+            // Don't add very short or very long words.
+            if (length < 2 || length > getMaxWordLength()) return;
             super.addWord(word, addFrequency);
             final int freq = getWordFrequency(word);
             if (freq > PROMOTION_THRESHOLD) {
