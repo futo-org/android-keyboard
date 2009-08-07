@@ -49,7 +49,7 @@ private:
 
     bool sameAsTyped(unsigned short *word, int length);
     bool addWord(unsigned short *word, int length, int frequency);
-    unsigned short toLowerCase(unsigned short c, int depth);
+    unsigned short toLowerCase(unsigned short c);
     void getWordsRec(int pos, int depth, int maxDepth, bool completion, int frequency,
             int inputIndex, int diffs);
     bool isValidWordRec(int pos, unsigned short *word, int offset, int length);

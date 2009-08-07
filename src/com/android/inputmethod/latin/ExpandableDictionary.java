@@ -250,7 +250,11 @@ public class ExpandableDictionary extends Dictionary {
         if (c < BASE_CHARS.length) {
             c = BASE_CHARS[c];
         }
-        c = Character.toLowerCase(c);
+        if (c >= 'A' && c <= 'Z') {
+            c = (char) (c | 32);
+        } else {
+            c = Character.toLowerCase(c);
+        }
         return c;
     }
 

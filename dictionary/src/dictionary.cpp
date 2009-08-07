@@ -147,16 +147,14 @@ Dictionary::addWord(unsigned short *word, int length, int frequency)
 }
 
 unsigned short
-Dictionary::toLowerCase(unsigned short c, const int depth) {
+Dictionary::toLowerCase(unsigned short c) {
     if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
         c = BASE_CHARS[c];
     }
-    if (depth == 0) {
-        if (c >='A' && c <= 'Z') {
-            c |= 32;
-        } else if (c > 127) {
-            c = u_tolower(c);
-        }
+    if (c >='A' && c <= 'Z') {
+        c |= 32;
+    } else if (c > 127) {
+        c = u_tolower(c);
     }
     return c;
 }
@@ -201,7 +199,7 @@ Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int s
 
     for (int i = 0; i < count; i++) {
         unsigned short c = getChar(&pos);
-        unsigned short lowerC = toLowerCase(c, depth);
+        unsigned short lowerC = toLowerCase(c);
         bool terminal = getTerminal(&pos);
         int childrenAddress = getAddress(&pos);
         int freq = 1;
