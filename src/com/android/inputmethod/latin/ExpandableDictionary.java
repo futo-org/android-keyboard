@@ -18,13 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 
-import com.android.inputmethod.latin.Dictionary;
-import com.android.inputmethod.latin.WordComposer;
-import com.android.inputmethod.latin.Dictionary.WordCallback;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Base class for an in-memory dictionary that can grow dynamically and can
  * be searched for suggestions and valid words.
@@ -42,14 +35,38 @@ public class ExpandableDictionary extends Dictionary {
         char code;
         int frequency;
         boolean terminal;
-        List<Node> children;
+        NodeArray children;
     }
 
-    private ArrayList<Node> mRoots;
+    static class NodeArray {
+        Node[] data;
+        int length = 0;
+        private static final int INCREMENT = 2;
+
+        NodeArray() {
+            data = new Node[INCREMENT];
+        }
+
+        void add(Node n) {
+            if (length + 1 > data.length) {
+                Node[] tempData = new Node[length + INCREMENT];
+                if (length > 0) {
+                    System.arraycopy(data, 0, tempData, 0, length);
+                }
+                data = tempData;
+            }
+            data[length++] = n;
+        }
+    }
+
+    private NodeArray mRoots;
+
+    private int[][] mCodes;
 
     ExpandableDictionary(Context context) {
         mContext = context;
         clearDictionary();
+        mCodes = new int[MAX_WORD_LENGTH][];
     }
 
     Context getContext() {
@@ -64,17 +81,17 @@ public class ExpandableDictionary extends Dictionary {
         addWordRec(mRoots, word, 0, frequency);
     }
 
-    private void addWordRec(List<Node> children, final String word, 
+    private void addWordRec(NodeArray children, final String word,
             final int depth, final int frequency) {
         
         final int wordLength = word.length();
         final char c = word.charAt(depth);
         // Does children have the current character?
-        final int childrenLength = children.size();
+        final int childrenLength = children.length;
         Node childNode = null;
         boolean found = false;
         for (int i = 0; i < childrenLength; i++) {
-            childNode = children.get(i);
+            childNode = children.data[i];
             if (childNode.code == c) {
                 found = true;
                 break;
@@ -93,7 +110,7 @@ public class ExpandableDictionary extends Dictionary {
             return;
         }
         if (childNode.children == null) {
-            childNode.children = new ArrayList<Node>();
+            childNode.children = new NodeArray();
         }
         addWordRec(childNode.children, word, depth + 1, frequency);
     }
@@ -101,10 +118,15 @@ public class ExpandableDictionary extends Dictionary {
     @Override
     public void getWords(final WordComposer codes, final WordCallback callback) {
         mInputLength = codes.size();
-        mMaxDepth = mInputLength * 3;
-        getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1.0f, 0, -1, callback);
+        if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
+        // Cache the codes so that we don't have to lookup an array list
         for (int i = 0; i < mInputLength; i++) {
-            getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1.0f, 0, i, callback);
+            mCodes[i] = codes.getCodesAt(i);
+        }
+        mMaxDepth = mInputLength * 3;
+        getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1, 0, -1, callback);
+        for (int i = 0; i < mInputLength; i++) {
+            getWordsRec(mRoots, codes, mWordBuilder, 0, false, 1, 0, i, callback);
         }
     }
 
@@ -124,12 +146,12 @@ public class ExpandableDictionary extends Dictionary {
     /**
      * Returns the word's frequency or -1 if not found
      */
-    private int getWordFrequencyRec(final List<Node> children, final CharSequence word, 
+    private int getWordFrequencyRec(final NodeArray children, final CharSequence word, 
             final int offset, final int length) {
-        final int count = children.size();
+        final int count = children.length;
         char currentChar = word.charAt(offset);
         for (int j = 0; j < count; j++) {
-            final Node node = children.get(j);
+            final Node node = children.data[j];
             if (node.code == currentChar) {
                 if (offset == length - 1) {
                     if (node.terminal) {
@@ -165,10 +187,10 @@ public class ExpandableDictionary extends Dictionary {
      * inputIndex
      * @param callback the callback class for adding a word
      */
-    protected void getWordsRec(List<Node> roots, final WordComposer codes, final char[] word, 
-            final int depth, boolean completion, float snr, int inputIndex, int skipPos,
+    protected void getWordsRec(NodeArray roots, final WordComposer codes, final char[] word, 
+            final int depth, boolean completion, int snr, int inputIndex, int skipPos,
             WordCallback callback) {
-        final int count = roots.size();
+        final int count = roots.length;
         final int codeSize = mInputLength;
         // Optimization: Prune out words that are too long compared to how much was typed.
         if (depth > mMaxDepth) {
@@ -178,20 +200,20 @@ public class ExpandableDictionary extends Dictionary {
         if (codeSize <= inputIndex) {
             completion = true;
         } else {
-            currentChars = codes.getCodesAt(inputIndex);
+            currentChars = mCodes[inputIndex];
         }
 
         for (int i = 0; i < count; i++) {
-            final Node node = roots.get(i); 
+            final Node node = roots.data[i];
             final char c = node.code;
             final char lowerC = toLowerCase(c);
-            boolean terminal = node.terminal;
-            List<Node> children = node.children;
-            int freq = node.frequency;
+            final boolean terminal = node.terminal;
+            final NodeArray children = node.children;
+            final int freq = node.frequency;
             if (completion) {
                 word[depth] = c;
                 if (terminal) {
-                    if (!callback.addWord(word, 0, depth + 1, (int) (freq * snr))) {
+                    if (!callback.addWord(word, 0, depth + 1, freq * snr)) {
                         return;
                     }
                 }
@@ -210,14 +232,15 @@ public class ExpandableDictionary extends Dictionary {
                 // Don't use alternatives if we're looking for missing characters
                 final int alternativesSize = skipPos >= 0? 1 : currentChars.length;
                 for (int j = 0; j < alternativesSize; j++) {
-                    float addedAttenuation = (j > 0 ? 1f : 3f);
-                    if (currentChars[j] == -1) {
+                    final int addedAttenuation = (j > 0 ? 1 : 2);
+                    final int currentChar = currentChars[j];
+                    if (currentChar == -1) {
                         break;
                     }
-                    if (currentChars[j] == lowerC || currentChars[j] == c) {
+                    if (currentChar == lowerC || currentChar == c) {
                         word[depth] = c;
 
-                        if (codes.size() == depth + 1) {
+                        if (codeSize == depth + 1) {
                             if (terminal) {
                                 if (INCLUDE_TYPED_WORD_IF_VALID 
                                         || !same(word, depth + 1, codes.getTypedWord())) {
@@ -227,7 +250,7 @@ public class ExpandableDictionary extends Dictionary {
                                 }
                             }
                             if (children != null) {
-                                getWordsRec(children, codes, word, depth + 1, 
+                                getWordsRec(children, codes, word, depth + 1,
                                         true, snr * addedAttenuation, inputIndex + 1,
                                         skipPos, callback);
                             }
@@ -243,7 +266,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     protected void clearDictionary() {
-        mRoots = new ArrayList<Node>();
+        mRoots = new NodeArray();
     }
 
     static char toLowerCase(char c) {
@@ -252,7 +275,7 @@ public class ExpandableDictionary extends Dictionary {
         }
         if (c >= 'A' && c <= 'Z') {
             c = (char) (c | 32);
-        } else {
+        } else if (c > 127) {
             c = Character.toLowerCase(c);
         }
         return c;

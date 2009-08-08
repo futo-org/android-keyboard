@@ -371,6 +371,7 @@ public class LatinIME extends InputMethodService
             TextEntryState.reset();
         }
         mJustAccepted = false;
+        postUpdateShiftKeyState();
     }
 
     @Override
@@ -496,6 +497,11 @@ public class LatinIME extends InputMethodService
             }
             updateSuggestions();
         }
+    }
+
+    private void postUpdateShiftKeyState() {
+        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SHIFT_STATE), 300);
     }
 
     public void updateShiftKeyState(EditorInfo attr) {
@@ -637,8 +643,7 @@ public class LatinIME extends InputMethodService
         } else {
             deleteChar = true;
         }
-        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SHIFT_STATE), 300);
+        postUpdateShiftKeyState();
         TextEntryState.backspace();
         if (TextEntryState.getState() == TextEntryState.STATE_UNDO_COMMIT) {
             revertLastWord(deleteChar);
@@ -688,7 +693,11 @@ public class LatinIME extends InputMethodService
         } else {
             sendKeyChar((char)primaryCode);
         }
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        if (mPredicting && mComposing.length() == 1) {
+            updateShiftKeyState(getCurrentInputEditorInfo());
+        } else {
+            postUpdateShiftKeyState();
+        }
         measureCps();
         TextEntryState.typedCharacter((char) primaryCode, isWordSeparator(primaryCode));
     }

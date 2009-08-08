@@ -66,8 +66,6 @@ public class BinaryDictionary extends Dictionary {
     private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize, 
             char[] outputChars, int[] frequencies,
             int maxWordLength, int maxWords, int maxAlternatives, int skipPos);
-    private native void setParamsNative(int typedLetterMultiplier,
-            int fullWordMultiplier);
 
     private final void loadDictionary(Context context, int resId) {
         AssetManager am = context.getResources().getAssets();

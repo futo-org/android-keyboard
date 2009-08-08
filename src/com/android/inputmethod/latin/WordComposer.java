@@ -26,7 +26,7 @@ public class WordComposer {
     /**
      * The list of unicode values for each keystroke (including surrounding keys)
      */
-    private List<int[]> mCodes;
+    private ArrayList<int[]> mCodes;
     
     /**
      * The word chosen from the candidate list, until it is committed.
