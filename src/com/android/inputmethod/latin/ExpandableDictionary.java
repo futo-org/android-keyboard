@@ -244,9 +244,9 @@ public class ExpandableDictionary extends Dictionary {
                             if (terminal) {
                                 if (INCLUDE_TYPED_WORD_IF_VALID 
                                         || !same(word, depth + 1, codes.getTypedWord())) {
-                                    callback.addWord(word, 0, depth + 1,
-                                        (int) (freq * snr * addedAttenuation 
-                                                * FULL_WORD_FREQ_MULTIPLIER));
+                                    int finalFreq = freq * snr * addedAttenuation;
+                                    if (skipPos < 0) finalFreq *= FULL_WORD_FREQ_MULTIPLIER;
+                                    callback.addWord(word, 0, depth + 1, finalFreq);
                                 }
                             }
                             if (children != null) {

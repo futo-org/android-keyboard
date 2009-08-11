@@ -230,8 +230,9 @@ Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int s
                         if (terminal) {
                             if (//INCLUDE_TYPED_WORD_IF_VALID ||
                                 !sameAsTyped(mWord, depth + 1)) {
-                                addWord(mWord, depth + 1,
-                                    (freq * snr * addedWeight * mFullWordMultiplier));
+                                int finalFreq = freq * snr * addedWeight;
+                                if (mSkipPos < 0) finalFreq *= mFullWordMultiplier;
+                                addWord(mWord, depth + 1, finalFreq);
                             }
                         }
                         if (childrenAddress != 0) {
