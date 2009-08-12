@@ -1020,7 +1020,7 @@ public class LatinIME extends InputMethodService
             return;
         }
         if (mVibrator == null) {
-            mVibrator = new Vibrator();
+            mVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         }
         mVibrator.vibrate(mVibrateDuration);
     }
@@ -1096,7 +1096,8 @@ public class LatinIME extends InputMethodService
                         launchSettings();
                         break;
                     case POS_METHOD:
-                        InputMethodManager.getInstance(LatinIME.this).showInputMethodPicker();
+                        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                            .showInputMethodPicker();
                         break;
                 }
             }
