@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
+    <uses-permission android:name="android.permission.BACKUP_DATA" />
 
     <application android:label="@string/english_ime_name"
             android:backupAgent="LatinIMEBackupAgent">
