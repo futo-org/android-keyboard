@@ -31,7 +31,7 @@
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Autom. vervollständigen"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Textfeld vergrößern"</string>
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"Wortvorschläge in Querformat ausblenden"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Automatische Groß-/Kleinschreibung"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Autom. Groß-/Kleinschreibung"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Sätze mit Großbuchstaben beginnen"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Autom. Zeichensetzung"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->

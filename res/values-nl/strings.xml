@@ -41,7 +41,7 @@
     <string name="show_suggestions" msgid="507074425254289133">"Suggesties weergeven"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Voorgestelde woorden weergeven tijdens typen"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Auto-aanvullen"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Met de spatiebalk en interpunctie wordt het gemarkeerde woord automatisch ingevoegd"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"Gemarkeerd woord automatisch invoegen met spatiebalk en interpunctie"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Geen"</item>
     <item msgid="1669461741568287396">"Basis"</item>
