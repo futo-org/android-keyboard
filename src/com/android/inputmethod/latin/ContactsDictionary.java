@@ -67,7 +67,9 @@ public class ContactsDictionary extends ExpandableDictionary {
     private synchronized void loadDictionary() {
         Cursor cursor = getContext().getContentResolver()
                 .query(People.CONTENT_URI, PROJECTION, null, null, null);
-        addWords(cursor);
+        if (cursor != null) {
+            addWords(cursor);
+        }
         mRequiresReload = false;
     }
 
