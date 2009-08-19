@@ -225,6 +225,8 @@ public class LatinKeyboard extends Keyboard {
                 y -= height / 10;
                 if (code == KEYCODE_SHIFT) x += width / 6;
                 if (code == KEYCODE_DELETE) x -= width / 6;
+            } else if (code == LatinIME.KEYCODE_SPACE) {
+                y += 5;
             }
             return super.isInside(x, y);
         }

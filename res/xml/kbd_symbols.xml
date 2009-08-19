@@ -94,10 +94,10 @@
     </Row>
     
     <Row>
-        <Key android:codes="-1" android:keyLabel="@string/label_alt_key" 
-                android:keyWidth="15%p" android:isModifier="true" 
+        <Key android:codes="-1" android:keyLabel="@string/label_alt_key"
+                android:keyWidth="15%p" android:isModifier="true"
                 android:isSticky="true" android:keyEdgeFlags="left"/>
-        <Key android:codes="33" android:keyLabel="!" 
+        <Key android:codes="33" android:keyLabel="!"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="¡"
         />
@@ -119,18 +119,19 @@
     </Row>
     
     <Row  android:rowEdgeFlags="bottom">
-        <Key android:codes="-2" android:keyLabel="@string/label_alpha_key" 
+        <Key android:codes="-2" android:keyLabel="@string/label_alpha_key"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="_"
                 android:keyWidth="20%p" android:keyEdgeFlags="left"/>
-        <Key android:keyLabel="," android:keyWidth="15%p" 
+        <Key android:keyLabel="," android:keyWidth="10%p"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="‚„"
         />
-        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" android:keyWidth="30%p" 
+        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
+                android:keyWidth="40%p"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
                 android:isRepeatable="true"/>
-        <Key android:keyLabel="." android:keyWidth="15%p" />
+        <Key android:keyLabel="." android:keyWidth="10%p" />
         <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return" android:keyWidth="20%p" android:keyEdgeFlags="right"
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
                 />

@@ -102,12 +102,12 @@
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters=""
                 android:keyWidth="20%p" android:keyEdgeFlags="left"/>
-        <Key android:keyLabel="," android:keyWidth="15%p" />
+        <Key android:keyLabel="," android:keyWidth="10%p" />
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" 
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
-                android:keyWidth="30%p" android:isRepeatable="true"/>
+                android:keyWidth="40%p" android:isRepeatable="true"/>
         <Key android:codes="46" android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation" 
-                android:keyWidth="15%p"/>
+                android:keyWidth="10%p"/>
         <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return" 
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
                 android:keyWidth="20%p" android:keyEdgeFlags="right"/>
@@ -142,24 +142,24 @@
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" 
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
                 android:keyWidth="15%p" android:isRepeatable="true"/>
-        <Key android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation" 
+        <Key android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"
                 android:keyWidth="15%p"/>
-        <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return" 
+        <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
                 android:keyWidth="20%p" android:keyEdgeFlags="right"/>
     </Row>
 
     <Row android:keyboardMode="@+id/mode_im" android:rowEdgeFlags="bottom">
-        <Key android:codes="-2" android:keyLabel="@string/label_symbol_key" 
+        <Key android:codes="-2" android:keyLabel="@string/label_symbol_key"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters=""
                 android:keyWidth="20%p" android:keyEdgeFlags="left"/>
-        <Key android:keyLabel="," android:keyWidth="15%p"/>
-        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" 
+        <Key android:keyLabel="," android:keyWidth="10%p"/>
+        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
-                android:keyWidth="30%p" android:isRepeatable="true"/>
-        <Key android:codes="46" android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation" 
-                android:keyWidth="15%p"/>
+                android:keyWidth="40%p" android:isRepeatable="true"/>
+        <Key android:codes="46" android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"
+                android:keyWidth="10%p"/>
         <Key android:keyLabel=":-)" android:keyOutputText=":-) "
                 android:popupKeyboard="@xml/popup_smileys"
                 android:keyWidth="20%p" android:keyEdgeFlags="right"/>

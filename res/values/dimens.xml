@@ -19,6 +19,7 @@
 -->
 
 <resources>
-    <dimen name="key_height">50dip</dimen>
+    <dimen name="key_height">54dip</dimen>
     <dimen name="bubble_pointer_offset">22dip</dimen>
+    <dimen name="candidate_strip_height">42dip</dimen>
 </resources>
