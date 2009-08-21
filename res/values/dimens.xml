@@ -22,4 +22,5 @@
     <dimen name="key_height">54dip</dimen>
     <dimen name="bubble_pointer_offset">22dip</dimen>
     <dimen name="candidate_strip_height">42dip</dimen>
+    <dimen name="spacebar_vertical_correction">4dip</dimen>
 </resources>

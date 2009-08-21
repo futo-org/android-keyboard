@@ -21,4 +21,5 @@
 <resources>
     <dimen name="key_height">47dip</dimen>
     <dimen name="candidate_strip_height">38dip</dimen>
+    <dimen name="spacebar_vertical_correction">2dip</dimen>
 </resources>

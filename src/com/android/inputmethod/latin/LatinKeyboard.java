@@ -37,20 +37,23 @@ public class LatinKeyboard extends Keyboard {
     private static final int SHIFT_LOCKED = 2;
     
     private int mShiftState = SHIFT_OFF;
-    
+
+    static int sSpacebarVerticalCorrection;
+
     public LatinKeyboard(Context context, int xmlLayoutResId) {
         this(context, xmlLayoutResId, 0);
     }
 
     public LatinKeyboard(Context context, int xmlLayoutResId, int mode) {
         super(context, xmlLayoutResId, mode);
-        mShiftLockIcon = context.getResources()
-                .getDrawable(R.drawable.sym_keyboard_shift_locked);
-        mShiftLockPreviewIcon = context.getResources()
-                .getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
+        Resources res = context.getResources();
+        mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
+        mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
         mShiftLockPreviewIcon.setBounds(0, 0, 
                 mShiftLockPreviewIcon.getIntrinsicWidth(),
                 mShiftLockPreviewIcon.getIntrinsicHeight());
+        sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
+                R.dimen.spacebar_vertical_correction);
     }
 
     public LatinKeyboard(Context context, int layoutTemplateResId, 
@@ -226,7 +229,7 @@ public class LatinKeyboard extends Keyboard {
                 if (code == KEYCODE_SHIFT) x += width / 6;
                 if (code == KEYCODE_DELETE) x -= width / 6;
             } else if (code == LatinIME.KEYCODE_SPACE) {
-                y += 5;
+                y += LatinKeyboard.sSpacebarVerticalCorrection;
             }
             return super.isInside(x, y);
         }
