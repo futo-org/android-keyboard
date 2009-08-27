@@ -24,30 +24,29 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.provider.Contacts;
-import android.provider.Contacts.People;
+import android.provider.ContactsContract.Contacts;
 import android.util.Log;
 
 public class ContactsDictionary extends ExpandableDictionary {
-    
+
     private static final String[] PROJECTION = {
-        People._ID,
-        People.NAME,
+        Contacts._ID,
+        Contacts.DISPLAY_NAME,
     };
-    
+
     private static final int INDEX_NAME = 1;
-    
+
     private ContentObserver mObserver;
-    
+
     private boolean mRequiresReload;
-    
+
     public ContactsDictionary(Context context) {
         super(context);
         // Perform a managed query. The Activity will handle closing and requerying the cursor
         // when needed.
         ContentResolver cres = context.getContentResolver();
-        
-        cres.registerContentObserver(People.CONTENT_URI, true, mObserver = new ContentObserver(null) {
+
+        cres.registerContentObserver(Contacts.CONTENT_URI, true, mObserver = new ContentObserver(null) {
             @Override
             public void onChange(boolean self) {
                 mRequiresReload = true;
@@ -56,17 +55,17 @@ public class ContactsDictionary extends ExpandableDictionary {
 
         loadDictionary();
     }
-    
+
     public synchronized void close() {
         if (mObserver != null) {
             getContext().getContentResolver().unregisterContentObserver(mObserver);
             mObserver = null;
         }
     }
-    
+
     private synchronized void loadDictionary() {
         Cursor cursor = getContext().getContentResolver()
-                .query(People.CONTENT_URI, PROJECTION, null, null, null);
+                .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
         if (cursor != null) {
             addWords(cursor);
         }
