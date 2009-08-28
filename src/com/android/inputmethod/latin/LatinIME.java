@@ -954,7 +954,7 @@ public class LatinIME extends InputMethodService
     }
 
     public void swipeDown() {
-        //handleClose();
+        handleClose();
     }
 
     public void swipeUp() {
