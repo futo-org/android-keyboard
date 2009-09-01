@@ -260,9 +260,8 @@ public class LatinIME extends InputMethodService
         switch (attribute.inputType&EditorInfo.TYPE_MASK_CLASS) {
             case EditorInfo.TYPE_CLASS_NUMBER:
             case EditorInfo.TYPE_CLASS_DATETIME:
-                mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_TEXT,
+                mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_SYMBOLS,
                         attribute.imeOptions);
-                mKeyboardSwitcher.toggleSymbols();
                 break;
             case EditorInfo.TYPE_CLASS_PHONE:
                 mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_PHONE,

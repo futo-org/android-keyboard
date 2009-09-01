@@ -54,6 +54,7 @@ public class KeyboardSwitcher {
     private int mImeOptions;
     private int mTextMode = MODE_TEXT_QWERTY;
     private boolean mIsSymbols;
+    private boolean mPreferSymbols;
     private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
 
     private int mLastDisplayWidth;
@@ -114,7 +115,10 @@ public class KeyboardSwitcher {
     }
 
     void setKeyboardMode(int mode, int imeOptions) {
-        setKeyboardMode(mode, imeOptions, false);
+        mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
+        mPreferSymbols = mode == MODE_SYMBOLS;
+        setKeyboardMode(mode == MODE_SYMBOLS ? MODE_TEXT : mode, imeOptions,
+                mPreferSymbols);
     }
 
     void setKeyboardMode(int mode, int imeOptions, boolean isSymbols) {
@@ -233,7 +237,7 @@ public class KeyboardSwitcher {
 
     void toggleSymbols() {
         setKeyboardMode(mMode, mImeOptions, !mIsSymbols);
-        if (mIsSymbols) {
+        if (mIsSymbols && !mPreferSymbols) {
             mSymbolsModeState = SYMBOLS_MODE_STATE_BEGIN;
         } else {
             mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
