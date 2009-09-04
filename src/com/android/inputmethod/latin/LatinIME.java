@@ -209,6 +209,10 @@ public class LatinIME extends InputMethodService
     public void onConfigurationChanged(Configuration conf) {
         if (!TextUtils.equals(conf.locale.toString(), mLocale)) {
             initSuggest(conf.locale.toString());
+            if (mKeyboardSwitcher == null) {
+                mKeyboardSwitcher = new KeyboardSwitcher(this);
+            }
+            mKeyboardSwitcher.makeKeyboards();
         }
         // If orientation changed while predicting, commit the change
         if (conf.orientation != mOrientation) {

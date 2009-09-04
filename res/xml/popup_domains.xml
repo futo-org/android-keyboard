@@ -26,9 +26,13 @@
     >
 
     <Row android:rowEdgeFlags="top|bottom">
-        <Key android:keyLabel=".net" android:keyOutputText=".net" android:keyEdgeFlags="left" />
-        <Key android:keyLabel=".org" android:keyOutputText=".org"/>
-        <Key android:keyLabel=".gov" android:keyOutputText=".gov"/>
-        <Key android:keyLabel=".tv" android:keyOutputText=".tv" android:keyEdgeFlags="right" />
+        <Key android:keyLabel="@string/popular_domain_1"
+            android:keyOutputText="@string/popular_domain_1" android:keyEdgeFlags="left" />
+        <Key android:keyLabel="@string/popular_domain_2"
+            android:keyOutputText="@string/popular_domain_2"/>
+        <Key android:keyLabel="@string/popular_domain_3"
+            android:keyOutputText="@string/popular_domain_3"/>
+        <Key android:keyLabel="@string/popular_domain_4"
+            android:keyOutputText="@string/popular_domain_4" android:keyEdgeFlags="right" />
     </Row>
 </Keyboard>
