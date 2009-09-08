@@ -83,12 +83,8 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
-    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
-    <skip />
-    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
-    <skip />
-    <!-- no translation found for touch_and_hold (6154166367273010534) -->
-    <skip />
-    <!-- no translation found for keyboard_settings (4585753477617374032) -->
-    <skip />
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"키보드 열기"\n</b></font><font size="3">\n</font>"아무 텍스트 입력란이나 터치하세요."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"키보드 닫기"\n</b></font><font size="3">\n</font>"\'뒤로\' 키를 누르세요."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"키를 길게 터치하여 옵션 보기"\n</b></font><font size="3">\n</font>"문장 부호 및 악센트 기호에 액세스하세요."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"키보드 설정"\n</b></font><font size="3">\n</font><b>"?123"</b>" 키를 길게 터치하세요."</string>
 </resources>

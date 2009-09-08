@@ -83,12 +83,8 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ΑΒΓ"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
-    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
-    <skip />
-    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
-    <skip />
-    <!-- no translation found for touch_and_hold (6154166367273010534) -->
-    <skip />
-    <!-- no translation found for keyboard_settings (4585753477617374032) -->
-    <skip />
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Ανοίξτε το πληκτρολόγιο"\n</b></font><font size="3">\n</font>"Αγγίξτε οποιοδήποτε πεδίο κειμένου."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Κλείστε το πληκτρολόγιο"\n</b></font><font size="3">\n</font>"Πατήστε το πλήκτρο Πίσω."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Αγγίξτε και κρατήστε ένα πλήκτρο για ορισμό επιλογών"\n</b></font><font size="3">\n</font>"Πρόσβαση στα σημεία στίξης και τονισμού."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Ρυθμίσεις πληκτρολογίου"\n</b></font><font size="3">\n</font>"Αγγίξτε και κρατήστε το πλήκτρο "<b>"?123"</b>"."</string>
 </resources>

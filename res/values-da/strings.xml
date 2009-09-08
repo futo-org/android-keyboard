@@ -83,12 +83,8 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
-    <!-- no translation found for open_the_keyboard (2215920976029260466) -->
-    <skip />
-    <!-- no translation found for close_the_keyboard (6251022259044940103) -->
-    <skip />
-    <!-- no translation found for touch_and_hold (6154166367273010534) -->
-    <skip />
-    <!-- no translation found for keyboard_settings (4585753477617374032) -->
-    <skip />
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Åbn tastaturet"\n</b></font><font size="3">\n</font>"Tryk på et hvilket som helst tekstfelt."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Luk tastaturet"\n</b></font><font size="3">\n</font>"Tryk på Tilbagetasten."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Tryk på og hold en tast nede for valgmuligheder"\n</b></font><font size="3">\n</font>"Få adgang til tegnsætning og accenter."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Tastaturindstillinger"\n</b></font><font size="3">\n</font>"Tryk på og hold tasten "<b>"?123"</b>" nede."</string>
 </resources>
