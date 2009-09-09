@@ -127,7 +127,8 @@
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="_"
                 android:keyWidth="20%p" android:keyEdgeFlags="left"/>
-        <Key android:keyLabel=".com" android:keyOutputText=".com"
+        <Key android:keyLabel="@string/popular_domain_0"
+                android:keyOutputText="@string/popular_domain_0"
                 android:popupKeyboard="@xml/popup_domains"
                 android:keyWidth="15%p"/>
         <Key android:keyLabel="/" android:keyWidth="15%p"/>
@@ -146,13 +147,16 @@
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="_"
                 android:keyWidth="20%p" android:keyEdgeFlags="left"/>
-        <Key android:keyLabel="," android:keyWidth="10%p" />
-        <Key android:keyLabel="\@" android:keyWidth="20%p"/>
+        <Key android:keyLabel="\@" android:keyWidth="15%p"/>
+        <Key android:keyLabel="@string/popular_domain_0"
+                android:keyOutputText="@string/popular_domain_0"
+                android:popupKeyboard="@xml/popup_domains"
+                android:keyWidth="15%p"/>
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
-                android:keyWidth="20%p" android:isRepeatable="true"/>
+                android:keyWidth="15%p" android:isRepeatable="true"/>
         <Key android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"
-                android:keyWidth="10%p"/>
+                android:keyWidth="15%p"/>
         <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
                 android:keyWidth="20%p" android:keyEdgeFlags="right"/>
