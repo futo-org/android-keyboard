@@ -44,8 +44,8 @@
     <Row>
         <Key android:codes="42" android:keyIcon="@drawable/sym_keyboard_numstar"
                 android:keyEdgeFlags="left"/>
-        <!-- Wait is w -->
-        <Key android:codes="w" android:keyLabel="Wait"/>
+        <!-- Wait is a semicolon. -->
+        <Key android:codes="59" android:keyLabel="Wait"/>
         <Key android:codes="35" android:keyIcon="@drawable/sym_keyboard_numpound"/>
         <Key android:codes="-5" android:keyIcon="@drawable/sym_keyboard_delete" 
                 android:iconPreview="@drawable/sym_keyboard_feedback_delete"
