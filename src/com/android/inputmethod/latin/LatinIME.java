@@ -308,6 +308,17 @@ public class LatinIME extends InputMethodService
                         disableAutoCorrect = true;
                     }
                 }
+
+                // If NO_SUGGESTIONS is set, don't do prediction.
+                if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
+                    mPredictionOn = false;
+                    disableAutoCorrect = true;
+                }
+                // If it's not multiline and the autoCorrect flag is not set, then don't correct
+                if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0 &&
+                        (attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
+                    disableAutoCorrect = true;
+                }
                 if ((attribute.inputType&EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
                     mPredictionOn = false;
                     mCompletionOn = true && isFullscreenMode();
