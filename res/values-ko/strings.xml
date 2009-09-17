@@ -87,4 +87,14 @@
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"키보드 닫기"\n</b></font><font size="3">\n</font>"\'뒤로\' 키를 누르세요."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"키를 길게 터치하여 옵션 보기"\n</b></font><font size="3">\n</font>"문장 부호 및 악센트 기호에 액세스하세요."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"키보드 설정"\n</b></font><font size="3">\n</font><b>"?123"</b>" 키를 길게 터치하세요."</string>
+    <!-- no translation found for popular_domain_0 (3745279225122472969) -->
+    <skip />
+    <!-- no translation found for popular_domain_1 (1370572248164278467) -->
+    <skip />
+    <!-- no translation found for popular_domain_2 (3036812463748402878) -->
+    <skip />
+    <!-- no translation found for popular_domain_3 (8718639560809452028) -->
+    <skip />
+    <!-- no translation found for popular_domain_4 (35359437471311470) -->
+    <skip />
 </resources>

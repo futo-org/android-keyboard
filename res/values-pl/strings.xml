@@ -87,4 +87,14 @@
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Zamknij klawiaturę"\n</b></font><font size="3">\n</font>"Naciśnij klawisz Wróć."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Dotknij klawisza i przytrzymaj go, aby wyświetlić opcje"\n</b></font><font size="3">\n</font>"Dostęp do znaków przestankowych i akcentowanych."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Ustawienia klawiatury"\n</b></font><font size="3">\n</font>"Dotknij klawisza "<b>"?123"</b>" i przytrzymaj go."</string>
+    <!-- no translation found for popular_domain_0 (3745279225122472969) -->
+    <skip />
+    <!-- no translation found for popular_domain_1 (1370572248164278467) -->
+    <skip />
+    <!-- no translation found for popular_domain_2 (3036812463748402878) -->
+    <skip />
+    <!-- no translation found for popular_domain_3 (8718639560809452028) -->
+    <skip />
+    <!-- no translation found for popular_domain_4 (35359437471311470) -->
+    <skip />
 </resources>
