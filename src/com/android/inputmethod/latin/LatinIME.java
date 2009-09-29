@@ -138,7 +138,8 @@ public class LatinIME extends InputMethodService
     private long mVibrateDuration;
 
     private AudioManager mAudioManager;
-    private final float FX_VOLUME = 1.0f;
+    // Align sound effect volume on music volume
+    private final float FX_VOLUME = -1.0f;
     private boolean mSilentMode;
 
     private String mWordSeparators;
