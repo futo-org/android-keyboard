@@ -47,12 +47,9 @@
     <item msgid="1669461741568287396">"Grunnleggende"</item>
     <item msgid="4894328801530136615">"Avansert"</item>
   </string-array>
-    <!-- no translation found for prediction_none (2472795101338047944) -->
-    <skip />
-    <!-- no translation found for prediction_basic (8407291081834155558) -->
-    <skip />
-    <!-- no translation found for prediction_full (3765102052052510268) -->
-    <skip />
+    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
+    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
+    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
     <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
     <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
     <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
@@ -87,7 +84,7 @@
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Åpne tastaturet"\n</b></font><font size="3">\n</font>"Trykk på et tekstfelt."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Lukk tastaturet"\n</b></font><font size="3">\n</font>"Trykk tilbake-knappen."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Lukke tastaturet"\n</b></font><font size="3">\n</font>"Trykk på tilbaketasten."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Trykk og hold nede en tast for flere valg"\n</b></font><font size="3">\n</font>"Få tilgang til skilletegn og aksenter."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Tastaturinnstillinger"\n</b></font><font size="3">\n</font>"Trykk og hold nede "<b>"?123"</b>"-knappen."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Innstillinger for tastatur"\n</b></font><font size="3">\n</font>"Trykk på &amp; hold "<b>"?123"</b>"-tasten."</string>
 </resources>
