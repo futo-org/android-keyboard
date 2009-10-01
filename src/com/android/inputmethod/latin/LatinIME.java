@@ -210,16 +210,16 @@ public class LatinIME extends InputMethodService
     public void onConfigurationChanged(Configuration conf) {
         if (!TextUtils.equals(conf.locale.toString(), mLocale)) {
             initSuggest(conf.locale.toString());
-            if (mKeyboardSwitcher == null) {
-                mKeyboardSwitcher = new KeyboardSwitcher(this);
-            }
-            mKeyboardSwitcher.makeKeyboards();
         }
         // If orientation changed while predicting, commit the change
         if (conf.orientation != mOrientation) {
             commitTyped(getCurrentInputConnection());
             mOrientation = conf.orientation;
         }
+        if (mKeyboardSwitcher == null) {
+            mKeyboardSwitcher = new KeyboardSwitcher(this);
+        }
+        mKeyboardSwitcher.makeKeyboards(true);
         super.onConfigurationChanged(conf);
     }
 
@@ -228,7 +228,7 @@ public class LatinIME extends InputMethodService
         mInputView = (LatinKeyboardView) getLayoutInflater().inflate(
                 R.layout.input, null);
         mKeyboardSwitcher.setInputView(mInputView);
-        mKeyboardSwitcher.makeKeyboards();
+        mKeyboardSwitcher.makeKeyboards(true);
         mInputView.setOnKeyboardActionListener(this);
         mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_TEXT, 0);
         return mInputView;
@@ -236,7 +236,7 @@ public class LatinIME extends InputMethodService
 
     @Override
     public View onCreateCandidatesView() {
-        mKeyboardSwitcher.makeKeyboards();
+        mKeyboardSwitcher.makeKeyboards(true);
         mCandidateViewContainer = (CandidateViewContainer) getLayoutInflater().inflate(
                 R.layout.candidates, null);
         mCandidateViewContainer.initViews();
@@ -253,7 +253,7 @@ public class LatinIME extends InputMethodService
             return;
         }
 
-        mKeyboardSwitcher.makeKeyboards();
+        mKeyboardSwitcher.makeKeyboards(false);
 
         TextEntryState.newSession(this);
 

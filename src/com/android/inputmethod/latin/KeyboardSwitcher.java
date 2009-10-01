@@ -70,14 +70,15 @@ public class KeyboardSwitcher {
         mInputView = inputView;
     }
     
-    void makeKeyboards() {
+    void makeKeyboards(boolean forceCreate) {
+        if (forceCreate) mKeyboards.clear();
         // Configuration change is coming after the keyboard gets recreated. So don't rely on that.
         // If keyboards have already been made, check if we have a screen width change and 
         // create the keyboard layouts again at the correct orientation
         int displayWidth = mContext.getMaxWidth();
         if (displayWidth == mLastDisplayWidth) return;
         mLastDisplayWidth = displayWidth;
-        mKeyboards.clear();
+        if (!forceCreate) mKeyboards.clear();
         mSymbolsId = new KeyboardId(R.xml.kbd_symbols);
         mSymbolsShiftedId = new KeyboardId(R.xml.kbd_symbols_shift);
     }
