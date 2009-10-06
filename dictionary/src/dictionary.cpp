@@ -139,7 +139,8 @@ Dictionary::addWord(unsigned short *word, int length, int frequency)
         }
         *dest = 0; // NULL terminate
         // Update the word count
-        if (insertAt + 1 > mWords) mWords = insertAt + 1;
+        mWords = 0;
+        while (mFrequencies[mWords] > 0) mWords++;
         if (DEBUG_DICT) LOGI("Added word at %d\n", insertAt);
         return true;
     }
