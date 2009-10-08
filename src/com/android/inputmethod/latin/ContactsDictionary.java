@@ -16,16 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.provider.ContactsContract.Contacts;
-import android.util.Log;
 
 public class ContactsDictionary extends ExpandableDictionary {
 
@@ -39,6 +34,8 @@ public class ContactsDictionary extends ExpandableDictionary {
     private ContentObserver mObserver;
 
     private boolean mRequiresReload;
+
+    private long mLastLoadedContacts;
 
     public ContactsDictionary(Context context) {
         super(context);
@@ -64,12 +61,17 @@ public class ContactsDictionary extends ExpandableDictionary {
     }
 
     private synchronized void loadDictionary() {
-        Cursor cursor = getContext().getContentResolver()
-                .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
-        if (cursor != null) {
-            addWords(cursor);
+        long now = android.os.SystemClock.uptimeMillis();
+        if (mLastLoadedContacts == 0
+                || now - mLastLoadedContacts > 30 * 60 * 1000 /* 30 minutes */) {
+            Cursor cursor = getContext().getContentResolver()
+                    .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
+            if (cursor != null) {
+                addWords(cursor);
+            }
+            mRequiresReload = false;
+            mLastLoadedContacts = now;
         }
-        mRequiresReload = false;
     }
 
     @Override
