@@ -693,6 +693,10 @@ public class LatinIME extends InputMethodService
         }
         if (mInputView.isShifted()) {
             // TODO: This doesn't work with ß, need to fix it in the next release.
+            if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
+                    || keyCodes[0] > Character.MAX_CODE_POINT) {
+                return;
+            }
             primaryCode = new String(keyCodes, 0, 1).toUpperCase().charAt(0);
         }
         if (mPredicting) {
