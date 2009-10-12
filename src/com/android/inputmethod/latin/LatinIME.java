@@ -713,11 +713,7 @@ public class LatinIME extends InputMethodService
         } else {
             sendKeyChar((char)primaryCode);
         }
-        if (mPredicting && mComposing.length() == 1) {
-            updateShiftKeyState(getCurrentInputEditorInfo());
-        } else {
-            postUpdateShiftKeyState();
-        }
+        updateShiftKeyState(getCurrentInputEditorInfo());
         measureCps();
         TextEntryState.typedCharacter((char) primaryCode, isWordSeparator(primaryCode));
     }
