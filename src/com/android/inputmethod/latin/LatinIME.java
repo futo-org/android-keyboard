@@ -16,14 +16,24 @@
 
 package com.android.inputmethod.latin;
 
+import java.io.FileDescriptor;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import android.app.AlertDialog;
+import android.backup.BackupManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -49,16 +59,13 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService 
-        implements KeyboardView.OnKeyboardActionListener {
+        implements KeyboardView.OnKeyboardActionListener,
+                   SharedPreferences.OnSharedPreferenceChangeListener {
+
     static final boolean DEBUG = false;
     static final boolean TRACE = false;
     
@@ -68,6 +75,8 @@ public class LatinIME extends InputMethodService
     private static final String PREF_QUICK_FIXES = "quick_fixes";
     private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     private static final String PREF_AUTO_COMPLETE = "auto_complete";
+    public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
+    public static final String PREF_INPUT_LANGUAGE = "input_language";
 
     private static final int MSG_UPDATE_SUGGESTIONS = 0;
     private static final int MSG_START_TUTORIAL = 1;
@@ -105,7 +114,9 @@ public class LatinIME extends InputMethodService
     private UserDictionary mUserDictionary;
     private ContactsDictionary mContactsDictionary;
     private ExpandableDictionary mAutoDictionary;
-    
+
+    Resources mResources;
+
     private String mLocale;
 
     private StringBuilder mComposing = new StringBuilder();
@@ -144,7 +155,12 @@ public class LatinIME extends InputMethodService
 
     private String mWordSeparators;
     private String mSentenceSeparators;
-    
+    private int mCurrentInputLocale = 0;
+    private String mInputLanguage;
+    private String[] mSelectedLanguageArray;
+    private String mSelectedLanguagesList;
+    private boolean mRefreshKeyboardRequired;
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -173,32 +189,61 @@ public class LatinIME extends InputMethodService
     @Override public void onCreate() {
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
-        mKeyboardSwitcher = new KeyboardSwitcher(this);
-        final Configuration conf = getResources().getConfiguration();
-        initSuggest(conf.locale.toString());
+        mKeyboardSwitcher = new KeyboardSwitcher(this, this);
+        mResources = getResources();
+        final Configuration conf = mResources.getConfiguration();
+        mInputLanguage = getPersistedInputLanguage();
+        mSelectedLanguagesList = getSelectedInputLanguages();
+        boolean enableMultipleLanguages = mSelectedLanguagesList != null
+                && mSelectedLanguagesList.split(",").length > 1;
+        if (mInputLanguage == null) {
+            mInputLanguage = conf.locale.toString();
+        }
+        initSuggest(mInputLanguage);
+        mKeyboardSwitcher.setInputLocale(conf.locale, enableMultipleLanguages);
         mOrientation = conf.orientation;
 
-        mVibrateDuration = getResources().getInteger(R.integer.vibrate_duration_ms);
+        mVibrateDuration = mResources.getInteger(R.integer.vibrate_duration_ms);
 
         // register to receive ringer mode changes for silent mode
         IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mReceiver, filter);
+        PreferenceManager.getDefaultSharedPreferences(this)
+                .registerOnSharedPreferenceChangeListener(this);
     }
-    
+
     private void initSuggest(String locale) {
         mLocale = locale;
+
+        Resources orig = getResources();
+        Configuration conf = orig.getConfiguration();
+        Locale saveLocale = conf.locale;
+        conf.locale = new Locale(locale);
+        orig.updateConfiguration(conf, orig.getDisplayMetrics());
+        if (mSuggest != null) {
+            mSuggest.close();
+        }
         mSuggest = new Suggest(this, R.raw.main);
         mSuggest.setCorrectionMode(mCorrectionMode);
         mUserDictionary = new UserDictionary(this);
-        mContactsDictionary = new ContactsDictionary(this);
-        mAutoDictionary = new AutoDictionary(this);
+        if (mContactsDictionary == null) {
+            mContactsDictionary = new ContactsDictionary(this);
+        }
+        // TODO: Save and restore the dictionary for the current input language.
+        if (mAutoDictionary == null) {
+            mAutoDictionary = new AutoDictionary(this);
+        }
         mSuggest.setUserDictionary(mUserDictionary);
         mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);
-        mWordSeparators = getResources().getString(R.string.word_separators);
-        mSentenceSeparators = getResources().getString(R.string.sentence_separators);
+        
+        mWordSeparators = mResources.getString(R.string.word_separators);
+        mSentenceSeparators = mResources.getString(R.string.sentence_separators);
+
+        conf.locale = saveLocale;
+        orig.updateConfiguration(conf, orig.getDisplayMetrics());
     }
-    
+
     @Override public void onDestroy() {
         mUserDictionary.close();
         mContactsDictionary.close();
@@ -216,10 +261,7 @@ public class LatinIME extends InputMethodService
             commitTyped(getCurrentInputConnection());
             mOrientation = conf.orientation;
         }
-        if (mKeyboardSwitcher == null) {
-            mKeyboardSwitcher = new KeyboardSwitcher(this);
-        }
-        mKeyboardSwitcher.makeKeyboards(true);
+        reloadKeyboards();
         super.onConfigurationChanged(conf);
     }
 
@@ -251,6 +293,11 @@ public class LatinIME extends InputMethodService
         // In landscape mode, this method gets called without the input view being created.
         if (mInputView == null) {
             return;
+        }
+
+        if (mRefreshKeyboardRequired) {
+            mRefreshKeyboardRequired = false;
+            toggleLanguage(true);
         }
 
         mKeyboardSwitcher.makeKeyboards(false);
@@ -499,6 +546,15 @@ public class LatinIME extends InputMethodService
         return super.onKeyUp(keyCode, event);
     }
 
+    private void reloadKeyboards() {
+        if (mKeyboardSwitcher == null) {
+            mKeyboardSwitcher = new KeyboardSwitcher(this, this);
+        }
+        mKeyboardSwitcher.setInputLocale(new Locale(mInputLanguage),
+                getSelectedInputLanguages() != null);
+        mKeyboardSwitcher.makeKeyboards(true);
+    }
+
     private void commitTyped(InputConnection inputConnection) {
         if (mPredicting) {
             mPredicting = false;
@@ -601,6 +657,9 @@ public class LatinIME extends InputMethodService
             case LatinKeyboardView.KEYCODE_OPTIONS:
                 showOptionsMenu();
                 break;
+            case LatinKeyboardView.KEYCODE_F1:
+                toggleLanguage(false);
+                break;
             case LatinKeyboardView.KEYCODE_SHIFT_LONGPRESS:
                 if (mCapsLock) {
                     handleShift();
@@ -674,7 +733,6 @@ public class LatinIME extends InputMethodService
 
     private void handleShift() {
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
-        Keyboard currentKeyboard = mInputView.getKeyboard();
         if (mKeyboardSwitcher.isAlphabetMode()) {
             // Alphabet keyboard
             checkToggleCapsLock();
@@ -966,9 +1024,32 @@ public class LatinIME extends InputMethodService
             }
         }
     }
-    
+
+    private void toggleLanguage(boolean reset) {
+        final String [] languages = mSelectedLanguageArray;
+        if (reset) mCurrentInputLocale = -1;
+        mCurrentInputLocale = (mCurrentInputLocale + 1)
+                % (languages != null ? languages.length : 1);
+        mInputLanguage = languages != null ? languages[mCurrentInputLocale] :
+                getResources().getConfiguration().locale.getLanguage();
+        int currentKeyboardMode = mKeyboardSwitcher.getKeyboardMode();
+        reloadKeyboards();
+        mKeyboardSwitcher.makeKeyboards(true);
+        mKeyboardSwitcher.setKeyboardMode(currentKeyboardMode, 0);
+        initSuggest(mInputLanguage);
+        persistInputLanguage(mInputLanguage);
+        updateShiftKeyState(getCurrentInputEditorInfo());
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+            String key) {
+        if (PREF_SELECTED_LANGUAGES.equals(key)) {
+            updateSelectedLanguages(sharedPreferences.getString(key, null));
+            mRefreshKeyboardRequired = true;
+        }
+    }
+
     public void swipeLeft() {
-        //handleBackspace();
     }
 
     public void swipeDown() {
@@ -1089,11 +1170,38 @@ public class LatinIME extends InputMethodService
         if (AutoText.getSize(mInputView) < 1) mQuickFixes = true;
         mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true) & mQuickFixes;
         boolean autoComplete = sp.getBoolean(PREF_AUTO_COMPLETE,
-                getResources().getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
+                mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
         mAutoCorrectOn = mSuggest != null && (autoComplete || mQuickFixes);
         mCorrectionMode = autoComplete
                 ? Suggest.CORRECTION_FULL
                 : (mQuickFixes ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
+        String languageList = sp.getString(PREF_SELECTED_LANGUAGES, null);
+        updateSelectedLanguages(languageList);
+    }
+
+    private void updateSelectedLanguages(String languageList) {
+        if (languageList != null && languageList.length() > 1) {
+            mSelectedLanguageArray = languageList.split(",");
+        } else {
+            mSelectedLanguageArray = null;
+        }
+    }
+
+    private String getPersistedInputLanguage() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        return sp.getString(PREF_INPUT_LANGUAGE, null);
+    }
+
+    private void persistInputLanguage(String inputLanguage) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        Editor editor = sp.edit();
+        editor.putString(PREF_INPUT_LANGUAGE, inputLanguage);
+        editor.commit();
+    }
+
+    private String getSelectedInputLanguages() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        return sp.getString(PREF_SELECTED_LANGUAGES, null);
     }
 
     private void showOptionsMenu() {
@@ -1120,7 +1228,7 @@ public class LatinIME extends InputMethodService
                 }
             }
         });
-        builder.setTitle(getResources().getString(R.string.english_ime_name));
+        builder.setTitle(mResources.getString(R.string.english_ime_name));
         mOptionsDialog = builder.create();
         Window window = mOptionsDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
@@ -1139,7 +1247,7 @@ public class LatinIME extends InputMethodService
 
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
-    
+
     @Override protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
         super.dump(fd, fout, args);
         

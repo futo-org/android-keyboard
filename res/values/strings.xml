@@ -208,4 +208,7 @@
     <string name="popular_domain_3">".gov"</string>
     <!-- popular web domains for the locale - item 4, displayed in the popup -->
     <string name="popular_domain_4">".edu"</string>
+    
+    <!-- Title for input language selection screen -->
+    <string name="language_selection_title">Select input languages</string>
 </resources>

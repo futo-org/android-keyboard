@@ -23,6 +23,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
+        </activity>
+
+        <activity android:name="InputLanguageSelection"
+                android:label="@string/language_selection_title">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
         </activity>    
     </application>
 </manifest>
