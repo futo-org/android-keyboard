@@ -63,6 +63,7 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ń"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ć"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Przytrzymaj klawisz, aby wyświetlić znaki akcentowane (ą, ó itp.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Naciśnij klawisz cofania ↶, aby zamknąć klawiaturę w dowolnym momencie"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Przejdź do cyfr i symboli"</string>
