@@ -63,6 +63,7 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"키를 길게 누르면 악센트(ø, ö 등)가 표시됩니다."</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"키보드를 닫으려면 언제든지 뒤로 키(↶)를 누르세요."</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"숫자 및 기호 액세스"</string>
