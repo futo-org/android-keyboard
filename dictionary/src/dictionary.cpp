@@ -51,6 +51,7 @@ Dictionary::~Dictionary()
 int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
         int maxWordLength, int maxWords, int maxAlternatives, int skipPos)
 {
+    int suggWords;
     mFrequencies = frequencies;
     mOutputChars = outWords;
     mInputCodes = codes;
@@ -58,14 +59,16 @@ int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWor
     mMaxAlternatives = maxAlternatives;
     mMaxWordLength = maxWordLength;
     mMaxWords = maxWords;
-    mWords = 0;
     mSkipPos = skipPos;
     mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
 
     getWordsRec(0, 0, mInputLength * 3, false, 1, 0, 0);
 
-    if (DEBUG_DICT) LOGI("Returning %d words", mWords);
-    return mWords;
+    // Get the word count
+    suggWords = 0;
+    while (suggWords < mMaxWords && mFrequencies[suggWords] > 0) suggWords++;
+    if (DEBUG_DICT) LOGI("Returning %d words", suggWords);
+    return suggWords;
 }
 
 unsigned short
@@ -138,9 +141,6 @@ Dictionary::addWord(unsigned short *word, int length, int frequency)
             *dest++ = *word++;
         }
         *dest = 0; // NULL terminate
-        // Update the word count
-        mWords = 0;
-        while (mFrequencies[mWords] > 0) mWords++;
         if (DEBUG_DICT) LOGI("Added word at %d\n", insertAt);
         return true;
     }
