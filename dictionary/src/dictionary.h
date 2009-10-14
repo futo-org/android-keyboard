@@ -60,7 +60,6 @@ private:
     int *mFrequencies;
     int mMaxWords;
     int mMaxWordLength;
-    int mWords;
     unsigned short *mOutputChars;
     int *mInputCodes;
     int mInputLength;
