@@ -63,17 +63,18 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
-    <string name="tip_long_press" msgid="6101270866284343344">"长按键可以查看重音符号（ø、ö 等）"</string>
+    <string name="key_i" msgid="6483655742552255124">"i"</string>
+    <string name="tip_long_press" msgid="6101270866284343344">"长按某些键可看到重音符号（例如 ø、ö 等）"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"随时可以通过按后退键 ↶ 关闭键盘"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"访问数字和符号"</string>
-    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"按住最左侧的字词可以将其添加到字典中"</string>
+    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"长按最左侧的字可将其添加到词典中"</string>
     <string name="touch_to_continue" msgid="7869803257948414531">"轻触此提示继续 »"</string>
     <string name="touch_to_finish" msgid="7990196086480585789">"轻触此处可关闭该提示，然后便可开始输入内容！"</string>
     <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"轻触文本字段即可打开键盘"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"轻触并按住某个键可以查看重音符号"\n"（?, ?, ?, ó 等）"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"长按某些键可看到重音符号"\n"（例如 ø、ö、ô、ó 等）"</b></string>
     <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"轻触该键可切换到数字和符号输入模式"</b></string>
     <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"再次轻触该键可返回字母输入模式"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"轻触并按住该键可以更改键盘设置，例如自动输入"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"长按该键可更改键盘设置，例如自动输入"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"试试吧！"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"开始"</string>
     <string name="label_next_key" msgid="362972844525672568">"下一步"</string>
@@ -83,18 +84,13 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"打开键盘"\n</b></font><font size="3">\n</font>"触摸任意文本字段。"</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"打开键盘"\n</b></font><font size="3">\n</font>"轻触任意文本字段。"</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"关闭键盘"\n</b></font><font size="3">\n</font>"按“返回”键。"</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"触摸并按住选项键"\n</b></font><font size="3">\n</font>"访问标点和重音符号。"</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"键盘设置"\n</b></font><font size="3">\n</font>"触摸并按住 "<b>"?123"</b>" 键。"</string>
-    <!-- no translation found for popular_domain_0 (3745279225122472969) -->
-    <skip />
-    <!-- no translation found for popular_domain_1 (1370572248164278467) -->
-    <skip />
-    <!-- no translation found for popular_domain_2 (3036812463748402878) -->
-    <skip />
-    <!-- no translation found for popular_domain_3 (8718639560809452028) -->
-    <skip />
-    <!-- no translation found for popular_domain_4 (35359437471311470) -->
-    <skip />
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"长按某些键可开启其他字符选项"\n</b></font><font size="3">\n</font>"访问标点和重音符号。"</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"键盘设置"\n</b></font><font size="3">\n</font>"长按 "<b>"?123"</b>" 键。"</string>
+    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
+    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
 </resources>

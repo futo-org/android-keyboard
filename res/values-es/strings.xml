@@ -63,6 +63,7 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Mantén pulsada una tecla para ver los caracteres acentuados (ø, ö, etc.)."</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Pulsa la tecla \"Atrás\" ↶ para cerrar el teclado en cualquier momento."</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Acceso a números y símbolos"</string>
@@ -87,14 +88,9 @@
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Cerrar el teclado"\n</b></font><font size="3">\n</font>"Pulsa la tecla \"Atrás\"."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Mantén pulsada una tecla para acceder a las opciones."\n</b></font><font size="3">\n</font>"Accede a los signos de puntuación y a los acentos."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Configuración del teclado"\n</b></font><font size="3">\n</font>"Mantén pulsada la tecla "<b>"?123"</b>"."</string>
-    <!-- no translation found for popular_domain_0 (3745279225122472969) -->
-    <skip />
-    <!-- no translation found for popular_domain_1 (1370572248164278467) -->
-    <skip />
-    <!-- no translation found for popular_domain_2 (3036812463748402878) -->
-    <skip />
-    <!-- no translation found for popular_domain_3 (8718639560809452028) -->
-    <skip />
-    <!-- no translation found for popular_domain_4 (35359437471311470) -->
-    <skip />
+    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
+    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
 </resources>

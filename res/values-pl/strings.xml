@@ -63,6 +63,7 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ń"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ć"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Przytrzymaj klawisz, aby wyświetlić znaki akcentowane (ą, ó itp.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Naciśnij klawisz cofania ↶, aby zamknąć klawiaturę w dowolnym momencie"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Przejdź do cyfr i symboli"</string>
@@ -87,14 +88,9 @@
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Zamknij klawiaturę"\n</b></font><font size="3">\n</font>"Naciśnij klawisz Wróć."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Dotknij klawisza i przytrzymaj go, aby wyświetlić opcje"\n</b></font><font size="3">\n</font>"Dostęp do znaków przestankowych i akcentowanych."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Ustawienia klawiatury"\n</b></font><font size="3">\n</font>"Dotknij klawisza "<b>"?123"</b>" i przytrzymaj go."</string>
-    <!-- no translation found for popular_domain_0 (3745279225122472969) -->
-    <skip />
-    <!-- no translation found for popular_domain_1 (1370572248164278467) -->
-    <skip />
-    <!-- no translation found for popular_domain_2 (3036812463748402878) -->
-    <skip />
-    <!-- no translation found for popular_domain_3 (8718639560809452028) -->
-    <skip />
-    <!-- no translation found for popular_domain_4 (35359437471311470) -->
-    <skip />
+    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
+    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
 </resources>

@@ -31,7 +31,7 @@
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Otomatik tamamlama"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Metin alanı boyutunu artır"</string>
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"Yatay görünümde kelime önerilerini gizle"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Ot. olarak büyük harf yap"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük harf yap"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Cümlenin baş harfini büyük yap"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Otomatik noktalama"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
@@ -63,7 +63,7 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
-    <string name="key_i">"ı"</string>
+    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Vurguları görmek için bir tuşu basılı tutun (ø, ö, v.b.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Klavyeyi herhangi bir anda kapatmak için geri tuşuna ↶ basın"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Sayılara ve simgelere erişin"</string>
@@ -88,14 +88,9 @@
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Klavyeyi kapatın"\n</b></font><font size="3">\n</font>"Geri tuşuna basın."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Seçenekler için bir tuşa dokunun ve basılı tutun"\n</b></font><font size="3">\n</font>"Noktalama ve vurgulama işaretlerine erişin."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Klavye ayarları"\n</b></font><font size="3">\n</font><b>"?123"</b>" tuşuna dokunun ve basılı tutun."</string>
-    <!-- no translation found for popular_domain_0 (3745279225122472969) -->
-    <skip />
-    <!-- no translation found for popular_domain_1 (1370572248164278467) -->
-    <skip />
-    <!-- no translation found for popular_domain_2 (3036812463748402878) -->
-    <skip />
-    <!-- no translation found for popular_domain_3 (8718639560809452028) -->
-    <skip />
-    <!-- no translation found for popular_domain_4 (35359437471311470) -->
-    <skip />
+    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
+    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
 </resources>

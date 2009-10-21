@@ -17,8 +17,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Teclado Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Configurações de teclado Android"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao pressionar a tecla"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Som ao pressionar a tecla"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao tocar a tecla"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Som ao tocar a tecla"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Corrigir erros de digitação"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Ativar a correção de erro de entrada"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Erros de entrada de paisagem"</string>
@@ -31,7 +31,7 @@
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Conclusão automática"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Aumentar o tamanho do arquivo de texto"</string>
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"Ocultar sugestões de palavra na visualização da paisagem"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Capitalização automática"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Capitaliz. automática"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Colocar em maiúscula o início de uma frase"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Pontuação automática"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
@@ -41,7 +41,7 @@
     <string name="show_suggestions" msgid="507074425254289133">"Mostrar sugestões"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Exibir sugestões de palavras durante a digitação"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Conclusão automática"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"A barra de espaço e pontuação inserem automaticamente a palavra destacada"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"Barra de espaço e pontuação inserem a palavra destacada"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Nenhum"</item>
     <item msgid="1669461741568287396">"Básico"</item>
@@ -63,6 +63,7 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
+    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Segure uma tecla pressionada para ver os acentos (ø, ö, etc.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Apertar a tecla voltar ↶ para fechar o teclado, em qualquer ponto"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Acessar números e símbolos"</string>
@@ -76,7 +77,7 @@
     <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Tocar e segurar esta tecla para alterar as configurações do teclado, como a conclusão automática"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Experimente!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Próximo"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Avançar"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Feito"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Enviar"</string>
     <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
@@ -87,14 +88,9 @@
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Feche o teclado"\n</b></font><font size="3">\n</font>"Pressione a tecla Voltar."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Toque e mantenha pressionada uma tecla para ver as opções"\n</b></font><font size="3">\n</font>"Acesse a pontuação e as pronúncias."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Configurações de teclado"\n</b></font><font size="3">\n</font>"Toque e mantenha pressionada a tecla "<b>"?123"</b>"."</string>
-    <!-- no translation found for popular_domain_0 (3745279225122472969) -->
-    <skip />
-    <!-- no translation found for popular_domain_1 (1370572248164278467) -->
-    <skip />
-    <!-- no translation found for popular_domain_2 (3036812463748402878) -->
-    <skip />
-    <!-- no translation found for popular_domain_3 (8718639560809452028) -->
-    <skip />
-    <!-- no translation found for popular_domain_4 (35359437471311470) -->
-    <skip />
+    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
+    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
 </resources>
