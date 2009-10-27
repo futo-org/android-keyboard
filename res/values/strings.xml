@@ -126,7 +126,10 @@
     <!-- Accented forms of "y" -->
     <string name="alternates_for_y">ýÿ</string>
 
-    <!-- Label to display on the "i" key -->
+    <!-- Label to display on the lower "i" key.
+         Usually you don't need to modify this value, but if your locale requires some variant
+         for this character (e.g. \\u131 "Latin Small Letter Dotoless i"), please modify this
+         value. -->
     <string name="key_i">i</string>
  
     <!-- Tip to long press on keys -->
