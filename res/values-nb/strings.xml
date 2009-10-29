@@ -88,9 +88,9 @@
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Lukke tastaturet"\n</b></font><font size="3">\n</font>"Trykk på tilbaketasten."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Trykk og hold nede en tast for flere valg"\n</b></font><font size="3">\n</font>"Få tilgang til skilletegn og aksenter."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Innstillinger for tastatur"\n</b></font><font size="3">\n</font>"Trykk på &amp; hold "<b>"?123"</b>"-tasten."</string>
-    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
-    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
-    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
+    <string name="popular_domain_0" msgid="3745279225122472969">".no"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".com"</string>
+    <string name="popular_domain_2" msgid="3036812463748402878">".net"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".org"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".info"</string>
 </resources>

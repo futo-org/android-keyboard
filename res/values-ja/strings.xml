@@ -63,7 +63,7 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
-    <string name="key_i" msgid="6483655742552255124">"I"</string>
+    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"キー長押しでアクセント文字を表示（ø、öなど）"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"戻るキーでキーボードを閉じます"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"数字と記号"</string>
