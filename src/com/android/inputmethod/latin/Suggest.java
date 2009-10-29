@@ -48,9 +48,9 @@ public class Suggest implements Dictionary.WordCallback {
     private int mPrefMaxSuggestions = 12;
 
     private int[] mPriorities = new int[mPrefMaxSuggestions];
-    private List<CharSequence> mSuggestions = new ArrayList<CharSequence>();
+    private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     private boolean mIncludeTypedWordIfValid;
-    private List<CharSequence> mStringPool = new ArrayList<CharSequence>();
+    private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
     private Context mContext;
     private boolean mHaveCorrection;
     private CharSequence mOriginalWord;
@@ -218,8 +218,36 @@ public class Suggest implements Dictionary.WordCallback {
             }
             i++;
         }
-        
+
+        removeDupes();
         return mSuggestions;
+    }
+
+    private void removeDupes() {
+        final ArrayList<CharSequence> suggestions = mSuggestions;
+        if (suggestions.size() < 2) return;
+        int i = 1;
+        // Don't cache suggestions.size(), since we may be removing items
+        while (i < suggestions.size()) {
+            final CharSequence cur = suggestions.get(i);
+            // Compare each candidate with each previous candidate
+            for (int j = 0; j < i; j++) {
+                CharSequence previous = suggestions.get(j);
+                if (TextUtils.equals(cur, previous)) {
+                    removeFromSuggestions(i);
+                    i--;
+                    break;
+                }
+            }
+            i++;
+        }
+    }
+
+    private void removeFromSuggestions(int index) {
+        CharSequence garbage = mSuggestions.remove(index);
+        if (garbage != null && garbage instanceof StringBuilder) {
+            mStringPool.add(garbage);
+        }
     }
 
     public boolean hasMinimalCorrection() {
