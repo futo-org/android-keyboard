@@ -29,7 +29,10 @@
         <Key android:keyLabel="~" android:keyEdgeFlags="left"/>
         <Key android:keyLabel="`"/>
         <Key android:keyLabel="|"/>
-        <Key android:keyLabel="•"/>
+        <Key android:keyLabel="•"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="♪♥♠♦♣"
+        />
         <Key android:keyLabel="√"/>
         <Key android:keyLabel="π"/>
         <Key android:keyLabel="÷"/>
@@ -44,7 +47,10 @@
         <Key android:keyLabel="¢"/>
         <Key android:keyLabel="€"/>
         <Key android:keyLabel="°"/>
-        <Key android:keyLabel="^"/>
+        <Key android:keyLabel="^"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="↑↓←→"
+        />
         <Key android:keyLabel="_"/>
         <Key android:keyLabel="="
                 android:popupKeyboard="@xml/kbd_popup_template"
@@ -61,7 +67,10 @@
         <Key android:keyLabel="™"/>
         <Key android:keyLabel="®"/>
         <Key android:keyLabel="©"/>
-        <Key android:keyLabel="¶"/>
+        <Key android:keyLabel="¶"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="§"
+        />
         <Key android:keyLabel="\\"/>
         <Key android:keyLabel="&lt;" 
                 android:popupKeyboard="@xml/kbd_popup_template"
