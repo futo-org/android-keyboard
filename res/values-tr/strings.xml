@@ -56,7 +56,7 @@
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Kaydedildi"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
-    <string name="alternates_for_i" msgid="7097915268629342242">"ıìíîï"</string>
+    <string name="alternates_for_i" msgid="7097915268629342242">"iìíîï"</string>
     <string name="alternates_for_o" msgid="6151402748321267776">"öòóôõœø"</string>
     <string name="alternates_for_u" msgid="5899096818189442934">"üùúû"</string>
     <string name="alternates_for_s" msgid="348762530927662188">"ş§ß"</string>
@@ -88,14 +88,9 @@
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Klavyeyi kapatın"\n</b></font><font size="3">\n</font>"Geri tuşuna basın."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Seçenekler için bir tuşa dokunun ve basılı tutun"\n</b></font><font size="3">\n</font>"Noktalama ve vurgulama işaretlerine erişin."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Klavye ayarları"\n</b></font><font size="3">\n</font><b>"?123"</b>" tuşuna dokunun ve basılı tutun."</string>
-    <!-- no translation found for popular_domain_0 (3745279225122472969) -->
-    <skip />
-    <!-- no translation found for popular_domain_1 (1370572248164278467) -->
-    <skip />
-    <!-- no translation found for popular_domain_2 (3036812463748402878) -->
-    <skip />
-    <!-- no translation found for popular_domain_3 (8718639560809452028) -->
-    <skip />
-    <!-- no translation found for popular_domain_4 (35359437471311470) -->
-    <skip />
+    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
+    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
 </resources>
