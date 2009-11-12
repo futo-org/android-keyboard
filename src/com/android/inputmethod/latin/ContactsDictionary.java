@@ -20,6 +20,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.provider.ContactsContract.Contacts;
 
 public class ContactsDictionary extends ExpandableDictionary {
@@ -37,6 +39,11 @@ public class ContactsDictionary extends ExpandableDictionary {
 
     private long mLastLoadedContacts;
 
+    private boolean mUpdatingContacts;
+
+    // Use this lock before touching mUpdatingContacts & mRequiresDownload
+    private Object mUpdatingLock = new Object();
+
     public ContactsDictionary(Context context) {
         super(context);
         // Perform a managed query. The Activity will handle closing and requerying the cursor
@@ -46,11 +53,15 @@ public class ContactsDictionary extends ExpandableDictionary {
         cres.registerContentObserver(Contacts.CONTENT_URI, true, mObserver = new ContentObserver(null) {
             @Override
             public void onChange(boolean self) {
-                mRequiresReload = true;
+                synchronized (mUpdatingLock) {
+                    mRequiresReload = true;
+                }
             }
         });
 
-        loadDictionary();
+        synchronized (mUpdatingLock) {
+            loadDictionaryAsyncLocked();
+        }
     }
 
     public synchronized void close() {
@@ -60,29 +71,37 @@ public class ContactsDictionary extends ExpandableDictionary {
         }
     }
 
-    private synchronized void loadDictionary() {
-        long now = android.os.SystemClock.uptimeMillis();
+    private synchronized void loadDictionaryAsyncLocked() {
+        long now = SystemClock.uptimeMillis();
         if (mLastLoadedContacts == 0
                 || now - mLastLoadedContacts > 30 * 60 * 1000 /* 30 minutes */) {
-            Cursor cursor = getContext().getContentResolver()
-                    .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
-            if (cursor != null) {
-                addWords(cursor);
+            if (!mUpdatingContacts) {
+                mUpdatingContacts = true;
+                mRequiresReload = false;
+                new LoadContactsTask().execute();
             }
-            mRequiresReload = false;
-            mLastLoadedContacts = now;
         }
     }
 
     @Override
     public synchronized void getWords(final WordComposer codes, final WordCallback callback) {
-        if (mRequiresReload) loadDictionary();
+        synchronized (mUpdatingLock) {
+            // If we need to update, start off a background task
+            if (mRequiresReload) loadDictionaryAsyncLocked();
+            // Currently updating contacts, don't return any results.
+            if (mUpdatingContacts) return;
+        }
         super.getWords(codes, callback);
     }
 
     @Override
     public synchronized boolean isValidWord(CharSequence word) {
-        if (mRequiresReload) loadDictionary();
+        synchronized (mUpdatingLock) {
+            // If we need to update, start off a background task
+            if (mRequiresReload) loadDictionaryAsyncLocked();
+            if (mUpdatingContacts) return false;
+        }
+
         return super.isValidWord(word);
     }
 
@@ -115,7 +134,10 @@ public class ContactsDictionary extends ExpandableDictionary {
 
                             // Safeguard against adding really long words. Stack
                             // may overflow due to recursion
-                            if (word.length() < maxWordLength) {
+                            // Also don't add single letter words, possibly confuses
+                            // capitalization of i.
+                            final int wordLen = word.length();
+                            if (wordLen < maxWordLength && wordLen > 1) {
                                 super.addWord(word, 128);
                             }
                         }
@@ -126,5 +148,28 @@ public class ContactsDictionary extends ExpandableDictionary {
             }
         }
         cursor.close();
+    }
+    
+    private class LoadContactsTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... v) {
+            Cursor cursor = getContext().getContentResolver()
+                    .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
+            if (cursor != null) {
+                addWords(cursor);
+            }
+            mLastLoadedContacts = SystemClock.uptimeMillis();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            // TODO Auto-generated method stub
+            synchronized (mUpdatingLock) {
+                mUpdatingContacts = false;
+            }
+            super.onPostExecute(result);
+        }
+        
     }
 }
