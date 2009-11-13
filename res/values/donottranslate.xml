@@ -32,4 +32,6 @@
     <string name="alternates_for_z"></string>
     <!-- Accented characters related to "l" -->
     <string name="alternates_for_l"></string>
+    <!-- Accented characters related to "g" -->
+    <string name="alternates_for_g"></string>
 </resources>

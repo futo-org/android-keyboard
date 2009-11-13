@@ -24,4 +24,6 @@
         android:layout_alignParentBottom="true"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/keyboard_background"
+        android:keyBackground="@drawable/btn_keyboard_key"
         />
