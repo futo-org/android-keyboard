@@ -18,7 +18,7 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Android 键盘"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Android 键盘设置"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按键时振动"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"按键时发出声音"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"按键时播放音效"</string>
     <string name="hit_correction" msgid="4855351009261318389">"纠正输入错误"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"启用输入错误纠正"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"横向输入错误"</string>
@@ -41,7 +41,7 @@
     <string name="show_suggestions" msgid="507074425254289133">"显示建议"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"输入时显示建议的字词"</string>
     <string name="auto_complete" msgid="1103196318775486023">"自动输入"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"按空格和标点会自动插入突出显示的字词"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"按空格或标点可自动插入突出显示的字词"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"无"</item>
     <item msgid="1669461741568287396">"基本模式"</item>
