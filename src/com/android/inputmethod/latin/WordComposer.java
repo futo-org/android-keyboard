@@ -26,7 +26,7 @@ public class WordComposer {
     /**
      * The list of unicode values for each keystroke (including surrounding keys)
      */
-    private List<int[]> mCodes;
+    private ArrayList<int[]> mCodes;
     
     /**
      * The word chosen from the candidate list, until it is committed.
@@ -34,6 +34,8 @@ public class WordComposer {
     private String mPreferredWord;
     
     private StringBuilder mTypedWord;
+
+    private int mCapsCount;
     
     /**
      * Whether the user chose to capitalize the word.
@@ -53,6 +55,7 @@ public class WordComposer {
         mIsCapitalized = false;
         mPreferredWord = null;
         mTypedWord.setLength(0);
+        mCapsCount = 0;
     }
 
     /**
@@ -80,6 +83,7 @@ public class WordComposer {
     public void add(int primaryCode, int[] codes) {
         mTypedWord.append((char) primaryCode);
         mCodes.add(codes);
+        if (Character.isUpperCase((char) primaryCode)) mCapsCount++;
     }
 
     /**
@@ -87,7 +91,10 @@ public class WordComposer {
      */
     public void deleteLast() {
         mCodes.remove(mCodes.size() - 1);
-        mTypedWord.deleteCharAt(mTypedWord.length() - 1);
+        final int lastPos = mTypedWord.length() - 1;
+        char last = mTypedWord.charAt(lastPos);
+        mTypedWord.deleteCharAt(lastPos);
+        if (Character.isUpperCase(last)) mCapsCount--;
     }
 
     /**
@@ -137,5 +144,12 @@ public class WordComposer {
      */
     public CharSequence getPreferredWord() {
         return mPreferredWord != null ? mPreferredWord : getTypedWord();
+    }
+
+    /**
+     * Returns true if more than one character is upper case, otherwise returns false.
+     */
+    public boolean isMostlyCaps() {
+        return mCapsCount > 1;
     }
 }

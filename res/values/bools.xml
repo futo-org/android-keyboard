@@ -19,7 +19,7 @@
 -->
 <resources>
     <!-- Whether or not auto-correction should be enabled by default -->
-    <bool name="enable_autocorrect">false</bool>
+    <bool name="enable_autocorrect">true</bool>
     <!-- Whether this input method should be used as the default for a locale. Override it
          for latin languages. -->
     <bool name="im_is_default">false</bool>

@@ -125,7 +125,10 @@
     <string name="alternates_for_c">ç</string>
     <!-- Accented forms of "y" -->
     <string name="alternates_for_y">ýÿ</string>
-    
+
+    <!-- Label to display on the "i" key -->
+    <string name="key_i">i</string>
+ 
     <!-- Tip to long press on keys -->
     <string name="tip_long_press">Hold a key down to see accents (ø, ö, etc.)</string>
     <!-- Tip to dismiss keyboard -->
@@ -191,4 +194,15 @@
 
     <!-- appears above image showing how to access keyboard settings -->
     <string name="keyboard_settings"><font size="17"><b>Keyboard settings\n</b></font><font size="3">\n</font>Touch \u0026 hold the <b>\?123\</b> key.</string>
+    
+    <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
+    <string name="popular_domain_0">".com"</string>
+    <!-- popular web domains for the locale - item 1, displayed in the popup -->
+    <string name="popular_domain_1">".net"</string>
+    <!-- popular web domains for the locale - item 2, displayed in the popup -->
+    <string name="popular_domain_2">".org"</string>
+    <!-- popular web domains for the locale - item 3, displayed in the popup -->
+    <string name="popular_domain_3">".gov"</string>
+    <!-- popular web domains for the locale - item 4, displayed in the popup -->
+    <string name="popular_domain_4">".edu"</string>
 </resources>
