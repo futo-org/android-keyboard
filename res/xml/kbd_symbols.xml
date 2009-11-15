@@ -73,7 +73,7 @@
         <Key android:codes="38" android:keyLabel="&amp;"/>
         <Key android:codes="42" android:keyLabel="*"
                 android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="†‡⁂★"
+                android:popupCharacters="†‡★"
         />
         <Key android:codes="45" android:keyLabel="-"
                 android:popupKeyboard="@xml/kbd_popup_template"
