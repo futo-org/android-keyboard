@@ -809,7 +809,8 @@ public class LatinIME extends InputMethodService
         //|| mCorrectionMode == mSuggest.CORRECTION_FULL;
         CharSequence typedWord = mWord.getTypedWord();
         // If we're in basic correct
-        boolean typedWordValid = mSuggest.isValidWord(typedWord);
+        boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
+                (preferCapitalization() && mSuggest.isValidWord(typedWord.toString().toLowerCase()));
         if (mCorrectionMode == Suggest.CORRECTION_FULL) {
             correctionAvailable |= typedWordValid;
         }
