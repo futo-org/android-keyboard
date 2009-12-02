@@ -36,7 +36,6 @@ public class BinaryDictionary extends Dictionary {
 
     private int mNativeDict;
     private int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_ALTERNATIVES];
-    private WordCallback mWordCallback;
     private char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private int[] mFrequencies = new int[MAX_WORDS];
 
@@ -75,7 +74,6 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public void getWords(final WordComposer codes, final WordCallback callback) {
-        mWordCallback = callback;
         final int codesSize = codes.size();
         // Wont deal with really long words.
         if (codesSize > MAX_WORD_LENGTH - 1) return;
@@ -123,7 +121,7 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public boolean isValidWord(CharSequence word) {
         if (word == null) return false;
-        char[] chars = word.toString().toLowerCase().toCharArray();
+        char[] chars = word.toString().toCharArray();
         return isValidWordNative(mNativeDict, chars, chars.length);
     }
 
