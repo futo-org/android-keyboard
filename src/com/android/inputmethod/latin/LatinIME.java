@@ -673,6 +673,7 @@ public class LatinIME extends InputMethodService
     }
 
     private void handleShift() {
+        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
         Keyboard currentKeyboard = mInputView.getKeyboard();
         if (mKeyboardSwitcher.isAlphabetMode()) {
             // Alphabet keyboard
