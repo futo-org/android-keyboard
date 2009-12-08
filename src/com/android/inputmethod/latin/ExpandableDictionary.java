@@ -105,8 +105,8 @@ public class ExpandableDictionary extends Dictionary {
         if (wordLength == depth + 1) {
             // Terminate this word
             childNode.terminal = true;
-            childNode.frequency += frequency; // If there are multiple similar words
-            if (childNode.frequency > 256) childNode.frequency = 256;
+            childNode.frequency = Math.max(frequency, childNode.frequency);
+            if (childNode.frequency > 255) childNode.frequency = 255;
             return;
         }
         if (childNode.children == null) {
