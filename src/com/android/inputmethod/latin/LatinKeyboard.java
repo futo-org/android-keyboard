@@ -31,6 +31,8 @@ public class LatinKeyboard extends Keyboard {
     private Drawable mOldShiftPreviewIcon;
     private Key mShiftKey;
     private Key mEnterKey;
+
+    private int mExtensionResId; 
     
     private static final int SHIFT_OFF = 0;
     private static final int SHIFT_ON = 1;
@@ -189,6 +191,14 @@ public class LatinKeyboard extends Keyboard {
         } else {
             return super.isShifted();
         }
+    }
+
+    public void setExtension(int resId) {
+        mExtensionResId = resId;
+    }
+
+    public int getExtension() {
+        return mExtensionResId;
     }
 
     static class LatinKey extends Keyboard.Key {

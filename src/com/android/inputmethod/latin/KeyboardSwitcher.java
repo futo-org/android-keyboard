@@ -147,6 +147,13 @@ public class KeyboardSwitcher {
         if (!mKeyboards.containsKey(id)) {
             LatinKeyboard keyboard = new LatinKeyboard(
                 mContext, id.mXml, id.mMode);
+            if (id.mMode == KEYBOARDMODE_NORMAL
+                    || id.mMode == KEYBOARDMODE_URL
+                    || id.mMode == KEYBOARDMODE_IM
+                    || id.mMode == KEYBOARDMODE_EMAIL) {
+                keyboard.setExtension(R.xml.kbd_extension);
+            }
+
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();
             }
