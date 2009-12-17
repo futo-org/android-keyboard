@@ -336,4 +336,10 @@ public class Suggest implements Dictionary.WordCallback {
         }
         mSuggestions.clear();
     }
+
+    public void close() {
+        if (mMainDict != null) {
+            mMainDict.close();
+        }
+    }
 }
