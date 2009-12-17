@@ -1291,7 +1291,7 @@ public class LatinIME extends InputMethodService
         // If the user touches a typed word 2 times or more, it will become valid.
         private static final int VALIDITY_THRESHOLD = 2 * FREQUENCY_FOR_PICKED;
         // If the user touches a typed word 5 times or more, it will be added to the user dict.
-        private static final int PROMOTION_THRESHOLD = 5 * FREQUENCY_FOR_PICKED;
+        private static final int PROMOTION_THRESHOLD = 4 * FREQUENCY_FOR_PICKED;
 
         public AutoDictionary(Context context) {
             super(context);
@@ -1300,7 +1300,7 @@ public class LatinIME extends InputMethodService
         @Override
         public boolean isValidWord(CharSequence word) {
             final int frequency = getWordFrequency(word);
-            return frequency > VALIDITY_THRESHOLD;
+            return frequency >= VALIDITY_THRESHOLD;
         }
 
         @Override
@@ -1308,9 +1308,10 @@ public class LatinIME extends InputMethodService
             final int length = word.length();
             // Don't add very short or very long words.
             if (length < 2 || length > getMaxWordLength()) return;
-            super.addWord(word, addFrequency);
-            final int freq = getWordFrequency(word);
-            if (freq > PROMOTION_THRESHOLD) {
+            int freq = getWordFrequency(word);
+            freq = freq < 0 ? addFrequency : freq + addFrequency;
+            super.addWord(word, freq);
+            if (freq >= PROMOTION_THRESHOLD) {
                 LatinIME.this.promoteToUserDictionary(word, FREQUENCY_FOR_AUTO_ADD);
             }
         }
