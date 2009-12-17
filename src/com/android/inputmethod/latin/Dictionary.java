@@ -86,4 +86,9 @@ abstract public class Dictionary {
         return true;
     }
 
+    /**
+     * Override to clean up any resources.
+     */
+    public void close() {
+    }
 }

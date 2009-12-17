@@ -120,7 +120,7 @@
                 android:iconPreview="@drawable/sym_keyboard_feedback_delete"
                 android:isRepeatable="true"/>
     </Row>
-    
+
     <Row  android:rowEdgeFlags="bottom">
         <Key android:codes="-2" android:keyLabel="@string/label_alpha_key"
                 android:popupKeyboard="@xml/kbd_popup_template"

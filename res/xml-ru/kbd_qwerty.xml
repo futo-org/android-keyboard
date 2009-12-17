@@ -19,84 +19,66 @@
 -->
 
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="10%p"
+    android:keyWidth="9.09%p"
     android:horizontalGap="0px"
     android:verticalGap="0px"
     android:keyHeight="@dimen/key_height"
     >
 
     <Row>
-        <Key android:codes="113" android:keyLabel="q" android:keyEdgeFlags="left"/>
-        <Key android:codes="119" android:keyLabel="w"/>
-        <Key android:codes="101" android:keyLabel="e"
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_e"
-        />
-        <Key android:codes="114" android:keyLabel="r"/>
-        <Key android:codes="116" android:keyLabel="t"/>
-        <Key android:codes="122" android:keyLabel="z" />
-        <Key android:codes="117" android:keyLabel="u"
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_u"
-        />
-        <Key android:codes="105" android:keyLabel="i"
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_i"
-        />
-        <Key android:codes="111" android:keyLabel="o"
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_o"
-        />
-        <Key android:codes="112" android:keyLabel="p" android:keyEdgeFlags="right"/>
-    </Row>
-    
-    <Row>
-        <Key android:codes="97" android:keyLabel="a" android:horizontalGap="5%p" 
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_a"
+        <Key android:keyLabel="й"
                 android:keyEdgeFlags="left"/>
-        <Key android:codes="115" android:keyLabel="s"
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_s"
-        />
-        <Key android:codes="100" android:keyLabel="d"/>
-        <Key android:codes="102" android:keyLabel="f"/>
-        <Key android:codes="103" android:keyLabel="g"/>
-        <Key android:codes="104" android:keyLabel="h"/>
-        <Key android:codes="106" android:keyLabel="j"/>
-        <Key android:codes="107" android:keyLabel="k"/>
-        <Key android:codes="108" android:keyLabel="l" android:keyEdgeFlags="right"/>
+        <Key android:keyLabel="ц"/>
+        <Key android:keyLabel="у"/>
+        <Key android:keyLabel="к"/>
+        <Key android:keyLabel="е"/>
+        <Key android:keyLabel="н"/>
+        <Key android:keyLabel="г"/>
+        <Key android:keyLabel="ш"/>
+        <Key android:keyLabel="щ"/>
+        <Key android:keyLabel="з"/>
+        <Key android:keyLabel="х"
+                android:keyEdgeFlags="right"/>
     </Row>
     
     <Row>
-        <Key android:codes="-1" android:keyIcon="@drawable/sym_keyboard_shift"
-                android:keyWidth="15%p" android:isModifier="true"
+        <Key android:keyLabel="ф"
+                android:keyEdgeFlags="left"/>
+        <Key android:keyLabel="ы"/>
+        <Key android:keyLabel="в"/>
+        <Key android:keyLabel="а"/>
+        <Key android:keyLabel="п"/>
+        <Key android:keyLabel="р"/>
+        <Key android:keyLabel="о"/>
+        <Key android:keyLabel="л"/>
+        <Key android:keyLabel="д"/>
+        <Key android:keyLabel="ж"/>
+        <Key android:keyLabel="э"
+                android:keyEdgeFlags="right"/>
+    </Row>
+    
+    <Row android:keyWidth="8.5%p">
+        <Key android:codes="-1" android:keyIcon="@drawable/sym_keyboard_shift" 
+                android:keyWidth="11.75%p" android:isModifier="true"
                 android:iconPreview="@drawable/sym_keyboard_feedback_shift"
                 android:isSticky="true" android:keyEdgeFlags="left"/>
-        <Key android:codes="121" android:keyLabel="y"
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_y"
-        />
-        <Key android:codes="120" android:keyLabel="x"/>
-        <Key android:codes="99" android:keyLabel="c"
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_c"
-        />
-        <Key android:codes="118" android:keyLabel="v"/>
-        <Key android:codes="98" android:keyLabel="b"/>
-        <Key android:codes="110" android:keyLabel="n"
-                android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_n"
-        />
-        <Key android:codes="109" android:keyLabel="m"/>
+        <Key android:keyLabel="я"/>
+        <Key android:keyLabel="ч"/>
+        <Key android:keyLabel="с"/>
+        <Key android:keyLabel="м"/>
+        <Key android:keyLabel="и"/>
+        <Key android:keyLabel="т"/>
+        <Key android:keyLabel="ь"/>
+        <Key android:keyLabel="б"/>
+        <Key android:keyLabel="ю"/>
         <Key android:codes="-5" android:keyIcon="@drawable/sym_keyboard_delete"
-                android:keyWidth="15%p" android:keyEdgeFlags="right" 
+                android:keyWidth="11.75%p" android:keyEdgeFlags="right"
                 android:iconPreview="@drawable/sym_keyboard_feedback_delete"
                 android:isRepeatable="true"/>
     </Row>
-    
+
     <Row android:keyboardMode="@+id/mode_normal" android:rowEdgeFlags="bottom">
-        <Key android:codes="-2" android:keyLabel="@string/label_symbol_key"
+        <Key android:codes="-2" android:keyLabel="@string/label_symbol_key" 
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="_"
                 android:keyWidth="20%p" android:keyEdgeFlags="left"/>
@@ -131,14 +113,14 @@
     </Row>
 
     <Row android:keyboardMode="@+id/mode_email" android:rowEdgeFlags="bottom">
-        <Key android:codes="-2" android:keyLabel="@string/label_symbol_key" 
+        <Key android:codes="-2" android:keyLabel="@string/label_symbol_key"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="_"
                 android:keyWidth="20%p" android:keyEdgeFlags="left"/>
         <Key android:codes="@integer/key_f1" android:keyIcon="@drawable/sym_keyboard_globe"
                 android:keyWidth="15%p"/>
         <Key android:keyLabel="\@" android:keyWidth="15%p"/>
-        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" 
+        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
                 android:keyWidth="15%p" android:isRepeatable="true"/>
         <Key android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"
@@ -163,6 +145,6 @@
         <Key android:keyLabel=":-)" android:keyOutputText=":-) "
                 android:popupKeyboard="@xml/popup_smileys"
                 android:keyWidth="20%p" android:keyEdgeFlags="right"/>
-
     </Row>
 </Keyboard>
+    

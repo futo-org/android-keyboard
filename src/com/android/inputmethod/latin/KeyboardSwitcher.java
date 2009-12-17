@@ -17,7 +17,13 @@
 package com.android.inputmethod.latin;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+
+import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.inputmethodservice.InputMethodService;
 
 public class KeyboardSwitcher {
 
@@ -42,7 +48,8 @@ public class KeyboardSwitcher {
     private static final int SYMBOLS_MODE_STATE_SYMBOL = 2;
 
     LatinKeyboardView mInputView;
-    LatinIME mContext;
+    Context mContext;
+    InputMethodService mInputMethodService;
     
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
@@ -58,12 +65,26 @@ public class KeyboardSwitcher {
     private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
 
     private int mLastDisplayWidth;
+    private Locale mInputLocale;
+    private boolean mEnableMultipleLanguages;
 
-    KeyboardSwitcher(LatinIME context) {
+    KeyboardSwitcher(Context context, InputMethodService ims) {
         mContext = context;
         mKeyboards = new HashMap<KeyboardId, LatinKeyboard>();
         mSymbolsId = new KeyboardId(R.xml.kbd_symbols);
         mSymbolsShiftedId = new KeyboardId(R.xml.kbd_symbols_shift);
+        mInputMethodService = ims;
+    }
+
+    /**
+     * Sets the input locale, when there are multiple locales for input.
+     * If no locale switching is required, then the locale should be set to null.
+     * @param locale the current input locale, or null for default locale with no locale 
+     * button.
+     */
+    void setInputLocale(Locale locale, boolean enableMultipleLanguages) {
+        mInputLocale = locale;
+        mEnableMultipleLanguages = enableMultipleLanguages;
     }
 
     void setInputView(LatinKeyboardView inputView) {
@@ -75,7 +96,7 @@ public class KeyboardSwitcher {
         // Configuration change is coming after the keyboard gets recreated. So don't rely on that.
         // If keyboards have already been made, check if we have a screen width change and 
         // create the keyboard layouts again at the correct orientation
-        int displayWidth = mContext.getMaxWidth();
+        int displayWidth = mInputMethodService.getMaxWidth();
         if (displayWidth == mLastDisplayWidth) return;
         mLastDisplayWidth = displayWidth;
         if (!forceCreate) mKeyboards.clear();
@@ -136,6 +157,11 @@ public class KeyboardSwitcher {
         }
 
         mCurrentId = id;
+        if (mEnableMultipleLanguages) {
+            keyboard.setLanguage(mInputLocale);
+        } else {
+            keyboard.setLanguage(null);
+        }
         mInputView.setKeyboard(keyboard);
         keyboard.setShifted(false);
         keyboard.setShiftLocked(keyboard.isShiftLocked());
@@ -145,6 +171,11 @@ public class KeyboardSwitcher {
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
         if (!mKeyboards.containsKey(id)) {
+            Resources orig = mContext.getResources();
+            Configuration conf = orig.getConfiguration();
+            Locale saveLocale = conf.locale;
+            conf.locale = mInputLocale;
+            orig.updateConfiguration(conf, null);
             LatinKeyboard keyboard = new LatinKeyboard(
                 mContext, id.mXml, id.mMode);
             if (id.mMode == KEYBOARDMODE_NORMAL
@@ -158,6 +189,9 @@ public class KeyboardSwitcher {
                 keyboard.enableShiftLock();
             }
             mKeyboards.put(id, keyboard);
+
+            conf.locale = saveLocale;
+            orig.updateConfiguration(conf, null);
         }
         return mKeyboards.get(id);
     }
