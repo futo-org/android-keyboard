@@ -38,6 +38,7 @@ using namespace android;
 static jfieldID sDescriptorField;
 static jfieldID sAssetManagerNativeField;
 static jmethodID sAddWordMethod;
+static jfieldID sDictLength;
 
 //
 // helper function to throw an exception
@@ -79,6 +80,7 @@ static jint latinime_BinaryDictionary_open
     }
     Dictionary *dictionary = new Dictionary(dict, typedLetterMultiplier, fullWordMultiplier);
     dictionary->setAsset(dictAsset);
+    env->SetIntField(object, sDictLength, (jint) dictAsset->getLength());
 
     env->ReleaseStringUTFChars(resourceString, resourcePath);
     return (jint) dictionary;
@@ -175,6 +177,14 @@ static int registerNatives(JNIEnv *env)
         return -1;
     }
     sAssetManagerNativeField = env->GetFieldID(clazz, "mObject", "I");
+
+    // Get the field pointer for the dictionary length
+    clazz = env->FindClass(kClassPathName);
+    if (clazz == NULL) {
+        LOGE("Can't find %s", kClassPathName);
+        return -1;
+    }
+    sDictLength = env->GetFieldID(clazz, "mDictLength", "I");
 
     return registerNativeMethods(env,
             kClassPathName, gMethods, sizeof(gMethods) / sizeof(gMethods[0]));

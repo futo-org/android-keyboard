@@ -126,7 +126,9 @@ public class LatinIME extends InputMethodService
     private CharSequence mBestWord;
     private boolean mPredictionOn;
     private boolean mCompletionOn;
+    private boolean mHasDictionary;
     private boolean mAutoSpace;
+    private boolean mAutoCorrectEnabled;
     private boolean mAutoCorrectOn;
     private boolean mCapsLock;
     private boolean mVibrateOn;
@@ -224,7 +226,6 @@ public class LatinIME extends InputMethodService
             mSuggest.close();
         }
         mSuggest = new Suggest(this, R.raw.main);
-        mSuggest.setCorrectionMode(mCorrectionMode);
         mUserDictionary = new UserDictionary(this);
         if (mContactsDictionary == null) {
             mContactsDictionary = new ContactsDictionary(this);
@@ -236,7 +237,7 @@ public class LatinIME extends InputMethodService
         mSuggest.setUserDictionary(mUserDictionary);
         mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);
-        
+        updateCorrectionMode();
         mWordSeparators = mResources.getString(R.string.word_separators);
         mSentenceSeparators = mResources.getString(R.string.sentence_separators);
 
@@ -304,7 +305,7 @@ public class LatinIME extends InputMethodService
 
         TextEntryState.newSession(this);
 
-        boolean disableAutoCorrect = false;
+        mInputTypeNoAutoCorrect = false;
         mPredictionOn = false;
         mCompletionOn = false;
         mCompletions = null;
@@ -353,19 +354,19 @@ public class LatinIME extends InputMethodService
                     // If it's a browser edit field and auto correct is not ON explicitly, then
                     // disable auto correction, but keep suggestions on.
                     if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
-                        disableAutoCorrect = true;
+                        mInputTypeNoAutoCorrect = true;
                     }
                 }
 
                 // If NO_SUGGESTIONS is set, don't do prediction.
                 if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
                     mPredictionOn = false;
-                    disableAutoCorrect = true;
+                    mInputTypeNoAutoCorrect = true;
                 }
                 // If it's not multiline and the autoCorrect flag is not set, then don't correct
                 if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0 &&
                         (attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
-                    disableAutoCorrect = true;
+                    mInputTypeNoAutoCorrect = true;
                 }
                 if ((attribute.inputType&EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
                     mPredictionOn = false;
@@ -385,17 +386,13 @@ public class LatinIME extends InputMethodService
         setCandidatesViewShown(false);
         if (mCandidateView != null) mCandidateView.setSuggestions(null, false, false, false);
         loadSettings();
-        // Override auto correct
-        if (disableAutoCorrect) {
-            mAutoCorrectOn = false;
-            if (mCorrectionMode == Suggest.CORRECTION_FULL) {
-                mCorrectionMode = Suggest.CORRECTION_BASIC;
-            }
-        }
+
+        // If the dictionary is not big enough, don't auto correct
+        mHasDictionary = mSuggest.hasMainDictionary();
+
+        updateCorrectionMode();
+
         mInputView.setProximityCorrectionEnabled(true);
-        if (mSuggest != null) {
-            mSuggest.setCorrectionMode(mCorrectionMode);
-        }
         mPredictionOn = mPredictionOn && mCorrectionMode > 0;
         checkTutorial(attribute.privateImeOptions);
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
@@ -1150,6 +1147,18 @@ public class LatinIME extends InputMethodService
         mUserDictionary.addWord(word, frequency);
     }
 
+    private void updateCorrectionMode() {
+        mHasDictionary = mSuggest != null ? mSuggest.hasMainDictionary() : false;
+        mAutoCorrectOn = (mAutoCorrectEnabled || mQuickFixes)
+                && !mInputTypeNoAutoCorrect && mHasDictionary;
+        mCorrectionMode = mAutoCorrectOn
+                ? Suggest.CORRECTION_FULL
+                : (mQuickFixes ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
+        if (mSuggest != null) {
+            mSuggest.setCorrectionMode(mCorrectionMode);
+        }
+    }
+
     private void launchSettings() {
         handleClose();
         Intent intent = new Intent();
@@ -1169,12 +1178,9 @@ public class LatinIME extends InputMethodService
         // will continue to work
         if (AutoText.getSize(mInputView) < 1) mQuickFixes = true;
         mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true) & mQuickFixes;
-        boolean autoComplete = sp.getBoolean(PREF_AUTO_COMPLETE,
+        mAutoCorrectEnabled = sp.getBoolean(PREF_AUTO_COMPLETE,
                 mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
-        mAutoCorrectOn = mSuggest != null && (autoComplete || mQuickFixes);
-        mCorrectionMode = autoComplete
-                ? Suggest.CORRECTION_FULL
-                : (mQuickFixes ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
+        updateCorrectionMode();
         String languageList = sp.getString(PREF_SELECTED_LANGUAGES, null);
         updateSelectedLanguages(languageList);
     }
@@ -1274,6 +1280,7 @@ public class LatinIME extends InputMethodService
     private static final int CPS_BUFFER_SIZE = 16;
     private long[] mCpsIntervals = new long[CPS_BUFFER_SIZE];
     private int mCpsIndex;
+    private boolean mInputTypeNoAutoCorrect;
     
     private void measureCps() {
         if (!LatinIME.PERF_DEBUG) return;
