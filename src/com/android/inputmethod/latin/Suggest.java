@@ -37,7 +37,9 @@ public class Suggest implements Dictionary.WordCallback {
     public static final int CORRECTION_BASIC = 1;
     public static final int CORRECTION_FULL = 2;
 
-    private Dictionary mMainDict;
+    private static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
+
+    private BinaryDictionary mMainDict;
 
     private Dictionary mUserDictionary;
 
@@ -49,9 +51,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private int[] mPriorities = new int[mPrefMaxSuggestions];
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
-    private boolean mIncludeTypedWordIfValid;
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
-    private Context mContext;
     private boolean mHaveCorrection;
     private CharSequence mOriginalWord;
     private String mLowerOriginalWord;
@@ -60,7 +60,6 @@ public class Suggest implements Dictionary.WordCallback {
 
 
     public Suggest(Context context, int dictionaryResId) {
-        mContext = context;
         mMainDict = new BinaryDictionary(context, dictionaryResId);
         for (int i = 0; i < mPrefMaxSuggestions; i++) {
             StringBuilder sb = new StringBuilder(32);
@@ -74,6 +73,10 @@ public class Suggest implements Dictionary.WordCallback {
 
     public void setCorrectionMode(int mode) {
         mCorrectionMode = mode;
+    }
+
+    public boolean hasMainDictionary() {
+        return mMainDict.getSize() > LARGE_DICTIONARY_THRESHOLD;
     }
 
     /**
@@ -155,7 +158,6 @@ public class Suggest implements Dictionary.WordCallback {
         mHaveCorrection = false;
         collectGarbage();
         Arrays.fill(mPriorities, 0);
-        mIncludeTypedWordIfValid = includeTypedWordIfValid;
         
         // Save a lowercase version of the original word
         mOriginalWord = wordComposer.getTypedWord();

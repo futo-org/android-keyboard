@@ -31,7 +31,9 @@
         <Key android:keyLabel="ц"/>
         <Key android:keyLabel="у"/>
         <Key android:keyLabel="к"/>
-        <Key android:keyLabel="е"/>
+        <Key android:keyLabel="е"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="ё" />
         <Key android:keyLabel="н"/>
         <Key android:keyLabel="г"/>
         <Key android:keyLabel="ш"/>
@@ -40,7 +42,7 @@
         <Key android:keyLabel="х"
                 android:keyEdgeFlags="right"/>
     </Row>
-    
+
     <Row>
         <Key android:keyLabel="ф"
                 android:keyEdgeFlags="left"/>
