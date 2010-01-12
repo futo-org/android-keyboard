@@ -89,8 +89,8 @@
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Přidržením klávesy zobrazte možnosti"\n</b></font><font size="3">\n</font>"Použijte interpunkční znaménka a diakritiku."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Nastavení klávesnice"\n</b></font><font size="3">\n</font>"Dotkněte se klávesy "<b>"?123"</b>" a přidržte ji."</string>
     <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".cz"</string>
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">".biz"</string>
-    <string name="popular_domain_4" msgid="35359437471311470">".cz"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".net"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".eu"</string>
 </resources>

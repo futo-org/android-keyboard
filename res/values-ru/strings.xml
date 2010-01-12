@@ -17,8 +17,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Клавиатура Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Настройки клавиатуры Android"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вибрация при нажатии клавиш"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при нажатии клавиш"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Исправлять опечатки"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Включить исправление ошибок при вводе"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Ошибки при вводе в горизонтальной ориентации"</string>
@@ -26,12 +26,12 @@
     <string name="auto_correction" msgid="7911639788808958255">"Предложение слов"</string>
     <string name="auto_correction_summary" msgid="6881047311475758267">"Автоматически исправлять предыдущее слово"</string>
     <string name="prediction" msgid="466220283138359837">"Предложение слов"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Настройки предложения слов"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"Настройки подсказок"</string>
     <string name="prediction_summary" msgid="459788228830873110">"Включить автоматическое завершение слов при вводе"</string>
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Автоматическое завершение"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Увеличить размер текстового поля"</string>
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"Скрывать предложение слов в горизонтальной ориентации"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Делать заглавной первую букву предложения"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Автоматическая пунктуация"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
@@ -39,9 +39,9 @@
     <string name="quick_fixes" msgid="5353213327680897927">"Быстрое исправление"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Исправлять распространенные опечатки"</string>
     <string name="show_suggestions" msgid="507074425254289133">"Предлагать варианты"</string>
-    <string name="show_suggestions_summary" msgid="1989672863935759654">"Предлагать варианты во время ввода"</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"Предлагать варианты слов во время ввода"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Автозавершение"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Пробел или знак препинания вставляют выделенное слово"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"При нажатии пробела или знака препинания вставлять предложенное слово"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Нет"</item>
     <item msgid="1669461741568287396">"Основной"</item>

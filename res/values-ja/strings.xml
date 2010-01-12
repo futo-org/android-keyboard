@@ -39,9 +39,9 @@
     <string name="quick_fixes" msgid="5353213327680897927">"クイックフィックス"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"よくある誤字・脱字を修正します"</string>
     <string name="show_suggestions" msgid="507074425254289133">"入力候補を表示"</string>
-    <string name="show_suggestions_summary" msgid="1989672863935759654">"入力時に入力候補を表示します"</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"入力時に入力候補を表示する"</string>
     <string name="auto_complete" msgid="1103196318775486023">"オートコンプリート"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"スペースまたは句読点キーで反転表示されている変換候補を挿入する"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"反転表示されている変換候補をスペースまたは句読点キーで挿入する"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"なし"</item>
     <item msgid="1669461741568287396">"基本"</item>

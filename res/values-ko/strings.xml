@@ -39,9 +39,9 @@
     <string name="quick_fixes" msgid="5353213327680897927">"빠른 수정"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"자주 발생하는 오타를 수정합니다."</string>
     <string name="show_suggestions" msgid="507074425254289133">"추천 단어 표시"</string>
-    <string name="show_suggestions_summary" msgid="1989672863935759654">"글자를 입력하는 동안 추천 단어를 표시합니다."</string>
+    <string name="show_suggestions_summary" msgid="1989672863935759654">"글자를 입력하는 동안 추천 단어를 표시"</string>
     <string name="auto_complete" msgid="1103196318775486023">"자동 완성"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"스페이스바와 문장부호 키로 강조 표시된 단어를 자동 삽입합니다."</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"스페이스바와 문장부호 키로 강조 표시된 단어를 자동 삽입"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"없음"</item>
     <item msgid="1669461741568287396">"기본"</item>

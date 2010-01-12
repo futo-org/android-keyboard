@@ -27,7 +27,7 @@
 
     <Row android:rowEdgeFlags="top">
         <Key android:keyLabel=";" android:keyEdgeFlags="left" />
-        <Key android:keyLabel="\\" />
+        <Key android:keyLabel="," />
         <Key android:keyLabel="&amp;" />
         <Key android:keyLabel="(" />
         <Key android:keyLabel=")" />
