@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.android.inputmethod.latin.UserDictionary;
+
 import android.app.AlertDialog;
 import android.backup.BackupManager;
 import android.content.BroadcastReceiver;
@@ -226,6 +228,7 @@ public class LatinIME extends InputMethodService
             mSuggest.close();
         }
         mSuggest = new Suggest(this, R.raw.main);
+        if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this);
         if (mContactsDictionary == null) {
             mContactsDictionary = new ContactsDictionary(this);
