@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.android.inputmethod.latin.WordComposer;
+
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of 
  * characters. This includes corrections and completions.
@@ -55,6 +57,7 @@ public class Suggest implements Dictionary.WordCallback {
     private boolean mHaveCorrection;
     private CharSequence mOriginalWord;
     private String mLowerOriginalWord;
+    private boolean mCapitalize;
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
@@ -156,6 +159,7 @@ public class Suggest implements Dictionary.WordCallback {
     public List<CharSequence> getSuggestions(View view, WordComposer wordComposer, 
             boolean includeTypedWordIfValid) {
         mHaveCorrection = false;
+        mCapitalize = wordComposer.isCapitalized();
         collectGarbage();
         Arrays.fill(mPriorities, 0);
         
@@ -300,7 +304,14 @@ public class Suggest implements Dictionary.WordCallback {
         StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1) 
                 : new StringBuilder(32);
         sb.setLength(0);
-        sb.append(word, offset, length);
+        if (mCapitalize) {
+            sb.append(Character.toUpperCase(word[offset]));
+            if (length > 1) {
+                sb.append(word, offset + 1, length - 1);
+            }
+        } else {
+            sb.append(word, offset, length);
+        }
         mSuggestions.add(pos, sb);
         if (mSuggestions.size() > prefMaxSuggestions) {
             CharSequence garbage = mSuggestions.remove(prefMaxSuggestions);
