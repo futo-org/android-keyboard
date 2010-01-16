@@ -47,12 +47,6 @@
     <item msgid="1669461741568287396">"Základní"</item>
     <item msgid="4894328801530136615">"Pokročilé"</item>
   </string-array>
-    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
-    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
-    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
-    <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
-    <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
-    <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Uloženo"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"áàâãäåæ"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"éěèêë"</string>
@@ -63,7 +57,6 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ňñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"čç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
-    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Podržením klávesy zobrazíte diakritiku (ž, á atd.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Stisknutím klávesy Zpět ↶ můžete klávesnici kdykoli zavřít"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Přístup k číslům a symbolům"</string>
@@ -84,6 +77,30 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"Alt"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Hlasový vstup"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Pro váš jazyk aktuálně není hlasový vstup podporován, ale funguje v angličtině."</string>
+    <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"Hlasový vstup je experimentální funkce, která využívá síťové rozpoznávání řeči společnosti Google."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Chcete-li vypnout hlasový vstup, přejděte do nastavení klávesnice."</string>
+    <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Chcete-li použít hlasový vstup, stiskněte tlačítko mikrofonu nebo přejeďte prstem přes klávesnici na obrazovce."</string>
+    <string name="voice_listening" msgid="467518160751321844">"Mluvte"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Probíhá zpracování"</string>
+    <!-- no translation found for voice_initializing (661962047129906646) -->
+    <skip />
+    <string name="voice_error" msgid="5140896300312186162">"Chyba. Zkuste to prosím znovu."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"Připojení se nezdařilo."</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"Chyba, řeč je příliš dlouhá."</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"Problém se zvukem"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"Chyba serveru"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"Nebyla detekována žádná řeč."</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Nebyly nalezeny žádné shody"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Hlasové vyhledávání není nainstalováno"</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Nápověda:"</b>" Chcete-li aktivovat hlasový vstup, přejeďte prstem přes klávesnici."</string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Nápověda:"</b>" Příště zkuste vyslovit interpunkci, například „tečka“, „čárka“ nebo „otazník“."</string>
+    <string name="cancel" msgid="6830980399865683324">"Zrušit"</string>
+    <string name="ok" msgid="7898366843681727667">"OK"</string>
+    <string name="enable_voice" msgid="8299503298530853956">"Hlasový vstup"</string>
+    <string name="auto_submit" msgid="9151008027068358518">"Po hlasovém vstupu automaticky odeslat"</string>
+    <string name="auto_submit_summary" msgid="4961875269610384226">"Při vyhledávání nebo přechodu na další pole automaticky stisknout Enter."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Otevřete klávesnici"\n</b></font><font size="3">\n</font>"Dotkněte se jakéhokoli textového pole."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Zavřete klávesnici"\n</b></font><font size="3">\n</font>"Stiskněte klávesu Zpět."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Přidržením klávesy zobrazte možnosti"\n</b></font><font size="3">\n</font>"Použijte interpunkční znaménka a diakritiku."</string>
@@ -95,4 +112,5 @@
     <string name="popular_domain_4" msgid="35359437471311470">".eu"</string>
     <!-- no translation found for language_selection_title (530749890984542339) -->
     <skip />
+    <string name="inputMethod" msgid="7854532062009028116">"Metoda zadávání dat"</string>
 </resources>

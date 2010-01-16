@@ -47,12 +47,6 @@
     <item msgid="1669461741568287396">"Base"</item>
     <item msgid="4894328801530136615">"Avanzate"</item>
   </string-array>
-    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
-    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
-    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
-    <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
-    <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
-    <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : parola salvata"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"àá"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"èé"</string>
@@ -63,7 +57,6 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
-    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Tieni premuto un tasto per vedere le lettere con segni diacritici (ø, ö etc.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Premi il tasto Indietro ↶ per chiudere la tastiera"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Accedi a numeri e simboli"</string>
@@ -84,6 +77,30 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Comandi vocali"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"I comandi vocali non sono attualmente supportati per la tua lingua ma funzionano in inglese."</string>
+    <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"I comandi vocali sono una funzione sperimentale che utilizza il riconoscimento vocale in rete di Google."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Per disattivare i comandi vocali, vai alle impostazioni della tastiera."</string>
+    <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Per utilizzare i comandi vocali, premi il pulsante del microfono o fai scorrere il dito sulla tastiera sullo schermo."</string>
+    <string name="voice_listening" msgid="467518160751321844">"Parla ora"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Elaborazione in corso"</string>
+    <!-- no translation found for voice_initializing (661962047129906646) -->
+    <skip />
+    <string name="voice_error" msgid="5140896300312186162">"Errore. Riprova più tardi."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"Impossibile connettersi."</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"Errore: conversazione troppo lunga."</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"Problema audio"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"Errore del server"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"Nessuna frase vocale rilevata"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Nessuna corrispondenza trovata"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Ricerca vocale non installata"</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Suggerimento."</b>" Fai scorrere il dito sulla tastiera per parlare"</string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Suggerimento."</b>" La prossima volta, prova a pronunciare termini relativi alla punteggiatura come \"punto\", \"virgola\" o \"punto di domanda\"."</string>
+    <string name="cancel" msgid="6830980399865683324">"Annulla"</string>
+    <string name="ok" msgid="7898366843681727667">"OK"</string>
+    <string name="enable_voice" msgid="8299503298530853956">"Comandi vocali"</string>
+    <string name="auto_submit" msgid="9151008027068358518">"Invia automaticamente dopo comando vocale"</string>
+    <string name="auto_submit_summary" msgid="4961875269610384226">"Premi automaticamente \"Invio\" durante una ricerca o un passaggio al campo successivo."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Apertura tastiera"\n</b></font><font size="3">\n</font>"Tocca qualsiasi campo di testo."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Chiusura tastiera"\n</b></font><font size="3">\n</font>"Premi il tasto Indietro."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Tocca e tieni premuto un tasto per le opzioni"\n</b></font><font size="3">\n</font>"Accesso a punteggiatura e accenti."</string>
@@ -95,4 +112,5 @@
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
     <!-- no translation found for language_selection_title (530749890984542339) -->
     <skip />
+    <string name="inputMethod" msgid="7854532062009028116">"Metodo inserimento"</string>
 </resources>

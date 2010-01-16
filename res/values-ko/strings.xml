@@ -47,12 +47,6 @@
     <item msgid="1669461741568287396">"기본"</item>
     <item msgid="4894328801530136615">"고급"</item>
   </string-array>
-    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
-    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
-    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
-    <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
-    <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
-    <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : 저장됨"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
@@ -63,7 +57,6 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
-    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"키를 길게 누르면 악센트(ø, ö 등)가 표시됩니다."</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"키보드를 닫으려면 언제든지 뒤로 키(↶)를 누르세요."</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"숫자 및 기호 액세스"</string>
@@ -84,6 +77,30 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"음성 입력"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"음성 입력은 현재 자국어로 지원되지 않으며 영어로 작동됩니다."</string>
+    <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"음성 입력은 Google의 네트워크화된 음성 인식을 사용하는 실험적 기능입니다."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"음성 입력을 사용하지 않으려면 키보드 설정으로 이동하세요."</string>
+    <string name="voice_hint_dialog_message" msgid="6892342981545727994">"음성 입력을 사용하려면 마이크 버튼을 누르거나 터치 키보드 위로 손가락을 미끄러지듯 움직이세요."</string>
+    <string name="voice_listening" msgid="467518160751321844">"지금 시작하세요."</string>
+    <string name="voice_working" msgid="6666937792815731889">"인식 중"</string>
+    <!-- no translation found for voice_initializing (661962047129906646) -->
+    <skip />
+    <string name="voice_error" msgid="5140896300312186162">"오류가 발생했습니다. 다시 시도해 보세요."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"연결할 수 없습니다."</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"음성을 너무 많이 입력했습니다."</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"오디오 문제"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"서버 오류"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"음성이 인식되지 않았습니다."</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"일치하는 항목 없음"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"음성 검색이 설치되지 않았습니다."</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"도움말:"</b>" 키보드를 스와이프하고 말하세요."</string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"도움말:"</b>" 다음 번에는 \'마침표\', \'쉼표\', \'물음표\'와 같은 구두점을 말해 보세요."</string>
+    <string name="cancel" msgid="6830980399865683324">"취소"</string>
+    <string name="ok" msgid="7898366843681727667">"확인"</string>
+    <string name="enable_voice" msgid="8299503298530853956">"음성 입력"</string>
+    <string name="auto_submit" msgid="9151008027068358518">"음성을 입력한 다음 자동 제출"</string>
+    <string name="auto_submit_summary" msgid="4961875269610384226">"검색하거나 다음 입력란으로 이동할 때 자동으로 Enter 키를 누릅니다."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"키보드 열기"\n</b></font><font size="3">\n</font>"아무 텍스트 입력란이나 터치하세요."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"키보드 닫기"\n</b></font><font size="3">\n</font>"\'뒤로\' 키를 누르세요."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"키를 길게 터치하여 옵션 보기"\n</b></font><font size="3">\n</font>"문장 부호 및 악센트 기호에 액세스하세요."</string>
@@ -95,4 +112,5 @@
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
     <!-- no translation found for language_selection_title (530749890984542339) -->
     <skip />
+    <string name="inputMethod" msgid="7854532062009028116">"입력 방법"</string>
 </resources>

@@ -26,6 +26,6 @@ public class LatinIMEBackupAgent extends BackupHelperAgent {
 
     public void onCreate() {
         addHelper("shared_pref", new SharedPreferencesBackupHelper(this,
-                "com.android.inputmethod.latin_preferences"));
+                getPackageName() + "_preferences"));
     }
 }

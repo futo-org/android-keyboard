@@ -113,7 +113,7 @@ public class CandidateView extends View {
     public CandidateView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mSelectionHighlight = context.getResources().getDrawable(
-                com.android.internal.R.drawable.list_selector_background_pressed);
+                R.drawable.list_selector_background_pressed);
 
         LayoutInflater inflate =
             (LayoutInflater) context

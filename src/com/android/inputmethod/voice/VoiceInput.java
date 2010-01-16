@@ -1,0 +1,551 @@
+/*
+ * Copyright (C) 2009 Google Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+package com.android.inputmethod.voice;
+
+import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
+import android.speech.IRecognitionListener;
+import android.speech.RecognitionServiceUtil;
+import android.speech.RecognizerIntent;
+import android.speech.RecognitionResult;
+import android.view.View;
+import android.view.View.OnClickListener;
+import com.android.inputmethod.latin.R;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * Speech recognition input, including both user interface and a background
+ * process to stream audio to the network recognizer. This class supplies a
+ * View (getView()), which it updates as recognition occurs. The user of this
+ * class is responsible for making the view visible to the user, as well as
+ * handling various events returned through UiListener.
+ */
+public class VoiceInput implements OnClickListener {
+    private static final String TAG = "VoiceInput";
+    private static final String EXTRA_RECOGNITION_CONTEXT =
+            "android.speech.extras.RECOGNITION_CONTEXT";
+    private static final String EXTRA_CALLING_PACKAGE = "calling_package";
+
+    private static final String DEFAULT_RECOMMENDED_PACKAGES =
+            "com.android.mms " +
+            "com.google.android.gm " +
+            "com.google.android.talk " +
+            "com.google.android.apps.googlevoice " +
+            "com.android.email " +
+            "com.android.browser ";
+
+    // WARNING! Before enabling this, fix the problem with calling getExtractedText() in
+    // landscape view. It causes Extracted text updates to be rejected due to a token mismatch
+    public static boolean ENABLE_WORD_CORRECTIONS = false;
+
+    private static Boolean sVoiceIsAvailable = null;
+
+    // Dummy word suggestion which means "delete current word"
+    public static final String DELETE_SYMBOL = " \u00D7 ";  // times symbol
+
+    private Whitelist mRecommendedList;
+    private Whitelist mBlacklist;
+
+    private VoiceInputLogger mLogger;
+
+    // Names of a few intent extras defined in VoiceSearch's RecognitionService.
+    // These let us tweak the endpointer parameters.
+    private static final String EXTRA_SPEECH_MINIMUM_LENGTH_MILLIS =
+            "android.speech.extras.SPEECH_INPUT_MINIMUM_LENGTH_MILLIS";
+    private static final String EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS =
+            "android.speech.extras.SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS";
+    private static final String EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS =
+            "android.speech.extras.SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS";
+    
+    // The usual endpointer default value for input complete silence length is 0.5 seconds,
+    // but that's used for things like voice search. For dictation-like voice input like this,
+    // we go with a more liberal value of 1 second. This value will only be used if a value
+    // is not provided from Gservices.
+    private static final String INPUT_COMPLETE_SILENCE_LENGTH_DEFAULT_VALUE_MILLIS = "1000";
+    
+    // Used to record part of that state for logging purposes.
+    public static final int DEFAULT = 0;
+    public static final int LISTENING = 1;
+    public static final int WORKING = 2;
+    public static final int ERROR = 3;
+
+    private int mState = DEFAULT;
+
+    /**
+     * Events relating to the recognition UI. You must implement these.
+     */
+    public interface UiListener {
+
+        /**
+         * @param recognitionResults a set of transcripts for what the user
+         *   spoke, sorted by likelihood.
+         */
+        public void onVoiceResults(
+            List<String> recognitionResults,
+            Map<String, List<CharSequence>> alternatives);
+
+        /**
+         * Called when the user cancels speech recognition.
+         */
+        public void onCancelVoice();
+    }
+
+    private RecognitionServiceUtil.Connection mRecognitionConnection;
+    private IRecognitionListener mRecognitionListener;
+    private RecognitionView mRecognitionView;
+    private UiListener mUiListener;
+    private Context mContext;
+    private ScheduledThreadPoolExecutor mExecutor;
+
+    /**
+     * @param context the service or activity in which we're runing.
+     * @param uiHandler object to receive events from VoiceInput.
+     */
+    public VoiceInput(Context context, UiListener uiHandler) {
+        mLogger = VoiceInputLogger.getLogger(context);
+        mRecognitionListener = new IMERecognitionListener();
+        mRecognitionConnection = new RecognitionServiceUtil.Connection() {
+            public synchronized void onServiceConnected(
+                ComponentName name, IBinder service) {
+                super.onServiceConnected(name, service);
+            }
+          };
+        mUiListener = uiHandler;
+        mContext = context;
+        newView();
+
+        String recommendedPackages = GoogleSettingsUtil.getGservicesString(
+                context.getContentResolver(),
+                GoogleSettingsUtil.LATIN_IME_VOICE_INPUT_RECOMMENDED_PACKAGES,
+                DEFAULT_RECOMMENDED_PACKAGES);
+        
+        mRecommendedList = new Whitelist();
+        for (String recommendedPackage : recommendedPackages.split("\\s+")) {
+            mRecommendedList.addApp(recommendedPackage);
+        }
+
+        mBlacklist = new Whitelist();
+        mBlacklist.addApp("com.android.setupwizard");
+
+        mExecutor = new ScheduledThreadPoolExecutor(1);
+        bindIfNecessary();
+    }
+
+    /**
+     * @return true if field is blacklisted for voice
+     */
+    public boolean isBlacklistedField(FieldContext context) {
+        return mBlacklist.matches(context);
+    }
+    
+    /**
+     * Used to decide whether to show voice input hints for this field, etc.
+     * 
+     * @return true if field is recommended for voice
+     */
+    public boolean isRecommendedField(FieldContext context) {
+        return mRecommendedList.matches(context);
+    }
+
+    /**
+     * @return true if the speech service is available on the platform.
+     */
+    public static boolean voiceIsAvailable(Context context) {
+        if (sVoiceIsAvailable != null) {
+            return sVoiceIsAvailable;
+        }
+
+        RecognitionServiceUtil.Connection recognitionConnection =
+                new RecognitionServiceUtil.Connection();
+        boolean bound = context.bindService(
+                makeIntent(), recognitionConnection, Context.BIND_AUTO_CREATE);
+        context.unbindService(recognitionConnection);
+        sVoiceIsAvailable = bound;
+        return bound;
+    }
+
+    /**
+     * Start listening for speech from the user. This will grab the microphone
+     * and start updating the view provided by getView(). It is the caller's
+     * responsibility to ensure that the view is visible to the user at this stage.
+     *
+     * @param context the same FieldContext supplied to voiceIsEnabled()
+     * @param swipe whether this voice input was started by swipe, for logging purposes
+     */
+    public void startListening(FieldContext context, boolean swipe) {
+        mState = DEFAULT;
+
+        Locale locale = Locale.getDefault();
+        String localeString = locale.getLanguage() + "-" + locale.getCountry();
+        
+        mLogger.start(localeString, swipe);
+        
+        mState = LISTENING;
+
+        if (mRecognitionConnection.mService == null) {
+            mRecognitionView.showInitializing();
+        } else {
+            mRecognitionView.showStartState();
+        }
+
+        if (!bindIfNecessary()) {
+            mState = ERROR;
+            
+            // We use CLIENT_ERROR to signify voice search is not available on the device.
+            onError(RecognitionResult.CLIENT_ERROR, false);
+            cancel();
+        }
+
+        if (mRecognitionConnection.mService != null) {
+            try {
+                Intent intent = makeIntent();
+                intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "");
+                intent.putExtra(EXTRA_RECOGNITION_CONTEXT, context.getBundle());
+                intent.putExtra(EXTRA_CALLING_PACKAGE, "VoiceIME");
+                intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,
+                        GoogleSettingsUtil.getGservicesInt(
+                                mContext.getContentResolver(),
+                                GoogleSettingsUtil.LATIN_IME_MAX_VOICE_RESULTS,
+                                1));
+
+                // Get endpointer params from Gservices.
+                // TODO: Consider caching these values for improved performance on slower devices.
+                ContentResolver cr = mContext.getContentResolver();
+                putEndpointerExtra(
+                        cr,
+                        intent,
+                        GoogleSettingsUtil.LATIN_IME_SPEECH_MINIMUM_LENGTH_MILLIS,
+                        EXTRA_SPEECH_MINIMUM_LENGTH_MILLIS,
+                        null  /* rely on endpointer default */);
+                putEndpointerExtra(
+                        cr,
+                        intent,
+                        GoogleSettingsUtil.LATIN_IME_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
+                        EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
+                        INPUT_COMPLETE_SILENCE_LENGTH_DEFAULT_VALUE_MILLIS
+                        /* our default value is different from the endpointer's */);
+                putEndpointerExtra(
+                        cr,
+                        intent,
+                        GoogleSettingsUtil.
+                                LATIN_IME_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
+                        EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
+                        null  /* rely on endpointer default */);
+                
+                mRecognitionConnection.mService.startListening(
+                        intent, mRecognitionListener);
+            } catch (RemoteException e) {
+                Log.e(TAG, "Could not start listening", e);
+                onError(-1 /* no specific error, just show default error */, false);
+            }
+        }
+    }
+    
+    /**
+     * Gets the value of the provided Gservices key, attempts to parse it into a long,
+     * and if successful, puts the long value as an extra in the provided intent.
+     */
+    private void putEndpointerExtra(ContentResolver cr, Intent i,
+            String gservicesKey, String intentExtraKey, String defaultValue) {
+        long l = -1;
+        String s = GoogleSettingsUtil.getGservicesString(cr, gservicesKey, defaultValue);
+        if (s != null) {
+            try {
+                l = Long.valueOf(s);
+            } catch (NumberFormatException e) {
+                Log.e(TAG, "could not parse value for " + gservicesKey + ": " + s);
+            }          
+        }
+        
+        if (l != -1) i.putExtra(intentExtraKey, l);
+    }
+
+    public void destroy() {
+        if (mRecognitionConnection.mService != null) {
+            //mContext.unbindService(mRecognitionConnection);
+        }
+    }
+
+    /**
+     * Creates a new instance of the view that is returned by {@link #getView()}
+     * Clients should use this when a previously returned view is stuck in a
+     * layout that is being thrown away and a new one is need to show to the
+     * user.
+     */
+    public void newView() {
+        mRecognitionView = new RecognitionView(mContext, this);
+    }
+
+    /**
+     * @return a view that shows the recognition flow--e.g., "Speak now" and
+     * "working" dialogs.
+     */
+    public View getView() {
+        return mRecognitionView.getView();
+    }
+
+    /**
+     * Handle the cancel button.
+     */
+    public void onClick(View view) {
+        switch(view.getId()) {
+            case R.id.button:
+                cancel();
+                break;
+        }
+    }
+
+    public void logTextModified() {
+        mLogger.textModified();
+    }
+    
+    public void logKeyboardWarningDialogShown() {
+        mLogger.keyboardWarningDialogShown();
+    }
+    
+    public void logKeyboardWarningDialogDismissed() {
+        mLogger.keyboardWarningDialogDismissed();
+    }
+    
+    public void logKeyboardWarningDialogOk() {
+        mLogger.keyboardWarningDialogOk();
+    }
+    
+    public void logKeyboardWarningDialogCancel() {
+        mLogger.keyboardWarningDialogCancel();
+    }
+    
+    public void logSwipeHintDisplayed() {
+        mLogger.swipeHintDisplayed();
+    }
+    
+    public void logPunctuationHintDisplayed() {
+        mLogger.punctuationHintDisplayed();
+    }
+    
+    public void logVoiceInputDelivered() {
+        mLogger.voiceInputDelivered();
+    }
+    
+    public void logNBestChoose(int index) {
+        mLogger.nBestChoose(index);
+    }
+
+    public void logInputEnded() {
+        mLogger.inputEnded();
+    }
+    
+    public void flushLogs() {
+        mLogger.flush();
+    }
+    
+    private static Intent makeIntent() {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+
+        // On Cupcake, use VoiceIMEHelper since VoiceSearch doesn't support.
+        // On Donut, always use VoiceSearch, since VoiceIMEHelper and
+        // VoiceSearch may conflict.
+        if (Build.VERSION.RELEASE.equals("1.5")) {
+            intent = intent.setClassName(
+              "com.google.android.voiceservice",
+              "com.google.android.voiceservice.IMERecognitionService");
+        } else {
+            intent = intent.setClassName(
+              "com.google.android.voicesearch",
+              "com.google.android.voicesearch.RecognitionService");
+        }
+
+        return intent;
+    }
+
+    /**
+     * Bind to the recognition service if necessary.
+     * @return true if we are bound or binding to the service, false if
+     *     the recognition service is unavailable.
+     */
+    private boolean bindIfNecessary() {
+        if (mRecognitionConnection.mService != null) {
+            return true;
+        }
+        return mContext.bindService(
+            makeIntent(), mRecognitionConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    /**
+     * Cancel in-progress speech recognition.
+     */
+    public void cancel() {
+        switch (mState) {
+        case LISTENING:
+            mLogger.cancelDuringListening();
+            break;
+        case WORKING:
+            mLogger.cancelDuringWorking();
+            break;
+        case ERROR:
+            mLogger.cancelDuringError();
+            break;
+        }
+        mState = DEFAULT;
+
+        // Remove all pending tasks (e.g., timers to cancel voice input)
+        for (Runnable runnable : mExecutor.getQueue()) {
+            mExecutor.remove(runnable);
+        }
+
+        if (mRecognitionConnection.mService != null) {
+            try {
+                mRecognitionConnection.mService.cancel();
+            } catch (RemoteException e) {
+                Log.e(TAG, "Exception on cancel", e);
+            }
+        }
+        mUiListener.onCancelVoice();
+        mRecognitionView.finish();
+    }
+
+    private int getErrorStringId(int errorType, boolean endpointed) {
+        switch (errorType) {
+            // We use CLIENT_ERROR to signify that voice search is not available on the device.
+            case RecognitionResult.CLIENT_ERROR:
+                return R.string.voice_not_installed;
+            case RecognitionResult.NETWORK_ERROR:
+                return R.string.voice_network_error;
+            case RecognitionResult.NETWORK_TIMEOUT:
+                return endpointed ?
+                        R.string.voice_network_error : R.string.voice_too_much_speech;
+            case RecognitionResult.AUDIO_ERROR:
+                return R.string.voice_audio_error;
+            case RecognitionResult.SERVER_ERROR:
+                return R.string.voice_server_error;
+            case RecognitionResult.SPEECH_TIMEOUT:
+                return R.string.voice_speech_timeout;
+            case RecognitionResult.NO_MATCH:
+                return R.string.voice_no_match;
+            default: return R.string.voice_error;
+        }
+    }
+
+    private void onError(int errorType, boolean endpointed) {
+        Log.i(TAG, "error " + errorType);
+        mLogger.error(errorType);
+        onError(mContext.getString(getErrorStringId(errorType, endpointed)));
+    }
+
+    private void onError(String error) {
+        mState = ERROR;
+        mRecognitionView.showError(error);
+        // Wait a couple seconds and then automatically dismiss message.
+        mExecutor.schedule(new Runnable() {
+            public void run() {
+                cancel();
+            }}, 2000, TimeUnit.MILLISECONDS);
+    }
+
+    private class IMERecognitionListener extends IRecognitionListener.Stub {
+        // Waveform data
+        final ByteArrayOutputStream mWaveBuffer = new ByteArrayOutputStream();
+        int mSpeechStart;
+        private boolean mEndpointed = false;
+
+        public void onReadyForSpeech(Bundle noiseParams) {
+            mRecognitionView.showListening();
+        }
+
+        public void onBeginningOfSpeech() {
+            mEndpointed = false;
+            mSpeechStart = mWaveBuffer.size();
+        }
+
+        public void onRmsChanged(float rmsdB) {
+            mRecognitionView.updateVoiceMeter(rmsdB);
+        }
+
+        public void onBufferReceived(byte[] buf) {
+            try {
+                mWaveBuffer.write(buf);
+            } catch (IOException e) {}
+        }
+
+        public void onEndOfSpeech() {
+            mEndpointed = true;
+            mState = WORKING;
+            mRecognitionView.showWorking(mWaveBuffer, mSpeechStart, mWaveBuffer.size());
+        }
+
+        public void onError(int errorType) {
+            mState = ERROR;
+            VoiceInput.this.onError(errorType, mEndpointed);
+        }
+
+        public void onResults(List<RecognitionResult> results, long token) {
+            mState = DEFAULT;
+            List<String> resultsAsText = new ArrayList<String>();
+            for (RecognitionResult result : results) {
+                resultsAsText.add(result.mText);
+            }
+
+            Map<String, List<CharSequence>> alternatives =
+                new HashMap<String, List<CharSequence>>();
+            if (resultsAsText.size() >= 2 && ENABLE_WORD_CORRECTIONS) {
+                String[][] words = new String[resultsAsText.size()][];
+                for (int i = 0; i < words.length; i++) {
+                    words[i] = resultsAsText.get(i).split(" ");
+                }
+
+                for (int key = 0; key < words[0].length; key++) {
+                    alternatives.put(words[0][key], new ArrayList<CharSequence>());
+                    for (int alt = 1; alt < words.length; alt++) {
+                        int keyBegin = key * words[alt].length / words[0].length;
+                        int keyEnd = (key + 1) * words[alt].length / words[0].length;
+
+                        for (int i = keyBegin; i < Math.min(words[alt].length, keyEnd); i++) {
+                            List<CharSequence> altList = alternatives.get(words[0][key]);
+                            if (!altList.contains(words[alt][i]) && altList.size() < 6) {
+                                altList.add(words[alt][i]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (resultsAsText.size() > 5) {
+                resultsAsText = resultsAsText.subList(0, 5);
+            }
+            mUiListener.onVoiceResults(resultsAsText, alternatives);
+            mRecognitionView.finish();
+
+            destroy();
+        }
+    }
+}

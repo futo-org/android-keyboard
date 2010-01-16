@@ -47,12 +47,6 @@
     <item msgid="1669461741568287396">"Grunnleggende"</item>
     <item msgid="4894328801530136615">"Avansert"</item>
   </string-array>
-    <string name="prediction_none" msgid="2472795101338047944">"0"</string>
-    <string name="prediction_basic" msgid="8407291081834155558">"1"</string>
-    <string name="prediction_full" msgid="3765102052052510268">"2"</string>
-    <!-- no translation found for prediction_modes_values:0 (579944677836100459) -->
-    <!-- no translation found for prediction_modes_values:1 (7214414132844804570) -->
-    <!-- no translation found for prediction_modes_values:2 (6678546276084314171) -->
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Lagret"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"åæáàâãä"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"éèêë"</string>
@@ -63,7 +57,6 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
-    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Hold en tast nede for å se aksenterte tegn (ø, ö, osv.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Trykk tilbakeknappen, ↶, for å lukke tastaturet"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Få tilgang til tall og symboler"</string>
@@ -84,6 +77,30 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Stemmedata"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Stemmedata håndteres foreløpig ikke på ditt språk, men fungerer på engelsk."</string>
+    <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"Talekommandoer er en eksperimentell funksjon som bruker Googles nettverksbaserte talegjenkjenning."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Gå til innstillinger for tastatur for å slå av stemmedata."</string>
+    <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Du bruker talekommandoer ved å trykke på mikrofonknappen eller skyve fingeren over tastaturet på skjermen."</string>
+    <string name="voice_listening" msgid="467518160751321844">"Snakk nå"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Arbeider"</string>
+    <!-- no translation found for voice_initializing (661962047129906646) -->
+    <skip />
+    <string name="voice_error" msgid="5140896300312186162">"Feil. Prøv på nytt."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"Kunne ikke koble til"</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"Feil – for mye tale"</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"Lydproblem"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"Tjenerfeil"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"Ingen tale høres"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Ingen treff"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Talesøk ikke installert"</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021">"Hint:"<b>" Sveip over tastaturet for å snakke"</b></string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hint:"</b>" Neste gang kan du prøve å tale inn tegnsettingen ved for eksempel å si «punktum», «komma» eller «spørsmålstegn»."</string>
+    <string name="cancel" msgid="6830980399865683324">"Avbryt"</string>
+    <string name="ok" msgid="7898366843681727667">"OK"</string>
+    <string name="enable_voice" msgid="8299503298530853956">"Stemmedata"</string>
+    <string name="auto_submit" msgid="9151008027068358518">"Send inn automatisk etter tale"</string>
+    <string name="auto_submit_summary" msgid="4961875269610384226">"Trykk Enter automatisk ved søk eller flytting til neste felt."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Åpne tastaturet"\n</b></font><font size="3">\n</font>"Trykk på et tekstfelt."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Lukke tastaturet"\n</b></font><font size="3">\n</font>"Trykk på tilbaketasten."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Trykk og hold nede en tast for flere valg"\n</b></font><font size="3">\n</font>"Få tilgang til skilletegn og aksenter."</string>
@@ -95,4 +112,5 @@
     <string name="popular_domain_4" msgid="35359437471311470">".info"</string>
     <!-- no translation found for language_selection_title (530749890984542339) -->
     <skip />
+    <string name="inputMethod" msgid="7854532062009028116">"Inndatametode"</string>
 </resources>

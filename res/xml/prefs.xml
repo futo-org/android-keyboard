@@ -37,6 +37,12 @@
             android:defaultValue="true"
             />
 
+    <CheckBoxPreference
+            android:key="enable_voice_input"
+            android:title="@string/enable_voice"
+            android:persistent="false"
+            android:defaultValue="@bool/voice_input_default"
+            />
     <PreferenceScreen
             android:title="@string/language_selection_title">
         <intent
