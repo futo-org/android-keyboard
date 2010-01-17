@@ -331,6 +331,7 @@ public class LatinIME extends InputMethodService
             mSuggest.close();
         }
         mSuggest = new Suggest(this, R.raw.main);
+        if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this);
         if (mContactsDictionary == null) {
             mContactsDictionary = new ContactsDictionary(this);
