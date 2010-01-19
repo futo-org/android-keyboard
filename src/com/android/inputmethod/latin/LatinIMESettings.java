@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.google.android.collect.Lists;
-
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.backup.BackupManager;
@@ -25,16 +23,17 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.speech.RecognitionManager;
 import android.text.AutoText;
 import android.util.Log;
 
+import com.google.android.collect.Lists;
+
 import com.android.inputmethod.voice.GoogleSettingsUtil;
-import com.android.inputmethod.voice.VoiceInput;
 import com.android.inputmethod.voice.VoiceInputLogger;
 
 import java.util.ArrayList;
@@ -93,7 +92,7 @@ public class LatinIMESettings extends PreferenceActivity
             mShowSuggestions.setDependency(QUICK_FIXES_KEY);
         }
         if (!LatinIME.VOICE_INSTALLED
-                || !VoiceInput.voiceIsAvailable(this)) {
+                || !RecognitionManager.isRecognitionAvailable(this)) {
             getPreferenceScreen().removePreference(mVoicePreference);
         }
         
