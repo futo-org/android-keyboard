@@ -893,7 +893,7 @@ public class LatinIME extends InputMethodService
             case LatinKeyboardView.KEYCODE_OPTIONS:
                 showOptionsMenu();
                 break;
-            case LatinKeyboardView.KEYCODE_F1:
+            case LatinKeyboardView.KEYCODE_NEXT_LANGUAGE:
                 toggleLanguage(false);
                 break;
             case LatinKeyboardView.KEYCODE_SHIFT_LONGPRESS:
