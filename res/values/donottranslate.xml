@@ -21,7 +21,7 @@
     <!-- Symbols that are commonly considered word separators in this language -->
     <string name="word_separators">.\u0020,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|\u0022</string>
     <!-- Symbols that are sentence separators, for purposes of making it hug the last sentence. -->
-    <string name="sentence_separators">.,;:!?</string>
+    <string name="sentence_separators">.,!?</string>
     <!-- Accented characters related to "d" -->
     <string name="alternates_for_d"></string>
     <!-- Accented characters related to "r" -->
