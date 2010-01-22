@@ -37,6 +37,8 @@ public class LatinKeyboardView extends KeyboardView {
     static final int KEYCODE_SHIFT_LONGPRESS = -101;
     static final int KEYCODE_VOICE = -102;
     static final int KEYCODE_F1 = -103;
+    static final int KEYCODE_NEXT_LANGUAGE = -104;
+
     private Keyboard mPhoneKeyboard;
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
@@ -63,6 +65,9 @@ public class LatinKeyboardView extends KeyboardView {
         } else if (key.codes[0] == '0' && getKeyboard() == mPhoneKeyboard) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             getOnKeyboardActionListener().onKey('+', null);
+            return true;
+        } else if (key.codes[0] == ' ' && ((LatinKeyboard)getKeyboard()).mLocale != null) {
+            getOnKeyboardActionListener().onKey(KEYCODE_NEXT_LANGUAGE, null);
             return true;
         } else {
             return super.onLongPress(key);

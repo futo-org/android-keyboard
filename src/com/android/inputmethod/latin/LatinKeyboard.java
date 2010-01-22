@@ -42,7 +42,7 @@ public class LatinKeyboard extends Keyboard {
     private Key mEnterKey;
     private Key mF1Key;
     private Key mSpaceKey;
-    private Locale mLocale;
+    /* package */ Locale mLocale;
     private Resources mRes;
     private int mMode;
 
@@ -227,17 +227,40 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void setF1Key() {
-        if (mF1Key == null) return; // No function key on this keyboard
+        // TODO
+//        else {
+//            mSpaceKey.icon = mRes.getDrawable(R.drawable.sym_keyboard_space);
+//            switch (mMode) {
+//            case KeyboardSwitcher.KEYBOARDMODE_NORMAL:
+//            case KeyboardSwitcher.KEYBOARDMODE_IM:
+//                mF1Key.label = ",";
+//                mF1Key.codes = new int[] { ',' };
+//                mF1Key.icon = null;
+//                mF1Key.iconPreview = null;
+//                break;
+//            case KeyboardSwitcher.KEYBOARDMODE_EMAIL:
+//            case KeyboardSwitcher.KEYBOARDMODE_URL:
+//                mF1Key.label = mRes.getString(R.string.popular_domain_0);
+//                mF1Key.codes = new int[] { '.' };
+//                mF1Key.text = mF1Key.label;
+//                mF1Key.icon = null;
+//                mF1Key.iconPreview = null;
+//                mF1Key.popupResId = R.xml.popup_domains;
+//                break;
+//            }
+//        }
+    }
+
+    private void updateSpaceBarForLocale() {
         if (mLocale != null) {
             // Create the graphic for spacebar
-            mF1Key.label = null;
-            mF1Key.icon = mRes.getDrawable(R.drawable.sym_keyboard_globe);
             Bitmap buffer = Bitmap.createBitmap(mSpaceKey.width, mSpaceIcon.getIntrinsicHeight(),
                     Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(buffer);
             canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
             Paint paint = new Paint();
             paint.setAntiAlias(true);
+            // TODO: Make the text size a customizable attribute
             paint.setTextSize(22);
             paint.setTextAlign(Align.CENTER);
             // Draw a drop shadow for the text
@@ -250,36 +273,18 @@ public class LatinKeyboard extends Keyboard {
             mSpaceIcon.setBounds(x, y, 
                     x + mSpaceIcon.getIntrinsicWidth(), y + mSpaceIcon.getIntrinsicHeight());
             mSpaceIcon.draw(canvas);
-            mSpaceKey.icon = new BitmapDrawable(mRes, buffer);            
+            mSpaceKey.icon = new BitmapDrawable(mRes, buffer);
+            mSpaceKey.repeatable = false;
         } else {
             mSpaceKey.icon = mRes.getDrawable(R.drawable.sym_keyboard_space);
-            switch (mMode) {
-            case KeyboardSwitcher.KEYBOARDMODE_NORMAL:
-            case KeyboardSwitcher.KEYBOARDMODE_IM:
-                mF1Key.label = ",";
-                mF1Key.codes = new int[] { ',' };
-                mF1Key.icon = null;
-                mF1Key.iconPreview = null;
-                break;
-            case KeyboardSwitcher.KEYBOARDMODE_EMAIL:
-            case KeyboardSwitcher.KEYBOARDMODE_URL:
-                mF1Key.label = mRes.getString(R.string.popular_domain_0);
-                mF1Key.codes = new int[] { '.' };
-                mF1Key.text = mF1Key.label;
-                mF1Key.icon = null;
-                mF1Key.iconPreview = null;
-                mF1Key.popupResId = R.xml.popup_domains;
-                break;
-            }
+            mSpaceKey.repeatable = true;
         }
     }
 
     public void setLanguage(Locale locale) {
         if (mLocale != null && mLocale.equals(locale)) return;
         mLocale = locale;
-        setF1Key();
-        if (mF1Key != null) {
-        }
+        updateSpaceBarForLocale();
     }
 
     static class LatinKey extends Keyboard.Key {
