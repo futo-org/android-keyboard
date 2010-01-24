@@ -36,6 +36,8 @@ public class WordComposer {
     private StringBuilder mTypedWord;
 
     private int mCapsCount;
+
+    private boolean mAutoCapitalized;
     
     /**
      * Whether the user chose to capitalize the word.
@@ -151,5 +153,22 @@ public class WordComposer {
      */
     public boolean isMostlyCaps() {
         return mCapsCount > 1;
+    }
+
+    /** 
+     * Saves the reason why the word is capitalized - whether it was automatic or
+     * due to the user hitting shift in the middle of a sentence.
+     * @param auto whether it was an automatic capitalization due to start of sentence
+     */
+    public void setAutoCapitalized(boolean auto) {
+        mAutoCapitalized = auto;
+    }
+
+    /**
+     * Returns whether the word was automatically capitalized.
+     * @return whether the word was automatically capitalized
+     */
+    public boolean isAutoCapitalized() {
+        return mAutoCapitalized;
     }
 }

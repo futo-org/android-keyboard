@@ -815,15 +815,19 @@ public class LatinIME extends InputMethodService
         InputConnection ic = getCurrentInputConnection();
         if (attr != null && mInputView != null && mKeyboardSwitcher.isAlphabetMode()
                 && ic != null) {
-            int caps = 0;
-            EditorInfo ei = getCurrentInputEditorInfo();
-            if (mAutoCap && ei != null && ei.inputType != EditorInfo.TYPE_NULL) {
-                caps = ic.getCursorCapsMode(attr.inputType);
-            }
-            mInputView.setShifted(mCapsLock || caps != 0);
+            mInputView.setShifted(mCapsLock || getCursorCapsMode(ic, attr) != 0);
         }
     }
-    
+
+    private int getCursorCapsMode(InputConnection ic, EditorInfo attr) {
+        int caps = 0;
+        EditorInfo ei = getCurrentInputEditorInfo();
+        if (mAutoCap && ei != null && ei.inputType != EditorInfo.TYPE_NULL) {
+            caps = ic.getCursorCapsMode(attr.inputType);
+        }
+        return caps;
+    }
+
     private void swapPunctuationAndSpace() {
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
@@ -837,7 +841,7 @@ public class LatinIME extends InputMethodService
             updateShiftKeyState(getCurrentInputEditorInfo());
         }
     }
-    
+
     private void doubleSpace() {
         //if (!mAutoPunctuate) return;
         if (mCorrectionMode == Suggest.CORRECTION_NONE) return;
@@ -1014,6 +1018,11 @@ public class LatinIME extends InputMethodService
             mWord.add(primaryCode, keyCodes);
             InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
+                // If it's the first letter, make note of auto-caps state
+                if (mWord.size() == 1) {
+                    mWord.setAutoCapitalized(
+                            getCursorCapsMode(ic, getCurrentInputEditorInfo()) != 0);
+                }
                 ic.setComposingText(mComposing, 1);
             }
             postUpdateSuggestions();
@@ -1847,6 +1856,11 @@ public class LatinIME extends InputMethodService
             final int length = word.length();
             // Don't add very short or very long words.
             if (length < 2 || length > getMaxWordLength()) return;
+            if (mWord.isAutoCapitalized()) {
+                // Remove caps before adding
+                word = Character.toLowerCase(word.charAt(0))
+                        + word.substring(1);
+            }
             int freq = getWordFrequency(word);
             freq = freq < 0 ? addFrequency : freq + addFrequency;
             super.addWord(word, freq);
