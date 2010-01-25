@@ -16,13 +16,15 @@
 
 package com.android.inputmethod.voice;
 
+import com.android.common.speech.LoggingEvents;
+
 import android.content.Context;
 import android.content.Intent;
 
 /**
  * Provides the logging facility for voice input events. This fires broadcasts back to
  * the voice search app which then logs on our behalf.
- * 
+ *
  * Note that debug console logging does not occur in this class. If you want to
  * see console output of these logging events, there is a boolean switch to turn
  * on on the VoiceSearch side.
@@ -141,6 +143,7 @@ public class VoiceInputLogger {
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.START);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_START_LOCALE, locale);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_START_SWIPE, swipe);
+        i.putExtra(LoggingEvents.EXTRA_TIMESTAMP, System.currentTimeMillis());
         mContext.sendBroadcast(i);
     }
     
