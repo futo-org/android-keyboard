@@ -33,6 +33,7 @@ public class KeyboardSwitcher {
     public static final int MODE_URL = 4;
     public static final int MODE_EMAIL = 5;
     public static final int MODE_IM = 6;
+    public static final int MODE_WEB = 7;
     
     public static final int MODE_TEXT_QWERTY = 0;
     public static final int MODE_TEXT_ALPHA = 1;
@@ -42,6 +43,7 @@ public class KeyboardSwitcher {
     public static final int KEYBOARDMODE_URL = R.id.mode_url;
     public static final int KEYBOARDMODE_EMAIL = R.id.mode_email;
     public static final int KEYBOARDMODE_IM = R.id.mode_im;
+    public static final int KEYBOARDMODE_WEB = R.id.mode_webentry;
 
     private static final int SYMBOLS_MODE_STATE_NONE = 0;
     private static final int SYMBOLS_MODE_STATE_BEGIN = 1;
@@ -52,7 +54,8 @@ public class KeyboardSwitcher {
         KEYBOARDMODE_NORMAL,
         KEYBOARDMODE_URL,
         KEYBOARDMODE_EMAIL,
-        KEYBOARDMODE_IM};
+        KEYBOARDMODE_IM,
+        KEYBOARDMODE_WEB};
 
     //LatinIME mContext;
     Context mContext;
@@ -91,6 +94,7 @@ public class KeyboardSwitcher {
         mModeToVoice.put(R.id.mode_url, R.id.mode_url_voice);
         mModeToVoice.put(R.id.mode_email, R.id.mode_email_voice);
         mModeToVoice.put(R.id.mode_im, R.id.mode_im_voice);
+        mModeToVoice.put(R.id.mode_webentry, R.id.mode_webentry_voice);
         mInputMethodService = ims;
     }
 
@@ -212,10 +216,12 @@ public class KeyboardSwitcher {
                     || id.mKeyboardMode == KEYBOARDMODE_URL
                     || id.mKeyboardMode == KEYBOARDMODE_IM
                     || id.mKeyboardMode == KEYBOARDMODE_EMAIL
+                    || id.mKeyboardMode == KEYBOARDMODE_WEB
                     || id.mKeyboardMode == R.id.mode_normal_voice
                     || id.mKeyboardMode == R.id.mode_url_voice
                     || id.mKeyboardMode == R.id.mode_im_voice
                     || id.mKeyboardMode == R.id.mode_email_voice
+                    || id.mKeyboardMode == R.id.mode_webentry_voice
                     ) {
                 keyboard.setExtension(R.xml.kbd_extension);
             }
@@ -255,6 +261,8 @@ public class KeyboardSwitcher {
                 return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_EMAIL, true);
             case MODE_IM:
                 return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_IM, true);
+            case MODE_WEB:
+                return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_WEB, true);
         }
         return null;
     }

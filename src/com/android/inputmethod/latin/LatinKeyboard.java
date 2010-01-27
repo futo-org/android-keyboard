@@ -261,11 +261,11 @@ public class LatinKeyboard extends Keyboard {
             Paint paint = new Paint();
             paint.setAntiAlias(true);
             // TODO: Make the text size a customizable attribute
-            paint.setTextSize(22);
+            paint.setTextSize(18);
             paint.setTextAlign(Align.CENTER);
             // Draw a drop shadow for the text
             paint.setShadowLayer(1f, 0, 0, 0xFF000000);
-            paint.setColor(0x80C0C0C0);
+            paint.setColor(0xFF808080);
             canvas.drawText(mLocale.getDisplayLanguage(mLocale),
                     buffer.getWidth() / 2, - paint.ascent() + 2, paint);
             int x = (buffer.getWidth() - mSpaceIcon.getIntrinsicWidth()) / 2;

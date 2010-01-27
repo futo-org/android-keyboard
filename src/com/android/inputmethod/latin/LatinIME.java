@@ -502,6 +502,8 @@ public class LatinIME extends InputMethodService
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_FILTER) {
                     mPredictionOn = false;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
+                    mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_WEB,
+                            attribute.imeOptions, mEnableVoiceButton);
                     // If it's a browser edit field and auto correct is not ON explicitly, then
                     // disable auto correction, but keep suggestions on.
                     if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
@@ -914,6 +916,9 @@ public class LatinIME extends InputMethodService
                 if (VOICE_INSTALLED) {
                     startListening(false /* was a button press, was not a swipe */);
                 }
+                break;
+            case 9 /*Tab*/:
+                sendKeyChar((char) primaryCode);
                 break;
             default:
                 if (isWordSeparator(primaryCode)) {
