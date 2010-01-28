@@ -252,6 +252,12 @@
     <!-- Preferences item for enabling speech input -->
     <string name="enable_voice">Voice input</string>
 
+    <!-- Preferences item for speech icon on primary keyboard -->
+    <string name="voice_on_primary">Mic on primary</string>
+
+    <!-- Preferences item summary for speech icon on primary keyboard -->
+    <string name="voice_on_primary_summary">Show the microphone on the primary keyboard</string>
+
     <!-- Press the "enter" key after the user speaks. Option on settings.-->
     <string name="auto_submit">Auto submit after voice</string>
 

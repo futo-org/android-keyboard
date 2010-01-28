@@ -38,6 +38,10 @@ public class LatinKeyboard extends Keyboard {
     private Drawable mOldShiftIcon;
     private Drawable mOldShiftPreviewIcon;
     private Drawable mSpaceIcon;
+    private Drawable mMicIcon;
+    private Drawable mMicPreviewIcon;
+    private Drawable m123MicIcon;
+    private Drawable m123MicPreviewIcon;
     private Key mShiftKey;
     private Key mEnterKey;
     private Key mF1Key;
@@ -45,6 +49,7 @@ public class LatinKeyboard extends Keyboard {
     /* package */ Locale mLocale;
     private Resources mRes;
     private int mMode;
+    private boolean mHasVoice;
 
     private int mExtensionResId; 
     
@@ -57,22 +62,26 @@ public class LatinKeyboard extends Keyboard {
     static int sSpacebarVerticalCorrection;
 
     public LatinKeyboard(Context context, int xmlLayoutResId) {
-        this(context, xmlLayoutResId, 0);
+        this(context, xmlLayoutResId, 0, false);
     }
 
-    public LatinKeyboard(Context context, int xmlLayoutResId, int mode) {
+    public LatinKeyboard(Context context, int xmlLayoutResId, int mode, boolean hasVoice) {
         super(context, xmlLayoutResId, mode);
         final Resources res = context.getResources();
         mMode = mode;
         mRes = res;
+        mHasVoice = hasVoice;
         mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
         mShiftLockPreviewIcon.setBounds(0, 0, 
                 mShiftLockPreviewIcon.getIntrinsicWidth(),
                 mShiftLockPreviewIcon.getIntrinsicHeight());
         mSpaceIcon = res.getDrawable(R.drawable.sym_keyboard_space);
+        mMicIcon = res.getDrawable(R.drawable.sym_keyboard_mic);
+        mMicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_mic);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
+        setF1Key();
     }
 
     public LatinKeyboard(Context context, int layoutTemplateResId, 
@@ -227,28 +236,19 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void setF1Key() {
-        // TODO
-//        else {
-//            mSpaceKey.icon = mRes.getDrawable(R.drawable.sym_keyboard_space);
-//            switch (mMode) {
-//            case KeyboardSwitcher.KEYBOARDMODE_NORMAL:
-//            case KeyboardSwitcher.KEYBOARDMODE_IM:
-//                mF1Key.label = ",";
-//                mF1Key.codes = new int[] { ',' };
-//                mF1Key.icon = null;
-//                mF1Key.iconPreview = null;
-//                break;
-//            case KeyboardSwitcher.KEYBOARDMODE_EMAIL:
-//            case KeyboardSwitcher.KEYBOARDMODE_URL:
-//                mF1Key.label = mRes.getString(R.string.popular_domain_0);
-//                mF1Key.codes = new int[] { '.' };
-//                mF1Key.text = mF1Key.label;
-//                mF1Key.icon = null;
-//                mF1Key.iconPreview = null;
-//                mF1Key.popupResId = R.xml.popup_domains;
-//                break;
-//            }
-//        }
+        if (mF1Key == null) return;
+        System.err.println("Setting F1 key");
+        if (!mHasVoice) {
+            mF1Key.label = ",";
+            mF1Key.codes = new int[] { ',' };
+            mF1Key.icon = null;
+            mF1Key.iconPreview = null;
+        } else {
+            mF1Key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
+            mF1Key.label = null;
+            mF1Key.icon = mMicIcon;
+            mF1Key.iconPreview = mMicPreviewIcon;
+        }
     }
 
     private void updateSpaceBarForLocale() {

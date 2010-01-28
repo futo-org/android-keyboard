@@ -92,7 +92,8 @@ public class LatinIME extends InputMethodService
     private static final String PREF_AUTO_COMPLETE = "auto_complete";
     private static final String PREF_ENABLE_VOICE = "enable_voice_input";
     private static final String PREF_VOICE_SERVER_URL = "voice_server_url";
-    
+    private static final String PREF_VOICE_MAIN = "voice_on_main";
+
     // Whether or not the user has used voice input before (and thus, whether to show the
     // first-run warning dialog or not). 
     private static final String PREF_HAS_USED_VOICE_INPUT = "has_used_voice_input";
@@ -211,6 +212,7 @@ public class LatinIME extends InputMethodService
     private boolean mIsShowingHint;
     private int     mCorrectionMode;
     private boolean mEnableVoice = true;
+    private boolean mVoiceOnPrimary;
     private int     mOrientation;
     
     // Indicates whether the suggestion strip is to be on in landscape
@@ -445,6 +447,7 @@ public class LatinIME extends InputMethodService
         }
         
         mEnableVoiceButton = shouldShowVoiceButton(makeFieldContext(), attribute);
+        final boolean enableVoiceButton = mEnableVoiceButton && mEnableVoice;
 
         mAfterVoiceInput = false;
         mImmediatelyAfterVoiceInput = false;
@@ -463,15 +466,15 @@ public class LatinIME extends InputMethodService
             case EditorInfo.TYPE_CLASS_NUMBER:
             case EditorInfo.TYPE_CLASS_DATETIME:
                 mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_SYMBOLS,
-                        attribute.imeOptions, mEnableVoiceButton);
+                        attribute.imeOptions, enableVoiceButton);
                 break;
             case EditorInfo.TYPE_CLASS_PHONE:
                 mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_PHONE,
-                        attribute.imeOptions, mEnableVoiceButton);
+                        attribute.imeOptions, enableVoiceButton);
                 break;
             case EditorInfo.TYPE_CLASS_TEXT:
                 mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_TEXT,
-                        attribute.imeOptions, mEnableVoiceButton);
+                        attribute.imeOptions, enableVoiceButton);
                 //startPrediction();
                 mPredictionOn = true;
                 // Make sure that passwords are not displayed in candidate view
@@ -491,19 +494,19 @@ public class LatinIME extends InputMethodService
                 if (variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
                     mPredictionOn = false;
                     mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_EMAIL,
-                            attribute.imeOptions, mEnableVoiceButton);
+                            attribute.imeOptions, enableVoiceButton);
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_URI) {
                     mPredictionOn = false;
                     mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_URL,
-                            attribute.imeOptions, mEnableVoiceButton);
+                            attribute.imeOptions, enableVoiceButton);
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE) {
                     mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_IM,
-                            attribute.imeOptions, mEnableVoiceButton);
+                            attribute.imeOptions, enableVoiceButton);
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_FILTER) {
                     mPredictionOn = false;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
                     mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_WEB,
-                            attribute.imeOptions, mEnableVoiceButton);
+                            attribute.imeOptions, enableVoiceButton);
                     // If it's a browser edit field and auto correct is not ON explicitly, then
                     // disable auto correction, but keep suggestions on.
                     if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
@@ -529,7 +532,7 @@ public class LatinIME extends InputMethodService
                 break;
             default:
                 mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_TEXT,
-                        attribute.imeOptions, mEnableVoiceButton);
+                        attribute.imeOptions, enableVoiceButton);
                 updateShiftKeyState(attribute);
         }
         mInputView.closing();
@@ -790,6 +793,7 @@ public class LatinIME extends InputMethodService
         }
         mKeyboardSwitcher.setInputLocale(new Locale(mInputLanguage),
                 getSelectedInputLanguages() != null);
+        mKeyboardSwitcher.setVoiceMode(mEnableVoice, mVoiceOnPrimary);
         mKeyboardSwitcher.makeKeyboards(true);
     }
 
@@ -1504,7 +1508,8 @@ public class LatinIME extends InputMethodService
         int currentKeyboardMode = mKeyboardSwitcher.getKeyboardMode();
         reloadKeyboards();
         mKeyboardSwitcher.makeKeyboards(true);
-        mKeyboardSwitcher.setKeyboardMode(currentKeyboardMode, 0, mEnableVoiceButton);
+        mKeyboardSwitcher.setKeyboardMode(currentKeyboardMode, 0,
+                mEnableVoiceButton && mEnableVoice);
         initSuggest(mInputLanguage);
         persistInputLanguage(mInputLanguage);
         updateShiftKeyState(getCurrentInputEditorInfo());
@@ -1555,7 +1560,6 @@ public class LatinIME extends InputMethodService
 
     private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo attribute) {
         return ENABLE_VOICE_BUTTON
-                && mEnableVoice
                 && fieldCanDoVoice(fieldContext)
                 && !(attribute != null && attribute.privateImeOptions != null
                         && attribute.privateImeOptions.equals(IME_OPTION_NO_MICROPHONE));
@@ -1719,10 +1723,13 @@ public class LatinIME extends InputMethodService
 
         if (VOICE_INSTALLED) {
             boolean enableVoice = sp.getBoolean(PREF_ENABLE_VOICE, true);
-            if (enableVoice != mEnableVoice && mKeyboardSwitcher != null) {
-                mKeyboardSwitcher.setVoiceMode(enableVoice);
+            boolean voiceOnPrimary = sp.getBoolean(PREF_VOICE_MAIN, true);
+            if (mKeyboardSwitcher != null &&
+                    (enableVoice != mEnableVoice || voiceOnPrimary != mVoiceOnPrimary)) {
+                mKeyboardSwitcher.setVoiceMode(enableVoice, voiceOnPrimary);
             }
             mEnableVoice = enableVoice;
+            mVoiceOnPrimary = voiceOnPrimary;
         }
         mAutoCorrectEnabled = sp.getBoolean(PREF_AUTO_COMPLETE,
                 mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;

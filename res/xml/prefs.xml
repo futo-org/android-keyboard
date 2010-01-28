@@ -43,6 +43,16 @@
             android:persistent="false"
             android:defaultValue="@bool/voice_input_default"
             />
+
+    <CheckBoxPreference
+            android:key="voice_on_main"
+            android:title="@string/voice_on_primary"
+            android:summary="@string/voice_on_primary_summary"
+            android:persistent="true"
+            android:dependency="enable_voice_input"
+            android:defaultValue="@bool/voice_input_default"
+            />
+
     <PreferenceScreen
             android:title="@string/language_selection_title">
         <intent
