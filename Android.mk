@@ -13,5 +13,8 @@ LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
 
 #LOCAL_AAPT_FLAGS := -0 .dict
 
+#LOCAL_SDK_VERSION := current
+
+LOCAL_STATIC_JAVA_LIBRARIES := google-common android-common
 include $(BUILD_PACKAGE)
 include $(LOCAL_PATH)/dictionary/Android.mk
