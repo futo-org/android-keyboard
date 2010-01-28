@@ -793,7 +793,9 @@ public class LatinIME extends InputMethodService
         }
         mKeyboardSwitcher.setInputLocale(new Locale(mInputLanguage),
                 getSelectedInputLanguages() != null);
-        mKeyboardSwitcher.setVoiceMode(mEnableVoice, mVoiceOnPrimary);
+        if (mInputView != null) {
+            mKeyboardSwitcher.setVoiceMode(mEnableVoice, mVoiceOnPrimary);
+        }
         mKeyboardSwitcher.makeKeyboards(true);
     }
 
