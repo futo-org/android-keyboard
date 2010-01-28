@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2009 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -36,7 +36,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.voice.GoogleSettingsUtil;
+import com.android.inputmethod.voice.SettingsUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -112,10 +112,10 @@ public class RecognitionView {
         mView = inflater.inflate(R.layout.recognition_status, null);
 
         ContentResolver cr = context.getContentResolver();
-        mMinMicrophoneLevel = GoogleSettingsUtil.getGservicesFloat(
-                cr, GoogleSettingsUtil.LATIN_IME_MIN_MICROPHONE_LEVEL, 15.f);
-        mMaxMicrophoneLevel = GoogleSettingsUtil.getGservicesFloat(
-                cr, GoogleSettingsUtil.LATIN_IME_MAX_MICROPHONE_LEVEL, 30.f);
+        mMinMicrophoneLevel = SettingsUtil.getSettingsFloat(
+                cr, SettingsUtil.LATIN_IME_MIN_MICROPHONE_LEVEL, 15.f);
+        mMaxMicrophoneLevel = SettingsUtil.getSettingsFloat(
+                cr, SettingsUtil.LATIN_IME_MAX_MICROPHONE_LEVEL, 30.f);
 
         // Pre-load volume level images
         Resources r = context.getResources();
@@ -131,7 +131,7 @@ public class RecognitionView {
 
         mInitializing = r.getDrawable(R.drawable.mic_slash);
         mError = r.getDrawable(R.drawable.caution);
- 
+
         mImage = (ImageView) mView.findViewById(R.id.image);
         mButton = mView.findViewById(R.id.button);
         mButton.setOnClickListener(clickListener);
@@ -207,12 +207,12 @@ public class RecognitionView {
               final ShortBuffer buf = ByteBuffer.wrap(waveBuffer.toByteArray())
                       .order(ByteOrder.nativeOrder()).asShortBuffer();
               buf.position(0);
-              waveBuffer.reset(); 
+              waveBuffer.reset();
               showWave(buf, speechStartPosition / 2, speechEndPosition / 2);
             }
           });
     }
-    
+
     /**
      * @return an average abs of the specified buffer.
      */
@@ -295,15 +295,15 @@ public class RecognitionView {
         MarginLayoutParams mProgressParams = (MarginLayoutParams)mProgress.getLayoutParams();
         mProgressParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 -h / 2 - 18, mContext.getResources().getDisplayMetrics());
-                
+
         // Tweak the padding manually to fill out the whole view horizontally.
         // TODO: Do this in the xml layout instead.
-        ((View) mImage.getParent()).setPadding(4, ((View) mImage.getParent()).getPaddingTop(), 3, 
+        ((View) mImage.getParent()).setPadding(4, ((View) mImage.getParent()).getPaddingTop(), 3,
                 ((View) mImage.getParent()).getPaddingBottom());
-        mProgress.setLayoutParams(mProgressParams);       
+        mProgress.setLayoutParams(mProgressParams);
     }
 
-    
+
     public void finish() {
         mState = State.READY;
         mUiHandler.post(new Runnable() {

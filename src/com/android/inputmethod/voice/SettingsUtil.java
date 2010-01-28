@@ -19,20 +19,19 @@ package com.android.inputmethod.voice;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 
 /**
- * Utility for getting Google-specific settings from GoogleSettings.Partner or
- * Gservices. Retrieving such settings may fail on a non-Google Experience
- * Device (GED)
+ * Utility for retrieving settings from Settings.Secure.
  */
-public class GoogleSettingsUtil {
+public class SettingsUtil {
     /**
      * A whitespace-separated list of supported locales for voice input from the keyboard.
      */
     public static final String LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES =
             "latin_ime_voice_input_supported_locales";
-    
+
     /**
      * A whitespace-separated list of recommended app packages for voice input from the
      * keyboard.
@@ -45,7 +44,7 @@ public class GoogleSettingsUtil {
      */
     public static final String LATIN_IME_VOICE_INPUT_SWIPE_HINT_MAX_DAYS =
             "latin_ime_voice_input_swipe_hint_max_days";
-    
+
     /**
      * The maximum number of times to show the punctuation hint for voice input.
      */
@@ -60,7 +59,7 @@ public class GoogleSettingsUtil {
     public static final String LATIN_IME_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS =
             "latin_ime_speech_input_complete_silence_length_millis";
     public static final String LATIN_IME_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS =
-            "latin_ime_speech_input_possibly_complete_silence_length_millis";    
+            "latin_ime_speech_input_possibly_complete_silence_length_millis";
 
     /**
      * Min and max volume levels that can be displayed on the "speak now" screen.
@@ -76,100 +75,39 @@ public class GoogleSettingsUtil {
     public static final String LATIN_IME_MAX_VOICE_RESULTS = "latin_ime_max_voice_results";
 
     /**
-     * Uri to use to access gservices settings
-     */
-    private static final Uri GSERVICES_URI = Uri.parse("content://settings/gservices");
-
-    private static final String TAG = GoogleSettingsUtil.class.getSimpleName();
-
-    private static final boolean DBG = false;
-
-    /**
-     * Safely query for a Gservices string setting, which may not be available if this
-     * is not a Google Experience Device.
-     * 
+     * Get a string-valued setting.
+     *
      * @param cr The content resolver to use
      * @param key The setting to look up
      * @param defaultValue The default value to use if none can be found
      * @return The value of the setting, or defaultValue if it couldn't be found
      */
-    public static String getGservicesString(ContentResolver cr, String key, String defaultValue) {
-        return getSettingString(GSERVICES_URI, cr, key, defaultValue);
+    public static String getSettingsString(ContentResolver cr, String key, String defaultValue) {
+        String result = Settings.Secure.getString(cr, key);
+        return (result == null) ? defaultValue : result;
     }
-    
+
     /**
-     * Safely query for a Gservices int setting, which may not be available if this
-     * is not a Google Experience Device.
-     * 
+     * Get an int-valued setting.
+     *
      * @param cr The content resolver to use
      * @param key The setting to look up
      * @param defaultValue The default value to use if the setting couldn't be found or parsed
      * @return The value of the setting, or defaultValue if it couldn't be found or parsed
      */
-    public static int getGservicesInt(ContentResolver cr, String key, int defaultValue) {
-        try {
-            return Integer.parseInt(getGservicesString(cr, key, String.valueOf(defaultValue)));
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
+    public static int getSettingsInt(ContentResolver cr, String key, int defaultValue) {
+        return Settings.Secure.getInt(cr, key, defaultValue);
     }
 
     /**
-     * Safely query for a Gservices float setting, which may not be available if this
-     * is not a Google Experience Device.
-     * 
+     * Get a float-valued setting.
+     *
      * @param cr The content resolver to use
      * @param key The setting to look up
      * @param defaultValue The default value to use if the setting couldn't be found or parsed
      * @return The value of the setting, or defaultValue if it couldn't be found or parsed
      */
-    public static float getGservicesFloat(ContentResolver cr, String key, float defaultValue) {
-        try {
-            return Float.parseFloat(getGservicesString(cr, key, String.valueOf(defaultValue)));
-        } catch (NumberFormatException e) {
-            return defaultValue;
-        }
-    }
-
-    /**
-     * A safe way to query for a setting on both Google Experience and
-     * non-Google Experience devices, (code adapted from maps application
-     * examples)
-     * 
-     * @param uri The uri to provide to the content resolver
-     * @param cr The content resolver to use
-     * @param key The setting to look up
-     * @param defaultValue The default value to use if none can be found
-     * @return The value of the setting, or defaultValue if it couldn't be found
-     */
-    private static String getSettingString(Uri uri, ContentResolver cr, String key,
-            String defaultValue) {
-        String value = null;
-
-        Cursor cursor = null;
-        try {
-            cursor = cr.query(uri, new String[] {
-                "value"
-            }, "name='" + key + "'", null, null);
-            if ((cursor != null) && cursor.moveToFirst()) {
-                value = cursor.getString(cursor.getColumnIndexOrThrow("value"));
-            }
-        } catch (Throwable t) {
-            // This happens because we're probably running a non Type 1 aka
-            // Google Experience device which doesn't have the Google libraries.
-            if (DBG) {
-                Log.d(TAG, "Error getting setting from " + uri + " for key " + key + ": " + t);
-            }
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-
-        if (DBG && value == null) {
-            Log.i(TAG, "no setting found from " + uri + " for key " + key + ", returning default");
-        }
-        
-        return (value != null) ? value : defaultValue;
+    public static float getSettingsFloat(ContentResolver cr, String key, float defaultValue) {
+        return Settings.Secure.getFloat(cr, key, defaultValue);
     }
 }

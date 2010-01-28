@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2009 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.voice.GoogleSettingsUtil;
+import com.android.inputmethod.voice.SettingsUtil;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -66,15 +66,15 @@ public class Hints {
     public Hints(Context context, Display display) {
         mContext = context;
         mDisplay = display;
-        
+
         ContentResolver cr = mContext.getContentResolver();
-        mSwipeHintMaxDaysToShow = GoogleSettingsUtil.getGservicesInt(
+        mSwipeHintMaxDaysToShow = SettingsUtil.getSettingsInt(
                 cr,
-                GoogleSettingsUtil.LATIN_IME_VOICE_INPUT_SWIPE_HINT_MAX_DAYS,
+                SettingsUtil.LATIN_IME_VOICE_INPUT_SWIPE_HINT_MAX_DAYS,
                 DEFAULT_SWIPE_HINT_MAX_DAYS_TO_SHOW);
-        mPunctuationHintMaxDisplays = GoogleSettingsUtil.getGservicesInt(
+        mPunctuationHintMaxDisplays = SettingsUtil.getSettingsInt(
                 cr,
-                GoogleSettingsUtil.LATIN_IME_VOICE_INPUT_PUNCTUATION_HINT_MAX_DISPLAYS,
+                SettingsUtil.LATIN_IME_VOICE_INPUT_PUNCTUATION_HINT_MAX_DISPLAYS,
                 DEFAULT_PUNCTUATION_HINT_MAX_DISPLAYS);
     }
 
@@ -108,7 +108,7 @@ public class Hints {
                 PreferenceManager.getDefaultSharedPreferences(mContext).edit();
         editor.putLong(PREF_VOICE_INPUT_LAST_TIME_USED, System.currentTimeMillis());
         editor.commit();
-        
+
         mVoiceResultContainedPunctuation = false;
         for (CharSequence s : SPEAKABLE_PUNCTUATION.keySet()) {
             if (text.indexOf(s.toString()) >= 0) {
@@ -117,40 +117,40 @@ public class Hints {
             }
         }
     }
-    
+
     private boolean shouldShowSwipeHint() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
 
         int numUniqueDaysShown = sp.getInt(PREF_VOICE_HINT_NUM_UNIQUE_DAYS_SHOWN, 0);
-        
+
         // If we've already shown the hint for enough days, we'll return false.
-        if (numUniqueDaysShown < mSwipeHintMaxDaysToShow) {    
+        if (numUniqueDaysShown < mSwipeHintMaxDaysToShow) {
 
             long lastTimeVoiceWasUsed = sp.getLong(PREF_VOICE_INPUT_LAST_TIME_USED, 0);
-            
+
             // If the user has used voice today, we'll return false. (We don't show the hint on
             // any day that the user has already used voice.)
-            if (!isFromToday(lastTimeVoiceWasUsed)) {                
+            if (!isFromToday(lastTimeVoiceWasUsed)) {
                 return true;
             }
         }
-        
+
         return false;
     }
-    
+
     /**
      * Determines whether the provided time is from some time today (i.e., this day, month,
      * and year).
      */
     private boolean isFromToday(long timeInMillis) {
         if (timeInMillis == 0) return false;
-        
+
         Calendar today = Calendar.getInstance();
         today.setTimeInMillis(System.currentTimeMillis());
-        
+
         Calendar timestamp = Calendar.getInstance();
         timestamp.setTimeInMillis(timeInMillis);
-        
+
         return (today.get(Calendar.YEAR) == timestamp.get(Calendar.YEAR) &&
                 today.get(Calendar.DAY_OF_MONTH) == timestamp.get(Calendar.DAY_OF_MONTH) &&
                 today.get(Calendar.MONTH) == timestamp.get(Calendar.MONTH));
@@ -158,7 +158,7 @@ public class Hints {
 
     private void showHint(int hintViewResource) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        
+
         int numUniqueDaysShown = sp.getInt(PREF_VOICE_HINT_NUM_UNIQUE_DAYS_SHOWN, 0);
         long lastTimeHintWasShown = sp.getLong(PREF_VOICE_HINT_LAST_TIME_SHOWN, 0);
 
@@ -176,7 +176,7 @@ public class Hints {
             mDisplay.showHint(hintViewResource);
         }
     }
-    
+
     private int getAndIncrementPref(String pref) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
         int value = sp.getInt(pref, 0);

@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2009 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -81,13 +81,13 @@ public class VoiceInput implements OnClickListener {
             "android.speech.extras.SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS";
     private static final String EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS =
             "android.speech.extras.SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS";
-    
+
     // The usual endpointer default value for input complete silence length is 0.5 seconds,
     // but that's used for things like voice search. For dictation-like voice input like this,
     // we go with a more liberal value of 1 second. This value will only be used if a value
     // is not provided from Gservices.
     private static final String INPUT_COMPLETE_SILENCE_LENGTH_DEFAULT_VALUE_MILLIS = "1000";
-    
+
     // Used to record part of that state for logging purposes.
     public static final int DEFAULT = 0;
     public static final int LISTENING = 1;
@@ -145,11 +145,11 @@ public class VoiceInput implements OnClickListener {
         mContext = context;
         newView();
 
-        String recommendedPackages = GoogleSettingsUtil.getGservicesString(
+        String recommendedPackages = SettingsUtil.getSettingsString(
                 context.getContentResolver(),
-                GoogleSettingsUtil.LATIN_IME_VOICE_INPUT_RECOMMENDED_PACKAGES,
+                SettingsUtil.LATIN_IME_VOICE_INPUT_RECOMMENDED_PACKAGES,
                 DEFAULT_RECOMMENDED_PACKAGES);
-        
+
         mRecommendedList = new Whitelist();
         for (String recommendedPackage : recommendedPackages.split("\\s+")) {
             mRecommendedList.addApp(recommendedPackage);
@@ -167,10 +167,10 @@ public class VoiceInput implements OnClickListener {
     public boolean isBlacklistedField(FieldContext context) {
         return mBlacklist.matches(context);
     }
-    
+
     /**
      * Used to decide whether to show voice input hints for this field, etc.
-     * 
+     *
      * @return true if field is recommended for voice
      */
     public boolean isRecommendedField(FieldContext context) {
@@ -190,7 +190,7 @@ public class VoiceInput implements OnClickListener {
 
         Locale locale = Locale.getDefault();
         String localeString = locale.getLanguage() + "-" + locale.getCountry();
-        
+
         mLogger.start(localeString, swipe);
 
         mState = LISTENING;
@@ -215,9 +215,9 @@ public class VoiceInput implements OnClickListener {
         intent.putExtra(EXTRA_RECOGNITION_CONTEXT, context.getBundle());
         intent.putExtra(EXTRA_CALLING_PACKAGE, "VoiceIME");
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,
-                GoogleSettingsUtil.getGservicesInt(
+                SettingsUtil.getSettingsInt(
                         mContext.getContentResolver(),
-                        GoogleSettingsUtil.LATIN_IME_MAX_VOICE_RESULTS,
+                        SettingsUtil.LATIN_IME_MAX_VOICE_RESULTS,
                         1));
 
         // Get endpointer params from Gservices.
@@ -226,27 +226,27 @@ public class VoiceInput implements OnClickListener {
         putEndpointerExtra(
                 cr,
                 intent,
-                GoogleSettingsUtil.LATIN_IME_SPEECH_MINIMUM_LENGTH_MILLIS,
+                SettingsUtil.LATIN_IME_SPEECH_MINIMUM_LENGTH_MILLIS,
                 EXTRA_SPEECH_MINIMUM_LENGTH_MILLIS,
                 null  /* rely on endpointer default */);
         putEndpointerExtra(
                 cr,
                 intent,
-                GoogleSettingsUtil.LATIN_IME_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
+                SettingsUtil.LATIN_IME_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
                 EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS,
                 INPUT_COMPLETE_SILENCE_LENGTH_DEFAULT_VALUE_MILLIS
                 /* our default value is different from the endpointer's */);
         putEndpointerExtra(
                 cr,
                 intent,
-                GoogleSettingsUtil.
+                SettingsUtil.
                         LATIN_IME_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
                 EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
                 null  /* rely on endpointer default */);
 
         mRecognitionManager.startListening(intent);
     }
-    
+
     /**
      * Gets the value of the provided Gservices key, attempts to parse it into a long,
      * and if successful, puts the long value as an extra in the provided intent.
@@ -254,15 +254,15 @@ public class VoiceInput implements OnClickListener {
     private void putEndpointerExtra(ContentResolver cr, Intent i,
             String gservicesKey, String intentExtraKey, String defaultValue) {
         long l = -1;
-        String s = GoogleSettingsUtil.getGservicesString(cr, gservicesKey, defaultValue);
+        String s = SettingsUtil.getSettingsString(cr, gservicesKey, defaultValue);
         if (s != null) {
             try {
                 l = Long.valueOf(s);
             } catch (NumberFormatException e) {
                 Log.e(TAG, "could not parse value for " + gservicesKey + ": " + s);
-            }          
+            }
         }
-        
+
         if (l != -1) i.putExtra(intentExtraKey, l);
     }
 
@@ -302,35 +302,35 @@ public class VoiceInput implements OnClickListener {
     public void logTextModified() {
         mLogger.textModified();
     }
-    
+
     public void logKeyboardWarningDialogShown() {
         mLogger.keyboardWarningDialogShown();
     }
-    
+
     public void logKeyboardWarningDialogDismissed() {
         mLogger.keyboardWarningDialogDismissed();
     }
-    
+
     public void logKeyboardWarningDialogOk() {
         mLogger.keyboardWarningDialogOk();
     }
-    
+
     public void logKeyboardWarningDialogCancel() {
         mLogger.keyboardWarningDialogCancel();
     }
-    
+
     public void logSwipeHintDisplayed() {
         mLogger.swipeHintDisplayed();
     }
-    
+
     public void logPunctuationHintDisplayed() {
         mLogger.punctuationHintDisplayed();
     }
-    
+
     public void logVoiceInputDelivered() {
         mLogger.voiceInputDelivered();
     }
-    
+
     public void logNBestChoose(int index) {
         mLogger.nBestChoose(index);
     }
@@ -338,11 +338,11 @@ public class VoiceInput implements OnClickListener {
     public void logInputEnded() {
         mLogger.inputEnded();
     }
-    
+
     public void flushLogs() {
         mLogger.flush();
     }
-    
+
     private static Intent makeIntent() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
 

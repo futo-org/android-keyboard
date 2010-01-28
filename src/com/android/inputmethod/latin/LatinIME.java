@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2008-2009 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -60,7 +60,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.android.inputmethod.voice.EditingUtil;
 import com.android.inputmethod.voice.FieldContext;
-import com.android.inputmethod.voice.GoogleSettingsUtil;
+import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceInput;
 
 import java.io.FileDescriptor;
@@ -83,7 +83,7 @@ public class LatinIME extends InputMethodService
     static final boolean TRACE = false;
     static final boolean VOICE_INSTALLED = true;
     static final boolean ENABLE_VOICE_BUTTON = true;
-    
+
     private static final String PREF_VIBRATE_ON = "vibrate_on";
     private static final String PREF_SOUND_ON = "sound_on";
     private static final String PREF_AUTO_CAP = "auto_cap";
@@ -95,9 +95,9 @@ public class LatinIME extends InputMethodService
     private static final String PREF_VOICE_MAIN = "voice_on_main";
 
     // Whether or not the user has used voice input before (and thus, whether to show the
-    // first-run warning dialog or not). 
+    // first-run warning dialog or not).
     private static final String PREF_HAS_USED_VOICE_INPUT = "has_used_voice_input";
-    
+
     // Whether or not the user has used voice input from an unsupported locale UI before.
     // For example, the user has a Chinese UI but activates voice input.
     private static final String PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE =
@@ -116,12 +116,12 @@ public class LatinIME extends InputMethodService
             "en_NZ " +
             "en_SG " +
             "en_ZA ";
-    
+
     // The private IME option used to indicate that no microphone should be shown for a
     // given text field. For instance this is specified by the search dialog when the
     // dialog is already showing a voice search button.
     private static final String IME_OPTION_NO_MICROPHONE = "nm";
-    
+
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_INPUT_LANGUAGE = "input_language";
 
@@ -138,7 +138,7 @@ public class LatinIME extends InputMethodService
     // If we detect a swipe gesture, and the user types N ms later, cancel the
     // swipe since it was probably a false trigger.
     private static final long MIN_MILLIS_AFTER_SWIPE_TO_WAIT_FOR_TYPING = 500;
-    
+
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
     // Key events coming any faster than this are long-presses.
@@ -150,7 +150,7 @@ public class LatinIME extends InputMethodService
     // A word that is frequently typed and get's promoted to the user dictionary, uses this
     // frequency.
     static final int FREQUENCY_FOR_AUTO_ADD = 250;
-    
+
     static final int KEYCODE_ENTER = '\n';
     static final int KEYCODE_SPACE = ' ';
 
@@ -163,18 +163,18 @@ public class LatinIME extends InputMethodService
     private CandidateView mCandidateView;
     private Suggest mSuggest;
     private CompletionInfo[] mCompletions;
-    
+
     private AlertDialog mOptionsDialog;
     private AlertDialog mVoiceWarningDialog;
-    
+
     KeyboardSwitcher mKeyboardSwitcher;
-    
+
     private UserDictionary mUserDictionary;
     private ContactsDictionary mContactsDictionary;
     private ExpandableDictionary mAutoDictionary;
 
     private Hints mHints;
-    
+
     Resources mResources;
 
     private String mLocale;
@@ -214,13 +214,13 @@ public class LatinIME extends InputMethodService
     private boolean mEnableVoice = true;
     private boolean mVoiceOnPrimary;
     private int     mOrientation;
-    
+
     // Indicates whether the suggestion strip is to be on in landscape
     private boolean mJustAccepted;
     private CharSequence mJustRevertedSeparator;
     private int mDeleteCount;
     private long mLastKeyTime;
-    
+
     private Tutorial mTutorial;
 
     private Vibrator mVibrator;
@@ -420,7 +420,7 @@ public class LatinIME extends InputMethodService
         return mCandidateViewContainer;
     }
 
-    @Override 
+    @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         // In landscape mode, this method gets called without the input view being created.
         if (mInputView == null) {
@@ -445,7 +445,7 @@ public class LatinIME extends InputMethodService
                 variation == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
             mPasswordText = true;
         }
-        
+
         mEnableVoiceButton = shouldShowVoiceButton(makeFieldContext(), attribute);
         final boolean enableVoiceButton = mEnableVoiceButton && mEnableVoice;
 
@@ -565,11 +565,11 @@ public class LatinIME extends InputMethodService
     @Override
     public void onFinishInput() {
         super.onFinishInput();
-        
+
         if (mAfterVoiceInput) mVoiceInput.logInputEnded();
-        
+
         mVoiceInput.flushLogs();
-        
+
         if (mInputView != null) {
             mInputView.closing();
         }
@@ -692,7 +692,7 @@ public class LatinIME extends InputMethodService
                 setSuggestions(null, false, false, false);
                 return;
             }
-            
+
             List<CharSequence> stringList = new ArrayList<CharSequence>();
             for (int i=0; i<(completions != null ? completions.length : 0); i++) {
                 CompletionInfo ci = completions[i];
@@ -712,7 +712,7 @@ public class LatinIME extends InputMethodService
             super.setCandidatesViewShown(shown);
         }
     }
-    
+
     @Override
     public void onComputeInsets(InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
@@ -720,7 +720,7 @@ public class LatinIME extends InputMethodService
             outInsets.contentTopInsets = outInsets.visibleTopInsets;
         }
     }
-    
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -760,7 +760,7 @@ public class LatinIME extends InputMethodService
                 }
                 // Enable shift key and DPAD to do selections
                 if (mInputView != null && mInputView.isShown() && mInputView.isShifted()) {
-                    event = new KeyEvent(event.getDownTime(), event.getEventTime(), 
+                    event = new KeyEvent(event.getDownTime(), event.getEventTime(),
                             event.getAction(), event.getKeyCode(), event.getRepeatCount(),
                             event.getDeviceId(), event.getScanCode(),
                             KeyEvent.META_SHIFT_LEFT_ON | KeyEvent.META_SHIFT_ON);
@@ -864,7 +864,7 @@ public class LatinIME extends InputMethodService
             updateShiftKeyState(getCurrentInputEditorInfo());
         }
     }
-    
+
     public boolean addWordToDictionary(String word) {
         mUserDictionary.addWord(word, 128);
         return true;
@@ -877,12 +877,12 @@ public class LatinIME extends InputMethodService
             return false;
         }
     }
-    
+
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes) {
         long when = SystemClock.uptimeMillis();
-        if (primaryCode != Keyboard.KEYCODE_DELETE || 
+        if (primaryCode != Keyboard.KEYCODE_DELETE ||
                 when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
         }
@@ -937,7 +937,7 @@ public class LatinIME extends InputMethodService
             changeKeyboardMode();
         }
     }
-    
+
     public void onText(CharSequence text) {
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
@@ -999,7 +999,7 @@ public class LatinIME extends InputMethodService
             mKeyboardSwitcher.toggleShift();
         }
     }
-    
+
     private void handleCharacter(int primaryCode, int[] keyCodes) {
         if (VOICE_INSTALLED && mVoiceInputHighlighted) {
             commitVoiceInput();
@@ -1055,12 +1055,12 @@ public class LatinIME extends InputMethodService
         }
         if (mPredicting) {
             // In certain languages where single quote is a separator, it's better
-            // not to auto correct, but accept the typed word. For instance, 
+            // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
-            if (mAutoCorrectOn && primaryCode != '\'' && 
-                    (mJustRevertedSeparator == null 
-                            || mJustRevertedSeparator.length() == 0 
+            if (mAutoCorrectOn && primaryCode != '\'' &&
+                    (mJustRevertedSeparator == null
+                            || mJustRevertedSeparator.length() == 0
                             || mJustRevertedSeparator.charAt(0) != primaryCode)) {
                 pickDefaultSuggestion();
                 pickedDefault = true;
@@ -1070,10 +1070,10 @@ public class LatinIME extends InputMethodService
         }
         sendKeyChar((char)primaryCode);
         TextEntryState.typedCharacter((char) primaryCode, true);
-        if (TextEntryState.getState() == TextEntryState.STATE_PUNCTUATION_AFTER_ACCEPTED 
+        if (TextEntryState.getState() == TextEntryState.STATE_PUNCTUATION_AFTER_ACCEPTED
                 && primaryCode != KEYCODE_ENTER) {
             swapPunctuationAndSpace();
-        } else if (isPredictionOn() && primaryCode == ' ') { 
+        } else if (isPredictionOn() && primaryCode == ' ') {
         //else if (TextEntryState.STATE_SPACE_AFTER_ACCEPTED) {
             doubleSpace();
         }
@@ -1101,7 +1101,7 @@ public class LatinIME extends InputMethodService
             toggleCapsLock();
         }
     }
-    
+
     private void toggleCapsLock() {
         mCapsLock = !mCapsLock;
         if (mKeyboardSwitcher.isAlphabetMode()) {
@@ -1113,13 +1113,13 @@ public class LatinIME extends InputMethodService
         mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SUGGESTIONS), 100);
     }
-    
+
     private boolean isPredictionOn() {
         boolean predictionOn = mPredictionOn;
         //if (isFullscreenMode()) predictionOn &= mPredictionLandscape;
         return predictionOn;
     }
-    
+
     private boolean isCandidateStripVisible() {
         return isPredictionOn() && mShowSuggestions;
     }
@@ -1159,7 +1159,7 @@ public class LatinIME extends InputMethodService
             reallyStartListening(swipe);
         }
     }
-    
+
     private void reallyStartListening(boolean swipe) {
         if (!mHasUsedVoiceInput) {
             // The user has started a voice input, so remember that in the
@@ -1170,7 +1170,7 @@ public class LatinIME extends InputMethodService
             editor.commit();
             mHasUsedVoiceInput = true;
         }
-        
+
         if (!mLocaleSupportedForVoiceInput && !mHasUsedVoiceInputUnsupportedLocale) {
             // The user has started a voice input from an unsupported locale, so remember that
             // in the future (so we don't show the warning dialog the next time they do this).
@@ -1180,7 +1180,7 @@ public class LatinIME extends InputMethodService
             editor.commit();
             mHasUsedVoiceInputUnsupportedLocale = true;
         }
-        
+
         // Clear N-best suggestions
         setSuggestions(null, false, false, true);
 
@@ -1189,7 +1189,7 @@ public class LatinIME extends InputMethodService
         mVoiceInput.startListening(context, swipe);
         switchToRecognitionStatusView();
     }
-    
+
     private void showVoiceWarningDialog(final boolean swipe) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
@@ -1205,7 +1205,7 @@ public class LatinIME extends InputMethodService
                 mVoiceInput.logKeyboardWarningDialogCancel();
             }
         });
-        
+
         if (mLocaleSupportedForVoiceInput) {
             String message = getString(R.string.voice_warning_may_not_understand) + "\n\n" +
                     getString(R.string.voice_warning_how_to_turn_off);
@@ -1216,10 +1216,10 @@ public class LatinIME extends InputMethodService
                     getString(R.string.voice_warning_how_to_turn_off);
             builder.setMessage(message);
         }
-        
+
         builder.setTitle(R.string.voice_warning_title);
         mVoiceWarningDialog = builder.create();
-        
+
         Window window = mVoiceWarningDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.token = mInputView.getWindowToken();
@@ -1391,11 +1391,11 @@ public class LatinIME extends InputMethodService
         // Fool the state watcher so that a subsequent backspace will not do a revert
         TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
     }
-    
+
     private void pickSuggestion(CharSequence suggestion) {
         if (mCapsLock) {
             suggestion = suggestion.toString().toUpperCase();
-        } else if (preferCapitalization() 
+        } else if (preferCapitalization()
                 || (mKeyboardSwitcher.isAlphabetMode() && mInputView.isShifted())) {
             suggestion = suggestion.toString().toUpperCase().charAt(0)
                     + suggestion.subSequence(1, suggestion.length()).toString();
@@ -1428,13 +1428,13 @@ public class LatinIME extends InputMethodService
                 && !isWordSeparator(toLeft.charAt(0))) {
             return true;
         }
-        if (!TextUtils.isEmpty(toRight) 
+        if (!TextUtils.isEmpty(toRight)
                 && !isWordSeparator(toRight.charAt(0))) {
             return true;
         }
         return false;
     }
-    
+
     public void revertLastWord(boolean deleteChar) {
         final int length = mComposing.length();
         if (!mPredicting && length > 0) {
@@ -1445,7 +1445,7 @@ public class LatinIME extends InputMethodService
             if (deleteChar) ic.deleteSurroundingText(1, 0);
             int toDelete = mCommittedLength;
             CharSequence toTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
-            if (toTheLeft != null && toTheLeft.length() > 0 
+            if (toTheLeft != null && toTheLeft.length() > 0
                     && isWordSeparator(toTheLeft.charAt(0))) {
                 toDelete--;
             }
@@ -1463,7 +1463,7 @@ public class LatinIME extends InputMethodService
     protected String getWordSeparators() {
         return mWordSeparators;
     }
-    
+
     public boolean isWordSeparator(int code) {
         String separators = getWordSeparators();
         return separators.contains(String.valueOf((char)code));
@@ -1542,11 +1542,11 @@ public class LatinIME extends InputMethodService
     public void onRelease(int primaryCode) {
         //vibrate();
     }
-    
+
     private FieldContext makeFieldContext() {
         return new FieldContext(getCurrentInputConnection(), getCurrentInputEditorInfo());
     }
-    
+
     private boolean fieldCanDoVoice(FieldContext fieldContext) {
         return !mPasswordText
                 && mVoiceInput != null
@@ -1564,7 +1564,7 @@ public class LatinIME extends InputMethodService
                 && !(attribute != null && attribute.privateImeOptions != null
                         && attribute.privateImeOptions.equals(IME_OPTION_NO_MICROPHONE));
     }
-    
+
     // receive ringer mode changes to detect silent mode
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
@@ -1652,7 +1652,7 @@ public class LatinIME extends InputMethodService
             }
         }
     }
-    
+
     private void startTutorial() {
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_START_TUTORIAL), 500);
     }
@@ -1700,21 +1700,21 @@ public class LatinIME extends InputMethodService
         mHasUsedVoiceInput = sp.getBoolean(PREF_HAS_USED_VOICE_INPUT, false);
         mHasUsedVoiceInputUnsupportedLocale =
                 sp.getBoolean(PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE, false);
-        
+
         // Get the current list of supported locales and check the current locale against that
         // list. We cache this value so as not to check it every time the user starts a voice
         // input. Because this method is called by onStartInputView, this should mean that as
         // long as the locale doesn't change while the user is keeping the IME open, the
         // value should never be stale.
-        String supportedLocalesString = GoogleSettingsUtil.getGservicesString(
+        String supportedLocalesString = SettingsUtil.getSettingsString(
                 getContentResolver(),
-                GoogleSettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
+                SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
                 DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
         ArrayList<String> voiceInputSupportedLocales =
                 Lists.newArrayList(supportedLocalesString.split("\\s+"));
-        
+
         mLocaleSupportedForVoiceInput = voiceInputSupportedLocales.contains(mLocale);
-        
+
         // If there is no auto text data, then quickfix is forced to "on", so that the other options
         // will continue to work
 
@@ -1809,7 +1809,7 @@ public class LatinIME extends InputMethodService
 
     @Override protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
         super.dump(fd, fout, args);
-        
+
         final Printer p = new PrintWriterPrinter(fout);
         p.println("LatinIME state :");
         p.println("  Keyboard mode = " + mKeyboardSwitcher.getKeyboardMode());
@@ -1827,14 +1827,14 @@ public class LatinIME extends InputMethodService
     }
 
     // Characters per second measurement
-    
+
     private static final boolean PERF_DEBUG = false;
     private long mLastCpsTime;
     private static final int CPS_BUFFER_SIZE = 16;
     private long[] mCpsIntervals = new long[CPS_BUFFER_SIZE];
     private int mCpsIndex;
     private boolean mInputTypeNoAutoCorrect;
-    
+
     private void measureCps() {
         if (!LatinIME.PERF_DEBUG) return;
         long now = System.currentTimeMillis();
