@@ -178,6 +178,7 @@ public class LatinIME extends InputMethodService
     Resources mResources;
 
     private String mLocale;
+    private LanguageSwitcher mLanguageSwitcher;
 
     private StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
@@ -244,10 +245,6 @@ public class LatinIME extends InputMethodService
         List<String> candidates;
         Map<String, List<CharSequence>> alternatives;
     }
-    private int mCurrentInputLocale = 0;
-    private String mInputLanguage;
-    private String[] mSelectedLanguageArray;
-    private String mSelectedLanguagesList;
     private boolean mRefreshKeyboardRequired;
 
     Handler mHandler = new Handler() {
@@ -285,18 +282,19 @@ public class LatinIME extends InputMethodService
     @Override public void onCreate() {
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
-        mKeyboardSwitcher = new KeyboardSwitcher(this, this);
         mResources = getResources();
         final Configuration conf = mResources.getConfiguration();
-        mInputLanguage = getPersistedInputLanguage();
-        mSelectedLanguagesList = getSelectedInputLanguages();
-        boolean enableMultipleLanguages = mSelectedLanguagesList != null
-                && mSelectedLanguagesList.split(",").length > 1;
-        if (mInputLanguage == null) {
-            mInputLanguage = conf.locale.toString();
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mLanguageSwitcher = new LanguageSwitcher(this);
+        mLanguageSwitcher.loadLocales(prefs);
+        mKeyboardSwitcher = new KeyboardSwitcher(this, this);
+        mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
+        boolean enableMultipleLanguages = mLanguageSwitcher.getLocaleCount() > 0;
+        String inputLanguage = mLanguageSwitcher.getInputLanguage();
+        if (inputLanguage == null) {
+            inputLanguage = conf.locale.toString();
         }
-        initSuggest(mInputLanguage);
-        mKeyboardSwitcher.setInputLocale(conf.locale, enableMultipleLanguages);
+        initSuggest(inputLanguage);
         mOrientation = conf.orientation;
 
         mVibrateDuration = mResources.getInteger(R.integer.vibrate_duration_ms);
@@ -317,8 +315,7 @@ public class LatinIME extends InputMethodService
                 }
               });
         }
-        PreferenceManager.getDefaultSharedPreferences(this)
-                .registerOnSharedPreferenceChangeListener(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     private void initSuggest(String locale) {
@@ -429,7 +426,7 @@ public class LatinIME extends InputMethodService
 
         if (mRefreshKeyboardRequired) {
             mRefreshKeyboardRequired = false;
-            toggleLanguage(true);
+            toggleLanguage(true, true);
         }
 
         mKeyboardSwitcher.makeKeyboards(false);
@@ -791,8 +788,7 @@ public class LatinIME extends InputMethodService
         if (mKeyboardSwitcher == null) {
             mKeyboardSwitcher = new KeyboardSwitcher(this, this);
         }
-        mKeyboardSwitcher.setInputLocale(new Locale(mInputLanguage),
-                getSelectedInputLanguages() != null);
+        mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         if (mInputView != null) {
             mKeyboardSwitcher.setVoiceMode(mEnableVoice, mVoiceOnPrimary);
         }
@@ -919,7 +915,10 @@ public class LatinIME extends InputMethodService
                 showOptionsMenu();
                 break;
             case LatinKeyboardView.KEYCODE_NEXT_LANGUAGE:
-                toggleLanguage(false);
+                toggleLanguage(false, true);
+                break;
+            case LatinKeyboardView.KEYCODE_PREV_LANGUAGE:
+                toggleLanguage(false, false);
                 break;
             case LatinKeyboardView.KEYCODE_SHIFT_LONGPRESS:
                 if (mCapsLock) {
@@ -1514,27 +1513,30 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private void toggleLanguage(boolean reset) {
-        final String [] languages = mSelectedLanguageArray;
-        if (reset) mCurrentInputLocale = -1;
-        mCurrentInputLocale = (mCurrentInputLocale + 1)
-                % (languages != null ? languages.length : 1);
-        mInputLanguage = languages != null ? languages[mCurrentInputLocale] :
-                getResources().getConfiguration().locale.getLanguage();
+    private void toggleLanguage(boolean reset, boolean next) {
+        if (reset) {
+            mLanguageSwitcher.reset();
+        } else {
+            if (next) {
+                mLanguageSwitcher.next();
+            } else {
+                mLanguageSwitcher.prev();
+            }
+        }
         int currentKeyboardMode = mKeyboardSwitcher.getKeyboardMode();
         reloadKeyboards();
         mKeyboardSwitcher.makeKeyboards(true);
         mKeyboardSwitcher.setKeyboardMode(currentKeyboardMode, 0,
                 mEnableVoiceButton && mEnableVoice);
-        initSuggest(mInputLanguage);
-        persistInputLanguage(mInputLanguage);
+        initSuggest(mLanguageSwitcher.getInputLanguage());
+        mLanguageSwitcher.persist();
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         if (PREF_SELECTED_LANGUAGES.equals(key)) {
-            updateSelectedLanguages(sharedPreferences.getString(key, null));
+            mLanguageSwitcher.loadLocales(sharedPreferences);
             mRefreshKeyboardRequired = true;
         }
     }
@@ -1556,6 +1558,8 @@ public class LatinIME extends InputMethodService
     }
 
     public void onRelease(int primaryCode) {
+        // Reset any drag flags in the keyboard
+        ((LatinKeyboard) mInputView.getKeyboard()).keyReleased();
         //vibrate();
     }
 
@@ -1750,28 +1754,12 @@ public class LatinIME extends InputMethodService
         mAutoCorrectEnabled = sp.getBoolean(PREF_AUTO_COMPLETE,
                 mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
         updateCorrectionMode();
-        String languageList = sp.getString(PREF_SELECTED_LANGUAGES, null);
-        updateSelectedLanguages(languageList);
-    }
-
-    private void updateSelectedLanguages(String languageList) {
-        if (languageList != null && languageList.length() > 1) {
-            mSelectedLanguageArray = languageList.split(",");
-        } else {
-            mSelectedLanguageArray = null;
-        }
+        mLanguageSwitcher.loadLocales(sp);
     }
 
     private String getPersistedInputLanguage() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         return sp.getString(PREF_INPUT_LANGUAGE, null);
-    }
-
-    private void persistInputLanguage(String inputLanguage) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Editor editor = sp.edit();
-        editor.putString(PREF_INPUT_LANGUAGE, inputLanguage);
-        editor.commit();
     }
 
     private String getSelectedInputLanguages() {

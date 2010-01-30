@@ -77,6 +77,7 @@ public class KeyboardSwitcher {
     private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
 
     private int mLastDisplayWidth;
+    private LanguageSwitcher mLanguageSwitcher;
     private Locale mInputLocale;
     private boolean mEnableMultipleLanguages;
 
@@ -94,9 +95,10 @@ public class KeyboardSwitcher {
      * @param locale the current input locale, or null for default locale with no locale 
      * button.
      */
-    void setInputLocale(Locale locale, boolean enableMultipleLanguages) {
-        mInputLocale = locale;
-        mEnableMultipleLanguages = enableMultipleLanguages;
+    void setLanguageSwitcher(LanguageSwitcher languageSwitcher) {
+        mLanguageSwitcher = languageSwitcher;
+        mInputLocale = mLanguageSwitcher.getInputLocale();
+        mEnableMultipleLanguages = mLanguageSwitcher.getLocaleCount() > 1;
     }
 
     void setInputView(LatinKeyboardView inputView) {
@@ -195,11 +197,6 @@ public class KeyboardSwitcher {
         }
 
         mCurrentId = id;
-        if (mEnableMultipleLanguages) {
-            keyboard.setLanguage(mInputLocale);
-        } else {
-            keyboard.setLanguage(null);
-        }
         mInputView.setKeyboard(keyboard);
         keyboard.setShifted(false);
         keyboard.setShiftLocked(keyboard.isShiftLocked());
@@ -215,6 +212,7 @@ public class KeyboardSwitcher {
             orig.updateConfiguration(conf, null);
             LatinKeyboard keyboard = new LatinKeyboard(
                 mContext, id.mXml, id.mKeyboardMode, id.mHasVoice);
+            keyboard.setLanguageSwitcher(mLanguageSwitcher);
             if (id.mKeyboardMode == KEYBOARDMODE_NORMAL
                     || id.mKeyboardMode == KEYBOARDMODE_URL
                     || id.mKeyboardMode == KEYBOARDMODE_IM

@@ -38,8 +38,14 @@ public class LatinKeyboardView extends KeyboardView {
     static final int KEYCODE_VOICE = -102;
     static final int KEYCODE_F1 = -103;
     static final int KEYCODE_NEXT_LANGUAGE = -104;
+    static final int KEYCODE_PREV_LANGUAGE = -105;
 
     private Keyboard mPhoneKeyboard;
+
+    private boolean mExtensionVisible;
+    private LatinKeyboardView mExtension;
+    private PopupWindow mExtensionPopup;
+    private boolean mFirstEvent;
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -66,22 +72,33 @@ public class LatinKeyboardView extends KeyboardView {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             getOnKeyboardActionListener().onKey('+', null);
             return true;
-        } else if (key.codes[0] == ' ' && ((LatinKeyboard)getKeyboard()).mLocale != null) {
-            getOnKeyboardActionListener().onKey(KEYCODE_NEXT_LANGUAGE, null);
-            return true;
         } else {
             return super.onLongPress(key);
         }
     }
 
-    private boolean mExtensionVisible;
-    private LatinKeyboardView mExtension;
-    private PopupWindow mExtensionPopup;
-    private boolean mFirstEvent;
-
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-        if (((LatinKeyboard) getKeyboard()).getExtension() == 0) {
+        LatinKeyboard keyboard = (LatinKeyboard) getKeyboard();
+        // Reset any bounding box controls in the keyboard
+        if (me.getAction() == MotionEvent.ACTION_DOWN) {
+            keyboard.keyReleased();
+        }
+
+        if (me.getAction() == MotionEvent.ACTION_UP) {
+            int languageDirection = keyboard.getLanguageChangeDirection();
+            if (languageDirection != 0) {
+                getOnKeyboardActionListener().onKey(
+                        languageDirection == 1 ? KEYCODE_NEXT_LANGUAGE : KEYCODE_PREV_LANGUAGE,
+                        null);
+                me.setAction(MotionEvent.ACTION_CANCEL);
+                keyboard.keyReleased();
+                return super.onTouchEvent(me);
+            }
+        }
+
+        // If we don't have an extension keyboard, don't go any further.
+        if (keyboard.getExtension() == 0) {
             return super.onTouchEvent(me);
         }
         if (me.getY() < 0) {

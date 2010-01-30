@@ -123,6 +123,7 @@ public class TextEntryState {
     }
     
     public static void acceptedDefault(CharSequence typedWord, CharSequence actualWord) {
+        if (typedWord == null) return;
         if (!typedWord.equals(actualWord)) {
             sAutoSuggestCount++;
         }
