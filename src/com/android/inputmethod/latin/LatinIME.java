@@ -867,6 +867,19 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    private void maybeRemovePreviousPeriod(CharSequence text) {
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+
+        // When the text's first character is '.', remove the previous period
+        // if there is one.
+        CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
+        if (lastOne != null && lastOne.length() == 1 && lastOne.charAt(0) == '.'
+                && text.charAt(0) == '.') {
+            ic.deleteSurroundingText(1, 0);
+        }
+    }
+
     public boolean addWordToDictionary(String word) {
         mUserDictionary.addWord(word, 128);
         return true;
@@ -947,6 +960,7 @@ public class LatinIME extends InputMethodService
         if (mPredicting) {
             commitTyped(ic);
         }
+        maybeRemovePreviousPeriod(text);
         ic.commitText(text, 1);
         ic.endBatchEdit();
         updateShiftKeyState(getCurrentInputEditorInfo());
