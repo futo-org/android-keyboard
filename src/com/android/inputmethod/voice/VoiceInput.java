@@ -16,19 +16,21 @@
 
 package com.android.inputmethod.voice;
 
+import com.android.inputmethod.latin.R;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.speech.RecognitionListener;
 import android.speech.RecognitionManager;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-
-import com.android.inputmethod.latin.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,8 +39,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Speech recognition input, including both user interface and a background
@@ -95,9 +95,19 @@ public class VoiceInput implements OnClickListener {
     public static final int ERROR = 3;
 
     private int mState = DEFAULT;
+    
+    private final static int MSG_CLOSE_ERROR_DIALOG = 1;
 
-    // flag that maintains the status of the RecognitionManager
-    private boolean mIsRecognitionInitialized = false;
+    private final Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == MSG_CLOSE_ERROR_DIALOG) {
+                mState = DEFAULT;
+                mRecognitionView.finish();
+                mUiListener.onCancelVoice();
+            }
+        }
+    };
 
     /**
      * Events relating to the recognition UI. You must implement these.
@@ -123,14 +133,6 @@ public class VoiceInput implements OnClickListener {
     private RecognitionView mRecognitionView;
     private UiListener mUiListener;
     private Context mContext;
-    private ScheduledThreadPoolExecutor mExecutor;
-
-    /**
-     * Context with which {@link RecognitionManager#startListening(Intent)} was
-     * executed. Used to store the context in case that startLitening was
-     * executed before the recognition service initialization was completed
-     */
-    private FieldContext mStartListeningContext;
 
     /**
      * @param context the service or activity in which we're running.
@@ -139,8 +141,8 @@ public class VoiceInput implements OnClickListener {
     public VoiceInput(Context context, UiListener uiHandler) {
         mLogger = VoiceInputLogger.getLogger(context);
         mRecognitionListener = new ImeRecognitionListener();
-        mRecognitionManager = RecognitionManager.createRecognitionManager(context,
-                mRecognitionListener, new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH));
+        mRecognitionManager = RecognitionManager.createRecognitionManager(context);
+        mRecognitionManager.setRecognitionListener(mRecognitionListener);
         mUiListener = uiHandler;
         mContext = context;
         newView();
@@ -157,8 +159,6 @@ public class VoiceInput implements OnClickListener {
 
         mBlacklist = new Whitelist();
         mBlacklist.addApp("com.android.setupwizard");
-
-        mExecutor = new ScheduledThreadPoolExecutor(1);
     }
 
     /**
@@ -187,7 +187,7 @@ public class VoiceInput implements OnClickListener {
      */
     public void startListening(FieldContext context, boolean swipe) {
         mState = DEFAULT;
-
+        
         Locale locale = Locale.getDefault();
         String localeString = locale.getLanguage() + "-" + locale.getCountry();
 
@@ -195,13 +195,8 @@ public class VoiceInput implements OnClickListener {
 
         mState = LISTENING;
 
-        if (!mIsRecognitionInitialized) {
-            mRecognitionView.showInitializing();
-            mStartListeningContext = context;
-        } else {
-            mRecognitionView.showStartState();
-            startListeningAfterInitialization(context);
-        }
+        mRecognitionView.showInitializing();
+        startListeningAfterInitialization(context);
     }
 
     /**
@@ -380,9 +375,7 @@ public class VoiceInput implements OnClickListener {
         mState = DEFAULT;
 
         // Remove all pending tasks (e.g., timers to cancel voice input)
-        for (Runnable runnable : mExecutor.getQueue()) {
-            mExecutor.remove(runnable);
-        }
+        mHandler.removeMessages(MSG_CLOSE_ERROR_DIALOG);
 
         mRecognitionManager.cancel();
         mUiListener.onCancelVoice();
@@ -392,20 +385,20 @@ public class VoiceInput implements OnClickListener {
     private int getErrorStringId(int errorType, boolean endpointed) {
         switch (errorType) {
             // We use CLIENT_ERROR to signify that voice search is not available on the device.
-            case RecognitionManager.CLIENT_ERROR:
+            case RecognitionManager.ERROR_CLIENT:
                 return R.string.voice_not_installed;
-            case RecognitionManager.NETWORK_ERROR:
+            case RecognitionManager.ERROR_NETWORK:
                 return R.string.voice_network_error;
-            case RecognitionManager.NETWORK_TIMEOUT_ERROR:
+            case RecognitionManager.ERROR_NETWORK_TIMEOUT:
                 return endpointed ?
                         R.string.voice_network_error : R.string.voice_too_much_speech;
-            case RecognitionManager.AUDIO_ERROR:
+            case RecognitionManager.ERROR_AUDIO:
                 return R.string.voice_audio_error;
-            case RecognitionManager.SERVER_ERROR:
+            case RecognitionManager.ERROR_SERVER:
                 return R.string.voice_server_error;
-            case RecognitionManager.SPEECH_TIMEOUT_ERROR:
+            case RecognitionManager.ERROR_SPEECH_TIMEOUT:
                 return R.string.voice_speech_timeout;
-            case RecognitionManager.NO_MATCH_ERROR:
+            case RecognitionManager.ERROR_NO_MATCH:
                 return R.string.voice_no_match;
             default: return R.string.voice_error;
         }
@@ -421,10 +414,7 @@ public class VoiceInput implements OnClickListener {
         mState = ERROR;
         mRecognitionView.showError(error);
         // Wait a couple seconds and then automatically dismiss message.
-        mExecutor.schedule(new Runnable() {
-            public void run() {
-                cancel();
-            }}, 2000, TimeUnit.MILLISECONDS);
+        mHandler.sendMessageDelayed(Message.obtain(mHandler, MSG_CLOSE_ERROR_DIALOG), 2000);
     }
 
     private class ImeRecognitionListener implements RecognitionListener {
@@ -465,7 +455,7 @@ public class VoiceInput implements OnClickListener {
 
         public void onResults(Bundle resultsBundle) {
             List<String> results = resultsBundle
-                    .getStringArrayList(RecognitionManager.RECOGNITION_RESULTS_STRING_ARRAY);
+                    .getStringArrayList(RecognitionManager.RESULTS_RECOGNITION);
             mState = DEFAULT;
 
             final Map<String, List<CharSequence>> alternatives =
@@ -499,15 +489,12 @@ public class VoiceInput implements OnClickListener {
             mRecognitionView.finish();
         }
 
-        public void onInit() {
-            mIsRecognitionInitialized = true;
-            if (mState == LISTENING) {
-                startListeningAfterInitialization(mStartListeningContext);
-            }
+        public void onPartialResults(final Bundle partialResults) {
+            // currently - do nothing
         }
 
-        public void onPartialResults(final Bundle partialResults) {
-            // TODO To add partial results as user speaks
+        public void onEvent(int eventType, Bundle params) {
+            // do nothing - reserved for events that might be added in the future
         }
     }
 }
