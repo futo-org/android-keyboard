@@ -102,13 +102,15 @@ public class LatinKeyboard extends Keyboard {
         mSpacePreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_space);
         mMicIcon = res.getDrawable(R.drawable.sym_keyboard_mic);
         mMicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_mic);
+        setDefaultBounds(mMicPreviewIcon);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
         m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);
         m123MicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_123_mic);
+        setDefaultBounds(m123MicPreviewIcon);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
-        setF1Key();
+        setF1Key(xmlLayoutResId == R.xml.kbd_qwerty);
         mSpaceKeyIndex = indexOf((int) ' ');
     }
 
@@ -266,16 +268,21 @@ public class LatinKeyboard extends Keyboard {
         return mExtensionResId;
     }
 
-    private void setF1Key() {
+    private void setDefaultBounds(Drawable drawable) {
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+    }
+
+    private void setF1Key(boolean isAlphaKeyboard) {
         if (mF1Key == null) return;
         if (!mHasVoice) {
             mF1Key.label = ",";
             mF1Key.codes = new int[] { ',' };
             mF1Key.icon = null;
             mF1Key.iconPreview = null;
-            if (m123Key != null) {
+            if (isAlphaKeyboard && m123Key != null) {
                 m123Key.icon = m123MicIcon;
                 m123Key.iconPreview = m123MicPreviewIcon;
+                m123Key.label = null;
             }
         } else {
             mF1Key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
