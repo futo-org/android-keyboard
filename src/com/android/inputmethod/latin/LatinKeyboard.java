@@ -56,6 +56,7 @@ public class LatinKeyboard extends Keyboard {
     private Key mEnterKey;
     private Key mF1Key;
     private Key mSpaceKey;
+    private Key m123Key;
     private int mSpaceKeyIndex = -1;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
@@ -103,6 +104,8 @@ public class LatinKeyboard extends Keyboard {
         mMicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_mic);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
+        m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);
+        m123MicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_123_mic);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
         setF1Key();
@@ -127,6 +130,9 @@ public class LatinKeyboard extends Keyboard {
             break;
         case 32:
             mSpaceKey = key;
+            break;
+        case KEYCODE_MODE_CHANGE:
+            m123Key = key;
             break;
         }
         return key;
@@ -267,6 +273,10 @@ public class LatinKeyboard extends Keyboard {
             mF1Key.codes = new int[] { ',' };
             mF1Key.icon = null;
             mF1Key.iconPreview = null;
+            if (m123Key != null) {
+                m123Key.icon = m123MicIcon;
+                m123Key.iconPreview = m123MicPreviewIcon;
+            }
         } else {
             mF1Key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
             mF1Key.label = null;
@@ -560,20 +570,15 @@ public class LatinKeyboard extends Keyboard {
         public void draw(Canvas canvas) {
             canvas.save();
             if (mHitThreshold) {
-                mTextPaint.setColor(0);
+                mTextPaint.setColor(0xFF000000);
                 canvas.clipRect(0, 0, mWidth, mHeight);
-                int alpha = (255 * Math.max(0, mWidth / 2 - Math.abs(mDiff))) / (mWidth / 2);
-                mTextPaint.setAlpha(alpha);
-
                 if (mCurrentLanguage == null) {
                     mCurrentLanguage = getInputLanguage(mWidth, mTextPaint);
                     mNextLanguage = getNextInputLanguage(mWidth, mTextPaint);
                     mPrevLanguage = getPrevInputLanguage(mWidth, mTextPaint);
                 }
-
                 canvas.drawText(mCurrentLanguage,
                         mWidth / 2 + mDiff, -mAscent + 4, mTextPaint);
-                mTextPaint.setAlpha(255 - alpha);
                 canvas.drawText(mNextLanguage,
                         mDiff - mWidth / 2, -mAscent + 4, mTextPaint);
                 canvas.drawText(mPrevLanguage,
