@@ -22,7 +22,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/candidate_strip_height"
         android:background="@drawable/keyboard_suggest_strip"
         >
 

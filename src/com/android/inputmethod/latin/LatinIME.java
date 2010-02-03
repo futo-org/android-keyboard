@@ -215,6 +215,7 @@ public class LatinIME extends InputMethodService
     private boolean mEnableVoice = true;
     private boolean mVoiceOnPrimary;
     private int     mOrientation;
+    private List<CharSequence> mSuggestPuncList;
 
     // Indicates whether the suggestion strip is to be on in landscape
     private boolean mJustAccepted;
@@ -296,6 +297,7 @@ public class LatinIME extends InputMethodService
         }
         initSuggest(inputLanguage);
         mOrientation = conf.orientation;
+        initSuggestPuncList();
 
         mVibrateDuration = mResources.getInteger(R.integer.vibrate_duration_ms);
 
@@ -1337,7 +1339,7 @@ public class LatinIME extends InputMethodService
         }
 
         if (!mPredicting) {
-            setSuggestions(null, false, false, false);
+            setNextSuggestions();
             return;
         }
 
@@ -1397,6 +1399,12 @@ public class LatinIME extends InputMethodService
             updateShiftKeyState(getCurrentInputEditorInfo());
             return;
         }
+
+        // If this is a punctuation, apply it through the normal key press
+        if (suggestion.length() == 1 && isWordSeparator(suggestion.charAt(0))) {
+            onKey(suggestion.charAt(0), null);
+            return;
+        }
         pickSuggestion(suggestion);
         TextEntryState.acceptedSuggestion(mComposing.toString(), suggestion);
         // Follow it with a space
@@ -1430,8 +1438,12 @@ public class LatinIME extends InputMethodService
         }
         mPredicting = false;
         mCommittedLength = suggestion.length();
-        setSuggestions(null, false, false, false);
+        setNextSuggestions();
         updateShiftKeyState(getCurrentInputEditorInfo());
+    }
+
+    private void setNextSuggestions() {
+        setSuggestions(mSuggestPuncList, false, false, false);
     }
 
     private boolean isCursorTouchingWord() {
@@ -1765,6 +1777,16 @@ public class LatinIME extends InputMethodService
     private String getSelectedInputLanguages() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         return sp.getString(PREF_SELECTED_LANGUAGES, null);
+    }
+
+    private void initSuggestPuncList() {
+        mSuggestPuncList = new ArrayList<CharSequence>();
+        String suggestPuncs = mResources.getString(R.string.suggested_punctuations);
+        if (suggestPuncs != null) {
+            for (int i = 0; i < suggestPuncs.length(); i++) {
+                mSuggestPuncList.add(suggestPuncs.subSequence(i, i + 1));
+            }
+        }
     }
 
     private void showOptionsMenu() {

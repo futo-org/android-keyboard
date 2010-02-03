@@ -159,7 +159,6 @@ public class KeyboardSwitcher {
 
     void setVoiceMode(boolean enableVoice, boolean voiceOnPrimary) {
         if (enableVoice != mHasVoice || voiceOnPrimary != mVoiceOnPrimary) {
-            System.err.println("Clearing keyboards");
             mKeyboards.clear();
         }
         mHasVoice = enableVoice;
