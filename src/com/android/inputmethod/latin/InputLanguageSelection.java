@@ -70,7 +70,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
             CheckBoxPreference pref = new CheckBoxPreference(this);
             Locale locale = mAvailableLanguages.get(i).locale;
-            pref.setTitle(locale.getDisplayName(locale));
+            pref.setTitle(toTitleCase(locale.getDisplayName(locale)));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
             parent.addPreference(pref);
