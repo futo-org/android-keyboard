@@ -565,14 +565,18 @@ public class LatinIME extends InputMethodService
     public void onFinishInput() {
         super.onFinishInput();
 
-        if (mAfterVoiceInput) mVoiceInput.logInputEnded();
+        if (VOICE_INSTALLED && mAfterVoiceInput) {
+            mVoiceInput.logInputEnded();
+        }
 
-        mVoiceInput.flushLogs();
+        if (VOICE_INSTALLED) {
+            mVoiceInput.flushLogs();
+        }
 
         if (mInputView != null) {
             mInputView.closing();
         }
-        if (VOICE_INSTALLED & mRecognizing) {
+        if (VOICE_INSTALLED && mRecognizing) {
             mVoiceInput.cancel();
         }
     }
