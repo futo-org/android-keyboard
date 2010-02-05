@@ -108,6 +108,13 @@ public class LanguageSwitcher {
 
         return mSelectedLanguageArray[mCurrentIndex];
     }
+    
+    /**
+     * Returns the list of enabled language codes.
+     */
+    public String[] getEnabledLanguages() {
+        return mSelectedLanguageArray;
+    }
 
     /**
      * Returns the currently selected input locale, or the display locale if no specific

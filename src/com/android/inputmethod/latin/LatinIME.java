@@ -1202,7 +1202,10 @@ public class LatinIME extends InputMethodService
         setSuggestions(null, false, false, true);
 
         FieldContext context = new FieldContext(
-            getCurrentInputConnection(), getCurrentInputEditorInfo());
+            getCurrentInputConnection(),
+            getCurrentInputEditorInfo(),
+            mLanguageSwitcher.getInputLanguage(),
+            mLanguageSwitcher.getEnabledLanguages());
         mVoiceInput.startListening(context, swipe);
         switchToRecognitionStatusView();
     }
@@ -1576,7 +1579,11 @@ public class LatinIME extends InputMethodService
     }
 
     private FieldContext makeFieldContext() {
-        return new FieldContext(getCurrentInputConnection(), getCurrentInputEditorInfo());
+        return new FieldContext(
+                getCurrentInputConnection(),
+                getCurrentInputEditorInfo(),
+                mLanguageSwitcher.getInputLanguage(),
+                mLanguageSwitcher.getEnabledLanguages());
     }
 
     private boolean fieldCanDoVoice(FieldContext fieldContext) {

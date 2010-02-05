@@ -28,6 +28,8 @@ import android.view.inputmethod.InputConnection;
  * to the speech recognizer as context information.
  */
 public class FieldContext {
+    private static final boolean DBG = false;
+    
     static final String LABEL = "label";
     static final String HINT = "hint";
     static final String PACKAGE_NAME = "packageName";
@@ -36,14 +38,18 @@ public class FieldContext {
     static final String SINGLE_LINE = "singleLine";
     static final String INPUT_TYPE = "inputType";
     static final String IME_OPTIONS = "imeOptions";
+    static final String SELECTED_LANGUAGE = "selectedLanguage";
+    static final String ENABLED_LANGUAGES = "enabledLanguages";
 
     Bundle mFieldInfo;
 
-    public FieldContext(InputConnection conn, EditorInfo info) {
-        this.mFieldInfo = new Bundle();
+    public FieldContext(InputConnection conn, EditorInfo info,
+            String selectedLanguage, String[] enabledLanguages) {
+        mFieldInfo = new Bundle();
         addEditorInfoToBundle(info, mFieldInfo);
         addInputConnectionToBundle(conn, mFieldInfo);
-        Log.i("FieldContext", "Bundle = " + mFieldInfo.toString());
+        addLanguageInfoToBundle(selectedLanguage, enabledLanguages, mFieldInfo);
+        if (DBG) Log.i("FieldContext", "Bundle = " + mFieldInfo.toString());
     }
 
     private static String safeToString(Object o) {
@@ -57,7 +63,6 @@ public class FieldContext {
         if (info == null) {
             return;
         }
-
 
         bundle.putString(LABEL, safeToString(info.label));
         bundle.putString(HINT, safeToString(info.hintText));
@@ -79,6 +84,12 @@ public class FieldContext {
             return;
         }
         bundle.putBoolean(SINGLE_LINE, (et.flags & et.FLAG_SINGLE_LINE) > 0);
+    }
+    
+    private static void addLanguageInfoToBundle(
+            String selectedLanguage, String[] enabledLanguages, Bundle bundle) {
+        bundle.putString(SELECTED_LANGUAGE, selectedLanguage);
+        bundle.putStringArray(ENABLED_LANGUAGES, enabledLanguages);
     }
 
     public Bundle getBundle() {
