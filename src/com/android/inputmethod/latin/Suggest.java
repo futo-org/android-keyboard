@@ -52,6 +52,12 @@ public class Suggest implements Dictionary.WordCallback {
     private int mPrefMaxSuggestions = 12;
 
     private int[] mPriorities = new int[mPrefMaxSuggestions];
+    // Handle predictive correction for only the first 1280 characters for performance reasons
+    // If we support scripts that need latin characters beyond that, we should probably use some
+    // kind of a sparse array or language specific list with a mapping lookup table.
+    // 1280 is the size of the BASE_CHARS array in ExpandableDictionary, which is a basic set of
+    // latin characters.
+    private int[] mNextLettersFrequencies = new int[1280];
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
     private boolean mHaveCorrection;
@@ -162,7 +168,8 @@ public class Suggest implements Dictionary.WordCallback {
         mCapitalize = wordComposer.isCapitalized();
         collectGarbage();
         Arrays.fill(mPriorities, 0);
-        
+        Arrays.fill(mNextLettersFrequencies, 0);
+
         // Save a lowercase version of the original word
         mOriginalWord = wordComposer.getTypedWord();
         if (mOriginalWord != null) {
@@ -175,17 +182,17 @@ public class Suggest implements Dictionary.WordCallback {
         if (wordComposer.size() > 1) {
             if (mUserDictionary != null || mContactsDictionary != null) {
                 if (mUserDictionary != null) {
-                    mUserDictionary.getWords(wordComposer, this);
+                    mUserDictionary.getWords(wordComposer, this, mNextLettersFrequencies);
                 }
                 if (mContactsDictionary != null) {
-                    mContactsDictionary.getWords(wordComposer, this);
+                    mContactsDictionary.getWords(wordComposer, this, mNextLettersFrequencies);
                 }
 
                 if (mSuggestions.size() > 0 && isValidWord(mOriginalWord)) {
                     mHaveCorrection = true;
                 }
             }
-            mMainDict.getWords(wordComposer, this);
+            mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
             if (mCorrectionMode == CORRECTION_FULL && mSuggestions.size() > 0) {
                 mHaveCorrection = true;
             }
@@ -227,6 +234,10 @@ public class Suggest implements Dictionary.WordCallback {
 
         removeDupes();
         return mSuggestions;
+    }
+
+    public int[] getNextLettersFrequencies() {
+        return mNextLettersFrequencies;
     }
 
     private void removeDupes() {

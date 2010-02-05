@@ -20,6 +20,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.Keyboard.Key;
@@ -80,6 +81,11 @@ public class LatinKeyboardView extends KeyboardView {
     @Override
     public boolean onTouchEvent(MotionEvent me) {
         LatinKeyboard keyboard = (LatinKeyboard) getKeyboard();
+        if (DEBUG_LINE) {
+            mLastX = (int) me.getX();
+            mLastY = (int) me.getY();
+            invalidate();
+        }
         // Reset any bounding box controls in the keyboard
         if (me.getAction() == MotionEvent.ACTION_DOWN) {
             keyboard.keyReleased();
@@ -203,6 +209,7 @@ public class LatinKeyboardView extends KeyboardView {
     /****************************  INSTRUMENTATION  *******************************/
 
     static final boolean DEBUG_AUTO_PLAY = false;
+    static final boolean DEBUG_LINE = false;
     private static final int MSG_TOUCH_DOWN = 1;
     private static final int MSG_TOUCH_UP = 2;
     
@@ -213,6 +220,9 @@ public class LatinKeyboardView extends KeyboardView {
     private boolean mDownDelivered;
     private Key[] mAsciiKeys = new Key[256];
     private boolean mPlaying;
+    private int mLastX;
+    private int mLastY;
+    private Paint mPaint;
 
     @Override
     public void setKeyboard(Keyboard k) {
@@ -308,6 +318,15 @@ public class LatinKeyboardView extends KeyboardView {
             } else {
                 mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 20);
             }
+        }
+        if (DEBUG_LINE) {
+            if (mPaint == null) {
+                mPaint = new Paint();
+                mPaint.setColor(0x80FFFFFF);
+                mPaint.setAntiAlias(false);
+            }
+            c.drawLine(mLastX, 0, mLastX, getHeight(), mPaint);
+            c.drawLine(0, mLastY, getWidth(), mLastY, mPaint);
         }
     }
 }

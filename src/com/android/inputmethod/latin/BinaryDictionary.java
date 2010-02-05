@@ -65,7 +65,8 @@ public class BinaryDictionary extends Dictionary {
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize, 
             char[] outputChars, int[] frequencies,
-            int maxWordLength, int maxWords, int maxAlternatives, int skipPos);
+            int maxWordLength, int maxWords, int maxAlternatives, int skipPos,
+            int[] nextLettersFrequencies, int nextLettersSize);
 
     private final void loadDictionary(Context context, int resId) {
         AssetManager am = context.getResources().getAssets();
@@ -74,7 +75,8 @@ public class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback) {
+    public void getWords(final WordComposer codes, final WordCallback callback,
+            int[] nextLettersFrequencies) {
         final int codesSize = codes.size();
         // Wont deal with really long words.
         if (codesSize > MAX_WORD_LENGTH - 1) return;
@@ -90,7 +92,9 @@ public class BinaryDictionary extends Dictionary {
 
         int count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize,
                 mOutputChars, mFrequencies,
-                MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, -1);
+                MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, -1,
+                nextLettersFrequencies,
+                nextLettersFrequencies != null ? nextLettersFrequencies.length : 0);
 
         // If there aren't sufficient suggestions, search for words by allowing wild cards at
         // the different character positions. This feature is not ready for prime-time as we need
@@ -100,7 +104,8 @@ public class BinaryDictionary extends Dictionary {
             for (int skip = 0; skip < codesSize; skip++) {
                 int tempCount = getSuggestionsNative(mNativeDict, mInputCodes, codesSize,
                         mOutputChars, mFrequencies,
-                        MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, skip);
+                        MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, skip,
+                        null, 0);
                 count = Math.max(count, tempCount);
                 if (tempCount > 0) break;
             }

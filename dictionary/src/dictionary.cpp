@@ -49,7 +49,8 @@ Dictionary::~Dictionary()
 }
 
 int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
-        int maxWordLength, int maxWords, int maxAlternatives, int skipPos)
+        int maxWordLength, int maxWords, int maxAlternatives, int skipPos,
+        int *nextLetters, int nextLettersSize)
 {
     int suggWords;
     mFrequencies = frequencies;
@@ -61,6 +62,8 @@ int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWor
     mMaxWords = maxWords;
     mSkipPos = skipPos;
     mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
+    mNextLettersFrequencies = nextLetters;
+    mNextLettersSize = nextLettersSize;
 
     getWordsRec(0, 0, mInputLength * 3, false, 1, 0, 0);
 
@@ -68,7 +71,25 @@ int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWor
     suggWords = 0;
     while (suggWords < mMaxWords && mFrequencies[suggWords] > 0) suggWords++;
     if (DEBUG_DICT) LOGI("Returning %d words", suggWords);
+
+    if (DEBUG_DICT) {
+        LOGI("Next letters: ");
+        for (int k = 0; k < nextLettersSize; k++) {
+            if (mNextLettersFrequencies[k] > 0) {
+                LOGI("%c = %d,", k, mNextLettersFrequencies[k]);
+            }
+        }
+        LOGI("\n");
+    }
     return suggWords;
+}
+
+void
+Dictionary::registerNextLetter(unsigned short c)
+{
+    if (c < mNextLettersSize) {
+        mNextLettersFrequencies[c]++;
+    }
 }
 
 unsigned short
@@ -210,6 +231,9 @@ Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int s
             mWord[depth] = c;
             if (terminal) {
                 addWord(mWord, depth + 1, freq * snr);
+                if (depth >= mInputLength && mSkipPos < 0) {
+                    registerNextLetter(mWord[mInputLength]);
+                }
             }
             if (childrenAddress != 0) {
                 getWordsRec(childrenAddress, depth + 1, maxDepth,

@@ -94,9 +94,10 @@ public class UserDictionary extends ExpandableDictionary {
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes, final WordCallback callback) {
+    public synchronized void getWords(final WordComposer codes, final WordCallback callback,
+            int[] nextLettersFrequencies) {
         if (mRequiresReload) loadDictionary();
-        super.getWords(codes, callback);
+        super.getWords(codes, callback, nextLettersFrequencies);
     }
 
     @Override

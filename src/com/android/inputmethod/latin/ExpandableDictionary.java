@@ -27,6 +27,7 @@ public class ExpandableDictionary extends Dictionary {
     private char[] mWordBuilder = new char[MAX_WORD_LENGTH];
     private int mMaxDepth;
     private int mInputLength;
+    private int[] mNextLettersFrequencies;
 
     public static final int MAX_WORD_LENGTH = 32;
     private static final char QUOTE = '\'';
@@ -116,8 +117,10 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback) {
+    public void getWords(final WordComposer codes, final WordCallback callback,
+            int[] nextLettersFrequencies) {
         mInputLength = codes.size();
+        mNextLettersFrequencies = nextLettersFrequencies;
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         // Cache the codes so that we don't have to lookup an array list
         for (int i = 0; i < mInputLength; i++) {
@@ -215,6 +218,11 @@ public class ExpandableDictionary extends Dictionary {
                 if (terminal) {
                     if (!callback.addWord(word, 0, depth + 1, freq * snr)) {
                         return;
+                    }
+                    // Add to frequency of next letters for predictive correction
+                    if (mNextLettersFrequencies != null && depth >= inputIndex && skipPos < 0
+                            && mNextLettersFrequencies.length > word[inputIndex]) {
+                        mNextLettersFrequencies[word[inputIndex]]++;
                     }
                 }
                 if (children != null) {

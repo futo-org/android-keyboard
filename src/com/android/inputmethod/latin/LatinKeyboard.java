@@ -35,10 +35,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
 
 public class LatinKeyboard extends Keyboard {
+
+    private static final boolean DEBUG_PREFERRED_LETTER = false;
+    private static final String TAG = "LatinKeyboard";
 
     private Drawable mShiftLockIcon;
     private Drawable mShiftLockPreviewIcon;
@@ -69,6 +73,12 @@ public class LatinKeyboard extends Keyboard {
     private boolean mCurrentlyInSpace;
     private SlidingLocaleDrawable mSlidingLocaleIcon;
     private Rect mBounds = new Rect();
+    private int[] mPrefLetterFrequencies;
+    private boolean mPreemptiveCorrection;
+    private int mPrefLetter;
+    private int mPrefLetterX;
+    private int mPrefLetterY;
+    private int mPrefDistance;
 
     private int mExtensionResId; 
     
@@ -79,6 +89,8 @@ public class LatinKeyboard extends Keyboard {
     private int mShiftState = SHIFT_OFF;
 
     private static final float SPACEBAR_DRAG_THRESHOLD = 0.8f;
+    private static final float OVERLAP_PERCENTAGE_LOW_PROB = 0.70f;
+    private static final float OVERLAP_PERCENTAGE_HIGH_PROB = 0.85f;
 
     static int sSpacebarVerticalCorrection;
 
@@ -409,9 +421,18 @@ public class LatinKeyboard extends Keyboard {
         return mCurrentlyInSpace;
     }
 
+    void setPreferredLetters(int[] frequencies) {
+        mPrefLetterFrequencies = frequencies;
+        mPrefLetter = 0;
+    }
+
     void keyReleased() {
         mCurrentlyInSpace = false;
         mSpaceDragLastDiff = 0;
+        mPrefLetter = 0;
+        mPrefLetterX = 0;
+        mPrefLetterY = 0;
+        mPrefDistance = Integer.MAX_VALUE;
         if (mSpaceKey != null) {
             updateLocaleDrag(Integer.MAX_VALUE);
         }
@@ -448,12 +469,98 @@ public class LatinKeyboard extends Keyboard {
                     return insideSpace;
                 }
             }
+        } else if (mPrefLetterFrequencies != null) {
+            // New coordinate? Reset
+            if (mPrefLetterX != x || mPrefLetterY != y) {
+                mPrefLetter = 0;
+                mPrefDistance = Integer.MAX_VALUE;
+            }
+            // Handle preferred next letter
+            final int[] pref = mPrefLetterFrequencies;
+            if (mPrefLetter > 0) {
+                if (DEBUG_PREFERRED_LETTER && mPrefLetter == code
+                        && !key.isInsideSuper(x, y)) {
+                    Log.d(TAG, "CORRECTED !!!!!!");
+                }
+                return mPrefLetter == code;
+            } else {
+                final boolean inside = key.isInsideSuper(x, y);
+                int[] nearby = getNearestKeys(x, y);
+                List<Key> nearbyKeys = getKeys();
+                if (inside) {
+                    // If it's a preferred letter
+                    if (inPrefList(code, pref)) {
+                        // Check if its frequency is much lower than a nearby key
+                        mPrefLetter = code;
+                        mPrefLetterX = x;
+                        mPrefLetterY = y;
+                        for (int i = 0; i < nearby.length; i++) {
+                            Key k = nearbyKeys.get(nearby[i]);
+                            if (k != key && inPrefList(k.codes[0], pref)) {
+                                final int dist = distanceFrom(k, x, y);
+                                if (dist < (int) (k.width * OVERLAP_PERCENTAGE_LOW_PROB) &&
+                                        (pref[k.codes[0]] > pref[mPrefLetter] * 3))  {
+                                    mPrefLetter = k.codes[0];
+                                    mPrefDistance = dist;
+                                    if (DEBUG_PREFERRED_LETTER) {
+                                        Log.d(TAG, "CORRECTED ALTHOUGH PREFERRED !!!!!!");
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        return mPrefLetter == code;
+                    }
+                }
+
+                // Get the surrounding keys and intersect with the preferred list
+                // For all in the intersection
+                //   if distance from touch point is within a reasonable distance
+                //       make this the pref letter
+                // If no pref letter
+                //   return inside;
+                // else return thiskey == prefletter;
+
+                for (int i = 0; i < nearby.length; i++) {
+                    Key k = nearbyKeys.get(nearby[i]);
+                    if (inPrefList(k.codes[0], pref)) {
+                        final int dist = distanceFrom(k, x, y);
+                        if (dist < (int) (k.width * OVERLAP_PERCENTAGE_HIGH_PROB)
+                                && dist < mPrefDistance)  {
+                            mPrefLetter = k.codes[0];
+                            mPrefLetterX = x;
+                            mPrefLetterY = y;
+                            mPrefDistance = dist;
+                        }
+                    }
+                }
+                // Didn't find any
+                if (mPrefLetter == 0) {
+                    return inside;
+                } else {
+                    return mPrefLetter == code;
+                }
+            }
         }
 
         // Lock into the spacebar
         if (mCurrentlyInSpace) return false;
 
         return key.isInsideSuper(x, y);
+    }
+
+    private boolean inPrefList(int code, int[] pref) {
+        if (code < pref.length && code >= 0) return pref[code] > 0;
+        return false;
+    }
+
+    private int distanceFrom(Key k, int x, int y) {
+        if (y > k.y && y < k.y + k.height) {
+            return Math.abs(k.x + k.width / 2 - x);
+        } else {
+            return Integer.MAX_VALUE;
+        }
     }
 
     @Override
@@ -512,7 +619,8 @@ public class LatinKeyboard extends Keyboard {
          */
         @Override
         public boolean isInside(int x, int y) {
-            return LatinKeyboard.this.isInside(this, x, y);
+            boolean result = LatinKeyboard.this.isInside(this, x, y);
+            return result;
         }
 
         boolean isInsideSuper(int x, int y) {

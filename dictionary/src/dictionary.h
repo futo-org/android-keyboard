@@ -32,7 +32,8 @@ class Dictionary {
 public:
     Dictionary(void *dict, int typedLetterMultipler, int fullWordMultiplier);
     int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
-        int maxWordLength, int maxWords, int maxAlternatives, int skipPos);
+            int maxWordLength, int maxWords, int maxAlternatives, int skipPos,
+            int *nextLetters, int nextLettersSize);
     bool isValidWord(unsigned short *word, int length);
     void setAsset(void *asset) { mAsset = asset; }
     void *getAsset() { return mAsset; }
@@ -53,6 +54,7 @@ private:
     void getWordsRec(int pos, int depth, int maxDepth, bool completion, int frequency,
             int inputIndex, int diffs);
     bool isValidWordRec(int pos, unsigned short *word, int offset, int length);
+    void registerNextLetter(unsigned short c);
 
     unsigned char *mDict;
     void *mAsset;
@@ -70,6 +72,8 @@ private:
 
     int mFullWordMultiplier;
     int mTypedLetterMultiplier;
+    int *mNextLettersFrequencies;
+    int mNextLettersSize;
 };
 
 // ----------------------------------------------------------------------------

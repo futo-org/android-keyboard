@@ -84,14 +84,15 @@ public class ContactsDictionary extends ExpandableDictionary {
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes, final WordCallback callback) {
+    public synchronized void getWords(final WordComposer codes, final WordCallback callback,
+            int[] nextLettersFrequencies) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) loadDictionaryAsyncLocked();
             // Currently updating contacts, don't return any results.
             if (mUpdatingContacts) return;
         }
-        super.getWords(codes, callback);
+        super.getWords(codes, callback, nextLettersFrequencies);
     }
 
     @Override

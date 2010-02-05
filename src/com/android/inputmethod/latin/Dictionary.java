@@ -55,9 +55,14 @@ abstract public class Dictionary {
      * words are added through the callback object.
      * @param composer the key sequence to match
      * @param callback the callback object to send matched words to as possible candidates
+     * @param nextLettersFrequencies array of frequencies of next letters that could follow the
+     *        word so far. For instance, "bracke" can be followed by "t", so array['t'] will have
+     *        a non-zero value on returning from this method. 
+     *        Pass in null if you don't want the dictionary to look up next letters.
      * @see WordCallback#addWord(char[], int, int)
      */
-    abstract public void getWords(final WordComposer composer, final WordCallback callback);
+    abstract public void getWords(final WordComposer composer, final WordCallback callback,
+            int[] nextLettersFrequencies);
 
     /**
      * Checks if the given word occurs in the dictionary

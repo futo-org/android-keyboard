@@ -1340,6 +1340,8 @@ public class LatinIME extends InputMethodService
     private void updateSuggestions() {
         mSuggestionShouldReplaceCurrentWord = false;
 
+        ((LatinKeyboard) mInputView.getKeyboard()).setPreferredLetters(null);
+
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !isPredictionOn()) && !mVoiceInputHighlighted) {
             return;
@@ -1351,6 +1353,10 @@ public class LatinIME extends InputMethodService
         }
 
         List<CharSequence> stringList = mSuggest.getSuggestions(mInputView, mWord, false);
+        int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
+
+        ((LatinKeyboard) mInputView.getKeyboard()).setPreferredLetters(nextLettersFrequencies);
+
         boolean correctionAvailable = mSuggest.hasMinimalCorrection();
         //|| mCorrectionMode == mSuggest.CORRECTION_FULL;
         CharSequence typedWord = mWord.getTypedWord();

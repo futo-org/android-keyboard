@@ -89,7 +89,7 @@ static jint latinime_BinaryDictionary_open
 static int latinime_BinaryDictionary_getSuggestions(
         JNIEnv *env, jobject object, jint dict, jintArray inputArray, jint arraySize,
         jcharArray outputArray, jintArray frequencyArray, jint maxWordLength, jint maxWords,
-        jint maxAlternatives, jint skipPos)
+        jint maxAlternatives, jint skipPos, jintArray nextLettersArray, jint nextLettersSize)
 {
     Dictionary *dictionary = (Dictionary*) dict;
     if (dictionary == NULL)
@@ -98,13 +98,16 @@ static int latinime_BinaryDictionary_getSuggestions(
     int *frequencies = env->GetIntArrayElements(frequencyArray, NULL);
     int *inputCodes = env->GetIntArrayElements(inputArray, NULL);
     jchar *outputChars = env->GetCharArrayElements(outputArray, NULL);
+    int *nextLetters = nextLettersArray != NULL ? env->GetIntArrayElements(nextLettersArray, NULL)
+            : NULL;
 
     int count = dictionary->getSuggestions(inputCodes, arraySize, (unsigned short*) outputChars, frequencies,
-            maxWordLength, maxWords, maxAlternatives, skipPos);
+            maxWordLength, maxWords, maxAlternatives, skipPos, nextLetters, nextLettersSize);
     
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
+    env->ReleaseIntArrayElements(nextLettersArray, nextLetters, 0);
     
     return count;
 }
@@ -136,7 +139,7 @@ static JNINativeMethod gMethods[] = {
     {"openNative",           "(Landroid/content/res/AssetManager;Ljava/lang/String;II)I",
                                           (void*)latinime_BinaryDictionary_open},
     {"closeNative",          "(I)V",            (void*)latinime_BinaryDictionary_close},
-    {"getSuggestionsNative", "(I[II[C[IIIII)I",  (void*)latinime_BinaryDictionary_getSuggestions},
+    {"getSuggestionsNative", "(I[II[C[IIIII[II)I",  (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative",    "(I[CI)Z",         (void*)latinime_BinaryDictionary_isValidWord}
 };
 
