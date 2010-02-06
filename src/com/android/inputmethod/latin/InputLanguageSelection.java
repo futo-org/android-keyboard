@@ -70,7 +70,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
             CheckBoxPreference pref = new CheckBoxPreference(this);
             Locale locale = mAvailableLanguages.get(i).locale;
-            pref.setTitle(toTitleCase(locale.getDisplayName(locale)));
+            pref.setTitle(LanguageSwitcher.toTitleCase(locale.getDisplayName(locale)));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
             parent.addPreference(pref);
@@ -138,7 +138,7 @@ public class InputLanguageSelection extends PreferenceActivity {
 
                 if (finalSize == 0) {
                     preprocess[finalSize++] =
-                            new Loc(toTitleCase(l.getDisplayName(l)), l);
+                            new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(l)), l);
                 } else {
                     // check previous entry:
                     //  same lang and a country -> upgrade to full name and
@@ -146,15 +146,15 @@ public class InputLanguageSelection extends PreferenceActivity {
                     //  diff lang -> insert ours with lang-only name
                     if (preprocess[finalSize-1].locale.getLanguage().equals(
                             language)) {
-                        preprocess[finalSize-1].label = toTitleCase(
+                        preprocess[finalSize-1].label = LanguageSwitcher.toTitleCase(
                                 preprocess[finalSize-1].locale.getDisplayName());
                         preprocess[finalSize++] =
-                                new Loc(toTitleCase(l.getDisplayName()), l);
+                                new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName()), l);
                     } else {
                         String displayName;
                         if (s.equals("zz_ZZ")) {
                         } else {
-                            displayName = toTitleCase(l.getDisplayName(l));
+                            displayName = LanguageSwitcher.toTitleCase(l.getDisplayName(l));
                             preprocess[finalSize++] = new Loc(displayName, l);
                         }
                     }
@@ -166,13 +166,4 @@ public class InputLanguageSelection extends PreferenceActivity {
         }
         return uniqueLocales;
     }
-
-    private static String toTitleCase(String s) {
-        if (s.length() == 0) {
-            return s;
-        }
-
-        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
-    }
-
 }

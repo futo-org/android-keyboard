@@ -298,42 +298,50 @@ public class LatinKeyboard extends Keyboard {
             Bitmap buffer = Bitmap.createBitmap(mSpaceKey.width, mSpaceIcon.getIntrinsicHeight(),
                     Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(buffer);
-            canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            // Get the text size from the theme
-            paint.setTextSize(getTextSizeFromTheme(android.R.style.TextAppearance_Small, 14));
-            paint.setTextAlign(Align.CENTER);
-            // Draw a drop shadow for the text
-            paint.setShadowLayer(2f, 0, 0, 0xFF000000);
-            paint.setColor(0xFF808080);
-            final String language = getInputLanguage(mSpaceKey.width, paint);
-            final int ascent = (int) -paint.ascent();
-            canvas.drawText(language,
-                    buffer.getWidth() / 2, ascent, paint);
-            // Put arrows on either side of the text
-            if (mLanguageSwitcher.getLocaleCount() > 1) {
-                Rect bounds = new Rect();
-                paint.getTextBounds(language, 0, language.length(), bounds);
-                drawButtonArrow(mButtonArrowLeftIcon, canvas,
-                        (mSpaceKey.width - bounds.right) / 2
-                        - mButtonArrowLeftIcon.getIntrinsicWidth(),
-                        (int) paint.getTextSize());
-                drawButtonArrow(mButtonArrowRightIcon, canvas,
-                        (mSpaceKey.width + bounds.right) / 2, (int) paint.getTextSize());
-            }
-            // Draw the spacebar icon at the bottom
-            int x = (buffer.getWidth() - mSpaceIcon.getIntrinsicWidth()) / 2;
-            int y = buffer.getHeight() - mSpaceIcon.getIntrinsicHeight();
-            mSpaceIcon.setBounds(x, y, 
-                    x + mSpaceIcon.getIntrinsicWidth(), y + mSpaceIcon.getIntrinsicHeight());
-            mSpaceIcon.draw(canvas);
+            drawSpaceBar(canvas, buffer.getWidth(), buffer.getHeight(), 255);
             mSpaceKey.icon = new BitmapDrawable(mRes, buffer);
             mSpaceKey.repeatable = mLanguageSwitcher.getLocaleCount() < 2;
         } else {
             mSpaceKey.icon = mRes.getDrawable(R.drawable.sym_keyboard_space);
             mSpaceKey.repeatable = true;
         }
+    }
+
+    private void drawSpaceBar(Canvas canvas, int width, int height, int opacity) {
+        canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setAlpha(opacity);
+        // Get the text size from the theme
+        paint.setTextSize(getTextSizeFromTheme(android.R.style.TextAppearance_Small, 14));
+        paint.setTextAlign(Align.CENTER);
+        //// Draw a drop shadow for the text
+        //paint.setShadowLayer(2f, 0, 0, 0xFF000000);
+        final String language = getInputLanguage(mSpaceKey.width, paint);
+        final int ascent = (int) -paint.ascent();
+        paint.setColor(0x80000000);
+        canvas.drawText(language,
+                width / 2, ascent - 1, paint);
+        paint.setColor(0xFF808080);
+        canvas.drawText(language,
+                width / 2, ascent, paint);
+        // Put arrows on either side of the text
+        if (mLanguageSwitcher.getLocaleCount() > 1) {
+            Rect bounds = new Rect();
+            paint.getTextBounds(language, 0, language.length(), bounds);
+            drawButtonArrow(mButtonArrowLeftIcon, canvas,
+                    (mSpaceKey.width - bounds.right) / 2
+                    - mButtonArrowLeftIcon.getIntrinsicWidth(),
+                    (int) paint.getTextSize());
+            drawButtonArrow(mButtonArrowRightIcon, canvas,
+                    (mSpaceKey.width + bounds.right) / 2, (int) paint.getTextSize());
+        }
+        // Draw the spacebar icon at the bottom
+        int x = (width - mSpaceIcon.getIntrinsicWidth()) / 2;
+        int y = height - mSpaceIcon.getIntrinsicHeight();
+        mSpaceIcon.setBounds(x, y, 
+                x + mSpaceIcon.getIntrinsicWidth(), y + mSpaceIcon.getIntrinsicHeight());
+        mSpaceIcon.draw(canvas);
     }
 
     private void drawButtonArrow(Drawable arrow, Canvas canvas, int x, int bottomY) {
@@ -356,9 +364,9 @@ public class LatinKeyboard extends Keyboard {
 
     private String chooseDisplayName(Locale locale, int widthAvail, Paint paint) {
         if (widthAvail < (int) (.35 * getMinWidth())) {
-            return locale.getLanguage().substring(0, 2).toUpperCase(locale);
+            return LanguageSwitcher.toTitleCase(locale.getLanguage().substring(0, 2));
         } else {
-            return locale.getDisplayLanguage(locale);
+            return LanguageSwitcher.toTitleCase(locale.getDisplayLanguage(locale));
         }
     }
 
