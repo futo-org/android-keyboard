@@ -169,4 +169,12 @@ public class LanguageSwitcher {
         editor.putString(LatinIME.PREF_INPUT_LANGUAGE, getInputLanguage());
         editor.commit();
     }
+
+    static String toTitleCase(String s) {
+        if (s.length() == 0) {
+            return s;
+        }
+
+        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+    }
 }

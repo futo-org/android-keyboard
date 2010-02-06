@@ -48,6 +48,7 @@ public class LatinIMESettings extends PreferenceActivity
     private static final String SHOW_SUGGESTIONS_KEY = "show_suggestions";
     private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
     private static final String VOICE_SETTINGS_KEY = "enable_voice_input";
+    private static final String VOICE_ON_PRIMARY_KEY = "voice_on_main";
     private static final String VOICE_SERVER_KEY = "voice_server_url";
 
     private static final String TAG = "LatinIMESettings";
@@ -58,6 +59,7 @@ public class LatinIMESettings extends PreferenceActivity
     private CheckBoxPreference mQuickFixes;
     private CheckBoxPreference mShowSuggestions;
     private CheckBoxPreference mVoicePreference;
+    private CheckBoxPreference mVoiceOnPrimary;
 
     private VoiceInputLogger mLogger;
 
@@ -70,7 +72,7 @@ public class LatinIMESettings extends PreferenceActivity
         mQuickFixes = (CheckBoxPreference) findPreference(QUICK_FIXES_KEY);
         mShowSuggestions = (CheckBoxPreference) findPreference(SHOW_SUGGESTIONS_KEY);
         mVoicePreference = (CheckBoxPreference) findPreference(VOICE_SETTINGS_KEY);
-
+        mVoiceOnPrimary = (CheckBoxPreference) findPreference(VOICE_ON_PRIMARY_KEY);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
@@ -93,6 +95,7 @@ public class LatinIMESettings extends PreferenceActivity
         }
         if (!LatinIME.VOICE_INSTALLED
                 || !RecognitionManager.isRecognitionAvailable(this)) {
+            getPreferenceScreen().removePreference(mVoiceOnPrimary);
             getPreferenceScreen().removePreference(mVoicePreference);
         }
 
