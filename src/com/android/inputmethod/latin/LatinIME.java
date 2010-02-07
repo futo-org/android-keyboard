@@ -192,6 +192,7 @@ public class LatinIME extends InputMethodService
     private boolean mCompletionOn;
     private boolean mHasDictionary;
     private boolean mAutoSpace;
+    private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
     private boolean mAutoCorrectOn;
     private boolean mCapsLock;
@@ -530,6 +531,7 @@ public class LatinIME extends InputMethodService
         mComposing.setLength(0);
         mPredicting = false;
         mDeleteCount = 0;
+        mJustAddedAutoSpace = false;
         loadSettings();
 
         setCandidatesViewShown(false);
@@ -618,9 +620,15 @@ public class LatinIME extends InputMethodService
                 ic.finishComposingText();
             }
             mVoiceInputHighlighted = false;
-        } else if (!mPredicting && !mJustAccepted
-                && TextEntryState.getState() == TextEntryState.STATE_ACCEPTED_DEFAULT) {
-            TextEntryState.reset();
+        } else if (!mPredicting && !mJustAccepted) {
+            switch (TextEntryState.getState()) {
+                case TextEntryState.STATE_ACCEPTED_DEFAULT:
+                    TextEntryState.reset();
+                    // fall through
+                case TextEntryState.STATE_SPACE_AFTER_PICKED:
+                    mJustAddedAutoSpace = false;  // The user moved the cursor.
+                    break;
+            }
         }
         mJustAccepted = false;
         postUpdateShiftKeyState();
@@ -841,6 +849,7 @@ public class LatinIME extends InputMethodService
             ic.commitText(lastTwo.charAt(1) + " ", 1);
             ic.endBatchEdit();
             updateShiftKeyState(getCurrentInputEditorInfo());
+            mJustAddedAutoSpace = true;
         }
     }
 
@@ -858,6 +867,7 @@ public class LatinIME extends InputMethodService
             ic.commitText(". ", 1);
             ic.endBatchEdit();
             updateShiftKeyState(getCurrentInputEditorInfo());
+            mJustAddedAutoSpace = true;
         }
     }
 
@@ -870,6 +880,17 @@ public class LatinIME extends InputMethodService
         CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1 && lastOne.charAt(0) == '.'
                 && text.charAt(0) == '.') {
+            ic.deleteSurroundingText(1, 0);
+        }
+    }
+
+    private void removeTrailingSpace() {
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+
+        CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
+        if (lastOne != null && lastOne.length() == 1
+                && lastOne.charAt(0) == KEYCODE_SPACE) {
             ic.deleteSurroundingText(1, 0);
         }
     }
@@ -937,6 +958,9 @@ public class LatinIME extends InputMethodService
                 sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
                 break;
             default:
+                if (primaryCode != KEYCODE_ENTER) {
+                    mJustAddedAutoSpace = false;
+                }
                 if (isWordSeparator(primaryCode)) {
                     handleSeparator(primaryCode);
                 } else {
@@ -962,6 +986,7 @@ public class LatinIME extends InputMethodService
         ic.endBatchEdit();
         updateShiftKeyState(getCurrentInputEditorInfo());
         mJustRevertedSeparator = null;
+        mJustAddedAutoSpace = false;
     }
 
     private void handleBackspace() {
@@ -1077,16 +1102,25 @@ public class LatinIME extends InputMethodService
                             || mJustRevertedSeparator.charAt(0) != primaryCode)) {
                 pickDefaultSuggestion();
                 pickedDefault = true;
+                // Picked the suggestion by the space key.  We consider this
+                // as "added an auto space".
+                if (primaryCode == KEYCODE_SPACE) {
+                    mJustAddedAutoSpace = true;
+                }
             } else {
                 commitTyped(ic);
             }
+        }
+        if (mJustAddedAutoSpace && primaryCode == KEYCODE_ENTER) {
+            removeTrailingSpace();
+            mJustAddedAutoSpace = false;
         }
         sendKeyChar((char)primaryCode);
         TextEntryState.typedCharacter((char) primaryCode, true);
         if (TextEntryState.getState() == TextEntryState.STATE_PUNCTUATION_AFTER_ACCEPTED
                 && primaryCode != KEYCODE_ENTER) {
             swapPunctuationAndSpace();
-        } else if (isPredictionOn() && primaryCode == ' ') {
+        } else if (isPredictionOn() && primaryCode == KEYCODE_SPACE) {
         //else if (TextEntryState.STATE_SPACE_AFTER_ACCEPTED) {
             doubleSpace();
         }
@@ -1390,10 +1424,13 @@ public class LatinIME extends InputMethodService
     public void pickSuggestionManually(int index, CharSequence suggestion) {
         if (mAfterVoiceInput && mShowingVoiceSuggestions) mVoiceInput.logNBestChoose(index);
 
+        InputConnection ic = getCurrentInputConnection();
+        if (ic != null) {
+            ic.beginBatchEdit();
+        }
         if (mCompletionOn && mCompletions != null && index >= 0
                 && index < mCompletions.length) {
             CompletionInfo ci = mCompletions[index];
-            InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
                 ic.commitCompletion(ci);
             }
@@ -1402,24 +1439,35 @@ public class LatinIME extends InputMethodService
                 mCandidateView.clear();
             }
             updateShiftKeyState(getCurrentInputEditorInfo());
+            if (ic != null) {
+                ic.endBatchEdit();
+            }
             return;
         }
 
         // If this is a punctuation, apply it through the normal key press
         if (suggestion.length() == 1 && isWordSeparator(suggestion.charAt(0))) {
             onKey(suggestion.charAt(0), null);
+            if (ic != null) {
+                ic.endBatchEdit();
+            }
             return;
         }
+        mJustAccepted = true;
         pickSuggestion(suggestion);
         TextEntryState.acceptedSuggestion(mComposing.toString(), suggestion);
         // Follow it with a space
         if (mAutoSpace) {
             sendSpace();
+            mJustAddedAutoSpace = true;
         }
         // Fool the state watcher so that a subsequent backspace will not do a revert
         TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
         if (index == 0 && !mSuggest.isValidWord(suggestion)) {
             mCandidateView.showAddToDictionaryHint(suggestion);
+        }
+        if (ic != null) {
+            ic.endBatchEdit();
         }
     }
 
