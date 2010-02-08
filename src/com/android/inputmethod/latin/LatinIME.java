@@ -942,7 +942,7 @@ public class LatinIME extends InputMethodService
                 }
                 break;
             case 9 /*Tab*/:
-                sendKeyChar((char) primaryCode);
+                sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
                 break;
             default:
                 if (isWordSeparator(primaryCode)) {
