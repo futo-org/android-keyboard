@@ -250,13 +250,34 @@
     <string name="ok">OK</string>
 
     <!-- Preferences item for enabling speech input -->
-    <string name="enable_voice">Voice input</string>
+    <string name="voice_input">Voice input</string>
 
-    <!-- Preferences item for speech icon on primary keyboard -->
-    <string name="voice_on_primary">Mic on primary</string>
+    <!-- Array of Voice Input modes -->
+    <string-array name="voice_input_modes">
+        <item>On main keyboard</item>
+        <item>On symbols keyboard</item>
+        <item>Off</item>
+    </string-array>
 
-    <!-- Preferences item summary for speech icon on primary keyboard -->
-    <string name="voice_on_primary_summary">Show the microphone on the primary keyboard</string>
+    <!-- Don't translate -->
+    <string name="voice_mode_main" translatable="false">0</string>
+    <!-- Don't translate -->
+    <string name="voice_mode_symbols" translatable="false">1</string>
+    <!-- Don't translate -->
+    <string name="voice_mode_off"  translatable="false">2</string>
+
+    <string-array name="voice_input_modes_values" translatable="false">
+        <item>@string/voice_mode_main</item>
+        <item>@string/voice_mode_symbols</item>
+        <item>@string/voice_mode_off</item>
+    </string-array>
+
+    <!-- Array of Voice Input modes summary -->
+    <string-array name="voice_input_modes_summary">
+        <item>Mic on main keyboard</item>
+        <item>Mic on symbols keyboard</item>
+        <item>Voice input is disabled</item>
+    </string-array>
 
     <!-- Press the "enter" key after the user speaks. Option on settings.-->
     <string name="auto_submit">Auto submit after voice</string>
@@ -293,4 +314,6 @@
     
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Select input languages</string>
+    <!-- Title summary for input language selection screen -->
+    <string name="language_selection_summary">Slide your finger across the spacebar to switch</string>
 </resources>

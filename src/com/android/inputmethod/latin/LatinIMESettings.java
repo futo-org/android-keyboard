@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.backup.BackupManager;
@@ -23,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
@@ -31,23 +35,18 @@ import android.speech.RecognitionManager;
 import android.text.AutoText;
 import android.util.Log;
 
-import com.google.android.collect.Lists;
-
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceInputLogger;
-
-import java.util.ArrayList;
-import java.util.Locale;
+import com.google.android.collect.Lists;
 
 public class LatinIMESettings extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
-        OnPreferenceClickListener,
         DialogInterface.OnDismissListener {
 
     private static final String QUICK_FIXES_KEY = "quick_fixes";
     private static final String SHOW_SUGGESTIONS_KEY = "show_suggestions";
     private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
-    private static final String VOICE_SETTINGS_KEY = "enable_voice_input";
+    private static final String VOICE_SETTINGS_KEY = "voice_mode";
     private static final String VOICE_ON_PRIMARY_KEY = "voice_on_main";
     private static final String VOICE_SERVER_KEY = "voice_server_url";
 
@@ -58,12 +57,13 @@ public class LatinIMESettings extends PreferenceActivity
 
     private CheckBoxPreference mQuickFixes;
     private CheckBoxPreference mShowSuggestions;
-    private CheckBoxPreference mVoicePreference;
-    private CheckBoxPreference mVoiceOnPrimary;
+    private ListPreference mVoicePreference;
+    private boolean mVoiceOn;
 
     private VoiceInputLogger mLogger;
 
     private boolean mOkClicked = false;
+    private String mVoiceModeOff;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -71,15 +71,12 @@ public class LatinIMESettings extends PreferenceActivity
         addPreferencesFromResource(R.xml.prefs);
         mQuickFixes = (CheckBoxPreference) findPreference(QUICK_FIXES_KEY);
         mShowSuggestions = (CheckBoxPreference) findPreference(SHOW_SUGGESTIONS_KEY);
-        mVoicePreference = (CheckBoxPreference) findPreference(VOICE_SETTINGS_KEY);
-        mVoiceOnPrimary = (CheckBoxPreference) findPreference(VOICE_ON_PRIMARY_KEY);
+        mVoicePreference = (ListPreference) findPreference(VOICE_SETTINGS_KEY);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
-        mVoicePreference.setOnPreferenceClickListener(this);
-        mVoicePreference.setChecked(prefs.getBoolean(
-                VOICE_SETTINGS_KEY, getResources().getBoolean(R.bool.voice_input_default)));
-
+        mVoiceModeOff = getString(R.string.voice_mode_off);
+        mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         mLogger = VoiceInputLogger.getLogger(this);
     }
 
@@ -95,12 +92,10 @@ public class LatinIMESettings extends PreferenceActivity
         }
         if (!LatinIME.VOICE_INSTALLED
                 || !RecognitionManager.isRecognitionAvailable(this)) {
-            getPreferenceScreen().removePreference(mVoiceOnPrimary);
             getPreferenceScreen().removePreference(mVoicePreference);
+        } else {
+            updateVoiceModeSummary();
         }
-
-        mVoicePreference.setChecked(
-                getPreferenceManager().getSharedPreferences().getBoolean(VOICE_SETTINGS_KEY, true));
     }
 
     @Override
@@ -110,21 +105,28 @@ public class LatinIMESettings extends PreferenceActivity
         super.onDestroy();
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-            String key) {
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         (new BackupManager(this)).dataChanged();
-    }
-
-    public boolean onPreferenceClick(Preference preference) {
-        if (preference == mVoicePreference) {
-            if (mVoicePreference.isChecked()) {
-                mOkClicked = false;
-                showDialog(VOICE_INPUT_CONFIRM_DIALOG);
-            } else {
-                updateVoicePreference();
+        // If turning on voice input, show dialog
+        if (key.equals(VOICE_SETTINGS_KEY) && !mVoiceOn) {
+            if (! prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff)
+                    .equals(mVoiceModeOff)) {
+                showVoiceConfirmation();
             }
         }
-        return false;
+        mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
+        updateVoiceModeSummary();
+    }
+
+    private void showVoiceConfirmation() {
+        mOkClicked = false;
+        showDialog(VOICE_INPUT_CONFIRM_DIALOG);
+    }
+
+    private void updateVoiceModeSummary() {
+        mVoicePreference.setSummary(
+                getResources().getStringArray(R.array.voice_input_modes_summary)
+                [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
     }
 
     @Override
@@ -134,7 +136,7 @@ public class LatinIMESettings extends PreferenceActivity
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (whichButton == DialogInterface.BUTTON_NEGATIVE) {
-                            mVoicePreference.setChecked(false);
+                            mVoicePreference.setValue(mVoiceModeOff);
                             mLogger.settingsWarningDialogCancel();
                         } else if (whichButton == DialogInterface.BUTTON_POSITIVE) {
                             mOkClicked = true;
@@ -186,19 +188,16 @@ public class LatinIMESettings extends PreferenceActivity
         if (!mOkClicked) {
             // This assumes that onPreferenceClick gets called first, and this if the user
             // agreed after the warning, we set the mOkClicked value to true.
-            mVoicePreference.setChecked(false);
+            mVoicePreference.setValue(mVoiceModeOff);
         }
     }
 
     private void updateVoicePreference() {
-        SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
-        boolean isChecked = mVoicePreference.isChecked();
+        boolean isChecked = !mVoicePreference.getValue().equals(mVoiceModeOff);
         if (isChecked) {
             mLogger.voiceInputSettingEnabled();
         } else {
             mLogger.voiceInputSettingDisabled();
         }
-        editor.putBoolean(VOICE_SETTINGS_KEY, isChecked);
-        editor.commit();
     }
 }
