@@ -37,24 +37,18 @@
             android:defaultValue="true"
             />
 
-    <CheckBoxPreference
-            android:key="enable_voice_input"
-            android:title="@string/enable_voice"
-            android:persistent="false"
-            android:defaultValue="@bool/voice_input_default"
-            />
-
-    <CheckBoxPreference
-            android:key="voice_on_main"
-            android:title="@string/voice_on_primary"
-            android:summary="@string/voice_on_primary_summary"
+    <ListPreference
+            android:key="voice_mode"
+            android:title="@string/voice_input"
             android:persistent="true"
-            android:dependency="enable_voice_input"
-            android:defaultValue="@bool/voice_input_default"
+            android:entryValues="@array/voice_input_modes_values"
+            android:entries="@array/voice_input_modes"
+            android:defaultValue="@string/voice_mode_main"
             />
 
     <PreferenceScreen
-            android:title="@string/language_selection_title">
+            android:title="@string/language_selection_title"
+            android:summary="@string/language_selection_summary">
         <intent
                 android:action="android.intent.action.MAIN"
                 android:targetPackage="com.android.inputmethod.latin"

@@ -90,9 +90,8 @@ public class LatinIME extends InputMethodService
     private static final String PREF_QUICK_FIXES = "quick_fixes";
     private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     private static final String PREF_AUTO_COMPLETE = "auto_complete";
-    private static final String PREF_ENABLE_VOICE = "enable_voice_input";
+    private static final String PREF_VOICE_MODE = "voice_mode";
     private static final String PREF_VOICE_SERVER_URL = "voice_server_url";
-    private static final String PREF_VOICE_MAIN = "voice_on_main";
 
     // Whether or not the user has used voice input before (and thus, whether to show the
     // first-run warning dialog or not).
@@ -1771,8 +1770,9 @@ public class LatinIME extends InputMethodService
         mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true) & mQuickFixes;
 
         if (VOICE_INSTALLED) {
-            boolean enableVoice = sp.getBoolean(PREF_ENABLE_VOICE, true);
-            boolean voiceOnPrimary = sp.getBoolean(PREF_VOICE_MAIN, true);
+            final String voiceMode = sp.getString(PREF_VOICE_MODE, "");
+            boolean enableVoice = !voiceMode.equals(getString(R.string.voice_mode_off));
+            boolean voiceOnPrimary = voiceMode.equals(getString(R.string.voice_mode_main));
             if (mKeyboardSwitcher != null &&
                     (enableVoice != mEnableVoice || voiceOnPrimary != mVoiceOnPrimary)) {
                 mKeyboardSwitcher.setVoiceMode(enableVoice, voiceOnPrimary);
