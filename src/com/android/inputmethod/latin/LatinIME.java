@@ -16,18 +16,19 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.voice.EditingUtil;
+import com.android.inputmethod.voice.FieldContext;
+import com.android.inputmethod.voice.SettingsUtil;
+import com.android.inputmethod.voice.VoiceInput;
 import com.google.android.collect.Lists;
 
 import android.app.AlertDialog;
-import android.backup.BackupManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
@@ -40,6 +41,7 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
+import android.speech.RecognitionManager;
 import android.text.AutoText;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
@@ -57,11 +59,6 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
-
-import com.android.inputmethod.voice.EditingUtil;
-import com.android.inputmethod.voice.FieldContext;
-import com.android.inputmethod.voice.SettingsUtil;
-import com.android.inputmethod.voice.VoiceInput;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -1607,10 +1604,10 @@ public class LatinIME extends InputMethodService
     }
 
     private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo attribute) {
-        return ENABLE_VOICE_BUTTON
-                && fieldCanDoVoice(fieldContext)
+        return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext)
                 && !(attribute != null && attribute.privateImeOptions != null
-                        && attribute.privateImeOptions.equals(IME_OPTION_NO_MICROPHONE));
+                        && attribute.privateImeOptions.equals(IME_OPTION_NO_MICROPHONE))
+                && RecognitionManager.isRecognitionAvailable(this);
     }
 
     // receive ringer mode changes to detect silent mode
