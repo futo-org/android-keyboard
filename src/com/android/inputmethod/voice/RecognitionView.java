@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.voice;
 
+import com.android.inputmethod.latin.R;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
@@ -34,9 +36,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.voice.SettingsUtil;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -149,6 +148,7 @@ public class RecognitionView {
     public void showInitializing() {
         mUiHandler.post(new Runnable() {
             public void run() {
+              mProgress.setVisibility(View.GONE); // make sure we show no spinner on startup
               mText.setText(R.string.voice_initializing);
               mImage.setImageDrawable(mInitializing);
               mButtonText.setText(mContext.getText(R.string.cancel));
