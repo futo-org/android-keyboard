@@ -48,6 +48,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,7 +89,6 @@ public class LatinIME extends InputMethodService
     private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     private static final String PREF_AUTO_COMPLETE = "auto_complete";
     private static final String PREF_VOICE_MODE = "voice_mode";
-    private static final String PREF_VOICE_SERVER_URL = "voice_server_url";
 
     // Whether or not the user has used voice input before (and thus, whether to show the
     // first-run warning dialog or not).
@@ -221,9 +221,6 @@ public class LatinIME extends InputMethodService
 
     private Tutorial mTutorial;
 
-    private Vibrator mVibrator;
-    private long mVibrateDuration;
-
     private AudioManager mAudioManager;
     // Align sound effect volume on music volume
     private final float FX_VOLUME = -1.0f;
@@ -236,7 +233,8 @@ public class LatinIME extends InputMethodService
     private long mSwipeTriggerTimeMillis;
 
     // For each word, a list of potential replacements, usually from voice.
-    private Map<String, List<CharSequence>> mWordToSuggestions = new HashMap();
+    private Map<String, List<CharSequence>> mWordToSuggestions =
+            new HashMap<String, List<CharSequence>>();
 
     private class VoiceResults {
         List<String> candidates;
@@ -294,8 +292,6 @@ public class LatinIME extends InputMethodService
         initSuggest(inputLanguage);
         mOrientation = conf.orientation;
         initSuggestPuncList();
-
-        mVibrateDuration = mResources.getInteger(R.integer.vibrate_duration_ms);
 
         // register to receive ringer mode changes for silent mode
         IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
@@ -1422,6 +1418,9 @@ public class LatinIME extends InputMethodService
         }
         // Fool the state watcher so that a subsequent backspace will not do a revert
         TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
+        if (index == 0 && !mSuggest.isValidWord(suggestion)) {
+            mCandidateView.showAddToDictionaryHint(suggestion);
+        }
     }
 
     private void pickSuggestion(CharSequence suggestion) {
@@ -1679,10 +1678,10 @@ public class LatinIME extends InputMethodService
         if (!mVibrateOn) {
             return;
         }
-        if (mVibrator == null) {
-            mVibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if (mInputView != null) {
+            mInputView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
         }
-        mVibrator.vibrate(mVibrateDuration);
     }
 
     private void checkTutorial(String privateImeOptions) {
@@ -1781,16 +1780,6 @@ public class LatinIME extends InputMethodService
                 mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
         updateCorrectionMode();
         mLanguageSwitcher.loadLocales(sp);
-    }
-
-    private String getPersistedInputLanguage() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        return sp.getString(PREF_INPUT_LANGUAGE, null);
-    }
-
-    private String getSelectedInputLanguages() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        return sp.getString(PREF_SELECTED_LANGUAGES, null);
     }
 
     private void initSuggestPuncList() {

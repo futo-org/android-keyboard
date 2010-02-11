@@ -316,4 +316,7 @@
     <string name="language_selection_title">Select input languages</string>
     <!-- Title summary for input language selection screen -->
     <string name="language_selection_summary">Slide your finger across the spacebar to switch</string>
+    
+    <!-- Add to dictionary hint -->
+    <string name="hint_add_to_dictionary">\u2190 Tap again to save</string>
 </resources>

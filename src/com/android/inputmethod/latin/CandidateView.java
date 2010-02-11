@@ -21,7 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -82,6 +82,10 @@ public class CandidateView extends View {
     private Paint mPaint;
     private int mDescent;
     private boolean mScrolled;
+    private boolean mShowingAddToDictionary;
+    private CharSequence mWordToAddToDictionary;
+    private CharSequence mAddToDictionaryHint;
+
     private int mTargetScrollX;
 
     private int mMinTouchableWidth;
@@ -121,15 +125,17 @@ public class CandidateView extends View {
         LayoutInflater inflate =
             (LayoutInflater) context
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Resources res = context.getResources();
         mPreviewPopup = new PopupWindow(context);
         mPreviewText = (TextView) inflate.inflate(R.layout.candidate_preview, null);
         mPreviewPopup.setWindowLayoutMode(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
-        mColorNormal = context.getResources().getColor(R.color.candidate_normal);
-        mColorRecommended = context.getResources().getColor(R.color.candidate_recommended);
-        mColorOther = context.getResources().getColor(R.color.candidate_other);
-        mDivider = context.getResources().getDrawable(R.drawable.keyboard_suggest_strip_divider);
+        mColorNormal = res.getColor(R.color.candidate_normal);
+        mColorRecommended = res.getColor(R.color.candidate_recommended);
+        mColorOther = res.getColor(R.color.candidate_other);
+        mDivider = res.getDrawable(R.drawable.keyboard_suggest_strip_divider);
+        mAddToDictionaryHint = res.getString(R.string.hint_add_to_dictionary);
 
         mPaint = new Paint();
         mPaint.setColor(mColorNormal);
@@ -247,7 +253,7 @@ public class CandidateView extends View {
 
             if (touchX + scrollX >= x && touchX + scrollX < x + wordWidth && !scrolled &&
                     touchX != OUT_OF_BOUNDS) {
-                if (canvas != null) {
+                if (canvas != null && !mShowingAddToDictionary) {
                     canvas.translate(x, 0);
                     mSelectionHighlight.setBounds(0, bgPadding.top, wordWidth, height);
                     mSelectionHighlight.draw(canvas);
@@ -262,7 +268,10 @@ public class CandidateView extends View {
                 canvas.drawText(suggestion, 0, suggestion.length(), x + wordWidth / 2, y, paint);
                 paint.setColor(mColorOther);
                 canvas.translate(x + wordWidth, 0);
-                mDivider.draw(canvas);
+                // Draw a divider unless it's after the hint
+                if (!(mShowingAddToDictionary && i == 1)) {
+                    mDivider.draw(canvas);
+                }
                 canvas.translate(-x - wordWidth, 0);
             }
             paint.setTypeface(Typeface.DEFAULT);
@@ -315,6 +324,15 @@ public class CandidateView extends View {
         requestLayout();
     }
 
+    public void showAddToDictionaryHint(CharSequence word) {
+        mWordToAddToDictionary = word;
+        ArrayList<CharSequence> suggestions = new ArrayList<CharSequence>();
+        suggestions.add(word);
+        suggestions.add(mAddToDictionaryHint);
+        setSuggestions(suggestions, false, false, false);
+        mShowingAddToDictionary = true;
+    }
+
     public void scrollPrev() {
         int i = 0;
         final int count = mSuggestions.size();
@@ -364,6 +382,7 @@ public class CandidateView extends View {
         mTouchX = OUT_OF_BOUNDS;
         mSelectedString = null;
         mSelectedIndex = -1;
+        mShowingAddToDictionary = false;
         invalidate();
         Arrays.fill(mWordWidth, 0);
         Arrays.fill(mWordX, 0);
@@ -407,11 +426,16 @@ public class CandidateView extends View {
         case MotionEvent.ACTION_UP:
             if (!mScrolled) {
                 if (mSelectedString != null) {
-                    if (!mShowingCompletions) {
-                        TextEntryState.acceptedSuggestion(mSuggestions.get(0),
-                                mSelectedString);
+                    if (mShowingAddToDictionary) {
+                        longPressFirstWord();
+                        clear();
+                    } else {
+                        if (!mShowingCompletions) {
+                            TextEntryState.acceptedSuggestion(mSuggestions.get(0),
+                                    mSelectedString);
+                        }
+                        mService.pickSuggestionManually(mSelectedIndex, mSelectedString);
                     }
-                    mService.pickSuggestionManually(mSelectedIndex, mSelectedString);
                 }
             }
             mSelectedString = null;
