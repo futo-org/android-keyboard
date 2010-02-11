@@ -52,12 +52,6 @@ import java.util.List;
 public class RecognitionView {
     private static final String TAG = "RecognitionView";
 
-    // If there's a significant delay between starting up voice search and the
-    // onset of audio recording, show the "initializing" screen first. If not,
-    // jump directly to the "speak now" screen to avoid flashing "initializing"
-    // quickly.
-    private static final boolean EXPECT_RECORDING_DELAY = true;
-
     private Handler mUiHandler;  // Reference to UI thread
     private View mView;
     private Context mContext;
@@ -148,29 +142,18 @@ public class RecognitionView {
     public void showInitializing() {
         mUiHandler.post(new Runnable() {
             public void run() {
-              mProgress.setVisibility(View.GONE); // make sure we show no spinner on startup
-              mText.setText(R.string.voice_initializing);
-              mImage.setImageDrawable(mInitializing);
-              mButtonText.setText(mContext.getText(R.string.cancel));
+                prepareDialog(false, mContext.getText(R.string.voice_initializing), mInitializing,
+                        mContext.getText(R.string.cancel)); 
             }
           });
     }
 
-    public void showStartState() {
-      if (EXPECT_RECORDING_DELAY) {
-          showInitializing();
-      } else {
-          showListening();
-      }
-    }
-
     public void showListening() {
-        mState = State.LISTENING;
         mUiHandler.post(new Runnable() {
             public void run() {
-              mText.setText(R.string.voice_listening);
-              mImage.setImageDrawable(mSpeakNow.get(0));
-              mButtonText.setText(mContext.getText(R.string.cancel));
+                mState = State.LISTENING;
+                prepareDialog(false, mContext.getText(R.string.voice_listening), mSpeakNow.get(0),
+                        mContext.getText(R.string.cancel));
             }
           });
         mUiHandler.postDelayed(mUpdateVolumeRunnable, 50);
@@ -181,13 +164,10 @@ public class RecognitionView {
     }
 
     public void showError(final String message) {
-        mState = State.READY;
         mUiHandler.post(new Runnable() {
             public void run() {
-              exitWorking();
-              mText.setText(message);
-              mImage.setImageDrawable(mError);
-              mButtonText.setText(mContext.getText(R.string.ok));
+                mState = State.READY;
+                prepareDialog(false, message, mError, mContext.getText(R.string.ok));
             }
           });
     }
@@ -197,20 +177,32 @@ public class RecognitionView {
         final int speechStartPosition,
         final int speechEndPosition) {
 
-        mState = State.WORKING;
-
         mUiHandler.post(new Runnable() {
             public void run() {
-              mText.setText(R.string.voice_working);
-              mImage.setVisibility(View.GONE);
-              mProgress.setVisibility(View.VISIBLE);
-              final ShortBuffer buf = ByteBuffer.wrap(waveBuffer.toByteArray())
-                      .order(ByteOrder.nativeOrder()).asShortBuffer();
-              buf.position(0);
-              waveBuffer.reset();
-              showWave(buf, speechStartPosition / 2, speechEndPosition / 2);
+                mState = State.WORKING;
+                prepareDialog(true, mContext.getText(R.string.voice_working), null, mContext
+                        .getText(R.string.cancel));
+                final ShortBuffer buf = ByteBuffer.wrap(waveBuffer.toByteArray()).order(
+                        ByteOrder.nativeOrder()).asShortBuffer();
+                buf.position(0);
+                waveBuffer.reset();
+                showWave(buf, speechStartPosition / 2, speechEndPosition / 2);
             }
           });
+    }
+    
+    private void prepareDialog(boolean spinVisible, CharSequence text, Drawable image,
+            CharSequence btnTxt) {
+        if (spinVisible) {
+            mProgress.setVisibility(View.VISIBLE);
+            mImage.setVisibility(View.GONE);
+        } else {
+            mProgress.setVisibility(View.GONE);
+            mImage.setImageDrawable(image);
+            mImage.setVisibility(View.VISIBLE);
+        }
+        mText.setText(text);
+        mButtonText.setText(btnTxt);
     }
 
     /**
@@ -305,13 +297,12 @@ public class RecognitionView {
 
 
     public void finish() {
-        mState = State.READY;
         mUiHandler.post(new Runnable() {
             public void run() {
-              exitWorking();
+                mState = State.READY;
+                exitWorking();
             }
           });
-        showStartState();
     }
 
     private void exitWorking() {
