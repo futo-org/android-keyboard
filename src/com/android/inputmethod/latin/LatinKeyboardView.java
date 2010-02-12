@@ -171,7 +171,7 @@ public class LatinKeyboardView extends KeyboardView {
             mExtensionPopup.setBackgroundDrawable(null);
             LayoutInflater li = (LayoutInflater) getContext().getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            mExtension = (LatinKeyboardView) li.inflate(R.layout.input, null);
+            mExtension = (LatinKeyboardView) li.inflate(R.layout.input_trans, null);
             mExtension.setOnKeyboardActionListener((LatinIME) getContext());
             mExtension.setPopupParent(this);
             mExtension.setPopupOffset(0, -windowLocation[1]);
