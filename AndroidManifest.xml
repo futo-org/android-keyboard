@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.android.inputmethod.latin"
         android:sharedUserId="android.uid.shared">
+
+    <original-package android:name="com.android.inputmethod.latin" />
+
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
