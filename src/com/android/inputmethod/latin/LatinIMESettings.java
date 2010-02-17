@@ -37,7 +37,6 @@ import android.util.Log;
 
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceInputLogger;
-import com.google.android.collect.Lists;
 
 public class LatinIMESettings extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -158,7 +157,7 @@ public class LatinIMESettings extends PreferenceActivity
                         SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
                         LatinIME.DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
                 ArrayList<String> voiceInputSupportedLocales =
-                        Lists.newArrayList(supportedLocalesString.split("\\s+"));
+                        LatinIME.newArrayList(supportedLocalesString.split("\\s+"));
                 boolean localeSupported = voiceInputSupportedLocales.contains(
                         Locale.getDefault().toString());
 

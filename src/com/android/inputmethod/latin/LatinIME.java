@@ -20,7 +20,6 @@ import com.android.inputmethod.voice.EditingUtil;
 import com.android.inputmethod.voice.FieldContext;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceInput;
-import com.google.android.collect.Lists;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -39,7 +38,6 @@ import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.speech.RecognitionManager;
 import android.text.AutoText;
@@ -64,6 +62,7 @@ import android.view.inputmethod.InputMethodManager;
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -1803,7 +1802,7 @@ public class LatinIME extends InputMethodService
                 SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
                 DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
         ArrayList<String> voiceInputSupportedLocales =
-                Lists.newArrayList(supportedLocalesString.split("\\s+"));
+                newArrayList(supportedLocalesString.split("\\s+"));
 
         mLocaleSupportedForVoiceInput = voiceInputSupportedLocales.contains(mLocale);
 
@@ -1882,6 +1881,13 @@ public class LatinIME extends InputMethodService
         }
 
         updateShiftKeyState(getCurrentInputEditorInfo());
+    }
+
+    public static <E> ArrayList<E> newArrayList(E... elements) {
+        int capacity = (elements.length * 110) / 100 + 5;
+        ArrayList<E> list = new ArrayList<E>(capacity);
+        Collections.addAll(list, elements);
+        return list;
     }
 
     @Override protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {

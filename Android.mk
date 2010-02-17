@@ -17,6 +17,5 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-common
 
 #LOCAL_SDK_VERSION := current
 
-LOCAL_STATIC_JAVA_LIBRARIES := google-common android-common
 include $(BUILD_PACKAGE)
 include $(LOCAL_PATH)/dictionary/Android.mk
