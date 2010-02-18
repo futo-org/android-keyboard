@@ -51,6 +51,8 @@ public class Suggest implements Dictionary.WordCallback {
 
     private int mPrefMaxSuggestions = 12;
 
+    private boolean mAutoTextEnabled;
+
     private int[] mPriorities = new int[mPrefMaxSuggestions];
     // Handle predictive correction for only the first 1280 characters for performance reasons
     // If we support scripts that need latin characters beyond that, we should probably use some
@@ -74,6 +76,10 @@ public class Suggest implements Dictionary.WordCallback {
             StringBuilder sb = new StringBuilder(32);
             mStringPool.add(sb);
         }
+    }
+
+    public void setAutoTextEnabled(boolean enabled) {
+        mAutoTextEnabled = enabled;
     }
 
     public int getCorrectionMode() {
@@ -207,29 +213,31 @@ public class Suggest implements Dictionary.WordCallback {
                 mHaveCorrection = false;
             }
         }
-        
-        int i = 0;
-        int max = 6;
-        // Don't autotext the suggestions from the dictionaries
-        if (mCorrectionMode == CORRECTION_BASIC) max = 1;
-        while (i < mSuggestions.size() && i < max) {
-            String suggestedWord = mSuggestions.get(i).toString().toLowerCase();
-            CharSequence autoText =
-                    AutoText.get(suggestedWord, 0, suggestedWord.length(), view);
-            // Is there an AutoText correction?
-            boolean canAdd = autoText != null;
-            // Is that correction already the current prediction (or original word)?
-            canAdd &= !TextUtils.equals(autoText, mSuggestions.get(i));
-            // Is that correction already the next predicted word?
-            if (canAdd && i + 1 < mSuggestions.size() && mCorrectionMode != CORRECTION_BASIC) {
-                canAdd &= !TextUtils.equals(autoText, mSuggestions.get(i + 1));
-            }
-            if (canAdd) {
-                mHaveCorrection = true;
-                mSuggestions.add(i + 1, autoText);
+
+        if (mAutoTextEnabled) {
+            int i = 0;
+            int max = 6;
+            // Don't autotext the suggestions from the dictionaries
+            if (mCorrectionMode == CORRECTION_BASIC) max = 1;
+            while (i < mSuggestions.size() && i < max) {
+                String suggestedWord = mSuggestions.get(i).toString().toLowerCase();
+                CharSequence autoText =
+                        AutoText.get(suggestedWord, 0, suggestedWord.length(), view);
+                // Is there an AutoText correction?
+                boolean canAdd = autoText != null;
+                // Is that correction already the current prediction (or original word)?
+                canAdd &= !TextUtils.equals(autoText, mSuggestions.get(i));
+                // Is that correction already the next predicted word?
+                if (canAdd && i + 1 < mSuggestions.size() && mCorrectionMode != CORRECTION_BASIC) {
+                    canAdd &= !TextUtils.equals(autoText, mSuggestions.get(i + 1));
+                }
+                if (canAdd) {
+                    mHaveCorrection = true;
+                    mSuggestions.add(i + 1, autoText);
+                    i++;
+                }
                 i++;
             }
-            i++;
         }
 
         removeDupes();

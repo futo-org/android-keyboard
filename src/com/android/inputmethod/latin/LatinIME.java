@@ -318,12 +318,14 @@ public class LatinIME extends InputMethodService
         Resources orig = getResources();
         Configuration conf = orig.getConfiguration();
         Locale saveLocale = conf.locale;
+        boolean different = !conf.locale.getCountry().equalsIgnoreCase(locale.substring(0, 2));
         conf.locale = new Locale(locale);
         orig.updateConfiguration(conf, orig.getDisplayMetrics());
         if (mSuggest != null) {
             mSuggest.close();
         }
         mSuggest = new Suggest(this, R.raw.main);
+        mSuggest.setAutoTextEnabled(!different);
         if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this);
         if (mContactsDictionary == null) {
