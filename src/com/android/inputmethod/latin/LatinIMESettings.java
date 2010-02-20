@@ -86,8 +86,6 @@ public class LatinIMESettings extends PreferenceActivity
         if (autoTextSize < 1) {
             ((PreferenceGroup) findPreference(PREDICTION_SETTINGS_KEY))
                     .removePreference(mQuickFixes);
-        } else {
-            mShowSuggestions.setDependency(QUICK_FIXES_KEY);
         }
         if (!LatinIME.VOICE_INSTALLED
                 || !RecognitionManager.isRecognitionAvailable(this)) {

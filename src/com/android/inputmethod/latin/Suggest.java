@@ -194,7 +194,8 @@ public class Suggest implements Dictionary.WordCallback {
                     mContactsDictionary.getWords(wordComposer, this, mNextLettersFrequencies);
                 }
 
-                if (mSuggestions.size() > 0 && isValidWord(mOriginalWord)) {
+                if (mSuggestions.size() > 0 && isValidWord(mOriginalWord)
+                        && mCorrectionMode == CORRECTION_FULL) {
                     mHaveCorrection = true;
                 }
             }

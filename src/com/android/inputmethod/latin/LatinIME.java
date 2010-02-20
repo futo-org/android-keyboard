@@ -318,14 +318,15 @@ public class LatinIME extends InputMethodService
         Resources orig = getResources();
         Configuration conf = orig.getConfiguration();
         Locale saveLocale = conf.locale;
-        boolean different = !conf.locale.getCountry().equalsIgnoreCase(locale.substring(0, 2));
         conf.locale = new Locale(locale);
         orig.updateConfiguration(conf, orig.getDisplayMetrics());
         if (mSuggest != null) {
             mSuggest.close();
         }
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        mQuickFixes = sp.getBoolean(PREF_QUICK_FIXES, true);
         mSuggest = new Suggest(this, R.raw.main);
-        mSuggest.setAutoTextEnabled(!different);
+        updateAutoTextEnabled(saveLocale);
         if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this);
         if (mContactsDictionary == null) {
@@ -447,7 +448,6 @@ public class LatinIME extends InputMethodService
         mShowingVoiceSuggestions = false;
         mImmediatelyAfterVoiceSuggestions = false;
         mVoiceInputHighlighted = false;
-        boolean disableAutoCorrect = false;
         mWordToSuggestions.clear();
         mInputTypeNoAutoCorrect = false;
         mPredictionOn = false;
@@ -538,20 +538,13 @@ public class LatinIME extends InputMethodService
         setCandidatesViewShown(false);
         setSuggestions(null, false, false, false);
 
-        // Override auto correct
-        if (disableAutoCorrect) {
-            mAutoCorrectOn = false;
-            if (mCorrectionMode == Suggest.CORRECTION_FULL) {
-                mCorrectionMode = Suggest.CORRECTION_BASIC;
-            }
-        }
         // If the dictionary is not big enough, don't auto correct
         mHasDictionary = mSuggest.hasMainDictionary();
 
         updateCorrectionMode();
 
         mInputView.setProximityCorrectionEnabled(true);
-        mPredictionOn = mPredictionOn && mCorrectionMode > 0;
+        mPredictionOn = mPredictionOn && (mCorrectionMode > 0 || mShowSuggestions);
         checkTutorial(attribute.privateImeOptions);
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
@@ -811,7 +804,7 @@ public class LatinIME extends InputMethodService
                 }
                 mCommittedLength = mComposing.length();
                 TextEntryState.acceptedTyped(mComposing);
-                mAutoDictionary.addWord(mComposing.toString(), FREQUENCY_FOR_TYPED);
+                checkAddToDictionary(mComposing, FREQUENCY_FOR_TYPED);
             }
             updateSuggestions();
         }
@@ -1464,7 +1457,7 @@ public class LatinIME extends InputMethodService
         }
         // Fool the state watcher so that a subsequent backspace will not do a revert
         TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
-        if (index == 0 && !mSuggest.isValidWord(suggestion)) {
+        if (index == 0 && mCorrectionMode > 0 && !mSuggest.isValidWord(suggestion)) {
             mCandidateView.showAddToDictionaryHint(suggestion);
         }
         if (ic != null) {
@@ -1490,9 +1483,7 @@ public class LatinIME extends InputMethodService
             }
         }
         // Add the word to the auto dictionary if it's not a known word
-        if (mAutoDictionary.isValidWord(suggestion) || !mSuggest.isValidWord(suggestion)) {
-            mAutoDictionary.addWord(suggestion.toString(), FREQUENCY_FOR_PICKED);
-        }
+        checkAddToDictionary(suggestion, FREQUENCY_FOR_PICKED);
         mPredicting = false;
         mCommittedLength = suggestion.length();
         setNextSuggestions();
@@ -1501,6 +1492,13 @@ public class LatinIME extends InputMethodService
 
     private void setNextSuggestions() {
         setSuggestions(mSuggestPuncList, false, false, false);
+    }
+
+    private void checkAddToDictionary(CharSequence suggestion, int frequencyDelta) {
+        if (mAutoDictionary.isValidWord(suggestion)
+                || !mSuggest.isValidWord(suggestion.toString().toLowerCase())) {
+            mAutoDictionary.addWord(suggestion.toString(), frequencyDelta);
+        }
     }
 
     private boolean isCursorTouchingWord() {
@@ -1763,12 +1761,18 @@ public class LatinIME extends InputMethodService
         mHasDictionary = mSuggest != null ? mSuggest.hasMainDictionary() : false;
         mAutoCorrectOn = (mAutoCorrectEnabled || mQuickFixes)
                 && !mInputTypeNoAutoCorrect && mHasDictionary;
-        mCorrectionMode = mAutoCorrectOn
+        mCorrectionMode = (mAutoCorrectOn && mAutoCorrectEnabled)
                 ? Suggest.CORRECTION_FULL
-                : (mQuickFixes ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
+                : (mAutoCorrectOn ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
         if (mSuggest != null) {
             mSuggest.setCorrectionMode(mCorrectionMode);
         }
+    }
+
+    private void updateAutoTextEnabled(Locale systemLocale) {
+        if (mSuggest == null) return;
+        boolean different = !systemLocale.getLanguage().equalsIgnoreCase(mLocale.substring(0, 2));
+        mSuggest.setAutoTextEnabled(!different && mQuickFixes);
     }
 
     protected void launchSettings() {
@@ -1808,11 +1812,7 @@ public class LatinIME extends InputMethodService
 
         mLocaleSupportedForVoiceInput = voiceInputSupportedLocales.contains(mLocale);
 
-        // If there is no auto text data, then quickfix is forced to "on", so that the other options
-        // will continue to work
-
-        if (AutoText.getSize(mInputView) < 1) mQuickFixes = true;
-        mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true) & mQuickFixes;
+        mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true);
 
         if (VOICE_INSTALLED) {
             final String voiceMode = sp.getString(PREF_VOICE_MODE, "");
@@ -1828,6 +1828,7 @@ public class LatinIME extends InputMethodService
         mAutoCorrectEnabled = sp.getBoolean(PREF_AUTO_COMPLETE,
                 mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
         updateCorrectionMode();
+        updateAutoTextEnabled(mResources.getConfiguration().locale);
         mLanguageSwitcher.loadLocales(sp);
     }
 
