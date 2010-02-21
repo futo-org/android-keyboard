@@ -979,6 +979,9 @@ public class LatinIME extends InputMethodService
     }
 
     public void onText(CharSequence text) {
+        if (VOICE_INSTALLED && mVoiceInputHighlighted) {
+            commitVoiceInput();
+        }
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         ic.beginBatchEdit();
