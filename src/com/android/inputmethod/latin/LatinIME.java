@@ -360,8 +360,18 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void onConfigurationChanged(Configuration conf) {
+        // If the system locale changes and is different from the saved
+        // locale (mLocale), then reload the input locale list from the 
+        // latin ime settings (shared prefs) and reset the input locale
+        // to the first one.
         if (!TextUtils.equals(conf.locale.toString(), mLocale)) {
-            initSuggest(conf.locale.toString());
+            if (mLanguageSwitcher != null) {
+                mLanguageSwitcher.loadLocales(
+                        PreferenceManager.getDefaultSharedPreferences(this));
+                toggleLanguage(true, true);
+            } else {
+                reloadKeyboards();
+            }
         }
         // If orientation changed while predicting, commit the change
         if (conf.orientation != mOrientation) {
@@ -369,8 +379,8 @@ public class LatinIME extends InputMethodService
             commitTyped(ic);
             if (ic != null) ic.finishComposingText(); // For voice input
             mOrientation = conf.orientation;
+            reloadKeyboards();
         }
-        reloadKeyboards();
         super.onConfigurationChanged(conf);
     }
 
