@@ -148,6 +148,7 @@ public class LatinIME extends InputMethodService
 
     static final int KEYCODE_ENTER = '\n';
     static final int KEYCODE_SPACE = ' ';
+    static final int KEYCODE_PERIOD = '.';
 
     // Contextual menu positions
     private static final int POS_SETTINGS = 0;
@@ -857,6 +858,22 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    private void reswapPeriodAndSpace() {
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+        CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
+        if (lastThree != null && lastThree.length() == 3
+                && lastThree.charAt(0) == KEYCODE_PERIOD
+                && lastThree.charAt(1) == KEYCODE_SPACE
+                && lastThree.charAt(2) == KEYCODE_PERIOD) {
+            ic.beginBatchEdit();
+            ic.deleteSurroundingText(3, 0);
+            ic.commitText(" ..", 1);
+            ic.endBatchEdit();
+            updateShiftKeyState(getCurrentInputEditorInfo());
+        }
+    }
+
     private void doubleSpace() {
         //if (!mAutoPunctuate) return;
         if (mCorrectionMode == Suggest.CORRECTION_NONE) return;
@@ -882,8 +899,9 @@ public class LatinIME extends InputMethodService
         // When the text's first character is '.', remove the previous period
         // if there is one.
         CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
-        if (lastOne != null && lastOne.length() == 1 && lastOne.charAt(0) == '.'
-                && text.charAt(0) == '.') {
+        if (lastOne != null && lastOne.length() == 1
+                && lastOne.charAt(0) == KEYCODE_PERIOD
+                && text.charAt(0) == KEYCODE_PERIOD) {
             ic.deleteSurroundingText(1, 0);
         }
     }
@@ -1123,6 +1141,14 @@ public class LatinIME extends InputMethodService
             mJustAddedAutoSpace = false;
         }
         sendKeyChar((char)primaryCode);
+
+        // Handle the case of ". ." -> " .." with auto-space if necessary
+        // before changing the TextEntryState.
+        if (TextEntryState.getState() == TextEntryState.STATE_PUNCTUATION_AFTER_ACCEPTED
+                && primaryCode == KEYCODE_PERIOD) {
+            reswapPeriodAndSpace();
+        }
+
         TextEntryState.typedCharacter((char) primaryCode, true);
         if (TextEntryState.getState() == TextEntryState.STATE_PUNCTUATION_AFTER_ACCEPTED
                 && primaryCode != KEYCODE_ENTER) {
