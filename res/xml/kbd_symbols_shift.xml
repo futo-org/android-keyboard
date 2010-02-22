@@ -42,7 +42,7 @@
     </Row>
     
     <Row>
-        <Key android:keyLabel="¥" android:keyEdgeFlags="left"/>
+        <Key android:codes="9" android:keyLabel="\u21E5" android:keyEdgeFlags="left"/>
         <Key android:keyLabel="£"/>
         <Key android:keyLabel="¢"/>
         <Key android:keyLabel="€"/>
