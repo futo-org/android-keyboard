@@ -21,6 +21,7 @@ import java.util.Locale;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 /**
  * Keeps track of list of selected input languages and the current
@@ -88,8 +89,9 @@ public class LanguageSwitcher {
 
     private void loadDefaults() {
         mDefaultInputLocale = mIme.getResources().getConfiguration().locale;
-        mDefaultInputLanguage = mDefaultInputLocale.getLanguage() + "_"
-                + mDefaultInputLocale.getCountry();
+        String country = mDefaultInputLocale.getCountry();
+        mDefaultInputLanguage = mDefaultInputLocale.getLanguage() +
+                (TextUtils.isEmpty(country) ? "" : "_" + country);
     }
 
     private void constructLocales() {

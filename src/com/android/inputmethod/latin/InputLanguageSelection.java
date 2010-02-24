@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Locale;
 
 import android.content.SharedPreferences;
@@ -29,7 +28,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.text.TextUtils;
 
 public class InputLanguageSelection extends PreferenceActivity {
 
@@ -91,7 +90,9 @@ public class InputLanguageSelection extends PreferenceActivity {
     }
 
     private String get5Code(Locale locale) {
-        return locale.getLanguage() + "_" + locale.getCountry();
+        String country = locale.getCountry();
+        return locale.getLanguage()
+                + (TextUtils.isEmpty(country) ? "" : "_" + country);
     }
 
     @Override

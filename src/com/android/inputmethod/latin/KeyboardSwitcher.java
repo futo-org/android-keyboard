@@ -180,6 +180,7 @@ public class KeyboardSwitcher {
 
     void setKeyboardMode(int mode, int imeOptions,
             boolean enableVoice, boolean isSymbols) {
+        if (mInputView == null) return;
         mMode = mode;
         mImeOptions = imeOptions;
         mHasVoice = enableVoice;

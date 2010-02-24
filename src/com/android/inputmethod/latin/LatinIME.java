@@ -130,21 +130,10 @@ public class LatinIME extends InputMethodService
     // ignored, since it may in fact be two key presses in quick succession.
     private static final long MIN_MILLIS_AFTER_TYPING_BEFORE_SWIPE = 1000;
 
-    // If we detect a swipe gesture, and the user types N ms later, cancel the
-    // swipe since it was probably a false trigger.
-    private static final long MIN_MILLIS_AFTER_SWIPE_TO_WAIT_FOR_TYPING = 500;
-
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
-    // Weight added to a user picking a new word from the suggestion strip
-    static final int FREQUENCY_FOR_PICKED = 3;
-    // Weight added to a user typing a new word that doesn't get corrected (or is reverted)
-    static final int FREQUENCY_FOR_TYPED = 1;
-    // A word that is frequently typed and get's promoted to the user dictionary, uses this
-    // frequency.
-    static final int FREQUENCY_FOR_AUTO_ADD = 250;
 
     static final int KEYCODE_ENTER = '\n';
     static final int KEYCODE_SPACE = ' ';
@@ -329,14 +318,14 @@ public class LatinIME extends InputMethodService
         mSuggest = new Suggest(this, R.raw.main);
         updateAutoTextEnabled(saveLocale);
         if (mUserDictionary != null) mUserDictionary.close();
-        mUserDictionary = new UserDictionary(this);
+        mUserDictionary = new UserDictionary(this, mLocale);
         if (mContactsDictionary == null) {
             mContactsDictionary = new ContactsDictionary(this);
         }
-        // TODO: Save and restore the dictionary for the current input language.
-        if (mAutoDictionary == null) {
-            mAutoDictionary = new AutoDictionary(this);
+        if (mAutoDictionary != null) {
+            mAutoDictionary.close();
         }
+        mAutoDictionary = new AutoDictionary(this, this, mLocale);
         mSuggest.setUserDictionary(mUserDictionary);
         mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);
@@ -815,7 +804,7 @@ public class LatinIME extends InputMethodService
                 }
                 mCommittedLength = mComposing.length();
                 TextEntryState.acceptedTyped(mComposing);
-                checkAddToDictionary(mComposing, FREQUENCY_FOR_TYPED);
+                checkAddToDictionary(mComposing, AutoDictionary.FREQUENCY_FOR_TYPED);
             }
             updateSuggestions();
         }
@@ -1196,7 +1185,6 @@ public class LatinIME extends InputMethodService
 
     private boolean isPredictionOn() {
         boolean predictionOn = mPredictionOn;
-        //if (isFullscreenMode()) predictionOn &= mPredictionLandscape;
         return predictionOn;
     }
 
@@ -1522,7 +1510,7 @@ public class LatinIME extends InputMethodService
             }
         }
         // Add the word to the auto dictionary if it's not a known word
-        checkAddToDictionary(suggestion, FREQUENCY_FOR_PICKED);
+        checkAddToDictionary(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
         mPredicting = false;
         mCommittedLength = suggestion.length();
         setNextSuggestions();
@@ -1683,11 +1671,6 @@ public class LatinIME extends InputMethodService
                 && !mVoiceInput.isBlacklistedField(fieldContext);
     }
 
-    private boolean fieldIsRecommendedForVoice(FieldContext fieldContext) {
-        // TODO: Move this logic into the VoiceInput method.
-        return !mPasswordText && !mEmailText && mVoiceInput.isRecommendedField(fieldContext);
-    }
-
     private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo attribute) {
         return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext)
                 && !(attribute != null && attribute.privateImeOptions != null
@@ -1717,21 +1700,6 @@ public class LatinIME extends InputMethodService
         return (SystemClock.uptimeMillis() - mLastKeyTime)
             > MIN_MILLIS_AFTER_TYPING_BEFORE_SWIPE;
     }
-
-    /*
-     * Only trigger a swipe action if the user hasn't typed X millis before
-     * now, and if they don't type Y millis after the swipe is detected. This
-     * delays the onset of the swipe action by Y millis.
-     */
-    private void conservativelyTriggerSwipeAction(final Runnable action) {
-        if (userHasNotTypedRecently()) {
-            mSwipeTriggerTimeMillis = System.currentTimeMillis();
-            mHandler.sendMessageDelayed(
-                    mHandler.obtainMessage(MSG_START_LISTENING_AFTER_SWIPE),
-                    MIN_MILLIS_AFTER_SWIPE_TO_WAIT_FOR_TYPING);
-        }
-    }
-
 
     private void playKeyClick(int primaryCode) {
         // if mAudioManager is null, we don't have the ringer state yet
@@ -1794,6 +1762,10 @@ public class LatinIME extends InputMethodService
     void promoteToUserDictionary(String word, int frequency) {
         if (mUserDictionary.isValidWord(word)) return;
         mUserDictionary.addWord(word, frequency);
+    }
+
+    WordComposer getCurrentWord() {
+        return mWord;
     }
 
     private void updateCorrectionMode() {
@@ -1972,38 +1944,4 @@ public class LatinIME extends InputMethodService
         System.out.println("CPS = " + ((CPS_BUFFER_SIZE * 1000f) / total));
     }
 
-    class AutoDictionary extends ExpandableDictionary {
-        // If the user touches a typed word 2 times or more, it will become valid.
-        private static final int VALIDITY_THRESHOLD = 2 * FREQUENCY_FOR_PICKED;
-        // If the user touches a typed word 5 times or more, it will be added to the user dict.
-        private static final int PROMOTION_THRESHOLD = 4 * FREQUENCY_FOR_PICKED;
-
-        public AutoDictionary(Context context) {
-            super(context);
-        }
-
-        @Override
-        public boolean isValidWord(CharSequence word) {
-            final int frequency = getWordFrequency(word);
-            return frequency >= VALIDITY_THRESHOLD;
-        }
-
-        @Override
-        public void addWord(String word, int addFrequency) {
-            final int length = word.length();
-            // Don't add very short or very long words.
-            if (length < 2 || length > getMaxWordLength()) return;
-            if (mWord.isAutoCapitalized()) {
-                // Remove caps before adding
-                word = Character.toLowerCase(word.charAt(0))
-                        + word.substring(1);
-            }
-            int freq = getWordFrequency(word);
-            freq = freq < 0 ? addFrequency : freq + addFrequency;
-            super.addWord(word, freq);
-            if (freq >= PROMOTION_THRESHOLD) {
-                LatinIME.this.promoteToUserDictionary(word, FREQUENCY_FOR_AUTO_ADD);
-            }
-        }
-    }
 }

@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Locale;
 
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.UserDictionary.Words;
 
 public class UserDictionary extends ExpandableDictionary {
@@ -40,9 +42,11 @@ public class UserDictionary extends ExpandableDictionary {
     private ContentObserver mObserver;
     
     private boolean mRequiresReload;
-    
-    public UserDictionary(Context context) {
+    private String mLocale;
+
+    public UserDictionary(Context context, String locale) {
         super(context);
+        mLocale = locale;
         // Perform a managed query. The Activity will handle closing and requerying the cursor
         // when needed.
         ContentResolver cres = context.getContentResolver();
@@ -67,7 +71,7 @@ public class UserDictionary extends ExpandableDictionary {
     private synchronized void loadDictionary() {
         Cursor cursor = getContext().getContentResolver()
                 .query(Words.CONTENT_URI, PROJECTION, "(locale IS NULL) or (locale=?)", 
-                        new String[] { Locale.getDefault().toString() }, null);
+                        new String[] { mLocale }, null);
         addWords(cursor);
         mRequiresReload = false;
     }
@@ -88,7 +92,14 @@ public class UserDictionary extends ExpandableDictionary {
 
         super.addWord(word, frequency);
 
-        Words.addWord(getContext(), word, frequency, Words.LOCALE_TYPE_CURRENT);
+        // Update the user dictionary provider
+        ContentValues values = new ContentValues(5);
+        values.put(Words.WORD, word);
+        values.put(Words.FREQUENCY, frequency);
+        values.put(Words.LOCALE, mLocale);
+        values.put(Words.APP_ID, 0);
+
+        getContext().getContentResolver().insert(Words.CONTENT_URI, values);
         // In case the above does a synchronous callback of the change observer
         mRequiresReload = false;
     }
