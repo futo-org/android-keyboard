@@ -1439,6 +1439,8 @@ public class LatinIME extends InputMethodService
             TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord);
             mJustAccepted = true;
             pickSuggestion(mBestWord);
+            // Add the word to the auto dictionary if it's not a known word
+            checkAddToDictionary(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
         }
     }
 
@@ -1476,6 +1478,8 @@ public class LatinIME extends InputMethodService
         }
         mJustAccepted = true;
         pickSuggestion(suggestion);
+        // Add the word to the auto dictionary if it's not a known word
+        checkAddToDictionary(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
         TextEntryState.acceptedSuggestion(mComposing.toString(), suggestion);
         // Follow it with a space
         if (mAutoSpace) {
@@ -1509,10 +1513,9 @@ public class LatinIME extends InputMethodService
                 ic.commitText(suggestion, 1);
             }
         }
-        // Add the word to the auto dictionary if it's not a known word
-        checkAddToDictionary(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
         mPredicting = false;
         mCommittedLength = suggestion.length();
+        ((LatinKeyboard) mInputView.getKeyboard()).setPreferredLetters(null);
         setNextSuggestions();
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
