@@ -790,7 +790,7 @@ public class LatinIME extends InputMethodService
         }
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         if (mInputView != null) {
-            mKeyboardSwitcher.setVoiceMode(mEnableVoice, mVoiceOnPrimary);
+            mKeyboardSwitcher.setVoiceMode(mEnableVoice && mEnableVoiceButton, mVoiceOnPrimary);
         }
         mKeyboardSwitcher.makeKeyboards(true);
     }
@@ -1829,8 +1829,10 @@ public class LatinIME extends InputMethodService
         mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true);
 
         if (VOICE_INSTALLED) {
-            final String voiceMode = sp.getString(PREF_VOICE_MODE, "");
-            boolean enableVoice = !voiceMode.equals(getString(R.string.voice_mode_off));
+            final String voiceMode = sp.getString(PREF_VOICE_MODE,
+                    getString(R.string.voice_mode_main));
+            boolean enableVoice = !voiceMode.equals(getString(R.string.voice_mode_off))
+                    && mEnableVoiceButton;
             boolean voiceOnPrimary = voiceMode.equals(getString(R.string.voice_mode_main));
             if (mKeyboardSwitcher != null &&
                     (enableVoice != mEnableVoice || voiceOnPrimary != mVoiceOnPrimary)) {

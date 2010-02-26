@@ -178,12 +178,13 @@ public class KeyboardSwitcher {
                 mPreferSymbols);
     }
 
-    void setKeyboardMode(int mode, int imeOptions,
-            boolean enableVoice, boolean isSymbols) {
+    void setKeyboardMode(int mode, int imeOptions, boolean enableVoice, boolean isSymbols) {
         if (mInputView == null) return;
         mMode = mode;
         mImeOptions = imeOptions;
-        mHasVoice = enableVoice;
+        if (enableVoice != mHasVoice) {
+            setVoiceMode(mHasVoice, mVoiceOnPrimary);
+        }
         mIsSymbols = isSymbols;
 
         mInputView.setPreviewEnabled(true);
@@ -211,7 +212,8 @@ public class KeyboardSwitcher {
             conf.locale = mInputLocale;
             orig.updateConfiguration(conf, null);
             LatinKeyboard keyboard = new LatinKeyboard(
-                mContext, id.mXml, id.mKeyboardMode, id.mHasVoice);
+                mContext, id.mXml, id.mKeyboardMode);
+            keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols), mHasVoice);
             keyboard.setLanguageSwitcher(mLanguageSwitcher);
             if (id.mKeyboardMode == KEYBOARDMODE_NORMAL
                     || id.mKeyboardMode == KEYBOARDMODE_URL
