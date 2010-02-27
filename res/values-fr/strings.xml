@@ -98,7 +98,17 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Astuce :"</b>" La prochaine fois, essayez de prononcer la ponctuation, en énonçant des termes tels que \"point\", \"virgule\" ou \"point d\'interrogation\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Annuler"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
-    <string name="enable_voice" msgid="8299503298530853956">"Saisie vocale"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Saisie vocale"</string>
+  <string-array name="voice_input_modes">
+    <item msgid="1349082139076086774">"Sur le clavier principal"</item>
+    <item msgid="8529385602829095903">"Sur le clavier des symboles"</item>
+    <item msgid="7283103513488381103">"Désactivée"</item>
+  </string-array>
+  <string-array name="voice_input_modes_summary">
+    <item msgid="554248625705084903">"Micro sur le clavier principal"</item>
+    <item msgid="6907837061058876770">"Micro sur le clavier des symboles"</item>
+    <item msgid="3664304608587798036">"Saisie vocale désactivée"</item>
+  </string-array>
     <string name="auto_submit" msgid="9151008027068358518">"Envoi automatique après la saisie vocale"</string>
     <string name="auto_submit_summary" msgid="4961875269610384226">"Appuyez automatiquement sur Entrée pour effectuer une recherche ou accéder au champ suivant."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Ouvrir le clavier"\n</b></font><font size="3">\n</font>"Appuyez sur un champ de texte."</string>
@@ -110,7 +120,8 @@
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
     <string name="popular_domain_3" msgid="8718639560809452028">".gouv"</string>
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
-    <!-- no translation found for language_selection_title (530749890984542339) -->
-    <skip />
     <string name="inputMethod" msgid="7854532062009028116">"Mode de saisie"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"Langues de saisie"</string>
+    <string name="language_selection_summary" msgid="187110938289512256">"Faites glisser votre doigt sur la barre d\'espacement pour changer la langue."</string>
+    <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Appuyer de nouveau pour enregistrer"</string>
 </resources>

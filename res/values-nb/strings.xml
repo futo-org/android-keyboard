@@ -98,7 +98,17 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hint:"</b>" Neste gang kan du prøve å tale inn tegnsettingen ved for eksempel å si «punktum», «komma» eller «spørsmålstegn»."</string>
     <string name="cancel" msgid="6830980399865683324">"Avbryt"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
-    <string name="enable_voice" msgid="8299503298530853956">"Stemmedata"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Talekommando"</string>
+  <string-array name="voice_input_modes">
+    <item msgid="1349082139076086774">"På hovedtastatur"</item>
+    <item msgid="8529385602829095903">"På talltastatur"</item>
+    <item msgid="7283103513488381103">"Av"</item>
+  </string-array>
+  <string-array name="voice_input_modes_summary">
+    <item msgid="554248625705084903">"Mikronfon på hovedtastatur"</item>
+    <item msgid="6907837061058876770">"Mikronfon på talltastatur"</item>
+    <item msgid="3664304608587798036">"Talekommando er deaktivert"</item>
+  </string-array>
     <string name="auto_submit" msgid="9151008027068358518">"Send inn automatisk etter tale"</string>
     <string name="auto_submit_summary" msgid="4961875269610384226">"Trykk Enter automatisk ved søk eller flytting til neste felt."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Åpne tastaturet"\n</b></font><font size="3">\n</font>"Trykk på et tekstfelt."</string>
@@ -110,7 +120,8 @@
     <string name="popular_domain_2" msgid="3036812463748402878">".net"</string>
     <string name="popular_domain_3" msgid="8718639560809452028">".org"</string>
     <string name="popular_domain_4" msgid="35359437471311470">".info"</string>
-    <!-- no translation found for language_selection_title (530749890984542339) -->
-    <skip />
     <string name="inputMethod" msgid="7854532062009028116">"Inndatametode"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"Inndataspråk"</string>
+    <string name="language_selection_summary" msgid="187110938289512256">"Dra fingeren på mellomromstasten for å endre språk"</string>
+    <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Trykk på nytt for å lagre"</string>
 </resources>

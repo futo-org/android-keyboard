@@ -57,7 +57,6 @@
     <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
-    <string name="key_i" msgid="6483655742552255124">"i"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"按住某个键可看到重音符号（例如 ø、ö 等）"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"随时可以通过按后退键 ↶ 关闭键盘"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"访问数字和符号"</string>
@@ -99,7 +98,17 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"提示："</b>"稍后，请尝试使用语音输入标点符号，如“句号”、“逗号”或“问号”。"</string>
     <string name="cancel" msgid="6830980399865683324">"取消"</string>
     <string name="ok" msgid="7898366843681727667">"确定"</string>
-    <string name="enable_voice" msgid="8299503298530853956">"语音输入"</string>
+    <string name="voice_input" msgid="2466640768843347841">"语音输入"</string>
+  <string-array name="voice_input_modes">
+    <item msgid="1349082139076086774">"主键盘上"</item>
+    <item msgid="8529385602829095903">"符号键盘上"</item>
+    <item msgid="7283103513488381103">"关"</item>
+  </string-array>
+  <string-array name="voice_input_modes_summary">
+    <item msgid="554248625705084903">"主键盘上的麦克风"</item>
+    <item msgid="6907837061058876770">"符号键盘上的麦克风"</item>
+    <item msgid="3664304608587798036">"已停用语音输入"</item>
+  </string-array>
     <string name="auto_submit" msgid="9151008027068358518">"语音结束后自动提交"</string>
     <string name="auto_submit_summary" msgid="4961875269610384226">"搜索或转到下一字段时自动按 Enter。"</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"打开键盘"\n</b></font><font size="3">\n</font>"轻触任意文本字段。"</string>
@@ -111,7 +120,8 @@
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
     <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
-    <!-- no translation found for language_selection_title (530749890984542339) -->
-    <skip />
     <string name="inputMethod" msgid="7854532062009028116">"输入法"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"输入语言"</string>
+    <string name="language_selection_summary" msgid="187110938289512256">"在空格键上滑动手指可更改语言"</string>
+    <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← 再次点按即可保存"</string>
 </resources>
