@@ -69,9 +69,11 @@ public class TextEntryState {
     public static final int STATE_SPACE_AFTER_ACCEPTED = 7;
     public static final int STATE_SPACE_AFTER_PICKED = 8;
     public static final int STATE_UNDO_COMMIT = 9;
-    
+    public static final int STATE_CORRECTING = 10;
+    public static final int STATE_PICKED_CORRECTION = 11;
+
     private static int sState = STATE_UNKNOWN;
-    
+
     private static FileOutputStream sKeyLocationFile;
     private static FileOutputStream sUserActionFile;
     
@@ -139,12 +141,17 @@ public class TextEntryState {
 
     public static void acceptedSuggestion(CharSequence typedWord, CharSequence actualWord) {
         sManualSuggestCount++;
+        int oldState = sState;
         if (typedWord.equals(actualWord)) {
             acceptedTyped(typedWord);
         }
-        sState = STATE_PICKED_SUGGESTION;
+        sState = oldState == STATE_CORRECTING ? STATE_PICKED_CORRECTION : STATE_PICKED_SUGGESTION;
     }
-    
+
+    public static void selectedForCorrection() {
+        sState = STATE_CORRECTING;
+    }
+
     public static void typedCharacter(char c, boolean isSeparator) {
         boolean isSpace = c == ' ';
         switch (sState) {
@@ -166,6 +173,7 @@ public class TextEntryState {
                 }
                 break;
             case STATE_PICKED_SUGGESTION:
+            case STATE_PICKED_CORRECTION:
                 if (isSpace) {
                     sState = STATE_SPACE_AFTER_PICKED;
                 } else if (isSeparator) {
@@ -192,6 +200,10 @@ public class TextEntryState {
                 } else {
                     sState = STATE_IN_WORD;
                 }
+                break;
+            case STATE_CORRECTING:
+                sState = STATE_START;
+                break;
         }
     }
     
@@ -212,7 +224,11 @@ public class TextEntryState {
     public static int getState() {
         return sState;
     }
-    
+
+    public static boolean isCorrecting() {
+        return sState == STATE_CORRECTING || sState == STATE_PICKED_CORRECTION;
+    }
+
     public static void keyPressedAt(Key key, int x, int y) {
         if (LOGGING && sKeyLocationFile != null && key.codes[0] >= 32) {
             String out = 

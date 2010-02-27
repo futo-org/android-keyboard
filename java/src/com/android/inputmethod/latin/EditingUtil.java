@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.voice;
+package com.android.inputmethod.latin;
 
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -75,9 +75,21 @@ public class EditingUtil {
      *   represents the cursor, then "hello " will be returned.
      */
     public static String getWordAtCursor(
-        InputConnection connection, String separators) {
-        Range range = getWordRangeAtCursor(connection, separators);
-        return (range == null) ? null : range.word;
+            InputConnection connection, String separators) {
+        return getWordAtCursor(connection, separators, null);
+    }
+
+    /**
+     * @param connection connection to the current text field.
+     * @param sep characters which may separate words
+     * @return the word that surrounds the cursor, including up to one trailing
+     *   separator. For example, if the field contains "he|llo world", where |
+     *   represents the cursor, then "hello " will be returned.
+     */
+    public static String getWordAtCursor(
+        InputConnection connection, String separators, Range range) {
+        Range r = getWordRangeAtCursor(connection, separators, range);
+        return (r == null) ? null : r.word;
     }
 
     /**
@@ -87,7 +99,7 @@ public class EditingUtil {
     public static void deleteWordAtCursor(
         InputConnection connection, String separators) {
 
-        Range range = getWordRangeAtCursor(connection, separators);
+        Range range = getWordRangeAtCursor(connection, separators, null);
         if (range == null) return;
 
         connection.finishComposingText();
@@ -101,18 +113,20 @@ public class EditingUtil {
     /**
      * Represents a range of text, relative to the current cursor position.
      */
-    private static class Range {
+    public static class Range {
         /** Characters before selection start */
-        int charsBefore;
+        public int charsBefore;
 
         /**
          * Characters after selection start, including one trailing word
          * separator.
          */
-        int charsAfter;
+        public int charsAfter;
 
         /** The actual characters that make up a word */
-        String word;
+        public String word;
+
+        public Range() {}
 
         public Range(int charsBefore, int charsAfter, String word) {
             if (charsBefore < 0 || charsAfter < 0) {
@@ -125,7 +139,7 @@ public class EditingUtil {
     }
 
     private static Range getWordRangeAtCursor(
-        InputConnection connection, String sep) {
+            InputConnection connection, String sep, Range range) {
         if (connection == null || sep == null) {
             return null;
         }
@@ -137,20 +151,22 @@ public class EditingUtil {
 
         // Find first word separator before the cursor
         int start = before.length();
-        while (--start > 0 && !isWhitespace(before.charAt(start - 1), sep));
+        while (start > 0 && !isWhitespace(before.charAt(start - 1), sep)) start--;
 
         // Find last word separator after the cursor
         int end = -1;
         while (++end < after.length() && !isWhitespace(after.charAt(end), sep));
-        if (end < after.length() - 1) {
-            end++; // Include trailing space, if it exists, in word
-        }
 
         int cursor = getCursorPosition(connection);
         if (start >= 0 && cursor + end <= after.length() + before.length()) {
             String word = before.toString().substring(start, before.length())
-                + after.toString().substring(0, end);
-            return new Range(before.length() - start, end, word);
+                    + after.toString().substring(0, end);
+
+            Range returnRange = range != null? range : new Range();
+            returnRange.charsBefore = before.length() - start;
+            returnRange.charsAfter = end;
+            returnRange.word = word;
+            return returnRange;
         }
 
         return null;
