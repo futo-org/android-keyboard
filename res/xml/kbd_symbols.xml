@@ -77,7 +77,7 @@
         />
         <Key android:codes="45" android:keyLabel="-"
                 android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="–—"
+                android:popupCharacters="_–—"
         />
         <Key android:keyLabel="+"
                 android:popupKeyboard="@xml/kbd_popup_template"

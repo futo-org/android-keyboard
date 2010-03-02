@@ -534,6 +534,7 @@ public class LatinIME extends InputMethodService
         mDeleteCount = 0;
         mJustAddedAutoSpace = false;
         loadSettings();
+        updateShiftKeyState(attribute);
 
         setCandidatesViewShown(false);
         setSuggestions(null, false, false, false);

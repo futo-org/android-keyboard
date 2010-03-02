@@ -26,8 +26,8 @@
     >
 
     <Row android:rowEdgeFlags="top">
-        <Key android:keyLabel=";" android:keyEdgeFlags="left" />
-        <Key android:keyLabel="," />
+        <Key android:keyLabel=":" android:keyEdgeFlags="left" />
+        <Key android:keyLabel="/" />
         <Key android:keyLabel="&amp;" />
         <Key android:keyLabel="(" />
         <Key android:keyLabel=")" />
@@ -35,12 +35,12 @@
         <Key android:keyLabel="+" android:keyEdgeFlags="right" />
     </Row>
     <Row android:rowEdgeFlags="bottom">
-        <Key android:codes="58" android:keyLabel=":" android:keyEdgeFlags="left" />
-        <Key android:codes="47" android:keyLabel="/" />
-        <Key android:codes="64" android:keyLabel="\@" />
-        <Key android:codes="39" android:keyLabel="\'" />
-        <Key android:codes="34" android:keyLabel="&quot;" />
-        <Key android:codes="63" android:keyLabel="\?" />
-        <Key android:codes="33" android:keyLabel="!" android:keyEdgeFlags="right" />
+        <Key android:keyLabel=";" android:keyEdgeFlags="left" />
+        <Key android:keyLabel="," />
+        <Key android:keyLabel="\@" />
+        <Key android:keyLabel="\'" />
+        <Key android:keyLabel="&quot;" />
+        <Key android:keyLabel="\?" />
+        <Key android:keyLabel="!" android:keyEdgeFlags="right" />
     </Row>
 </Keyboard>
