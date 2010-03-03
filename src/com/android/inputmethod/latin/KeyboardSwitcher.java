@@ -147,8 +147,7 @@ public class KeyboardSwitcher {
         public boolean equals(KeyboardId other) {
           return other.mXml == this.mXml
               && other.mKeyboardMode == this.mKeyboardMode
-              && other.mEnableShiftLock == this.mEnableShiftLock
-              && other.mHasVoice == this.mHasVoice;
+              && other.mEnableShiftLock == this.mEnableShiftLock;
         }
 
         public int hashCode() {
