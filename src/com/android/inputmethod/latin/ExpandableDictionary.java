@@ -248,7 +248,7 @@ public class ExpandableDictionary extends Dictionary {
                     if (currentChar == lowerC || currentChar == c) {
                         word[depth] = c;
 
-                        if (codeSize == depth + 1) {
+                        if (codeSize == inputIndex + 1) {
                             if (terminal) {
                                 if (INCLUDE_TYPED_WORD_IF_VALID 
                                         || !same(word, depth + 1, codes.getTypedWord())) {
