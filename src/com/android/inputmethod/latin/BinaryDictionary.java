@@ -138,7 +138,6 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public synchronized void close() {
         if (mNativeDict != 0) {
-            System.err.println("Closing BinaryDictionary");
             closeNative(mNativeDict);
             mNativeDict = 0;
         }

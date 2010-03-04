@@ -34,6 +34,9 @@ public class InputLanguageSelection extends PreferenceActivity {
 
     private String mSelectedLanguages;
     private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
+    private static final String[] BLACKLIST_LANGUAGES = {
+        "ko", "ja", "zh"
+    };
 
     private static class Loc implements Comparable {
         static Collator sCollator = Collator.getInstance();
@@ -137,6 +140,9 @@ public class InputLanguageSelection extends PreferenceActivity {
                 String country = s.substring(3, 5);
                 Locale l = new Locale(language, country);
 
+                // Exclude languages that are not relevant to LatinIME
+                if (arrayContains(BLACKLIST_LANGUAGES, language)) continue;
+
                 if (finalSize == 0) {
                     preprocess[finalSize++] =
                             new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(l)), l);
@@ -166,5 +172,12 @@ public class InputLanguageSelection extends PreferenceActivity {
             uniqueLocales.add(preprocess[i]);
         }
         return uniqueLocales;
+    }
+
+    private boolean arrayContains(String[] array, String value) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i].equalsIgnoreCase(value)) return true;
+        }
+        return false;
     }
 }

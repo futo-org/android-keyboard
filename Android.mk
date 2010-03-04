@@ -15,7 +15,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-common
 
 #LOCAL_AAPT_FLAGS := -0 .dict
 
-#LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := current
 
 LOCAL_PROGUARD_FLAGS := -include $(LOCAL_PATH)/proguard.flags
 
