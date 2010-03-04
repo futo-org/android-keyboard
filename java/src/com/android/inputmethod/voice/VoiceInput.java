@@ -94,6 +94,12 @@ public class VoiceInput implements OnClickListener {
     public static final int WORKING = 2;
     public static final int ERROR = 3;
 
+    private int mAfterVoiceInputDeleteCount = 0;
+    private int mAfterVoiceInputInsertCount = 0;
+    private int mAfterVoiceInputInsertPunctuationCount = 0;
+    private int mAfterVoiceInputCursorPos = 0;
+    private int mAfterVoiceInputSelectionSpan = 0;
+
     private int mState = DEFAULT;
     
     private final static int MSG_CLOSE_ERROR_DIALOG = 1;
@@ -159,6 +165,87 @@ public class VoiceInput implements OnClickListener {
 
         mBlacklist = new Whitelist();
         mBlacklist.addApp("com.android.setupwizard");
+    }
+
+    public void setCursorPos(int pos) {
+        mAfterVoiceInputCursorPos = pos;
+    }
+
+    public int getCursorPos() {
+        return mAfterVoiceInputCursorPos;
+    }
+
+    public void setSelectionSpan(int span) {
+        mAfterVoiceInputSelectionSpan = span;
+    }
+
+    public int getSelectionSpan() {
+        return mAfterVoiceInputSelectionSpan;
+    }
+
+    public void incrementTextModificationDeleteCount(int count){
+        mAfterVoiceInputDeleteCount += count;
+        // Send up intents for other text modification types
+        if (mAfterVoiceInputInsertCount > 0) {
+            logTextModifiedByTypingInsertion(mAfterVoiceInputInsertCount);
+            mAfterVoiceInputInsertCount = 0;
+        }
+        if (mAfterVoiceInputInsertPunctuationCount > 0) {
+            logTextModifiedByTypingInsertionPunctuation(mAfterVoiceInputInsertPunctuationCount);
+            mAfterVoiceInputInsertPunctuationCount = 0;
+        }
+
+    }
+
+    public void incrementTextModificationInsertCount(int count){
+        mAfterVoiceInputInsertCount += count;
+        if (mAfterVoiceInputSelectionSpan > 0) {
+            // If text was highlighted before inserting the char, count this as
+            // a delete.
+            mAfterVoiceInputDeleteCount += mAfterVoiceInputSelectionSpan;
+        }
+        // Send up intents for other text modification types
+        if (mAfterVoiceInputDeleteCount > 0) {
+            logTextModifiedByTypingDeletion(mAfterVoiceInputDeleteCount);
+            mAfterVoiceInputDeleteCount = 0;
+        }
+        if (mAfterVoiceInputInsertPunctuationCount > 0) {
+            logTextModifiedByTypingInsertionPunctuation(mAfterVoiceInputInsertPunctuationCount);
+            mAfterVoiceInputInsertPunctuationCount = 0;
+        }
+    }
+
+    public void incrementTextModificationInsertPunctuationCount(int count){
+        mAfterVoiceInputInsertPunctuationCount += 1;
+        if (mAfterVoiceInputSelectionSpan > 0) {
+            // If text was highlighted before inserting the char, count this as
+            // a delete.
+            mAfterVoiceInputDeleteCount += mAfterVoiceInputSelectionSpan;
+        }
+        // Send up intents for aggregated non-punctuation insertions
+        if (mAfterVoiceInputDeleteCount > 0) {
+            logTextModifiedByTypingDeletion(mAfterVoiceInputDeleteCount);
+            mAfterVoiceInputDeleteCount = 0;
+        }
+        if (mAfterVoiceInputInsertCount > 0) {
+            logTextModifiedByTypingInsertion(mAfterVoiceInputInsertCount);
+            mAfterVoiceInputInsertCount = 0;
+        }
+    }
+
+    public void flushAllTextModificationCounters() {
+        if (mAfterVoiceInputInsertCount > 0) {
+            logTextModifiedByTypingInsertion(mAfterVoiceInputInsertCount);
+            mAfterVoiceInputInsertCount = 0;
+        }
+        if (mAfterVoiceInputDeleteCount > 0) {
+            logTextModifiedByTypingDeletion(mAfterVoiceInputDeleteCount);
+            mAfterVoiceInputDeleteCount = 0;
+        }
+        if (mAfterVoiceInputInsertPunctuationCount > 0) {
+            logTextModifiedByTypingInsertionPunctuation(mAfterVoiceInputInsertPunctuationCount);
+            mAfterVoiceInputInsertPunctuationCount = 0;
+        }
     }
 
     /**
@@ -302,8 +389,20 @@ public class VoiceInput implements OnClickListener {
         }
     }
 
-    public void logTextModified() {
-        mLogger.textModified();
+    public void logTextModifiedByTypingInsertion(int length) {
+        mLogger.textModifiedByTypingInsertion(length);
+    }
+
+    public void logTextModifiedByTypingInsertionPunctuation(int length) {
+        mLogger.textModifiedByTypingInsertionPunctuation(length);
+    }
+
+    public void logTextModifiedByTypingDeletion(int length) {
+        mLogger.textModifiedByTypingDeletion(length);
+    }
+
+    public void logTextModifiedByChooseSuggestion(int length) {
+        mLogger.textModifiedByChooseSuggestion(length);
     }
 
     public void logKeyboardWarningDialogShown() {
@@ -330,8 +429,8 @@ public class VoiceInput implements OnClickListener {
         mLogger.punctuationHintDisplayed();
     }
 
-    public void logVoiceInputDelivered() {
-        mLogger.voiceInputDelivered();
+    public void logVoiceInputDelivered(int length) {
+        mLogger.voiceInputDelivered(length);
     }
 
     public void logNBestChoose(int index) {

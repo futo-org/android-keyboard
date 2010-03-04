@@ -147,12 +147,43 @@ public class VoiceInputLogger {
         mContext.sendBroadcast(i);
     }
     
-    public void voiceInputDelivered() {
-        mContext.sendBroadcast(newLoggingBroadcast(LoggingEvents.VoiceIme.VOICE_INPUT_DELIVERED));
+    public void voiceInputDelivered(int length) {
+        Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.VOICE_INPUT_DELIVERED);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
+        mContext.sendBroadcast(i);
     }
 
-    public void textModified() {
-        mContext.sendBroadcast(newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED));
+    public void textModifiedByTypingInsertion(int length) {
+        Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
+                LoggingEvents.VoiceIme.TEXT_MODIFIED_TYPE_TYPING_INSERTION);
+        mContext.sendBroadcast(i);
+    }
+
+    public void textModifiedByTypingInsertionPunctuation(int length) {
+        Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
+                LoggingEvents.VoiceIme.TEXT_MODIFIED_TYPE_TYPING_INSERTION_PUNCTUATION);
+        mContext.sendBroadcast(i);
+    }
+
+    public void textModifiedByTypingDeletion(int length) {
+        Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
+                LoggingEvents.VoiceIme.TEXT_MODIFIED_TYPE_TYPING_DELETION);
+
+        mContext.sendBroadcast(i);
+    }
+
+    public void textModifiedByChooseSuggestion(int length) {
+        Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
+        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
+                LoggingEvents.VoiceIme.TEXT_MODIFIED_TYPE_CHOOSE_SUGGESTION);
+        mContext.sendBroadcast(i);
     }
 
     public void nBestChoose(int index) {

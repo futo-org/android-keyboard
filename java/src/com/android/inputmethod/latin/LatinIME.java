@@ -234,6 +234,7 @@ public class LatinIME extends InputMethodService
         List<String> candidates;
         Map<String, List<CharSequence>> alternatives;
     }
+
     private boolean mRefreshKeyboardRequired;
 
     Handler mHandler = new Handler() {
@@ -552,6 +553,7 @@ public class LatinIME extends InputMethodService
 
         if (VOICE_INSTALLED && !mConfigurationChanging) {
             if (mAfterVoiceInput) {
+                mVoiceInput.flushAllTextModificationCounters();
                 mVoiceInput.logInputEnded();
             }
             mVoiceInput.flushLogs();
@@ -567,8 +569,6 @@ public class LatinIME extends InputMethodService
         super.onUpdateExtractedText(token, text);
         InputConnection ic = getCurrentInputConnection();
         if (!mImmediatelyAfterVoiceInput && mAfterVoiceInput && ic != null) {
-            mVoiceInput.logTextModified();
-
             if (mHints.showPunctuationHintIfNecessary(ic)) {
                 mVoiceInput.logPunctuationHintDisplayed();
             }
@@ -590,6 +590,11 @@ public class LatinIME extends InputMethodService
                     + ", nse=" + newSelEnd
                     + ", cs=" + candidatesStart
                     + ", ce=" + candidatesEnd);
+        }
+
+        if (mAfterVoiceInput) {
+            mVoiceInput.setCursorPos(newSelEnd);
+            mVoiceInput.setSelectionSpan(newSelEnd - newSelStart);
         }
 
         mSuggestionShouldReplaceCurrentWord = false;
@@ -997,12 +1002,27 @@ public class LatinIME extends InputMethodService
 
     private void handleBackspace() {
         if (VOICE_INSTALLED && mVoiceInputHighlighted) {
+            mVoiceInput.incrementTextModificationDeleteCount(
+                    mVoiceResults.candidates.get(0).toString().length());
             revertVoiceInput();
             return;
         }
         boolean deleteChar = false;
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
+
+        if (mAfterVoiceInput) {
+            // Don't log delete if the user is pressing delete at
+            // the beginning of the text box (hence not deleting anything)
+            if (mVoiceInput.getCursorPos() > 0) {
+                // If anything was selected before the delete was pressed, increment the
+                // delete count by the length of the selection
+                int deleteLen  =  mVoiceInput.getSelectionSpan() > 0 ?
+                        mVoiceInput.getSelectionSpan() : 1;
+                mVoiceInput.incrementTextModificationDeleteCount(deleteLen);
+            }
+        }
+
         if (mPredicting) {
             final int length = mComposing.length();
             if (length > 0) {
@@ -1048,6 +1068,12 @@ public class LatinIME extends InputMethodService
         if (VOICE_INSTALLED && mVoiceInputHighlighted) {
             commitVoiceInput();
         }
+
+        if (mAfterVoiceInput) {
+            // Assume input length is 1. This assumption fails for smiley face insertions.
+            mVoiceInput.incrementTextModificationInsertCount(1);
+        }
+
         if (isAlphabet(primaryCode) && isPredictionOn() && !isCursorTouchingWord()) {
             if (!mPredicting) {
                 mPredicting = true;
@@ -1091,6 +1117,12 @@ public class LatinIME extends InputMethodService
         if (VOICE_INSTALLED && mVoiceInputHighlighted) {
             commitVoiceInput();
         }
+
+        if (mAfterVoiceInput){
+            // Assume input length is 1. This assumption fails for smiley face insertions.
+            mVoiceInput.incrementTextModificationInsertPunctuationCount(1);
+        }
+
         boolean pickedDefault = false;
         // Handle separator
         InputConnection ic = getCurrentInputConnection();
@@ -1344,7 +1376,7 @@ public class LatinIME extends InputMethodService
 
         String bestResult = nBest.get(0).toString();
 
-        mVoiceInput.logVoiceInputDelivered();
+        mVoiceInput.logVoiceInputDelivered(bestResult.length());
 
         mHints.registerVoiceResult(bestResult);
 
@@ -1447,6 +1479,12 @@ public class LatinIME extends InputMethodService
 
     public void pickSuggestionManually(int index, CharSequence suggestion) {
         if (mAfterVoiceInput && mShowingVoiceSuggestions) mVoiceInput.logNBestChoose(index);
+
+        if (mAfterVoiceInput && !mShowingVoiceSuggestions) {
+            mVoiceInput.flushAllTextModificationCounters();
+            // send this intent AFTER logging any prior aggregated edits.
+            mVoiceInput.logTextModifiedByChooseSuggestion(suggestion.length());
+        }
 
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
