@@ -21,7 +21,7 @@ import java.util.Locale;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.backup.BackupManager;
+import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
