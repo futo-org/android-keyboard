@@ -1737,7 +1737,7 @@ public class LatinIME extends InputMethodService
             return;
         }
         if (mInputView != null) {
-            mInputView.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY,
+            mInputView.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP,
                     HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
         }
     }
