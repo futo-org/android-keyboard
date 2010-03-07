@@ -50,6 +50,8 @@ import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewParent;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
@@ -221,6 +223,7 @@ public class LatinIME extends InputMethodService
     private VoiceInput mVoiceInput;
     private VoiceResults mVoiceResults = new VoiceResults();
     private long mSwipeTriggerTimeMillis;
+    private boolean mConfigurationChanging;
 
     // For each word, a list of potential replacements, usually from voice.
     private Map<String, List<CharSequence>> mWordToSuggestions =
@@ -371,7 +374,12 @@ public class LatinIME extends InputMethodService
             mOrientation = conf.orientation;
             reloadKeyboards();
         }
+        mConfigurationChanging = true;
         super.onConfigurationChanged(conf);
+        if (mRecognizing) {
+            switchToRecognitionStatusView();
+        }
+        mConfigurationChanging = false;
     }
 
     @Override
@@ -385,21 +393,6 @@ public class LatinIME extends InputMethodService
                 KeyboardSwitcher.MODE_TEXT, 0,
                 shouldShowVoiceButton(makeFieldContext(), getCurrentInputEditorInfo()));
         return mInputView;
-    }
-
-    @Override
-    public void onInitializeInterface() {
-        // Create a new view associated with voice input if the old
-        // view is stuck in another layout (e.g. if switching from
-        // portrait to landscape while speaking)
-        // NOTE: This must be done here because for some reason
-        // onCreateInputView isn't called after an orientation change while
-        // speech rec is in progress.
-        if (mVoiceInput != null && mVoiceInput.getView().getParent() != null) {
-            mVoiceInput.newView();
-        }
-
-        super.onInitializeInterface();
     }
 
     @Override
@@ -554,19 +547,15 @@ public class LatinIME extends InputMethodService
     public void onFinishInput() {
         super.onFinishInput();
 
-        if (VOICE_INSTALLED && mAfterVoiceInput) {
-            mVoiceInput.logInputEnded();
-        }
-
-        if (VOICE_INSTALLED) {
+        if (VOICE_INSTALLED && !mConfigurationChanging) {
+            if (mAfterVoiceInput) {
+                mVoiceInput.logInputEnded();
+            }
             mVoiceInput.flushLogs();
+            mVoiceInput.cancel();
         }
-
         if (mInputView != null) {
             mInputView.closing();
-        }
-        if (VOICE_INSTALLED && mRecognizing) {
-            mVoiceInput.cancel();
         }
     }
 
@@ -654,23 +643,21 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void hideWindow() {
-        if (mAfterVoiceInput) mVoiceInput.logInputEnded();
         if (TRACE) Debug.stopMethodTracing();
         if (mOptionsDialog != null && mOptionsDialog.isShowing()) {
             mOptionsDialog.dismiss();
             mOptionsDialog = null;
         }
-        if (mVoiceWarningDialog != null && mVoiceWarningDialog.isShowing()) {
-            mVoiceInput.logKeyboardWarningDialogDismissed();
-            mVoiceWarningDialog.dismiss();
-            mVoiceWarningDialog = null;
-        }
-        if (mTutorial != null) {
-            mTutorial.close();
-            mTutorial = null;
-        }
-        if (VOICE_INSTALLED & mRecognizing) {
-            mVoiceInput.cancel();
+        if (!mConfigurationChanging) {
+            if (mAfterVoiceInput) mVoiceInput.logInputEnded();
+            if (mVoiceWarningDialog != null && mVoiceWarningDialog.isShowing()) {
+                mVoiceInput.logKeyboardWarningDialogDismissed();
+                mVoiceWarningDialog.dismiss();
+                mVoiceWarningDialog = null;
+            }
+            if (VOICE_INSTALLED & mRecognizing) {
+                mVoiceInput.cancel();
+            }
         }
         super.hideWindow();
         TextEntryState.endSession();
@@ -1211,12 +1198,21 @@ public class LatinIME extends InputMethodService
     }
 
     private void switchToRecognitionStatusView() {
-      mHandler.post(new Runnable() {
-          public void run() {
-              mRecognizing = true;
-              setInputView(mVoiceInput.getView());
-              updateInputViewShown();
-          }});
+        final boolean configChanged = mConfigurationChanging;
+        mHandler.post(new Runnable() {
+            public void run() {
+                mRecognizing = true;
+                View v = mVoiceInput.getView();
+                ViewParent p = v.getParent();
+                if (p != null && p instanceof ViewGroup) {
+                    ((ViewGroup)v.getParent()).removeView(v);
+                }
+                setInputView(v);
+                updateInputViewShown();
+                if (configChanged) {
+                    mVoiceInput.onConfigurationChanged();
+                }
+        }});
     }
 
     private void startListening(boolean swipe) {

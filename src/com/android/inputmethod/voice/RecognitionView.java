@@ -16,7 +16,12 @@
 
 package com.android.inputmethod.voice;
 
-import com.android.inputmethod.latin.R;
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -35,14 +40,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import com.android.inputmethod.latin.R;
 
 /**
  * The user interface for the "Speak now" and "working" states.
@@ -103,7 +104,6 @@ public class RecognitionView {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(
             Context.LAYOUT_INFLATER_SERVICE);
         mView = inflater.inflate(R.layout.recognition_status, null);
-
         ContentResolver cr = context.getContentResolver();
         mMinMicrophoneLevel = SettingsUtil.getSettingsFloat(
                 cr, SettingsUtil.LATIN_IME_MIN_MICROPHONE_LEVEL, 15.f);
@@ -137,6 +137,18 @@ public class RecognitionView {
 
     public View getView() {
         return mView;
+    }
+
+    public void restoreState() {
+        mUiHandler.post(new Runnable() {
+            public void run() {
+                // Restart the spinner
+                if (mState == State.WORKING) {
+                    ((ProgressBar)mProgress).setIndeterminate(false);
+                    ((ProgressBar)mProgress).setIndeterminate(true);
+                }
+            }
+        });
     }
 
     public void showInitializing() {

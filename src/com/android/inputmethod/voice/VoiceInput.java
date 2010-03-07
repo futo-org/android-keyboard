@@ -162,6 +162,14 @@ public class VoiceInput implements OnClickListener {
     }
 
     /**
+     * The configuration of the IME changed and may have caused the views to be layed out
+     * again. Restore the state of the recognition view.
+     */
+    public void onConfigurationChanged() {
+        mRecognitionView.restoreState();
+    }
+
+    /**
      * @return true if field is blacklisted for voice
      */
     public boolean isBlacklistedField(FieldContext context) {
