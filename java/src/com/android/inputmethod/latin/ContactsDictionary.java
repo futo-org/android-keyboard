@@ -35,14 +35,7 @@ public class ContactsDictionary extends ExpandableDictionary {
 
     private ContentObserver mObserver;
 
-    private boolean mRequiresReload;
-
     private long mLastLoadedContacts;
-
-    private boolean mUpdatingContacts;
-
-    // Use this lock before touching mUpdatingContacts & mRequiresDownload
-    private Object mUpdatingLock = new Object();
 
     public ContactsDictionary(Context context) {
         super(context);
@@ -53,15 +46,10 @@ public class ContactsDictionary extends ExpandableDictionary {
         cres.registerContentObserver(Contacts.CONTENT_URI, true, mObserver = new ContentObserver(null) {
             @Override
             public void onChange(boolean self) {
-                synchronized (mUpdatingLock) {
-                    mRequiresReload = true;
-                }
+                setRequiresReload(true);
             }
         });
-
-        synchronized (mUpdatingLock) {
-            loadDictionaryAsyncLocked();
-        }
+        loadDictionary();
     }
 
     public synchronized void close() {
@@ -69,41 +57,26 @@ public class ContactsDictionary extends ExpandableDictionary {
             getContext().getContentResolver().unregisterContentObserver(mObserver);
             mObserver = null;
         }
+        super.close();
     }
 
-    private synchronized void loadDictionaryAsyncLocked() {
+    @Override
+    public void startDictionaryLoadingTaskLocked() {
         long now = SystemClock.uptimeMillis();
         if (mLastLoadedContacts == 0
                 || now - mLastLoadedContacts > 30 * 60 * 1000 /* 30 minutes */) {
-            if (!mUpdatingContacts) {
-                mUpdatingContacts = true;
-                mRequiresReload = false;
-                new LoadContactsTask().execute();
-            }
+            super.startDictionaryLoadingTaskLocked();
         }
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes, final WordCallback callback,
-            int[] nextLettersFrequencies) {
-        synchronized (mUpdatingLock) {
-            // If we need to update, start off a background task
-            if (mRequiresReload) loadDictionaryAsyncLocked();
-            // Currently updating contacts, don't return any results.
-            if (mUpdatingContacts) return;
+    public void loadDictionaryAsync() {
+        Cursor cursor = getContext().getContentResolver()
+                .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
+        if (cursor != null) {
+            addWords(cursor);
         }
-        super.getWords(codes, callback, nextLettersFrequencies);
-    }
-
-    @Override
-    public synchronized boolean isValidWord(CharSequence word) {
-        synchronized (mUpdatingLock) {
-            // If we need to update, start off a background task
-            if (mRequiresReload) loadDictionaryAsyncLocked();
-            if (mUpdatingContacts) return false;
-        }
-
-        return super.isValidWord(word);
+        mLastLoadedContacts = SystemClock.uptimeMillis();
     }
 
     private void addWords(Cursor cursor) {
@@ -150,27 +123,5 @@ public class ContactsDictionary extends ExpandableDictionary {
         }
         cursor.close();
     }
-    
-    private class LoadContactsTask extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... v) {
-            Cursor cursor = getContext().getContentResolver()
-                    .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
-            if (cursor != null) {
-                addWords(cursor);
-            }
-            mLastLoadedContacts = SystemClock.uptimeMillis();
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(Void result) {
-            // TODO Auto-generated method stub
-            synchronized (mUpdatingLock) {
-                mUpdatingContacts = false;
-            }
-            super.onPostExecute(result);
-        }
-        
-    }
 }

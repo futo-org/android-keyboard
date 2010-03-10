@@ -16,16 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.UserDictionary.Words;
 
 public class UserDictionary extends ExpandableDictionary {
@@ -40,8 +35,6 @@ public class UserDictionary extends ExpandableDictionary {
     private static final int INDEX_FREQUENCY = 2;
     
     private ContentObserver mObserver;
-    
-    private boolean mRequiresReload;
     private String mLocale;
 
     public UserDictionary(Context context, String locale) {
@@ -54,26 +47,27 @@ public class UserDictionary extends ExpandableDictionary {
         cres.registerContentObserver(Words.CONTENT_URI, true, mObserver = new ContentObserver(null) {
             @Override
             public void onChange(boolean self) {
-                mRequiresReload = true;
+                setRequiresReload(true);
             }
         });
 
         loadDictionary();
     }
-    
+
     public synchronized void close() {
         if (mObserver != null) {
             getContext().getContentResolver().unregisterContentObserver(mObserver);
             mObserver = null;
         }
+        super.close();
     }
-    
-    private synchronized void loadDictionary() {
+
+    @Override
+    public void loadDictionaryAsync() {
         Cursor cursor = getContext().getContentResolver()
                 .query(Words.CONTENT_URI, PROJECTION, "(locale IS NULL) or (locale=?)", 
                         new String[] { mLocale }, null);
         addWords(cursor);
-        mRequiresReload = false;
     }
 
     /**
@@ -86,7 +80,8 @@ public class UserDictionary extends ExpandableDictionary {
      */
     @Override
     public synchronized void addWord(String word, int frequency) {
-        if (mRequiresReload) loadDictionary();
+        // Force load the dictionary here synchronously
+        if (getRequiresReload()) loadDictionaryAsync();
         // Safeguard against adding long words. Can cause stack overflow.
         if (word.length() >= getMaxWordLength()) return;
 
@@ -101,19 +96,17 @@ public class UserDictionary extends ExpandableDictionary {
 
         getContext().getContentResolver().insert(Words.CONTENT_URI, values);
         // In case the above does a synchronous callback of the change observer
-        mRequiresReload = false;
+        setRequiresReload(false);
     }
 
     @Override
     public synchronized void getWords(final WordComposer codes, final WordCallback callback,
             int[] nextLettersFrequencies) {
-        if (mRequiresReload) loadDictionary();
         super.getWords(codes, callback, nextLettersFrequencies);
     }
 
     @Override
     public synchronized boolean isValidWord(CharSequence word) {
-        if (mRequiresReload) loadDictionary();
         return super.isValidWord(word);
     }
 

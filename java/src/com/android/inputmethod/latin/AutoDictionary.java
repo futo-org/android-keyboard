@@ -96,11 +96,14 @@ public class AutoDictionary extends ExpandableDictionary {
         return frequency >= VALIDITY_THRESHOLD;
     }
 
+    @Override
     public void close() {
         mOpenHelper.close();
+        super.close();
     }
 
-    private void loadDictionary() {
+    @Override
+    public void loadDictionaryAsync() {
         // Load the words that correspond to the current input locale
         Cursor cursor = query(COLUMN_LOCALE + "=?", new String[] { mLocale });
         if (cursor.moveToFirst()) {
@@ -181,15 +184,6 @@ public class AutoDictionary extends ExpandableDictionary {
         Cursor c = qb.query(db, null, selection, selectionArgs, null, null,
                 DEFAULT_SORT_ORDER);
         return c;
-    }
-
-    private boolean insert(ContentValues values) {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long rowId = db.insert(AUTODICT_TABLE_NAME, Words.WORD, values);
-        if (rowId > 0) {
-            return true;
-        }
-        return false;
     }
 
     private int delete(String where, String[] whereArgs) {
