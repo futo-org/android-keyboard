@@ -16,7 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.Dictionary.WordCallback;
+
 import android.content.Context;
+import android.os.AsyncTask;
+import android.os.SystemClock;
 
 /**
  * Base class for an in-memory dictionary that can grow dynamically and can
@@ -31,6 +35,13 @@ public class ExpandableDictionary extends Dictionary {
 
     public static final int MAX_WORD_LENGTH = 32;
     private static final char QUOTE = '\'';
+
+    private boolean mRequiresReload;
+
+    private boolean mUpdatingDictionary;
+
+    // Use this lock before touching mUpdatingDictionary & mRequiresDownload
+    private Object mUpdatingLock = new Object();
 
     static class Node {
         char code;
@@ -68,6 +79,34 @@ public class ExpandableDictionary extends Dictionary {
         mContext = context;
         clearDictionary();
         mCodes = new int[MAX_WORD_LENGTH][];
+    }
+
+    public void loadDictionary() {
+        synchronized (mUpdatingLock) {
+            startDictionaryLoadingTaskLocked();
+        }
+    }
+
+    public void startDictionaryLoadingTaskLocked() {
+        if (!mUpdatingDictionary) {
+            mUpdatingDictionary = true;
+            mRequiresReload = false;
+            new LoadDictionaryTask().execute();
+        }
+    }
+
+    public void setRequiresReload(boolean reload) {
+        synchronized (mUpdatingLock) {
+            mRequiresReload = reload;
+        }
+    }
+
+    public boolean getRequiresReload() {
+        return mRequiresReload;
+    }
+
+    /** Override to load your dictionary here, on a background thread. */
+    public void loadDictionaryAsync() {
     }
 
     Context getContext() {
@@ -119,6 +158,13 @@ public class ExpandableDictionary extends Dictionary {
     @Override
     public void getWords(final WordComposer codes, final WordCallback callback,
             int[] nextLettersFrequencies) {
+        synchronized (mUpdatingLock) {
+            // If we need to update, start off a background task
+            if (mRequiresReload) startDictionaryLoadingTaskLocked();
+            // Currently updating contacts, don't return any results.
+            if (mUpdatingDictionary) return;
+        }
+
         mInputLength = codes.size();
         mNextLettersFrequencies = nextLettersFrequencies;
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
@@ -135,6 +181,11 @@ public class ExpandableDictionary extends Dictionary {
 
     @Override
     public synchronized boolean isValidWord(CharSequence word) {
+        synchronized (mUpdatingLock) {
+            // If we need to update, start off a background task
+            if (mRequiresReload) startDictionaryLoadingTaskLocked();
+            if (mUpdatingDictionary) return false;
+        }
         final int freq = getWordFrequencyRec(mRoots, word, 0, word.length());
         return freq > -1;
     }
@@ -275,6 +326,24 @@ public class ExpandableDictionary extends Dictionary {
 
     protected void clearDictionary() {
         mRoots = new NodeArray();
+    }
+
+    private class LoadDictionaryTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... v) {
+            loadDictionaryAsync();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            // TODO Auto-generated method stub
+            synchronized (mUpdatingLock) {
+                mUpdatingDictionary = false;
+            }
+            super.onPostExecute(result);
+        }
+        
     }
 
     static char toLowerCase(char c) {
