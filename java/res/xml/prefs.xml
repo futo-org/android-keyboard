@@ -50,9 +50,7 @@
             android:title="@string/language_selection_title"
             android:summary="@string/language_selection_summary">
         <intent
-                android:action="android.intent.action.MAIN"
-                android:targetPackage="com.android.inputmethod.latin"
-                android:targetClass="com.android.inputmethod.latin.InputLanguageSelection" />
+                android:action="com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION"/>
     </PreferenceScreen>
 
     <PreferenceCategory
