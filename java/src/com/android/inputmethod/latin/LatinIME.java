@@ -694,7 +694,8 @@ public class LatinIME extends InputMethodService
     public void setCandidatesViewShown(boolean shown) {
         // TODO: Remove this if we support candidates with hard keyboard
         if (onEvaluateInputViewShown()) {
-            super.setCandidatesViewShown(shown);
+            // Show the candidates view only if input view is showing
+            super.setCandidatesViewShown(shown && mInputView != null && mInputView.isShown());
         }
     }
 
