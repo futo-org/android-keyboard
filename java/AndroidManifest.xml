@@ -1,6 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.android.inputmethod.latin"
-        android:sharedUserId="android.uid.shared">
+        package="com.android.inputmethod.latin">
 
     <original-package android:name="com.android.inputmethod.latin" />
 
@@ -8,6 +7,7 @@
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.WRITE_USER_DICTIONARY" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application android:label="@string/english_ime_name"
             android:backupAgent="LatinIMEBackupAgent"
