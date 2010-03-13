@@ -164,7 +164,8 @@ public class LatinIME extends InputMethodService
 
     Resources mResources;
 
-    private String mLocale;
+    private String mInputLocale;
+    private String mSystemLocale;
     private LanguageSwitcher mLanguageSwitcher;
 
     private StringBuilder mComposing = new StringBuilder();
@@ -277,7 +278,7 @@ public class LatinIME extends InputMethodService
         mLanguageSwitcher.loadLocales(prefs);
         mKeyboardSwitcher = new KeyboardSwitcher(this, this);
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
-        boolean enableMultipleLanguages = mLanguageSwitcher.getLocaleCount() > 0;
+        mSystemLocale = conf.locale.toString();
         String inputLanguage = mLanguageSwitcher.getInputLanguage();
         if (inputLanguage == null) {
             inputLanguage = conf.locale.toString();
@@ -306,7 +307,7 @@ public class LatinIME extends InputMethodService
     }
 
     private void initSuggest(String locale) {
-        mLocale = locale;
+        mInputLocale = locale;
 
         Resources orig = getResources();
         Configuration conf = orig.getConfiguration();
@@ -321,14 +322,14 @@ public class LatinIME extends InputMethodService
         mSuggest = new Suggest(this, R.raw.main);
         updateAutoTextEnabled(saveLocale);
         if (mUserDictionary != null) mUserDictionary.close();
-        mUserDictionary = new UserDictionary(this, mLocale);
+        mUserDictionary = new UserDictionary(this, mInputLocale);
         if (mContactsDictionary == null) {
             mContactsDictionary = new ContactsDictionary(this);
         }
         if (mAutoDictionary != null) {
             mAutoDictionary.close();
         }
-        mAutoDictionary = new AutoDictionary(this, this, mLocale);
+        mAutoDictionary = new AutoDictionary(this, this, mInputLocale);
         mSuggest.setUserDictionary(mUserDictionary);
         mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);
@@ -354,10 +355,12 @@ public class LatinIME extends InputMethodService
     @Override
     public void onConfigurationChanged(Configuration conf) {
         // If the system locale changes and is different from the saved
-        // locale (mLocale), then reload the input locale list from the 
+        // locale (mSystemLocale), then reload the input locale list from the
         // latin ime settings (shared prefs) and reset the input locale
         // to the first one.
-        if (!TextUtils.equals(conf.locale.toString(), mLocale)) {
+        final String systemLocale = conf.locale.toString();
+        if (!TextUtils.equals(systemLocale, mSystemLocale)) {
+            mSystemLocale = systemLocale;
             if (mLanguageSwitcher != null) {
                 mLanguageSwitcher.loadLocales(
                         PreferenceManager.getDefaultSharedPreferences(this));
@@ -1783,7 +1786,8 @@ public class LatinIME extends InputMethodService
 
     private void updateAutoTextEnabled(Locale systemLocale) {
         if (mSuggest == null) return;
-        boolean different = !systemLocale.getLanguage().equalsIgnoreCase(mLocale.substring(0, 2));
+        boolean different =
+                !systemLocale.getLanguage().equalsIgnoreCase(mInputLocale.substring(0, 2));
         mSuggest.setAutoTextEnabled(!different && mQuickFixes);
     }
 
@@ -1822,7 +1826,7 @@ public class LatinIME extends InputMethodService
         ArrayList<String> voiceInputSupportedLocales =
                 newArrayList(supportedLocalesString.split("\\s+"));
 
-        mLocaleSupportedForVoiceInput = voiceInputSupportedLocales.contains(mLocale);
+        mLocaleSupportedForVoiceInput = voiceInputSupportedLocales.contains(mInputLocale);
 
         mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true);
 
