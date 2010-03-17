@@ -23,6 +23,8 @@ import java.util.Locale;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
@@ -35,7 +37,7 @@ public class InputLanguageSelection extends PreferenceActivity {
     private String mSelectedLanguages;
     private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
     private static final String[] BLACKLIST_LANGUAGES = {
-        "ko", "ja", "zh"
+        "ko", "ja", "zh", "el"
     };
 
     private static class Loc implements Comparable {
@@ -75,6 +77,9 @@ public class InputLanguageSelection extends PreferenceActivity {
             pref.setTitle(LanguageSwitcher.toTitleCase(locale.getDisplayName(locale)));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
+            if (hasDictionary(locale)) {
+                pref.setSummary(R.string.has_dictionary);
+            }
             parent.addPreference(pref);
         }
     }
@@ -90,6 +95,25 @@ public class InputLanguageSelection extends PreferenceActivity {
             return true;
         }
         return false;
+    }
+
+    private boolean hasDictionary(Locale locale) {
+        Resources res = getResources();
+        Configuration conf = res.getConfiguration();
+        Locale saveLocale = conf.locale;
+        boolean haveDictionary = false;
+        conf.locale = locale;
+        res.updateConfiguration(conf, res.getDisplayMetrics());
+        BinaryDictionary bd = new BinaryDictionary(this, R.raw.main);
+        // Is the dictionary larger than a placeholder? Arbitrarily chose a lower limit of
+        // 4000-5000 words, whereas the LARGE_DICTIONARY is about 20000+ words.
+        if (bd.getSize() > Suggest.LARGE_DICTIONARY_THRESHOLD / 4) {
+            haveDictionary = true;
+        }
+        bd.close();
+        conf.locale = saveLocale;
+        res.updateConfiguration(conf, res.getDisplayMetrics());
+        return haveDictionary;
     }
 
     private String get5Code(Locale locale) {

@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
@@ -178,6 +179,10 @@ public class LatinKeyboardView extends KeyboardView {
             Keyboard keyboard;
             mExtension.setKeyboard(keyboard = new LatinKeyboard(getContext(),
                     ((LatinKeyboard) getKeyboard()).getExtension()));
+            if (getContext().getResources().getConfiguration().orientation
+                    == Configuration.ORIENTATION_LANDSCAPE) {
+                mExtension.setPreviewEnabled(false);
+            }
             mExtensionPopup.setContentView(mExtension);
             mExtensionPopup.setWidth(getWidth());
             mExtensionPopup.setHeight(keyboard.getHeight());
