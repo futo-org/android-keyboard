@@ -1468,7 +1468,7 @@ public class LatinIME extends InputMethodService
             mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
             updateSuggestions();
         }
-        if (mBestWord != null) {
+        if (mBestWord != null && mBestWord.length() > 0) {
             TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord);
             mJustAccepted = true;
             pickSuggestion(mBestWord);
