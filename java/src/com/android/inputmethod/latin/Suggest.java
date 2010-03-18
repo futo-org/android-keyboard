@@ -39,7 +39,7 @@ public class Suggest implements Dictionary.WordCallback {
     public static final int CORRECTION_BASIC = 1;
     public static final int CORRECTION_FULL = 2;
 
-    private static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
+    static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
 
     private BinaryDictionary mMainDict;
 
