@@ -19,11 +19,11 @@ package com.android.inputmethod.latin;
 import java.util.List;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
@@ -173,19 +173,17 @@ public class LatinKeyboardView extends KeyboardView {
             LayoutInflater li = (LayoutInflater) getContext().getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
             mExtension = (LatinKeyboardView) li.inflate(R.layout.input_trans, null);
-            mExtension.setOnKeyboardActionListener((LatinIME) getContext());
+            mExtension.setOnKeyboardActionListener(
+                    new ExtensionKeyboardListener(getOnKeyboardActionListener()));
             mExtension.setPopupParent(this);
             mExtension.setPopupOffset(0, -windowLocation[1]);
             Keyboard keyboard;
             mExtension.setKeyboard(keyboard = new LatinKeyboard(getContext(),
                     ((LatinKeyboard) getKeyboard()).getExtension()));
-            if (getContext().getResources().getConfiguration().orientation
-                    == Configuration.ORIENTATION_LANDSCAPE) {
-                mExtension.setPreviewEnabled(false);
-            }
             mExtensionPopup.setContentView(mExtension);
             mExtensionPopup.setWidth(getWidth());
             mExtensionPopup.setHeight(keyboard.getHeight());
+            mExtensionPopup.setAnimationStyle(-1);
             getLocationInWindow(windowLocation);
             // TODO: Fix the "- 30". 
             mExtension.setPopupOffset(0, -windowLocation[1] - 30);
@@ -206,9 +204,40 @@ public class LatinKeyboardView extends KeyboardView {
     }
 
     private void closeExtension() {
-        mExtension.setVisibility(INVISIBLE);
         mExtension.closing();
+        mExtension.setVisibility(INVISIBLE);
         mExtensionVisible = false;
+    }
+
+    private static class ExtensionKeyboardListener implements OnKeyboardActionListener {
+        private OnKeyboardActionListener mTarget;
+        ExtensionKeyboardListener(OnKeyboardActionListener target) {
+            mTarget = target;
+        }
+        public void onKey(int primaryCode, int[] keyCodes) {
+            mTarget.onKey(primaryCode, keyCodes);
+        }
+        public void onPress(int primaryCode) {
+            mTarget.onPress(primaryCode);
+        }
+        public void onRelease(int primaryCode) {
+            mTarget.onRelease(primaryCode);
+        }
+        public void onText(CharSequence text) {
+            mTarget.onText(text);
+        }
+        public void swipeDown() {
+            // Don't pass through
+        }
+        public void swipeLeft() {
+            // Don't pass through
+        }
+        public void swipeRight() {
+            // Don't pass through
+        }
+        public void swipeUp() {
+            // Don't pass through
+        }
     }
 
     /****************************  INSTRUMENTATION  *******************************/
