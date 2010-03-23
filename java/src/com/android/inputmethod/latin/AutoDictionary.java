@@ -17,6 +17,8 @@
 package com.android.inputmethod.latin;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -24,8 +26,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.os.AsyncTask;
 import android.provider.BaseColumns;
-import android.provider.UserDictionary.Words;
 import android.util.Log;
 
 /**
@@ -50,6 +52,9 @@ public class AutoDictionary extends ExpandableDictionary {
     private LatinIME mIme;
     // Locale for which this auto dictionary is storing words
     private String mLocale;
+
+    private HashMap<String,Integer> mPendingWrites = new HashMap<String,Integer>();
+    private final Object mPendingWritesLock = new Object();
 
     private static final String DATABASE_NAME = "auto_dict.db";
     private static final int DATABASE_VERSION = 1;
@@ -98,6 +103,7 @@ public class AutoDictionary extends ExpandableDictionary {
 
     @Override
     public void close() {
+        flushPendingWrites();
         mOpenHelper.close();
         super.close();
     }
@@ -135,14 +141,29 @@ public class AutoDictionary extends ExpandableDictionary {
         int freq = getWordFrequency(word);
         freq = freq < 0 ? addFrequency : freq + addFrequency;
         super.addWord(word, freq);
+
         if (freq >= PROMOTION_THRESHOLD) {
             mIme.promoteToUserDictionary(word, FREQUENCY_FOR_AUTO_ADD);
-            // Delete the word (for input locale) from the auto dictionary db, as it
-            // is now in the user dictionary provider.
-            delete(COLUMN_WORD + "=? AND " + COLUMN_LOCALE + "=?",
-                    new String[] { word, mLocale });
-        } else {
-            update(word, freq, mLocale);
+            freq = 0;
+        }
+
+        synchronized (mPendingWritesLock) {
+            // Write a null frequency if it is to be deleted from the db
+            mPendingWrites.put(word, freq == 0 ? null : new Integer(freq));
+        }
+    }
+
+    /**
+     * Schedules a background thread to write any pending words to the database.
+     */
+    public void flushPendingWrites() {
+        synchronized (mPendingWritesLock) {
+            // Nothing pending? Return
+            if (mPendingWrites.isEmpty()) return;
+            // Create a background thread to write the pending entries
+            new UpdateDbTask(getContext(), mPendingWrites, mLocale).execute();
+            // Create a new map for writing new entries into while the old one is written to db
+            mPendingWrites = new HashMap<String, Integer>();
         }
     }
 
@@ -186,26 +207,49 @@ public class AutoDictionary extends ExpandableDictionary {
         return c;
     }
 
-    private int delete(String where, String[] whereArgs) {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        int count = db.delete(AUTODICT_TABLE_NAME, where, whereArgs);
-        return count;
-    }
+    /**
+     * Async task to write pending words to the database so that it stays in sync with
+     * the in-memory trie.
+     */
+    private static class UpdateDbTask extends AsyncTask<Void, Void, Void> {
+        private final HashMap<String, Integer> mMap;
+        private final DatabaseHelper mDbHelper;
+        private final String mLocale;
 
-    private int update(String word, int frequency, String locale) {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        long count = db.delete(AUTODICT_TABLE_NAME, COLUMN_WORD + "=? AND " + COLUMN_LOCALE + "=?",
-                new String[] { word, locale });
-        count = db.insert(AUTODICT_TABLE_NAME, null,
-                getContentValues(word, frequency, locale));
-        return (int) count;
-    }
+        public UpdateDbTask(Context context,
+                HashMap<String, Integer> pendingWrites, String locale) {
+            mMap = pendingWrites;
+            mLocale = locale;
+            mDbHelper = new DatabaseHelper(context);
+        }
 
-    private ContentValues getContentValues(String word, int frequency, String locale) {
-        ContentValues values = new ContentValues(4);
-        values.put(COLUMN_WORD, word);
-        values.put(COLUMN_FREQUENCY, frequency);
-        values.put(COLUMN_LOCALE, locale);
-        return values;
+        @Override
+        protected Void doInBackground(Void... v) {
+            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            // Write all the entries to the db
+            Set<Entry<String,Integer>> mEntries = mMap.entrySet();
+            try {
+                for (Entry<String,Integer> entry : mEntries) {
+                    Integer freq = entry.getValue();
+                    db.delete(AUTODICT_TABLE_NAME, COLUMN_WORD + "=? AND " + COLUMN_LOCALE + "=?",
+                            new String[] { entry.getKey(), mLocale });
+                    if (freq != null) {
+                        db.insert(AUTODICT_TABLE_NAME, null,
+                                getContentValues(entry.getKey(), freq, mLocale));
+                    }
+                }
+            } finally {
+                mDbHelper.close();
+            }
+            return null;
+        }
+
+        private ContentValues getContentValues(String word, int frequency, String locale) {
+            ContentValues values = new ContentValues(4);
+            values.put(COLUMN_WORD, word);
+            values.put(COLUMN_FREQUENCY, frequency);
+            values.put(COLUMN_LOCALE, locale);
+            return values;
+        }
     }
 }

@@ -158,7 +158,7 @@ public class LatinIME extends InputMethodService
 
     private UserDictionary mUserDictionary;
     private ContactsDictionary mContactsDictionary;
-    private ExpandableDictionary mAutoDictionary;
+    private AutoDictionary mAutoDictionary;
 
     private Hints mHints;
 
@@ -562,6 +562,7 @@ public class LatinIME extends InputMethodService
         if (mInputView != null) {
             mInputView.closing();
         }
+        if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
     }
 
     @Override
