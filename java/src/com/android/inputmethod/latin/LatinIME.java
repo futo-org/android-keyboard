@@ -1438,7 +1438,7 @@ public class LatinIME extends InputMethodService
 
         ((LatinKeyboard) mInputView.getKeyboard()).setPreferredLetters(nextLettersFrequencies);
 
-        boolean correctionAvailable = mSuggest.hasMinimalCorrection();
+        boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasMinimalCorrection();
         //|| mCorrectionMode == mSuggest.CORRECTION_FULL;
         CharSequence typedWord = mWord.getTypedWord();
         // If we're in basic correct
@@ -1519,7 +1519,9 @@ public class LatinIME extends InputMethodService
         mJustAccepted = true;
         pickSuggestion(suggestion);
         // Add the word to the auto dictionary if it's not a known word
-        checkAddToDictionary(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
+        if (index == 0) {
+            checkAddToDictionary(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
+        }
         TextEntryState.acceptedSuggestion(mComposing.toString(), suggestion);
         // Follow it with a space
         if (mAutoSpace) {
@@ -1565,8 +1567,13 @@ public class LatinIME extends InputMethodService
     }
 
     private void checkAddToDictionary(CharSequence suggestion, int frequencyDelta) {
+        // Only auto-add to dictionary if auto-correct is ON. Otherwise we'll be
+        // adding words in situations where the user or application really didn't
+        // want corrections enabled or learned.
+        if (!(mCorrectionMode == Suggest.CORRECTION_FULL)) return;
         if (mAutoDictionary.isValidWord(suggestion)
-                || !mSuggest.isValidWord(suggestion.toString().toLowerCase())) {
+                || (!mSuggest.isValidWord(suggestion.toString())
+                    && !mSuggest.isValidWord(suggestion.toString().toLowerCase()))) {
             mAutoDictionary.addWord(suggestion.toString(), frequencyDelta);
         }
     }

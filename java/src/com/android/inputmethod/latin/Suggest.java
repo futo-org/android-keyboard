@@ -346,11 +346,10 @@ public class Suggest implements Dictionary.WordCallback {
         if (word == null || word.length() == 0) {
             return false;
         }
-        return (mCorrectionMode == CORRECTION_FULL && mMainDict.isValidWord(word)) 
-                || (mCorrectionMode > CORRECTION_NONE && 
-                    ((mUserDictionary != null && mUserDictionary.isValidWord(word)))
-                     || (mAutoDictionary != null && mAutoDictionary.isValidWord(word))
-                     || (mContactsDictionary != null && mContactsDictionary.isValidWord(word)));
+        return mMainDict.isValidWord(word)
+                || (mUserDictionary != null && mUserDictionary.isValidWord(word))
+                || (mAutoDictionary != null && mAutoDictionary.isValidWord(word))
+                || (mContactsDictionary != null && mContactsDictionary.isValidWord(word));
     }
     
     private void collectGarbage() {
