@@ -39,7 +39,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.speech.RecognitionManager;
+import android.speech.SpeechRecognizer;
 import android.text.AutoText;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
@@ -1725,7 +1725,7 @@ public class LatinIME extends InputMethodService
         return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext)
                 && !(attribute != null && attribute.privateImeOptions != null
                         && attribute.privateImeOptions.equals(IME_OPTION_NO_MICROPHONE))
-                && RecognitionManager.isRecognitionAvailable(this);
+                && SpeechRecognizer.isRecognitionAvailable(this);
     }
 
     // receive ringer mode changes to detect silent mode

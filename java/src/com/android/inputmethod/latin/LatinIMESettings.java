@@ -31,7 +31,7 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.speech.RecognitionManager;
+import android.speech.SpeechRecognizer;
 import android.text.AutoText;
 import android.util.Log;
 
@@ -88,7 +88,7 @@ public class LatinIMESettings extends PreferenceActivity
                     .removePreference(mQuickFixes);
         }
         if (!LatinIME.VOICE_INSTALLED
-                || !RecognitionManager.isRecognitionAvailable(this)) {
+                || !SpeechRecognizer.isRecognitionAvailable(this)) {
             getPreferenceScreen().removePreference(mVoicePreference);
         } else {
             updateVoiceModeSummary();

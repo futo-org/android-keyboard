@@ -26,7 +26,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.speech.RecognitionListener;
-import android.speech.RecognitionManager;
+import android.speech.SpeechRecognizer;
 import android.speech.RecognizerIntent;
 import android.util.Log;
 import android.view.View;
@@ -134,7 +134,7 @@ public class VoiceInput implements OnClickListener {
         public void onCancelVoice();
     }
 
-    private RecognitionManager mRecognitionManager;
+    private SpeechRecognizer mSpeechRecognizer;
     private RecognitionListener mRecognitionListener;
     private RecognitionView mRecognitionView;
     private UiListener mUiListener;
@@ -147,8 +147,8 @@ public class VoiceInput implements OnClickListener {
     public VoiceInput(Context context, UiListener uiHandler) {
         mLogger = VoiceInputLogger.getLogger(context);
         mRecognitionListener = new ImeRecognitionListener();
-        mRecognitionManager = RecognitionManager.createRecognitionManager(context);
-        mRecognitionManager.setRecognitionListener(mRecognitionListener);
+        mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
+        mSpeechRecognizer.setRecognitionListener(mRecognitionListener);
         mUiListener = uiHandler;
         mContext = context;
         newView();
@@ -334,7 +334,7 @@ public class VoiceInput implements OnClickListener {
                 EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS,
                 null  /* rely on endpointer default */);
 
-        mRecognitionManager.startListening(intent);
+        mSpeechRecognizer.startListening(intent);
     }
 
     /**
@@ -357,7 +357,7 @@ public class VoiceInput implements OnClickListener {
     }
 
     public void destroy() {
-        mRecognitionManager.destroy();
+        mSpeechRecognizer.destroy();
     }
 
     /**
@@ -484,7 +484,7 @@ public class VoiceInput implements OnClickListener {
         // Remove all pending tasks (e.g., timers to cancel voice input)
         mHandler.removeMessages(MSG_CLOSE_ERROR_DIALOG);
 
-        mRecognitionManager.cancel();
+        mSpeechRecognizer.cancel();
         mUiListener.onCancelVoice();
         mRecognitionView.finish();
     }
@@ -492,20 +492,20 @@ public class VoiceInput implements OnClickListener {
     private int getErrorStringId(int errorType, boolean endpointed) {
         switch (errorType) {
             // We use CLIENT_ERROR to signify that voice search is not available on the device.
-            case RecognitionManager.ERROR_CLIENT:
+            case SpeechRecognizer.ERROR_CLIENT:
                 return R.string.voice_not_installed;
-            case RecognitionManager.ERROR_NETWORK:
+            case SpeechRecognizer.ERROR_NETWORK:
                 return R.string.voice_network_error;
-            case RecognitionManager.ERROR_NETWORK_TIMEOUT:
+            case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
                 return endpointed ?
                         R.string.voice_network_error : R.string.voice_too_much_speech;
-            case RecognitionManager.ERROR_AUDIO:
+            case SpeechRecognizer.ERROR_AUDIO:
                 return R.string.voice_audio_error;
-            case RecognitionManager.ERROR_SERVER:
+            case SpeechRecognizer.ERROR_SERVER:
                 return R.string.voice_server_error;
-            case RecognitionManager.ERROR_SPEECH_TIMEOUT:
+            case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
                 return R.string.voice_speech_timeout;
-            case RecognitionManager.ERROR_NO_MATCH:
+            case SpeechRecognizer.ERROR_NO_MATCH:
                 return R.string.voice_no_match;
             default: return R.string.voice_error;
         }
@@ -562,7 +562,7 @@ public class VoiceInput implements OnClickListener {
 
         public void onResults(Bundle resultsBundle) {
             List<String> results = resultsBundle
-                    .getStringArrayList(RecognitionManager.RESULTS_RECOGNITION);
+                    .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
             mState = DEFAULT;
 
             final Map<String, List<CharSequence>> alternatives =
