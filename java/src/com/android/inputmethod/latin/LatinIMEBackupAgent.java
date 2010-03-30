@@ -16,13 +16,13 @@
 
 package com.android.inputmethod.latin;
 
-import android.app.backup.BackupHelperAgent;
+import android.app.backup.BackupAgentHelper;
 import android.app.backup.SharedPreferencesBackupHelper;
 
 /**
  * Backs up the Latin IME shared preferences.
  */
-public class LatinIMEBackupAgent extends BackupHelperAgent {
+public class LatinIMEBackupAgent extends BackupAgentHelper {
 
     public void onCreate() {
         addHelper("shared_pref", new SharedPreferencesBackupHelper(this,
