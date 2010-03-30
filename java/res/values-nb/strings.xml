@@ -45,7 +45,7 @@
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Retter vanlige stavefeil"</string>
     <string name="show_suggestions" msgid="507074425254289133">"Vis forslag"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Vis foreslåtte ord under skriving"</string>
-    <string name="auto_complete" msgid="1103196318775486023">"Autokomplettering"</string>
+    <string name="auto_complete" msgid="1103196318775486023">"Autofullføring"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"Mellomrom og punktum setter automatisk inn valgt ord"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Ingen"</item>
@@ -110,8 +110,8 @@
     <item msgid="7283103513488381103">"Av"</item>
   </string-array>
   <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"Mikronfon på hovedtastatur"</item>
-    <item msgid="6907837061058876770">"Mikronfon på talltastatur"</item>
+    <item msgid="554248625705084903">"Mikrofon på hovedtastatur"</item>
+    <item msgid="6907837061058876770">"Mikrofon på talltastatur"</item>
     <item msgid="3664304608587798036">"Talekommando er deaktivert"</item>
   </string-array>
     <string name="auto_submit" msgid="9151008027068358518">"Send inn automatisk etter tale"</string>
