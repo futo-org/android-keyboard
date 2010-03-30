@@ -44,10 +44,25 @@ public class LatinKeyboardView extends KeyboardView {
 
     private Keyboard mPhoneKeyboard;
 
+    /** Whether the extension of this keyboard is visible */
     private boolean mExtensionVisible;
+    /** The view that is shown as an extension of this keyboard view */
     private LatinKeyboardView mExtension;
+    /** The popup window that contains the extension of this keyboard */
     private PopupWindow mExtensionPopup;
+    /** Whether this view is an extension of another keyboard */
+    private boolean mIsExtensionType;
     private boolean mFirstEvent;
+    /** Whether we've started dropping move events because we found a big jump */
+    private boolean mDroppingEvents;
+    /** 
+     * Whether multi-touch disambiguation needs to be disabled for any reason. There are 2 reasons
+     * for this to happen - (1) if a real multi-touch event has occured and (2) we've opened an 
+     * extension keyboard.
+     */
+    private boolean mDisableDisambiguation;
+    /** The distance threshold at which we start treating the touch session as a multi-touch */
+    private int mJumpThresholdSquare = Integer.MAX_VALUE;
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -59,6 +74,15 @@ public class LatinKeyboardView extends KeyboardView {
 
     public void setPhoneKeyboard(Keyboard phoneKeyboard) {
         mPhoneKeyboard = phoneKeyboard;
+    }
+
+    @Override
+    public void setKeyboard(Keyboard k) {
+        super.setKeyboard(k);
+        // One-seventh of the keyboard width seems like a reasonable threshold
+        mJumpThresholdSquare = k.getMinWidth() / 7;
+        mJumpThresholdSquare *= mJumpThresholdSquare;
+        setKeyboardLocal(k);
     }
 
     @Override
@@ -79,6 +103,79 @@ public class LatinKeyboardView extends KeyboardView {
         }
     }
 
+    /**
+     * This function checks to see if we need to handle any sudden jumps in the pointer location
+     * that could be due to a multi-touch being treated as a move by the firmware or hardware.
+     * Once a sudden jump is detected, all subsequent move events are discarded
+     * until an UP is received.<P>
+     * When a sudden jump is detected, an UP event is simulated at the last position and when 
+     * the sudden moves subside, a DOWN event is simulated for the second key.
+     * @param me the motion event
+     * @return true if the event was consumed, so that it doesn't continue to be handled by 
+     * KeyboardView.
+     */
+    private boolean handleSuddenJump(MotionEvent me) {
+        final int action = me.getAction();
+        final int x = (int) me.getX();
+        final int y = (int) me.getY();
+        boolean result = false;
+
+        // Real multi-touch event? Stop looking for sudden jumps
+        if (me.getPointerCount() > 1) {
+            mDisableDisambiguation = true;
+        }
+        if (mDisableDisambiguation) {
+            // If UP, reset the multi-touch flag
+            if (action == MotionEvent.ACTION_UP) mDisableDisambiguation = false;
+            return false;
+        }
+
+        switch (action) {
+        case MotionEvent.ACTION_DOWN:
+            // Reset the "session"
+            mDroppingEvents = false;
+            mDisableDisambiguation = false;
+            break;
+        case MotionEvent.ACTION_MOVE:
+            // Is this a big jump?
+            final int distanceSquare = (mLastX - x) * (mLastX - x) + (mLastY - y) * (mLastY - y);
+            if (distanceSquare > mJumpThresholdSquare) {
+                // If we're not yet dropping events, start dropping and send an UP event
+                if (!mDroppingEvents) {
+                    mDroppingEvents = true;
+                    // Send an up event
+                    MotionEvent translated = MotionEvent.obtain(me.getEventTime(), me.getEventTime(),
+                            MotionEvent.ACTION_UP,
+                            mLastX, mLastY, me.getMetaState());
+                    super.onTouchEvent(translated);
+                    translated.recycle();
+                }
+                result = true;
+            } else if (mDroppingEvents) {
+                // If moves are small and we're already dropping events, continue dropping
+                result = true;
+            }
+            break;
+        case MotionEvent.ACTION_UP:
+            if (mDroppingEvents) {
+                // Send a down event first, as we dropped a bunch of sudden jumps and assume that
+                // the user is releasing the touch on the second key.
+                MotionEvent translated = MotionEvent.obtain(me.getEventTime(), me.getEventTime(),
+                        MotionEvent.ACTION_DOWN,
+                        x, y, me.getMetaState());
+                super.onTouchEvent(translated);
+                translated.recycle();
+                mDroppingEvents = false;
+                // Let the up event get processed as well, result = false
+            }
+            break;
+        }
+        // Track the previous coordinate
+        mLastX = x;
+        mLastY = y;
+        return result;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent me) {
         LatinKeyboard keyboard = (LatinKeyboard) getKeyboard();
@@ -87,6 +184,12 @@ public class LatinKeyboardView extends KeyboardView {
             mLastY = (int) me.getY();
             invalidate();
         }
+        // If an extension keyboard is visible or this is an extension keyboard, don't look
+        // for sudden jumps. Otherwise, if there was a sudden jump, return without processing the
+        // actual motion event.
+        if (!mExtensionVisible && !mIsExtensionType
+                && handleSuddenJump(me)) return true;
+
         // Reset any bounding box controls in the keyboard
         if (me.getAction() == MotionEvent.ACTION_DOWN) {
             keyboard.keyReleased();
@@ -140,6 +243,8 @@ public class LatinKeyboardView extends KeyboardView {
                     } else {
                         mFirstEvent = true;
                     }
+                    // Stop processing multi-touch errors
+                    mDisableDisambiguation  = true;
                 }
                 return true;
             }
@@ -158,6 +263,10 @@ public class LatinKeyboardView extends KeyboardView {
         }
     }
 
+    private void setExtensionType(boolean isExtensionType) {
+        mIsExtensionType = isExtensionType;
+    }
+
     private boolean openExtension() {
         if (((LatinKeyboard) getKeyboard()).getExtension() == 0) return false;
         makePopupWindow();
@@ -173,6 +282,7 @@ public class LatinKeyboardView extends KeyboardView {
             LayoutInflater li = (LayoutInflater) getContext().getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
             mExtension = (LatinKeyboardView) li.inflate(R.layout.input_trans, null);
+            mExtension.setExtensionType(true);
             mExtension.setOnKeyboardActionListener(
                     new ExtensionKeyboardListener(getOnKeyboardActionListener()));
             mExtension.setPopupParent(this);
@@ -258,9 +368,7 @@ public class LatinKeyboardView extends KeyboardView {
     private int mLastY;
     private Paint mPaint;
 
-    @Override
-    public void setKeyboard(Keyboard k) {
-        super.setKeyboard(k);
+    private void setKeyboardLocal(Keyboard k) {
         if (DEBUG_AUTO_PLAY) {
             findKeys();
             if (mHandler2 == null) {
