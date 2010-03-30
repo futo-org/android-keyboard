@@ -63,7 +63,7 @@
     <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Hold en tast nede for at se accenter (ø, ö osv.)"</string>
-    <string name="tip_dismiss" msgid="7585579046862204381">"Tryk på tilbagetasten ↶ for når som helst at lukke for tastaturet"</string>
+    <string name="tip_dismiss" msgid="7585579046862204381">"Tryk på knappen Tilbage ↶ for når som helst at lukke for tastaturet"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Få adgang til tal og symboler"</string>
     <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Tryk og hold på ordet længst til venstre for at føje det til ordbogen"</string>
     <string name="touch_to_continue" msgid="7869803257948414531">"Berør dette tip for at fortsætte »"</string>
