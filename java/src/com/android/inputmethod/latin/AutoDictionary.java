@@ -83,13 +83,15 @@ public class AutoDictionary extends ExpandableDictionary {
         sDictProjectionMap.put(COLUMN_LOCALE, COLUMN_LOCALE);
     }
 
-    private DatabaseHelper mOpenHelper;
+    private static DatabaseHelper mOpenHelper = null;
 
     public AutoDictionary(Context context, LatinIME ime, String locale) {
         super(context);
         mIme = ime;
         mLocale = locale;
-        mOpenHelper = new DatabaseHelper(getContext());
+        if (mOpenHelper == null) {
+            mOpenHelper = new DatabaseHelper(getContext());
+        }
         if (mLocale != null && mLocale.length() > 1) {
             loadDictionary();
         }
@@ -104,7 +106,10 @@ public class AutoDictionary extends ExpandableDictionary {
     @Override
     public void close() {
         flushPendingWrites();
-        mOpenHelper.close();
+        // Don't close the database as locale changes will require it to be reopened anyway
+        // Also, the database is written to somewhat frequently, so it needs to be kept alive
+        // throughout the life of the process.
+        // mOpenHelper.close();
         super.close();
     }
 
@@ -112,21 +117,24 @@ public class AutoDictionary extends ExpandableDictionary {
     public void loadDictionaryAsync() {
         // Load the words that correspond to the current input locale
         Cursor cursor = query(COLUMN_LOCALE + "=?", new String[] { mLocale });
-        if (cursor.moveToFirst()) {
-            int wordIndex = cursor.getColumnIndex(COLUMN_WORD);
-            int frequencyIndex = cursor.getColumnIndex(COLUMN_FREQUENCY);
-            while (!cursor.isAfterLast()) {
-                String word = cursor.getString(wordIndex);
-                int frequency = cursor.getInt(frequencyIndex);
-                // Safeguard against adding really long words. Stack may overflow due
-                // to recursive lookup
-                if (word.length() < getMaxWordLength()) {
-                    super.addWord(word, frequency);
+        try {
+            if (cursor.moveToFirst()) {
+                int wordIndex = cursor.getColumnIndex(COLUMN_WORD);
+                int frequencyIndex = cursor.getColumnIndex(COLUMN_FREQUENCY);
+                while (!cursor.isAfterLast()) {
+                    String word = cursor.getString(wordIndex);
+                    int frequency = cursor.getInt(frequencyIndex);
+                    // Safeguard against adding really long words. Stack may overflow due
+                    // to recursive lookup
+                    if (word.length() < getMaxWordLength()) {
+                        super.addWord(word, frequency);
+                    }
+                    cursor.moveToNext();
                 }
-                cursor.moveToNext();
             }
+        } finally {
+            cursor.close();
         }
-        cursor.close();
     }
 
     @Override
@@ -161,7 +169,7 @@ public class AutoDictionary extends ExpandableDictionary {
             // Nothing pending? Return
             if (mPendingWrites.isEmpty()) return;
             // Create a background thread to write the pending entries
-            new UpdateDbTask(getContext(), mPendingWrites, mLocale).execute();
+            new UpdateDbTask(getContext(), mOpenHelper, mPendingWrites, mLocale).execute();
             // Create a new map for writing new entries into while the old one is written to db
             mPendingWrites = new HashMap<String, Integer>();
         }
@@ -216,11 +224,11 @@ public class AutoDictionary extends ExpandableDictionary {
         private final DatabaseHelper mDbHelper;
         private final String mLocale;
 
-        public UpdateDbTask(Context context,
+        public UpdateDbTask(Context context, DatabaseHelper openHelper,
                 HashMap<String, Integer> pendingWrites, String locale) {
             mMap = pendingWrites;
             mLocale = locale;
-            mDbHelper = new DatabaseHelper(context);
+            mDbHelper = openHelper;
         }
 
         @Override
@@ -228,18 +236,14 @@ public class AutoDictionary extends ExpandableDictionary {
             SQLiteDatabase db = mDbHelper.getWritableDatabase();
             // Write all the entries to the db
             Set<Entry<String,Integer>> mEntries = mMap.entrySet();
-            try {
-                for (Entry<String,Integer> entry : mEntries) {
-                    Integer freq = entry.getValue();
-                    db.delete(AUTODICT_TABLE_NAME, COLUMN_WORD + "=? AND " + COLUMN_LOCALE + "=?",
-                            new String[] { entry.getKey(), mLocale });
-                    if (freq != null) {
-                        db.insert(AUTODICT_TABLE_NAME, null,
-                                getContentValues(entry.getKey(), freq, mLocale));
-                    }
+            for (Entry<String,Integer> entry : mEntries) {
+                Integer freq = entry.getValue();
+                db.delete(AUTODICT_TABLE_NAME, COLUMN_WORD + "=? AND " + COLUMN_LOCALE + "=?",
+                        new String[] { entry.getKey(), mLocale });
+                if (freq != null) {
+                    db.insert(AUTODICT_TABLE_NAME, null,
+                            getContentValues(entry.getKey(), freq, mLocale));
                 }
-            } finally {
-                mDbHelper.close();
             }
             return null;
         }
