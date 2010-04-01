@@ -226,6 +226,9 @@ public class LatinIME extends InputMethodService
     private long mSwipeTriggerTimeMillis;
     private boolean mConfigurationChanging;
 
+    // Keeps track of most recently inserted text (multi-character key) for reverting
+    private CharSequence mEnteredText;
+
     // For each word, a list of potential replacements, usually from voice.
     private Map<String, List<CharSequence>> mWordToSuggestions =
             new HashMap<String, List<CharSequence>>();
@@ -452,6 +455,8 @@ public class LatinIME extends InputMethodService
         mCompletions = null;
         mCapsLock = false;
         mEmailText = false;
+        mEnteredText = null;
+
         switch (attribute.inputType & EditorInfo.TYPE_MASK_CLASS) {
             case EditorInfo.TYPE_CLASS_NUMBER:
             case EditorInfo.TYPE_CLASS_DATETIME:
@@ -981,6 +986,8 @@ public class LatinIME extends InputMethodService
         if (mKeyboardSwitcher.onKey(primaryCode)) {
             changeKeyboardMode();
         }
+        // Reset after any single keystroke
+        mEnteredText = null;
     }
 
     public void onText(CharSequence text) {
@@ -999,6 +1006,7 @@ public class LatinIME extends InputMethodService
         updateShiftKeyState(getCurrentInputEditorInfo());
         mJustRevertedSeparator = null;
         mJustAddedAutoSpace = false;
+        mEnteredText = text;
     }
 
     private void handleBackspace() {
@@ -1045,6 +1053,8 @@ public class LatinIME extends InputMethodService
         if (TextEntryState.getState() == TextEntryState.STATE_UNDO_COMMIT) {
             revertLastWord(deleteChar);
             return;
+        } else if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
+            ic.deleteSurroundingText(mEnteredText.length(), 0);
         } else if (deleteChar) {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
             if (mDeleteCount > DELETE_ACCELERATE_AT) {
@@ -1592,6 +1602,11 @@ public class LatinIME extends InputMethodService
             return true;
         }
         return false;
+    }
+
+    private boolean sameAsTextBeforeCursor(InputConnection ic, CharSequence text) {
+        CharSequence beforeText = ic.getTextBeforeCursor(text.length(), 0);
+        return TextUtils.equals(text, beforeText);
     }
 
     public void revertLastWord(boolean deleteChar) {
