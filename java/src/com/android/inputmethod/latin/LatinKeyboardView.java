@@ -63,6 +63,8 @@ public class LatinKeyboardView extends KeyboardView {
     private boolean mDisableDisambiguation;
     /** The distance threshold at which we start treating the touch session as a multi-touch */
     private int mJumpThresholdSquare = Integer.MAX_VALUE;
+    /** The y coordinate of the last row */
+    private int mLastRowY;
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -82,6 +84,8 @@ public class LatinKeyboardView extends KeyboardView {
         // One-seventh of the keyboard width seems like a reasonable threshold
         mJumpThresholdSquare = k.getMinWidth() / 7;
         mJumpThresholdSquare *= mJumpThresholdSquare;
+        // Assuming there are 4 rows, this is the coordinate of the last row
+        mLastRowY = (k.getHeight() * 3) / 4;
         setKeyboardLocal(k);
     }
 
@@ -139,7 +143,11 @@ public class LatinKeyboardView extends KeyboardView {
         case MotionEvent.ACTION_MOVE:
             // Is this a big jump?
             final int distanceSquare = (mLastX - x) * (mLastX - x) + (mLastY - y) * (mLastY - y);
-            if (distanceSquare > mJumpThresholdSquare) {
+            // Check the distance and also if the move is not entirely within the bottom row
+            // If it's only in the bottom row, it might be an intentional slide gesture
+            // for language switching
+            if (distanceSquare > mJumpThresholdSquare
+                    && (mLastY < mLastRowY || y < mLastRowY)) {
                 // If we're not yet dropping events, start dropping and send an UP event
                 if (!mDroppingEvents) {
                     mDroppingEvents = true;
