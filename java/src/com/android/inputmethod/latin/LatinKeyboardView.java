@@ -276,6 +276,10 @@ public class LatinKeyboardView extends KeyboardView {
     }
 
     private boolean openExtension() {
+        // If the current keyboard is not visible, don't show the popup
+        if (!isShown()) {
+            return false;
+        }
         if (((LatinKeyboard) getKeyboard()).getExtension() == 0) return false;
         makePopupWindow();
         mExtensionVisible = true;
