@@ -5,11 +5,11 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
-LOCAL_PACKAGE_NAME := LatinIME
+LOCAL_PACKAGE_NAME := LatinIme2Google
 
 LOCAL_CERTIFICATE := shared
 
-LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
+LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime2
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common
 

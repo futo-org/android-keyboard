@@ -21,7 +21,7 @@ LOCAL_SHARED_LIBRARIES := \
     libutils \
     libicuuc
 
-LOCAL_MODULE := libjni_latinime
+LOCAL_MODULE := libjni_latinime2
 
 LOCAL_MODULE_TAGS := user
 
