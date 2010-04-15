@@ -192,12 +192,12 @@ public class LatinKeyboardView extends KeyboardView {
             mLastY = (int) me.getY();
             invalidate();
         }
+
         // If an extension keyboard is visible or this is an extension keyboard, don't look
         // for sudden jumps. Otherwise, if there was a sudden jump, return without processing the
         // actual motion event.
         if (!mExtensionVisible && !mIsExtensionType
                 && handleSuddenJump(me)) return true;
-
         // Reset any bounding box controls in the keyboard
         if (me.getAction() == MotionEvent.ACTION_DOWN) {
             keyboard.keyReleased();
@@ -219,7 +219,9 @@ public class LatinKeyboardView extends KeyboardView {
         if (keyboard.getExtension() == 0) {
             return super.onTouchEvent(me);
         }
-        if (me.getY() < 0) {
+        // If the motion event is above the keyboard and it's not an UP event coming
+        // even before the first MOVE event into the extension area
+        if (me.getY() < 0 && (mExtensionVisible || me.getAction() != MotionEvent.ACTION_UP)) {
             if (mExtensionVisible) {
                 int action = me.getAction();
                 if (mFirstEvent) action = MotionEvent.ACTION_DOWN;
