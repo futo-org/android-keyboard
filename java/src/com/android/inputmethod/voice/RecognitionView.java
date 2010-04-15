@@ -274,12 +274,11 @@ public class RecognitionView {
 
         final int count = (endIndex - startIndex) / numSamplePerWave;
         final float deltaX = 1.0f * w / count;
-        int yMax = h / 2 - 10;
+        int yMax = h / 2 - 8;
         Path path = new Path();
         c.translate(0, yMax);
         float x = 0;
         path.moveTo(x, 0);
-        yMax -= 10;
         for (int i = 0; i < count; i++) {
             final int avabs = getAverageAbs(waveBuffer, startIndex, i , numSamplePerWave);
             int sign = ( (i & 01) == 0) ? -1 : 1;
@@ -297,8 +296,8 @@ public class RecognitionView {
         mImage.setImageBitmap(b);
         mImage.setVisibility(View.VISIBLE);
         MarginLayoutParams mProgressParams = (MarginLayoutParams)mProgress.getLayoutParams();
-        mProgressParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                -h / 2 - 18, mContext.getResources().getDisplayMetrics());
+        mProgressParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
+                -h , mContext.getResources().getDisplayMetrics());
 
         // Tweak the padding manually to fill out the whole view horizontally.
         // TODO: Do this in the xml layout instead.
