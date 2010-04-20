@@ -21,8 +21,6 @@
 #include <string.h>
 #include <cutils/log.h>
 
-#include <unicode/uchar.h>
-
 //#define USE_ASSET_MANAGER
 
 #ifdef USE_ASSET_MANAGER
@@ -32,6 +30,7 @@
 
 #include "dictionary.h"
 #include "basechars.h"
+#include "char_utils.h"
 
 #define DEBUG_DICT 0
 
@@ -176,7 +175,7 @@ Dictionary::toLowerCase(unsigned short c) {
     if (c >='A' && c <= 'Z') {
         c |= 32;
     } else if (c > 127) {
-        c = u_tolower(c);
+        c = latin_tolower(c);
     }
     return c;
 }
