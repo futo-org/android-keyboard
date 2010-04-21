@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <stdlib.h>
+#include <sys/types.h>
 
 namespace latinime {
 
@@ -882,18 +882,25 @@ static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
     { 0xFF3A, 0xFF5A }   // FULLWIDTH LATIN CAPITAL LETTER Z
 };
 
-static int compare_pair_capital(const void *a, const void *b) {
-    return (int)((struct LatinCapitalSmallPair*)a)->capital
-            - (int)((struct LatinCapitalSmallPair*)b)->capital;
-}
+unsigned short latin_tolower(unsigned short c0) {
+    const struct LatinCapitalSmallPair *p;
+    const struct LatinCapitalSmallPair *base = SORTED_CHAR_MAP;
+    int c = c0;
+    int lim, cmp;
+    const size_t nmemb = sizeof(SORTED_CHAR_MAP) / sizeof(SORTED_CHAR_MAP[0]);
 
-unsigned short latin_tolower(unsigned short c) {
-    struct LatinCapitalSmallPair *p =
-            (struct LatinCapitalSmallPair *)bsearch(&c, SORTED_CHAR_MAP,
-                    sizeof(SORTED_CHAR_MAP) / sizeof(SORTED_CHAR_MAP[0]),
-                    sizeof(SORTED_CHAR_MAP[0]),
-                    compare_pair_capital);
-    return p ? p->small : c;
+    // Binary search: Taken from bionic
+    for (lim = nmemb; lim != 0; lim >>= 1) {
+        p = base + (lim >> 1);
+        cmp = c - (int)p->capital;
+        if (cmp == 0)
+            return p->small;
+        if (cmp > 0) {  /* key > p: move right */
+            base = p + 1;
+            lim--;
+        } /* else move left */
+    }
+    return c0;
 }
 
 } // namespace latinime
