@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <sys/types.h>
+#include <stdlib.h>
 
 namespace latinime {
 
@@ -27,7 +27,7 @@ struct LatinCapitalSmallPair {
 //
 // 1. Run the following code.  Bascially taken from
 //    Dictionary::toLowerCase(unsigned short c) in dictionary.cpp.
-//    Then, get the list of chars where ccc != ccc2 above.
+//    Then, get the list of chars where cc != ccc.
 //
 //    unsigned short c, cc, ccc, ccc2;
 //    for (c = 0; c < 0xFFFF ; c++) {
@@ -882,25 +882,18 @@ static const struct LatinCapitalSmallPair SORTED_CHAR_MAP[] = {
     { 0xFF3A, 0xFF5A }   // FULLWIDTH LATIN CAPITAL LETTER Z
 };
 
-unsigned short latin_tolower(unsigned short c0) {
-    const struct LatinCapitalSmallPair *p;
-    const struct LatinCapitalSmallPair *base = SORTED_CHAR_MAP;
-    int c = c0;
-    int lim, cmp;
-    const size_t nmemb = sizeof(SORTED_CHAR_MAP) / sizeof(SORTED_CHAR_MAP[0]);
+static int compare_pair_capital(const void *a, const void *b) {
+    return (int)(*(unsigned short *)a)
+            - (int)((struct LatinCapitalSmallPair*)b)->capital;
+}
 
-    // Binary search: Taken from bionic
-    for (lim = nmemb; lim != 0; lim >>= 1) {
-        p = base + (lim >> 1);
-        cmp = c - (int)p->capital;
-        if (cmp == 0)
-            return p->small;
-        if (cmp > 0) {  /* key > p: move right */
-            base = p + 1;
-            lim--;
-        } /* else move left */
-    }
-    return c0;
+unsigned short latin_tolower(unsigned short c) {
+    struct LatinCapitalSmallPair *p =
+            (struct LatinCapitalSmallPair *)bsearch(&c, SORTED_CHAR_MAP,
+                    sizeof(SORTED_CHAR_MAP) / sizeof(SORTED_CHAR_MAP[0]),
+                    sizeof(SORTED_CHAR_MAP[0]),
+                    compare_pair_capital);
+    return p ? p->small : c;
 }
 
 } // namespace latinime
