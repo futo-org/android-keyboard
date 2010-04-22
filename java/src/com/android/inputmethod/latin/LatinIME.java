@@ -42,6 +42,7 @@ import android.preference.PreferenceManager;
 import android.speech.SpeechRecognizer;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -715,6 +716,19 @@ public class LatinIME extends InputMethodService
         super.onComputeInsets(outInsets);
         if (!isFullscreenMode()) {
             outInsets.contentTopInsets = outInsets.visibleTopInsets;
+        }
+    }
+
+    @Override
+    public boolean onEvaluateFullscreenMode() {
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        float displayHeight = dm.heightPixels;
+        // If the display is more than X inches high, don't go to fullscreen mode
+        float dimen = getResources().getDimension(R.dimen.max_height_for_fullscreen);
+        if (displayHeight > dimen) {
+            return false;
+        } else {
+            return super.onEvaluateFullscreenMode();
         }
     }
 
