@@ -11,14 +11,7 @@ LOCAL_SRC_FILES := \
 LOCAL_C_INCLUDES += \
 	$(JNI_H_INCLUDE)
 
-LOCAL_LDLIBS := -lm
-
 LOCAL_PRELINK_MODULE := false
-
-LOCAL_SHARED_LIBRARIES := \
-    libandroid_runtime \
-    libcutils \
-    libutils
 
 LOCAL_MODULE := libjni_latinime2
 

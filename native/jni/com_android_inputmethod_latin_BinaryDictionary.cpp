@@ -15,30 +15,17 @@
 ** limitations under the License.
 */
 
-#define LOG_TAG "BinaryDictionary"
-#include "utils/Log.h"
-
 #include <stdio.h>
 #include <assert.h>
 #include <unistd.h>
 #include <fcntl.h>
 
-#include <nativehelper/jni.h>
-#include "utils/AssetManager.h"
-#include "utils/Asset.h"
-
+#include <jni.h>
 #include "dictionary.h"
 
 // ----------------------------------------------------------------------------
 
 using namespace latinime;
-
-using namespace android;
-
-static jfieldID sDescriptorField;
-static jfieldID sAssetManagerNativeField;
-static jmethodID sAddWordMethod;
-static jfieldID sDictLength;
 
 //
 // helper function to throw an exception
@@ -54,35 +41,15 @@ static void throwException(JNIEnv *env, const char* ex, const char* fmt, int dat
 }
 
 static jint latinime_BinaryDictionary_open
-        (JNIEnv *env, jobject object, jobject assetManager, jstring resourceString,
+        (JNIEnv *env, jobject object, jobject dictDirectBuffer,
          jint typedLetterMultiplier, jint fullWordMultiplier)
 {
-    // Get the native file descriptor from the FileDescriptor object
-    AssetManager *am = (AssetManager*) env->GetIntField(assetManager, sAssetManagerNativeField);
-    if (!am) {
-        LOGE("DICT: Couldn't get AssetManager native peer\n");
-        return 0;
-    }
-    const char *resourcePath = env->GetStringUTFChars(resourceString, NULL);
-
-    Asset *dictAsset = am->openNonAsset(resourcePath, Asset::ACCESS_BUFFER);
-    if (dictAsset == NULL) {
-        LOGE("DICT: Couldn't get asset %s\n", resourcePath);
-        env->ReleaseStringUTFChars(resourceString, resourcePath);
-        return 0;
-    }
-
-    void *dict = (void*) dictAsset->getBuffer(false);
+    void *dict = env->GetDirectBufferAddress(dictDirectBuffer);
     if (dict == NULL) {
-        LOGE("DICT: Dictionary buffer is null\n");
-        env->ReleaseStringUTFChars(resourceString, resourcePath);
+        fprintf(stderr, "DICT: Dictionary buffer is null\n");
         return 0;
     }
     Dictionary *dictionary = new Dictionary(dict, typedLetterMultiplier, fullWordMultiplier);
-    dictionary->setAsset(dictAsset);
-    env->SetIntField(object, sDictLength, (jint) dictAsset->getLength());
-
-    env->ReleaseStringUTFChars(resourceString, resourcePath);
     return (jint) dictionary;
 }
 
@@ -131,14 +98,13 @@ static void latinime_BinaryDictionary_close
         (JNIEnv *env, jobject object, jint dict)
 {
     Dictionary *dictionary = (Dictionary*) dict;
-    ((Asset*) dictionary->getAsset())->close();
     delete (Dictionary*) dict;
 }
 
 // ----------------------------------------------------------------------------
 
 static JNINativeMethod gMethods[] = {
-    {"openNative",           "(Landroid/content/res/AssetManager;Ljava/lang/String;II)I",
+    {"openNative",           "(Ljava/nio/ByteBuffer;II)I",
                                           (void*)latinime_BinaryDictionary_open},
     {"closeNative",          "(I)V",            (void*)latinime_BinaryDictionary_close},
     {"getSuggestionsNative", "(I[II[C[IIIII[II)I",  (void*)latinime_BinaryDictionary_getSuggestions},
@@ -167,30 +133,6 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
 static int registerNatives(JNIEnv *env)
 {
     const char* const kClassPathName = "com/android/inputmethod/latin/BinaryDictionary";
-    jclass clazz;
-
-    clazz = env->FindClass("java/io/FileDescriptor");
-    if (clazz == NULL) {
-        LOGE("Can't find %s", "java/io/FileDescriptor");
-        return -1;
-    }
-    sDescriptorField = env->GetFieldID(clazz, "descriptor", "I");
-
-    clazz = env->FindClass("android/content/res/AssetManager");
-    if (clazz == NULL) {
-        LOGE("Can't find %s", "java/io/FileDescriptor");
-        return -1;
-    }
-    sAssetManagerNativeField = env->GetFieldID(clazz, "mObject", "I");
-
-    // Get the field pointer for the dictionary length
-    clazz = env->FindClass(kClassPathName);
-    if (clazz == NULL) {
-        LOGE("Can't find %s", kClassPathName);
-        return -1;
-    }
-    sDictLength = env->GetFieldID(clazz, "mDictLength", "I");
-
     return registerNativeMethods(env,
             kClassPathName, gMethods, sizeof(gMethods) / sizeof(gMethods[0]));
 }
