@@ -28,14 +28,14 @@
     <string name="hit_correction_summary" msgid="8761701873008070796">"Włącz poprawianie błędów wprowadzania"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Błędy wprowadzania w orientacji poziomej"</string>
     <string name="hit_correction_land_summary" msgid="4076803842198368328">"Włącz poprawianie błędów wprowadzania"</string>
-    <string name="auto_correction" msgid="7911639788808958255">"Propozycje słów"</string>
+    <string name="auto_correction" msgid="7911639788808958255">"Sugestie słów"</string>
     <string name="auto_correction_summary" msgid="6881047311475758267">"Automatycznie poprawiaj poprzednie słowo"</string>
-    <string name="prediction" msgid="466220283138359837">"Propozycje słów"</string>
+    <string name="prediction" msgid="466220283138359837">"Sugestie słów"</string>
     <string name="prediction_category" msgid="7027100625580696660">"Ustawienia propozycji słów"</string>
     <string name="prediction_summary" msgid="459788228830873110">"Włącz autouzupełnianie podczas wpisywania"</string>
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Autouzupełnianie"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Zwiększ rozmiar pola tekstowego"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Wyłącz propozycje słów w orientacji poziomej"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Wyłącz sugestie słów w orientacji poziomej"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Wstawiaj wielkie litery"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Zamieniaj na wielką pierwszą literę zdania"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Automatyczna interpunkcja"</string>
@@ -74,7 +74,7 @@
     <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Wróć do trybu liter, dotykając ponownie tego klawisza."</b></string>
     <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Dotknij i przytrzymaj ten klawisz, aby zmienić ustawienia klawiatury, takie jak autouzupełnianie."</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Wypróbuj!"</b></string>
-    <string name="label_go_key" msgid="1635148082137219148">"Przejdź"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
     <string name="label_next_key" msgid="362972844525672568">"Dalej"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Gotowe"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Wyślij"</string>
@@ -88,7 +88,7 @@
     <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Aby wyłączyć wprowadzanie głosowe, przejdź do ustawień klawiatury."</string>
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Aby skorzystać z wprowadzania głosowego, naciśnij przycisk mikrofonu lub przesuń palcem po klawiaturze ekranowej."</string>
     <string name="voice_listening" msgid="467518160751321844">"Mów teraz"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Działa"</string>
+    <string name="voice_working" msgid="6666937792815731889">"W toku"</string>
     <!-- no translation found for voice_initializing (661962047129906646) -->
     <skip />
     <string name="voice_error" msgid="5140896300312186162">"Błąd. Spróbuj ponownie."</string>

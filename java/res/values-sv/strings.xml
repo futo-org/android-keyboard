@@ -69,7 +69,7 @@
     <string name="touch_to_continue" msgid="7869803257948414531">"Tryck på tipset för att fortsätta »"</string>
     <string name="touch_to_finish" msgid="7990196086480585789">"Tryck här om du vill stänga tipset och börja skriva!"</string>
     <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Tangentbordet öppnas när du trycker på ett textfält"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Tryck och håll ned en tangent om du vill visa accenter"\n"(ø, ö, ô, ó och så vidare)"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Tryck och håll nere en tangent om du vill visa accenter"\n"(ø, ö, ô, ó och så vidare)"</b></string>
     <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Växla till siffror och symboler med den här tangenten"</b></string>
     <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Återgå till bokstäver genom att trycka på tangenten en gång till"</b></string>
     <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Tryck och håll ned tangenten om du vill ändra inställningarna för tangentbordet, till exempel Komplettera automatiskt"</b></string>
@@ -119,7 +119,7 @@
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Öppna tangentbordet"\n</b></font><font size="3">\n</font>"Tryck på ett textfält."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Stäng tangentbordet"\n</b></font><font size="3">\n</font>"Tryck på Tillbaka."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Tryck länge på en tangent om du vill se alternativ"\n</b></font><font size="3">\n</font>"Använda skiljetecken och accenter."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Tangentbordsinställningar"\n</b></font><font size="3">\n</font>"Tryck länge på tangenten "<b>"?123"</b>"."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Tangentbordsinställningar"\n</b></font><font size="3">\n</font>"Tryck länge på tangenten"<b>"?123"</b>"."</string>
     <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
     <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
