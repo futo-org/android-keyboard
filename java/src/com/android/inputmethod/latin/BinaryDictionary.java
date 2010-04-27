@@ -80,7 +80,7 @@ public class BinaryDictionary extends Dictionary {
         InputStream is = context.getResources().openRawResource(resId);
         try {
             int avail = is.available();
-            ByteBuffer mNativeDictDirectBuffer =
+            mNativeDictDirectBuffer =
                     ByteBuffer.allocateDirect(avail).order(ByteOrder.nativeOrder());
             int got = Channels.newChannel(is).read(mNativeDictDirectBuffer);
             if (got != avail) {
