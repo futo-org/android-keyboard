@@ -16,6 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import java.io.InputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.channels.Channels;
 import java.util.Arrays;
 
 import android.content.Context;
@@ -27,6 +32,7 @@ import android.util.Log;
  */
 public class BinaryDictionary extends Dictionary {
 
+    private static final String TAG = "BinaryDictionary";
     public static final int MAX_WORD_LENGTH = 48;
     private static final int MAX_ALTERNATIVES = 16;
     private static final int MAX_WORDS = 16;
@@ -35,10 +41,13 @@ public class BinaryDictionary extends Dictionary {
     private static final boolean ENABLE_MISSED_CHARACTERS = true;
 
     private int mNativeDict;
-    private int mDictLength; // This value is set from native code, don't change the name!!!!
+    private int mDictLength;
     private int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_ALTERNATIVES];
     private char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private int[] mFrequencies = new int[MAX_WORDS];
+    // Keep a reference to the native dict direct buffer in Java to avoid
+    // unexpected deallocation of the direct buffer.
+    private ByteBuffer mNativeDictDirectBuffer;
 
     static {
         try {
@@ -59,8 +68,7 @@ public class BinaryDictionary extends Dictionary {
         }
     }
 
-    private native int openNative(AssetManager am, String resourcePath, int typedLetterMultiplier,
-            int fullWordMultiplier);
+    private native int openNative(ByteBuffer bb, int typedLetterMultiplier, int fullWordMultiplier);
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize, 
@@ -69,9 +77,28 @@ public class BinaryDictionary extends Dictionary {
             int[] nextLettersFrequencies, int nextLettersSize);
 
     private final void loadDictionary(Context context, int resId) {
-        AssetManager am = context.getResources().getAssets();
-        String assetName = context.getResources().getString(resId);
-        mNativeDict = openNative(am, assetName, TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER);
+        InputStream is = context.getResources().openRawResource(resId);
+        try {
+            int avail = is.available();
+            mNativeDictDirectBuffer =
+                    ByteBuffer.allocateDirect(avail).order(ByteOrder.nativeOrder());
+            int got = Channels.newChannel(is).read(mNativeDictDirectBuffer);
+            if (got != avail) {
+                Log.e(TAG, "Read " + got + " bytes, expected " + avail);
+            } else {
+                mNativeDict = openNative(mNativeDictDirectBuffer,
+                        TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER);
+                mDictLength = avail;
+            }
+        } catch (IOException e) {
+            Log.w(TAG, "No available size for binary dictionary");
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                Log.w(TAG, "Failed to close input stream");
+            }
+        }
     }
 
     @Override

@@ -19,14 +19,8 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <string.h>
-#include <cutils/log.h>
-
-//#define USE_ASSET_MANAGER
-
-#ifdef USE_ASSET_MANAGER
-#include <utils/AssetManager.h>
-#include <utils/Asset.h>
-#endif
+//#include <cutils/log.h>
+#define LOGI
 
 #include "dictionary.h"
 #include "basechars.h"
