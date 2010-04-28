@@ -31,7 +31,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     // DEFAULT_LOG_ENABLED should be false when released to public.
     private static final boolean DEFAULT_LOG_ENABLED = true;
 
-    private static final long MINIMUMSENDINTERVAL = 5 * DateUtils.MINUTE_IN_MILLIS; // 5 min
+    private static final long MINIMUMSENDINTERVAL = 1 * DateUtils.MINUTE_IN_MILLIS; // 1 min
     private static final long MINIMUMCOUNTINTERVAL = 20 * DateUtils.SECOND_IN_MILLIS; // 20 sec
     private static final char SEPARATER = ';';
     private static final int ID_CLICKSUGGESTION = 0;
@@ -74,6 +74,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mLastTimeCountEntry = mLastTimeSend;
         mDeleteCount = 0;
         mInputCount = 0;
+        mLogBuffer = new ArrayList<LogEntry>();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         sLogEnabled = prefs.getBoolean(PREF_ENABLE_LOG, DEFAULT_LOG_ENABLED);
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -169,7 +170,11 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void commitInternal() {
-        mDropBox.addText(TAG, createStringFromEntries(mLogBuffer));
+        String s = createStringFromEntries(mLogBuffer);
+        if (DBG) {
+            Log.d(TAG, "Commit log: " + s);
+        }
+        mDropBox.addText(TAG, s);
         reset();
         mLastTimeSend = System.currentTimeMillis();
     }
