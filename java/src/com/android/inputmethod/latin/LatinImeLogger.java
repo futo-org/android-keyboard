@@ -175,6 +175,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void sendLogToDropBox(int tag, Object s) {
+        if (DBG) {
+            Log.d(TAG, "SendLog: " + tag + ";" + s);
+        }
         long now = System.currentTimeMillis();
         if (now - mLastTimeActive > MINIMUMSENDINTERVAL) {
             // Send a log before adding an log entry if the last data is too old.

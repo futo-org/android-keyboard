@@ -937,6 +937,7 @@ public class LatinIME extends InputMethodService
             case Keyboard.KEYCODE_DELETE:
                 handleBackspace();
                 mDeleteCount++;
+                LatinImeLogger.logOnDelete(1);
                 break;
             case Keyboard.KEYCODE_SHIFT:
                 handleShift();
@@ -982,6 +983,7 @@ public class LatinIME extends InputMethodService
                 } else {
                     handleCharacter(primaryCode, keyCodes);
                 }
+                LatinImeLogger.logOnInputChar(1);
                 // Cancel the just reverted state
                 mJustRevertedSeparator = null;
         }
