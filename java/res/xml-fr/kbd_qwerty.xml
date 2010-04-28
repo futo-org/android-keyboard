@@ -122,11 +122,11 @@
         <Key android:keyLabel="/" android:keyWidth="10%p"/>
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
-                android:keyWidth="20%p" android:isRepeatable="true"/>
-        <Key android:keyLabel="@string/popular_domain_0"
+                android:keyWidth="40%p" android:isRepeatable="true"/>
+        <!--Key android:keyLabel="@string/popular_domain_0"
                 android:keyOutputText="@string/popular_domain_0"
                 android:popupKeyboard="@xml/popup_domains"
-                android:keyWidth="20%p"/>
+                android:keyWidth="20%p"/-->
         <Key android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"
                 android:keyWidth="10%p"/>
         <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
@@ -142,11 +142,11 @@
         <Key android:keyLabel="\@"/>
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
-                android:keyWidth="20%p" android:isRepeatable="true"/>
-        <Key android:keyLabel="@string/popular_domain_0"
+                android:keyWidth="40%p" android:isRepeatable="true"/>
+        <!--Key android:keyLabel="@string/popular_domain_0"
                 android:keyOutputText="@string/popular_domain_0"
                 android:popupKeyboard="@xml/popup_domains"
-                android:keyWidth="20%p"/>
+                android:keyWidth="20%p"/-->
         <Key android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"/>
         <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
