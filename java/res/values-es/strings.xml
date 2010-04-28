@@ -21,7 +21,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Teclado de Android"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Configuración del teclado de Android"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Ajustes del teclado de Android"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar tecla"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al pulsar tecla"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Corregir errores de escritura"</string>
@@ -31,7 +31,7 @@
     <string name="auto_correction" msgid="7911639788808958255">"Sugerencias de palabras"</string>
     <string name="auto_correction_summary" msgid="6881047311475758267">"Corregir automáticamente la palabra anterior"</string>
     <string name="prediction" msgid="466220283138359837">"Sugerencias de palabras"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Configuración de sugerencia de palabras"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"Ajustes de sugerencia de palabras"</string>
     <string name="prediction_summary" msgid="459788228830873110">"Habilitar Autocompletar al escribir"</string>
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Autocompletar"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Aumentar el tamaño del campo de texto"</string>
@@ -52,7 +52,7 @@
     <item msgid="1669461741568287396">"Básico"</item>
     <item msgid="4894328801530136615">"Avanzado"</item>
   </string-array>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Guardada"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: guardada"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"á"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"é"</string>
     <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
@@ -69,10 +69,10 @@
     <string name="touch_to_continue" msgid="7869803257948414531">"Toca esta sugerencia para continuar »"</string>
     <string name="touch_to_finish" msgid="7990196086480585789">"Toca aquí para cerrar la sugerencia y comenzar a escribir."</string>
     <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"El teclado se abre cada vez que tocas un campo de texto"</b>"."</string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Mantén pulsada una tecla para ver los caracteres acentuados "\n"(ø, ö, ô, ó, etc.)"</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Toca esta tecla para cambiar al teclado de números y símbolos"</b>"."</string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Toca esta tecla de nuevo para volver a las letras"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Mantén pulsada esta tecla para cambiar la configuración del teclado como, por ejemplo, la opción de autocompletar"</b>"."</string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Mantén pulsada una tecla para ver los caracteres acentuados"\n"(ø, ö, ô, ó, etc.)."</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Cambiar a números y a símbolos tocando esta tecla"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Volver a las letras tocando esta tecla de nuevo"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Mantén pulsada esta tecla para cambiar la configuración de teclado a, por ejemplo, autocompletar"</b>"."</string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"¡Pruébalo!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Sig."</string>
@@ -116,10 +116,10 @@
   </string-array>
     <string name="auto_submit" msgid="9151008027068358518">"Enviar automáticamente después de la introducción de voz"</string>
     <string name="auto_submit_summary" msgid="4961875269610384226">"Pulsar Intro automáticamente al buscar o al pasar al siguiente campo"</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Abrir el teclado"\n</b></font><font size="3">\n</font>"Pulsa cualquier campo de texto."</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Abrir el teclado"\n</b></font><font size="3">\n</font>"Toca cualquier campo de texto."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Cerrar el teclado"\n</b></font><font size="3">\n</font>"Pulsa la tecla \"Atrás\"."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Mantén pulsada una tecla para acceder a las opciones."\n</b></font><font size="3">\n</font>"Accede a los signos de puntuación y a los acentos."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Configuración del teclado"\n</b></font><font size="3">\n</font>"Mantén pulsada la tecla "<b>"?123"</b>"."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Ajustes del teclado"\n</b></font><font size="3">\n</font>"Mantén pulsada la tecla "<b>"?123"</b>"."</string>
     <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
     <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>

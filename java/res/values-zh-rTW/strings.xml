@@ -75,7 +75,7 @@
     <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"輕觸並按住此鍵即可變更鍵盤設定，例如自動完成"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"試試看！"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"開始"</string>
-    <string name="label_next_key" msgid="362972844525672568">"下一步"</string>
+    <string name="label_next_key" msgid="362972844525672568">"繼續"</string>
     <string name="label_done_key" msgid="2441578748772529288">"完成"</string>
     <string name="label_send_key" msgid="2815056534433717444">"傳送"</string>
     <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
