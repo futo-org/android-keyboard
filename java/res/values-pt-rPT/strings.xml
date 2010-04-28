@@ -52,7 +52,7 @@
     <item msgid="1669461741568287396">"Básico"</item>
     <item msgid="4894328801530136615">"Avançados"</item>
   </string-array>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Guardada"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: guardada"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
     <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
@@ -69,10 +69,10 @@
     <string name="touch_to_continue" msgid="7869803257948414531">"Toque nesta sugestão para continuar »"</string>
     <string name="touch_to_finish" msgid="7990196086480585789">"Toque aqui para fechar esta sugestão e começar a escrever!"</string>
     <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"O teclado abre quando tocar num campo de texto"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Toque e mantenha premida uma tecla para ver os acentos"\n"(ø, ö, ô, ó, etc.)"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Mantenha premida uma tecla para ver os acentos"\n"(ø, ö, ô, ó, etc.)"</b></string>
     <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Mude para números e símbolos tocando nesta tecla"</b></string>
     <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Regresse às letras tocando novamente nesta tecla"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Toque e mantenha premida esta tecla para alterar definições do teclado, como a conclusão automática."</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Mantenha premida esta tecla para alterar definições do teclado, tais como a conclusão automática"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Experimente!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Seguinte"</string>
