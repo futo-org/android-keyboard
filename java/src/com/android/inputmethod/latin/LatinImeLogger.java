@@ -17,35 +17,43 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.DropBoxManager;
+import android.preference.PreferenceManager;
 import android.text.format.DateUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
 
-public class LatinImeLogger {
+public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIMELogs";
     private static final boolean DBG = false;
+    // DEFAULT_LOG_ENABLED should be false when released to public.
+    private static final boolean DEFAULT_LOG_ENABLED = true;
 
-    // Volatile is needed for multi-cpu platform.
-    private static volatile LatinImeLogger sLatinImeLogger;
-
-    private static final long MINIMUMINTERVAL = 20 * DateUtils.SECOND_IN_MILLIS; // 20 sec
+    private static final long MINIMUMSENDINTERVAL = 5 * DateUtils.MINUTE_IN_MILLIS; // 5 min
+    private static final long MINIMUMCOUNTINTERVAL = 20 * DateUtils.SECOND_IN_MILLIS; // 20 sec
     private static final char SEPARATER = ';';
     private static final int ID_CLICKSUGGESTION = 0;
     private static final int ID_AUTOSUGGESTION = 1;
     private static final int ID_AUTOSUGGESTIONCANCELED = 2;
     private static final int ID_INPUT = 3;
     private static final int ID_DELETE = 4;
+    private static final String PREF_ENABLE_LOG = "enable_log";
 
-    private ArrayList<LogEntry> mLogBuffer;
-    private final Context mContext;
-    private final DropBoxManager mDropBox;
+    private static LatinImeLogger sLatinImeLogger = new LatinImeLogger();
+    public static boolean sLogEnabled = true;
+
+    private ArrayList<LogEntry> mLogBuffer = null;
+    private Context mContext = null;
+    private DropBoxManager mDropBox = null;
     private long mLastTimeActive;
     private long mLastTimeSend;
+    private long mLastTimeCountEntry;
 
     private int mDeleteCount;
     private int mInputCount;
+
 
     private static class LogEntry {
         public final int mTag;
@@ -58,28 +66,17 @@ public class LatinImeLogger {
         }
     }
 
-    /**
-     * Returns the singleton of the logger.
-     * @param context
-     */
-    public static LatinImeLogger getLogger(Context context) {
-        if (sLatinImeLogger == null) {
-            synchronized (LatinImeLogger.class) {
-                if (sLatinImeLogger == null) {
-                    sLatinImeLogger =new LatinImeLogger(context);
-                }
-            }
-        }
-        return sLatinImeLogger;
-    }
-
-    private LatinImeLogger(Context context) {
+    private void initInternal(Context context) {
         mContext = context;
         mDropBox = (DropBoxManager) mContext.getSystemService(Context.DROPBOX_SERVICE);
         mLastTimeSend = System.currentTimeMillis();
         mLastTimeActive = mLastTimeSend;
+        mLastTimeCountEntry = mLastTimeSend;
         mDeleteCount = 0;
         mInputCount = 0;
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        sLogEnabled = prefs.getBoolean(PREF_ENABLE_LOG, DEFAULT_LOG_ENABLED);
+        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -94,13 +91,20 @@ public class LatinImeLogger {
     /**
      * Check if the input string is safe as an entry or not.
      */
-    private boolean checkStringDataSafe(String s) {
+    private static boolean checkStringDataSafe(String s) {
         for (int i = 0; i < s.length(); ++i) {
             if (!Character.isDigit(s.charAt(i))) {
                 return true;
             }
         }
         return false;
+    }
+
+    private void addCountEntry(long time) {
+        mLogBuffer.add(new LogEntry (time, ID_DELETE, String.valueOf(mDeleteCount)));
+        mLogBuffer.add(new LogEntry (time, ID_INPUT, String.valueOf(mInputCount)));
+        mDeleteCount = 0;
+        mInputCount = 0;
     }
 
     /**
@@ -111,9 +115,17 @@ public class LatinImeLogger {
     private void addData(int tag, Object data) {
         switch (tag) {
             case ID_DELETE:
+                if (mLastTimeActive - mLastTimeCountEntry > MINIMUMCOUNTINTERVAL
+                        || (mDeleteCount == 0 && mInputCount == 0)) {
+                    addCountEntry(mLastTimeActive);
+                }
                 mDeleteCount += (Integer)data;
                 break;
             case ID_INPUT:
+                if (mLastTimeActive - mLastTimeCountEntry > MINIMUMCOUNTINTERVAL
+                        || (mDeleteCount == 0 && mInputCount == 0)) {
+                    addCountEntry(mLastTimeActive);
+                }
                 mInputCount += (Integer)data;
                 break;
             default:
@@ -148,17 +160,15 @@ public class LatinImeLogger {
     }
 
     private String createStringFromEntries(ArrayList<LogEntry> logs) {
+        addCountEntry(System.currentTimeMillis());
         StringBuffer sb = new StringBuffer();
-        String nowString = String.valueOf(System.currentTimeMillis());
-        appendLogEntry(sb, nowString, String.valueOf(ID_DELETE), String.valueOf(mDeleteCount));
-        appendLogEntry(sb, nowString, String.valueOf(ID_INPUT), String.valueOf(mInputCount));
         for (LogEntry log: logs) {
             appendLogEntry(sb, String.valueOf(log.mTime), String.valueOf(log.mTag), log.mData);
         }
         return sb.toString();
     }
 
-    private void commit() {
+    private void commitInternal() {
         mDropBox.addText(TAG, createStringFromEntries(mLogBuffer));
         reset();
         mLastTimeSend = System.currentTimeMillis();
@@ -166,37 +176,68 @@ public class LatinImeLogger {
 
     private void sendLogToDropBox(int tag, Object s) {
         long now = System.currentTimeMillis();
-        if (now - mLastTimeActive > MINIMUMINTERVAL) {
+        if (now - mLastTimeActive > MINIMUMSENDINTERVAL) {
             // Send a log before adding an log entry if the last data is too old.
-            commit();
+            commitInternal();
             addData(tag, s);
-        } else if (now - mLastTimeSend > MINIMUMINTERVAL) {
+        } else if (now - mLastTimeSend > MINIMUMSENDINTERVAL) {
             // Send a log after adding an log entry.
             addData(tag, s);
-            commit();
+            commitInternal();
         } else {
             addData(tag, s);
         }
         mLastTimeActive = now;
     }
 
-    public void logOnClickSuggestion(String s) {
-        sendLogToDropBox(ID_CLICKSUGGESTION, s);
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (PREF_ENABLE_LOG.equals(key)) {
+            if (sharedPreferences.getBoolean(key, DEFAULT_LOG_ENABLED)) {
+                sLogEnabled = (mContext != null);
+            } else {
+                sLogEnabled = false;
+            }
+        }
     }
 
-    public void logOnAutoSuggestion(String s) {
-        sendLogToDropBox(ID_AUTOSUGGESTION, s);
+    public static void init(Context context) {
+        sLatinImeLogger.initInternal(context);
     }
 
-    public void logOnAutoSuggestionCanceled(String s) {
-        sendLogToDropBox(ID_AUTOSUGGESTIONCANCELED, s);
+    public static void commit() {
+        if (sLogEnabled) {
+            sLatinImeLogger.commitInternal();
+        }
     }
 
-    public void logOnDelete(int length) {
-        sendLogToDropBox(ID_DELETE, length);
+    public static void logOnClickSuggestion(String s) {
+        if (sLogEnabled) {
+            sLatinImeLogger.sendLogToDropBox(ID_CLICKSUGGESTION, s);
+        }
     }
 
-    public void logOnInputChar(int length) {
-        sendLogToDropBox(ID_INPUT, length);
+    public static void logOnAutoSuggestion(String s) {
+        if (sLogEnabled) {
+            sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTION, s);
+        }
     }
+
+    public static void logOnAutoSuggestionCanceled(String s) {
+        if (sLogEnabled) {
+            sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTIONCANCELED, s);
+        }
+    }
+
+    public static void logOnDelete(int length) {
+        if (sLogEnabled) {
+            sLatinImeLogger.sendLogToDropBox(ID_DELETE, length);
+        }
+    }
+
+    public static void logOnInputChar(int length) {
+        if (sLogEnabled) {
+            sLatinImeLogger.sendLogToDropBox(ID_INPUT, length);
+        }
+    }
+
 }

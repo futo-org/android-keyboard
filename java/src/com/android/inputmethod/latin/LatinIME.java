@@ -308,6 +308,7 @@ public class LatinIME extends InputMethodService
               });
         }
         prefs.registerOnSharedPreferenceChangeListener(this);
+        LatinImeLogger.init(this);
     }
 
     private void initSuggest(String locale) {
@@ -353,6 +354,7 @@ public class LatinIME extends InputMethodService
         if (VOICE_INSTALLED) {
             mVoiceInput.destroy();
         }
+        LatinImeLogger.commit();
         super.onDestroy();
     }
 
