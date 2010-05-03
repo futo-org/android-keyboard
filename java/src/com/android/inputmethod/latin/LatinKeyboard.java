@@ -430,6 +430,13 @@ public class LatinKeyboard extends Keyboard {
         Locale locale = mLanguageSwitcher.getLocaleCount() > 0
                 ? mLanguageSwitcher.getInputLocale()
                 : null;
+        // If the language count is 1 and is the same as the system language, don't show it.
+        if (locale != null
+                && mLanguageSwitcher.getLocaleCount() == 1
+                && mLanguageSwitcher.getSystemLocale().getLanguage()
+                   .equalsIgnoreCase(locale.getLanguage())) {
+            locale = null;
+        }
         if (mLocale != null && mLocale.equals(locale)) return;
         mLocale = locale;
         updateSpaceBarForLocale();
