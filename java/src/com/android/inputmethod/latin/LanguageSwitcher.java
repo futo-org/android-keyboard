@@ -36,6 +36,7 @@ public class LanguageSwitcher {
     private int      mCurrentIndex = 0;
     private String   mDefaultInputLanguage;
     private Locale   mDefaultInputLocale;
+    private Locale   mSystemLocale;
 
     public LanguageSwitcher(LatinIME ime) {
         mIme = ime;
@@ -97,7 +98,9 @@ public class LanguageSwitcher {
     private void constructLocales() {
         mLocales = new Locale[mSelectedLanguageArray.length];
         for (int i = 0; i < mLocales.length; i++) {
-            mLocales[i] = new Locale(mSelectedLanguageArray[i]);
+            final String lang = mSelectedLanguageArray[i];
+            mLocales[i] = new Locale(lang.substring(0, 2),
+                    lang.length() > 4 ? lang.substring(3, 5) : "");
         }
     }
 
@@ -138,6 +141,22 @@ public class LanguageSwitcher {
         if (getLocaleCount() == 0) return mDefaultInputLocale;
 
         return mLocales[(mCurrentIndex + 1) % mLocales.length];
+    }
+
+    /**
+     * Sets the system locale (display UI) used for comparing with the input language.
+     * @param locale the locale of the system
+     */
+    public void setSystemLocale(Locale locale) {
+        mSystemLocale = locale;
+    }
+
+    /**
+     * Returns the system locale.
+     * @return the system locale
+     */
+    public Locale getSystemLocale() {
+        return mSystemLocale;
     }
 
     /**
