@@ -13,8 +13,6 @@ LOCAL_C_INCLUDES += \
 
 LOCAL_LDLIBS := -lm
 
-LOCAL_PRELINK_MODULE := false
-
 LOCAL_SHARED_LIBRARIES := \
     libandroid_runtime \
     libcutils \
