@@ -11,8 +11,6 @@ LOCAL_SRC_FILES := \
 LOCAL_C_INCLUDES += \
 	$(JNI_H_INCLUDE)
 
-LOCAL_PRELINK_MODULE := false
-
 LOCAL_MODULE := libjni_latinime
 
 LOCAL_MODULE_TAGS := user
