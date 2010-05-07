@@ -22,5 +22,5 @@
 
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
         android:settingsActivity="com.android.inputmethod.latin.LatinIMESettings"
-        android:isDefault="true"
+        android:isDefault="@bool/im_is_default"
 />
