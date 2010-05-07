@@ -16,17 +16,16 @@
 
 package com.android.inputmethod.latin;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import android.content.Context;
 import android.text.AutoText;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import com.android.inputmethod.latin.WordComposer;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of 
@@ -69,9 +68,17 @@ public class Suggest implements Dictionary.WordCallback {
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
-
     public Suggest(Context context, int dictionaryResId) {
         mMainDict = new BinaryDictionary(context, dictionaryResId);
+        initPool();
+    }
+
+    public Suggest(Context context, ByteBuffer byteBuffer) {
+        mMainDict = new BinaryDictionary(context, byteBuffer);
+        initPool();
+    }
+
+    private void initPool() {
         for (int i = 0; i < mPrefMaxSuggestions; i++) {
             StringBuilder sb = new StringBuilder(32);
             mStringPool.add(sb);
