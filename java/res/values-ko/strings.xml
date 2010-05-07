@@ -35,7 +35,7 @@
     <string name="prediction_summary" msgid="459788228830873110">"입력할 때 자동 완성 사용"</string>
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"자동 완성"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"입력란 크기 늘리기"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"가로 보기에서 단어 추천 숨기기"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"가로 보기에서 추천 단어 숨기기"</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"문장의 첫 글자를 대문자로 표시"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"자동 구두점 입력"</string>
@@ -52,7 +52,7 @@
     <item msgid="1669461741568287396">"기본"</item>
     <item msgid="4894328801530136615">"고급"</item>
   </string-array>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : 저장됨"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: 저장됨"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
     <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
@@ -64,16 +64,16 @@
     <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"키를 길게 누르면 악센트(ø, ö 등)가 표시됩니다."</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"키보드를 닫으려면 언제든지 뒤로 키(↶)를 누르세요."</string>
-    <string name="tip_access_symbols" msgid="6344098517525531652">"숫자 및 기호 액세스"</string>
+    <string name="tip_access_symbols" msgid="6344098517525531652">"숫자 및 기호 사용"</string>
     <string name="tip_add_to_dictionary" msgid="1487293888469227817">"맨 왼쪽에 있는 단어를 길게 누르면 사전에 추가됩니다."</string>
     <string name="touch_to_continue" msgid="7869803257948414531">"계속하려면 힌트를 터치하세요. »"</string>
     <string name="touch_to_finish" msgid="7990196086480585789">"힌트를 닫고 입력을 시작하려면 여기를 터치하세요."</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"입력란을 터치하면 키보드가 열립니다."</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"키를 길게 누르면 악센트"\n"(ø, ö, ô, ó 등)를 볼 수 있습니다."</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"이 키를 터치하면 숫자 및 기호 자판으로 변경됩니다."</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"이 키를 다시 터치하면 키보드가 표시됩니다."</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"자동 완성과 같은 키보드 설정을 변경하려면 이 키를 길게 누르세요."</b></string>
-    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"이제 직접 사용해 보세요!"</b></string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"언제든지 입력란을 터치하면 키보드가 열립니다."</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"키를 길게 터치하면 악센트"\n"(ø, ö, ô, ó 등)가 표시됩니다."</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"이 키를 터치하면 숫자 및 기호 키보드로 전환됩니다."</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"이 키를 다시 터치하면 문자 키보드로 돌아갑니다."</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"자동 완성과 같은 키보드 설정을 변경하려면 이 키를 길게 터치하세요."</b></string>
+    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"이제 사용해 보세요."</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"이동"</string>
     <string name="label_next_key" msgid="362972844525672568">"다음"</string>
     <string name="label_done_key" msgid="2441578748772529288">"완료"</string>
@@ -99,7 +99,7 @@
     <string name="voice_speech_timeout" msgid="8461817525075498795">"음성이 인식되지 않았습니다."</string>
     <string name="voice_no_match" msgid="4285117547030179174">"일치하는 항목 없음"</string>
     <string name="voice_not_installed" msgid="5552450909753842415">"음성 검색이 설치되지 않았습니다."</string>
-    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"도움말:"</b>" 키보드를 스와이프하고 말하세요."</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"도움말:"</b>" 키보드 위로 손가락을 미끄러지듯 움직이고 나서 말하세요."</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"도움말:"</b>" 다음 번에는 \'마침표\', \'쉼표\', \'물음표\'와 같은 구두점을 말해 보세요."</string>
     <string name="cancel" msgid="6830980399865683324">"취소"</string>
     <string name="ok" msgid="7898366843681727667">"확인"</string>
@@ -118,8 +118,8 @@
     <string name="auto_submit_summary" msgid="4961875269610384226">"검색하거나 다음 입력란으로 이동할 때 자동으로 Enter 키를 누릅니다."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"키보드 열기"\n</b></font><font size="3">\n</font>"아무 텍스트 입력란이나 터치하세요."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"키보드 닫기"\n</b></font><font size="3">\n</font>"\'뒤로\' 키를 누르세요."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"키를 길게 터치하여 옵션 보기"\n</b></font><font size="3">\n</font>"문장 부호 및 악센트 기호에 액세스하세요."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"키보드 설정"\n</b></font><font size="3">\n</font><b>"?123"</b>" 키를 길게 터치하세요."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"키를 길게 눌러 옵션 보기"\n</b></font><font size="3">\n</font>"문장 부호 및 악센트 기호 입력창이 열립니다."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"키보드 설정"\n</b></font><font size="3">\n</font><b>"?123"</b>" 키를 길게 누르세요."</string>
     <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
     <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>

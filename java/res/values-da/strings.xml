@@ -68,11 +68,11 @@
     <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Tryk og hold på ordet længst til venstre for at føje det til ordbogen"</string>
     <string name="touch_to_continue" msgid="7869803257948414531">"Berør dette tip for at fortsætte »"</string>
     <string name="touch_to_finish" msgid="7990196086480585789">"Berør her for at lukke dette tip og begynde at indtaste!"</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Tastaturet åbnes, når du berører et tekstfelt"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Berør og hold en tast nede for at vise accenter"\n"(ø, ö, ô, ó osv.)"</b></string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Tastaturet åbner når som helst, du berører et tekstfelt"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Tryk på en tast, og hold den nede for a vise accenter"\n"(ø, ö, ô, ó osv.)"</b></string>
     <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Skift til tal og symboler ved at røre denne tast"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Gå tilbage til bogstaverne ved at berøre denne tast igen"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Berør og hold denne tast nede for at ændre indstillingerne for tastaturet, som f.eks. automatisk udfyldelse"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Gå tilbage til bogstaver ved at berøre denne tast igen"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Tryk på denne tast, og hold den nede for at ændre tastaturindstillingerne, som f.eks. automatisk udfyldelse"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Prøv det!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Gå"</string>
     <string name="label_next_key" msgid="362972844525672568">"Næste"</string>
@@ -117,9 +117,9 @@
     <string name="auto_submit" msgid="9151008027068358518">"Send automatisk efter stemme"</string>
     <string name="auto_submit_summary" msgid="4961875269610384226">"Tryk automatisk på enter, når du søger eller går til det næste felt."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Åbn tastaturet"\n</b></font><font size="3">\n</font>"Tryk på et hvilket som helst tekstfelt."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Luk tastaturet"\n</b></font><font size="3">\n</font>"Tryk på Tilbagetasten."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Tryk på og hold en tast nede for valgmuligheder"\n</b></font><font size="3">\n</font>"Få adgang til tegnsætning og accenter."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Indstillinger for tastatur"\n</b></font><font size="3">\n</font>"Tryk på og hold tasten "<b>"?123"</b>" nede."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Luk tastaturet"\n</b></font><font size="3">\n</font>"Tryk på knappen Tilbage."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Tryk på en tast, og hold den nede for valgmuligheder"\n</b></font><font size="3">\n</font>"Få adgang til tegnsætning og accenter."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Tastaturindstillinger"\n</b></font><font size="3">\n</font>"Tryk på tasten "<b>"?123"</b>", og hold den nede."</string>
     <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
     <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>

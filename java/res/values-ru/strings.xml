@@ -38,7 +38,7 @@
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"Скрывать предложение слов в горизонтальной ориентации"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Делать заглавной первую букву предложения"</string>
-    <string name="auto_punctuate" msgid="7276672334264521751">"Автоматическая пунктуация"</string>
+    <string name="auto_punctuate" msgid="7276672334264521751">"Автопунктуация"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
     <skip />
     <string name="quick_fixes" msgid="5353213327680897927">"Быстрое исправление"</string>
@@ -46,13 +46,13 @@
     <string name="show_suggestions" msgid="507074425254289133">"Предлагать варианты"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Предлагать варианты слов во время ввода"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Автозавершение"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"При нажатии пробела или знака препинания вставлять предложенное слово"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"При нажатии пробела вставлять предложенное слово"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Нет"</item>
     <item msgid="1669461741568287396">"Основной"</item>
-    <item msgid="4894328801530136615">"Расширенный"</item>
+    <item msgid="4894328801530136615">"Дополнительно"</item>
   </string-array>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : сохранено"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: сохранено"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
     <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
@@ -69,12 +69,12 @@
     <string name="touch_to_continue" msgid="7869803257948414531">"Чтобы продолжить, нажмите на эту подсказку »"</string>
     <string name="touch_to_finish" msgid="7990196086480585789">"Нажмите здесь, чтобы закрыть подсказку и начать вводить текст."</string>
     <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Клавиатура появляется автоматически при касании текстового поля"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Нажмите и удерживайте клавишу, чтобы появились спецсимволы "\n"(ø, ö, ô, ó и т. п.)"</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Чтобы переключаться между вводом цифр и символов, используйте эту клавишу"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Нажмите и удерживайте клавишу для отображения вариантов с диакритическими знаками "\n"(ø, ö, ô, ó и т. п.)"</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Для переключения между вводом цифр и символов используйте эту клавишу"</b></string>
     <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Чтобы вернуться к буквенной клавиатуре, снова нажмите на эту клавишу"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Чтобы сменить настройки клавиатуры (такие как автозавершение), нажмите и удерживайте эту клавишу"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Чтобы изменить настройки клавиатуры (такие как автозавершение), нажмите и удерживайте эту клавишу"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Попробуйте!"</b></string>
-    <string name="label_go_key" msgid="1635148082137219148">"Перейти"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Поиск"</string>
     <string name="label_next_key" msgid="362972844525672568">"Далее"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Готово"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Отправить"</string>
@@ -116,7 +116,7 @@
   </string-array>
     <string name="auto_submit" msgid="9151008027068358518">"Автоматически отправлять по окончании голосового ввода"</string>
     <string name="auto_submit_summary" msgid="4961875269610384226">"Автоматически нажимать \"Ввод\" при поиске или переходе к следующему полю."</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Откройте клавиатуру"\n</b></font><font size="3">\n</font>"Нажмите на любое текстовое поле."</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Открытие клавиатуры"\n</b></font><font size="3">\n</font>"Нажмите на любое текстовое поле."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Закрытие клавиатуры"\n</b></font><font size="3">\n</font>"Нажмите клавишу \"Назад\"."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Нажмите и удерживайте клавишу для вызова параметров"\n</b></font><font size="3">\n</font>"Доступ к пунктуационным и диакритическим знакам."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Настройки клавиатуры"\n</b></font><font size="3">\n</font>"Нажмите и удерживайте клавишу "<b>"?123"</b>"."</string>

@@ -89,11 +89,6 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < list.length; i++) {
             if (lang.equalsIgnoreCase(list[i])) return true;
         }
-        // If it matches the current locale
-        Locale displayLocale = getResources().getConfiguration().locale;
-        if (lang.equalsIgnoreCase(get5Code(displayLocale))) {
-            return true;
-        }
         return false;
     }
 

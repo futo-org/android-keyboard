@@ -25,16 +25,16 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按键时振动"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"按键时播放音效"</string>
     <string name="hit_correction" msgid="4855351009261318389">"纠正输入错误"</string>
-    <string name="hit_correction_summary" msgid="8761701873008070796">"启用输入错误纠正"</string>
+    <string name="hit_correction_summary" msgid="8761701873008070796">"启用输入错误纠正功能"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"横向输入错误"</string>
-    <string name="hit_correction_land_summary" msgid="4076803842198368328">"启用输入错误纠正"</string>
+    <string name="hit_correction_land_summary" msgid="4076803842198368328">"启用输入错误纠正功能"</string>
     <string name="auto_correction" msgid="7911639788808958255">"字词建议"</string>
-    <string name="auto_correction_summary" msgid="6881047311475758267">"自动纠正之前的字词"</string>
+    <string name="auto_correction_summary" msgid="6881047311475758267">"自动纠正前面的字词"</string>
     <string name="prediction" msgid="466220283138359837">"字词建议"</string>
     <string name="prediction_category" msgid="7027100625580696660">"字词建议设置"</string>
     <string name="prediction_summary" msgid="459788228830873110">"输入时启用自动填写功能"</string>
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"自动完成"</string>
-    <string name="prediction_landscape" msgid="4874601565593216183">"增加文本域的大小"</string>
+    <string name="prediction_landscape" msgid="4874601565593216183">"扩大文字字段"</string>
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"在横向视图中隐藏字词建议"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"句首字母大写"</string>
@@ -50,7 +50,7 @@
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"无"</item>
     <item msgid="1669461741568287396">"基本模式"</item>
-    <item msgid="4894328801530136615">"高级模式"</item>
+    <item msgid="4894328801530136615">"高级"</item>
   </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已保存"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
@@ -68,11 +68,11 @@
     <string name="tip_add_to_dictionary" msgid="1487293888469227817">"长按最左侧的字可将其添加到词典中"</string>
     <string name="touch_to_continue" msgid="7869803257948414531">"轻触此提示继续 »"</string>
     <string name="touch_to_finish" msgid="7990196086480585789">"轻触此处可关闭该提示，然后便可开始输入内容！"</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"轻触文本字段即可打开键盘"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"按住某个键可看到重音符号"\n"（例如 ø、ö、ô、ó 等）"</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"轻触该键可切换到数字和符号输入模式"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"再次轻触该键可返回字母输入模式"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"长按该键可更改键盘设置，例如自动填写"</b></string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"您可以随时通过触摸文字字段打开键盘"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"轻触并按住某个键可以查看重音符号"\n"（ø、ö、ô、ó 等）"</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"轻触该键即可切换到数字和符号键盘"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"再次轻触该键即可返回字母键盘"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"触摸并按住该键可更改键盘设置，例如自动完成"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"试试吧！"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"开始"</string>
     <string name="label_next_key" msgid="362972844525672568">"下一步"</string>
@@ -116,10 +116,10 @@
   </string-array>
     <string name="auto_submit" msgid="9151008027068358518">"语音结束后自动提交"</string>
     <string name="auto_submit_summary" msgid="4961875269610384226">"搜索或转到下一字段时自动按 Enter。"</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"打开键盘"\n</b></font><font size="3">\n</font>"轻触任意文本字段。"</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"打开键盘"\n</b></font><font size="3">\n</font>"触摸任意文本字段。"</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"关闭键盘"\n</b></font><font size="3">\n</font>"按“返回”键。"</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"按住某个键可开启其他字符选项"\n</b></font><font size="3">\n</font>"访问标点和重音符号。"</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"键盘设置"\n</b></font><font size="3">\n</font>"长按 "<b>"?123"</b>" 键。"</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"触摸并按住选项键"\n</b></font><font size="3">\n</font>"进入标点/重音符号界面。"</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"键盘设置"\n</b></font><font size="3">\n</font>"触摸并按住 "<b>"?123"</b>" 键。"</string>
     <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
     <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>

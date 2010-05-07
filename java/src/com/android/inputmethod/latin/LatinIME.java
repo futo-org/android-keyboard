@@ -283,6 +283,7 @@ public class LatinIME extends InputMethodService
         mKeyboardSwitcher = new KeyboardSwitcher(this, this);
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         mSystemLocale = conf.locale.toString();
+        mLanguageSwitcher.setSystemLocale(conf.locale);
         String inputLanguage = mLanguageSwitcher.getInputLanguage();
         if (inputLanguage == null) {
             inputLanguage = conf.locale.toString();
@@ -370,6 +371,7 @@ public class LatinIME extends InputMethodService
             if (mLanguageSwitcher != null) {
                 mLanguageSwitcher.loadLocales(
                         PreferenceManager.getDefaultSharedPreferences(this));
+                mLanguageSwitcher.setSystemLocale(conf.locale);
                 toggleLanguage(true, true);
             } else {
                 reloadKeyboards();

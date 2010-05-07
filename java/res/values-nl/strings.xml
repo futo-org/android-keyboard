@@ -22,7 +22,7 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Android-toetsenbord"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Instellingen voor Android-toetsenbord"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Trillen bij druk op een toets"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Trillen bij druk op toets"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Geluid bij druk op een toets"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Typefouten corrigeren"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Foutcorrectie tijdens invoer inschakelen"</string>
@@ -36,7 +36,7 @@
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Automatisch voltooien"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Tekstveld vergroten"</string>
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"Woordsuggesties verbergen in liggende weergave"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Automatisch hoofdlettergebruik"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Auto-hoofdlettergebruik"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Hoofdletter gebruiken aan het begin van een zin"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Automatische interpunctie"</string>
     <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
@@ -52,7 +52,7 @@
     <item msgid="1669461741568287396">"Basis"</item>
     <item msgid="4894328801530136615">"Geavanceerd"</item>
   </string-array>
-    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Opgeslagen"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: opgeslagen"</string>
     <string name="alternates_for_a" msgid="2566516493365324765">"àáâãäåæ"</string>
     <string name="alternates_for_e" msgid="3900510936875547555">"èéêë"</string>
     <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
@@ -119,7 +119,7 @@
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Het toetsenbord openen"\n</b></font><font size="3">\n</font>"Raak een tekstveld aan."</string>
     <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Het toetsenbord sluiten"\n</b></font><font size="3">\n</font>"Druk op de terugtoets."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Een toets blijven aanraken voor opties"\n</b></font><font size="3">\n</font>"Toegang tot interpunctie en diakritische tekens."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Toetsenbordinstellingen"\n</b></font><font size="3">\n</font>"Blijf de toets "<b>"?123"</b>" aanraken."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Toetsenbordinstellingen"\n</b></font><font size="3">\n</font>"Blijf de toets \'"<b>"?123"</b>"\' aanraken."</string>
     <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
     <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
