@@ -41,11 +41,16 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_INPUT_COUNT = 3;
     private static final int ID_DELETE_COUNT = 4;
     private static final int ID_WORD_COUNT = 5;
+    private static final int ID_ACTUAL_CHAR_COUNT = 6;
 
     private static final String PREF_ENABLE_LOG = "enable_log";
 
-    private static LatinImeLogger sLatinImeLogger = new LatinImeLogger();
     public static boolean sLogEnabled = true;
+    private static LatinImeLogger sLatinImeLogger = new LatinImeLogger();
+    // Store the last auto suggested word.
+    // This is required for a cancellation log of auto suggestion of that word.
+    private static String sLastAutoSuggestBefore;
+    private static String sLastAutoSuggestAfter;
 
     private ArrayList<LogEntry> mLogBuffer = null;
     private ArrayList<LogEntry> mPrivacyLogBuffer = null;
@@ -58,6 +63,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private int mDeleteCount;
     private int mInputCount;
     private int mWordCount;
+    // ActualCharCount includes all characters that were completed.
+    private int mActualCharCount;
 
     private static class LogEntry implements Comparable<LogEntry> {
         public final int mTag;
@@ -90,7 +97,10 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mLastTimeCountEntry = mLastTimeSend;
         mDeleteCount = 0;
         mInputCount = 0;
+        mWordCount = 0;
+        mActualCharCount = 0;
         mLogBuffer = new ArrayList<LogEntry>();
+        mPrivacyLogBuffer = new ArrayList<LogEntry>();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         sLogEnabled = prefs.getBoolean(PREF_ENABLE_LOG, DEFAULT_LOG_ENABLED);
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -102,7 +112,10 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private void reset() {
         mDeleteCount = 0;
         mInputCount = 0;
+        mWordCount = 0;
+        mActualCharCount = 0;
         mLogBuffer.clear();
+        mPrivacyLogBuffer.clear();
     }
 
     /**
@@ -134,9 +147,12 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 new String[] {String.valueOf(mInputCount)}));
         mLogBuffer.add(new LogEntry (time, ID_WORD_COUNT,
                 new String[] {String.valueOf(mWordCount)}));
+        mLogBuffer.add(new LogEntry (time, ID_ACTUAL_CHAR_COUNT,
+                new String[] {String.valueOf(mActualCharCount)}));
         mDeleteCount = 0;
         mInputCount = 0;
         mWordCount = 0;
+        mActualCharCount = 0;
     }
 
     private void flushPrivacyLogSafely() {
@@ -174,6 +190,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             case ID_AUTOSUGGESTION:
                 ++mWordCount;
                 String[] dataStrings = (String[]) data;
+                mActualCharCount += dataStrings[1].length();
                 if (checkStringsDataSafe(dataStrings)) {
                     mPrivacyLogBuffer.add(
                             new LogEntry (System.currentTimeMillis(), tag, dataStrings));
@@ -186,6 +203,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             case ID_AUTOSUGGESTIONCANCELED:
                 --mWordCount;
                 dataStrings = (String[]) data;
+                mActualCharCount -= dataStrings[1].length();
                 if (checkStringsDataSafe(dataStrings)) {
                     mPrivacyLogBuffer.add(
                             new LogEntry (System.currentTimeMillis(), tag, dataStrings));
@@ -215,7 +233,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mLastTimeSend = System.currentTimeMillis();
     }
 
-    private void sendLogToDropBox(int tag, Object s) {
+    private synchronized void sendLogToDropBox(int tag, Object s) {
         long now = System.currentTimeMillis();
         if (DBG) {
             Log.d(TAG, "SendLog: " + tag + ";" + s + ","
@@ -255,6 +273,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    // TODO: Handle CharSequence instead of String
     public static void logOnClickSuggestion(String before, String after, int position) {
         if (sLogEnabled) {
             String[] strings = new String[] {before, after, String.valueOf(position)};
@@ -265,14 +284,22 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnAutoSuggestion(String before, String after) {
         if (sLogEnabled) {
             String[] strings = new String[] {before, after};
-            sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTION, strings);
+            synchronized (sLastAutoSuggestBefore) {
+                sLastAutoSuggestBefore = before;
+            }
+            synchronized (sLastAutoSuggestAfter) {
+                sLastAutoSuggestAfter = after;
+            }
+            sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTIONCANCELED, strings);
         }
     }
 
-    public static void logOnAutoSuggestionCanceled(String before, String after) {
+    public static void logOnAutoSuggestionCanceled() {
         if (sLogEnabled) {
-            String[] strings = new String[] {before, after};
-            sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTIONCANCELED, strings);
+            if (sLastAutoSuggestBefore != null && sLastAutoSuggestAfter != null) {
+                String[] strings = new String[] {sLastAutoSuggestBefore, sLastAutoSuggestAfter};
+                sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTION, strings);
+            }
         }
     }
 
@@ -296,7 +323,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             sb.append(SEPARATER);
         }
 
-        private static void appendLogEntry(StringBuffer sb, String time, String tag, String[] data) {
+        private static void appendLogEntry(StringBuffer sb, String time, String tag,
+                String[] data) {
             if (data.length > 0) {
                 appendWithLength(sb, String.valueOf(data.length + 2));
                 appendWithLength(sb, time);

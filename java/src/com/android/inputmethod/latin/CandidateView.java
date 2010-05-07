@@ -167,7 +167,7 @@ public class CandidateView extends View {
                 if (scrollX < 0) {
                     scrollX = 0;
                 }
-                if (distanceX > 0 && scrollX + width > mTotalWidth) {                    
+                if (distanceX > 0 && scrollX + width > mTotalWidth) {
                     scrollX -= (int) distanceX;
                 }
                 mTargetScrollX = scrollX;
@@ -412,7 +412,11 @@ public class CandidateView extends View {
             if (y <= 0) {
                 // Fling up!?
                 if (mSelectedString != null) {
+                    // If there are completions from the application, we don't change the state to
+                    // STATE_PICKED_SUGGESTION
                     if (!mShowingCompletions) {
+                        // This "acceptedSuggestion" will not be counted as a word because
+                        // it will be counted in pickSuggestion instead.
                         TextEntryState.acceptedSuggestion(mSuggestions.get(0),
                                 mSelectedString);
                     }
@@ -446,25 +450,6 @@ public class CandidateView extends View {
             break;
         }
         return true;
-    }
-    
-    /**
-     * For flick through from keyboard, call this method with the x coordinate of the flick 
-     * gesture.
-     * @param x
-     */
-    public void takeSuggestionAt(float x) {
-        mTouchX = (int) x;
-        // To detect candidate
-        onDraw(null);
-        if (mSelectedString != null) {
-            if (!mShowingCompletions) {
-                TextEntryState.acceptedSuggestion(mSuggestions.get(0), mSelectedString);
-            }
-            mService.pickSuggestionManually(mSelectedIndex, mSelectedString);
-        }
-        invalidate();
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_REMOVE_THROUGH_PREVIEW), 200);
     }
 
     private void hidePreview() {
