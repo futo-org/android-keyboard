@@ -37,6 +37,13 @@
             android:defaultValue="true"
             />
 
+    <CheckBoxPreference
+            android:key="enable_log"
+            android:title="@string/prefs_enable_log"
+            android:summary="@string/prefs_description_log"
+            android:persistent="true"
+            />
+
     <ListPreference
             android:key="voice_mode"
             android:title="@string/voice_input"
