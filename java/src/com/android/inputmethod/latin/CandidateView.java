@@ -447,25 +447,6 @@ public class CandidateView extends View {
         }
         return true;
     }
-    
-    /**
-     * For flick through from keyboard, call this method with the x coordinate of the flick 
-     * gesture.
-     * @param x
-     */
-    public void takeSuggestionAt(float x) {
-        mTouchX = (int) x;
-        // To detect candidate
-        onDraw(null);
-        if (mSelectedString != null) {
-            if (!mShowingCompletions) {
-                TextEntryState.acceptedSuggestion(mSuggestions.get(0), mSelectedString);
-            }
-            mService.pickSuggestionManually(mSelectedIndex, mSelectedString);
-        }
-        invalidate();
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_REMOVE_THROUGH_PREVIEW), 200);
-    }
 
     private void hidePreview() {
         mCurrentWordIndex = OUT_OF_BOUNDS;
