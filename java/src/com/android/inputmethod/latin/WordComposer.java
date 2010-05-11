@@ -44,7 +44,7 @@ public class WordComposer {
      */
     private boolean mIsCapitalized;
 
-    WordComposer() {
+    public WordComposer() {
         mCodes = new ArrayList<int[]>(12);
         mTypedWord = new StringBuilder(20);
     }

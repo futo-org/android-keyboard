@@ -68,6 +68,26 @@ public class BinaryDictionary extends Dictionary {
         }
     }
 
+    /**
+     * Create a dictionary from a byte buffer. This is used for testing.
+     * @param context application context for reading resources
+     * @param resId the resource containing the raw binary dictionary
+     */
+    public BinaryDictionary(Context context, ByteBuffer byteBuffer) {
+        if (byteBuffer != null) {
+            if (byteBuffer.isDirect()) {
+                mNativeDictDirectBuffer = byteBuffer;
+            } else {
+                mNativeDictDirectBuffer = ByteBuffer.allocateDirect(byteBuffer.capacity());
+                byteBuffer.rewind();
+                mNativeDictDirectBuffer.put(byteBuffer);
+            }
+            mDictLength = byteBuffer.capacity();
+            mNativeDict = openNative(mNativeDictDirectBuffer,
+                    TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER);
+        }
+    }
+
     private native int openNative(ByteBuffer bb, int typedLetterMultiplier, int fullWordMultiplier);
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
