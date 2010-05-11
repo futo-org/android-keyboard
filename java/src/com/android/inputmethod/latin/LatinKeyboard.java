@@ -47,7 +47,6 @@ public class LatinKeyboard extends Keyboard {
     private Drawable mShiftLockIcon;
     private Drawable mShiftLockPreviewIcon;
     private Drawable mOldShiftIcon;
-    private Drawable mOldShiftPreviewIcon;
     private Drawable mSpaceIcon;
     private Drawable mSpacePreviewIcon;
     private Drawable mMicIcon;
@@ -68,7 +67,6 @@ public class LatinKeyboard extends Keyboard {
     private LanguageSwitcher mLanguageSwitcher;
     private Resources mRes;
     private Context mContext;
-    private int mMode;
     // Whether this keyboard has voice icon on it
     private boolean mHasVoiceButton;
     // Whether voice icon is enabled at all
@@ -77,9 +75,7 @@ public class LatinKeyboard extends Keyboard {
     private CharSequence m123Label;
     private boolean mCurrentlyInSpace;
     private SlidingLocaleDrawable mSlidingLocaleIcon;
-    private Rect mBounds = new Rect();
     private int[] mPrefLetterFrequencies;
-    private boolean mPreemptiveCorrection;
     private int mPrefLetter;
     private int mPrefLetterX;
     private int mPrefLetterY;
@@ -107,7 +103,6 @@ public class LatinKeyboard extends Keyboard {
         super(context, xmlLayoutResId, mode);
         final Resources res = context.getResources();
         mContext = context;
-        mMode = mode;
         mRes = res;
         mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
@@ -224,7 +219,6 @@ public class LatinKeyboard extends Keyboard {
                 ((LatinKey)mShiftKey).enableShiftLock();
             }
             mOldShiftIcon = mShiftKey.icon;
-            mOldShiftPreviewIcon = mShiftKey.iconPreview;
         }
     }
 
@@ -338,21 +332,19 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void drawSpaceBar(Canvas canvas, int width, int height, int opacity) {
-        canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
+        canvas.drawColor(mRes.getColor(R.color.latinkeyboard_transparent), PorterDuff.Mode.CLEAR);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setAlpha(opacity);
         // Get the text size from the theme
         paint.setTextSize(getTextSizeFromTheme(android.R.style.TextAppearance_Small, 14));
         paint.setTextAlign(Align.CENTER);
-        //// Draw a drop shadow for the text
-        //paint.setShadowLayer(2f, 0, 0, 0xFF000000);
         final String language = getInputLanguage(mSpaceKey.width, paint);
         final int ascent = (int) -paint.ascent();
-        paint.setColor(0x80000000);
+        paint.setColor(mRes.getColor(R.color.latinkeyboard_bar_language_shadow));
         canvas.drawText(language,
                 width / 2, ascent - 1, paint);
-        paint.setColor(0xFF808080);
+        paint.setColor(mRes.getColor(R.color.latinkeyboard_bar_language_text));
         canvas.drawText(language,
                 width / 2, ascent, paint);
         // Put arrows on either side of the text
@@ -503,9 +495,10 @@ public class LatinKeyboard extends Keyboard {
             // Handle preferred next letter
             final int[] pref = mPrefLetterFrequencies;
             if (mPrefLetter > 0) {
-                if (DEBUG_PREFERRED_LETTER && mPrefLetter == code
-                        && !key.isInsideSuper(x, y)) {
-                    Log.d(TAG, "CORRECTED !!!!!!");
+                if (DEBUG_PREFERRED_LETTER) {
+                    if (mPrefLetter == code && !key.isInsideSuper(x, y)) {
+                        Log.d(TAG, "CORRECTED !!!!!!");
+                    }
                 }
                 return mPrefLetter == code;
             } else {
@@ -718,7 +711,7 @@ public class LatinKeyboard extends Keyboard {
         public void draw(Canvas canvas) {
             canvas.save();
             if (mHitThreshold) {
-                mTextPaint.setColor(0xFF000000);
+                mTextPaint.setColor(mRes.getColor(R.color.latinkeyboard_text_color));
                 canvas.clipRect(0, 0, mWidth, mHeight);
                 if (mCurrentLanguage == null) {
                     mCurrentLanguage = getInputLanguage(mWidth, mTextPaint);
