@@ -23,7 +23,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
-import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
@@ -452,27 +451,30 @@ public class LatinKeyboardView extends KeyboardView {
             }
         }
     }
-    
-    void startPlaying(String s) {
-        if (!DEBUG_AUTO_PLAY) return;
-        if (s == null) return;
-        mStringToPlay = s.toLowerCase();
-        mPlaying = true;
-        mDownDelivered = false;
-        mStringIndex = 0;
-        mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 10);
+
+    public void startPlaying(String s) {
+        if (DEBUG_AUTO_PLAY) {
+            if (s == null) return;
+            mStringToPlay = s.toLowerCase();
+            mPlaying = true;
+            mDownDelivered = false;
+            mStringIndex = 0;
+            mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 10);
+        }
     }
 
     @Override
     public void draw(Canvas c) {
         super.draw(c);
-        if (DEBUG_AUTO_PLAY && mPlaying) {
-            mHandler2.removeMessages(MSG_TOUCH_DOWN);
-            mHandler2.removeMessages(MSG_TOUCH_UP);
-            if (mDownDelivered) {
-                mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_UP, 20);
-            } else {
-                mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 20);
+        if (DEBUG_AUTO_PLAY) {
+            if (mPlaying) {
+                mHandler2.removeMessages(MSG_TOUCH_DOWN);
+                mHandler2.removeMessages(MSG_TOUCH_UP);
+                if (mDownDelivered) {
+                    mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_UP, 20);
+                } else {
+                    mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 20);
+                }
             }
         }
         if (DEBUG_LINE) {

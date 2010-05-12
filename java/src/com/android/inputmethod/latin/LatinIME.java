@@ -40,7 +40,6 @@ import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.speech.SpeechRecognizer;
-import android.text.AutoText;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -78,6 +77,7 @@ public class LatinIME extends InputMethodService
         VoiceInput.UiListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIME";
+    private static final boolean PERF_DEBUG = false;
     static final boolean DEBUG = false;
     static final boolean TRACE = false;
     static final boolean VOICE_INSTALLED = true;
@@ -189,7 +189,6 @@ public class LatinIME extends InputMethodService
     private boolean mAutoCorrectOn;
     private boolean mCapsLock;
     private boolean mPasswordText;
-    private boolean mEmailText;
     private boolean mVibrateOn;
     private boolean mSoundOn;
     private boolean mAutoCap;
@@ -458,7 +457,6 @@ public class LatinIME extends InputMethodService
         mCompletionOn = false;
         mCompletions = null;
         mCapsLock = false;
-        mEmailText = false;
         mEnteredText = null;
 
         switch (attribute.inputType & EditorInfo.TYPE_MASK_CLASS) {
@@ -480,9 +478,6 @@ public class LatinIME extends InputMethodService
                 if (variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD ||
                         variation == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ) {
                     mPredictionOn = false;
-                }
-                if (variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
-                    mEmailText = true;
                 }
                 if (variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                         || variation == EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME) {
@@ -683,7 +678,7 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void onDisplayCompletions(CompletionInfo[] completions) {
-        if (false) {
+        if (DEBUG) {
             Log.i("foo", "Received completions:");
             for (int i=0; i<(completions != null ? completions.length : 0); i++) {
                 Log.i("foo", "  #" + i + ": " + completions[i]);
@@ -1126,7 +1121,7 @@ public class LatinIME extends InputMethodService
             sendKeyChar((char)primaryCode);
         }
         updateShiftKeyState(getCurrentInputEditorInfo());
-        measureCps();
+        if (LatinIME.PERF_DEBUG) measureCps();
         TextEntryState.typedCharacter((char) primaryCode, isWordSeparator(primaryCode));
     }
 
@@ -1868,7 +1863,7 @@ public class LatinIME extends InputMethodService
         launchSettings(LatinIMESettings.class);
     }
 
-    protected void launchSettings(Class settingsClass) {
+    protected void launchSettings(Class<LatinIMESettings> settingsClass) {
         handleClose();
         Intent intent = new Intent();
         intent.setClass(LatinIME.this, settingsClass);
@@ -2005,7 +2000,6 @@ public class LatinIME extends InputMethodService
 
     // Characters per second measurement
 
-    private static final boolean PERF_DEBUG = false;
     private long mLastCpsTime;
     private static final int CPS_BUFFER_SIZE = 16;
     private long[] mCpsIntervals = new long[CPS_BUFFER_SIZE];
@@ -2013,7 +2007,6 @@ public class LatinIME extends InputMethodService
     private boolean mInputTypeNoAutoCorrect;
 
     private void measureCps() {
-        if (!LatinIME.PERF_DEBUG) return;
         long now = System.currentTimeMillis();
         if (mLastCpsTime == 0) mLastCpsTime = now - 100; // Initial
         mCpsIntervals[mCpsIndex] = now - mLastCpsTime;
