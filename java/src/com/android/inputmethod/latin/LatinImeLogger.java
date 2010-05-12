@@ -284,10 +284,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnAutoSuggestion(String before, String after) {
         if (sLogEnabled) {
             String[] strings = new String[] {before, after};
-            synchronized (sLastAutoSuggestBefore) {
+            synchronized (LatinImeLogger.class) {
                 sLastAutoSuggestBefore = before;
-            }
-            synchronized (sLastAutoSuggestAfter) {
                 sLastAutoSuggestAfter = after;
             }
             sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTIONCANCELED, strings);
