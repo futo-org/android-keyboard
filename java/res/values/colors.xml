@@ -24,5 +24,6 @@
     <color name="latinkeyboard_transparent">#00000000</color>
     <color name="latinkeyboard_bar_language_shadow">#80000000</color>
     <color name="latinkeyboard_bar_language_text">#FF808080</color>
+    <color name="latinkeyboard_extension_background">#A0000000</color>
     <color name="latinkeyboard_text_color">#FF000000</color>
 </resources>
