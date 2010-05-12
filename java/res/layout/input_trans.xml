@@ -24,7 +24,7 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#A0000000"
+        android:background="@color/latinkeyboard_extension_background"
         android:verticalCorrection="0dip"
         android:keyBackground="@drawable/btn_keyboard_key_fulltrans"
         />
