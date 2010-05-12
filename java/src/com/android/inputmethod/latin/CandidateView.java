@@ -219,7 +219,7 @@ public class CandidateView extends View {
                     mDivider.getIntrinsicHeight());
         }
         int x = 0;
-        final int count = mSuggestions.size(); 
+        final int count = Math.min(mSuggestions.size(), MAX_SUGGESTIONS);
         final int width = getWidth();
         final Rect bgPadding = mBgPadding;
         final Paint paint = mPaint;
@@ -335,7 +335,7 @@ public class CandidateView extends View {
 
     public void scrollPrev() {
         int i = 0;
-        final int count = mSuggestions.size();
+        final int count = Math.min(mSuggestions.size(), MAX_SUGGESTIONS);
         int firstItem = 0; // Actually just before the first item, if at the boundary
         while (i < count) {
             if (mWordX[i] < getScrollX() 
@@ -354,7 +354,7 @@ public class CandidateView extends View {
         int i = 0;
         int scrollX = getScrollX();
         int targetX = scrollX;
-        final int count = mSuggestions.size();
+        final int count = Math.min(mSuggestions.size(), MAX_SUGGESTIONS);
         int rightEdge = scrollX + getWidth();
         while (i < count) {
             if (mWordX[i] <= rightEdge &&
