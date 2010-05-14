@@ -53,6 +53,15 @@
             android:defaultValue="@string/voice_mode_main"
             />
 
+    <ListPreference
+            android:key="keyboard_layout"
+            android:title="@string/keyboard_layout"
+            android:persistent="true"
+            android:entryValues="@array/keyboard_layout_modes_values"
+            android:entries="@array/keyboard_layout_modes"
+            android:defaultValue="2"
+            />
+
     <PreferenceScreen
             android:title="@string/language_selection_title"
             android:summary="@string/language_selection_summary">
@@ -89,5 +98,5 @@
             android:dependency="show_suggestions"
             />
             
-    </PreferenceCategory>            
+    </PreferenceCategory>
 </PreferenceScreen>

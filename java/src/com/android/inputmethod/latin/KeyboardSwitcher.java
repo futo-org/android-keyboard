@@ -21,11 +21,12 @@ import java.util.Locale;
 import java.util.Map;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.inputmethodservice.InputMethodService;
+import android.preference.PreferenceManager;
 
-public class KeyboardSwitcher {
+public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static final int MODE_TEXT = 1;
     public static final int MODE_SYMBOLS = 2;
@@ -56,10 +57,15 @@ public class KeyboardSwitcher {
         KEYBOARDMODE_EMAIL,
         KEYBOARDMODE_IM,
         KEYBOARDMODE_WEB};
+    private static final String PREF_KEYBOARD_LAYOUT = "keyboard_layout";
+    private static final int[] LAYOUTS = new int [] {
+        R.layout.input, R.layout.input2, R.layout.input3, R.layout.input4, R.layout.input5,
+        R.layout.input6
+    };
+    private static final String DEFAULT_LAYOUT_ID = "0";
 
-    //LatinIME mContext;
     Context mContext;
-    InputMethodService mInputMethodService;
+    LatinIME mInputMethodService;
     
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
@@ -79,14 +85,20 @@ public class KeyboardSwitcher {
     private int mLastDisplayWidth;
     private LanguageSwitcher mLanguageSwitcher;
     private Locale mInputLocale;
-    private boolean mEnableMultipleLanguages;
 
-    KeyboardSwitcher(Context context, InputMethodService ims) {
+    private int mLayoutId;
+
+    KeyboardSwitcher(Context context, LatinIME ims) {
         mContext = context;
         mKeyboards = new HashMap<KeyboardId, LatinKeyboard>();
         mSymbolsId = new KeyboardId(R.xml.kbd_symbols, false);
         mSymbolsShiftedId = new KeyboardId(R.xml.kbd_symbols_shift, false);
         mInputMethodService = ims;
+
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ims);
+        int mLayoutId = Integer.valueOf(prefs.getString(PREF_KEYBOARD_LAYOUT, DEFAULT_LAYOUT_ID));
+        prefs.registerOnSharedPreferenceChangeListener(this);
+        changeLatinKeyboardView(mLayoutId, false);
     }
 
     /**
@@ -98,13 +110,12 @@ public class KeyboardSwitcher {
     void setLanguageSwitcher(LanguageSwitcher languageSwitcher) {
         mLanguageSwitcher = languageSwitcher;
         mInputLocale = mLanguageSwitcher.getInputLocale();
-        mEnableMultipleLanguages = mLanguageSwitcher.getLocaleCount() > 1;
     }
 
     void setInputView(LatinKeyboardView inputView) {
         mInputView = inputView;
     }
-    
+
     void makeKeyboards(boolean forceCreate) {
         if (forceCreate) mKeyboards.clear();
         // Configuration change is coming after the keyboard gets recreated. So don't rely on that.
@@ -140,6 +151,7 @@ public class KeyboardSwitcher {
             this(xml, 0, false, hasVoice);
         }
 
+        @Override
         public boolean equals(Object other) {
             return other instanceof KeyboardId && equals((KeyboardId) other);
         }
@@ -150,6 +162,7 @@ public class KeyboardSwitcher {
               && other.mEnableShiftLock == this.mEnableShiftLock;
         }
 
+        @Override
         public int hashCode() {
             return (mXml + 1) * (mKeyboardMode + 1) * (mEnableShiftLock ? 2 : 1)
                     * (mHasVoice ? 4 : 8);
@@ -347,5 +360,39 @@ public class KeyboardSwitcher {
                 break;
         }
         return false;
+    }
+
+    public LatinKeyboardView getInputView() {
+        return mInputView;
+    }
+
+    public void recreateInputView() {
+        changeLatinKeyboardView(mLayoutId, true);
+    }
+
+    private void changeLatinKeyboardView(int newLayout, boolean forceReset) {
+        if (mLayoutId != newLayout || mInputView == null || forceReset) {
+            if (LAYOUTS.length <= newLayout) {
+                newLayout = Integer.valueOf(DEFAULT_LAYOUT_ID);
+            }
+            mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater().inflate(
+                    LAYOUTS[newLayout], null);
+            mInputView.setOnKeyboardActionListener(mInputMethodService);
+            mLayoutId = newLayout;
+        }
+        mInputMethodService.mHandler.post(new Runnable() {
+            public void run() {
+                if (mInputView != null) {
+                    mInputMethodService.setInputView(mInputView);
+                }
+                mInputMethodService.updateInputViewShown();
+            }});
+    }
+
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (PREF_KEYBOARD_LAYOUT.equals(key)) {
+            changeLatinKeyboardView(
+                    Integer.valueOf(sharedPreferences.getString(key, DEFAULT_LAYOUT_ID)), false);
+        }
     }
 }
