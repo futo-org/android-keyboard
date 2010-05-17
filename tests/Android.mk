@@ -12,6 +12,6 @@ LOCAL_SRC_FILES := $(call all-java-files-under, src)
 
 LOCAL_PACKAGE_NAME := LatinIMETests
 
-LOCAL_INSTRUMENTATION_FOR := LatinIME
+LOCAL_INSTRUMENTATION_FOR := LatinIme2Google
 
 include $(BUILD_PACKAGE)
