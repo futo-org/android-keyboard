@@ -22,8 +22,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Tastiera Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Impostazioni tastiera Android"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibra alla pressione di un tasto"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Suona alla pressione di un tasto"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrazione tasti"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Suono tasti"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Correggi errori di digitazione"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Attiva la correzione degli errori di inserimento"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Errori di inserimento in visualizzazione orizzontale"</string>
