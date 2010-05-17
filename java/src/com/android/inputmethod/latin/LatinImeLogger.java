@@ -32,7 +32,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     // DEFAULT_LOG_ENABLED should be false when released to public.
     private static final boolean DEFAULT_LOG_ENABLED = true;
 
-    private static final long MINIMUMSENDINTERVAL = 60 * DateUtils.SECOND_IN_MILLIS; // 60 sec
+    private static final long MINIMUMSENDINTERVAL = 300 * DateUtils.SECOND_IN_MILLIS; // 300 sec
     private static final long MINIMUMCOUNTINTERVAL = 20 * DateUtils.SECOND_IN_MILLIS; // 20 sec
     private static final char SEPARATER = ';';
     private static final int ID_CLICKSUGGESTION = 0;
@@ -42,6 +42,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_DELETE_COUNT = 4;
     private static final int ID_WORD_COUNT = 5;
     private static final int ID_ACTUAL_CHAR_COUNT = 6;
+    private static final int ID_THEME_ID = 7;
 
     private static final String PREF_ENABLE_LOG = "enable_log";
 
@@ -60,6 +61,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private long mLastTimeSend;
     private long mLastTimeCountEntry;
 
+    private String mThemeId;
     private int mDeleteCount;
     private int mInputCount;
     private int mWordCount;
@@ -103,6 +105,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mPrivacyLogBuffer = new ArrayList<LogEntry>();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         sLogEnabled = prefs.getBoolean(PREF_ENABLE_LOG, DEFAULT_LOG_ENABLED);
+        mThemeId = prefs.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
+                KeyboardSwitcher.DEFAULT_LAYOUT_ID);
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -140,9 +144,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addCountEntry(long time) {
-        mLogBuffer.add(
-                new LogEntry (time, ID_DELETE_COUNT,
-                        new String[] {String.valueOf(mDeleteCount)}));
+        mLogBuffer.add(new LogEntry (time, ID_DELETE_COUNT,
+                new String[] {String.valueOf(mDeleteCount)}));
         mLogBuffer.add(new LogEntry (time, ID_INPUT_COUNT,
                 new String[] {String.valueOf(mInputCount)}));
         mLogBuffer.add(new LogEntry (time, ID_WORD_COUNT,
@@ -153,6 +156,11 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mInputCount = 0;
         mWordCount = 0;
         mActualCharCount = 0;
+    }
+
+    private void addThemeIdEntry(long time) {
+        mLogBuffer.add(new LogEntry (time, ID_THEME_ID,
+                new String[] {mThemeId}));
     }
 
     private void flushPrivacyLogSafely() {
@@ -176,6 +184,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 if (mLastTimeActive - mLastTimeCountEntry > MINIMUMCOUNTINTERVAL
                         || (mDeleteCount == 0 && mInputCount == 0)) {
                     addCountEntry(mLastTimeActive);
+                    addThemeIdEntry(mLastTimeActive);
                 }
                 mDeleteCount += (Integer)data;
                 break;
@@ -183,6 +192,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 if (mLastTimeActive - mLastTimeCountEntry > MINIMUMCOUNTINTERVAL
                         || (mDeleteCount == 0 && mInputCount == 0)) {
                     addCountEntry(mLastTimeActive);
+                    addThemeIdEntry(mLastTimeActive);
                 }
                 mInputCount += (Integer)data;
                 break;
@@ -223,14 +233,16 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private void commitInternal() {
         flushPrivacyLogSafely();
-        addCountEntry(System.currentTimeMillis());
+        long now = System.currentTimeMillis();
+        addCountEntry(now);
+        addThemeIdEntry(now);
         String s = LogSerializer.createStringFromEntries(mLogBuffer);
         if (DBG) {
             Log.d(TAG, "Commit log: " + s);
         }
         mDropBox.addText(TAG, s);
         reset();
-        mLastTimeSend = System.currentTimeMillis();
+        mLastTimeSend = now;
     }
 
     private synchronized void sendLogToDropBox(int tag, Object s) {
@@ -260,6 +272,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             } else {
                 sLogEnabled = false;
             }
+        } else if (KeyboardSwitcher.PREF_KEYBOARD_LAYOUT.equals(key)) {
+            mThemeId = sharedPreferences.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
+                    KeyboardSwitcher.DEFAULT_LAYOUT_ID);
         }
     }
 
