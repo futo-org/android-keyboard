@@ -22,8 +22,8 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Android-Tastatur"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Android-Tastatureinstellungen"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrieren bei Tastendruck"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Sound bei Tastendruck"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrieren b. Tastendruck"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Ton bei Tastendruck"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Eingabefehler korrigieren"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Korrektur von Eingabefehlern aktivieren"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Eingabefehler im Querformat"</string>
@@ -86,7 +86,7 @@
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Spracheingaben werden derzeit nicht für Ihre Sprache unterstützt, funktionieren jedoch in Englisch."</string>
     <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"Die Spracheingabe ist eine Funktion im Versuchsstadium, die die vernetzte Spracherkennung von Google verwendet."</string>
     <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Wenn Sie die Spracheingabe deaktivieren möchten, rufen Sie die Tastatureinstellungen auf."</string>
-    <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Um die Spracheingabe zu verwenden, drücken Sie den Mikrofonknopf oder ziehen Sie Ihren Finger über die Bildschirmtastatur."</string>
+    <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Um die Spracheingabe zu verwenden, drücken Sie die Mikrofontaste oder ziehen Sie Ihren Finger über die Bildschirmtastatur."</string>
     <string name="voice_listening" msgid="467518160751321844">"Jetzt sprechen"</string>
     <string name="voice_working" msgid="6666937792815731889">"Vorgang läuft"</string>
     <!-- no translation found for voice_initializing (661962047129906646) -->
@@ -117,7 +117,7 @@
     <string name="auto_submit" msgid="9151008027068358518">"Nach Sprachaufnahme automatisch senden"</string>
     <string name="auto_submit_summary" msgid="4961875269610384226">"Drücken Sie auf die Eingabetaste, wenn Sie einen Suchvorgang durchführen oder zum nächsten Feld wechseln."</string>
     <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Tastatur öffnen"\n</b></font><font size="3">\n</font>"Berühren Sie ein beliebiges Textfeld."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Tastatur schließen"\n</b></font><font size="3">\n</font>"Drücken Sie die Zurück-Taste."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Tastatur schließen"\n</b></font><font size="3">\n</font>"Drücken Sie die Zurücktaste."</string>
     <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Für Optionen eine Taste berühren und gedrückt halten"\n</b></font><font size="3">\n</font>"Greifen Sie auf Satzzeichen und Akzente zu."</string>
     <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Tastatureinstellungen"\n</b></font><font size="3">\n</font>"Berühren und halten Sie die Taste "<b>"?123"</b>" gedrückt."</string>
     <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
@@ -127,7 +127,7 @@
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
     <string name="inputMethod" msgid="7854532062009028116">"Eingabemethode"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Eingabesprachen"</string>
-    <string name="language_selection_summary" msgid="187110938289512256">"Finger über die Leertaste bewegen, um die Sprache zu ändern"</string>
+    <string name="language_selection_summary" msgid="187110938289512256">"Finger über die Leertaste bewegen, um die Eingabesprache zu wechseln"</string>
     <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Zum Speichern erneut tippen"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Wörterbuch verfügbar"</string>
 </resources>
