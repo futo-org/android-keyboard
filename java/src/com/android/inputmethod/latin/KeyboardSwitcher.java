@@ -46,6 +46,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public static final int KEYBOARDMODE_IM = R.id.mode_im;
     public static final int KEYBOARDMODE_WEB = R.id.mode_webentry;
 
+    public static final String DEFAULT_LAYOUT_ID = "3";
+    public static final String PREF_KEYBOARD_LAYOUT = "keyboard_layout";
+    private static final int[] LAYOUTS = new int [] {
+        R.layout.input, R.layout.input2, R.layout.input3, R.layout.input4, R.layout.input5,
+        R.layout.input6
+    };
+
     private static final int SYMBOLS_MODE_STATE_NONE = 0;
     private static final int SYMBOLS_MODE_STATE_BEGIN = 1;
     private static final int SYMBOLS_MODE_STATE_SYMBOL = 2;
@@ -57,12 +64,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         KEYBOARDMODE_EMAIL,
         KEYBOARDMODE_IM,
         KEYBOARDMODE_WEB};
-    private static final String PREF_KEYBOARD_LAYOUT = "keyboard_layout";
-    private static final int[] LAYOUTS = new int [] {
-        R.layout.input, R.layout.input2, R.layout.input3, R.layout.input4, R.layout.input5,
-        R.layout.input6
-    };
-    private static final String DEFAULT_LAYOUT_ID = "0";
 
     Context mContext;
     LatinIME mInputMethodService;
