@@ -1,8 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.google.android.inputmethod.latin">
 
-    <!-- Do not override the default LatinIME for now -->
-    <!-- original-package android:name="com.android.inputmethod.latin" / -->
+    <original-package android:name="com.android.inputmethod.latin" />
 
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />

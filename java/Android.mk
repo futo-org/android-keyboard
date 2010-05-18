@@ -15,7 +15,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-common
 
 #LOCAL_AAPT_FLAGS := -0 .dict
 # The following flag is required because we use a different package name
-# com.google.android.inputmethod.latin2 in the LatinIME sandbox.
+# com.google.android.inputmethod.latin in the LatinIME sandbox.
 LOCAL_AAPT_FLAGS := --custom-package com.android.inputmethod.latin
 
 LOCAL_SDK_VERSION := current
