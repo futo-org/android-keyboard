@@ -554,6 +554,8 @@ public class LatinIME extends InputMethodService
     public void onFinishInput() {
         super.onFinishInput();
 
+        LatinImeLogger.commit();
+
         if (VOICE_INSTALLED && !mConfigurationChanging) {
             if (mAfterVoiceInput) {
                 mVoiceInput.flushAllTextModificationCounters();
@@ -655,6 +657,8 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void hideWindow() {
+        LatinImeLogger.commit();
+
         if (TRACE) Debug.stopMethodTracing();
         if (mOptionsDialog != null && mOptionsDialog.isShowing()) {
             mOptionsDialog.dismiss();

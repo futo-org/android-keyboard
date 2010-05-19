@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -28,7 +29,7 @@ import java.util.Collections;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIMELogs";
-    private static final boolean DBG = false;
+    private static boolean sDBG = false;
     // DEFAULT_LOG_ENABLED should be false when released to public.
     private static final boolean DEFAULT_LOG_ENABLED = true;
 
@@ -44,7 +45,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_ACTUAL_CHAR_COUNT = 6;
     private static final int ID_THEME_ID = 7;
 
-    private static final String PREF_ENABLE_LOG = "enable_log";
+    private static final String PREF_ENABLE_LOG = "enable_logging";
+    private static final String PREF_DEBUG_MODE = "debug_mode";
 
     public static boolean sLogEnabled = true;
     private static LatinImeLogger sLatinImeLogger = new LatinImeLogger();
@@ -107,6 +109,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         sLogEnabled = prefs.getBoolean(PREF_ENABLE_LOG, DEFAULT_LOG_ENABLED);
         mThemeId = prefs.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
                 KeyboardSwitcher.DEFAULT_LAYOUT_ID);
+        sDBG = prefs.getBoolean(PREF_DEBUG_MODE, sDBG);
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -126,21 +129,15 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
      * Check if the input string is safe as an entry or not.
      */
     private static boolean checkStringDataSafe(String s) {
+        if (sDBG) {
+            Log.d(TAG, "Check String safety: " + s);
+        }
         for (int i = 0; i < s.length(); ++i) {
             if (!Character.isDigit(s.charAt(i))) {
                 return true;
             }
         }
         return false;
-    }
-
-    private static boolean checkStringsDataSafe(String[] strings) {
-        for(String s: strings) {
-            if (!checkStringDataSafe(s)) {
-                return false;
-            }
-        }
-        return true;
     }
 
     private void addCountEntry(long time) {
@@ -200,12 +197,18 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             case ID_AUTOSUGGESTION:
                 ++mWordCount;
                 String[] dataStrings = (String[]) data;
+                if (dataStrings.length != 3) {
+                    if (sDBG) {
+                        Log.e(TAG, "The length of string array is invalid.");
+                    }
+                    break;
+                }
                 mActualCharCount += dataStrings[1].length();
-                if (checkStringsDataSafe(dataStrings)) {
+                if (checkStringDataSafe(dataStrings[0]) && checkStringDataSafe(dataStrings[1])) {
                     mPrivacyLogBuffer.add(
                             new LogEntry (System.currentTimeMillis(), tag, dataStrings));
                 } else {
-                    if (DBG) {
+                    if (sDBG) {
                         Log.d(TAG, "Skipped to add an entry because data is unsafe.");
                     }
                 }
@@ -213,18 +216,24 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             case ID_AUTOSUGGESTIONCANCELED:
                 --mWordCount;
                 dataStrings = (String[]) data;
+                if (dataStrings.length != 3) {
+                    if (sDBG) {
+                        Log.e(TAG, "The length of string array is invalid.");
+                    }
+                    break;
+                }
                 mActualCharCount -= dataStrings[1].length();
-                if (checkStringsDataSafe(dataStrings)) {
+                if (checkStringDataSafe(dataStrings[0]) && checkStringDataSafe(dataStrings[1])) {
                     mPrivacyLogBuffer.add(
                             new LogEntry (System.currentTimeMillis(), tag, dataStrings));
                 } else {
-                    if (DBG) {
+                    if (sDBG) {
                         Log.d(TAG, "Skipped to add an entry because data is unsafe.");
                     }
                 }
                 break;
             default:
-                if (DBG) {
+                if (sDBG) {
                     Log.e(TAG, "Log Tag is not entried.");
                 }
                 break;
@@ -237,19 +246,29 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         addCountEntry(now);
         addThemeIdEntry(now);
         String s = LogSerializer.createStringFromEntries(mLogBuffer);
-        if (DBG) {
-            Log.d(TAG, "Commit log: " + s);
+        if (!TextUtils.isEmpty(s)) {
+            if (sDBG) {
+                Log.d(TAG, "Commit log: " + s);
+            }
+            mDropBox.addText(TAG, s);
         }
-        mDropBox.addText(TAG, s);
         reset();
         mLastTimeSend = now;
     }
 
     private synchronized void sendLogToDropBox(int tag, Object s) {
         long now = System.currentTimeMillis();
-        if (DBG) {
-            Log.d(TAG, "SendLog: " + tag + ";" + s + ","
-                    + (now - mLastTimeSend - MINIMUMSENDINTERVAL) );
+        if (sDBG) {
+            String out = "";
+            if (s instanceof String[]) {
+                for (String str: ((String[]) s)) {
+                    out += str + ",";
+                }
+            } else if (s instanceof Integer) {
+                out += (Integer) s;
+            }
+            Log.d(TAG, "SendLog: " + tag + ";" + out + ", will be sent after "
+                    + (- (now - mLastTimeSend - MINIMUMSENDINTERVAL) / 1000) + " sec.");
         }
         if (now - mLastTimeActive > MINIMUMSENDINTERVAL) {
             // Send a log before adding an log entry if the last data is too old.
@@ -275,6 +294,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         } else if (KeyboardSwitcher.PREF_KEYBOARD_LAYOUT.equals(key)) {
             mThemeId = sharedPreferences.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
                     KeyboardSwitcher.DEFAULT_LAYOUT_ID);
+        } else if (PREF_DEBUG_MODE.equals(key)) {
+            sDBG = sharedPreferences.getBoolean(PREF_DEBUG_MODE, sDBG);
         }
     }
 

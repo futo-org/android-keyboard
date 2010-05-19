@@ -354,4 +354,7 @@
         <item>4</item>
         <item>5</item>
     </string-array>
+
+    <string name="prefs_debug_mode">Debug (Temporary)</string>
+
 </resources>

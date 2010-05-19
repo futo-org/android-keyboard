@@ -38,10 +38,11 @@
             />
 
     <CheckBoxPreference
-            android:key="enable_log"
+            android:key="enable_logging"
             android:title="@string/prefs_enable_log"
             android:summary="@string/prefs_description_log"
             android:persistent="true"
+            android:defaultValue="true"
             />
 
     <ListPreference
@@ -99,4 +100,12 @@
             />
             
     </PreferenceCategory>
+
+    <CheckBoxPreference
+            android:key="debug_mode"
+            android:title="@string/prefs_debug_mode"
+            android:persistent="true"
+            android:defaultValue="false"
+            />
+
 </PreferenceScreen>
