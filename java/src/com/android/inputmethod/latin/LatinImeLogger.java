@@ -141,6 +141,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addCountEntry(long time) {
+        if (sDBG) {
+            Log.d(TAG, "Log counts. (4)");
+        }
         mLogBuffer.add(new LogEntry (time, ID_DELETE_COUNT,
                 new String[] {String.valueOf(mDeleteCount)}));
         mLogBuffer.add(new LogEntry (time, ID_INPUT_COUNT,
@@ -153,14 +156,21 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mInputCount = 0;
         mWordCount = 0;
         mActualCharCount = 0;
+        mLastTimeCountEntry = time;
     }
 
     private void addThemeIdEntry(long time) {
+        if (sDBG) {
+            Log.d(TAG, "Log theme Id. (1)");
+        }
         mLogBuffer.add(new LogEntry (time, ID_THEME_ID,
                 new String[] {mThemeId}));
     }
 
     private void flushPrivacyLogSafely() {
+        if (sDBG) {
+            Log.d(TAG, "Log theme Id. (" + mPrivacyLogBuffer.size() + ")");
+        }
         long now = System.currentTimeMillis();
         Collections.sort(mPrivacyLogBuffer);
         for (LogEntry l: mPrivacyLogBuffer) {
@@ -178,7 +188,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private void addData(int tag, Object data) {
         switch (tag) {
             case ID_DELETE_COUNT:
-                if (mLastTimeActive - mLastTimeCountEntry > MINIMUMCOUNTINTERVAL
+                if (((mLastTimeActive - mLastTimeCountEntry) > MINIMUMCOUNTINTERVAL)
                         || (mDeleteCount == 0 && mInputCount == 0)) {
                     addCountEntry(mLastTimeActive);
                     addThemeIdEntry(mLastTimeActive);
@@ -186,7 +196,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 mDeleteCount += (Integer)data;
                 break;
             case ID_INPUT_COUNT:
-                if (mLastTimeActive - mLastTimeCountEntry > MINIMUMCOUNTINTERVAL
+                if (((mLastTimeActive - mLastTimeCountEntry) > MINIMUMCOUNTINTERVAL)
                         || (mDeleteCount == 0 && mInputCount == 0)) {
                     addCountEntry(mLastTimeActive);
                     addThemeIdEntry(mLastTimeActive);
@@ -197,9 +207,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             case ID_AUTOSUGGESTION:
                 ++mWordCount;
                 String[] dataStrings = (String[]) data;
-                if (dataStrings.length != 3) {
+                if (dataStrings.length < 2) {
                     if (sDBG) {
-                        Log.e(TAG, "The length of string array is invalid.");
+                        Log.e(TAG, "The length of logged string array is invalid.");
                     }
                     break;
                 }
@@ -216,9 +226,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             case ID_AUTOSUGGESTIONCANCELED:
                 --mWordCount;
                 dataStrings = (String[]) data;
-                if (dataStrings.length != 3) {
+                if (dataStrings.length < 2) {
                     if (sDBG) {
-                        Log.e(TAG, "The length of string array is invalid.");
+                        Log.e(TAG, "The length of logged string array is invalid.");
                     }
                     break;
                 }
@@ -241,6 +251,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void commitInternal() {
+        if (sDBG) {
+            Log.d(TAG, "Commit (" + mLogBuffer.size() + ")");
+        }
         flushPrivacyLogSafely();
         long now = System.currentTimeMillis();
         addCountEntry(now);
