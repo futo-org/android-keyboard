@@ -65,6 +65,8 @@ public class LatinKeyboardView extends KeyboardView {
     /** The y coordinate of the last row */
     private int mLastRowY;
 
+    private int mExtensionLayoutResId = 0;
+
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -75,6 +77,10 @@ public class LatinKeyboardView extends KeyboardView {
 
     public void setPhoneKeyboard(Keyboard phoneKeyboard) {
         mPhoneKeyboard = phoneKeyboard;
+    }
+
+    public void setExtentionLayoutResId (int id) {
+        mExtensionLayoutResId = id;
     }
 
     @Override
@@ -294,7 +300,8 @@ public class LatinKeyboardView extends KeyboardView {
             mExtensionPopup.setBackgroundDrawable(null);
             LayoutInflater li = (LayoutInflater) getContext().getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            mExtension = (LatinKeyboardView) li.inflate(R.layout.input_trans, null);
+            mExtension = (LatinKeyboardView) li.inflate(mExtensionLayoutResId == 0 ?
+                    R.layout.input_trans : mExtensionLayoutResId, null);
             mExtension.setExtensionType(true);
             mExtension.setOnKeyboardActionListener(
                     new ExtensionKeyboardListener(getOnKeyboardActionListener()));

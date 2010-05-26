@@ -378,6 +378,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
             mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater().inflate(
                     LAYOUTS[newLayout], null);
+            mInputView.setExtentionLayoutResId(LAYOUTS[newLayout]);
             mInputView.setOnKeyboardActionListener(mInputMethodService);
             mLayoutId = newLayout;
         }

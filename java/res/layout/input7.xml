@@ -29,5 +29,5 @@
         android:keyTextColor="@color/latinkeyboard_key_color_black"
         android:shadowColor="@color/latinkeyboard_key_color_white"
         android:keyTextSize="22dip"
-        />
-<!--         android:keyBackground="@drawable/btn_keyboard_normal_metal"-->
+        android:popupLayout="@layout/input7_popup"
+    />

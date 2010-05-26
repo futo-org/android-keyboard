@@ -35,18 +35,21 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private static final long MINIMUMSENDINTERVAL = 300 * DateUtils.SECOND_IN_MILLIS; // 300 sec
     private static final long MINIMUMCOUNTINTERVAL = 20 * DateUtils.SECOND_IN_MILLIS; // 20 sec
+    private static final long MINIMUMSENDSIZE = 40;
     private static final char SEPARATER = ';';
     private static final int ID_CLICKSUGGESTION = 0;
-    private static final int ID_AUTOSUGGESTION = 1;
-    private static final int ID_AUTOSUGGESTIONCANCELED = 2;
+    private static final int ID_AUTOSUGGESTIONCANCELLED = 1;
+    private static final int ID_AUTOSUGGESTION = 2;
     private static final int ID_INPUT_COUNT = 3;
     private static final int ID_DELETE_COUNT = 4;
     private static final int ID_WORD_COUNT = 5;
     private static final int ID_ACTUAL_CHAR_COUNT = 6;
     private static final int ID_THEME_ID = 7;
+    private static final int ID_SETTING_AUTO_COMPLETE = 8;
 
     private static final String PREF_ENABLE_LOG = "enable_logging";
     private static final String PREF_DEBUG_MODE = "debug_mode";
+    private static final String PREF_AUTO_COMPLETE = "auto_complete";
 
     public static boolean sLogEnabled = true;
     private static LatinImeLogger sLatinImeLogger = new LatinImeLogger();
@@ -132,12 +135,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         if (sDBG) {
             Log.d(TAG, "Check String safety: " + s);
         }
-        for (int i = 0; i < s.length(); ++i) {
-            if (!Character.isDigit(s.charAt(i))) {
-                return true;
-            }
-        }
-        return false;
+        return !TextUtils.isDigitsOnly(s);
     }
 
     private void addCountEntry(long time) {
@@ -167,6 +165,16 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 new String[] {mThemeId}));
     }
 
+    private void addSettingsEntry(long time) {
+        if (sDBG) {
+            Log.d(TAG, "Log settings. (1)");
+        }
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        mLogBuffer.add(new LogEntry (time, ID_SETTING_AUTO_COMPLETE,
+                new String[] {String.valueOf(prefs.getBoolean(PREF_AUTO_COMPLETE,
+                        mContext.getResources().getBoolean(R.bool.enable_autocorrect)))}));
+    }
+
     private void flushPrivacyLogSafely() {
         if (sDBG) {
             Log.d(TAG, "Log theme Id. (" + mPrivacyLogBuffer.size() + ")");
@@ -191,7 +199,6 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 if (((mLastTimeActive - mLastTimeCountEntry) > MINIMUMCOUNTINTERVAL)
                         || (mDeleteCount == 0 && mInputCount == 0)) {
                     addCountEntry(mLastTimeActive);
-                    addThemeIdEntry(mLastTimeActive);
                 }
                 mDeleteCount += (Integer)data;
                 break;
@@ -199,7 +206,6 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 if (((mLastTimeActive - mLastTimeCountEntry) > MINIMUMCOUNTINTERVAL)
                         || (mDeleteCount == 0 && mInputCount == 0)) {
                     addCountEntry(mLastTimeActive);
-                    addThemeIdEntry(mLastTimeActive);
                 }
                 mInputCount += (Integer)data;
                 break;
@@ -223,7 +229,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                 }
                 break;
-            case ID_AUTOSUGGESTIONCANCELED:
+            case ID_AUTOSUGGESTIONCANCELLED:
                 --mWordCount;
                 dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
@@ -258,6 +264,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         long now = System.currentTimeMillis();
         addCountEntry(now);
         addThemeIdEntry(now);
+        addSettingsEntry(now);
         String s = LogSerializer.createStringFromEntries(mLogBuffer);
         if (!TextUtils.isEmpty(s)) {
             if (sDBG) {
@@ -307,6 +314,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         } else if (KeyboardSwitcher.PREF_KEYBOARD_LAYOUT.equals(key)) {
             mThemeId = sharedPreferences.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
                     KeyboardSwitcher.DEFAULT_LAYOUT_ID);
+            addThemeIdEntry(mLastTimeActive);
         } else if (PREF_DEBUG_MODE.equals(key)) {
             sDBG = sharedPreferences.getBoolean(PREF_DEBUG_MODE, sDBG);
         }
@@ -318,7 +326,11 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public static void commit() {
         if (sLogEnabled) {
-            sLatinImeLogger.commitInternal();
+            if (System.currentTimeMillis() - sLatinImeLogger.mLastTimeActive > MINIMUMCOUNTINTERVAL
+                        || (sLatinImeLogger.mLogBuffer.size()
+                                + sLatinImeLogger.mPrivacyLogBuffer.size() > MINIMUMSENDSIZE)) {
+                sLatinImeLogger.commitInternal();
+            }
         }
     }
 
@@ -337,7 +349,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 sLastAutoSuggestBefore = before;
                 sLastAutoSuggestAfter = after;
             }
-            sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTIONCANCELED, strings);
+            sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTION, strings);
         }
     }
 
@@ -345,7 +357,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         if (sLogEnabled) {
             if (sLastAutoSuggestBefore != null && sLastAutoSuggestAfter != null) {
                 String[] strings = new String[] {sLastAutoSuggestBefore, sLastAutoSuggestAfter};
-                sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTION, strings);
+                sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTIONCANCELLED, strings);
             }
         }
     }
