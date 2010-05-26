@@ -26,4 +26,6 @@
     <color name="latinkeyboard_bar_language_text">#FF808080</color>
     <color name="latinkeyboard_extension_background">#A0000000</color>
     <color name="latinkeyboard_text_color">#FF000000</color>
+    <color name="latinkeyboard_key_color_white">#FFFFFFFF</color>
+    <color name="latinkeyboard_key_color_black">#FF000000</color>
 </resources>

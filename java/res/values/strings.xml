@@ -336,6 +336,7 @@
     <string name="layout_dazzle"  translatable="false">Dazzle</string>
     <string name="layout_blue_ribbon_high"  translatable="false">Blue Ribbon (High Contrast)</string>
     <string name="layout_dazzle_high"  translatable="false">Dazzle (High Contrast)</string>
+    <string name="layout_gingerbread"  translatable="false">Ginger Bread</string>
 
     <string-array name="keyboard_layout_modes" translatable="false">
         <item>@string/layout_basic</item>
@@ -344,6 +345,7 @@
         <item>@string/layout_blue_ribbon_high</item>
         <item>@string/layout_dazzle</item>
         <item>@string/layout_dazzle_high</item>
+        <item>@string/layout_gingerbread</item>
     </string-array>
 
     <string-array name="keyboard_layout_modes_values" translatable="false">
@@ -353,6 +355,7 @@
         <item>3</item>
         <item>4</item>
         <item>5</item>
+        <item>6</item>
     </string-array>
 
     <string name="prefs_debug_mode">Debug (Temporary)</string>
