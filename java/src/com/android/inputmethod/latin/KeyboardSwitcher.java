@@ -215,6 +215,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         keyboard.setShifted(false);
         keyboard.setShiftLocked(keyboard.isShiftLocked());
         keyboard.setImeOptions(mContext.getResources(), mMode, imeOptions);
+        keyboard.setBlackFlag(isBlackSym());
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -227,8 +228,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             LatinKeyboard keyboard = new LatinKeyboard(
                 mContext, id.mXml, id.mKeyboardMode);
             keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols), mHasVoice);
-            keyboard.setBlackFlag(isBlackSym());
             keyboard.setLanguageSwitcher(mLanguageSwitcher);
+            keyboard.setBlackFlag(isBlackSym());
             if (id.mKeyboardMode == KEYBOARDMODE_NORMAL
                     || id.mKeyboardMode == KEYBOARDMODE_URL
                     || id.mKeyboardMode == KEYBOARDMODE_IM
@@ -403,6 +404,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     // TODO: Generalize for any theme
     public boolean isBlackSym () {
-        return (mLayoutId == 6 && mLanguageSwitcher.getInputLanguage().indexOf("en_") >= 0);
+        return (mLayoutId == 6 && (mLanguageSwitcher == null
+                || mLanguageSwitcher.getEnabledLanguages() == null
+                || mLanguageSwitcher.getInputLanguage().startsWith("en_")));
     }
 }
