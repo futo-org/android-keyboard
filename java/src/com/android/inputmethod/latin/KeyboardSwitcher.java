@@ -227,6 +227,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             LatinKeyboard keyboard = new LatinKeyboard(
                 mContext, id.mXml, id.mKeyboardMode);
             keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols), mHasVoice);
+            keyboard.setBlackFlag(isBlackSym());
             keyboard.setLanguageSwitcher(mLanguageSwitcher);
             if (id.mKeyboardMode == KEYBOARDMODE_NORMAL
                     || id.mKeyboardMode == KEYBOARDMODE_URL
@@ -250,6 +251,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private KeyboardId getKeyboardId(int mode, int imeOptions, boolean isSymbols) {
         boolean hasVoice = hasVoiceButton(isSymbols);
+        // TODO: generalize for any KeyboardId
+        int keyboardRowsResId = isBlackSym() ? R.xml.kbd_qwerty_black : R.xml.kbd_qwerty;
         if (isSymbols) {
             return (mode == MODE_PHONE)
                 ? new KeyboardId(R.xml.kbd_phone_symbols, hasVoice)
@@ -258,7 +261,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         switch (mode) {
             case MODE_TEXT:
                 if (mTextMode == MODE_TEXT_QWERTY) {
-                    return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_NORMAL, true, hasVoice);
+                    return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_NORMAL, true, hasVoice);
                 } else if (mTextMode == MODE_TEXT_ALPHA) {
                     return new KeyboardId(R.xml.kbd_alpha, KEYBOARDMODE_NORMAL, true, hasVoice);
                 }
@@ -268,13 +271,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             case MODE_PHONE:
                 return new KeyboardId(R.xml.kbd_phone, hasVoice);
             case MODE_URL:
-                return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_URL, true, hasVoice);
+                return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_URL, true, hasVoice);
             case MODE_EMAIL:
-                return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_EMAIL, true, hasVoice);
+                return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_EMAIL, true, hasVoice);
             case MODE_IM:
-                return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_IM, true, hasVoice);
+                return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_IM, true, hasVoice);
             case MODE_WEB:
-                return new KeyboardId(R.xml.kbd_qwerty, KEYBOARDMODE_WEB, true, hasVoice);
+                return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_WEB, true, hasVoice);
         }
         return null;
     }
@@ -396,5 +399,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             changeLatinKeyboardView(
                     Integer.valueOf(sharedPreferences.getString(key, DEFAULT_LAYOUT_ID)), false);
         }
+    }
+
+    // TODO: Generalize for any theme
+    public boolean isBlackSym () {
+        return (mLayoutId == 6 && mLanguageSwitcher.getInputLanguage().indexOf("en_") >= 0);
     }
 }

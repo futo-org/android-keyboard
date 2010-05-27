@@ -81,8 +81,10 @@ public class LatinKeyboard extends Keyboard {
     private int mPrefLetterY;
     private int mPrefDistance;
 
-    private int mExtensionResId; 
-    
+    private int mExtensionResId;
+    // TODO: generalize for any keyboardId
+    private boolean mIsBlackSym;
+
     private static final int SHIFT_OFF = 0;
     private static final int SHIFT_ON = 1;
     private static final int SHIFT_LOCKED = 2;
@@ -177,8 +179,8 @@ public class LatinKeyboard extends Keyboard {
                 case EditorInfo.IME_ACTION_SEARCH:
                     mEnterKey.iconPreview = res.getDrawable(
                             R.drawable.sym_keyboard_feedback_search);
-                    mEnterKey.icon = res.getDrawable(
-                            R.drawable.sym_keyboard_search);
+                    mEnterKey.icon = res.getDrawable(mIsBlackSym ?
+                            R.drawable.sym_bkeyboard_search : R.drawable.sym_keyboard_search);
                     mEnterKey.label = null;
                     break;
                 case EditorInfo.IME_ACTION_SEND:
@@ -196,8 +198,8 @@ public class LatinKeyboard extends Keyboard {
                     } else {
                         mEnterKey.iconPreview = res.getDrawable(
                                 R.drawable.sym_keyboard_feedback_return);
-                        mEnterKey.icon = res.getDrawable(
-                                R.drawable.sym_keyboard_return);
+                        mEnterKey.icon = res.getDrawable(mIsBlackSym ?
+                                R.drawable.sym_bkeyboard_return : R.drawable.sym_keyboard_return);
                         mEnterKey.label = null;
                     }
                     break;
@@ -277,6 +279,23 @@ public class LatinKeyboard extends Keyboard {
 
     public int getExtension() {
         return mExtensionResId;
+    }
+
+    public void setBlackFlag(boolean f) {
+        mIsBlackSym = f;
+        if (f) {
+            mShiftLockIcon = mRes.getDrawable(R.drawable.sym_bkeyboard_shift_locked);
+            mSpaceIcon = mRes.getDrawable(R.drawable.sym_bkeyboard_space);
+            mMicIcon = mRes.getDrawable(R.drawable.sym_bkeyboard_mic);
+            m123MicIcon = mRes.getDrawable(R.drawable.sym_bkeyboard_123_mic);
+            mF1Key.icon = mRes.getDrawable(R.drawable.sym_bkeyboard_mic);
+        } else {
+            mShiftLockIcon = mRes.getDrawable(R.drawable.sym_keyboard_shift_locked);
+            mSpaceIcon = mRes.getDrawable(R.drawable.sym_keyboard_space);
+            mMicIcon = mRes.getDrawable(R.drawable.sym_keyboard_mic);
+            m123MicIcon = mRes.getDrawable(R.drawable.sym_keyboard_123_mic);
+            mF1Key.icon = mRes.getDrawable(R.drawable.sym_keyboard_mic);
+        }
     }
 
     private void setDefaultBounds(Drawable drawable) {
