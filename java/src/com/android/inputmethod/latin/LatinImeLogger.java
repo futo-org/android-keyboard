@@ -18,6 +18,8 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -46,6 +48,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_ACTUAL_CHAR_COUNT = 6;
     private static final int ID_THEME_ID = 7;
     private static final int ID_SETTING_AUTO_COMPLETE = 8;
+    private static final int ID_VERSION = 9;
 
     private static final String PREF_ENABLE_LOG = "enable_logging";
     private static final String PREF_DEBUG_MODE = "debug_mode";
@@ -180,6 +183,20 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                         mContext.getResources().getBoolean(R.bool.enable_autocorrect)))}));
     }
 
+    private void addVersionNameEntry(long time) {
+        if (sDBG) {
+            Log.d(TAG, "Log Version. (1)");
+        }
+        try {
+            PackageInfo info = mContext.getPackageManager().getPackageInfo(
+                    mContext.getPackageName(), 0);
+            mLogBuffer.add(new LogEntry (time, ID_VERSION,
+                    new String[] {String.valueOf(info.versionCode), info.versionName}));
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Could not find version name.");
+        }
+    }
+
     private void flushPrivacyLogSafely() {
         if (sDBG) {
             Log.d(TAG, "Log theme Id. (" + mPrivacyLogBuffer.size() + ")");
@@ -270,6 +287,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         addCountEntry(now);
         addThemeIdEntry(now);
         addSettingsEntry(now);
+        addVersionNameEntry(now);
         String s = LogSerializer.createStringFromEntries(mLogBuffer);
         if (!TextUtils.isEmpty(s)) {
             if (sDBG) {
