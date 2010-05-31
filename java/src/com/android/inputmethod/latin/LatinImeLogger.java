@@ -342,6 +342,10 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     // TODO: Handle CharSequence instead of String
     public static void logOnClickSuggestion(String before, String after, int position) {
         if (sLogEnabled) {
+            if (before.equals(after)) {
+                before = "";
+                after = "";
+            }
             String[] strings = new String[] {before, after, String.valueOf(position)};
             sLatinImeLogger.sendLogToDropBox(ID_CLICKSUGGESTION, strings);
         }
