@@ -1551,9 +1551,9 @@ public class LatinIME extends InputMethodService
         // If this is a punctuation, apply it through the normal key press
         if (suggestion.length() == 1 && isWordSeparator(suggestion.charAt(0))) {
             // Word separators are suggested before the user inputs something.
-            // So, LatinImeLogger logs suggestion.charAt(0) as a user's input.
+            // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnClickSuggestion(
-                    suggestion.toString(), suggestion.toString(), index);
+                    "", suggestion.toString(), index);
             onKey(suggestion.charAt(0), null);
             if (ic != null) {
                 ic.endBatchEdit();

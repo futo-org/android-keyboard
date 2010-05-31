@@ -135,7 +135,12 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         if (sDBG) {
             Log.d(TAG, "Check String safety: " + s);
         }
-        return !TextUtils.isDigitsOnly(s);
+        for (int i = 0; i < s.length(); ++i) {
+            if (Character.isDigit(s.charAt(i))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void addCountEntry(long time) {
@@ -344,6 +349,10 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public static void logOnAutoSuggestion(String before, String after) {
         if (sLogEnabled) {
+            if (before.equals(after)) {
+                before = "";
+                after = "";
+            }
             String[] strings = new String[] {before, after};
             synchronized (LatinImeLogger.class) {
                 sLastAutoSuggestBefore = before;
