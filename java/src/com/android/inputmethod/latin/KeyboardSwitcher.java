@@ -91,14 +91,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     KeyboardSwitcher(Context context, LatinIME ims) {
         mContext = context;
-        mKeyboards = new HashMap<KeyboardId, LatinKeyboard>();
-        mSymbolsId = new KeyboardId(R.xml.kbd_symbols, false);
-        mSymbolsShiftedId = new KeyboardId(R.xml.kbd_symbols_shift, false);
-        mInputMethodService = ims;
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ims);
-        int mLayoutId = Integer.valueOf(prefs.getString(PREF_KEYBOARD_LAYOUT, DEFAULT_LAYOUT_ID));
+        mLayoutId = Integer.valueOf(prefs.getString(PREF_KEYBOARD_LAYOUT, DEFAULT_LAYOUT_ID));
         prefs.registerOnSharedPreferenceChangeListener(this);
+
+        mKeyboards = new HashMap<KeyboardId, LatinKeyboard>();
+        mSymbolsId = makeSymbolsId(false);
+        mSymbolsShiftedId = makeSymbolsShiftedId(false);
+        mInputMethodService = ims;
         changeLatinKeyboardView(mLayoutId, false);
     }
 
@@ -117,6 +118,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputView = inputView;
     }
 
+    private KeyboardId makeSymbolsId(boolean hasVoice) {
+        return new KeyboardId(
+                isBlackSym() ? R.xml.kbd_symbols_black : R.xml.kbd_symbols, hasVoice);
+    }
+
+    private KeyboardId makeSymbolsShiftedId(boolean hasVoice) {
+        return new KeyboardId(
+                isBlackSym() ? R.xml.kbd_symbols_shift_black : R.xml.kbd_symbols_shift, hasVoice);
+    }
+
     void makeKeyboards(boolean forceCreate) {
         if (forceCreate) mKeyboards.clear();
         // Configuration change is coming after the keyboard gets recreated. So don't rely on that.
@@ -126,9 +137,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (displayWidth == mLastDisplayWidth) return;
         mLastDisplayWidth = displayWidth;
         if (!forceCreate) mKeyboards.clear();
-        mSymbolsId = new KeyboardId(R.xml.kbd_symbols, mHasVoice && !mVoiceOnPrimary);
-        mSymbolsShiftedId = new KeyboardId(R.xml.kbd_symbols_shift,
-                mHasVoice && !mVoiceOnPrimary);
+        mSymbolsId = makeSymbolsId(mHasVoice && !mVoiceOnPrimary);
+        mSymbolsShiftedId = makeSymbolsShiftedId(mHasVoice && !mVoiceOnPrimary);
     }
 
     /**
@@ -227,7 +237,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             orig.updateConfiguration(conf, null);
             LatinKeyboard keyboard = new LatinKeyboard(
                 mContext, id.mXml, id.mKeyboardMode);
-            keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols), mHasVoice);
+            keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols
+                    || id.mXml == R.xml.kbd_symbols_black), mHasVoice);
             keyboard.setLanguageSwitcher(mLanguageSwitcher);
             keyboard.setBlackFlag(isBlackSym());
             if (id.mKeyboardMode == KEYBOARDMODE_NORMAL
@@ -256,8 +267,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         int keyboardRowsResId = isBlackSym() ? R.xml.kbd_qwerty_black : R.xml.kbd_qwerty;
         if (isSymbols) {
             return (mode == MODE_PHONE)
-                ? new KeyboardId(R.xml.kbd_phone_symbols, hasVoice)
-                : new KeyboardId(R.xml.kbd_symbols, hasVoice);
+                ? new KeyboardId(R.xml.kbd_phone_symbols, hasVoice) : makeSymbolsId(hasVoice);
         }
         switch (mode) {
             case MODE_TEXT:
@@ -268,7 +278,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 }
                 break;
             case MODE_SYMBOLS:
-                return new KeyboardId(R.xml.kbd_symbols, hasVoice);
+                return makeSymbolsId(hasVoice);
             case MODE_PHONE:
                 return new KeyboardId(R.xml.kbd_phone, hasVoice);
             case MODE_URL:
@@ -404,8 +414,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     // TODO: Generalize for any theme
     public boolean isBlackSym () {
-        return (mLayoutId == 6 && (mLanguageSwitcher == null
-                || mLanguageSwitcher.getEnabledLanguages() == null
-                || mLanguageSwitcher.getInputLanguage().startsWith("en_")));
+        return (mLayoutId == 6);
     }
 }

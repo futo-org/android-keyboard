@@ -123,7 +123,8 @@ public class LatinKeyboard extends Keyboard {
         setDefaultBounds(m123MicPreviewIcon);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
-        mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty;
+        mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
+                || xmlLayoutResId == R.xml.kbd_qwerty_black;
         mSpaceKeyIndex = indexOf((int) ' ');
     }
 
