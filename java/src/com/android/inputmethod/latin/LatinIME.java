@@ -1172,8 +1172,7 @@ public class LatinIME extends InputMethodService
                     (mJustRevertedSeparator == null
                             || mJustRevertedSeparator.length() == 0
                             || mJustRevertedSeparator.charAt(0) != primaryCode)) {
-                pickDefaultSuggestion();
-                pickedDefault = true;
+                pickedDefault = pickDefaultSuggestion();
                 // Picked the suggestion by the space key.  We consider this
                 // as "added an auto space".
                 if (primaryCode == KEYCODE_SPACE) {
@@ -1204,8 +1203,8 @@ public class LatinIME extends InputMethodService
         //else if (TextEntryState.STATE_SPACE_AFTER_ACCEPTED) {
             doubleSpace();
         }
-        if (pickedDefault && mBestWord != null) {
-            TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord);
+        if (pickedDefault) {
+            TextEntryState.backToAcceptedDefault();
         }
         updateShiftKeyState(getCurrentInputEditorInfo());
         if (ic != null) {
@@ -1502,7 +1501,7 @@ public class LatinIME extends InputMethodService
         setCandidatesViewShown(isCandidateStripVisible() || mCompletionOn);
     }
 
-    private void pickDefaultSuggestion() {
+    private boolean pickDefaultSuggestion() {
         // Complete any pending candidate query first
         if (mHandler.hasMessages(MSG_UPDATE_SUGGESTIONS)) {
             mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
@@ -1514,7 +1513,9 @@ public class LatinIME extends InputMethodService
             pickSuggestion(mBestWord);
             // Add the word to the auto dictionary if it's not a known word
             checkAddToDictionary(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
+            return true;
         }
+        return false;
     }
 
     public void pickSuggestionManually(int index, CharSequence suggestion) {

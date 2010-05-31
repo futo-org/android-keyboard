@@ -132,7 +132,20 @@ public class TextEntryState {
         sState = STATE_ACCEPTED_DEFAULT;
         LatinImeLogger.logOnAutoSuggestion(typedWord.toString(), actualWord.toString());
     }
-    
+
+    // STATE_ACCEPTED_DEFAULT will be changed to other sub-states
+    // (see "case STATE_ACCEPTED_DEFAULT" in typedCharacter() below),
+    // and should be restored back to STATE_ACCEPTED_DEFAULT after processing for each sub-state.
+    public static void backToAcceptedDefault() {
+        switch (sState) {
+            case STATE_SPACE_AFTER_ACCEPTED:
+            case STATE_PUNCTUATION_AFTER_ACCEPTED:
+            case STATE_IN_WORD:
+                sState = STATE_ACCEPTED_DEFAULT;
+                break;
+        }
+    }
+
     public static void acceptedTyped(CharSequence typedWord) {
         sWordNotInDictionaryCount++;
         sState = STATE_PICKED_SUGGESTION;
