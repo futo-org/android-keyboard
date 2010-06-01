@@ -472,7 +472,11 @@ public class LatinKeyboardView extends KeyboardView {
 
     @Override
     public void draw(Canvas c) {
-        super.draw(c);
+        try {
+            super.draw(c);
+        } catch (RuntimeException e) {
+            LatinImeLogger.logOnException("draw in LatinKeybaordView", e);
+        }
         if (DEBUG_AUTO_PLAY) {
             if (mPlaying) {
                 mHandler2.removeMessages(MSG_TOUCH_DOWN);

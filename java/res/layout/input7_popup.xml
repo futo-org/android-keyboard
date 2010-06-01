@@ -32,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:keyBackground="@drawable/btn_keyboard_key_ginger"
-            android:background="@drawable/background_gradient"
+            android:background="@drawable/keyboard_background"
             android:keyTextColor="@color/latinkeyboard_key_color_black"
             android:shadowColor="@color/latinkeyboard_key_color_white"
             android:keyTextSize="22dip"
