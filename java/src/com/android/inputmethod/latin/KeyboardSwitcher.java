@@ -212,8 +212,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         mInputView.setPreviewEnabled(true);
         KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
-
-        LatinKeyboard keyboard = getKeyboard(id);
+        LatinKeyboard keyboard = null;
+        try {
+            keyboard = getKeyboard(id);
+        } catch (RuntimeException e) {
+            LatinImeLogger.logOnException(mode + "," + imeOptions + "," + isSymbols, e);
+        }
 
         if (mode == MODE_PHONE) {
             mInputView.setPhoneKeyboard(keyboard);
@@ -271,12 +275,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
         switch (mode) {
             case MODE_TEXT:
-                if (mTextMode == MODE_TEXT_QWERTY) {
-                    return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_NORMAL, true, hasVoice);
-                } else if (mTextMode == MODE_TEXT_ALPHA) {
+                if (mTextMode == MODE_TEXT_ALPHA) {
                     return new KeyboardId(R.xml.kbd_alpha, KEYBOARDMODE_NORMAL, true, hasVoice);
                 }
-                break;
+                // Normally mTextMode should be MODE_TEXT_QWERTY.
+                return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_NORMAL, true, hasVoice);
             case MODE_SYMBOLS:
                 return makeSymbolsId(hasVoice);
             case MODE_PHONE:
@@ -301,19 +304,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return mMode == MODE_TEXT;
     }
     
-    int getTextMode() {
-        return mTextMode;
-    }
-    
-    void setTextMode(int position) {
-        if (position < MODE_TEXT_COUNT && position >= 0) {
-            mTextMode = position;
-        }
-        if (isTextMode()) {
-            setKeyboardMode(MODE_TEXT, mImeOptions, mHasVoice);
-        }
-    }
-
     int getTextModeCount() {
         return MODE_TEXT_COUNT;
     }
@@ -387,11 +377,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private void changeLatinKeyboardView(int newLayout, boolean forceReset) {
         if (mLayoutId != newLayout || mInputView == null || forceReset) {
+            if (mInputView != null) {
+                mInputView.closing();
+            }
             if (LAYOUTS.length <= newLayout) {
                 newLayout = Integer.valueOf(DEFAULT_LAYOUT_ID);
             }
-            mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater().inflate(
-                    LAYOUTS[newLayout], null);
+            try {
+                mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater().inflate(
+                        LAYOUTS[newLayout], null);
+            } catch (RuntimeException e) {
+                LatinImeLogger.logOnException(mLayoutId + "," + newLayout, e);
+            }
             mInputView.setExtentionLayoutResId(LAYOUTS[newLayout]);
             mInputView.setOnKeyboardActionListener(mInputMethodService);
             mLayoutId = newLayout;

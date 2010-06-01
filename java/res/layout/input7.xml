@@ -24,10 +24,10 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/keyboard_background"
         android:keyBackground="@drawable/btn_keyboard_key_ginger"
-        android:background="@drawable/background_gradient"
+        android:keyTextSize="22dip"
         android:keyTextColor="@color/latinkeyboard_key_color_black"
         android:shadowColor="@color/latinkeyboard_key_color_white"
-        android:keyTextSize="22dip"
         android:popupLayout="@layout/input7_popup"
-    />
+        />

@@ -26,12 +26,16 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIMELogs";
     private static boolean sDBG = false;
+    // SUPPRESS_EXCEPTION should be true when released to public.
+    private static final boolean SUPPRESS_EXCEPTION = false;
     // DEFAULT_LOG_ENABLED should be false when released to public.
     private static final boolean DEFAULT_LOG_ENABLED = true;
 
@@ -49,6 +53,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_THEME_ID = 7;
     private static final int ID_SETTING_AUTO_COMPLETE = 8;
     private static final int ID_VERSION = 9;
+    private static final int ID_EXCEPTION = 10;
 
     private static final String PREF_ENABLE_LOG = "enable_logging";
     private static final String PREF_DEBUG_MODE = "debug_mode";
@@ -197,6 +202,13 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    private void addExceptionEntry(long time, String[] data) {
+        if (sDBG) {
+            Log.d(TAG, "Log Exception. (1)");
+        }
+        mLogBuffer.add(new LogEntry(time, ID_EXCEPTION, data));
+    }
+
     private void flushPrivacyLogSafely() {
         if (sDBG) {
             Log.d(TAG, "Log theme Id. (" + mPrivacyLogBuffer.size() + ")");
@@ -270,6 +282,16 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                 }
                 break;
+            case ID_EXCEPTION:
+                dataStrings = (String[]) data;
+                if (dataStrings.length < 2) {
+                    if (sDBG) {
+                        Log.e(TAG, "The length of logged string array is invalid.");
+                    }
+                    break;
+                }
+                addExceptionEntry(System.currentTimeMillis(), dataStrings);
+                break;
             default:
                 if (sDBG) {
                     Log.e(TAG, "Log Tag is not entried.");
@@ -297,6 +319,12 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         reset();
         mLastTimeSend = now;
+    }
+
+    private void commitInternalAndStopSelf() {
+        Log.e(TAG, "Exception was caused and let's die.");
+        commitInternal();
+        ((LatinIME) mContext).stopSelf();
     }
 
     private synchronized void sendLogToDropBox(int tag, Object s) {
@@ -402,6 +430,23 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnInputChar(int length) {
         if (sLogEnabled) {
             sLatinImeLogger.sendLogToDropBox(ID_INPUT_COUNT, length);
+        }
+    }
+
+    public static void logOnException(String metaData, RuntimeException e) {
+        if (sLogEnabled) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PrintStream ps = new PrintStream(baos);
+            e.printStackTrace(ps);
+            String exceptionString = new String(baos.toByteArray());
+            sLatinImeLogger.sendLogToDropBox(
+                    ID_EXCEPTION, new String[] {metaData, exceptionString});
+            Log.e(TAG, "Exception: " + exceptionString);
+            if (SUPPRESS_EXCEPTION) {
+                sLatinImeLogger.commitInternalAndStopSelf();
+            } else {
+                throw e;
+            }
         }
     }
 
