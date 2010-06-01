@@ -219,7 +219,7 @@ public class LatinIME extends InputMethodService
     private final float FX_VOLUME = -1.0f;
     private boolean mSilentMode;
 
-    private String mWordSeparators;
+    /* package */ String mWordSeparators;
     private String mSentenceSeparators;
     private VoiceInput mVoiceInput;
     private VoiceResults mVoiceResults = new VoiceResults();
@@ -955,7 +955,7 @@ public class LatinIME extends InputMethodService
             case Keyboard.KEYCODE_DELETE:
                 handleBackspace();
                 mDeleteCount++;
-                LatinImeLogger.logOnDelete(1);
+                LatinImeLogger.logOnDelete();
                 break;
             case Keyboard.KEYCODE_SHIFT:
                 handleShift();
@@ -996,12 +996,12 @@ public class LatinIME extends InputMethodService
                 if (primaryCode != KEYCODE_ENTER) {
                     mJustAddedAutoSpace = false;
                 }
+                LatinImeLogger.logOnInputChar((char)primaryCode);
                 if (isWordSeparator(primaryCode)) {
                     handleSeparator(primaryCode);
                 } else {
                     handleCharacter(primaryCode, keyCodes);
                 }
-                LatinImeLogger.logOnInputChar(1);
                 // Cancel the just reverted state
                 mJustRevertedSeparator = null;
         }

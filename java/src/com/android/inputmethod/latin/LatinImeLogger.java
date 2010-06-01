@@ -33,7 +33,8 @@ import java.util.Collections;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIMELogs";
-    private static boolean sDBG = false;
+    private static final boolean DBG = true;
+    private static boolean sLOGPRINT = false;
     // SUPPRESS_EXCEPTION should be true when released to public.
     private static final boolean SUPPRESS_EXCEPTION = false;
     // DEFAULT_LOG_ENABLED should be false when released to public.
@@ -43,6 +44,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final long MINIMUMCOUNTINTERVAL = 20 * DateUtils.SECOND_IN_MILLIS; // 20 sec
     private static final long MINIMUMSENDSIZE = 40;
     private static final char SEPARATER = ';';
+    private static final char NULL_CHAR = '\uFFFC';
     private static final int ID_CLICKSUGGESTION = 0;
     private static final int ID_AUTOSUGGESTIONCANCELLED = 1;
     private static final int ID_AUTOSUGGESTION = 2;
@@ -60,14 +62,17 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final String PREF_AUTO_COMPLETE = "auto_complete";
 
     public static boolean sLogEnabled = true;
-    private static LatinImeLogger sLatinImeLogger = new LatinImeLogger();
+    /* package */ static LatinImeLogger sLatinImeLogger = new LatinImeLogger();
     // Store the last auto suggested word.
     // This is required for a cancellation log of auto suggestion of that word.
-    private static String sLastAutoSuggestBefore;
-    private static String sLastAutoSuggestAfter;
+    /* package */ static String sLastAutoSuggestBefore;
+    /* package */ static String sLastAutoSuggestAfter;
+    /* package */ static String sLastAutoSuggestSeparator;
 
     private ArrayList<LogEntry> mLogBuffer = null;
     private ArrayList<LogEntry> mPrivacyLogBuffer = null;
+    /* package */ RingCharBuffer mRingCharBuffer = null;
+
     private Context mContext = null;
     private DropBoxManager mDropBox = null;
     private long mLastTimeActive;
@@ -116,11 +121,12 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mActualCharCount = 0;
         mLogBuffer = new ArrayList<LogEntry>();
         mPrivacyLogBuffer = new ArrayList<LogEntry>();
+        mRingCharBuffer = new RingCharBuffer(context);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         sLogEnabled = prefs.getBoolean(PREF_ENABLE_LOG, DEFAULT_LOG_ENABLED);
         mThemeId = prefs.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
                 KeyboardSwitcher.DEFAULT_LAYOUT_ID);
-        sDBG = prefs.getBoolean(PREF_DEBUG_MODE, sDBG);
+        sLOGPRINT = prefs.getBoolean(PREF_DEBUG_MODE, sLOGPRINT);
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -134,13 +140,14 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mActualCharCount = 0;
         mLogBuffer.clear();
         mPrivacyLogBuffer.clear();
+        mRingCharBuffer.reset();
     }
 
     /**
      * Check if the input string is safe as an entry or not.
      */
     private static boolean checkStringDataSafe(String s) {
-        if (sDBG) {
+        if (DBG) {
             Log.d(TAG, "Check String safety: " + s);
         }
         for (int i = 0; i < s.length(); ++i) {
@@ -152,7 +159,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addCountEntry(long time) {
-        if (sDBG) {
+        if (sLOGPRINT) {
             Log.d(TAG, "Log counts. (4)");
         }
         mLogBuffer.add(new LogEntry (time, ID_DELETE_COUNT,
@@ -171,7 +178,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addThemeIdEntry(long time) {
-        if (sDBG) {
+        if (sLOGPRINT) {
             Log.d(TAG, "Log theme Id. (1)");
         }
         mLogBuffer.add(new LogEntry (time, ID_THEME_ID,
@@ -179,7 +186,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addSettingsEntry(long time) {
-        if (sDBG) {
+        if (sLOGPRINT) {
             Log.d(TAG, "Log settings. (1)");
         }
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -189,7 +196,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addVersionNameEntry(long time) {
-        if (sDBG) {
+        if (sLOGPRINT) {
             Log.d(TAG, "Log Version. (1)");
         }
         try {
@@ -203,15 +210,15 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addExceptionEntry(long time, String[] data) {
-        if (sDBG) {
+        if (sLOGPRINT) {
             Log.d(TAG, "Log Exception. (1)");
         }
         mLogBuffer.add(new LogEntry(time, ID_EXCEPTION, data));
     }
 
     private void flushPrivacyLogSafely() {
-        if (sDBG) {
-            Log.d(TAG, "Log theme Id. (" + mPrivacyLogBuffer.size() + ")");
+        if (sLOGPRINT) {
+            Log.d(TAG, "Log obfuscated data. (" + mPrivacyLogBuffer.size() + ")");
         }
         long now = System.currentTimeMillis();
         Collections.sort(mPrivacyLogBuffer);
@@ -248,7 +255,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 ++mWordCount;
                 String[] dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
-                    if (sDBG) {
+                    if (DBG) {
                         Log.e(TAG, "The length of logged string array is invalid.");
                     }
                     break;
@@ -258,7 +265,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     mPrivacyLogBuffer.add(
                             new LogEntry (System.currentTimeMillis(), tag, dataStrings));
                 } else {
-                    if (sDBG) {
+                    if (DBG) {
                         Log.d(TAG, "Skipped to add an entry because data is unsafe.");
                     }
                 }
@@ -267,7 +274,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 --mWordCount;
                 dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
-                    if (sDBG) {
+                    if (DBG) {
                         Log.e(TAG, "The length of logged string array is invalid.");
                     }
                     break;
@@ -277,7 +284,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     mPrivacyLogBuffer.add(
                             new LogEntry (System.currentTimeMillis(), tag, dataStrings));
                 } else {
-                    if (sDBG) {
+                    if (DBG) {
                         Log.d(TAG, "Skipped to add an entry because data is unsafe.");
                     }
                 }
@@ -285,7 +292,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             case ID_EXCEPTION:
                 dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
-                    if (sDBG) {
+                    if (DBG) {
                         Log.e(TAG, "The length of logged string array is invalid.");
                     }
                     break;
@@ -293,7 +300,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 addExceptionEntry(System.currentTimeMillis(), dataStrings);
                 break;
             default:
-                if (sDBG) {
+                if (DBG) {
                     Log.e(TAG, "Log Tag is not entried.");
                 }
                 break;
@@ -301,7 +308,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void commitInternal() {
-        if (sDBG) {
+        if (sLOGPRINT) {
             Log.d(TAG, "Commit (" + mLogBuffer.size() + ")");
         }
         flushPrivacyLogSafely();
@@ -312,7 +319,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         addVersionNameEntry(now);
         String s = LogSerializer.createStringFromEntries(mLogBuffer);
         if (!TextUtils.isEmpty(s)) {
-            if (sDBG) {
+            if (sLOGPRINT) {
                 Log.d(TAG, "Commit log: " + s);
             }
             mDropBox.addText(TAG, s);
@@ -329,7 +336,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private synchronized void sendLogToDropBox(int tag, Object s) {
         long now = System.currentTimeMillis();
-        if (sDBG) {
+        if (DBG) {
             String out = "";
             if (s instanceof String[]) {
                 for (String str: ((String[]) s)) {
@@ -367,7 +374,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     KeyboardSwitcher.DEFAULT_LAYOUT_ID);
             addThemeIdEntry(mLastTimeActive);
         } else if (PREF_DEBUG_MODE.equals(key)) {
-            sDBG = sharedPreferences.getBoolean(PREF_DEBUG_MODE, sDBG);
+            sLOGPRINT = sharedPreferences.getBoolean(PREF_DEBUG_MODE, sLOGPRINT);
         }
     }
 
@@ -403,7 +410,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 before = "";
                 after = "";
             }
-            String[] strings = new String[] {before, after};
+            sLastAutoSuggestSeparator =
+                String.valueOf(sLatinImeLogger.mRingCharBuffer.getLastChar());
+            String[] strings = new String[] {before, after, sLastAutoSuggestSeparator};
             synchronized (LatinImeLogger.class) {
                 sLastAutoSuggestBefore = before;
                 sLastAutoSuggestAfter = after;
@@ -415,21 +424,33 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnAutoSuggestionCanceled() {
         if (sLogEnabled) {
             if (sLastAutoSuggestBefore != null && sLastAutoSuggestAfter != null) {
-                String[] strings = new String[] {sLastAutoSuggestBefore, sLastAutoSuggestAfter};
+                String[] strings = new String[] {
+                        sLastAutoSuggestBefore, sLastAutoSuggestAfter, sLastAutoSuggestSeparator};
                 sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTIONCANCELLED, strings);
+            }
+            synchronized (LatinImeLogger.class) {
+                sLastAutoSuggestBefore = "";
+                sLastAutoSuggestAfter = "";
             }
         }
     }
 
-    public static void logOnDelete(int length) {
+    public static void logOnDelete() {
         if (sLogEnabled) {
-            sLatinImeLogger.sendLogToDropBox(ID_DELETE_COUNT, length);
+            String mLastWord = sLatinImeLogger.mRingCharBuffer.getLastString();
+            if (!TextUtils.isEmpty(mLastWord)
+                    && mLastWord.equalsIgnoreCase(sLastAutoSuggestBefore)) {
+                logOnAutoSuggestionCanceled();
+            }
+            sLatinImeLogger.mRingCharBuffer.pop();
+            sLatinImeLogger.sendLogToDropBox(ID_DELETE_COUNT, 1);
         }
     }
 
-    public static void logOnInputChar(int length) {
+    public static void logOnInputChar(char c) {
         if (sLogEnabled) {
-            sLatinImeLogger.sendLogToDropBox(ID_INPUT_COUNT, length);
+            sLatinImeLogger.mRingCharBuffer.push(c);
+            sLatinImeLogger.sendLogToDropBox(ID_INPUT_COUNT, 1);
         }
     }
 
@@ -476,6 +497,61 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 appendLogEntry(sb, String.valueOf(log.mTime), String.valueOf(log.mTag), log.mData);
             }
             return sb.toString();
+        }
+    }
+
+    /* package */ static class RingCharBuffer {
+        final int BUFSIZE = 20;
+        private Context mContext;
+        private int mEnd = 0;
+        /* package */ int length = 0;
+        private char[] mCharBuf = new char[BUFSIZE];
+
+        public RingCharBuffer(Context context) {
+            mContext = context;
+        }
+
+        private int normalize(int in) {
+            int ret = in % BUFSIZE;
+            return ret < 0 ? ret + BUFSIZE : ret;
+        }
+        public void push(char c) {
+            mCharBuf[mEnd] = c;
+            mEnd = normalize(mEnd + 1);
+            if (length < BUFSIZE) {
+                ++length;
+            }
+        }
+        public char pop() {
+            if (length < 1) {
+                return NULL_CHAR;
+            } else {
+                mEnd = normalize(mEnd - 1);
+                --length;
+                return mCharBuf[mEnd];
+            }
+        }
+        public char getLastChar() {
+            if (length < 1) {
+                return NULL_CHAR;
+            } else {
+                return mCharBuf[normalize(mEnd - 1)];
+            }
+        }
+        public String getLastString() {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < length; ++i) {
+                char c = mCharBuf[normalize(mEnd - 1 - i)];
+                if (!((LatinIME)mContext).isWordSeparator(c)) {
+                    sb.append(c);
+                } else {
+                    break;
+                }
+            }
+            return sb.reverse().toString();
+        }
+        public void reset() {
+            length = 0;
         }
     }
 }

@@ -27,7 +27,7 @@
     </application>
 
     <instrumentation android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="com.android.inputmethod.latin"
+        android:targetPackage="com.google.android.inputmethod.latin"
         android:label="LatinIME tests">
     </instrumentation>
 </manifest>

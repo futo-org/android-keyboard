@@ -241,8 +241,11 @@ public class SuggestTests extends AndroidTestCase {
      * Are accented forms of words suggested as corrections?
      */
     public void testAccents() {
-        assertTrue(isDefaultCorrection("nino", "ni\u00F1o")); // ni–o
-        assertTrue(isDefaultCorrection("nimo", "ni\u00F1o")); // ni–o
-        assertTrue(isDefaultCorrection("maria", "Mar\u00EDa")); // Mar’a
+        // ni<LATIN SMALL LETTER N WITH TILDE>o
+        assertTrue(isDefaultCorrection("nino", "ni\u00F1o"));
+        // ni<LATIN SMALL LETTER N WITH TILDE>o
+        assertTrue(isDefaultCorrection("nimo", "ni\u00F1o"));
+        // Mar<LATIN SMALL LETTER I WITH ACUTE>a
+        assertTrue(isDefaultCorrection("maria", "Mar\u00EDa"));
     }
 }
