@@ -221,6 +221,7 @@ public class LatinIME extends InputMethodService
 
     /* package */ String mWordSeparators;
     private String mSentenceSeparators;
+    private String mSuggestPuncs;
     private VoiceInput mVoiceInput;
     private VoiceResults mVoiceResults = new VoiceResults();
     private long mSwipeTriggerTimeMillis;
@@ -1116,7 +1117,7 @@ public class LatinIME extends InputMethodService
             }
         }
         if (mKeyboardSwitcher.getInputView().isShifted()) {
-            // TODO: This doesn't work with ß, need to fix it in the next release.
+            // TODO: This doesn't work with [beta], need to fix it in the next release.
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
                 return;
@@ -1549,7 +1550,8 @@ public class LatinIME extends InputMethodService
         }
 
         // If this is a punctuation, apply it through the normal key press
-        if (suggestion.length() == 1 && isWordSeparator(suggestion.charAt(0))) {
+        if (suggestion.length() == 1 && (isWordSeparator(suggestion.charAt(0))
+                || isSuggestedPunctuation(suggestion.charAt(0)))) {
             // Word separators are suggested before the user inputs something.
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnClickSuggestion(
@@ -1681,7 +1683,7 @@ public class LatinIME extends InputMethodService
         return separators.contains(String.valueOf((char)code));
     }
 
-    public boolean isSentenceSeparator(int code) {
+    private boolean isSentenceSeparator(int code) {
         return mSentenceSeparators.contains(String.valueOf((char)code));
     }
 
@@ -1952,12 +1954,16 @@ public class LatinIME extends InputMethodService
 
     private void initSuggestPuncList() {
         mSuggestPuncList = new ArrayList<CharSequence>();
-        String suggestPuncs = mResources.getString(R.string.suggested_punctuations);
-        if (suggestPuncs != null) {
-            for (int i = 0; i < suggestPuncs.length(); i++) {
-                mSuggestPuncList.add(suggestPuncs.subSequence(i, i + 1));
+        mSuggestPuncs = mResources.getString(R.string.suggested_punctuations);
+        if (mSuggestPuncs != null) {
+            for (int i = 0; i < mSuggestPuncs.length(); i++) {
+                mSuggestPuncList.add(mSuggestPuncs.subSequence(i, i + 1));
             }
         }
+    }
+
+    private boolean isSuggestedPunctuation(int code) {
+        return mSuggestPuncs.contains(String.valueOf((char)code));
     }
 
     private void showOptionsMenu() {
