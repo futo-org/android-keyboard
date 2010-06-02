@@ -85,8 +85,8 @@ public class AutoDictionary extends ExpandableDictionary {
 
     private static DatabaseHelper mOpenHelper = null;
 
-    public AutoDictionary(Context context, LatinIME ime, String locale) {
-        super(context);
+    public AutoDictionary(Context context, LatinIME ime, String locale, int dicTypeId) {
+        super(context, dicTypeId);
         mIme = ime;
         mLocale = locale;
         if (mOpenHelper == null) {

@@ -99,7 +99,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         boolean haveDictionary = false;
         conf.locale = locale;
         res.updateConfiguration(conf, res.getDisplayMetrics());
-        BinaryDictionary bd = new BinaryDictionary(this, R.raw.main);
+        BinaryDictionary bd = new BinaryDictionary(this, R.raw.main, Suggest.DIC_MAIN);
         // Is the dictionary larger than a placeholder? Arbitrarily chose a lower limit of
         // 4000-5000 words, whereas the LARGE_DICTIONARY is about 20000+ words.
         if (bd.getSize() > Suggest.LARGE_DICTIONARY_THRESHOLD / 4) {

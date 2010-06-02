@@ -331,12 +331,12 @@ public class LatinIME extends InputMethodService
         if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this, mInputLocale);
         if (mContactsDictionary == null) {
-            mContactsDictionary = new ContactsDictionary(this);
+            mContactsDictionary = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
         }
         if (mAutoDictionary != null) {
             mAutoDictionary.close();
         }
-        mAutoDictionary = new AutoDictionary(this, this, mInputLocale);
+        mAutoDictionary = new AutoDictionary(this, this, mInputLocale, Suggest.DIC_AUTO);
         mSuggest.setUserDictionary(mUserDictionary);
         mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);

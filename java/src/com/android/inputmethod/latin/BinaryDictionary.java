@@ -24,7 +24,6 @@ import java.nio.channels.Channels;
 import java.util.Arrays;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.util.Log;
 
 /**
@@ -40,6 +39,7 @@ public class BinaryDictionary extends Dictionary {
     private static final int TYPED_LETTER_MULTIPLIER = 2;
     private static final boolean ENABLE_MISSED_CHARACTERS = true;
 
+    private int mDicTypeId;
     private int mNativeDict;
     private int mDictLength;
     private int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_ALTERNATIVES];
@@ -62,10 +62,11 @@ public class BinaryDictionary extends Dictionary {
      * @param context application context for reading resources
      * @param resId the resource containing the raw binary dictionary
      */
-    public BinaryDictionary(Context context, int resId) {
+    public BinaryDictionary(Context context, int resId, int dicTypeId) {
         if (resId != 0) {
             loadDictionary(context, resId);
         }
+        mDicTypeId = dicTypeId;
     }
 
     /**
@@ -73,7 +74,7 @@ public class BinaryDictionary extends Dictionary {
      * @param context application context for reading resources
      * @param resId the resource containing the raw binary dictionary
      */
-    public BinaryDictionary(Context context, ByteBuffer byteBuffer) {
+    public BinaryDictionary(Context context, ByteBuffer byteBuffer, int dicTypeId) {
         if (byteBuffer != null) {
             if (byteBuffer.isDirect()) {
                 mNativeDictDirectBuffer = byteBuffer;
@@ -86,6 +87,7 @@ public class BinaryDictionary extends Dictionary {
             mNativeDict = openNative(mNativeDictDirectBuffer,
                     TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER);
         }
+        mDicTypeId = dicTypeId;
     }
 
     private native int openNative(ByteBuffer bb, int typedLetterMultiplier, int fullWordMultiplier);
@@ -166,7 +168,7 @@ public class BinaryDictionary extends Dictionary {
                 len++;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars, start, len, mFrequencies[j]);
+                callback.addWord(mOutputChars, start, len, mFrequencies[j], mDicTypeId);
             }
         }
     }

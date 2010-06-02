@@ -20,7 +20,6 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.provider.ContactsContract.Contacts;
 
@@ -37,21 +36,23 @@ public class ContactsDictionary extends ExpandableDictionary {
 
     private long mLastLoadedContacts;
 
-    public ContactsDictionary(Context context) {
-        super(context);
+    public ContactsDictionary(Context context, int dicTypeId) {
+        super(context, dicTypeId);
         // Perform a managed query. The Activity will handle closing and requerying the cursor
         // when needed.
         ContentResolver cres = context.getContentResolver();
 
-        cres.registerContentObserver(Contacts.CONTENT_URI, true, mObserver = new ContentObserver(null) {
-            @Override
-            public void onChange(boolean self) {
-                setRequiresReload(true);
-            }
-        });
+        cres.registerContentObserver(
+                Contacts.CONTENT_URI, true,mObserver = new ContentObserver(null) {
+                    @Override
+                    public void onChange(boolean self) {
+                        setRequiresReload(true);
+                    }
+                });
         loadDictionary();
     }
 
+    @Override
     public synchronized void close() {
         if (mObserver != null) {
             getContext().getContentResolver().unregisterContentObserver(mObserver);

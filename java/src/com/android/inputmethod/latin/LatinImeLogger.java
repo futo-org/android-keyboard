@@ -29,7 +29,9 @@ import android.util.Log;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIMELogs";
@@ -56,6 +58,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_SETTING_AUTO_COMPLETE = 8;
     private static final int ID_VERSION = 9;
     private static final int ID_EXCEPTION = 10;
+    private static final int ID_SUGGESTIONCOUNT = 11;
 
     private static final String PREF_ENABLE_LOG = "enable_logging";
     private static final String PREF_DEBUG_MODE = "debug_mode";
@@ -68,6 +71,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package */ static String sLastAutoSuggestBefore;
     /* package */ static String sLastAutoSuggestAfter;
     /* package */ static String sLastAutoSuggestSeparator;
+    private static HashMap<String, Integer> sSuggestDicMap = new HashMap<String, Integer>();
 
     private ArrayList<LogEntry> mLogBuffer = null;
     private ArrayList<LogEntry> mPrivacyLogBuffer = null;
@@ -83,6 +87,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private int mDeleteCount;
     private int mInputCount;
     private int mWordCount;
+    private int[] mAutoSuggestCountPerDic = new int[Suggest.DIC_TYPE_LAST_ID + 1];
+    private int mAutoCancelledCount;
     // ActualCharCount includes all characters that were completed.
     private int mActualCharCount;
 
@@ -119,6 +125,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mInputCount = 0;
         mWordCount = 0;
         mActualCharCount = 0;
+        Arrays.fill(mAutoSuggestCountPerDic, 0);
+        mAutoCancelledCount = 0;
         mLogBuffer = new ArrayList<LogEntry>();
         mPrivacyLogBuffer = new ArrayList<LogEntry>();
         mRingCharBuffer = new RingCharBuffer(context);
@@ -138,6 +146,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mInputCount = 0;
         mWordCount = 0;
         mActualCharCount = 0;
+        Arrays.fill(mAutoSuggestCountPerDic, 0);
+        mAutoCancelledCount = 0;
         mLogBuffer.clear();
         mPrivacyLogBuffer.clear();
         mRingCharBuffer.reset();
@@ -175,6 +185,18 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mWordCount = 0;
         mActualCharCount = 0;
         mLastTimeCountEntry = time;
+    }
+
+    private void addSuggestionCountEntry(long time) {
+        if (sLOGPRINT) {
+            Log.d(TAG, "log suggest counts. (1)");
+        }
+        String[] s = new String[mAutoSuggestCountPerDic.length + 1];
+        s[0] = String.valueOf(mAutoCancelledCount);
+        for (int i = 1; i < s.length; ++i) {
+            s[i] = String.valueOf(mAutoSuggestCountPerDic[i - 1]);
+        }
+        mLogBuffer.add(new LogEntry(time, ID_SUGGESTIONCOUNT, s));
     }
 
     private void addThemeIdEntry(long time) {
@@ -317,6 +339,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         addThemeIdEntry(now);
         addSettingsEntry(now);
         addVersionNameEntry(now);
+        addSuggestionCountEntry(now);
         String s = LogSerializer.createStringFromEntries(mLogBuffer);
         if (!TextUtils.isEmpty(s)) {
             if (sLOGPRINT) {
@@ -406,6 +429,21 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public static void logOnAutoSuggestion(String before, String after) {
         if (sLogEnabled) {
+            if (!sSuggestDicMap.containsKey(after)) {
+                if (DBG) {
+                    Log.e(TAG, "logOnAutoSuggestion was cancelled: came from unknown source.");
+                }
+                return;
+            }
+            int dicId = sSuggestDicMap.get(after);
+            sLatinImeLogger.mAutoSuggestCountPerDic[dicId]++;
+            sSuggestDicMap.clear();
+            if (dicId != Suggest.DIC_MAIN) {
+                if (DBG) {
+                    Log.d(TAG, "logOnAutoSuggestion was cancelled: didn't come from main dic.");
+                }
+                return;
+            }
             if (before.equals(after)) {
                 before = "";
                 after = "";
@@ -423,6 +461,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     public static void logOnAutoSuggestionCanceled() {
         if (sLogEnabled) {
+            sLatinImeLogger.mAutoCancelledCount++;
             if (sLastAutoSuggestBefore != null && sLastAutoSuggestAfter != null) {
                 String[] strings = new String[] {
                         sLastAutoSuggestBefore, sLastAutoSuggestAfter, sLastAutoSuggestSeparator};
@@ -468,6 +507,18 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             } else {
                 throw e;
             }
+        }
+    }
+
+    public static void onStartSuggestion() {
+        if (sLogEnabled) {
+            sSuggestDicMap.clear();
+        }
+    }
+
+    public static void onAddSuggestedWord(String word, int typeId) {
+        if (sLogEnabled) {
+            sSuggestDicMap.put(word, typeId);
         }
     }
 

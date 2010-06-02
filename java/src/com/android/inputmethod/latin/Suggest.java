@@ -38,6 +38,14 @@ public class Suggest implements Dictionary.WordCallback {
     public static final int CORRECTION_BASIC = 1;
     public static final int CORRECTION_FULL = 2;
 
+    public static final int DIC_USER_TYPED = 0;
+    public static final int DIC_MAIN = 1;
+    public static final int DIC_USER = 2;
+    public static final int DIC_AUTO = 3;
+    public static final int DIC_CONTACTS = 4;
+    // If you add a type of dictionary, increment DIC_TYPE_LAST_ID
+    public static final int DIC_TYPE_LAST_ID = 4;
+
     static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
 
     private BinaryDictionary mMainDict;
@@ -69,12 +77,12 @@ public class Suggest implements Dictionary.WordCallback {
     private int mCorrectionMode = CORRECTION_BASIC;
 
     public Suggest(Context context, int dictionaryResId) {
-        mMainDict = new BinaryDictionary(context, dictionaryResId);
+        mMainDict = new BinaryDictionary(context, dictionaryResId, DIC_MAIN);
         initPool();
     }
 
     public Suggest(Context context, ByteBuffer byteBuffer) {
-        mMainDict = new BinaryDictionary(context, byteBuffer);
+        mMainDict = new BinaryDictionary(context, byteBuffer, DIC_MAIN);
         initPool();
     }
 
@@ -177,6 +185,7 @@ public class Suggest implements Dictionary.WordCallback {
      */
     public List<CharSequence> getSuggestions(View view, WordComposer wordComposer, 
             boolean includeTypedWordIfValid) {
+        LatinImeLogger.onStartSuggestion();
         mHaveCorrection = false;
         mCapitalize = wordComposer.isCapitalized();
         collectGarbage();
@@ -191,6 +200,7 @@ public class Suggest implements Dictionary.WordCallback {
         } else {
             mLowerOriginalWord = "";
         }
+        LatinImeLogger.onAddSuggestedWord(mOriginalWord.toString(), Suggest.DIC_USER_TYPED);
         // Search the dictionary only if there are at least 2 characters
         if (wordComposer.size() > 1) {
             if (mUserDictionary != null || mContactsDictionary != null) {
@@ -301,7 +311,8 @@ public class Suggest implements Dictionary.WordCallback {
         return false;
     }
 
-    public boolean addWord(final char[] word, final int offset, final int length, final int freq) {
+    public boolean addWord(final char[] word, final int offset, final int length,
+            final int freq, final int dicTypeId) {
         int pos = 0;
         final int[] priorities = mPriorities;
         final int prefMaxSuggestions = mPrefMaxSuggestions;
@@ -320,7 +331,7 @@ public class Suggest implements Dictionary.WordCallback {
                 pos++;
             }
         }
-        
+
         if (pos >= prefMaxSuggestions) {
             return true;
         }
@@ -345,6 +356,8 @@ public class Suggest implements Dictionary.WordCallback {
             if (garbage instanceof StringBuilder) {
                 mStringPool.add(garbage);
             }
+        } else {
+            LatinImeLogger.onAddSuggestedWord(sb.toString(), dicTypeId);
         }
         return true;
     }

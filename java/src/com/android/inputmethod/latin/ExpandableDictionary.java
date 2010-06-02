@@ -16,11 +16,8 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.Dictionary.WordCallback;
-
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.SystemClock;
 
 /**
  * Base class for an in-memory dictionary that can grow dynamically and can
@@ -29,6 +26,7 @@ import android.os.SystemClock;
 public class ExpandableDictionary extends Dictionary {
     private Context mContext;
     private char[] mWordBuilder = new char[MAX_WORD_LENGTH];
+    private int mDicTypeId;
     private int mMaxDepth;
     private int mInputLength;
     private int[] mNextLettersFrequencies;
@@ -75,10 +73,11 @@ public class ExpandableDictionary extends Dictionary {
 
     private int[][] mCodes;
 
-    ExpandableDictionary(Context context) {
+    ExpandableDictionary(Context context, int dicTypeId) {
         mContext = context;
         clearDictionary();
         mCodes = new int[MAX_WORD_LENGTH][];
+        mDicTypeId = dicTypeId;
     }
 
     public void loadDictionary() {
@@ -267,7 +266,7 @@ public class ExpandableDictionary extends Dictionary {
             if (completion) {
                 word[depth] = c;
                 if (terminal) {
-                    if (!callback.addWord(word, 0, depth + 1, freq * snr)) {
+                    if (!callback.addWord(word, 0, depth + 1, freq * snr, mDicTypeId)) {
                         return;
                     }
                     // Add to frequency of next letters for predictive correction
@@ -305,7 +304,7 @@ public class ExpandableDictionary extends Dictionary {
                                         || !same(word, depth + 1, codes.getTypedWord())) {
                                     int finalFreq = freq * snr * addedAttenuation;
                                     if (skipPos < 0) finalFreq *= FULL_WORD_FREQ_MULTIPLIER;
-                                    callback.addWord(word, 0, depth + 1, finalFreq);
+                                    callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId);
                                 }
                             }
                             if (children != null) {

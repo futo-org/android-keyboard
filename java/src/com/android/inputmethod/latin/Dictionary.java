@@ -45,9 +45,10 @@ abstract public class Dictionary {
          * @param wordLength length of valid characters in the character array
          * @param frequency the frequency of occurence. This is normalized between 1 and 255, but
          * can exceed those limits
+         * @param dicTypeId of the dictionary where word was from
          * @return true if the word was added, false if no more words are required
          */
-        boolean addWord(char[] word, int wordOffset, int wordLength, int frequency);
+        boolean addWord(char[] word, int wordOffset, int wordLength, int frequency, int dicTypeId);
     }
 
     /**
