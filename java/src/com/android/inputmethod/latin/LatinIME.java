@@ -1521,6 +1521,7 @@ public class LatinIME extends InputMethodService
 
     public void pickSuggestionManually(int index, CharSequence suggestion) {
         if (mAfterVoiceInput && mShowingVoiceSuggestions) mVoiceInput.logNBestChoose(index);
+        List<CharSequence> suggestions = mCandidateView.getSuggestions();
 
         if (mAfterVoiceInput && !mShowingVoiceSuggestions) {
             mVoiceInput.flushAllTextModificationCounters();
@@ -1554,8 +1555,8 @@ public class LatinIME extends InputMethodService
                 || isSuggestedPunctuation(suggestion.charAt(0)))) {
             // Word separators are suggested before the user inputs something.
             // So, LatinImeLogger logs "" as a user's input.
-            LatinImeLogger.logOnClickSuggestion(
-                    "", suggestion.toString(), index);
+            LatinImeLogger.logOnManualSuggestion(
+                    "", suggestion.toString(), index, suggestions);
             onKey(suggestion.charAt(0), null);
             if (ic != null) {
                 ic.endBatchEdit();
@@ -1568,8 +1569,8 @@ public class LatinIME extends InputMethodService
         if (index == 0) {
             checkAddToDictionary(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
         }
-        LatinImeLogger.logOnClickSuggestion(
-                mComposing.toString(), suggestion.toString(), index);
+        LatinImeLogger.logOnManualSuggestion(mComposing.toString(), suggestion.toString(),
+                index, suggestions);
         TextEntryState.acceptedSuggestion(mComposing.toString(), suggestion);
         // Follow it with a space
         if (mAutoSpace) {

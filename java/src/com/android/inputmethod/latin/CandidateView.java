@@ -83,7 +83,6 @@ public class CandidateView extends View {
     private int mDescent;
     private boolean mScrolled;
     private boolean mShowingAddToDictionary;
-    private CharSequence mWordToAddToDictionary;
     private CharSequence mAddToDictionaryHint;
 
     private int mTargetScrollX;
@@ -220,7 +219,6 @@ public class CandidateView extends View {
         }
         int x = 0;
         final int count = Math.min(mSuggestions.size(), MAX_SUGGESTIONS);
-        final int width = getWidth();
         final Rect bgPadding = mBgPadding;
         final Paint paint = mPaint;
         final int touchX = mTouchX;
@@ -325,7 +323,6 @@ public class CandidateView extends View {
     }
 
     public void showAddToDictionaryHint(CharSequence word) {
-        mWordToAddToDictionary = word;
         ArrayList<CharSequence> suggestions = new ArrayList<CharSequence>();
         suggestions.add(word);
         suggestions.add(mAddToDictionaryHint);
@@ -376,8 +373,14 @@ public class CandidateView extends View {
             mScrolled = true;
         }
     }
-    
+
+    /* package */ List<CharSequence> getSuggestions() {
+        return mSuggestions;
+    }
+
     public void clear() {
+        // Don't call mSuggestions.clear() because it's being used for logging
+        // in LatinIME.pickSuggestionManually().
         mSuggestions = EMPTY_LIST;
         mTouchX = OUT_OF_BOUNDS;
         mSelectedString = null;
