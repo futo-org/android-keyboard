@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 
 public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    public static final int MODE_NONE = 0;
     public static final int MODE_TEXT = 1;
     public static final int MODE_SYMBOLS = 2;
     public static final int MODE_PHONE = 3;
@@ -74,7 +75,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private KeyboardId mCurrentId;
     private Map<KeyboardId, LatinKeyboard> mKeyboards;
 
-    private int mMode = MODE_TEXT; /** One of the MODE_XXX values */
+    private int mMode = MODE_NONE; /** One of the MODE_XXX values */
     private int mImeOptions;
     private int mTextMode = MODE_TEXT_QWERTY;
     private boolean mIsSymbols;
@@ -276,6 +277,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 ? new KeyboardId(R.xml.kbd_phone_symbols, hasVoice) : makeSymbolsId(hasVoice);
         }
         switch (mode) {
+            case MODE_NONE:
+                LatinImeLogger.logOnWarning(
+                        "getKeyboardId:" + mode + "," + imeOptions + "," + isSymbols);
+                /* fall through */
             case MODE_TEXT:
                 if (mTextMode == MODE_TEXT_ALPHA) {
                     return new KeyboardId(R.xml.kbd_alpha, KEYBOARDMODE_NORMAL, true, hasVoice);

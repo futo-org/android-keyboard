@@ -570,6 +570,13 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    public static void logOnWarning(String warning) {
+        if (sLogEnabled) {
+            sLatinImeLogger.sendLogToDropBox(
+                    ID_EXCEPTION, new String[] {warning, ""});
+        }
+    }
+
     public static void onStartSuggestion() {
         if (sLogEnabled) {
             sSuggestDicMap.clear();

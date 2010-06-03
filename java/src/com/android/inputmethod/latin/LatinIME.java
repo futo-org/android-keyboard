@@ -812,7 +812,8 @@ public class LatinIME extends InputMethodService
             mKeyboardSwitcher = new KeyboardSwitcher(this, this);
         }
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
-        if (mKeyboardSwitcher.getInputView() != null) {
+        if (mKeyboardSwitcher.getInputView() != null
+                && mKeyboardSwitcher.getKeyboardMode() != KeyboardSwitcher.MODE_NONE) {
             mKeyboardSwitcher.setVoiceMode(mEnableVoice && mEnableVoiceButton, mVoiceOnPrimary);
         }
         mKeyboardSwitcher.makeKeyboards(true);
