@@ -510,6 +510,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             synchronized (LatinImeLogger.class) {
                 sLastAutoSuggestBefore = "";
                 sLastAutoSuggestAfter = "";
+                sLastAutoSuggestSeparator = "";
             }
         }
     }
@@ -545,6 +546,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             if (SUPPRESS_EXCEPTION) {
                 sLatinImeLogger.commitInternalAndStopSelf();
             } else {
+                sLatinImeLogger.commitInternal();
                 throw e;
             }
         }
