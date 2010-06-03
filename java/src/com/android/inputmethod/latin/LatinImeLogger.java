@@ -441,33 +441,38 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnManualSuggestion(String before, String after, int position
             , List<CharSequence> suggestions) {
         if (sLogEnabled) {
-            if (!sSuggestDicMap.containsKey(after)) {
+            // log punctuation
+            if (before.length() == 0 && after.length() == 1) {
+                sLatinImeLogger.sendLogToDropBox(ID_MANUALSUGGESTION, new String[] {
+                        before, after, String.valueOf(position), ""});
+            } else if (!sSuggestDicMap.containsKey(after)) {
                 if (DBG) {
                     Log.e(TAG, "logOnManualSuggestion was cancelled: came from unknown source.");
                 }
-                return;
-            }
-            int dicTypeId = sSuggestDicMap.get(after);
-            sLatinImeLogger.mManualSuggestCountPerDic[dicTypeId]++;
-            sSuggestDicMap.clear();
-            if (dicTypeId != Suggest.DIC_MAIN) {
-                if (DBG) {
-                    Log.d(TAG, "logOnManualSuggestion was cancelled: didn't come from main dic.");
+            } else {
+                int dicTypeId = sSuggestDicMap.get(after);
+                sLatinImeLogger.mManualSuggestCountPerDic[dicTypeId]++;
+                if (dicTypeId != Suggest.DIC_MAIN) {
+                    if (DBG) {
+                        Log.d(TAG, "logOnManualSuggestion was cancelled: didn't come from main dic.");
+                    }
+                } else {
+                    if (before.equals(after)) {
+                        before = "";
+                        after = "";
+                    }
+                    String[] strings = new String[3 + suggestions.size()];
+                    strings[0] = before;
+                    strings[1] = after;
+                    strings[2] = String.valueOf(position);
+                    for (int i = 0; i < suggestions.size(); ++i) {
+                        String s = suggestions.get(i).toString();
+                        strings[i + 3] = sSuggestDicMap.containsKey(s) ? s : "";
+                    }
+                    sLatinImeLogger.sendLogToDropBox(ID_MANUALSUGGESTION, strings);
                 }
-                return;
             }
-            if (before.equals(after)) {
-                before = "";
-                after = "";
-            }
-            String[] strings = new String[3 + suggestions.size()];
-            strings[0] = before;
-            strings[1] = after;
-            strings[2] = String.valueOf(position);
-            for (int i = 0; i < suggestions.size(); ++i) {
-                strings[i + 3] = suggestions.get(i).toString();
-            }
-            sLatinImeLogger.sendLogToDropBox(ID_MANUALSUGGESTION, strings);
+            sSuggestDicMap.clear();
         }
     }
 
