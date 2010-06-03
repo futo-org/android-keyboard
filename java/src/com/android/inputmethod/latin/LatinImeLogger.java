@@ -555,12 +555,12 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             e.printStackTrace(ps);
-            String exceptionString = new String(baos.toByteArray(), 0,
-                    Math.min(EXCEPTION_MAX_LENGTH, baos.size()));
+            String exceptionString = URLEncoder.encode(new String(baos.toByteArray(), 0,
+                    Math.min(EXCEPTION_MAX_LENGTH, baos.size())));
             sLatinImeLogger.sendLogToDropBox(
-                    ID_EXCEPTION, new String[] {metaData, URLEncoder.encode(exceptionString)});
+                    ID_EXCEPTION, new String[] {metaData, exceptionString});
             if (sDBG) {
-                Log.e(TAG, "Exception: " + new String(baos.toByteArray()));
+                Log.e(TAG, "Exception: " + new String(baos.toByteArray())+ ":" + exceptionString);
             }
             if (SUPPRESS_EXCEPTION) {
                 sLatinImeLogger.commitInternalAndStopSelf();
