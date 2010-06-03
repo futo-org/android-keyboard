@@ -39,7 +39,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final boolean DBG = true;
     private static boolean sLOGPRINT = false;
     // SUPPRESS_EXCEPTION should be true when released to public.
-    private static final boolean SUPPRESS_EXCEPTION = false;
+    private static final boolean SUPPRESS_EXCEPTION = true;
     // DEFAULT_LOG_ENABLED should be false when released to public.
     private static final boolean DEFAULT_LOG_ENABLED = true;
 
@@ -48,6 +48,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final long MINIMUMSENDSIZE = 40;
     private static final char SEPARATER = ';';
     private static final char NULL_CHAR = '\uFFFC';
+    private static final int EXCEPTION_MAX_LENGTH = 400;
+
     private static final int ID_MANUALSUGGESTION = 0;
     private static final int ID_AUTOSUGGESTIONCANCELLED = 1;
     private static final int ID_AUTOSUGGESTION = 2;
@@ -368,7 +370,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void commitInternalAndStopSelf() {
-        Log.e(TAG, "Exception was caused and let's die.");
+        if (DBG) {
+            Log.e(TAG, "Exception was thrown and let's die.");
+        }
         commitInternal();
         LatinIME ime = ((LatinIME) mContext);
         ime.hideWindow();
@@ -539,10 +543,13 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
             e.printStackTrace(ps);
-            String exceptionString = new String(baos.toByteArray());
+            String exceptionString = new String(baos.toByteArray(), 0,
+                    Math.min(EXCEPTION_MAX_LENGTH, baos.size()));
             sLatinImeLogger.sendLogToDropBox(
                     ID_EXCEPTION, new String[] {metaData, exceptionString});
-            Log.e(TAG, "Exception: " + exceptionString);
+            if (DBG) {
+                Log.e(TAG, "Exception: " + new String(baos.toByteArray()));
+            }
             if (SUPPRESS_EXCEPTION) {
                 sLatinImeLogger.commitInternalAndStopSelf();
             } else {

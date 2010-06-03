@@ -197,8 +197,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     void setKeyboardMode(int mode, int imeOptions, boolean enableVoice) {
         mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
         mPreferSymbols = mode == MODE_SYMBOLS;
-        setKeyboardMode(mode == MODE_SYMBOLS ? MODE_TEXT : mode, imeOptions, enableVoice,
-                mPreferSymbols);
+        if (mode == MODE_SYMBOLS) {
+            mode = MODE_TEXT;
+        }
+        try {
+            setKeyboardMode(mode, imeOptions, enableVoice, mPreferSymbols);
+        } catch (RuntimeException e) {
+            LatinImeLogger.logOnException(mode + "," + imeOptions + "," + mPreferSymbols, e);
+        }
     }
 
     void setKeyboardMode(int mode, int imeOptions, boolean enableVoice, boolean isSymbols) {
@@ -213,11 +219,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputView.setPreviewEnabled(true);
         KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
         LatinKeyboard keyboard = null;
-        try {
-            keyboard = getKeyboard(id);
-        } catch (RuntimeException e) {
-            LatinImeLogger.logOnException(mode + "," + imeOptions + "," + isSymbols, e);
-        }
+        keyboard = getKeyboard(id);
 
         if (mode == MODE_PHONE) {
             mInputView.setPhoneKeyboard(keyboard);

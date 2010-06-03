@@ -275,6 +275,7 @@ public class LatinIME extends InputMethodService
     };
 
     @Override public void onCreate() {
+        LatinImeLogger.init(this);
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
         mResources = getResources();
@@ -311,7 +312,6 @@ public class LatinIME extends InputMethodService
               });
         }
         prefs.registerOnSharedPreferenceChangeListener(this);
-        LatinImeLogger.init(this);
     }
 
     private void initSuggest(String locale) {
