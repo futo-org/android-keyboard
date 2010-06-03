@@ -355,10 +355,14 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void onDestroy() {
-        mUserDictionary.close();
-        mContactsDictionary.close();
+        if (mUserDictionary != null) {
+            mUserDictionary.close();
+        }
+        if (mContactsDictionary != null) {
+            mContactsDictionary.close();
+        }
         unregisterReceiver(mReceiver);
-        if (VOICE_INSTALLED) {
+        if (VOICE_INSTALLED && mVoiceInput != null) {
             mVoiceInput.destroy();
         }
         LatinImeLogger.commit();
