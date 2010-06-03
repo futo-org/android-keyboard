@@ -550,7 +550,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public static void logOnException(String metaData, RuntimeException e) {
+    public static void logOnException(String metaData, Throwable e) {
         if (sLogEnabled) {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
             PrintStream ps = new PrintStream(baos);
@@ -566,7 +566,11 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 sLatinImeLogger.commitInternalAndStopSelf();
             } else {
                 sLatinImeLogger.commitInternal();
-                throw e;
+                if (e instanceof RuntimeException) {
+                    throw (RuntimeException) e;
+                } else if (e instanceof Error) {
+                    throw (Error) e;
+                }
             }
         }
     }

@@ -291,7 +291,11 @@ public class LatinIME extends InputMethodService
         if (inputLanguage == null) {
             inputLanguage = conf.locale.toString();
         }
-        initSuggest(inputLanguage);
+        try {
+            initSuggest(inputLanguage);
+        } catch (OutOfMemoryError e) {
+            LatinImeLogger.logOnException(inputLanguage, e);
+        }
         mOrientation = conf.orientation;
         initSuggestPuncList();
 

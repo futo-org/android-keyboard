@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.google.android.inputmethod.latin"
         android:versionCode="9"
-        android:versionName="0.15">
+        android:versionName="0.16">
 
     <uses-sdk android:minSdkVersion="8"></uses-sdk>
 

@@ -392,7 +392,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             try {
                 mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater().inflate(
                         LAYOUTS[newLayout], null);
-            } catch (RuntimeException e) {
+            } catch (OutOfMemoryError e) {
                 LatinImeLogger.logOnException(mLayoutId + "," + newLayout, e);
             }
             mInputView.setExtentionLayoutResId(LAYOUTS[newLayout]);
