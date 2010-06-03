@@ -101,7 +101,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mSymbolsId = makeSymbolsId(false);
         mSymbolsShiftedId = makeSymbolsShiftedId(false);
         mInputMethodService = ims;
-        changeLatinKeyboardView(mLayoutId, false);
     }
 
     /**
