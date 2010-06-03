@@ -28,6 +28,7 @@ import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -557,7 +558,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             String exceptionString = new String(baos.toByteArray(), 0,
                     Math.min(EXCEPTION_MAX_LENGTH, baos.size()));
             sLatinImeLogger.sendLogToDropBox(
-                    ID_EXCEPTION, new String[] {metaData, exceptionString});
+                    ID_EXCEPTION, new String[] {metaData, URLEncoder.encode(exceptionString)});
             if (sDBG) {
                 Log.e(TAG, "Exception: " + new String(baos.toByteArray()));
             }
