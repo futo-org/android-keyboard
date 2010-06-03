@@ -36,7 +36,7 @@ import java.util.List;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIMELogs";
-    private static final boolean DBG = true;
+    private static boolean sDBG = false;
     private static boolean sLOGPRINT = false;
     // SUPPRESS_EXCEPTION should be true when released to public.
     private static final boolean SUPPRESS_EXCEPTION = true;
@@ -77,6 +77,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package */ static String sLastAutoSuggestAfter;
     /* package */ static String sLastAutoSuggestSeparator;
     private static HashMap<String, Integer> sSuggestDicMap = new HashMap<String, Integer>();
+    private static DebugKeyEnabler sDebugKeyEnabler = new DebugKeyEnabler();
 
     private ArrayList<LogEntry> mLogBuffer = null;
     private ArrayList<LogEntry> mPrivacyLogBuffer = null;
@@ -142,6 +143,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mThemeId = prefs.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
                 KeyboardSwitcher.DEFAULT_LAYOUT_ID);
         sLOGPRINT = prefs.getBoolean(PREF_DEBUG_MODE, sLOGPRINT);
+        sDBG = sLOGPRINT;
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -165,7 +167,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
      * Check if the input string is safe as an entry or not.
      */
     private static boolean checkStringDataSafe(String s) {
-        if (DBG) {
+        if (sDBG) {
             Log.d(TAG, "Check String safety: " + s);
         }
         for (int i = 0; i < s.length(); ++i) {
@@ -295,7 +297,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 ++mWordCount;
                 String[] dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
-                    if (DBG) {
+                    if (sDBG) {
                         Log.e(TAG, "The length of logged string array is invalid.");
                     }
                     break;
@@ -305,7 +307,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     mPrivacyLogBuffer.add(
                             new LogEntry (System.currentTimeMillis(), tag, dataStrings));
                 } else {
-                    if (DBG) {
+                    if (sDBG) {
                         Log.d(TAG, "Skipped to add an entry because data is unsafe.");
                     }
                 }
@@ -314,7 +316,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 --mWordCount;
                 dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
-                    if (DBG) {
+                    if (sDBG) {
                         Log.e(TAG, "The length of logged string array is invalid.");
                     }
                     break;
@@ -324,7 +326,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     mPrivacyLogBuffer.add(
                             new LogEntry (System.currentTimeMillis(), tag, dataStrings));
                 } else {
-                    if (DBG) {
+                    if (sDBG) {
                         Log.d(TAG, "Skipped to add an entry because data is unsafe.");
                     }
                 }
@@ -332,7 +334,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             case ID_EXCEPTION:
                 dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
-                    if (DBG) {
+                    if (sDBG) {
                         Log.e(TAG, "The length of logged string array is invalid.");
                     }
                     break;
@@ -340,7 +342,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 addExceptionEntry(System.currentTimeMillis(), dataStrings);
                 break;
             default:
-                if (DBG) {
+                if (sDBG) {
                     Log.e(TAG, "Log Tag is not entried.");
                 }
                 break;
@@ -370,7 +372,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void commitInternalAndStopSelf() {
-        if (DBG) {
+        if (sDBG) {
             Log.e(TAG, "Exception was thrown and let's die.");
         }
         commitInternal();
@@ -381,7 +383,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private synchronized void sendLogToDropBox(int tag, Object s) {
         long now = System.currentTimeMillis();
-        if (DBG) {
+        if (sDBG) {
             String out = "";
             if (s instanceof String[]) {
                 for (String str: ((String[]) s)) {
@@ -414,12 +416,16 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             } else {
                 sLogEnabled = false;
             }
+            if (sDebugKeyEnabler.check()) {
+                sharedPreferences.edit().putBoolean(PREF_DEBUG_MODE, true).commit();
+            }
         } else if (KeyboardSwitcher.PREF_KEYBOARD_LAYOUT.equals(key)) {
             mThemeId = sharedPreferences.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
                     KeyboardSwitcher.DEFAULT_LAYOUT_ID);
             addThemeIdEntry(mLastTimeActive);
         } else if (PREF_DEBUG_MODE.equals(key)) {
             sLOGPRINT = sharedPreferences.getBoolean(PREF_DEBUG_MODE, sLOGPRINT);
+            sDBG = sLOGPRINT;
         }
     }
 
@@ -446,14 +452,14 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 sLatinImeLogger.sendLogToDropBox(ID_MANUALSUGGESTION, new String[] {
                         before, after, String.valueOf(position), ""});
             } else if (!sSuggestDicMap.containsKey(after)) {
-                if (DBG) {
+                if (sDBG) {
                     Log.e(TAG, "logOnManualSuggestion was cancelled: came from unknown source.");
                 }
             } else {
                 int dicTypeId = sSuggestDicMap.get(after);
                 sLatinImeLogger.mManualSuggestCountPerDic[dicTypeId]++;
                 if (dicTypeId != Suggest.DIC_MAIN) {
-                    if (DBG) {
+                    if (sDBG) {
                         Log.d(TAG, "logOnManualSuggestion was cancelled: didn't come from main dic.");
                     }
                 } else {
@@ -479,7 +485,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnAutoSuggestion(String before, String after) {
         if (sLogEnabled) {
             if (!sSuggestDicMap.containsKey(after)) {
-                if (DBG) {
+                if (sDBG) {
                     Log.e(TAG, "logOnAutoSuggestion was cancelled: came from unknown source.");
                 }
                 return;
@@ -488,7 +494,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             sLatinImeLogger.mAutoSuggestCountPerDic[dicId]++;
             sSuggestDicMap.clear();
             if (dicId != Suggest.DIC_MAIN) {
-                if (DBG) {
+                if (sDBG) {
                     Log.d(TAG, "logOnAutoSuggestion was cancelled: didn't come from main dic.");
                 }
                 return;
@@ -552,7 +558,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     Math.min(EXCEPTION_MAX_LENGTH, baos.size()));
             sLatinImeLogger.sendLogToDropBox(
                     ID_EXCEPTION, new String[] {metaData, exceptionString});
-            if (DBG) {
+            if (sDBG) {
                 Log.e(TAG, "Exception: " + new String(baos.toByteArray()));
             }
             if (SUPPRESS_EXCEPTION) {
@@ -657,6 +663,20 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         public void reset() {
             length = 0;
+        }
+    }
+
+    private static class DebugKeyEnabler {
+        private int mCounter = 0;
+        private long mLastTime = 0;
+        public boolean check() {
+            if (System.currentTimeMillis() - mLastTime > 10 * 1000) {
+                mCounter = 0;
+                mLastTime = System.currentTimeMillis();
+            } else if (++mCounter >= 10) {
+                return true;
+            }
+            return false;
         }
     }
 }

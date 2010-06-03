@@ -74,7 +74,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private KeyboardId mCurrentId;
     private Map<KeyboardId, LatinKeyboard> mKeyboards;
 
-    private int mMode; /** One of the MODE_XXX values */
+    private int mMode = MODE_TEXT; /** One of the MODE_XXX values */
     private int mImeOptions;
     private int mTextMode = MODE_TEXT_QWERTY;
     private boolean mIsSymbols;

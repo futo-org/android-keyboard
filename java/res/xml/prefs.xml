@@ -107,5 +107,4 @@
             android:persistent="true"
             android:defaultValue="false"
             />
-
 </PreferenceScreen>
