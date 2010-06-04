@@ -292,9 +292,6 @@ public class LatinKeyboard extends Keyboard {
             if (mF1Key != null) {
                 mF1Key.icon = mMicIcon;
             }
-            if (mSpaceKey != null) {
-                mSpaceKey.icon = mSpaceIcon;
-            }
         } else {
             mShiftLockIcon = mRes.getDrawable(R.drawable.sym_keyboard_shift_locked);
             mSpaceIcon = mRes.getDrawable(R.drawable.sym_keyboard_space);
@@ -303,9 +300,10 @@ public class LatinKeyboard extends Keyboard {
             if (mF1Key != null) {
                 mF1Key.icon = mMicIcon;
             }
-            if (mSpaceKey != null) {
-                mSpaceKey.icon = mSpaceIcon;
-            }
+        }
+        if (mSpaceKey != null) {
+            mSpaceKey.icon = mSpaceIcon;
+            updateSpaceBarForLocale(f);
         }
     }
 
@@ -346,7 +344,7 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    private void updateSpaceBarForLocale() {
+    private void updateSpaceBarForLocale(boolean isBlack) {
         if (mLocale != null) {
             // Create the graphic for spacebar
             Bitmap buffer = Bitmap.createBitmap(mSpaceKey.width, mSpaceIcon.getIntrinsicHeight(),
@@ -356,7 +354,8 @@ public class LatinKeyboard extends Keyboard {
             mSpaceKey.icon = new BitmapDrawable(mRes, buffer);
             mSpaceKey.repeatable = mLanguageSwitcher.getLocaleCount() < 2;
         } else {
-            mSpaceKey.icon = mRes.getDrawable(R.drawable.sym_keyboard_space);
+            mSpaceKey.icon = isBlack ? mRes.getDrawable(R.drawable.sym_bkeyboard_space)
+                : mRes.getDrawable(R.drawable.sym_keyboard_space);
             mSpaceKey.repeatable = true;
         }
     }
@@ -461,7 +460,7 @@ public class LatinKeyboard extends Keyboard {
         }
         if (mLocale != null && mLocale.equals(locale)) return;
         mLocale = locale;
-        updateSpaceBarForLocale();
+        updateSpaceBarForLocale(mIsBlackSym);
     }
 
     boolean isCurrentlyInSpace() {
