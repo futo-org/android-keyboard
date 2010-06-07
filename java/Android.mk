@@ -7,7 +7,7 @@ LOCAL_SRC_FILES := $(call all-subdir-java-files)
 
 LOCAL_PACKAGE_NAME := LatinIme2Google
 
-LOCAL_CERTIFICATE := shared
+LOCAL_CERTIFICATE := vendor/google/certs/app
 
 LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime2
 
