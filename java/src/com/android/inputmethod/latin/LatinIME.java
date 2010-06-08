@@ -291,11 +291,18 @@ public class LatinIME extends InputMethodService
         if (inputLanguage == null) {
             inputLanguage = conf.locale.toString();
         }
-        try {
-            initSuggest(inputLanguage);
-        } catch (OutOfMemoryError e) {
-            LatinImeLogger.logOnException(inputLanguage, e);
+
+        LatinIMEUtil.GCUtils.getInstance().reset();
+        boolean tryGC = true;
+        for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+            try {
+                initSuggest(inputLanguage);
+                tryGC = false;
+            } catch (OutOfMemoryError e) {
+                tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(inputLanguage, e);
+            }
         }
+
         mOrientation = conf.orientation;
         initSuggestPuncList();
 

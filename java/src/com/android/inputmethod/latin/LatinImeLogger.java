@@ -37,7 +37,7 @@ import java.util.List;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIMELogs";
-    private static boolean sDBG = false;
+    public static boolean sDBG = false;
     private static boolean sLOGPRINT = false;
     // SUPPRESS_EXCEPTION should be true when released to public.
     private static final boolean SUPPRESS_EXCEPTION = true;

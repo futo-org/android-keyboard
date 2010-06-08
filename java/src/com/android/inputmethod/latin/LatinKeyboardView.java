@@ -472,10 +472,15 @@ public class LatinKeyboardView extends KeyboardView {
 
     @Override
     public void draw(Canvas c) {
-        try {
-            super.draw(c);
-        } catch (OutOfMemoryError e) {
-            LatinImeLogger.logOnException("draw in LatinKeybaordView", e);
+        LatinIMEUtil.GCUtils.getInstance().reset();
+        boolean tryGC = true;
+        for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+            try {
+                super.draw(c);
+                tryGC = false;
+            } catch (OutOfMemoryError e) {
+                tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait("LatinKeyboardView", e);
+            }
         }
         if (DEBUG_AUTO_PLAY) {
             if (mPlaying) {

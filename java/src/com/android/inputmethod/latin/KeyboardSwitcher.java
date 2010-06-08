@@ -389,11 +389,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (LAYOUTS.length <= newLayout) {
                 newLayout = Integer.valueOf(DEFAULT_LAYOUT_ID);
             }
-            try {
-                mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater().inflate(
-                        LAYOUTS[newLayout], null);
-            } catch (OutOfMemoryError e) {
-                LatinImeLogger.logOnException(mLayoutId + "," + newLayout, e);
+
+            LatinIMEUtil.GCUtils.getInstance().reset();
+            boolean tryGC = true;
+            for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+                try {
+                    mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater(
+                            ).inflate(LAYOUTS[newLayout], null);
+                    tryGC = false;
+                } catch (OutOfMemoryError e) {
+                    tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(
+                            mLayoutId + "," + newLayout, e);
+                }
             }
             mInputView.setExtentionLayoutResId(LAYOUTS[newLayout]);
             mInputView.setOnKeyboardActionListener(mInputMethodService);
