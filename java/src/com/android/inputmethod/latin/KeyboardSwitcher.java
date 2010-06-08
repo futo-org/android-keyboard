@@ -25,6 +25,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.view.InflateException;
 
 public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -398,6 +399,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                             ).inflate(LAYOUTS[newLayout], null);
                     tryGC = false;
                 } catch (OutOfMemoryError e) {
+                    tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(
+                            mLayoutId + "," + newLayout, e);
+                } catch (InflateException e) {
                     tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(
                             mLayoutId + "," + newLayout, e);
                 }

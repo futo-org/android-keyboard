@@ -24,7 +24,7 @@ public class LatinIMEUtil {
         private static final String TAG = "GCUtils";
         public static final int GC_TRY_COUNT = 2;
         // GC_TRY_LOOP_MAX is used for the hard limit of GC wait,
-        // GC_TRY_LOOP_MAX should be GC_TRY_COUNT.
+        // GC_TRY_LOOP_MAX should be greater than GC_TRY_COUNT.
         public static final int GC_TRY_LOOP_MAX = 5;
         private static final long GC_INTERVAL = DateUtils.SECOND_IN_MILLIS;
         private static GCUtils sInstance = new GCUtils();
@@ -38,15 +38,15 @@ public class LatinIMEUtil {
             mGCTryCount = 0;
         }
 
-        public boolean tryGCOrWait(String metaData, OutOfMemoryError oome) {
+        public boolean tryGCOrWait(String metaData, Throwable t) {
             if (LatinImeLogger.sDBG) {
-                Log.d(TAG, "Encountered Out of memory Error. Try GC.");
+                Log.d(TAG, "Encountered Exception or Error. Try GC.");
             }
             if (mGCTryCount == 0) {
                 System.gc();
             }
             if (++mGCTryCount > GC_TRY_COUNT) {
-                LatinImeLogger.logOnException(metaData, oome);
+                LatinImeLogger.logOnException(metaData, t);
                 return false;
             } else {
                 try {
@@ -54,7 +54,7 @@ public class LatinIMEUtil {
                     return true;
                 } catch (InterruptedException e) {
                     Log.e(TAG, "Sleep was interrupted.");
-                    LatinImeLogger.logOnException(metaData, oome);
+                    LatinImeLogger.logOnException(metaData, t);
                     return false;
                 }
             }
