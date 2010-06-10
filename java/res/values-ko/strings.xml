@@ -87,7 +87,7 @@
     <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"음성 입력은 Google의 네트워크화된 음성 인식을 사용하는 실험적 기능입니다."</string>
     <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"음성 입력을 사용하지 않으려면 키보드 설정으로 이동하세요."</string>
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"음성 입력을 사용하려면 마이크 버튼을 누르거나 터치 키보드 위로 손가락을 미끄러지듯 움직이세요."</string>
-    <string name="voice_listening" msgid="467518160751321844">"지금 시작하세요."</string>
+    <string name="voice_listening" msgid="467518160751321844">"지금 말하세요."</string>
     <string name="voice_working" msgid="6666937792815731889">"인식 중"</string>
     <!-- no translation found for voice_initializing (661962047129906646) -->
     <skip />
