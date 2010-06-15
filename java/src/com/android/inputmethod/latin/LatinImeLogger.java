@@ -65,6 +65,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_MANUALSUGGESTIONCOUNT = 11;
     private static final int ID_AUTOSUGGESTIONCANCELLEDCOUNT = 12;
     private static final int ID_AUTOSUGGESTIONCOUNT = 13;
+    private static final int ID_LANGUAGES = 14;
 
     private static final String PREF_ENABLE_LOG = "enable_logging";
     private static final String PREF_DEBUG_MODE = "debug_mode";
@@ -92,6 +93,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private long mLastTimeCountEntry;
 
     private String mThemeId;
+    private String mSelectedLanguages;
+    private String mCurrentLanguage;
     private int mDeleteCount;
     private int mInputCount;
     private int mWordCount;
@@ -143,6 +146,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         sLogEnabled = prefs.getBoolean(PREF_ENABLE_LOG, DEFAULT_LOG_ENABLED);
         mThemeId = prefs.getString(KeyboardSwitcher.PREF_KEYBOARD_LAYOUT,
                 KeyboardSwitcher.DEFAULT_LAYOUT_ID);
+        mSelectedLanguages = prefs.getString(LatinIME.PREF_SELECTED_LANGUAGES, "");
+        mCurrentLanguage = prefs.getString(LatinIME.PREF_INPUT_LANGUAGE, "");
         sLOGPRINT = prefs.getBoolean(PREF_DEBUG_MODE, sLOGPRINT);
         sDBG = sLOGPRINT;
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -231,6 +236,19 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         mLogBuffer.add(new LogEntry (time, ID_THEME_ID,
                 new String[] {mThemeId}));
+    }
+
+    private void addLanguagesEntry(long time) {
+        if (sLOGPRINT) {
+            Log.d(TAG, "Log language settings. (1)");
+        }
+        // CurrentLanguage and SelectedLanguages will be blank if user doesn't use multi-language
+        // switching.
+        if (TextUtils.isEmpty(mCurrentLanguage)) {
+            mCurrentLanguage = mContext.getResources().getConfiguration().locale.toString();
+        }
+        mLogBuffer.add(new LogEntry (time, ID_LANGUAGES,
+                new String[] {mCurrentLanguage , mSelectedLanguages}));
     }
 
     private void addSettingsEntry(long time) {
@@ -363,6 +381,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         long now = System.currentTimeMillis();
         addCountEntry(now);
         addThemeIdEntry(now);
+        addLanguagesEntry(now);
         addSettingsEntry(now);
         addVersionNameEntry(now);
         addSuggestionCountEntry(now);
@@ -432,6 +451,11 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         } else if (PREF_DEBUG_MODE.equals(key)) {
             sLOGPRINT = sharedPreferences.getBoolean(PREF_DEBUG_MODE, sLOGPRINT);
             sDBG = sLOGPRINT;
+        } else if (LatinIME.PREF_INPUT_LANGUAGE.equals(key)) {
+            mCurrentLanguage = sharedPreferences.getString(LatinIME.PREF_INPUT_LANGUAGE, "");
+            addLanguagesEntry(mLastTimeActive);
+        } else if (LatinIME.PREF_INPUT_LANGUAGE.equals(key)) {
+            mSelectedLanguages = sharedPreferences.getString(LatinIME.PREF_SELECTED_LANGUAGES, "");
         }
     }
 
