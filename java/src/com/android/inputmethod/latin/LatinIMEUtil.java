@@ -16,10 +16,25 @@
 
 package com.android.inputmethod.latin;
 
+import android.os.AsyncTask;
 import android.text.format.DateUtils;
 import android.util.Log;
 
 public class LatinIMEUtil {
+
+    /**
+     * Cancel an {@link AsyncTask}.
+     *
+     * @param mayInterruptIfRunning <tt>true</tt> if the thread executing this
+     *        task should be interrupted; otherwise, in-progress tasks are allowed
+     *        to complete.
+     */
+    public static void cancelTask(AsyncTask<?, ?, ?> task, boolean mayInterruptIfRunning) {
+        if (task != null && task.getStatus() != AsyncTask.Status.FINISHED) {
+            task.cancel(mayInterruptIfRunning);
+        }
+    }
+
     public static class GCUtils {
         private static final String TAG = "GCUtils";
         public static final int GC_TRY_COUNT = 2;

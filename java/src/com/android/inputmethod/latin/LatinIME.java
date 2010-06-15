@@ -373,6 +373,7 @@ public class LatinIME extends InputMethodService
             mVoiceInput.destroy();
         }
         LatinImeLogger.commit();
+        LatinImeLogger.onDestroy();
         super.onDestroy();
     }
 

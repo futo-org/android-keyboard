@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.os.AsyncTask;
 import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
@@ -88,6 +89,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
 
     private Context mContext = null;
     private DropBoxManager mDropBox = null;
+    private AddTextToDropBoxTask mAddTextToDropBoxTask;
     private long mLastTimeActive;
     private long mLastTimeSend;
     private long mLastTimeCountEntry;
@@ -123,6 +125,29 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 return -1;
             }
             return log2.mData[0].compareTo(mData[0]);
+        }
+    }
+
+    private class AddTextToDropBoxTask extends AsyncTask<Void, Void, Void> {
+        private final DropBoxManager mDropBox;
+        private final long mTime;
+        private final String mData;
+        public AddTextToDropBoxTask(DropBoxManager db, long time, String data) {
+            mDropBox = db;
+            mTime = time;
+            mData = data;
+        }
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (sLOGPRINT) {
+                Log.d(TAG, "Commit log: " + mData);
+            }
+            mDropBox.addText(TAG, mData);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void v) {
+            mLastTimeSend = mTime;
         }
     }
 
@@ -167,6 +192,10 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         mLogBuffer.clear();
         mPrivacyLogBuffer.clear();
         mRingCharBuffer.reset();
+    }
+
+    public void destroy() {
+        LatinIMEUtil.cancelTask(mAddTextToDropBoxTask, false);
     }
 
     /**
@@ -374,26 +403,25 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void commitInternal() {
-        if (sLOGPRINT) {
-            Log.d(TAG, "Commit (" + mLogBuffer.size() + ")");
-        }
-        flushPrivacyLogSafely();
-        long now = System.currentTimeMillis();
-        addCountEntry(now);
-        addThemeIdEntry(now);
-        addLanguagesEntry(now);
-        addSettingsEntry(now);
-        addVersionNameEntry(now);
-        addSuggestionCountEntry(now);
-        String s = LogSerializer.createStringFromEntries(mLogBuffer);
-        if (!TextUtils.isEmpty(s)) {
+        // if there is no log entry in mLogBuffer, will not send logs to DropBox.
+        if (!mLogBuffer.isEmpty() && (mAddTextToDropBoxTask == null
+                || mAddTextToDropBoxTask.getStatus() == AsyncTask.Status.FINISHED)) {
             if (sLOGPRINT) {
-                Log.d(TAG, "Commit log: " + s);
+                Log.d(TAG, "Commit (" + mLogBuffer.size() + ")");
             }
-            mDropBox.addText(TAG, s);
+            flushPrivacyLogSafely();
+            long now = System.currentTimeMillis();
+            addCountEntry(now);
+            addThemeIdEntry(now);
+            addLanguagesEntry(now);
+            addSettingsEntry(now);
+            addVersionNameEntry(now);
+            addSuggestionCountEntry(now);
+            String s = LogSerializer.createStringFromEntries(mLogBuffer);
+            reset();
+            mAddTextToDropBoxTask = (AddTextToDropBoxTask) new AddTextToDropBoxTask(
+                    mDropBox, now, s).execute();
         }
-        reset();
-        mLastTimeSend = now;
     }
 
     private void commitInternalAndStopSelf() {
@@ -471,6 +499,11 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 sLatinImeLogger.commitInternal();
             }
         }
+    }
+
+    public static void onDestroy() {
+        sLatinImeLogger.commitInternal();
+        sLatinImeLogger.destroy();
     }
 
     // TODO: Handle CharSequence instead of String
