@@ -22,7 +22,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
@@ -32,7 +31,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.PopupWindow;
 
-public class LatinKeyboardView extends KeyboardView {
+public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     static final int KEYCODE_OPTIONS = -100;
     static final int KEYCODE_SHIFT_LONGPRESS = -101;

@@ -32,7 +32,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
 import android.media.AudioManager;
 import android.os.Debug;
 import android.os.Handler;
@@ -74,7 +73,7 @@ import java.util.Map;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService
-        implements KeyboardView.OnKeyboardActionListener,
+        implements LatinKeyboardBaseView.OnKeyboardActionListener,
         VoiceInput.UiListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIME";

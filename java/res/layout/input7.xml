@@ -20,14 +20,16 @@
 
 <com.android.inputmethod.latin.LatinKeyboardView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@android:id/keyboardView"
+        xmlns:latin="http://schemas.android.com/apk/res/com.google.android.inputmethod.latin"
+        android:id="@+id/LatinkeyboardBaseView"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/keyboard_background"
-        android:keyBackground="@drawable/btn_keyboard_key_ginger"
-        android:keyTextSize="22dip"
-        android:keyTextColor="@color/latinkeyboard_key_color_black"
-        android:shadowColor="@color/latinkeyboard_key_color_white"
-        android:popupLayout="@layout/input7_popup"
+
+        latin:keyBackground="@drawable/btn_keyboard_key_ginger"
+        latin:keyTextSize="22dip"
+        latin:keyTextColor="@color/latinkeyboard_key_color_black"
+        latin:shadowColor="@color/latinkeyboard_key_color_white"
+        latin:popupLayout="@layout/input7_popup"
         />
