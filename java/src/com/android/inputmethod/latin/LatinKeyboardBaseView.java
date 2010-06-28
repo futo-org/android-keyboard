@@ -165,6 +165,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     private Map<Key,View> mMiniKeyboardCache;
     private int[] mWindowOffset;
     private Key[] mKeys;
+    private Typeface mKeyTextStyle = Typeface.DEFAULT;
+    private int mSymbolColorScheme = 0;
 
     /** Listener for {@link OnKeyboardActionListener}. */
     private OnKeyboardActionListener mKeyboardActionListener;
@@ -333,6 +335,24 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
             case R.styleable.LatinKeyboardBaseView_backgroundDimAmount:
                 mBackgroundDimAmount = a.getFloat(attr, 0.5f);
+                break;
+            //case android.R.styleable.
+            case R.styleable.LatinKeyboardBaseView_keyTextStyle:
+                int textStyle = a.getInt(attr, 0);
+                switch (textStyle) {
+                    case 0:
+                        mKeyTextStyle = Typeface.DEFAULT;
+                        break;
+                    case 1:
+                        mKeyTextStyle = Typeface.DEFAULT_BOLD;
+                        break;
+                    default:
+                        mKeyTextStyle = Typeface.defaultFromStyle(textStyle);
+                        break;
+                }
+                break;
+            case R.styleable.LatinKeyboardBaseView_symbolColorScheme:
+                mSymbolColorScheme = a.getInt(attr, 0);
                 break;
             }
         }
@@ -526,6 +546,10 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         return mShowPreview;
     }
 
+    public int getSymbolColorSheme() {
+        return mSymbolColorScheme;
+    }
+
     public void setVerticalCorrection(int verticalOffset) {
     }
 
@@ -693,7 +717,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     paint.setTypeface(Typeface.DEFAULT_BOLD);
                 } else {
                     paint.setTextSize(mKeyTextSize);
-                    paint.setTypeface(Typeface.DEFAULT);
+                    paint.setTypeface(mKeyTextStyle);
                 }
                 // Draw a drop shadow for the text
                 paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
@@ -894,7 +918,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 mPreviewText.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
                 mPreviewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSizeLarge);
-                mPreviewText.setTypeface(Typeface.DEFAULT);
+                mPreviewText.setTypeface(mKeyTextStyle);
             }
         }
         mPreviewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),

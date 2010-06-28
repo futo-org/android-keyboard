@@ -48,10 +48,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public static final int KEYBOARDMODE_IM = R.id.mode_im;
     public static final int KEYBOARDMODE_WEB = R.id.mode_webentry;
 
-    public static final String DEFAULT_LAYOUT_ID = "2";
+    public static final String DEFAULT_LAYOUT_ID = "3";
     public static final String PREF_KEYBOARD_LAYOUT = "keyboard_layout";
     private static final int[] LAYOUTS = new int [] {
-        R.layout.input, R.layout.input2, R.layout.input7};
+        R.layout.input_basic, R.layout.input_basic_highcontrast, R.layout.input_stone_normal,
+        R.layout.input_stone_bold};
 
     private static final int SYMBOLS_MODE_STATE_NONE = 0;
     private static final int SYMBOLS_MODE_STATE_BEGIN = 1;
@@ -424,8 +425,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    // TODO: Generalize for any theme
     public boolean isBlackSym () {
-        return (mLayoutId == 6);
+        if (mInputView != null && mInputView.getSymbolColorSheme() == 1) {
+            return true;
+        }
+        return false;
     }
 }

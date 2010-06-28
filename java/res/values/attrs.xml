@@ -52,6 +52,18 @@
         <attr name="shadowColor" format="color" />
         <attr name="shadowRadius" format="float" />
         <attr name="backgroundDimAmount" format="float" />
+
+        <attr name="keyTextStyle">
+            <flag name="normal" value="0" />
+            <flag name="bold" value="1" />
+            <flag name="italic" value="2" />
+        </attr>
+
+        <attr name="symbolColorScheme">
+            <flag name="white" value="0" />
+            <flag name="black" value="1" />
+        </attr>
+
     </declare-styleable>
 
 </resources>

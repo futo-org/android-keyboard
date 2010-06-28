@@ -31,5 +31,6 @@
         latin:keyTextSize="22dip"
         latin:keyTextColor="@color/latinkeyboard_key_color_black"
         latin:shadowColor="@color/latinkeyboard_key_color_white"
-        latin:popupLayout="@layout/input7_popup"
+        latin:symbolColorScheme="black"
+        latin:popupLayout="@layout/input_stone_popup"
         />

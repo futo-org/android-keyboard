@@ -30,5 +30,6 @@
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
+        <item name="symbolColorScheme">white</item>
     </style>
 </resources>

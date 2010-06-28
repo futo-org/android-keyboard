@@ -264,8 +264,10 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             Log.d(TAG, "Log theme Id. (1)");
         }
         // TODO: Not to convert theme ID here. Currently "2" is treated as "6" in a log server.
-        if (mThemeId == "2") {
+        if (mThemeId.equals("2")) {
             mThemeId = "6";
+        } else if (mThemeId.equals("3")) {
+            mThemeId = "7";
         }
         mLogBuffer.add(new LogEntry (time, ID_THEME_ID,
                 new String[] {mThemeId}));
