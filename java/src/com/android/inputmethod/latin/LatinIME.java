@@ -508,7 +508,6 @@ public class LatinIME extends InputMethodService
         mShowingVoiceSuggestions = false;
         mImmediatelyAfterVoiceSuggestions = false;
         mVoiceInputHighlighted = false;
-        mWordToSuggestions.clear();
         mInputTypeNoAutoCorrect = false;
         mPredictionOn = false;
         mCompletionOn = false;
@@ -702,29 +701,6 @@ public class LatinIME extends InputMethodService
                 postUpdateOldSuggestions();
             }
         }
-
-        if (VOICE_INSTALLED) {
-            if (mShowingVoiceSuggestions) {
-                if (mImmediatelyAfterVoiceSuggestions) {
-                    mImmediatelyAfterVoiceSuggestions = false;
-                } else {
-                    updateSuggestions();
-                    mShowingVoiceSuggestions = false;
-                }
-            }
-            if (VoiceInput.ENABLE_WORD_CORRECTIONS) {
-                // If we have alternatives for the current word, then show them.
-                String word = EditingUtil.getWordAtCursor(
-                        getCurrentInputConnection(), getWordSeparators());
-                if (word != null && mWordToSuggestions.containsKey(word.trim())) {
-                    mSuggestionShouldReplaceCurrentWord = true;
-                    final List<CharSequence> suggestions = mWordToSuggestions.get(word.trim());
-
-                    setSuggestions(suggestions, false, true, true);
-                    setCandidatesViewShown(true);
-                }
-            }
-        }
     }
 
     @Override
@@ -745,6 +721,7 @@ public class LatinIME extends InputMethodService
                 mVoiceInput.cancel();
             }
         }
+        mWordToSuggestions.clear();
         mWordHistory.clear();
         super.hideWindow();
         TextEntryState.endSession();
@@ -1512,9 +1489,6 @@ public class LatinIME extends InputMethodService
         // Show N-Best alternates, if there is more than one choice.
         if (nBest.size() > 1) {
             mImmediatelyAfterVoiceSuggestions = true;
-            mShowingVoiceSuggestions = true;
-            setSuggestions(nBest.subList(1, nBest.size()), false, true, true);
-            setCandidatesViewShown(true);
         }
         mVoiceInputHighlighted = true;
         mWordToSuggestions.putAll(mVoiceResults.alternatives);
@@ -1682,6 +1656,29 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    private void rememberReplacedWord(CharSequence suggestion) {
+        if (mShowingVoiceSuggestions) {
+            // Retain the replaced word in the alternatives array.
+            InputConnection ic = getCurrentInputConnection();
+            EditingUtil.Range range = new EditingUtil.Range();
+            String wordToBeReplaced = EditingUtil.getWordAtCursor(getCurrentInputConnection(),
+                                                                  mWordSeparators, range).trim();
+            if (!mWordToSuggestions.containsKey(wordToBeReplaced)) {
+              wordToBeReplaced = wordToBeReplaced.toLowerCase();
+            }
+            if (mWordToSuggestions.containsKey(wordToBeReplaced)) {
+                List<CharSequence> suggestions = mWordToSuggestions.get(wordToBeReplaced);
+                if (suggestions.contains(suggestion)) {
+                    suggestions.remove(suggestion);
+                }
+                suggestions.add(wordToBeReplaced);
+                mWordToSuggestions.remove(wordToBeReplaced);
+                mWordToSuggestions.put(suggestion.toString(), suggestions);
+            }
+        }
+        // TODO: implement rememberReplacedWord for typed words
+    }
+
     private void pickSuggestion(CharSequence suggestion) {
         if (mCapsLock) {
             suggestion = suggestion.toString().toUpperCase();
@@ -1692,6 +1689,7 @@ public class LatinIME extends InputMethodService
         }
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
+            rememberReplacedWord(suggestion);
             if (mSuggestionShouldReplaceCurrentWord) {
                 EditingUtil.deleteWordAtCursor(ic, getWordSeparators());
             }
@@ -1710,6 +1708,7 @@ public class LatinIME extends InputMethodService
     private void setOldSuggestions() {
         // TODO: Inefficient to check if touching word and then get the touching word. Do it
         // in one go.
+        mShowingVoiceSuggestions = false;
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         ic.beginBatchEdit();
@@ -1727,7 +1726,35 @@ public class LatinIME extends InputMethodService
                 if (mWordSeparators.indexOf(touching.charAt(touching.length() - 1)) > 0) {
                     touching = touching.toString().substring(0, touching.length() - 1);
                 }
-                // Search for result in word history
+
+                // Search for result in spoken word alternatives
+                // TODO: possibly combine the spoken suggestions with the typed suggestions.
+                String selectedWord = touching.toString().trim();
+                if (!mWordToSuggestions.containsKey(selectedWord)){
+                    selectedWord = selectedWord.toLowerCase();
+                }
+                if (mWordToSuggestions.containsKey(selectedWord)){
+                    mShowingVoiceSuggestions = true;
+                    mSuggestionShouldReplaceCurrentWord = true;
+                    underlineWord(touching, range.charsBefore, range.charsAfter);
+                    List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
+                    // If the first letter of touching is capitalized, make all the suggestions
+                    // start with a capital letter.
+                    if (Character.isUpperCase((char) touching.charAt(0))) {
+                        for (int i=0; i< suggestions.size(); i++) {
+                            String origSugg = (String) suggestions.get(i);
+                            String capsSugg = origSugg.toUpperCase().charAt(0)
+                                + origSugg.subSequence(1, origSugg.length()).toString();
+                            suggestions.set(i,capsSugg);
+                        }
+                    }
+                    setSuggestions(suggestions, false, true, true);
+                    setCandidatesViewShown(true);
+                    TextEntryState.selectedForCorrection();
+                    ic.endBatchEdit();
+                    return;
+                }
+                // If we didn't find a match, search for result in word history
                 WordComposer foundWord = null;
                 WordAlternatives alternatives = null;
                 for (WordAlternatives entry : mWordHistory) {

@@ -63,7 +63,7 @@ public class VoiceInput implements OnClickListener {
 
     // WARNING! Before enabling this, fix the problem with calling getExtractedText() in
     // landscape view. It causes Extracted text updates to be rejected due to a token mismatch
-    public static boolean ENABLE_WORD_CORRECTIONS = false;
+    public static boolean ENABLE_WORD_CORRECTIONS = true;
 
     // Dummy word suggestion which means "delete current word"
     public static final String DELETE_SYMBOL = " \u00D7 ";  // times symbol
@@ -308,7 +308,7 @@ public class VoiceInput implements OnClickListener {
                 SettingsUtil.getSettingsInt(
                         mContext.getContentResolver(),
                         SettingsUtil.LATIN_IME_MAX_VOICE_RESULTS,
-                        1));
+                        10));
 
         // Get endpointer params from Gservices.
         // TODO: Consider caching these values for improved performance on slower devices.
