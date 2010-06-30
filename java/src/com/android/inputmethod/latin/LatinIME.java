@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.voice.EditingUtil;
 import com.android.inputmethod.voice.FieldContext;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceInput;
@@ -127,6 +126,7 @@ public class LatinIME extends InputMethodService
     private static final int MSG_UPDATE_SHIFT_STATE = 2;
     private static final int MSG_VOICE_RESULTS = 3;
     private static final int MSG_START_LISTENING_AFTER_SWIPE = 4;
+    private static final int MSG_UPDATE_OLD_SUGGESTIONS = 5;
 
     // If we detect a swipe gesture within N ms of typing, then swipe is
     // ignored, since it may in fact be two key presses in quick succession.
@@ -204,6 +204,12 @@ public class LatinIME extends InputMethodService
     private boolean mVoiceOnPrimary;
     private int     mOrientation;
     private List<CharSequence> mSuggestPuncList;
+    // Keep track of the last selection range to decide if we need to show word alternatives
+    private int     mLastSelectionStart;
+    private int     mLastSelectionEnd;
+
+    // Input type is such that we should not auto-correct
+    private boolean mInputTypeNoAutoCorrect;
 
     // Indicates whether the suggestion strip is to be on in landscape
     private boolean mJustAccepted;
@@ -228,17 +234,66 @@ public class LatinIME extends InputMethodService
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private CharSequence mEnteredText;
+    private boolean mRefreshKeyboardRequired;
 
     // For each word, a list of potential replacements, usually from voice.
     private Map<String, List<CharSequence>> mWordToSuggestions =
             new HashMap<String, List<CharSequence>>();
 
+    private ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
+
     private class VoiceResults {
         List<String> candidates;
         Map<String, List<CharSequence>> alternatives;
     }
+    
+    public abstract static class WordAlternatives {
+        protected CharSequence mChosenWord;
 
-    private boolean mRefreshKeyboardRequired;
+        public WordAlternatives() {
+            // Nothing
+        }
+
+        public WordAlternatives(CharSequence chosenWord) {
+            mChosenWord = chosenWord;
+        }
+
+        @Override
+        public int hashCode() {
+            return mChosenWord.hashCode();
+        }
+
+        public abstract CharSequence getOriginalWord();
+
+        public CharSequence getChosenWord() {
+            return mChosenWord;
+        }
+
+        public abstract List<CharSequence> getAlternatives();
+    }
+
+    public class TypedWordAlternatives extends WordAlternatives {
+        private WordComposer word;
+
+        public TypedWordAlternatives() {
+            // Nothing
+        }
+
+        public TypedWordAlternatives(CharSequence chosenWord, WordComposer wordComposer) {
+            super(chosenWord);
+            word = wordComposer;
+        }
+
+        @Override
+        public CharSequence getOriginalWord() {
+            return word.getTypedWord();
+        }
+
+        @Override
+        public List<CharSequence> getAlternatives() {
+            return getTypedSuggestions(word);
+        }
+    }
 
     Handler mHandler = new Handler() {
         @Override
@@ -246,6 +301,9 @@ public class LatinIME extends InputMethodService
             switch (msg.what) {
                 case MSG_UPDATE_SUGGESTIONS:
                     updateSuggestions();
+                    break;
+                case MSG_UPDATE_OLD_SUGGESTIONS:
+                    setOldSuggestions();
                     break;
                 case MSG_START_TUTORIAL:
                     if (mTutorial == null) {
@@ -467,7 +525,6 @@ public class LatinIME extends InputMethodService
         mShowingVoiceSuggestions = false;
         mImmediatelyAfterVoiceSuggestions = false;
         mVoiceInputHighlighted = false;
-        mWordToSuggestions.clear();
         mInputTypeNoAutoCorrect = false;
         mPredictionOn = false;
         mCompletionOn = false;
@@ -625,10 +682,11 @@ public class LatinIME extends InputMethodService
         // clear whatever candidate text we have.
         if ((((mComposing.length() > 0 && mPredicting) || mVoiceInputHighlighted)
                 && (newSelStart != candidatesEnd
-                    || newSelEnd != candidatesEnd))) {
+                    || newSelEnd != candidatesEnd)
+                && mLastSelectionStart != newSelStart)) {
             mComposing.setLength(0);
             mPredicting = false;
-            updateSuggestions();
+            postUpdateSuggestions();
             TextEntryState.reset();
             InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
@@ -648,26 +706,18 @@ public class LatinIME extends InputMethodService
         mJustAccepted = false;
         postUpdateShiftKeyState();
 
-        if (VOICE_INSTALLED) {
-            if (mShowingVoiceSuggestions) {
-                if (mImmediatelyAfterVoiceSuggestions) {
-                    mImmediatelyAfterVoiceSuggestions = false;
-                } else {
-                    updateSuggestions();
-                    mShowingVoiceSuggestions = false;
-                }
-            }
-            if (VoiceInput.ENABLE_WORD_CORRECTIONS) {
-                // If we have alternatives for the current word, then show them.
-                String word = EditingUtil.getWordAtCursor(
-                        getCurrentInputConnection(), getWordSeparators());
-                if (word != null && mWordToSuggestions.containsKey(word.trim())) {
-                    mSuggestionShouldReplaceCurrentWord = true;
-                    final List<CharSequence> suggestions = mWordToSuggestions.get(word.trim());
+        // Make a note of the cursor position
+        mLastSelectionStart = newSelStart;
+        mLastSelectionEnd = newSelEnd;
 
-                    setSuggestions(suggestions, false, true, true);
-                    setCandidatesViewShown(true);
-                }
+
+        // If a word is selected
+        if ((candidatesStart == candidatesEnd || newSelStart != oldSelStart)
+                && (newSelStart < newSelEnd - 1 || (!mPredicting))
+                && !mVoiceInputHighlighted) {
+            abortCorrection(false);
+            if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
+                postUpdateOldSuggestions();
             }
         }
     }
@@ -692,6 +742,8 @@ public class LatinIME extends InputMethodService
                 mVoiceInput.cancel();
             }
         }
+        mWordToSuggestions.clear();
+        mWordHistory.clear();
         super.hideWindow();
         TextEntryState.endSession();
     }
@@ -1035,6 +1087,7 @@ public class LatinIME extends InputMethodService
         }
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
+        abortCorrection(false);
         ic.beginBatchEdit();
         if (mPredicting) {
             commitTyped(ic);
@@ -1115,6 +1168,13 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    private void abortCorrection(boolean force) {
+        if (force || TextEntryState.isCorrecting()) {
+            getCurrentInputConnection().finishComposingText();
+            setSuggestions(null, false, false, false);
+        }
+    }
+
     private void handleCharacter(int primaryCode, int[] keyCodes) {
         if (VOICE_INSTALLED && mVoiceInputHighlighted) {
             commitVoiceInput();
@@ -1124,11 +1184,13 @@ public class LatinIME extends InputMethodService
             // Assume input length is 1. This assumption fails for smiley face insertions.
             mVoiceInput.incrementTextModificationInsertCount(1);
         }
+        abortCorrection(false);
 
         if (isAlphabet(primaryCode) && isPredictionOn() && !isCursorTouchingWord()) {
             if (!mPredicting) {
                 mPredicting = true;
                 mComposing.setLength(0);
+                saveWordInHistory(mBestWord);
                 mWord.reset();
             }
         }
@@ -1184,6 +1246,7 @@ public class LatinIME extends InputMethodService
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.beginBatchEdit();
+            abortCorrection(false);
         }
         if (mPredicting) {
             // In certain languages where single quote is a separator, it's better
@@ -1222,7 +1285,6 @@ public class LatinIME extends InputMethodService
                 && primaryCode != KEYCODE_ENTER) {
             swapPunctuationAndSpace();
         } else if (isPredictionOn() && primaryCode == KEYCODE_SPACE) {
-        //else if (TextEntryState.STATE_SPACE_AFTER_ACCEPTED) {
             doubleSpace();
         }
         if (pickedDefault) {
@@ -1244,6 +1306,17 @@ public class LatinIME extends InputMethodService
         TextEntryState.endSession();
     }
 
+    private void saveWordInHistory(CharSequence result) {
+        if (mWord.size() <= 1) {
+            mWord.reset();
+            return;
+        }
+        TypedWordAlternatives entry = new TypedWordAlternatives(result, mWord);
+        // Create a new WordComposer as the old one is being saved for later use
+        mWord = new WordComposer(mWord);
+        mWordHistory.add(entry);
+    }
+
     private void checkToggleCapsLock() {
         if (mKeyboardSwitcher.getInputView().getKeyboard().isShifted()) {
             toggleCapsLock();
@@ -1261,6 +1334,11 @@ public class LatinIME extends InputMethodService
     private void postUpdateSuggestions() {
         mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SUGGESTIONS), 100);
+    }
+
+    private void postUpdateOldSuggestions() {
+        mHandler.removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
+        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_OLD_SUGGESTIONS), 300);
     }
 
     private boolean isPredictionOn() {
@@ -1447,9 +1525,6 @@ public class LatinIME extends InputMethodService
         // Show N-Best alternates, if there is more than one choice.
         if (nBest.size() > 1) {
             mImmediatelyAfterVoiceSuggestions = true;
-            mShowingVoiceSuggestions = true;
-            setSuggestions(nBest.subList(1, nBest.size()), false, true, true);
-            setCandidatesViewShown(true);
         }
         mVoiceInputHighlighted = true;
         mWordToSuggestions.putAll(mVoiceResults.alternatives);
@@ -1489,17 +1564,32 @@ public class LatinIME extends InputMethodService
             setNextSuggestions();
             return;
         }
+        showSuggestions(mWord);
+    }
 
-        List<CharSequence> stringList = mSuggest.getSuggestions(inputView,
-                mWord, false);
+    private List<CharSequence> getTypedSuggestions(WordComposer word) {
+        List<CharSequence> stringList = mSuggest.getSuggestions(
+                mKeyboardSwitcher.getInputView(), word, false);
+        return stringList;
+    }
+
+    private void showCorrections(WordAlternatives alternatives) {
+        List<CharSequence> stringList = alternatives.getAlternatives();
+        ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).setPreferredLetters(null);
+        showSuggestions(stringList, alternatives.getOriginalWord(), false, false);
+    }
+
+    private void showSuggestions(WordComposer word) {
+        List<CharSequence> stringList = mSuggest.getSuggestions(
+                mKeyboardSwitcher.getInputView(), word, false);
         int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
 
-        ((LatinKeyboard) inputView.getKeyboard()).setPreferredLetters(
+        ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).setPreferredLetters(
                 nextLettersFrequencies);
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasMinimalCorrection();
         //|| mCorrectionMode == mSuggest.CORRECTION_FULL;
-        CharSequence typedWord = mWord.getTypedWord();
+        CharSequence typedWord = word.getTypedWord();
         // If we're in basic correct
         boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
                 (preferCapitalization()
@@ -1508,8 +1598,14 @@ public class LatinIME extends InputMethodService
             correctionAvailable |= typedWordValid;
         }
         // Don't auto-correct words with multiple capital letter
-        correctionAvailable &= !mWord.isMostlyCaps();
+        correctionAvailable &= !word.isMostlyCaps();
+        correctionAvailable &= !TextEntryState.isCorrecting();
 
+        showSuggestions(stringList, typedWord, typedWordValid, correctionAvailable);
+    }
+
+    private void showSuggestions(List<CharSequence> stringList, CharSequence typedWord,
+            boolean typedWordValid, boolean correctionAvailable) {
         setSuggestions(stringList, false, typedWordValid, correctionAvailable);
         if (stringList.size() > 0) {
             if (correctionAvailable && !typedWordValid && stringList.size() > 1) {
@@ -1550,6 +1646,7 @@ public class LatinIME extends InputMethodService
             mVoiceInput.logTextModifiedByChooseSuggestion(suggestion.length());
         }
 
+        final boolean correcting = TextEntryState.isCorrecting();
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.beginBatchEdit();
@@ -1594,10 +1691,11 @@ public class LatinIME extends InputMethodService
                 index, suggestions);
         TextEntryState.acceptedSuggestion(mComposing.toString(), suggestion);
         // Follow it with a space
-        if (mAutoSpace) {
+        if (mAutoSpace && !correcting) {
             sendSpace();
             mJustAddedAutoSpace = true;
         }
+
         // Fool the state watcher so that a subsequent backspace will not do a revert
         TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
         if (index == 0 && mCorrectionMode > 0 && !mSuggest.isValidWord(suggestion)) {
@@ -1606,6 +1704,29 @@ public class LatinIME extends InputMethodService
         if (ic != null) {
             ic.endBatchEdit();
         }
+    }
+
+    private void rememberReplacedWord(CharSequence suggestion) {
+        if (mShowingVoiceSuggestions) {
+            // Retain the replaced word in the alternatives array.
+            InputConnection ic = getCurrentInputConnection();
+            EditingUtil.Range range = new EditingUtil.Range();
+            String wordToBeReplaced = EditingUtil.getWordAtCursor(getCurrentInputConnection(),
+                                                                  mWordSeparators, range).trim();
+            if (!mWordToSuggestions.containsKey(wordToBeReplaced)) {
+              wordToBeReplaced = wordToBeReplaced.toLowerCase();
+            }
+            if (mWordToSuggestions.containsKey(wordToBeReplaced)) {
+                List<CharSequence> suggestions = mWordToSuggestions.get(wordToBeReplaced);
+                if (suggestions.contains(suggestion)) {
+                    suggestions.remove(suggestion);
+                }
+                suggestions.add(wordToBeReplaced);
+                mWordToSuggestions.remove(wordToBeReplaced);
+                mWordToSuggestions.put(suggestion.toString(), suggestions);
+            }
+        }
+        // TODO: implement rememberReplacedWord for typed words
     }
 
     private void pickSuggestion(CharSequence suggestion) {
@@ -1620,6 +1741,7 @@ public class LatinIME extends InputMethodService
         }
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
+            rememberReplacedWord(suggestion);
             if (mSuggestionShouldReplaceCurrentWord) {
                 EditingUtil.deleteWordAtCursor(ic, getWordSeparators());
             }
@@ -1627,6 +1749,7 @@ public class LatinIME extends InputMethodService
                 ic.commitText(suggestion, 1);
             }
         }
+        saveWordInHistory(suggestion);
         mPredicting = false;
         mCommittedLength = suggestion.length();
         ((LatinKeyboard) inputView.getKeyboard()).setPreferredLetters(null);
@@ -1634,16 +1757,128 @@ public class LatinIME extends InputMethodService
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
+    private void setOldSuggestions() {
+        // TODO: Inefficient to check if touching word and then get the touching word. Do it
+        // in one go.
+        mShowingVoiceSuggestions = false;
+        InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+        ic.beginBatchEdit();
+        // If there is a selection, then undo the selection first. Unfortunately this causes
+        // a flicker. TODO: Add getSelectionText() to InputConnection API.
+        if (mLastSelectionStart < mLastSelectionEnd) {
+            ic.setSelection(mLastSelectionStart, mLastSelectionStart);
+        }
+        if (!mPredicting && isCursorTouchingWord()) {
+            EditingUtil.Range range = new EditingUtil.Range();
+            CharSequence touching =
+                EditingUtil.getWordAtCursor(getCurrentInputConnection(), mWordSeparators,
+                        range);
+            if (touching != null && touching.length() > 1) {
+                if (mWordSeparators.indexOf(touching.charAt(touching.length() - 1)) > 0) {
+                    touching = touching.toString().substring(0, touching.length() - 1);
+                }
+
+                // Search for result in spoken word alternatives
+                // TODO: possibly combine the spoken suggestions with the typed suggestions.
+                String selectedWord = touching.toString().trim();
+                if (!mWordToSuggestions.containsKey(selectedWord)){
+                    selectedWord = selectedWord.toLowerCase();
+                }
+                if (mWordToSuggestions.containsKey(selectedWord)){
+                    mShowingVoiceSuggestions = true;
+                    mSuggestionShouldReplaceCurrentWord = true;
+                    underlineWord(touching, range.charsBefore, range.charsAfter);
+                    List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
+                    // If the first letter of touching is capitalized, make all the suggestions
+                    // start with a capital letter.
+                    if (Character.isUpperCase((char) touching.charAt(0))) {
+                        for (int i=0; i< suggestions.size(); i++) {
+                            String origSugg = (String) suggestions.get(i);
+                            String capsSugg = origSugg.toUpperCase().charAt(0)
+                                + origSugg.subSequence(1, origSugg.length()).toString();
+                            suggestions.set(i,capsSugg);
+                        }
+                    }
+                    setSuggestions(suggestions, false, true, true);
+                    setCandidatesViewShown(true);
+                    TextEntryState.selectedForCorrection();
+                    ic.endBatchEdit();
+                    return;
+                }
+                // If we didn't find a match, search for result in word history
+                WordComposer foundWord = null;
+                WordAlternatives alternatives = null;
+                for (WordAlternatives entry : mWordHistory) {
+                    if (TextUtils.equals(entry.getChosenWord(), touching)) {
+                        if (entry instanceof TypedWordAlternatives) {
+                            foundWord = ((TypedWordAlternatives)entry).word;
+                        }
+                        alternatives = entry;
+                        break;
+                    }
+                }
+                // If we didn't find a match, at least suggest completions
+                if (foundWord == null && mSuggest.isValidWord(touching)) {
+                    foundWord = new WordComposer();
+                    for (int i = 0; i < touching.length(); i++) {
+                        foundWord.add(touching.charAt(i), new int[] { touching.charAt(i) });
+                    }
+                }
+                // Found a match, show suggestions
+                if (foundWord != null || alternatives != null) {
+                    mSuggestionShouldReplaceCurrentWord = true;
+                    underlineWord(touching, range.charsBefore, range.charsAfter);
+                    TextEntryState.selectedForCorrection();
+                    if (alternatives == null) alternatives = new TypedWordAlternatives(touching,
+                            foundWord);
+                    showCorrections(alternatives);
+                    if (foundWord != null) {
+                        mWord = foundWord;
+                    } else {
+                        mWord.reset();
+                    }
+                    // Revert the selection
+                    if (mLastSelectionStart < mLastSelectionEnd) {
+                        ic.setSelection(mLastSelectionStart, mLastSelectionEnd);
+                    }
+                    ic.endBatchEdit();
+                    return;
+                }
+                abortCorrection(true);
+            } else {
+                abortCorrection(true);
+                setNextSuggestions();
+            }
+        } else {
+            abortCorrection(true);
+        }
+        // Revert the selection
+        if (mLastSelectionStart < mLastSelectionEnd) {
+            ic.setSelection(mLastSelectionStart, mLastSelectionEnd);
+        }
+        ic.endBatchEdit();
+    }
+
     private void setNextSuggestions() {
         setSuggestions(mSuggestPuncList, false, false, false);
     }
 
+    private void underlineWord(CharSequence word, int left, int right) {
+        InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+        ic.deleteSurroundingText(left, right);
+        ic.setComposingText(word, 1);
+        ic.setSelection(mLastSelectionStart, mLastSelectionStart);
+    }
+
     private void checkAddToDictionary(CharSequence suggestion, int frequencyDelta) {
+        if (suggestion == null || suggestion.length() < 1) return;
         // Only auto-add to dictionary if auto-correct is ON. Otherwise we'll be
         // adding words in situations where the user or application really didn't
         // want corrections enabled or learned.
         if (!(mCorrectionMode == Suggest.CORRECTION_FULL)) return;
-        if (mAutoDictionary.isValidWord(suggestion)
+        if (suggestion != null && mAutoDictionary.isValidWord(suggestion)
                 || (!mSuggest.isValidWord(suggestion.toString())
                     && !mSuggest.isValidWord(suggestion.toString().toLowerCase()))) {
             mAutoDictionary.addWord(suggestion.toString(), frequencyDelta);
@@ -2065,7 +2300,6 @@ public class LatinIME extends InputMethodService
     private static final int CPS_BUFFER_SIZE = 16;
     private long[] mCpsIntervals = new long[CPS_BUFFER_SIZE];
     private int mCpsIndex;
-    private boolean mInputTypeNoAutoCorrect;
 
     private void measureCps() {
         long now = System.currentTimeMillis();
