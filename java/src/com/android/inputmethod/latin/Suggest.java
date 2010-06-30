@@ -197,10 +197,11 @@ public class Suggest implements Dictionary.WordCallback {
         if (mOriginalWord != null) {
             mOriginalWord = mOriginalWord.toString();
             mLowerOriginalWord = mOriginalWord.toString().toLowerCase();
+            LatinImeLogger.onAddSuggestedWord(mOriginalWord.toString(), Suggest.DIC_USER_TYPED);
         } else {
             mLowerOriginalWord = "";
         }
-        LatinImeLogger.onAddSuggestedWord(mOriginalWord.toString(), Suggest.DIC_USER_TYPED);
+
         // Search the dictionary only if there are at least 2 characters
         if (wordComposer.size() > 1) {
             if (mUserDictionary != null || mContactsDictionary != null) {
