@@ -1144,7 +1144,9 @@ public class LatinIME extends InputMethodService
             }
         }
         if (mPredicting) {
-            if (mKeyboardSwitcher.getInputView().isShifted() && mComposing.length() == 0) {
+            if (mKeyboardSwitcher.getInputView().isShifted()
+                    && mKeyboardSwitcher.isAlphabetMode()
+                    && mComposing.length() == 0) {
                 mWord.setCapitalized(true);
             }
             mComposing.append((char) primaryCode);
