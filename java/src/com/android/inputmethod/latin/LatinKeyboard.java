@@ -350,7 +350,7 @@ public class LatinKeyboard extends Keyboard {
             Bitmap buffer = Bitmap.createBitmap(mSpaceKey.width, mSpaceIcon.getIntrinsicHeight(),
                     Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(buffer);
-            drawSpaceBar(canvas, buffer.getWidth(), buffer.getHeight(), 255);
+            drawSpaceBar(canvas, buffer.getWidth(), buffer.getHeight(), 255, isBlack);
             mSpaceKey.icon = new BitmapDrawable(mRes, buffer);
             mSpaceKey.repeatable = mLanguageSwitcher.getLocaleCount() < 2;
         } else {
@@ -360,7 +360,7 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    private void drawSpaceBar(Canvas canvas, int width, int height, int opacity) {
+    private void drawSpaceBar(Canvas canvas, int width, int height, int opacity, boolean isBlack) {
         canvas.drawColor(mRes.getColor(R.color.latinkeyboard_transparent), PorterDuff.Mode.CLEAR);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -370,12 +370,14 @@ public class LatinKeyboard extends Keyboard {
         paint.setTextAlign(Align.CENTER);
         final String language = getInputLanguage(mSpaceKey.width, paint);
         final int ascent = (int) -paint.ascent();
-        paint.setColor(mRes.getColor(R.color.latinkeyboard_bar_language_shadow));
-        canvas.drawText(language,
-                width / 2, ascent - 1, paint);
+
+        int shadowColor = isBlack ? mRes.getColor(R.color.latinkeyboard_bar_language_shadow_black)
+                : mRes.getColor(R.color.latinkeyboard_bar_language_shadow_white);
+
+        paint.setColor(shadowColor);
+        canvas.drawText(language, width / 2, ascent - 1, paint);
         paint.setColor(mRes.getColor(R.color.latinkeyboard_bar_language_text));
-        canvas.drawText(language,
-                width / 2, ascent, paint);
+        canvas.drawText(language, width / 2, ascent, paint);
         // Put arrows on either side of the text
         if (mLanguageSwitcher.getLocaleCount() > 1) {
             Rect bounds = new Rect();
