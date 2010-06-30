@@ -111,6 +111,19 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         }
     }
 
+    @Override
+    protected CharSequence adjustCase(CharSequence label) {
+        Keyboard keyboard = getKeyboard();
+        if (keyboard.isShifted()
+                && keyboard instanceof LatinKeyboard
+                && ((LatinKeyboard) keyboard).isAlphaKeyboard()
+                && label != null && label.length() < 3
+                && Character.isLowerCase(label.charAt(0))) {
+            label = label.toString().toUpperCase();
+        }
+        return label;
+    }
+
     /**
      * This function checks to see if we need to handle any sudden jumps in the pointer location
      * that could be due to a multi-touch being treated as a move by the firmware or hardware.

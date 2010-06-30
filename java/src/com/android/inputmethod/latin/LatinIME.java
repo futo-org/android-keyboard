@@ -1138,7 +1138,10 @@ public class LatinIME extends InputMethodService
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
                 return;
             }
-            primaryCode = new String(keyCodes, 0, 1).toUpperCase().charAt(0);
+            primaryCode = keyCodes[0];
+            if (mKeyboardSwitcher.isAlphabetMode()) {
+                primaryCode = Character.toUpperCase(primaryCode);
+            }
         }
         if (mPredicting) {
             if (mKeyboardSwitcher.getInputView().isShifted() && mComposing.length() == 0) {

@@ -274,6 +274,10 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
+    /* package */ boolean isAlphaKeyboard() {
+        return mIsAlphaKeyboard;
+    }
+
     public void setExtension(int resId) {
         mExtensionResId = resId;
     }

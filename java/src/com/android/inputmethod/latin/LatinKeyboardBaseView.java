@@ -590,7 +590,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         dismissPopupKeyboard();
     }
 
-    private CharSequence adjustCase(CharSequence label) {
+    protected CharSequence adjustCase(CharSequence label) {
         if (mKeyboard.isShifted() && label != null && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
             label = label.toString().toUpperCase();
