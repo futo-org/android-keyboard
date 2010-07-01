@@ -293,17 +293,17 @@ public class LatinKeyboard extends Keyboard {
             mSpaceIcon = mRes.getDrawable(R.drawable.sym_bkeyboard_space);
             mMicIcon = mRes.getDrawable(R.drawable.sym_bkeyboard_mic);
             m123MicIcon = mRes.getDrawable(R.drawable.sym_bkeyboard_123_mic);
-            if (mF1Key != null) {
-                mF1Key.icon = mMicIcon;
-            }
         } else {
             mShiftLockIcon = mRes.getDrawable(R.drawable.sym_keyboard_shift_locked);
             mSpaceIcon = mRes.getDrawable(R.drawable.sym_keyboard_space);
             mMicIcon = mRes.getDrawable(R.drawable.sym_keyboard_mic);
             m123MicIcon = mRes.getDrawable(R.drawable.sym_keyboard_123_mic);
-            if (mF1Key != null) {
-                mF1Key.icon = mMicIcon;
-            }
+        }
+        if (m123Key != null) {
+            m123Key.icon = m123MicIcon;
+        }
+        if (mF1Key != null) {
+            mF1Key.icon = mMicIcon;
         }
         if (mSpaceKey != null) {
             mSpaceKey.icon = mSpaceIcon;
