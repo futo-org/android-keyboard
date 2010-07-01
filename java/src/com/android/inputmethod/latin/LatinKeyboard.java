@@ -299,12 +299,7 @@ public class LatinKeyboard extends Keyboard {
             mMicIcon = mRes.getDrawable(R.drawable.sym_keyboard_mic);
             m123MicIcon = mRes.getDrawable(R.drawable.sym_keyboard_123_mic);
         }
-        if (m123Key != null) {
-            m123Key.icon = m123MicIcon;
-        }
-        if (mF1Key != null) {
-            mF1Key.icon = mMicIcon;
-        }
+        updateF1Key();
         if (mSpaceKey != null) {
             mSpaceKey.icon = mSpaceIcon;
             updateSpaceBarForLocale(f);
