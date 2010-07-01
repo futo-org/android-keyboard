@@ -182,6 +182,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
     private int mVerticalCorrection;
     private int mProximityThreshold;
+    private int mKeyDebounceThreshold;
+    private static final int KEY_DEBOUNCE_FACTOR = 6;
 
     private boolean mPreviewCentered = false;
     private boolean mShowPreview = true;
@@ -633,6 +635,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         if (dimensionSum < 0 || length == 0) return;
         mProximityThreshold = (int) (dimensionSum * 1.4f / length);
         mProximityThreshold *= mProximityThreshold; // Square it
+
+        // 1/KEY_DEBOUNCE_FACTOR of distance between adjacent keys
+        mKeyDebounceThreshold = mProximityThreshold / KEY_DEBOUNCE_FACTOR;
     }
 
     @Override
@@ -1158,6 +1163,13 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         return result;
     }
 
+    private boolean isMinorMoveForKeyDebounce(int x, int y) {
+        // TODO: Check the coordinate against each key border.  The current
+        // logic is pretty simple.
+        return ((x - mLastCodeX) * (x - mLastCodeX) +
+                (y - mLastCodeY) * (y - mLastCodeY)) < mKeyDebounceThreshold;
+    }
+
     private boolean onModifiedTouchEvent(MotionEvent me, boolean possiblePoly) {
         int touchX = (int) me.getX() - getPaddingLeft();
         int touchY = (int) me.getY() + mVerticalCorrection - getPaddingTop();
@@ -1231,7 +1243,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                         mCurrentKey = keyIndex;
                         mCurrentKeyTime = eventTime - mDownTime;
                     } else {
-                        if (keyIndex == mCurrentKey) {
+                        if (keyIndex == mCurrentKey
+                            || isMinorMoveForKeyDebounce(touchX, touchY)) {
                             mCurrentKeyTime += eventTime - mLastMoveTime;
                             continueLongPress = true;
                         } else if (mRepeatKeyIndex == NOT_A_KEY) {
