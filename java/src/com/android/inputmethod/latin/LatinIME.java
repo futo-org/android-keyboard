@@ -1288,7 +1288,7 @@ public class LatinIME extends InputMethodService
             doubleSpace();
         }
         if (pickedDefault) {
-            TextEntryState.backToAcceptedDefault();
+            TextEntryState.backToAcceptedDefault(mWord.getTypedWord());
         }
         updateShiftKeyState(getCurrentInputEditorInfo());
         if (ic != null) {

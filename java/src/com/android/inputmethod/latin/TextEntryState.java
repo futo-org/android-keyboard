@@ -138,7 +138,8 @@ public class TextEntryState {
     // STATE_ACCEPTED_DEFAULT will be changed to other sub-states
     // (see "case STATE_ACCEPTED_DEFAULT" in typedCharacter() below),
     // and should be restored back to STATE_ACCEPTED_DEFAULT after processing for each sub-state.
-    public static void backToAcceptedDefault() {
+    public static void backToAcceptedDefault(CharSequence typedWord) {
+        if (typedWord == null) return;
         switch (sState) {
             case STATE_SPACE_AFTER_ACCEPTED:
             case STATE_PUNCTUATION_AFTER_ACCEPTED:
