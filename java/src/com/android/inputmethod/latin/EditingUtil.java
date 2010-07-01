@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import java.util.regex.Pattern;
+
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
@@ -24,6 +26,11 @@ import android.view.inputmethod.InputConnection;
  * Utility methods to deal with editing text through an InputConnection.
  */
 public class EditingUtil {
+    /**
+     * Number of characters we want to look back in order to identify the previous word
+     */
+    public static final int LOOKBACK_CHARACTER_NUM = 15;
+
     private EditingUtil() {};
 
     /**
@@ -174,5 +181,14 @@ public class EditingUtil {
 
     private static boolean isWhitespace(int code, String whitespace) {
         return whitespace.contains(String.valueOf((char) code));
+    }
+
+    private static final Pattern spaceRegex = Pattern.compile("\\s+");
+
+    public static CharSequence getPreviousWord(InputConnection connection) {
+        //TODO: Should fix this. This could be slow!
+        CharSequence prev = connection.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        String[] w = spaceRegex.split(prev);
+        return (w.length >= 2) ? w[w.length-2] : null;
     }
 }

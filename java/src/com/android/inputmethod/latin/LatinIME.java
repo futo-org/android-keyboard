@@ -89,6 +89,7 @@ public class LatinIME extends InputMethodService
     private static final String PREF_QUICK_FIXES = "quick_fixes";
     private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     private static final String PREF_AUTO_COMPLETE = "auto_complete";
+    private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     private static final String PREF_VOICE_MODE = "voice_mode";
 
     // Whether or not the user has used voice input before (and thus, whether to show the
@@ -187,6 +188,7 @@ public class LatinIME extends InputMethodService
     private boolean mAutoSpace;
     private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
+    private boolean mBigramSuggestionEnabled;
     private boolean mAutoCorrectOn;
     private boolean mCapsLock;
     private boolean mPasswordText;
@@ -1538,7 +1540,7 @@ public class LatinIME extends InputMethodService
     }
 
     private List<CharSequence> getTypedSuggestions(WordComposer word) {
-        List<CharSequence> stringList = mSuggest.getSuggestions(mInputView, word, false);
+        List<CharSequence> stringList = mSuggest.getSuggestions(mInputView, word, false, null);
         return stringList;
     }
 
@@ -1549,7 +1551,14 @@ public class LatinIME extends InputMethodService
     }
 
     private void showSuggestions(WordComposer word) {
-        List<CharSequence> stringList = mSuggest.getSuggestions(mInputView, word, false);
+        //long startTime = System.currentTimeMillis(); // TIME MEASUREMENT!
+        // TODO Maybe need better way of retrieving previous word
+        CharSequence prevWord = EditingUtil.getPreviousWord(getCurrentInputConnection());
+        List<CharSequence> stringList = mSuggest.getSuggestions(mInputView, word, false,
+                prevWord);
+        //long stopTime = System.currentTimeMillis(); // TIME MEASUREMENT!
+        //Log.d("LatinIME","Suggest Total Time - " + (stopTime - startTime));
+
         int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
 
         ((LatinKeyboard) mInputView.getKeyboard()).setPreferredLetters(nextLettersFrequencies);
@@ -2088,6 +2097,8 @@ public class LatinIME extends InputMethodService
         mCorrectionMode = (mAutoCorrectOn && mAutoCorrectEnabled)
                 ? Suggest.CORRECTION_FULL
                 : (mAutoCorrectOn ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
+        mCorrectionMode = (mBigramSuggestionEnabled && mAutoCorrectOn && mAutoCorrectEnabled)
+                ? Suggest.CORRECTION_FULL_BIGRAM : mCorrectionMode;
         if (mSuggest != null) {
             mSuggest.setCorrectionMode(mCorrectionMode);
         }
@@ -2154,6 +2165,7 @@ public class LatinIME extends InputMethodService
         }
         mAutoCorrectEnabled = sp.getBoolean(PREF_AUTO_COMPLETE,
                 mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
+        mBigramSuggestionEnabled = sp.getBoolean(PREF_BIGRAM_SUGGESTIONS, true) & mShowSuggestions;
         updateCorrectionMode();
         updateAutoTextEnabled(mResources.getConfiguration().locale);
         mLanguageSwitcher.loadLocales(sp);

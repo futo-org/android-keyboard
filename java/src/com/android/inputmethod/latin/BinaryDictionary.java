@@ -33,9 +33,9 @@ import android.util.Log;
 public class BinaryDictionary extends Dictionary {
 
     private static final String TAG = "BinaryDictionary";
-    public static final int MAX_WORD_LENGTH = 48;
     private static final int MAX_ALTERNATIVES = 16;
     private static final int MAX_WORDS = 16;
+    private static final int MAX_BIGRAMS = 255; // TODO Probably don't need all 255
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
     private static final boolean ENABLE_MISSED_CHARACTERS = true;
@@ -44,7 +44,9 @@ public class BinaryDictionary extends Dictionary {
     private int mDictLength;
     private int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_ALTERNATIVES];
     private char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
+    private char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
     private int[] mFrequencies = new int[MAX_WORDS];
+    private int[] mFrequencies_bigrams = new int[MAX_BIGRAMS];
     // Keep a reference to the native dict direct buffer in Java to avoid
     // unexpected deallocation of the direct buffer.
     private ByteBuffer mNativeDictDirectBuffer;
@@ -71,7 +73,7 @@ public class BinaryDictionary extends Dictionary {
     /**
      * Create a dictionary from a byte buffer. This is used for testing.
      * @param context application context for reading resources
-     * @param resId the resource containing the raw binary dictionary
+     * @param byteBuffer a ByteBuffer containing the binary dictionary
      */
     public BinaryDictionary(Context context, ByteBuffer byteBuffer) {
         if (byteBuffer != null) {
@@ -95,6 +97,8 @@ public class BinaryDictionary extends Dictionary {
             char[] outputChars, int[] frequencies,
             int maxWordLength, int maxWords, int maxAlternatives, int skipPos,
             int[] nextLettersFrequencies, int nextLettersSize);
+    private native int getBigramsNative(int nativeData, char[] prevWord, int prevWordLength,
+            char[] outputChars, int[] frequencies, int maxWordLength, int maxBigrams);
 
     private final void loadDictionary(Context context, int resId) {
         InputStream is = context.getResources().openRawResource(resId);
@@ -117,6 +121,30 @@ public class BinaryDictionary extends Dictionary {
                 is.close();
             } catch (IOException e) {
                 Log.w(TAG, "Failed to close input stream");
+            }
+        }
+    }
+
+    @Override
+    public void getBigrams(final WordComposer composer, final CharSequence previousWord,
+            final WordCallback callback, int[] nextLettersFrequencies) {
+
+        char[] chars = previousWord.toString().toCharArray();
+        Arrays.fill(mOutputChars_bigrams, (char) 0);
+        Arrays.fill(mFrequencies_bigrams, 0);
+
+        int count = getBigramsNative(mNativeDict, chars, chars.length, mOutputChars_bigrams,
+                mFrequencies_bigrams, MAX_WORD_LENGTH, MAX_BIGRAMS);
+        for (int j = 0; j < count; j++) {
+            if (mFrequencies_bigrams[j] < 1) break;
+            int start = j * MAX_WORD_LENGTH;
+            int len = 0;
+            while (mOutputChars_bigrams[start + len] != 0) {
+                len++;
+            }
+            if (len > 0) {
+                callback.addWord(mOutputChars_bigrams, start, len, mFrequencies_bigrams[j],
+                        DataType.BIGRAM);
             }
         }
     }
@@ -166,7 +194,7 @@ public class BinaryDictionary extends Dictionary {
                 len++;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars, start, len, mFrequencies[j]);
+                callback.addWord(mOutputChars, start, len, mFrequencies[j], DataType.UNIGRAM);
             }
         }
     }
