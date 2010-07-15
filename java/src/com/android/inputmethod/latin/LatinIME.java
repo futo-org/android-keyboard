@@ -82,6 +82,7 @@ public class LatinIME extends InputMethodService
     static final boolean TRACE = false;
     static final boolean VOICE_INSTALLED = true;
     static final boolean ENABLE_VOICE_BUTTON = true;
+    private static final boolean MODIFY_TEXT_FOR_CORRECTION = false;
 
     private static final String PREF_VIBRATE_ON = "vibrate_on";
     private static final String PREF_SOUND_ON = "sound_on";
@@ -1604,7 +1605,7 @@ public class LatinIME extends InputMethodService
         if (mBestWord != null && mBestWord.length() > 0) {
             TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord);
             mJustAccepted = true;
-            pickSuggestion(mBestWord);
+            pickSuggestion(mBestWord, false);
             // Add the word to the auto dictionary if it's not a known word
             checkAddToDictionary(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
         }
@@ -1650,7 +1651,7 @@ public class LatinIME extends InputMethodService
             return;
         }
         mJustAccepted = true;
-        pickSuggestion(suggestion);
+        pickSuggestion(suggestion, correcting);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
             checkAddToDictionary(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
@@ -1696,7 +1697,15 @@ public class LatinIME extends InputMethodService
         // TODO: implement rememberReplacedWord for typed words
     }
 
-    private void pickSuggestion(CharSequence suggestion) {
+    /**
+     * Commits the chosen word to the text field and saves it for later
+     * retrieval.
+     * @param suggestion the suggestion picked by the user to be committed to
+     *            the text field
+     * @param correcting whether this is due to a correction of an existing
+     *            word.
+     */
+    private void pickSuggestion(CharSequence suggestion, boolean correcting) {
         if (mCapsLock) {
             suggestion = suggestion.toString().toUpperCase();
         } else if (preferCapitalization()
@@ -1707,9 +1716,17 @@ public class LatinIME extends InputMethodService
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             rememberReplacedWord(suggestion);
-            if (!VoiceInput.DELETE_SYMBOL.equals(suggestion)) {
-                ic.commitText(suggestion, 1);
+            // If text is in correction mode and we're not using composing
+            // text to underline, then the word at the cursor position needs
+            // to be removed before committing the correction
+            if (correcting && !MODIFY_TEXT_FOR_CORRECTION) {
+                if (mLastSelectionStart < mLastSelectionEnd) {
+                    ic.setSelection(mLastSelectionStart, mLastSelectionStart);
+                }
+                EditingUtil.deleteWordAtCursor(ic, getWordSeparators());
             }
+
+            ic.commitText(suggestion, 1);
         }
         saveWordInHistory(suggestion);
         mPredicting = false;
@@ -1828,9 +1845,11 @@ public class LatinIME extends InputMethodService
     private void underlineWord(CharSequence word, int left, int right) {
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
-        ic.finishComposingText();
-        ic.deleteSurroundingText(left, right);
-        ic.setComposingText(word, 1);
+        if (MODIFY_TEXT_FOR_CORRECTION) {
+            ic.finishComposingText();
+            ic.deleteSurroundingText(left, right);
+            ic.setComposingText(word, 1);
+        }
         ic.setSelection(mLastSelectionStart, mLastSelectionStart);
     }
 
