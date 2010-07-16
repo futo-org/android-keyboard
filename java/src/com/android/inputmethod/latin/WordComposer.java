@@ -55,7 +55,9 @@ public class WordComposer {
         mTypedWord = new StringBuilder(copy.mTypedWord);
         mCapsCount = copy.mCapsCount;
         mAutoCapitalized = copy.mAutoCapitalized;
+        mIsCapitalized = copy.mIsCapitalized;
     }
+
     /**
      * Clear out the keys registered so far.
      */

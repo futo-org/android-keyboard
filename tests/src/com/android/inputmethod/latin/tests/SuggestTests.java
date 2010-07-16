@@ -71,7 +71,7 @@ public class SuggestTests extends AndroidTestCase {
             Log.w(TAG, "No available size for binary dictionary");
         }
         mSuggest.setAutoTextEnabled(false);
-        mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL);
+        mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
     }
 
     /************************** Helper functions ************************/
@@ -108,19 +108,56 @@ public class SuggestTests extends AndroidTestCase {
 
     private boolean isDefaultSuggestion(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false);
+        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, null);
+        return isDefaultSuggestion(suggestions, expected);
+    }
+
+    private void getBigramSuggestions(CharSequence previous, CharSequence typed) {
+        if(!TextUtils.isEmpty(previous) && (typed.length() > 1)) {
+            WordComposer firstChar = createWordComposer(typed.charAt(0) + "");
+            mSuggest.getSuggestions(null, firstChar, false, previous);
+        }
+    }
+
+    private boolean isDefaultNextSuggestion(CharSequence previous, CharSequence typed,
+            CharSequence expected) {
+        WordComposer word = createWordComposer(typed);
+        getBigramSuggestions(previous, typed);
+        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, previous);
         return isDefaultSuggestion(suggestions, expected);
     }
 
     private boolean isDefaultCorrection(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false);
+        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, null);
+        return isDefaultSuggestion(suggestions, expected) && mSuggest.hasMinimalCorrection();
+    }
+
+    private boolean isDefaultNextCorrection(CharSequence previous, CharSequence typed,
+            CharSequence expected) {
+        WordComposer word = createWordComposer(typed);
+        getBigramSuggestions(previous, typed);
+        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, previous);
+        for(int i=0;i<suggestions.size();i++) {
+            Log.i(TAG,i+" "+suggestions.get(i));
+        }
         return isDefaultSuggestion(suggestions, expected) && mSuggest.hasMinimalCorrection();
     }
 
     private boolean isASuggestion(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false);
+        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, null);
+        for (int i = 1; i < suggestions.size(); i++) {
+            if (TextUtils.equals(suggestions.get(i), expected)) return true;
+        }
+        return false;
+    }
+
+    private boolean isASuggestion(CharSequence previous, CharSequence typed,
+            CharSequence expected) {
+        WordComposer word = createWordComposer(typed);
+        getBigramSuggestions(previous, typed);
+        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, previous);
         for (int i = 1; i < suggestions.size(); i++) {
             if (TextUtils.equals(suggestions.get(i), expected)) return true;
         }
@@ -247,5 +284,27 @@ public class SuggestTests extends AndroidTestCase {
         assertTrue(isDefaultCorrection("nimo", "ni\u00F1o"));
         // Mar<LATIN SMALL LETTER I WITH ACUTE>a
         assertTrue(isDefaultCorrection("maria", "Mar\u00EDa"));
+    }
+
+    /**
+     * Make sure bigrams are showing when first character is typed
+     *  and don't show any when there aren't any
+     */
+    public void testBigramsAtFirstChar() {
+        assertTrue(isDefaultNextCorrection("about", "p", "part"));
+        assertTrue(isDefaultNextCorrection("I'm", "a", "about"));
+        assertTrue(isDefaultNextCorrection("about", "b", "business"));
+        assertTrue(isASuggestion("about", "b", "being"));
+        assertFalse(isDefaultNextSuggestion("about", "p", "business"));
+    }
+
+    /**
+     * Make sure bigrams score affects the original score
+     */
+    public void testBigramsScoreEffect() {
+       assertTrue(isDefaultCorrection("pa", "page"));
+       assertTrue(isDefaultNextCorrection("about", "pa", "part"));
+       assertTrue(isDefaultCorrection("sa", "said"));
+       assertTrue(isDefaultNextCorrection("from", "sa", "same"));
     }
 }

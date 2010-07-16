@@ -266,7 +266,8 @@ public class ExpandableDictionary extends Dictionary {
             if (completion) {
                 word[depth] = c;
                 if (terminal) {
-                    if (!callback.addWord(word, 0, depth + 1, freq * snr, mDicTypeId)) {
+                    if (!callback.addWord(word, 0, depth + 1, freq * snr, mDicTypeId,
+                                DataType.UNIGRAM)) {
                         return;
                     }
                     // Add to frequency of next letters for predictive correction
@@ -304,7 +305,8 @@ public class ExpandableDictionary extends Dictionary {
                                         || !same(word, depth + 1, codes.getTypedWord())) {
                                     int finalFreq = freq * snr * addedAttenuation;
                                     if (skipPos < 0) finalFreq *= FULL_WORD_FREQ_MULTIPLIER;
-                                    callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId);
+                                    callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
+                                            DataType.UNIGRAM);
                                 }
                             }
                             if (children != null) {

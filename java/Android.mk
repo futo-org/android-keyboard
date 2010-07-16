@@ -18,7 +18,7 @@ LOCAL_STATIC_JAVA_LIBRARIES := android-common
 # com.google.android.inputmethod.latin in the LatinIME sandbox.
 LOCAL_AAPT_FLAGS := --custom-package com.android.inputmethod.latin
 
-LOCAL_SDK_VERSION := current
+LOCAL_SDK_VERSION := 8
 
 LOCAL_PROGUARD_FLAGS := -include $(LOCAL_PATH)/proguard.flags
 

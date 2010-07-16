@@ -21,7 +21,9 @@ package com.android.inputmethod.latin;
  * strokes.
  */
 abstract public class Dictionary {
-    
+
+    protected static final int MAX_WORD_LENGTH = 48;
+
     /**
      * Whether or not to replicate the typed word in the suggested list, even if it's valid.
      */
@@ -31,7 +33,11 @@ abstract public class Dictionary {
      * The weight to give to a word if it's length is the same as the number of typed characters.
      */
     protected static final int FULL_WORD_FREQ_MULTIPLIER = 2;
-    
+
+    public static enum DataType {
+        UNIGRAM, BIGRAM
+    }
+
     /**
      * Interface to be implemented by classes requesting words to be fetched from the dictionary.
      * @see #getWords(WordComposer, WordCallback)
@@ -46,9 +52,11 @@ abstract public class Dictionary {
          * @param frequency the frequency of occurence. This is normalized between 1 and 255, but
          * can exceed those limits
          * @param dicTypeId of the dictionary where word was from
+         * @param dataType tells type of this data
          * @return true if the word was added, false if no more words are required
          */
-        boolean addWord(char[] word, int wordOffset, int wordLength, int frequency, int dicTypeId);
+        boolean addWord(char[] word, int wordOffset, int wordLength, int frequency, int dicTypeId,
+                DataType dataType);
     }
 
     /**
@@ -64,6 +72,21 @@ abstract public class Dictionary {
      */
     abstract public void getWords(final WordComposer composer, final WordCallback callback,
             int[] nextLettersFrequencies);
+
+    /**
+     * Searches for pairs in the bigram dictionary that matches the previous word and all the
+     * possible words following are added through the callback object.
+     * @param composer the key sequence to match
+     * @param callback the callback object to send possible word following previous word
+     * @param nextLettersFrequencies array of frequencies of next letters that could follow the
+     *        word so far. For instance, "bracke" can be followed by "t", so array['t'] will have
+     *        a non-zero value on returning from this method.
+     *        Pass in null if you don't want the dictionary to look up next letters.
+     */
+    public void getBigrams(final WordComposer composer, final CharSequence previousWord,
+            final WordCallback callback, int[] nextLettersFrequencies) {
+        // empty base implementation
+    }
 
     /**
      * Checks if the given word occurs in the dictionary

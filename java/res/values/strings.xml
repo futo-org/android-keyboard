@@ -86,6 +86,11 @@
     <!-- Description for auto completion -->
     <string name="auto_complete_summary">Spacebar and punctuation automatically insert highlighted word</string>
     
+    <!-- Option to enable bigram completion -->
+    <string name="bigram_suggestion">Bigram Suggestions</string>
+    <!-- Description for auto completion -->
+    <string name="bigram_suggestion_summary">Use previous word to improve suggestion</string>
+
     <!-- Array of prediction modes -->
     <string-array name="prediction_modes">
         <item>None</item>
