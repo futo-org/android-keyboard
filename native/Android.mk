@@ -1,7 +1,7 @@
 LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/src
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/src $(JNI_H_INCLUDE)
 
 LOCAL_SRC_FILES := \
 	jni/com_android_inputmethod_latin_BinaryDictionary.cpp \
