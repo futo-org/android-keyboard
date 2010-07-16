@@ -92,7 +92,8 @@ public class BinaryDictionary extends Dictionary {
         mDicTypeId = dicTypeId;
     }
 
-    private native int openNative(ByteBuffer bb, int typedLetterMultiplier, int fullWordMultiplier);
+    private native int openNative(ByteBuffer bb, int typedLetterMultiplier,
+            int fullWordMultiplier);
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize, 
@@ -146,7 +147,7 @@ public class BinaryDictionary extends Dictionary {
             }
             if (len > 0) {
                 callback.addWord(mOutputChars_bigrams, start, len, mFrequencies_bigrams[j],
-                        DataType.BIGRAM);
+                        mDicTypeId, DataType.BIGRAM);
             }
         }
     }
@@ -196,7 +197,8 @@ public class BinaryDictionary extends Dictionary {
                 len++;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars, start, len, mFrequencies[j], mDicTypeId, DataType.UNIGRAM);
+                callback.addWord(mOutputChars, start, len, mFrequencies[j], mDicTypeId,
+                        DataType.UNIGRAM);
             }
         }
     }
