@@ -8,8 +8,13 @@ LOCAL_SRC_FILES := \
 	src/dictionary.cpp \
 	src/char_utils.cpp
 
-LOCAL_NDK_VERSION := 4
-LOCAL_SDK_VERSION := 8
+# NDK does not support sim build.
+ifneq ($(TARGET_SIMULATOR),true)
+  LOCAL_NDK_VERSION := 4
+  LOCAL_SDK_VERSION := 8
+else
+  LOCAL_C_INCLUDES += $(JNI_H_INCLUDE)
+endif
 
 LOCAL_PRELINK_MODULE := false
 
