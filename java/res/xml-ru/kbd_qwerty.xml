@@ -70,7 +70,9 @@
         <Key android:keyLabel="м"/>
         <Key android:keyLabel="и"/>
         <Key android:keyLabel="т"/>
-        <Key android:keyLabel="ь"/>
+        <Key android:keyLabel="ь"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="ъ" />
         <Key android:keyLabel="б"/>
         <Key android:keyLabel="ю"/>
         <Key android:codes="-5" android:keyIcon="@drawable/sym_keyboard_delete"
