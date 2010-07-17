@@ -144,9 +144,13 @@ public class CandidateView extends View {
         mPaint.setStrokeWidth(0);
         mPaint.setTextAlign(Align.CENTER);
         mDescent = (int) mPaint.descent();
-        // 80 pixels for a 160dpi device would mean half an inch
+        // 50 pixels for a 160dpi device would mean about 0.3 inch
         mMinTouchableWidth = (int) (getResources().getDisplayMetrics().density * 50);
         
+        // Slightly reluctant to scroll to be able to easily choose the suggestion
+        // 50 pixels for a 160dpi device would mean about 0.3 inch
+        final int touchSlop = (int) (getResources().getDisplayMetrics().density * 50);
+        final int touchSlopSquare = touchSlop * touchSlop;
         mGestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
             @Override
             public void onLongPress(MotionEvent me) {
@@ -160,6 +164,13 @@ public class CandidateView extends View {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
                     float distanceX, float distanceY) {
+                final int deltaX = (int) (e2.getX() - e1.getX());
+                final int deltaY = (int) (e2.getY() - e1.getY());
+                final int distance = (deltaX * deltaX) + (deltaY * deltaY);
+                if (distance < touchSlopSquare) {
+                    return false;
+                }
+
                 final int width = getWidth();
                 mScrolled = true;
                 int scrollX = getScrollX();
