@@ -42,7 +42,7 @@
             android:title="@string/prefs_enable_log"
             android:summary="@string/prefs_description_log"
             android:persistent="true"
-            android:defaultValue="true"
+            android:defaultValue="false"
             />
 
     <ListPreference
