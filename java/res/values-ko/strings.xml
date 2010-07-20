@@ -20,8 +20,8 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="english_ime_name" msgid="7252517407088836577">"Android 키보드 2"</string>
-    <string name="english_ime_settings" msgid="6661589557206947774">"Android 키보드 2 설정"</string>
+    <string name="english_ime_name" msgid="7252517407088836577">"Android 키보드"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Android 키보드 설정"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"키를 누를 때 진동 발생"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"키를 누를 때 소리 발생"</string>
     <string name="hit_correction" msgid="4855351009261318389">"입력 오류 수정"</string>
