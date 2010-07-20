@@ -43,7 +43,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     // SUPPRESS_EXCEPTION should be true when released to public.
     private static final boolean SUPPRESS_EXCEPTION = true;
     // DEFAULT_LOG_ENABLED should be false when released to public.
-    private static final boolean DEFAULT_LOG_ENABLED = true;
+    private static final boolean DEFAULT_LOG_ENABLED = false;
 
     private static final long MINIMUMSENDINTERVAL = 300 * DateUtils.SECOND_IN_MILLIS; // 300 sec
     private static final long MINIMUMCOUNTINTERVAL = 20 * DateUtils.SECOND_IN_MILLIS; // 20 sec
