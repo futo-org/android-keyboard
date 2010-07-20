@@ -716,7 +716,6 @@ public class LatinIME extends InputMethodService
 
         // TODO: Uncomment this block when we enable re-editing feature
         // If a word is selected
-        /*
         if (isPredictionOn() && mJustRevertedSeparator == null
                 && (candidatesStart == candidatesEnd || newSelStart != oldSelStart)
                 && (newSelStart < newSelEnd - 1 || (!mPredicting))
@@ -727,7 +726,6 @@ public class LatinIME extends InputMethodService
                 abortCorrection(false);
             }
         }
-        */
     }
 
     @Override
