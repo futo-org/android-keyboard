@@ -93,13 +93,6 @@
         <item>Напредно</item>
     </string-array>
 
-    <!-- Don't translate -->
-    <string name="prediction_none" translatable="false">0</string>
-    <!-- Don't translate -->
-    <string name="prediction_basic" translatable="false">1</string>
-    <!-- Don't translate -->
-    <string name="prediction_full"  translatable="false">2</string>
-
     <string-array name="prediction_modes_values" translatable="false">
         <item>@string/prediction_none</item>
         <item>@string/prediction_basic</item>
@@ -248,13 +241,6 @@
         <item>На симболичкој тастатури</item>
         <item>Искључен</item>
     </string-array>
-
-    <!-- Don't translate -->
-    <string name="voice_mode_main" translatable="false">0</string>
-    <!-- Don't translate -->
-    <string name="voice_mode_symbols" translatable="false">1</string>
-    <!-- Don't translate -->
-    <string name="voice_mode_off"  translatable="false">2</string>
 
     <string-array name="voice_input_modes_values" translatable="false">
         <item>@string/voice_mode_main</item>
