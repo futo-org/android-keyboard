@@ -178,7 +178,6 @@ public class LatinIME extends InputMethodService
     private boolean mAfterVoiceInput;
     private boolean mImmediatelyAfterVoiceInput;
     private boolean mShowingVoiceSuggestions;
-    private boolean mImmediatelyAfterVoiceSuggestions;
     private boolean mVoiceInputHighlighted;
     private boolean mEnableVoiceButton;
     private CharSequence mBestWord;
@@ -200,7 +199,6 @@ public class LatinIME extends InputMethodService
     private boolean mHasUsedVoiceInputUnsupportedLocale;
     private boolean mLocaleSupportedForVoiceInput;
     private boolean mShowSuggestions;
-    private boolean mSuggestionShouldReplaceCurrentWord;
     private boolean mIsShowingHint;
     private int     mCorrectionMode;
     private boolean mEnableVoice = true;
@@ -526,7 +524,6 @@ public class LatinIME extends InputMethodService
         mAfterVoiceInput = false;
         mImmediatelyAfterVoiceInput = false;
         mShowingVoiceSuggestions = false;
-        mImmediatelyAfterVoiceSuggestions = false;
         mVoiceInputHighlighted = false;
         mInputTypeNoAutoCorrect = false;
         mPredictionOn = false;
@@ -680,7 +677,6 @@ public class LatinIME extends InputMethodService
             mVoiceInput.setSelectionSpan(newSelEnd - newSelStart);
         }
 
-        mSuggestionShouldReplaceCurrentWord = false;
         // If the current selection in the text view changes, we should
         // clear whatever candidate text we have.
         if ((((mComposing.length() > 0 && mPredicting) || mVoiceInputHighlighted)
@@ -1533,10 +1529,6 @@ public class LatinIME extends InputMethodService
 
         if (ic != null) ic.endBatchEdit();
 
-        // Show N-Best alternates, if there is more than one choice.
-        if (nBest.size() > 1) {
-            mImmediatelyAfterVoiceSuggestions = true;
-        }
         mVoiceInputHighlighted = true;
         mWordToSuggestions.putAll(mVoiceResults.alternatives);
 
@@ -1561,8 +1553,6 @@ public class LatinIME extends InputMethodService
     }
 
     private void updateSuggestions() {
-        mSuggestionShouldReplaceCurrentWord = false;
-
         LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
         ((LatinKeyboard) inputView.getKeyboard()).setPreferredLetters(null);
 
@@ -1579,7 +1569,8 @@ public class LatinIME extends InputMethodService
     }
 
     private List<CharSequence> getTypedSuggestions(WordComposer word) {
-        List<CharSequence> stringList = mSuggest.getSuggestions(mKeyboardSwitcher.getInputView(), word, false, null);
+        List<CharSequence> stringList = mSuggest.getSuggestions(
+                mKeyboardSwitcher.getInputView(), word, false, null);
         return stringList;
     }
 
@@ -1593,8 +1584,8 @@ public class LatinIME extends InputMethodService
         //long startTime = System.currentTimeMillis(); // TIME MEASUREMENT!
         // TODO Maybe need better way of retrieving previous word
         CharSequence prevWord = EditingUtil.getPreviousWord(getCurrentInputConnection());
-        List<CharSequence> stringList = mSuggest.getSuggestions(mKeyboardSwitcher.getInputView(), word, false,
-                prevWord);
+        List<CharSequence> stringList = mSuggest.getSuggestions(
+                mKeyboardSwitcher.getInputView(), word, false, prevWord);
         //long stopTime = System.currentTimeMillis(); // TIME MEASUREMENT!
         //Log.d("LatinIME","Suggest Total Time - " + (stopTime - startTime));
 
@@ -1726,7 +1717,6 @@ public class LatinIME extends InputMethodService
     private void rememberReplacedWord(CharSequence suggestion) {
         if (mShowingVoiceSuggestions) {
             // Retain the replaced word in the alternatives array.
-            InputConnection ic = getCurrentInputConnection();
             EditingUtil.Range range = new EditingUtil.Range();
             String wordToBeReplaced = EditingUtil.getWordAtCursor(getCurrentInputConnection(),
                     mWordSeparators, range);
@@ -1816,7 +1806,6 @@ public class LatinIME extends InputMethodService
                 }
                 if (mWordToSuggestions.containsKey(selectedWord)){
                     mShowingVoiceSuggestions = true;
-                    mSuggestionShouldReplaceCurrentWord = true;
                     underlineWord(touching, range.charsBefore, range.charsAfter);
                     List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
                     // If the first letter of touching is capitalized, make all the suggestions
@@ -1856,7 +1845,6 @@ public class LatinIME extends InputMethodService
                 }
                 // Found a match, show suggestions
                 if (foundWord != null || alternatives != null) {
-                    mSuggestionShouldReplaceCurrentWord = true;
                     underlineWord(touching, range.charsBefore, range.charsAfter);
                     TextEntryState.selectedForCorrection();
                     if (alternatives == null) alternatives = new TypedWordAlternatives(touching,
