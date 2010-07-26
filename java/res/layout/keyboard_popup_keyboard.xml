@@ -33,7 +33,6 @@
             android:background="@android:color/transparent"
 
             latin:keyPreviewLayout="@layout/keyboard_key_preview"
-            latin:keyTextSize="22sp"
             latin:popupLayout="@layout/keyboard_popup_keyboard"
             />
     <ImageButton android:id="@+id/closeButton"

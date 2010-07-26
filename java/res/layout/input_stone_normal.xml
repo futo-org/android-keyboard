@@ -27,8 +27,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/keyboard_background"
 
-        latin:keyBackground="@drawable/btn_keyboard_key_ginger"
-        latin:keyTextSize="22dip"
+        latin:keyBackground="@drawable/btn_keyboard_key_stone"
         latin:keyTextColor="@color/latinkeyboard_key_color_black"
         latin:shadowColor="@color/latinkeyboard_key_color_white"
         latin:symbolColorScheme="black"
