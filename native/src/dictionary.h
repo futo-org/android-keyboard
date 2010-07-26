@@ -39,8 +39,9 @@ public:
     int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
             int maxWordLength, int maxWords, int maxAlternatives, int skipPos,
             int *nextLetters, int nextLettersSize);
-    int getBigrams(unsigned short *word, int length, unsigned short *outWords, int *frequencies,
-            int maxWordLength, int maxBigrams);
+    int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
+            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
+            int maxAlternatives);
     bool isValidWord(unsigned short *word, int length);
     void setAsset(void *asset) { mAsset = asset; }
     void *getAsset() { return mAsset; }
@@ -64,6 +65,7 @@ private:
     int wideStrLen(unsigned short *str);
 
     bool sameAsTyped(unsigned short *word, int length);
+    bool checkFirstCharacter(unsigned short *word);
     bool addWord(unsigned short *word, int length, int frequency);
     bool addWordBigram(unsigned short *word, int length, int frequency);
     unsigned short toLowerCase(unsigned short c);

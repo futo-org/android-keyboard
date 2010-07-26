@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -30,6 +31,14 @@ import android.util.Log;
  * Implements a static, compacted, binary dictionary of standard words.
  */
 public class BinaryDictionary extends Dictionary {
+
+    /**
+     * There is difference between what java and native code can handle.
+     * This value should only be used in BinaryDictionary.java
+     * It is necessary to keep it at this value because some languages e.g. German have
+     * really long words.
+     */
+    protected static final int MAX_WORD_LENGTH = 48;
 
     private static final String TAG = "BinaryDictionary";
     private static final int MAX_ALTERNATIVES = 16;
@@ -64,8 +73,8 @@ public class BinaryDictionary extends Dictionary {
      * @param context application context for reading resources
      * @param resId the resource containing the raw binary dictionary
      */
-    public BinaryDictionary(Context context, int resId, int dicTypeId) {
-        if (resId != 0) {
+    public BinaryDictionary(Context context, int[] resId, int dicTypeId) {
+        if (resId != null && resId.length > 0 && resId[0] != 0) {
             loadDictionary(context, resId);
         }
         mDicTypeId = dicTypeId;
@@ -97,47 +106,68 @@ public class BinaryDictionary extends Dictionary {
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize, 
-            char[] outputChars, int[] frequencies,
-            int maxWordLength, int maxWords, int maxAlternatives, int skipPos,
-            int[] nextLettersFrequencies, int nextLettersSize);
-    private native int getBigramsNative(int nativeData, char[] prevWord, int prevWordLength,
-            char[] outputChars, int[] frequencies, int maxWordLength, int maxBigrams);
+            char[] outputChars, int[] frequencies, int maxWordLength, int maxWords,
+            int maxAlternatives, int skipPos, int[] nextLettersFrequencies, int nextLettersSize);
+    private native int getBigramsNative(int dict, char[] prevWord, int prevWordLength,
+            int[] inputCodes, int inputCodesLength, char[] outputChars, int[] frequencies,
+            int maxWordLength, int maxBigrams, int maxAlternatives);
 
-    private final void loadDictionary(Context context, int resId) {
-        InputStream is = context.getResources().openRawResource(resId);
+    private final void loadDictionary(Context context, int[] resId) {
+        InputStream[] is = null;
         try {
-            int avail = is.available();
+            // merging separated dictionary into one if dictionary is separated
+            int total = 0;
+            is = new InputStream[resId.length];
+            for (int i = 0; i < resId.length; i++) {
+                is[i] = context.getResources().openRawResource(resId[i]);
+                total += is[i].available();
+            }
+
             mNativeDictDirectBuffer =
-                    ByteBuffer.allocateDirect(avail).order(ByteOrder.nativeOrder());
-            int got = Channels.newChannel(is).read(mNativeDictDirectBuffer);
-            if (got != avail) {
-                Log.e(TAG, "Read " + got + " bytes, expected " + avail);
+                ByteBuffer.allocateDirect(total).order(ByteOrder.nativeOrder());
+            int got = 0;
+            for (int i = 0; i < resId.length; i++) {
+                 got += Channels.newChannel(is[i]).read(mNativeDictDirectBuffer);
+            }
+            if (got != total) {
+                Log.e(TAG, "Read " + got + " bytes, expected " + total);
             } else {
                 mNativeDict = openNative(mNativeDictDirectBuffer,
                         TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER);
-                mDictLength = avail;
+                mDictLength = total;
             }
         } catch (IOException e) {
-            Log.w(TAG, "No available size for binary dictionary");
+            Log.w(TAG, "No available memory for binary dictionary");
         } finally {
             try {
-                is.close();
+                for (int i = 0;i < is.length; i++) {
+                    is[i].close();
+                }
             } catch (IOException e) {
                 Log.w(TAG, "Failed to close input stream");
             }
         }
     }
 
+
     @Override
-    public void getBigrams(final WordComposer composer, final CharSequence previousWord,
+    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
             final WordCallback callback, int[] nextLettersFrequencies) {
 
         char[] chars = previousWord.toString().toCharArray();
         Arrays.fill(mOutputChars_bigrams, (char) 0);
         Arrays.fill(mFrequencies_bigrams, 0);
 
-        int count = getBigramsNative(mNativeDict, chars, chars.length, mOutputChars_bigrams,
-                mFrequencies_bigrams, MAX_WORD_LENGTH, MAX_BIGRAMS);
+        int codesSize = codes.size();
+        Arrays.fill(mInputCodes, -1);
+        int[] alternatives = codes.getCodesAt(0);
+        System.arraycopy(alternatives, 0, mInputCodes, 0,
+                Math.min(alternatives.length, MAX_ALTERNATIVES));
+
+        int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
+                mOutputChars_bigrams, mFrequencies_bigrams, MAX_WORD_LENGTH, MAX_BIGRAMS,
+                MAX_ALTERNATIVES);
+
         for (int j = 0; j < count; j++) {
             if (mFrequencies_bigrams[j] < 1) break;
             int start = j * MAX_WORD_LENGTH;
@@ -156,7 +186,7 @@ public class BinaryDictionary extends Dictionary {
     public void getWords(final WordComposer codes, final WordCallback callback,
             int[] nextLettersFrequencies) {
         final int codesSize = codes.size();
-        // Wont deal with really long words.
+        // Won't deal with really long words.
         if (codesSize > MAX_WORD_LENGTH - 1) return;
         
         Arrays.fill(mInputCodes, -1);

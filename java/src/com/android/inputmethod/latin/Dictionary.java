@@ -21,9 +21,6 @@ package com.android.inputmethod.latin;
  * strokes.
  */
 abstract public class Dictionary {
-
-    protected static final int MAX_WORD_LENGTH = 48;
-
     /**
      * Whether or not to replicate the typed word in the suggested list, even if it's valid.
      */

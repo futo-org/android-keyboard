@@ -20,6 +20,8 @@ import com.android.inputmethod.voice.FieldContext;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceInput;
 
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -29,6 +31,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.media.AudioManager;
@@ -60,6 +63,7 @@ import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -159,6 +163,8 @@ public class LatinIME extends InputMethodService
     KeyboardSwitcher mKeyboardSwitcher;
 
     private UserDictionary mUserDictionary;
+    // User Bigram is disabled for now
+    //private UserBigramDictionary mUserBigramDictionary;
     private ContactsDictionary mContactsDictionary;
     private AutoDictionary mAutoDictionary;
 
@@ -383,6 +389,45 @@ public class LatinIME extends InputMethodService
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
+    /**
+     * Loads a dictionary or multiple separated dictionary
+     * @return returns array of dictionary resource ids
+     */
+    static int[] getDictionary(Resources res, String packageName) {
+        XmlResourceParser xrp = res.getXml(R.xml.dictionary);
+        int dictionaryCount = 0;
+        ArrayList<Integer> dictionaries = new ArrayList<Integer>();
+
+        try {
+            int current = xrp.getEventType();
+            while (current != XmlResourceParser.END_DOCUMENT) {
+                if (current == XmlResourceParser.START_TAG) {
+                    String tag = xrp.getName();
+                    if (tag != null) {
+                        if (tag.equals("part")) {
+                            String dictFileName = xrp.getAttributeValue(null, "name");
+                            dictionaries.add(res.getIdentifier(dictFileName, "raw", packageName));
+                        }
+                    }
+                }
+                xrp.next();
+                current = xrp.getEventType();
+            }
+        } catch (XmlPullParserException e) {
+            Log.e(TAG, "Dictionary XML parsing failure");
+        } catch (IOException e) {
+            Log.e(TAG, "Dictionary XML IOException");
+        }
+
+        int count = dictionaries.size();
+        int[] dict = new int[count];
+        for (int i = 0; i < count; i++) {
+            dict[i] = dictionaries.get(i);
+        }
+
+        return dict;
+    }
+
     private void initSuggest(String locale) {
         mInputLocale = locale;
 
@@ -396,7 +441,9 @@ public class LatinIME extends InputMethodService
         }
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mQuickFixes = sp.getBoolean(PREF_QUICK_FIXES, true);
-        mSuggest = new Suggest(this, R.raw.main);
+
+        int[] dictionaries = getDictionary(orig, this.getPackageName());
+        mSuggest = new Suggest(this, dictionaries);
         updateAutoTextEnabled(saveLocale);
         if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this, mInputLocale);
@@ -407,6 +454,15 @@ public class LatinIME extends InputMethodService
             mAutoDictionary.close();
         }
         mAutoDictionary = new AutoDictionary(this, this, mInputLocale, Suggest.DIC_AUTO);
+        // User Bigram is disabled for now
+        /*
+        if (mUserBigramDictionary != null) {
+            mUserBigramDictionary.close();
+        }
+        mUserBigramDictionary = new UserBigramDictionary(this, this, mInputLocale,
+                Suggest.DIC_USERBIGRAM);
+        mSuggest.setUserBigramDictionary(mUserBigramDictionary);
+        */
         mSuggest.setUserDictionary(mUserDictionary);
         mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);
@@ -642,6 +698,8 @@ public class LatinIME extends InputMethodService
             mKeyboardSwitcher.getInputView().closing();
         }
         if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
+        // User Bigram is disabled for now
+        //if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
     }
 
     @Override
@@ -897,7 +955,7 @@ public class LatinIME extends InputMethodService
                 }
                 mCommittedLength = mComposing.length();
                 TextEntryState.acceptedTyped(mComposing);
-                checkAddToDictionary(mComposing, AutoDictionary.FREQUENCY_FOR_TYPED);
+                addToDictionaries(mComposing, AutoDictionary.FREQUENCY_FOR_TYPED);
             }
             updateSuggestions();
         }
@@ -1583,9 +1641,10 @@ public class LatinIME extends InputMethodService
     private void showSuggestions(WordComposer word) {
         //long startTime = System.currentTimeMillis(); // TIME MEASUREMENT!
         // TODO Maybe need better way of retrieving previous word
-        CharSequence prevWord = EditingUtil.getPreviousWord(getCurrentInputConnection());
+        CharSequence prevWord = EditingUtil.getPreviousWord(getCurrentInputConnection(),
+                mWordSeparators);
         List<CharSequence> stringList = mSuggest.getSuggestions(
-                mKeyboardSwitcher.getInputView(), word, false, prevWord);
+            mKeyboardSwitcher.getInputView(), word, false, prevWord);
         //long stopTime = System.currentTimeMillis(); // TIME MEASUREMENT!
         //Log.d("LatinIME","Suggest Total Time - " + (stopTime - startTime));
 
@@ -1601,7 +1660,8 @@ public class LatinIME extends InputMethodService
         boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
                 (preferCapitalization()
                         && mSuggest.isValidWord(typedWord.toString().toLowerCase()));
-        if (mCorrectionMode == Suggest.CORRECTION_FULL) {
+        if (mCorrectionMode == Suggest.CORRECTION_FULL
+                || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
             correctionAvailable |= typedWordValid;
         }
         // Don't auto-correct words with multiple capital letter
@@ -1637,8 +1697,9 @@ public class LatinIME extends InputMethodService
             mJustAccepted = true;
             pickSuggestion(mBestWord, false);
             // Add the word to the auto dictionary if it's not a known word
-            checkAddToDictionary(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
+            addToDictionaries(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
             return true;
+
         }
         return false;
     }
@@ -1692,7 +1753,9 @@ public class LatinIME extends InputMethodService
         pickSuggestion(suggestion, correcting);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
-            checkAddToDictionary(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
+            addToDictionaries(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
+        } else {
+            addToBigramDictionary(suggestion, 1);
         }
         LatinImeLogger.logOnManualSuggestion(mComposing.toString(), suggestion.toString(),
                 index, suggestions);
@@ -1892,16 +1955,43 @@ public class LatinIME extends InputMethodService
         ic.setSelection(mLastSelectionStart, mLastSelectionStart);
     }
 
-    private void checkAddToDictionary(CharSequence suggestion, int frequencyDelta) {
+    private void addToDictionaries(CharSequence suggestion, int frequencyDelta) {
+        checkAddToDictionary(suggestion, frequencyDelta, false);
+    }
+
+    private void addToBigramDictionary(CharSequence suggestion, int frequencyDelta) {
+        checkAddToDictionary(suggestion, frequencyDelta, true);
+    }
+
+    /**
+     * Adds to the UserBigramDictionary and/or AutoDictionary
+     * @param addToBigramDictionary true if it should be added to bigram dictionary if possible
+     */
+    private void checkAddToDictionary(CharSequence suggestion, int frequencyDelta,
+            boolean addToBigramDictionary) {
         if (suggestion == null || suggestion.length() < 1) return;
         // Only auto-add to dictionary if auto-correct is ON. Otherwise we'll be
         // adding words in situations where the user or application really didn't
         // want corrections enabled or learned.
-        if (!(mCorrectionMode == Suggest.CORRECTION_FULL)) return;
-        if (suggestion != null && mAutoDictionary.isValidWord(suggestion)
-                || (!mSuggest.isValidWord(suggestion.toString())
+        if (!(mCorrectionMode == Suggest.CORRECTION_FULL
+                || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM)) {
+            return;
+        }
+        if (suggestion != null) {
+            if (!addToBigramDictionary && mAutoDictionary.isValidWord(suggestion)
+                    || (!mSuggest.isValidWord(suggestion.toString())
                     && !mSuggest.isValidWord(suggestion.toString().toLowerCase()))) {
-            mAutoDictionary.addWord(suggestion.toString(), frequencyDelta);
+                mAutoDictionary.addWord(suggestion.toString(), frequencyDelta);
+            }
+            // User Bigram is disabled for now
+            /*
+            if (mUserBigramDictionary != null) {
+                CharSequence prevWord = EditingUtil.getPreviousWord(getCurrentInputConnection());
+                if (!TextUtils.isEmpty(prevWord)) {
+                    mUserBigramDictionary.addBigrams(prevWord.toString(), suggestion.toString(), 1);
+                }
+            }
+            */
         }
     }
 

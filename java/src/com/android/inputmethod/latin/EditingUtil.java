@@ -29,7 +29,7 @@ public class EditingUtil {
     /**
      * Number of characters we want to look back in order to identify the previous word
      */
-    public static final int LOOKBACK_CHARACTER_NUM = 15;
+    private static final int LOOKBACK_CHARACTER_NUM = 15;
 
     private EditingUtil() {};
 
@@ -185,10 +185,22 @@ public class EditingUtil {
 
     private static final Pattern spaceRegex = Pattern.compile("\\s+");
 
-    public static CharSequence getPreviousWord(InputConnection connection) {
+    public static CharSequence getPreviousWord(InputConnection connection,
+            String sentenceSeperators) {
         //TODO: Should fix this. This could be slow!
         CharSequence prev = connection.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        if (prev == null) {
+            return null;
+        }
         String[] w = spaceRegex.split(prev);
-        return (w.length >= 2) ? w[w.length-2] : null;
+        if (w.length >= 2 && w[w.length-2].length() > 0) {
+            char lastChar = w[w.length-2].charAt(w[w.length-2].length() -1);
+            if (sentenceSeperators.contains(String.valueOf(lastChar))) {
+                return null;
+            }
+            return w[w.length-2];
+        } else {
+            return null;
+        }
     }
 }

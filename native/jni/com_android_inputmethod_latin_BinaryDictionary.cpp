@@ -67,8 +67,9 @@ static int latinime_BinaryDictionary_getSuggestions(
     int *nextLetters = nextLettersArray != NULL ? env->GetIntArrayElements(nextLettersArray, NULL)
             : NULL;
 
-    int count = dictionary->getSuggestions(inputCodes, arraySize, (unsigned short*) outputChars, frequencies,
-            maxWordLength, maxWords, maxAlternatives, skipPos, nextLetters, nextLettersSize);
+    int count = dictionary->getSuggestions(inputCodes, arraySize, (unsigned short*) outputChars,
+            frequencies, maxWordLength, maxWords, maxAlternatives, skipPos, nextLetters,
+            nextLettersSize);
 
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
@@ -81,20 +82,24 @@ static int latinime_BinaryDictionary_getSuggestions(
 }
 
 static int latinime_BinaryDictionary_getBigrams
-        (JNIEnv *env, jobject object, jint dict, jcharArray wordArray, jint wordLength,
-         jcharArray outputArray, jintArray frequencyArray, jint maxWordLength, jint maxBigrams)
+        (JNIEnv *env, jobject object, jint dict, jcharArray prevWordArray, jint prevWordLength,
+         jintArray inputArray, jint inputArraySize, jcharArray outputArray,
+         jintArray frequencyArray, jint maxWordLength, jint maxBigrams, jint maxAlternatives)
 {
     Dictionary *dictionary = (Dictionary*) dict;
     if (dictionary == NULL) return 0;
 
-    jchar *word = env->GetCharArrayElements(wordArray, NULL);
+    jchar *prevWord = env->GetCharArrayElements(prevWordArray, NULL);
+    int *inputCodes = env->GetIntArrayElements(inputArray, NULL);
     jchar *outputChars = env->GetCharArrayElements(outputArray, NULL);
     int *frequencies = env->GetIntArrayElements(frequencyArray, NULL);
 
-    int count = dictionary->getBigrams((unsigned short*) word, wordLength,
-            (unsigned short*) outputChars, frequencies, maxWordLength, maxBigrams);
+    int count = dictionary->getBigrams((unsigned short*) prevWord, prevWordLength, inputCodes,
+            inputArraySize, (unsigned short*) outputChars, frequencies, maxWordLength, maxBigrams,
+            maxAlternatives);
 
-    env->ReleaseCharArrayElements(wordArray, word, JNI_ABORT);
+    env->ReleaseCharArrayElements(prevWordArray, prevWord, JNI_ABORT);
+    env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
 
@@ -130,7 +135,7 @@ static JNINativeMethod gMethods[] = {
     {"closeNative",          "(I)V",            (void*)latinime_BinaryDictionary_close},
     {"getSuggestionsNative", "(I[II[C[IIIII[II)I",  (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative",    "(I[CI)Z",         (void*)latinime_BinaryDictionary_isValidWord},
-    {"getBigramsNative",    "(I[CI[C[III)I",         (void*)latinime_BinaryDictionary_getBigrams}
+    {"getBigramsNative",    "(I[CI[II[C[IIII)I",         (void*)latinime_BinaryDictionary_getBigrams}
 };
 
 static int registerNativeMethods(JNIEnv* env, const char* className,

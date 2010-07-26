@@ -22,6 +22,8 @@ import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.SystemClock;
 import android.provider.ContactsContract.Contacts;
+import android.text.TextUtils;
+import android.util.Log;
 
 public class ContactsDictionary extends ExpandableDictionary {
 
@@ -29,6 +31,12 @@ public class ContactsDictionary extends ExpandableDictionary {
         Contacts._ID,
         Contacts.DISPLAY_NAME,
     };
+
+    /**
+     * Frequency for contacts information into the dictionary
+     */
+    private static final int FREQUENCY_FOR_CONTACTS = 128;
+    private static final int FREQUENCY_FOR_CONTACTS_BIGRAM = 90;
 
     private static final int INDEX_NAME = 1;
 
@@ -90,6 +98,7 @@ public class ContactsDictionary extends ExpandableDictionary {
 
                 if (name != null) {
                     int len = name.length();
+                    String prevWord = null;
 
                     // TODO: Better tokenization for non-Latin writing systems
                     for (int i = 0; i < len; i++) {
@@ -113,7 +122,13 @@ public class ContactsDictionary extends ExpandableDictionary {
                             // capitalization of i.
                             final int wordLen = word.length();
                             if (wordLen < maxWordLength && wordLen > 1) {
-                                super.addWord(word, 128);
+                                super.addWord(word, FREQUENCY_FOR_CONTACTS);
+                                if (!TextUtils.isEmpty(prevWord)) {
+                                    // TODO Do not add email address
+                                    super.addBigrams(prevWord, word,
+                                            FREQUENCY_FOR_CONTACTS_BIGRAM);
+                                }
+                                prevWord = word;
                             }
                         }
                     }

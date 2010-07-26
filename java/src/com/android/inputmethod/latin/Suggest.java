@@ -34,6 +34,10 @@ import android.view.View;
  */
 public class Suggest implements Dictionary.WordCallback {
 
+    private static final String TAG = "Suggest";
+
+    public static final int APPROX_MAX_WORD_LENGTH = 32;
+
     public static final int CORRECTION_NONE = 0;
     public static final int CORRECTION_BASIC = 1;
     public static final int CORRECTION_FULL = 2;
@@ -71,6 +75,8 @@ public class Suggest implements Dictionary.WordCallback {
 
     private Dictionary mContactsDictionary;
 
+    private Dictionary mUserBigramDictionary;
+
     private int mPrefMaxSuggestions = 12;
     private int mPrefMaxBigrams = 255;
 
@@ -95,7 +101,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
-    public Suggest(Context context, int dictionaryResId) {
+    public Suggest(Context context, int[] dictionaryResId) {
         mMainDict = new BinaryDictionary(context, dictionaryResId, DIC_MAIN);
         initPool();
     }
@@ -107,7 +113,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private void initPool() {
         for (int i = 0; i < mPrefMaxSuggestions; i++) {
-            StringBuilder sb = new StringBuilder(Dictionary.MAX_WORD_LENGTH);
+            StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
             mStringPool.add(sb);
         }
     }
@@ -126,6 +132,10 @@ public class Suggest implements Dictionary.WordCallback {
 
     public boolean hasMainDictionary() {
         return mMainDict.getSize() > LARGE_DICTIONARY_THRESHOLD;
+    }
+
+    public int getApproxMaxWordLength() {
+        return APPROX_MAX_WORD_LENGTH;
     }
 
     /**
@@ -147,6 +157,10 @@ public class Suggest implements Dictionary.WordCallback {
         mAutoDictionary = autoDictionary;
     }
 
+    public void setUserBigramDictionary(Dictionary userBigramDictionary) {
+        mUserBigramDictionary = userBigramDictionary;
+    }
+
     /**
      * Number of suggestions to generate from the input key sequence. This has
      * to be a number between 1 and 100 (inclusive).
@@ -162,7 +176,7 @@ public class Suggest implements Dictionary.WordCallback {
         mBigramPriorities = new int[mPrefMaxBigrams];
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         while (mStringPool.size() < mPrefMaxSuggestions) {
-            StringBuilder sb = new StringBuilder(Dictionary.MAX_WORD_LENGTH);
+            StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
             mStringPool.add(sb);
         }
     }
@@ -224,10 +238,9 @@ public class Suggest implements Dictionary.WordCallback {
             mLowerOriginalWord = "";
         }
 
-        // Search the dictionary only if there are at least 2 characters
         if (wordComposer.size() == 1 && (mCorrectionMode == CORRECTION_FULL_BIGRAM
                 || mCorrectionMode == CORRECTION_BASIC)) {
-            // At first character, just get the bigrams
+            // At first character typed, search only the bigrams
             Arrays.fill(mBigramPriorities, 0);
             collectGarbage(mBigramSuggestions, mPrefMaxBigrams);
 
@@ -236,17 +249,29 @@ public class Suggest implements Dictionary.WordCallback {
                 if (mMainDict.isValidWord(lowerPrevWord)) {
                     prevWordForBigram = lowerPrevWord;
                 }
-                mMainDict.getBigrams(wordComposer, prevWordForBigram, this,
-                        mNextLettersFrequencies);
+                if (mUserBigramDictionary != null) {
+                    mUserBigramDictionary.getBigrams(wordComposer, prevWordForBigram, this,
+                            mNextLettersFrequencies);
+                }
+                if (mContactsDictionary != null) {
+                    mContactsDictionary.getBigrams(wordComposer, prevWordForBigram, this,
+                            mNextLettersFrequencies);
+                }
+                if (mMainDict != null) {
+                    mMainDict.getBigrams(wordComposer, prevWordForBigram, this,
+                            mNextLettersFrequencies);
+                }
                 char currentChar = wordComposer.getTypedWord().charAt(0);
+                char currentCharUpper = Character.toUpperCase(currentChar);
                 int count = 0;
                 int bigramSuggestionSize = mBigramSuggestions.size();
                 for (int i = 0; i < bigramSuggestionSize; i++) {
-                    if (mBigramSuggestions.get(i).charAt(0) == currentChar) {
+                    if (mBigramSuggestions.get(i).charAt(0) == currentChar
+                            || mBigramSuggestions.get(i).charAt(0) == currentCharUpper) {
                         int poolSize = mStringPool.size();
                         StringBuilder sb = poolSize > 0 ?
                                 (StringBuilder) mStringPool.remove(poolSize - 1)
-                                : new StringBuilder(Dictionary.MAX_WORD_LENGTH);
+                                : new StringBuilder(getApproxMaxWordLength());
                         sb.setLength(0);
                         sb.append(mBigramSuggestions.get(i));
                         mSuggestions.add(count++, sb);
@@ -256,7 +281,7 @@ public class Suggest implements Dictionary.WordCallback {
             }
 
         } else if (wordComposer.size() > 1) {
-            // Search the dictionary only if there are at least 2 characters
+            // At second character typed, search the unigrams (scores being affected by bigrams)
             if (mUserDictionary != null || mContactsDictionary != null) {
                 if (mUserDictionary != null) {
                     mUserDictionary.getWords(wordComposer, this, mNextLettersFrequencies);
@@ -277,7 +302,6 @@ public class Suggest implements Dictionary.WordCallback {
                 mHaveCorrection = true;
             }
         }
-
         if (mOriginalWord != null) {
             mSuggestions.add(0, mOriginalWord.toString());
         }
@@ -290,7 +314,6 @@ public class Suggest implements Dictionary.WordCallback {
                 mHaveCorrection = false;
             }
         }
-
         if (mAutoTextEnabled) {
             int i = 0;
             int max = 6;
@@ -401,7 +424,7 @@ public class Suggest implements Dictionary.WordCallback {
                             / MAXIMUM_BIGRAM_FREQUENCY)
                             * (BIGRAM_MULTIPLIER_MAX - BIGRAM_MULTIPLIER_MIN)
                             + BIGRAM_MULTIPLIER_MIN;
-                    /* Log.d("Suggest","bigram num: " + bigramSuggestion
+                    /* Log.d(TAG,"bigram num: " + bigramSuggestion
                             + "  wordB: " + mBigramSuggestions.get(bigramSuggestion).toString()
                             + "  currentPriority: " + freq + "  bigramPriority: "
                             + mBigramPriorities[bigramSuggestion]
@@ -430,7 +453,7 @@ public class Suggest implements Dictionary.WordCallback {
         priorities[pos] = freq;
         int poolSize = mStringPool.size();
         StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1) 
-                : new StringBuilder(Dictionary.MAX_WORD_LENGTH);
+                : new StringBuilder(getApproxMaxWordLength());
         sb.setLength(0);
         if (mCapitalize) {
             sb.append(Character.toUpperCase(word[offset]));

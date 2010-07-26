@@ -387,13 +387,17 @@ Dictionary::getBigramFreq(int *pos)
 
 
 int
-Dictionary::getBigrams(unsigned short *prevWord, int prevWordLength, unsigned short *bigramChars,
-                       int *bigramFreq, int maxWordLength, int maxBigrams)
+Dictionary::getBigrams(unsigned short *prevWord, int prevWordLength, int *codes, int codesSize,
+        unsigned short *bigramChars, int *bigramFreq, int maxWordLength, int maxBigrams,
+        int maxAlternatives)
 {
     mBigramFreq = bigramFreq;
     mBigramChars = bigramChars;
+    mInputCodes = codes;
+    mInputLength = codesSize;
     mMaxWordLength = maxWordLength;
     mMaxBigrams = maxBigrams;
+    mMaxAlternatives = maxAlternatives;
 
     if (mBigram == 1 && checkIfDictVersionIsLatest()) {
         int pos = isValidWordRec(DICTIONARY_HEADER_SIZE, prevWord, 0, prevWordLength);
@@ -406,7 +410,7 @@ Dictionary::getBigrams(unsigned short *prevWord, int prevWordLength, unsigned sh
         int bigramExist = (mDict[pos] & FLAG_BIGRAM_READ);
         if (bigramExist > 0) {
             int nextBigramExist = 1;
-            while (nextBigramExist > 0) {
+            while (nextBigramExist > 0 && bigramCount < maxBigrams) {
                 int bigramAddress = getBigramAddress(&pos, true);
                 int frequency = (FLAG_BIGRAM_FREQ & mDict[pos]);
                 // search for all bigrams and store them
@@ -521,8 +525,27 @@ Dictionary::searchForTerminalNode(int addressLookingFor, int frequency)
             break;
         }
     }
+    if (checkFirstCharacter(word)) {
+        addWordBigram(word, depth, frequency);
+    }
+}
 
-    addWordBigram(word, depth, frequency);
+bool
+Dictionary::checkFirstCharacter(unsigned short *word)
+{
+    // Checks whether this word starts with same character or neighboring characters of
+    // what user typed.
+
+    int *inputCodes = mInputCodes;
+    int maxAlt = mMaxAlternatives;
+    while (maxAlt > 0) {
+        if ((unsigned int) *inputCodes == (unsigned int) *word) {
+            return true;
+        }
+        inputCodes++;
+        maxAlt--;
+    }
+    return false;
 }
 
 bool
