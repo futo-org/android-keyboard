@@ -129,6 +129,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     void makeKeyboards(boolean forceCreate) {
+        mSymbolsId = makeSymbolsId(mHasVoice && !mVoiceOnPrimary);
+        mSymbolsShiftedId = makeSymbolsShiftedId(mHasVoice && !mVoiceOnPrimary);
+
         if (forceCreate) mKeyboards.clear();
         // Configuration change is coming after the keyboard gets recreated. So don't rely on that.
         // If keyboards have already been made, check if we have a screen width change and 
@@ -137,8 +140,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (displayWidth == mLastDisplayWidth) return;
         mLastDisplayWidth = displayWidth;
         if (!forceCreate) mKeyboards.clear();
-        mSymbolsId = makeSymbolsId(mHasVoice && !mVoiceOnPrimary);
-        mSymbolsShiftedId = makeSymbolsShiftedId(mHasVoice && !mVoiceOnPrimary);
     }
 
     /**
@@ -338,7 +339,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             LatinKeyboard symbolsShiftedKeyboard = getKeyboard(mSymbolsShiftedId);
             symbolsShiftedKeyboard.setShifted(false);
             mCurrentId = mSymbolsId;
-            mInputView.setKeyboard(getKeyboard(mSymbolsId));
+            mInputView.setKeyboard(symbolsKeyboard);
             symbolsKeyboard.setShifted(false);
             symbolsKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
         }
