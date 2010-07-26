@@ -20,17 +20,17 @@
 
     <item android:state_checkable="true" android:state_checked="true"
           android:state_pressed="true"
-          android:drawable="@drawable/btn_keyboard_key_normal_on_ginger" />
+          android:drawable="@drawable/btn_keyboard_key_normal_on_stone" />
     <item android:state_checkable="true" android:state_pressed="true"
-          android:drawable="@drawable/btn_keyboard_key_normal_off_ginger" />
+          android:drawable="@drawable/btn_keyboard_key_normal_off_stone" />
     <item android:state_checkable="true" android:state_checked="true"
-          android:drawable="@drawable/btn_keyboard_key_normal_on_ginger" />
+          android:drawable="@drawable/btn_keyboard_key_normal_on_stone" />
     <item android:state_checkable="true"
-          android:drawable="@drawable/btn_keyboard_key_normal_off_ginger" />
+          android:drawable="@drawable/btn_keyboard_key_normal_off_stone" />
 
     <!-- Normal keys -->
 
     <item android:state_pressed="true"
           android:drawable="@drawable/btn_keyboard_key_fulltrans_pressed" />
-    <item android:drawable="@drawable/btn_keyboard_key_normal_ginger" />
+    <item android:drawable="@drawable/btn_keyboard_key_normal_stone" />
 </selector>
