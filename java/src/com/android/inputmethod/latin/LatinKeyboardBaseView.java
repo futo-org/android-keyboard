@@ -197,7 +197,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
     private KeyDebouncer mDebouncer;
 
-    private int[] mKeyIndices = new int[12];
     private GestureDetector mGestureDetector;
     private int mPopupX;
     private int mPopupY;
@@ -273,6 +272,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
 
         public void popupPreview(int keyIndex, long delay) {
+            removeMessages(MSG_POPUP_PREVIEW);
             sendMessageDelayed(obtainMessage(MSG_POPUP_PREVIEW, keyIndex, 0), delay);
         }
 
@@ -911,12 +911,12 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         mDirtyRect.setEmpty();
     }
 
-    private int getKeyIndices(int x, int y, int[] allKeys) {
+    private int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys) {
         final Key[] keys = mKeys;
         int primaryIndex = NOT_A_KEY;
         int closestKey = NOT_A_KEY;
         int closestKeyDist = mProximityThreshold + 1;
-        java.util.Arrays.fill(mDistances, Integer.MAX_VALUE);
+        Arrays.fill(mDistances, Integer.MAX_VALUE);
         int [] nearestKeyIndices = mKeyboard.getNearestKeys(x, y);
         final int keyCount = nearestKeyIndices.length;
         for (int i = 0; i < keyCount; i++) {
@@ -947,10 +947,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                                 mDistances.length - j - nCodes);
                         System.arraycopy(allKeys, j, allKeys, j + nCodes,
                                 allKeys.length - j - nCodes);
-                        for (int c = 0; c < nCodes; c++) {
-                            allKeys[j + c] = key.codes[c];
-                            mDistances[j + c] = dist;
-                        }
+                        System.arraycopy(key.codes, 0, allKeys, j, nCodes);
+                        Arrays.fill(mDistances, j, j + nCodes, dist);
                         break;
                     }
                 }
@@ -973,7 +971,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 //TextEntryState.keyPressedAt(key, x, y);
                 int[] codes = new int[MAX_NEARBY_KEYS];
                 Arrays.fill(codes, NOT_A_KEY);
-                getKeyIndices(x, y, codes);
+                getKeyIndexAndNearbyCodes(x, y, codes);
                 // Multi-tap
                 if (mInMultiTap) {
                     if (mTapCount != -1) {
@@ -982,6 +980,15 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                         mTapCount = 0;
                     }
                     code = key.codes[mTapCount];
+                }
+                /*
+                 * Swap the first and second values in the codes array if the primary code is not
+                 * the first value but the second value in the array. This happens when key
+                 * debouncing is in effect.
+                 */
+                if (codes.length >= 2 && codes[0] != code && codes[1] == code) {
+                    codes[1] = codes[0];
+                    codes[0] = code;
                 }
                 mKeyboardActionListener.onKey(code, codes);
                 mKeyboardActionListener.onRelease(code);
@@ -1024,13 +1031,12 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
         // If key changed and preview is on ...
         if (oldKeyIndex != mCurrentKeyIndex && mShowPreview) {
-            mHandler.cancelPopupPreview();
-            if (previewPopup.isShowing()) {
-                if (keyIndex == NOT_A_KEY) {
+            if (keyIndex == NOT_A_KEY) {
+                mHandler.cancelPopupPreview();
+                if (previewPopup.isShowing()) {
                     mHandler.dismissPreview(DELAY_AFTER_PREVIEW);
                 }
-            }
-            if (keyIndex != NOT_A_KEY) {
+            } else {
                 if (previewPopup.isShowing() && mPreviewText.getVisibility() == VISIBLE) {
                     // Show right away, if it's already visible and finger is moving around
                     showKey(keyIndex);
@@ -1303,7 +1309,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         int touchY = (int) me.getY() + mVerticalCorrection - getPaddingTop();
         final int action = me.getAction();
         final long eventTime = me.getEventTime();
-        int keyIndex = getKeyIndices(touchX, touchY, null);
+        int keyIndex = getKeyIndexAndNearbyCodes(touchX, touchY, null);
         mPossiblePoly = possiblePoly;
 
         // Track the last few movements to look for spurious swipes.
@@ -1381,12 +1387,19 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                         mHandler.startLongPressTimer(me, LONGPRESS_TIMEOUT);
                     }
                 }
-                showPreview(mCurrentKey);
+                /*
+                 * While time debouncing is in effect, mCurrentKey holds the new key and mDebouncer
+                 * holds the last key.  At ACTION_UP event if time debouncing will be in effect
+                 * eventually, the last key should be send as the result.  For that situation
+                 * mCurrentKey should not be showed as popup preview.
+                 */
+                showPreview(mDebouncer.isMinorTimeBounce() ? mDebouncer.getLastKey() : mCurrentKey);
                 break;
 
             case MotionEvent.ACTION_UP:
                 mHandler.cancelKeyTimersAndPopupPreview();
-                if (keyIndex == mCurrentKey) {
+                if (mDebouncer.isMinorMoveBounce(touchX, touchY, mKeys[keyIndex],
+                        mKeys[mCurrentKey])) {
                     mDebouncer.updateTimeDebouncing(eventTime);
                 } else {
                     resetMultiTap();
@@ -1399,7 +1412,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     touchY = mDebouncer.getLastCodeY();
                 }
                 showPreview(NOT_A_KEY);
-                Arrays.fill(mKeyIndices, NOT_A_KEY);
                 // If we're not on a repeating key (which sends on a DOWN event)
                 if (mRepeatKeyIndex == NOT_A_KEY && !mMiniKeyboardOnScreen && !mAbortKey) {
                     detectAndSendKey(mCurrentKey, touchX, touchY, eventTime);
@@ -1407,6 +1419,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 invalidateKey(keyIndex);
                 mRepeatKeyIndex = NOT_A_KEY;
                 break;
+
             case MotionEvent.ACTION_CANCEL:
                 mHandler.cancelKeyTimersAndPopupPreview();
                 dismissPopupKeyboard();
