@@ -43,22 +43,9 @@ public class TextEntryState {
     private static int sSessionCount = 0;
     
     private static int sTypedChars;
-    
+
     private static int sActualChars;
-    
-    private static final String[] STATES = {
-        "Unknown",
-        "Start", 
-        "In word",
-        "Accepted default",
-        "Picked suggestion",
-        "Punc. after word",
-        "Punc. after accepted",
-        "Space after accepted",
-        "Space after picked",
-        "Undo commit"
-    };
-    
+
     public static final int STATE_UNKNOWN = 0;
     public static final int STATE_START = 1;
     public static final int STATE_IN_WORD = 2;

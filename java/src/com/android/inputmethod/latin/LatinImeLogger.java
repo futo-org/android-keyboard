@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.Dictionary.DataType;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -26,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.util.Pair;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -39,7 +42,7 @@ import java.util.List;
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIMELogs";
     public static boolean sDBG = false;
-    private static boolean sLOGPRINT = false;
+    private static boolean sPRINTLOGGING = false;
     // SUPPRESS_EXCEPTION should be true when released to public.
     private static final boolean SUPPRESS_EXCEPTION = true;
     // DEFAULT_LOG_ENABLED should be false when released to public.
@@ -52,7 +55,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final char NULL_CHAR = '\uFFFC';
     private static final int EXCEPTION_MAX_LENGTH = 400;
 
-    private static final int ID_MANUALSUGGESTION = 0;
+    // ID_MANUALSUGGESTION has been replaced by ID_MANUALSUGGESTION_WITH_DATATYPE
+    // private static final int ID_MANUALSUGGESTION = 0;
     private static final int ID_AUTOSUGGESTIONCANCELLED = 1;
     private static final int ID_AUTOSUGGESTION = 2;
     private static final int ID_INPUT_COUNT = 3;
@@ -67,6 +71,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_AUTOSUGGESTIONCANCELLEDCOUNT = 12;
     private static final int ID_AUTOSUGGESTIONCOUNT = 13;
     private static final int ID_LANGUAGES = 14;
+    private static final int ID_MANUALSUGGESTION_WITH_DATATYPE = 15;
 
     private static final String PREF_ENABLE_LOG = "enable_logging";
     private static final String PREF_DEBUG_MODE = "debug_mode";
@@ -79,8 +84,13 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package */ static String sLastAutoSuggestBefore;
     /* package */ static String sLastAutoSuggestAfter;
     /* package */ static String sLastAutoSuggestSeparator;
+    // This value holds MAIN, USER, AUTO, etc...
     private static int sLastAutoSuggestDicTypeId;
-    private static HashMap<String, Integer> sSuggestDicMap = new HashMap<String, Integer>();
+    // This value holds 0 (= unigram), 1 (= bigram) etc...
+    private static int sLastAutoSuggestDataType;
+    private static HashMap<String, Pair<Integer, Integer>> sSuggestDicMap
+            = new HashMap<String, Pair<Integer, Integer>>();
+    private static String[] sPreviousWords;
     private static DebugKeyEnabler sDebugKeyEnabler = new DebugKeyEnabler();
 
     private ArrayList<LogEntry> mLogBuffer = null;
@@ -139,7 +149,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
         @Override
         protected Void doInBackground(Void... params) {
-            if (sLOGPRINT) {
+            if (sPRINTLOGGING) {
                 Log.d(TAG, "Commit log: " + mData);
             }
             mDropBox.addText(TAG, mData);
@@ -173,8 +183,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 KeyboardSwitcher.DEFAULT_LAYOUT_ID);
         mSelectedLanguages = prefs.getString(LatinIME.PREF_SELECTED_LANGUAGES, "");
         mCurrentLanguage = prefs.getString(LatinIME.PREF_INPUT_LANGUAGE, "");
-        sLOGPRINT = prefs.getBoolean(PREF_DEBUG_MODE, sLOGPRINT);
-        sDBG = sLOGPRINT;
+        sPRINTLOGGING = prefs.getBoolean(PREF_DEBUG_MODE, sPRINTLOGGING);
+        sDBG = sPRINTLOGGING;
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -214,7 +224,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addCountEntry(long time) {
-        if (sLOGPRINT) {
+        if (sPRINTLOGGING) {
             Log.d(TAG, "Log counts. (4)");
         }
         mLogBuffer.add(new LogEntry (time, ID_DELETE_COUNT,
@@ -233,7 +243,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addSuggestionCountEntry(long time) {
-        if (sLOGPRINT) {
+        if (sPRINTLOGGING) {
             Log.d(TAG, "log suggest counts. (1)");
         }
         String[] s = new String[mAutoSuggestCountPerDic.length];
@@ -260,7 +270,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addThemeIdEntry(long time) {
-        if (sLOGPRINT) {
+        if (sPRINTLOGGING) {
             Log.d(TAG, "Log theme Id. (1)");
         }
         // TODO: Not to convert theme ID here. Currently "2" is treated as "6" in a log server.
@@ -274,7 +284,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addLanguagesEntry(long time) {
-        if (sLOGPRINT) {
+        if (sPRINTLOGGING) {
             Log.d(TAG, "Log language settings. (1)");
         }
         // CurrentLanguage and SelectedLanguages will be blank if user doesn't use multi-language
@@ -287,7 +297,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addSettingsEntry(long time) {
-        if (sLOGPRINT) {
+        if (sPRINTLOGGING) {
             Log.d(TAG, "Log settings. (1)");
         }
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
@@ -297,7 +307,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addVersionNameEntry(long time) {
-        if (sLOGPRINT) {
+        if (sPRINTLOGGING) {
             Log.d(TAG, "Log Version. (1)");
         }
         try {
@@ -311,14 +321,14 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     }
 
     private void addExceptionEntry(long time, String[] data) {
-        if (sLOGPRINT) {
+        if (sPRINTLOGGING) {
             Log.d(TAG, "Log Exception. (1)");
         }
         mLogBuffer.add(new LogEntry(time, ID_EXCEPTION, data));
     }
 
     private void flushPrivacyLogSafely() {
-        if (sLOGPRINT) {
+        if (sPRINTLOGGING) {
             Log.d(TAG, "Log obfuscated data. (" + mPrivacyLogBuffer.size() + ")");
         }
         long now = System.currentTimeMillis();
@@ -351,7 +361,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 }
                 mInputCount += (Integer)data;
                 break;
-            case ID_MANUALSUGGESTION:
+            case ID_MANUALSUGGESTION_WITH_DATATYPE:
             case ID_AUTOSUGGESTION:
                 ++mWordCount;
                 String[] dataStrings = (String[]) data;
@@ -412,7 +422,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         // if there is no log entry in mLogBuffer, will not send logs to DropBox.
         if (!mLogBuffer.isEmpty() && (mAddTextToDropBoxTask == null
                 || mAddTextToDropBoxTask.getStatus() == AsyncTask.Status.FINISHED)) {
-            if (sLOGPRINT) {
+            if (sPRINTLOGGING) {
                 Log.d(TAG, "Commit (" + mLogBuffer.size() + ")");
             }
             flushPrivacyLogSafely();
@@ -483,8 +493,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     KeyboardSwitcher.DEFAULT_LAYOUT_ID);
             addThemeIdEntry(mLastTimeActive);
         } else if (PREF_DEBUG_MODE.equals(key)) {
-            sLOGPRINT = sharedPreferences.getBoolean(PREF_DEBUG_MODE, sLOGPRINT);
-            sDBG = sLOGPRINT;
+            sPRINTLOGGING = sharedPreferences.getBoolean(PREF_DEBUG_MODE, sPRINTLOGGING);
+            sDBG = sPRINTLOGGING;
         } else if (LatinIME.PREF_INPUT_LANGUAGE.equals(key)) {
             mCurrentLanguage = sharedPreferences.getString(LatinIME.PREF_INPUT_LANGUAGE, "");
             addLanguagesEntry(mLastTimeActive);
@@ -518,14 +528,14 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         if (sLogEnabled) {
             // log punctuation
             if (before.length() == 0 && after.length() == 1) {
-                sLatinImeLogger.sendLogToDropBox(ID_MANUALSUGGESTION, new String[] {
+                sLatinImeLogger.sendLogToDropBox(ID_MANUALSUGGESTION_WITH_DATATYPE, new String[] {
                         before, after, String.valueOf(position), ""});
             } else if (!sSuggestDicMap.containsKey(after)) {
                 if (sDBG) {
                     Log.e(TAG, "logOnManualSuggestion was cancelled: from unknown dic.");
                 }
             } else {
-                int dicTypeId = sSuggestDicMap.get(after);
+                int dicTypeId = sSuggestDicMap.get(after).first;
                 sLatinImeLogger.mManualSuggestCountPerDic[dicTypeId]++;
                 if (dicTypeId != Suggest.DIC_MAIN) {
                     if (sDBG) {
@@ -533,6 +543,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                     before = "";
                     after = "";
+                    sPreviousWords = null;
                 }
                 // TODO: Don't send a log if this doesn't come from Main Dictionary.
                 {
@@ -540,15 +551,61 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                         before = "";
                         after = "";
                     }
-                    String[] strings = new String[3 + suggestions.size()];
-                    strings[0] = before;
-                    strings[1] = after;
-                    strings[2] = String.valueOf(position);
-                    for (int i = 0; i < suggestions.size(); ++i) {
+
+                    /* Example:
+                     * When user typed "Illegal imm" and picked "immigrants",
+                     * the suggestion list has "immigrants, immediate, immigrant".
+                     * At this time, the log strings will be something like below:
+                     * strings[0 = COLUMN_BEFORE_ID] = imm
+                     * strings[1 = COLUMN_AFTER_ID] = immigrants
+                     * strings[2 = COLUMN_PICKED_POSITION_ID] = 0
+                     * strings[3 = COLUMN_SUGGESTION_LENGTH_ID] = 3
+                     * strings[4 = COLUMN_PREVIOUS_WORDS_COUNT_ID] = 1
+                     * strings[5] = immigrants
+                     * strings[6] = immediate
+                     * strings[7] = immigrant
+                     * strings[8] = 1 (= bigram)
+                     * strings[9] = 0 (= unigram)
+                     * strings[10] = 1 (= bigram)
+                     * strings[11] = Illegal
+                     */
+
+                    // 0 for unigram, 1 for bigram, 2 for trigram...
+                    int previousWordsLength = (sPreviousWords == null) ? 0 : sPreviousWords.length;
+                    int suggestionLength = suggestions.size();
+
+                    final int COLUMN_BEFORE_ID = 0;
+                    final int COLUMN_AFTER_ID = 1;
+                    final int COLUMN_PICKED_POSITION_ID = 2;
+                    final int COLUMN_SUGGESTION_LENGTH_ID = 3;
+                    final int COLUMN_PREVIOUS_WORDS_COUNT_ID = 4;
+                    final int BASE_COLUMN_SIZE = 5;
+
+                    String[] strings =
+                        new String[BASE_COLUMN_SIZE + suggestionLength * 2 + previousWordsLength];
+                    strings[COLUMN_BEFORE_ID] = before;
+                    strings[COLUMN_AFTER_ID] = after;
+                    strings[COLUMN_PICKED_POSITION_ID] = String.valueOf(position);
+                    strings[COLUMN_SUGGESTION_LENGTH_ID] = String.valueOf(suggestionLength);
+                    strings[COLUMN_PREVIOUS_WORDS_COUNT_ID] = String.valueOf(previousWordsLength);
+
+                    for (int i = 0; i < suggestionLength; ++i) {
                         String s = suggestions.get(i).toString();
-                        strings[i + 3] = sSuggestDicMap.containsKey(s) ? s : "";
+                        if (sSuggestDicMap.containsKey(s)) {
+                            strings[BASE_COLUMN_SIZE + i] = s;
+                            strings[BASE_COLUMN_SIZE + suggestionLength + i]
+                                    = sSuggestDicMap.get(s).second.toString();
+                        } else {
+                            strings[BASE_COLUMN_SIZE + i] = "";
+                            strings[BASE_COLUMN_SIZE + suggestionLength + i] = "";
+                        }
                     }
-                    sLatinImeLogger.sendLogToDropBox(ID_MANUALSUGGESTION, strings);
+
+                    for (int i = 0; i < previousWordsLength; ++i) {
+                        strings[BASE_COLUMN_SIZE + suggestionLength * 2 + i] = sPreviousWords[i];
+                    }
+
+                    sLatinImeLogger.sendLogToDropBox(ID_MANUALSUGGESTION_WITH_DATATYPE, strings);
                 }
             }
             sSuggestDicMap.clear();
@@ -563,7 +620,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 }
             } else {
                 String separator = String.valueOf(sLatinImeLogger.mRingCharBuffer.getLastChar());
-                sLastAutoSuggestDicTypeId = sSuggestDicMap.get(after);
+                sLastAutoSuggestDicTypeId = sSuggestDicMap.get(after).first;
+                sLastAutoSuggestDataType = sSuggestDicMap.get(after).second;
                 sLatinImeLogger.mAutoSuggestCountPerDic[sLastAutoSuggestDicTypeId]++;
                 if (sLastAutoSuggestDicTypeId != Suggest.DIC_MAIN) {
                     if (sDBG) {
@@ -571,6 +629,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                     before = "";
                     after = "";
+                    sPreviousWords = null;
                 }
                 // TODO: Not to send a log if this doesn't come from Main Dictionary.
                 {
@@ -578,7 +637,22 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                         before = "";
                         after = "";
                     }
-                    String[] strings = new String[] {before, after, separator};
+                    int previousWordsLength = (sPreviousWords == null) ? 0 : sPreviousWords.length;
+
+                    final int COLUMN_BEFORE_ID = 0;
+                    final int COLUMN_AFTER_ID = 1;
+                    final int COLUMN_SEPARATOR_ID = 2;
+                    final int COLUMN_DATA_TYPE_ID = 3;
+                    final int BASE_COLUMN_SIZE = 4;
+
+                    String[] strings = new String[4 + previousWordsLength];
+                    strings[COLUMN_BEFORE_ID] = before;
+                    strings[COLUMN_AFTER_ID] = after;
+                    strings[COLUMN_SEPARATOR_ID] = separator;
+                    strings[COLUMN_DATA_TYPE_ID] = String.valueOf(sLastAutoSuggestDataType);
+                    for (int i = 0; i < previousWordsLength; ++i) {
+                        strings[BASE_COLUMN_SIZE + i] = sPreviousWords[i];
+                    }
                     sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTION, strings);
                 }
                 synchronized (LatinImeLogger.class) {
@@ -658,15 +732,18 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public static void onStartSuggestion() {
+    // TODO: This code supports only Bigram.
+    public static void onStartSuggestion(CharSequence previousWords) {
         if (sLogEnabled) {
             sSuggestDicMap.clear();
+            sPreviousWords = new String[] {
+                    (previousWords == null) ? "" : previousWords.toString()};
         }
     }
 
-    public static void onAddSuggestedWord(String word, int typeId) {
+    public static void onAddSuggestedWord(String word, int typeId, DataType dataType) {
         if (sLogEnabled) {
-            sSuggestDicMap.put(word, typeId);
+            sSuggestDicMap.put(word, new Pair<Integer, Integer>(typeId, dataType.ordinal()));
         }
     }
 

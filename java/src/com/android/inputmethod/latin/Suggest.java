@@ -204,7 +204,7 @@ public class Suggest implements Dictionary.WordCallback {
      */
     public List<CharSequence> getSuggestions(View view, WordComposer wordComposer, 
             boolean includeTypedWordIfValid, CharSequence prevWordForBigram) {
-        LatinImeLogger.onStartSuggestion();
+        LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mHaveCorrection = false;
         mCapitalize = wordComposer.isCapitalized();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
@@ -214,9 +214,12 @@ public class Suggest implements Dictionary.WordCallback {
         // Save a lowercase version of the original word
         mOriginalWord = wordComposer.getTypedWord();
         if (mOriginalWord != null) {
-            mOriginalWord = mOriginalWord.toString();
-            mLowerOriginalWord = mOriginalWord.toString().toLowerCase();
-            LatinImeLogger.onAddSuggestedWord(mOriginalWord.toString(), Suggest.DIC_USER_TYPED);
+            final String mOriginalWordString = mOriginalWord.toString();
+            mOriginalWord = mOriginalWordString;
+            mLowerOriginalWord = mOriginalWordString.toLowerCase();
+            // Treating USER_TYPED as UNIGRAM suggestion for logging now.
+            LatinImeLogger.onAddSuggestedWord(mOriginalWordString, Suggest.DIC_USER_TYPED,
+                    Dictionary.DataType.UNIGRAM);
         } else {
             mLowerOriginalWord = "";
         }
@@ -368,6 +371,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     public boolean addWord(final char[] word, final int offset, final int length, int freq,
             final int dicTypeId, final Dictionary.DataType dataType) {
+        Dictionary.DataType dataTypeForLog = dataType;
         ArrayList<CharSequence> suggestions;
         int[] priorities;
         int prefMaxSuggestions;
@@ -391,6 +395,7 @@ public class Suggest implements Dictionary.WordCallback {
                 // Check if the word was already added before (by bigram data)
                 int bigramSuggestion = searchBigramSuggestion(word,offset,length);
                 if(bigramSuggestion >= 0) {
+                    dataTypeForLog = Dictionary.DataType.BIGRAM;
                     // turn freq from bigram into multiplier specified above
                     double multiplier = (((double) mBigramPriorities[bigramSuggestion])
                             / MAXIMUM_BIGRAM_FREQUENCY)
@@ -442,7 +447,7 @@ public class Suggest implements Dictionary.WordCallback {
                 mStringPool.add(garbage);
             }
         } else {
-            LatinImeLogger.onAddSuggestedWord(sb.toString(), dicTypeId);
+            LatinImeLogger.onAddSuggestedWord(sb.toString(), dicTypeId, dataTypeForLog);
         }
         return true;
     }
