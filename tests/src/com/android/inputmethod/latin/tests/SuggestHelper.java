@@ -36,10 +36,11 @@ public class SuggestHelper {
 
     public SuggestHelper(String tag, Context context, int[] resId) {
         TAG = tag;
+        InputStream[] res = null;
         try {
             // merging separated dictionary into one if dictionary is separated
             int total = 0;
-            InputStream[] res = new InputStream[resId.length];
+            res = new InputStream[resId.length];
             for (int i = 0; i < resId.length; i++) {
                 res[i] = context.getResources().openRawResource(resId[i]);
                 total += res[i].available();
@@ -61,7 +62,7 @@ public class SuggestHelper {
             Log.w(TAG, "No available memory for binary dictionary");
         } finally {
             try {
-                for (int i = 0;i < is.length; i++) {
+                for (int i = 0;i < res.length; i++) {
                     res[i].close();
                 }
             } catch (IOException e) {
