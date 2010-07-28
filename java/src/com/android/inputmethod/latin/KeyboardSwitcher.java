@@ -50,9 +50,24 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     public static final String DEFAULT_LAYOUT_ID = "3";
     public static final String PREF_KEYBOARD_LAYOUT = "keyboard_layout";
-    private static final int[] LAYOUTS = new int [] {
+    private static final int[] THEMES = new int [] {
         R.layout.input_basic, R.layout.input_basic_highcontrast, R.layout.input_stone_normal,
         R.layout.input_stone_bold};
+
+    // Ids for each characters' color in the keyboard
+    private static final int CHAR_THEME_COLOR_WHITE = 0;
+    private static final int CHAR_THEME_COLOR_BLACK = 1;
+
+    // Tables which contains resource ids for each character theme color
+    private static final int[] KBD_ALPHA = new int[] {R.xml.kbd_alpha, R.xml.kbd_alpha_black};
+    private static final int[] KBD_PHONE = new int[] {R.xml.kbd_phone, R.xml.kbd_phone_black};
+    private static final int[] KBD_PHONE_SYMBOLS = new int[] {
+        R.xml.kbd_phone_symbols, R.xml.kbd_phone_symbols_black};
+    private static final int[] KBD_SYMBOLS = new int[] {
+        R.xml.kbd_symbols, R.xml.kbd_symbols_black};
+    private static final int[] KBD_SYMBOLS_SHIFT = new int[] {
+        R.xml.kbd_symbols_shift, R.xml.kbd_symbols_shift_black};
+    private static final int[] KBD_QWERTY = new int[] {R.xml.kbd_qwerty, R.xml.kbd_qwerty_black};
 
     private static final int SYMBOLS_MODE_STATE_NONE = 0;
     private static final int SYMBOLS_MODE_STATE_BEGIN = 1;
@@ -119,13 +134,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private KeyboardId makeSymbolsId(boolean hasVoice) {
-        return new KeyboardId(
-                isBlackSym() ? R.xml.kbd_symbols_black : R.xml.kbd_symbols, hasVoice);
+        return new KeyboardId(KBD_SYMBOLS[getCharColorId()], hasVoice);
     }
 
     private KeyboardId makeSymbolsShiftedId(boolean hasVoice) {
-        return new KeyboardId(
-                isBlackSym() ? R.xml.kbd_symbols_shift_black : R.xml.kbd_symbols_shift, hasVoice);
+        return new KeyboardId(KBD_SYMBOLS_SHIFT[getCharColorId()], hasVoice);
     }
 
     void makeKeyboards(boolean forceCreate) {
@@ -270,11 +283,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private KeyboardId getKeyboardId(int mode, int imeOptions, boolean isSymbols) {
         boolean hasVoice = hasVoiceButton(isSymbols);
+        int charColorId = getCharColorId();
         // TODO: generalize for any KeyboardId
-        int keyboardRowsResId = isBlackSym() ? R.xml.kbd_qwerty_black : R.xml.kbd_qwerty;
+        int keyboardRowsResId = KBD_QWERTY[charColorId];
         if (isSymbols) {
-            return (mode == MODE_PHONE)
-                ? new KeyboardId(R.xml.kbd_phone_symbols, hasVoice) : makeSymbolsId(hasVoice);
+            if (mode == MODE_PHONE) {
+                return new KeyboardId(KBD_PHONE_SYMBOLS[charColorId], hasVoice);
+            } else {
+                return new KeyboardId(KBD_SYMBOLS[charColorId], hasVoice);
+            }
         }
         switch (mode) {
             case MODE_NONE:
@@ -283,14 +300,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 /* fall through */
             case MODE_TEXT:
                 if (mTextMode == MODE_TEXT_ALPHA) {
-                    return new KeyboardId(R.xml.kbd_alpha, KEYBOARDMODE_NORMAL, true, hasVoice);
+                    return new KeyboardId(
+                            KBD_ALPHA[charColorId], KEYBOARDMODE_NORMAL, true, hasVoice);
                 }
                 // Normally mTextMode should be MODE_TEXT_QWERTY.
                 return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_NORMAL, true, hasVoice);
             case MODE_SYMBOLS:
-                return makeSymbolsId(hasVoice);
+                return new KeyboardId(KBD_SYMBOLS[charColorId], hasVoice);
             case MODE_PHONE:
-                return new KeyboardId(R.xml.kbd_phone, hasVoice);
+                return new KeyboardId(KBD_PHONE[charColorId], hasVoice);
             case MODE_URL:
                 return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_URL, true, hasVoice);
             case MODE_EMAIL:
@@ -387,7 +405,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (mInputView != null) {
                 mInputView.closing();
             }
-            if (LAYOUTS.length <= newLayout) {
+            if (THEMES.length <= newLayout) {
                 newLayout = Integer.valueOf(DEFAULT_LAYOUT_ID);
             }
 
@@ -396,7 +414,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
                 try {
                     mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater(
-                            ).inflate(LAYOUTS[newLayout], null);
+                            ).inflate(THEMES[newLayout], null);
                     tryGC = false;
                 } catch (OutOfMemoryError e) {
                     tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(
@@ -406,7 +424,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                             mLayoutId + "," + newLayout, e);
                 }
             }
-            mInputView.setExtentionLayoutResId(LAYOUTS[newLayout]);
+            mInputView.setExtentionLayoutResId(THEMES[newLayout]);
             mInputView.setOnKeyboardActionListener(mInputMethodService);
             mLayoutId = newLayout;
         }
@@ -432,4 +450,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
         return false;
     }
+
+    private int getCharColorId () {
+        if (isBlackSym()) {
+            return CHAR_THEME_COLOR_BLACK;
+        } else {
+            return CHAR_THEME_COLOR_WHITE;
+        }
+    }
+
 }
