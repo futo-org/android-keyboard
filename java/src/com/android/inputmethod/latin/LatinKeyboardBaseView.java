@@ -332,12 +332,10 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         private long mLastMoveTime;
         private long mCurrentKeyTime;
 
-        private int mKeyDebounceThreshold;
-        private static final int KEY_DEBOUNCE_FACTOR = 6;
+        private final int mKeyDebounceThresholdSquared;
 
-        KeyDebouncer(int proximityThreshold) {
-            // 1/KEY_DEBOUNCE_FACTOR of distance between adjacent keys
-            mKeyDebounceThreshold = proximityThreshold / KEY_DEBOUNCE_FACTOR;
+        KeyDebouncer(float hysteresisPixel) {
+            mKeyDebounceThresholdSquared = (int)(hysteresisPixel * hysteresisPixel);
         }
 
         public int getLastCodeX() {
@@ -375,15 +373,23 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             mLastCodeY = mLastY;
         }
 
-        public boolean isMinorMoveBounce(int x, int y, int keyIndex, int currentKey) {
-            // TODO: Check the coordinate against each key border.  The current
-            // logic is pretty simple.
-            if (keyIndex == currentKey)
+        public boolean isMinorMoveBounce(int x, int y, Key newKey, Key curKey) {
+            if (newKey == curKey)
                 return true;
-            int dx = x - mLastCodeX;
-            int dy = y - mLastCodeY;
-            int delta = dx * dx + dy * dy;
-            return delta < mKeyDebounceThreshold;
+
+            return getSquareDistanceToKeyEdge(x, y, curKey) < mKeyDebounceThresholdSquared;
+        }
+
+        private static int getSquareDistanceToKeyEdge(int x, int y, Key key) {
+            final int left = key.x;
+            final int right = key.x + key.width;
+            final int top = key.y;
+            final int bottom = key.y + key.height;
+            final int edgeX = x < left ? left : (x > right ? right : x);
+            final int edgeY = y < top ? top : (y > bottom ? bottom : y);
+            final int dx = x - edgeX;
+            final int dy = y - edgeY;
+            return dx * dx + dy * dy;
         }
 
         public void startTimeDebouncing(long eventTime) {
@@ -766,7 +772,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         mProximityThreshold = (int) (dimensionSum * 1.4f / length);
         mProximityThreshold *= mProximityThreshold; // Square it
 
-        mDebouncer = new KeyDebouncer(mProximityThreshold);
+        final float hysteresisPixel = getContext().getResources()
+                .getDimension(R.dimen.key_debounce_hysteresis_distance);
+        mDebouncer = new KeyDebouncer(hysteresisPixel);
     }
 
     @Override
@@ -1354,8 +1362,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     if (mCurrentKey == NOT_A_KEY) {
                         mCurrentKey = keyIndex;
                         mDebouncer.updateTimeDebouncing(eventTime);
-                    } else if (mDebouncer.isMinorMoveBounce(touchX, touchY,
-                            keyIndex, mCurrentKey)) {
+                    } else if (mDebouncer.isMinorMoveBounce(touchX, touchY, mKeys[keyIndex],
+                            mKeys[mCurrentKey])) {
                         mDebouncer.updateTimeDebouncing(eventTime);
                         continueLongPress = true;
                     } else if (mRepeatKeyIndex == NOT_A_KEY) {

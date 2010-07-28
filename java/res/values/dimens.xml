@@ -27,4 +27,5 @@
          will not go into extract (fullscreen) mode. -->
     <dimen name="max_height_for_fullscreen">2.5in</dimen>
     <dimen name="key_text_size">22sp</dimen>
+    <dimen name="key_debounce_hysteresis_distance">0.05in</dimen>
 </resources>
