@@ -1390,8 +1390,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 /*
                  * While time debouncing is in effect, mCurrentKey holds the new key and mDebouncer
                  * holds the last key.  At ACTION_UP event if time debouncing will be in effect
-                 * eventually, the last key should be send as the result.  For that situation
-                 * mCurrentKey should not be showed as popup preview.
+                 * eventually, the last key should be sent as the result.  In such case mCurrentKey
+                 * should not be showed as popup preview.
                  */
                 showPreview(mDebouncer.isMinorTimeBounce() ? mDebouncer.getLastKey() : mCurrentKey);
                 break;
