@@ -320,6 +320,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     };
 
     static class KeyDebouncer {
+        private Key[] mKeys;
+
         // for move de-bouncing
         private int mLastCodeX;
         private int mLastCodeY;
@@ -334,7 +336,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
         private final int mKeyDebounceThresholdSquared;
 
-        KeyDebouncer(float hysteresisPixel) {
+        KeyDebouncer(Key[] keys, float hysteresisPixel) {
+            mKeys = keys;
             mKeyDebounceThresholdSquared = (int)(hysteresisPixel * hysteresisPixel);
         }
 
@@ -373,11 +376,15 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             mLastCodeY = mLastY;
         }
 
-        public boolean isMinorMoveBounce(int x, int y, Key newKey, Key curKey) {
-            if (newKey == curKey)
+        public boolean isMinorMoveBounce(int x, int y, int newKey, int curKey) {
+            if (newKey == curKey) {
                 return true;
-
-            return getSquareDistanceToKeyEdge(x, y, curKey) < mKeyDebounceThresholdSquared;
+            } else if (curKey == NOT_A_KEY) {
+                return false;
+            } else {
+                return getSquareDistanceToKeyEdge(x, y, mKeys[curKey])
+                    < mKeyDebounceThresholdSquared;
+            }
         }
 
         private static int getSquareDistanceToKeyEdge(int x, int y, Key key) {
@@ -774,7 +781,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
         final float hysteresisPixel = getContext().getResources()
                 .getDimension(R.dimen.key_debounce_hysteresis_distance);
-        mDebouncer = new KeyDebouncer(hysteresisPixel);
+        mDebouncer = new KeyDebouncer(keys, hysteresisPixel);
     }
 
     @Override
@@ -1368,8 +1375,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     if (mCurrentKey == NOT_A_KEY) {
                         mCurrentKey = keyIndex;
                         mDebouncer.updateTimeDebouncing(eventTime);
-                    } else if (mDebouncer.isMinorMoveBounce(touchX, touchY, mKeys[keyIndex],
-                            mKeys[mCurrentKey])) {
+                    } else if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex,
+                            mCurrentKey)) {
                         mDebouncer.updateTimeDebouncing(eventTime);
                         continueLongPress = true;
                     } else if (mRepeatKeyIndex == NOT_A_KEY) {
@@ -1398,8 +1405,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
             case MotionEvent.ACTION_UP:
                 mHandler.cancelKeyTimersAndPopupPreview();
-                if (mDebouncer.isMinorMoveBounce(touchX, touchY, mKeys[keyIndex],
-                        mKeys[mCurrentKey])) {
+                if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
                     mDebouncer.updateTimeDebouncing(eventTime);
                 } else {
                     resetMultiTap();
