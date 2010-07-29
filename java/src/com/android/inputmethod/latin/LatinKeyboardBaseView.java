@@ -320,7 +320,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     };
 
     static class KeyDebouncer {
-        private Key[] mKeys;
+        private final Key[] mKeys;
+        private final int mKeyDebounceThresholdSquared;
 
         // for move de-bouncing
         private int mLastCodeX;
@@ -334,9 +335,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         private long mLastMoveTime;
         private long mCurrentKeyTime;
 
-        private final int mKeyDebounceThresholdSquared;
-
         KeyDebouncer(Key[] keys, float hysteresisPixel) {
+            if (keys == null || hysteresisPixel < 1.0f)
+                throw new IllegalArgumentException();
             mKeys = keys;
             mKeyDebounceThresholdSquared = (int)(hysteresisPixel * hysteresisPixel);
         }
@@ -379,11 +380,11 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         public boolean isMinorMoveBounce(int x, int y, int newKey, int curKey) {
             if (newKey == curKey) {
                 return true;
-            } else if (curKey == NOT_A_KEY) {
-                return false;
-            } else {
+            } else if (curKey >= 0 && curKey < mKeys.length) {
                 return getSquareDistanceToKeyEdge(x, y, mKeys[curKey])
-                    < mKeyDebounceThresholdSquared;
+                        < mKeyDebounceThresholdSquared;
+            } else {
+                return false;
             }
         }
 
