@@ -39,8 +39,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"自动大写"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"句首字母大写"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"自动加标点"</string>
-    <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
-    <skip />
+    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"快速纠正"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"纠正常见的输入错误"</string>
     <string name="show_suggestions" msgid="507074425254289133">"显示建议"</string>
@@ -89,8 +88,7 @@
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"要使用语音输入，请按麦克风按钮或者在屏幕键盘上滑动手指。"</string>
     <string name="voice_listening" msgid="467518160751321844">"请开始说话"</string>
     <string name="voice_working" msgid="6666937792815731889">"正在处理"</string>
-    <!-- no translation found for voice_initializing (661962047129906646) -->
-    <skip />
+    <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"出错，请重试。"</string>
     <string name="voice_network_error" msgid="6649556447401862563">"无法连接"</string>
     <string name="voice_too_much_speech" msgid="5746973620134227376">"出错，语音过长。"</string>
