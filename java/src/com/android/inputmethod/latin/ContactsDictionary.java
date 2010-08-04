@@ -125,8 +125,8 @@ public class ContactsDictionary extends ExpandableDictionary {
                                 super.addWord(word, FREQUENCY_FOR_CONTACTS);
                                 if (!TextUtils.isEmpty(prevWord)) {
                                     // TODO Do not add email address
-                                    super.addBigrams(prevWord, word,
-                                            FREQUENCY_FOR_CONTACTS_BIGRAM);
+                                    // Not so critical
+                                    super.setBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM);
                                 }
                                 prevWord = word;
                             }

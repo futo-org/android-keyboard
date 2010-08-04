@@ -14,16 +14,15 @@
  * the License.
  */
 
-package com.android.inputmethod.latin.tests;
+package com.android.inputmethod.latin;
 
 import android.test.AndroidTestCase;
 import android.util.Log;
-
+import com.android.inputmethod.latin.tests.R;
 import java.io.InputStreamReader;
 import java.io.InputStream;
 import java.io.BufferedReader;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
 
 public class SuggestPerformanceTests extends AndroidTestCase {
     private static final String TAG = "SuggestPerformanceTests";
@@ -122,6 +121,6 @@ public class SuggestPerformanceTests extends AndroidTestCase {
      * Check the log for detail
      */
     public void testSuggestPerformance() {
-        assertTrue(runText(false) < runText(true));
+        assertTrue(runText(false) <= runText(true));
     }
 }
