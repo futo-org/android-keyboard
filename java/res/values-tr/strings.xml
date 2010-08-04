@@ -39,8 +39,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük harf yap"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Cümlenin baş harfini büyük yap"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Otomatik noktalama"</string>
-    <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
-    <skip />
+    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Hızlı onarımlar"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Yaygın olarak yapılan yazım hatalarını düzeltir"</string>
     <string name="show_suggestions" msgid="507074425254289133">"Önerileri göster"</string>
@@ -89,8 +88,7 @@
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Ses girişini kullanmak için mikrofon düğmesine basın veya parmağınızı dokunmatik klavye üzerinde kaydırın."</string>
     <string name="voice_listening" msgid="467518160751321844">"Şimdi konuşun"</string>
     <string name="voice_working" msgid="6666937792815731889">"Çalışıyor"</string>
-    <!-- no translation found for voice_initializing (661962047129906646) -->
-    <skip />
+    <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"Hata. Lütfen tekrar deneyin."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Bağlanamadı"</string>
     <string name="voice_too_much_speech" msgid="5746973620134227376">"Hata, çok uzun konuşma."</string>

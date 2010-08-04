@@ -39,8 +39,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"Maiuscole automatiche"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Rendi maiuscole le iniziali delle frasi"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Punteggiatura automat."</string>
-    <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
-    <skip />
+    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Correzioni veloci"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corregge gli errori di digitazione più comuni"</string>
     <string name="show_suggestions" msgid="507074425254289133">"Mostra suggerimenti"</string>
@@ -89,8 +88,7 @@
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Per utilizzare i comandi vocali, premi il pulsante del microfono o fai scorrere il dito sulla tastiera sullo schermo."</string>
     <string name="voice_listening" msgid="467518160751321844">"Parla ora"</string>
     <string name="voice_working" msgid="6666937792815731889">"Elaborazione in corso"</string>
-    <!-- no translation found for voice_initializing (661962047129906646) -->
-    <skip />
+    <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"Errore. Riprova più tardi."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Impossibile connettersi."</string>
     <string name="voice_too_much_speech" msgid="5746973620134227376">"Errore: conversazione troppo lunga."</string>
