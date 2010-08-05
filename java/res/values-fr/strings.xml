@@ -39,14 +39,15 @@
     <string name="auto_cap" msgid="1719746674854628252">"Majuscules auto"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Mettre en majuscule la première lettre de chaque phrase"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Ponctuation automatique"</string>
-    <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
-    <skip />
+    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Corrections rapides"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrige les fautes de frappe courantes"</string>
     <string name="show_suggestions" msgid="507074425254289133">"Afficher les suggestions"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Afficher les suggestions de terme lors de la saisie"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Saisie semi-automatique"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"Insérer auto. le terme surligné avec barre espace/ponctuation"</string>
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Suggestions de type bigramme"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Améliorer la suggestion en fonction du mot précédent"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Aucun"</item>
     <item msgid="1669461741568287396">"Simple"</item>
@@ -89,8 +90,7 @@
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Pour utiliser la saisie vocale, appuyez sur la touche du microphone ou faites glisser votre doigt sur le clavier à l\'écran."</string>
     <string name="voice_listening" msgid="467518160751321844">"Parlez maintenant"</string>
     <string name="voice_working" msgid="6666937792815731889">"Traitement en cours"</string>
-    <!-- no translation found for voice_initializing (661962047129906646) -->
-    <skip />
+    <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"Erreur. Veuillez réessayer."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Connexion impossible"</string>
     <string name="voice_too_much_speech" msgid="5746973620134227376">"Erreur, discours trop long."</string>
@@ -130,4 +130,12 @@
     <string name="language_selection_summary" msgid="187110938289512256">"Faites glisser votre doigt sur la barre d\'espacement pour changer la langue."</string>
     <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Appuyer de nouveau pour enregistrer"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
+    <!-- no translation found for prefs_description_log (5827825607258246003) -->
+    <skip />
+    <!-- no translation found for keyboard_layout (437433231038683666) -->
+    <skip />
+    <!-- no translation found for prefs_debug_mode (3889340783846594980) -->
+    <skip />
 </resources>
