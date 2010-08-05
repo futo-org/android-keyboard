@@ -913,6 +913,9 @@ public class LatinIME extends InputMethodService
 
     public boolean addWordToDictionary(String word) {
         mUserDictionary.addWord(word, 128);
+        // Suggestion strip should be updated after the operation of adding word to the
+        // user dictionary
+        postUpdateSuggestions();
         return true;
     }
 
@@ -1058,9 +1061,20 @@ public class LatinIME extends InputMethodService
         } else if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
             ic.deleteSurroundingText(mEnteredText.length(), 0);
         } else if (deleteChar) {
-            sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
-            if (mDeleteCount > DELETE_ACCELERATE_AT) {
+            if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
+                // Go back to the suggestion mode if the user canceled the
+                // "Tap again to save".
+                // NOTE: In gerenal, we don't revert the word when backspacing
+                // from a manual suggestion pick.  We deliberately chose a
+                // different behavior only in the case of picking the first
+                // suggestion (typed word).  It's intentional to have made this
+                // inconsistent with backspacing after selecting other suggestions.
+                revertLastWord(deleteChar);
+            } else {
                 sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+                if (mDeleteCount > DELETE_ACCELERATE_AT) {
+                    sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+                }
             }
         }
         mJustRevertedSeparator = null;
@@ -1134,6 +1148,11 @@ public class LatinIME extends InputMethodService
         if (mAfterVoiceInput){
             // Assume input length is 1. This assumption fails for smiley face insertions.
             mVoiceInput.incrementTextModificationInsertPunctuationCount(1);
+        }
+
+        // Should dismiss the "Tap again to save" message when handling separator
+        if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
+            postUpdateSuggestions();
         }
 
         boolean pickedDefault = false;
