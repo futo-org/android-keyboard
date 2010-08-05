@@ -1394,6 +1394,11 @@ public class LatinIME extends InputMethodService
             mWord.reset();
             return;
         }
+        // Skip if result is null. It happens in some edge case.
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
+
         // Make a copy of the CharSequence, since it is/could be a mutable CharSequence
         final String resultCopy = result.toString();
         TypedWordAlternatives entry = new TypedWordAlternatives(resultCopy,
