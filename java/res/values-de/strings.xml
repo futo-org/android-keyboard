@@ -39,14 +39,15 @@
     <string name="auto_cap" msgid="1719746674854628252">"Autom. Groß-/Kleinschr."</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Sätze mit Großbuchstaben beginnen"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Autom. Zeichensetzung"</string>
-    <!-- no translation found for auto_punctuate_summary (6589441565817502132) -->
-    <skip />
+    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Quick Fixes"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Korrigiert gängige Tippfehler"</string>
     <string name="show_suggestions" msgid="507074425254289133">"Vorschläge anzeigen"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Vorgeschlagene Wörter während des Tippens anzeigen"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Autom. vervollständigen"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"Leertaste und Interpunktion fügen autom. ein markiertes Wort ein"</string>
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Bigramm-Vorschläge"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Zur Verbesserung des Vorschlags vorheriges Wort verwenden"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Kein"</item>
     <item msgid="1669461741568287396">"Standard"</item>
@@ -89,8 +90,7 @@
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Um die Spracheingabe zu verwenden, drücken Sie die Mikrofontaste oder ziehen Sie Ihren Finger über die Bildschirmtastatur."</string>
     <string name="voice_listening" msgid="467518160751321844">"Jetzt sprechen"</string>
     <string name="voice_working" msgid="6666937792815731889">"Vorgang läuft"</string>
-    <!-- no translation found for voice_initializing (661962047129906646) -->
-    <skip />
+    <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"Fehler. Versuchen Sie es erneut.."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Keine Verbindung"</string>
     <string name="voice_too_much_speech" msgid="5746973620134227376">"Fehler – Text zu lang"</string>
@@ -130,4 +130,12 @@
     <string name="language_selection_summary" msgid="187110938289512256">"Finger über die Leertaste bewegen, um die Eingabesprache zu wechseln"</string>
     <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Zum Speichern erneut tippen"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Wörterbuch verfügbar"</string>
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
+    <!-- no translation found for prefs_description_log (5827825607258246003) -->
+    <skip />
+    <!-- no translation found for keyboard_layout (437433231038683666) -->
+    <skip />
+    <!-- no translation found for prefs_debug_mode (3889340783846594980) -->
+    <skip />
 </resources>
