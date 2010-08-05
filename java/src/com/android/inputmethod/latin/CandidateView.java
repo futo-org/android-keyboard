@@ -341,6 +341,12 @@ public class CandidateView extends View {
         mShowingAddToDictionary = true;
     }
 
+    public boolean dismissAddToDictionaryHint() {
+        if (!mShowingAddToDictionary) return false;
+        clear();
+        return true;
+    }
+
     public void scrollPrev() {
         int i = 0;
         final int count = Math.min(mSuggestions.size(), MAX_SUGGESTIONS);
