@@ -46,8 +46,8 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Предлагать варианты слов во время ввода"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Автозавершение"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"При нажатии пробела вставлять предложенное слово"</string>
-    <string name="bigram_suggestion" msgid="1323347224043514969">"Биграммные предложения"</string>
-    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Используйте предыдущее слово, чтобы улучшить предложение"</string>
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Биграммные подсказки "</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Используйте предыдущее слово, чтобы исправить подсказку"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Нет"</item>
     <item msgid="1669461741568287396">"Основной"</item>
