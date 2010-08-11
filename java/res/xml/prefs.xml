@@ -31,6 +31,13 @@
             />
 
     <CheckBoxPreference
+            android:key="popup_on"
+            android:title="@string/popup_on_keypress"
+            android:persistent="true"
+            android:defaultValue="@bool/default_popup_preview"
+            />
+
+    <CheckBoxPreference
             android:key="auto_cap"
             android:title="@string/auto_cap"
             android:persistent="true"

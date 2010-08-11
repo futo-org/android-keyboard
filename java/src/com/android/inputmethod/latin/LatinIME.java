@@ -89,6 +89,7 @@ public class LatinIME extends InputMethodService
 
     private static final String PREF_VIBRATE_ON = "vibrate_on";
     private static final String PREF_SOUND_ON = "sound_on";
+    private static final String PREF_POPUP_ON = "popup_on";
     private static final String PREF_AUTO_CAP = "auto_cap";
     private static final String PREF_QUICK_FIXES = "quick_fixes";
     private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
@@ -198,6 +199,7 @@ public class LatinIME extends InputMethodService
     private boolean mPasswordText;
     private boolean mVibrateOn;
     private boolean mSoundOn;
+    private boolean mPopupOn;
     private boolean mAutoCap;
     private boolean mQuickFixes;
     private boolean mHasUsedVoiceInput;
@@ -670,6 +672,7 @@ public class LatinIME extends InputMethodService
 
         updateCorrectionMode();
 
+        inputView.setPreviewEnabled(mPopupOn);
         inputView.setProximityCorrectionEnabled(true);
         mPredictionOn = mPredictionOn && (mCorrectionMode > 0 || mShowSuggestions);
         checkTutorial(attribute.privateImeOptions);
@@ -2295,6 +2298,7 @@ public class LatinIME extends InputMethodService
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mVibrateOn = sp.getBoolean(PREF_VIBRATE_ON, false);
         mSoundOn = sp.getBoolean(PREF_SOUND_ON, false);
+        mPopupOn = sp.getBoolean(PREF_POPUP_ON, true);
         mAutoCap = sp.getBoolean(PREF_AUTO_CAP, true);
         mQuickFixes = sp.getBoolean(PREF_QUICK_FIXES, true);
         mHasUsedVoiceInput = sp.getBoolean(PREF_HAS_USED_VOICE_INPUT, false);
@@ -2421,6 +2425,7 @@ public class LatinIME extends InputMethodService
         p.println("  TextEntryState.state=" + TextEntryState.getState());
         p.println("  mSoundOn=" + mSoundOn);
         p.println("  mVibrateOn=" + mVibrateOn);
+        p.println("  mPopupOn=" + mPopupOn);
     }
 
     // Characters per second measurement
