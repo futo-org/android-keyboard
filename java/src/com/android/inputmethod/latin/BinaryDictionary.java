@@ -42,8 +42,8 @@ public class BinaryDictionary extends Dictionary {
 
     private static final String TAG = "BinaryDictionary";
     private static final int MAX_ALTERNATIVES = 16;
-    private static final int MAX_WORDS = 16;
-    private static final int MAX_BIGRAMS = 255; // TODO Probably don't need all 255
+    private static final int MAX_WORDS = 18;
+    private static final int MAX_BIGRAMS = 60;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
     private static final boolean ENABLE_MISSED_CHARACTERS = true;
@@ -140,8 +140,10 @@ public class BinaryDictionary extends Dictionary {
             Log.w(TAG, "No available memory for binary dictionary");
         } finally {
             try {
-                for (int i = 0;i < is.length; i++) {
-                    is[i].close();
+                if (is != null) {
+                    for (int i = 0; i < is.length; i++) {
+                        is[i].close();
+                    }
                 }
             } catch (IOException e) {
                 Log.w(TAG, "Failed to close input stream");

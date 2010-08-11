@@ -20,8 +20,6 @@ import java.util.LinkedList;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.os.SystemClock;
-import android.util.Log;
 
 /**
  * Base class for an in-memory dictionary that can grow dynamically and can
@@ -325,12 +323,21 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
+    protected int setBigram(String word1, String word2, int frequency) {
+        return addOrSetBigram(word1, word2, frequency, false);
+    }
+
+    protected int addBigram(String word1, String word2, int frequency) {
+        return addOrSetBigram(word1, word2, frequency, true);
+    }
+
     /**
      * Adds bigrams to the in-memory trie structure that is being used to retrieve any word
-     * @param addFrequency adding frequency of the pair
+     * @param frequency frequency for this bigrams
+     * @param addFrequency if true, it adds to current frequency
      * @return returns the final frequency
      */
-    protected int addBigrams(String word1, String word2, int addFrequency) {
+    private int addOrSetBigram(String word1, String word2, int frequency, boolean addFrequency) {
         Node firstWord = searchWord(mRoots, word1, 0, null);
         Node secondWord = searchWord(mRoots, word2, 0, null);
         LinkedList<NextWord> bigram = firstWord.ngrams;
@@ -340,14 +347,18 @@ public class ExpandableDictionary extends Dictionary {
         } else {
             for (NextWord nw : bigram) {
                 if (nw.word == secondWord) {
-                    nw.frequency += addFrequency;
+                    if (addFrequency) {
+                        nw.frequency += frequency;
+                    } else {
+                        nw.frequency = frequency;
+                    }
                     return nw.frequency;
                 }
             }
         }
-        NextWord nw = new NextWord(secondWord, addFrequency);
+        NextWord nw = new NextWord(secondWord, frequency);
         firstWord.ngrams.add(nw);
-        return addFrequency;
+        return frequency;
     }
 
     /**
@@ -385,19 +396,41 @@ public class ExpandableDictionary extends Dictionary {
         return searchWord(childNode.children, word, depth + 1, childNode);
     }
 
-    @Override
-    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback, int[] nextLettersFrequencies) {
+    // @VisibleForTesting
+    boolean reloadDictionaryIfRequired() {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
             // Currently updating contacts, don't return any results.
-            if (mUpdatingDictionary) return;
+            return mUpdatingDictionary;
         }
+    }
 
+    private void runReverseLookUp(final CharSequence previousWord, final WordCallback callback) {
         Node prevWord = searchNode(mRoots, previousWord, 0, previousWord.length());
         if (prevWord != null && prevWord.ngrams != null) {
             reverseLookUp(prevWord.ngrams, callback);
+        }
+    }
+
+    @Override
+    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
+            final WordCallback callback, int[] nextLettersFrequencies) {
+        if (!reloadDictionaryIfRequired()) {
+            runReverseLookUp(previousWord, callback);
+        }
+    }
+
+    /**
+     * Used only for testing purposes
+     * This function will wait for loading from database to be done
+     */
+    void waitForDictionaryLoading() {
+        while (mUpdatingDictionary) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+            }
         }
     }
 
@@ -413,15 +446,18 @@ public class ExpandableDictionary extends Dictionary {
         for (NextWord nextWord : terminalNodes) {
             node = nextWord.word;
             freq = nextWord.frequency;
-            sb.setLength(0);
-            do {
-                sb.insert(0, node.code);
-                node = node.parent;
-            } while(node != null);
+            // TODO Not the best way to limit suggestion threshold
+            if (freq >= UserBigramDictionary.SUGGEST_THRESHOLD) {
+                sb.setLength(0);
+                do {
+                    sb.insert(0, node.code);
+                    node = node.parent;
+                } while(node != null);
 
-            // TODO better way to feed char array?
-            callback.addWord(sb.toString().toCharArray(), 0, sb.length(), freq, mDicTypeId,
-                    DataType.BIGRAM);
+                // TODO better way to feed char array?
+                callback.addWord(sb.toString().toCharArray(), 0, sb.length(), freq, mDicTypeId,
+                        DataType.BIGRAM);
+            }
         }
     }
 
@@ -460,18 +496,11 @@ public class ExpandableDictionary extends Dictionary {
         @Override
         protected Void doInBackground(Void... v) {
             loadDictionaryAsync();
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            // TODO Auto-generated method stub
             synchronized (mUpdatingLock) {
                 mUpdatingDictionary = false;
             }
-            super.onPostExecute(result);
+            return null;
         }
-        
     }
 
     static char toLowerCase(char c) {

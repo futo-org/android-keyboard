@@ -163,8 +163,7 @@ public class LatinIME extends InputMethodService
     KeyboardSwitcher mKeyboardSwitcher;
 
     private UserDictionary mUserDictionary;
-    // User Bigram is disabled for now
-    //private UserBigramDictionary mUserBigramDictionary;
+    private UserBigramDictionary mUserBigramDictionary;
     private ContactsDictionary mContactsDictionary;
     private AutoDictionary mAutoDictionary;
 
@@ -454,15 +453,12 @@ public class LatinIME extends InputMethodService
             mAutoDictionary.close();
         }
         mAutoDictionary = new AutoDictionary(this, this, mInputLocale, Suggest.DIC_AUTO);
-        // User Bigram is disabled for now
-        /*
         if (mUserBigramDictionary != null) {
             mUserBigramDictionary.close();
         }
         mUserBigramDictionary = new UserBigramDictionary(this, this, mInputLocale,
-                Suggest.DIC_USERBIGRAM);
+                Suggest.DIC_USER);
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
-        */
         mSuggest.setUserDictionary(mUserDictionary);
         mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);
@@ -698,8 +694,7 @@ public class LatinIME extends InputMethodService
             mKeyboardSwitcher.getInputView().closing();
         }
         if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
-        // User Bigram is disabled for now
-        //if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
+        if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
     }
 
     @Override
@@ -2007,15 +2002,14 @@ public class LatinIME extends InputMethodService
                     && !mSuggest.isValidWord(suggestion.toString().toLowerCase()))) {
                 mAutoDictionary.addWord(suggestion.toString(), frequencyDelta);
             }
-            // User Bigram is disabled for now
-            /*
+
             if (mUserBigramDictionary != null) {
-                CharSequence prevWord = EditingUtil.getPreviousWord(getCurrentInputConnection());
+                CharSequence prevWord = EditingUtil.getPreviousWord(getCurrentInputConnection(),
+                        mSentenceSeparators);
                 if (!TextUtils.isEmpty(prevWord)) {
-                    mUserBigramDictionary.addBigrams(prevWord.toString(), suggestion.toString(), 1);
+                    mUserBigramDictionary.addBigrams(prevWord.toString(), suggestion.toString());
                 }
             }
-            */
         }
     }
 

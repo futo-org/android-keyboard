@@ -78,12 +78,13 @@ public class Suggest implements Dictionary.WordCallback {
     private Dictionary mUserBigramDictionary;
 
     private int mPrefMaxSuggestions = 12;
-    private int mPrefMaxBigrams = 255;
+
+    private static final int PREF_MAX_BIGRAMS = 60;
 
     private boolean mAutoTextEnabled;
 
     private int[] mPriorities = new int[mPrefMaxSuggestions];
-    private int[] mBigramPriorities = new int[mPrefMaxBigrams];
+    private int[] mBigramPriorities = new int[PREF_MAX_BIGRAMS];
 
     // Handle predictive correction for only the first 1280 characters for performance reasons
     // If we support scripts that need latin characters beyond that, we should probably use some
@@ -92,7 +93,7 @@ public class Suggest implements Dictionary.WordCallback {
     // latin characters.
     private int[] mNextLettersFrequencies = new int[1280];
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
-    private ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
+    ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
     private boolean mHaveCorrection;
     private CharSequence mOriginalWord;
@@ -173,7 +174,7 @@ public class Suggest implements Dictionary.WordCallback {
         }
         mPrefMaxSuggestions = maxSuggestions;
         mPriorities = new int[mPrefMaxSuggestions];
-        mBigramPriorities = new int[mPrefMaxBigrams];
+        mBigramPriorities = new int[PREF_MAX_BIGRAMS];
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         while (mStringPool.size() < mPrefMaxSuggestions) {
             StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
@@ -242,7 +243,7 @@ public class Suggest implements Dictionary.WordCallback {
                 || mCorrectionMode == CORRECTION_BASIC)) {
             // At first character typed, search only the bigrams
             Arrays.fill(mBigramPriorities, 0);
-            collectGarbage(mBigramSuggestions, mPrefMaxBigrams);
+            collectGarbage(mBigramSuggestions, PREF_MAX_BIGRAMS);
 
             if (!TextUtils.isEmpty(prevWordForBigram)) {
                 CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
@@ -401,7 +402,7 @@ public class Suggest implements Dictionary.WordCallback {
         if(dataType == Dictionary.DataType.BIGRAM) {
             suggestions = mBigramSuggestions;
             priorities = mBigramPriorities;
-            prefMaxSuggestions = mPrefMaxBigrams;
+            prefMaxSuggestions = PREF_MAX_BIGRAMS;
         } else {
             suggestions = mSuggestions;
             priorities = mPriorities;
@@ -443,7 +444,6 @@ public class Suggest implements Dictionary.WordCallback {
                 pos++;
             }
         }
-
         if (pos >= prefMaxSuggestions) {
             return true;
         }
