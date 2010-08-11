@@ -359,4 +359,6 @@
 
     <string name="prefs_debug_mode">Debug (Temporary)</string>
 
+    <string name="subtype_mode_keyboard">keyboard</string>
+    <string name="subtype_mode_voice">voice</string>
 </resources>
