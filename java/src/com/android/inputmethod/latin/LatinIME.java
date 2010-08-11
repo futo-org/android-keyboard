@@ -394,7 +394,8 @@ public class LatinIME extends InputMethodService
      * Loads a dictionary or multiple separated dictionary
      * @return returns array of dictionary resource ids
      */
-    static int[] getDictionary(Resources res, String packageName) {
+    static int[] getDictionary(Resources res) {
+        String packageName = LatinIME.class.getPackage().getName();
         XmlResourceParser xrp = res.getXml(R.xml.dictionary);
         int dictionaryCount = 0;
         ArrayList<Integer> dictionaries = new ArrayList<Integer>();
@@ -443,7 +444,7 @@ public class LatinIME extends InputMethodService
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mQuickFixes = sp.getBoolean(PREF_QUICK_FIXES, true);
 
-        int[] dictionaries = getDictionary(orig, this.getPackageName());
+        int[] dictionaries = getDictionary(orig);
         mSuggest = new Suggest(this, dictionaries);
         updateAutoTextEnabled(saveLocale);
         if (mUserDictionary != null) mUserDictionary.close();

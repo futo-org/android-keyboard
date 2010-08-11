@@ -1,7 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.google.android.inputmethod.latin">
-
-    <original-package android:name="com.android.inputmethod.latin" />
+        package="com.android.inputmethod.latin">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
@@ -10,10 +8,10 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application android:label="@string/english_ime_name"
-            android:backupAgent="com.android.inputmethod.latin.LatinIMEBackupAgent"
+            android:backupAgent="LatinIMEBackupAgent"
             android:killAfterRestore="false">
 
-        <service android:name="com.android.inputmethod.latin.LatinIME"
+        <service android:name="LatinIME"
                 android:label="@string/english_ime_name"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
@@ -22,13 +20,13 @@
             <meta-data android:name="android.view.im" android:resource="@xml/method" />
         </service>
 
-        <activity android:name="com.android.inputmethod.latin.LatinIMESettings" android:label="@string/english_ime_settings">
+        <activity android:name="LatinIMESettings" android:label="@string/english_ime_settings">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
 
-        <activity android:name="com.android.inputmethod.latin.InputLanguageSelection"
+        <activity android:name="InputLanguageSelection"
                 android:label="@string/language_selection_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
