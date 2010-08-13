@@ -2261,6 +2261,10 @@ public class LatinIME extends InputMethodService
         return mWord;
     }
 
+    boolean getPopupOn() {
+        return mPopupOn;
+    }
+
     private void updateCorrectionMode() {
         mHasDictionary = mSuggest != null ? mSuggest.hasMainDictionary() : false;
         mAutoCorrectOn = (mAutoCorrectEnabled || mQuickFixes)

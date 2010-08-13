@@ -230,7 +230,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
         mIsSymbols = isSymbols;
 
-        mInputView.setPreviewEnabled(true);
+        mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
         KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
         LatinKeyboard keyboard = null;
         keyboard = getKeyboard(id);
