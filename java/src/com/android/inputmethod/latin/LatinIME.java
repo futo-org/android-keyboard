@@ -752,10 +752,10 @@ public class LatinIME extends InputMethodService
             mVoiceInputHighlighted = false;
         } else if (!mPredicting && !mJustAccepted) {
             switch (TextEntryState.getState()) {
-                case TextEntryState.STATE_ACCEPTED_DEFAULT:
+                case ACCEPTED_DEFAULT:
                     TextEntryState.reset();
                     // fall through
-                case TextEntryState.STATE_SPACE_AFTER_PICKED:
+                case SPACE_AFTER_PICKED:
                     mJustAddedAutoSpace = false;  // The user moved the cursor.
                     break;
             }
@@ -768,10 +768,10 @@ public class LatinIME extends InputMethodService
         mLastSelectionEnd = newSelEnd;
 
 
-        // TODO: Uncomment this block when we enable re-editing feature
-        // If a word is selected
+        // Check if we should go in or out of correction mode.
         if (isPredictionOn() && mJustRevertedSeparator == null
-                && (candidatesStart == candidatesEnd || newSelStart != oldSelStart)
+                && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
+                        || TextEntryState.isCorrecting())
                 && (newSelStart < newSelEnd - 1 || (!mPredicting))
                 && !mVoiceInputHighlighted) {
             if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
@@ -1207,7 +1207,7 @@ public class LatinIME extends InputMethodService
         }
         postUpdateShiftKeyState();
         TextEntryState.backspace();
-        if (TextEntryState.getState() == TextEntryState.STATE_UNDO_COMMIT) {
+        if (TextEntryState.getState() == TextEntryState.State.UNDO_COMMIT) {
             revertLastWord(deleteChar);
             ic.endBatchEdit();
             return;
@@ -1358,13 +1358,13 @@ public class LatinIME extends InputMethodService
 
         // Handle the case of ". ." -> " .." with auto-space if necessary
         // before changing the TextEntryState.
-        if (TextEntryState.getState() == TextEntryState.STATE_PUNCTUATION_AFTER_ACCEPTED
+        if (TextEntryState.getState() == TextEntryState.State.PUNCTUATION_AFTER_ACCEPTED
                 && primaryCode == KEYCODE_PERIOD) {
             reswapPeriodAndSpace();
         }
 
         TextEntryState.typedCharacter((char) primaryCode, true);
-        if (TextEntryState.getState() == TextEntryState.STATE_PUNCTUATION_AFTER_ACCEPTED
+        if (TextEntryState.getState() == TextEntryState.State.PUNCTUATION_AFTER_ACCEPTED
                 && primaryCode != KEYCODE_ENTER) {
             swapPunctuationAndSpace();
         } else if (isPredictionOn() && primaryCode == KEYCODE_SPACE) {
@@ -1790,8 +1790,16 @@ public class LatinIME extends InputMethodService
             mJustAddedAutoSpace = true;
         }
 
-        // Fool the state watcher so that a subsequent backspace will not do a revert
-        TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
+        // Fool the state watcher so that a subsequent backspace will not do a revert, unless
+        // we just did a correction, in which case we need to stay in
+        // TextEntryState.State.PICKED_SUGGESTION state.
+        if (!correcting) {
+            TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
+            setNextSuggestions();
+        } else {
+            // In case the cursor position doesn't change, make sure we show the suggestions again.
+            postUpdateOldSuggestions();
+        }
         if (index == 0 && mCorrectionMode > 0 && !mSuggest.isValidWord(suggestion)
                 && !mSuggest.isValidWord(suggestion.toString().toLowerCase())) {
             mCandidateView.showAddToDictionaryHint(suggestion);
@@ -1820,7 +1828,6 @@ public class LatinIME extends InputMethodService
                 mWordToSuggestions.put(suggestion.toString(), suggestions);
             }
         }
-        // TODO: implement rememberReplacedWord for typed words
     }
 
     /**
@@ -1860,7 +1867,10 @@ public class LatinIME extends InputMethodService
         mPredicting = false;
         mCommittedLength = suggestion.length();
         ((LatinKeyboard) inputView.getKeyboard()).setPreferredLetters(null);
-        setNextSuggestions();
+        // If we just corrected a word, then don't show punctuations
+        if (!correcting) {
+            setNextSuggestions();
+        }
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
@@ -1880,13 +1890,16 @@ public class LatinIME extends InputMethodService
             EditingUtil.Range range = new EditingUtil.Range();
             CharSequence touching = EditingUtil.getWordAtCursor(getCurrentInputConnection(),
                     mWordSeparators, range);
-            if (touching != null && touching.length() > 1) {
+            // If it's a selection, check if it's an entire word and no more, no less.
+            boolean fullword = EditingUtil.isFullWordOrInside(range, mLastSelectionStart,
+                    mLastSelectionEnd);
+            if (fullword && touching != null && touching.length() > 1) {
+                // Strip out any trailing word separator
                 if (mWordSeparators.indexOf(touching.charAt(touching.length() - 1)) > 0) {
                     touching = touching.toString().substring(0, touching.length() - 1);
                 }
 
                 // Search for result in spoken word alternatives
-                // TODO: possibly combine the spoken suggestions with the typed suggestions.
                 String selectedWord = touching.toString().trim();
                 if (!mWordToSuggestions.containsKey(selectedWord)){
                     selectedWord = selectedWord.toLowerCase();
@@ -1911,7 +1924,8 @@ public class LatinIME extends InputMethodService
                     ic.endBatchEdit();
                     return;
                 }
-                // If we didn't find a match, search for result in word history
+
+                // If we didn't find a match, search for result in typed word history
                 WordComposer foundWord = null;
                 WordAlternatives alternatives = null;
                 for (WordAlternatives entry : mWordHistory) {

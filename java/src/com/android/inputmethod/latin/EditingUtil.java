@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.regex.Pattern;
-
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
+
+import java.util.regex.Pattern;
 
 /**
  * Utility methods to deal with editing text through an InputConnection.
@@ -202,5 +202,28 @@ public class EditingUtil {
         } else {
             return null;
         }
+    }
+
+    /**
+     * Checks if the cursor is touching/inside a word or the selection is for a whole
+     * word and no more and no less.
+     * @param range the Range object that contains the bounds of the word around the cursor
+     * @param start the start of the selection
+     * @param end the end of the selection, which could be the same as the start, if text is not
+     * in selection mode
+     * @return false if the selection is a partial word or straddling multiple words, true if
+     * the selection is a full word or there is no selection.
+     */
+    public static boolean isFullWordOrInside(Range range, int start, int end) {
+        // Is the cursor inside or touching a word?
+        if (start == end) return true;
+
+        // Is it a selection? Then is the start of the selection the start of the word and
+        // the size of the selection the size of the word? Then return true
+        if (start < end
+                && (range.charsBefore == 0 && range.charsAfter == end - start)) {
+            return true;
+        }
+        return false;
     }
 }
