@@ -24,6 +24,8 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Nastavení klávesnice Android"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Při stisku klávesy vibrovat"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk při stisku klávesy"</string>
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <string name="hit_correction" msgid="4855351009261318389">"Opravovat překlepy"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Povolit opravu chyb vstupu"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Chyby vstupu v zobrazení na šířku"</string>

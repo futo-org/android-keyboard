@@ -24,6 +24,8 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Configurações de teclado Android"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao tocar a tecla"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Som ao tocar a tecla"</string>
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <string name="hit_correction" msgid="4855351009261318389">"Corrigir erros de digitação"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Ativar a correção de erro de entrada"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Erros de entrada de paisagem"</string>
