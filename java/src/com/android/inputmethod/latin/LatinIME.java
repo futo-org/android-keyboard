@@ -345,6 +345,7 @@ public class LatinIME extends InputMethodService
         //setStatusIcon(R.drawable.ime_qwerty);
         mResources = getResources();
         final Configuration conf = mResources.getConfiguration();
+        PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mLanguageSwitcher = new LanguageSwitcher(this);
         mLanguageSwitcher.loadLocales(prefs);
