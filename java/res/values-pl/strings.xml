@@ -24,6 +24,8 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Ustawienia klawiatury Android"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Wibracja przy naciśnięciu"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Dźwięk przy naciśnięciu"</string>
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <string name="hit_correction" msgid="4855351009261318389">"Popraw błędy pisowni"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Włącz poprawianie błędów wprowadzania"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Błędy wprowadzania w orientacji poziomej"</string>

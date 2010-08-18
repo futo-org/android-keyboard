@@ -24,6 +24,8 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Настройки клавиатуры Android"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <string name="hit_correction" msgid="4855351009261318389">"Исправлять опечатки"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Включить исправление ошибок при вводе"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Ошибки при вводе в горизонтальной ориентации"</string>
