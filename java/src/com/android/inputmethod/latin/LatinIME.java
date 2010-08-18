@@ -345,7 +345,6 @@ public class LatinIME extends InputMethodService
         //setStatusIcon(R.drawable.ime_qwerty);
         mResources = getResources();
         final Configuration conf = mResources.getConfiguration();
-        PreferenceManager.setDefaultValues(this, R.xml.prefs, false);
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mLanguageSwitcher = new LanguageSwitcher(this);
         mLanguageSwitcher.loadLocales(prefs);
@@ -2318,7 +2317,8 @@ public class LatinIME extends InputMethodService
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mVibrateOn = sp.getBoolean(PREF_VIBRATE_ON, false);
         mSoundOn = sp.getBoolean(PREF_SOUND_ON, false);
-        mPopupOn = sp.getBoolean(PREF_POPUP_ON, true);
+        mPopupOn = sp.getBoolean(PREF_POPUP_ON,
+                mResources.getBoolean(R.bool.default_popup_preview));
         mAutoCap = sp.getBoolean(PREF_AUTO_CAP, true);
         mQuickFixes = sp.getBoolean(PREF_QUICK_FIXES, true);
         mHasUsedVoiceInput = sp.getBoolean(PREF_HAS_USED_VOICE_INPUT, false);
