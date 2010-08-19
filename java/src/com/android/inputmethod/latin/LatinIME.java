@@ -195,6 +195,7 @@ public class LatinIME extends InputMethodService
     private boolean mAutoCorrectEnabled;
     private boolean mBigramSuggestionEnabled;
     private boolean mAutoCorrectOn;
+    // TODO move this state variable outside LatinIME
     private boolean mCapsLock;
     private boolean mPasswordText;
     private boolean mVibrateOn;
@@ -967,10 +968,8 @@ public class LatinIME extends InputMethodService
 
     public void updateShiftKeyState(EditorInfo attr) {
         InputConnection ic = getCurrentInputConnection();
-        if (attr != null && mKeyboardSwitcher.getInputView() != null
-                && mKeyboardSwitcher.isAlphabetMode() && ic != null) {
-            mKeyboardSwitcher.getInputView().setShifted(
-                    mCapsLock || getCursorCapsMode(ic, attr) != 0);
+        if (attr != null && mKeyboardSwitcher.isAlphabetMode() && ic != null) {
+            mKeyboardSwitcher.setShifted(mCapsLock || getCursorCapsMode(ic, attr) != 0);
         }
     }
 
@@ -1106,11 +1105,7 @@ public class LatinIME extends InputMethodService
                 toggleLanguage(false, false);
                 break;
             case LatinKeyboardView.KEYCODE_SHIFT_LONGPRESS:
-                if (mCapsLock) {
-                    handleShift();
-                } else {
-                    toggleCapsLock();
-                }
+                handleCapsLock();
                 break;
             case Keyboard.KEYCODE_MODE_CHANGE:
                 changeKeyboardMode();
@@ -1235,13 +1230,35 @@ public class LatinIME extends InputMethodService
 
     private void handleShift() {
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
-        if (mKeyboardSwitcher.isAlphabetMode()) {
-            // Alphabet keyboard
-            checkToggleCapsLock();
-            mKeyboardSwitcher.getInputView().setShifted(mCapsLock
-                    || !mKeyboardSwitcher.getInputView().isShifted());
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        LatinKeyboardView inputView = switcher.getInputView();
+        if (switcher.isAlphabetMode()) {
+            if (mCapsLock) {
+                mCapsLock = false;
+                switcher.setShifted(false);
+            } else if (inputView != null) {
+                if (inputView.isShifted()) {
+                    mCapsLock = true;
+                    switcher.setShiftLocked(true);
+                } else {
+                    switcher.setShifted(true);
+                }
+            }
         } else {
-            mKeyboardSwitcher.toggleShift();
+            switcher.toggleShift();
+        }
+    }
+
+    private void handleCapsLock() {
+        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        if (switcher.isAlphabetMode()) {
+            mCapsLock = !mCapsLock;
+            if (mCapsLock) {
+                switcher.setShiftLocked(true);
+            } else {
+                switcher.setShifted(false);
+            }
         }
     }
 
@@ -1403,20 +1420,6 @@ public class LatinIME extends InputMethodService
         TypedWordAlternatives entry = new TypedWordAlternatives(resultCopy,
                 new WordComposer(mWord));
         mWordHistory.add(entry);
-    }
-
-    private void checkToggleCapsLock() {
-        if (mKeyboardSwitcher.getInputView().getKeyboard().isShifted()) {
-            toggleCapsLock();
-        }
-    }
-
-    private void toggleCapsLock() {
-        mCapsLock = !mCapsLock;
-        if (mKeyboardSwitcher.isAlphabetMode()) {
-            ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).setShiftLocked(
-                    mCapsLock);
-        }
     }
 
     private void postUpdateSuggestions() {
@@ -2414,8 +2417,7 @@ public class LatinIME extends InputMethodService
     private void changeKeyboardMode() {
         mKeyboardSwitcher.toggleSymbols();
         if (mCapsLock && mKeyboardSwitcher.isAlphabetMode()) {
-            ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).setShiftLocked(
-                    mCapsLock);
+            mKeyboardSwitcher.setShiftLocked(mCapsLock);
         }
 
         updateShiftKeyState(getCurrentInputEditorInfo());

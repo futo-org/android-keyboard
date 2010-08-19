@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.inputmethodservice.Keyboard;
 import android.preference.PreferenceManager;
 import android.view.InflateException;
 
@@ -341,6 +342,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
         }
         return false;
+    }
+
+    void setShifted(boolean shifted) {
+        if (mInputView != null) {
+            mInputView.setShifted(shifted);
+        }
+    }
+
+    void setShiftLocked(boolean shiftLocked) {
+        if (mInputView != null) {
+            mInputView.setShiftLocked(shiftLocked);
+        }
     }
 
     void toggleShift() {
