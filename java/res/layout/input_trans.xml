@@ -20,11 +20,13 @@
 
 <com.android.inputmethod.latin.LatinKeyboardView
         xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
         android:id="@android:id/keyboardView"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#A0000000"
+        android:background="@color/latinkeyboard_extension_background"
         android:verticalCorrection="0dip"
-        android:keyBackground="@drawable/btn_keyboard_key_fulltrans"
+
+        latin:keyBackground="@drawable/btn_keyboard_key_fulltrans"
         />

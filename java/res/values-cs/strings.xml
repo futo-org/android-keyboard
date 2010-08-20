@@ -24,6 +24,8 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Nastavení klávesnice Android"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Při stisku klávesy vibrovat"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk při stisku klávesy"</string>
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <string name="hit_correction" msgid="4855351009261318389">"Opravovat překlepy"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Povolit opravu chyb vstupu"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Chyby vstupu v zobrazení na šířku"</string>
@@ -46,6 +48,8 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Zobrazovat navržená slova během psaní"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Automatické dokončování"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"Stisknutím mezerníku nebo interpunkčního znaménka automaticky vložíte zvýrazněné slovo."</string>
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Návrh Bigram"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Použít předchozí slovo ke zlepšení návrhu"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Žádný"</item>
     <item msgid="1669461741568287396">"Základní"</item>
@@ -128,4 +132,12 @@
     <string name="language_selection_summary" msgid="187110938289512256">"Jazyk můžete změnit posunutím prstu po mezerníku."</string>
     <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Uložte slovo opětovným klepnutím"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"K dispozici je slovník"</string>
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
+    <!-- no translation found for prefs_description_log (5827825607258246003) -->
+    <skip />
+    <!-- no translation found for keyboard_layout (437433231038683666) -->
+    <skip />
+    <!-- no translation found for prefs_debug_mode (3889340783846594980) -->
+    <skip />
 </resources>

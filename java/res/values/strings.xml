@@ -25,9 +25,13 @@
 
     <!-- Option to provide vibrate/haptic feedback on keypress -->
     <string name="vibrate_on_keypress">Vibrate on keypress</string>
+
     <!-- Option to play back sound on keypress in soft keyboard -->
     <string name="sound_on_keypress">Sound on keypress</string>
-    
+
+    <!-- Option to pop up the character with a larger font above soft keyboard -->
+    <string name="popup_on_keypress">Popup on keypress</string>
+
     <!-- Option to enable using nearby keys when correcting/predicting -->
     <string name="hit_correction">Correct typing errors</string>
     
@@ -85,6 +89,11 @@
     <!-- Description for auto completion -->
     <string name="auto_complete_summary">Spacebar and punctuation automatically insert highlighted word</string>
     
+    <!-- Option to enable bigram completion -->
+    <string name="bigram_suggestion">Bigram Suggestions</string>
+    <!-- Description for auto completion -->
+    <string name="bigram_suggestion_summary">Use previous word to improve suggestion</string>
+
     <!-- Array of prediction modes -->
     <string-array name="prediction_modes">
         <item>None</item>
@@ -322,4 +331,34 @@
     
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
+
+    <!-- Option to send logs -->
+    <string name="prefs_enable_log">Enable user feedback</string>
+    <!-- Description for sending logs -->
+    <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports to Google.</string>
+
+    <string name="keyboard_layout">Keyboard Theme</string>
+    <string name="layout_basic" translatable="false">Basic</string>
+    <string name="layout_high_contrast" translatable="false">Basic (High Contrast)</string>
+    <string name="layout_stone_bold"  translatable="false">Default (bold)</string>
+    <string name="layout_stone_normal"  translatable="false">Default (normal)</string>
+
+    <string-array name="keyboard_layout_modes" translatable="false">
+        <item>@string/layout_basic</item>
+        <item>@string/layout_high_contrast</item>
+        <item>@string/layout_stone_normal</item>
+        <item>@string/layout_stone_bold</item>
+    </string-array>
+
+    <string-array name="keyboard_layout_modes_values" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string name="prefs_debug_mode">Debug (Temporary)</string>
+
+    <string name="subtype_mode_keyboard">keyboard</string>
+    <string name="subtype_mode_voice">voice</string>
 </resources>

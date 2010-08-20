@@ -83,7 +83,6 @@ public class CandidateView extends View {
     private int mDescent;
     private boolean mScrolled;
     private boolean mShowingAddToDictionary;
-    private CharSequence mWordToAddToDictionary;
     private CharSequence mAddToDictionaryHint;
 
     private int mTargetScrollX;
@@ -144,9 +143,13 @@ public class CandidateView extends View {
         mPaint.setStrokeWidth(0);
         mPaint.setTextAlign(Align.CENTER);
         mDescent = (int) mPaint.descent();
-        // 80 pixels for a 160dpi device would mean half an inch
+        // 50 pixels for a 160dpi device would mean about 0.3 inch
         mMinTouchableWidth = (int) (getResources().getDisplayMetrics().density * 50);
         
+        // Slightly reluctant to scroll to be able to easily choose the suggestion
+        // 50 pixels for a 160dpi device would mean about 0.3 inch
+        final int touchSlop = (int) (getResources().getDisplayMetrics().density * 50);
+        final int touchSlopSquare = touchSlop * touchSlop;
         mGestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
             @Override
             public void onLongPress(MotionEvent me) {
@@ -160,6 +163,13 @@ public class CandidateView extends View {
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2,
                     float distanceX, float distanceY) {
+                final int deltaX = (int) (e2.getX() - e1.getX());
+                final int deltaY = (int) (e2.getY() - e1.getY());
+                final int distance = (deltaX * deltaX) + (deltaY * deltaY);
+                if (distance < touchSlopSquare) {
+                    return false;
+                }
+
                 final int width = getWidth();
                 mScrolled = true;
                 int scrollX = getScrollX();
@@ -167,7 +177,7 @@ public class CandidateView extends View {
                 if (scrollX < 0) {
                     scrollX = 0;
                 }
-                if (distanceX > 0 && scrollX + width > mTotalWidth) {                    
+                if (distanceX > 0 && scrollX + width > mTotalWidth) {
                     scrollX -= (int) distanceX;
                 }
                 mTargetScrollX = scrollX;
@@ -219,8 +229,7 @@ public class CandidateView extends View {
                     mDivider.getIntrinsicHeight());
         }
         int x = 0;
-        final int count = mSuggestions.size(); 
-        final int width = getWidth();
+        final int count = Math.min(mSuggestions.size(), MAX_SUGGESTIONS);
         final Rect bgPadding = mBgPadding;
         final Paint paint = mPaint;
         final int touchX = mTouchX;
@@ -325,7 +334,6 @@ public class CandidateView extends View {
     }
 
     public void showAddToDictionaryHint(CharSequence word) {
-        mWordToAddToDictionary = word;
         ArrayList<CharSequence> suggestions = new ArrayList<CharSequence>();
         suggestions.add(word);
         suggestions.add(mAddToDictionaryHint);
@@ -341,7 +349,7 @@ public class CandidateView extends View {
 
     public void scrollPrev() {
         int i = 0;
-        final int count = mSuggestions.size();
+        final int count = Math.min(mSuggestions.size(), MAX_SUGGESTIONS);
         int firstItem = 0; // Actually just before the first item, if at the boundary
         while (i < count) {
             if (mWordX[i] < getScrollX() 
@@ -360,7 +368,7 @@ public class CandidateView extends View {
         int i = 0;
         int scrollX = getScrollX();
         int targetX = scrollX;
-        final int count = mSuggestions.size();
+        final int count = Math.min(mSuggestions.size(), MAX_SUGGESTIONS);
         int rightEdge = scrollX + getWidth();
         while (i < count) {
             if (mWordX[i] <= rightEdge &&
@@ -382,8 +390,14 @@ public class CandidateView extends View {
             mScrolled = true;
         }
     }
-    
+
+    /* package */ List<CharSequence> getSuggestions() {
+        return mSuggestions;
+    }
+
     public void clear() {
+        // Don't call mSuggestions.clear() because it's being used for logging
+        // in LatinIME.pickSuggestionManually().
         mSuggestions = EMPTY_LIST;
         mTouchX = OUT_OF_BOUNDS;
         mSelectedString = null;
@@ -418,7 +432,11 @@ public class CandidateView extends View {
             if (y <= 0) {
                 // Fling up!?
                 if (mSelectedString != null) {
+                    // If there are completions from the application, we don't change the state to
+                    // STATE_PICKED_SUGGESTION
                     if (!mShowingCompletions) {
+                        // This "acceptedSuggestion" will not be counted as a word because
+                        // it will be counted in pickSuggestion instead.
                         TextEntryState.acceptedSuggestion(mSuggestions.get(0),
                                 mSelectedString);
                     }
@@ -452,25 +470,6 @@ public class CandidateView extends View {
             break;
         }
         return true;
-    }
-    
-    /**
-     * For flick through from keyboard, call this method with the x coordinate of the flick 
-     * gesture.
-     * @param x
-     */
-    public void takeSuggestionAt(float x) {
-        mTouchX = (int) x;
-        // To detect candidate
-        onDraw(null);
-        if (mSelectedString != null) {
-            if (!mShowingCompletions) {
-                TextEntryState.acceptedSuggestion(mSuggestions.get(0), mSelectedString);
-            }
-            mService.pickSuggestionManually(mSelectedIndex, mSelectedString);
-        }
-        invalidate();
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_REMOVE_THROUGH_PREVIEW), 200);
     }
 
     private void hidePreview() {
