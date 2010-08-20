@@ -335,6 +335,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     boolean isAlphabetMode() {
+        if (mCurrentId == null) {
+            return false;
+        }
         int currentMode = mCurrentId.mKeyboardMode;
         for (Integer mode : ALPHABET_MODES) {
             if (currentMode == mode) {

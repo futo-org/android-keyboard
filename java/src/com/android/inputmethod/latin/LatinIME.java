@@ -968,7 +968,7 @@ public class LatinIME extends InputMethodService
 
     public void updateShiftKeyState(EditorInfo attr) {
         InputConnection ic = getCurrentInputConnection();
-        if (attr != null && mKeyboardSwitcher.isAlphabetMode() && ic != null) {
+        if (ic != null && attr != null && mKeyboardSwitcher.isAlphabetMode()) {
             mKeyboardSwitcher.setShifted(mCapsLock || getCursorCapsMode(ic, attr) != 0);
         }
     }
