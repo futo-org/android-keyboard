@@ -32,6 +32,8 @@ public class ContactsDictionary extends ExpandableDictionary {
         Contacts.DISPLAY_NAME,
     };
 
+    private static final String TAG = "ContactsDictionary";
+
     /**
      * Frequency for contacts information into the dictionary
      */
@@ -80,10 +82,14 @@ public class ContactsDictionary extends ExpandableDictionary {
 
     @Override
     public void loadDictionaryAsync() {
-        Cursor cursor = getContext().getContentResolver()
-                .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
-        if (cursor != null) {
-            addWords(cursor);
+        try {
+            Cursor cursor = getContext().getContentResolver()
+                    .query(Contacts.CONTENT_URI, PROJECTION, null, null, null);
+            if (cursor != null) {
+                addWords(cursor);
+            }
+        } catch(IllegalStateException e) {
+            Log.e(TAG, "Contacts DB is having problems");
         }
         mLastLoadedContacts = SystemClock.uptimeMillis();
     }
@@ -92,52 +98,55 @@ public class ContactsDictionary extends ExpandableDictionary {
         clearDictionary();
 
         final int maxWordLength = getMaxWordLength();
-        if (cursor.moveToFirst()) {
-            while (!cursor.isAfterLast()) {
-                String name = cursor.getString(INDEX_NAME);
+        try {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    String name = cursor.getString(INDEX_NAME);
 
-                if (name != null) {
-                    int len = name.length();
-                    String prevWord = null;
+                    if (name != null) {
+                        int len = name.length();
+                        String prevWord = null;
 
-                    // TODO: Better tokenization for non-Latin writing systems
-                    for (int i = 0; i < len; i++) {
-                        if (Character.isLetter(name.charAt(i))) {
-                            int j;
-                            for (j = i + 1; j < len; j++) {
-                                char c = name.charAt(j);
+                        // TODO: Better tokenization for non-Latin writing systems
+                        for (int i = 0; i < len; i++) {
+                            if (Character.isLetter(name.charAt(i))) {
+                                int j;
+                                for (j = i + 1; j < len; j++) {
+                                    char c = name.charAt(j);
 
-                                if (!(c == '-' || c == '\'' ||
-                                      Character.isLetter(c))) {
-                                    break;
+                                    if (!(c == '-' || c == '\'' ||
+                                          Character.isLetter(c))) {
+                                        break;
+                                    }
                                 }
-                            }
 
-                            String word = name.substring(i, j);
-                            i = j - 1;
+                                String word = name.substring(i, j);
+                                i = j - 1;
 
-                            // Safeguard against adding really long words. Stack
-                            // may overflow due to recursion
-                            // Also don't add single letter words, possibly confuses
-                            // capitalization of i.
-                            final int wordLen = word.length();
-                            if (wordLen < maxWordLength && wordLen > 1) {
-                                super.addWord(word, FREQUENCY_FOR_CONTACTS);
-                                if (!TextUtils.isEmpty(prevWord)) {
-                                    // TODO Do not add email address
-                                    // Not so critical
-                                    super.setBigram(prevWord, word, FREQUENCY_FOR_CONTACTS_BIGRAM);
+                                // Safeguard against adding really long words. Stack
+                                // may overflow due to recursion
+                                // Also don't add single letter words, possibly confuses
+                                // capitalization of i.
+                                final int wordLen = word.length();
+                                if (wordLen < maxWordLength && wordLen > 1) {
+                                    super.addWord(word, FREQUENCY_FOR_CONTACTS);
+                                    if (!TextUtils.isEmpty(prevWord)) {
+                                        // TODO Do not add email address
+                                        // Not so critical
+                                        super.setBigram(prevWord, word,
+                                                FREQUENCY_FOR_CONTACTS_BIGRAM);
+                                    }
+                                    prevWord = word;
                                 }
-                                prevWord = word;
                             }
                         }
                     }
+                    cursor.moveToNext();
                 }
-
-                cursor.moveToNext();
             }
+            cursor.close();
+        } catch(IllegalStateException e) {
+            Log.e(TAG, "Contacts DB is having problems");
         }
-        cursor.close();
     }
-
 }
