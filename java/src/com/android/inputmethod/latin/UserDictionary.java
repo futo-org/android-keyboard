@@ -38,7 +38,7 @@ public class UserDictionary extends ExpandableDictionary {
     private String mLocale;
 
     public UserDictionary(Context context, String locale) {
-        super(context);
+        super(context, Suggest.DIC_USER);
         mLocale = locale;
         // Perform a managed query. The Activity will handle closing and requerying the cursor
         // when needed.
@@ -54,6 +54,7 @@ public class UserDictionary extends ExpandableDictionary {
         loadDictionary();
     }
 
+    @Override
     public synchronized void close() {
         if (mObserver != null) {
             getContext().getContentResolver().unregisterContentObserver(mObserver);

@@ -24,13 +24,13 @@ import android.app.Dialog;
 import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
-import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
-import android.preference.Preference.OnPreferenceClickListener;
 import android.speech.SpeechRecognizer;
 import android.text.AutoText;
 import android.util.Log;
@@ -43,11 +43,9 @@ public class LatinIMESettings extends PreferenceActivity
         DialogInterface.OnDismissListener {
 
     private static final String QUICK_FIXES_KEY = "quick_fixes";
-    private static final String SHOW_SUGGESTIONS_KEY = "show_suggestions";
     private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
     private static final String VOICE_SETTINGS_KEY = "voice_mode";
-    private static final String VOICE_ON_PRIMARY_KEY = "voice_on_main";
-    private static final String VOICE_SERVER_KEY = "voice_server_url";
+    private static final String DEBUG_MODE_KEY = "debug_mode";
 
     private static final String TAG = "LatinIMESettings";
 
@@ -55,7 +53,7 @@ public class LatinIMESettings extends PreferenceActivity
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
 
     private CheckBoxPreference mQuickFixes;
-    private CheckBoxPreference mShowSuggestions;
+    private CheckBoxPreference mDebugMode;
     private ListPreference mVoicePreference;
     private boolean mVoiceOn;
 
@@ -69,7 +67,6 @@ public class LatinIMESettings extends PreferenceActivity
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs);
         mQuickFixes = (CheckBoxPreference) findPreference(QUICK_FIXES_KEY);
-        mShowSuggestions = (CheckBoxPreference) findPreference(SHOW_SUGGESTIONS_KEY);
         mVoicePreference = (ListPreference) findPreference(VOICE_SETTINGS_KEY);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -77,6 +74,9 @@ public class LatinIMESettings extends PreferenceActivity
         mVoiceModeOff = getString(R.string.voice_mode_off);
         mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         mLogger = VoiceInputLogger.getLogger(this);
+
+        mDebugMode = (CheckBoxPreference) findPreference(DEBUG_MODE_KEY);
+        updateDebugMode(mDebugMode.isChecked());
     }
 
     @Override
@@ -110,9 +110,33 @@ public class LatinIMESettings extends PreferenceActivity
                     .equals(mVoiceModeOff)) {
                 showVoiceConfirmation();
             }
+        } else if (key.equals(DEBUG_MODE_KEY)) {
+            updateDebugMode(prefs.getBoolean(DEBUG_MODE_KEY, false));
         }
         mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         updateVoiceModeSummary();
+    }
+
+    private void updateDebugMode(boolean isDebugMode) {
+        if (mDebugMode == null) {
+            return;
+        }
+        String version = "";
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
+            version = "Version " + info.versionName;
+        } catch (NameNotFoundException e) {
+            Log.e(TAG, "Could not find version info.");
+        }
+        if (!isDebugMode) {
+            mDebugMode.setEnabled(false);
+            mDebugMode.setTitle(version);
+            mDebugMode.setSummary("");
+        } else {
+            mDebugMode.setEnabled(true);
+            mDebugMode.setTitle(getResources().getString(R.string.prefs_debug_mode));
+            mDebugMode.setSummary(version);
+        }
     }
 
     private void showVoiceConfirmation() {

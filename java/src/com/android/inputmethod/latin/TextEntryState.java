@@ -17,10 +17,9 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.inputmethodservice.Keyboard.Key;
 import android.text.format.DateFormat;
 import android.util.Log;
-
-import android.inputmethodservice.Keyboard.Key;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,8 +27,12 @@ import java.util.Calendar;
 
 public class TextEntryState {
     
+    private static final boolean DBG = false;
+
+    private static final String TAG = "TextEntryState";
+
     private static boolean LOGGING = false;
-    
+
     private static int sBackspaceCount = 0;
     
     private static int sAutoSuggestCount = 0;
@@ -43,35 +46,26 @@ public class TextEntryState {
     private static int sSessionCount = 0;
     
     private static int sTypedChars;
-    
+
     private static int sActualChars;
-    
-    private static final String[] STATES = {
-        "Unknown",
-        "Start", 
-        "In word",
-        "Accepted default",
-        "Picked suggestion",
-        "Punc. after word",
-        "Punc. after accepted",
-        "Space after accepted",
-        "Space after picked",
-        "Undo commit"
-    };
-    
-    public static final int STATE_UNKNOWN = 0;
-    public static final int STATE_START = 1;
-    public static final int STATE_IN_WORD = 2;
-    public static final int STATE_ACCEPTED_DEFAULT = 3;
-    public static final int STATE_PICKED_SUGGESTION = 4;
-    public static final int STATE_PUNCTUATION_AFTER_WORD = 5;
-    public static final int STATE_PUNCTUATION_AFTER_ACCEPTED = 6;
-    public static final int STATE_SPACE_AFTER_ACCEPTED = 7;
-    public static final int STATE_SPACE_AFTER_PICKED = 8;
-    public static final int STATE_UNDO_COMMIT = 9;
-    
-    private static int sState = STATE_UNKNOWN;
-    
+
+    public enum State {
+        UNKNOWN,
+        START,
+        IN_WORD,
+        ACCEPTED_DEFAULT,
+        PICKED_SUGGESTION,
+        PUNCTUATION_AFTER_WORD,
+        PUNCTUATION_AFTER_ACCEPTED,
+        SPACE_AFTER_ACCEPTED,
+        SPACE_AFTER_PICKED,
+        UNDO_COMMIT,
+        CORRECTING,
+        PICKED_CORRECTION;
+    }
+
+    private static State sState = State.UNKNOWN;
+
     private static FileOutputStream sKeyLocationFile;
     private static FileOutputStream sUserActionFile;
     
@@ -84,7 +78,7 @@ public class TextEntryState {
         sWordNotInDictionaryCount = 0;
         sTypedChars = 0;
         sActualChars = 0;
-        sState = STATE_START;
+        sState = State.START;
         
         if (LOGGING) {
             try {
@@ -129,90 +123,135 @@ public class TextEntryState {
         }
         sTypedChars += typedWord.length();
         sActualChars += actualWord.length();
-        sState = STATE_ACCEPTED_DEFAULT;
+        sState = State.ACCEPTED_DEFAULT;
+        LatinImeLogger.logOnAutoSuggestion(typedWord.toString(), actualWord.toString());
+        displayState();
     }
-    
+
+    // State.ACCEPTED_DEFAULT will be changed to other sub-states
+    // (see "case ACCEPTED_DEFAULT" in typedCharacter() below),
+    // and should be restored back to State.ACCEPTED_DEFAULT after processing for each sub-state.
+    public static void backToAcceptedDefault(CharSequence typedWord) {
+        if (typedWord == null) return;
+        switch (sState) {
+            case SPACE_AFTER_ACCEPTED:
+            case PUNCTUATION_AFTER_ACCEPTED:
+            case IN_WORD:
+                sState = State.ACCEPTED_DEFAULT;
+                break;
+        }
+        displayState();
+    }
+
     public static void acceptedTyped(CharSequence typedWord) {
         sWordNotInDictionaryCount++;
-        sState = STATE_PICKED_SUGGESTION;
+        sState = State.PICKED_SUGGESTION;
+        displayState();
     }
 
     public static void acceptedSuggestion(CharSequence typedWord, CharSequence actualWord) {
         sManualSuggestCount++;
+        State oldState = sState;
         if (typedWord.equals(actualWord)) {
             acceptedTyped(typedWord);
         }
-        sState = STATE_PICKED_SUGGESTION;
+        if (oldState == State.CORRECTING || oldState == State.PICKED_CORRECTION) {
+            sState = State.PICKED_CORRECTION;
+        } else {
+            sState = State.PICKED_SUGGESTION;
+        }
+        displayState();
     }
-    
+
+    public static void selectedForCorrection() {
+        sState = State.CORRECTING;
+        displayState();
+    }
+
     public static void typedCharacter(char c, boolean isSeparator) {
         boolean isSpace = c == ' ';
         switch (sState) {
-            case STATE_IN_WORD:
+            case IN_WORD:
                 if (isSpace || isSeparator) {
-                    sState = STATE_START;
+                    sState = State.START;
                 } else {
                     // State hasn't changed.
                 }
                 break;
-            case STATE_ACCEPTED_DEFAULT:
-            case STATE_SPACE_AFTER_PICKED:
+            case ACCEPTED_DEFAULT:
+            case SPACE_AFTER_PICKED:
                 if (isSpace) {
-                    sState = STATE_SPACE_AFTER_ACCEPTED;
+                    sState = State.SPACE_AFTER_ACCEPTED;
                 } else if (isSeparator) {
-                    sState = STATE_PUNCTUATION_AFTER_ACCEPTED;
+                    sState = State.PUNCTUATION_AFTER_ACCEPTED;
                 } else {
-                    sState = STATE_IN_WORD;
+                    sState = State.IN_WORD;
                 }
                 break;
-            case STATE_PICKED_SUGGESTION:
+            case PICKED_SUGGESTION:
+            case PICKED_CORRECTION:
                 if (isSpace) {
-                    sState = STATE_SPACE_AFTER_PICKED;
+                    sState = State.SPACE_AFTER_PICKED;
                 } else if (isSeparator) {
                     // Swap 
-                    sState = STATE_PUNCTUATION_AFTER_ACCEPTED;
+                    sState = State.PUNCTUATION_AFTER_ACCEPTED;
                 } else {
-                    sState = STATE_IN_WORD;
+                    sState = State.IN_WORD;
                 }
                 break;
-            case STATE_START:
-            case STATE_UNKNOWN:
-            case STATE_SPACE_AFTER_ACCEPTED:
-            case STATE_PUNCTUATION_AFTER_ACCEPTED:
-            case STATE_PUNCTUATION_AFTER_WORD:
+            case START:
+            case UNKNOWN:
+            case SPACE_AFTER_ACCEPTED:
+            case PUNCTUATION_AFTER_ACCEPTED:
+            case PUNCTUATION_AFTER_WORD:
                 if (!isSpace && !isSeparator) {
-                    sState = STATE_IN_WORD;
+                    sState = State.IN_WORD;
                 } else {
-                    sState = STATE_START;
+                    sState = State.START;
                 }
                 break;
-            case STATE_UNDO_COMMIT:
+            case UNDO_COMMIT:
                 if (isSpace || isSeparator) {
-                    sState = STATE_ACCEPTED_DEFAULT;
+                    sState = State.ACCEPTED_DEFAULT;
                 } else {
-                    sState = STATE_IN_WORD;
+                    sState = State.IN_WORD;
                 }
+                break;
+            case CORRECTING:
+                sState = State.START;
+                break;
         }
+        displayState();
     }
     
     public static void backspace() {
-        if (sState == STATE_ACCEPTED_DEFAULT) {
-            sState = STATE_UNDO_COMMIT;
+        if (sState == State.ACCEPTED_DEFAULT) {
+            sState = State.UNDO_COMMIT;
             sAutoSuggestUndoneCount++;
-        } else if (sState == STATE_UNDO_COMMIT) {
-            sState = STATE_IN_WORD;
+            LatinImeLogger.logOnAutoSuggestionCanceled();
+        } else if (sState == State.UNDO_COMMIT) {
+            sState = State.IN_WORD;
         }
         sBackspaceCount++;
+        displayState();
     }
-    
+
     public static void reset() {
-        sState = STATE_START;
+        sState = State.START;
+        displayState();
     }
-    
-    public static int getState() {
+
+    public static State getState() {
+        if (DBG) {
+            Log.d(TAG, "Returning state = " + sState);
+        }
         return sState;
     }
-    
+
+    public static boolean isCorrecting() {
+        return sState == State.CORRECTING || sState == State.PICKED_CORRECTION;
+    }
+
     public static void keyPressedAt(Key key, int x, int y) {
         if (LOGGING && sKeyLocationFile != null && key.codes[0] >= 32) {
             String out = 
@@ -227,6 +266,12 @@ public class TextEntryState {
             } catch (IOException ioe) {
                 // TODO: May run out of space
             }
+        }
+    }
+
+    private static void displayState() {
+        if (DBG) {
+            Log.d(TAG, "State = " + sState);
         }
     }
 }

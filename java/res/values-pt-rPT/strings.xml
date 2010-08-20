@@ -24,6 +24,8 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Definições de teclado do Android"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao primir as teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Som ao premir as teclas"</string>
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <string name="hit_correction" msgid="4855351009261318389">"Corrigir erros de escrita"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Activar a correcção de erros de entrada"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Erros de entrada na horizontal"</string>
@@ -46,6 +48,8 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Apresentar sugestões de palavras ao escrever"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Conclusão automática"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"A barra de espaços e a pontuação inserem automaticamente uma palavra realçada"</string>
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Sugestões Bigram"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Utilizar a palavra anterior para melhorar a sugestão"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Nenhum"</item>
     <item msgid="1669461741568287396">"Básico"</item>
@@ -128,4 +132,12 @@
     <string name="language_selection_summary" msgid="187110938289512256">"Deslize o dedo pela barra de espaço para alterar o idioma"</string>
     <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Toque novamente para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
+    <!-- no translation found for prefs_description_log (5827825607258246003) -->
+    <skip />
+    <!-- no translation found for keyboard_layout (437433231038683666) -->
+    <skip />
+    <!-- no translation found for prefs_debug_mode (3889340783846594980) -->
+    <skip />
 </resources>

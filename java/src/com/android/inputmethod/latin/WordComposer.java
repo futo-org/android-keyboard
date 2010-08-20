@@ -44,9 +44,18 @@ public class WordComposer {
      */
     private boolean mIsCapitalized;
 
-    WordComposer() {
+    public WordComposer() {
         mCodes = new ArrayList<int[]>(12);
         mTypedWord = new StringBuilder(20);
+    }
+
+    WordComposer(WordComposer copy) {
+        mCodes = (ArrayList<int[]>) copy.mCodes.clone();
+        mPreferredWord = copy.mPreferredWord;
+        mTypedWord = new StringBuilder(copy.mTypedWord);
+        mCapsCount = copy.mCapsCount;
+        mAutoCapitalized = copy.mAutoCapitalized;
+        mIsCapitalized = copy.mIsCapitalized;
     }
 
     /**

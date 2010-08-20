@@ -25,4 +25,7 @@
     <bool name="im_is_default">false</bool>
     <!-- Whether or not voice input is enabled by default. -->
     <bool name="voice_input_default">true</bool>
+    <bool name="config_swipeDisambiguation">true</bool>
+    <!-- Whether or not Popup on key press is enabled by default -->
+    <bool name="default_popup_preview">true</bool>
 </resources>

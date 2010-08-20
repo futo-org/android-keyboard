@@ -83,14 +83,14 @@ public class AutoDictionary extends ExpandableDictionary {
         sDictProjectionMap.put(COLUMN_LOCALE, COLUMN_LOCALE);
     }
 
-    private static DatabaseHelper mOpenHelper = null;
+    private static DatabaseHelper sOpenHelper = null;
 
-    public AutoDictionary(Context context, LatinIME ime, String locale) {
-        super(context);
+    public AutoDictionary(Context context, LatinIME ime, String locale, int dicTypeId) {
+        super(context, dicTypeId);
         mIme = ime;
         mLocale = locale;
-        if (mOpenHelper == null) {
-            mOpenHelper = new DatabaseHelper(getContext());
+        if (sOpenHelper == null) {
+            sOpenHelper = new DatabaseHelper(getContext());
         }
         if (mLocale != null && mLocale.length() > 1) {
             loadDictionary();
@@ -169,7 +169,7 @@ public class AutoDictionary extends ExpandableDictionary {
             // Nothing pending? Return
             if (mPendingWrites.isEmpty()) return;
             // Create a background thread to write the pending entries
-            new UpdateDbTask(getContext(), mOpenHelper, mPendingWrites, mLocale).execute();
+            new UpdateDbTask(getContext(), sOpenHelper, mPendingWrites, mLocale).execute();
             // Create a new map for writing new entries into while the old one is written to db
             mPendingWrites = new HashMap<String, Integer>();
         }
@@ -209,7 +209,7 @@ public class AutoDictionary extends ExpandableDictionary {
         qb.setProjectionMap(sDictProjectionMap);
 
         // Get the database and run the query
-        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+        SQLiteDatabase db = sOpenHelper.getReadableDatabase();
         Cursor c = qb.query(db, null, selection, selectionArgs, null, null,
                 DEFAULT_SORT_ORDER);
         return c;

@@ -25,6 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Parcelable;
 import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
 import android.speech.RecognizerIntent;
@@ -52,6 +53,8 @@ public class VoiceInput implements OnClickListener {
     private static final String EXTRA_RECOGNITION_CONTEXT =
             "android.speech.extras.RECOGNITION_CONTEXT";
     private static final String EXTRA_CALLING_PACKAGE = "calling_package";
+    private static final String EXTRA_ALTERNATES = "android.speech.extra.ALTERNATES";
+    private static final int MAX_ALT_LIST_LENGTH = 6;
 
     private static final String DEFAULT_RECOMMENDED_PACKAGES =
             "com.android.mms " +
@@ -63,7 +66,7 @@ public class VoiceInput implements OnClickListener {
 
     // WARNING! Before enabling this, fix the problem with calling getExtractedText() in
     // landscape view. It causes Extracted text updates to be rejected due to a token mismatch
-    public static boolean ENABLE_WORD_CORRECTIONS = false;
+    public static boolean ENABLE_WORD_CORRECTIONS = true;
 
     // Dummy word suggestion which means "delete current word"
     public static final String DELETE_SYMBOL = " \u00D7 ";  // times symbol
@@ -72,6 +75,25 @@ public class VoiceInput implements OnClickListener {
     private Whitelist mBlacklist;
 
     private VoiceInputLogger mLogger;
+
+    // Names of a few extras defined in VoiceSearch's RecognitionController
+    // Note, the version of voicesearch that shipped in Froyo returns the raw
+    // RecognitionClientAlternates protocol buffer under the key "alternates",
+    // so a VS market update must be installed on Froyo devices in order to see
+    // alternatives.
+    private static final String ALTERNATES_BUNDLE = "alternates_bundle";
+
+    //  This is copied from the VoiceSearch app.
+    private static final class AlternatesBundleKeys {
+        public static final String ALTERNATES = "alternates";
+        public static final String CONFIDENCE = "confidence";
+        public static final String LENGTH = "length";
+        public static final String MAX_SPAN_LENGTH = "max_span_length";
+        public static final String SPANS = "spans";
+        public static final String SPAN_KEY_DELIMITER = ":";
+        public static final String START = "start";
+        public static final String TEXT = "text";
+    }
 
     // Names of a few intent extras defined in VoiceSearch's RecognitionService.
     // These let us tweak the endpointer parameters.
@@ -304,12 +326,12 @@ public class VoiceInput implements OnClickListener {
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, "");
         intent.putExtra(EXTRA_RECOGNITION_CONTEXT, context.getBundle());
         intent.putExtra(EXTRA_CALLING_PACKAGE, "VoiceIME");
+        intent.putExtra(EXTRA_ALTERNATES, true);
         intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,
                 SettingsUtil.getSettingsInt(
                         mContext.getContentResolver(),
                         SettingsUtil.LATIN_IME_MAX_VOICE_RESULTS,
                         1));
-
         // Get endpointer params from Gservices.
         // TODO: Consider caching these values for improved performance on slower devices.
         final ContentResolver cr = mContext.getContentResolver();
@@ -563,26 +585,42 @@ public class VoiceInput implements OnClickListener {
         public void onResults(Bundle resultsBundle) {
             List<String> results = resultsBundle
                     .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            // VS Market update is needed for IME froyo clients to access the alternatesBundle
+            // TODO: verify this.
+            Bundle alternatesBundle = resultsBundle.getBundle(ALTERNATES_BUNDLE);
             mState = DEFAULT;
 
             final Map<String, List<CharSequence>> alternatives =
-                    new HashMap<String, List<CharSequence>>();
-            if (results.size() >= 2 && ENABLE_WORD_CORRECTIONS) {
-                final String[][] words = new String[results.size()][];
-                for (int i = 0; i < words.length; i++) {
-                    words[i] = results.get(i).split(" ");
-                }
+                new HashMap<String, List<CharSequence>>();
 
-                for (int key = 0; key < words[0].length; key++) {
-                    alternatives.put(words[0][key], new ArrayList<CharSequence>());
-                    for (int alt = 1; alt < words.length; alt++) {
-                        int keyBegin = key * words[alt].length / words[0].length;
-                        int keyEnd = (key + 1) * words[alt].length / words[0].length;
-
-                        for (int i = keyBegin; i < Math.min(words[alt].length, keyEnd); i++) {
-                            List<CharSequence> altList = alternatives.get(words[0][key]);
-                            if (!altList.contains(words[alt][i]) && altList.size() < 6) {
-                                altList.add(words[alt][i]);
+            if (ENABLE_WORD_CORRECTIONS && alternatesBundle != null && results.size() > 0) {
+                // Use the top recognition result to map each alternative's start:length to a word.
+                String[] words = results.get(0).split(" ");
+                Bundle spansBundle = alternatesBundle.getBundle(AlternatesBundleKeys.SPANS);
+                for (String key : spansBundle.keySet()) {
+                    // Get the word for which these alternates correspond to.
+                    Bundle spanBundle = spansBundle.getBundle(key);
+                    int start = spanBundle.getInt(AlternatesBundleKeys.START);
+                    int length = spanBundle.getInt(AlternatesBundleKeys.LENGTH);
+                    // Only keep single-word based alternatives.
+                    if (length == 1 && start < words.length) {
+                        // Get the alternatives associated with the span.
+                        // If a word appears twice in a recognition result,
+                        // concatenate the alternatives for the word.
+                        List<CharSequence> altList = alternatives.get(words[start]);
+                        if (altList == null) {
+                            altList = new ArrayList<CharSequence>();
+                            alternatives.put(words[start], altList);
+                        }
+                        Parcelable[] alternatesArr = spanBundle
+                            .getParcelableArray(AlternatesBundleKeys.ALTERNATES);
+                        for (int j = 0; j < alternatesArr.length &&
+                                 altList.size() < MAX_ALT_LIST_LENGTH; j++) {
+                            Bundle alternateBundle = (Bundle) alternatesArr[j];
+                            String alternate = alternateBundle.getString(AlternatesBundleKeys.TEXT);
+                            // Don't allow duplicates in the alternates list.
+                            if (!altList.contains(alternate)) {
+                                altList.add(alternate);
                             }
                         }
                     }

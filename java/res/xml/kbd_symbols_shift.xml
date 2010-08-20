@@ -34,7 +34,10 @@
                 android:popupCharacters="♪♥♠♦♣"
         />
         <Key android:keyLabel="√"/>
-        <Key android:keyLabel="π"/>
+        <Key android:keyLabel="π"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="Π"
+        />
         <Key android:keyLabel="÷"/>
         <Key android:keyLabel="×"/>
         <Key android:keyLabel="{"/>

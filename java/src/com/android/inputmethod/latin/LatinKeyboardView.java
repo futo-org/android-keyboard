@@ -22,8 +22,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
-import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
 import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
@@ -33,7 +31,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.widget.PopupWindow;
 
-public class LatinKeyboardView extends KeyboardView {
+public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     static final int KEYCODE_OPTIONS = -100;
     static final int KEYCODE_SHIFT_LONGPRESS = -101;
@@ -66,6 +64,8 @@ public class LatinKeyboardView extends KeyboardView {
     /** The y coordinate of the last row */
     private int mLastRowY;
 
+    private int mExtensionLayoutResId = 0;
+
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -76,6 +76,10 @@ public class LatinKeyboardView extends KeyboardView {
 
     public void setPhoneKeyboard(Keyboard phoneKeyboard) {
         mPhoneKeyboard = phoneKeyboard;
+    }
+
+    public void setExtentionLayoutResId (int id) {
+        mExtensionLayoutResId = id;
     }
 
     @Override
@@ -105,6 +109,29 @@ public class LatinKeyboardView extends KeyboardView {
         } else {
             return super.onLongPress(key);
         }
+    }
+
+    @Override
+    protected CharSequence adjustCase(CharSequence label) {
+        Keyboard keyboard = getKeyboard();
+        if (keyboard.isShifted()
+                && keyboard instanceof LatinKeyboard
+                && ((LatinKeyboard) keyboard).isAlphaKeyboard()
+                && label != null && label.length() < 3
+                && Character.isLowerCase(label.charAt(0))) {
+            label = label.toString().toUpperCase();
+        }
+        return label;
+    }
+
+    public boolean setShiftLocked(boolean shiftLocked) {
+        Keyboard keyboard = getKeyboard();
+        if (keyboard != null && keyboard instanceof LatinKeyboard) {
+            ((LatinKeyboard)keyboard).setShiftLocked(shiftLocked);
+            invalidateAllKeys();
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -295,7 +322,8 @@ public class LatinKeyboardView extends KeyboardView {
             mExtensionPopup.setBackgroundDrawable(null);
             LayoutInflater li = (LayoutInflater) getContext().getSystemService(
                     Context.LAYOUT_INFLATER_SERVICE);
-            mExtension = (LatinKeyboardView) li.inflate(R.layout.input_trans, null);
+            mExtension = (LatinKeyboardView) li.inflate(mExtensionLayoutResId == 0 ?
+                    R.layout.input_trans : mExtensionLayoutResId, null);
             mExtension.setExtensionType(true);
             mExtension.setOnKeyboardActionListener(
                     new ExtensionKeyboardListener(getOnKeyboardActionListener()));
@@ -452,27 +480,39 @@ public class LatinKeyboardView extends KeyboardView {
             }
         }
     }
-    
-    void startPlaying(String s) {
-        if (!DEBUG_AUTO_PLAY) return;
-        if (s == null) return;
-        mStringToPlay = s.toLowerCase();
-        mPlaying = true;
-        mDownDelivered = false;
-        mStringIndex = 0;
-        mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 10);
+
+    public void startPlaying(String s) {
+        if (DEBUG_AUTO_PLAY) {
+            if (s == null) return;
+            mStringToPlay = s.toLowerCase();
+            mPlaying = true;
+            mDownDelivered = false;
+            mStringIndex = 0;
+            mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 10);
+        }
     }
 
     @Override
     public void draw(Canvas c) {
-        super.draw(c);
-        if (DEBUG_AUTO_PLAY && mPlaying) {
-            mHandler2.removeMessages(MSG_TOUCH_DOWN);
-            mHandler2.removeMessages(MSG_TOUCH_UP);
-            if (mDownDelivered) {
-                mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_UP, 20);
-            } else {
-                mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 20);
+        LatinIMEUtil.GCUtils.getInstance().reset();
+        boolean tryGC = true;
+        for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+            try {
+                super.draw(c);
+                tryGC = false;
+            } catch (OutOfMemoryError e) {
+                tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait("LatinKeyboardView", e);
+            }
+        }
+        if (DEBUG_AUTO_PLAY) {
+            if (mPlaying) {
+                mHandler2.removeMessages(MSG_TOUCH_DOWN);
+                mHandler2.removeMessages(MSG_TOUCH_UP);
+                if (mDownDelivered) {
+                    mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_UP, 20);
+                } else {
+                    mHandler2.sendEmptyMessageDelayed(MSG_TOUCH_DOWN, 20);
+                }
             }
         }
         if (DEBUG_LINE) {

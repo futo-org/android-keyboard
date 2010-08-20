@@ -24,6 +24,8 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Android 키보드 설정"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"키를 누를 때 진동 발생"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"키를 누를 때 소리 발생"</string>
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
     <string name="hit_correction" msgid="4855351009261318389">"입력 오류 수정"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"입력 오류 수정 사용"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"가로 입력 오류"</string>
@@ -46,6 +48,8 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"글자를 입력하는 동안 추천 단어를 표시"</string>
     <string name="auto_complete" msgid="1103196318775486023">"자동 완성"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"스페이스바와 문장부호 키로 강조 표시된 단어를 자동 삽입"</string>
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Bigram 추천"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"이전 단어를 사용하여 추천 기능 개선"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"없음"</item>
     <item msgid="1669461741568287396">"기본"</item>
@@ -128,4 +132,12 @@
     <string name="language_selection_summary" msgid="187110938289512256">"손가락을 스페이스바에서 미끄러지듯 움직여 언어 변경"</string>
     <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← 저장하려면 다시 누르세요."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
+    <!-- no translation found for prefs_description_log (5827825607258246003) -->
+    <skip />
+    <!-- no translation found for keyboard_layout (437433231038683666) -->
+    <skip />
+    <!-- no translation found for prefs_debug_mode (3889340783846594980) -->
+    <skip />
 </resources>
