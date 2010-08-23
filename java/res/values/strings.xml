@@ -29,7 +29,7 @@
     <!-- Option to play back sound on keypress in soft keyboard -->
     <string name="sound_on_keypress">Sound on keypress</string>
 
-    <!-- Option to pop up the character with a larger font above soft keyboard -->
+    <!-- Option to control whether or not to show a popup with a larger font on each key press. -->
     <string name="popup_on_keypress">Popup on keypress</string>
 
     <!-- Option to enable using nearby keys when correcting/predicting -->
