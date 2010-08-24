@@ -36,7 +36,6 @@ public class Hints {
         public void showHint(int viewResource);
     }
 
-    private static final String TAG = "Hints";
     private static final String PREF_VOICE_HINT_NUM_UNIQUE_DAYS_SHOWN =
             "voice_hint_num_unique_days_shown";
     private static final String PREF_VOICE_HINT_LAST_TIME_SHOWN =

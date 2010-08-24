@@ -398,7 +398,6 @@ public class LatinIME extends InputMethodService
     static int[] getDictionary(Resources res) {
         String packageName = LatinIME.class.getPackage().getName();
         XmlResourceParser xrp = res.getXml(R.xml.dictionary);
-        int dictionaryCount = 0;
         ArrayList<Integer> dictionaries = new ArrayList<Integer>();
 
         try {

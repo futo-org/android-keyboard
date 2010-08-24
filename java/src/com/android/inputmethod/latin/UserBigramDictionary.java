@@ -374,8 +374,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
                 c.close();
 
                 // insert new frequency
-                long s = db.insert(FREQ_TABLE_NAME, null,
-                        getFrequencyContentValues(pairId, bi.frequency));
+                db.insert(FREQ_TABLE_NAME, null, getFrequencyContentValues(pairId, bi.frequency));
             }
             checkPruneData(db);
             sUpdatingDB = false;

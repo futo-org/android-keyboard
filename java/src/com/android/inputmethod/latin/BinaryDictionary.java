@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
