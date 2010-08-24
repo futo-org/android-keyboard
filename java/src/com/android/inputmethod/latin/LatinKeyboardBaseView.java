@@ -205,7 +205,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     private boolean mAbortKey;
     private Key mInvalidatedKey;
     private Rect mClipRegion = new Rect(0, 0, 0, 0);
-    private boolean mPossiblePoly;
+    private boolean mCancelGestureDetector;
     private SwipeTracker mSwipeTracker = new SwipeTracker();
     private int mSwipeThreshold;
     private boolean mDisambiguateSwipe;
@@ -545,7 +545,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             @Override
             public boolean onFling(MotionEvent me1, MotionEvent me2,
                     float velocityX, float velocityY) {
-                if (mPossiblePoly) return false;
+                if (mCancelGestureDetector) return false;
                 final float absX = Math.abs(velocityX);
                 final float absY = Math.abs(velocityY);
                 float deltaX = me2.getX() - me1.getX();
@@ -1279,46 +1279,10 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         boolean result = false;
         final long now = me.getEventTime();
 
-        if (pointerCount != mOldPointerCount) {
-            if (pointerCount == 1) {
-                // Send a down event for the latest pointer
-                MotionEvent down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN,
-                        me.getX(), me.getY(), me.getMetaState());
-                result = onModifiedTouchEvent(down, false);
-                down.recycle();
-                // If it's an up action, then deliver the up as well.
-                if (action == MotionEvent.ACTION_UP) {
-                    result = onModifiedTouchEvent(me, true);
-                }
-            } else {
-                // Send an up event for the last pointer
-                MotionEvent up = MotionEvent.obtain(now, now, MotionEvent.ACTION_UP,
-                        mOldPointerX, mOldPointerY, me.getMetaState());
-                result = onModifiedTouchEvent(up, true);
-                up.recycle();
-            }
-        } else {
-            if (pointerCount == 1) {
-                result = onModifiedTouchEvent(me, false);
-                mOldPointerX = me.getX();
-                mOldPointerY = me.getY();
-            } else {
-                // Don't do anything when 2 pointers are down and moving.
-                result = true;
-            }
+        if (pointerCount > 1 && mOldPointerCount > 1) {
+            // Don't do anything when 2 or more pointers are down and moving.
+            return true;
         }
-        mOldPointerCount = pointerCount;
-
-        return result;
-    }
-
-    private boolean onModifiedTouchEvent(MotionEvent me, boolean possiblePoly) {
-        int touchX = (int) me.getX() - getPaddingLeft();
-        int touchY = (int) me.getY() + mVerticalCorrection - getPaddingTop();
-        final int action = me.getAction();
-        final long eventTime = me.getEventTime();
-        int keyIndex = getKeyIndexAndNearbyCodes(touchX, touchY, null);
-        mPossiblePoly = possiblePoly;
 
         // Track the last few movements to look for spurious swipes.
         if (action == MotionEvent.ACTION_DOWN) mSwipeTracker.clear();
@@ -1330,6 +1294,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             return true;
         }
 
+        mCancelGestureDetector = (pointerCount > 1);
         if (mGestureDetector.onTouchEvent(me)) {
             showPreview(NOT_A_KEY);
             mHandler.cancelKeyTimers();
@@ -1341,6 +1306,43 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         if (mMiniKeyboardOnScreen && action != MotionEvent.ACTION_CANCEL) {
             return true;
         }
+
+        if (pointerCount != mOldPointerCount) {
+            if (pointerCount == 1) {
+                // Send a down event for the latest pointer
+                MotionEvent down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN,
+                        me.getX(), me.getY(), me.getMetaState());
+                result = onModifiedTouchEvent(down);
+                down.recycle();
+                // If it's an up action, then deliver the up as well.
+                if (action == MotionEvent.ACTION_UP) {
+                    result = onModifiedTouchEvent(me);
+                }
+            } else {
+                // Send an up event for the last pointer
+                MotionEvent up = MotionEvent.obtain(now, now, MotionEvent.ACTION_UP,
+                        mOldPointerX, mOldPointerY, me.getMetaState());
+                result = onModifiedTouchEvent(up);
+                up.recycle();
+            }
+            mOldPointerCount = pointerCount;
+        } else {
+            if (pointerCount == 1) {
+                result = onModifiedTouchEvent(me);
+                mOldPointerX = me.getX();
+                mOldPointerY = me.getY();
+            }
+        }
+
+        return result;
+    }
+
+    private boolean onModifiedTouchEvent(MotionEvent me) {
+        int touchX = (int) me.getX() - getPaddingLeft();
+        int touchY = (int) me.getY() + mVerticalCorrection - getPaddingTop();
+        final int action = me.getAction();
+        final long eventTime = me.getEventTime();
+        int keyIndex = getKeyIndexAndNearbyCodes(touchX, touchY, null);
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
