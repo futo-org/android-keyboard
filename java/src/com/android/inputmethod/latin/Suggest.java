@@ -34,8 +34,6 @@ import android.view.View;
  */
 public class Suggest implements Dictionary.WordCallback {
 
-    private static final String TAG = "Suggest";
-
     public static final int APPROX_MAX_WORD_LENGTH = 32;
 
     public static final int CORRECTION_NONE = 0;

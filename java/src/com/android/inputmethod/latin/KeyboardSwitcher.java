@@ -24,7 +24,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.inputmethodservice.Keyboard;
 import android.preference.PreferenceManager;
 import android.view.InflateException;
 

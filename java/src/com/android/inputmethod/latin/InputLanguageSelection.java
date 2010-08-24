@@ -40,7 +40,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         "ko", "ja", "zh", "el"
     };
 
-    private static class Loc implements Comparable {
+    private static class Loc implements Comparable<Object> {
         static Collator sCollator = Collator.getInstance();
 
         String label;
