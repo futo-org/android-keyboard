@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -38,13 +37,9 @@ import java.util.List;
 public class Tutorial implements OnTouchListener {
     
     private List<Bubble> mBubbles = new ArrayList<Bubble>();
-    private long mStartTime;
-    private static final long MINIMUM_TIME = 6000;
-    private static final long MAXIMUM_TIME = 20000;
     private View mInputView;
     private LatinIME mIme;
     private int[] mLocation = new int[2];
-    private int mBubblePointerOffset;
     
     private static final int MSG_SHOW_BUBBLE = 0;
     
@@ -167,8 +162,6 @@ public class Tutorial implements OnTouchListener {
         mIme = ime;
         int inputWidth = inputView.getWidth();
         final int x = inputWidth / 20; // Half of 1/10th
-        mBubblePointerOffset = inputView.getContext().getResources()
-            .getDimensionPixelOffset(R.dimen.bubble_pointer_offset);
         Bubble bWelcome = new Bubble(context, inputView, 
                 R.drawable.dialog_bubble_step02, x, 0, 
                 R.string.tip_to_open_keyboard, R.string.touch_to_continue);

@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
@@ -50,7 +49,7 @@ public class WordComposer {
     }
 
     WordComposer(WordComposer copy) {
-        mCodes = (ArrayList<int[]>) copy.mCodes.clone();
+        mCodes = new ArrayList<int[]>(copy.mCodes);
         mPreferredWord = copy.mPreferredWord;
         mTypedWord = new StringBuilder(copy.mTypedWord);
         mCapsCount = copy.mCapsCount;
