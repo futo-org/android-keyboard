@@ -21,11 +21,11 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.Typeface;
-import android.graphics.Paint.Align;
 import android.graphics.Region.Op;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
@@ -200,7 +200,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     private GestureDetector mGestureDetector;
     private int mPopupX;
     private int mPopupY;
-    private int mRepeatKeyIndex = NOT_A_KEY;
     private int mPopupLayout;
     private boolean mAbortKey;
     private Key mInvalidatedKey;
@@ -251,6 +250,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         private static final int MSG_REPEAT_KEY = 3;
         private static final int MSG_LOGPRESS_KEY = 4;
 
+        private boolean mInKeyRepeat;
+
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -261,9 +262,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     mPreviewText.setVisibility(INVISIBLE);
                     break;
                 case MSG_REPEAT_KEY:
-                    if (repeatKey()) {
-                        startKeyRepeatTimer(REPEAT_INTERVAL);
-                    }
+                    repeatKey(msg.arg1);
+                    startKeyRepeatTimer(REPEAT_INTERVAL, msg.arg1);
                     break;
                 case MSG_LOGPRESS_KEY:
                     openPopupIfRequired(msg.arg1);
@@ -288,8 +288,18 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             removeMessages(MSG_DISMISS_PREVIEW);
         }
 
-        public void startKeyRepeatTimer(long delay) {
-            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY), delay);
+        public void startKeyRepeatTimer(long delay, int keyIndex) {
+            mInKeyRepeat = true;
+            sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, keyIndex, 0), delay);
+        }
+
+        public void cancelKeyRepeatTimer() {
+            mInKeyRepeat = false;
+            removeMessages(MSG_REPEAT_KEY);
+        }
+
+        public boolean isInKeyRepeat() {
+            return mInKeyRepeat;
         }
 
         public void startLongPressTimer(int keyIndex, long delay) {
@@ -302,21 +312,14 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
 
         public void cancelKeyTimers() {
-            removeMessages(MSG_REPEAT_KEY);
-            removeMessages(MSG_LOGPRESS_KEY);
-        }
-
-        public void cancelKeyTimersAndPopupPreview() {
-            removeMessages(MSG_REPEAT_KEY);
-            removeMessages(MSG_LOGPRESS_KEY);
-            removeMessages(MSG_POPUP_PREVIEW);
+            cancelKeyRepeatTimer();
+            cancelLongPressTimer();
         }
 
         public void cancelAllMessages() {
-            removeMessages(MSG_REPEAT_KEY);
-            removeMessages(MSG_LOGPRESS_KEY);
-            removeMessages(MSG_POPUP_PREVIEW);
-            removeMessages(MSG_DISMISS_PREVIEW);
+            cancelKeyTimers();
+            cancelPopupPreview();
+            cancelDismissPreview();
         }
     };
 
@@ -621,7 +624,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             showPreview(NOT_A_KEY);
         }
         // Remove any pending messages, except dismissing preview
-        mHandler.cancelKeyTimersAndPopupPreview();
+        mHandler.cancelKeyTimers();
+        mHandler.cancelPopupPreview();
         mKeyboard = keyboard;
         List<Key> keys = mKeyboard.getKeys();
         mKeys = keys.toArray(new Key[keys.size()]);
@@ -1308,6 +1312,16 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             return true;
         }
 
+        if (mHandler.isInKeyRepeat()) {
+            // Will keep being in the key repeating mode while the key is being pressed.  It'll be
+            // canceled otherwise.
+            if (pointerCount == 1 && action == MotionEvent.ACTION_MOVE) {
+                return true;
+            } else {
+                mHandler.cancelKeyRepeatTimer();
+            }
+        }
+
         if (pointerCount != mOldPointerCount) {
             if (pointerCount == 1) {
                 // Send a down event for the latest pointer
@@ -1357,13 +1371,12 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 checkMultiTap(eventTime, keyIndex);
                 mKeyboardActionListener.onPress(keyIndex != NOT_A_KEY ?
                         mKeys[keyIndex].codes[0] : 0);
-                if (mCurrentKey >= 0 && mKeys[mCurrentKey].repeatable) {
-                    mRepeatKeyIndex = mCurrentKey;
-                    mHandler.startKeyRepeatTimer(REPEAT_START_DELAY);
-                    repeatKey();
+                if (keyIndex >= 0 && mKeys[keyIndex].repeatable) {
+                    repeatKey(keyIndex);
+                    mHandler.startKeyRepeatTimer(REPEAT_START_DELAY, keyIndex);
                     // Delivering the key could have caused an abort
                     if (mAbortKey) {
-                        mRepeatKeyIndex = NOT_A_KEY;
+                        mHandler.cancelKeyRepeatTimer();
                         break;
                     }
                 }
@@ -1382,7 +1395,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     } else if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex,
                             mCurrentKey)) {
                         mDebouncer.updateTimeDebouncing(eventTime);
-                    } else if (mRepeatKeyIndex == NOT_A_KEY) {
+                    } else {
                         resetMultiTap();
                         mDebouncer.resetTimeDebouncing(eventTime, mCurrentKey);
                         mDebouncer.resetMoveDebouncing();
@@ -1402,7 +1415,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 break;
 
             case MotionEvent.ACTION_UP:
-                mHandler.cancelKeyTimersAndPopupPreview();
+                mHandler.cancelKeyTimers();
+                mHandler.cancelPopupPreview();
                 if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
                     mDebouncer.updateTimeDebouncing(eventTime);
                 } else {
@@ -1417,15 +1431,15 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 }
                 showPreview(NOT_A_KEY);
                 // If we're not on a repeating key (which sends on a DOWN event)
-                if (mRepeatKeyIndex == NOT_A_KEY && !mMiniKeyboardOnScreen && !mAbortKey) {
+                if (!mMiniKeyboardOnScreen && !mAbortKey) {
                     detectAndSendKey(mCurrentKey, touchX, touchY, eventTime);
                 }
                 invalidateKey(keyIndex);
-                mRepeatKeyIndex = NOT_A_KEY;
                 break;
 
             case MotionEvent.ACTION_CANCEL:
-                mHandler.cancelKeyTimersAndPopupPreview();
+                mHandler.cancelKeyTimers();
+                mHandler.cancelPopupPreview();
                 dismissPopupKeyboard();
                 mAbortKey = true;
                 showPreview(NOT_A_KEY);
@@ -1436,10 +1450,11 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         return true;
     }
 
-    private boolean repeatKey() {
-        Key key = mKeys[mRepeatKeyIndex];
-        detectAndSendKey(mCurrentKey, key.x, key.y, mLastTapTime);
-        return true;
+    private void repeatKey(int keyIndex) {
+        Key key = mKeys[keyIndex];
+        // While key is repeating, because there is no need to handle multi-tap key, we can pass
+        // -1 as eventTime argument.
+        detectAndSendKey(keyIndex, key.x, key.y, -1);
     }
 
     protected void swipeRight() {
