@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.inputmethodservice.Keyboard;
 import android.os.AsyncTask;
 import android.os.DropBoxManager;
 import android.preference.PreferenceManager;
@@ -54,11 +55,12 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final char SEPARATER = ';';
     private static final char NULL_CHAR = '\uFFFC';
     private static final int EXCEPTION_MAX_LENGTH = 400;
+    private static final int INVALID_COORDINATE = -2;
 
     // ID_MANUALSUGGESTION has been replaced by ID_MANUALSUGGESTION_WITH_DATATYPE
     // private static final int ID_MANUALSUGGESTION = 0;
-    private static final int ID_AUTOSUGGESTIONCANCELLED = 1;
-    private static final int ID_AUTOSUGGESTION = 2;
+    // private static final int ID_AUTOSUGGESTIONCANCELLED = 1;
+    // private static final int ID_AUTOSUGGESTION = 2;
     private static final int ID_INPUT_COUNT = 3;
     private static final int ID_DELETE_COUNT = 4;
     private static final int ID_WORD_COUNT = 5;
@@ -72,6 +74,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     private static final int ID_AUTOSUGGESTIONCOUNT = 13;
     private static final int ID_LANGUAGES = 14;
     private static final int ID_MANUALSUGGESTION_WITH_DATATYPE = 15;
+    private static final int ID_AUTOSUGGESTIONCANCELLED_WITH_COORDINATES = 16;
+    private static final int ID_AUTOSUGGESTION_WITH_COORDINATES = 17;
 
     private static final String PREF_ENABLE_LOG = "enable_logging";
     private static final String PREF_DEBUG_MODE = "debug_mode";
@@ -84,6 +88,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     /* package */ static String sLastAutoSuggestBefore;
     /* package */ static String sLastAutoSuggestAfter;
     /* package */ static String sLastAutoSuggestSeparator;
+    private static int[] sLastAutoSuggestXCoordinates;
+    private static int[] sLastAutoSuggestYCoordinates;
     // This value holds MAIN, USER, AUTO, etc...
     private static int sLastAutoSuggestDicTypeId;
     // This value holds 0 (= unigram), 1 (= bigram) etc...
@@ -92,6 +98,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             = new HashMap<String, Pair<Integer, Integer>>();
     private static String[] sPreviousWords;
     private static DebugKeyEnabler sDebugKeyEnabler = new DebugKeyEnabler();
+    private static int sKeyboardWidth = 0;
+    private static int sKeyboardHeight = 0;
 
     private ArrayList<LogEntry> mLogBuffer = null;
     private ArrayList<LogEntry> mPrivacyLogBuffer = null;
@@ -362,7 +370,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 mInputCount += (Integer)data;
                 break;
             case ID_MANUALSUGGESTION_WITH_DATATYPE:
-            case ID_AUTOSUGGESTION:
+            case ID_AUTOSUGGESTION_WITH_COORDINATES:
                 ++mWordCount;
                 String[] dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
@@ -381,7 +389,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                     }
                 }
                 break;
-            case ID_AUTOSUGGESTIONCANCELLED:
+            case ID_AUTOSUGGESTIONCANCELLED_WITH_COORDINATES:
                 --mWordCount;
                 dataStrings = (String[]) data;
                 if (dataStrings.length < 2) {
@@ -461,7 +469,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             } else if (s instanceof Integer) {
                 out += (Integer) s;
             }
-            Log.d(TAG, "SendLog: " + tag + ";" + out + ", will be sent after "
+            Log.d(TAG, "SendLog: " + tag + ";" + out + " -> will be sent after "
                     + (- (now - mLastTimeSend - MINIMUMSENDINTERVAL) / 1000) + " sec.");
         }
         if (now - mLastTimeActive > MINIMUMSENDINTERVAL) {
@@ -625,7 +633,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                 sLatinImeLogger.mAutoSuggestCountPerDic[sLastAutoSuggestDicTypeId]++;
                 if (sLastAutoSuggestDicTypeId != Suggest.DIC_MAIN) {
                     if (sDBG) {
-                        Log.d(TAG, "logOnAutoSuggestion was cancelled: not from main dic.");
+                        Log.d(TAG, "logOnAutoSuggestion was cancelled: not from main dic.:"
+                                + sLastAutoSuggestDicTypeId);
                     }
                     before = "";
                     after = "";
@@ -637,23 +646,46 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
                         before = "";
                         after = "";
                     }
-                    int previousWordsLength = (sPreviousWords == null) ? 0 : sPreviousWords.length;
 
                     final int COLUMN_BEFORE_ID = 0;
                     final int COLUMN_AFTER_ID = 1;
                     final int COLUMN_SEPARATOR_ID = 2;
                     final int COLUMN_DATA_TYPE_ID = 3;
-                    final int BASE_COLUMN_SIZE = 4;
+                    final int COLUMN_KEYBOARD_SIZE_WIDTH = 4;
+                    final int COLUMN_KEYBOARD_SIZE_HEIGHT = 5;
+                    final int BASE_COLUMN_SIZE = 6;
 
-                    String[] strings = new String[4 + previousWordsLength];
+                    final int userTypedWordLength = before.length();
+                    final int previousWordsLength = (sPreviousWords == null) ? 0
+                            : sPreviousWords.length;
+                    String[] strings = new String[BASE_COLUMN_SIZE + userTypedWordLength * 2
+                                                  + previousWordsLength];
+                    sLastAutoSuggestXCoordinates = new int[userTypedWordLength];
+                    sLastAutoSuggestXCoordinates = new int[userTypedWordLength];
+
                     strings[COLUMN_BEFORE_ID] = before;
                     strings[COLUMN_AFTER_ID] = after;
                     strings[COLUMN_SEPARATOR_ID] = separator;
                     strings[COLUMN_DATA_TYPE_ID] = String.valueOf(sLastAutoSuggestDataType);
-                    for (int i = 0; i < previousWordsLength; ++i) {
-                        strings[BASE_COLUMN_SIZE + i] = sPreviousWords[i];
+                    strings[COLUMN_KEYBOARD_SIZE_WIDTH] = String.valueOf(sKeyboardWidth);
+                    strings[COLUMN_KEYBOARD_SIZE_HEIGHT] = String.valueOf(sKeyboardHeight);
+
+                    for (int i = 0; i < userTypedWordLength; ++i) {
+                        int x = sLatinImeLogger.mRingCharBuffer.getPreviousX(before.charAt(i),
+                                userTypedWordLength - i - 1);
+                        int y = sLatinImeLogger.mRingCharBuffer.getPreviousY(before.charAt(i),
+                                userTypedWordLength - i - 1);
+                        strings[BASE_COLUMN_SIZE + i * 2] = String.valueOf(x);
+                        strings[BASE_COLUMN_SIZE + i * 2 + 1] = String.valueOf(y);
+                        sLastAutoSuggestXCoordinates[i] = x;
+                        sLastAutoSuggestXCoordinates[i] = y;
                     }
-                    sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTION, strings);
+
+                    for (int i = 0; i < previousWordsLength; ++i) {
+                        strings[BASE_COLUMN_SIZE + userTypedWordLength * 2 + i] = sPreviousWords[i];
+                    }
+
+                    sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTION_WITH_COORDINATES, strings);
                 }
                 synchronized (LatinImeLogger.class) {
                     sLastAutoSuggestBefore = before;
@@ -669,9 +701,29 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         if (sLogEnabled) {
             sLatinImeLogger.mAutoCancelledCountPerDic[sLastAutoSuggestDicTypeId]++;
             if (sLastAutoSuggestBefore != null && sLastAutoSuggestAfter != null) {
-                String[] strings = new String[] {
-                        sLastAutoSuggestBefore, sLastAutoSuggestAfter, sLastAutoSuggestSeparator};
-                sLatinImeLogger.sendLogToDropBox(ID_AUTOSUGGESTIONCANCELLED, strings);
+                final int COLUMN_BEFORE_ID = 0;
+                final int COLUMN_AFTER_ID = 1;
+                final int COLUMN_SEPARATOR_ID = 2;
+                final int COLUMN_KEYBOARD_SIZE_WIDTH = 3;
+                final int COLUMN_KEYBOARD_SIZE_HEIGHT = 4;
+                final int BASE_COLUMN_SIZE = 5;
+
+                final int userTypedWordLength = sLastAutoSuggestBefore.length();
+
+                String[] strings = new String[BASE_COLUMN_SIZE + userTypedWordLength * 2];
+                strings[COLUMN_BEFORE_ID] = sLastAutoSuggestBefore;
+                strings[COLUMN_AFTER_ID] = sLastAutoSuggestAfter;
+                strings[COLUMN_SEPARATOR_ID] = sLastAutoSuggestSeparator;
+                strings[COLUMN_KEYBOARD_SIZE_WIDTH] = String.valueOf(sKeyboardWidth);
+                strings[COLUMN_KEYBOARD_SIZE_HEIGHT] = String.valueOf(sKeyboardHeight);
+                for (int i = 0; i < userTypedWordLength; ++i) {
+                    strings[BASE_COLUMN_SIZE + i * 2] = String.valueOf(
+                            sLastAutoSuggestXCoordinates);
+                    strings[BASE_COLUMN_SIZE + i * 2 + 1] = String.valueOf(
+                            sLastAutoSuggestYCoordinates);
+                }
+                sLatinImeLogger.sendLogToDropBox(
+                        ID_AUTOSUGGESTIONCANCELLED_WITH_COORDINATES, strings);
             }
             synchronized (LatinImeLogger.class) {
                 sLastAutoSuggestBefore = "";
@@ -693,9 +745,9 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
-    public static void logOnInputChar(char c) {
+    public static void logOnInputChar(char c, int x, int y) {
         if (sLogEnabled) {
-            sLatinImeLogger.mRingCharBuffer.push(c);
+            sLatinImeLogger.mRingCharBuffer.push(c, x, y);
             sLatinImeLogger.sendLogToDropBox(ID_INPUT_COUNT, 1);
         }
     }
@@ -747,6 +799,13 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         }
     }
 
+    public static void onSetKeyboard(Keyboard kb) {
+        if (sLogEnabled) {
+            sKeyboardWidth = kb.getMinWidth();
+            sKeyboardHeight = kb.getHeight();
+        }
+    }
+
     private static class LogSerializer {
         private static void appendWithLength(StringBuffer sb, String data) {
             sb.append(data.length());
@@ -780,43 +839,64 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         final int BUFSIZE = 20;
         private Context mContext;
         private int mEnd = 0;
-        /* package */ int length = 0;
+        /* package */ int mLength = 0;
         private char[] mCharBuf = new char[BUFSIZE];
+        private int[] mXBuf = new int[BUFSIZE];
+        private int[] mYBuf = new int[BUFSIZE];
 
         public RingCharBuffer(Context context) {
             mContext = context;
         }
-
         private int normalize(int in) {
             int ret = in % BUFSIZE;
             return ret < 0 ? ret + BUFSIZE : ret;
         }
-        public void push(char c) {
+        public void push(char c, int x, int y) {
             mCharBuf[mEnd] = c;
+            mXBuf[mEnd] = x;
+            mYBuf[mEnd] = y;
             mEnd = normalize(mEnd + 1);
-            if (length < BUFSIZE) {
-                ++length;
+            if (mLength < BUFSIZE) {
+                ++mLength;
             }
         }
         public char pop() {
-            if (length < 1) {
+            if (mLength < 1) {
                 return NULL_CHAR;
             } else {
                 mEnd = normalize(mEnd - 1);
-                --length;
+                --mLength;
                 return mCharBuf[mEnd];
             }
         }
         public char getLastChar() {
-            if (length < 1) {
+            if (mLength < 1) {
                 return NULL_CHAR;
             } else {
                 return mCharBuf[normalize(mEnd - 1)];
             }
         }
+        public int getPreviousX(char c, int back) {
+            int index = normalize(mEnd - 2 - back);
+            if (mLength <= back
+                    || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
+                return INVALID_COORDINATE;
+            } else {
+                return mXBuf[index];
+            }
+        }
+        public int getPreviousY(char c, int back) {
+            int index = normalize(mEnd - 2 - back);
+            if (mLength <= back
+                    || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
+                return INVALID_COORDINATE;
+            } else {
+                return mYBuf[index];
+            }
+        }
         public String getLastString() {
             StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < length; ++i) {
+            for (int i = 0; i < mLength; ++i) {
                 char c = mCharBuf[normalize(mEnd - 1 - i)];
                 if (!((LatinIME)mContext).isWordSeparator(c)) {
                     sb.append(c);
@@ -827,7 +907,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             return sb.reverse().toString();
         }
         public void reset() {
-            length = 0;
+            mLength = 0;
         }
     }
 

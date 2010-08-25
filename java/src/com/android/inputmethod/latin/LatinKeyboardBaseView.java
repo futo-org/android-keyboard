@@ -100,8 +100,14 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
          *            keys. These codes are useful to correct for
          *            accidental presses of a key adjacent to the intended
          *            key.
+         * @param x
+         *            x-coordinate pixel of touched event. If onKey is not called by onTouchEvent,
+         *            the value should be NOT_A_TOUCH_COORDINATE.
+         * @param y
+         *            y-coordinate pixel of touched event. If onKey is not called by onTouchEvent,
+         *            the value should be NOT_A_TOUCH_COORDINATE.
          */
-        void onKey(int primaryCode, int[] keyCodes);
+        void onKey(int primaryCode, int[] keyCodes, int x, int y);
 
         /**
          * Sends a sequence of characters to the listener.
@@ -133,6 +139,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
          */
         void swipeUp();
     }
+
+    public static final int NOT_A_TOUCH_COORDINATE = -1;
 
     private static final boolean DEBUG = false;
     private static final int NOT_A_KEY = -1;
@@ -614,6 +622,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         mKeyboard = keyboard;
+        LatinImeLogger.onSetKeyboard(mKeyboard);
         List<Key> keys = mKeyboard.getKeys();
         mKeys = keys.toArray(new Key[keys.size()]);
         requestLayout();
@@ -975,7 +984,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 // Multi-tap
                 if (mInMultiTap) {
                     if (mTapCount != -1) {
-                        mKeyboardActionListener.onKey(Keyboard.KEYCODE_DELETE, KEY_DELETE);
+                        mKeyboardActionListener.onKey(Keyboard.KEYCODE_DELETE, KEY_DELETE, x, y);
                     } else {
                         mTapCount = 0;
                     }
@@ -990,7 +999,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     codes[1] = codes[0];
                     codes[0] = code;
                 }
-                mKeyboardActionListener.onKey(code, codes);
+                mKeyboardActionListener.onKey(code, codes, x, y);
                 mKeyboardActionListener.onRelease(code);
             }
             mLastSentIndex = index;
@@ -1198,8 +1207,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                         R.id.closeButton);
                 if (closeButton != null) closeButton.setOnClickListener(this);
                 mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
-                    public void onKey(int primaryCode, int[] keyCodes) {
-                        mKeyboardActionListener.onKey(primaryCode, keyCodes);
+                    public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
+                        mKeyboardActionListener.onKey(primaryCode, keyCodes, x, y);
                         dismissPopupKeyboard();
                     }
 
