@@ -266,7 +266,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     }
                     break;
                 case MSG_LOGPRESS_KEY:
-                    openPopupIfRequired((MotionEvent) msg.obj);
+                    openPopupIfRequired(msg.arg1);
                     break;
             }
         }
@@ -292,8 +292,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY), delay);
         }
 
-        public void startLongPressTimer(MotionEvent me, long delay) {
-            sendMessageDelayed(obtainMessage(MSG_LOGPRESS_KEY, me), delay);
+        public void startLongPressTimer(int keyIndex, long delay) {
+            removeMessages(MSG_LOGPRESS_KEY);
+            sendMessageDelayed(obtainMessage(MSG_LOGPRESS_KEY, keyIndex, 0), delay);
         }
 
         public void cancelLongPressTimer() {
@@ -1166,16 +1167,16 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 key.x + key.width + getPaddingLeft(), key.y + key.height + getPaddingTop());
     }
 
-    private boolean openPopupIfRequired(MotionEvent me) {
+    private boolean openPopupIfRequired(int keyIndex) {
         // Check if we have a popup layout specified first.
         if (mPopupLayout == 0) {
             return false;
         }
-        if (mCurrentKey < 0 || mCurrentKey >= mKeys.length) {
+        if (keyIndex < 0 || keyIndex >= mKeys.length) {
             return false;
         }
 
-        Key popupKey = mKeys[mCurrentKey];
+        Key popupKey = mKeys[keyIndex];
         boolean result = onLongPress(popupKey);
         if (result) {
             mAbortKey = true;
@@ -1366,36 +1367,30 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                         break;
                     }
                 }
-                if (mCurrentKey != NOT_A_KEY) {
-                    mHandler.startLongPressTimer(me, LONGPRESS_TIMEOUT);
+                if (keyIndex != NOT_A_KEY) {
+                    mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
                 }
                 showPreview(keyIndex);
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                boolean continueLongPress = false;
                 if (keyIndex != NOT_A_KEY) {
                     if (mCurrentKey == NOT_A_KEY) {
-                        mCurrentKey = keyIndex;
                         mDebouncer.updateTimeDebouncing(eventTime);
+                        mCurrentKey = keyIndex;
+                        mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
                     } else if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex,
                             mCurrentKey)) {
                         mDebouncer.updateTimeDebouncing(eventTime);
-                        continueLongPress = true;
                     } else if (mRepeatKeyIndex == NOT_A_KEY) {
                         resetMultiTap();
                         mDebouncer.resetTimeDebouncing(eventTime, mCurrentKey);
                         mDebouncer.resetMoveDebouncing();
                         mCurrentKey = keyIndex;
+                        mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
                     }
-                }
-                if (!continueLongPress) {
-                    // Cancel old longpress
+                } else {
                     mHandler.cancelLongPressTimer();
-                    // Start new longpress if key has changed
-                    if (keyIndex != NOT_A_KEY) {
-                        mHandler.startLongPressTimer(me, LONGPRESS_TIMEOUT);
-                    }
                 }
                 /*
                  * While time debouncing is in effect, mCurrentKey holds the new key and mDebouncer
