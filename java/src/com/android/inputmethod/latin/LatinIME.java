@@ -768,6 +768,9 @@ public class LatinIME extends InputMethodService
 
 
         // Check if we should go in or out of correction mode.
+        // TODO: Uncomment this block when we enable re-editing feature
+        // If a word is selected
+        /*
         if (isPredictionOn() && mJustRevertedSeparator == null
                 && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
                         || TextEntryState.isCorrecting())
@@ -779,6 +782,7 @@ public class LatinIME extends InputMethodService
                 abortCorrection(false);
             }
         }
+        */
     }
 
     @Override
