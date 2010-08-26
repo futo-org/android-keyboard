@@ -214,8 +214,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
     // Variables for dealing with multiple pointers
     private int mOldPointerCount = 1;
-    private float mOldPointerX;
-    private float mOldPointerY;
+    private int mOldPointerX;
+    private int mOldPointerY;
 
     private Drawable mKeyBackground;
 
@@ -1215,14 +1215,21 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         return false;
     }
 
+    private int getTouchX(float x) {
+        return (int)x - getPaddingLeft();
+    }
+
+    private int getTouchY(float y) {
+        return (int)y + mVerticalCorrection - getPaddingTop();
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent me) {
         // Convert multi-pointer up/down events to single up/down events to
         // deal with the typical multi-pointer behavior of two-thumb typing
         final int pointerCount = me.getPointerCount();
         final int action = me.getAction();
-        boolean result = false;
-        final long now = me.getEventTime();
+        final long eventTime = me.getEventTime();
 
         if (pointerCount > 1 && mOldPointerCount > 1) {
             // Don't do anything when 2 or more pointers are down and moving.
@@ -1261,132 +1268,138 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             // Up event will pass through.
         }
 
+        int touchX = getTouchX(me.getX());
+        int touchY = getTouchY(me.getY());
         if (pointerCount != mOldPointerCount) {
             if (pointerCount == 1) {
                 // Send a down event for the latest pointer
-                MotionEvent down = MotionEvent.obtain(now, now, MotionEvent.ACTION_DOWN,
-                        me.getX(), me.getY(), me.getMetaState());
-                result = onModifiedTouchEvent(down);
-                down.recycle();
+                onDownEvent(touchX, touchY, eventTime);
                 // If it's an up action, then deliver the up as well.
                 if (action == MotionEvent.ACTION_UP) {
-                    result = onModifiedTouchEvent(me);
+                    onUpEvent(touchX, touchY, eventTime);
                 }
             } else {
                 // Send an up event for the last pointer
-                MotionEvent up = MotionEvent.obtain(now, now, MotionEvent.ACTION_UP,
-                        mOldPointerX, mOldPointerY, me.getMetaState());
-                result = onModifiedTouchEvent(up);
-                up.recycle();
+                onUpEvent(mOldPointerX, mOldPointerY, eventTime);
             }
             mOldPointerCount = pointerCount;
+            return true;
         } else {
             if (pointerCount == 1) {
-                result = onModifiedTouchEvent(me);
-                mOldPointerX = me.getX();
-                mOldPointerY = me.getY();
+                onModifiedTouchEvent(action, touchX, touchY, eventTime);
+                mOldPointerX = touchX;
+                mOldPointerY = touchY;
+                return true;
             }
         }
 
-        return result;
+        return false;
     }
 
-    private boolean onModifiedTouchEvent(MotionEvent me) {
-        int touchX = (int) me.getX() - getPaddingLeft();
-        int touchY = (int) me.getY() + mVerticalCorrection - getPaddingTop();
-        final int action = me.getAction();
-        final long eventTime = me.getEventTime();
-        int keyIndex = mProximityKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
-
+    private void onModifiedTouchEvent(int action, int touchX, int touchY, long eventTime) {
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                mAbortKey = false;
-                mCurrentKey = keyIndex;
-                mStartX = touchX;
-                mStartY = touchY;
-                mDebouncer.startMoveDebouncing(touchX, touchY);
-                mDebouncer.startTimeDebouncing(eventTime);
-                checkMultiTap(eventTime, keyIndex);
-                mKeyboardActionListener.onPress(keyIndex != NOT_A_KEY ?
-                        mKeys[keyIndex].codes[0] : 0);
-                if (keyIndex >= 0 && mKeys[keyIndex].repeatable) {
-                    repeatKey(keyIndex);
-                    mHandler.startKeyRepeatTimer(REPEAT_START_DELAY, keyIndex);
-                    // Delivering the key could have caused an abort
-                    if (mAbortKey) {
-                        mHandler.cancelKeyRepeatTimer();
-                        break;
-                    }
-                }
-                if (keyIndex != NOT_A_KEY) {
-                    mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
-                }
-                showPreview(keyIndex);
+                onDownEvent(touchX, touchY, eventTime);
                 break;
-
             case MotionEvent.ACTION_MOVE:
-                if (keyIndex != NOT_A_KEY) {
-                    if (mCurrentKey == NOT_A_KEY) {
-                        mDebouncer.updateTimeDebouncing(eventTime);
-                        mCurrentKey = keyIndex;
-                        mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
-                    } else if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex,
-                            mCurrentKey)) {
-                        mDebouncer.updateTimeDebouncing(eventTime);
-                    } else {
-                        resetMultiTap();
-                        mDebouncer.resetTimeDebouncing(eventTime, mCurrentKey);
-                        mDebouncer.resetMoveDebouncing();
-                        mCurrentKey = keyIndex;
-                        mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
-                    }
-                } else {
-                    mHandler.cancelLongPressTimer();
-                }
-                /*
-                 * While time debouncing is in effect, mCurrentKey holds the new key and mDebouncer
-                 * holds the last key.  At ACTION_UP event if time debouncing will be in effect
-                 * eventually, the last key should be sent as the result.  In such case mCurrentKey
-                 * should not be showed as popup preview.
-                 */
-                showPreview(mDebouncer.isMinorTimeBounce() ? mDebouncer.getLastKey() : mCurrentKey);
+                onMoveEvent(touchX, touchY, eventTime);
                 break;
-
             case MotionEvent.ACTION_UP:
-                boolean wasInKeyRepeat = mHandler.isInKeyRepeat();
-                mHandler.cancelKeyTimers();
-                mHandler.cancelPopupPreview();
-                if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
-                    mDebouncer.updateTimeDebouncing(eventTime);
-                } else {
-                    resetMultiTap();
-                    mDebouncer.resetTimeDebouncing(eventTime, mCurrentKey);
-                    mCurrentKey = keyIndex;
-                }
-                if (mDebouncer.isMinorTimeBounce()) {
-                    mCurrentKey = mDebouncer.getLastKey();
-                    touchX = mDebouncer.getLastCodeX();
-                    touchY = mDebouncer.getLastCodeY();
-                }
-                showPreview(NOT_A_KEY);
-                // If we're not on a repeating key (which sends on a DOWN event)
-                if (!wasInKeyRepeat && !mMiniKeyboardOnScreen && !mAbortKey) {
-                    detectAndSendKey(mCurrentKey, touchX, touchY, eventTime);
-                }
-                invalidateKey(keyIndex);
+                onUpEvent(touchX, touchY, eventTime);
                 break;
-
             case MotionEvent.ACTION_CANCEL:
-                mHandler.cancelKeyTimers();
-                mHandler.cancelPopupPreview();
-                dismissPopupKeyboard();
-                mAbortKey = true;
-                showPreview(NOT_A_KEY);
-                invalidateKey(mCurrentKey);
+                onCancelEvent(touchX, touchY, eventTime);
                 break;
         }
+    }
+
+    private void onDownEvent(int touchX, int touchY, long eventTime) {
+        int keyIndex = mProximityKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
+        mAbortKey = false;
+        mCurrentKey = keyIndex;
+        mStartX = touchX;
+        mStartY = touchY;
+        mDebouncer.startMoveDebouncing(touchX, touchY);
+        mDebouncer.startTimeDebouncing(eventTime);
+        checkMultiTap(eventTime, keyIndex);
+        mKeyboardActionListener.onPress(keyIndex != NOT_A_KEY ? mKeys[keyIndex].codes[0] : 0);
+        if (keyIndex >= 0 && mKeys[keyIndex].repeatable) {
+            repeatKey(keyIndex);
+            mHandler.startKeyRepeatTimer(REPEAT_START_DELAY, keyIndex);
+            // Delivering the key could have caused an abort
+            if (mAbortKey) {
+                mHandler.cancelKeyRepeatTimer();
+                return;
+            }
+        }
+        if (keyIndex != NOT_A_KEY) {
+            mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
+        }
+        showPreview(keyIndex);
         mDebouncer.updateMoveDebouncing(touchX, touchY);
-        return true;
+    }
+
+    private void onMoveEvent(int touchX, int touchY, long eventTime) {
+        int keyIndex = mProximityKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
+        if (keyIndex != NOT_A_KEY) {
+            if (mCurrentKey == NOT_A_KEY) {
+                mDebouncer.updateTimeDebouncing(eventTime);
+                mCurrentKey = keyIndex;
+                mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
+            } else if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
+                mDebouncer.updateTimeDebouncing(eventTime);
+            } else {
+                resetMultiTap();
+                mDebouncer.resetTimeDebouncing(eventTime, mCurrentKey);
+                mDebouncer.resetMoveDebouncing();
+                mCurrentKey = keyIndex;
+                mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
+            }
+        } else {
+            mHandler.cancelLongPressTimer();
+        }
+        /*
+         * While time debouncing is in effect, mCurrentKey holds the new key and mDebouncer
+         * holds the last key.  At ACTION_UP event if time debouncing will be in effect
+         * eventually, the last key should be sent as the result.  In such case mCurrentKey
+         * should not be showed as popup preview.
+         */
+        showPreview(mDebouncer.isMinorTimeBounce() ? mDebouncer.getLastKey() : mCurrentKey);
+        mDebouncer.updateMoveDebouncing(touchX, touchY);
+    }
+
+    private void onUpEvent(int touchX, int touchY, long eventTime) {
+        int keyIndex = mProximityKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
+        boolean wasInKeyRepeat = mHandler.isInKeyRepeat();
+        mHandler.cancelKeyTimers();
+        mHandler.cancelPopupPreview();
+        if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
+            mDebouncer.updateTimeDebouncing(eventTime);
+        } else {
+            resetMultiTap();
+            mDebouncer.resetTimeDebouncing(eventTime, mCurrentKey);
+            mCurrentKey = keyIndex;
+        }
+        if (mDebouncer.isMinorTimeBounce()) {
+            mCurrentKey = mDebouncer.getLastKey();
+            touchX = mDebouncer.getLastCodeX();
+            touchY = mDebouncer.getLastCodeY();
+        }
+        showPreview(NOT_A_KEY);
+        // If we're not on a repeating key (which sends on a DOWN event)
+        if (!wasInKeyRepeat && !mMiniKeyboardOnScreen && !mAbortKey) {
+            detectAndSendKey(mCurrentKey, touchX, touchY, eventTime);
+        }
+        invalidateKey(keyIndex);
+    }
+
+    private void onCancelEvent(int touchX, int touchY, long eventTime) {
+        mHandler.cancelKeyTimers();
+        mHandler.cancelPopupPreview();
+        dismissPopupKeyboard();
+        mAbortKey = true;
+        showPreview(NOT_A_KEY);
+        invalidateKey(mCurrentKey);
     }
 
     private void repeatKey(int keyIndex) {
