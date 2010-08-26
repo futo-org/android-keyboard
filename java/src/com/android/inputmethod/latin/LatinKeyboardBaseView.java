@@ -1313,13 +1313,14 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
 
         if (mHandler.isInKeyRepeat()) {
-            // Will keep being in the key repeating mode while the key is being pressed.  It'll be
-            // canceled otherwise.
-            if (pointerCount == 1 && action == MotionEvent.ACTION_MOVE) {
-                return true;
-            } else {
+            // It'll be canceled if 2 or more keys are in action. Otherwise it will keep being in
+            // the key repeating mode while the key is being pressed.
+            if (pointerCount > 1) {
                 mHandler.cancelKeyRepeatTimer();
+            } else if (action == MotionEvent.ACTION_MOVE) {
+                return true;
             }
+            // Up event will pass through.
         }
 
         if (pointerCount != mOldPointerCount) {
@@ -1415,6 +1416,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 break;
 
             case MotionEvent.ACTION_UP:
+                boolean wasInKeyRepeat = mHandler.isInKeyRepeat();
                 mHandler.cancelKeyTimers();
                 mHandler.cancelPopupPreview();
                 if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
@@ -1431,7 +1433,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 }
                 showPreview(NOT_A_KEY);
                 // If we're not on a repeating key (which sends on a DOWN event)
-                if (!mMiniKeyboardOnScreen && !mAbortKey) {
+                if (!wasInKeyRepeat && !mMiniKeyboardOnScreen && !mAbortKey) {
                     detectAndSendKey(mCurrentKey, touchX, touchY, eventTime);
                 }
                 invalidateKey(keyIndex);
