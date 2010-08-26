@@ -1073,7 +1073,7 @@ public class LatinIME extends InputMethodService
 
     // Implementation of KeyboardViewListener
 
-    public void onKey(int primaryCode, int[] keyCodes) {
+    public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
         long when = SystemClock.uptimeMillis();
         if (primaryCode != Keyboard.KEYCODE_DELETE ||
                 when > mLastKeyTime + QUICK_PRESS) {
@@ -1121,7 +1121,7 @@ public class LatinIME extends InputMethodService
                 if (primaryCode != KEYCODE_ENTER) {
                     mJustAddedAutoSpace = false;
                 }
-                LatinImeLogger.logOnInputChar((char)primaryCode);
+                LatinImeLogger.logOnInputChar((char)primaryCode, x, y);
                 if (isWordSeparator(primaryCode)) {
                     handleSeparator(primaryCode);
                 } else {
@@ -1768,7 +1768,8 @@ public class LatinIME extends InputMethodService
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions);
-            onKey(suggestion.charAt(0), null);
+            onKey(suggestion.charAt(0), null, LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
             if (ic != null) {
                 ic.endBatchEdit();
             }
