@@ -16,70 +16,40 @@
 
 package com.android.inputmethod.latin;
 
+import android.util.Log;
 import android.view.MotionEvent;
 
 class SwipeTracker {
+    private static final int NUM_PAST = 4;
+    private static final int LONGEST_PAST_TIME = 200;
 
-    static final int NUM_PAST = 4;
-    static final int LONGEST_PAST_TIME = 200;
+    final EventRingBuffer mBuffer = new EventRingBuffer(NUM_PAST);
 
-    final float mPastX[] = new float[NUM_PAST];
-    final float mPastY[] = new float[NUM_PAST];
-    final long mPastTime[] = new long[NUM_PAST];
-
-    float mYVelocity;
-    float mXVelocity;
-
-    public void clear() {
-        mPastTime[0] = 0;
-    }
+    private float mYVelocity;
+    private float mXVelocity;
 
     public void addMovement(MotionEvent ev) {
         if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            clear();
+            mBuffer.clear();
             return;
         }
         long time = ev.getEventTime();
-        final int N = ev.getHistorySize();
-        for (int i=0; i<N; i++) {
-            addPoint(ev.getHistoricalX(i), ev.getHistoricalY(i),
-                    ev.getHistoricalEventTime(i));
+        final int count = ev.getHistorySize();
+        for (int i = 0; i < count; i++) {
+            addPoint(ev.getHistoricalX(i), ev.getHistoricalY(i), ev.getHistoricalEventTime(i));
         }
         addPoint(ev.getX(), ev.getY(), time);
     }
 
     private void addPoint(float x, float y, long time) {
-        int drop = -1;
-        int i;
-        final long[] pastTime = mPastTime;
-        for (i=0; i<NUM_PAST; i++) {
-            if (pastTime[i] == 0) {
+        final EventRingBuffer buffer = mBuffer;
+        while (buffer.size() > 0) {
+            long lastT = buffer.getTime(0);
+            if (lastT >= time - LONGEST_PAST_TIME)
                 break;
-            } else if (pastTime[i] < time-LONGEST_PAST_TIME) {
-                drop = i;
-            }
+            buffer.dropOldest();
         }
-        if (i == NUM_PAST && drop < 0) {
-            drop = 0;
-        }
-        if (drop == i) drop--;
-        final float[] pastX = mPastX;
-        final float[] pastY = mPastY;
-        if (drop >= 0) {
-            final int start = drop+1;
-            final int count = NUM_PAST-drop-1;
-            System.arraycopy(pastX, start, pastX, 0, count);
-            System.arraycopy(pastY, start, pastY, 0, count);
-            System.arraycopy(pastTime, start, pastTime, 0, count);
-            i -= (drop+1);
-        }
-        pastX[i] = x;
-        pastY[i] = y;
-        pastTime[i] = time;
-        i++;
-        if (i < NUM_PAST) {
-            pastTime[i] = 0;
-        }
+        buffer.add(x, y, time);
     }
 
     public void computeCurrentVelocity(int units) {
@@ -87,33 +57,24 @@ class SwipeTracker {
     }
 
     public void computeCurrentVelocity(int units, float maxVelocity) {
-        final float[] pastX = mPastX;
-        final float[] pastY = mPastY;
-        final long[] pastTime = mPastTime;
+        final EventRingBuffer buffer = mBuffer;
+        final float oldestX = buffer.getX(0);
+        final float oldestY = buffer.getY(0);
+        final long oldestTime = buffer.getTime(0);
 
-        final float oldestX = pastX[0];
-        final float oldestY = pastY[0];
-        final long oldestTime = pastTime[0];
         float accumX = 0;
         float accumY = 0;
-        int N=0;
-        while (N < NUM_PAST) {
-            if (pastTime[N] == 0) {
-                break;
-            }
-            N++;
-        }
-
-        for (int i=1; i < N; i++) {
-            final int dur = (int)(pastTime[i] - oldestTime);
+        final int count = buffer.size();
+        for (int pos = 1; pos < count; pos++) {
+            final int dur = (int)(buffer.getTime(pos) - oldestTime);
             if (dur == 0) continue;
-            float dist = pastX[i] - oldestX;
-            float vel = (dist/dur) * units;   // pixels/frame.
+            float dist = buffer.getX(pos) - oldestX;
+            float vel = (dist / dur) * units;   // pixels/frame.
             if (accumX == 0) accumX = vel;
             else accumX = (accumX + vel) * .5f;
 
-            dist = pastY[i] - oldestY;
-            vel = (dist/dur) * units;   // pixels/frame.
+            dist = buffer.getY(pos) - oldestY;
+            vel = (dist / dur) * units;   // pixels/frame.
             if (accumY == 0) accumY = vel;
             else accumY = (accumY + vel) * .5f;
         }
@@ -129,5 +90,69 @@ class SwipeTracker {
 
     public float getYVelocity() {
         return mYVelocity;
+    }
+
+    static class EventRingBuffer {
+        private final int bufSize;
+        private final float xBuf[];
+        private final float yBuf[];
+        private final long timeBuf[];
+        private int top;  // points new event
+        private int end;  // points oldest event
+        private int count; // the number of valid data
+
+        public EventRingBuffer(int max) {
+            this.bufSize = max;
+            xBuf = new float[max];
+            yBuf = new float[max];
+            timeBuf = new long[max];
+            clear();
+        }
+
+        public void clear() {
+            top = end = count = 0;
+        }
+
+        public int size() {
+            return count;
+        }
+
+        // Position 0 points oldest event
+        private int index(int pos) {
+            return (end + pos) % bufSize;
+        }
+
+        private int advance(int index) {
+            return (index + 1) % bufSize;
+        }
+
+        public void add(float x, float y, long time) {
+            xBuf[top] = x;
+            yBuf[top] = y;
+            timeBuf[top] = time;
+            top = advance(top);
+            if (count < bufSize) {
+                count++;
+            } else {
+                end = advance(end);
+            }
+        }
+
+        public float getX(int pos) {
+            return xBuf[index(pos)];
+        }
+
+        public float getY(int pos) {
+            return yBuf[index(pos)];
+        }
+
+        public long getTime(int pos) {
+            return timeBuf[index(pos)];
+        }
+
+        public void dropOldest() {
+            count--;
+            end = advance(end);
+        }
     }
 }
