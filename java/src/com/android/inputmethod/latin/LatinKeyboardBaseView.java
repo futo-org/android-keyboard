@@ -204,7 +204,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     private boolean mAbortKey;
     private Key mInvalidatedKey;
     private Rect mClipRegion = new Rect(0, 0, 0, 0);
-    private boolean mCancelGestureDetector;
     private SwipeTracker mSwipeTracker = new SwipeTracker();
     private int mSwipeThreshold;
     private boolean mDisambiguateSwipe;
@@ -544,12 +543,11 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     }
 
     private void initGestureDetector() {
-        mGestureDetector = new GestureDetector(
-                getContext(), new GestureDetector.SimpleOnGestureListener() {
+        GestureDetector.SimpleOnGestureListener listener =
+                new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onFling(MotionEvent me1, MotionEvent me2,
                     float velocityX, float velocityY) {
-                if (mCancelGestureDetector) return false;
                 final float absX = Math.abs(velocityX);
                 final float absY = Math.abs(velocityY);
                 float deltaX = me2.getX() - me1.getX();
@@ -559,44 +557,33 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 mSwipeTracker.computeCurrentVelocity(1000);
                 final float endingVelocityX = mSwipeTracker.getXVelocity();
                 final float endingVelocityY = mSwipeTracker.getYVelocity();
-                boolean sendDownKey = false;
                 if (velocityX > mSwipeThreshold && absY < absX && deltaX > travelX) {
-                    if (mDisambiguateSwipe && endingVelocityX < velocityX / 4) {
-                        sendDownKey = true;
-                    } else {
+                    if (mDisambiguateSwipe && endingVelocityX >= velocityX / 4) {
                         swipeRight();
                         return true;
                     }
                 } else if (velocityX < -mSwipeThreshold && absY < absX && deltaX < -travelX) {
-                    if (mDisambiguateSwipe && endingVelocityX > velocityX / 4) {
-                        sendDownKey = true;
-                    } else {
+                    if (mDisambiguateSwipe && endingVelocityX <= velocityX / 4) {
                         swipeLeft();
                         return true;
                     }
                 } else if (velocityY < -mSwipeThreshold && absX < absY && deltaY < -travelY) {
-                    if (mDisambiguateSwipe && endingVelocityY > velocityY / 4) {
-                        sendDownKey = true;
-                    } else {
+                    if (mDisambiguateSwipe && endingVelocityY <= velocityY / 4) {
                         swipeUp();
                         return true;
                     }
                 } else if (velocityY > mSwipeThreshold && absX < absY / 2 && deltaY > travelY) {
-                    if (mDisambiguateSwipe && endingVelocityY < velocityY / 4) {
-                        sendDownKey = true;
-                    } else {
+                    if (mDisambiguateSwipe && endingVelocityY >= velocityY / 4) {
                         swipeDown();
                         return true;
                     }
                 }
-
-                if (sendDownKey) {
-                    detectAndSendKey(mDownKey, mStartX, mStartY, me1.getEventTime());
-                }
                 return false;
             }
-        });
+        };
 
+        final boolean ignoreMultitouch = true;
+        mGestureDetector = new GestureDetector(getContext(), listener, null, ignoreMultitouch);
         mGestureDetector.setIsLongpressEnabled(false);
     }
 
@@ -1299,7 +1286,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             return true;
         }
 
-        mCancelGestureDetector = (pointerCount > 1);
         if (mGestureDetector.onTouchEvent(me)) {
             showPreview(NOT_A_KEY);
             mHandler.cancelKeyTimers();
