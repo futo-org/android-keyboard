@@ -43,7 +43,6 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,7 +142,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     public static final int NOT_A_TOUCH_COORDINATE = -1;
 
     private static final boolean DEBUG = false;
-    private static final int NOT_A_KEY = -1;
+    static final int NOT_A_KEY = -1;
     private static final int[] KEY_DELETE = { Keyboard.KEYCODE_DELETE };
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
 
@@ -184,7 +183,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     private static final int DEBOUNCE_TIME = 70;
 
     private int mVerticalCorrection;
-    private int mProximityThreshold;
+    private ProximityKeyDetector mProximityKeyDetector = new ProximityKeyDetector();
 
     private boolean mPreviewCentered = false;
     private boolean mShowPreview = true;
@@ -193,13 +192,10 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     private int mPopupPreviewY;
     private int mWindowY;
 
-    private boolean mProximityCorrectOn;
-
     private Paint mPaint;
     private Rect mPadding;
 
     private int mCurrentKey = NOT_A_KEY;
-    private int mDownKey = NOT_A_KEY;
     private int mStartX;
     private int mStartY;
 
@@ -226,9 +222,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     private static final int REPEAT_INTERVAL = 50; // ~20 keys per second
     private static final int REPEAT_START_DELAY = 400;
     private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
-
-    private static int MAX_NEARBY_KEYS = 12;
-    private int[] mDistances = new int[MAX_NEARBY_KEYS];
 
     // For multi-tap
     private int mLastSentIndex;
@@ -625,6 +618,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         LatinImeLogger.onSetKeyboard(mKeyboard);
         List<Key> keys = mKeyboard.getKeys();
         mKeys = keys.toArray(new Key[keys.size()]);
+        mProximityKeyDetector.setKeyboard(keyboard, mKeys);
         requestLayout();
         // Hint to reallocate the buffer if the size changed
         mKeyboardChanged = true;
@@ -719,14 +713,14 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
      * @param enabled whether or not the proximity correction is enabled
      */
     public void setProximityCorrectionEnabled(boolean enabled) {
-        mProximityCorrectOn = enabled;
+        mProximityKeyDetector.setProximityCorrectionEnabled(enabled);
     }
 
     /**
      * Returns true if proximity correction is enabled.
      */
     public boolean isProximityCorrectionEnabled() {
-        return mProximityCorrectOn;
+        return mProximityKeyDetector.isProximityCorrectionEnabled();
     }
 
     /**
@@ -778,8 +772,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             dimensionSum += Math.min(key.width, key.height) + key.gap;
         }
         if (dimensionSum < 0 || length == 0) return;
-        mProximityThreshold = (int) (dimensionSum * 1.4f / length);
-        mProximityThreshold *= mProximityThreshold; // Square it
+        mProximityKeyDetector.setProximityThreshold((int) (dimensionSum * 1.4f / length));
 
         final float hysteresisPixel = getContext().getResources()
                 .getDimension(R.dimen.key_debounce_hysteresis_distance);
@@ -920,54 +913,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         mDirtyRect.setEmpty();
     }
 
-    private int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys) {
-        final Key[] keys = mKeys;
-        int primaryIndex = NOT_A_KEY;
-        int closestKey = NOT_A_KEY;
-        int closestKeyDist = mProximityThreshold + 1;
-        Arrays.fill(mDistances, Integer.MAX_VALUE);
-        int [] nearestKeyIndices = mKeyboard.getNearestKeys(x, y);
-        final int keyCount = nearestKeyIndices.length;
-        for (int i = 0; i < keyCount; i++) {
-            final Key key = keys[nearestKeyIndices[i]];
-            int dist = 0;
-            boolean isInside = key.isInside(x,y);
-            if (isInside) {
-                primaryIndex = nearestKeyIndices[i];
-            }
-
-            if (((mProximityCorrectOn
-                    && (dist = key.squaredDistanceFrom(x, y)) < mProximityThreshold)
-                    || isInside)
-                    && key.codes[0] > 32) {
-                // Find insertion point
-                final int nCodes = key.codes.length;
-                if (dist < closestKeyDist) {
-                    closestKeyDist = dist;
-                    closestKey = nearestKeyIndices[i];
-                }
-
-                if (allKeys == null) continue;
-
-                for (int j = 0; j < mDistances.length; j++) {
-                    if (mDistances[j] > dist) {
-                        // Make space for nCodes codes
-                        System.arraycopy(mDistances, j, mDistances, j + nCodes,
-                                mDistances.length - j - nCodes);
-                        System.arraycopy(allKeys, j, allKeys, j + nCodes,
-                                allKeys.length - j - nCodes);
-                        System.arraycopy(key.codes, 0, allKeys, j, nCodes);
-                        Arrays.fill(mDistances, j, j + nCodes, dist);
-                        break;
-                    }
-                }
-            }
-        }
-        if (primaryIndex == NOT_A_KEY) {
-            primaryIndex = closestKey;
-        }
-        return primaryIndex;
-    }
 
     private void detectAndSendKey(int index, int x, int y, long eventTime) {
         if (index != NOT_A_KEY && index < mKeys.length) {
@@ -978,9 +923,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             } else {
                 int code = key.codes[0];
                 //TextEntryState.keyPressedAt(key, x, y);
-                int[] codes = new int[MAX_NEARBY_KEYS];
-                Arrays.fill(codes, NOT_A_KEY);
-                getKeyIndexAndNearbyCodes(x, y, codes);
+                int[] codes = mProximityKeyDetector.newCodeArray();
+                mProximityKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
                 // Multi-tap
                 if (mInMultiTap) {
                     if (mTapCount != -1) {
@@ -1352,13 +1296,12 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         int touchY = (int) me.getY() + mVerticalCorrection - getPaddingTop();
         final int action = me.getAction();
         final long eventTime = me.getEventTime();
-        int keyIndex = getKeyIndexAndNearbyCodes(touchX, touchY, null);
+        int keyIndex = mProximityKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 mAbortKey = false;
                 mCurrentKey = keyIndex;
-                mDownKey = keyIndex;
                 mStartX = touchX;
                 mStartY = touchY;
                 mDebouncer.startMoveDebouncing(touchX, touchY);
