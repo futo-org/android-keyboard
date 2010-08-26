@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.voice;
 
+import com.android.inputmethod.latin.EditingUtil;
 import com.android.inputmethod.latin.R;
 
 import android.content.ContentResolver;
@@ -30,6 +31,7 @@ import android.speech.RecognitionListener;
 import android.speech.SpeechRecognizer;
 import android.speech.RecognizerIntent;
 import android.util.Log;
+import android.view.inputmethod.InputConnection;
 import android.view.View;
 import android.view.View.OnClickListener;
 
@@ -423,8 +425,14 @@ public class VoiceInput implements OnClickListener {
         mLogger.textModifiedByTypingDeletion(length);
     }
 
-    public void logTextModifiedByChooseSuggestion(int length) {
-        mLogger.textModifiedByChooseSuggestion(length);
+    public void logTextModifiedByChooseSuggestion(String suggestion, int index,
+                                                  String wordSeparators, InputConnection ic) {
+        EditingUtil.Range range = new EditingUtil.Range();
+        String wordToBeReplaced = EditingUtil.getWordAtCursor(ic, wordSeparators, range);
+        // If we enable phrase-based alternatives, only send up the first word
+        // in suggestion and wordToBeReplaced.
+        mLogger.textModifiedByChooseSuggestion(suggestion.length(), wordToBeReplaced.length(),
+                                               index, wordToBeReplaced, suggestion);
     }
 
     public void logKeyboardWarningDialogShown() {
@@ -453,10 +461,6 @@ public class VoiceInput implements OnClickListener {
 
     public void logVoiceInputDelivered(int length) {
         mLogger.voiceInputDelivered(length);
-    }
-
-    public void logNBestChoose(int index) {
-        mLogger.nBestChoose(index);
     }
 
     public void logInputEnded() {
