@@ -96,15 +96,21 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     @Override
     protected boolean onLongPress(Key key) {
         if (key.codes[0] == Keyboard.KEYCODE_MODE_CHANGE) {
-            getOnKeyboardActionListener().onKey(KEYCODE_OPTIONS, null);
+            getOnKeyboardActionListener().onKey(KEYCODE_OPTIONS, null,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
             return true;
         } else if (key.codes[0] == Keyboard.KEYCODE_SHIFT) {
-            getOnKeyboardActionListener().onKey(KEYCODE_SHIFT_LONGPRESS, null);
+            getOnKeyboardActionListener().onKey(KEYCODE_SHIFT_LONGPRESS, null,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
             invalidateAllKeys();
             return true;
         } else if (key.codes[0] == '0' && getKeyboard() == mPhoneKeyboard) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
-            getOnKeyboardActionListener().onKey('+', null);
+            getOnKeyboardActionListener().onKey(
+                    '+', null, LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
             return true;
         } else {
             return super.onLongPress(key);
@@ -235,7 +241,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
             if (languageDirection != 0) {
                 getOnKeyboardActionListener().onKey(
                         languageDirection == 1 ? KEYCODE_NEXT_LANGUAGE : KEYCODE_PREV_LANGUAGE,
-                        null);
+                        null, mLastX, mLastY);
                 me.setAction(MotionEvent.ACTION_CANCEL);
                 keyboard.keyReleased();
                 return super.onTouchEvent(me);
@@ -366,8 +372,8 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         ExtensionKeyboardListener(OnKeyboardActionListener target) {
             mTarget = target;
         }
-        public void onKey(int primaryCode, int[] keyCodes) {
-            mTarget.onKey(primaryCode, keyCodes);
+        public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
+            mTarget.onKey(primaryCode, keyCodes, x, y);
         }
         public void onPress(int primaryCode) {
             mTarget.onPress(primaryCode);
