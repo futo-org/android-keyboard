@@ -1286,7 +1286,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
 
         // Track the last few movements to look for spurious swipes.
-        if (action == MotionEvent.ACTION_DOWN) mSwipeTracker.clear();
         mSwipeTracker.addMovement(me);
 
         // Ignore all motion events until a DOWN.
