@@ -1,9 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.android.inputmethod.latin"
-        android:versionCode="22"
-        android:versionName="0.22">
-
-    <uses-sdk android:minSdkVersion="8"></uses-sdk>
+        package="com.android.inputmethod.latin">
 
     <original-package android:name="com.android.inputmethod.latin" />
 
