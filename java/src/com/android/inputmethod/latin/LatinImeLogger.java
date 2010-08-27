@@ -209,7 +209,6 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
         Arrays.fill(mAutoCancelledCountPerDic, 0);
         mLogBuffer.clear();
         mPrivacyLogBuffer.clear();
-        mRingCharBuffer.reset();
     }
 
     public void destroy() {
