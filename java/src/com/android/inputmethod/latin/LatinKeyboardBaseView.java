@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -61,6 +62,9 @@ import java.util.Map;
  * @attr ref R.styleable#LatinKeyboardBaseView_popupLayout
  */
 public class LatinKeyboardBaseView extends View implements View.OnClickListener {
+    private static final boolean DEBUG = false;
+
+    public static final int NOT_A_TOUCH_COORDINATE = -1;
 
     public interface OnKeyboardActionListener {
 
@@ -139,29 +143,54 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         void swipeUp();
     }
 
-    public static final int NOT_A_TOUCH_COORDINATE = -1;
+    // Timing constants
+    private static final int DELAY_BEFORE_PREVIEW = 0;
+    private static final int DELAY_AFTER_PREVIEW = 70;
+    private static final int REPEAT_INTERVAL = 50; // ~20 keys per second
+    private static final int REPEAT_START_DELAY = 400;
+    private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
+    private static final int MULTITAP_INTERVAL = 800; // milliseconds
+    private static final int KEY_DEBOUNCE_TIME = 70;
 
-    private static final boolean DEBUG = false;
+    // Miscellaneous constants
     static final int NOT_A_KEY = -1;
     private static final int[] KEY_DELETE = { Keyboard.KEYCODE_DELETE };
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
 
-    private Keyboard mKeyboard;
-    private int mCurrentKeyIndex = NOT_A_KEY;
-    private int mLabelTextSize;
+    // XML attribute
     private int mKeyTextSize;
     private int mKeyTextColor;
-    private float mShadowRadius;
+    private Typeface mKeyTextStyle = Typeface.DEFAULT;
+    private int mLabelTextSize;
+    private int mSymbolColorScheme = 0;
     private int mShadowColor;
+    private float mShadowRadius;
+    private Drawable mKeyBackground;
     private float mBackgroundDimAmount;
+    private int mVerticalCorrection;
+    private int mPreviewOffset;
+    private int mPreviewHeight;
+    private int mPopupLayout;
 
+    // Main keyboard
+    private Keyboard mKeyboard;
+    private Key[] mKeys;
+
+    // Key preview popup
+    private final static boolean PREVIEW_CENTERED = false;
     private TextView mPreviewText;
     private PopupWindow mPreviewPopup;
     private int mPreviewTextSizeLarge;
-    private int mPreviewOffset;
-    private int mPreviewHeight;
     private int[] mOffsetInWindow;
+    private int mOldPreviewKeyIndex = NOT_A_KEY;
+    private boolean mShowPreview = true;
+    private boolean mShowTouchPoints = true;
+    private int mPopupPreviewX;
+    private int mPopupPreviewY;
+    private int mWindowY;
+    private final StringBuilder mPreviewLabel = new StringBuilder(1);
 
+    // Popup mini keyboard
     private PopupWindow mPopupKeyboard;
     private View mMiniKeyboardContainer;
     private LatinKeyboardBaseView mMiniKeyboard;
@@ -171,78 +200,54 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     private int mMiniKeyboardOffsetY;
     private Map<Key,View> mMiniKeyboardCache;
     private int[] mWindowOffset;
-    private Key[] mKeys;
-    private Typeface mKeyTextStyle = Typeface.DEFAULT;
-    private int mSymbolColorScheme = 0;
 
     /** Listener for {@link OnKeyboardActionListener}. */
     private OnKeyboardActionListener mKeyboardActionListener;
 
-    private static final int DELAY_BEFORE_PREVIEW = 0;
-    private static final int DELAY_AFTER_PREVIEW = 70;
-    private static final int DEBOUNCE_TIME = 70;
-
-    private int mVerticalCorrection;
-    private ProximityKeyDetector mProximityKeyDetector = new ProximityKeyDetector();
-
-    private boolean mPreviewCentered = false;
-    private boolean mShowPreview = true;
-    private boolean mShowTouchPoints = true;
-    private int mPopupPreviewX;
-    private int mPopupPreviewY;
-    private int mWindowY;
-
-    private Paint mPaint;
-    private Rect mPadding;
-
+    private final KeyDebouncer mDebouncer = new KeyDebouncer();
+    private final float mDebounceHysteresis;
     private int mCurrentKey = NOT_A_KEY;
     private int mStartX;
     private int mStartY;
 
-    private KeyDebouncer mDebouncer;
+    private final ProximityKeyDetector mProximityKeyDetector = new ProximityKeyDetector();
 
-    private GestureDetector mGestureDetector;
-    private int mPopupX;
-    private int mPopupY;
-    private int mPopupLayout;
     private boolean mAbortKey;
-    private Key mInvalidatedKey;
-    private Rect mClipRegion = new Rect(0, 0, 0, 0);
-    private SwipeTracker mSwipeTracker = new SwipeTracker();
-    private int mSwipeThreshold;
-    private boolean mDisambiguateSwipe;
-
-    // Variables for dealing with multiple pointers
-    private int mOldPointerCount = 1;
-    private int mOldPointerX;
-    private int mOldPointerY;
-
-    private Drawable mKeyBackground;
-
-    private static final int REPEAT_INTERVAL = 50; // ~20 keys per second
-    private static final int REPEAT_START_DELAY = 400;
-    private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
 
     // For multi-tap
     private int mLastSentIndex;
     private int mTapCount;
     private long mLastTapTime;
     private boolean mInMultiTap;
-    private static final int MULTITAP_INTERVAL = 800; // milliseconds
-    private StringBuilder mPreviewLabel = new StringBuilder(1);
 
+    // Variables for dealing with multiple pointers
+    private int mOldPointerCount = 1;
+    private int mOldPointerX;
+    private int mOldPointerY;
+
+    // Swipe gesture detector
+    private final GestureDetector mGestureDetector;
+    private final SwipeTracker mSwipeTracker = new SwipeTracker();
+    private final int mSwipeThreshold;
+    private final boolean mDisambiguateSwipe;
+
+    // Drawing
     /** Whether the keyboard bitmap needs to be redrawn before it's blitted. **/
     private boolean mDrawPending;
     /** The dirty region in the keyboard bitmap */
-    private Rect mDirtyRect = new Rect();
+    private final Rect mDirtyRect = new Rect();
     /** The keyboard bitmap for faster updates */
     private Bitmap mBuffer;
     /** Notes if the keyboard just changed, so that we could possibly reallocate the mBuffer. */
     private boolean mKeyboardChanged;
+    private Key mInvalidatedKey;
     /** The canvas for the above mutable keyboard bitmap */
     private Canvas mCanvas;
+    private final Paint mPaint;
+    private final Rect mPadding;
+    private final Rect mClipRegion = new Rect(0, 0, 0, 0);
 
-    UIHandler mHandler = new UIHandler();
+    private final UIHandler mHandler = new UIHandler();
 
     class UIHandler extends Handler {
         private static final int MSG_POPUP_PREVIEW = 1;
@@ -324,8 +329,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     };
 
     static class KeyDebouncer {
-        private final Key[] mKeys;
-        private final int mKeyDebounceThresholdSquared;
+        private Key[] mKeys;
+        private int mKeyDebounceThresholdSquared = -1;
 
         // for move de-bouncing
         private int mLastCodeX;
@@ -339,7 +344,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         private long mLastMoveTime;
         private long mCurrentKeyTime;
 
-        KeyDebouncer(Key[] keys, float hysteresisPixel) {
+        public void setKeyboard(Key[] keys, float hysteresisPixel) {
             if (keys == null || hysteresisPixel < 1.0f)
                 throw new IllegalArgumentException();
             mKeys = keys;
@@ -382,6 +387,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
 
         public boolean isMinorMoveBounce(int x, int y, int newKey, int curKey) {
+            if (mKeys == null || mKeyDebounceThresholdSquared < 0)
+                throw new IllegalStateException("keyboard and/or hysteresis not set");
             if (newKey == curKey) {
                 return true;
             } else if (curKey >= 0 && curKey < mKeys.length) {
@@ -424,7 +431,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
 
         public boolean isMinorTimeBounce() {
-            return mCurrentKeyTime < mLastKeyTime && mCurrentKeyTime < DEBOUNCE_TIME
+            return mCurrentKeyTime < mLastKeyTime && mCurrentKeyTime < KEY_DEBOUNCE_TIME
                 && mLastKey != NOT_A_KEY;
         }
     }
@@ -516,15 +523,11 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         } else {
             mShowPreview = false;
         }
-
         mPreviewPopup.setTouchable(false);
+        mPopupParent = this;
 
         mPopupKeyboard = new PopupWindow(context);
         mPopupKeyboard.setBackgroundDrawable(null);
-        //mPopupKeyboard.setClippingEnabled(false);
-
-        mPopupParent = this;
-        //mPredicting = true;
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -536,19 +539,18 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         mMiniKeyboardCache = new HashMap<Key,View>();
         mKeyBackground.getPadding(mPadding);
 
-        mSwipeThreshold = (int) (500 * getResources().getDisplayMetrics().density);
+        final Resources res = getResources();
+        mSwipeThreshold = (int) (500 * res.getDisplayMetrics().density);
         // TODO: Refer frameworks/base/core/res/res/values/config.xml
-        mDisambiguateSwipe = getResources().getBoolean(R.bool.config_swipeDisambiguation);
+        mDisambiguateSwipe = res.getBoolean(R.bool.config_swipeDisambiguation);
+        mDebounceHysteresis = res.getDimension(R.dimen.key_debounce_hysteresis_distance);
         resetMultiTap();
-        initGestureDetector();
-    }
 
-    private void initGestureDetector() {
         GestureDetector.SimpleOnGestureListener listener =
                 new GestureDetector.SimpleOnGestureListener() {
             @Override
-            public boolean onFling(MotionEvent me1, MotionEvent me2,
-                    float velocityX, float velocityY) {
+            public boolean onFling(MotionEvent me1, MotionEvent me2, float velocityX,
+                    float velocityY) {
                 final float absX = Math.abs(velocityX);
                 final float absY = Math.abs(velocityY);
                 float deltaX = me2.getX() - me1.getX();
@@ -619,6 +621,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         List<Key> keys = mKeyboard.getKeys();
         mKeys = keys.toArray(new Key[keys.size()]);
         mProximityKeyDetector.setKeyboard(keyboard, mKeys);
+        mDebouncer.setKeyboard(mKeys, mDebounceHysteresis);
         requestLayout();
         // Hint to reallocate the buffer if the size changed
         mKeyboardChanged = true;
@@ -773,10 +776,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
         if (dimensionSum < 0 || length == 0) return;
         mProximityKeyDetector.setProximityThreshold((int) (dimensionSum * 1.4f / length));
-
-        final float hysteresisPixel = getContext().getResources()
-                .getDimension(R.dimen.key_debounce_hysteresis_distance);
-        mDebouncer = new KeyDebouncer(keys, hysteresisPixel);
     }
 
     @Override
@@ -966,24 +965,26 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     }
 
     private void showPreview(int keyIndex) {
-        int oldKeyIndex = mCurrentKeyIndex;
-        final PopupWindow previewPopup = mPreviewPopup;
+        int oldKeyIndex = mOldPreviewKeyIndex;
+        mOldPreviewKeyIndex = keyIndex;
 
-        mCurrentKeyIndex = keyIndex;
         // Release the old key and press the new key
         final Key[] keys = mKeys;
-        if (oldKeyIndex != mCurrentKeyIndex) {
+        if (oldKeyIndex != keyIndex) {
             if (oldKeyIndex != NOT_A_KEY && keys.length > oldKeyIndex) {
-                keys[oldKeyIndex].onReleased(mCurrentKeyIndex == NOT_A_KEY);
+                // if new key index is not a key, old key was just released inside of the key.
+                final boolean inside = (keyIndex == NOT_A_KEY);
+                keys[oldKeyIndex].onReleased(inside);
                 invalidateKey(oldKeyIndex);
             }
-            if (mCurrentKeyIndex != NOT_A_KEY && keys.length > mCurrentKeyIndex) {
-                keys[mCurrentKeyIndex].onPressed();
-                invalidateKey(mCurrentKeyIndex);
+            if (keyIndex != NOT_A_KEY && keys.length > keyIndex) {
+                keys[keyIndex].onPressed();
+                invalidateKey(keyIndex);
             }
         }
         // If key changed and preview is on ...
-        if (oldKeyIndex != mCurrentKeyIndex && mShowPreview) {
+        if (oldKeyIndex != keyIndex && mShowPreview) {
+            final PopupWindow previewPopup = mPreviewPopup;
             if (keyIndex == NOT_A_KEY) {
                 mHandler.cancelPopupPreview();
                 if (previewPopup.isShowing()) {
@@ -1030,13 +1031,13 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             lp.width = popupWidth;
             lp.height = popupHeight;
         }
-        if (!mPreviewCentered) {
-            mPopupPreviewX = key.x - mPreviewText.getPaddingLeft() + getPaddingLeft();
-            mPopupPreviewY = key.y - popupHeight + mPreviewOffset;
-        } else {
+        if (PREVIEW_CENTERED) {
             // TODO: Fix this if centering is brought back
             mPopupPreviewX = 160 - mPreviewText.getMeasuredWidth() / 2;
             mPopupPreviewY = - mPreviewText.getMeasuredHeight();
+        } else {
+            mPopupPreviewX = key.x - mPreviewText.getPaddingLeft() + getPaddingLeft();
+            mPopupPreviewY = key.y - popupHeight + mPreviewOffset;
         }
         mHandler.cancelDismissPreview();
         if (mOffsetInWindow == null) {
@@ -1147,8 +1148,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 mMiniKeyboardContainer = inflater.inflate(mPopupLayout, null);
                 mMiniKeyboard = (LatinKeyboardBaseView) mMiniKeyboardContainer.findViewById(
                        R.id.LatinKeyboardBaseView);
-                View closeButton = mMiniKeyboardContainer.findViewById(
-                        R.id.closeButton);
+                View closeButton = mMiniKeyboardContainer.findViewById(R.id.closeButton);
                 if (closeButton != null) closeButton.setOnClickListener(this);
                 mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
                     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
@@ -1195,12 +1195,12 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                 mWindowOffset = new int[2];
                 getLocationInWindow(mWindowOffset);
             }
-            mPopupX = popupKey.x + getPaddingLeft();
-            mPopupY = popupKey.y + getPaddingTop();
-            mPopupX = mPopupX + popupKey.width - mMiniKeyboardContainer.getMeasuredWidth();
-            mPopupY = mPopupY - mMiniKeyboardContainer.getMeasuredHeight();
-            final int x = mPopupX + mMiniKeyboardContainer.getPaddingRight() + mWindowOffset[0];
-            final int y = mPopupY + mMiniKeyboardContainer.getPaddingBottom() + mWindowOffset[1];
+            int popupX = popupKey.x + getPaddingLeft();
+            int popupY = popupKey.y + getPaddingTop();
+            popupX = popupX + popupKey.width - mMiniKeyboardContainer.getMeasuredWidth();
+            popupY = popupY - mMiniKeyboardContainer.getMeasuredHeight();
+            final int x = popupX + mMiniKeyboardContainer.getPaddingRight() + mWindowOffset[0];
+            final int y = popupY + mMiniKeyboardContainer.getPaddingBottom() + mWindowOffset[1];
             mMiniKeyboard.setPopupOffset(x < 0 ? 0 : x, y);
             mMiniKeyboard.setShifted(isShifted());
             mPopupKeyboard.setContentView(mMiniKeyboardContainer);
