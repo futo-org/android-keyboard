@@ -1103,9 +1103,6 @@ public class LatinIME extends InputMethodService
             case LatinKeyboardView.KEYCODE_PREV_LANGUAGE:
                 toggleLanguage(false, false);
                 break;
-            case LatinKeyboardView.KEYCODE_SHIFT_LONGPRESS:
-                handleCapsLock();
-                break;
             case Keyboard.KEYCODE_MODE_CHANGE:
                 changeKeyboardMode();
                 break;
