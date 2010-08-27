@@ -178,7 +178,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     /** Listener for {@link OnKeyboardActionListener}. */
     private OnKeyboardActionListener mKeyboardActionListener;
 
-    private static final int DELAY_BEFORE_PREVIEW = 0;
     private static final int DELAY_AFTER_PREVIEW = 70;
     private static final int DEBOUNCE_TIME = 70;
 
@@ -245,19 +244,15 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
     UIHandler mHandler = new UIHandler();
 
     class UIHandler extends Handler {
-        private static final int MSG_POPUP_PREVIEW = 1;
-        private static final int MSG_DISMISS_PREVIEW = 2;
-        private static final int MSG_REPEAT_KEY = 3;
-        private static final int MSG_LOGPRESS_KEY = 4;
+        private static final int MSG_DISMISS_PREVIEW = 0;
+        private static final int MSG_REPEAT_KEY = 1;
+        private static final int MSG_LOGPRESS_KEY = 2;
 
         private boolean mInKeyRepeat;
 
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_POPUP_PREVIEW:
-                    showKey(msg.arg1);
-                    break;
                 case MSG_DISMISS_PREVIEW:
                     mPreviewText.setVisibility(INVISIBLE);
                     break;
@@ -269,15 +264,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
                     openPopupIfRequired(msg.arg1);
                     break;
             }
-        }
-
-        public void popupPreview(int keyIndex, long delay) {
-            removeMessages(MSG_POPUP_PREVIEW);
-            sendMessageDelayed(obtainMessage(MSG_POPUP_PREVIEW, keyIndex, 0), delay);
-        }
-
-        public void cancelPopupPreview() {
-            removeMessages(MSG_POPUP_PREVIEW);
         }
 
         public void dismissPreview(long delay) {
@@ -318,7 +304,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
         public void cancelAllMessages() {
             cancelKeyTimers();
-            cancelPopupPreview();
             cancelDismissPreview();
         }
     };
@@ -613,7 +598,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
         // Remove any pending messages, except dismissing preview
         mHandler.cancelKeyTimers();
-        mHandler.cancelPopupPreview();
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(mKeyboard);
         List<Key> keys = mKeyboard.getKeys();
@@ -985,17 +969,11 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         // If key changed and preview is on ...
         if (oldKeyIndex != mCurrentKeyIndex && mShowPreview) {
             if (keyIndex == NOT_A_KEY) {
-                mHandler.cancelPopupPreview();
                 if (previewPopup.isShowing()) {
                     mHandler.dismissPreview(DELAY_AFTER_PREVIEW);
                 }
             } else {
-                if (previewPopup.isShowing() && mPreviewText.getVisibility() == VISIBLE) {
-                    // Show right away, if it's already visible and finger is moving around
-                    showKey(keyIndex);
-                } else {
-                    mHandler.popupPreview(keyIndex, DELAY_BEFORE_PREVIEW);
-                }
+                showKey(keyIndex);
             }
         }
     }
@@ -1372,7 +1350,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         int keyIndex = mProximityKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
         boolean wasInKeyRepeat = mHandler.isInKeyRepeat();
         mHandler.cancelKeyTimers();
-        mHandler.cancelPopupPreview();
         if (mDebouncer.isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
             mDebouncer.updateTimeDebouncing(eventTime);
         } else {
@@ -1395,7 +1372,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
     private void onCancelEvent(int touchX, int touchY, long eventTime) {
         mHandler.cancelKeyTimers();
-        mHandler.cancelPopupPreview();
         dismissPopupKeyboard();
         mAbortKey = true;
         showPreview(NOT_A_KEY);
