@@ -34,7 +34,6 @@ import android.widget.PopupWindow;
 public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     static final int KEYCODE_OPTIONS = -100;
-    static final int KEYCODE_SHIFT_LONGPRESS = -101;
     static final int KEYCODE_VOICE = -102;
     static final int KEYCODE_F1 = -103;
     static final int KEYCODE_NEXT_LANGUAGE = -104;
@@ -95,18 +94,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     @Override
     protected boolean onLongPress(Key key) {
-        if (key.codes[0] == Keyboard.KEYCODE_MODE_CHANGE) {
-            getOnKeyboardActionListener().onKey(KEYCODE_OPTIONS, null,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
-            return true;
-        } else if (key.codes[0] == Keyboard.KEYCODE_SHIFT) {
-            getOnKeyboardActionListener().onKey(KEYCODE_SHIFT_LONGPRESS, null,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
-            invalidateAllKeys();
-            return true;
-        } else if (key.codes[0] == '0' && getKeyboard() == mPhoneKeyboard) {
+        if (key.codes[0] == '0' && getKeyboard() == mPhoneKeyboard) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             getOnKeyboardActionListener().onKey(
                     '+', null, LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
