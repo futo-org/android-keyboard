@@ -1,5 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-        package="com.android.inputmethod.latin">
+        package="com.android.inputmethod.latin"
+        android:versionCode="22"
+        android:versionName="0.22">
+
+    <uses-sdk android:minSdkVersion="8"></uses-sdk>
+
+    <original-package android:name="com.android.inputmethod.latin" />
 
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.READ_USER_DICTIONARY" />
