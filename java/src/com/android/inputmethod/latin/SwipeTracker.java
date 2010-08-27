@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.util.Log;
 import android.view.MotionEvent;
 
 class SwipeTracker {
