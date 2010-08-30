@@ -105,15 +105,6 @@
             android:defaultValue="@bool/enable_autocorrect"
             android:dependency="show_suggestions"
             />
-
-        <CheckBoxPreference
-            android:key="bigram_suggestion"
-            android:title="@string/bigram_suggestion"
-            android:summary="@string/bigram_suggestion_summary"
-            android:persistent="true"
-            android:defaultValue="true"
-            android:dependency="auto_complete"
-            />
     </PreferenceCategory>            
 
 <CheckBoxPreference
