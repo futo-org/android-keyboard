@@ -212,8 +212,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
     private final ProximityKeyDetector mProximityKeyDetector = new ProximityKeyDetector();
 
-    private boolean mAbortKey;
-
     // For multi-tap
     private int mLastSentIndex;
     private int mTapCount;
@@ -628,10 +626,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         invalidateAllKeys();
         computeProximityThreshold(keyboard);
         mMiniKeyboardCache.clear();
-        // Not really necessary to do every time, but will free up views
-        // Switching to a different keyboard should abort any pending keys so that the key up
-        // doesn't get delivered to the old or new keyboard
-        mAbortKey = true; // Until the next ACTION_DOWN
     }
 
     /**
@@ -1124,7 +1118,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         Key popupKey = mKeys[keyIndex];
         boolean result = onLongPress(popupKey);
         if (result) {
-            mAbortKey = true;
             showPreview(NOT_A_KEY);
         }
         return result;
@@ -1239,13 +1232,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         // Track the last few movements to look for spurious swipes.
         mSwipeTracker.addMovement(me);
 
-        // Ignore all motion events until a DOWN.
-        if (mAbortKey
-                && action != MotionEvent.ACTION_DOWN && action != MotionEvent.ACTION_CANCEL) {
-            return true;
-        }
-
-        if (mGestureDetector.onTouchEvent(me)) {
+        // We must disable gesture detector while mini-keyboard is on the screen.
+        if (!mMiniKeyboardOnScreen && mGestureDetector.onTouchEvent(me)) {
             showPreview(NOT_A_KEY);
             mHandler.cancelKeyTimers();
             return true;
@@ -1315,7 +1303,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
 
     private void onDownEvent(int touchX, int touchY, long eventTime) {
         int keyIndex = mProximityKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
-        mAbortKey = false;
         mCurrentKey = keyIndex;
         mStartX = touchX;
         mStartY = touchY;
@@ -1326,11 +1313,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         if (keyIndex >= 0 && mKeys[keyIndex].repeatable) {
             repeatKey(keyIndex);
             mHandler.startKeyRepeatTimer(REPEAT_START_DELAY, keyIndex);
-            // Delivering the key could have caused an abort
-            if (mAbortKey) {
-                mHandler.cancelKeyRepeatTimer();
-                return;
-            }
         }
         if (keyIndex != NOT_A_KEY) {
             mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
@@ -1387,7 +1369,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
         showPreview(NOT_A_KEY);
         // If we're not on a repeating key (which sends on a DOWN event)
-        if (!wasInKeyRepeat && !mMiniKeyboardOnScreen && !mAbortKey) {
+        if (!wasInKeyRepeat && !mMiniKeyboardOnScreen) {
             detectAndSendKey(mCurrentKey, touchX, touchY, eventTime);
         }
         invalidateKey(keyIndex);
@@ -1397,7 +1379,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         dismissPopupKeyboard();
-        mAbortKey = true;
         showPreview(NOT_A_KEY);
         invalidateKey(mCurrentKey);
     }
