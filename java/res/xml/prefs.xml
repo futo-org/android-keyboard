@@ -107,10 +107,4 @@
             />
     </PreferenceCategory>            
 
-<CheckBoxPreference
-            android:key="debug_mode"
-            android:title="@string/prefs_debug_mode"
-            android:persistent="true"
-            android:defaultValue="false"
-            />
 </PreferenceScreen>
