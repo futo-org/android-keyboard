@@ -94,7 +94,7 @@ public class LatinIME extends InputMethodService
     private static final String PREF_QUICK_FIXES = "quick_fixes";
     private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
     private static final String PREF_AUTO_COMPLETE = "auto_complete";
-    private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
+    //private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     private static final String PREF_VOICE_MODE = "voice_mode";
 
     // Whether or not the user has used voice input before (and thus, whether to show the
@@ -193,7 +193,8 @@ public class LatinIME extends InputMethodService
     private boolean mAutoSpace;
     private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
-    private boolean mBigramSuggestionEnabled;
+    // Bigram Suggestion is disabled in this version.
+    private final boolean mBigramSuggestionEnabled = false;
     private boolean mAutoCorrectOn;
     // TODO move this state variable outside LatinIME
     private boolean mCapsLock;
@@ -2356,7 +2357,8 @@ public class LatinIME extends InputMethodService
         }
         mAutoCorrectEnabled = sp.getBoolean(PREF_AUTO_COMPLETE,
                 mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
-        mBigramSuggestionEnabled = sp.getBoolean(PREF_BIGRAM_SUGGESTIONS, true) & mShowSuggestions;
+        //mBigramSuggestionEnabled = sp.getBoolean(
+        //        PREF_BIGRAM_SUGGESTIONS, true) & mShowSuggestions;
         updateCorrectionMode();
         updateAutoTextEnabled(mResources.getConfiguration().locale);
         mLanguageSwitcher.loadLocales(sp);
