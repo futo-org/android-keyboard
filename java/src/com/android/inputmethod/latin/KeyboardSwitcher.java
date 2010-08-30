@@ -261,14 +261,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     || id.mXml == R.xml.kbd_symbols_black), mHasVoice);
             keyboard.setLanguageSwitcher(mLanguageSwitcher);
             keyboard.setBlackFlag(isBlackSym());
-            if (id.mKeyboardMode == KEYBOARDMODE_NORMAL
-                    || id.mKeyboardMode == KEYBOARDMODE_URL
-                    || id.mKeyboardMode == KEYBOARDMODE_IM
-                    || id.mKeyboardMode == KEYBOARDMODE_EMAIL
-                    || id.mKeyboardMode == KEYBOARDMODE_WEB
-                    ) {
-                keyboard.setExtension(R.xml.kbd_extension);
-            }
 
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();
@@ -439,7 +431,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                             mLayoutId + "," + newLayout, e);
                 }
             }
-            mInputView.setExtentionLayoutResId(THEMES[newLayout]);
             mInputView.setOnKeyboardActionListener(mInputMethodService);
             mLayoutId = newLayout;
         }
