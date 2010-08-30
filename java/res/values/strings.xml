@@ -332,9 +332,9 @@
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
 
-    <!-- Option to send logs -->
+    <!-- Preferences item for enabling to send user statistics to Google.   -->
     <string name="prefs_enable_log">Enable user feedback</string>
-    <!-- Description for sending logs -->
+    <!-- Description for enabling to send user statistics to Google. -->
     <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports to Google.</string>
 
     <string name="keyboard_layout">Keyboard Theme</string>
@@ -356,8 +356,6 @@
         <item>2</item>
         <item>3</item>
     </string-array>
-
-    <string name="prefs_debug_mode">Debug (Temporary)</string>
 
     <string name="subtype_mode_keyboard">keyboard</string>
     <string name="subtype_mode_voice">voice</string>

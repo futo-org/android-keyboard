@@ -76,7 +76,7 @@ public class LatinIMESettings extends PreferenceActivity
         mLogger = VoiceInputLogger.getLogger(this);
 
         mDebugMode = (CheckBoxPreference) findPreference(DEBUG_MODE_KEY);
-        updateDebugMode(mDebugMode.isChecked());
+        updateDebugMode();
     }
 
     @Override
@@ -111,16 +111,20 @@ public class LatinIMESettings extends PreferenceActivity
                 showVoiceConfirmation();
             }
         } else if (key.equals(DEBUG_MODE_KEY)) {
-            updateDebugMode(prefs.getBoolean(DEBUG_MODE_KEY, false));
+            if (mDebugMode != null) {
+                mDebugMode.setChecked(prefs.getBoolean(DEBUG_MODE_KEY, false));
+                updateDebugMode();
+            }
         }
         mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         updateVoiceModeSummary();
     }
 
-    private void updateDebugMode(boolean isDebugMode) {
+    private void updateDebugMode() {
         if (mDebugMode == null) {
             return;
         }
+        boolean isDebugMode = mDebugMode.isChecked();
         String version = "";
         try {
             PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -134,8 +138,8 @@ public class LatinIMESettings extends PreferenceActivity
             mDebugMode.setSummary("");
         } else {
             mDebugMode.setEnabled(true);
-            mDebugMode.setTitle(getResources().getString(R.string.prefs_debug_mode));
             mDebugMode.setSummary(version);
+            mDebugMode.setSummary("");
         }
     }
 

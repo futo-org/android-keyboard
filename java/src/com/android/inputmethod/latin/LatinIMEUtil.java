@@ -54,9 +54,6 @@ public class LatinIMEUtil {
         }
 
         public boolean tryGCOrWait(String metaData, Throwable t) {
-            if (LatinImeLogger.sDBG) {
-                Log.d(TAG, "Encountered Exception or Error. Try GC.");
-            }
             if (mGCTryCount == 0) {
                 System.gc();
             }
