@@ -8,8 +8,8 @@ LOCAL_SRC_FILES := \
 	src/dictionary.cpp \
 	src/char_utils.cpp
 
-LOCAL_NDK_VERSION := 4
-LOCAL_SDK_VERSION := 8
+#LOCAL_NDK_VERSION := 4
+#LOCAL_SDK_VERSION := 8
 
 LOCAL_MODULE := libjni_latinime
 

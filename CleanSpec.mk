@@ -47,6 +47,7 @@
 $(call add-clean-step, rm -rf $(OUT_DIR)/target/common/obj/APPS/LatinIME*)
 $(call add-clean-step, rm -rf $(PRODUCT_OUT)/system/app/LatinIME.apk)
 
+$(call add-clean-step, rm -rf $(PRODUCT_OUT)/obj/SHARED_LIBRARIES/libjni_latinime_intermediates)
 # ************************************************
 # NEWER CLEAN STEPS MUST BE AT THE END OF THE LIST
 # ************************************************
