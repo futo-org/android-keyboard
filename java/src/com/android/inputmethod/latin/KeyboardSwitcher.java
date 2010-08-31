@@ -37,11 +37,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public static final int MODE_EMAIL = 5;
     public static final int MODE_IM = 6;
     public static final int MODE_WEB = 7;
-    
-    public static final int MODE_TEXT_QWERTY = 0;
-    public static final int MODE_TEXT_ALPHA = 1;
-    public static final int MODE_TEXT_COUNT = 2;
-    
+
     public static final int KEYBOARDMODE_NORMAL = R.id.mode_normal;
     public static final int KEYBOARDMODE_URL = R.id.mode_url;
     public static final int KEYBOARDMODE_EMAIL = R.id.mode_email;
@@ -59,7 +55,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int CHAR_THEME_COLOR_BLACK = 1;
 
     // Tables which contains resource ids for each character theme color
-    private static final int[] KBD_ALPHA = new int[] {R.xml.kbd_alpha, R.xml.kbd_alpha_black};
     private static final int[] KBD_PHONE = new int[] {R.xml.kbd_phone, R.xml.kbd_phone_black};
     private static final int[] KBD_PHONE_SYMBOLS = new int[] {
         R.xml.kbd_phone_symbols, R.xml.kbd_phone_symbols_black};
@@ -92,7 +87,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private int mMode = MODE_NONE; /** One of the MODE_XXX values */
     private int mImeOptions;
-    private int mTextMode = MODE_TEXT_QWERTY;
     private boolean mIsSymbols;
     private boolean mHasVoice;
     private boolean mVoiceOnPrimary;
@@ -291,11 +285,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                         "getKeyboardId:" + mode + "," + imeOptions + "," + isSymbols);
                 /* fall through */
             case MODE_TEXT:
-                if (mTextMode == MODE_TEXT_ALPHA) {
-                    return new KeyboardId(
-                            KBD_ALPHA[charColorId], KEYBOARDMODE_NORMAL, true, hasVoice);
-                }
-                // Normally mTextMode should be MODE_TEXT_QWERTY.
                 return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_NORMAL, true, hasVoice);
             case MODE_SYMBOLS:
                 return new KeyboardId(KBD_SYMBOLS[charColorId], hasVoice);
@@ -319,10 +308,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     
     boolean isTextMode() {
         return mMode == MODE_TEXT;
-    }
-    
-    int getTextModeCount() {
-        return MODE_TEXT_COUNT;
     }
 
     boolean isAlphabetMode() {
