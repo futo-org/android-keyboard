@@ -76,7 +76,7 @@ public class PointerTracker {
     private final StringBuilder mPreviewLabel = new StringBuilder(1);
 
     // pressed key
-    private int mPreviousKey;
+    private int mPreviousKey = NOT_A_KEY;
 
     public PointerTracker(UIHandler handler, ProximityKeyDetector keyDetector, UIProxy proxy) {
         if (proxy == null || handler == null || keyDetector == null)
