@@ -21,7 +21,6 @@ import com.android.inputmethod.latin.LatinKeyboardBaseView.UIHandler;
 
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
-import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 public class PointerTracker {
@@ -116,23 +115,6 @@ public class PointerTracker {
                 mKeys[keyIndex].onPressed();
                 mProxy.invalidateKey(mKeys[keyIndex]);
             }
-        }
-    }
-
-    public void onModifiedTouchEvent(int action, int touchX, int touchY, long eventTime) {
-        switch (action) {
-            case MotionEvent.ACTION_DOWN:
-                onDownEvent(touchX, touchY, eventTime);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                onMoveEvent(touchX, touchY, eventTime);
-                break;
-            case MotionEvent.ACTION_UP:
-                onUpEvent(touchX, touchY, eventTime);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                onCancelEvent(touchX, touchY, eventTime);
-                break;
         }
     }
 

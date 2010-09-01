@@ -204,11 +204,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
 
     private final ProximityKeyDetector mProximityKeyDetector = new ProximityKeyDetector();
 
-    // Variables for dealing with multiple pointers
-    private int mOldPointerCount = 1;
-    private int mOldPointerX;
-    private int mOldPointerY;
-
     // Swipe gesture detector
     private final GestureDetector mGestureDetector;
     private final SwipeTracker mSwipeTracker = new SwipeTracker();
@@ -1070,16 +1065,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-        // Convert multi-pointer up/down events to single up/down events to
-        // deal with the typical multi-pointer behavior of two-thumb typing
         final int pointerCount = me.getPointerCount();
-        final int action = me.getAction();
+        final int action = me.getActionMasked();
         final long eventTime = me.getEventTime();
-
-        if (pointerCount > 1 && mOldPointerCount > 1) {
-            // Don't do anything when 2 or more pointers are down and moving.
-            return true;
-        }
 
         // Track the last few movements to look for spurious swipes.
         mSwipeTracker.addMovement(me);
@@ -1108,34 +1096,36 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             // Up event will pass through.
         }
 
-        // TODO: Should remove this implicit reference to id=0 pointer tracker in the future.
-        PointerTracker tracker = getPointerTracker(0);
-        int touchX = getTouchX(me.getX());
-        int touchY = getTouchY(me.getY());
-        if (pointerCount != mOldPointerCount) {
-            if (pointerCount == 1) {
-                // Send a down event for the latest pointer
-                tracker.onDownEvent(touchX, touchY, eventTime);
-                // If it's an up action, then deliver the up as well.
-                if (action == MotionEvent.ACTION_UP) {
-                    tracker.onUpEvent(touchX, touchY, eventTime);
-                }
-            } else {
-                // Send an up event for the last pointer
-                tracker.onUpEvent(mOldPointerX, mOldPointerY, eventTime);
+        if (action == MotionEvent.ACTION_MOVE) {
+            for (int index = 0; index < pointerCount; index++) {
+                int touchX = getTouchX(me.getX(index));
+                int touchY = getTouchY(me.getY(index));
+                int id = me.getPointerId(index);
+                PointerTracker tracker = getPointerTracker(id);
+                tracker.onMoveEvent(touchX, touchY, eventTime);
             }
-            mOldPointerCount = pointerCount;
-            return true;
         } else {
-            if (pointerCount == 1) {
-                tracker.onModifiedTouchEvent(action, touchX, touchY, eventTime);
-                mOldPointerX = touchX;
-                mOldPointerY = touchY;
-                return true;
+            int index = me.getActionIndex();
+            int touchX = getTouchX(me.getX(index));
+            int touchY = getTouchY(me.getY(index));
+            int id = me.getPointerId(index);
+            PointerTracker tracker = getPointerTracker(id);
+            switch (action) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
+                tracker.onDownEvent(touchX, touchY, eventTime);
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+                tracker.onUpEvent(touchX, touchY, eventTime);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                tracker.onCancelEvent(touchX, touchY, eventTime);
+                break;
             }
         }
 
-        return false;
+        return true;
     }
 
     protected void swipeRight() {
