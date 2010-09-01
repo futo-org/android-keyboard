@@ -33,6 +33,7 @@ import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -45,6 +46,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 /**
@@ -62,6 +64,7 @@ import java.util.Map;
  */
 public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         PointerTracker.UIProxy {
+    private static final String TAG = "LatinKeyboardBaseView";
     private static final boolean DEBUG = false;
 
     public static final int NOT_A_TOUCH_COORDINATE = -1;
@@ -199,6 +202,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     private OnKeyboardActionListener mKeyboardActionListener;
 
     private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
+    private final PointerQueue mPointerQueue = new PointerQueue();
     private final float mDebounceHysteresis;
 
     protected KeyDetector mKeyDetector = new ProximityKeyDetector();
@@ -315,6 +319,41 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             cancelDismissPreview();
         }
     };
+
+    static class PointerQueue {
+        private LinkedList<PointerTracker> mQueue = new LinkedList<PointerTracker>();
+
+        public void add(PointerTracker tracker) {
+            mQueue.add(tracker);
+        }
+
+        public int lastIndexOf(PointerTracker tracker) {
+            LinkedList<PointerTracker> queue = mQueue;
+            for (int index = queue.size() - 1; index >= 0; index--) {
+                PointerTracker t = queue.get(index);
+                if (t == tracker)
+                    return index;
+            }
+            return -1;
+        }
+
+        public void releasePointersOlderThan(PointerTracker tracker, long eventTime) {
+            LinkedList<PointerTracker> queue = mQueue;
+            int oldestPos = 0;
+            for (PointerTracker t = queue.get(oldestPos); t != tracker; t = queue.get(oldestPos)) {
+                if (t.isModifier()) {
+                    oldestPos++;
+                } else {
+                    t.onUpEvent(t.getLastX(), t.getLastY(), eventTime);
+                    queue.remove(oldestPos);
+                }
+            }
+        }
+
+        public void remove(PointerTracker tracker) {
+            mQueue.remove(tracker);
+        }
+    }
 
     public LatinKeyboardBaseView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
@@ -1107,19 +1146,41 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-                tracker.onDownEvent(touchX, touchY, eventTime);
+                onDownEvent(tracker, touchX, touchY, eventTime);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-                tracker.onUpEvent(touchX, touchY, eventTime);
+                onUpEvent(tracker, touchX, touchY, eventTime);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                tracker.onCancelEvent(touchX, touchY, eventTime);
+                onCancelEvent(tracker, touchX, touchY, eventTime);
                 break;
             }
         }
 
         return true;
+    }
+
+    private void onDownEvent(PointerTracker tracker, int touchX, int touchY, long eventTime) {
+        tracker.onDownEvent(touchX, touchY, eventTime);
+        mPointerQueue.add(tracker);
+    }
+
+    private void onUpEvent(PointerTracker tracker, int touchX, int touchY, long eventTime) {
+        int index = mPointerQueue.lastIndexOf(tracker);
+        if (index >= 0) {
+            mPointerQueue.releasePointersOlderThan(tracker, eventTime);
+        } else {
+            Log.w(TAG, "onUpEvent: corresponding down event not found for pointer "
+                    + tracker.mPointerId);
+        }
+        tracker.onUpEvent(touchX, touchY, eventTime);
+        mPointerQueue.remove(tracker);
+    }
+
+    private void onCancelEvent(PointerTracker tracker, int touchX, int touchY, long eventTime) {
+        tracker.onCancelEvent(touchX, touchY, eventTime);
+        mPointerQueue.remove(tracker);
     }
 
     protected void swipeRight() {
