@@ -39,11 +39,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -199,7 +199,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     /** Listener for {@link OnKeyboardActionListener}. */
     private OnKeyboardActionListener mKeyboardActionListener;
 
-    private final PointerTracker mPointerTracker;
+    private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
     private final float mDebounceHysteresis;
 
     private final ProximityKeyDetector mProximityKeyDetector = new ProximityKeyDetector();
@@ -473,13 +473,14 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         final boolean ignoreMultitouch = true;
         mGestureDetector = new GestureDetector(getContext(), listener, null, ignoreMultitouch);
         mGestureDetector.setIsLongpressEnabled(false);
-
-        mPointerTracker = new PointerTracker(mHandler, mProximityKeyDetector, this);
     }
 
     public void setOnKeyboardActionListener(OnKeyboardActionListener listener) {
         mKeyboardActionListener = listener;
-        mPointerTracker.setOnKeyboardActionListener(listener);
+        for (PointerTracker tracker : mPointerTrackers) {
+            if (tracker != null)
+                tracker.setOnKeyboardActionListener(listener);
+        }
     }
 
     /**
@@ -509,7 +510,10 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         List<Key> keys = mKeyboard.getKeys();
         mKeys = keys.toArray(new Key[keys.size()]);
         mProximityKeyDetector.setKeyboard(keyboard, mKeys);
-        mPointerTracker.setKeyboard(mKeys, mDebounceHysteresis);
+        for (PointerTracker tracker : mPointerTrackers) {
+            if (tracker != null)
+                tracker.setKeyboard(mKeys, mDebounceHysteresis);
+        }
         requestLayout();
         // Hint to reallocate the buffer if the size changed
         mKeyboardChanged = true;
@@ -779,19 +783,21 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
 
         if (DEBUG) {
             if (mShowTouchPoints) {
-                PointerTracker tracker = mPointerTracker;
-                int startX = tracker.getStartX();
-                int startY = tracker.getStartY();
-                int lastX = tracker.getLastX();
-                int lastY = tracker.getLastY();
-                paint.setAlpha(128);
-                paint.setColor(0xFFFF0000);
-                canvas.drawCircle(startX, startY, 3, paint);
-                canvas.drawLine(startX, startY, lastX, lastY, paint);
-                paint.setColor(0xFF0000FF);
-                canvas.drawCircle(lastX, lastY, 3, paint);
-                paint.setColor(0xFF00FF00);
-                canvas.drawCircle((startX + lastX) / 2, (startY + lastY) / 2, 2, paint);
+                for (PointerTracker tracker : mPointerTrackers) {
+                    if (tracker == null) continue;
+                    int startX = tracker.getStartX();
+                    int startY = tracker.getStartY();
+                    int lastX = tracker.getLastX();
+                    int lastY = tracker.getLastY();
+                    paint.setAlpha(128);
+                    paint.setColor(0xFFFF0000);
+                    canvas.drawCircle(startX, startY, 3, paint);
+                    canvas.drawLine(startX, startY, lastX, lastY, paint);
+                    paint.setColor(0xFF0000FF);
+                    canvas.drawCircle(lastX, lastY, 3, paint);
+                    paint.setColor(0xFF00FF00);
+                    canvas.drawCircle((startX + lastX) / 2, (startY + lastY) / 2, 2, paint);
+                }
             }
         }
 
@@ -801,8 +807,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
 
     // TODO: clean up this method.
     private void dismissKeyPreview() {
-        mPointerTracker.updateKey(NOT_A_KEY);
-        showPreview(NOT_A_KEY, mPointerTracker);
+        for (PointerTracker tracker : mPointerTrackers)
+            tracker.updateKey(NOT_A_KEY);
+        showPreview(NOT_A_KEY, null);
     }
 
     public void showPreview(int keyIndex, PointerTracker tracker) {
@@ -813,7 +820,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             if (keyIndex == NOT_A_KEY) {
                 mHandler.cancelPopupPreview();
                 mHandler.dismissPreview(DELAY_AFTER_PREVIEW);
-            } else {
+            } else if (tracker != null) {
                 mHandler.popupPreview(DELAY_BEFORE_PREVIEW, keyIndex, tracker);
             }
         }
@@ -1042,6 +1049,25 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         return (int)y + mVerticalCorrection - getPaddingTop();
     }
 
+    private PointerTracker getPointerTracker(final int id) {
+        final ArrayList<PointerTracker> pointers = mPointerTrackers;
+        final Key[] keys = mKeys;
+        final OnKeyboardActionListener listener = mKeyboardActionListener;
+
+        // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
+        for (int i = pointers.size(); i <= id; i++) {
+            final PointerTracker tracker =
+                new PointerTracker(mHandler, mProximityKeyDetector, this);
+            if (keys != null)
+                tracker.setKeyboard(keys, mDebounceHysteresis);
+            if (listener != null)
+                tracker.setOnKeyboardActionListener(listener);
+            pointers.add(tracker);
+        }
+
+        return pointers.get(id);
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent me) {
         // Convert multi-pointer up/down events to single up/down events to
@@ -1082,25 +1108,27 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             // Up event will pass through.
         }
 
+        // TODO: Should remove this implicit reference to id=0 pointer tracker in the future.
+        PointerTracker tracker = getPointerTracker(0);
         int touchX = getTouchX(me.getX());
         int touchY = getTouchY(me.getY());
         if (pointerCount != mOldPointerCount) {
             if (pointerCount == 1) {
                 // Send a down event for the latest pointer
-                mPointerTracker.onDownEvent(touchX, touchY, eventTime);
+                tracker.onDownEvent(touchX, touchY, eventTime);
                 // If it's an up action, then deliver the up as well.
                 if (action == MotionEvent.ACTION_UP) {
-                    mPointerTracker.onUpEvent(touchX, touchY, eventTime);
+                    tracker.onUpEvent(touchX, touchY, eventTime);
                 }
             } else {
                 // Send an up event for the last pointer
-                mPointerTracker.onUpEvent(mOldPointerX, mOldPointerY, eventTime);
+                tracker.onUpEvent(mOldPointerX, mOldPointerY, eventTime);
             }
             mOldPointerCount = pointerCount;
             return true;
         } else {
             if (pointerCount == 1) {
-                mPointerTracker.onModifiedTouchEvent(action, touchX, touchY, eventTime);
+                tracker.onModifiedTouchEvent(action, touchX, touchY, eventTime);
                 mOldPointerX = touchX;
                 mOldPointerY = touchY;
                 return true;
