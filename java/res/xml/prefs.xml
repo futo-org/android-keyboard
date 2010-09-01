@@ -67,7 +67,7 @@
             android:persistent="true"
             android:entryValues="@array/keyboard_layout_modes_values"
             android:entries="@array/keyboard_layout_modes"
-            android:defaultValue="3"
+            android:defaultValue="4"
             />
 
     <PreferenceScreen
