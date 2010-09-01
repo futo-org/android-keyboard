@@ -45,7 +45,7 @@ public class PointerTracker {
 
     private final UIProxy mProxy;
     private final UIHandler mHandler;
-    private final ProximityKeyDetector mKeyDetector;
+    private final KeyDetector mKeyDetector;
     private OnKeyboardActionListener mListener;
 
     private Key[] mKeys;
@@ -77,7 +77,7 @@ public class PointerTracker {
     // pressed key
     private int mPreviousKey = NOT_A_KEY;
 
-    public PointerTracker(UIHandler handler, ProximityKeyDetector keyDetector, UIProxy proxy) {
+    public PointerTracker(UIHandler handler, KeyDetector keyDetector, UIProxy proxy) {
         if (proxy == null || handler == null || keyDetector == null)
             throw new NullPointerException();
         mProxy = proxy;
