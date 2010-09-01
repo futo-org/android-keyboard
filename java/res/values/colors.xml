@@ -20,13 +20,13 @@
 <resources>
     <color name="candidate_normal">#FFFFFFFF</color>
     <color name="candidate_recommended">#FFF07020</color>
-    <color name="candidate_other">#ffB05010</color>
+    <color name="candidate_other">#ffD06015</color>
     <color name="latinkeyboard_transparent">#00000000</color>
     <color name="latinkeyboard_bar_language_shadow_white">#80000000</color>
     <color name="latinkeyboard_bar_language_shadow_black">#80FFFFFF</color>
-    <color name="latinkeyboard_bar_language_text">#FF808080</color>
+    <color name="latinkeyboard_bar_language_text">#FFC0C0C0</color>
     <color name="latinkeyboard_extension_background">#A0000000</color>
-    <color name="latinkeyboard_text_color">#FF000000</color>
+    <color name="latinkeyboard_feedback_language_text">#FFFFFFFF</color>
     <color name="latinkeyboard_key_color_white">#FFFFFFFF</color>
     <color name="latinkeyboard_key_color_black">#FF000000</color>
 </resources>
