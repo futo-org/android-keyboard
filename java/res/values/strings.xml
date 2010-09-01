@@ -337,17 +337,20 @@
     <!-- Description for enabling to send user statistics to Google. -->
     <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports to Google.</string>
 
+    <!-- Description for keyboard theme switcher -->
     <string name="keyboard_layout">Keyboard Theme</string>
     <string name="layout_basic" translatable="false">Basic</string>
     <string name="layout_high_contrast" translatable="false">Basic (High Contrast)</string>
-    <string name="layout_stone_bold"  translatable="false">Default (bold)</string>
-    <string name="layout_stone_normal"  translatable="false">Default (normal)</string>
+    <string name="layout_stone_bold"  translatable="false">Stone (bold)</string>
+    <string name="layout_stone_normal"  translatable="false">Stone (normal)</string>
+    <string name="layout_gingerbread"  translatable="false">Gingerbread</string>
 
     <string-array name="keyboard_layout_modes" translatable="false">
         <item>@string/layout_basic</item>
         <item>@string/layout_high_contrast</item>
         <item>@string/layout_stone_normal</item>
         <item>@string/layout_stone_bold</item>
+        <item>@string/layout_gingerbread</item>
     </string-array>
 
     <string-array name="keyboard_layout_modes_values" translatable="false">
@@ -355,6 +358,7 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
+        <item>4</item>
     </string-array>
 
     <string name="subtype_mode_keyboard">keyboard</string>
