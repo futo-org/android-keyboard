@@ -18,7 +18,7 @@
 */
 -->
 
-<com.android.inputmethod.latin.CandidateViewContainer
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -26,27 +26,6 @@
         android:background="@drawable/keyboard_suggest_strip"
         >
 
-    <LinearLayout
-            android:id="@+id/candidate_left_parent"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-        <ImageButton
-            android:id="@+id/candidate_left"
-            android:background="@drawable/ic_suggest_scroll_background"
-            android:src="@drawable/ic_suggest_strip_scroll_left_arrow" 
-            android:layout_width="36dp"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            />
-        
-        <ImageView
-            android:src="@drawable/keyboard_suggest_strip_divider"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            />
-    </LinearLayout>
-    
     <com.android.inputmethod.latin.CandidateView
         android:id="@+id/candidates"
         android:layout_width="wrap_content"
@@ -54,26 +33,4 @@
         android:layout_weight="1"
         />
         
-    <LinearLayout
-            android:id="@+id/candidate_right_parent"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            android:orientation="horizontal">
-        <ImageView
-            android:src="@drawable/keyboard_suggest_strip_divider"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            />
-        
-        <ImageButton
-            android:id="@+id/candidate_right"
-            android:background="@drawable/ic_suggest_scroll_background"
-            android:src="@drawable/ic_suggest_strip_scroll_right_arrow" 
-            android:layout_width="36dp"
-            android:layout_height="match_parent"
-            android:clickable="true"
-            />
-    </LinearLayout>        
-    
-</com.android.inputmethod.latin.CandidateViewContainer>
+</LinearLayout>
