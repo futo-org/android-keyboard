@@ -61,6 +61,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -153,7 +154,7 @@ public class LatinIME extends InputMethodService
     private static final int POS_METHOD = 1;
 
     //private LatinKeyboardView mInputView;
-    private CandidateViewContainer mCandidateViewContainer;
+    private LinearLayout mCandidateViewContainer;
     private CandidateView mCandidateView;
     private Suggest mSuggest;
     private CompletionInfo[] mCompletions;
@@ -538,9 +539,8 @@ public class LatinIME extends InputMethodService
     @Override
     public View onCreateCandidatesView() {
         mKeyboardSwitcher.makeKeyboards(true);
-        mCandidateViewContainer = (CandidateViewContainer) getLayoutInflater().inflate(
+        mCandidateViewContainer = (LinearLayout) getLayoutInflater().inflate(
                 R.layout.candidates, null);
-        mCandidateViewContainer.initViews();
         mCandidateView = (CandidateView) mCandidateViewContainer.findViewById(R.id.candidates);
         mCandidateView.setService(this);
         setCandidatesViewShown(true);
