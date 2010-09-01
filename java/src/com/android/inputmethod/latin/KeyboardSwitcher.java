@@ -44,11 +44,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public static final int KEYBOARDMODE_IM = R.id.mode_im;
     public static final int KEYBOARDMODE_WEB = R.id.mode_webentry;
 
-    public static final String DEFAULT_LAYOUT_ID = "3";
+    public static final String DEFAULT_LAYOUT_ID = "4";
     public static final String PREF_KEYBOARD_LAYOUT = "keyboard_layout";
     private static final int[] THEMES = new int [] {
         R.layout.input_basic, R.layout.input_basic_highcontrast, R.layout.input_stone_normal,
-        R.layout.input_stone_bold};
+        R.layout.input_stone_bold, R.layout.input_gingerbread};
 
     // Ids for each characters' color in the keyboard
     private static final int CHAR_THEME_COLOR_WHITE = 0;
@@ -78,7 +78,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     Context mContext;
     LatinIME mInputMethodService;
-    
+
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
 
