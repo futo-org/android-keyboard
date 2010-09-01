@@ -500,8 +500,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             if (!wasInKeyRepeat && !mProxy.isMiniKeyboardOnScreen()) {
                 detectAndSendKey(mCurrentKey, touchX, touchY, eventTime);
             }
-            if (keyIndex != NOT_A_KEY)
+            if (keyIndex != NOT_A_KEY && keyIndex < mKeys.length) {
                 mProxy.invalidateKey(mKeys[keyIndex]);
+            }
         }
 
         public void onCancelEvent(int touchX, int touchY, long eventTime) {
@@ -509,8 +510,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
             mHandler.cancelPopupPreview();
             mProxy.dismissPopupKeyboard();
             showKeyPreviewAndUpdateKey(NOT_A_KEY);
-            if (mCurrentKey != NOT_A_KEY)
+            if (mCurrentKey != NOT_A_KEY && mCurrentKey < mKeys.length) {
                mProxy.invalidateKey(mKeys[mCurrentKey]);
+            }
         }
 
         public void repeatKey(int keyIndex) {
@@ -670,7 +672,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener 
         }
 
         private void checkMultiTap(long eventTime, int keyIndex) {
-            if (keyIndex == NOT_A_KEY) return;
+            if (keyIndex == NOT_A_KEY || keyIndex >= mKeys.length) return;
             Key key = mKeys[keyIndex];
             if (key.codes.length > 1) {
                 mInMultiTap = true;
