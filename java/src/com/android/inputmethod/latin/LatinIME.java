@@ -964,6 +964,7 @@ public class LatinIME extends InputMethodService
 
     private void postUpdateShiftKeyState() {
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
+        // TODO: Should remove this 300ms delay?
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SHIFT_STATE), 300);
     }
 
@@ -1089,7 +1090,7 @@ public class LatinIME extends InputMethodService
                 LatinImeLogger.logOnDelete();
                 break;
             case Keyboard.KEYCODE_SHIFT:
-                handleShift();
+                // Shift key is handled in onPress().
                 break;
             case Keyboard.KEYCODE_CANCEL:
                 if (mOptionsDialog == null || !mOptionsDialog.isShowing()) {
@@ -1106,6 +1107,7 @@ public class LatinIME extends InputMethodService
                 toggleLanguage(false, false);
                 break;
             case Keyboard.KEYCODE_MODE_CHANGE:
+                // TODO: Mode change (symbol key) should be handled in onPress().
                 changeKeyboardMode();
                 break;
             case LatinKeyboardView.KEYCODE_VOICE:
@@ -1244,19 +1246,6 @@ public class LatinIME extends InputMethodService
             }
         } else {
             switcher.toggleShift();
-        }
-    }
-
-    private void handleCapsLock() {
-        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (switcher.isAlphabetMode()) {
-            mCapsLock = !mCapsLock;
-            if (mCapsLock) {
-                switcher.setShiftLocked(true);
-            } else {
-                switcher.setShifted(false);
-            }
         }
     }
 
@@ -2156,6 +2145,10 @@ public class LatinIME extends InputMethodService
     public void onPress(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
+        if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+            handleShift();
+        }
+        // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
     }
 
     public void onRelease(int primaryCode) {
