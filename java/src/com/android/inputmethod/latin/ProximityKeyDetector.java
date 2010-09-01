@@ -16,48 +16,24 @@
 
 package com.android.inputmethod.latin;
 
-import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 
 import java.util.Arrays;
 
-class ProximityKeyDetector {
+class ProximityKeyDetector extends KeyDetector {
     private static final int MAX_NEARBY_KEYS = 12;
-
-    private Keyboard mKeyboard;
-    private Key[] mKeys;
-
-    private boolean mProximityCorrectOn;
-    private int mProximityThresholdSquare;
 
     // working area
     private int[] mDistances = new int[MAX_NEARBY_KEYS];
 
-    public void setKeyboard(Keyboard keyboard, Key[] keys) {
-        if (keyboard == null || keys == null)
-            throw new NullPointerException();
-        mKeyboard = keyboard;
-        mKeys = keys;
-    }
-
-    public void setProximityCorrectionEnabled(boolean enabled) {
-        mProximityCorrectOn = enabled;
-    }
-
-    public boolean isProximityCorrectionEnabled() {
-        return mProximityCorrectOn;
-    }
-
-    public void setProximityThreshold(int threshold) {
-        mProximityThresholdSquare = threshold * threshold;
-    }
-
+    @Override
     public int[] newCodeArray() {
         int[] codes = new int[MAX_NEARBY_KEYS];
         Arrays.fill(codes, LatinKeyboardBaseView.NOT_A_KEY);
         return codes;
     }
 
+    @Override
     public int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys) {
         final Key[] keys = mKeys;
         if (keys == null)

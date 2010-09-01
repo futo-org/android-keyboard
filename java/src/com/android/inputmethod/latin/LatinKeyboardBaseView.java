@@ -45,7 +45,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -202,7 +201,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
     private final float mDebounceHysteresis;
 
-    private final ProximityKeyDetector mProximityKeyDetector = new ProximityKeyDetector();
+    protected KeyDetector mKeyDetector = new ProximityKeyDetector();
 
     // Swipe gesture detector
     private final GestureDetector mGestureDetector;
@@ -473,8 +472,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     public void setOnKeyboardActionListener(OnKeyboardActionListener listener) {
         mKeyboardActionListener = listener;
         for (PointerTracker tracker : mPointerTrackers) {
-            if (tracker != null)
-                tracker.setOnKeyboardActionListener(listener);
+            tracker.setOnKeyboardActionListener(listener);
         }
     }
 
@@ -501,13 +499,10 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         mKeyboard = keyboard;
-        LatinImeLogger.onSetKeyboard(mKeyboard);
-        List<Key> keys = mKeyboard.getKeys();
-        mKeys = keys.toArray(new Key[keys.size()]);
-        mProximityKeyDetector.setKeyboard(keyboard, mKeys);
+        LatinImeLogger.onSetKeyboard(keyboard);
+        mKeys = mKeyDetector.setKeyboard(keyboard);
         for (PointerTracker tracker : mPointerTrackers) {
-            if (tracker != null)
-                tracker.setKeyboard(mKeys, mDebounceHysteresis);
+            tracker.setKeyboard(mKeys, mDebounceHysteresis);
         }
         requestLayout();
         // Hint to reallocate the buffer if the size changed
@@ -599,14 +594,14 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
      * @param enabled whether or not the proximity correction is enabled
      */
     public void setProximityCorrectionEnabled(boolean enabled) {
-        mProximityKeyDetector.setProximityCorrectionEnabled(enabled);
+        mKeyDetector.setProximityCorrectionEnabled(enabled);
     }
 
     /**
      * Returns true if proximity correction is enabled.
      */
     public boolean isProximityCorrectionEnabled() {
-        return mProximityKeyDetector.isProximityCorrectionEnabled();
+        return mKeyDetector.isProximityCorrectionEnabled();
     }
 
     /**
@@ -658,7 +653,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             dimensionSum += Math.min(key.width, key.height) + key.gap;
         }
         if (dimensionSum < 0 || length == 0) return;
-        mProximityKeyDetector.setProximityThreshold((int) (dimensionSum * 1.4f / length));
+        mKeyDetector.setProximityThreshold((int) (dimensionSum * 1.4f / length));
     }
 
     @Override
@@ -1052,7 +1047,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = pointers.size(); i <= id; i++) {
             final PointerTracker tracker =
-                new PointerTracker(mHandler, mProximityKeyDetector, this);
+                new PointerTracker(mHandler, mKeyDetector, this);
             if (keys != null)
                 tracker.setKeyboard(keys, mDebounceHysteresis);
             if (listener != null)
