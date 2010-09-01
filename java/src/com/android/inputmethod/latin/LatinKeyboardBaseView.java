@@ -774,7 +774,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         if (DEBUG) {
             if (mShowTouchPoints) {
                 for (PointerTracker tracker : mPointerTrackers) {
-                    if (tracker == null) continue;
                     int startX = tracker.getStartX();
                     int startY = tracker.getStartY();
                     int lastX = tracker.getLastX();
@@ -1047,7 +1046,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = pointers.size(); i <= id; i++) {
             final PointerTracker tracker =
-                new PointerTracker(mHandler, mKeyDetector, this);
+                new PointerTracker(i, mHandler, mKeyDetector, this);
             if (keys != null)
                 tracker.setKeyboard(keys, mDebounceHysteresis);
             if (listener != null)

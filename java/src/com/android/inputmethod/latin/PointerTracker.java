@@ -32,6 +32,8 @@ public class PointerTracker {
         public boolean isMiniKeyboardOnScreen();
     }
 
+    public final int mPointerId;
+
     // Timing constants
     private static final int REPEAT_START_DELAY = 400;
     /* package */  static final int REPEAT_INTERVAL = 50; // ~20 keys per second
@@ -77,9 +79,10 @@ public class PointerTracker {
     // pressed key
     private int mPreviousKey = NOT_A_KEY;
 
-    public PointerTracker(UIHandler handler, KeyDetector keyDetector, UIProxy proxy) {
+    public PointerTracker(int id, UIHandler handler, KeyDetector keyDetector, UIProxy proxy) {
         if (proxy == null || handler == null || keyDetector == null)
             throw new NullPointerException();
+        mPointerId = id;
         mProxy = proxy;
         mHandler = handler;
         mKeyDetector = keyDetector;
