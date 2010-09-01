@@ -32,6 +32,7 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
 
+            latin:keyBackground="@drawable/btn_keyboard_key_gingerbread"
             latin:keyPreviewLayout="@layout/keyboard_key_preview"
             latin:popupLayout="@layout/keyboard_popup_keyboard"
             />

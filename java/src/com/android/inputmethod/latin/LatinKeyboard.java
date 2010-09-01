@@ -732,7 +732,7 @@ public class LatinKeyboard extends Keyboard {
         public void draw(Canvas canvas) {
             canvas.save();
             if (mHitThreshold) {
-                mTextPaint.setColor(mRes.getColor(R.color.latinkeyboard_text_color));
+                mTextPaint.setColor(mRes.getColor(R.color.latinkeyboard_feedback_language_text));
                 canvas.clipRect(0, 0, mWidth, mHeight);
                 if (mCurrentLanguage == null) {
                     mCurrentLanguage = getInputLanguage(mWidth, mTextPaint);
