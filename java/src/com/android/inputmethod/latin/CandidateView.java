@@ -107,7 +107,6 @@ public class CandidateView extends View {
                     }
                     break;
             }
-            
         }
     };
 
@@ -331,6 +330,10 @@ public class CandidateView extends View {
         onDraw(null);
         invalidate();
         requestLayout();
+    }
+
+    public boolean isShowingAddToDictionaryHint() {
+        return mShowingAddToDictionary;
     }
 
     public void showAddToDictionaryHint(CharSequence word) {
