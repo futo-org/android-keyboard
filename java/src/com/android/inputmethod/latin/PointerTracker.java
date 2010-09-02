@@ -27,6 +27,7 @@ import android.view.ViewConfiguration;
 public class PointerTracker {
     private static final String TAG = "PointerTracker";
     private static final boolean DEBUG = false;
+    private static final boolean DEBUG_MOVE = true && DEBUG;
 
     public interface UIProxy {
         public void invalidateKey(Key key);
@@ -155,12 +156,12 @@ public class PointerTracker {
                 repeatKey(keyIndex);
                 mHandler.startKeyRepeatTimer(REPEAT_START_DELAY, keyIndex, this);
             }
-            mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
+            mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
         }
         showKeyPreviewAndUpdateKey(keyIndex);
         updateMoveDebouncing(touchX, touchY);
         if (DEBUG)
-            Log.d(TAG, "onDownEvent: [" + mPointerId + "] modifier=" + isModifier());
+            debugLog("onDownEvent:", touchX, touchY);
     }
 
     public void onMoveEvent(int touchX, int touchY, long eventTime) {
@@ -169,7 +170,7 @@ public class PointerTracker {
             if (mCurrentKey == NOT_A_KEY) {
                 updateTimeDebouncing(eventTime);
                 mCurrentKey = keyIndex;
-                mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
+                mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
             } else if (isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
                 updateTimeDebouncing(eventTime);
             } else {
@@ -177,7 +178,7 @@ public class PointerTracker {
                 resetTimeDebouncing(eventTime, mCurrentKey);
                 resetMoveDebouncing();
                 mCurrentKey = keyIndex;
-                mHandler.startLongPressTimer(keyIndex, LONGPRESS_TIMEOUT);
+                mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
             }
         } else {
             mHandler.cancelLongPressTimer();
@@ -190,11 +191,13 @@ public class PointerTracker {
          */
         showKeyPreviewAndUpdateKey(isMinorTimeBounce() ? mLastKey : mCurrentKey);
         updateMoveDebouncing(touchX, touchY);
+        if (DEBUG_MOVE)
+            debugLog("onMoveEvent:", touchX, touchY);
     }
 
     public void onUpEvent(int touchX, int touchY, long eventTime) {
         if (DEBUG)
-            Log.d(TAG, "onUpEvent: [" + mPointerId + "] modifier=" + isModifier());
+            debugLog("onUpEvent  :", touchX, touchY);
         int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
         boolean wasInKeyRepeat = mHandler.isInKeyRepeat();
         mHandler.cancelKeyTimers();
@@ -222,7 +225,7 @@ public class PointerTracker {
 
     public void onCancelEvent(int touchX, int touchY, long eventTime) {
         if (DEBUG)
-            Log.d(TAG, "onCancelEvent: [" + mPointerId + "]");
+            debugLog("onCancelEvt:", touchX, touchY);
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         mProxy.dismissPopupKeyboard();
@@ -411,5 +414,19 @@ public class PointerTracker {
         if (!isMultiTap) {
             resetMultiTap();
         }
+    }
+
+    private void debugLog(String title, int x, int y) {
+        Key key = getKey(mCurrentKey);
+        final String code;
+        if (key == null) {
+            code = "----";
+        } else {
+            int primaryCode = key.codes[0];
+            code = String.format((primaryCode < 0) ? "%4d" : "0x%02x", primaryCode);
+        }
+         Log.d(TAG,
+                String.format("%s [%d] %d,%d %s %s", title, mPointerId, x, y, code,
+                        isModifier() ? "modifier" : ""));
     }
 }
