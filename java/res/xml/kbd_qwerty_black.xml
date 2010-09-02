@@ -201,5 +201,4 @@
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
                 android:keyWidth="15%p" android:keyEdgeFlags="right"/>
     </Row>
-
 </Keyboard>

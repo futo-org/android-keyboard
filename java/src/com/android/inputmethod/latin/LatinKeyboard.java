@@ -628,9 +628,20 @@ public class LatinKeyboard extends Keyboard {
     }
 
     class LatinKey extends Keyboard.Key {
-        
+
+        // functional normal state (with properties)
+        private final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
+                android.R.attr.state_single
+        };
+
+        // functional pressed state (with properties)
+        private final int[] KEY_STATE_FUNCTIONAL_PRESSED = {
+                android.R.attr.state_single,
+                android.R.attr.state_pressed
+        };
+
         private boolean mShiftLockEnabled;
-        
+
         public LatinKey(Resources res, Keyboard.Row parent, int x, int y, 
                 XmlResourceParser parser) {
             super(res, parent, x, y, parser);
@@ -639,9 +650,15 @@ public class LatinKeyboard extends Keyboard {
                 popupResId = 0;
             }
         }
-        
-        void enableShiftLock() {
+
+        private void enableShiftLock() {
             mShiftLockEnabled = true;
+        }
+
+        // sticky is used for shift key.  If a key is not sticky and is modifier,
+        // the key will be treated as functional.
+        private boolean isFunctionalKey() {
+            return !sticky && modifier;
         }
 
         @Override
@@ -664,6 +681,18 @@ public class LatinKeyboard extends Keyboard {
 
         boolean isInsideSuper(int x, int y) {
             return super.isInside(x, y);
+        }
+
+        @Override
+        public int[] getCurrentDrawableState() {
+            if (isFunctionalKey()) {
+                if (pressed) {
+                    return KEY_STATE_FUNCTIONAL_PRESSED;
+                } else {
+                    return KEY_STATE_FUNCTIONAL_NORMAL;
+                }
+            }
+            return super.getCurrentDrawableState();
         }
     }
 
