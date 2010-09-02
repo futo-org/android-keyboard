@@ -19,11 +19,12 @@ package com.android.inputmethod.latin;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 
+import java.util.Arrays;
 import java.util.List;
 
 abstract class KeyDetector {
     protected Keyboard mKeyboard;
-    protected Key[] mKeys;
+    private Key[] mKeys;
 
     protected int mCorrectionX;
     protected int mCorrectionY;
@@ -50,6 +51,13 @@ abstract class KeyDetector {
         return y + mCorrectionY;
     }
 
+    protected Key[] getKeys() {
+        if (mKeys == null)
+            throw new IllegalStateException("keyboard isn't set");
+        // mKeyboard is guaranteed not null at setKeybaord() method
+        return mKeys;
+    }
+
     public void setProximityCorrectionEnabled(boolean enabled) {
         mProximityCorrectOn = enabled;
     }
@@ -62,7 +70,13 @@ abstract class KeyDetector {
         mProximityThresholdSquare = threshold * threshold;
     }
 
-    abstract public int[] newCodeArray();
+    public int[] newCodeArray() {
+        int[] codes = new int[getMaxNearbyKeys()];
+        Arrays.fill(codes, LatinKeyboardBaseView.NOT_A_KEY);
+        return codes;
+    }
+
+    abstract protected int getMaxNearbyKeys();
 
     abstract public int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys);
 }
