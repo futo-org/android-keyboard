@@ -254,9 +254,11 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
                     startKeyRepeatTimer(REPEAT_INTERVAL, msg.arg1, tracker);
                     break;
                 }
-                case MSG_LONGPRESS_KEY:
-                    openPopupIfRequired(msg.arg1);
+                case MSG_LONGPRESS_KEY: {
+                    final PointerTracker tracker = (PointerTracker)msg.obj;
+                    openPopupIfRequired(msg.arg1, tracker);
                     break;
+                }
             }
         }
 
@@ -299,9 +301,9 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             return mInKeyRepeat;
         }
 
-        public void startLongPressTimer(int keyIndex, long delay) {
+        public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {
             removeMessages(MSG_LONGPRESS_KEY);
-            sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, keyIndex, 0), delay);
+            sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, keyIndex, 0, tracker), delay);
         }
 
         public void cancelLongPressTimer() {
@@ -962,16 +964,15 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
                 key.x + key.width + getPaddingLeft(), key.y + key.height + getPaddingTop());
     }
 
-    private boolean openPopupIfRequired(int keyIndex) {
+    private boolean openPopupIfRequired(int keyIndex, PointerTracker tracker) {
         // Check if we have a popup layout specified first.
         if (mPopupLayout == 0) {
             return false;
         }
-        if (keyIndex < 0 || keyIndex >= mKeys.length) {
-            return false;
-        }
 
-        Key popupKey = mKeys[keyIndex];
+        Key popupKey = tracker.getKey(keyIndex);
+        if (popupKey == null)
+            return false;
         boolean result = onLongPress(popupKey);
         if (result) {
             dismissKeyPreview();
