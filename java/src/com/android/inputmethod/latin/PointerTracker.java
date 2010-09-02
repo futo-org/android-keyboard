@@ -21,9 +21,13 @@ import com.android.inputmethod.latin.LatinKeyboardBaseView.UIHandler;
 
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
+import android.util.Log;
 import android.view.ViewConfiguration;
 
 public class PointerTracker {
+    private static final String TAG = "PointerTracker";
+    private static final boolean DEBUG = false;
+
     public interface UIProxy {
         public void invalidateKey(Key key);
         public void showPreview(int keyIndex, PointerTracker tracker);
@@ -108,6 +112,15 @@ public class PointerTracker {
         return isValidKeyIndex(keyIndex) ? mKeys[keyIndex] : null;
     }
 
+    public boolean isModifier() {
+        Key key = getKey(mCurrentKey);
+        if (key == null)
+            return false;
+        int primaryCode = key.codes[0];
+        // TODO: KEYCODE_MODE_CHANGE (symbol) will be also a modifier key
+        return primaryCode == Keyboard.KEYCODE_SHIFT;
+    }
+
     public void updateKey(int keyIndex) {
         int oldKeyIndex = mPreviousKey;
         mPreviousKey = keyIndex;
@@ -146,6 +159,8 @@ public class PointerTracker {
         }
         showKeyPreviewAndUpdateKey(keyIndex);
         updateMoveDebouncing(touchX, touchY);
+        if (DEBUG)
+            Log.d(TAG, "onDownEvent: [" + mPointerId + "] modifier=" + isModifier());
     }
 
     public void onMoveEvent(int touchX, int touchY, long eventTime) {
@@ -178,6 +193,8 @@ public class PointerTracker {
     }
 
     public void onUpEvent(int touchX, int touchY, long eventTime) {
+        if (DEBUG)
+            Log.d(TAG, "onUpEvent: [" + mPointerId + "] modifier=" + isModifier());
         int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
         boolean wasInKeyRepeat = mHandler.isInKeyRepeat();
         mHandler.cancelKeyTimers();
@@ -204,6 +221,8 @@ public class PointerTracker {
     }
 
     public void onCancelEvent(int touchX, int touchY, long eventTime) {
+        if (DEBUG)
+            Log.d(TAG, "onCancelEvent: [" + mPointerId + "]");
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         mProxy.dismissPopupKeyboard();
@@ -305,7 +324,8 @@ public class PointerTracker {
 
     private void showKeyPreviewAndUpdateKey(int keyIndex) {
         updateKey(keyIndex);
-        mProxy.showPreview(keyIndex, this);
+        if (!isModifier())
+            mProxy.showPreview(keyIndex, this);
     }
 
     private void detectAndSendKey(int index, int x, int y, long eventTime) {

@@ -226,6 +226,9 @@ public class LatinIME extends InputMethodService
     private int mDeleteCount;
     private long mLastKeyTime;
 
+    // Shift modifier key state
+    private ModifierKeyState mShiftKeyState = new ModifierKeyState();
+
     private Tutorial mTutorial;
 
     private AudioManager mAudioManager;
@@ -975,7 +978,8 @@ public class LatinIME extends InputMethodService
     public void updateShiftKeyState(EditorInfo attr) {
         InputConnection ic = getCurrentInputConnection();
         if (ic != null && attr != null && mKeyboardSwitcher.isAlphabetMode()) {
-            mKeyboardSwitcher.setShifted(mCapsLock || getCursorCapsMode(ic, attr) != 0);
+            mKeyboardSwitcher.setShifted(mShiftKeyState.isMomentary() || mCapsLock
+                    || getCursorCapsMode(ic, attr) != 0);
         }
     }
 
@@ -1232,12 +1236,20 @@ public class LatinIME extends InputMethodService
         ic.endBatchEdit();
     }
 
+    private void resetShift() {
+        handleShiftInternal(true);
+    }
+
     private void handleShift() {
+        handleShiftInternal(false);
+    }
+
+    private void handleShiftInternal(boolean forceNormal) {
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getInputView();
         if (switcher.isAlphabetMode()) {
-            if (mCapsLock) {
+            if (mCapsLock || forceNormal) {
                 mCapsLock = false;
                 switcher.setShifted(false);
             } else if (inputView != null) {
@@ -2145,15 +2157,26 @@ public class LatinIME extends InputMethodService
         vibrate();
         playKeyClick(primaryCode);
         if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+            mShiftKeyState.onPress();
             handleShift();
+        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
+        } else {
+            mShiftKeyState.onOtherKeyPressed();
         }
-        // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
     }
 
     public void onRelease(int primaryCode) {
         // Reset any drag flags in the keyboard
         ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).keyReleased();
         //vibrate();
+        if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+            if (mShiftKeyState.isMomentary())
+                resetShift();
+            mShiftKeyState.onRelease();
+        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
+        }
     }
 
     private FieldContext makeFieldContext() {
