@@ -38,13 +38,4 @@
             latin:shadowColor="@color/latinkeyboard_key_color_white"
             latin:popupLayout="@layout/input_stone_popup"
         />
-    <ImageButton android:id="@+id/closeButton"
-        android:background="@android:color/transparent"
-        android:src="@drawable/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="8dp"
-        android:clickable="true"
-        />
 </LinearLayout>

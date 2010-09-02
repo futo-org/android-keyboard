@@ -62,8 +62,7 @@ import java.util.Map;
  * @attr ref R.styleable#LatinKeyboardBaseView_verticalCorrection
  * @attr ref R.styleable#LatinKeyboardBaseView_popupLayout
  */
-public class LatinKeyboardBaseView extends View implements View.OnClickListener,
-        PointerTracker.UIProxy {
+public class LatinKeyboardBaseView extends View implements PointerTracker.UIProxy {
     private static final String TAG = "LatinKeyboardBaseView";
     private static final boolean DEBUG = false;
 
@@ -646,14 +645,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         return mKeyDetector.isProximityCorrectionEnabled();
     }
 
-    /**
-     * Popup keyboard close button clicked.
-     * @hide
-     */
-    public void onClick(View v) {
-        dismissPopupKeyboard();
-    }
-
     protected CharSequence adjustCase(CharSequence label) {
         if (mKeyboard.isShifted() && label != null && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
@@ -1006,8 +997,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
                 mMiniKeyboardContainer = inflater.inflate(mPopupLayout, null);
                 mMiniKeyboard = (LatinKeyboardBaseView) mMiniKeyboardContainer.findViewById(
                        R.id.LatinKeyboardBaseView);
-                View closeButton = mMiniKeyboardContainer.findViewById(R.id.closeButton);
-                if (closeButton != null) closeButton.setOnClickListener(this);
                 mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
                     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
                         mKeyboardActionListener.onKey(primaryCode, keyCodes, x, y);
