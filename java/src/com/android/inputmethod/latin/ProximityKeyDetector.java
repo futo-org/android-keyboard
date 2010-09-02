@@ -35,8 +35,8 @@ class ProximityKeyDetector extends KeyDetector {
 
     @Override
     public int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys) {
-        int touchX = getTouchX(x);
-        int touchY = getTouchY(y);
+        final int touchX = getTouchX(x);
+        final int touchY = getTouchY(y);
         final Key[] keys = mKeys;
         if (keys == null)
             throw new IllegalStateException("keyboard isn't set");
