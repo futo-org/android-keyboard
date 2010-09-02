@@ -27,20 +27,15 @@ class ProximityKeyDetector extends KeyDetector {
     private int[] mDistances = new int[MAX_NEARBY_KEYS];
 
     @Override
-    public int[] newCodeArray() {
-        int[] codes = new int[MAX_NEARBY_KEYS];
-        Arrays.fill(codes, LatinKeyboardBaseView.NOT_A_KEY);
-        return codes;
+    protected int getMaxNearbyKeys() {
+        return MAX_NEARBY_KEYS;
     }
 
     @Override
     public int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys) {
+        final Key[] keys = getKeys();
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
-        final Key[] keys = mKeys;
-        if (keys == null)
-            throw new IllegalStateException("keyboard isn't set");
-        // mKeyboard is guaranteed not null at setKeybaord() method
         int primaryIndex = LatinKeyboardBaseView.NOT_A_KEY;
         int closestKey = LatinKeyboardBaseView.NOT_A_KEY;
         int closestKeyDist = mProximityThresholdSquare + 1;
