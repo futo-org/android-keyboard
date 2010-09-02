@@ -27,7 +27,7 @@ import android.view.ViewConfiguration;
 public class PointerTracker {
     private static final String TAG = "PointerTracker";
     private static final boolean DEBUG = false;
-    private static final boolean DEBUG_MOVE = true && DEBUG;
+    private static final boolean DEBUG_MOVE = DEBUG && true;
 
     public interface UIProxy {
         public void invalidateKey(Key key);
@@ -425,8 +425,7 @@ public class PointerTracker {
             int primaryCode = key.codes[0];
             code = String.format((primaryCode < 0) ? "%4d" : "0x%02x", primaryCode);
         }
-         Log.d(TAG,
-                String.format("%s [%d] %3d,%3d %s %s", title, mPointerId, x, y, code,
-                        isModifier() ? "modifier" : ""));
+        Log.d(TAG, String.format("%s [%d] %3d,%3d %s %s", title, mPointerId, x, y, code,
+                isModifier() ? "modifier" : ""));
     }
 }
