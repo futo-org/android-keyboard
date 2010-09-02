@@ -165,7 +165,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     private float mShadowRadius;
     private Drawable mKeyBackground;
     private float mBackgroundDimAmount;
-    private int mVerticalCorrection;
+    private float mVerticalCorrection;
     private int mPreviewOffset;
     private int mPreviewHeight;
     private int mPopupLayout;
@@ -541,7 +541,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         mHandler.cancelPopupPreview();
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(keyboard);
-        mKeys = mKeyDetector.setKeyboard(keyboard);
+        mKeys = mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
+                -getPaddingTop() + mVerticalCorrection);
         for (PointerTracker tracker : mPointerTrackers) {
             tracker.setKeyboard(mKeys, mDebounceHysteresis);
         }
@@ -611,9 +612,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
 
     public int getSymbolColorSheme() {
         return mSymbolColorScheme;
-    }
-
-    public void setVerticalCorrection(int verticalOffset) {
     }
 
     public void setPopupParent(View v) {
@@ -1070,14 +1068,6 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         return mMiniKeyboardOnScreen;
     }
 
-    private int getTouchX(float x) {
-        return (int)x - getPaddingLeft();
-    }
-
-    private int getTouchY(float y) {
-        return (int)y + mVerticalCorrection - getPaddingTop();
-    }
-
     private PointerTracker getPointerTracker(final int id) {
         final ArrayList<PointerTracker> pointers = mPointerTrackers;
         final Key[] keys = mKeys;
@@ -1132,29 +1122,29 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
 
         if (action == MotionEvent.ACTION_MOVE) {
             for (int index = 0; index < pointerCount; index++) {
-                int touchX = getTouchX(me.getX(index));
-                int touchY = getTouchY(me.getY(index));
+                int x = (int)me.getX(index);
+                int y = (int)me.getY(index);
                 int id = me.getPointerId(index);
                 PointerTracker tracker = getPointerTracker(id);
-                tracker.onMoveEvent(touchX, touchY, eventTime);
+                tracker.onMoveEvent(x, y, eventTime);
             }
         } else {
             int index = me.getActionIndex();
-            int touchX = getTouchX(me.getX(index));
-            int touchY = getTouchY(me.getY(index));
+            int x = (int)me.getX(index);
+            int y = (int)me.getY(index);
             int id = me.getPointerId(index);
             PointerTracker tracker = getPointerTracker(id);
             switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-                onDownEvent(tracker, touchX, touchY, eventTime);
+                onDownEvent(tracker, x, y, eventTime);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-                onUpEvent(tracker, touchX, touchY, eventTime);
+                onUpEvent(tracker, x, y, eventTime);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                onCancelEvent(tracker, touchX, touchY, eventTime);
+                onCancelEvent(tracker, x, y, eventTime);
                 break;
             }
         }
@@ -1162,12 +1152,12 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         return true;
     }
 
-    private void onDownEvent(PointerTracker tracker, int touchX, int touchY, long eventTime) {
-        tracker.onDownEvent(touchX, touchY, eventTime);
+    private void onDownEvent(PointerTracker tracker, int x, int y, long eventTime) {
+        tracker.onDownEvent(x, y, eventTime);
         mPointerQueue.add(tracker);
     }
 
-    private void onUpEvent(PointerTracker tracker, int touchX, int touchY, long eventTime) {
+    private void onUpEvent(PointerTracker tracker, int x, int y, long eventTime) {
         int index = mPointerQueue.lastIndexOf(tracker);
         if (index >= 0) {
             mPointerQueue.releasePointersOlderThan(tracker, eventTime);
@@ -1175,12 +1165,12 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             Log.w(TAG, "onUpEvent: corresponding down event not found for pointer "
                     + tracker.mPointerId);
         }
-        tracker.onUpEvent(touchX, touchY, eventTime);
+        tracker.onUpEvent(x, y, eventTime);
         mPointerQueue.remove(tracker);
     }
 
-    private void onCancelEvent(PointerTracker tracker, int touchX, int touchY, long eventTime) {
-        tracker.onCancelEvent(touchX, touchY, eventTime);
+    private void onCancelEvent(PointerTracker tracker, int x, int y, long eventTime) {
+        tracker.onCancelEvent(x, y, eventTime);
         mPointerQueue.remove(tracker);
     }
 

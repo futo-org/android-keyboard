@@ -139,12 +139,12 @@ public class PointerTracker {
         }
     }
 
-    public void onDownEvent(int touchX, int touchY, long eventTime) {
-        int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
+    public void onDownEvent(int x, int y, long eventTime) {
+        int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
         mCurrentKey = keyIndex;
-        mStartX = touchX;
-        mStartY = touchY;
-        startMoveDebouncing(touchX, touchY);
+        mStartX = x;
+        mStartY = y;
+        startMoveDebouncing(x, y);
         startTimeDebouncing(eventTime);
         checkMultiTap(eventTime, keyIndex);
         if (mListener != null) {
@@ -159,19 +159,19 @@ public class PointerTracker {
             mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
         }
         showKeyPreviewAndUpdateKey(keyIndex);
-        updateMoveDebouncing(touchX, touchY);
+        updateMoveDebouncing(x, y);
         if (DEBUG)
-            debugLog("onDownEvent:", touchX, touchY);
+            debugLog("onDownEvent:", x, y);
     }
 
-    public void onMoveEvent(int touchX, int touchY, long eventTime) {
-        int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
+    public void onMoveEvent(int x, int y, long eventTime) {
+        int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
         if (isValidKeyIndex(keyIndex)) {
             if (mCurrentKey == NOT_A_KEY) {
                 updateTimeDebouncing(eventTime);
                 mCurrentKey = keyIndex;
                 mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
-            } else if (isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
+            } else if (isMinorMoveBounce(x, y, keyIndex, mCurrentKey)) {
                 updateTimeDebouncing(eventTime);
             } else {
                 resetMultiTap();
@@ -190,19 +190,19 @@ public class PointerTracker {
          * should not be showed as popup preview.
          */
         showKeyPreviewAndUpdateKey(isMinorTimeBounce() ? mLastKey : mCurrentKey);
-        updateMoveDebouncing(touchX, touchY);
+        updateMoveDebouncing(x, y);
         if (DEBUG_MOVE)
-            debugLog("onMoveEvent:", touchX, touchY);
+            debugLog("onMoveEvent:", x, y);
     }
 
-    public void onUpEvent(int touchX, int touchY, long eventTime) {
+    public void onUpEvent(int x, int y, long eventTime) {
         if (DEBUG)
-            debugLog("onUpEvent  :", touchX, touchY);
-        int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(touchX, touchY, null);
+            debugLog("onUpEvent  :", x, y);
+        int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
         boolean wasInKeyRepeat = mHandler.isInKeyRepeat();
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
-        if (isMinorMoveBounce(touchX, touchY, keyIndex, mCurrentKey)) {
+        if (isMinorMoveBounce(x, y, keyIndex, mCurrentKey)) {
             updateTimeDebouncing(eventTime);
         } else {
             resetMultiTap();
@@ -211,21 +211,21 @@ public class PointerTracker {
         }
         if (isMinorTimeBounce()) {
             mCurrentKey = mLastKey;
-            touchX = mLastCodeX;
-            touchY = mLastCodeY;
+            x = mLastCodeX;
+            y = mLastCodeY;
         }
         showKeyPreviewAndUpdateKey(NOT_A_KEY);
         // If we're not on a repeating key (which sends on a DOWN event)
         if (!wasInKeyRepeat && !mProxy.isMiniKeyboardOnScreen()) {
-            detectAndSendKey(mCurrentKey, touchX, touchY, eventTime);
+            detectAndSendKey(mCurrentKey, (int)x, (int)y, eventTime);
         }
         if (isValidKeyIndex(keyIndex))
             mProxy.invalidateKey(mKeys[keyIndex]);
     }
 
-    public void onCancelEvent(int touchX, int touchY, long eventTime) {
+    public void onCancelEvent(int x, int y, long eventTime) {
         if (DEBUG)
-            debugLog("onCancelEvt:", touchX, touchY);
+            debugLog("onCancelEvt:", x, y);
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         mProxy.dismissPopupKeyboard();
@@ -244,6 +244,14 @@ public class PointerTracker {
         }
     }
 
+    public int getLastX() {
+        return mLastX;
+    }
+
+    public int getLastY() {
+        return mLastY;
+    }
+
     // These package scope methods are only for debugging purpose.
     /* package */ int getStartX() {
         return mStartX;
@@ -251,14 +259,6 @@ public class PointerTracker {
 
     /* package */ int getStartY() {
         return mStartY;
-    }
-
-    /* package */ int getLastX() {
-        return mLastX;
-    }
-
-    /* package */ int getLastY() {
-        return mLastY;
     }
 
     private void startMoveDebouncing(int x, int y) {
@@ -426,7 +426,7 @@ public class PointerTracker {
             code = String.format((primaryCode < 0) ? "%4d" : "0x%02x", primaryCode);
         }
          Log.d(TAG,
-                String.format("%s [%d] %d,%d %s %s", title, mPointerId, x, y, code,
+                String.format("%s [%d] %3d,%3d %s %s", title, mPointerId, x, y, code,
                         isModifier() ? "modifier" : ""));
     }
 }

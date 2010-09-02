@@ -35,6 +35,8 @@ class ProximityKeyDetector extends KeyDetector {
 
     @Override
     public int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys) {
+        int touchX = getTouchX(x);
+        int touchY = getTouchY(y);
         final Key[] keys = mKeys;
         if (keys == null)
             throw new IllegalStateException("keyboard isn't set");
@@ -44,18 +46,18 @@ class ProximityKeyDetector extends KeyDetector {
         int closestKeyDist = mProximityThresholdSquare + 1;
         int[] distances = mDistances;
         Arrays.fill(distances, Integer.MAX_VALUE);
-        int [] nearestKeyIndices = mKeyboard.getNearestKeys(x, y);
+        int [] nearestKeyIndices = mKeyboard.getNearestKeys(touchX, touchY);
         final int keyCount = nearestKeyIndices.length;
         for (int i = 0; i < keyCount; i++) {
             final Key key = keys[nearestKeyIndices[i]];
             int dist = 0;
-            boolean isInside = key.isInside(x,y);
+            boolean isInside = key.isInside(touchX, touchY);
             if (isInside) {
                 primaryIndex = nearestKeyIndices[i];
             }
 
             if (((mProximityCorrectOn
-                    && (dist = key.squaredDistanceFrom(x, y)) < mProximityThresholdSquare)
+                    && (dist = key.squaredDistanceFrom(touchX, touchY)) < mProximityThresholdSquare)
                     || isInside)
                     && key.codes[0] > 32) {
                 // Find insertion point
