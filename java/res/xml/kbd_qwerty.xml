@@ -4,16 +4,16 @@
 **
 ** Copyright 2008, The Android Open Source Project
 **
-** Licensed under the Apache License, Version 2.0 (the "License"); 
-** you may not use this file except in compliance with the License. 
-** You may obtain a copy of the License at 
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
 **
-**     http://www.apache.org/licenses/LICENSE-2.0 
+**     http://www.apache.org/licenses/LICENSE-2.0
 **
-** Unless required by applicable law or agreed to in writing, software 
-** distributed under the License is distributed on an "AS IS" BASIS, 
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
-** See the License for the specific language governing permissions and 
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
 ** limitations under the License.
 */
 -->
@@ -59,9 +59,9 @@
         />
         <Key android:codes="112" android:keyLabel="p" android:keyEdgeFlags="right"/>
     </Row>
-    
+
     <Row>
-        <Key android:codes="97" android:keyLabel="a" android:horizontalGap="5%p" 
+        <Key android:codes="97" android:keyLabel="a" android:horizontalGap="5%p"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="@string/alternates_for_a"
                 android:keyEdgeFlags="left"/>
@@ -85,9 +85,9 @@
                 android:popupCharacters="@string/alternates_for_l"
                 android:keyEdgeFlags="right"/>
     </Row>
-    
+
     <Row>
-        <Key android:codes="-1" android:keyIcon="@drawable/sym_keyboard_shift" 
+        <Key android:codes="-1" android:keyIcon="@drawable/sym_keyboard_shift"
                 android:keyWidth="15%p" android:isModifier="true"
                 android:iconPreview="@drawable/sym_keyboard_feedback_shift"
                 android:isSticky="true" android:keyEdgeFlags="left"/>
@@ -113,7 +113,7 @@
     </Row>
 
     <Row android:keyboardMode="@+id/mode_normal" android:rowEdgeFlags="bottom">
-        <Key android:codes="-2" android:keyLabel="@string/label_symbol_key" 
+        <Key android:codes="-2" android:keyLabel="@string/label_symbol_key"
                 android:keyWidth="15%p" android:keyEdgeFlags="left" android:isModifier="true"/>
         <Key android:codes="@integer/key_settings" android:keyIcon="@drawable/sym_keyboard_settings"
                 android:iconPreview="@drawable/sym_keyboard_feedback_settings"
@@ -124,7 +124,7 @@
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
                 android:keyWidth="30%p" android:isRepeatable="true" android:isModifier="true"/>
-        <Key android:codes="46" android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation" 
+        <Key android:codes="46" android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"
                 android:keyWidth="10%p" android:isModifier="true"/>
         <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
@@ -176,11 +176,11 @@
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
                 android:keyWidth="30%p" android:isRepeatable="true" android:isModifier="true"/>
-        <Key android:codes="46" android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation" 
+        <Key android:codes="46" android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"
                 android:keyWidth="10%p" android:isModifier="true"/>
         <Key android:keyLabel=":-)" android:keyOutputText=":-) "
                 android:popupKeyboard="@xml/popup_smileys"
-                android:keyWidth="25%p" android:keyEdgeFlags="right"/>
+                android:keyWidth="25%p" android:keyEdgeFlags="right" android:isModifier="true"/>
     </Row>
 
     <Row android:keyboardMode="@+id/mode_webentry" android:rowEdgeFlags="bottom">
