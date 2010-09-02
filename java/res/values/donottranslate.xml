@@ -24,16 +24,22 @@
     <string name="sentence_separators">.,!?)</string>
     <!-- Symbols that are suggested between words -->
     <string name="suggested_punctuations">!?,\u0022\u0027:()-/@_</string>
+    <!-- Accented characters related to "q" -->
+    <string name="alternates_for_q">1</string>
+    <!-- Accented characters related to "w" -->
+    <string name="alternates_for_w">2</string>
     <!-- Accented characters related to "d" -->
     <string name="alternates_for_d"></string>
     <!-- Accented characters related to "r" -->
-    <string name="alternates_for_r"></string>
+    <string name="alternates_for_r">4</string>
     <!-- Accented characters related to "t" -->
-    <string name="alternates_for_t"></string>
+    <string name="alternates_for_t">5</string>
     <!-- Accented characters related to "z" -->
     <string name="alternates_for_z"></string>
     <!-- Accented characters related to "l" -->
     <string name="alternates_for_l"></string>
     <!-- Accented characters related to "g" -->
     <string name="alternates_for_g"></string>
+    <!-- Accented characters related to "p" -->
+    <string name="alternates_for_p">0</string>
 </resources>

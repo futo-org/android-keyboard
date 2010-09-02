@@ -26,18 +26,26 @@
     >
 
     <Row>
-        <Key android:codes="113" android:keyLabel="q" android:keyEdgeFlags="left"/>
-        <Key android:codes="119" android:keyLabel="w"/>
+        <Key android:codes="113" android:keyLabel="q" android:keyEdgeFlags="left"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="@string/alternates_for_q"
+        />
+        <Key android:codes="119" android:keyLabel="w"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="@string/alternates_for_w"
+        />
         <Key android:codes="101" android:keyLabel="e"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="@string/alternates_for_e"
         />
         <Key android:codes="114" android:keyLabel="r"
                 android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_r"/>
+                android:popupCharacters="@string/alternates_for_r"
+        />
         <Key android:codes="116" android:keyLabel="t"
                 android:popupKeyboard="@xml/kbd_popup_template"
-                android:popupCharacters="@string/alternates_for_t"/>
+                android:popupCharacters="@string/alternates_for_t"
+        />
         <Key android:codes="121" android:keyLabel="y"
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="@string/alternates_for_y"
@@ -54,7 +62,10 @@
                 android:popupKeyboard="@xml/kbd_popup_template"
                 android:popupCharacters="@string/alternates_for_o"
         />
-        <Key android:codes="112" android:keyLabel="p" android:keyEdgeFlags="right"/>
+        <Key android:codes="112" android:keyLabel="p" android:keyEdgeFlags="right"
+                android:popupKeyboard="@xml/kbd_popup_template"
+                android:popupCharacters="@string/alternates_for_p"
+        />
     </Row>
 
     <Row>
