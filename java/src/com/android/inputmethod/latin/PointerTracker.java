@@ -61,6 +61,7 @@ public class PointerTracker {
     private int mCurrentKey = NOT_A_KEY;
     private int mStartX;
     private int mStartY;
+    private long mDownTime;
 
     // for move de-bouncing
     private int mLastCodeX;
@@ -144,6 +145,7 @@ public class PointerTracker {
         mCurrentKey = keyIndex;
         mStartX = x;
         mStartY = y;
+        mDownTime = eventTime;
         startMoveDebouncing(x, y);
         startTimeDebouncing(eventTime);
         checkMultiTap(eventTime, keyIndex);
@@ -181,7 +183,19 @@ public class PointerTracker {
                 mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
             }
         } else {
-            mHandler.cancelLongPressTimer();
+            if (mCurrentKey != NOT_A_KEY) {
+                updateTimeDebouncing(eventTime);
+                mCurrentKey = keyIndex;
+                mHandler.cancelLongPressTimer();
+            } else if (isMinorMoveBounce(x, y, keyIndex, mCurrentKey)) {
+                updateTimeDebouncing(eventTime);
+            } else {
+                resetMultiTap();
+                resetTimeDebouncing(eventTime, mCurrentKey);
+                resetMoveDebouncing();
+                mCurrentKey = keyIndex;
+                mHandler.cancelLongPressTimer();
+            }
         }
         /*
          * While time debouncing is in effect, mCurrentKey holds the new key and this tracker
@@ -250,6 +264,10 @@ public class PointerTracker {
 
     public int getLastY() {
         return mLastY;
+    }
+
+    public long getDownTime() {
+        return mDownTime;
     }
 
     // These package scope methods are only for debugging purpose.

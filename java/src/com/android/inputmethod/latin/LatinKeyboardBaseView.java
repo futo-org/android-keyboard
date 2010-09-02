@@ -185,17 +185,20 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     private boolean mShowTouchPoints = true;
     private int mPopupPreviewX;
     private int mPopupPreviewY;
+    private int mPopupPreviewOffsetX;
+    private int mPopupPreviewOffsetY;
     private int mWindowY;
 
     // Popup mini keyboard
-    private PopupWindow mPopupKeyboard;
+    private PopupWindow mMiniKeyboardPopup;
     private View mMiniKeyboardContainer;
     private LatinKeyboardBaseView mMiniKeyboard;
     private boolean mMiniKeyboardOnScreen;
-    private View mPopupParent;
-    private int mMiniKeyboardOffsetX;
-    private int mMiniKeyboardOffsetY;
+    private View mMiniKeyboardParent;
     private Map<Key,View> mMiniKeyboardCache;
+    private int mMiniKeyboardOriginX;
+    private int mMiniKeyboardOriginY;
+    private long mMiniKeyboardPopupTime;
     private int[] mWindowOffset;
 
     /** Listener for {@link OnKeyboardActionListener}. */
@@ -445,10 +448,10 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
             mShowPreview = false;
         }
         mPreviewPopup.setTouchable(false);
-        mPopupParent = this;
+        mMiniKeyboardParent = this;
 
-        mPopupKeyboard = new PopupWindow(context);
-        mPopupKeyboard.setBackgroundDrawable(null);
+        mMiniKeyboardPopup = new PopupWindow(context);
+        mMiniKeyboardPopup.setBackgroundDrawable(null);
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -615,12 +618,12 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     }
 
     public void setPopupParent(View v) {
-        mPopupParent = v;
+        mMiniKeyboardParent = v;
     }
 
     public void setPopupOffset(int x, int y) {
-        mMiniKeyboardOffsetX = x;
-        mMiniKeyboardOffsetY = y;
+        mPopupPreviewOffsetX = x;
+        mPopupPreviewOffsetY = y;
         if (mPreviewPopup.isShowing()) {
             mPreviewPopup.dismiss();
         }
@@ -896,8 +899,8 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         if (mOffsetInWindow == null) {
             mOffsetInWindow = new int[2];
             getLocationInWindow(mOffsetInWindow);
-            mOffsetInWindow[0] += mMiniKeyboardOffsetX; // Offset may be zero
-            mOffsetInWindow[1] += mMiniKeyboardOffsetY; // Offset may be zero
+            mOffsetInWindow[0] += mPopupPreviewOffsetX; // Offset may be zero
+            mOffsetInWindow[1] += mPopupPreviewOffsetY; // Offset may be zero
             int[] mWindowLocation = new int[2];
             getLocationOnScreen(mWindowLocation);
             mWindowY = mWindowLocation[1];
@@ -926,7 +929,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         } else {
             previewPopup.setWidth(popupWidth);
             previewPopup.setHeight(popupHeight);
-            previewPopup.showAtLocation(mPopupParent, Gravity.NO_GRAVITY,
+            previewPopup.showAtLocation(mMiniKeyboardParent, Gravity.NO_GRAVITY,
                     mPopupPreviewX, mPopupPreviewY);
         }
         mPreviewText.setVisibility(VISIBLE);
@@ -974,6 +977,13 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
         boolean result = onLongPress(popupKey);
         if (result) {
             dismissKeyPreview();
+
+            long eventTime = tracker.getDownTime();
+            mMiniKeyboardPopupTime = eventTime;
+            MotionEvent downEvent = generateMiniKeyboardMotionEvent(MotionEvent.ACTION_DOWN,
+                    tracker.getLastX(), tracker.getLastY(), eventTime);
+            mMiniKeyboard.onTouchEvent(downEvent);
+            downEvent.recycle();
         }
         return result;
     }
@@ -1020,7 +1030,7 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
                         mKeyboardActionListener.onRelease(primaryCode);
                     }
                 });
-                //mInputView.setSuggest(mSuggest);
+
                 Keyboard keyboard;
                 if (popupKey.popupCharacters != null) {
                     keyboard = new Keyboard(getContext(), popupKeyboardId,
@@ -1043,20 +1053,25 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
                 mWindowOffset = new int[2];
                 getLocationInWindow(mWindowOffset);
             }
-            int popupX = popupKey.x + getPaddingLeft();
+            int popupX = popupKey.x + popupKey.width + getPaddingLeft();
             int popupY = popupKey.y + getPaddingTop();
-            popupX = popupX + popupKey.width - mMiniKeyboardContainer.getMeasuredWidth();
-            popupY = popupY - mMiniKeyboardContainer.getMeasuredHeight();
-            final int x = popupX + mMiniKeyboardContainer.getPaddingRight() + mWindowOffset[0];
-            final int y = popupY + mMiniKeyboardContainer.getPaddingBottom() + mWindowOffset[1];
-            mMiniKeyboard.setPopupOffset(x < 0 ? 0 : x, y);
+            popupX -= mMiniKeyboardContainer.getMeasuredWidth();
+            popupY -= mMiniKeyboardContainer.getMeasuredHeight();
+            popupX += mWindowOffset[0];
+            popupY += mWindowOffset[1];
+            final int x = popupX + mMiniKeyboardContainer.getPaddingRight();
+            final int y = popupY + mMiniKeyboardContainer.getPaddingBottom();
+            mMiniKeyboardOriginX = (x < 0 ? 0 : x) + mMiniKeyboardContainer.getPaddingLeft();
+            mMiniKeyboardOriginY = y + mMiniKeyboardContainer.getPaddingTop();
+            mMiniKeyboard.setPopupOffset((x < 0) ? 0 : x, y);
             mMiniKeyboard.setShifted(isShifted());
-            mPopupKeyboard.setContentView(mMiniKeyboardContainer);
-            mPopupKeyboard.setWidth(mMiniKeyboardContainer.getMeasuredWidth());
-            mPopupKeyboard.setHeight(mMiniKeyboardContainer.getMeasuredHeight());
-            mPopupKeyboard.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
+            mMiniKeyboardPopup.setContentView(mMiniKeyboardContainer);
+            mMiniKeyboardPopup.setWidth(mMiniKeyboardContainer.getMeasuredWidth());
+            mMiniKeyboardPopup.setHeight(mMiniKeyboardContainer.getMeasuredHeight());
+            mMiniKeyboardPopup.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
             mMiniKeyboardOnScreen = true;
-            //mMiniKeyboard.onTouchEvent(getTranslatedEvent(me));
+
+            // TODO: down event?
             invalidateAllKeys();
             return true;
         }
@@ -1066,6 +1081,11 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     // TODO: Should cleanup after refactoring mini-keyboard. 
     public boolean isMiniKeyboardOnScreen() {
         return mMiniKeyboardOnScreen;
+    }
+
+    private MotionEvent generateMiniKeyboardMotionEvent(int action, int x, int y, long eventTime) {
+        return MotionEvent.obtain(mMiniKeyboardPopupTime, eventTime, action,
+                x - mMiniKeyboardOriginX, y - mMiniKeyboardOriginY, 0);
     }
 
     private PointerTracker getPointerTracker(final int id) {
@@ -1105,7 +1125,11 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
 
         // Needs to be called after the gesture detector gets a turn, as it may have
         // displayed the mini keyboard
-        if (mMiniKeyboardOnScreen && action != MotionEvent.ACTION_CANCEL) {
+        if (mMiniKeyboardOnScreen) {
+            MotionEvent translated = generateMiniKeyboardMotionEvent(action, (int)me.getX(),
+                    (int)me.getY(), eventTime);
+            mMiniKeyboard.onTouchEvent(translated);
+            translated.recycle();
             return true;
         }
 
@@ -1209,15 +1233,17 @@ public class LatinKeyboardBaseView extends View implements View.OnClickListener,
     }
 
     public void dismissPopupKeyboard() {
-        if (mPopupKeyboard.isShowing()) {
-            mPopupKeyboard.dismiss();
+        if (mMiniKeyboardPopup.isShowing()) {
+            mMiniKeyboardPopup.dismiss();
             mMiniKeyboardOnScreen = false;
+            mMiniKeyboardOriginX = 0;
+            mMiniKeyboardOriginY = 0;
             invalidateAllKeys();
         }
     }
 
     public boolean handleBack() {
-        if (mPopupKeyboard.isShowing()) {
+        if (mMiniKeyboardPopup.isShowing()) {
             dismissPopupKeyboard();
             return true;
         }
