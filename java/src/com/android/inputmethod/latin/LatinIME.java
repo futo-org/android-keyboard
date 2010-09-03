@@ -1083,6 +1083,40 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    private boolean hasMultipleEnabledIMEs() {
+        return ((InputMethodManager) getSystemService(
+                INPUT_METHOD_SERVICE)).getEnabledInputMethodList().size() > 1;
+    }
+
+    private void showInputMethodPicker() {
+        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .showInputMethodPicker();
+    }
+
+    private void onOptionKeyPressed() {
+        if (!isShowingOptionDialog()) {
+            if (hasMultipleEnabledIMEs()) {
+                showOptionsMenu();
+            } else {
+                launchSettings();
+            }
+        }
+    }
+
+    private void onOptionKeyLongPressed() {
+        if (!isShowingOptionDialog()) {
+            if (hasMultipleEnabledIMEs()) {
+                showInputMethodPicker();
+            } else {
+                launchSettings();
+            }
+        }
+    }
+
+    private boolean isShowingOptionDialog() {
+        return mOptionsDialog != null && mOptionsDialog.isShowing();
+    }
+
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
@@ -1102,12 +1136,15 @@ public class LatinIME extends InputMethodService
                 // Shift key is handled in onPress().
                 break;
             case Keyboard.KEYCODE_CANCEL:
-                if (mOptionsDialog == null || !mOptionsDialog.isShowing()) {
+                if (!isShowingOptionDialog()) {
                     handleClose();
                 }
                 break;
             case LatinKeyboardView.KEYCODE_OPTIONS:
-                showOptionsMenu();
+                onOptionKeyPressed();
+                break;
+            case LatinKeyboardView.KEYCODE_OPTIONS_LONGPRESS:
+                onOptionKeyLongPressed();
                 break;
             case LatinKeyboardView.KEYCODE_NEXT_LANGUAGE:
                 toggleLanguage(false, true);
@@ -2400,7 +2437,7 @@ public class LatinIME extends InputMethodService
         builder.setIcon(R.drawable.ic_dialog_keyboard);
         builder.setNegativeButton(android.R.string.cancel, null);
         CharSequence itemSettings = getString(R.string.english_ime_settings);
-        CharSequence itemInputMethod = getString(R.string.inputMethod);
+        CharSequence itemInputMethod = getString(R.string.selectInputMethod);
         builder.setItems(new CharSequence[] {
                 itemSettings, itemInputMethod},
                 new DialogInterface.OnClickListener() {
