@@ -971,6 +971,58 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return result;
     }
 
+    private View inflateMiniKeyboardContainer(Key popupKey) {
+        int popupKeyboardId = popupKey.popupResId;
+        LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        View container = inflater.inflate(mPopupLayout, null);
+        if (container == null)
+            throw new NullPointerException();
+
+        mMiniKeyboard = (LatinKeyboardBaseView)container.findViewById(R.id.LatinKeyboardBaseView);
+        mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
+            public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
+                mKeyboardActionListener.onKey(primaryCode, keyCodes, x, y);
+                dismissPopupKeyboard();
+            }
+
+            public void onText(CharSequence text) {
+                mKeyboardActionListener.onText(text);
+                dismissPopupKeyboard();
+            }
+
+            public void swipeLeft() {
+            }
+            public void swipeRight() {
+            }
+            public void swipeUp() {
+            }
+            public void swipeDown() {
+            }
+            public void onPress(int primaryCode) {
+                mKeyboardActionListener.onPress(primaryCode);
+            }
+            public void onRelease(int primaryCode) {
+                mKeyboardActionListener.onRelease(primaryCode);
+            }
+        });
+
+        Keyboard keyboard;
+        if (popupKey.popupCharacters != null) {
+            keyboard = new Keyboard(getContext(), popupKeyboardId, popupKey.popupCharacters,
+                    -1, getPaddingLeft() + getPaddingRight());
+        } else {
+            keyboard = new Keyboard(getContext(), popupKeyboardId);
+        }
+        mMiniKeyboard.setKeyboard(keyboard);
+        mMiniKeyboard.setPopupParent(this);
+
+        container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
+                MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
+
+        return container;
+    }
+
     /**
      * Called when a key is long pressed. By default this will open any popup keyboard associated
      * with this key through the attributes popupLayout and popupCharacters.
@@ -979,91 +1031,50 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
      * method on the base class if the subclass doesn't wish to handle the call.
      */
     protected boolean onLongPress(Key popupKey) {
-        int popupKeyboardId = popupKey.popupResId;
+        // TODO if popupKey.popupCharacters has only one letter, send it as key without opening
+        // mini keyboard.
 
-        if (popupKeyboardId != 0) {
-            View container = mMiniKeyboardCache.get(popupKey);
-            if (container == null) {
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(
-                        Context.LAYOUT_INFLATER_SERVICE);
-                container = inflater.inflate(mPopupLayout, null);
-                mMiniKeyboard = (LatinKeyboardBaseView) container.findViewById(
-                       R.id.LatinKeyboardBaseView);
-                mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
-                    public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
-                        mKeyboardActionListener.onKey(primaryCode, keyCodes, x, y);
-                        dismissPopupKeyboard();
-                    }
+        if (popupKey.popupResId == 0)
+            return false;
 
-                    public void onText(CharSequence text) {
-                        mKeyboardActionListener.onText(text);
-                        dismissPopupKeyboard();
-                    }
-
-                    public void swipeLeft() { }
-                    public void swipeRight() { }
-                    public void swipeUp() { }
-                    public void swipeDown() { }
-                    public void onPress(int primaryCode) {
-                        mKeyboardActionListener.onPress(primaryCode);
-                    }
-                    public void onRelease(int primaryCode) {
-                        mKeyboardActionListener.onRelease(primaryCode);
-                    }
-                });
-
-                Keyboard keyboard;
-                if (popupKey.popupCharacters != null) {
-                    keyboard = new Keyboard(getContext(), popupKeyboardId,
-                            popupKey.popupCharacters, -1, getPaddingLeft() + getPaddingRight());
-                } else {
-                    keyboard = new Keyboard(getContext(), popupKeyboardId);
-                }
-                mMiniKeyboard.setKeyboard(keyboard);
-                mMiniKeyboard.setPopupParent(this);
-                container.measure(
-                        MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
-                        MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
-
-                mMiniKeyboardCache.put(popupKey, container);
-            } else {
-                mMiniKeyboard = (LatinKeyboardBaseView) container.findViewById(
-                        R.id.LatinKeyboardBaseView);
-            }
-            if (mWindowOffset == null) {
-                mWindowOffset = new int[2];
-                getLocationInWindow(mWindowOffset);
-            }
-            int popupX = popupKey.x + popupKey.width + getPaddingLeft();
-            int popupY = popupKey.y + getPaddingTop();
-            popupX -= container.getMeasuredWidth();
-            popupY -= container.getMeasuredHeight();
-            popupX += mWindowOffset[0];
-            popupY += mWindowOffset[1];
-            final int x = popupX + container.getPaddingRight();
-            final int y = popupY + container.getPaddingBottom();
-            mMiniKeyboardOriginX = (x < 0 ? 0 : x) + container.getPaddingLeft();
-            mMiniKeyboardOriginY = y + container.getPaddingTop();
-            mMiniKeyboard.setPopupOffset((x < 0) ? 0 : x, y);
-            mMiniKeyboard.setShifted(isShifted());
-            mMiniKeyboard.setPreviewEnabled(isPreviewEnabled());
-            mMiniKeyboardPopup.setContentView(container);
-            mMiniKeyboardPopup.setWidth(container.getMeasuredWidth());
-            mMiniKeyboardPopup.setHeight(container.getMeasuredHeight());
-            mMiniKeyboardPopup.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
-
-            // Inject down event on the key to mini keyboard.
-            long eventTime = System.currentTimeMillis();
-            mMiniKeyboardPopupTime = eventTime;
-            MotionEvent downEvent = generateMiniKeyboardMotionEvent(MotionEvent.ACTION_DOWN,
-                    popupKey.x + popupKey.width / 2, popupKey.y + popupKey.height / 2, eventTime);
-            mMiniKeyboard.onTouchEvent(downEvent);
-            downEvent.recycle();
-
-            invalidateAllKeys();
-            return true;
+        View container = mMiniKeyboardCache.get(popupKey);
+        if (container == null) {
+            container = inflateMiniKeyboardContainer(popupKey);
+            mMiniKeyboardCache.put(popupKey, container);
         }
-        return false;
+        mMiniKeyboard = (LatinKeyboardBaseView)container.findViewById(R.id.LatinKeyboardBaseView);
+        if (mWindowOffset == null) {
+            mWindowOffset = new int[2];
+            getLocationInWindow(mWindowOffset);
+        }
+        int popupX = popupKey.x + popupKey.width + getPaddingLeft();
+        int popupY = popupKey.y + getPaddingTop();
+        popupX -= container.getMeasuredWidth();
+        popupY -= container.getMeasuredHeight();
+        popupX += mWindowOffset[0];
+        popupY += mWindowOffset[1];
+        final int x = popupX + container.getPaddingRight();
+        final int y = popupY + container.getPaddingBottom();
+        mMiniKeyboardOriginX = (x < 0 ? 0 : x) + container.getPaddingLeft();
+        mMiniKeyboardOriginY = y + container.getPaddingTop();
+        mMiniKeyboard.setPopupOffset((x < 0) ? 0 : x, y);
+        mMiniKeyboard.setShifted(isShifted());
+        mMiniKeyboard.setPreviewEnabled(isPreviewEnabled());
+        mMiniKeyboardPopup.setContentView(container);
+        mMiniKeyboardPopup.setWidth(container.getMeasuredWidth());
+        mMiniKeyboardPopup.setHeight(container.getMeasuredHeight());
+        mMiniKeyboardPopup.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
+
+        // Inject down event on the key to mini keyboard.
+        long eventTime = System.currentTimeMillis();
+        mMiniKeyboardPopupTime = eventTime;
+        MotionEvent downEvent = generateMiniKeyboardMotionEvent(MotionEvent.ACTION_DOWN, popupKey.x
+                + popupKey.width / 2, popupKey.y + popupKey.height / 2, eventTime);
+        mMiniKeyboard.onTouchEvent(downEvent);
+        downEvent.recycle();
+
+        invalidateAllKeys();
+        return true;
     }
 
     private MotionEvent generateMiniKeyboardMotionEvent(int action, int x, int y, long eventTime) {
