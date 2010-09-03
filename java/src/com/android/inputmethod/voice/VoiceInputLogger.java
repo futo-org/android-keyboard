@@ -182,12 +182,12 @@ public class VoiceInputLogger {
                                              int index, String before, String after) {
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, suggestionLength);
-        i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_REPLACED_LENGTH, replacedPhraseLength);
+        i.putExtra("rlength", replacedPhraseLength);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
                 LoggingEvents.VoiceIme.TEXT_MODIFIED_TYPE_CHOOSE_SUGGESTION);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_N_BEST_CHOOSE_INDEX, index);
-        i.putExtra(LoggingEvents.VoiceIme.EXTRA_BEFORE_N_BEST_CHOOSE, before);
-        i.putExtra(LoggingEvents.VoiceIme.EXTRA_AFTER_N_BEST_CHOOSE, after);
+        i.putExtra("before", before);
+        i.putExtra("after", after);
         mContext.sendBroadcast(i);
     }
 
