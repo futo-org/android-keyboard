@@ -42,7 +42,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
-    /** 
+    /**
      * Whether multi-touch disambiguation needs to be disabled if a real multi-touch event has
      * occured
      */
@@ -51,6 +51,9 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     private int mJumpThresholdSquare = Integer.MAX_VALUE;
     /** The y coordinate of the last row */
     private int mLastRowY;
+
+    // This is local working variable for onLongPress().
+    private int[] mKeyCodes = new int[1];
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -75,17 +78,37 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         setKeyboardLocal(k);
     }
 
+    private static boolean hasOneDigitAlternate(Key key) {
+        final CharSequence alternates = key.popupCharacters;
+        if (alternates == null)
+            return false;
+        final String altChars = alternates.toString();
+        if (altChars.codePointCount(0, altChars.length()) != 1)
+            return false;
+        final int altCode = altChars.codePointAt(0);
+        return altCode >= '0' && altCode <= '9';
+    }
+
     @Override
     protected boolean onLongPress(Key key) {
-        if (key.codes[0] == KEYCODE_OPTIONS) {
+        int primaryCode = key.codes[0];
+        if (primaryCode == KEYCODE_OPTIONS) {
             getOnKeyboardActionListener().onKey(KEYCODE_OPTIONS_LONGPRESS, null,
                     LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
                     LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
             return true;
-        } else if (key.codes[0] == '0' && getKeyboard() == mPhoneKeyboard) {
+        } else if (primaryCode == '0' && getKeyboard() == mPhoneKeyboard) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             getOnKeyboardActionListener().onKey(
-                    '+', null, LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
+                    '+', null,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
+            return true;
+        } else if (hasOneDigitAlternate(key)) {
+            mKeyCodes[0] = primaryCode = key.popupCharacters.charAt(0);
+            // when there is only one alternate character, send it as key action.
+            getOnKeyboardActionListener().onKey(primaryCode, mKeyCodes,
+                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
                     LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
             return true;
         } else {
@@ -121,10 +144,10 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
      * that could be due to a multi-touch being treated as a move by the firmware or hardware.
      * Once a sudden jump is detected, all subsequent move events are discarded
      * until an UP is received.<P>
-     * When a sudden jump is detected, an UP event is simulated at the last position and when 
+     * When a sudden jump is detected, an UP event is simulated at the last position and when
      * the sudden moves subside, a DOWN event is simulated for the second key.
      * @param me the motion event
-     * @return true if the event was consumed, so that it doesn't continue to be handled by 
+     * @return true if the event was consumed, so that it doesn't continue to be handled by
      * KeyboardView.
      */
     private boolean handleSuddenJump(MotionEvent me) {
@@ -232,9 +255,9 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     static final boolean DEBUG_LINE = false;
     private static final int MSG_TOUCH_DOWN = 1;
     private static final int MSG_TOUCH_UP = 2;
-    
+
     Handler mHandler2;
-    
+
     private String mStringToPlay;
     private int mStringIndex;
     private boolean mDownDelivered;
@@ -254,7 +277,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
                         removeMessages(MSG_TOUCH_DOWN);
                         removeMessages(MSG_TOUCH_UP);
                         if (mPlaying == false) return;
-                        
+
                         switch (msg.what) {
                             case MSG_TOUCH_DOWN:
                                 if (mStringIndex >= mStringToPlay.length()) {
@@ -262,7 +285,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
                                     return;
                                 }
                                 char c = mStringToPlay.charAt(mStringIndex);
-                                while (c > 255 || mAsciiKeys[(int) c] == null) {
+                                while (c > 255 || mAsciiKeys[c] == null) {
                                     mStringIndex++;
                                     if (mStringIndex >= mStringToPlay.length()) {
                                         mPlaying = false;
@@ -272,8 +295,8 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
                                 }
                                 int x = mAsciiKeys[c].x + 10;
                                 int y = mAsciiKeys[c].y + 26;
-                                MotionEvent me = MotionEvent.obtain(SystemClock.uptimeMillis(), 
-                                        SystemClock.uptimeMillis(), 
+                                MotionEvent me = MotionEvent.obtain(SystemClock.uptimeMillis(),
+                                        SystemClock.uptimeMillis(),
                                         MotionEvent.ACTION_DOWN, x, y, 0);
                                 LatinKeyboardView.this.dispatchTouchEvent(me);
                                 me.recycle();
@@ -286,9 +309,9 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
                                 int x2 = mAsciiKeys[cUp].x + 10;
                                 int y2 = mAsciiKeys[cUp].y + 26;
                                 mStringIndex++;
-                                
-                                MotionEvent me2 = MotionEvent.obtain(SystemClock.uptimeMillis(), 
-                                        SystemClock.uptimeMillis(), 
+
+                                MotionEvent me2 = MotionEvent.obtain(SystemClock.uptimeMillis(),
+                                        SystemClock.uptimeMillis(),
                                         MotionEvent.ACTION_UP, x2, y2, 0);
                                 LatinKeyboardView.this.dispatchTouchEvent(me2);
                                 me2.recycle();
@@ -309,7 +332,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         // Get the keys on this keyboard
         for (int i = 0; i < keys.size(); i++) {
             int code = keys.get(i).codes[0];
-            if (code >= 0 && code <= 255) { 
+            if (code >= 0 && code <= 255) {
                 mAsciiKeys[code] = keys.get(i);
             }
         }

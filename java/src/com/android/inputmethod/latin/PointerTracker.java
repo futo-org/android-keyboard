@@ -124,6 +124,8 @@ public class PointerTracker {
     }
 
     public void updateKey(int keyIndex) {
+        if (mKeyAlreadyProcessed)
+            return;
         int oldKeyIndex = mPreviousKey;
         mPreviousKey = keyIndex;
         if (keyIndex != oldKeyIndex) {
@@ -172,6 +174,8 @@ public class PointerTracker {
     }
 
     public void onMoveEvent(int x, int y, long eventTime) {
+        if (mKeyAlreadyProcessed)
+            return;
         int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
         if (isValidKeyIndex(keyIndex)) {
             if (mCurrentKey == NOT_A_KEY) {
@@ -215,6 +219,8 @@ public class PointerTracker {
     }
 
     public void onUpEvent(int x, int y, long eventTime) {
+        if (mKeyAlreadyProcessed)
+            return;
         if (DEBUG)
             debugLog("onUpEvent  :", x, y);
         int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
@@ -235,7 +241,7 @@ public class PointerTracker {
         }
         showKeyPreviewAndUpdateKey(NOT_A_KEY);
         // If we're not on a repeating key (which sends on a DOWN event)
-        if (!wasInKeyRepeat && !mKeyAlreadyProcessed) {
+        if (!wasInKeyRepeat) {
             detectAndSendKey(mCurrentKey, (int)x, (int)y, eventTime);
         }
         if (isValidKeyIndex(keyIndex))
