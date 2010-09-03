@@ -44,6 +44,7 @@ public class LatinKeyboard extends Keyboard {
     private static final boolean DEBUG_PREFERRED_LETTER = false;
     private static final String TAG = "LatinKeyboard";
     private static final int OPACITY_FULLY_OPAQUE = 255;
+    private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
     private Drawable mShiftLockIcon;
     private Drawable mShiftLockPreviewIcon;
@@ -345,16 +346,20 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void updateSpaceBarForLocale(boolean isAutoCompletion, boolean isBlack) {
+        // If application locales are explicitly selected.
         if (mLocale != null) {
-            Bitmap buffer = drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion, isBlack);
-            mSpaceKey.icon = new BitmapDrawable(mRes, buffer);
+            mSpaceKey.icon = new BitmapDrawable(mRes,
+                    drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion, isBlack));
             mSpaceKey.repeatable = mLanguageSwitcher.getLocaleCount() < 2;
         } else {
             // sym_keyboard_space_led can be shared with Black and White symbol themes.
-            mSpaceKey.icon =
-                isAutoCompletion ? mRes.getDrawable(R.drawable.sym_keyboard_space_led)
-                        : isBlack ? mRes.getDrawable(R.drawable.sym_bkeyboard_space)
-                                : mRes.getDrawable(R.drawable.sym_keyboard_space);
+            if (isAutoCompletion) {
+                mSpaceKey.icon = new BitmapDrawable(mRes,
+                        drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion, isBlack));
+            } else {
+                mSpaceKey.icon = isBlack ? mRes.getDrawable(R.drawable.sym_bkeyboard_space)
+                        : mRes.getDrawable(R.drawable.sym_keyboard_space);
+            }
             mSpaceKey.repeatable = true;
         }
     }
@@ -365,36 +370,40 @@ public class LatinKeyboard extends Keyboard {
         Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(buffer);
         canvas.drawColor(mRes.getColor(R.color.latinkeyboard_transparent), PorterDuff.Mode.CLEAR);
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setAlpha(opacity);
-        // Get the text size from the theme
-        paint.setTextSize(getTextSizeFromTheme(android.R.style.TextAppearance_Small, 14));
-        paint.setTextAlign(Align.CENTER);
-        final String language = getInputLanguage(mSpaceKey.width, paint);
-        final int ascent = (int) -paint.ascent();
+        // If application locales are explicitly selected.
+        if (mLocale != null) {
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setAlpha(opacity);
+            // Get the text size from the theme
+            paint.setTextSize(getTextSizeFromTheme(android.R.style.TextAppearance_Small, 14));
+            paint.setTextAlign(Align.CENTER);
+            final String language = getInputLanguage(mSpaceKey.width, paint);
+            final int ascent = (int) -paint.ascent();
 
-        int shadowColor = isBlack ? mRes.getColor(R.color.latinkeyboard_bar_language_shadow_black)
-                : mRes.getColor(R.color.latinkeyboard_bar_language_shadow_white);
+            int shadowColor = isBlack ?
+                    mRes.getColor(R.color.latinkeyboard_bar_language_shadow_black)
+                    : mRes.getColor(R.color.latinkeyboard_bar_language_shadow_white);
 
-        paint.setColor(shadowColor);
-        canvas.drawText(language, width / 2, ascent - 1, paint);
-        paint.setColor(mRes.getColor(R.color.latinkeyboard_bar_language_text));
-        canvas.drawText(language, width / 2, ascent, paint);
-        // Put arrows on either side of the text
-        if (mLanguageSwitcher.getLocaleCount() > 1) {
-            Rect bounds = new Rect();
-            paint.getTextBounds(language, 0, language.length(), bounds);
-            drawButtonArrow(mButtonArrowLeftIcon, canvas,
-                    (mSpaceKey.width - bounds.right) / 2
-                    - mButtonArrowLeftIcon.getIntrinsicWidth(),
-                    (int) paint.getTextSize());
-            drawButtonArrow(mButtonArrowRightIcon, canvas,
-                    (mSpaceKey.width + bounds.right) / 2, (int) paint.getTextSize());
+            paint.setColor(shadowColor);
+            canvas.drawText(language, width / 2, ascent - 1, paint);
+            paint.setColor(mRes.getColor(R.color.latinkeyboard_bar_language_text));
+            canvas.drawText(language, width / 2, ascent, paint);
+            // Put arrows on either side of the text
+            if (mLanguageSwitcher.getLocaleCount() > 1) {
+                Rect bounds = new Rect();
+                paint.getTextBounds(language, 0, language.length(), bounds);
+                drawButtonArrow(mButtonArrowLeftIcon, canvas,
+                        (mSpaceKey.width - bounds.right) / 2
+                        - mButtonArrowLeftIcon.getIntrinsicWidth(),
+                        (int) paint.getTextSize());
+                drawButtonArrow(mButtonArrowRightIcon, canvas,
+                        (mSpaceKey.width + bounds.right) / 2, (int) paint.getTextSize());
+            }
         }
         // Draw the spacebar icon at the bottom
         if (isAutoCompletion) {
-            final int iconWidth = mSpaceAutoCompletionIndicator.getIntrinsicWidth();
+            final int iconWidth = width * SPACE_LED_LENGTH_PERCENT / 100;
             final int iconHeight = mSpaceAutoCompletionIndicator.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
             int y = height - iconHeight;
