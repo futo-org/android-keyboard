@@ -686,6 +686,7 @@ public class LatinIME extends InputMethodService
         super.onFinishInput();
 
         LatinImeLogger.commit();
+        onAutoCompletionStateChanged(false);
 
         if (VOICE_INSTALLED && !mConfigurationChanging) {
             if (mAfterVoiceInput) {
@@ -790,6 +791,7 @@ public class LatinIME extends InputMethodService
     @Override
     public void hideWindow() {
         LatinImeLogger.commit();
+        onAutoCompletionStateChanged(false);
 
         if (TRACE) Debug.stopMethodTracing();
         if (mOptionsDialog != null && mOptionsDialog.isShowing()) {
