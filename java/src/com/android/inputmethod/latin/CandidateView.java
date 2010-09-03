@@ -237,6 +237,8 @@ public class CandidateView extends View {
         final boolean typedWordValid = mTypedWordValid;
         final int y = (int) (height + mPaint.getTextSize() - mDescent) / 2;
 
+        boolean existsAutoCompletion = false;
+
         for (int i = 0; i < count; i++) {
             CharSequence suggestion = mSuggestions.get(i);
             if (suggestion == null) continue;
@@ -245,6 +247,7 @@ public class CandidateView extends View {
                     && ((i == 1 && !typedWordValid) || (i == 0 && typedWordValid))) {
                 paint.setTypeface(Typeface.DEFAULT_BOLD);
                 paint.setColor(mColorRecommended);
+                existsAutoCompletion = true;
             } else if (i != 0) {
                 paint.setColor(mColorOther);
             }
@@ -285,6 +288,7 @@ public class CandidateView extends View {
             paint.setTypeface(Typeface.DEFAULT);
             x += wordWidth;
         }
+        mService.onAutoCompletionStateChanged(existsAutoCompletion);
         mTotalWidth = x;
         if (mTargetScrollX != scrollX) {
             scrollToTarget();
