@@ -32,9 +32,6 @@ public class PointerTracker {
     public interface UIProxy {
         public void invalidateKey(Key key);
         public void showPreview(int keyIndex, PointerTracker tracker);
-        // TODO: These methods might be temporary.
-        public void dismissPopupKeyboard();
-        public boolean isMiniKeyboardOnScreen();
     }
 
     public final int mPointerId;
@@ -62,6 +59,9 @@ public class PointerTracker {
     private int mStartX;
     private int mStartY;
     private long mDownTime;
+
+    // true if event is already translated to a key action (long press or mini-keyboard)
+    private boolean mKeyAlreadyProcessed;
 
     // for move de-bouncing
     private int mLastCodeX;
@@ -140,12 +140,17 @@ public class PointerTracker {
         }
     }
 
+    public void setAlreadyProcessed() {
+        mKeyAlreadyProcessed = true;
+    }
+
     public void onDownEvent(int x, int y, long eventTime) {
         int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
         mCurrentKey = keyIndex;
         mStartX = x;
         mStartY = y;
         mDownTime = eventTime;
+        mKeyAlreadyProcessed = false;
         startMoveDebouncing(x, y);
         startTimeDebouncing(eventTime);
         checkMultiTap(eventTime, keyIndex);
@@ -230,7 +235,7 @@ public class PointerTracker {
         }
         showKeyPreviewAndUpdateKey(NOT_A_KEY);
         // If we're not on a repeating key (which sends on a DOWN event)
-        if (!wasInKeyRepeat && !mProxy.isMiniKeyboardOnScreen()) {
+        if (!wasInKeyRepeat && !mKeyAlreadyProcessed) {
             detectAndSendKey(mCurrentKey, (int)x, (int)y, eventTime);
         }
         if (isValidKeyIndex(keyIndex))
@@ -242,7 +247,6 @@ public class PointerTracker {
             debugLog("onCancelEvt:", x, y);
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
-        mProxy.dismissPopupKeyboard();
         showKeyPreviewAndUpdateKey(NOT_A_KEY);
         int keyIndex = mCurrentKey;
         if (isValidKeyIndex(keyIndex))
