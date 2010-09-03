@@ -2481,4 +2481,7 @@ public class LatinIME extends InputMethodService
         System.out.println("CPS = " + ((CPS_BUFFER_SIZE * 1000f) / total));
     }
 
+    public void onAutoCompletionStateChanged(boolean isAutoCompletion) {
+        mKeyboardSwitcher.onAutoCompletionStateChanged(isAutoCompletion);
+    }
 }

@@ -88,6 +88,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private int mMode = MODE_NONE; /** One of the MODE_XXX values */
     private int mImeOptions;
     private boolean mIsSymbols;
+    /** mIsAutoCompletionActive indicates that auto completed word will be input instead of
+     * what user actually typed. */
+    private boolean mIsAutoCompletionActive;
     private boolean mHasVoice;
     private boolean mVoiceOnPrimary;
     private boolean mPreferSymbols;
@@ -239,7 +242,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         keyboard.setShifted(false);
         keyboard.setShiftLocked(keyboard.isShiftLocked());
         keyboard.setImeOptions(mContext.getResources(), mMode, imeOptions);
-        keyboard.setBlackFlag(isBlackSym());
+        keyboard.setColorOfSymbolIcons(mIsAutoCompletionActive, isBlackSym());
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -249,12 +252,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             Locale saveLocale = conf.locale;
             conf.locale = mInputLocale;
             orig.updateConfiguration(conf, null);
-            LatinKeyboard keyboard = new LatinKeyboard(
-                mContext, id.mXml, id.mKeyboardMode);
+            LatinKeyboard keyboard = new LatinKeyboard(mContext, id.mXml, id.mKeyboardMode);
             keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols
                     || id.mXml == R.xml.kbd_symbols_black), mHasVoice);
-            keyboard.setLanguageSwitcher(mLanguageSwitcher);
-            keyboard.setBlackFlag(isBlackSym());
+            keyboard.setLanguageSwitcher(mLanguageSwitcher, mIsAutoCompletionActive, isBlackSym());
 
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();
@@ -450,4 +451,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    public void onAutoCompletionStateChanged(boolean isAutoCompletion) {
+        if (isAutoCompletion != mIsAutoCompletionActive) {
+            LatinKeyboardView keyboardView = getInputView();
+            mIsAutoCompletionActive = isAutoCompletion;
+            keyboardView.invalidateKey(((LatinKeyboard) keyboardView.getKeyboard())
+                    .onAutoCompletionStateChanged(isAutoCompletion));
+        }
+    }
 }
