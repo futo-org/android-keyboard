@@ -320,7 +320,10 @@
 
     <!-- Menu item for launching Input method switcher -->
     <string name="inputMethod">Input method</string>
-    
+
+    <!-- Menu item for launching Input method picker -->
+    <string name="selectInputMethod">Select input method</string>
+
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Input languages</string>
     <!-- Title summary for input language selection screen -->
