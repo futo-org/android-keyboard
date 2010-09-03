@@ -32,16 +32,8 @@
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
 
+            latin:keyBackground="@drawable/btn_keyboard_key_gingerbread"
             latin:keyPreviewLayout="@layout/keyboard_key_preview"
             latin:popupLayout="@layout/keyboard_popup_keyboard"
             />
-    <ImageButton android:id="@+id/closeButton"
-        android:background="@android:color/transparent"
-        android:src="@drawable/btn_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="8dp"
-        android:clickable="true"
-        />
 </LinearLayout>

@@ -61,14 +61,14 @@
             android:defaultValue="@string/voice_mode_main"
             />
 
-    <ListPreference
+    <!-- <ListPreference
             android:key="keyboard_layout"
             android:title="@string/keyboard_layout"
             android:persistent="true"
             android:entryValues="@array/keyboard_layout_modes_values"
             android:entries="@array/keyboard_layout_modes"
-            android:defaultValue="3"
-            />
+            android:defaultValue="4"
+            />-->
 
     <PreferenceScreen
             android:title="@string/language_selection_title"
@@ -116,10 +116,4 @@
             />
     </PreferenceCategory>            
 
-<CheckBoxPreference
-            android:key="debug_mode"
-            android:title="@string/prefs_debug_mode"
-            android:persistent="true"
-            android:defaultValue="false"
-            />
 </PreferenceScreen>

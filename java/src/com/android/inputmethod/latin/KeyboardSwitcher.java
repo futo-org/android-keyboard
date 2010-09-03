@@ -37,29 +37,24 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public static final int MODE_EMAIL = 5;
     public static final int MODE_IM = 6;
     public static final int MODE_WEB = 7;
-    
-    public static final int MODE_TEXT_QWERTY = 0;
-    public static final int MODE_TEXT_ALPHA = 1;
-    public static final int MODE_TEXT_COUNT = 2;
-    
+
     public static final int KEYBOARDMODE_NORMAL = R.id.mode_normal;
     public static final int KEYBOARDMODE_URL = R.id.mode_url;
     public static final int KEYBOARDMODE_EMAIL = R.id.mode_email;
     public static final int KEYBOARDMODE_IM = R.id.mode_im;
     public static final int KEYBOARDMODE_WEB = R.id.mode_webentry;
 
-    public static final String DEFAULT_LAYOUT_ID = "3";
-    public static final String PREF_KEYBOARD_LAYOUT = "keyboard_layout";
+    public static final String DEFAULT_LAYOUT_ID = "4";
+    public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20100902";
     private static final int[] THEMES = new int [] {
         R.layout.input_basic, R.layout.input_basic_highcontrast, R.layout.input_stone_normal,
-        R.layout.input_stone_bold};
+        R.layout.input_stone_bold, R.layout.input_gingerbread};
 
     // Ids for each characters' color in the keyboard
     private static final int CHAR_THEME_COLOR_WHITE = 0;
     private static final int CHAR_THEME_COLOR_BLACK = 1;
 
     // Tables which contains resource ids for each character theme color
-    private static final int[] KBD_ALPHA = new int[] {R.xml.kbd_alpha, R.xml.kbd_alpha_black};
     private static final int[] KBD_PHONE = new int[] {R.xml.kbd_phone, R.xml.kbd_phone_black};
     private static final int[] KBD_PHONE_SYMBOLS = new int[] {
         R.xml.kbd_phone_symbols, R.xml.kbd_phone_symbols_black};
@@ -83,7 +78,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     Context mContext;
     LatinIME mInputMethodService;
-    
+
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
 
@@ -92,8 +87,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private int mMode = MODE_NONE; /** One of the MODE_XXX values */
     private int mImeOptions;
-    private int mTextMode = MODE_TEXT_QWERTY;
     private boolean mIsSymbols;
+    /** mIsAutoCompletionActive indicates that auto completed word will be input instead of
+     * what user actually typed. */
+    private boolean mIsAutoCompletionActive;
     private boolean mHasVoice;
     private boolean mVoiceOnPrimary;
     private boolean mPreferSymbols;
@@ -245,7 +242,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         keyboard.setShifted(false);
         keyboard.setShiftLocked(keyboard.isShiftLocked());
         keyboard.setImeOptions(mContext.getResources(), mMode, imeOptions);
-        keyboard.setBlackFlag(isBlackSym());
+        keyboard.setColorOfSymbolIcons(mIsAutoCompletionActive, isBlackSym());
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -255,20 +252,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             Locale saveLocale = conf.locale;
             conf.locale = mInputLocale;
             orig.updateConfiguration(conf, null);
-            LatinKeyboard keyboard = new LatinKeyboard(
-                mContext, id.mXml, id.mKeyboardMode);
+            LatinKeyboard keyboard = new LatinKeyboard(mContext, id.mXml, id.mKeyboardMode);
             keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols
                     || id.mXml == R.xml.kbd_symbols_black), mHasVoice);
-            keyboard.setLanguageSwitcher(mLanguageSwitcher);
-            keyboard.setBlackFlag(isBlackSym());
-            if (id.mKeyboardMode == KEYBOARDMODE_NORMAL
-                    || id.mKeyboardMode == KEYBOARDMODE_URL
-                    || id.mKeyboardMode == KEYBOARDMODE_IM
-                    || id.mKeyboardMode == KEYBOARDMODE_EMAIL
-                    || id.mKeyboardMode == KEYBOARDMODE_WEB
-                    ) {
-                keyboard.setExtension(R.xml.kbd_extension);
-            }
+            keyboard.setLanguageSwitcher(mLanguageSwitcher, mIsAutoCompletionActive, isBlackSym());
 
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();
@@ -299,11 +286,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                         "getKeyboardId:" + mode + "," + imeOptions + "," + isSymbols);
                 /* fall through */
             case MODE_TEXT:
-                if (mTextMode == MODE_TEXT_ALPHA) {
-                    return new KeyboardId(
-                            KBD_ALPHA[charColorId], KEYBOARDMODE_NORMAL, true, hasVoice);
-                }
-                // Normally mTextMode should be MODE_TEXT_QWERTY.
                 return new KeyboardId(keyboardRowsResId, KEYBOARDMODE_NORMAL, true, hasVoice);
             case MODE_SYMBOLS:
                 return new KeyboardId(KBD_SYMBOLS[charColorId], hasVoice);
@@ -327,10 +309,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     
     boolean isTextMode() {
         return mMode == MODE_TEXT;
-    }
-    
-    int getTextModeCount() {
-        return MODE_TEXT_COUNT;
     }
 
     boolean isAlphabetMode() {
@@ -439,7 +417,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                             mLayoutId + "," + newLayout, e);
                 }
             }
-            mInputView.setExtentionLayoutResId(THEMES[newLayout]);
             mInputView.setOnKeyboardActionListener(mInputMethodService);
             mLayoutId = newLayout;
         }
@@ -474,4 +451,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    public void onAutoCompletionStateChanged(boolean isAutoCompletion) {
+        if (isAutoCompletion != mIsAutoCompletionActive) {
+            LatinKeyboardView keyboardView = getInputView();
+            mIsAutoCompletionActive = isAutoCompletion;
+            keyboardView.invalidateKey(((LatinKeyboard) keyboardView.getKeyboard())
+                    .onAutoCompletionStateChanged(isAutoCompletion));
+        }
+    }
 }

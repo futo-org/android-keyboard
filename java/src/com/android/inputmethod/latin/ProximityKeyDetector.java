@@ -16,70 +16,43 @@
 
 package com.android.inputmethod.latin;
 
-import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 
 import java.util.Arrays;
 
-class ProximityKeyDetector {
+class ProximityKeyDetector extends KeyDetector {
     private static final int MAX_NEARBY_KEYS = 12;
-
-    private Keyboard mKeyboard;
-    private Key[] mKeys;
-
-    private boolean mProximityCorrectOn;
-    private int mProximityThresholdSquare;
 
     // working area
     private int[] mDistances = new int[MAX_NEARBY_KEYS];
 
-    public void setKeyboard(Keyboard keyboard, Key[] keys) {
-        if (keyboard == null || keys == null)
-            throw new NullPointerException();
-        mKeyboard = keyboard;
-        mKeys = keys;
+    @Override
+    protected int getMaxNearbyKeys() {
+        return MAX_NEARBY_KEYS;
     }
 
-    public void setProximityCorrectionEnabled(boolean enabled) {
-        mProximityCorrectOn = enabled;
-    }
-
-    public boolean isProximityCorrectionEnabled() {
-        return mProximityCorrectOn;
-    }
-
-    public void setProximityThreshold(int threshold) {
-        mProximityThresholdSquare = threshold * threshold;
-    }
-
-    public int[] newCodeArray() {
-        int[] codes = new int[MAX_NEARBY_KEYS];
-        Arrays.fill(codes, LatinKeyboardBaseView.NOT_A_KEY);
-        return codes;
-    }
-
+    @Override
     public int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys) {
-        final Key[] keys = mKeys;
-        if (keys == null)
-            throw new IllegalStateException("keyboard isn't set");
-        // mKeyboard is guaranteed not null at setKeybaord() method
+        final Key[] keys = getKeys();
+        final int touchX = getTouchX(x);
+        final int touchY = getTouchY(y);
         int primaryIndex = LatinKeyboardBaseView.NOT_A_KEY;
         int closestKey = LatinKeyboardBaseView.NOT_A_KEY;
         int closestKeyDist = mProximityThresholdSquare + 1;
         int[] distances = mDistances;
         Arrays.fill(distances, Integer.MAX_VALUE);
-        int [] nearestKeyIndices = mKeyboard.getNearestKeys(x, y);
+        int [] nearestKeyIndices = mKeyboard.getNearestKeys(touchX, touchY);
         final int keyCount = nearestKeyIndices.length;
         for (int i = 0; i < keyCount; i++) {
             final Key key = keys[nearestKeyIndices[i]];
             int dist = 0;
-            boolean isInside = key.isInside(x,y);
+            boolean isInside = key.isInside(touchX, touchY);
             if (isInside) {
                 primaryIndex = nearestKeyIndices[i];
             }
 
             if (((mProximityCorrectOn
-                    && (dist = key.squaredDistanceFrom(x, y)) < mProximityThresholdSquare)
+                    && (dist = key.squaredDistanceFrom(touchX, touchY)) < mProximityThresholdSquare)
                     || isInside)
                     && key.codes[0] > 32) {
                 // Find insertion point

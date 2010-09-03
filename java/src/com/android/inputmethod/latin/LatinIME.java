@@ -61,6 +61,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.LinearLayout;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -85,7 +86,6 @@ public class LatinIME extends InputMethodService
     static final boolean TRACE = false;
     static final boolean VOICE_INSTALLED = true;
     static final boolean ENABLE_VOICE_BUTTON = true;
-    private static final boolean MODIFY_TEXT_FOR_CORRECTION = false;
 
     private static final String PREF_VIBRATE_ON = "vibrate_on";
     private static final String PREF_SOUND_ON = "sound_on";
@@ -153,7 +153,7 @@ public class LatinIME extends InputMethodService
     private static final int POS_METHOD = 1;
 
     //private LatinKeyboardView mInputView;
-    private CandidateViewContainer mCandidateViewContainer;
+    private LinearLayout mCandidateViewContainer;
     private CandidateView mCandidateView;
     private Suggest mSuggest;
     private CompletionInfo[] mCompletions;
@@ -225,6 +225,9 @@ public class LatinIME extends InputMethodService
     private CharSequence mJustRevertedSeparator;
     private int mDeleteCount;
     private long mLastKeyTime;
+
+    // Shift modifier key state
+    private ModifierKeyState mShiftKeyState = new ModifierKeyState();
 
     private Tutorial mTutorial;
 
@@ -537,9 +540,8 @@ public class LatinIME extends InputMethodService
     @Override
     public View onCreateCandidatesView() {
         mKeyboardSwitcher.makeKeyboards(true);
-        mCandidateViewContainer = (CandidateViewContainer) getLayoutInflater().inflate(
+        mCandidateViewContainer = (LinearLayout) getLayoutInflater().inflate(
                 R.layout.candidates, null);
-        mCandidateViewContainer.initViews();
         mCandidateView = (CandidateView) mCandidateViewContainer.findViewById(R.id.candidates);
         mCandidateView.setService(this);
         setCandidatesViewShown(true);
@@ -646,16 +648,14 @@ public class LatinIME extends InputMethodService
                         (attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
                     mInputTypeNoAutoCorrect = true;
                 }
-                if ((attribute.inputType&EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
+                if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
                     mPredictionOn = false;
-                    mCompletionOn = true && isFullscreenMode();
+                    mCompletionOn = isFullscreenMode();
                 }
-                updateShiftKeyState(attribute);
                 break;
             default:
                 mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_TEXT,
                         attribute.imeOptions, enableVoiceButton);
-                updateShiftKeyState(attribute);
         }
         inputView.closing();
         mComposing.setLength(0);
@@ -665,8 +665,9 @@ public class LatinIME extends InputMethodService
         loadSettings();
         updateShiftKeyState(attribute);
 
-        setCandidatesViewShown(false);
-        setSuggestions(null, false, false, false);
+        setCandidatesViewShownInternal(isCandidateStripVisible() || mCompletionOn,
+                false /* needsInputViewShown */ );
+        updateSuggestions();
 
         // If the dictionary is not big enough, don't auto correct
         mHasDictionary = mSuggest.hasMainDictionary();
@@ -685,6 +686,7 @@ public class LatinIME extends InputMethodService
         super.onFinishInput();
 
         LatinImeLogger.commit();
+        onAutoCompletionStateChanged(false);
 
         if (VOICE_INSTALLED && !mConfigurationChanging) {
             if (mAfterVoiceInput) {
@@ -767,27 +769,29 @@ public class LatinIME extends InputMethodService
         mLastSelectionEnd = newSelEnd;
 
 
-        // Check if we should go in or out of correction mode.
-        // TODO: Uncomment this block when we enable re-editing feature
-        // If a word is selected
-        /*
-        if (isPredictionOn() && mJustRevertedSeparator == null
-                && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
-                        || TextEntryState.isCorrecting())
-                && (newSelStart < newSelEnd - 1 || (!mPredicting))
-                && !mVoiceInputHighlighted) {
-            if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
-                postUpdateOldSuggestions();
-            } else {
-                abortCorrection(false);
+        // Don't look for corrections if the keyboard is not visible
+        if (mKeyboardSwitcher != null && mKeyboardSwitcher.getInputView() != null
+                && mKeyboardSwitcher.getInputView().isShown()) {
+            // Check if we should go in or out of correction mode.
+            if (isPredictionOn()
+                    && mJustRevertedSeparator == null
+                    && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
+                            || TextEntryState.isCorrecting())
+                    && (newSelStart < newSelEnd - 1 || (!mPredicting))
+                    && !mVoiceInputHighlighted) {
+                if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
+                    postUpdateOldSuggestions();
+                } else {
+                    abortCorrection(false);
+                }
             }
         }
-        */
     }
 
     @Override
     public void hideWindow() {
         LatinImeLogger.commit();
+        onAutoCompletionStateChanged(false);
 
         if (TRACE) Debug.stopMethodTracing();
         if (mOptionsDialog != null && mOptionsDialog.isShowing()) {
@@ -822,7 +826,7 @@ public class LatinIME extends InputMethodService
         if (mCompletionOn) {
             mCompletions = completions;
             if (completions == null) {
-                setSuggestions(null, false, false, false);
+                clearSuggestions();
                 return;
             }
 
@@ -834,18 +838,21 @@ public class LatinIME extends InputMethodService
             // When in fullscreen mode, show completions generated by the application
             setSuggestions(stringList, true, true, true);
             mBestWord = null;
-            setCandidatesViewShown(isCandidateStripVisible() || mCompletionOn);
+            setCandidatesViewShown(true);
+        }
+    }
+
+    private void setCandidatesViewShownInternal(boolean shown, boolean needsInputViewShown) {
+        // TODO: Remove this if we support candidates with hard keyboard
+        if (onEvaluateInputViewShown()) {
+            super.setCandidatesViewShown(shown && mKeyboardSwitcher.getInputView() != null
+                    && (needsInputViewShown ? mKeyboardSwitcher.getInputView().isShown() : true));
         }
     }
 
     @Override
     public void setCandidatesViewShown(boolean shown) {
-        // TODO: Remove this if we support candidates with hard keyboard
-        if (onEvaluateInputViewShown()) {
-            // Show the candidates view only if input view is showing
-            super.setCandidatesViewShown(shown && mKeyboardSwitcher.getInputView() != null
-                    && mKeyboardSwitcher.getInputView().isShown());
-        }
+        setCandidatesViewShownInternal(shown, true /* needsInputViewShown */ );
     }
 
     @Override
@@ -966,13 +973,15 @@ public class LatinIME extends InputMethodService
 
     private void postUpdateShiftKeyState() {
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
+        // TODO: Should remove this 300ms delay?
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SHIFT_STATE), 300);
     }
 
     public void updateShiftKeyState(EditorInfo attr) {
         InputConnection ic = getCurrentInputConnection();
         if (ic != null && attr != null && mKeyboardSwitcher.isAlphabetMode()) {
-            mKeyboardSwitcher.setShifted(mCapsLock || getCursorCapsMode(ic, attr) != 0);
+            mKeyboardSwitcher.setShifted(mShiftKeyState.isMomentary() || mCapsLock
+                    || getCursorCapsMode(ic, attr) != 0);
         }
     }
 
@@ -1075,6 +1084,40 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    private boolean hasMultipleEnabledIMEs() {
+        return ((InputMethodManager) getSystemService(
+                INPUT_METHOD_SERVICE)).getEnabledInputMethodList().size() > 1;
+    }
+
+    private void showInputMethodPicker() {
+        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
+                .showInputMethodPicker();
+    }
+
+    private void onOptionKeyPressed() {
+        if (!isShowingOptionDialog()) {
+            if (hasMultipleEnabledIMEs()) {
+                showOptionsMenu();
+            } else {
+                launchSettings();
+            }
+        }
+    }
+
+    private void onOptionKeyLongPressed() {
+        if (!isShowingOptionDialog()) {
+            if (hasMultipleEnabledIMEs()) {
+                showInputMethodPicker();
+            } else {
+                launchSettings();
+            }
+        }
+    }
+
+    private boolean isShowingOptionDialog() {
+        return mOptionsDialog != null && mOptionsDialog.isShowing();
+    }
+
     // Implementation of KeyboardViewListener
 
     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
@@ -1091,15 +1134,18 @@ public class LatinIME extends InputMethodService
                 LatinImeLogger.logOnDelete();
                 break;
             case Keyboard.KEYCODE_SHIFT:
-                handleShift();
+                // Shift key is handled in onPress().
                 break;
             case Keyboard.KEYCODE_CANCEL:
-                if (mOptionsDialog == null || !mOptionsDialog.isShowing()) {
+                if (!isShowingOptionDialog()) {
                     handleClose();
                 }
                 break;
             case LatinKeyboardView.KEYCODE_OPTIONS:
-                showOptionsMenu();
+                onOptionKeyPressed();
+                break;
+            case LatinKeyboardView.KEYCODE_OPTIONS_LONGPRESS:
+                onOptionKeyLongPressed();
                 break;
             case LatinKeyboardView.KEYCODE_NEXT_LANGUAGE:
                 toggleLanguage(false, true);
@@ -1107,10 +1153,8 @@ public class LatinIME extends InputMethodService
             case LatinKeyboardView.KEYCODE_PREV_LANGUAGE:
                 toggleLanguage(false, false);
                 break;
-            case LatinKeyboardView.KEYCODE_SHIFT_LONGPRESS:
-                handleCapsLock();
-                break;
             case Keyboard.KEYCODE_MODE_CHANGE:
+                // TODO: Mode change (symbol key) should be handled in onPress().
                 changeKeyboardMode();
                 break;
             case LatinKeyboardView.KEYCODE_VOICE:
@@ -1231,12 +1275,20 @@ public class LatinIME extends InputMethodService
         ic.endBatchEdit();
     }
 
+    private void resetShift() {
+        handleShiftInternal(true);
+    }
+
     private void handleShift() {
+        handleShiftInternal(false);
+    }
+
+    private void handleShiftInternal(boolean forceNormal) {
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getInputView();
         if (switcher.isAlphabetMode()) {
-            if (mCapsLock) {
+            if (mCapsLock || forceNormal) {
                 mCapsLock = false;
                 switcher.setShifted(false);
             } else if (inputView != null) {
@@ -1252,23 +1304,10 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private void handleCapsLock() {
-        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (switcher.isAlphabetMode()) {
-            mCapsLock = !mCapsLock;
-            if (mCapsLock) {
-                switcher.setShiftLocked(true);
-            } else {
-                switcher.setShifted(false);
-            }
-        }
-    }
-
     private void abortCorrection(boolean force) {
         if (force || TextEntryState.isCorrecting()) {
             getCurrentInputConnection().finishComposingText();
-            setSuggestions(null, false, false, false);
+            clearSuggestions();
         }
     }
 
@@ -1281,7 +1320,9 @@ public class LatinIME extends InputMethodService
             // Assume input length is 1. This assumption fails for smiley face insertions.
             mVoiceInput.incrementTextModificationInsertCount(1);
         }
-        abortCorrection(false);
+        if (mLastSelectionStart == mLastSelectionEnd && TextEntryState.isCorrecting()) {
+            abortCorrection(false);
+        }
 
         if (isAlphabet(primaryCode) && isPredictionOn() && !isCursorTouchingWord()) {
             if (!mPredicting) {
@@ -1436,8 +1477,7 @@ public class LatinIME extends InputMethodService
     }
 
     private boolean isPredictionOn() {
-        boolean predictionOn = mPredictionOn;
-        return predictionOn;
+        return mPredictionOn;
     }
 
     private boolean isCandidateStripVisible() {
@@ -1511,7 +1551,7 @@ public class LatinIME extends InputMethodService
         }
 
         // Clear N-best suggestions
-        setSuggestions(null, false, false, true);
+        clearSuggestions();
 
         FieldContext context = new FieldContext(
             getCurrentInputConnection(),
@@ -1618,13 +1658,15 @@ public class LatinIME extends InputMethodService
 
         mVoiceInputHighlighted = true;
         mWordToSuggestions.putAll(mVoiceResults.alternatives);
+    }
 
+    private void clearSuggestions() {
+        setSuggestions(null, false, false, false);
     }
 
     private void setSuggestions(
             List<CharSequence> suggestions,
             boolean completions,
-
             boolean typedWordValid,
             boolean haveMinimalSuggestion) {
 
@@ -1668,14 +1710,14 @@ public class LatinIME extends InputMethodService
     }
 
     private void showSuggestions(WordComposer word) {
-        //long startTime = System.currentTimeMillis(); // TIME MEASUREMENT!
+        // long startTime = System.currentTimeMillis(); // TIME MEASUREMENT!
         // TODO Maybe need better way of retrieving previous word
         CharSequence prevWord = EditingUtil.getPreviousWord(getCurrentInputConnection(),
                 mWordSeparators);
         List<CharSequence> stringList = mSuggest.getSuggestions(
-            mKeyboardSwitcher.getInputView(), word, false, prevWord);
-        //long stopTime = System.currentTimeMillis(); // TIME MEASUREMENT!
-        //Log.d("LatinIME","Suggest Total Time - " + (stopTime - startTime));
+                mKeyboardSwitcher.getInputView(), word, false, prevWord);
+        // long stopTime = System.currentTimeMillis(); // TIME MEASUREMENT!
+        // Log.d("LatinIME","Suggest Total Time - " + (stopTime - startTime));
 
         int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
 
@@ -1734,13 +1776,13 @@ public class LatinIME extends InputMethodService
     }
 
     public void pickSuggestionManually(int index, CharSequence suggestion) {
-        if (mAfterVoiceInput && mShowingVoiceSuggestions) mVoiceInput.logNBestChoose(index);
         List<CharSequence> suggestions = mCandidateView.getSuggestions();
-
-        if (mAfterVoiceInput && !mShowingVoiceSuggestions) {
+        if (mAfterVoiceInput && mShowingVoiceSuggestions) {
             mVoiceInput.flushAllTextModificationCounters();
             // send this intent AFTER logging any prior aggregated edits.
-            mVoiceInput.logTextModifiedByChooseSuggestion(suggestion.length());
+            mVoiceInput.logTextModifiedByChooseSuggestion(suggestion.toString(), index,
+                                                          mWordSeparators,
+                                                          getCurrentInputConnection());
         }
 
         final boolean correcting = TextEntryState.isCorrecting();
@@ -1796,18 +1838,23 @@ public class LatinIME extends InputMethodService
             mJustAddedAutoSpace = true;
         }
 
-        // Fool the state watcher so that a subsequent backspace will not do a revert, unless
-        // we just did a correction, in which case we need to stay in
-        // TextEntryState.State.PICKED_SUGGESTION state.
+        final boolean showingAddToDictionaryHint = index == 0 && mCorrectionMode > 0
+                && !mSuggest.isValidWord(suggestion)
+                && !mSuggest.isValidWord(suggestion.toString().toLowerCase());
+
         if (!correcting) {
+            // Fool the state watcher so that a subsequent backspace will not do a revert, unless
+            // we just did a correction, in which case we need to stay in
+            // TextEntryState.State.PICKED_SUGGESTION state.
             TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
             setNextSuggestions();
-        } else {
+        } else if (!showingAddToDictionaryHint) {
+            // If we're not showing the "Tap again to save hint", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
+            clearSuggestions();
             postUpdateOldSuggestions();
         }
-        if (index == 0 && mCorrectionMode > 0 && !mSuggest.isValidWord(suggestion)
-                && !mSuggest.isValidWord(suggestion.toString().toLowerCase())) {
+        if (showingAddToDictionaryHint) {
             mCandidateView.showAddToDictionaryHint(suggestion);
         }
         if (ic != null) {
@@ -1857,16 +1904,6 @@ public class LatinIME extends InputMethodService
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             rememberReplacedWord(suggestion);
-            // If text is in correction mode and we're not using composing
-            // text to underline, then the word at the cursor position needs
-            // to be removed before committing the correction
-            if (correcting && !MODIFY_TEXT_FOR_CORRECTION) {
-                if (mLastSelectionStart < mLastSelectionEnd) {
-                    ic.setSelection(mLastSelectionStart, mLastSelectionStart);
-                }
-                EditingUtil.deleteWordAtCursor(ic, getWordSeparators());
-            }
-
             ic.commitText(suggestion, 1);
         }
         saveWordInHistory(suggestion);
@@ -1880,96 +1917,108 @@ public class LatinIME extends InputMethodService
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
+    /**
+     * Tries to apply any voice alternatives for the word if this was a spoken word and
+     * there are voice alternatives.
+     * @param touching The word that the cursor is touching, with position information
+     * @return true if an alternative was found, false otherwise.
+     */
+    private boolean applyVoiceAlternatives(EditingUtil.SelectedWord touching) {
+        // Search for result in spoken word alternatives
+        String selectedWord = touching.word.toString().trim();
+        if (!mWordToSuggestions.containsKey(selectedWord)) {
+            selectedWord = selectedWord.toLowerCase();
+        }
+        if (mWordToSuggestions.containsKey(selectedWord)) {
+            mShowingVoiceSuggestions = true;
+            List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
+            // If the first letter of touching is capitalized, make all the suggestions
+            // start with a capital letter.
+            if (Character.isUpperCase((char) touching.word.charAt(0))) {
+                for (int i = 0; i < suggestions.size(); i++) {
+                    String origSugg = (String) suggestions.get(i);
+                    String capsSugg = origSugg.toUpperCase().charAt(0)
+                            + origSugg.subSequence(1, origSugg.length()).toString();
+                    suggestions.set(i, capsSugg);
+                }
+            }
+            setSuggestions(suggestions, false, true, true);
+            setCandidatesViewShown(true);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Tries to apply any typed alternatives for the word if we have any cached alternatives,
+     * otherwise tries to find new corrections and completions for the word.
+     * @param touching The word that the cursor is touching, with position information
+     * @return true if an alternative was found, false otherwise.
+     */
+    private boolean applyTypedAlternatives(EditingUtil.SelectedWord touching) {
+        // If we didn't find a match, search for result in typed word history
+        WordComposer foundWord = null;
+        WordAlternatives alternatives = null;
+        for (WordAlternatives entry : mWordHistory) {
+            if (TextUtils.equals(entry.getChosenWord(), touching.word)) {
+                if (entry instanceof TypedWordAlternatives) {
+                    foundWord = ((TypedWordAlternatives) entry).word;
+                }
+                alternatives = entry;
+                break;
+            }
+        }
+        // If we didn't find a match, at least suggest completions
+        if (foundWord == null
+                && (mSuggest.isValidWord(touching.word)
+                        || mSuggest.isValidWord(touching.word.toString().toLowerCase()))) {
+            foundWord = new WordComposer();
+            for (int i = 0; i < touching.word.length(); i++) {
+                foundWord.add(touching.word.charAt(i), new int[] {
+                    touching.word.charAt(i)
+                });
+            }
+            foundWord.setCapitalized(Character.isUpperCase(touching.word.charAt(0)));
+        }
+        // Found a match, show suggestions
+        if (foundWord != null || alternatives != null) {
+            if (alternatives == null) {
+                alternatives = new TypedWordAlternatives(touching.word, foundWord);
+            }
+            showCorrections(alternatives);
+            if (foundWord != null) {
+                mWord = new WordComposer(foundWord);
+            } else {
+                mWord.reset();
+            }
+            return true;
+        }
+        return false;
+    }
+
     private void setOldSuggestions() {
-        // TODO: Inefficient to check if touching word and then get the touching word. Do it
-        // in one go.
         mShowingVoiceSuggestions = false;
+        if (mCandidateView != null && mCandidateView.isShowingAddToDictionaryHint()) {
+            return;
+        }
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
-        ic.beginBatchEdit();
-        // If there is a selection, then undo the selection first. Unfortunately this causes
-        // a flicker. TODO: Add getSelectionText() to InputConnection API.
-        if (mLastSelectionStart < mLastSelectionEnd) {
-            ic.setSelection(mLastSelectionStart, mLastSelectionStart);
-        }
-        if (!mPredicting && isCursorTouchingWord()) {
-            EditingUtil.Range range = new EditingUtil.Range();
-            CharSequence touching = EditingUtil.getWordAtCursor(getCurrentInputConnection(),
-                    mWordSeparators, range);
-            // If it's a selection, check if it's an entire word and no more, no less.
-            boolean fullword = EditingUtil.isFullWordOrInside(range, mLastSelectionStart,
-                    mLastSelectionEnd);
-            if (fullword && touching != null && touching.length() > 1) {
-                // Strip out any trailing word separator
-                if (mWordSeparators.indexOf(touching.charAt(touching.length() - 1)) > 0) {
-                    touching = touching.toString().substring(0, touching.length() - 1);
+        if (!mPredicting) {
+            // Extract the selected or touching text
+            EditingUtil.SelectedWord touching = EditingUtil.getWordAtCursorOrSelection(ic,
+                    mLastSelectionStart, mLastSelectionEnd, mWordSeparators);
+
+            if (touching != null && touching.word.length() > 1) {
+                ic.beginBatchEdit();
+
+                if (!applyVoiceAlternatives(touching) && !applyTypedAlternatives(touching)) {
+                    abortCorrection(true);
+                } else {
+                    TextEntryState.selectedForCorrection();
+                    EditingUtil.underlineWord(ic, touching);
                 }
 
-                // Search for result in spoken word alternatives
-                String selectedWord = touching.toString().trim();
-                if (!mWordToSuggestions.containsKey(selectedWord)){
-                    selectedWord = selectedWord.toLowerCase();
-                }
-                if (mWordToSuggestions.containsKey(selectedWord)){
-                    mShowingVoiceSuggestions = true;
-                    underlineWord(touching, range.charsBefore, range.charsAfter);
-                    List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
-                    // If the first letter of touching is capitalized, make all the suggestions
-                    // start with a capital letter.
-                    if (Character.isUpperCase((char) touching.charAt(0))) {
-                        for (int i=0; i< suggestions.size(); i++) {
-                            String origSugg = (String) suggestions.get(i);
-                            String capsSugg = origSugg.toUpperCase().charAt(0)
-                                + origSugg.subSequence(1, origSugg.length()).toString();
-                            suggestions.set(i,capsSugg);
-                        }
-                    }
-                    setSuggestions(suggestions, false, true, true);
-                    setCandidatesViewShown(true);
-                    TextEntryState.selectedForCorrection();
-                    ic.endBatchEdit();
-                    return;
-                }
-
-                // If we didn't find a match, search for result in typed word history
-                WordComposer foundWord = null;
-                WordAlternatives alternatives = null;
-                for (WordAlternatives entry : mWordHistory) {
-                    if (TextUtils.equals(entry.getChosenWord(), touching)) {
-                        if (entry instanceof TypedWordAlternatives) {
-                            foundWord = ((TypedWordAlternatives)entry).word;
-                        }
-                        alternatives = entry;
-                        break;
-                    }
-                }
-                // If we didn't find a match, at least suggest completions
-                if (foundWord == null && mSuggest.isValidWord(touching)) {
-                    foundWord = new WordComposer();
-                    for (int i = 0; i < touching.length(); i++) {
-                        foundWord.add(touching.charAt(i), new int[] { touching.charAt(i) });
-                    }
-                }
-                // Found a match, show suggestions
-                if (foundWord != null || alternatives != null) {
-                    underlineWord(touching, range.charsBefore, range.charsAfter);
-                    TextEntryState.selectedForCorrection();
-                    if (alternatives == null) alternatives = new TypedWordAlternatives(touching,
-                            foundWord);
-                    showCorrections(alternatives);
-                    if (foundWord != null) {
-                        mWord = new WordComposer(foundWord);
-                    } else {
-                        mWord.reset();
-                    }
-                    // Revert the selection
-                    if (mLastSelectionStart < mLastSelectionEnd) {
-                        ic.setSelection(mLastSelectionStart, mLastSelectionEnd);
-                    }
-                    ic.endBatchEdit();
-                    return;
-                }
-                abortCorrection(true);
+                ic.endBatchEdit();
             } else {
                 abortCorrection(true);
                 setNextSuggestions();
@@ -1977,26 +2026,10 @@ public class LatinIME extends InputMethodService
         } else {
             abortCorrection(true);
         }
-        // Revert the selection
-        if (mLastSelectionStart < mLastSelectionEnd) {
-            ic.setSelection(mLastSelectionStart, mLastSelectionEnd);
-        }
-        ic.endBatchEdit();
     }
 
     private void setNextSuggestions() {
         setSuggestions(mSuggestPuncList, false, false, false);
-    }
-
-    private void underlineWord(CharSequence word, int left, int right) {
-        InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
-        if (MODIFY_TEXT_FOR_CORRECTION) {
-            ic.finishComposingText();
-            ic.deleteSurroundingText(left, right);
-            ic.setComposingText(word, 1);
-        }
-        ic.setSelection(mLastSelectionStart, mLastSelectionStart);
     }
 
     private void addToDictionaries(CharSequence suggestion, int frequencyDelta) {
@@ -2162,12 +2195,27 @@ public class LatinIME extends InputMethodService
     public void onPress(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
+        if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+            mShiftKeyState.onPress();
+            handleShift();
+        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
+        } else {
+            mShiftKeyState.onOtherKeyPressed();
+        }
     }
 
     public void onRelease(int primaryCode) {
         // Reset any drag flags in the keyboard
         ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).keyReleased();
         //vibrate();
+        if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+            if (mShiftKeyState.isMomentary())
+                resetShift();
+            mShiftKeyState.onRelease();
+        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
+        }
     }
 
     private FieldContext makeFieldContext() {
@@ -2389,7 +2437,7 @@ public class LatinIME extends InputMethodService
         builder.setIcon(R.drawable.ic_dialog_keyboard);
         builder.setNegativeButton(android.R.string.cancel, null);
         CharSequence itemSettings = getString(R.string.english_ime_settings);
-        CharSequence itemInputMethod = getString(R.string.inputMethod);
+        CharSequence itemInputMethod = getString(R.string.selectInputMethod);
         builder.setItems(new CharSequence[] {
                 itemSettings, itemInputMethod},
                 new DialogInterface.OnClickListener() {
@@ -2472,4 +2520,7 @@ public class LatinIME extends InputMethodService
         System.out.println("CPS = " + ((CPS_BUFFER_SIZE * 1000f) / total));
     }
 
+    public void onAutoCompletionStateChanged(boolean isAutoCompletion) {
+        mKeyboardSwitcher.onAutoCompletionStateChanged(isAutoCompletion);
+    }
 }
