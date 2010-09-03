@@ -965,8 +965,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             return false;
         boolean result = onLongPress(popupKey);
         if (result) {
-            tracker.setAlreadyProcessed();
             dismissKeyPreview();
+            tracker.setAlreadyProcessed();
         }
         return result;
     }
