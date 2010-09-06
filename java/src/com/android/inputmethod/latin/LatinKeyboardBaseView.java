@@ -1073,7 +1073,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mMiniKeyboardOriginY = y + container.getPaddingTop();
         mMiniKeyboard.setPopupOffset((x < 0) ? 0 : x, y);
         mMiniKeyboard.setShifted(isShifted());
-        mMiniKeyboard.setPreviewEnabled(isPreviewEnabled());
+        // Mini keyboard needs no pop-up key preview displayed.
+        mMiniKeyboard.setPreviewEnabled(false);
         mMiniKeyboardPopup.setContentView(container);
         mMiniKeyboardPopup.setWidth(container.getMeasuredWidth());
         mMiniKeyboardPopup.setHeight(container.getMeasuredHeight());
