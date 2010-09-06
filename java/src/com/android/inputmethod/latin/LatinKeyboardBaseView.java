@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -204,6 +205,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
     private final PointerQueue mPointerQueue = new PointerQueue();
     private final float mDebounceHysteresis;
+    private final boolean mHasDistinctMultitouch;
+    private int mOldPointerCount = 1;
 
     protected KeyDetector mKeyDetector = new ProximityKeyDetector();
 
@@ -508,6 +511,9 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         final boolean ignoreMultitouch = true;
         mGestureDetector = new GestureDetector(getContext(), listener, null, ignoreMultitouch);
         mGestureDetector.setIsLongpressEnabled(false);
+
+        mHasDistinctMultitouch = context.getPackageManager()
+                .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
     }
 
     public void setOnKeyboardActionListener(OnKeyboardActionListener listener) {
@@ -561,6 +567,14 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
      */
     public Keyboard getKeyboard() {
         return mKeyboard;
+    }
+
+    /**
+     * Return whether the device has distinct multi-touch panel.
+     * @return true if the device has distinct multi-touch panel.
+     */
+    public boolean hasDistinctMultitouch() {
+        return mHasDistinctMultitouch;
     }
 
     /**
@@ -1090,7 +1104,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = pointers.size(); i <= id; i++) {
             final PointerTracker tracker =
-                new PointerTracker(i, mHandler, mKeyDetector, this);
+                new PointerTracker(i, mHandler, mKeyDetector, this, mHasDistinctMultitouch);
             if (keys != null)
                 tracker.setKeyboard(keys, mDebounceHysteresis);
             if (listener != null)
@@ -1106,6 +1120,13 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         final int pointerCount = me.getPointerCount();
         final int action = me.getActionMasked();
         final long eventTime = me.getEventTime();
+
+        // TODO: cleanup this code into a multi-touch to single-touch event converter class?
+        // If the device does not have distinct multi-touch support panel, ignore all multi-touch
+        // events except a transition from/to single-touch.
+        if (!mHasDistinctMultitouch && pointerCount > 1 && mOldPointerCount > 1) {
+            return true;
+        }
 
         // Track the last few movements to look for spurious swipes.
         mSwipeTracker.addMovement(me);
@@ -1136,6 +1157,34 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 return true;
             }
             // Up event will pass through.
+        }
+
+        // TODO: cleanup this code into a multi-touch to single-touch event converter class?
+        // Translate mutli-touch event to single-touch events on the device that has no distinct
+        // multi-touch panel.
+        if (!mHasDistinctMultitouch) {
+            // Use only main (id=0) pointer tracker.
+            PointerTracker tracker = getPointerTracker(0);
+            int index = me.getActionIndex();
+            int x = (int)me.getX(index);
+            int y = (int)me.getY(index);
+            int oldPointerCount = mOldPointerCount;
+            if (pointerCount == 1 && oldPointerCount == 2) {
+                // Multi-touch to single touch transition.
+                // Send a down event for the latest pointer.
+                tracker.onDownEvent(x, y, eventTime);
+            } else if (pointerCount == 2 && oldPointerCount == 1) {
+                // Single-touch to multi-touch transition.
+                // Send an up event for the last pointer.
+                tracker.onUpEvent(tracker.getLastX(), tracker.getLastY(), eventTime);
+            } else if (pointerCount == 1 && oldPointerCount == 1) {
+                tracker.onTouchEvent(action, x, y, eventTime);
+            } else {
+                Log.w(TAG, "Unknown touch panel behavior: pointer count is " + pointerCount
+                        + " (old " + oldPointerCount + ")");
+            }
+            mOldPointerCount = pointerCount;
+            return true;
         }
 
         if (action == MotionEvent.ACTION_MOVE) {

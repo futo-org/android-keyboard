@@ -1135,7 +1135,9 @@ public class LatinIME extends InputMethodService
                 LatinImeLogger.logOnDelete();
                 break;
             case Keyboard.KEYCODE_SHIFT:
-                // Shift key is handled in onPress().
+                // Shift key is handled in onPress() when device has distinct multi-touch panel.
+                if (!mKeyboardSwitcher.hasDistinctMultitouch())
+                    handleShift();
                 break;
             case Keyboard.KEYCODE_CANCEL:
                 if (!isShowingOptionDialog()) {
@@ -1935,7 +1937,7 @@ public class LatinIME extends InputMethodService
             List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
             // If the first letter of touching is capitalized, make all the suggestions
             // start with a capital letter.
-            if (Character.isUpperCase((char) touching.word.charAt(0))) {
+            if (Character.isUpperCase(touching.word.charAt(0))) {
                 for (int i = 0; i < suggestions.size(); i++) {
                     String origSugg = (String) suggestions.get(i);
                     String capsSugg = origSugg.toUpperCase().charAt(0)
@@ -2196,7 +2198,7 @@ public class LatinIME extends InputMethodService
     public void onPress(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
-        if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+        if (mKeyboardSwitcher.hasDistinctMultitouch() && primaryCode == Keyboard.KEYCODE_SHIFT) {
             mShiftKeyState.onPress();
             handleShift();
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
@@ -2210,7 +2212,7 @@ public class LatinIME extends InputMethodService
         // Reset any drag flags in the keyboard
         ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).keyReleased();
         //vibrate();
-        if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+        if (mKeyboardSwitcher.hasDistinctMultitouch() && primaryCode == Keyboard.KEYCODE_SHIFT) {
             if (mShiftKeyState.isMomentary())
                 resetShift();
             mShiftKeyState.onRelease();

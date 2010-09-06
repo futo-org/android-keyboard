@@ -22,12 +22,13 @@ import com.android.inputmethod.latin.LatinKeyboardBaseView.UIHandler;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
 public class PointerTracker {
     private static final String TAG = "PointerTracker";
     private static final boolean DEBUG = false;
-    private static final boolean DEBUG_MOVE = DEBUG && true;
+    private static final boolean DEBUG_MOVE = false;
 
     public interface UIProxy {
         public void invalidateKey(Key key);
@@ -51,6 +52,7 @@ public class PointerTracker {
     private final UIHandler mHandler;
     private final KeyDetector mKeyDetector;
     private OnKeyboardActionListener mListener;
+    private final boolean mHasDistinctMultitouch;
 
     private Key[] mKeys;
     private int mKeyDebounceThresholdSquared = -1;
@@ -85,13 +87,15 @@ public class PointerTracker {
     // pressed key
     private int mPreviousKey = NOT_A_KEY;
 
-    public PointerTracker(int id, UIHandler handler, KeyDetector keyDetector, UIProxy proxy) {
+    public PointerTracker(int id, UIHandler handler, KeyDetector keyDetector, UIProxy proxy,
+            boolean hasDistinctMultitouch) {
         if (proxy == null || handler == null || keyDetector == null)
             throw new NullPointerException();
         mPointerId = id;
         mProxy = proxy;
         mHandler = handler;
         mKeyDetector = keyDetector;
+        mHasDistinctMultitouch = hasDistinctMultitouch;
         resetMultiTap();
     }
 
@@ -144,6 +148,25 @@ public class PointerTracker {
 
     public void setAlreadyProcessed() {
         mKeyAlreadyProcessed = true;
+    }
+
+    public void onTouchEvent(int action, int x, int y, long eventTime) {
+        switch (action) {
+        case MotionEvent.ACTION_MOVE:
+            onMoveEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_DOWN:
+        case MotionEvent.ACTION_POINTER_DOWN:
+            onDownEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_POINTER_UP:
+            onUpEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_CANCEL:
+            onCancelEvent(x, y, eventTime);
+            break;
+        }
     }
 
     public void onDownEvent(int x, int y, long eventTime) {
@@ -242,7 +265,7 @@ public class PointerTracker {
         showKeyPreviewAndUpdateKey(NOT_A_KEY);
         // If we're not on a repeating key (which sends on a DOWN event)
         if (!wasInKeyRepeat) {
-            detectAndSendKey(mCurrentKey, (int)x, (int)y, eventTime);
+            detectAndSendKey(mCurrentKey, x, y, eventTime);
         }
         if (isValidKeyIndex(keyIndex))
             mProxy.invalidateKey(mKeys[keyIndex]);
@@ -355,7 +378,10 @@ public class PointerTracker {
 
     private void showKeyPreviewAndUpdateKey(int keyIndex) {
         updateKey(keyIndex);
-        if (!isModifier())
+        // The modifier key, such as shift key, should not be shown as preview when multi-touch is
+        // supported. On thge other hand, if multi-touch is not supported, the modifier key should
+        // be shown as preview.
+        if (!isModifier() || !mHasDistinctMultitouch)
             mProxy.showPreview(keyIndex, this);
     }
 

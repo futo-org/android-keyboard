@@ -365,6 +365,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    public boolean hasDistinctMultitouch() {
+        return mInputView != null && mInputView.hasDistinctMultitouch();
+    }
+
     /**
      * Updates state machine to figure out when to automatically switch back to alpha mode.
      * Returns true if the keyboard needs to switch back 
