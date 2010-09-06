@@ -78,17 +78,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         setKeyboardLocal(k);
     }
 
-    private static boolean hasOneDigitAlternate(Key key) {
-        final CharSequence alternates = key.popupCharacters;
-        if (alternates == null)
-            return false;
-        final String altChars = alternates.toString();
-        if (altChars.codePointCount(0, altChars.length()) != 1)
-            return false;
-        final int altCode = altChars.codePointAt(0);
-        return altCode >= '0' && altCode <= '9';
-    }
-
     @Override
     protected boolean onLongPress(Key key) {
         int primaryCode = key.codes[0];
@@ -101,13 +90,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             getOnKeyboardActionListener().onKey(
                     '+', null,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
-            return true;
-        } else if (hasOneDigitAlternate(key)) {
-            mKeyCodes[0] = primaryCode = key.popupCharacters.charAt(0);
-            // when there is only one alternate character, send it as key action.
-            getOnKeyboardActionListener().onKey(primaryCode, mKeyCodes,
                     LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
                     LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
             return true;
