@@ -131,7 +131,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     public boolean setShiftLocked(boolean shiftLocked) {
         Keyboard keyboard = getKeyboard();
-        if (keyboard != null && keyboard instanceof LatinKeyboard) {
+        if (keyboard instanceof LatinKeyboard) {
             ((LatinKeyboard)keyboard).setShiftLocked(shiftLocked);
             invalidateAllKeys();
             return true;

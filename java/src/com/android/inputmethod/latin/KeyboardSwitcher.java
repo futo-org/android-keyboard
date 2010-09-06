@@ -16,16 +16,16 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.view.InflateException;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -197,8 +197,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
         mHasVoice = enableVoice;
         mVoiceOnPrimary = voiceOnPrimary;
-        setKeyboardMode(mMode, mImeOptions, mHasVoice,
-                mIsSymbols);
+        setKeyboardMode(mMode, mImeOptions, mHasVoice, mIsSymbols);
     }
 
     boolean hasVoiceButton(boolean isSymbols) {
@@ -338,19 +337,23 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     void toggleShift() {
         if (mCurrentId.equals(mSymbolsId)) {
-            LatinKeyboard symbolsKeyboard = getKeyboard(mSymbolsId);
             LatinKeyboard symbolsShiftedKeyboard = getKeyboard(mSymbolsShiftedId);
-            symbolsKeyboard.setShifted(true);
             mCurrentId = mSymbolsShiftedId;
             mInputView.setKeyboard(symbolsShiftedKeyboard);
-            symbolsShiftedKeyboard.setShifted(true);
+            // Symbol shifted keyboard has an ALT key that has a caps lock style indicator. To
+            // enable the indicator, we need to call enableShiftLock() and setShiftLocked(true).
+            // Thus we can keep the ALT key's Key.on value true while LatinKey.onRelease() is
+            // called.
+            symbolsShiftedKeyboard.enableShiftLock();
+            symbolsShiftedKeyboard.setShiftLocked(true);
             symbolsShiftedKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
         } else if (mCurrentId.equals(mSymbolsShiftedId)) {
             LatinKeyboard symbolsKeyboard = getKeyboard(mSymbolsId);
-            LatinKeyboard symbolsShiftedKeyboard = getKeyboard(mSymbolsShiftedId);
-            symbolsShiftedKeyboard.setShifted(false);
             mCurrentId = mSymbolsId;
             mInputView.setKeyboard(symbolsKeyboard);
+            // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
+            // indicator, we need to call enableShiftLock() and setShiftLocked(false).
+            symbolsKeyboard.enableShiftLock();
             symbolsKeyboard.setShifted(false);
             symbolsKeyboard.setImeOptions(mContext.getResources(), mMode, mImeOptions);
         }
