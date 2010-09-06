@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.List;
-import java.util.Locale;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -27,10 +24,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.Paint.Align;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
-import android.graphics.Paint.Align;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
@@ -38,6 +35,9 @@ import android.text.TextPaint;
 import android.util.Log;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
+
+import java.util.List;
+import java.util.Locale;
 
 public class LatinKeyboard extends Keyboard {
 
@@ -128,7 +128,7 @@ public class LatinKeyboard extends Keyboard {
                 R.dimen.spacebar_vertical_correction);
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
-        mSpaceKeyIndex = indexOf((int) ' ');
+        mSpaceKeyIndex = indexOf(' ');
     }
 
     public LatinKeyboard(Context context, int layoutTemplateResId, 
