@@ -150,8 +150,8 @@ public class LatinIME extends InputMethodService
     static final int KEYCODE_PERIOD = '.';
 
     // Contextual menu positions
-    private static final int POS_SETTINGS = 0;
-    private static final int POS_METHOD = 1;
+    private static final int POS_METHOD = 0;
+    private static final int POS_SETTINGS = 1;
 
     //private LatinKeyboardView mInputView;
     private LinearLayout mCandidateViewContainer;
@@ -2455,7 +2455,7 @@ public class LatinIME extends InputMethodService
         CharSequence itemSettings = getString(R.string.english_ime_settings);
         CharSequence itemInputMethod = getString(R.string.selectInputMethod);
         builder.setItems(new CharSequence[] {
-                itemSettings, itemInputMethod},
+                itemInputMethod, itemSettings},
                 new DialogInterface.OnClickListener() {
 
             public void onClick(DialogInterface di, int position) {
@@ -2471,7 +2471,7 @@ public class LatinIME extends InputMethodService
                 }
             }
         });
-        builder.setTitle(mResources.getString(R.string.english_ime_name));
+        builder.setTitle(mResources.getString(R.string.english_ime_input_options));
         mOptionsDialog = builder.create();
         Window window = mOptionsDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();

@@ -286,9 +286,6 @@
     <!-- popular web domains for the locale - item 4, displayed in the popup -->
     <string name="popular_domain_4">".edu"</string>
 
-    <!-- Menu item for launching Input method switcher -->
-    <string name="inputMethod">Метод за унос</string>
-
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Језици за унос</string>
     <!-- Title summary for input language selection screen -->
