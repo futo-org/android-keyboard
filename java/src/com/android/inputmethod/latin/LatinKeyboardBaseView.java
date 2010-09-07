@@ -1120,7 +1120,6 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     public boolean onTouchEvent(MotionEvent me) {
         final int pointerCount = me.getPointerCount();
         final int action = me.getActionMasked();
-        final long eventTime = me.getEventTime();
 
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // If the device does not have distinct multi-touch support panel, ignore all multi-touch
@@ -1139,23 +1138,31 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             return true;
         }
 
+        final long eventTime = me.getEventTime();
+        final int index = me.getActionIndex();
+        final int id = me.getPointerId(index);
+        final int x = (int)me.getX(index);
+        final int y = (int)me.getY(index);
+
         // Needs to be called after the gesture detector gets a turn, as it may have
         // displayed the mini keyboard
         if (mMiniKeyboard != null) {
-            MotionEvent translated = generateMiniKeyboardMotionEvent(action, (int)me.getX(),
-                    (int)me.getY(), eventTime);
+            MotionEvent translated = generateMiniKeyboardMotionEvent(action, x, y, eventTime);
             mMiniKeyboard.onTouchEvent(translated);
             translated.recycle();
             return true;
         }
 
         if (mHandler.isInKeyRepeat()) {
-            // It'll be canceled if 2 or more keys are in action. Otherwise it will keep being in
-            // the key repeating mode while the key is being pressed.
-            if (pointerCount > 1) {
-                mHandler.cancelKeyRepeatTimer();
-            } else if (action == MotionEvent.ACTION_MOVE) {
+            // It will keep being in the key repeating mode while the key is being pressed.
+            if (action == MotionEvent.ACTION_MOVE) {
                 return true;
+            }
+            final PointerTracker tracker = getPointerTracker(id);
+            // Key repeating timer will be canceled if 2 or more keys are in action, and current
+            // event (UP or DOWN) is non-modifier key.
+            if (pointerCount > 1 && !tracker.isModifier()) {
+                mHandler.cancelKeyRepeatTimer();
             }
             // Up event will pass through.
         }
@@ -1166,9 +1173,6 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         if (!mHasDistinctMultitouch) {
             // Use only main (id=0) pointer tracker.
             PointerTracker tracker = getPointerTracker(0);
-            int index = me.getActionIndex();
-            int x = (int)me.getX(index);
-            int y = (int)me.getY(index);
             int oldPointerCount = mOldPointerCount;
             if (pointerCount == 1 && oldPointerCount == 2) {
                 // Multi-touch to single touch transition.
@@ -1189,18 +1193,11 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         }
 
         if (action == MotionEvent.ACTION_MOVE) {
-            for (int index = 0; index < pointerCount; index++) {
-                int x = (int)me.getX(index);
-                int y = (int)me.getY(index);
-                int id = me.getPointerId(index);
-                PointerTracker tracker = getPointerTracker(id);
-                tracker.onMoveEvent(x, y, eventTime);
+            for (int i = 0; i < pointerCount; i++) {
+                PointerTracker tracker = getPointerTracker(me.getPointerId(i));
+                tracker.onMoveEvent((int)me.getX(i), (int)me.getY(i), eventTime);
             }
         } else {
-            int index = me.getActionIndex();
-            int x = (int)me.getX(index);
-            int y = (int)me.getY(index);
-            int id = me.getPointerId(index);
             PointerTracker tracker = getPointerTracker(id);
             switch (action) {
             case MotionEvent.ACTION_DOWN:
