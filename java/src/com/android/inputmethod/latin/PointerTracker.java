@@ -65,6 +65,9 @@ public class PointerTracker {
     // true if event is already translated to a key action (long press or mini-keyboard)
     private boolean mKeyAlreadyProcessed;
 
+    // true if this pointer is repeatable key
+    private boolean mIsRepeatableKey;
+
     // for move de-bouncing
     private int mLastCodeX;
     private int mLastCodeY;
@@ -176,6 +179,7 @@ public class PointerTracker {
         mStartY = y;
         mDownTime = eventTime;
         mKeyAlreadyProcessed = false;
+        mIsRepeatableKey = false;
         startMoveDebouncing(x, y);
         startTimeDebouncing(eventTime);
         checkMultiTap(eventTime, keyIndex);
@@ -187,6 +191,7 @@ public class PointerTracker {
             if (mKeys[keyIndex].repeatable) {
                 repeatKey(keyIndex);
                 mHandler.startKeyRepeatTimer(REPEAT_START_DELAY, keyIndex, this);
+                mIsRepeatableKey = true;
             }
             mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
         }
@@ -246,10 +251,9 @@ public class PointerTracker {
             return;
         if (DEBUG)
             debugLog("onUpEvent  :", x, y);
-        int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
-        boolean wasInKeyRepeat = mHandler.isInKeyRepeat();
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
+        int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
         if (isMinorMoveBounce(x, y, keyIndex, mCurrentKey)) {
             updateTimeDebouncing(eventTime);
         } else {
@@ -263,8 +267,7 @@ public class PointerTracker {
             y = mLastCodeY;
         }
         showKeyPreviewAndUpdateKey(NOT_A_KEY);
-        // If we're not on a repeating key (which sends on a DOWN event)
-        if (!wasInKeyRepeat) {
+        if (!mIsRepeatableKey) {
             detectAndSendKey(mCurrentKey, x, y, eventTime);
         }
         if (isValidKeyIndex(keyIndex))
