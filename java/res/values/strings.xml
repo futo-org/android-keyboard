@@ -339,7 +339,7 @@
     <!-- Description for enabling to send user statistics to Google. -->
     <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports to Google.</string>
     <!-- Preferences item for enabling to re-correct suggestions .   -->
-    <string name="prefs_enable_recorrection">Tap to re-correction</string>
+    <string name="prefs_enable_recorrection">Tap to re-correct words</string>
     <!-- The summary for the preferences item for enabling to re-correct suggestions .   -->
     <string name="prefs_enable_recorrection_summary">You can re-correct words by tapping words you have typed</string>
 
