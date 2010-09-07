@@ -127,7 +127,6 @@
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
     <string name="popular_domain_3" msgid="8718639560809452028">".gouv"</string>
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
-    <string name="inputMethod" msgid="7854532062009028116">"Mode de saisie"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Langues de saisie"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Faites glisser votre doigt sur la barre d\'espacement pour changer la langue."</string>
     <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Appuyer de nouveau pour enregistrer"</string>
