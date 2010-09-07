@@ -111,11 +111,11 @@
         <Key android:codes="@integer/key_settings" android:keyIcon="@drawable/sym_keyboard_settings"
                 android:iconPreview="@drawable/sym_keyboard_feedback_settings"
                 android:keyWidth="10%p" android:isModifier="true"/>
-        <Key android:keyLabel="\@"/>
+        <Key android:keyLabel="\@" android:isModifier="true"/>
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
                 android:keyWidth="30%p" android:isRepeatable="true" android:isModifier="true"/>
-        <Key android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation"/>
+        <Key android:keyLabel="." android:popupKeyboard="@xml/popup_punctuation" android:isModifier="true"/>
         <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
                 android:keyWidth="25%p" android:keyEdgeFlags="right" android:isModifier="true"/>
