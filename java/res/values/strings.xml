@@ -22,6 +22,8 @@
     <string name="english_ime_name">Android keyboard</string>
     <!-- Title for Latin keyboard settings activity / dialog -->
     <string name="english_ime_settings">Android keyboard settings</string>
+    <!-- Title for Latin keyboard input options dialog -->
+    <string name="english_ime_input_options">Input options</string>
 
     <!-- Option to provide vibrate/haptic feedback on keypress -->
     <string name="vibrate_on_keypress">Vibrate on keypress</string>
@@ -317,9 +319,6 @@
     <string name="popular_domain_3">".gov"</string>
     <!-- popular web domains for the locale - item 4, displayed in the popup -->
     <string name="popular_domain_4">".edu"</string>
-
-    <!-- Menu item for launching Input method switcher -->
-    <string name="inputMethod">Input method</string>
 
     <!-- Menu item for launching Input method picker -->
     <string name="selectInputMethod">Select input method</string>
