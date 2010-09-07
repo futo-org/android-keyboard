@@ -389,9 +389,13 @@ public class PointerTracker {
     }
 
     private void detectAndSendKey(int index, int x, int y, long eventTime) {
-        if (isValidKeyIndex(index)) {
-            final Key key = mKeys[index];
-            OnKeyboardActionListener listener = mListener;
+        final OnKeyboardActionListener listener = mListener;
+        final Key key = getKey(index);
+
+        if (key == null) {
+            if (listener != null)
+                listener.onCancel();
+        } else {
             if (key.text != null) {
                 if (listener != null) {
                     listener.onText(key.text);
