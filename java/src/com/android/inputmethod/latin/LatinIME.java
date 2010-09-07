@@ -127,6 +127,7 @@ public class LatinIME extends InputMethodService
 
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_INPUT_LANGUAGE = "input_language";
+    private static final String PREF_RECORRECTION_ENABLED = "recorrection_enabled";
 
     private static final int MSG_UPDATE_SUGGESTIONS = 0;
     private static final int MSG_START_TUTORIAL = 1;
@@ -193,6 +194,7 @@ public class LatinIME extends InputMethodService
     private boolean mAutoSpace;
     private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
+    private boolean mReCorrectionEnabled;
     private boolean mBigramSuggestionEnabled;
     private boolean mAutoCorrectOn;
     // TODO move this state variable outside LatinIME
@@ -360,6 +362,8 @@ public class LatinIME extends InputMethodService
         if (inputLanguage == null) {
             inputLanguage = conf.locale.toString();
         }
+        mReCorrectionEnabled = prefs.getBoolean(PREF_RECORRECTION_ENABLED,
+                getResources().getBoolean(R.bool.default_recorrection_enabled));
 
         LatinIMEUtil.GCUtils.getInstance().reset();
         boolean tryGC = true;
@@ -768,21 +772,22 @@ public class LatinIME extends InputMethodService
         mLastSelectionStart = newSelStart;
         mLastSelectionEnd = newSelEnd;
 
-
-        // Don't look for corrections if the keyboard is not visible
-        if (mKeyboardSwitcher != null && mKeyboardSwitcher.getInputView() != null
-                && mKeyboardSwitcher.getInputView().isShown()) {
-            // Check if we should go in or out of correction mode.
-            if (isPredictionOn()
-                    && mJustRevertedSeparator == null
-                    && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
-                            || TextEntryState.isCorrecting())
-                    && (newSelStart < newSelEnd - 1 || (!mPredicting))
-                    && !mVoiceInputHighlighted) {
-                if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
-                    postUpdateOldSuggestions();
-                } else {
-                    abortCorrection(false);
+        if (mReCorrectionEnabled) {
+            // Don't look for corrections if the keyboard is not visible
+            if (mKeyboardSwitcher != null && mKeyboardSwitcher.getInputView() != null
+                    && mKeyboardSwitcher.getInputView().isShown()) {
+                // Check if we should go in or out of correction mode.
+                if (isPredictionOn()
+                        && mJustRevertedSeparator == null
+                        && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
+                                || TextEntryState.isCorrecting())
+                                && (newSelStart < newSelEnd - 1 || (!mPredicting))
+                                && !mVoiceInputHighlighted) {
+                    if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
+                        postUpdateOldSuggestions();
+                    } else {
+                        abortCorrection(false);
+                    }
                 }
             }
         }
@@ -1134,7 +1139,9 @@ public class LatinIME extends InputMethodService
                 LatinImeLogger.logOnDelete();
                 break;
             case Keyboard.KEYCODE_SHIFT:
-                // Shift key is handled in onPress().
+                // Shift key is handled in onPress() when device has distinct multi-touch panel.
+                if (!mKeyboardSwitcher.hasDistinctMultitouch())
+                    handleShift();
                 break;
             case Keyboard.KEYCODE_CANCEL:
                 if (!isShowingOptionDialog()) {
@@ -1934,7 +1941,7 @@ public class LatinIME extends InputMethodService
             List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
             // If the first letter of touching is capitalized, make all the suggestions
             // start with a capital letter.
-            if (Character.isUpperCase((char) touching.word.charAt(0))) {
+            if (Character.isUpperCase(touching.word.charAt(0))) {
                 for (int i = 0; i < suggestions.size(); i++) {
                     String origSugg = (String) suggestions.get(i);
                     String capsSugg = origSugg.toUpperCase().charAt(0)
@@ -2178,6 +2185,9 @@ public class LatinIME extends InputMethodService
         if (PREF_SELECTED_LANGUAGES.equals(key)) {
             mLanguageSwitcher.loadLocales(sharedPreferences);
             mRefreshKeyboardRequired = true;
+        } else if (PREF_RECORRECTION_ENABLED.equals(key)) {
+            mReCorrectionEnabled = sharedPreferences.getBoolean(PREF_RECORRECTION_ENABLED,
+                    getResources().getBoolean(R.bool.default_recorrection_enabled));
         }
     }
 
@@ -2195,7 +2205,7 @@ public class LatinIME extends InputMethodService
     public void onPress(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
-        if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+        if (mKeyboardSwitcher.hasDistinctMultitouch() && primaryCode == Keyboard.KEYCODE_SHIFT) {
             mShiftKeyState.onPress();
             handleShift();
         } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
@@ -2209,7 +2219,7 @@ public class LatinIME extends InputMethodService
         // Reset any drag flags in the keyboard
         ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).keyReleased();
         //vibrate();
-        if (primaryCode == Keyboard.KEYCODE_SHIFT) {
+        if (mKeyboardSwitcher.hasDistinctMultitouch() && primaryCode == Keyboard.KEYCODE_SHIFT) {
             if (mShiftKeyState.isMomentary())
                 resetShift();
             mShiftKeyState.onRelease();
