@@ -124,6 +124,11 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         void onText(CharSequence text);
 
         /**
+         * Called when user released a finger outside any key.
+         */
+        void onCancel();
+
+        /**
          * Called when the user quickly moves the finger from right to
          * left.
          */
@@ -1002,6 +1007,10 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
             public void onText(CharSequence text) {
                 mKeyboardActionListener.onText(text);
+                dismissPopupKeyboard();
+            }
+
+            public void onCancel() {
                 dismissPopupKeyboard();
             }
 

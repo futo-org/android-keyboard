@@ -1213,6 +1213,10 @@ public class LatinIME extends InputMethodService
         mEnteredText = text;
     }
 
+    public void onCancel() {
+        // User released a finger outside any key
+    }
+
     private void handleBackspace() {
         if (VOICE_INSTALLED && mVoiceInputHighlighted) {
             mVoiceInput.incrementTextModificationDeleteCount(
