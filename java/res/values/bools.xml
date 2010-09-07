@@ -28,5 +28,5 @@
     <bool name="config_swipeDisambiguation">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="default_popup_preview">true</bool>
-    <bool name="default_recorrection_enabled">true</bool>
+    <bool name="default_recorrection_enabled">false</bool>
 </resources>
