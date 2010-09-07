@@ -127,6 +127,7 @@ public class LatinIME extends InputMethodService
 
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_INPUT_LANGUAGE = "input_language";
+    private static final String PREF_RECORRECTION_ENABLED = "recorrection_enabled";
 
     private static final int MSG_UPDATE_SUGGESTIONS = 0;
     private static final int MSG_START_TUTORIAL = 1;
@@ -193,6 +194,7 @@ public class LatinIME extends InputMethodService
     private boolean mAutoSpace;
     private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
+    private boolean mReCorrectionEnabled;
     private boolean mBigramSuggestionEnabled;
     private boolean mAutoCorrectOn;
     // TODO move this state variable outside LatinIME
@@ -360,6 +362,8 @@ public class LatinIME extends InputMethodService
         if (inputLanguage == null) {
             inputLanguage = conf.locale.toString();
         }
+        mReCorrectionEnabled = prefs.getBoolean(PREF_RECORRECTION_ENABLED,
+                getResources().getBoolean(R.bool.default_recorrection_enabled));
 
         LatinIMEUtil.GCUtils.getInstance().reset();
         boolean tryGC = true;
@@ -768,21 +772,22 @@ public class LatinIME extends InputMethodService
         mLastSelectionStart = newSelStart;
         mLastSelectionEnd = newSelEnd;
 
-
-        // Don't look for corrections if the keyboard is not visible
-        if (mKeyboardSwitcher != null && mKeyboardSwitcher.getInputView() != null
-                && mKeyboardSwitcher.getInputView().isShown()) {
-            // Check if we should go in or out of correction mode.
-            if (isPredictionOn()
-                    && mJustRevertedSeparator == null
-                    && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
-                            || TextEntryState.isCorrecting())
-                    && (newSelStart < newSelEnd - 1 || (!mPredicting))
-                    && !mVoiceInputHighlighted) {
-                if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
-                    postUpdateOldSuggestions();
-                } else {
-                    abortCorrection(false);
+        if (mReCorrectionEnabled) {
+            // Don't look for corrections if the keyboard is not visible
+            if (mKeyboardSwitcher != null && mKeyboardSwitcher.getInputView() != null
+                    && mKeyboardSwitcher.getInputView().isShown()) {
+                // Check if we should go in or out of correction mode.
+                if (isPredictionOn()
+                        && mJustRevertedSeparator == null
+                        && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
+                                || TextEntryState.isCorrecting())
+                                && (newSelStart < newSelEnd - 1 || (!mPredicting))
+                                && !mVoiceInputHighlighted) {
+                    if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
+                        postUpdateOldSuggestions();
+                    } else {
+                        abortCorrection(false);
+                    }
                 }
             }
         }
@@ -2180,6 +2185,9 @@ public class LatinIME extends InputMethodService
         if (PREF_SELECTED_LANGUAGES.equals(key)) {
             mLanguageSwitcher.loadLocales(sharedPreferences);
             mRefreshKeyboardRequired = true;
+        } else if (PREF_RECORRECTION_ENABLED.equals(key)) {
+            mReCorrectionEnabled = sharedPreferences.getBoolean(PREF_RECORRECTION_ENABLED,
+                    getResources().getBoolean(R.bool.default_recorrection_enabled));
         }
     }
 
