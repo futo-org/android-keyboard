@@ -38,6 +38,13 @@
             />
 
     <CheckBoxPreference
+            android:key="recorrection_enabled"
+            android:title="@string/prefs_enable_recorrection"
+            android:persistent="true"
+            android:defaultValue="@bool/default_recorrection_enabled"
+            />
+
+    <CheckBoxPreference
             android:key="auto_cap"
             android:title="@string/auto_cap"
             android:persistent="true"
