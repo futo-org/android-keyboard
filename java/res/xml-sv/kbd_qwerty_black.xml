@@ -43,31 +43,31 @@
         <Key
             android:keyLabel="e"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="éèêëę€" />
+            android:popupCharacters="@string/alternates_for_e" />
         <Key
             android:keyLabel="r"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="ř" />
+            android:popupCharacters="@string/alternates_for_r" />
         <Key
             android:keyLabel="t"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="ťþ" />
+            android:popupCharacters="@string/alternates_for_t" />
         <Key
             android:keyLabel="y"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="ýÿü" />
+            android:popupCharacters="@string/alternates_for_y" />
         <Key
             android:keyLabel="u"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="úùûū" />
+            android:popupCharacters="@string/alternates_for_u" />
         <Key
             android:keyLabel="i"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="íìîï" />
+            android:popupCharacters="@string/alternates_for_i" />
         <Key
             android:keyLabel="o"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="óòôõ" />
+            android:popupCharacters="@string/alternates_for_o" />
         <Key
             android:keyLabel="p" />
         <Key
@@ -79,17 +79,17 @@
         <Key
             android:keyLabel="a"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="áàâąã"
+            android:popupCharacters="@string/alternates_for_a"
             android:keyWidth="8.75%p"
             android:keyEdgeFlags="left" />
         <Key
             android:keyLabel="s"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="śšşß" />
+            android:popupCharacters="@string/alternates_for_s" />
         <Key
             android:keyLabel="d"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="ðď" />
+            android:popupCharacters="@string/alternates_for_d" />
         <Key
             android:keyLabel="f" />
         <Key
@@ -103,15 +103,15 @@
         <Key
             android:keyLabel="l"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="ł" />
+            android:popupCharacters="@string/alternates_for_l" />
         <Key
             android:keyLabel="ö"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="øœ" />
+            android:popupCharacters="@string/alternates_for_o_umlaut" />
         <Key
             android:keyLabel="ä"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="æ"
+            android:popupCharacters="@string/alternates_for_a_umlaut"
             android:keyWidth="8.75%p"
             android:keyEdgeFlags="right" />
     </Row>
@@ -129,23 +129,23 @@
         <Key
             android:keyLabel="z"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="źžż" />
+            android:popupCharacters="@string/alternates_for_z" />
         <Key
             android:keyLabel="x" />
         <Key
             android:keyLabel="c"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="çćč" />
+            android:popupCharacters="@string/alternates_for_c" />
         <Key
             android:keyLabel="v"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="w" />
+            android:popupCharacters="@string/alternates_for_v" />
         <Key
             android:keyLabel="b" />
         <Key
             android:keyLabel="n"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="ńñň" />
+            android:popupCharacters="@string/alternates_for_n" />
         <Key
             android:keyLabel="m" />
         <Key

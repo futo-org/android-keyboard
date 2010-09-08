@@ -36,4 +36,11 @@
     <string name="alternates_for_l"></string>
     <string name="alternates_for_g"></string>
     <string name="alternates_for_p">0</string>
+    <string name="alternates_for_v"></string>
+    <string name="alternates_for_ae"></string>
+    <string name="alternates_for_oe"></string>
+    <string name="alternates_for_cyrillic_e"></string>
+    <string name="alternates_for_cyrillic_soft_sign"></string>
+    <string name="alternates_for_a_umlaut"></string>
+    <string name="alternates_for_o_umlaut"></string>
 </resources>

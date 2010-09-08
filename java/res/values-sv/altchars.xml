@@ -18,13 +18,21 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_a">àáâãäåæ</string>
-    <string name="alternates_for_e">èéêë</string>
-    <string name="alternates_for_i">ìíîï</string>
-    <string name="alternates_for_o">òóôõöœø</string>
-    <string name="alternates_for_u">ùúûü</string>
-    <string name="alternates_for_s">§ß</string>
-    <string name="alternates_for_n">ñ</string>
-    <string name="alternates_for_c">ç</string>
-    <string name="alternates_for_y">ýÿ</string>
+    <string name="alternates_for_a">áàâąã</string>
+    <string name="alternates_for_e">éèêëę€</string>
+    <string name="alternates_for_i">íìîï</string>
+    <string name="alternates_for_o">óòôõ</string>
+    <string name="alternates_for_u">úùûū</string>
+    <string name="alternates_for_s">śšşß</string>
+    <string name="alternates_for_n">ńñň</string>
+    <string name="alternates_for_c">çćč</string>
+    <string name="alternates_for_y">ýÿü</string>
+    <string name="alternates_for_d">ðď</string>
+    <string name="alternates_for_r">ř</string>
+    <string name="alternates_for_t">ťþ</string>
+    <string name="alternates_for_z">źžż</string>
+    <string name="alternates_for_l">ł</string>
+    <string name="alternates_for_v">w</string>
+    <string name="alternates_for_a_umlaut">æ</string>
+    <string name="alternates_for_o_umlaut">øœ</string>
 </resources>
