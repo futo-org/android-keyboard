@@ -242,7 +242,8 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="/"
-            android:keyWidth="10%p" />
+            android:keyWidth="10%p"
+            android:isModifier="true" />
         <Key
             android:codes="32"
             android:keyIcon="@drawable/sym_keyboard_space"
