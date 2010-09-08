@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.view.InflateException;
 
+import java.lang.ref.SoftReference;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -76,14 +77,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         KEYBOARDMODE_IM,
         KEYBOARDMODE_WEB};
 
-    Context mContext;
-    LatinIME mInputMethodService;
+    final Context mContext;
+    final LatinIME mInputMethodService;
 
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
 
     private KeyboardId mCurrentId;
-    private Map<KeyboardId, LatinKeyboard> mKeyboards;
+    private final Map<KeyboardId, SoftReference<LatinKeyboard>> mKeyboards;
 
     private int mMode = MODE_NONE; /** One of the MODE_XXX values */
     private int mImeOptions;
@@ -109,7 +110,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mLayoutId = Integer.valueOf(prefs.getString(PREF_KEYBOARD_LAYOUT, DEFAULT_LAYOUT_ID));
         prefs.registerOnSharedPreferenceChangeListener(this);
 
-        mKeyboards = new HashMap<KeyboardId, LatinKeyboard>();
+        mKeyboards = new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
         mSymbolsId = makeSymbolsId(false);
         mSymbolsShiftedId = makeSymbolsShiftedId(false);
         mInputMethodService = ims;
@@ -157,10 +158,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
      * which also serve as a unique identifier for each keyboard type.
      */
     private static class KeyboardId {
-        public int mXml;
-        public int mKeyboardMode; /** A KEYBOARDMODE_XXX value */
-        public boolean mEnableShiftLock;
-        public boolean mHasVoice;
+        // TODO: should have locale and portrait/landscape orientation?
+        public final int mXml;
+        public final int mKeyboardMode; /** A KEYBOARDMODE_XXX value */
+        public final boolean mEnableShiftLock;
+        public final boolean mHasVoice;
 
         public KeyboardId(int xml, int mode, boolean enableShiftLock, boolean hasVoice) {
             this.mXml = xml;
@@ -178,10 +180,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             return other instanceof KeyboardId && equals((KeyboardId) other);
         }
 
-        public boolean equals(KeyboardId other) {
-          return other.mXml == this.mXml
-              && other.mKeyboardMode == this.mKeyboardMode
-              && other.mEnableShiftLock == this.mEnableShiftLock;
+        private boolean equals(KeyboardId other) {
+            return other.mXml == this.mXml
+                && other.mKeyboardMode == this.mKeyboardMode
+                && other.mEnableShiftLock == this.mEnableShiftLock
+                && other.mHasVoice == this.mHasVoice;
         }
 
         @Override
@@ -245,13 +248,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
-        if (!mKeyboards.containsKey(id)) {
+        SoftReference<LatinKeyboard> ref = mKeyboards.get(id);
+        LatinKeyboard keyboard = (ref == null) ? null : ref.get();
+        if (keyboard == null) {
             Resources orig = mContext.getResources();
             Configuration conf = orig.getConfiguration();
             Locale saveLocale = conf.locale;
             conf.locale = mInputLocale;
             orig.updateConfiguration(conf, null);
-            LatinKeyboard keyboard = new LatinKeyboard(mContext, id.mXml, id.mKeyboardMode);
+            keyboard = new LatinKeyboard(mContext, id.mXml, id.mKeyboardMode);
             keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols
                     || id.mXml == R.xml.kbd_symbols_black), mHasVoice);
             keyboard.setLanguageSwitcher(mLanguageSwitcher, mIsAutoCompletionActive, isBlackSym());
@@ -259,12 +264,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();
             }
-            mKeyboards.put(id, keyboard);
+            mKeyboards.put(id, new SoftReference<LatinKeyboard>(keyboard));
 
             conf.locale = saveLocale;
             orig.updateConfiguration(conf, null);
         }
-        return mKeyboards.get(id);
+        return keyboard;
     }
 
     private KeyboardId getKeyboardId(int mode, int imeOptions, boolean isSymbols) {
