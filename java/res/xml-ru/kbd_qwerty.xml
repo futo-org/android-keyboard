@@ -87,7 +87,7 @@
         android:keyWidth="8.5%p"
     >
         <Key
-            android:codes="-1"
+            android:codes="@integer/key_shift"
             android:keyIcon="@drawable/sym_keyboard_shift"
             android:keyWidth="11.75%p"
             android:isModifier="true"
@@ -115,7 +115,7 @@
         <Key
             android:keyLabel="ю" />
         <Key
-            android:codes="-5"
+            android:codes="@integer/key_delete"
             android:keyIcon="@drawable/sym_keyboard_delete"
             android:keyWidth="11.75%p"
             android:keyEdgeFlags="right"
@@ -128,7 +128,7 @@
         android:rowEdgeFlags="bottom"
     >
         <Key
-            android:codes="-2"
+            android:codes="@integer/key_symbol"
             android:keyLabel="@string/label_symbol_key"
             android:keyWidth="15%p"
             android:keyEdgeFlags="left"
@@ -146,20 +146,19 @@
             android:keyWidth="10%p"
             android:isModifier="true" />
         <Key
-            android:codes="32"
+            android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_keyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
             android:keyWidth="30%p"
             android:isRepeatable="true"
             android:isModifier="true" />
         <Key
-            android:codes="46"
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation"
             android:keyWidth="10%p"
             android:isModifier="true" />
         <Key
-            android:codes="10"
+            android:codes="@integer/key_return"
             android:keyIcon="@drawable/sym_keyboard_return"
             android:iconPreview="@drawable/sym_keyboard_feedback_return"
             android:keyWidth="25%p"
@@ -171,7 +170,7 @@
         android:rowEdgeFlags="bottom"
     >
         <Key
-            android:codes="-2"
+            android:codes="@integer/key_symbol"
             android:keyLabel="@string/label_symbol_key"
             android:keyWidth="15%p"
             android:keyEdgeFlags="left"
@@ -187,7 +186,7 @@
             android:keyWidth="10%p"
             android:isModifier="true" />
         <Key
-            android:codes="32"
+            android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_keyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
             android:keyWidth="30%p"
@@ -199,7 +198,7 @@
             android:keyWidth="10%p"
             android:isModifier="true" />
         <Key
-            android:codes="10"
+            android:codes="@integer/key_return"
             android:keyIcon="@drawable/sym_keyboard_return"
             android:iconPreview="@drawable/sym_keyboard_feedback_return"
             android:keyWidth="25%p"
@@ -211,7 +210,7 @@
         android:rowEdgeFlags="bottom"
     >
         <Key
-            android:codes="-2"
+            android:codes="@integer/key_symbol"
             android:keyLabel="@string/label_symbol_key"
             android:keyWidth="15%p"
             android:keyEdgeFlags="left"
@@ -226,7 +225,7 @@
             android:keyLabel="\@"
             android:isModifier="true" />
         <Key
-            android:codes="32"
+            android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_keyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
             android:keyWidth="30%p"
@@ -237,7 +236,7 @@
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
-            android:codes="10"
+            android:codes="@integer/key_return"
             android:keyIcon="@drawable/sym_keyboard_return"
             android:iconPreview="@drawable/sym_keyboard_feedback_return"
             android:keyWidth="25%p"
@@ -249,7 +248,7 @@
         android:rowEdgeFlags="bottom"
     >
         <Key
-            android:codes="-2"
+            android:codes="@integer/key_symbol"
             android:keyLabel="@string/label_symbol_key"
             android:keyWidth="15%p"
             android:keyEdgeFlags="left"
@@ -267,14 +266,13 @@
             android:keyWidth="10%p"
             android:isModifier="true" />
         <Key
-            android:codes="32"
+            android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_keyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
             android:keyWidth="30%p"
             android:isRepeatable="true"
             android:isModifier="true" />
         <Key
-            android:codes="46"
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation"
             android:keyWidth="10%p"
@@ -292,7 +290,7 @@
         android:rowEdgeFlags="bottom"
     >
         <Key
-            android:codes="-2"
+            android:codes="@integer/key_symbol"
             android:keyLabel="@string/label_symbol_key"
             android:keyWidth="15%p"
             android:keyEdgeFlags="left"
@@ -310,14 +308,14 @@
             android:keyWidth="10%p"
             android:isModifier="true" />
         <Key
-            android:codes="32"
+            android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_keyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
             android:keyWidth="30%p"
             android:isRepeatable="true"
             android:isModifier="true" />
         <Key
-            android:codes="9"
+            android:codes="@integer/key_tab"
             android:keyIcon="@drawable/sym_keyboard_tab"
             android:iconPreview="@drawable/sym_keyboard_feedback_tab"
             android:keyWidth="10%p"
@@ -328,7 +326,7 @@
             android:keyWidth="10%p"
             android:isModifier="true" />
         <Key
-            android:codes="10"
+            android:codes="@integer/key_return"
             android:keyIcon="@drawable/sym_keyboard_return"
             android:iconPreview="@drawable/sym_keyboard_feedback_return"
             android:keyWidth="15%p"
