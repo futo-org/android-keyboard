@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2009, The Android Open Source Project
+** Copyright 2010, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,10 +18,13 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Symbols that are commonly considered word separators in this language -->
-    <string name="word_separators">.\u0009\u0020,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|\u0022</string>
-    <!-- Symbols that are sentence separators, for purposes of making it hug the last sentence. -->
-    <string name="sentence_separators">.,!?)</string>
-    <!-- Symbols that are suggested between words -->
-    <string name="suggested_punctuations">!?,\u0022\u0027:()-/@_</string>
+    <string name="alternates_for_a">àá</string>
+    <string name="alternates_for_e">èé</string>
+    <string name="alternates_for_i">ìíîï</string>
+    <string name="alternates_for_o">òó</string>
+    <string name="alternates_for_u">ùúûü</string>
+    <string name="alternates_for_s">§</string>
+    <string name="alternates_for_n">ñ</string>
+    <string name="alternates_for_c">ç</string>
+    <string name="alternates_for_y">ýÿ</string>
 </resources>
