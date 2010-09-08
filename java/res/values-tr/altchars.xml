@@ -20,7 +20,7 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="alternates_for_a">àáâãäåæ</string>
     <string name="alternates_for_e">èéêë</string>
-    <string name="alternates_for_i">iìíîï</string>
+    <string name="alternates_for_i">ìíîï</string>
     <string name="alternates_for_o">öòóôõœø</string>
     <string name="alternates_for_u">üùúû</string>
     <string name="alternates_for_s">ş§ß</string>

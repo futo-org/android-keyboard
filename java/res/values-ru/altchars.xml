@@ -27,4 +27,6 @@
     <string name="alternates_for_n">ñ</string>
     <string name="alternates_for_c">ç</string>
     <string name="alternates_for_y">ýÿ</string>
+    <string name="alternates_for_cyrillic_e">ё</string>
+    <string name="alternates_for_cyrillic_soft_sign">ъ</string>
 </resources>

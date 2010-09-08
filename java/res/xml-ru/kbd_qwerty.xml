@@ -39,7 +39,7 @@
         <Key
             android:keyLabel="е"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="ё" />
+            android:popupCharacters="@string/alternates_for_cyrillic_e" />
         <Key
             android:keyLabel="н" />
         <Key
@@ -109,7 +109,7 @@
         <Key
             android:keyLabel="ь"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="ъ" />
+            android:popupCharacters="@string/alternates_for_cyrillic_soft_sign" />
         <Key
             android:keyLabel="б" />
         <Key
