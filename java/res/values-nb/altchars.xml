@@ -18,13 +18,20 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_a">åæáàâãä</string>
-    <string name="alternates_for_e">éèêë</string>
+    <string name="alternates_for_a">äáàâąã</string>
+    <string name="alternates_for_e">éèêëę€</string>
     <string name="alternates_for_i">íìîï</string>
-    <string name="alternates_for_o">ôóòöõœø</string>
-    <string name="alternates_for_u">üùúû</string>
-    <string name="alternates_for_s">ß§</string>
-    <string name="alternates_for_n">ñ</string>
-    <string name="alternates_for_c">ç</string>
+    <string name="alternates_for_o">öóòôõ</string>
+    <string name="alternates_for_u">üúùûū</string>
+    <string name="alternates_for_s">śšşß</string>
+    <string name="alternates_for_n">ńñň</string>
+    <string name="alternates_for_c">çćč</string>
     <string name="alternates_for_y">ýÿ</string>
+    <string name="alternates_for_d">ðď</string>
+    <string name="alternates_for_r">ř</string>
+    <string name="alternates_for_t">ťþ</string>
+    <string name="alternates_for_z">źžż</string>
+    <string name="alternates_for_l">ł</string>
+    <string name="alternates_for_v">w</string>
+    <string name="alternates_for_oe">œ</string>
 </resources>
