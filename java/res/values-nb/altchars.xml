@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2009, The Android Open Source Project
+** Copyright 2010, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,8 +18,13 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Accented characters related to "z" -->
-    <string name="alternates_for_z">źż</string>
-    <!-- Accented characters related to "l" -->
-    <string name="alternates_for_l">ł</string>    
+    <string name="alternates_for_a">åæáàâãä</string>
+    <string name="alternates_for_e">éèêë</string>
+    <string name="alternates_for_i">íìîï</string>
+    <string name="alternates_for_o">ôóòöõœø</string>
+    <string name="alternates_for_u">üùúû</string>
+    <string name="alternates_for_s">ß§</string>
+    <string name="alternates_for_n">ñ</string>
+    <string name="alternates_for_c">ç</string>
+    <string name="alternates_for_y">ýÿ</string>
 </resources>
