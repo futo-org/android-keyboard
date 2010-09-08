@@ -34,10 +34,14 @@
     <Row>
         <Key
             android:keyLabel="q"
+            android:popupKeyboard="@xml/kbd_popup_template"
+            android:popupCharacters="@string/alternates_for_q"
             android:keyWidth="8.75%p"
             android:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="w" />
+            android:keyLabel="w"
+            android:popupKeyboard="@xml/kbd_popup_template"
+            android:popupCharacters="@string/alternates_for_w" />
         <Key
             android:keyLabel="e"
             android:popupKeyboard="@xml/kbd_popup_template"
@@ -67,7 +71,9 @@
             android:popupKeyboard="@xml/kbd_popup_template"
             android:popupCharacters="@string/alternates_for_o" />
         <Key
-            android:keyLabel="p" />
+            android:keyLabel="p"
+            android:popupKeyboard="@xml/kbd_popup_template"
+            android:popupCharacters="@string/alternates_for_p" />
         <Key
             android:keyLabel="å"
             android:keyWidth="8.75%p"
@@ -91,7 +97,9 @@
         <Key
             android:keyLabel="f" />
         <Key
-            android:keyLabel="g" />
+            android:keyLabel="g"
+            android:popupKeyboard="@xml/kbd_popup_template"
+            android:popupCharacters="@string/alternates_for_g" />
         <Key
             android:keyLabel="h" />
         <Key
@@ -119,9 +127,9 @@
         <Key
             android:codes="@integer/key_shift"
             android:keyIcon="@drawable/sym_bkeyboard_shift"
+            android:iconPreview="@drawable/sym_keyboard_feedback_shift"
             android:keyWidth="15%p"
             android:isModifier="true"
-            android:iconPreview="@drawable/sym_keyboard_feedback_shift"
             android:isSticky="true"
             android:keyEdgeFlags="left" />
         <Key
@@ -149,10 +157,10 @@
         <Key
             android:codes="@integer/key_delete"
             android:keyIcon="@drawable/sym_bkeyboard_delete"
-            android:keyWidth="15%p"
-            android:keyEdgeFlags="right"
             android:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            android:isRepeatable="true" />
+            android:keyWidth="15%p"
+            android:isRepeatable="true"
+            android:keyEdgeFlags="right" />
     </Row>
     <Row
         android:keyboardMode="@+id/mode_normal"
