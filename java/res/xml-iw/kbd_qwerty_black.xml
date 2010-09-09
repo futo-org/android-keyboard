@@ -46,12 +46,12 @@
             android:keyLabel="פ" />
         <Key
             android:codes="@integer/key_delete"
-            android:horizontalGap="1.25%p"
             android:keyIcon="@drawable/sym_bkeyboard_delete"
-            android:keyWidth="13.75%p"
-            android:keyEdgeFlags="right"
             android:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            android:isRepeatable="true" />
+            android:keyWidth="13.75%p"
+            android:horizontalGap="1.25%p"
+            android:isRepeatable="true"
+            android:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
