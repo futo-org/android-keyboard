@@ -52,9 +52,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     /** The y coordinate of the last row */
     private int mLastRowY;
 
-    // This is local working variable for onLongPress().
-    private int[] mKeyCodes = new int[1];
-
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
