@@ -111,6 +111,8 @@ public class PointerTracker {
             throw new IllegalArgumentException();
         mKeys = keys;
         mKeyDebounceThresholdSquared = (int)(hysteresisPixel * hysteresisPixel);
+        // Update current key index because keyboard layout has been changed.
+        mCurrentKey = mKeyDetector.getKeyIndexAndNearbyCodes(mStartX, mStartY, null);
     }
 
     private boolean isValidKeyIndex(int keyIndex) {
@@ -126,8 +128,8 @@ public class PointerTracker {
         if (key == null)
             return false;
         int primaryCode = key.codes[0];
-        // TODO: KEYCODE_MODE_CHANGE (symbol) will be also a modifier key
-        return primaryCode == Keyboard.KEYCODE_SHIFT;
+        return primaryCode == Keyboard.KEYCODE_SHIFT
+                || primaryCode == Keyboard.KEYCODE_MODE_CHANGE;
     }
 
     public void updateKey(int keyIndex) {
@@ -173,6 +175,8 @@ public class PointerTracker {
     }
 
     public void onDownEvent(int x, int y, long eventTime) {
+        if (DEBUG)
+            debugLog("onDownEvent:", x, y);
         int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
         mCurrentKey = keyIndex;
         mStartX = x;
@@ -186,6 +190,8 @@ public class PointerTracker {
         if (mListener != null) {
             int primaryCode = isValidKeyIndex(keyIndex) ? mKeys[keyIndex].codes[0] : 0;
             mListener.onPress(primaryCode);
+            // This onPress call may have changed keyboard layout and have updated mCurrentKey
+            keyIndex = mCurrentKey;
         }
         if (isValidKeyIndex(keyIndex)) {
             if (mKeys[keyIndex].repeatable) {
@@ -197,11 +203,11 @@ public class PointerTracker {
         }
         showKeyPreviewAndUpdateKey(keyIndex);
         updateMoveDebouncing(x, y);
-        if (DEBUG)
-            debugLog("onDownEvent:", x, y);
     }
 
     public void onMoveEvent(int x, int y, long eventTime) {
+        if (DEBUG_MOVE)
+            debugLog("onMoveEvent:", x, y);
         if (mKeyAlreadyProcessed)
             return;
         int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
@@ -242,15 +248,13 @@ public class PointerTracker {
          */
         showKeyPreviewAndUpdateKey(isMinorTimeBounce() ? mLastKey : mCurrentKey);
         updateMoveDebouncing(x, y);
-        if (DEBUG_MOVE)
-            debugLog("onMoveEvent:", x, y);
     }
 
     public void onUpEvent(int x, int y, long eventTime) {
-        if (mKeyAlreadyProcessed)
-            return;
         if (DEBUG)
             debugLog("onUpEvent  :", x, y);
+        if (mKeyAlreadyProcessed)
+            return;
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         int keyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
@@ -384,8 +388,11 @@ public class PointerTracker {
         // The modifier key, such as shift key, should not be shown as preview when multi-touch is
         // supported. On thge other hand, if multi-touch is not supported, the modifier key should
         // be shown as preview.
-        if (!isModifier() || !mHasDistinctMultitouch)
+        if (mHasDistinctMultitouch && isModifier()) {
+            mProxy.showPreview(NOT_A_KEY, this);
+        } else {
             mProxy.showPreview(keyIndex, this);
+        }
     }
 
     private void detectAndSendKey(int index, int x, int y, long eventTime) {
@@ -478,7 +485,7 @@ public class PointerTracker {
     }
 
     private void debugLog(String title, int x, int y) {
-        Key key = getKey(mCurrentKey);
+        Key key = getKey(mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null));
         final String code;
         if (key == null) {
             code = "----";
