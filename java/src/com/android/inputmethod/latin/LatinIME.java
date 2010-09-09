@@ -229,8 +229,9 @@ public class LatinIME extends InputMethodService
     private int mDeleteCount;
     private long mLastKeyTime;
 
-    // Shift modifier key state
+    // Modifier keys state
     private ModifierKeyState mShiftKeyState = new ModifierKeyState();
+    private ModifierKeyState mSymbolKeyState = new ModifierKeyState();
 
     private Tutorial mTutorial;
 
@@ -1133,6 +1134,7 @@ public class LatinIME extends InputMethodService
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
+        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
         switch (primaryCode) {
             case Keyboard.KEYCODE_DELETE:
                 handleBackspace();
@@ -1141,8 +1143,13 @@ public class LatinIME extends InputMethodService
                 break;
             case Keyboard.KEYCODE_SHIFT:
                 // Shift key is handled in onPress() when device has distinct multi-touch panel.
-                if (!mKeyboardSwitcher.hasDistinctMultitouch())
+                if (!distinctMultiTouch)
                     handleShift();
+                break;
+            case Keyboard.KEYCODE_MODE_CHANGE:
+                // Symbol key is handled in onPress() when device has distinct multi-touch panel.
+                if (!distinctMultiTouch)
+                    changeKeyboardMode();
                 break;
             case Keyboard.KEYCODE_CANCEL:
                 if (!isShowingOptionDialog()) {
@@ -1160,10 +1167,6 @@ public class LatinIME extends InputMethodService
                 break;
             case LatinKeyboardView.KEYCODE_PREV_LANGUAGE:
                 toggleLanguage(false, false);
-                break;
-            case Keyboard.KEYCODE_MODE_CHANGE:
-                // TODO: Mode change (symbol key) should be handled in onPress().
-                changeKeyboardMode();
                 break;
             case LatinKeyboardView.KEYCODE_VOICE:
                 if (VOICE_INSTALLED) {
@@ -2210,13 +2213,16 @@ public class LatinIME extends InputMethodService
     public void onPress(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
-        if (mKeyboardSwitcher.hasDistinctMultitouch() && primaryCode == Keyboard.KEYCODE_SHIFT) {
+        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
+        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
             mShiftKeyState.onPress();
             handleShift();
-        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
-            // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
+        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            mSymbolKeyState.onPress();
+            changeKeyboardMode();
         } else {
             mShiftKeyState.onOtherKeyPressed();
+            mSymbolKeyState.onOtherKeyPressed();
         }
     }
 
@@ -2224,12 +2230,15 @@ public class LatinIME extends InputMethodService
         // Reset any drag flags in the keyboard
         ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).keyReleased();
         //vibrate();
-        if (mKeyboardSwitcher.hasDistinctMultitouch() && primaryCode == Keyboard.KEYCODE_SHIFT) {
+        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
+        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
             if (mShiftKeyState.isMomentary())
                 resetShift();
             mShiftKeyState.onRelease();
-        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
-            // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
+        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            if (mSymbolKeyState.isMomentary())
+                changeKeyboardMode();
+            mSymbolKeyState.onRelease();
         }
     }
 
