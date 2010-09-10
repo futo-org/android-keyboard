@@ -180,7 +180,6 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private Key[] mKeys;
 
     // Key preview popup
-    private final static boolean PREVIEW_CENTERED = false;
     private TextView mPreviewText;
     private PopupWindow mPreviewPopup;
     private int mPreviewTextSizeLarge;
@@ -188,8 +187,6 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private int mOldPreviewKeyIndex = NOT_A_KEY;
     private boolean mShowPreview = true;
     private boolean mShowTouchPoints = true;
-    private int mPopupPreviewX;
-    private int mPopupPreviewY;
     private int mPopupPreviewOffsetX;
     private int mPopupPreviewOffsetY;
     private int mWindowY;
@@ -869,7 +866,6 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         Key key = tracker.getKey(keyIndex);
         if (key == null)
             return;
-        final PopupWindow previewPopup = mPreviewPopup;
         if (key.icon != null) {
             mPreviewText.setCompoundDrawables(null, null, null,
                     key.iconPreview != null ? key.iconPreview : key.icon);
@@ -895,14 +891,10 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             lp.width = popupWidth;
             lp.height = popupHeight;
         }
-        if (PREVIEW_CENTERED) {
-            // TODO: Fix this if centering is brought back
-            mPopupPreviewX = 160 - mPreviewText.getMeasuredWidth() / 2;
-            mPopupPreviewY = - mPreviewText.getMeasuredHeight();
-        } else {
-            mPopupPreviewX = key.x - mPreviewText.getPaddingLeft() + getPaddingLeft();
-            mPopupPreviewY = key.y - popupHeight + mPreviewOffset;
-        }
+
+        int popupPreviewX = key.x - mPreviewText.getPaddingLeft() + getPaddingLeft();
+        int popupPreviewY = key.y - popupHeight + mPreviewOffset;
+
         mHandler.cancelDismissPreview();
         if (mOffsetInWindow == null) {
             mOffsetInWindow = new int[2];
@@ -916,29 +908,28 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // Set the preview background state
         mPreviewText.getBackground().setState(
                 key.popupResId != 0 ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
-        mPopupPreviewX += mOffsetInWindow[0];
-        mPopupPreviewY += mOffsetInWindow[1];
+        popupPreviewX += mOffsetInWindow[0];
+        popupPreviewY += mOffsetInWindow[1];
 
         // If the popup cannot be shown above the key, put it on the side
-        if (mPopupPreviewY + mWindowY < 0) {
+        if (popupPreviewY + mWindowY < 0) {
             // If the key you're pressing is on the left side of the keyboard, show the popup on
             // the right, offset by enough to see at least one key to the left/right.
             if (key.x + key.width <= getWidth() / 2) {
-                mPopupPreviewX += (int) (key.width * 2.5);
+                popupPreviewX += (int) (key.width * 2.5);
             } else {
-                mPopupPreviewX -= (int) (key.width * 2.5);
+                popupPreviewX -= (int) (key.width * 2.5);
             }
-            mPopupPreviewY += popupHeight;
+            popupPreviewY += popupHeight;
         }
 
-        if (previewPopup.isShowing()) {
-            previewPopup.update(mPopupPreviewX, mPopupPreviewY,
-                    popupWidth, popupHeight);
+        if (mPreviewPopup.isShowing()) {
+            mPreviewPopup.update(popupPreviewX, popupPreviewY, popupWidth, popupHeight);
         } else {
-            previewPopup.setWidth(popupWidth);
-            previewPopup.setHeight(popupHeight);
-            previewPopup.showAtLocation(mMiniKeyboardParent, Gravity.NO_GRAVITY,
-                    mPopupPreviewX, mPopupPreviewY);
+            mPreviewPopup.setWidth(popupWidth);
+            mPreviewPopup.setHeight(popupHeight);
+            mPreviewPopup.showAtLocation(mMiniKeyboardParent, Gravity.NO_GRAVITY,
+                    popupPreviewX, popupPreviewY);
         }
         mPreviewText.setVisibility(VISIBLE);
     }
