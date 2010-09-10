@@ -989,8 +989,9 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         if (container == null)
             throw new NullPointerException();
 
-        mMiniKeyboard = (LatinKeyboardBaseView)container.findViewById(R.id.LatinKeyboardBaseView);
-        mMiniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
+        LatinKeyboardBaseView miniKeyboard =
+                (LatinKeyboardBaseView)container.findViewById(R.id.LatinKeyboardBaseView);
+        miniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
             public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
                 mKeyboardActionListener.onKey(primaryCode, keyCodes, x, y);
                 dismissPopupKeyboard();
@@ -1028,8 +1029,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         } else {
             keyboard = new Keyboard(getContext(), popupKeyboardId);
         }
-        mMiniKeyboard.setKeyboard(keyboard);
-        mMiniKeyboard.setPopupParent(this);
+        miniKeyboard.setKeyboard(keyboard);
+        miniKeyboard.setPopupParent(this);
 
         container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
                 MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
@@ -1061,17 +1062,38 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             mWindowOffset = new int[2];
             getLocationInWindow(mWindowOffset);
         }
-        int popupX = popupKey.x + popupKey.width + getPaddingLeft();
-        int popupY = popupKey.y + getPaddingTop();
-        popupX -= container.getMeasuredWidth();
+
+        // HACK: Have the leftmost number in the popup characters right above the key
+        boolean isNumberAtLeftmost = false;
+        if (popupKey.popupCharacters != null && popupKey.popupCharacters.length() > 1) {
+            char leftmostChar = popupKey.popupCharacters.charAt(0);
+            isNumberAtLeftmost = leftmostChar >= '0' && leftmostChar <= '9';
+        }
+
+        int popupX = popupKey.x + mWindowOffset[0];
+        int popupY = popupKey.y + mWindowOffset[1];
+        if (isNumberAtLeftmost) {
+            popupX -= container.getPaddingLeft();
+        } else {
+            popupX += popupKey.width + getPaddingLeft();
+            popupX -= container.getMeasuredWidth();
+            popupX += container.getPaddingRight();
+        }
+        popupY += getPaddingTop();
         popupY -= container.getMeasuredHeight();
-        popupX += mWindowOffset[0];
-        popupY += mWindowOffset[1];
-        final int x = popupX + container.getPaddingRight();
-        final int y = popupY + container.getPaddingBottom();
-        mMiniKeyboardOriginX = (x < 0 ? 0 : x) + container.getPaddingLeft();
+        popupY += container.getPaddingBottom();
+        final int x = popupX;
+        final int y = popupY;
+
+        int adjustedX = x;
+        if (x < 0) {
+            adjustedX = 0;
+        } else if (x > (getMeasuredWidth() - container.getMeasuredWidth())) {
+            adjustedX = getMeasuredWidth() - container.getMeasuredWidth();
+        }
+        mMiniKeyboardOriginX = adjustedX + container.getPaddingLeft();
         mMiniKeyboardOriginY = y + container.getPaddingTop();
-        mMiniKeyboard.setPopupOffset((x < 0) ? 0 : x, y);
+        mMiniKeyboard.setPopupOffset(adjustedX, y);
         mMiniKeyboard.setShifted(isShifted());
         // Mini keyboard needs no pop-up key preview displayed.
         mMiniKeyboard.setPreviewEnabled(false);
