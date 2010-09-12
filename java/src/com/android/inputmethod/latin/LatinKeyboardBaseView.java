@@ -200,6 +200,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private int mMiniKeyboardOriginY;
     private long mMiniKeyboardPopupTime;
     private int[] mWindowOffset;
+    private float mMiniKeyboardSlideAllowance;
 
     /** Listener for {@link OnKeyboardActionListener}. */
     private OnKeyboardActionListener mKeyboardActionListener;
@@ -387,6 +388,9 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 break;
             case R.styleable.LatinKeyboardBaseView_verticalCorrection:
                 mVerticalCorrection = a.getDimensionPixelOffset(attr, 0);
+                break;
+            case R.styleable.LatinKeyboardBaseView_miniKeyboardSlideAllowance:
+                mMiniKeyboardSlideAllowance = a.getDimensionPixelOffset(attr, 0);
                 break;
             case R.styleable.LatinKeyboardBaseView_keyPreviewLayout:
                 previewLayout = a.getResourceId(attr, 0);
@@ -1091,8 +1095,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         } else if (x > (getMeasuredWidth() - container.getMeasuredWidth())) {
             adjustedX = getMeasuredWidth() - container.getMeasuredWidth();
         }
-        mMiniKeyboardOriginX = adjustedX + container.getPaddingLeft();
-        mMiniKeyboardOriginY = y + container.getPaddingTop();
+        mMiniKeyboardOriginX = adjustedX + container.getPaddingLeft() - mWindowOffset[0];
+        mMiniKeyboardOriginY = y + container.getPaddingTop() - mWindowOffset[1];
         mMiniKeyboard.setPopupOffset(adjustedX, y);
         mMiniKeyboard.setShifted(isShifted());
         // Mini keyboard needs no pop-up key preview displayed.
@@ -1116,7 +1120,12 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
     private MotionEvent generateMiniKeyboardMotionEvent(int action, int x, int y, long eventTime) {
         return MotionEvent.obtain(mMiniKeyboardPopupTime, eventTime, action,
-                x - mMiniKeyboardOriginX, y - mMiniKeyboardOriginY, 0);
+                x - mMiniKeyboardOriginX,
+                // TODO: Currently just taking care of "below" of the keys in a mini popup keyboard
+                // for key detection by sliding finger.  Need to take care of left, right, and
+                // upper of "edge" keys.
+                y - mMiniKeyboardOriginY - (int)mMiniKeyboardSlideAllowance,
+                0);
     }
 
     private PointerTracker getPointerTracker(final int id) {
