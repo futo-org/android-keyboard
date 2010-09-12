@@ -1551,7 +1551,7 @@ public class LatinIME extends InputMethodService
             SharedPreferences.Editor editor =
                     PreferenceManager.getDefaultSharedPreferences(this).edit();
             editor.putBoolean(PREF_HAS_USED_VOICE_INPUT, true);
-            editor.commit();
+            SharedPreferencesCompat.apply(editor);
             mHasUsedVoiceInput = true;
         }
 
@@ -1561,7 +1561,7 @@ public class LatinIME extends InputMethodService
             SharedPreferences.Editor editor =
                     PreferenceManager.getDefaultSharedPreferences(this).edit();
             editor.putBoolean(PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE, true);
-            editor.commit();
+            SharedPreferencesCompat.apply(editor);
             mHasUsedVoiceInputUnsupportedLocale = true;
         }
 
