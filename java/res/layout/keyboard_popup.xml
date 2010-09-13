@@ -33,5 +33,7 @@
             android:background="@drawable/keyboard_dark_background"
 
             latin:keyBackground="@drawable/btn_keyboard_key_gingerbread_popup"
+            latin:keyHysteresisDistance="0dip"
+            latin:verticalCorrection="-20dip"
             />
 </LinearLayout>

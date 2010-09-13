@@ -170,6 +170,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private float mShadowRadius;
     private Drawable mKeyBackground;
     private float mBackgroundDimAmount;
+    private float mKeyHysteresisDistance;
     private float mVerticalCorrection;
     private int mPreviewOffset;
     private int mPreviewHeight;
@@ -200,14 +201,13 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private int mMiniKeyboardOriginY;
     private long mMiniKeyboardPopupTime;
     private int[] mWindowOffset;
-    private float mMiniKeyboardSlideAllowance;
+    private final float mMiniKeyboardSlideAllowance;
 
     /** Listener for {@link OnKeyboardActionListener}. */
     private OnKeyboardActionListener mKeyboardActionListener;
 
     private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
     private final PointerQueue mPointerQueue = new PointerQueue();
-    private final float mDebounceHysteresis;
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
 
@@ -386,11 +386,11 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             case R.styleable.LatinKeyboardBaseView_keyBackground:
                 mKeyBackground = a.getDrawable(attr);
                 break;
+            case R.styleable.LatinKeyboardBaseView_keyHysteresisDistance:
+                mKeyHysteresisDistance = a.getDimensionPixelOffset(attr, 0);
+                break;
             case R.styleable.LatinKeyboardBaseView_verticalCorrection:
                 mVerticalCorrection = a.getDimensionPixelOffset(attr, 0);
-                break;
-            case R.styleable.LatinKeyboardBaseView_miniKeyboardSlideAllowance:
-                mMiniKeyboardSlideAllowance = a.getDimensionPixelOffset(attr, 0);
                 break;
             case R.styleable.LatinKeyboardBaseView_keyPreviewLayout:
                 previewLayout = a.getResourceId(attr, 0);
@@ -473,7 +473,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mSwipeThreshold = (int) (500 * res.getDisplayMetrics().density);
         // TODO: Refer frameworks/base/core/res/res/values/config.xml
         mDisambiguateSwipe = res.getBoolean(R.bool.config_swipeDisambiguation);
-        mDebounceHysteresis = res.getDimension(R.dimen.key_debounce_hysteresis_distance);
+        mMiniKeyboardSlideAllowance = res.getDimension(R.dimen.mini_keyboard_slide_allowance);
 
         GestureDetector.SimpleOnGestureListener listener =
                 new GestureDetector.SimpleOnGestureListener() {
@@ -556,7 +556,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mKeys = mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
         for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setKeyboard(mKeys, mDebounceHysteresis);
+            tracker.setKeyboard(mKeys, mKeyHysteresisDistance);
         }
         requestLayout();
         // Hint to reallocate the buffer if the size changed
@@ -1025,6 +1025,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 mKeyboardActionListener.onRelease(primaryCode);
             }
         });
+        // Override default ProximityKeyDetector.
+        miniKeyboard.mKeyDetector = new MiniKeyboardKeyDetector(mMiniKeyboardSlideAllowance);
 
         Keyboard keyboard;
         if (popupKey.popupCharacters != null) {
@@ -1120,12 +1122,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
     private MotionEvent generateMiniKeyboardMotionEvent(int action, int x, int y, long eventTime) {
         return MotionEvent.obtain(mMiniKeyboardPopupTime, eventTime, action,
-                x - mMiniKeyboardOriginX,
-                // TODO: Currently just taking care of "below" of the keys in a mini popup keyboard
-                // for key detection by sliding finger.  Need to take care of left, right, and
-                // upper of "edge" keys.
-                y - mMiniKeyboardOriginY - (int)mMiniKeyboardSlideAllowance,
-                0);
+                    x - mMiniKeyboardOriginX, y - mMiniKeyboardOriginY, 0);
     }
 
     private PointerTracker getPointerTracker(final int id) {
@@ -1138,7 +1135,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             final PointerTracker tracker =
                 new PointerTracker(i, mHandler, mKeyDetector, this, mHasDistinctMultitouch);
             if (keys != null)
-                tracker.setKeyboard(keys, mDebounceHysteresis);
+                tracker.setKeyboard(keys, mKeyHysteresisDistance);
             if (listener != null)
                 tracker.setOnKeyboardActionListener(listener);
             pointers.add(tracker);

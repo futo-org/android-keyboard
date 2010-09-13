@@ -55,7 +55,7 @@ public class PointerTracker {
     private final boolean mHasDistinctMultitouch;
 
     private Key[] mKeys;
-    private int mKeyDebounceThresholdSquared = -1;
+    private int mKeyHysteresisDistanceSquared = -1;
 
     private int mCurrentKey = NOT_A_KEY;
     private int mStartX;
@@ -106,11 +106,11 @@ public class PointerTracker {
         mListener = listener;
     }
 
-    public void setKeyboard(Key[] keys, float hysteresisPixel) {
-        if (keys == null || hysteresisPixel < 1.0f)
+    public void setKeyboard(Key[] keys, float keyHysteresisDistance) {
+        if (keys == null || keyHysteresisDistance < 0)
             throw new IllegalArgumentException();
         mKeys = keys;
-        mKeyDebounceThresholdSquared = (int)(hysteresisPixel * hysteresisPixel);
+        mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
         // Update current key index because keyboard layout has been changed.
         mCurrentKey = mKeyDetector.getKeyIndexAndNearbyCodes(mStartX, mStartY, null);
     }
@@ -335,13 +335,12 @@ public class PointerTracker {
     }
 
     private boolean isMinorMoveBounce(int x, int y, int newKey, int curKey) {
-        if (mKeys == null || mKeyDebounceThresholdSquared < 0)
+        if (mKeys == null || mKeyHysteresisDistanceSquared < 0)
             throw new IllegalStateException("keyboard and/or hysteresis not set");
         if (newKey == curKey) {
             return true;
         } else if (isValidKeyIndex(curKey)) {
-            return getSquareDistanceToKeyEdge(x, y, mKeys[curKey])
-                    < mKeyDebounceThresholdSquared;
+            return getSquareDistanceToKeyEdge(x, y, mKeys[curKey]) < mKeyHysteresisDistanceSquared;
         } else {
             return false;
         }
