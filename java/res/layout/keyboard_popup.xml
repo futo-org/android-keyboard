@@ -33,7 +33,5 @@
             android:background="@drawable/keyboard_dark_background"
 
             latin:keyBackground="@drawable/btn_keyboard_key_gingerbread_popup"
-            latin:keyPreviewLayout="@layout/keyboard_key_preview"
-            latin:popupLayout="@layout/keyboard_popup_keyboard"
             />
 </LinearLayout>

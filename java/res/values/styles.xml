@@ -21,11 +21,11 @@
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
         <item name="keyTextSize">@dimen/key_text_size</item>
         <item name="keyTextColor">#FFFFFFFF</item>
-        <item name="keyPreviewLayout">@layout/keyboard_key_preview</item>
+        <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewOffset">5dip</item>
         <item name="keyPreviewHeight">80dip</item>
         <item name="labelTextSize">14sp</item>
-        <item name="popupLayout">@layout/keyboard_popup_keyboard</item>
+        <item name="popupLayout">@layout/keyboard_popup</item>
         <item name="verticalCorrection">-10dip</item>
         <item name="miniKeyboardSlideAllowance">40dip</item>
         <item name="shadowColor">#BB000000</item>
