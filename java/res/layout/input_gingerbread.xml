@@ -29,5 +29,6 @@
         android:textStyle="bold"
 
         latin:keyBackground="@drawable/btn_keyboard_key_gingerbread"
+        latin:popupLayout="@layout/input_gingerbread_popup"
         latin:keyTextStyle="bold"
         />
