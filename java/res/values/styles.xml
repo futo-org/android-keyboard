@@ -26,8 +26,8 @@
         <item name="keyPreviewHeight">80dip</item>
         <item name="labelTextSize">14sp</item>
         <item name="popupLayout">@layout/keyboard_popup</item>
+        <item name="keyHysteresisDistance">0.05in</item>
         <item name="verticalCorrection">-10dip</item>
-        <item name="miniKeyboardSlideAllowance">40dip</item>
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
