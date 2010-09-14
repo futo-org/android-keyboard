@@ -1348,14 +1348,21 @@ public class LatinIME extends InputMethodService
             }
         }
         if (mKeyboardSwitcher.getInputView().isShifted()) {
-            // TODO: This doesn't work with [beta], need to fix it in the next release.
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
                 return;
             }
             primaryCode = keyCodes[0];
-            if (mKeyboardSwitcher.isAlphabetMode()) {
-                primaryCode = Character.toUpperCase(primaryCode);
+            if (mKeyboardSwitcher.isAlphabetMode() && Character.isLowerCase(primaryCode)) {
+                int upperCaseCode = Character.toUpperCase(primaryCode);
+                if (upperCaseCode != primaryCode) {
+                    primaryCode = upperCaseCode;
+                } else {
+                    // Some keys, such as [eszett], have upper case as multi-characters.
+                    String upperCase = new String(new int[] {primaryCode}, 0, 1).toUpperCase();
+                    onText(upperCase);
+                    return;
+                }
             }
         }
         if (mPredicting) {
