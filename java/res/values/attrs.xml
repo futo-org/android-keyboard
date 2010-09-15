@@ -43,11 +43,11 @@
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
 
+        <!-- Hysteresis distance for key debouncing -->
+        <attr name="keyHysteresisDistance" format="dimension" />
+
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
-
-        <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
-        <attr name="miniKeyboardSlideAllowance" format="dimension" />
 
         <!-- Layout resource for popup keyboards. -->
         <attr name="popupLayout" format="reference" />
