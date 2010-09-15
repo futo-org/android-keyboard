@@ -88,18 +88,39 @@
                 android:isRepeatable="true" android:isModifier="true"/>
     </Row>
     
-    <Row android:rowEdgeFlags="bottom">
+    <Row
+        android:keyboardMode="@+id/mode_symbols"
+        android:rowEdgeFlags="bottom"
+    >
+        <Key android:codes="-2" android:keyLabel="@string/label_alpha_key" android:keyWidth="20%p"
+                android:keyEdgeFlags="left" android:isModifier="true"/>
+        <Key android:keyLabel="„" android:isModifier="true"/>
+        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
+                android:keyWidth="40%p"
+                android:iconPreview="@drawable/sym_keyboard_feedback_space"
+                android:isRepeatable="true" android:isModifier="true"/>
+        <Key android:keyLabel="…" android:isModifier="true"/>
+        <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
+                android:keyWidth="20%p" android:keyEdgeFlags="right"
+                android:iconPreview="@drawable/sym_keyboard_feedback_return"
+                android:isModifier="true"/>
+    </Row>
+
+    <Row
+        android:keyboardMode="@+id/mode_symbols_with_settings_key"
+        android:rowEdgeFlags="bottom"
+    >
         <Key android:codes="-2" android:keyLabel="@string/label_alpha_key" android:keyWidth="15%p"
                 android:keyEdgeFlags="left" android:isModifier="true"/>
         <Key android:codes="@integer/key_settings" android:keyIcon="@drawable/sym_keyboard_settings"
                 android:iconPreview="@drawable/sym_keyboard_feedback_settings"
-                android:keyWidth="10%p" android:isModifier="true"/>
-        <Key android:keyLabel="„" android:keyWidth="10%p"  android:isModifier="true"/>
+                android:isModifier="true"/>
+        <Key android:keyLabel="„" android:isModifier="true"/>
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
                 android:keyWidth="30%p"
                 android:iconPreview="@drawable/sym_keyboard_feedback_space"
                 android:isRepeatable="true" android:isModifier="true"/>
-        <Key android:keyLabel="…" android:keyWidth="10%p"  android:isModifier="true"/>
+        <Key android:keyLabel="…" android:isModifier="true"/>
         <Key android:codes="10" android:keyIcon="@drawable/sym_keyboard_return"
                 android:keyWidth="25%p" android:keyEdgeFlags="right"
                 android:iconPreview="@drawable/sym_keyboard_feedback_return"
