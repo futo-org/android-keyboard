@@ -123,13 +123,21 @@ public class PointerTracker {
         return isValidKeyIndex(keyIndex) ? mKeys[keyIndex] : null;
     }
 
-    public boolean isModifier() {
-        Key key = getKey(mCurrentKey);
+    private boolean isModifierInternal(int keyIndex) {
+        Key key = getKey(keyIndex);
         if (key == null)
             return false;
         int primaryCode = key.codes[0];
         return primaryCode == Keyboard.KEYCODE_SHIFT
                 || primaryCode == Keyboard.KEYCODE_MODE_CHANGE;
+    }
+
+    public boolean isModifier() {
+        return isModifierInternal(mCurrentKey);
+    }
+
+    public boolean isOnModifierKey(int x, int y) {
+        return isModifierInternal(mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null));
     }
 
     public void updateKey(int keyIndex) {
