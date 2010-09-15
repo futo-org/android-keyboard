@@ -345,7 +345,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             return -1;
         }
 
-        public void releasePointersOlderThan(PointerTracker tracker, long eventTime) {
+        public void releaseAllPointersOlderThan(PointerTracker tracker, long eventTime) {
             LinkedList<PointerTracker> queue = mQueue;
             int oldestPos = 0;
             for (PointerTracker t = queue.get(oldestPos); t != tracker; t = queue.get(oldestPos)) {
@@ -353,9 +353,22 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                     oldestPos++;
                 } else {
                     t.onUpEvent(t.getLastX(), t.getLastY(), eventTime);
+                    t.setAlreadyProcessed();
                     queue.remove(oldestPos);
                 }
             }
+        }
+
+        public void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
+            for (PointerTracker t : mQueue) {
+                if (t == tracker)
+                    continue;
+                t.onUpEvent(t.getLastX(), t.getLastY(), eventTime);
+                t.setAlreadyProcessed();
+            }
+            mQueue.clear();
+            if (tracker != null)
+                mQueue.add(tracker);
         }
 
         public void remove(PointerTracker tracker) {
@@ -1246,17 +1259,28 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     }
 
     private void onDownEvent(PointerTracker tracker, int x, int y, long eventTime) {
+        if (tracker.isOnModifierKey(x, y)) {
+            // Before processing a down event of modifier key, all pointers already being tracked
+            // should be released.
+            mPointerQueue.releaseAllPointersExcept(null, eventTime);
+        }
         tracker.onDownEvent(x, y, eventTime);
         mPointerQueue.add(tracker);
     }
 
     private void onUpEvent(PointerTracker tracker, int x, int y, long eventTime) {
-        int index = mPointerQueue.lastIndexOf(tracker);
-        if (index >= 0) {
-            mPointerQueue.releasePointersOlderThan(tracker, eventTime);
+        if (tracker.isModifier()) {
+            // Before processing an up event of modifier key, all pointers already being tracked
+            // should be released.
+            mPointerQueue.releaseAllPointersExcept(tracker, eventTime);
         } else {
-            Log.w(TAG, "onUpEvent: corresponding down event not found for pointer "
-                    + tracker.mPointerId);
+            int index = mPointerQueue.lastIndexOf(tracker);
+            if (index >= 0) {
+                mPointerQueue.releaseAllPointersOlderThan(tracker, eventTime);
+            } else {
+                Log.w(TAG, "onUpEvent: corresponding down event not found for pointer "
+                        + tracker.mPointerId);
+            }
         }
         tracker.onUpEvent(x, y, eventTime);
         mPointerQueue.remove(tracker);
