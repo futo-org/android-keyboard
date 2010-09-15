@@ -355,7 +355,7 @@ public class LatinIME extends InputMethodService
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mLanguageSwitcher = new LanguageSwitcher(this);
         mLanguageSwitcher.loadLocales(prefs);
-        mKeyboardSwitcher = new KeyboardSwitcher(this, this);
+        mKeyboardSwitcher = new KeyboardSwitcher(this);
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         mSystemLocale = conf.locale.toString();
         mLanguageSwitcher.setSystemLocale(conf.locale);
@@ -983,7 +983,7 @@ public class LatinIME extends InputMethodService
 
     private void reloadKeyboards() {
         if (mKeyboardSwitcher == null) {
-            mKeyboardSwitcher = new KeyboardSwitcher(this, this);
+            mKeyboardSwitcher = new KeyboardSwitcher(this);
         }
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         if (mKeyboardSwitcher.getInputView() != null
@@ -1121,11 +1121,6 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private boolean hasMultipleEnabledIMEs() {
-        return ((InputMethodManager) getSystemService(
-                INPUT_METHOD_SERVICE)).getEnabledInputMethodList().size() > 1;
-    }
-
     private void showInputMethodPicker() {
         ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                 .showInputMethodPicker();
@@ -1133,7 +1128,7 @@ public class LatinIME extends InputMethodService
 
     private void onOptionKeyPressed() {
         if (!isShowingOptionDialog()) {
-            if (hasMultipleEnabledIMEs()) {
+            if (LatinIMEUtil.hasMultipleEnabledIMEs(this)) {
                 showOptionsMenu();
             } else {
                 launchSettings();
@@ -1143,7 +1138,7 @@ public class LatinIME extends InputMethodService
 
     private void onOptionKeyLongPressed() {
         if (!isShowingOptionDialog()) {
-            if (hasMultipleEnabledIMEs()) {
+            if (LatinIMEUtil.hasMultipleEnabledIMEs(this)) {
                 showInputMethodPicker();
             } else {
                 launchSettings();

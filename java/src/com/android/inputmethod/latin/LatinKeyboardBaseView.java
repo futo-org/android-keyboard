@@ -643,7 +643,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return mShowPreview;
     }
 
-    public int getSymbolColorSheme() {
+    public int getSymbolColorScheme() {
         return mSymbolColorScheme;
     }
 

@@ -91,6 +91,27 @@
     <!-- Description for auto completion -->
     <string name="auto_complete_summary">Spacebar and punctuation automatically insert highlighted word</string>
     
+    <!-- Option to show/hide the settings key -->
+    <string name="prefs_settings_key">Show settings key</string>
+    <!-- Array of the settings key mode values -->
+    <string-array name="settings_key_modes_values" translatable="false">
+        <item>@string/settings_key_mode_auto</item>
+        <item>@string/settings_key_mode_always_show</item>
+        <item>@string/settings_key_mode_always_hide</item>
+    </string-array>
+    <!-- Option to automatically decide to show/hide the settings key -->
+    <string name="settings_key_mode_auto_name">Automatic</string>
+    <!-- Option to always show the settings key -->
+    <string name="settings_key_mode_always_show_name">Always show</string>
+    <!-- Option to always hide the settings key -->
+    <string name="settings_key_mode_always_hide_name">Always hide</string>
+    <!-- Array of the settings key modes -->
+    <string-array name="settings_key_modes">
+        <item>@string/settings_key_mode_auto_name</item>
+        <item>@string/settings_key_mode_always_show_name</item>
+        <item>@string/settings_key_mode_always_hide_name</item>
+    </string-array>
+
     <!-- Option to enable bigram completion -->
     <string name="bigram_suggestion">Bigram Suggestions</string>
     <!-- Description for auto completion -->
