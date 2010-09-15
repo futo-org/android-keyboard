@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
@@ -262,7 +262,7 @@ public class LatinIME extends InputMethodService
         List<String> candidates;
         Map<String, List<CharSequence>> alternatives;
     }
-    
+
     public abstract static class WordAlternatives {
         protected CharSequence mChosenWord;
 
@@ -793,6 +793,37 @@ public class LatinIME extends InputMethodService
                 }
             }
         }
+    }
+
+    /**
+     * This is called when the user has clicked on the extracted text view,
+     * when running in fullscreen mode.  The default implementation hides
+     * the candidates view when this happens, but only if the extracted text
+     * editor has a vertical scroll bar because its text doesn't fit.
+     * Here we override the behavior due to the possibility that a re-correction could
+     * cause the candidate strip to disappear and re-appear.
+     */
+    @Override
+    public void onExtractedTextClicked() {
+        if (mReCorrectionEnabled && isPredictionOn()) return;
+
+        super.onExtractedTextClicked();
+    }
+
+    /**
+     * This is called when the user has performed a cursor movement in the
+     * extracted text view, when it is running in fullscreen mode.  The default
+     * implementation hides the candidates view when a vertical movement
+     * happens, but only if the extracted text editor has a vertical scroll bar
+     * because its text doesn't fit.
+     * Here we override the behavior due to the possibility that a re-correction could
+     * cause the candidate strip to disappear and re-appear.
+     */
+    @Override
+    public void onExtractedCursorMovement(int dx, int dy) {
+        if (mReCorrectionEnabled && isPredictionOn()) return;
+
+        super.onExtractedCursorMovement(dx, dy);
     }
 
     @Override
