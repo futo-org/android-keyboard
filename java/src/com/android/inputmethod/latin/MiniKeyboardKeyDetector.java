@@ -41,19 +41,19 @@ class MiniKeyboardKeyDetector extends KeyDetector {
         final Key[] keys = getKeys();
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
-        int closestKey = LatinKeyboardBaseView.NOT_A_KEY;
+        int closestKeyIndex = LatinKeyboardBaseView.NOT_A_KEY;
         int closestKeyDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
         final int keyCount = keys.length;
         for (int i = 0; i < keyCount; i++) {
             final Key key = keys[i];
             int dist = key.squaredDistanceFrom(touchX, touchY);
             if (dist < closestKeyDist) {
-                closestKey = i;
+                closestKeyIndex = i;
                 closestKeyDist = dist;
             }
         }
-        if (allKeys != null && closestKey != LatinKeyboardBaseView.NOT_A_KEY)
-            allKeys[0] = closestKey;
-        return closestKey;
+        if (allKeys != null && closestKeyIndex != LatinKeyboardBaseView.NOT_A_KEY)
+            allKeys[0] = keys[closestKeyIndex].codes[0];
+        return closestKeyIndex;
     }
 }
