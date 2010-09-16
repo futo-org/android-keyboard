@@ -186,7 +186,6 @@ public class CandidateView extends View {
                 return true;
             }
         });
-        setHorizontalFadingEdgeEnabled(true);
         setWillNotDraw(false);
         setHorizontalScrollBarEnabled(false);
         setVerticalScrollBarEnabled(false);
