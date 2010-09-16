@@ -19,8 +19,8 @@
 -->
 <resources>
     <color name="candidate_normal">#FFFFFFFF</color>
-    <color name="candidate_recommended">#FFF07020</color>
-    <color name="candidate_other">#ffD06015</color>
+    <color name="candidate_recommended">#FFFCAE00</color>
+    <color name="candidate_other">#FFFCAE00</color>
     <color name="latinkeyboard_transparent">#00000000</color>
     <color name="latinkeyboard_bar_language_shadow_white">#80000000</color>
     <color name="latinkeyboard_bar_language_shadow_black">#80FFFFFF</color>
