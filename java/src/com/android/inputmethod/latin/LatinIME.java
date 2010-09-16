@@ -598,9 +598,10 @@ public class LatinIME extends InputMethodService
         switch (attribute.inputType & EditorInfo.TYPE_MASK_CLASS) {
             case EditorInfo.TYPE_CLASS_NUMBER:
             case EditorInfo.TYPE_CLASS_DATETIME:
-                mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_SYMBOLS,
-                        attribute.imeOptions, enableVoiceButton);
-                break;
+                // fall through
+                // NOTE: For now, we use the phone keyboard for NUMBER and DATETIME until we get
+                // a dedicated number entry keypad.
+                // TODO: Use a dedicated number entry keypad here when we get one.
             case EditorInfo.TYPE_CLASS_PHONE:
                 mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_PHONE,
                         attribute.imeOptions, enableVoiceButton);
