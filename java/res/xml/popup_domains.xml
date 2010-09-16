@@ -18,21 +18,29 @@
 */
 -->
 
-<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+<Keyboard
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:keyWidth="15%p"
     android:horizontalGap="0px"
     android:verticalGap="0px"
     android:keyHeight="@dimen/key_height"
+>
+    <Row
+        android:rowEdgeFlags="top|bottom"
     >
-
-    <Row android:rowEdgeFlags="top|bottom">
-        <Key android:keyLabel="@string/popular_domain_1"
-            android:keyOutputText="@string/popular_domain_1" android:keyEdgeFlags="left" />
-        <Key android:keyLabel="@string/popular_domain_2"
-            android:keyOutputText="@string/popular_domain_2"/>
-        <Key android:keyLabel="@string/popular_domain_3"
-            android:keyOutputText="@string/popular_domain_3"/>
-        <Key android:keyLabel="@string/popular_domain_4"
-            android:keyOutputText="@string/popular_domain_4" android:keyEdgeFlags="right" />
+        <Key
+            android:keyLabel="@string/popular_domain_1"
+            android:keyOutputText="@string/popular_domain_1"
+            android:keyEdgeFlags="left" />
+        <Key
+            android:keyLabel="@string/popular_domain_2"
+            android:keyOutputText="@string/popular_domain_2" />
+        <Key
+            android:keyLabel="@string/popular_domain_3"
+            android:keyOutputText="@string/popular_domain_3" />
+        <Key
+            android:keyLabel="@string/popular_domain_4"
+            android:keyOutputText="@string/popular_domain_4"
+            android:keyEdgeFlags="right" />
     </Row>
 </Keyboard>
