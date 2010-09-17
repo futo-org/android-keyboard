@@ -153,7 +153,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
     // Timing constants
     private static final int DELAY_BEFORE_PREVIEW = 0;
-    private static final int DELAY_AFTER_PREVIEW = 70;
+    private static final int DELAY_AFTER_PREVIEW = 150;
     private static final int REPEAT_INTERVAL = PointerTracker.REPEAT_INTERVAL;
 
     // Miscellaneous constants
