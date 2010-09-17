@@ -247,7 +247,9 @@ public class CandidateView extends View {
                 paint.setTypeface(Typeface.DEFAULT_BOLD);
                 paint.setColor(mColorRecommended);
                 existsAutoCompletion = true;
-            } else if (i != 0) {
+            } else if (i != 0 || (suggestion.length() == 1 && count > 1)) {
+                // HACK: even if i == 0, we use mColorOther when this suggestion's length is 1 and
+                // there are multiple suggestions, such as the default punctuation list.
                 paint.setColor(mColorOther);
             }
             final int wordWidth;
