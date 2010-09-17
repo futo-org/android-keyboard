@@ -48,6 +48,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -191,6 +192,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private int mPopupPreviewOffsetX;
     private int mPopupPreviewOffsetY;
     private int mWindowY;
+    private int mPopupPreviewDisplayedY;
 
     // Popup mini keyboard
     private PopupWindow mMiniKeyboardPopup;
@@ -918,9 +920,9 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             getLocationInWindow(mOffsetInWindow);
             mOffsetInWindow[0] += mPopupPreviewOffsetX; // Offset may be zero
             mOffsetInWindow[1] += mPopupPreviewOffsetY; // Offset may be zero
-            int[] mWindowLocation = new int[2];
-            getLocationOnScreen(mWindowLocation);
-            mWindowY = mWindowLocation[1];
+            int[] windowLocation = new int[2];
+            getLocationOnScreen(windowLocation);
+            mWindowY = windowLocation[1];
         }
         // Set the preview background state
         mPreviewText.getBackground().setState(
@@ -948,6 +950,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             mPreviewPopup.showAtLocation(mMiniKeyboardParent, Gravity.NO_GRAVITY,
                     popupPreviewX, popupPreviewY);
         }
+        // Record popup preview position to display mini-keyboard later at the same positon
+        mPopupPreviewDisplayedY = popupPreviewY;
         mPreviewText.setVisibility(VISIBLE);
     }
 
@@ -1057,6 +1061,19 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return container;
     }
 
+    private static boolean isOneRowKeyboard(Keyboard keyboard) {
+        final List<Key> keys = keyboard.getKeys();
+        if (keys.size() == 0) return false;
+        final int edgeFlags = keys.get(0).edgeFlags;
+        // HACK: The first key of mini keyboard which was inflated from xml and has multiple rows,
+        // does not have both top and bottom edge flags on at the same time.  On the other hand,
+        // the first key of mini keyboard that was created with popupCharacters must have both top
+        // and bottom edge flags on.
+        // When you want to use one row mini-keyboard from xml file, make sure that the row has
+        // both top and bottom edge flags set.
+        return (edgeFlags & Keyboard.EDGE_TOP) != 0 && (edgeFlags & Keyboard.EDGE_BOTTOM) != 0;
+    }
+
     /**
      * Called when a key is long pressed. By default this will open any popup keyboard associated
      * with this key through the attributes popupLayout and popupCharacters.
@@ -1102,7 +1119,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         popupY -= container.getMeasuredHeight();
         popupY += container.getPaddingBottom();
         final int x = popupX;
-        final int y = popupY;
+        final int y = isOneRowKeyboard(mMiniKeyboard.getKeyboard())
+                ? mPopupPreviewDisplayedY : popupY;
 
         int adjustedX = x;
         if (x < 0) {
