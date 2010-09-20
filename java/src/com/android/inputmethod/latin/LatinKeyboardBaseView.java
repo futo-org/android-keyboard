@@ -797,6 +797,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             canvas.translate(key.x + kbdPaddingLeft, key.y + kbdPaddingTop);
             keyBackground.draw(canvas);
 
+            boolean shouldDrawIcon = true;
             if (label != null) {
                 // For characters, use large font. For labels like "Done", use small font.
                 if (label.length() > 1 && key.codes.length < 2) {
@@ -817,14 +818,24 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                     paint);
                 // Turn off drop shadow
                 paint.setShadowLayer(0, 0, 0, 0);
-            } else if (key.icon != null) {
+
+                // Usually don't draw icon if label is not null, but we draw icon for the number
+                // hint.
+                shouldDrawIcon = isNumberAtEdgeOfPopupChars(key);
+            }
+            if (key.icon != null && shouldDrawIcon) {
+                // Special handing for the upper-right number hint icons
+                final int drawableWidth = isNumberAtEdgeOfPopupChars(key) ?
+                        key.width : key.icon.getIntrinsicWidth();
+                final int drawableHeight = isNumberAtEdgeOfPopupChars(key) ?
+                        key.height : key.icon.getIntrinsicHeight();
+
                 final int drawableX = (key.width - padding.left - padding.right
-                                - key.icon.getIntrinsicWidth()) / 2 + padding.left;
+                        - drawableWidth) / 2 + padding.left;
                 final int drawableY = (key.height - padding.top - padding.bottom
-                        - key.icon.getIntrinsicHeight()) / 2 + padding.top;
+                        - drawableHeight) / 2 + padding.top;
                 canvas.translate(drawableX, drawableY);
-                key.icon.setBounds(0, 0,
-                        key.icon.getIntrinsicWidth(), key.icon.getIntrinsicHeight());
+                key.icon.setBounds(0, 0, drawableWidth, drawableHeight);
                 key.icon.draw(canvas);
                 canvas.translate(-drawableX, -drawableY);
             }
@@ -885,7 +896,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         Key key = tracker.getKey(keyIndex);
         if (key == null)
             return;
-        if (key.icon != null) {
+        // Should not draw number hint icons
+        if (key.icon != null && !isNumberAtEdgeOfPopupChars(key)) {
             mPreviewText.setCompoundDrawables(null, null, null,
                     key.iconPreview != null ? key.iconPreview : key.icon);
             mPreviewText.setText(null);
@@ -1100,12 +1112,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         }
 
         // HACK: Have the leftmost number in the popup characters right above the key
-        boolean isNumberAtLeftmost = false;
-        if (popupKey.popupCharacters != null && popupKey.popupCharacters.length() > 1) {
-            char leftmostChar = popupKey.popupCharacters.charAt(0);
-            isNumberAtLeftmost = leftmostChar >= '0' && leftmostChar <= '9';
-        }
-
+        boolean isNumberAtLeftmost =
+                hasMultiplePopupChars(popupKey) && isNumberAtLeftmostPopupChar(popupKey);
         int popupX = popupKey.x + mWindowOffset[0];
         int popupY = popupKey.y + mWindowOffset[1];
         if (isNumberAtLeftmost) {
@@ -1149,6 +1157,37 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
         invalidateAllKeys();
         return true;
+    }
+
+    private static boolean hasMultiplePopupChars(Key key) {
+        if (key.popupCharacters != null && key.popupCharacters.length() > 1) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isNumberAtEdgeOfPopupChars(Key key) {
+        return isNumberAtLeftmostPopupChar(key) || isNumberAtRightmostPopupChar(key);
+    }
+
+    /* package */ static boolean isNumberAtLeftmostPopupChar(Key key) {
+        if (key.popupCharacters != null && key.popupCharacters.length() > 0
+                && isAsciiDigit(key.popupCharacters.charAt(0))) {
+            return true;
+        }
+        return false;
+    }
+
+    /* package */ static boolean isNumberAtRightmostPopupChar(Key key) {
+        if (key.popupCharacters != null && key.popupCharacters.length() > 0
+                && isAsciiDigit(key.popupCharacters.charAt(key.popupCharacters.length() - 1))) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isAsciiDigit(char c) {
+        return (c < 0x80) && Character.isDigit(c);
     }
 
     private MotionEvent generateMiniKeyboardMotionEvent(int action, int x, int y, long eventTime) {
