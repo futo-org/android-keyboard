@@ -56,8 +56,8 @@ public class LatinKeyboard extends Keyboard {
     private Drawable mMicPreviewIcon;
     private Drawable m123MicIcon;
     private Drawable m123MicPreviewIcon;
-    private Drawable mButtonArrowLeftIcon;
-    private Drawable mButtonArrowRightIcon;
+    private final Drawable mButtonArrowLeftIcon;
+    private final Drawable mButtonArrowRightIcon;
     private Key mShiftKey;
     private Key mEnterKey;
     private Key mF1Key;
@@ -66,15 +66,15 @@ public class LatinKeyboard extends Keyboard {
     private int mSpaceKeyIndex = -1;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
-    /* package */ Locale mLocale;
+    private Locale mLocale;
     private LanguageSwitcher mLanguageSwitcher;
-    private Resources mRes;
-    private Context mContext;
+    private final Resources mRes;
+    private final Context mContext;
     // Whether this keyboard has voice icon on it
     private boolean mHasVoiceButton;
     // Whether voice icon is enabled at all
     private boolean mVoiceEnabled;
-    private boolean mIsAlphaKeyboard;
+    private final boolean mIsAlphaKeyboard;
     private CharSequence m123Label;
     private boolean mCurrentlyInSpace;
     private SlidingLocaleDrawable mSlidingLocaleIcon;
@@ -97,7 +97,7 @@ public class LatinKeyboard extends Keyboard {
     private static final float OVERLAP_PERCENTAGE_LOW_PROB = 0.70f;
     private static final float OVERLAP_PERCENTAGE_HIGH_PROB = 0.85f;
 
-    static int sSpacebarVerticalCorrection;
+    private static int sSpacebarVerticalCorrection;
 
     public LatinKeyboard(Context context, int xmlLayoutResId) {
         this(context, xmlLayoutResId, 0);
@@ -129,11 +129,6 @@ public class LatinKeyboard extends Keyboard {
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
         mSpaceKeyIndex = indexOf(' ');
-    }
-
-    public LatinKeyboard(Context context, int layoutTemplateResId, 
-            CharSequence characters, int columns, int horizontalPadding) {
-        super(context, layoutTemplateResId, characters, columns, horizontalPadding);
     }
 
     @Override
@@ -482,9 +477,8 @@ public class LatinKeyboard extends Keyboard {
                    .equalsIgnoreCase(locale.getLanguage())) {
             locale = null;
         }
-        setColorOfSymbolIcons(isAutoCompletion, isBlackSym);
-        if (mLocale != null && mLocale.equals(locale)) return;
         mLocale = locale;
+        setColorOfSymbolIcons(isAutoCompletion, isBlackSym);
     }
 
     boolean isCurrentlyInSpace() {
