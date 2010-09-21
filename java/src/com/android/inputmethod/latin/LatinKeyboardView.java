@@ -66,6 +66,16 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     }
 
     @Override
+    public void setPreviewEnabled(boolean previewEnabled) {
+        if (getKeyboard() == mPhoneKeyboard) {
+            // Phone keyboard never shows popup preview (except language switch).
+            super.setPreviewEnabled(false);
+        } else {
+            super.setPreviewEnabled(previewEnabled);
+        }
+    }
+
+    @Override
     public void setKeyboard(Keyboard k) {
         super.setKeyboard(k);
         // One-seventh of the keyboard width seems like a reasonable threshold

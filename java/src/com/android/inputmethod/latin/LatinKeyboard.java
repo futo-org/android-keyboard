@@ -131,7 +131,7 @@ public class LatinKeyboard extends Keyboard {
                 R.dimen.spacebar_vertical_correction);
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
-        mSpaceKeyIndex = indexOf(' ');
+        mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
         initializeNumberHintResources(context);
     }
 
@@ -382,6 +382,10 @@ public class LatinKeyboard extends Keyboard {
                 mNumberHintKeys[i].icon = mNumberHintIcons[i];
             }
         }
+    }
+
+    public boolean isLanguageSwitchEnabled() {
+        return mLocale != null;
     }
 
     private void updateSpaceBarForLocale(boolean isAutoCompletion, boolean isBlack) {
