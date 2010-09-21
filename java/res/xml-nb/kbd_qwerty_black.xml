@@ -180,8 +180,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="40%p"
-            android:isRepeatable="true" />
+            android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation" />
@@ -208,8 +207,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="40%p"
-            android:isRepeatable="true" />
+            android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation" />
@@ -236,8 +234,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="40%p"
-            android:isRepeatable="true" />
+            android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation" />
@@ -266,8 +263,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="40%p"
-            android:isRepeatable="true" />
+            android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation" />
@@ -296,8 +292,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="20%p"
-            android:isRepeatable="true" />
+            android:keyWidth="20%p" />
         <Key
             android:codes="@integer/key_tab"
             android:keyIcon="@drawable/sym_bkeyboard_tab"
@@ -335,8 +330,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="30%p"
-            android:isRepeatable="true" />
+            android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation" />
@@ -367,8 +361,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="30%p"
-            android:isRepeatable="true" />
+            android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation" />
@@ -399,8 +392,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="30%p"
-            android:isRepeatable="true" />
+            android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation" />
@@ -433,8 +425,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="30%p"
-            android:isRepeatable="true" />
+            android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
             android:popupKeyboard="@xml/popup_punctuation" />
@@ -467,8 +458,7 @@
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="30%p"
-            android:isRepeatable="true" />
+            android:keyWidth="30%p" />
         <Key
             android:codes="@integer/key_tab"
             android:keyIcon="@drawable/sym_bkeyboard_tab"
