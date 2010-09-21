@@ -139,8 +139,7 @@
             android:keyIcon="@drawable/sym_keyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
             android:keyWidth="40%p"
-            android:isModifier="true"
-            android:isRepeatable="true" />
+            android:isModifier="true" />
         <Key
             android:keyLabel="…"
             android:isModifier="true" />
@@ -175,8 +174,7 @@
             android:keyIcon="@drawable/sym_keyboard_space"
             android:iconPreview="@drawable/sym_keyboard_feedback_space"
             android:keyWidth="30%p"
-            android:isModifier="true"
-            android:isRepeatable="true" />
+            android:isModifier="true" />
         <Key
             android:keyLabel="…"
             android:isModifier="true" />

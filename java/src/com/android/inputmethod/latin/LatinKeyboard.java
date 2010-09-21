@@ -350,7 +350,6 @@ public class LatinKeyboard extends Keyboard {
         if (mLocale != null) {
             mSpaceKey.icon = new BitmapDrawable(mRes,
                     drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion, isBlack));
-            mSpaceKey.repeatable = mLanguageSwitcher.getLocaleCount() < 2;
         } else {
             // sym_keyboard_space_led can be shared with Black and White symbol themes.
             if (isAutoCompletion) {
@@ -360,7 +359,6 @@ public class LatinKeyboard extends Keyboard {
                 mSpaceKey.icon = isBlack ? mRes.getDrawable(R.drawable.sym_bkeyboard_space)
                         : mRes.getDrawable(R.drawable.sym_keyboard_space);
             }
-            mSpaceKey.repeatable = true;
         }
     }
 
