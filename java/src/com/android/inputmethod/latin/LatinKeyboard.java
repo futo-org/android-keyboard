@@ -63,6 +63,9 @@ public class LatinKeyboard extends Keyboard {
     private Key mF1Key;
     private Key mSpaceKey;
     private Key m123Key;
+    private final int NUMBER_HINT_COUNT = 10;
+    private Key[] mNumberHintKeys;
+    private Drawable[] mNumberHintIcons = new Drawable[NUMBER_HINT_COUNT];
     private int mSpaceKeyIndex = -1;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
@@ -129,6 +132,21 @@ public class LatinKeyboard extends Keyboard {
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
         mSpaceKeyIndex = indexOf(' ');
+        initializeNumberHintResources(context);
+    }
+
+    private void initializeNumberHintResources(Context context) {
+        final Resources res = context.getResources();
+        mNumberHintIcons[0] = res.getDrawable(R.drawable.keyboard_hint_0);
+        mNumberHintIcons[1] = res.getDrawable(R.drawable.keyboard_hint_1);
+        mNumberHintIcons[2] = res.getDrawable(R.drawable.keyboard_hint_2);
+        mNumberHintIcons[3] = res.getDrawable(R.drawable.keyboard_hint_3);
+        mNumberHintIcons[4] = res.getDrawable(R.drawable.keyboard_hint_4);
+        mNumberHintIcons[5] = res.getDrawable(R.drawable.keyboard_hint_5);
+        mNumberHintIcons[6] = res.getDrawable(R.drawable.keyboard_hint_6);
+        mNumberHintIcons[7] = res.getDrawable(R.drawable.keyboard_hint_7);
+        mNumberHintIcons[8] = res.getDrawable(R.drawable.keyboard_hint_8);
+        mNumberHintIcons[9] = res.getDrawable(R.drawable.keyboard_hint_9);
     }
 
     @Override
@@ -150,6 +168,23 @@ public class LatinKeyboard extends Keyboard {
             m123Label = key.label;
             break;
         }
+
+        // For number hints on the upper-right corner of key
+        if (mNumberHintKeys == null) {
+            // NOTE: This protected method is being called from the base class constructor before
+            // mNumberHintKeys gets initialized.
+            mNumberHintKeys = new Key[NUMBER_HINT_COUNT];
+        }
+        int hintNumber = -1;
+        if (LatinKeyboardBaseView.isNumberAtLeftmostPopupChar(key)) {
+            hintNumber = key.popupCharacters.charAt(0) - '0';
+        } else if (LatinKeyboardBaseView.isNumberAtRightmostPopupChar(key)) {
+            hintNumber = key.popupCharacters.charAt(key.popupCharacters.length() - 1) - '0';
+        }
+        if (hintNumber >= 0 && hintNumber <= 9) {
+            mNumberHintKeys[hintNumber] = key;
+        }
+
         return key;
     }
 
@@ -293,6 +328,7 @@ public class LatinKeyboard extends Keyboard {
         if (mSpaceKey != null) {
             updateSpaceBarForLocale(isAutoCompletion, isBlack);
         }
+        updateNumberHintKeys();
     }
 
     private void setDefaultBounds(Drawable drawable) {
@@ -338,6 +374,14 @@ public class LatinKeyboard extends Keyboard {
     public Key onAutoCompletionStateChanged(boolean isAutoCompletion) {
         updateSpaceBarForLocale(isAutoCompletion, mIsBlackSym);
         return mSpaceKey;
+    }
+
+    private void updateNumberHintKeys() {
+        for (int i = 0; i < mNumberHintKeys.length; ++i) {
+            if (mNumberHintKeys[i] != null) {
+                mNumberHintKeys[i].icon = mNumberHintIcons[i];
+            }
+        }
     }
 
     private void updateSpaceBarForLocale(boolean isAutoCompletion, boolean isBlack) {
