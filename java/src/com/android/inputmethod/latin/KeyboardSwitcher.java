@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -87,7 +86,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int SYMBOLS_MODE_STATE_BEGIN = 1;
     private static final int SYMBOLS_MODE_STATE_SYMBOL = 2;
 
-    LatinKeyboardView mInputView;
+    private LatinKeyboardView mInputView;
     private static final int[] ALPHABET_MODES = {
         KEYBOARDMODE_NORMAL,
         KEYBOARDMODE_URL,
@@ -100,7 +99,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         KEYBOARDMODE_IM_WITH_SETTINGS_KEY,
         KEYBOARDMODE_WEB_WITH_SETTINGS_KEY };
 
-    final LatinIME mInputMethodService;
+    private final LatinIME mInputMethodService;
 
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
@@ -120,7 +119,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
 
     // Indicates whether or not we have the settings key
-    boolean mHasSettingsKey;
+    private boolean mHasSettingsKey;
     private static final int SETTINGS_KEY_MODE_AUTO = R.string.settings_key_mode_auto;
     private static final int SETTINGS_KEY_MODE_ALWAYS_SHOW = R.string.settings_key_mode_always_show;
     // NOTE: No need to have SETTINGS_KEY_MODE_ALWAYS_HIDE here because it's not being referred to
@@ -134,7 +133,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private int mLayoutId;
 
-    KeyboardSwitcher(LatinIME ims) {
+    public KeyboardSwitcher(LatinIME ims) {
         mInputMethodService = ims;
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ims);
@@ -153,13 +152,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
      * @param locale the current input locale, or null for default locale with no locale 
      * button.
      */
-    void setLanguageSwitcher(LanguageSwitcher languageSwitcher) {
+    public void setLanguageSwitcher(LanguageSwitcher languageSwitcher) {
         mLanguageSwitcher = languageSwitcher;
         mInputLocale = mLanguageSwitcher.getInputLocale();
-    }
-
-    void setInputView(LatinKeyboardView inputView) {
-        mInputView = inputView;
     }
 
     private KeyboardId makeSymbolsId(boolean hasVoice) {
@@ -174,7 +169,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 false, hasVoice);
     }
 
-    void makeKeyboards(boolean forceCreate) {
+    public void makeKeyboards(boolean forceCreate) {
         mSymbolsId = makeSymbolsId(mHasVoice && !mVoiceOnPrimary);
         mSymbolsShiftedId = makeSymbolsShiftedId(mHasVoice && !mVoiceOnPrimary);
 
@@ -229,7 +224,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    void setVoiceMode(boolean enableVoice, boolean voiceOnPrimary) {
+    public void setVoiceMode(boolean enableVoice, boolean voiceOnPrimary) {
         if (enableVoice != mHasVoice || voiceOnPrimary != mVoiceOnPrimary) {
             mKeyboards.clear();
         }
@@ -238,11 +233,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         setKeyboardMode(mMode, mImeOptions, mHasVoice, mIsSymbols);
     }
 
-    boolean hasVoiceButton(boolean isSymbols) {
+    private boolean hasVoiceButton(boolean isSymbols) {
         return mHasVoice && (isSymbols != mVoiceOnPrimary);
     }
 
-    void setKeyboardMode(int mode, int imeOptions, boolean enableVoice) {
+    public void setKeyboardMode(int mode, int imeOptions, boolean enableVoice) {
         mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
         mPreferSymbols = mode == MODE_SYMBOLS;
         if (mode == MODE_SYMBOLS) {
@@ -255,7 +250,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    void setKeyboardMode(int mode, int imeOptions, boolean enableVoice, boolean isSymbols) {
+    private void setKeyboardMode(int mode, int imeOptions, boolean enableVoice, boolean isSymbols) {
         if (mInputView == null) return;
         mMode = mode;
         mImeOptions = imeOptions;
@@ -271,7 +266,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         if (mode == MODE_PHONE) {
             mInputView.setPhoneKeyboard(keyboard);
-            mInputView.setPreviewEnabled(false);
         }
 
         mCurrentId = id;
@@ -354,15 +348,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return null;
     }
 
-    int getKeyboardMode() {
+    public int getKeyboardMode() {
         return mMode;
     }
     
-    boolean isTextMode() {
-        return mMode == MODE_TEXT;
-    }
-
-    boolean isAlphabetMode() {
+    public boolean isAlphabetMode() {
         if (mCurrentId == null) {
             return false;
         }
@@ -375,19 +365,19 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return false;
     }
 
-    void setShifted(boolean shifted) {
+    public void setShifted(boolean shifted) {
         if (mInputView != null) {
             mInputView.setShifted(shifted);
         }
     }
 
-    void setShiftLocked(boolean shiftLocked) {
+    public void setShiftLocked(boolean shiftLocked) {
         if (mInputView != null) {
             mInputView.setShiftLocked(shiftLocked);
         }
     }
 
-    void toggleShift() {
+    public void toggleShift() {
         if (mCurrentId.equals(mSymbolsId)) {
             LatinKeyboard symbolsShiftedKeyboard = getKeyboard(mSymbolsShiftedId);
             mCurrentId = mSymbolsShiftedId;
@@ -412,7 +402,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    void toggleSymbols() {
+    public void toggleSymbols() {
         setKeyboardMode(mMode, mImeOptions, mHasVoice, !mIsSymbols);
         if (mIsSymbols && !mPreferSymbols) {
             mSymbolsModeState = SYMBOLS_MODE_STATE_BEGIN;
@@ -429,7 +419,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
      * Updates state machine to figure out when to automatically switch back to alpha mode.
      * Returns true if the keyboard needs to switch back 
      */
-    boolean onKey(int key) {
+    public boolean onKey(int key) {
         // Switch back to alpha mode if user types one or more non-space/enter characters
         // followed by a space/enter
         switch (mSymbolsModeState) {
