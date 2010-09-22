@@ -161,13 +161,13 @@ public class LatinKeyboard extends Keyboard {
             XmlResourceParser parser) {
         Key key = new LatinKey(res, parent, x, y, parser);
         switch (key.codes[0]) {
-        case 10:
+        case LatinIME.KEYCODE_ENTER:
             mEnterKey = key;
             break;
         case LatinKeyboardView.KEYCODE_F1:
             mF1Key = key;
             break;
-        case 32:
+        case LatinIME.KEYCODE_SPACE:
             mSpaceKey = key;
             break;
         case KEYCODE_MODE_CHANGE:
