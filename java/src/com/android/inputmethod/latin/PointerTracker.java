@@ -140,6 +140,11 @@ public class PointerTracker {
         return isModifierInternal(mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null));
     }
 
+    public boolean isSpaceKey(int keyIndex) {
+        Key key = getKey(keyIndex);
+        return key != null && key.codes[0] == LatinIME.KEYCODE_SPACE;
+    }
+
     public void updateKey(int keyIndex) {
         if (mKeyAlreadyProcessed)
             return;
