@@ -46,6 +46,7 @@ public class LatinIMESettings extends PreferenceActivity
     private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
     private static final String VOICE_SETTINGS_KEY = "voice_mode";
     private static final String DEBUG_MODE_KEY = "debug_mode";
+    /* package */ static final String PREF_SETTINGS_KEY = "settings_key";
 
     private static final String TAG = "LatinIMESettings";
 
@@ -55,6 +56,7 @@ public class LatinIMESettings extends PreferenceActivity
     private CheckBoxPreference mQuickFixes;
     private CheckBoxPreference mDebugMode;
     private ListPreference mVoicePreference;
+    private ListPreference mSettingsKeyPreference;
     private boolean mVoiceOn;
 
     private VoiceInputLogger mLogger;
@@ -68,6 +70,7 @@ public class LatinIMESettings extends PreferenceActivity
         addPreferencesFromResource(R.xml.prefs);
         mQuickFixes = (CheckBoxPreference) findPreference(QUICK_FIXES_KEY);
         mVoicePreference = (ListPreference) findPreference(VOICE_SETTINGS_KEY);
+        mSettingsKeyPreference = (ListPreference) findPreference(PREF_SETTINGS_KEY);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
@@ -93,6 +96,7 @@ public class LatinIMESettings extends PreferenceActivity
         } else {
             updateVoiceModeSummary();
         }
+        updateSettingsKeySummary();
     }
 
     @Override
@@ -106,7 +110,7 @@ public class LatinIMESettings extends PreferenceActivity
         (new BackupManager(this)).dataChanged();
         // If turning on voice input, show dialog
         if (key.equals(VOICE_SETTINGS_KEY) && !mVoiceOn) {
-            if (! prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff)
+            if (!prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff)
                     .equals(mVoiceModeOff)) {
                 showVoiceConfirmation();
             }
@@ -118,6 +122,13 @@ public class LatinIMESettings extends PreferenceActivity
         }
         mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         updateVoiceModeSummary();
+        updateSettingsKeySummary();
+    }
+
+    private void updateSettingsKeySummary() {
+        mSettingsKeyPreference.setSummary(
+                getResources().getStringArray(R.array.settings_key_modes)
+                [mSettingsKeyPreference.findIndexOfValue(mSettingsKeyPreference.getValue())]);
     }
 
     private void updateDebugMode() {

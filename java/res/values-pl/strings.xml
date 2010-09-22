@@ -56,15 +56,6 @@
     <item msgid="4894328801530136615">"Zaawansowany"</item>
   </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Zapisano"</string>
-    <string name="alternates_for_a" msgid="2566516493365324765">"ą"</string>
-    <string name="alternates_for_e" msgid="3900510936875547555">"ę"</string>
-    <string name="alternates_for_i" msgid="7097915268629342242">"ìíîï"</string>
-    <string name="alternates_for_o" msgid="6151402748321267776">"ó"</string>
-    <string name="alternates_for_u" msgid="5899096818189442934">"ùúûü"</string>
-    <string name="alternates_for_s" msgid="348762530927662188">"ś"</string>
-    <string name="alternates_for_n" msgid="6257322556221886400">"ń"</string>
-    <string name="alternates_for_c" msgid="151699780720639892">"ć"</string>
-    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Przytrzymaj klawisz, aby wyświetlić znaki akcentowane (ą, ó itp.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Naciśnij klawisz cofania ↶, aby zamknąć klawiaturę w dowolnym momencie"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Przejdź do cyfr i symboli"</string>

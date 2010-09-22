@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
@@ -228,8 +228,9 @@ public class LatinIME extends InputMethodService
     private int mDeleteCount;
     private long mLastKeyTime;
 
-    // Shift modifier key state
+    // Modifier keys state
     private ModifierKeyState mShiftKeyState = new ModifierKeyState();
+    private ModifierKeyState mSymbolKeyState = new ModifierKeyState();
 
     private Tutorial mTutorial;
 
@@ -260,7 +261,7 @@ public class LatinIME extends InputMethodService
         List<String> candidates;
         Map<String, List<CharSequence>> alternatives;
     }
-    
+
     public abstract static class WordAlternatives {
         protected CharSequence mChosenWord;
 
@@ -354,7 +355,7 @@ public class LatinIME extends InputMethodService
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mLanguageSwitcher = new LanguageSwitcher(this);
         mLanguageSwitcher.loadLocales(prefs);
-        mKeyboardSwitcher = new KeyboardSwitcher(this, this);
+        mKeyboardSwitcher = new KeyboardSwitcher(this);
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         mSystemLocale = conf.locale.toString();
         mLanguageSwitcher.setSystemLocale(conf.locale);
@@ -596,9 +597,10 @@ public class LatinIME extends InputMethodService
         switch (attribute.inputType & EditorInfo.TYPE_MASK_CLASS) {
             case EditorInfo.TYPE_CLASS_NUMBER:
             case EditorInfo.TYPE_CLASS_DATETIME:
-                mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_SYMBOLS,
-                        attribute.imeOptions, enableVoiceButton);
-                break;
+                // fall through
+                // NOTE: For now, we use the phone keyboard for NUMBER and DATETIME until we get
+                // a dedicated number entry keypad.
+                // TODO: Use a dedicated number entry keypad here when we get one.
             case EditorInfo.TYPE_CLASS_PHONE:
                 mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_PHONE,
                         attribute.imeOptions, enableVoiceButton);
@@ -793,6 +795,37 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    /**
+     * This is called when the user has clicked on the extracted text view,
+     * when running in fullscreen mode.  The default implementation hides
+     * the candidates view when this happens, but only if the extracted text
+     * editor has a vertical scroll bar because its text doesn't fit.
+     * Here we override the behavior due to the possibility that a re-correction could
+     * cause the candidate strip to disappear and re-appear.
+     */
+    @Override
+    public void onExtractedTextClicked() {
+        if (mReCorrectionEnabled && isPredictionOn()) return;
+
+        super.onExtractedTextClicked();
+    }
+
+    /**
+     * This is called when the user has performed a cursor movement in the
+     * extracted text view, when it is running in fullscreen mode.  The default
+     * implementation hides the candidates view when a vertical movement
+     * happens, but only if the extracted text editor has a vertical scroll bar
+     * because its text doesn't fit.
+     * Here we override the behavior due to the possibility that a re-correction could
+     * cause the candidate strip to disappear and re-appear.
+     */
+    @Override
+    public void onExtractedCursorMovement(int dx, int dy) {
+        if (mReCorrectionEnabled && isPredictionOn()) return;
+
+        super.onExtractedCursorMovement(dx, dy);
+    }
+
     @Override
     public void hideWindow() {
         LatinImeLogger.commit();
@@ -951,7 +984,7 @@ public class LatinIME extends InputMethodService
 
     private void reloadKeyboards() {
         if (mKeyboardSwitcher == null) {
-            mKeyboardSwitcher = new KeyboardSwitcher(this, this);
+            mKeyboardSwitcher = new KeyboardSwitcher(this);
         }
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         if (mKeyboardSwitcher.getInputView() != null
@@ -1089,11 +1122,6 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private boolean hasMultipleEnabledIMEs() {
-        return ((InputMethodManager) getSystemService(
-                INPUT_METHOD_SERVICE)).getEnabledInputMethodList().size() > 1;
-    }
-
     private void showInputMethodPicker() {
         ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
                 .showInputMethodPicker();
@@ -1101,7 +1129,7 @@ public class LatinIME extends InputMethodService
 
     private void onOptionKeyPressed() {
         if (!isShowingOptionDialog()) {
-            if (hasMultipleEnabledIMEs()) {
+            if (LatinIMEUtil.hasMultipleEnabledIMEs(this)) {
                 showOptionsMenu();
             } else {
                 launchSettings();
@@ -1111,7 +1139,7 @@ public class LatinIME extends InputMethodService
 
     private void onOptionKeyLongPressed() {
         if (!isShowingOptionDialog()) {
-            if (hasMultipleEnabledIMEs()) {
+            if (LatinIMEUtil.hasMultipleEnabledIMEs(this)) {
                 showInputMethodPicker();
             } else {
                 launchSettings();
@@ -1132,6 +1160,7 @@ public class LatinIME extends InputMethodService
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
+        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
         switch (primaryCode) {
             case Keyboard.KEYCODE_DELETE:
                 handleBackspace();
@@ -1140,8 +1169,13 @@ public class LatinIME extends InputMethodService
                 break;
             case Keyboard.KEYCODE_SHIFT:
                 // Shift key is handled in onPress() when device has distinct multi-touch panel.
-                if (!mKeyboardSwitcher.hasDistinctMultitouch())
+                if (!distinctMultiTouch)
                     handleShift();
+                break;
+            case Keyboard.KEYCODE_MODE_CHANGE:
+                // Symbol key is handled in onPress() when device has distinct multi-touch panel.
+                if (!distinctMultiTouch)
+                    changeKeyboardMode();
                 break;
             case Keyboard.KEYCODE_CANCEL:
                 if (!isShowingOptionDialog()) {
@@ -1159,10 +1193,6 @@ public class LatinIME extends InputMethodService
                 break;
             case LatinKeyboardView.KEYCODE_PREV_LANGUAGE:
                 toggleLanguage(false, false);
-                break;
-            case Keyboard.KEYCODE_MODE_CHANGE:
-                // TODO: Mode change (symbol key) should be handled in onPress().
-                changeKeyboardMode();
                 break;
             case LatinKeyboardView.KEYCODE_VOICE:
                 if (VOICE_INSTALLED) {
@@ -1344,14 +1374,21 @@ public class LatinIME extends InputMethodService
             }
         }
         if (mKeyboardSwitcher.getInputView().isShifted()) {
-            // TODO: This doesn't work with [beta], need to fix it in the next release.
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
                 return;
             }
             primaryCode = keyCodes[0];
-            if (mKeyboardSwitcher.isAlphabetMode()) {
-                primaryCode = Character.toUpperCase(primaryCode);
+            if (mKeyboardSwitcher.isAlphabetMode() && Character.isLowerCase(primaryCode)) {
+                int upperCaseCode = Character.toUpperCase(primaryCode);
+                if (upperCaseCode != primaryCode) {
+                    primaryCode = upperCaseCode;
+                } else {
+                    // Some keys, such as [eszett], have upper case as multi-characters.
+                    String upperCase = new String(new int[] {primaryCode}, 0, 1).toUpperCase();
+                    onText(upperCase);
+                    return;
+                }
             }
         }
         if (mPredicting) {
@@ -1547,7 +1584,7 @@ public class LatinIME extends InputMethodService
             SharedPreferences.Editor editor =
                     PreferenceManager.getDefaultSharedPreferences(this).edit();
             editor.putBoolean(PREF_HAS_USED_VOICE_INPUT, true);
-            editor.commit();
+            SharedPreferencesCompat.apply(editor);
             mHasUsedVoiceInput = true;
         }
 
@@ -1557,7 +1594,7 @@ public class LatinIME extends InputMethodService
             SharedPreferences.Editor editor =
                     PreferenceManager.getDefaultSharedPreferences(this).edit();
             editor.putBoolean(PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE, true);
-            editor.commit();
+            SharedPreferencesCompat.apply(editor);
             mHasUsedVoiceInputUnsupportedLocale = true;
         }
 
@@ -2209,13 +2246,16 @@ public class LatinIME extends InputMethodService
     public void onPress(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
-        if (mKeyboardSwitcher.hasDistinctMultitouch() && primaryCode == Keyboard.KEYCODE_SHIFT) {
+        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
+        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
             mShiftKeyState.onPress();
             handleShift();
-        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
-            // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
+        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            mSymbolKeyState.onPress();
+            changeKeyboardMode();
         } else {
             mShiftKeyState.onOtherKeyPressed();
+            mSymbolKeyState.onOtherKeyPressed();
         }
     }
 
@@ -2223,12 +2263,15 @@ public class LatinIME extends InputMethodService
         // Reset any drag flags in the keyboard
         ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).keyReleased();
         //vibrate();
-        if (mKeyboardSwitcher.hasDistinctMultitouch() && primaryCode == Keyboard.KEYCODE_SHIFT) {
+        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
+        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
             if (mShiftKeyState.isMomentary())
                 resetShift();
             mShiftKeyState.onRelease();
-        } else if (primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
-            // TODO: We should handle KEYCODE_MODE_CHANGE (symbol) here as well.
+        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+            if (mSymbolKeyState.isMomentary())
+                changeKeyboardMode();
+            mSymbolKeyState.onRelease();
         }
     }
 

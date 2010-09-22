@@ -143,7 +143,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         Editor editor = sp.edit();
         editor.putString(LatinIME.PREF_SELECTED_LANGUAGES, checkedLanguages);
-        editor.commit();
+        SharedPreferencesCompat.apply(editor);
     }
 
     ArrayList<Loc> getUniqueLocales() {

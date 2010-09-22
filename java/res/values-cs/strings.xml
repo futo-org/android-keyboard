@@ -56,15 +56,6 @@
     <item msgid="4894328801530136615">"Pokročilé"</item>
   </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Uloženo"</string>
-    <string name="alternates_for_a" msgid="2566516493365324765">"áàâãäåæ"</string>
-    <string name="alternates_for_e" msgid="3900510936875547555">"éěèêë"</string>
-    <string name="alternates_for_i" msgid="7097915268629342242">"íìîï"</string>
-    <string name="alternates_for_o" msgid="6151402748321267776">"óòôõöœø"</string>
-    <string name="alternates_for_u" msgid="5899096818189442934">"ůúùûü"</string>
-    <string name="alternates_for_s" msgid="348762530927662188">"š§ß"</string>
-    <string name="alternates_for_n" msgid="6257322556221886400">"ňñ"</string>
-    <string name="alternates_for_c" msgid="151699780720639892">"čç"</string>
-    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Podržením klávesy zobrazíte diakritiku (á, ž apod.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Stisknutím klávesy Zpět ↶ můžete klávesnici kdykoli zavřít."</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Přístup k číslům a symbolům"</string>

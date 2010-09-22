@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import android.view.inputmethod.InputMethodManager;
+
+import android.content.Context;
 import android.os.AsyncTask;
 import android.text.format.DateUtils;
 import android.util.Log;
@@ -71,5 +74,10 @@ public class LatinIMEUtil {
                 }
             }
         }
+    }
+
+    public static boolean hasMultipleEnabledIMEs(Context context) {
+        return ((InputMethodManager) context.getSystemService(
+                Context.INPUT_METHOD_SERVICE)).getEnabledInputMethodList().size() > 1;
     }
 }

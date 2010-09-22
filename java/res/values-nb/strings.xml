@@ -56,15 +56,6 @@
     <item msgid="4894328801530136615">"Avansert"</item>
   </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Lagret"</string>
-    <string name="alternates_for_a" msgid="2566516493365324765">"åæáàâãä"</string>
-    <string name="alternates_for_e" msgid="3900510936875547555">"éèêë"</string>
-    <string name="alternates_for_i" msgid="7097915268629342242">"íìîï"</string>
-    <string name="alternates_for_o" msgid="6151402748321267776">"ôóòöõœø"</string>
-    <string name="alternates_for_u" msgid="5899096818189442934">"üùúû"</string>
-    <string name="alternates_for_s" msgid="348762530927662188">"ß§"</string>
-    <string name="alternates_for_n" msgid="6257322556221886400">"ñ"</string>
-    <string name="alternates_for_c" msgid="151699780720639892">"ç"</string>
-    <string name="alternates_for_y" msgid="1722776806607271199">"ýÿ"</string>
     <string name="tip_long_press" msgid="6101270866284343344">"Hold en tast nede for å se aksenterte tegn (ø, ö, osv.)"</string>
     <string name="tip_dismiss" msgid="7585579046862204381">"Trykk tilbakeknappen, ↶, for å lukke tastaturet"</string>
     <string name="tip_access_symbols" msgid="6344098517525531652">"Få tilgang til tall og symboler"</string>

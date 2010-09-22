@@ -24,6 +24,7 @@ import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
@@ -52,9 +53,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     /** The y coordinate of the last row */
     private int mLastRowY;
 
-    // This is local working variable for onLongPress().
-    private int[] mKeyCodes = new int[1];
-
     public LatinKeyboardView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -65,6 +63,16 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     public void setPhoneKeyboard(Keyboard phoneKeyboard) {
         mPhoneKeyboard = phoneKeyboard;
+    }
+
+    @Override
+    public void setPreviewEnabled(boolean previewEnabled) {
+        if (getKeyboard() == mPhoneKeyboard) {
+            // Phone keyboard never shows popup preview (except language switch).
+            super.setPreviewEnabled(false);
+        } else {
+            super.setPreviewEnabled(previewEnabled);
+        }
     }
 
     @Override
@@ -104,7 +112,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         if (keyboard.isShifted()
                 && keyboard instanceof LatinKeyboard
                 && ((LatinKeyboard) keyboard).isAlphaKeyboard()
-                && label != null && label.length() < 3
+                && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
             label = label.toString().toUpperCase();
         }

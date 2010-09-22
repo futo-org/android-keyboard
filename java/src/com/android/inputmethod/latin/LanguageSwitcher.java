@@ -188,7 +188,7 @@ public class LanguageSwitcher {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mIme);
         Editor editor = sp.edit();
         editor.putString(LatinIME.PREF_INPUT_LANGUAGE, getInputLanguage());
-        editor.commit();
+        SharedPreferencesCompat.apply(editor);
     }
 
     static String toTitleCase(String s) {
