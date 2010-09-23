@@ -33,6 +33,7 @@ import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -1157,7 +1158,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mMiniKeyboardPopup.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
 
         // Inject down event on the key to mini keyboard.
-        long eventTime = System.currentTimeMillis();
+        long eventTime = SystemClock.uptimeMillis();
         mMiniKeyboardPopupTime = eventTime;
         MotionEvent downEvent = generateMiniKeyboardMotionEvent(MotionEvent.ACTION_DOWN, popupKey.x
                 + popupKey.width / 2, popupKey.y + popupKey.height / 2, eventTime);
