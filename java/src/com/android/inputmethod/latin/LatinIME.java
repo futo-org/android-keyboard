@@ -133,12 +133,7 @@ public class LatinIME extends InputMethodService
     private static final int MSG_START_TUTORIAL = 1;
     private static final int MSG_UPDATE_SHIFT_STATE = 2;
     private static final int MSG_VOICE_RESULTS = 3;
-    private static final int MSG_START_LISTENING_AFTER_SWIPE = 4;
-    private static final int MSG_UPDATE_OLD_SUGGESTIONS = 5;
-
-    // If we detect a swipe gesture within N ms of typing, then swipe is
-    // ignored, since it may in fact be two key presses in quick succession.
-    private static final long MIN_MILLIS_AFTER_TYPING_BEFORE_SWIPE = 1000;
+    private static final int MSG_UPDATE_OLD_SUGGESTIONS = 4;
 
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
@@ -245,7 +240,6 @@ public class LatinIME extends InputMethodService
     private String mSuggestPuncs;
     private VoiceInput mVoiceInput;
     private VoiceResults mVoiceResults = new VoiceResults();
-    private long mSwipeTriggerTimeMillis;
     private boolean mConfigurationChanging;
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
@@ -339,10 +333,6 @@ public class LatinIME extends InputMethodService
                 case MSG_VOICE_RESULTS:
                     handleVoiceResults();
                     break;
-                case MSG_START_LISTENING_AFTER_SWIPE:
-                    if (mLastKeyTime < mSwipeTriggerTimeMillis) {
-                        startListening(true);
-                    }
             }
         }
     };
@@ -2187,21 +2177,6 @@ public class LatinIME extends InputMethodService
         return mWord.isCapitalized();
     }
 
-    public void swipeRight() {
-        if (userHasNotTypedRecently() && VOICE_INSTALLED && mEnableVoice &&
-                fieldCanDoVoice(makeFieldContext())) {
-            startListening(true /* was a swipe */);
-        }
-
-        if (LatinKeyboardView.DEBUG_AUTO_PLAY) {
-            ClipboardManager cm = ((ClipboardManager)getSystemService(CLIPBOARD_SERVICE));
-            CharSequence text = cm.getText();
-            if (!TextUtils.isEmpty(text)) {
-                mKeyboardSwitcher.getInputView().startPlaying(text.toString());
-            }
-        }
-    }
-
     private void toggleLanguage(boolean reset, boolean next) {
         if (reset) {
             mLanguageSwitcher.reset();
@@ -2230,6 +2205,16 @@ public class LatinIME extends InputMethodService
         } else if (PREF_RECORRECTION_ENABLED.equals(key)) {
             mReCorrectionEnabled = sharedPreferences.getBoolean(PREF_RECORRECTION_ENABLED,
                     getResources().getBoolean(R.bool.default_recorrection_enabled));
+        }
+    }
+
+    public void swipeRight() {
+        if (LatinKeyboardView.DEBUG_AUTO_PLAY) {
+            ClipboardManager cm = ((ClipboardManager)getSystemService(CLIPBOARD_SERVICE));
+            CharSequence text = cm.getText();
+            if (!TextUtils.isEmpty(text)) {
+                mKeyboardSwitcher.getInputView().startPlaying(text.toString());
+            }
         }
     }
 
@@ -2313,11 +2298,6 @@ public class LatinIME extends InputMethodService
         if (mAudioManager != null) {
             mSilentMode = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
         }
-    }
-
-    private boolean userHasNotTypedRecently() {
-        return (SystemClock.uptimeMillis() - mLastKeyTime)
-            > MIN_MILLIS_AFTER_TYPING_BEFORE_SWIPE;
     }
 
     private void playKeyClick(int primaryCode) {
