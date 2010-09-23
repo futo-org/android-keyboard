@@ -25,14 +25,14 @@ public class WordComposer {
     /**
      * The list of unicode values for each keystroke (including surrounding keys)
      */
-    private ArrayList<int[]> mCodes;
+    private final ArrayList<int[]> mCodes;
     
     /**
      * The word chosen from the candidate list, until it is committed.
      */
     private String mPreferredWord;
     
-    private StringBuilder mTypedWord;
+    private final StringBuilder mTypedWord;
 
     private int mCapsCount;
 
@@ -116,11 +116,14 @@ public class WordComposer {
      * Delete the last keystroke as a result of hitting backspace.
      */
     public void deleteLast() {
-        mCodes.remove(mCodes.size() - 1);
-        final int lastPos = mTypedWord.length() - 1;
-        char last = mTypedWord.charAt(lastPos);
-        mTypedWord.deleteCharAt(lastPos);
-        if (Character.isUpperCase(last)) mCapsCount--;
+        final int codesSize = mCodes.size();
+        if (codesSize > 0) {
+            mCodes.remove(codesSize - 1);
+            final int lastPos = mTypedWord.length() - 1;
+            char last = mTypedWord.charAt(lastPos);
+            mTypedWord.deleteCharAt(lastPos);
+            if (Character.isUpperCase(last)) mCapsCount--;
+        }
     }
 
     /**
@@ -132,15 +135,6 @@ public class WordComposer {
         if (wordSize == 0) {
             return null;
         }
-//        StringBuffer sb = new StringBuffer(wordSize);
-//        for (int i = 0; i < wordSize; i++) {
-//            char c = (char) mCodes.get(i)[0];
-//            if (i == 0 && mIsCapitalized) {
-//                c = Character.toUpperCase(c);
-//            }
-//            sb.append(c);
-//        }
-//        return sb;
         return mTypedWord;
     }
 
