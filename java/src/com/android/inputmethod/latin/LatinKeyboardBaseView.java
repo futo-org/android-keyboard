@@ -1129,7 +1129,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         if (isNumberAtLeftmost) {
             popupX -= container.getPaddingLeft();
         } else {
-            popupX += popupKey.width + getPaddingLeft();
+            popupX += popupKey.width + container.getPaddingLeft();
             popupX -= container.getMeasuredWidth();
             popupX += container.getPaddingRight();
         }
