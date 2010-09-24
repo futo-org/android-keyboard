@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.LatinIMEUtil.RingCharBuffer;
 import com.android.inputmethod.voice.FieldContext;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceInput;
@@ -1197,7 +1198,8 @@ public class LatinIME extends InputMethodService
                 if (primaryCode != KEYCODE_ENTER) {
                     mJustAddedAutoSpace = false;
                 }
-                LatinImeLogger.logOnInputChar((char)primaryCode, x, y);
+                RingCharBuffer.getInstance().push((char)primaryCode, x, y);
+                LatinImeLogger.logOnInputChar();
                 if (isWordSeparator(primaryCode)) {
                     handleSeparator(primaryCode);
                 } else {
