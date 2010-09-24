@@ -50,7 +50,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnDelete() {
     }
 
-    public static void logOnInputChar(char c, int x, int y) {
+    public static void logOnInputChar() {
     }
 
     public static void logOnException(String metaData, Throwable e) {

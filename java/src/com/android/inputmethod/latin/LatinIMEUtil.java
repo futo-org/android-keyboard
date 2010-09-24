@@ -80,4 +80,92 @@ public class LatinIMEUtil {
         return ((InputMethodManager) context.getSystemService(
                 Context.INPUT_METHOD_SERVICE)).getEnabledInputMethodList().size() > 1;
     }
+
+    /* package */ static class RingCharBuffer {
+        private static RingCharBuffer sRingCharBuffer = new RingCharBuffer();
+        private static final char PLACEHOLDER_DELIMITER_CHAR = '\uFFFC';
+        private static final int INVALID_COORDINATE = -2;
+        /* package */ static final int BUFSIZE = 20;
+        private Context mContext;
+        private boolean mEnabled = false;
+        private int mEnd = 0;
+        /* package */ int mLength = 0;
+        private char[] mCharBuf = new char[BUFSIZE];
+        private int[] mXBuf = new int[BUFSIZE];
+        private int[] mYBuf = new int[BUFSIZE];
+
+        private RingCharBuffer() {
+        }
+        public static RingCharBuffer getInstance() {
+            return sRingCharBuffer;
+        }
+        public static RingCharBuffer init(Context context, boolean enabled) {
+            sRingCharBuffer.mContext = context;
+            sRingCharBuffer.mEnabled = enabled;
+            return sRingCharBuffer;
+        }
+        private int normalize(int in) {
+            int ret = in % BUFSIZE;
+            return ret < 0 ? ret + BUFSIZE : ret;
+        }
+        public void push(char c, int x, int y) {
+            if (!mEnabled) return;
+            mCharBuf[mEnd] = c;
+            mXBuf[mEnd] = x;
+            mYBuf[mEnd] = y;
+            mEnd = normalize(mEnd + 1);
+            if (mLength < BUFSIZE) {
+                ++mLength;
+            }
+        }
+        public char pop() {
+            if (mLength < 1) {
+                return PLACEHOLDER_DELIMITER_CHAR;
+            } else {
+                mEnd = normalize(mEnd - 1);
+                --mLength;
+                return mCharBuf[mEnd];
+            }
+        }
+        public char getLastChar() {
+            if (mLength < 1) {
+                return PLACEHOLDER_DELIMITER_CHAR;
+            } else {
+                return mCharBuf[normalize(mEnd - 1)];
+            }
+        }
+        public int getPreviousX(char c, int back) {
+            int index = normalize(mEnd - 2 - back);
+            if (mLength <= back
+                    || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
+                return INVALID_COORDINATE;
+            } else {
+                return mXBuf[index];
+            }
+        }
+        public int getPreviousY(char c, int back) {
+            int index = normalize(mEnd - 2 - back);
+            if (mLength <= back
+                    || Character.toLowerCase(c) != Character.toLowerCase(mCharBuf[index])) {
+                return INVALID_COORDINATE;
+            } else {
+                return mYBuf[index];
+            }
+        }
+        public String getLastString() {
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < mLength; ++i) {
+                char c = mCharBuf[normalize(mEnd - 1 - i)];
+                if (!((LatinIME)mContext).isWordSeparator(c)) {
+                    sb.append(c);
+                } else {
+                    break;
+                }
+            }
+            return sb.reverse().toString();
+        }
+        public void reset() {
+            mLength = 0;
+        }
+    }
 }
