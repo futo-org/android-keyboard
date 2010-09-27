@@ -36,6 +36,8 @@ import android.util.Log;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -48,7 +50,7 @@ public class LatinKeyboard extends Keyboard {
 
     private Drawable mShiftLockIcon;
     private Drawable mShiftLockPreviewIcon;
-    private Drawable mOldShiftIcon;
+    private final HashMap<Key, Drawable> mOldShiftIcons = new HashMap<Key, Drawable>();
     private Drawable mSpaceIcon;
     private Drawable mSpaceAutoCompletionIndicator;
     private Drawable mSpacePreviewIcon;
@@ -58,7 +60,7 @@ public class LatinKeyboard extends Keyboard {
     private Drawable m123MicPreviewIcon;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
-    private Key mShiftKey;
+    private ArrayList<Key> mShiftKeys;
     private Key mEnterKey;
     private Key mF1Key;
     private Key mSpaceKey;
@@ -170,6 +172,13 @@ public class LatinKeyboard extends Keyboard {
         case LatinIME.KEYCODE_SPACE:
             mSpaceKey = key;
             break;
+        case KEYCODE_SHIFT:
+            // NOTE: This protected method is being called from the base class constructor before
+            // mShiftKeys gets initialized.
+            if (mShiftKeys == null)
+                mShiftKeys = new ArrayList<Key>();
+            mShiftKeys.add(key);
+            break;
         case KEYCODE_MODE_CHANGE:
             m123Key = key;
             m123Label = key.label;
@@ -195,7 +204,7 @@ public class LatinKeyboard extends Keyboard {
         return key;
     }
 
-    void setImeOptions(Resources res, int mode, int options) {
+    public void setImeOptions(Resources res, int mode, int options) {
         if (mEnterKey != null) {
             // Reset some of the rarely used attributes.
             mEnterKey.popupCharacters = null;
@@ -253,61 +262,56 @@ public class LatinKeyboard extends Keyboard {
             }
         }
     }
-    
-    void enableShiftLock() {
-        int index = getShiftKeyIndex();
-        if (index >= 0) {
-            mShiftKey = getKeys().get(index);
-            if (mShiftKey instanceof LatinKey) {
-                ((LatinKey)mShiftKey).enableShiftLock();
+
+    public void enableShiftLock() {
+        for (final Key key : mShiftKeys) {
+            if (key instanceof LatinKey) {
+                ((LatinKey)key).enableShiftLock();
             }
-            mOldShiftIcon = mShiftKey.icon;
+            mOldShiftIcons.put(key, key.icon);
         }
     }
 
-    void setShiftLocked(boolean shiftLocked) {
-        if (mShiftKey != null) {
-            if (shiftLocked) {
-                mShiftKey.on = true;
-                mShiftKey.icon = mShiftLockIcon;
-                mShiftState = SHIFT_LOCKED;
-            } else {
-                mShiftKey.on = false;
-                mShiftKey.icon = mShiftLockIcon;
-                mShiftState = SHIFT_ON;
-            }
+    public void setShiftLocked(boolean shiftLocked) {
+        for (final Key key : mShiftKeys) {
+            key.on = shiftLocked;
+            key.icon = mShiftLockIcon;
         }
+        mShiftState = shiftLocked ? SHIFT_LOCKED : SHIFT_ON;
     }
 
-    boolean isShiftLocked() {
+    public boolean isShiftLocked() {
         return mShiftState == SHIFT_LOCKED;
     }
     
     @Override
     public boolean setShifted(boolean shiftState) {
         boolean shiftChanged = false;
-        if (mShiftKey != null) {
+        if (mShiftKeys.size() > 0) {
+            for (final Key key : mShiftKeys) {
+                if (shiftState == false) {
+                    key.on = false;
+                    key.icon = mOldShiftIcons.get(key);
+                } else if (mShiftState == SHIFT_OFF) {
+                    key.icon = mShiftLockIcon;
+                }
+            }
             if (shiftState == false) {
                 shiftChanged = mShiftState != SHIFT_OFF;
                 mShiftState = SHIFT_OFF;
-                mShiftKey.on = false;
-                mShiftKey.icon = mOldShiftIcon;
-            } else {
-                if (mShiftState == SHIFT_OFF) {
-                    shiftChanged = mShiftState == SHIFT_OFF;
-                    mShiftState = SHIFT_ON;
-                    mShiftKey.icon = mShiftLockIcon;
-                }
+            } else if (mShiftState == SHIFT_OFF) {
+                shiftChanged = mShiftState == SHIFT_OFF;
+                mShiftState = SHIFT_ON;
             }
+            return shiftChanged;
         } else {
             return super.setShifted(shiftState);
         }
-        return shiftChanged;
     }
 
     @Override
     public boolean isShifted() {
-        if (mShiftKey != null) {
+        if (mShiftKeys.size() > 0) {
             return mShiftState != SHIFT_OFF;
         } else {
             return super.isShifted();

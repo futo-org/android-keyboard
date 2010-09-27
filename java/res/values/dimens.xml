@@ -31,4 +31,5 @@
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- key_height * 1.7 -->
     <dimen name="mini_keyboard_slide_allowance">91.8dip</dimen>
+    <dimen name="keyboard_vertical_correction">-10dip</dimen>
 </resources>
