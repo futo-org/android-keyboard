@@ -51,14 +51,6 @@
             android:defaultValue="true"
             />
 
-    <CheckBoxPreference
-            android:key="enable_logging"
-            android:title="@string/prefs_enable_log"
-            android:summary="@string/prefs_description_log"
-            android:persistent="true"
-            android:defaultValue="false"
-            />
-
     <ListPreference
             android:key="settings_key"
             android:title="@string/prefs_settings_key"
@@ -77,14 +69,6 @@
             android:defaultValue="@string/voice_mode_main"
             />
 
-    <!-- <ListPreference
-            android:key="keyboard_layout"
-            android:title="@string/keyboard_layout"
-            android:persistent="true"
-            android:entryValues="@array/keyboard_layout_modes_values"
-            android:entries="@array/keyboard_layout_modes"
-            android:defaultValue="4"
-            />-->
 
     <PreferenceScreen
             android:title="@string/language_selection_title"

@@ -40,6 +40,7 @@ import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.speech.SpeechRecognizer;
 import android.text.ClipboardManager;
@@ -2398,7 +2399,11 @@ public class LatinIME extends InputMethodService
         launchSettings(LatinIMESettings.class);
     }
 
-    protected void launchSettings(Class<LatinIMESettings> settingsClass) {
+    public void launchDebugSettings() {
+        launchSettings(LatinIMEDebugSettings.class);
+    }
+
+    protected void launchSettings (Class<? extends PreferenceActivity> settingsClass) {
         handleClose();
         Intent intent = new Intent();
         intent.setClass(LatinIME.this, settingsClass);
