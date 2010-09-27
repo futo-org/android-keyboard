@@ -24,8 +24,6 @@ import android.app.Dialog;
 import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -45,7 +43,6 @@ public class LatinIMESettings extends PreferenceActivity
     private static final String QUICK_FIXES_KEY = "quick_fixes";
     private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
     private static final String VOICE_SETTINGS_KEY = "voice_mode";
-    private static final String DEBUG_MODE_KEY = "debug_mode";
     /* package */ static final String PREF_SETTINGS_KEY = "settings_key";
 
     private static final String TAG = "LatinIMESettings";
@@ -54,7 +51,6 @@ public class LatinIMESettings extends PreferenceActivity
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
 
     private CheckBoxPreference mQuickFixes;
-    private CheckBoxPreference mDebugMode;
     private ListPreference mVoicePreference;
     private ListPreference mSettingsKeyPreference;
     private boolean mVoiceOn;
@@ -77,9 +73,6 @@ public class LatinIMESettings extends PreferenceActivity
         mVoiceModeOff = getString(R.string.voice_mode_off);
         mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         mLogger = VoiceInputLogger.getLogger(this);
-
-        mDebugMode = (CheckBoxPreference) findPreference(DEBUG_MODE_KEY);
-        updateDebugMode();
     }
 
     @Override
@@ -114,11 +107,6 @@ public class LatinIMESettings extends PreferenceActivity
                     .equals(mVoiceModeOff)) {
                 showVoiceConfirmation();
             }
-        } else if (key.equals(DEBUG_MODE_KEY)) {
-            if (mDebugMode != null) {
-                mDebugMode.setChecked(prefs.getBoolean(DEBUG_MODE_KEY, false));
-                updateDebugMode();
-            }
         }
         mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         updateVoiceModeSummary();
@@ -129,29 +117,6 @@ public class LatinIMESettings extends PreferenceActivity
         mSettingsKeyPreference.setSummary(
                 getResources().getStringArray(R.array.settings_key_modes)
                 [mSettingsKeyPreference.findIndexOfValue(mSettingsKeyPreference.getValue())]);
-    }
-
-    private void updateDebugMode() {
-        if (mDebugMode == null) {
-            return;
-        }
-        boolean isDebugMode = mDebugMode.isChecked();
-        String version = "";
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(getPackageName(), 0);
-            version = "Version " + info.versionName;
-        } catch (NameNotFoundException e) {
-            Log.e(TAG, "Could not find version info.");
-        }
-        if (!isDebugMode) {
-            mDebugMode.setEnabled(false);
-            mDebugMode.setTitle(version);
-            mDebugMode.setSummary("");
-        } else {
-            mDebugMode.setEnabled(true);
-            mDebugMode.setSummary(version);
-            mDebugMode.setSummary("");
-        }
     }
 
     private void showVoiceConfirmation() {

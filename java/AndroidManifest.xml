@@ -26,6 +26,12 @@
             </intent-filter>
         </activity>
 
+        <activity android:name="LatinIMEDebugSettings" android:label="@string/english_ime_debug_settings">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
+        </activity>
+
         <activity android:name="InputLanguageSelection"
                 android:label="@string/language_selection_title">
             <intent-filter>
