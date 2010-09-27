@@ -61,7 +61,7 @@
     <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
     <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
     <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
-    <string name="bigram_suggestion" msgid="1323347224043514969">"Биграммные подсказки "</string>
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Биграммные подсказки"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Используйте предыдущее слово, чтобы исправить подсказку"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Нет"</item>

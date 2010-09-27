@@ -103,7 +103,7 @@
     <string name="voice_audio_error" msgid="5072707727016414454">"Problem z dźwiękiem"</string>
     <string name="voice_server_error" msgid="7807129913977261644">"Błąd serwera"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Nie wykryto mowy"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Nie znaleziono żadnych wyników"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Brak wyników"</string>
     <string name="voice_not_installed" msgid="5552450909753842415">"Wyszukiwanie głosowe nie jest zainstalowane"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Wskazówka:"</b>" przesuń palcem po klawiaturze, aby mówić."</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Wskazówka:"</b>" następnym razem spróbuj wypowiadać nazwy znaków interpunkcyjnych: „kropka”, „przecinek” lub „pytajnik”."</string>
