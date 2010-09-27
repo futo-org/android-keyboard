@@ -22,5 +22,6 @@
     <dimen name="key_height">72dip</dimen>
     <dimen name="candidate_strip_height">46dip</dimen>
     <dimen name="spacebar_vertical_correction">0dip</dimen>
-    <dimen name="key_text_size">35sp</dimen>
+    <dimen name="key_text_size">28sp</dimen>
+    <dimen name="keyboard_vertical_correction">0dip</dimen>
 </resources>
