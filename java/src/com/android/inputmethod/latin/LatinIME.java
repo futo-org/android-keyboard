@@ -1388,7 +1388,7 @@ public class LatinIME extends InputMethodService
             if (mKeyboardSwitcher.getInputView().isShifted()
                     && mKeyboardSwitcher.isAlphabetMode()
                     && mComposing.length() == 0) {
-                mWord.setCapitalized(true);
+                mWord.setFirstCharCapitalized(true);
             }
             mComposing.append((char) primaryCode);
             mWord.add(primaryCode, keyCodes);
@@ -2019,7 +2019,7 @@ public class LatinIME extends InputMethodService
                     touching.word.charAt(i)
                 });
             }
-            foundWord.setCapitalized(Character.isUpperCase(touching.word.charAt(0)));
+            foundWord.setFirstCharCapitalized(Character.isUpperCase(touching.word.charAt(0)));
         }
         // Found a match, show suggestions
         if (foundWord != null || alternatives != null) {
@@ -2176,7 +2176,7 @@ public class LatinIME extends InputMethodService
     }
 
     public boolean preferCapitalization() {
-        return mWord.isCapitalized();
+        return mWord.isFirstCharCapitalized();
     }
 
     private void toggleLanguage(boolean reset, boolean next) {

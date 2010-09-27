@@ -96,7 +96,10 @@ public class Suggest implements Dictionary.WordCallback {
     private boolean mHaveCorrection;
     private CharSequence mOriginalWord;
     private String mLowerOriginalWord;
-    private boolean mCapitalize;
+
+    // TODO: Remove these member variables by passing more context to addWord() callback method
+    private boolean mIsFirstCharCapitalized;
+    private boolean mIsAllUpperCase;
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
@@ -219,7 +222,8 @@ public class Suggest implements Dictionary.WordCallback {
             boolean includeTypedWordIfValid, CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mHaveCorrection = false;
-        mCapitalize = wordComposer.isCapitalized();
+        mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
+        mIsAllUpperCase = wordComposer.isAllUpperCase();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         Arrays.fill(mPriorities, 0);
         Arrays.fill(mNextLettersFrequencies, 0);
@@ -453,7 +457,9 @@ public class Suggest implements Dictionary.WordCallback {
         StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1) 
                 : new StringBuilder(getApproxMaxWordLength());
         sb.setLength(0);
-        if (mCapitalize) {
+        if (mIsAllUpperCase) {
+            sb.append(new String(word, offset, length).toUpperCase());
+        } else if (mIsFirstCharCapitalized) {
             sb.append(Character.toUpperCase(word[offset]));
             if (length > 1) {
                 sb.append(word, offset + 1, length - 1);
