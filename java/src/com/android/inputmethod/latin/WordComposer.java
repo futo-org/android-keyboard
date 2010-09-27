@@ -39,9 +39,9 @@ public class WordComposer {
     private boolean mAutoCapitalized;
     
     /**
-     * Whether the user chose to capitalize the word.
+     * Whether the user chose to capitalize the first char of the word.
      */
-    private boolean mIsCapitalized;
+    private boolean mIsFirstCharCapitalized;
 
     public WordComposer() {
         mCodes = new ArrayList<int[]>(12);
@@ -54,7 +54,7 @@ public class WordComposer {
         mTypedWord = new StringBuilder(copy.mTypedWord);
         mCapsCount = copy.mCapsCount;
         mAutoCapitalized = copy.mAutoCapitalized;
-        mIsCapitalized = copy.mIsCapitalized;
+        mIsFirstCharCapitalized = copy.mIsFirstCharCapitalized;
     }
 
     /**
@@ -62,7 +62,7 @@ public class WordComposer {
      */
     public void reset() {
         mCodes.clear();
-        mIsCapitalized = false;
+        mIsFirstCharCapitalized = false;
         mPreferredWord = null;
         mTypedWord.setLength(0);
         mCapsCount = 0;
@@ -138,18 +138,26 @@ public class WordComposer {
         return mTypedWord;
     }
 
-    public void setCapitalized(boolean capitalized) {
-        mIsCapitalized = capitalized;
+    public void setFirstCharCapitalized(boolean capitalized) {
+        mIsFirstCharCapitalized = capitalized;
     }
     
     /**
      * Whether or not the user typed a capital letter as the first letter in the word
      * @return capitalization preference
      */
-    public boolean isCapitalized() {
-        return mIsCapitalized;
+    public boolean isFirstCharCapitalized() {
+        return mIsFirstCharCapitalized;
     }
-    
+
+    /**
+     * Whether or not all of the user typed chars are upper case
+     * @return true if all user typed chars are upper case, false otherwise
+     */
+    public boolean isAllUpperCase() {
+        return (mCapsCount > 0) && (mCapsCount == size());
+    }
+
     /**
      * Stores the user's selected word, before it is actually committed to the text field.
      * @param preferred
