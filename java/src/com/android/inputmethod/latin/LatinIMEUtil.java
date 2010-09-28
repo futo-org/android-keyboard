@@ -168,4 +168,58 @@ public class LatinIMEUtil {
             mLength = 0;
         }
     }
+
+    public static int editDistance(CharSequence s, CharSequence t) {
+        if (s == null || t == null) {
+            throw new IllegalArgumentException("editDistance: Arguments should not be null.");
+        }
+        final int sl = s.length();
+        final int tl = t.length();
+        int[][] dp = new int [sl + 1][tl + 1];
+        for (int i = 0; i <= sl; i++) {
+            dp[i][0] = i;
+        }
+        for (int j = 0; j <= tl; j++) {
+            dp[0][j] = j;
+        }
+        for (int i = 0; i < sl; ++i) {
+            for (int j = 0; j < tl; ++j) {
+                if (s.charAt(i) == t.charAt(j)) {
+                    dp[i + 1][j + 1] = dp[i][j];
+                } else {
+                    dp[i + 1][j + 1] = 1 + Math.min(dp[i][j],
+                            Math.min(dp[i + 1][j], dp[i][j + 1]));
+                }
+            }
+        }
+        return dp[sl][tl];
+    }
+
+    // In dictionary.cpp, getSuggestion() method,
+    // suggestion scores are computed using the below formula.
+    // original score (called 'frequency')
+    //  := pow(mTypedLetterMultiplier (this is defined 2),
+    //         (the number of matched characters between typed word and suggested word))
+    //     * (individual word's score which defined in the unigram dictionary,
+    //         and this score is defined in range [0, 255].)
+    //     * (when before.length() == after.length(),
+    //         mFullWordMultiplier (this is defined 2))
+    // So, maximum original score is pow(2, before.length()) * 255 * 2
+    // So, we can normalize original score by dividing this value.
+    private static final int MAX_INITIAL_SCORE = 255;
+    private static final int TYPED_LETTER_MULTIPLIER = 2;
+    private static final int FULL_WORD_MULTIPLYER = 2;
+    public static double calcNormalizedScore(CharSequence before, CharSequence after, int score) {
+        final int beforeLength = before.length();
+        final int afterLength = after.length();
+        final int distance = editDistance(before, after);
+        final double maximumScore = MAX_INITIAL_SCORE
+                * Math.pow(TYPED_LETTER_MULTIPLIER, beforeLength)
+                * FULL_WORD_MULTIPLYER;
+        // add a weight based on edit distance.
+        // distance <= max(afterLength, beforeLength) == afterLength,
+        // so, 0 <= distance / afterLength <= 1
+        final double weight = 1.0 - (double) distance / afterLength;
+        return (score / maximumScore) * weight;
+    }
 }

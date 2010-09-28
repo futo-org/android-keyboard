@@ -97,13 +97,14 @@
             android:defaultValue="true"
             />
 
-        <CheckBoxPreference
-            android:key="auto_complete"
+        <ListPreference
+            android:key="auto_completion_threshold"
             android:title="@string/auto_complete"
             android:summary="@string/auto_complete_summary"
-            android:persistent="true" 
-            android:defaultValue="@bool/enable_autocorrect"
-            android:dependency="show_suggestions"
+            android:persistent="true"
+            android:entryValues="@array/auto_completion_threshold_mode_values"
+            android:entries="@array/auto_completion_threshold_modes"
+            android:defaultValue="@string/auto_completion_threshold_mode_value_modest"
             />
 
         <CheckBoxPreference
@@ -112,7 +113,6 @@
             android:summary="@string/bigram_suggestion_summary"
             android:persistent="true"
             android:defaultValue="true"
-            android:dependency="auto_complete"
             />
     </PreferenceCategory>            
 

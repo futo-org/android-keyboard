@@ -25,4 +25,14 @@
     <integer name="config_preview_fadeout_anim_time">90</integer>
     <integer name="config_mini_keyboard_fadein_anim_time">0</integer>
     <integer name="config_mini_keyboard_fadeout_anim_time">100</integer>
+    <string-array name="auto_complete_threshold_values">
+        <!-- Off, When auto completing setting is Off, this value is not used. -->
+        <item></item>
+        <!-- Modest : Suggestion whose normalized score is greater than this value
+             will be subject to auto-completion. -->
+        <item>0.22</item>
+        <!-- Aggressive : Suggestion whose normalized score is greater than this value
+             will be subject to auto-completion. -->
+        <item>0</item>
+    </string-array>
 </resources>

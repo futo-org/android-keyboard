@@ -81,6 +81,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private boolean mAutoTextEnabled;
 
+    private double mAutoCompleteThreshold;
     private int[] mPriorities = new int[mPrefMaxSuggestions];
     private int[] mBigramPriorities = new int[PREF_MAX_BIGRAMS];
 
@@ -161,6 +162,10 @@ public class Suggest implements Dictionary.WordCallback {
 
     public void setUserBigramDictionary(Dictionary userBigramDictionary) {
         mUserBigramDictionary = userBigramDictionary;
+    }
+
+    public void setAutoCompleteThreshold(double threshold) {
+        mAutoCompleteThreshold = threshold;
     }
 
     /**
@@ -301,8 +306,14 @@ public class Suggest implements Dictionary.WordCallback {
             }
             mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
             if ((mCorrectionMode == CORRECTION_FULL || mCorrectionMode == CORRECTION_FULL_BIGRAM)
-                    && mSuggestions.size() > 0) {
-                mHaveCorrection = true;
+                    && mSuggestions.size() > 0 && mPriorities.length > 0) {
+                // TODO: when the normalized score of the first suggestion is nearly equals to
+                //       the normalized score of the second suggestion, behave less aggressive.
+                final double normalizedScore = LatinIMEUtil.calcNormalizedScore(
+                        mOriginalWord, mSuggestions.get(0), mPriorities[0]);
+                if (normalizedScore >= mAutoCompleteThreshold) {
+                    mHaveCorrection = true;
+                }
             }
         }
         if (mOriginalWord != null) {

@@ -43,6 +43,9 @@ public class LatinIMESettings extends PreferenceActivity
     private static final String QUICK_FIXES_KEY = "quick_fixes";
     private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
     private static final String VOICE_SETTINGS_KEY = "voice_mode";
+    private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
+    private static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
+    private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     /* package */ static final String PREF_SETTINGS_KEY = "settings_key";
 
     private static final String TAG = "LatinIMESettings";
@@ -53,6 +56,9 @@ public class LatinIMESettings extends PreferenceActivity
     private CheckBoxPreference mQuickFixes;
     private ListPreference mVoicePreference;
     private ListPreference mSettingsKeyPreference;
+    private CheckBoxPreference mShowSuggestions;
+    private ListPreference mAutoCompletionThreshold;
+    private CheckBoxPreference mBigramSuggestion;
     private boolean mVoiceOn;
 
     private VoiceInputLogger mLogger;
@@ -60,6 +66,18 @@ public class LatinIMESettings extends PreferenceActivity
     private boolean mOkClicked = false;
     private String mVoiceModeOff;
 
+    private void ensureConsistencyOfAutoCompletionSettings() {
+        if (mShowSuggestions.isChecked()) {
+            mAutoCompletionThreshold.setEnabled(true);
+            final String autoCompletionOff = getResources().getString(
+                    R.string.auto_completion_threshold_mode_value_off);
+            final String currentSetting = mAutoCompletionThreshold.getValue();
+            mBigramSuggestion.setEnabled(!currentSetting.equals(autoCompletionOff));
+        } else {
+            mAutoCompletionThreshold.setEnabled(false);
+            mBigramSuggestion.setEnabled(false);
+        }
+    }
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -73,6 +91,11 @@ public class LatinIMESettings extends PreferenceActivity
         mVoiceModeOff = getString(R.string.voice_mode_off);
         mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         mLogger = VoiceInputLogger.getLogger(this);
+
+        mShowSuggestions = (CheckBoxPreference) findPreference(PREF_SHOW_SUGGESTIONS);
+        mAutoCompletionThreshold = (ListPreference) findPreference(PREF_AUTO_COMPLETION_THRESHOLD);
+        mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
+        ensureConsistencyOfAutoCompletionSettings();
     }
 
     @Override
@@ -108,6 +131,7 @@ public class LatinIMESettings extends PreferenceActivity
                 showVoiceConfirmation();
             }
         }
+        ensureConsistencyOfAutoCompletionSettings();
         mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
         updateVoiceModeSummary();
         updateSettingsKeySummary();

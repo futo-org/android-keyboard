@@ -68,6 +68,7 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -94,7 +95,7 @@ public class LatinIME extends InputMethodService
     private static final String PREF_AUTO_CAP = "auto_cap";
     private static final String PREF_QUICK_FIXES = "quick_fixes";
     private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
-    private static final String PREF_AUTO_COMPLETE = "auto_complete";
+    private static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
     private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     private static final String PREF_VOICE_MODE = "voice_mode";
 
@@ -445,6 +446,7 @@ public class LatinIME extends InputMethodService
 
         int[] dictionaries = getDictionary(orig);
         mSuggest = new Suggest(this, dictionaries);
+        loadAndSetAutoCompletionThreshold(sp);
         updateAutoTextEnabled(saveLocale);
         if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this, mInputLocale);
@@ -2469,6 +2471,9 @@ public class LatinIME extends InputMethodService
         mLocaleSupportedForVoiceInput = voiceInputSupportedLocales.contains(mInputLocale);
 
         mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true);
+        mAutoCorrectEnabled = mShowSuggestions && isAutoCorrectEnabled(sp);
+        mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(sp);
+        loadAndSetAutoCompletionThreshold(sp);
 
         if (VOICE_INSTALLED) {
             final String voiceMode = sp.getString(PREF_VOICE_MODE,
@@ -2483,12 +2488,59 @@ public class LatinIME extends InputMethodService
             mEnableVoice = enableVoice;
             mVoiceOnPrimary = voiceOnPrimary;
         }
-        mAutoCorrectEnabled = sp.getBoolean(PREF_AUTO_COMPLETE,
-                mResources.getBoolean(R.bool.enable_autocorrect)) & mShowSuggestions;
-        mBigramSuggestionEnabled = sp.getBoolean(PREF_BIGRAM_SUGGESTIONS, true) & mShowSuggestions;
         updateCorrectionMode();
         updateAutoTextEnabled(mResources.getConfiguration().locale);
         mLanguageSwitcher.loadLocales(sp);
+    }
+
+    /**
+     *  load Auto completion threshold from SharedPreferences,
+     *  and modify mSuggest's threshold.
+     */
+    private void loadAndSetAutoCompletionThreshold(SharedPreferences sp) {
+        // When mSuggest is not initialized, cannnot modify mSuggest's threshold.
+        if (mSuggest == null) return;
+        // When auto completion setting is turned off, the threshold is ignored.
+        if (!isAutoCorrectEnabled(sp)) return;
+
+        final String currentAutoCompletionSetting = sp.getString(PREF_AUTO_COMPLETION_THRESHOLD,
+                mResources.getString(R.string.auto_completion_threshold_mode_value_modest));
+        final String[] autoCompletionThresholdValues = mResources.getStringArray(
+                R.array.auto_complete_threshold_values);
+        // When autoCompletionThreshold is greater than 1.0,
+        // auto completion is virtually turned off.
+        double autoCompletionThreshold = Double.MAX_VALUE;
+        try {
+            final int arrayIndex = Integer.valueOf(currentAutoCompletionSetting);
+            if (arrayIndex >= 0 && arrayIndex < autoCompletionThresholdValues.length) {
+                autoCompletionThreshold = Double.parseDouble(
+                        autoCompletionThresholdValues[arrayIndex]);
+            }
+        } catch (NumberFormatException e) {
+            // Whenever the threshold settings are correct,
+            // never come here.
+            autoCompletionThreshold = Double.MAX_VALUE;
+            Log.w(TAG, "Cannot load auto completion threshold setting."
+                    + " currentAutoCompletionSetting: " + currentAutoCompletionSetting
+                    + ", autoCompletionThresholdValues: "
+                    + Arrays.toString(autoCompletionThresholdValues));
+        }
+        // TODO: This should be refactored :
+        //           setAutoCompleteThreshold should be called outside of this method.
+        mSuggest.setAutoCompleteThreshold(autoCompletionThreshold);
+    }
+
+    private boolean isAutoCorrectEnabled(SharedPreferences sp) {
+        final String currentAutoCompletionSetting = sp.getString(PREF_AUTO_COMPLETION_THRESHOLD,
+                mResources.getString(R.string.auto_completion_threshold_mode_value_modest));
+        final String autoCompletionOff = mResources.getString(
+                R.string.auto_completion_threshold_mode_value_off);
+        return !currentAutoCompletionSetting.equals(autoCompletionOff);
+    }
+
+    private boolean isBigramSuggestionEnabled(SharedPreferences sp) {
+       // TODO: Define default value instead of 'true'.
+       return sp.getBoolean(PREF_BIGRAM_SUGGESTIONS, true);
     }
 
     private void initSuggestPuncList() {

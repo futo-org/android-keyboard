@@ -86,11 +86,6 @@
     <!-- Description for show suggestions -->
     <string name="show_suggestions_summary">Display suggested words while typing</string>
     
-    <!-- Option to enable auto completion -->
-    <string name="auto_complete">Auto-complete</string>
-    <!-- Description for auto completion -->
-    <string name="auto_complete_summary">Spacebar and punctuation automatically insert highlighted word</string>
-    
     <!-- Option to show/hide the settings key -->
     <string name="prefs_settings_key">Show settings key</string>
     <!-- Array of the settings key mode values -->
@@ -110,6 +105,31 @@
         <item>@string/settings_key_mode_auto_name</item>
         <item>@string/settings_key_mode_always_show_name</item>
         <item>@string/settings_key_mode_always_hide_name</item>
+    </string-array>
+
+    <!-- Option to decide the auto completion threshold score -->
+    <!-- Option to enable auto completion -->
+    <string name="auto_complete">Auto-complete</string>
+    <!-- Description for auto completion -->
+    <string name="auto_complete_summary">Spacebar and punctuation automatically insert highlighted word</string>
+    <string name="auto_completion_threshold_mode_value_off" translatable="false">0</string>
+    <string name="auto_completion_threshold_mode_value_modest" translatable="false">1</string>
+    <string name="auto_completion_threshold_mode_value_aggeressive" translatable="false">2</string>
+    <string-array name="auto_completion_threshold_mode_values" translatable="false">
+      <item>@string/auto_completion_threshold_mode_value_off</item>
+      <item>@string/auto_completion_threshold_mode_value_modest</item>
+      <item>@string/auto_completion_threshold_mode_value_aggeressive</item>
+    </string-array>
+    <!-- Option to disable auto completion. -->
+    <string name="auto_completion_threshold_mode_off">Off</string>
+    <!-- Option to use modest auto completion. -->
+    <string name="auto_completion_threshold_mode_modest">Modest</string>
+    <!-- Option to use aggressive auto completion. -->
+    <string name="auto_completion_threshold_mode_aggeressive">Aggressive</string>
+    <string-array name="auto_completion_threshold_modes">
+      <item>@string/auto_completion_threshold_mode_off</item>
+      <item>@string/auto_completion_threshold_mode_modest</item>
+      <item>@string/auto_completion_threshold_mode_aggeressive</item>
     </string-array>
 
     <!-- Option to enable bigram completion -->
