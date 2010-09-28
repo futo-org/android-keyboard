@@ -30,7 +30,6 @@
         <Key
             android:codes="@integer/key_tab"
             android:keyLabel="Tab"
-            android:popupKeyboard="@xml/kbd_popup_template"
             android:keyEdgeFlags="left" />
         <Key
             android:keyLabel="q"
