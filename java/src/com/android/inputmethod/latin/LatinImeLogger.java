@@ -37,8 +37,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void onDestroy() {
     }
 
-    public static void logOnManualSuggestion(String before, String after, int position
-            , List<CharSequence> suggestions) {
+    public static void logOnManualSuggestion(
+            String before, String after, int position, List<CharSequence> suggestions) {
    }
 
     public static void logOnAutoSuggestion(String before, String after) {
