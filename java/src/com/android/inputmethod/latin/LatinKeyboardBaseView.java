@@ -205,6 +205,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private long mMiniKeyboardPopupTime;
     private int[] mWindowOffset;
     private final float mMiniKeyboardSlideAllowance;
+    private int mMiniKeyboardTrackerId;
 
     /** Listener for {@link OnKeyboardActionListener}. */
     private OnKeyboardActionListener mKeyboardActionListener;
@@ -1023,6 +1024,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         if (result) {
             dismissKeyPreview();
             tracker.setAlreadyProcessed();
+            mMiniKeyboardTrackerId = tracker.mPointerId;
         }
         return result;
     }
@@ -1258,9 +1260,15 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // Needs to be called after the gesture detector gets a turn, as it may have
         // displayed the mini keyboard
         if (mMiniKeyboard != null) {
-            MotionEvent translated = generateMiniKeyboardMotionEvent(action, x, y, eventTime);
-            mMiniKeyboard.onTouchEvent(translated);
-            translated.recycle();
+            final int miniKeyboardPointerIndex = me.findPointerIndex(mMiniKeyboardTrackerId);
+            if (miniKeyboardPointerIndex >= 0 && miniKeyboardPointerIndex < pointerCount) {
+                final int miniKeyboardX = (int)me.getX(miniKeyboardPointerIndex);
+                final int miniKeyboardY = (int)me.getY(miniKeyboardPointerIndex);
+                MotionEvent translated = generateMiniKeyboardMotionEvent(action,
+                        miniKeyboardX, miniKeyboardY, eventTime);
+                mMiniKeyboard.onTouchEvent(translated);
+                translated.recycle();
+            }
             return true;
         }
 
