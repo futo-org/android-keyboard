@@ -676,8 +676,31 @@ public class LatinIME extends InputMethodService
         inputView.setPreviewEnabled(mPopupOn);
         inputView.setProximityCorrectionEnabled(true);
         mPredictionOn = mPredictionOn && (mCorrectionMode > 0 || mShowSuggestions);
+        // If we just entered a text field, maybe it has some old text that requires correction
+        checkReCorrectionOnStart();
         checkTutorial(attribute.privateImeOptions);
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
+    }
+
+    private void checkReCorrectionOnStart() {
+        if (mReCorrectionEnabled && isPredictionOn()) {
+            // First get the cursor position. This is required by setOldSuggestions(), so that
+            // it can pass the correct range to setComposingRegion(). At this point, we don't
+            // have valid values for mLastSelectionStart/Stop because onUpdateSelection() has
+            // not been called yet.
+            InputConnection ic = getCurrentInputConnection();
+            if (ic == null) return;
+            ExtractedTextRequest etr = new ExtractedTextRequest();
+            etr.token = 0; // anything is fine here
+            ExtractedText et = ic.getExtractedText(etr, 0);
+            if (et == null) return;
+
+            mLastSelectionStart = et.startOffset + et.selectionStart;
+            mLastSelectionEnd = et.startOffset + et.selectionEnd;
+
+            // Then look for possible corrections in a delayed fashion
+            if (!TextUtils.isEmpty(et.text)) postUpdateOldSuggestions();
+        }
     }
 
     @Override
