@@ -1487,7 +1487,12 @@ public class LatinIME extends InputMethodService
             mVoiceInput.cancel();
         }
         requestHideSelf(0);
-        mKeyboardSwitcher.getInputView().closing();
+        if (mKeyboardSwitcher != null) {
+            LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+            if (inputView != null) {
+                inputView.closing();
+            }
+        }
         TextEntryState.endSession();
     }
 
