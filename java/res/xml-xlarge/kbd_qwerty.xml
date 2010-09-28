@@ -26,6 +26,7 @@
     android:keyHeight="@dimen/key_height"
 >
     <Row>
+    <!-- This row is intentionally not marked as a top row -->
         <Key
             android:codes="@integer/key_tab"
             android:keyLabel="Tab"
@@ -34,8 +35,7 @@
         <Key
             android:keyLabel="q"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_q"
-            android:keyEdgeFlags="left" />
+            android:popupCharacters="@string/alternates_for_q" />
         <Key
             android:keyLabel="w"
             android:popupKeyboard="@xml/kbd_popup_template"
@@ -188,18 +188,17 @@
             android:isSticky="true"
             android:keyEdgeFlags="right" />
     </Row>
-    <Row
-        android:rowEdgeFlags="bottom"
-    >
+    <Row>
+    <!-- This row is intentionally not marked as a bottom row -->
         <Key
-            android:keyLabel="&lt;"
+            android:keyLabel="("
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="("
+            android:popupCharacters="&lt;"
             android:horizontalGap="16.25%p" />
         <Key
-            android:keyLabel="&gt;"
+            android:keyLabel=")"
             android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters=")" />
+            android:popupCharacters="&gt;" />
         <Key
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_keyboard_space"
