@@ -158,9 +158,22 @@ public class LatinKeyboard extends Keyboard {
         mNumberHintIcons[9] = res.getDrawable(R.drawable.keyboard_hint_9);
     }
 
+    // TODO: delete this method and do initialization in constructor.
+    private void initializeMemberVariablesAsNeeded() {
+        if (mNumberHintKeys == null)
+            mNumberHintKeys = new Key[NUMBER_HINT_COUNT];
+        if (mShiftKeys == null)
+            mShiftKeys = new ArrayList<Key>();
+    }
+
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y, 
             XmlResourceParser parser) {
+        // TODO: This initialization is needed because this protected method is being called from
+        // the base class constructor before this class constructor gets called. We need to fix
+        // this.
+        initializeMemberVariablesAsNeeded();
+
         Key key = new LatinKey(res, parent, x, y, parser);
         switch (key.codes[0]) {
         case LatinIME.KEYCODE_ENTER:
@@ -173,10 +186,6 @@ public class LatinKeyboard extends Keyboard {
             mSpaceKey = key;
             break;
         case KEYCODE_SHIFT:
-            // NOTE: This protected method is being called from the base class constructor before
-            // mShiftKeys gets initialized.
-            if (mShiftKeys == null)
-                mShiftKeys = new ArrayList<Key>();
             mShiftKeys.add(key);
             break;
         case KEYCODE_MODE_CHANGE:
@@ -186,11 +195,6 @@ public class LatinKeyboard extends Keyboard {
         }
 
         // For number hints on the upper-right corner of key
-        if (mNumberHintKeys == null) {
-            // NOTE: This protected method is being called from the base class constructor before
-            // mNumberHintKeys gets initialized.
-            mNumberHintKeys = new Key[NUMBER_HINT_COUNT];
-        }
         int hintNumber = -1;
         if (LatinKeyboardBaseView.isNumberAtLeftmostPopupChar(key)) {
             hintNumber = key.popupCharacters.charAt(0) - '0';
