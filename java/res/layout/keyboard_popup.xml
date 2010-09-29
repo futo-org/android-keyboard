@@ -36,6 +36,6 @@
 
             latin:keyBackground="@drawable/btn_keyboard_key_gingerbread_popup"
             latin:keyHysteresisDistance="0dip"
-            latin:verticalCorrection="-20dip"
+            latin:verticalCorrection="@dimen/mini_keyboard_vertical_correction"
             />
 </LinearLayout>

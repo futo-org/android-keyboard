@@ -32,8 +32,10 @@
     <dimen name="key_preview_offset">0dip</dimen>
     <dimen name="key_preview_height">80dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
-    <!-- key_height * 1.7 -->
+    <!-- key_height x 1.7 -->
     <dimen name="mini_keyboard_slide_allowance">91.8dip</dimen>
+    <!-- -key_height x 1.0 -->
+    <dimen name="mini_keyboard_vertical_correction">-54dip</dimen>
     <dimen name="key_hysteresis_distance">0.05in</dimen>
     <dimen name="keyboard_vertical_correction">-10dip</dimen>
 </resources>

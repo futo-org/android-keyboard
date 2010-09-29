@@ -24,7 +24,11 @@
     <dimen name="spacebar_vertical_correction">0dip</dimen>
     <dimen name="key_text_size">28sp</dimen>
     <dimen name="key_label_text_size">16sp</dimen>
-    <dimen name="key_preview_offset">0dip</dimen>
     <dimen name="key_preview_height">40dip</dimen>
+    <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
+    <!-- key_height x 1.7 -->
+    <dimen name="mini_keyboard_slide_allowance">122.4dip</dimen>
+    <!-- -key_height x 1.0 -->
+    <dimen name="mini_keyboard_vertical_correction">-72dip</dimen>
     <dimen name="keyboard_vertical_correction">0dip</dimen>
 </resources>
