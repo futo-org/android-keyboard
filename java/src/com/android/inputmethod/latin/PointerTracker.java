@@ -515,7 +515,8 @@ public class PointerTracker {
             int primaryCode = key.codes[0];
             code = String.format((primaryCode < 0) ? "%4d" : "0x%02x", primaryCode);
         }
-        Log.d(TAG, String.format("%s [%d] %3d,%3d %3d(%s) %s", title, mPointerId, x, y, keyIndex,
-                code, isModifier() ? "modifier" : ""));
+        Log.d(TAG, String.format("%s%s[%d] %3d,%3d %3d(%s) %s", title,
+                (mKeyAlreadyProcessed ? "-" : " "), mPointerId, x, y, keyIndex, code,
+                (isModifier() ? "modifier" : "")));
     }
 }
