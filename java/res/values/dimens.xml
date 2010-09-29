@@ -29,6 +29,8 @@
     <dimen name="max_height_for_fullscreen">2.5in</dimen>
     <dimen name="key_text_size">22sp</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
-    <!-- key_height * 1.7 -->
+    <!-- key_height x 1.7 -->
     <dimen name="mini_keyboard_slide_allowance">91.8dip</dimen>
+    <!-- -key_height x 1.0 -->
+    <dimen name="mini_keyboard_vertical_correction">-54dip</dimen>
 </resources>
