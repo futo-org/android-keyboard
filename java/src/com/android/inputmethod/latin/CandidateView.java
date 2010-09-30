@@ -149,61 +149,69 @@ public class CandidateView extends View {
         mDescent = (int) mPaint.descent();
         mMinTouchableWidth = (int)res.getDimension(R.dimen.candidate_min_touchable_width);
         
-        // Slightly reluctant to scroll to be able to easily choose the suggestion
-        final int touchSlopSquare = mMinTouchableWidth * mMinTouchableWidth;
-        mGestureDetector = new GestureDetector(new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public void onLongPress(MotionEvent me) {
-                if (mSuggestions.size() > 0) {
-                    if (me.getX() + getScrollX() < mWordWidth[0] && getScrollX() < 10) {
-                        longPressFirstWord();
-                    }
-                }
-            }
-
-            @Override
-            public boolean onDown(MotionEvent e) {
-                mScrolled = false;
-                return false;
-            }
-
-            @Override
-            public boolean onScroll(MotionEvent e1, MotionEvent e2,
-                    float distanceX, float distanceY) {
-                if (!mScrolled) {
-                    // This is applied only when we recognize that scrolling is starting.
-                    final int deltaX = (int) (e2.getX() - e1.getX());
-                    final int deltaY = (int) (e2.getY() - e1.getY());
-                    final int distance = (deltaX * deltaX) + (deltaY * deltaY);
-                    if (distance < touchSlopSquare) {
-                        return true;
-                    }
-                    mScrolled = true;
-                }
-
-                final int width = getWidth();
-                mScrolled = true;
-                int scrollX = getScrollX();
-                scrollX += (int) distanceX;
-                if (scrollX < 0) {
-                    scrollX = 0;
-                }
-                if (distanceX > 0 && scrollX + width > mTotalWidth) {
-                    scrollX -= (int) distanceX;
-                }
-                mTargetScrollX = scrollX;
-                scrollTo(scrollX, getScrollY());
-                hidePreview();
-                invalidate();
-                return true;
-            }
-        });
+        mGestureDetector = new GestureDetector(
+                new CandidateStripGestureListener(mMinTouchableWidth));
         setWillNotDraw(false);
         setHorizontalScrollBarEnabled(false);
         setVerticalScrollBarEnabled(false);
         scrollTo(0, getScrollY());
     }
-    
+
+    private class CandidateStripGestureListener extends GestureDetector.SimpleOnGestureListener {
+        private final int mTouchSlopSquare;
+
+        public CandidateStripGestureListener(int touchSlop) {
+            // Slightly reluctant to scroll to be able to easily choose the suggestion
+            mTouchSlopSquare = touchSlop * touchSlop;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent me) {
+            if (mSuggestions.size() > 0) {
+                if (me.getX() + getScrollX() < mWordWidth[0] && getScrollX() < 10) {
+                    longPressFirstWord();
+                }
+            }
+        }
+
+        @Override
+        public boolean onDown(MotionEvent e) {
+            mScrolled = false;
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2,
+                float distanceX, float distanceY) {
+            if (!mScrolled) {
+                // This is applied only when we recognize that scrolling is starting.
+                final int deltaX = (int) (e2.getX() - e1.getX());
+                final int deltaY = (int) (e2.getY() - e1.getY());
+                final int distance = (deltaX * deltaX) + (deltaY * deltaY);
+                if (distance < mTouchSlopSquare) {
+                    return true;
+                }
+                mScrolled = true;
+            }
+
+            final int width = getWidth();
+            mScrolled = true;
+            int scrollX = getScrollX();
+            scrollX += (int) distanceX;
+            if (scrollX < 0) {
+                scrollX = 0;
+            }
+            if (distanceX > 0 && scrollX + width > mTotalWidth) {
+                scrollX -= (int) distanceX;
+            }
+            mTargetScrollX = scrollX;
+            scrollTo(scrollX, getScrollY());
+            hidePreview();
+            invalidate();
+            return true;
+        }
+    }
+
     /**
      * A connection back to the service to communicate with the text field
      * @param listener
@@ -282,7 +290,6 @@ public class CandidateView extends View {
                     mSelectionHighlight.setBounds(0, bgPadding.top, wordWidth, height);
                     mSelectionHighlight.draw(canvas);
                     canvas.translate(-x, 0);
-                    showPreview(i, null);
                 }
                 mSelectedString = suggestion;
                 mSelectedIndex = i;
@@ -443,7 +450,6 @@ public class CandidateView extends View {
             mSelectedIndex = -1;
             removeHighlight();
             requestLayout();
-            mHandler.dismissPreview(mDelayAfterPreview);
             break;
         }
         return true;
@@ -501,6 +507,7 @@ public class CandidateView extends View {
         if (word.length() < 2) return;
         if (mService.addWordToDictionary(word.toString())) {
             showPreview(0, getContext().getResources().getString(R.string.added_word, word));
+            mHandler.dismissPreview(mDelayAfterPreview);
         }
     }
     
