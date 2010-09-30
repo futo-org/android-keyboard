@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
@@ -41,6 +42,8 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     private Keyboard mPhoneKeyboard;
 
+    private final boolean mLongPressCommaForSettingsEnabled;
+
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
     /**
@@ -54,11 +57,15 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     private int mLastRowY;
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        Resources res = context.getResources();
+        mLongPressCommaForSettingsEnabled = res.getBoolean(
+                R.bool.config_long_press_comma_for_settings_enabled);
     }
 
     public void setPhoneKeyboard(Keyboard phoneKeyboard) {
@@ -90,20 +97,23 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     protected boolean onLongPress(Key key) {
         int primaryCode = key.codes[0];
         if (primaryCode == KEYCODE_OPTIONS) {
-            getOnKeyboardActionListener().onKey(KEYCODE_OPTIONS_LONGPRESS, null,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
-            return true;
+            return invokeOnKey(KEYCODE_OPTIONS_LONGPRESS);
         } else if (primaryCode == '0' && getKeyboard() == mPhoneKeyboard) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
-            getOnKeyboardActionListener().onKey(
-                    '+', null,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
-            return true;
+            return invokeOnKey('+');
+        } else if (primaryCode == KEYCODE_VOICE
+                || (primaryCode == ',' && mLongPressCommaForSettingsEnabled)) {
+            return invokeOnKey(KEYCODE_OPTIONS);
         } else {
             return super.onLongPress(key);
         }
+    }
+
+    private boolean invokeOnKey(int primaryCode) {
+        getOnKeyboardActionListener().onKey(primaryCode, null,
+                LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
+                LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
+        return true;
     }
 
     @Override
