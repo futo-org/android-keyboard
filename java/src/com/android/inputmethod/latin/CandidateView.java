@@ -24,8 +24,6 @@ import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.Gravity;
@@ -59,7 +57,6 @@ public class CandidateView extends View {
 
     private final TextView mPreviewText;
     private final PopupWindow mPreviewPopup;
-    private final int mDelayAfterPreview;
     private int mCurrentWordIndex;
     private Drawable mDivider;
     
@@ -90,29 +87,6 @@ public class CandidateView extends View {
     
     private final GestureDetector mGestureDetector;
 
-    private final UIHandler mHandler = new UIHandler();
-
-    private class UIHandler extends Handler {
-        private static final int MSG_DISMISS_PREVIEW = 1;
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_DISMISS_PREVIEW:
-                    mPreviewPopup.dismiss();
-                    break;
-            }
-        }
-
-        public void dismissPreview(long delay) {
-            sendMessageDelayed(obtainMessage(MSG_DISMISS_PREVIEW), delay);
-        }
-
-        public void cancelDismissPreview() {
-            removeMessages(MSG_DISMISS_PREVIEW);
-        }
-    }
-
     /**
      * Construct a CandidateView for showing suggested words for completion.
      * @param context
@@ -133,7 +107,6 @@ public class CandidateView extends View {
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
         mPreviewPopup.setAnimationStyle(R.style.KeyPreviewAnimation);
-        mDelayAfterPreview = res.getInteger(R.integer.config_delay_after_preview);
         mColorNormal = res.getColor(R.color.candidate_normal);
         mColorRecommended = res.getColor(R.color.candidate_recommended);
         mColorOther = res.getColor(R.color.candidate_other);
@@ -394,7 +367,6 @@ public class CandidateView extends View {
         invalidate();
         Arrays.fill(mWordWidth, 0);
         Arrays.fill(mWordX, 0);
-        mPreviewPopup.dismiss();
     }
     
     @Override
@@ -448,8 +420,9 @@ public class CandidateView extends View {
             }
             mSelectedString = null;
             mSelectedIndex = -1;
-            removeHighlight();
             requestLayout();
+            hidePreview();
+            invalidate();
             break;
         }
         return true;
@@ -468,7 +441,6 @@ public class CandidateView extends View {
             if (wordIndex == OUT_OF_BOUNDS) {
                 hidePreview();
             } else {
-                mHandler.cancelDismissPreview();
                 CharSequence word = altText != null? altText : mSuggestions.get(wordIndex);
                 mPreviewText.setText(word);
                 mPreviewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), 
@@ -496,18 +468,12 @@ public class CandidateView extends View {
             }
         }
     }
-    
-    private void removeHighlight() {
-        mTouchX = OUT_OF_BOUNDS;
-        invalidate();
-    }
-    
+
     private void longPressFirstWord() {
         CharSequence word = mSuggestions.get(0);
         if (word.length() < 2) return;
         if (mService.addWordToDictionary(word.toString())) {
             showPreview(0, getContext().getResources().getString(R.string.added_word, word));
-            mHandler.dismissPreview(mDelayAfterPreview);
         }
     }
     
