@@ -1566,7 +1566,9 @@ public class LatinIME extends InputMethodService
               if (mKeyboardSwitcher.getInputView() != null) {
                 setInputView(mKeyboardSwitcher.getInputView());
               }
+              setCandidatesViewShown(true);
               updateInputViewShown();
+              postUpdateSuggestions();
           }});
     }
 
@@ -1574,6 +1576,7 @@ public class LatinIME extends InputMethodService
         final boolean configChanged = mConfigurationChanging;
         mHandler.post(new Runnable() {
             public void run() {
+                setCandidatesViewShown(false);
                 mRecognizing = true;
                 View v = mVoiceInput.getView();
                 ViewParent p = v.getParent();
