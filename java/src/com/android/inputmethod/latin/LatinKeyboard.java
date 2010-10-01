@@ -367,11 +367,13 @@ public class LatinKeyboard extends Keyboard {
             mF1Key.label = null;
             mF1Key.icon = mMicIcon;
             mF1Key.iconPreview = mMicPreviewIcon;
+            mF1Key.popupResId = R.xml.popup_mic;
         } else {
             mF1Key.label = ",";
             mF1Key.codes = new int[] { ',' };
             mF1Key.icon = null;
             mF1Key.iconPreview = null;
+            mF1Key.popupResId = R.xml.popup_comma;
         }
     }
 
