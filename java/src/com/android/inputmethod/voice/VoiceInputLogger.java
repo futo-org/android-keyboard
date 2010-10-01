@@ -17,6 +17,7 @@
 package com.android.inputmethod.voice;
 
 import com.android.common.speech.LoggingEvents;
+import com.android.common.userhappiness.UserHappinessSignals;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,13 +34,17 @@ public class VoiceInputLogger {
     private static final String TAG = VoiceInputLogger.class.getSimpleName();
 
     private static VoiceInputLogger sVoiceInputLogger;
-    
+
     private final Context mContext;
-    
+
     // The base intent used to form all broadcast intents to the logger
     // in VoiceSearch.
     private final Intent mBaseIntent;
-    
+
+    // This flag is used to indicate when there are voice events that
+    // need to be flushed.
+    private boolean mHasLoggingInfo = false;
+
     /**
      * Returns the singleton of the logger.
      *
@@ -67,79 +72,97 @@ public class VoiceInputLogger {
     }
 
     public void flush() {
-        Intent i = new Intent(mBaseIntent);
-        i.putExtra(LoggingEvents.EXTRA_FLUSH, true);
-        mContext.sendBroadcast(i);
+        if (hasLoggingInfo()) {
+            Intent i = new Intent(mBaseIntent);
+            i.putExtra(LoggingEvents.EXTRA_FLUSH, true);
+            mContext.sendBroadcast(i);
+            setHasLoggingInfo(false);
+        }
     }
     
     public void keyboardWarningDialogShown() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.KEYBOARD_WARNING_DIALOG_SHOWN));
     }
     
     public void keyboardWarningDialogDismissed() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.KEYBOARD_WARNING_DIALOG_DISMISSED));
     }
 
     public void keyboardWarningDialogOk() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.KEYBOARD_WARNING_DIALOG_OK));
     }
 
     public void keyboardWarningDialogCancel() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.KEYBOARD_WARNING_DIALOG_CANCEL));
     }
 
     public void settingsWarningDialogShown() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.SETTINGS_WARNING_DIALOG_SHOWN));
     }
     
     public void settingsWarningDialogDismissed() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.SETTINGS_WARNING_DIALOG_DISMISSED));
     }
 
     public void settingsWarningDialogOk() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.SETTINGS_WARNING_DIALOG_OK));
     }
 
     public void settingsWarningDialogCancel() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.SETTINGS_WARNING_DIALOG_CANCEL));
     }
     
     public void swipeHintDisplayed() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(LoggingEvents.VoiceIme.SWIPE_HINT_DISPLAYED));
     }
     
     public void cancelDuringListening() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(LoggingEvents.VoiceIme.CANCEL_DURING_LISTENING));
     }
 
     public void cancelDuringWorking() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(LoggingEvents.VoiceIme.CANCEL_DURING_WORKING));
     }
 
     public void cancelDuringError() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(LoggingEvents.VoiceIme.CANCEL_DURING_ERROR));
     }
     
     public void punctuationHintDisplayed() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.PUNCTUATION_HINT_DISPLAYED));
     }
     
     public void error(int code) {
+        setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.ERROR);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_ERROR_CODE, code);
         mContext.sendBroadcast(i);
     }
 
     public void start(String locale, boolean swipe) {
+        setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.START);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_START_LOCALE, locale);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_START_SWIPE, swipe);
@@ -148,12 +171,14 @@ public class VoiceInputLogger {
     }
     
     public void voiceInputDelivered(int length) {
+        setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.VOICE_INPUT_DELIVERED);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
         mContext.sendBroadcast(i);
     }
 
     public void textModifiedByTypingInsertion(int length) {
+        setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
@@ -162,6 +187,7 @@ public class VoiceInputLogger {
     }
 
     public void textModifiedByTypingInsertionPunctuation(int length) {
+        setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
@@ -170,6 +196,7 @@ public class VoiceInputLogger {
     }
 
     public void textModifiedByTypingDeletion(int length) {
+        setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
@@ -179,6 +206,7 @@ public class VoiceInputLogger {
     }
 
     public void textModifiedByChooseSuggestion(int length) {
+        setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, length);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
@@ -187,22 +215,52 @@ public class VoiceInputLogger {
     }
 
     public void nBestChoose(int index) {
+        setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.N_BEST_CHOOSE);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_N_BEST_CHOOSE_INDEX, index);
         mContext.sendBroadcast(i);
     }
     
     public void inputEnded() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(LoggingEvents.VoiceIme.INPUT_ENDED));
     }
     
     public void voiceInputSettingEnabled() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.VOICE_INPUT_SETTING_ENABLED));
     }
     
     public void voiceInputSettingDisabled() {
+        setHasLoggingInfo(true);
         mContext.sendBroadcast(newLoggingBroadcast(
                 LoggingEvents.VoiceIme.VOICE_INPUT_SETTING_DISABLED));
     }
+
+    private void setHasLoggingInfo(boolean hasLoggingInfo) {
+        mHasLoggingInfo = hasLoggingInfo;
+        // If applications that call UserHappinessSignals.userAcceptedImeText
+        // make that call after VoiceInputLogger.flush() calls this method with false, we
+        // will lose those happiness signals. For example, consider the gmail sequence:
+        // 1. compose message
+        // 2. speak message into message field
+        // 3. type subject into subject field
+        // 4. press send
+        // We will NOT get the signal that the user accepted the voice inputted message text
+        // because when the user tapped on the subject field, the ime's flush will be triggered
+        // and the hasLoggingInfo will be then set to false. So by the time the user hits send
+        // we have essentially forgotten about any voice input.
+        // However the following (more common) use case is properly logged
+        // 1. compose message
+        // 2. type subject in subject field
+        // 3. speak message in message field
+        // 4. press send
+        UserHappinessSignals.setHasVoiceLoggingInfo(hasLoggingInfo);
+    }
+
+    private boolean hasLoggingInfo(){
+        return mHasLoggingInfo;
+    }
+
 }
