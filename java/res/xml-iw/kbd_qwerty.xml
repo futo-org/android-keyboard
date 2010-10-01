@@ -114,8 +114,6 @@
             android:keyEdgeFlags="left" />
         <Key
             android:codes="@integer/key_f1"
-            android:keyIcon="@drawable/sym_keyboard_mic"
-            android:iconPreview="@drawable/sym_keyboard_feedback_mic"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
@@ -212,8 +210,6 @@
             android:keyEdgeFlags="left" />
         <Key
             android:codes="@integer/key_f1"
-            android:keyIcon="@drawable/sym_keyboard_mic"
-            android:iconPreview="@drawable/sym_keyboard_feedback_mic"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
@@ -246,8 +242,6 @@
             android:keyEdgeFlags="left" />
         <Key
             android:codes="@integer/key_f1"
-            android:keyIcon="@drawable/sym_keyboard_mic"
-            android:iconPreview="@drawable/sym_keyboard_feedback_mic"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
@@ -291,8 +285,6 @@
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_f1"
-            android:keyIcon="@drawable/sym_keyboard_mic"
-            android:iconPreview="@drawable/sym_keyboard_feedback_mic"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
@@ -404,8 +396,6 @@
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_f1"
-            android:keyIcon="@drawable/sym_keyboard_mic"
-            android:iconPreview="@drawable/sym_keyboard_feedback_mic"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
@@ -443,8 +433,6 @@
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_f1"
-            android:keyIcon="@drawable/sym_keyboard_mic"
-            android:iconPreview="@drawable/sym_keyboard_feedback_mic"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
