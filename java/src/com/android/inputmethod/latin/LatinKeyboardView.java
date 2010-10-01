@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.inputmethodservice.Keyboard;
@@ -42,8 +41,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     private Keyboard mPhoneKeyboard;
 
-    private final boolean mLongPressCommaForSettingsEnabled;
-
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
     /**
@@ -62,10 +59,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        Resources res = context.getResources();
-        mLongPressCommaForSettingsEnabled = res.getBoolean(
-                R.bool.config_long_press_comma_for_settings_enabled);
     }
 
     public void setPhoneKeyboard(Keyboard phoneKeyboard) {
@@ -101,9 +94,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         } else if (primaryCode == '0' && getKeyboard() == mPhoneKeyboard) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
-        } else if (primaryCode == KEYCODE_VOICE
-                || (primaryCode == ',' && mLongPressCommaForSettingsEnabled)) {
-            return invokeOnKey(KEYCODE_OPTIONS);
         } else {
             return super.onLongPress(key);
         }
