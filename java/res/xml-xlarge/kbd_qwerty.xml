@@ -19,198 +19,198 @@
 -->
 
 <Keyboard
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="7.5%p"
-    android:horizontalGap="0px"
-    android:verticalGap="0px"
-    android:keyHeight="@dimen/key_height"
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    latin:keyWidth="7.5%p"
+    latin:horizontalGap="0px"
+    latin:verticalGap="0px"
+    latin:keyHeight="@dimen/key_height"
 >
     <Row>
     <!-- This row is intentionally not marked as a top row -->
         <Key
-            android:codes="@integer/key_tab"
-            android:keyLabel="Tab"
-            android:keyEdgeFlags="left" />
+            latin:codes="@integer/key_tab"
+            latin:keyLabel="Tab"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="q"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_q" />
+            latin:keyLabel="q"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_q" />
         <Key
-            android:keyLabel="w"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_w" />
+            latin:keyLabel="w"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_w" />
         <Key
-            android:keyLabel="e"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_e" />
+            latin:keyLabel="e"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_e" />
         <Key
-            android:keyLabel="r"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_r" />
+            latin:keyLabel="r"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_r" />
         <Key
-            android:keyLabel="t"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_t" />
+            latin:keyLabel="t"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_t" />
         <Key
-            android:keyLabel="y"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_y" />
+            latin:keyLabel="y"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_y" />
         <Key
-            android:keyLabel="u"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_u" />
+            latin:keyLabel="u"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_u" />
         <Key
-            android:keyLabel="i"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_i" />
+            latin:keyLabel="i"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_i" />
         <Key
-            android:keyLabel="o"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_o" />
+            latin:keyLabel="o"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_o" />
         <Key
-            android:keyLabel="p"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_p" />
+            latin:keyLabel="p"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_p" />
         <Key
-            android:keyLabel="="
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="+" />
+            latin:keyLabel="="
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="+" />
         <Key
-            android:codes="@integer/key_delete"
-            android:keyIcon="@drawable/sym_keyboard_delete"
-            android:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            android:keyWidth="10.5%p"
-            android:isModifier="true"
-            android:isRepeatable="true"
-            android:keyEdgeFlags="right" />
+            latin:codes="@integer/key_delete"
+            latin:keyIcon="@drawable/sym_keyboard_delete"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            latin:keyWidth="10.5%p"
+            latin:isModifier="true"
+            latin:isRepeatable="true"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
-            android:codes="@integer/key_symbol"
-            android:keyLabel="@string/label_symbol_key"
-            android:keyWidth="8.75%p"
-            android:isModifier="true"
-            android:keyEdgeFlags="left" />
+            latin:codes="@integer/key_symbol"
+            latin:keyLabel="@string/label_symbol_key"
+            latin:keyWidth="8.75%p"
+            latin:isModifier="true"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="a"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_a" />
+            latin:keyLabel="a"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_a" />
         <Key
-            android:keyLabel="s"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_s" />
+            latin:keyLabel="s"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_s" />
         <Key
-            android:keyLabel="d"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_d" />
+            latin:keyLabel="d"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_d" />
         <Key
-            android:keyLabel="f" />
+            latin:keyLabel="f" />
         <Key
-            android:keyLabel="g"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_g" />
+            latin:keyLabel="g"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_g" />
         <Key
-            android:keyLabel="h" />
+            latin:keyLabel="h" />
         <Key
-            android:keyLabel="j" />
+            latin:keyLabel="j" />
         <Key
-            android:keyLabel="k" />
+            latin:keyLabel="k" />
         <Key
-            android:keyLabel="l"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_l" />
+            latin:keyLabel="l"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_l" />
         <Key
-            android:keyLabel=";"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters=":" />
+            latin:keyLabel=";"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters=":" />
         <Key
-            android:keyLabel="\'"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="&quot;" />
+            latin:keyLabel="\'"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="&quot;" />
         <Key
-            android:codes="@integer/key_return"
-            android:keyIcon="@drawable/sym_keyboard_return"
-            android:iconPreview="@drawable/sym_keyboard_feedback_return"
-            android:keyWidth="8.75%p"
-            android:isModifier="true"
-            android:keyEdgeFlags="right" />
+            latin:codes="@integer/key_return"
+            latin:keyIcon="@drawable/sym_keyboard_return"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+            latin:keyWidth="8.75%p"
+            latin:isModifier="true"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
-            android:codes="@integer/key_shift"
-            android:keyIcon="@drawable/sym_keyboard_shift"
-            android:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            android:keyWidth="12.5%p"
-            android:isModifier="true"
-            android:isSticky="true"
-            android:keyEdgeFlags="left" />
+            latin:codes="@integer/key_shift"
+            latin:keyIcon="@drawable/sym_keyboard_shift"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyWidth="12.5%p"
+            latin:isModifier="true"
+            latin:isSticky="true"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="z"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_z" />
+            latin:keyLabel="z"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_z" />
         <Key
-            android:keyLabel="x" />
+            latin:keyLabel="x" />
         <Key
-            android:keyLabel="c"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_c" />
+            latin:keyLabel="c"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_c" />
         <Key
-            android:keyLabel="v"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_v" />
+            latin:keyLabel="v"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_v" />
         <Key
-            android:keyLabel="b" />
+            latin:keyLabel="b" />
         <Key
-            android:keyLabel="n"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="@string/alternates_for_n" />
+            latin:keyLabel="n"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="@string/alternates_for_n" />
         <Key
-            android:keyLabel="m" />
+            latin:keyLabel="m" />
         <Key
-            android:keyLabel=","
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="*" />
+            latin:keyLabel=","
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="*" />
         <Key
-            android:keyLabel="."
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="!" />
+            latin:keyLabel="."
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="!" />
         <Key
-            android:keyLabel="/"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="\?" />
+            latin:keyLabel="/"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="\?" />
         <Key
-            android:codes="@integer/key_shift"
-            android:keyIcon="@drawable/sym_keyboard_shift"
-            android:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            android:keyWidth="12.5%p"
-            android:isModifier="true"
-            android:isSticky="true"
-            android:keyEdgeFlags="right" />
+            latin:codes="@integer/key_shift"
+            latin:keyIcon="@drawable/sym_keyboard_shift"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyWidth="12.5%p"
+            latin:isModifier="true"
+            latin:isSticky="true"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row>
     <!-- This row is intentionally not marked as a bottom row -->
         <Key
-            android:keyLabel="("
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="&lt;"
-            android:horizontalGap="16.25%p" />
+            latin:keyLabel="("
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="&lt;"
+            latin:horizontalGap="16.25%p" />
         <Key
-            android:keyLabel=")"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="&gt;" />
+            latin:keyLabel=")"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="&gt;" />
         <Key
-            android:codes="@integer/key_space"
-            android:keyIcon="@drawable/sym_keyboard_space"
-            android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="37.5%p"
-            android:isModifier="true" />
+            latin:codes="@integer/key_space"
+            latin:keyIcon="@drawable/sym_keyboard_space"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+            latin:keyWidth="37.5%p"
+            latin:isModifier="true" />
         <Key
-            android:keyLabel="_"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="\@" />
+            latin:keyLabel="_"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="\@" />
         <Key
-            android:keyLabel="-"
-            android:popupKeyboard="@xml/kbd_popup_template"
-            android:popupCharacters="#" />
+            latin:keyLabel="-"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="#" />
     </Row>
 </Keyboard>

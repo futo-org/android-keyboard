@@ -16,14 +16,13 @@
 
 package com.android.inputmethod.latin;
 
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.Keyboard.Key;
+import com.android.inputmethod.latin.BaseKeyboard.Key;
 
 import java.util.Arrays;
 import java.util.List;
 
 abstract class KeyDetector {
-    protected Keyboard mKeyboard;
+    protected BaseKeyboard mKeyboard;
 
     private Key[] mKeys;
 
@@ -35,7 +34,7 @@ abstract class KeyDetector {
 
     protected int mProximityThresholdSquare;
 
-    public Key[] setKeyboard(Keyboard keyboard, float correctionX, float correctionY) {
+    public Key[] setKeyboard(BaseKeyboard keyboard, float correctionX, float correctionY) {
         if (keyboard == null)
             throw new NullPointerException();
         mCorrectionX = (int)correctionX;

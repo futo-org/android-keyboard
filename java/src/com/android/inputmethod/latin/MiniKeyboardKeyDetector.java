@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import android.inputmethodservice.Keyboard.Key;
+import com.android.inputmethod.latin.BaseKeyboard.Key;
 
 class MiniKeyboardKeyDetector extends KeyDetector {
     private static final int MAX_NEARBY_KEYS = 1;

@@ -69,4 +69,60 @@
 
     </declare-styleable>
 
+    <declare-styleable name="BaseKeyboard">
+        <!-- Default width of a key, in pixels or percentage of display width. -->
+        <attr name="keyWidth" format="dimension|fraction" />
+        <!-- Default height of a key, in pixels or percentage of display width. -->
+        <attr name="keyHeight" format="dimension|fraction" />
+        <!-- Default horizontal gap between keys. -->
+        <attr name="horizontalGap" format="dimension|fraction" />
+        <!-- Default vertical gap between rows of keys. -->
+        <attr name="verticalGap" format="dimension|fraction" />
+    </declare-styleable>
+
+    <declare-styleable name="BaseKeyboard_Key">
+        <!-- The unicode value or comma-separated values that this key outputs. -->
+        <attr name="codes" format="integer|string" />
+        <!-- The XML keyboard layout of any popup keyboard. -->
+        <attr name="popupKeyboard" format="reference" />
+        <!-- The characters to display in the popup keyboard. -->
+        <attr name="popupCharacters" format="string" />
+        <!-- Key edge flags. -->
+        <attr name="keyEdgeFlags">
+            <!-- Key is anchored to the left of the keyboard. -->
+            <flag name="left" value="1" />
+            <!-- Key is anchored to the right of the keyboard. -->
+            <flag name="right" value="2" />
+        </attr>
+        <!-- Whether this is a modifier key such as Alt or Shift. -->
+        <attr name="isModifier" format="boolean" />
+        <!-- Whether this is a toggle key. -->
+        <attr name="isSticky" format="boolean" />
+        <!-- Whether long-pressing on this key will make it repeat. -->
+        <attr name="isRepeatable" format="boolean" />
+        <!-- The icon to show in the popup preview. -->
+        <attr name="iconPreview" format="reference" />
+        <!-- The string of characters to output when this key is pressed. -->
+        <attr name="keyOutputText" format="string" />
+        <!-- The label to display on the key. -->
+        <attr name="keyLabel" format="string" />
+        <!-- The icon to display on the key instead of the label. -->
+        <attr name="keyIcon" format="reference" />
+        <!-- Mode of the keyboard. If the mode doesn't match the
+             requested keyboard mode, the key will be skipped. -->
+        <attr name="keyboardMode" />
+    </declare-styleable>
+
+    <declare-styleable name="BaseKeyboard_Row">
+        <!-- Row edge flags. -->
+        <attr name="rowEdgeFlags">
+            <!-- Row is anchored to the top of the keyboard. -->
+            <flag name="top" value="4" />
+            <!-- Row is anchored to the bottom of the keyboard. -->
+            <flag name="bottom" value="8" />
+        </attr>
+        <!-- Mode of the keyboard. If the mode doesn't match the
+             requested keyboard mode, the row will be skipped. -->
+        <attr name="keyboardMode" format="reference" />
+    </declare-styleable>
 </resources>

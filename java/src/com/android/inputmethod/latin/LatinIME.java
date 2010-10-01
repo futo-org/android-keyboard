@@ -34,7 +34,6 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.inputmethodservice.InputMethodService;
-import android.inputmethodservice.Keyboard;
 import android.media.AudioManager;
 import android.os.Debug;
 import android.os.Handler;
@@ -1170,29 +1169,29 @@ public class LatinIME extends InputMethodService
 
     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
         long when = SystemClock.uptimeMillis();
-        if (primaryCode != Keyboard.KEYCODE_DELETE ||
+        if (primaryCode != BaseKeyboard.KEYCODE_DELETE ||
                 when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
         final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
         switch (primaryCode) {
-            case Keyboard.KEYCODE_DELETE:
+            case BaseKeyboard.KEYCODE_DELETE:
                 handleBackspace();
                 mDeleteCount++;
                 LatinImeLogger.logOnDelete();
                 break;
-            case Keyboard.KEYCODE_SHIFT:
+            case BaseKeyboard.KEYCODE_SHIFT:
                 // Shift key is handled in onPress() when device has distinct multi-touch panel.
                 if (!distinctMultiTouch)
                     handleShift();
                 break;
-            case Keyboard.KEYCODE_MODE_CHANGE:
+            case BaseKeyboard.KEYCODE_MODE_CHANGE:
                 // Symbol key is handled in onPress() when device has distinct multi-touch panel.
                 if (!distinctMultiTouch)
                     changeKeyboardMode();
                 break;
-            case Keyboard.KEYCODE_CANCEL:
+            case BaseKeyboard.KEYCODE_CANCEL:
                 if (!isShowingOptionDialog()) {
                     handleClose();
                 }
@@ -2266,10 +2265,10 @@ public class LatinIME extends InputMethodService
         vibrate();
         playKeyClick(primaryCode);
         final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
-        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
+        if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
             mShiftKeyState.onPress();
             handleShift();
-        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+        } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
             mSymbolKeyState.onPress();
             changeKeyboardMode();
         } else {
@@ -2283,11 +2282,11 @@ public class LatinIME extends InputMethodService
         ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).keyReleased();
         //vibrate();
         final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
-        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
+        if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
             if (mShiftKeyState.isMomentary())
                 resetShift();
             mShiftKeyState.onRelease();
-        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+        } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
             if (mSymbolKeyState.isMomentary())
                 changeKeyboardMode();
             mSymbolKeyState.onRelease();
@@ -2346,7 +2345,7 @@ public class LatinIME extends InputMethodService
             // FIXME: These should be triggered after auto-repeat logic
             int sound = AudioManager.FX_KEYPRESS_STANDARD;
             switch (primaryCode) {
-                case Keyboard.KEYCODE_DELETE:
+                case BaseKeyboard.KEYCODE_DELETE:
                     sound = AudioManager.FX_KEYPRESS_DELETE;
                     break;
                 case KEYCODE_ENTER:

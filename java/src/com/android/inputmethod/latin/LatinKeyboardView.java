@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.BaseKeyboard.Key;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -39,7 +39,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     static final int KEYCODE_NEXT_LANGUAGE = -104;
     static final int KEYCODE_PREV_LANGUAGE = -105;
 
-    private Keyboard mPhoneKeyboard;
+    private BaseKeyboard mPhoneKeyboard;
 
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
@@ -61,7 +61,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         super(context, attrs, defStyle);
     }
 
-    public void setPhoneKeyboard(Keyboard phoneKeyboard) {
+    public void setPhoneKeyboard(BaseKeyboard phoneKeyboard) {
         mPhoneKeyboard = phoneKeyboard;
     }
 
@@ -76,7 +76,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     }
 
     @Override
-    public void setKeyboard(Keyboard k) {
+    public void setKeyboard(BaseKeyboard k) {
         super.setKeyboard(k);
         // One-seventh of the keyboard width seems like a reasonable threshold
         mJumpThresholdSquare = k.getMinWidth() / 7;
@@ -108,7 +108,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     @Override
     protected CharSequence adjustCase(CharSequence label) {
-        Keyboard keyboard = getKeyboard();
+        BaseKeyboard keyboard = getKeyboard();
         if (keyboard.isShifted()
                 && keyboard instanceof LatinKeyboard
                 && ((LatinKeyboard) keyboard).isAlphaKeyboard()
@@ -120,7 +120,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     }
 
     public boolean setShiftLocked(boolean shiftLocked) {
-        Keyboard keyboard = getKeyboard();
+        BaseKeyboard keyboard = getKeyboard();
         if (keyboard instanceof LatinKeyboard) {
             ((LatinKeyboard)keyboard).setShiftLocked(shiftLocked);
             invalidateAllKeys();
@@ -257,7 +257,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     private int mLastY;
     private Paint mPaint;
 
-    private void setKeyboardLocal(Keyboard k) {
+    private void setKeyboardLocal(BaseKeyboard k) {
         if (DEBUG_AUTO_PLAY) {
             findKeys();
             if (mHandler2 == null) {

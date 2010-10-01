@@ -30,7 +30,6 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.inputmethodservice.Keyboard;
 import android.text.TextPaint;
 import android.util.Log;
 import android.view.ViewConfiguration;
@@ -41,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class LatinKeyboard extends Keyboard {
+public class LatinKeyboard extends BaseKeyboard {
 
     private static final boolean DEBUG_PREFERRED_LETTER = false;
     private static final String TAG = "LatinKeyboard";
@@ -744,7 +743,7 @@ public class LatinKeyboard extends Keyboard {
         return textSize;
     }
 
-    class LatinKey extends Keyboard.Key {
+    class LatinKey extends BaseKeyboard.Key {
 
         // functional normal state (with properties)
         private final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
@@ -759,7 +758,7 @@ public class LatinKeyboard extends Keyboard {
 
         private boolean mShiftLockEnabled;
 
-        public LatinKey(Resources res, Keyboard.Row parent, int x, int y, 
+        public LatinKey(Resources res, BaseKeyboard.Row parent, int x, int y,
                 XmlResourceParser parser) {
             super(res, parent, x, y, parser);
             if (popupCharacters != null && popupCharacters.length() == 0) {

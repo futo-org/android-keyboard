@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.BaseKeyboard.Key;
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -29,8 +31,6 @@ import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.Keyboard.Key;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
@@ -177,7 +177,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private int mPopupLayout;
 
     // Main keyboard
-    private Keyboard mKeyboard;
+    private BaseKeyboard mKeyboard;
     private Key[] mKeys;
 
     // Key preview popup
@@ -566,7 +566,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
      * @see #getKeyboard()
      * @param keyboard the keyboard to display in this view
      */
-    public void setKeyboard(Keyboard keyboard) {
+    public void setKeyboard(BaseKeyboard keyboard) {
         if (mKeyboard != null) {
             dismissKeyPreview();
         }
@@ -593,7 +593,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
      * @return the currently attached keyboard
      * @see #setKeyboard(Keyboard)
      */
-    public Keyboard getKeyboard() {
+    public BaseKeyboard getKeyboard() {
         return mKeyboard;
     }
 
@@ -713,7 +713,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
      * the touch distance from a key's center to avoid taking a square root.
      * @param keyboard
      */
-    private void computeProximityThreshold(Keyboard keyboard) {
+    private void computeProximityThreshold(BaseKeyboard keyboard) {
         if (keyboard == null) return;
         final Key[] keys = mKeys;
         if (keys == null) return;
@@ -1072,12 +1072,12 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // Override default ProximityKeyDetector.
         miniKeyboard.mKeyDetector = new MiniKeyboardKeyDetector(mMiniKeyboardSlideAllowance);
 
-        Keyboard keyboard;
+        BaseKeyboard keyboard;
         if (popupKey.popupCharacters != null) {
-            keyboard = new Keyboard(getContext(), popupKeyboardId, popupKey.popupCharacters,
+            keyboard = new BaseKeyboard(getContext(), popupKeyboardId, popupKey.popupCharacters,
                     -1, getPaddingLeft() + getPaddingRight());
         } else {
-            keyboard = new Keyboard(getContext(), popupKeyboardId);
+            keyboard = new BaseKeyboard(getContext(), popupKeyboardId);
         }
         miniKeyboard.setKeyboard(keyboard);
         miniKeyboard.setPopupParent(this);
@@ -1088,7 +1088,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return container;
     }
 
-    private static boolean isOneRowKeyboard(Keyboard keyboard) {
+    private static boolean isOneRowKeyboard(BaseKeyboard keyboard) {
         final List<Key> keys = keyboard.getKeys();
         if (keys.size() == 0) return false;
         final int edgeFlags = keys.get(0).edgeFlags;
@@ -1098,7 +1098,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // and bottom edge flags on.
         // When you want to use one row mini-keyboard from xml file, make sure that the row has
         // both top and bottom edge flags set.
-        return (edgeFlags & Keyboard.EDGE_TOP) != 0 && (edgeFlags & Keyboard.EDGE_BOTTOM) != 0;
+        return (edgeFlags & BaseKeyboard.EDGE_TOP) != 0
+                && (edgeFlags & BaseKeyboard.EDGE_BOTTOM) != 0;
     }
 
     /**

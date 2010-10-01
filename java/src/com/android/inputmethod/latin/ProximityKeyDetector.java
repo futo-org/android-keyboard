@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import android.inputmethodservice.Keyboard.Key;
+import com.android.inputmethod.latin.BaseKeyboard.Key;
 
 import java.util.Arrays;
 

@@ -19,140 +19,140 @@
 -->
 
 <Keyboard
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="7.5%p"
-    android:horizontalGap="0px"
-    android:verticalGap="0px"
-    android:keyHeight="@dimen/key_height"
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    latin:keyWidth="7.5%p"
+    latin:horizontalGap="0px"
+    latin:verticalGap="0px"
+    latin:keyHeight="@dimen/key_height"
 >
     <Row>
     <!-- This row is intentionally not marked as a top row -->
         <Key
-            android:codes="@integer/key_tab"
-            android:keyLabel="Tab"
-            android:keyEdgeFlags="left" />
+            latin:codes="@integer/key_tab"
+            latin:keyLabel="Tab"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="1" />
+            latin:keyLabel="1" />
         <Key
-            android:keyLabel="2" />
+            latin:keyLabel="2" />
         <Key
-            android:keyLabel="3" />
+            latin:keyLabel="3" />
         <Key
-            android:keyLabel="4" />
+            latin:keyLabel="4" />
         <Key
-            android:keyLabel="5" />
+            latin:keyLabel="5" />
         <Key
-            android:keyLabel="6" />
+            latin:keyLabel="6" />
         <Key
-            android:keyLabel="7" />
+            latin:keyLabel="7" />
         <Key
-            android:keyLabel="8" />
+            latin:keyLabel="8" />
         <Key
-            android:keyLabel="9" />
+            latin:keyLabel="9" />
         <Key
-            android:keyLabel="0" />
+            latin:keyLabel="0" />
         <Key
-            android:keyLabel="~" />
+            latin:keyLabel="~" />
         <Key
-            android:codes="@integer/key_delete"
-            android:keyIcon="@drawable/sym_keyboard_delete"
-            android:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            android:keyWidth="10.5%p"
-            android:isModifier="true"
-            android:isRepeatable="true"
-            android:keyEdgeFlags="right" />
+            latin:codes="@integer/key_delete"
+            latin:keyIcon="@drawable/sym_keyboard_delete"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            latin:keyWidth="10.5%p"
+            latin:isModifier="true"
+            latin:isRepeatable="true"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
-            android:codes="@integer/key_symbol"
-            android:keyLabel="@string/label_alpha_key"
-            android:keyWidth="8.75%p"
-            android:isModifier="true"
-            android:keyEdgeFlags="left" />
+            latin:codes="@integer/key_symbol"
+            latin:keyLabel="@string/label_alpha_key"
+            latin:keyWidth="8.75%p"
+            latin:isModifier="true"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="\@" />
+            latin:keyLabel="\@" />
         <Key
-            android:keyLabel="#" />
+            latin:keyLabel="#" />
         <Key
-            android:keyLabel="$" />
+            latin:keyLabel="$" />
         <Key
-            android:keyLabel="%" />
+            latin:keyLabel="%" />
         <Key
-            android:keyLabel="^" />
+            latin:keyLabel="^" />
         <Key
-            android:keyLabel="&amp;" />
+            latin:keyLabel="&amp;" />
         <Key
-            android:keyLabel="*" />
+            latin:keyLabel="*" />
         <Key
-            android:keyLabel="-" />
+            latin:keyLabel="-" />
         <Key
-            android:keyLabel="+" />
+            latin:keyLabel="+" />
         <Key
-            android:keyLabel="(" />
+            latin:keyLabel="(" />
         <Key
-            android:keyLabel=")" />
+            latin:keyLabel=")" />
         <Key
-            android:codes="@integer/key_return"
-            android:keyIcon="@drawable/sym_keyboard_return"
-            android:iconPreview="@drawable/sym_keyboard_feedback_return"
-            android:keyWidth="8.75%p"
-            android:isModifier="true"
-            android:keyEdgeFlags="right" />
+            latin:codes="@integer/key_return"
+            latin:keyIcon="@drawable/sym_keyboard_return"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+            latin:keyWidth="8.75%p"
+            latin:isModifier="true"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
-            android:codes="@integer/key_shift"
-            android:keyIcon="@drawable/sym_keyboard_shift"
-            android:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            android:keyWidth="12.5%p"
-            android:isModifier="true"
-            android:isSticky="true"
-            android:keyEdgeFlags="left" />
+            latin:codes="@integer/key_shift"
+            latin:keyIcon="@drawable/sym_keyboard_shift"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyWidth="12.5%p"
+            latin:isModifier="true"
+            latin:isSticky="true"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="!" />
+            latin:keyLabel="!" />
         <Key
-            android:keyLabel="&quot;" />
+            latin:keyLabel="&quot;" />
         <Key
-            android:keyLabel="\'" />
+            latin:keyLabel="\'" />
         <Key
-            android:keyLabel=":" />
+            latin:keyLabel=":" />
         <Key
-            android:keyLabel=";" />
+            latin:keyLabel=";" />
         <Key
-            android:keyLabel="/" />
+            latin:keyLabel="/" />
         <Key
-            android:keyLabel="\\" />
+            latin:keyLabel="\\" />
         <Key
-            android:keyLabel="," />
+            latin:keyLabel="," />
         <Key
-            android:keyLabel="." />
+            latin:keyLabel="." />
         <Key
-            android:keyLabel="\?" />
+            latin:keyLabel="\?" />
         <Key
-            android:codes="@integer/key_shift"
-            android:keyIcon="@drawable/sym_keyboard_shift"
-            android:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            android:keyWidth="12.5%p"
-            android:isModifier="true"
-            android:isSticky="true"
-            android:keyEdgeFlags="right" />
+            latin:codes="@integer/key_shift"
+            latin:keyIcon="@drawable/sym_keyboard_shift"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyWidth="12.5%p"
+            latin:isModifier="true"
+            latin:isSticky="true"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row>
     <!-- This row is intentionally not marked as a bottom row -->
         <Key
-            android:keyLabel="&lt;"
-            android:horizontalGap="16.25%p" />
+            latin:keyLabel="&lt;"
+            latin:horizontalGap="16.25%p" />
         <Key
-            android:keyLabel="&gt;" />
+            latin:keyLabel="&gt;" />
         <Key
-            android:codes="@integer/key_space"
-            android:keyIcon="@drawable/sym_keyboard_space"
-            android:iconPreview="@drawable/sym_keyboard_feedback_space"
-            android:keyWidth="37.5%p"
-            android:isModifier="true" />
+            latin:codes="@integer/key_space"
+            latin:keyIcon="@drawable/sym_keyboard_space"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+            latin:keyWidth="37.5%p"
+            latin:isModifier="true" />
         <Key
-            android:keyLabel="[" />
+            latin:keyLabel="[" />
         <Key
-            android:keyLabel="]" />
+            latin:keyLabel="]" />
     </Row>
 </Keyboard>

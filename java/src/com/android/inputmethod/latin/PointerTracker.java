@@ -16,11 +16,10 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.BaseKeyboard.Key;
 import com.android.inputmethod.latin.LatinKeyboardBaseView.OnKeyboardActionListener;
 import com.android.inputmethod.latin.LatinKeyboardBaseView.UIHandler;
 
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.Keyboard.Key;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -45,7 +44,7 @@ public class PointerTracker {
 
     // Miscellaneous constants
     private static final int NOT_A_KEY = LatinKeyboardBaseView.NOT_A_KEY;
-    private static final int[] KEY_DELETE = { Keyboard.KEYCODE_DELETE };
+    private static final int[] KEY_DELETE = { BaseKeyboard.KEYCODE_DELETE };
 
     private final UIProxy mProxy;
     private final UIHandler mHandler;
@@ -202,8 +201,8 @@ public class PointerTracker {
         if (key == null)
             return false;
         int primaryCode = key.codes[0];
-        return primaryCode == Keyboard.KEYCODE_SHIFT
-                || primaryCode == Keyboard.KEYCODE_MODE_CHANGE;
+        return primaryCode == BaseKeyboard.KEYCODE_SHIFT
+                || primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE;
     }
 
     public boolean isModifier() {
@@ -437,7 +436,7 @@ public class PointerTracker {
                 // Multi-tap
                 if (mInMultiTap) {
                     if (mTapCount != -1) {
-                        mListener.onKey(Keyboard.KEYCODE_DELETE, KEY_DELETE, x, y);
+                        mListener.onKey(BaseKeyboard.KEYCODE_DELETE, KEY_DELETE, x, y);
                     } else {
                         mTapCount = 0;
                     }
