@@ -40,14 +40,15 @@ import java.util.List;
 
 public class CandidateView extends View {
 
-    private static final int OUT_OF_BOUNDS = -1;
+    private static final int OUT_OF_BOUNDS_WORD_INDEX = -1;
+    private static final int OUT_OF_BOUNDS_X_COORD = -1;
 
     private LatinIME mService;
     private final ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     private boolean mShowingCompletions;
     private CharSequence mSelectedString;
     private int mSelectedIndex;
-    private int mTouchX = OUT_OF_BOUNDS;
+    private int mTouchX = OUT_OF_BOUNDS_X_COORD;
     private final Drawable mSelectionHighlight;
     private boolean mTypedWordValid;
     
@@ -256,8 +257,8 @@ public class CandidateView extends View {
 
             mWordX[i] = x;
 
-            if (touchX + scrollX >= x && touchX + scrollX < x + wordWidth && !scrolled &&
-                    touchX != OUT_OF_BOUNDS) {
+            if (touchX != OUT_OF_BOUNDS_X_COORD && !scrolled
+                    && touchX + scrollX >= x && touchX + scrollX < x + wordWidth) {
                 if (canvas != null && !mShowingAddToDictionary) {
                     canvas.translate(x, 0);
                     mSelectionHighlight.setBounds(0, bgPadding.top, wordWidth, height);
@@ -360,7 +361,7 @@ public class CandidateView extends View {
         // Don't call mSuggestions.clear() because it's being used for logging
         // in LatinIME.pickSuggestionManually().
         mSuggestions.clear();
-        mTouchX = OUT_OF_BOUNDS;
+        mTouchX = OUT_OF_BOUNDS_X_COORD;
         mSelectedString = null;
         mSelectedIndex = -1;
         mShowingAddToDictionary = false;
@@ -429,7 +430,8 @@ public class CandidateView extends View {
     }
 
     private void hidePreview() {
-        mCurrentWordIndex = OUT_OF_BOUNDS;
+        mTouchX = OUT_OF_BOUNDS_X_COORD;
+        mCurrentWordIndex = OUT_OF_BOUNDS_WORD_INDEX;
         mPreviewPopup.dismiss();
     }
     
@@ -438,7 +440,7 @@ public class CandidateView extends View {
         mCurrentWordIndex = wordIndex;
         // If index changed or changing text
         if (oldWordIndex != mCurrentWordIndex || altText != null) {
-            if (wordIndex == OUT_OF_BOUNDS) {
+            if (wordIndex == OUT_OF_BOUNDS_WORD_INDEX) {
                 hidePreview();
             } else {
                 CharSequence word = altText != null? altText : mSuggestions.get(wordIndex);
