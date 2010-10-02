@@ -35,7 +35,6 @@ import android.util.Log;
 import android.view.ViewConfiguration;
 import android.view.inputmethod.EditorInfo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +58,6 @@ public class LatinKeyboard extends BaseKeyboard {
     private Drawable m123MicPreviewIcon;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
-    private ArrayList<Key> mShiftKeys;
     private Key mEnterKey;
     private Key mF1Key;
     private Key mSpaceKey;
@@ -161,8 +159,6 @@ public class LatinKeyboard extends BaseKeyboard {
     private void initializeMemberVariablesAsNeeded() {
         if (mNumberHintKeys == null)
             mNumberHintKeys = new Key[NUMBER_HINT_COUNT];
-        if (mShiftKeys == null)
-            mShiftKeys = new ArrayList<Key>();
     }
 
     @Override
@@ -183,9 +179,6 @@ public class LatinKeyboard extends BaseKeyboard {
             break;
         case LatinIME.KEYCODE_SPACE:
             mSpaceKey = key;
-            break;
-        case KEYCODE_SHIFT:
-            mShiftKeys.add(key);
             break;
         case KEYCODE_MODE_CHANGE:
             m123Key = key;
@@ -267,7 +260,7 @@ public class LatinKeyboard extends BaseKeyboard {
     }
 
     public void enableShiftLock() {
-        for (final Key key : mShiftKeys) {
+        for (final Key key : getShiftKeys()) {
             if (key instanceof LatinKey) {
                 ((LatinKey)key).enableShiftLock();
             }
@@ -276,7 +269,7 @@ public class LatinKeyboard extends BaseKeyboard {
     }
 
     public void setShiftLocked(boolean shiftLocked) {
-        for (final Key key : mShiftKeys) {
+        for (final Key key : getShiftKeys()) {
             key.on = shiftLocked;
             key.icon = mShiftLockIcon;
         }
@@ -290,8 +283,8 @@ public class LatinKeyboard extends BaseKeyboard {
     @Override
     public boolean setShifted(boolean shiftState) {
         boolean shiftChanged = false;
-        if (mShiftKeys.size() > 0) {
-            for (final Key key : mShiftKeys) {
+        if (getShiftKeys().size() > 0) {
+            for (final Key key : getShiftKeys()) {
                 if (shiftState == false) {
                     key.on = false;
                     key.icon = mOldShiftIcons.get(key);
@@ -314,7 +307,7 @@ public class LatinKeyboard extends BaseKeyboard {
 
     @Override
     public boolean isShifted() {
-        if (mShiftKeys.size() > 0) {
+        if (getShiftKeys().size() > 0) {
             return mShiftState != SHIFT_OFF;
         } else {
             return super.isShifted();

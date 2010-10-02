@@ -89,11 +89,8 @@ public class BaseKeyboard {
     /** Is the keyboard in the shifted state */
     private boolean mShifted;
 
-    /** Key instance for the shift key, if present */
-    private Key mShiftKey;
-
-    /** Key index for the shift key, if present */
-    private int mShiftKeyIndex = -1;
+    /** List of shift keys in this keyboard */
+    private final List<Key> mShiftKeys = new ArrayList<Key>();
 
     /** Total height of the keyboard, including the padding and keys */
     private int mTotalHeight;
@@ -105,19 +102,19 @@ public class BaseKeyboard {
     private int mTotalWidth;
 
     /** List of keys in this keyboard */
-    private List<Key> mKeys;
+    private final List<Key> mKeys = new ArrayList<Key>();
 
     /** List of modifier keys such as Shift & Alt, if any */
-    private List<Key> mModifierKeys;
+    private final List<Key> mModifierKeys = new ArrayList<Key>();
 
     /** Width of the screen available to fit the keyboard */
-    private int mDisplayWidth;
+    private final int mDisplayWidth;
 
     /** Height of the screen */
-    private int mDisplayHeight;
+    private final int mDisplayHeight;
 
     /** Keyboard mode, or zero, if none.  */
-    private int mKeyboardMode;
+    private final int mKeyboardMode;
 
     // Variables for pre-computing nearest keys.
 
@@ -488,8 +485,6 @@ public class BaseKeyboard {
         mDefaultWidth = mDisplayWidth / 10;
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
-        mKeys = new ArrayList<Key>();
-        mModifierKeys = new ArrayList<Key>();
         mKeyboardMode = modeId;
         loadKeyboard(context, context.getResources().getXml(xmlLayoutResId));
     }
@@ -511,8 +506,6 @@ public class BaseKeyboard {
         mDefaultWidth = mDisplayWidth / 10;
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
-        mKeys = new ArrayList<Key>();
-        mModifierKeys = new ArrayList<Key>();
         mKeyboardMode = modeId;
         loadKeyboard(context, context.getResources().getXml(xmlLayoutResId));
     }
@@ -622,8 +615,8 @@ public class BaseKeyboard {
     }
 
     public boolean setShifted(boolean shiftState) {
-        if (mShiftKey != null) {
-            mShiftKey.on = shiftState;
+        for (final Key key : mShiftKeys) {
+            key.on = shiftState;
         }
         if (mShifted != shiftState) {
             mShifted = shiftState;
@@ -636,8 +629,8 @@ public class BaseKeyboard {
         return mShifted;
     }
 
-    public int getShiftKeyIndex() {
-        return mShiftKeyIndex;
+    public List<Key> getShiftKeys() {
+        return mShiftKeys;
     }
 
     private void computeNearestNeighbors() {
@@ -725,8 +718,7 @@ public class BaseKeyboard {
                         key = createKeyFromXml(res, currentRow, x, y, parser);
                         mKeys.add(key);
                         if (key.codes[0] == KEYCODE_SHIFT) {
-                            mShiftKey = key;
-                            mShiftKeyIndex = mKeys.size()-1;
+                            mShiftKeys.add(key);
                             mModifierKeys.add(key);
                         } else if (key.codes[0] == KEYCODE_ALT) {
                             mModifierKeys.add(key);
