@@ -578,7 +578,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mKeys = mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
         for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setKeyboard(mKeys, mKeyHysteresisDistance);
+            tracker.setKeyboard(keyboard, mKeys, mKeyHysteresisDistance);
         }
         requestLayout();
         // Hint to reallocate the buffer if the size changed
@@ -802,8 +802,19 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             canvas.translate(key.x + kbdPaddingLeft, key.y + kbdPaddingTop);
             keyBackground.draw(canvas);
 
-            boolean shouldDrawIcon = true;
+            boolean drawHintIcon = true;
             if (label != null) {
+                // If keyboard is multi-touch capable and in temporary upper case state and key has
+                // tempoarary shift label, label should be hint character and hint icon should not
+                // be drawn.
+                if (mHasDistinctMultitouch
+                        && mKeyboard instanceof LatinKeyboard
+                        && ((LatinKeyboard)mKeyboard).isTemporaryUpperCase()
+                        && key.temporaryShiftLabel != null) {
+                    label = key.temporaryShiftLabel.toString();
+                    drawHintIcon = false;
+                }
+
                 // For characters, use large font. For labels like "Done", use small font.
                 if (label.length() > 1 && key.codes.length < 2) {
                     paint.setTextSize(mLabelTextSize);
@@ -823,25 +834,26 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                     paint);
                 // Turn off drop shadow
                 paint.setShadowLayer(0, 0, 0, 0);
-
-                // Usually don't draw icon if label is not null, but we draw icon for the number
-                // hint.
-                shouldDrawIcon = isNumberAtEdgeOfPopupChars(key);
             }
-            if (key.icon != null && shouldDrawIcon) {
-                // Special handing for the upper-right number hint icons
-                final int drawableWidth = isNumberAtEdgeOfPopupChars(key) ?
-                        key.width : key.icon.getIntrinsicWidth();
-                final int drawableHeight = isNumberAtEdgeOfPopupChars(key) ?
-                        key.height : key.icon.getIntrinsicHeight();
+            Drawable icon = null;
+            if (key.label == null && key.icon != null)
+                icon = key.icon;
+            if (icon == null && key.hintIcon != null && drawHintIcon)
+                icon = key.hintIcon;
+            if (icon != null) {
+                // Hack for key hint icon displaying at the top right corner of the key.
+                final int drawableWidth = icon == key.hintIcon
+                        ? key.width : icon.getIntrinsicWidth();
+                final int drawableHeight = icon == key.hintIcon
+                        ? key.height : icon.getIntrinsicHeight();
 
                 final int drawableX = (key.width - padding.left - padding.right
                         - drawableWidth) / 2 + padding.left;
                 final int drawableY = (key.height - padding.top - padding.bottom
                         - drawableHeight) / 2 + padding.top;
                 canvas.translate(drawableX, drawableY);
-                key.icon.setBounds(0, 0, drawableWidth, drawableHeight);
-                key.icon.draw(canvas);
+                icon.setBounds(0, 0, drawableWidth, drawableHeight);
+                icon.draw(canvas);
                 canvas.translate(-drawableX, -drawableY);
             }
             canvas.translate(-key.x - kbdPaddingLeft, -key.y - kbdPaddingTop);
@@ -906,16 +918,18 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         }
     }
 
+    // TODO Must fix popup preview on xlarge layout
     private void showKey(final int keyIndex, PointerTracker tracker) {
         Key key = tracker.getKey(keyIndex);
         if (key == null)
             return;
         // Should not draw number hint icons
-        if (key.icon != null && !isNumberAtEdgeOfPopupChars(key)) {
+        if (key.icon != null && key.label == null) {
             mPreviewText.setCompoundDrawables(null, null, null,
                     key.iconPreview != null ? key.iconPreview : key.icon);
             mPreviewText.setText(null);
         } else {
+            // TODO Should take care of temporaryShiftLabel here.
             mPreviewText.setCompoundDrawables(null, null, null, null);
             mPreviewText.setText(adjustCase(tracker.getPreviewText(key)));
             if (key.label.length() > 1 && key.codes.length < 2) {
@@ -997,7 +1011,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
      * Invalidates a key so that it will be redrawn on the next repaint. Use this method if only
      * one key is changing it's content. Any changes that affect the position or size of the key
      * may not be honored.
-     * @param key key in the attached {@link Keyboard}.
+     * @param key key in the attached {@link BaseKeyboard}.
      * @see #invalidateAllKeys
      */
     public void invalidateKey(Key key) {
@@ -1182,21 +1196,9 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return false;
     }
 
-    private static boolean isNumberAtEdgeOfPopupChars(Key key) {
-        return isNumberAtLeftmostPopupChar(key) || isNumberAtRightmostPopupChar(key);
-    }
-
-    /* package */ static boolean isNumberAtLeftmostPopupChar(Key key) {
+    private static boolean isNumberAtLeftmostPopupChar(Key key) {
         if (key.popupCharacters != null && key.popupCharacters.length() > 0
                 && isAsciiDigit(key.popupCharacters.charAt(0))) {
-            return true;
-        }
-        return false;
-    }
-
-    /* package */ static boolean isNumberAtRightmostPopupChar(Key key) {
-        if (key.popupCharacters != null && key.popupCharacters.length() > 0
-                && isAsciiDigit(key.popupCharacters.charAt(key.popupCharacters.length() - 1))) {
             return true;
         }
         return false;
@@ -1221,7 +1223,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             final PointerTracker tracker =
                 new PointerTracker(i, mHandler, mKeyDetector, this, mHasDistinctMultitouch);
             if (keys != null)
-                tracker.setKeyboard(keys, mKeyHysteresisDistance);
+                tracker.setKeyboard(mKeyboard, keys, mKeyHysteresisDistance);
             if (listener != null)
                 tracker.setOnKeyboardActionListener(listener);
             pointers.add(tracker);

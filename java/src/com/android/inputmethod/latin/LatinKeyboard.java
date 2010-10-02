@@ -62,9 +62,6 @@ public class LatinKeyboard extends BaseKeyboard {
     private Key mF1Key;
     private Key mSpaceKey;
     private Key m123Key;
-    private final int NUMBER_HINT_COUNT = 10;
-    private Key[] mNumberHintKeys;
-    private Drawable[] mNumberHintIcons = new Drawable[NUMBER_HINT_COUNT];
     private int mSpaceKeyIndex = -1;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
@@ -119,9 +116,7 @@ public class LatinKeyboard extends BaseKeyboard {
         mRes = res;
         mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
-        mShiftLockPreviewIcon.setBounds(0, 0, 
-                mShiftLockPreviewIcon.getIntrinsicWidth(),
-                mShiftLockPreviewIcon.getIntrinsicHeight());
+        setDefaultBounds(mShiftLockPreviewIcon);
         mSpaceIcon = res.getDrawable(R.drawable.sym_keyboard_space);
         mSpaceAutoCompletionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mSpacePreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_space);
@@ -138,37 +133,11 @@ public class LatinKeyboard extends BaseKeyboard {
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
         mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
-        initializeNumberHintResources(context);
-    }
-
-    private void initializeNumberHintResources(Context context) {
-        final Resources res = context.getResources();
-        mNumberHintIcons[0] = res.getDrawable(R.drawable.keyboard_hint_0);
-        mNumberHintIcons[1] = res.getDrawable(R.drawable.keyboard_hint_1);
-        mNumberHintIcons[2] = res.getDrawable(R.drawable.keyboard_hint_2);
-        mNumberHintIcons[3] = res.getDrawable(R.drawable.keyboard_hint_3);
-        mNumberHintIcons[4] = res.getDrawable(R.drawable.keyboard_hint_4);
-        mNumberHintIcons[5] = res.getDrawable(R.drawable.keyboard_hint_5);
-        mNumberHintIcons[6] = res.getDrawable(R.drawable.keyboard_hint_6);
-        mNumberHintIcons[7] = res.getDrawable(R.drawable.keyboard_hint_7);
-        mNumberHintIcons[8] = res.getDrawable(R.drawable.keyboard_hint_8);
-        mNumberHintIcons[9] = res.getDrawable(R.drawable.keyboard_hint_9);
-    }
-
-    // TODO: delete this method and do initialization in constructor.
-    private void initializeMemberVariablesAsNeeded() {
-        if (mNumberHintKeys == null)
-            mNumberHintKeys = new Key[NUMBER_HINT_COUNT];
     }
 
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y, 
             XmlResourceParser parser) {
-        // TODO: This initialization is needed because this protected method is being called from
-        // the base class constructor before this class constructor gets called. We need to fix
-        // this.
-        initializeMemberVariablesAsNeeded();
-
         Key key = new LatinKey(res, parent, x, y, parser);
         switch (key.codes[0]) {
         case LatinIME.KEYCODE_ENTER:
@@ -184,17 +153,6 @@ public class LatinKeyboard extends BaseKeyboard {
             m123Key = key;
             m123Label = key.label;
             break;
-        }
-
-        // For number hints on the upper-right corner of key
-        int hintNumber = -1;
-        if (LatinKeyboardBaseView.isNumberAtLeftmostPopupChar(key)) {
-            hintNumber = key.popupCharacters.charAt(0) - '0';
-        } else if (LatinKeyboardBaseView.isNumberAtRightmostPopupChar(key)) {
-            hintNumber = key.popupCharacters.charAt(key.popupCharacters.length() - 1) - '0';
-        }
-        if (hintNumber >= 0 && hintNumber <= 9) {
-            mNumberHintKeys[hintNumber] = key;
         }
 
         return key;
@@ -251,11 +209,7 @@ public class LatinKeyboard extends BaseKeyboard {
                     break;
             }
             // Set the initial size of the preview icon
-            if (mEnterKey.iconPreview != null) {
-                mEnterKey.iconPreview.setBounds(0, 0, 
-                        mEnterKey.iconPreview.getIntrinsicWidth(),
-                        mEnterKey.iconPreview.getIntrinsicHeight());
-            }
+            setDefaultBounds(mEnterKey.iconPreview);
         }
     }
 
@@ -279,7 +233,7 @@ public class LatinKeyboard extends BaseKeyboard {
     public boolean isShiftLocked() {
         return mShiftState == SHIFT_LOCKED;
     }
-    
+
     @Override
     public boolean setShifted(boolean shiftState) {
         boolean shiftChanged = false;
@@ -314,6 +268,10 @@ public class LatinKeyboard extends BaseKeyboard {
         }
     }
 
+    public boolean isTemporaryUpperCase() {
+        return mIsAlphaKeyboard && isShifted() && !isShiftLocked();
+    }
+
     /* package */ boolean isAlphaKeyboard() {
         return mIsAlphaKeyboard;
     }
@@ -335,11 +293,6 @@ public class LatinKeyboard extends BaseKeyboard {
         if (mSpaceKey != null) {
             updateSpaceBarForLocale(isAutoCompletion, isBlack);
         }
-        updateNumberHintKeys();
-    }
-
-    private void setDefaultBounds(Drawable drawable) {
-        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
     }
 
     public void setVoiceMode(boolean hasVoiceButton, boolean hasVoice) {
@@ -383,14 +336,6 @@ public class LatinKeyboard extends BaseKeyboard {
     public Key onAutoCompletionStateChanged(boolean isAutoCompletion) {
         updateSpaceBarForLocale(isAutoCompletion, mIsBlackSym);
         return mSpaceKey;
-    }
-
-    private void updateNumberHintKeys() {
-        for (int i = 0; i < mNumberHintKeys.length; ++i) {
-            if (mNumberHintKeys[i] != null) {
-                mNumberHintKeys[i].icon = mNumberHintIcons[i];
-            }
-        }
     }
 
     public boolean isLanguageSwitchEnabled() {
@@ -828,8 +773,7 @@ public class LatinKeyboard extends BaseKeyboard {
 
         public SlidingLocaleDrawable(Drawable background, int width, int height) {
             mBackground = background;
-            mBackground.setBounds(0, 0,
-                    mBackground.getIntrinsicWidth(), mBackground.getIntrinsicHeight());
+            setDefaultBounds(mBackground);
             mWidth = width;
             mHeight = height;
             mTextPaint = new TextPaint();
@@ -887,7 +831,7 @@ public class LatinKeyboard extends BaseKeyboard {
                 canvas.drawText(mNextLanguage, diff - width / 2, baseline, paint);
                 canvas.drawText(mPrevLanguage, diff + width + width / 2, baseline, paint);
 
-                lArrow.setBounds(0, 0, lArrow.getIntrinsicWidth(), lArrow.getIntrinsicHeight());
+                setDefaultBounds(lArrow);
                 rArrow.setBounds(width - rArrow.getIntrinsicWidth(), 0, width,
                         rArrow.getIntrinsicHeight());
                 lArrow.draw(canvas);

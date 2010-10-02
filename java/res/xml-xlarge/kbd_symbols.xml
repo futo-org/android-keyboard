@@ -30,6 +30,7 @@
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="Tab"
+            latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="1" />
@@ -102,7 +103,7 @@
     <Row>
         <Key
             latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
+            latin:keyLabel="@string/label_more_key"
             latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
             latin:keyWidth="12.5%p"
             latin:isModifier="true"
@@ -130,7 +131,7 @@
             latin:keyLabel="\?" />
         <Key
             latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
+            latin:keyLabel="@string/label_more_key"
             latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
             latin:keyWidth="12.5%p"
             latin:isModifier="true"

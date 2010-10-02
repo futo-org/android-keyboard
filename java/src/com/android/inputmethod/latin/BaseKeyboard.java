@@ -194,9 +194,13 @@ public class BaseKeyboard {
 
         /** Label to display */
         public CharSequence label;
+        /** Label to display when keyboard is in temporary shift mode */
+        public CharSequence temporaryShiftLabel;
 
         /** Icon to display instead of a label. Icon takes precedence over a label */
         public Drawable icon;
+        /** Hint icon to display on the key in conjunction with the label */
+        public Drawable hintIcon;
         /** Preview version of the icon, for the preview popup */
         public Drawable iconPreview;
         /** Width of the key, not including the gap */
@@ -294,22 +298,17 @@ public class BaseKeyboard {
             TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.BaseKeyboard);
 
-            width = getDimensionOrFraction(a,
-                    R.styleable.BaseKeyboard_keyWidth,
+            width = getDimensionOrFraction(a, R.styleable.BaseKeyboard_keyWidth,
                     keyboard.mDisplayWidth, parent.defaultWidth);
-            height = getDimensionOrFraction(a,
-                    R.styleable.BaseKeyboard_keyHeight,
+            height = getDimensionOrFraction(a, R.styleable.BaseKeyboard_keyHeight,
                     keyboard.mDisplayHeight, parent.defaultHeight);
-            gap = getDimensionOrFraction(a,
-                    R.styleable.BaseKeyboard_horizontalGap,
+            gap = getDimensionOrFraction(a, R.styleable.BaseKeyboard_horizontalGap,
                     keyboard.mDisplayWidth, parent.defaultHorizontalGap);
             a.recycle();
-            a = res.obtainAttributes(Xml.asAttributeSet(parser),
-                    R.styleable.BaseKeyboard_Key);
+            a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.BaseKeyboard_Key);
             this.x += gap;
             TypedValue codesValue = new TypedValue();
-            a.getValue(R.styleable.BaseKeyboard_Key_codes,
-                    codesValue);
+            a.getValue(R.styleable.BaseKeyboard_Key_codes, codesValue);
             if (codesValue.type == TypedValue.TYPE_INT_DEC
                     || codesValue.type == TypedValue.TYPE_INT_HEX) {
                 codes = new int[] { codesValue.data };
@@ -318,29 +317,22 @@ public class BaseKeyboard {
             }
 
             iconPreview = a.getDrawable(R.styleable.BaseKeyboard_Key_iconPreview);
-            if (iconPreview != null) {
-                iconPreview.setBounds(0, 0, iconPreview.getIntrinsicWidth(),
-                        iconPreview.getIntrinsicHeight());
-            }
-            popupCharacters = a.getText(
-                    R.styleable.BaseKeyboard_Key_popupCharacters);
-            popupResId = a.getResourceId(
-                    R.styleable.BaseKeyboard_Key_popupKeyboard, 0);
-            repeatable = a.getBoolean(
-                    R.styleable.BaseKeyboard_Key_isRepeatable, false);
-            modifier = a.getBoolean(
-                    R.styleable.BaseKeyboard_Key_isModifier, false);
-            sticky = a.getBoolean(
-                    R.styleable.BaseKeyboard_Key_isSticky, false);
+            setDefaultBounds(iconPreview);
+            popupCharacters = a.getText(R.styleable.BaseKeyboard_Key_popupCharacters);
+            popupResId = a.getResourceId(R.styleable.BaseKeyboard_Key_popupKeyboard, 0);
+            repeatable = a.getBoolean(R.styleable.BaseKeyboard_Key_isRepeatable, false);
+            modifier = a.getBoolean(R.styleable.BaseKeyboard_Key_isModifier, false);
+            sticky = a.getBoolean(R.styleable.BaseKeyboard_Key_isSticky, false);
             edgeFlags = a.getInt(R.styleable.BaseKeyboard_Key_keyEdgeFlags, 0);
             edgeFlags |= parent.rowEdgeFlags;
 
-            icon = a.getDrawable(
-                    R.styleable.BaseKeyboard_Key_keyIcon);
-            if (icon != null) {
-                icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
-            }
+            icon = a.getDrawable(R.styleable.BaseKeyboard_Key_keyIcon);
+            setDefaultBounds(icon);
+            hintIcon = a.getDrawable(R.styleable.BaseKeyboard_Key_keyHintIcon);
+            setDefaultBounds(hintIcon);
+
             label = a.getText(R.styleable.BaseKeyboard_Key_keyLabel);
+            temporaryShiftLabel = a.getText(R.styleable.BaseKeyboard_Key_temporaryShiftKeyLabel);
             text = a.getText(R.styleable.BaseKeyboard_Key_keyOutputText);
 
             if (codes == null && !TextUtils.isEmpty(label)) {
@@ -679,10 +671,12 @@ public class BaseKeyboard {
         return new int[0];
     }
 
+    // TODO should be private
     protected Row createRowFromXml(Resources res, XmlResourceParser parser) {
         return new Row(res, this, parser);
     }
 
+    // TODO should be private
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y,
             XmlResourceParser parser) {
         return new Key(res, parent, x, y, parser);
@@ -707,6 +701,7 @@ public class BaseKeyboard {
                     if (TAG_ROW.equals(tag)) {
                         inRow = true;
                         x = 0;
+                        // TODO createRowFromXml should not be called from BaseKeyboard constructor.
                         currentRow = createRowFromXml(res, parser);
                         skipRow = currentRow.mode != 0 && currentRow.mode != mKeyboardMode;
                         if (skipRow) {
@@ -715,6 +710,7 @@ public class BaseKeyboard {
                         }
                    } else if (TAG_KEY.equals(tag)) {
                         inKey = true;
+                        // TODO createKeyFromXml should not be called from BaseKeyboard constructor.
                         key = createKeyFromXml(res, currentRow, x, y, parser);
                         mKeys.add(key);
                         if (key.codes[0] == KEYCODE_SHIFT) {
@@ -792,5 +788,11 @@ public class BaseKeyboard {
             return Math.round(a.getFraction(index, base, base, defValue));
         }
         return defValue;
+    }
+
+    protected static void setDefaultBounds(Drawable drawable)  {
+        if (drawable != null)
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight());
     }
 }

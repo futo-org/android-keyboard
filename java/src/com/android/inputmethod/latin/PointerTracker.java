@@ -52,6 +52,7 @@ public class PointerTracker {
     private OnKeyboardActionListener mListener;
     private final boolean mHasDistinctMultitouch;
 
+    private BaseKeyboard mKeyboard;
     private Key[] mKeys;
     private int mKeyHysteresisDistanceSquared = -1;
 
@@ -179,9 +180,10 @@ public class PointerTracker {
         mListener = listener;
     }
 
-    public void setKeyboard(Key[] keys, float keyHysteresisDistance) {
-        if (keys == null || keyHysteresisDistance < 0)
+    public void setKeyboard(BaseKeyboard keyboard, Key[] keys, float keyHysteresisDistance) {
+        if (keyboard == null || keys == null || keyHysteresisDistance < 0)
             throw new IllegalArgumentException();
+        mKeyboard = keyboard;
         mKeys = keys;
         mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
         // Update current key index because keyboard layout has been changed.
@@ -280,7 +282,7 @@ public class PointerTracker {
                 mHandler.startKeyRepeatTimer(REPEAT_START_DELAY, keyIndex, this);
                 mIsRepeatableKey = true;
             }
-            mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
+            startLongPressTimer(keyIndex);
         }
         showKeyPreviewAndUpdateKey(keyIndex);
     }
@@ -292,14 +294,15 @@ public class PointerTracker {
             return;
         KeyState keyState = mKeyState;
         int keyIndex = keyState.onMoveKey(x, y);
-        if (isValidKeyIndex(keyIndex)) {
+        Key key = getKey(keyIndex);
+        if (key != null) {
             if (keyState.getKeyIndex() == NOT_A_KEY) {
                 keyState.onMoveToNewKey(keyIndex, x, y);
-                mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
+                startLongPressTimer(keyIndex);
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
                 resetMultiTap();
                 keyState.onMoveToNewKey(keyIndex, x, y);
-                mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
+                startLongPressTimer(keyIndex);
             }
         } else {
             if (keyState.getKeyIndex() != NOT_A_KEY) {
@@ -415,6 +418,20 @@ public class PointerTracker {
         }
     }
 
+    private void startLongPressTimer(int keyIndex) {
+        Key key = getKey(keyIndex);
+        // If keyboard is in temporary upper case state and the key has temporary shift label,
+        // long press should not be started.
+        if (isTemporaryUpperCase() && key.temporaryShiftLabel != null)
+            return;
+        mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
+    }
+
+    private boolean isTemporaryUpperCase() {
+        return mKeyboard instanceof LatinKeyboard
+                && ((LatinKeyboard)mKeyboard).isTemporaryUpperCase();
+    }
+
     private void detectAndSendKey(int index, int x, int y, long eventTime) {
         final OnKeyboardActionListener listener = mListener;
         final Key key = getKey(index);
@@ -442,6 +459,14 @@ public class PointerTracker {
                     }
                     code = key.codes[mTapCount];
                 }
+
+                // If keyboard is in temporary upper case state and key has temporary shift label,
+                // alternate character code should be sent.
+                if (isTemporaryUpperCase() && key.temporaryShiftLabel != null) {
+                    code = key.temporaryShiftLabel.charAt(0);
+                    codes[0] = code;
+                }
+
                 /*
                  * Swap the first and second values in the codes array if the primary code is not
                  * the first value but the second value in the array. This happens when key

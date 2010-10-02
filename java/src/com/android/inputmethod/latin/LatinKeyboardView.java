@@ -109,9 +109,9 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     @Override
     protected CharSequence adjustCase(CharSequence label) {
         BaseKeyboard keyboard = getKeyboard();
-        if (keyboard.isShifted()
-                && keyboard instanceof LatinKeyboard
+        if (keyboard instanceof LatinKeyboard
                 && ((LatinKeyboard) keyboard).isAlphaKeyboard()
+                && keyboard.isShifted()
                 && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
             label = label.toString().toUpperCase();

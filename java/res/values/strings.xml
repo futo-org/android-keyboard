@@ -212,6 +212,8 @@
     <string name="label_alpha_key">ABC</string>
     <!-- Label for ALT modifier key.  Must be short to fit on key! -->
     <string name="label_alt_key">ALT</string>
+    <!-- Label for Shift modifier key of symbol keyboard.  Must be short to fit on key! -->
+    <string name="label_more_key">More</string>
 
     <!-- Voice related labels -->
 

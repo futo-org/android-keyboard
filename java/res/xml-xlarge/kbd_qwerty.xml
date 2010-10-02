@@ -30,49 +30,62 @@
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="Tab"
+            latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="q"
+            latin:keyHintIcon="@drawable/keyboard_hint_1"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_q" />
         <Key
             latin:keyLabel="w"
+            latin:keyHintIcon="@drawable/keyboard_hint_2"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_w" />
         <Key
             latin:keyLabel="e"
+            latin:keyHintIcon="@drawable/keyboard_hint_3"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
+            latin:keyHintIcon="@drawable/keyboard_hint_4"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
+            latin:keyHintIcon="@drawable/keyboard_hint_5"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_t" />
         <Key
             latin:keyLabel="y"
+            latin:keyHintIcon="@drawable/keyboard_hint_6"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_y" />
         <Key
             latin:keyLabel="u"
+            latin:keyHintIcon="@drawable/keyboard_hint_7"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
+            latin:keyHintIcon="@drawable/keyboard_hint_8"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
+            latin:keyHintIcon="@drawable/keyboard_hint_9"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
+            latin:keyHintIcon="@drawable/keyboard_hint_0"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyLabel="="
+            latin:temporaryShiftKeyLabel="+"
+            latin:keyHintIcon="@drawable/keyboard_hint_plus"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="+" />
         <Key
@@ -121,10 +134,14 @@
             latin:popupCharacters="@string/alternates_for_l" />
         <Key
             latin:keyLabel=";"
+            latin:temporaryShiftKeyLabel=":"
+            latin:keyHintIcon="@drawable/keyboard_hint_colon"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters=":" />
         <Key
             latin:keyLabel="\'"
+            latin:temporaryShiftKeyLabel="&quot;"
+            latin:keyHintIcon="@drawable/keyboard_hint_quote"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&quot;" />
         <Key
@@ -168,14 +185,20 @@
             latin:keyLabel="m" />
         <Key
             latin:keyLabel=","
+            latin:temporaryShiftKeyLabel="*"
+            latin:keyHintIcon="@drawable/keyboard_hint_star"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="*" />
         <Key
             latin:keyLabel="."
+            latin:temporaryShiftKeyLabel="!"
+            latin:keyHintIcon="@drawable/keyboard_hint_exclamation"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="!" />
         <Key
             latin:keyLabel="/"
+            latin:temporaryShiftKeyLabel="\?"
+            latin:keyHintIcon="@drawable/keyboard_hint_question"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\?" />
         <Key
@@ -191,11 +214,15 @@
     <!-- This row is intentionally not marked as a bottom row -->
         <Key
             latin:keyLabel="("
+            latin:temporaryShiftKeyLabel="&lt;"
+            latin:keyHintIcon="@drawable/keyboard_hint_smaller"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&lt;"
             latin:horizontalGap="16.25%p" />
         <Key
             latin:keyLabel=")"
+            latin:temporaryShiftKeyLabel="&gt;"
+            latin:keyHintIcon="@drawable/keyboard_hint_greater"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&gt;" />
         <Key
@@ -206,10 +233,14 @@
             latin:isModifier="true" />
         <Key
             latin:keyLabel="_"
+            latin:temporaryShiftKeyLabel="\@"
+            latin:keyHintIcon="@drawable/keyboard_hint_at"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\@" />
         <Key
             latin:keyLabel="-"
+            latin:temporaryShiftKeyLabel="#"
+            latin:keyHintIcon="@drawable/keyboard_hint_doublecross"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="#" />
     </Row>

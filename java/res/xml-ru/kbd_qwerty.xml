@@ -28,44 +28,54 @@
     <Row>
         <Key
             latin:keyLabel="й"
+            latin:keyHintIcon="@drawable/keyboard_hint_1"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="1"
             latin:keyWidth="8.75%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ц"
+            latin:keyHintIcon="@drawable/keyboard_hint_2"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="у"
+            latin:keyHintIcon="@drawable/keyboard_hint_3"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="к"
+            latin:keyHintIcon="@drawable/keyboard_hint_4"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="е"
+            latin:keyHintIcon="@drawable/keyboard_hint_5"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_cyrillic_e" />
         <Key
             latin:keyLabel="н"
+            latin:keyHintIcon="@drawable/keyboard_hint_6"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="г"
+            latin:keyHintIcon="@drawable/keyboard_hint_7"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="ш"
+            latin:keyHintIcon="@drawable/keyboard_hint_8"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="щ"
+            latin:keyHintIcon="@drawable/keyboard_hint_9"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="з"
+            latin:keyHintIcon="@drawable/keyboard_hint_0"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="0" />
         <Key
