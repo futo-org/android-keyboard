@@ -332,7 +332,7 @@
     <string name="language_selection_summary">Slide finger on spacebar to change language</string>
     
     <!-- Add to dictionary hint -->
-    <string name="hint_add_to_dictionary">\u2190 Tap again to save</string>
+    <string name="hint_add_to_dictionary">\u2190 Touch again to save</string>
     
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
@@ -342,9 +342,9 @@
     <!-- Description for enabling to send user statistics to Google. -->
     <string name="prefs_description_log">Help improve this input method editor by automatically sending usage statistics and crash reports to Google.</string>
     <!-- Preferences item for enabling to re-correct suggestions .   -->
-    <string name="prefs_enable_recorrection">Tap to re-correct words</string>
+    <string name="prefs_enable_recorrection">Touch to re-correct words</string>
     <!-- The summary for the preferences item for enabling to re-correct suggestions .   -->
-    <string name="prefs_enable_recorrection_summary">You can re-correct words by tapping words you have typed</string>
+    <string name="prefs_enable_recorrection_summary">You can re-correct words by touching words you have typed</string>
 
     <!-- Description for keyboard theme switcher -->
     <string name="keyboard_layout">Keyboard Theme</string>
