@@ -728,6 +728,14 @@ public class LatinIME extends InputMethodService
     }
 
     @Override
+    public void onFinishInputView(boolean finishingInput) {
+        super.onFinishInputView(finishingInput);
+        // Remove penging messages related to update suggestions
+        mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
+        mHandler.removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
+    }
+
+    @Override
     public void onUpdateExtractedText(int token, ExtractedText text) {
         super.onUpdateExtractedText(token, text);
         InputConnection ic = getCurrentInputConnection();
