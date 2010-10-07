@@ -40,6 +40,7 @@
     <CheckBoxPreference
             android:key="recorrection_enabled"
             android:title="@string/prefs_enable_recorrection"
+            android:summary="@string/prefs_enable_recorrection_summary"
             android:persistent="true"
             android:defaultValue="@bool/default_recorrection_enabled"
             />
