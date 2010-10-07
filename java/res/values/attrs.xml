@@ -129,4 +129,8 @@
              requested keyboard mode, the row will be skipped. -->
         <attr name="keyboardMode" format="reference" />
     </declare-styleable>
+
+    <declare-styleable name="BaseKeyboard_Include">
+        <attr name="keyboardLayout" format="reference" />
+    </declare-styleable>
 </resources>
