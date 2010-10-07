@@ -22,12 +22,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Android 鍵盤"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Android 鍵盤設定"</string>
-    <!-- no translation found for english_ime_input_options (3909945612939668554) -->
-    <skip />
+    <string name="english_ime_input_options" msgid="3909945612939668554">"輸入選項"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按鍵時震動"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"按鍵時播放音效"</string>
-    <!-- no translation found for popup_on_keypress (123894815723512944) -->
-    <skip />
+    <string name="popup_on_keypress" msgid="123894815723512944">"按鍵時顯示彈出式視窗"</string>
     <string name="hit_correction" msgid="4855351009261318389">"修正輸入錯誤"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"啟用輸入錯誤修正功能"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"橫向輸入錯誤"</string>
@@ -50,14 +48,10 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"打字時顯示建議字詞"</string>
     <string name="auto_complete" msgid="1103196318775486023">"自動完成"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"在反白顯示的字詞處自動插入空白鍵和標點符號鍵盤"</string>
-    <!-- no translation found for prefs_settings_key (4623341240804046498) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_auto_name (2993460277873684680) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_show_name (3047567041784760575) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
-    <skip />
+    <string name="prefs_settings_key" msgid="4623341240804046498">"顯示設定金鑰"</string>
+    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"自動"</string>
+    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"永遠顯示"</string>
+    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"永遠隱藏"</string>
     <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
     <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
     <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
@@ -131,24 +125,16 @@
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
     <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
-    <!-- no translation found for selectInputMethod (315076553378705821) -->
-    <skip />
+    <string name="selectInputMethod" msgid="315076553378705821">"選取輸入法"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"輸入語言"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"以手指在空白鍵上滑動可變更語言"</string>
-    <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← 再次輕按可儲存"</string>
+    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← 再次輕按可儲存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
-    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
-    <skip />
-    <!-- no translation found for prefs_description_log (5827825607258246003) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection (4966265843750259377) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection_summary (8181745740388568396) -->
-    <skip />
-    <!-- no translation found for keyboard_layout (437433231038683666) -->
-    <skip />
-    <!-- no translation found for subtype_mode_keyboard (2242090416595003881) -->
-    <skip />
-    <!-- no translation found for subtype_mode_voice (4394113125441627771) -->
-    <skip />
+    <string name="prefs_enable_log" msgid="6620424505072963557">"啟用使用者意見回饋"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"自動將使用統計資料和當機報告傳送給 Google，協助改善這個輸入法編輯器。"</string>
+    <!-- outdated translation 4966265843750259377 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"輕按即可重新修正字詞"</string>
+    <!-- outdated translation 8181745740388568396 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"只要輕按您所輸入的字詞，即可重新予以修正。"</string>
+    <string name="keyboard_layout" msgid="437433231038683666">"鍵盤主題"</string>
+    <string name="subtype_mode_keyboard" msgid="2242090416595003881">"鍵盤"</string>
+    <string name="subtype_mode_voice" msgid="4394113125441627771">"語音"</string>
 </resources>

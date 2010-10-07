@@ -22,12 +22,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Android-toetsenbord"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Instellingen voor Android-toetsenbord"</string>
-    <!-- no translation found for english_ime_input_options (3909945612939668554) -->
-    <skip />
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Invoeropties"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Trillen bij druk op toets"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Geluid bij druk op een toets"</string>
-    <!-- no translation found for popup_on_keypress (123894815723512944) -->
-    <skip />
+    <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up bij toetsaanslag"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Typefouten corrigeren"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Foutcorrectie tijdens invoer inschakelen"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Invoerfouten in liggende weergave"</string>
@@ -50,14 +48,10 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Voorgestelde woorden weergeven tijdens typen"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Auto-aanvullen"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"Gemarkeerd woord automatisch invoegen met spatiebalk en interpunctie"</string>
-    <!-- no translation found for prefs_settings_key (4623341240804046498) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_auto_name (2993460277873684680) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_show_name (3047567041784760575) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
-    <skip />
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Instellingscode weergeven"</string>
+    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatisch"</string>
+    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Altijd weergeven"</string>
+    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Altijd verbergen"</string>
     <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
     <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
     <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
@@ -131,24 +125,16 @@
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
     <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
-    <!-- no translation found for selectInputMethod (315076553378705821) -->
-    <skip />
+    <string name="selectInputMethod" msgid="315076553378705821">"Invoermethode selecteren"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Invoertalen"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Schuif uw vinger over de spatiebalk om de taal te wijzigen"</string>
-    <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Tik nogmaals om op te slaan"</string>
+    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tik nogmaals om op te slaan"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Woordenboek beschikbaar"</string>
-    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
-    <skip />
-    <!-- no translation found for prefs_description_log (5827825607258246003) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection (4966265843750259377) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection_summary (8181745740388568396) -->
-    <skip />
-    <!-- no translation found for keyboard_layout (437433231038683666) -->
-    <skip />
-    <!-- no translation found for subtype_mode_keyboard (2242090416595003881) -->
-    <skip />
-    <!-- no translation found for subtype_mode_voice (4394113125441627771) -->
-    <skip />
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Gebruikersfeedback inschakelen."</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Help deze invoermethode te verbeteren door automatisch gebruiksstatistieken en crashmeldingen naar Google te verzenden."</string>
+    <!-- outdated translation 4966265843750259377 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tik om woorden opnieuw te corrigeren"</string>
+    <!-- outdated translation 8181745740388568396 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"U kunt woorden opnieuw corrigeren door woorden aan te raken die u heeft getypt"</string>
+    <string name="keyboard_layout" msgid="437433231038683666">"Toetsenbordthema"</string>
+    <string name="subtype_mode_keyboard" msgid="2242090416595003881">"toetsenbord"</string>
+    <string name="subtype_mode_voice" msgid="4394113125441627771">"spraak"</string>
 </resources>
