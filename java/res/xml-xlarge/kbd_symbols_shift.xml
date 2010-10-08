@@ -25,8 +25,8 @@
     latin:verticalGap="0px"
     latin:keyHeight="@dimen/key_height"
 >
-    <Row>
     <!-- This row is intentionally not marked as a top row -->
+    <Row>
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="Tab"
@@ -138,8 +138,8 @@
             latin:isSticky="true"
             latin:keyEdgeFlags="right" />
     </Row>
-    <Row>
     <!-- This row is intentionally not marked as a bottom row -->
+    <Row>
         <Key
             latin:keyLabel="≤"
             latin:horizontalGap="16.25%p" />

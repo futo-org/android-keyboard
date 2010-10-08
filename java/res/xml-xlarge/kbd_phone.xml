@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<Keyboard
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    latin:keyWidth="7.5%p"
+    latin:horizontalGap="0px"
+    latin:verticalGap="0px"
+    latin:keyHeight="@dimen/key_height"
+>
+    <!-- This row is intentionally not marked as a top row -->
+    <Row>
+        <Key
+            latin:codes="@integer/key_tab"
+            latin:keyLabel="@string/label_tab_key"
+            latin:keyWidth="15.0%p"
+            latin:isModifier="true"
+            latin:keyEdgeFlags="left" />
+        <!-- To match one character label size with "Tab", I placed spaces around the char '-'
+             and '+'. -->
+        <Key
+            latin:codes="45"
+            latin:keyLabel=" - "
+            latin:horizontalGap="6.0%p" />
+        <Key
+            latin:codes="43"
+            latin:keyLabel=" + " />
+        <Key
+            latin:codes="49"
+            latin:keyIcon="@drawable/sym_keyboard_num1"
+            latin:horizontalGap="11.5%p" />
+        <Key
+            latin:codes="50"
+            latin:keyIcon="@drawable/sym_keyboard_num2" />
+        <Key
+            latin:codes="51"
+            latin:keyIcon="@drawable/sym_keyboard_num3" />
+        <Key
+            latin:codes="@integer/key_delete"
+            latin:keyIcon="@drawable/sym_keyboard_delete"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            latin:keyWidth="15.0%p"
+            latin:horizontalGap="6.0%p"
+            latin:isModifier="true"
+            latin:isRepeatable="true"
+            latin:keyEdgeFlags="right" />
+    </Row>
+    <Row>
+        <Key
+            latin:codes="@integer/key_symbol"
+            latin:keyLabel="@string/label_more_key"
+            latin:keyWidth="15.0%p"
+            latin:isModifier="true"
+            latin:isSticky="true"
+            latin:keyEdgeFlags="left" />
+        <!-- To match one character label size with "More", I placed spaces around the char ','
+             and '.'. -->
+        <Key
+            latin:codes="44"
+            latin:keyLabel=" , "
+            latin:horizontalGap="6.0%p" />
+        <Key
+            latin:codes="46"
+            latin:keyLabel=" . " />
+        <Key
+            latin:codes="52"
+            latin:keyIcon="@drawable/sym_keyboard_num4"
+            latin:horizontalGap="11.5%p" />
+        <Key
+            latin:codes="53"
+            latin:keyIcon="@drawable/sym_keyboard_num5" />
+        <Key
+            latin:codes="54"
+            latin:keyIcon="@drawable/sym_keyboard_num6" />
+        <Key
+            latin:codes="@integer/key_return"
+            latin:keyIcon="@drawable/sym_keyboard_return"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+            latin:keyWidth="15.0%p"
+            latin:horizontalGap="6.0%p"
+            latin:isModifier="true"
+            latin:keyEdgeFlags="right" />
+    </Row>
+    <Row>
+        <!-- To match one character label size with "More", I placed spaces around the char '('
+             and ')'. -->
+        <!-- There is an empty area bellow the "More" key and left of the "(" key.  To ignore
+             the touch event on the area, "(" is intentionally not marked as a left edge key. -->
+        <Key
+            latin:codes="40"
+            latin:keyLabel=" ( "
+            latin:horizontalGap="21.0%p" />
+        <Key
+            latin:codes="41"
+            latin:keyLabel=" ) " />
+        <Key
+            latin:codes="55"
+            latin:keyIcon="@drawable/sym_keyboard_num7"
+            latin:horizontalGap="11.5%p" />
+        <Key
+            latin:codes="56"
+            latin:keyIcon="@drawable/sym_keyboard_num8" />
+        <!-- There is an empty area bellow the "Enter" key and right of the "9" key.  To ignore
+             the touch event on the area, "9" is intentionally not marked as a right edge key. -->
+        <Key
+            latin:codes="57"
+            latin:keyIcon="@drawable/sym_keyboard_num9" />
+    </Row>
+    <!-- This row is intentionally not marked as a bottom row -->
+    <Row>
+        <!-- There is an empty area bellow the "More" key and left of the "space" key.  To ignore
+             the touch event on the area, "space" is intentionally not marked as a left edge key. -->
+        <Key
+            latin:codes="@integer/key_space"
+            latin:keyIcon="@drawable/sym_keyboard_space"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+            latin:keyWidth="15.0%p"
+            latin:horizontalGap="21.0%p " />
+        <Key
+            latin:codes="42"
+            latin:keyIcon="@drawable/sym_keyboard_numstar"
+            latin:horizontalGap="11.5%p" />
+        <Key
+            latin:codes="48"
+            latin:keyIcon="@drawable/sym_keyboard_num0" />
+        <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
+             the touch event on the area, "#" is intentionally not marked as a right edge key. -->
+        <Key
+            latin:codes="35"
+            latin:keyIcon="@drawable/sym_keyboard_numpound" />
+    </Row>
+</Keyboard>
