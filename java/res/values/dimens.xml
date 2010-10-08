@@ -37,6 +37,8 @@
     <!-- -key_height x 1.0 -->
     <dimen name="mini_keyboard_vertical_correction">-54dip</dimen>
     <dimen name="key_hysteresis_distance">0.05in</dimen>
-    <dimen name="keyboard_vertical_correction">-10dip</dimen>
+    <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
+         to user's finger. -->
+    <dimen name="keyboard_vertical_correction">-0.06in</dimen>
     <dimen name="candidate_min_touchable_width">0.3in</dimen>
 </resources>
