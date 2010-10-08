@@ -23,9 +23,9 @@ import android.preference.PreferenceManager;
 import android.view.InflateException;
 
 import java.lang.ref.SoftReference;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -105,7 +105,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private KeyboardId mSymbolsShiftedId;
 
     private KeyboardId mCurrentId;
-    private final Map<KeyboardId, SoftReference<LatinKeyboard>> mKeyboards;
+    private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboards;
 
     private int mMode = MODE_NONE; /** One of the MODE_XXX values */
     private int mImeOptions;
@@ -194,11 +194,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         public final boolean mEnableShiftLock;
         public final boolean mHasVoice;
 
+        private final int mHashCode;
+
         public KeyboardId(int xml, int mode, boolean enableShiftLock, boolean hasVoice) {
             this.mXml = xml;
             this.mKeyboardMode = mode;
             this.mEnableShiftLock = enableShiftLock;
             this.mHasVoice = hasVoice;
+
+            this.mHashCode = Arrays.hashCode(new Object[] {
+               xml, mode, enableShiftLock, hasVoice
+            });
         }
 
         public KeyboardId(int xml, boolean hasVoice) {
@@ -219,8 +225,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         @Override
         public int hashCode() {
-            return (mXml + 1) * (mKeyboardMode + 1) * (mEnableShiftLock ? 2 : 1)
-                    * (mHasVoice ? 4 : 8);
+            return mHashCode;
         }
     }
 
@@ -378,7 +383,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void toggleShift() {
-        if (mCurrentId.equals(mSymbolsId)) {
+        if (isAlphabetMode())
+            return;
+        if (mCurrentId.equals(mSymbolsId) || !mCurrentId.equals(mSymbolsShiftedId)) {
             LatinKeyboard symbolsShiftedKeyboard = getKeyboard(mSymbolsShiftedId);
             mCurrentId = mSymbolsShiftedId;
             mInputView.setKeyboard(symbolsShiftedKeyboard);
@@ -390,7 +397,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             symbolsShiftedKeyboard.setShiftLocked(true);
             symbolsShiftedKeyboard.setImeOptions(mInputMethodService.getResources(),
                     mMode, mImeOptions);
-        } else if (mCurrentId.equals(mSymbolsShiftedId)) {
+        } else {
             LatinKeyboard symbolsKeyboard = getKeyboard(mSymbolsId);
             mCurrentId = mSymbolsId;
             mInputView.setKeyboard(symbolsKeyboard);
