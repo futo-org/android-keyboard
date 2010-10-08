@@ -154,7 +154,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     }
 
     // Timing constants
-    private static final int REPEAT_INTERVAL = PointerTracker.REPEAT_INTERVAL;
+    private final int mKeyRepeatInterval;
 
     // Miscellaneous constants
     /* package */ static final int NOT_A_KEY = -1;
@@ -261,7 +261,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 case MSG_REPEAT_KEY: {
                     final PointerTracker tracker = (PointerTracker)msg.obj;
                     tracker.repeatKey(msg.arg1);
-                    startKeyRepeatTimer(REPEAT_INTERVAL, msg.arg1, tracker);
+                    startKeyRepeatTimer(mKeyRepeatInterval, msg.arg1, tracker);
                     break;
                 }
                 case MSG_LONGPRESS_KEY: {
@@ -542,6 +542,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
         mHasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
+        mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
     }
 
     public void setOnKeyboardActionListener(OnKeyboardActionListener listener) {
@@ -1218,7 +1219,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = pointers.size(); i <= id; i++) {
             final PointerTracker tracker =
-                new PointerTracker(i, mHandler, mKeyDetector, this, mHasDistinctMultitouch);
+                new PointerTracker(i, mHandler, mKeyDetector, this, getResources());
             if (keys != null)
                 tracker.setKeyboard(keys, mKeyHysteresisDistance);
             if (listener != null)

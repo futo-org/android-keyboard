@@ -19,11 +19,11 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.latin.LatinKeyboardBaseView.OnKeyboardActionListener;
 import com.android.inputmethod.latin.LatinKeyboardBaseView.UIHandler;
 
+import android.content.res.Resources;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.Keyboard.Key;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.ViewConfiguration;
 
 public class PointerTracker {
     private static final String TAG = "PointerTracker";
@@ -33,15 +33,15 @@ public class PointerTracker {
     public interface UIProxy {
         public void invalidateKey(Key key);
         public void showPreview(int keyIndex, PointerTracker tracker);
+        public boolean hasDistinctMultitouch();
     }
 
     public final int mPointerId;
 
     // Timing constants
-    private static final int REPEAT_START_DELAY = 400;
-    /* package */  static final int REPEAT_INTERVAL = 50; // ~20 keys per second
-    private static final int LONGPRESS_TIMEOUT = ViewConfiguration.getLongPressTimeout();
-    private static final int MULTITAP_INTERVAL = 800; // milliseconds
+    private final int mDelayBeforeKeyRepeatStart;
+    private final int mLongPressKeyTimeout;
+    private final int mMultiTapKeyTimeout;
 
     // Miscellaneous constants
     private static final int NOT_A_KEY = LatinKeyboardBaseView.NOT_A_KEY;
@@ -164,7 +164,7 @@ public class PointerTracker {
     }
 
     public PointerTracker(int id, UIHandler handler, KeyDetector keyDetector, UIProxy proxy,
-            boolean hasDistinctMultitouch) {
+            Resources res) {
         if (proxy == null || handler == null || keyDetector == null)
             throw new NullPointerException();
         mPointerId = id;
@@ -172,7 +172,10 @@ public class PointerTracker {
         mHandler = handler;
         mKeyDetector = keyDetector;
         mKeyState = new KeyState(keyDetector);
-        mHasDistinctMultitouch = hasDistinctMultitouch;
+        mHasDistinctMultitouch = proxy.hasDistinctMultitouch();
+        mDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
+        mLongPressKeyTimeout = res.getInteger(R.integer.config_long_press_key_timeout);
+        mMultiTapKeyTimeout = res.getInteger(R.integer.config_multi_tap_key_timeout);
         resetMultiTap();
     }
 
@@ -278,10 +281,10 @@ public class PointerTracker {
         if (isValidKeyIndex(keyIndex)) {
             if (mKeys[keyIndex].repeatable) {
                 repeatKey(keyIndex);
-                mHandler.startKeyRepeatTimer(REPEAT_START_DELAY, keyIndex, this);
+                mHandler.startKeyRepeatTimer(mDelayBeforeKeyRepeatStart, keyIndex, this);
                 mIsRepeatableKey = true;
             }
-            mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
+            mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
         }
         showKeyPreviewAndUpdateKey(keyIndex);
     }
@@ -296,11 +299,11 @@ public class PointerTracker {
         if (isValidKeyIndex(keyIndex)) {
             if (keyState.getKeyIndex() == NOT_A_KEY) {
                 keyState.onMoveToNewKey(keyIndex, x, y);
-                mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
+                mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
                 resetMultiTap();
                 keyState.onMoveToNewKey(keyIndex, x, y);
-                mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
+                mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
             }
         } else {
             if (keyState.getKeyIndex() != NOT_A_KEY) {
@@ -489,7 +492,7 @@ public class PointerTracker {
             return;
 
         final boolean isMultiTap =
-                (eventTime < mLastTapTime + MULTITAP_INTERVAL && keyIndex == mLastSentIndex);
+                (eventTime < mLastTapTime + mMultiTapKeyTimeout && keyIndex == mLastSentIndex);
         if (key.codes.length > 1) {
             mInMultiTap = true;
             if (isMultiTap) {
