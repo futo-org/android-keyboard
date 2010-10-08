@@ -699,7 +699,9 @@ public class LatinIME extends InputMethodService
             mLastSelectionEnd = et.startOffset + et.selectionEnd;
 
             // Then look for possible corrections in a delayed fashion
-            if (!TextUtils.isEmpty(et.text)) postUpdateOldSuggestions();
+            if (!TextUtils.isEmpty(et.text) && isCursorTouchingWord()) {
+                postUpdateOldSuggestions();
+            }
         }
     }
 
@@ -805,6 +807,10 @@ public class LatinIME extends InputMethodService
                         postUpdateOldSuggestions();
                     } else {
                         abortCorrection(false);
+                        // Show the punctuation suggestions list if the current one is not
+                        if (!mSuggestPuncList.equals(mCandidateView.getSuggestions())) {
+                            setNextSuggestions();
+                        }
                     }
                 }
             }
@@ -1315,7 +1321,7 @@ public class LatinIME extends InputMethodService
         } else if (deleteChar) {
             if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
                 // Go back to the suggestion mode if the user canceled the
-                // "Tap again to save".
+                // "Touch again to save".
                 // NOTE: In gerenal, we don't revert the word when backspacing
                 // from a manual suggestion pick.  We deliberately chose a
                 // different behavior only in the case of picking the first
@@ -1444,7 +1450,7 @@ public class LatinIME extends InputMethodService
             mVoiceInput.incrementTextModificationInsertPunctuationCount(1);
         }
 
-        // Should dismiss the "Tap again to save" message when handling separator
+        // Should dismiss the "Touch again to save" message when handling separator
         if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
             postUpdateSuggestions();
         }
@@ -1887,7 +1893,8 @@ public class LatinIME extends InputMethodService
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions);
-            onKey(suggestion.charAt(0), null, LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
+            final char primaryCode = suggestion.charAt(0);
+            onKey(primaryCode, new int[]{primaryCode}, LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
                     LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
             if (ic != null) {
                 ic.endBatchEdit();
@@ -1922,7 +1929,7 @@ public class LatinIME extends InputMethodService
             TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
             setNextSuggestions();
         } else if (!showingAddToDictionaryHint) {
-            // If we're not showing the "Tap again to save hint", then show corrections again.
+            // If we're not showing the "Touch again to save hint", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
             clearSuggestions();
             postUpdateOldSuggestions();
@@ -2094,7 +2101,7 @@ public class LatinIME extends InputMethodService
                 ic.endBatchEdit();
             } else {
                 abortCorrection(true);
-                setNextSuggestions();
+                setNextSuggestions();  // Show the punctuation suggestions list
             }
         } else {
             abortCorrection(true);
@@ -2150,11 +2157,13 @@ public class LatinIME extends InputMethodService
         CharSequence toLeft = ic.getTextBeforeCursor(1, 0);
         CharSequence toRight = ic.getTextAfterCursor(1, 0);
         if (!TextUtils.isEmpty(toLeft)
-                && !isWordSeparator(toLeft.charAt(0))) {
+                && !isWordSeparator(toLeft.charAt(0))
+                && !isSuggestedPunctuation(toLeft.charAt(0))) {
             return true;
         }
         if (!TextUtils.isEmpty(toRight)
-                && !isWordSeparator(toRight.charAt(0))) {
+                && !isWordSeparator(toRight.charAt(0))
+                && !isSuggestedPunctuation(toRight.charAt(0))) {
             return true;
         }
         return false;
