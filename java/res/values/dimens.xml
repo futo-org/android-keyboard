@@ -28,10 +28,17 @@
          will not go into extract (fullscreen) mode. -->
     <dimen name="max_height_for_fullscreen">2.5in</dimen>
     <dimen name="key_text_size">22sp</dimen>
+    <dimen name="key_label_text_size">14sp</dimen>
+    <dimen name="key_preview_offset">0dip</dimen>
+    <dimen name="key_preview_height">80dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- key_height x 1.7 -->
     <dimen name="mini_keyboard_slide_allowance">91.8dip</dimen>
     <!-- -key_height x 1.0 -->
     <dimen name="mini_keyboard_vertical_correction">-54dip</dimen>
+    <dimen name="key_hysteresis_distance">0.05in</dimen>
+    <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
+         to user's finger. -->
+    <dimen name="keyboard_vertical_correction">-0.06in</dimen>
     <dimen name="candidate_min_touchable_width">0.3in</dimen>
 </resources>
