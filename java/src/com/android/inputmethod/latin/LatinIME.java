@@ -159,7 +159,7 @@ public class LatinIME extends InputMethodService
     private AlertDialog mOptionsDialog;
     private AlertDialog mVoiceWarningDialog;
 
-    KeyboardSwitcher mKeyboardSwitcher;
+    /* package */ KeyboardSwitcher mKeyboardSwitcher;
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
@@ -168,7 +168,7 @@ public class LatinIME extends InputMethodService
 
     private Hints mHints;
 
-    Resources mResources;
+    private Resources mResources;
 
     private String mInputLocale;
     private String mSystemLocale;
@@ -307,7 +307,7 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    Handler mHandler = new Handler() {
+    /* package */ Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -339,7 +339,8 @@ public class LatinIME extends InputMethodService
         }
     };
 
-    @Override public void onCreate() {
+    @Override
+    public void onCreate() {
         LatinImeLogger.init(this);
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
@@ -396,7 +397,7 @@ public class LatinIME extends InputMethodService
      * Loads a dictionary or multiple separated dictionary
      * @return returns array of dictionary resource ids
      */
-    static int[] getDictionary(Resources res) {
+    /* package */ static int[] getDictionary(Resources res) {
         String packageName = LatinIME.class.getPackage().getName();
         XmlResourceParser xrp = res.getXml(R.xml.dictionary);
         ArrayList<Integer> dictionaries = new ArrayList<Integer>();
@@ -1013,9 +1014,6 @@ public class LatinIME extends InputMethodService
     }
 
     private void reloadKeyboards() {
-        if (mKeyboardSwitcher == null) {
-            mKeyboardSwitcher = new KeyboardSwitcher(this);
-        }
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         if (mKeyboardSwitcher.getInputView() != null
                 && mKeyboardSwitcher.getKeyboardMode() != KeyboardSwitcher.MODE_NONE) {
@@ -2406,20 +2404,20 @@ public class LatinIME extends InputMethodService
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_START_TUTORIAL), 500);
     }
 
-    void tutorialDone() {
+    /* package */ void tutorialDone() {
         mTutorial = null;
     }
 
-    void promoteToUserDictionary(String word, int frequency) {
+    /* package */ void promoteToUserDictionary(String word, int frequency) {
         if (mUserDictionary.isValidWord(word)) return;
         mUserDictionary.addWord(word, frequency);
     }
 
-    WordComposer getCurrentWord() {
+    /* package */ WordComposer getCurrentWord() {
         return mWord;
     }
 
-    boolean getPopupOn() {
+    /* package */ boolean getPopupOn() {
         return mPopupOn;
     }
 
@@ -2576,7 +2574,8 @@ public class LatinIME extends InputMethodService
         return list;
     }
 
-    @Override protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
+    @Override
+    protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
         super.dump(fd, fout, args);
 
         final Printer p = new PrintWriterPrinter(fout);
