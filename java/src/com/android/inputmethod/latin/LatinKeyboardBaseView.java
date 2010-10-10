@@ -1087,8 +1087,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return container;
     }
 
-    private static boolean isOneRowKeyboard(Keyboard keyboard) {
-        final List<Key> keys = keyboard.getKeys();
+    private static boolean isOneRowKeys(List<Key> keys) {
         if (keys.size() == 0) return false;
         final int edgeFlags = keys.get(0).edgeFlags;
         // HACK: The first key of mini keyboard which was inflated from xml and has multiple rows,
@@ -1125,24 +1124,35 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             getLocationInWindow(mWindowOffset);
         }
 
+        // Get width of a key in the mini popup keyboard = "miniKeyWidth".
+        // On the other hand, "popupKey.width" is width of the pressed key on the main keyboard.
+        // We adjust the position of mini popup keyboard with the edge key in it:
+        //  a) When we have the leftmost key in popup keyboard directly above the pressed key
+        //     Right edges of both keys should be aligned for consistent default selection
+        //  b) When we have the rightmost key in popup keyboard directly above the pressed key
+        //     Left edges of both keys should be aligned for consistent default selection
+        final List<Key> miniKeys = mMiniKeyboard.getKeyboard().getKeys();
+        final int miniKeyWidth = miniKeys.size() > 0 ? miniKeys.get(0).width : 0;
+
         // HACK: Have the leftmost number in the popup characters right above the key
         boolean isNumberAtLeftmost =
                 hasMultiplePopupChars(popupKey) && isNumberAtLeftmostPopupChar(popupKey);
         int popupX = popupKey.x + mWindowOffset[0];
-        int popupY = popupKey.y + mWindowOffset[1];
+        popupX += getPaddingLeft();
         if (isNumberAtLeftmost) {
+            popupX += popupKey.width - miniKeyWidth;  // adjustment for a) described above
             popupX -= container.getPaddingLeft();
         } else {
-            popupX += popupKey.width + getPaddingLeft();
+            popupX += miniKeyWidth;  // adjustment for b) described above
             popupX -= container.getMeasuredWidth();
             popupX += container.getPaddingRight();
         }
+        int popupY = popupKey.y + mWindowOffset[1];
         popupY += getPaddingTop();
         popupY -= container.getMeasuredHeight();
         popupY += container.getPaddingBottom();
         final int x = popupX;
-        final int y = mShowPreview && isOneRowKeyboard(mMiniKeyboard.getKeyboard())
-                ? mPopupPreviewDisplayedY : popupY;
+        final int y = mShowPreview && isOneRowKeys(miniKeys) ? mPopupPreviewDisplayedY : popupY;
 
         int adjustedX = x;
         if (x < 0) {

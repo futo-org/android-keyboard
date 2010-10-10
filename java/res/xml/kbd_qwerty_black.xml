@@ -61,7 +61,7 @@
             android:popupCharacters="@string/alternates_for_i" />
         <Key
             android:keyLabel="o"
-            android:popupKeyboard="@xml/kbd_popup_template"
+            android:popupKeyboard="@xml/kbd_popup_narrow_template"
             android:popupCharacters="@string/alternates_for_o" />
         <Key
             android:keyLabel="p"
