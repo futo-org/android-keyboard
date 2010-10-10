@@ -817,7 +817,10 @@ public class LatinIME extends InputMethodService
                     } else {
                         abortCorrection(false);
                         // Show the punctuation suggestions list if the current one is not
-                        if (!mSuggestPuncList.equals(mCandidateView.getSuggestions())) {
+                        // and if not showing "Touch again to save".
+                        if (mCandidateView != null
+                                && !mSuggestPuncList.equals(mCandidateView.getSuggestions())
+                                        && !mCandidateView.isShowingAddToDictionaryHint()) {
                             setNextSuggestions();
                         }
                     }
@@ -1935,7 +1938,7 @@ public class LatinIME extends InputMethodService
             TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
             setNextSuggestions();
         } else if (!showingAddToDictionaryHint) {
-            // If we're not showing the "Touch again to save hint", then show corrections again.
+            // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
             clearSuggestions();
             postUpdateOldSuggestions();
