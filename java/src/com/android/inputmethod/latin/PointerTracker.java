@@ -22,7 +22,6 @@ import com.android.inputmethod.latin.LatinKeyboardBaseView.UIHandler;
 
 import android.content.res.Resources;
 import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.Keyboard.Key;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -429,7 +428,7 @@ public class PointerTracker {
         // long press should not be started.
         if (isTemporaryUpperCase() && key.temporaryShiftLabel != null)
             return;
-        mHandler.startLongPressTimer(LONGPRESS_TIMEOUT, keyIndex, this);
+        mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
     }
 
     private boolean isTemporaryUpperCase() {
