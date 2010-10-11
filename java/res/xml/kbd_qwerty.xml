@@ -70,7 +70,7 @@
         <Key
             latin:keyLabel="o"
             latin:keyHintIcon="@drawable/keyboard_hint_9"
-            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupKeyboard="@xml/kbd_popup_narrow_template"
             latin:popupCharacters="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
