@@ -47,10 +47,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.WeakHashMap;
 
 /**
  * A view that renders a virtual {@link LatinKeyboard}. It handles rendering of keys and
@@ -199,7 +198,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private PopupWindow mMiniKeyboardPopup;
     private LatinKeyboardBaseView mMiniKeyboard;
     private View mMiniKeyboardParent;
-    private Map<Key,View> mMiniKeyboardCache;
+    private final WeakHashMap<Key, View> mMiniKeyboardCache = new WeakHashMap<Key, View>();
     private int mMiniKeyboardOriginX;
     private int mMiniKeyboardOriginY;
     private long mMiniKeyboardPopupTime;
@@ -489,7 +488,6 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mPaint.setAlpha(255);
 
         mPadding = new Rect(0, 0, 0, 0);
-        mMiniKeyboardCache = new HashMap<Key,View>();
         mKeyBackground.getPadding(mPadding);
 
         mSwipeThreshold = (int) (500 * res.getDisplayMetrics().density);
