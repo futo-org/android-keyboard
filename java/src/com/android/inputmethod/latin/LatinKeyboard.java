@@ -164,7 +164,7 @@ public class LatinKeyboard extends BaseKeyboard {
             mEnterKey.popupCharacters = null;
             mEnterKey.popupResId = 0;
             mEnterKey.text = null;
-            switch (options&(EditorInfo.IME_MASK_ACTION|EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
+            switch (options & (EditorInfo.IME_MASK_ACTION|EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
                 case EditorInfo.IME_ACTION_GO:
                     mEnterKey.iconPreview = null;
                     mEnterKey.icon = null;
@@ -193,19 +193,11 @@ public class LatinKeyboard extends BaseKeyboard {
                     mEnterKey.label = res.getText(R.string.label_send_key);
                     break;
                 default:
-                    if (mode == KeyboardSwitcher.MODE_IM) {
-                        mEnterKey.icon = null;
-                        mEnterKey.iconPreview = null;
-                        mEnterKey.label = ":-)";
-                        mEnterKey.text = ":-) ";
-                        mEnterKey.popupResId = R.xml.popup_smileys;
-                    } else {
-                        mEnterKey.iconPreview = res.getDrawable(
-                                R.drawable.sym_keyboard_feedback_return);
-                        mEnterKey.icon = res.getDrawable(mIsBlackSym ?
-                                R.drawable.sym_bkeyboard_return : R.drawable.sym_keyboard_return);
-                        mEnterKey.label = null;
-                    }
+                    mEnterKey.iconPreview = res.getDrawable(
+                            R.drawable.sym_keyboard_feedback_return);
+                    mEnterKey.icon = res.getDrawable(mIsBlackSym ?
+                            R.drawable.sym_bkeyboard_return : R.drawable.sym_keyboard_return);
+                    mEnterKey.label = null;
                     break;
             }
             // Set the initial size of the preview icon
