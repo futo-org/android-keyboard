@@ -86,6 +86,10 @@ public class LatinKeyboard extends BaseKeyboard {
     // TODO: generalize for any keyboardId
     private boolean mIsBlackSym;
 
+    // TODO: remove this attribute when either Keyboard.mDefaultVerticalGap or Key.parent becomes
+    // non-private.
+    private final int mVerticalGap;
+
     private static final int SHIFT_OFF = 0;
     private static final int SHIFT_ON = 1;
     private static final int SHIFT_LOCKED = 2;
@@ -133,6 +137,8 @@ public class LatinKeyboard extends BaseKeyboard {
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
         mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
+        // TODO remove this initialization after cleanup
+        mVerticalGap = super.getVerticalGap();
     }
 
     @Override
@@ -168,31 +174,30 @@ public class LatinKeyboard extends BaseKeyboard {
     }
 
     public void setImeOptions(Resources res, int mode, int options) {
-        if (mEnterKey != null) {
-            switch (options & (EditorInfo.IME_MASK_ACTION|EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
-                case EditorInfo.IME_ACTION_GO:
-                    resetKeyAttributes(mEnterKey, res.getText(R.string.label_go_key));
-                    break;
-                case EditorInfo.IME_ACTION_NEXT:
-                    resetKeyAttributes(mEnterKey, res.getText(R.string.label_next_key));
-                    break;
-                case EditorInfo.IME_ACTION_DONE:
-                    resetKeyAttributes(mEnterKey, res.getText(R.string.label_done_key));
-                    break;
-                case EditorInfo.IME_ACTION_SEARCH:
-                    resetKeyAttributes(mEnterKey, null);
-                    mEnterKey.iconPreview = res.getDrawable(
-                            R.drawable.sym_keyboard_feedback_search);
-                    mEnterKey.icon = res.getDrawable(mIsBlackSym ?
-                            R.drawable.sym_bkeyboard_search : R.drawable.sym_keyboard_search);
-                    break;
-                case EditorInfo.IME_ACTION_SEND:
-                    resetKeyAttributes(mEnterKey, res.getText(R.string.label_send_key));
-                    break;
-            }
-            // Set the initial size of the preview icon
-            setDefaultBounds(mEnterKey.iconPreview);
+        if (mEnterKey == null)
+            return;
+        switch (options & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
+        case EditorInfo.IME_ACTION_GO:
+            resetKeyAttributes(mEnterKey, res.getText(R.string.label_go_key));
+            break;
+        case EditorInfo.IME_ACTION_NEXT:
+            resetKeyAttributes(mEnterKey, res.getText(R.string.label_next_key));
+            break;
+        case EditorInfo.IME_ACTION_DONE:
+            resetKeyAttributes(mEnterKey, res.getText(R.string.label_done_key));
+            break;
+        case EditorInfo.IME_ACTION_SEARCH:
+            resetKeyAttributes(mEnterKey, null);
+            mEnterKey.iconPreview = res.getDrawable(R.drawable.sym_keyboard_feedback_search);
+            mEnterKey.icon = res.getDrawable(mIsBlackSym ? R.drawable.sym_bkeyboard_search
+                    : R.drawable.sym_keyboard_search);
+            break;
+        case EditorInfo.IME_ACTION_SEND:
+            resetKeyAttributes(mEnterKey, res.getText(R.string.label_send_key));
+            break;
         }
+        // Set the initial size of the preview icon
+        setDefaultBounds(mEnterKey.iconPreview);
     }
 
     public void enableShiftLock() {
@@ -663,6 +668,7 @@ public class LatinKeyboard extends BaseKeyboard {
         return textSize;
     }
 
+    // TODO LatinKey could be static class
     class LatinKey extends BaseKeyboard.Key {
 
         // functional normal state (with properties)
@@ -711,6 +717,8 @@ public class LatinKeyboard extends BaseKeyboard {
          */
         @Override
         public boolean isInside(int x, int y) {
+            // TODO This should be done by parent.isInside(this, x, y)
+            // if Key.parent were protected.
             boolean result = LatinKeyboard.this.isInside(this, x, y);
             return result;
         }
@@ -729,6 +737,15 @@ public class LatinKeyboard extends BaseKeyboard {
                 }
             }
             return super.getCurrentDrawableState();
+        }
+
+        @Override
+        public int squaredDistanceFrom(int x, int y) {
+            // We should count vertical gap between rows to calculate the center of this Key.
+            final int verticalGap = LatinKeyboard.this.mVerticalGap;
+            final int xDist = this.x + width / 2 - x;
+            final int yDist = this.y + (height + verticalGap) / 2 - y;
+            return xDist * xDist + yDist * yDist;
         }
     }
 
