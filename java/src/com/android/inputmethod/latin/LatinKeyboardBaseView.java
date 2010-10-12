@@ -47,6 +47,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.WeakHashMap;
@@ -158,6 +159,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     // Miscellaneous constants
     /* package */ static final int NOT_A_KEY = -1;
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
+    private static final int NUMBER_HINT_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
     // XML attribute
     private int mKeyTextSize;
@@ -178,6 +180,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     // Main keyboard
     private Keyboard mKeyboard;
     private Key[] mKeys;
+    // TODO this attribute should be gotten from Keyboard.
+    private int mKeyboardVerticalGap;
 
     // Key preview popup
     private TextView mPreviewText;
@@ -237,6 +241,11 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private final Paint mPaint;
     private final Rect mPadding;
     private final Rect mClipRegion = new Rect(0, 0, 0, 0);
+    // This map caches key label text height in pixel as value and key label text size as map key.
+    private final HashMap<Integer, Integer> mTextHeightCache = new HashMap<Integer, Integer>();
+    // Distance from horizontal center of the key, proportional to key label text height.
+    private final float KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR = 0.55f;
+    private final String KEY_LABEL_HEIGHT_REFERENCE_CHAR = "H";
 
     private final UIHandler mHandler = new UIHandler();
 
@@ -465,7 +474,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mPreviewPopup = new PopupWindow(context);
         if (previewLayout != 0) {
             mPreviewText = (TextView) inflate.inflate(previewLayout, null);
-            mPreviewTextSizeLarge = (int) mPreviewText.getTextSize();
+            mPreviewTextSizeLarge = (int) res.getDimension(R.dimen.key_preview_text_size_large);
             mPreviewPopup.setContentView(mPreviewText);
             mPreviewPopup.setBackgroundDrawable(null);
         } else {
@@ -576,6 +585,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         LatinImeLogger.onSetKeyboard(keyboard);
         mKeys = mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
+        mKeyboardVerticalGap = (int)getResources().getDimension(R.dimen.key_bottom_gap);
         for (PointerTracker tracker : mPointerTrackers) {
             tracker.setKeyboard(mKeys, mKeyHysteresisDistance);
         }
@@ -720,7 +730,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         int dimensionSum = 0;
         for (int i = 0; i < length; i++) {
             Key key = keys[i];
-            dimensionSum += Math.min(key.width, key.height) + key.gap;
+            dimensionSum += Math.min(key.width, key.height + mKeyboardVerticalGap) + key.gap;
         }
         if (dimensionSum < 0 || length == 0) return;
         mKeyDetector.setProximityThreshold((int) (dimensionSum * 1.4f / length));
@@ -772,13 +782,14 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         paint.setColor(mKeyTextColor);
         boolean drawSingleKey = false;
         if (invalidKey != null && canvas.getClipBounds(clipRegion)) {
-          // Is clipRegion completely contained within the invalidated key?
-          if (invalidKey.x + kbdPaddingLeft - 1 <= clipRegion.left &&
-                  invalidKey.y + kbdPaddingTop - 1 <= clipRegion.top &&
-                  invalidKey.x + invalidKey.width + kbdPaddingLeft + 1 >= clipRegion.right &&
-                  invalidKey.y + invalidKey.height + kbdPaddingTop + 1 >= clipRegion.bottom) {
-              drawSingleKey = true;
-          }
+            // TODO we should use Rect.inset and Rect.contains here.
+            // Is clipRegion completely contained within the invalidated key?
+            if (invalidKey.x + kbdPaddingLeft - 1 <= clipRegion.left &&
+                    invalidKey.y + kbdPaddingTop - 1 <= clipRegion.top &&
+                    invalidKey.x + invalidKey.width + kbdPaddingLeft + 1 >= clipRegion.right &&
+                    invalidKey.y + invalidKey.height + kbdPaddingTop + 1 >= clipRegion.bottom) {
+                drawSingleKey = true;
+            }
         }
         canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
         final int keyCount = keys.length;
@@ -794,8 +805,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             String label = key.label == null? null : adjustCase(key.label).toString();
 
             final Rect bounds = keyBackground.getBounds();
-            if (key.width != bounds.right ||
-                    key.height != bounds.bottom) {
+            if (key.width != bounds.right || key.height != bounds.bottom) {
                 keyBackground.setBounds(0, 0, key.width, key.height);
             }
             canvas.translate(key.x + kbdPaddingLeft, key.y + kbdPaddingTop);
@@ -804,22 +814,34 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             boolean shouldDrawIcon = true;
             if (label != null) {
                 // For characters, use large font. For labels like "Done", use small font.
+                final int labelSize;
                 if (label.length() > 1 && key.codes.length < 2) {
-                    paint.setTextSize(mLabelTextSize);
+                    labelSize = mLabelTextSize;
                     paint.setTypeface(Typeface.DEFAULT_BOLD);
                 } else {
-                    paint.setTextSize(mKeyTextSize);
+                    labelSize = mKeyTextSize;
                     paint.setTypeface(mKeyTextStyle);
                 }
+                paint.setTextSize(labelSize);
+
+                Integer labelHeightValue = mTextHeightCache.get(labelSize);
+                final int labelHeight;
+                if (labelHeightValue != null) {
+                    labelHeight = labelHeightValue;
+                } else {
+                    Rect textBounds = new Rect();
+                    paint.getTextBounds(KEY_LABEL_HEIGHT_REFERENCE_CHAR, 0, 1, textBounds);
+                    labelHeight = textBounds.height();
+                    mTextHeightCache.put(labelSize, labelHeight);
+                }
+
                 // Draw a drop shadow for the text
                 paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
-                // Draw the text
-                canvas.drawText(label,
-                    (key.width - padding.left - padding.right) / 2
-                            + padding.left,
-                    (key.height - padding.top - padding.bottom) / 2
-                            + (paint.getTextSize() - paint.descent()) / 2 + padding.top,
-                    paint);
+                final int centerX = (key.width + padding.left - padding.right) / 2;
+                final int centerY = (key.height + padding.top - padding.bottom) / 2;
+                final float baseline = centerY
+                        + labelHeight * KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR;
+                canvas.drawText(label, centerX, baseline, paint);
                 // Turn off drop shadow
                 paint.setShadowLayer(0, 0, 0, 0);
 
@@ -829,15 +851,23 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             }
             if (key.icon != null && shouldDrawIcon) {
                 // Special handing for the upper-right number hint icons
-                final int drawableWidth = isNumberAtEdgeOfPopupChars(key) ?
-                        key.width : key.icon.getIntrinsicWidth();
-                final int drawableHeight = isNumberAtEdgeOfPopupChars(key) ?
-                        key.height : key.icon.getIntrinsicHeight();
-
-                final int drawableX = (key.width - padding.left - padding.right
-                        - drawableWidth) / 2 + padding.left;
-                final int drawableY = (key.height - padding.top - padding.bottom
-                        - drawableHeight) / 2 + padding.top;
+                final int drawableWidth;
+                final int drawableHeight;
+                final int drawableX;
+                final int drawableY;
+                if (isNumberAtEdgeOfPopupChars(key)) {
+                    drawableWidth = key.width;
+                    drawableHeight = key.height;
+                    drawableX = 0;
+                    drawableY = NUMBER_HINT_VERTICAL_ADJUSTMENT_PIXEL;
+                } else {
+                    drawableWidth = key.icon.getIntrinsicWidth();
+                    drawableHeight = key.icon.getIntrinsicHeight();
+                    drawableX = (key.width - padding.left - padding.right - drawableWidth)
+                            / 2 + padding.left;
+                    drawableY = (key.height - padding.top - padding.bottom - drawableHeight)
+                            / 2 + padding.top;
+                }
                 canvas.translate(drawableX, drawableY);
                 key.icon.setBounds(0, 0, drawableWidth, drawableHeight);
                 key.icon.draw(canvas);
@@ -1003,6 +1033,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         if (key == null)
             return;
         mInvalidatedKey = key;
+        // TODO we should clean up this and record key's region to use in onBufferDraw.
         mDirtyRect.union(key.x + getPaddingLeft(), key.y + getPaddingTop(),
                 key.x + key.width + getPaddingLeft(), key.y + key.height + getPaddingTop());
         onBufferDraw();

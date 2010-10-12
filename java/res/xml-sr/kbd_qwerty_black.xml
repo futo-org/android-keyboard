@@ -23,10 +23,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:keyWidth="9.09%p"
     android:horizontalGap="0px"
-    android:verticalGap="0px"
+    android:verticalGap="@dimen/key_bottom_gap"
     android:keyHeight="@dimen/key_height"
 >
-    <Row>
+    <Row
+        android:rowEdgeFlags="top"
+    >
         <Key
             android:keyLabel="љ"
             android:popupKeyboard="@xml/kbd_popup_template"
