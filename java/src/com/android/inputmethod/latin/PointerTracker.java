@@ -21,7 +21,6 @@ import com.android.inputmethod.latin.LatinKeyboardBaseView.OnKeyboardActionListe
 import com.android.inputmethod.latin.LatinKeyboardBaseView.UIHandler;
 
 import android.content.res.Resources;
-import android.inputmethodservice.Keyboard;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -286,7 +285,7 @@ public class PointerTracker {
                 mHandler.startKeyRepeatTimer(mDelayBeforeKeyRepeatStart, keyIndex, this);
                 mIsRepeatableKey = true;
             }
-            mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
+            startLongPressTimer(keyIndex);
         }
         showKeyPreviewAndUpdateKey(keyIndex);
     }
@@ -302,11 +301,11 @@ public class PointerTracker {
         if (key != null) {
             if (keyState.getKeyIndex() == NOT_A_KEY) {
                 keyState.onMoveToNewKey(keyIndex, x, y);
-                mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
+                startLongPressTimer(keyIndex);
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
                 resetMultiTap();
                 keyState.onMoveToNewKey(keyIndex, x, y);
-                mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
+                startLongPressTimer(keyIndex);
             }
         } else {
             if (keyState.getKeyIndex() != NOT_A_KEY) {
