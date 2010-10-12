@@ -158,46 +158,36 @@ public class LatinKeyboard extends BaseKeyboard {
         return key;
     }
 
+    private static void resetKeyAttributes(Key key, CharSequence label) {
+        key.popupCharacters = null;
+        key.popupResId = 0;
+        key.text = null;
+        key.iconPreview = null;
+        key.icon = null;
+        key.label = label;
+    }
+
     public void setImeOptions(Resources res, int mode, int options) {
         if (mEnterKey != null) {
-            // Reset some of the rarely used attributes.
-            mEnterKey.popupCharacters = null;
-            mEnterKey.popupResId = 0;
-            mEnterKey.text = null;
             switch (options & (EditorInfo.IME_MASK_ACTION|EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
                 case EditorInfo.IME_ACTION_GO:
-                    mEnterKey.iconPreview = null;
-                    mEnterKey.icon = null;
-                    mEnterKey.label = res.getText(R.string.label_go_key);
+                    resetKeyAttributes(mEnterKey, res.getText(R.string.label_go_key));
                     break;
                 case EditorInfo.IME_ACTION_NEXT:
-                    mEnterKey.iconPreview = null;
-                    mEnterKey.icon = null;
-                    mEnterKey.label = res.getText(R.string.label_next_key);
+                    resetKeyAttributes(mEnterKey, res.getText(R.string.label_next_key));
                     break;
                 case EditorInfo.IME_ACTION_DONE:
-                    mEnterKey.iconPreview = null;
-                    mEnterKey.icon = null;
-                    mEnterKey.label = res.getText(R.string.label_done_key);
+                    resetKeyAttributes(mEnterKey, res.getText(R.string.label_done_key));
                     break;
                 case EditorInfo.IME_ACTION_SEARCH:
+                    resetKeyAttributes(mEnterKey, null);
                     mEnterKey.iconPreview = res.getDrawable(
                             R.drawable.sym_keyboard_feedback_search);
                     mEnterKey.icon = res.getDrawable(mIsBlackSym ?
                             R.drawable.sym_bkeyboard_search : R.drawable.sym_keyboard_search);
-                    mEnterKey.label = null;
                     break;
                 case EditorInfo.IME_ACTION_SEND:
-                    mEnterKey.iconPreview = null;
-                    mEnterKey.icon = null;
-                    mEnterKey.label = res.getText(R.string.label_send_key);
-                    break;
-                default:
-                    mEnterKey.iconPreview = res.getDrawable(
-                            R.drawable.sym_keyboard_feedback_return);
-                    mEnterKey.icon = res.getDrawable(mIsBlackSym ?
-                            R.drawable.sym_bkeyboard_return : R.drawable.sym_keyboard_return);
-                    mEnterKey.label = null;
+                    resetKeyAttributes(mEnterKey, res.getText(R.string.label_send_key));
                     break;
             }
             // Set the initial size of the preview icon
