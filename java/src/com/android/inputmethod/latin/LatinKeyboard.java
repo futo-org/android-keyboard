@@ -61,6 +61,7 @@ public class LatinKeyboard extends Keyboard {
     private Key mShiftKey;
     private Key mEnterKey;
     private Key mF1Key;
+    private Drawable mF1HintIcon;
     private Key mSpaceKey;
     private Key m123Key;
     private final int NUMBER_HINT_COUNT = 10;
@@ -135,6 +136,7 @@ public class LatinKeyboard extends Keyboard {
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
         m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);
         m123MicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_123_mic);
+        mF1HintIcon = res.getDrawable(R.drawable.hint_settings);
         setDefaultBounds(m123MicPreviewIcon);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
@@ -368,13 +370,18 @@ public class LatinKeyboard extends Keyboard {
         if (mHasVoiceButton && mVoiceEnabled) {
             mF1Key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
             mF1Key.label = null;
-            mF1Key.icon = mMicIcon;
+            // HACK: draw mMicIcon and mF1HintIcon at the same time
+            mF1Key.icon = new BitmapDrawable(mRes, drawSynthesizedSettingsHintImage(
+                    mF1Key.width, mF1Key.height + mVerticalGap, mMicIcon, mF1HintIcon));
             mF1Key.iconPreview = mMicPreviewIcon;
             mF1Key.popupResId = R.xml.popup_mic;
         } else {
             mF1Key.label = ",";
             mF1Key.codes = new int[] { ',' };
-            mF1Key.icon = null;
+            // HACK: draw only mF1HintIcon on offscreen buffer to adjust position of '...' to the
+            // above synthesized icon
+            mF1Key.icon = new BitmapDrawable(mRes, drawSynthesizedSettingsHintImage(
+                    mF1Key.width, mF1Key.height + mVerticalGap, null, mF1HintIcon));
             mF1Key.iconPreview = null;
             mF1Key.popupResId = R.xml.popup_comma;
         }
@@ -422,6 +429,29 @@ public class LatinKeyboard extends Keyboard {
         paint.setTextSize(textSize);
         paint.getTextBounds(text, 0, text.length(), bounds);
         return bounds.width();
+    }
+
+    // Overlay two images.  Note that mainIcon can be null.
+    private Bitmap drawSynthesizedSettingsHintImage(
+            int width, int height, Drawable mainIcon, Drawable hintIcon) {
+        if (hintIcon == null)
+            return null;
+        final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        final Canvas canvas = new Canvas(buffer);
+        canvas.drawColor(mRes.getColor(R.color.latinkeyboard_transparent), PorterDuff.Mode.CLEAR);
+        // draw main icon at centered position
+        if (mainIcon != null) {
+            setDefaultBounds(mainIcon);
+            final int drawableX = (width - mainIcon.getIntrinsicWidth()) / 2;
+            final int drawableY = (height - mainIcon.getIntrinsicHeight()) / 2;
+            canvas.translate(drawableX, drawableY);
+            mainIcon.draw(canvas);
+            canvas.translate(-drawableX, -drawableY);
+        }
+        // draw hint icon fully in the key
+        hintIcon.setBounds(0, 0, width, height);
+        hintIcon.draw(canvas);
+        return buffer;
     }
 
     // Layout local language name and left and right arrow on space bar.
