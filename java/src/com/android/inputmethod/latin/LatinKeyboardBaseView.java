@@ -847,7 +847,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
                 // Usually don't draw icon if label is not null, but we draw icon for the number
                 // hint.
-                shouldDrawIcon = isNumberAtEdgeOfPopupChars(key);
+                shouldDrawIcon = isCommaKeyLabelOrNumberAtEdgeOfPopupChars(key);
             }
             if (key.icon != null && shouldDrawIcon) {
                 // Special handing for the upper-right number hint icons
@@ -940,7 +940,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         if (key == null)
             return;
         // Should not draw number hint icons
-        if (key.icon != null && !isNumberAtEdgeOfPopupChars(key)) {
+        if (key.icon != null && !isCommaKeyLabelOrNumberAtEdgeOfPopupChars(key)) {
             mPreviewText.setCompoundDrawables(null, null, null,
                     key.iconPreview != null ? key.iconPreview : key.icon);
             mPreviewText.setText(null);
@@ -1219,6 +1219,14 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             return true;
         }
         return false;
+    }
+
+    private static boolean isCommaKeyLabelOrNumberAtEdgeOfPopupChars(Key key) {
+        return isNumberAtEdgeOfPopupChars(key) || isCommaKeyLabel(key);
+    }
+
+    private static boolean isCommaKeyLabel(Key key) {
+        return ",".equals(key.label);
     }
 
     private static boolean isNumberAtEdgeOfPopupChars(Key key) {
