@@ -128,12 +128,12 @@
     <string name="selectInputMethod" msgid="315076553378705821">"Seleccionar método de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Deslize o dedo pela barra de espaço para alterar o idioma"</string>
-    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Toque novamente para guardar"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Toque novamente para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activar comentários do utilizador"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Envie automaticamente estatísticas de utilização e relatórios de falhas para a Google e ajude-nos a melhor este editor de método de introdução."</string>
-    <!-- outdated translation 4966265843750259377 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para voltar a corrigir palavras"</string>
-    <!-- outdated translation 8181745740388568396 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Pode voltar a corrigir palavras tocando naquelas que escreveu"</string>
+    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para voltar a corrigir palavras"</string>
+    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Pode voltar a corrigir palavras tocando naquelas que escreveu"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema do teclado"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"teclado"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"voz"</string>

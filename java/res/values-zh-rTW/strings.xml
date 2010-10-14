@@ -128,12 +128,12 @@
     <string name="selectInputMethod" msgid="315076553378705821">"選取輸入法"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"輸入語言"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"以手指在空白鍵上滑動可變更語言"</string>
-    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← 再次輕按可儲存"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← 再次輕觸即可儲存"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"啟用使用者意見回饋"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"自動將使用統計資料和當機報告傳送給 Google，協助改善這個輸入法編輯器。"</string>
-    <!-- outdated translation 4966265843750259377 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"輕按即可重新修正字詞"</string>
-    <!-- outdated translation 8181745740388568396 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"只要輕按您所輸入的字詞，即可重新予以修正。"</string>
+    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"輕觸即可重新修正字詞"</string>
+    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"只要輕觸您所輸入的字詞，即可重新予以修正"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"鍵盤主題"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"鍵盤"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"語音"</string>

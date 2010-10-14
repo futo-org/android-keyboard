@@ -128,12 +128,12 @@
     <string name="selectInputMethod" msgid="315076553378705821">"Seleziona metodo di inserimento"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lingue comandi"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Scorri il dito sulla barra spaziatrice per cambiare la lingua"</string>
-    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tocca di nuovo per salvare"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tocca di nuovo per salvare"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dizionario disponibile"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Attiva commenti degli utenti"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Aiuta a migliorare l\'editor del metodo di inserimento inviando automaticamente a Google statistiche sull\'utilizzo e segnalazioni sugli arresti anomali."</string>
-    <!-- outdated translation 4966265843750259377 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocca per correggere di nuovo le parole"</string>
-    <!-- outdated translation 8181745740388568396 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Puoi correggere di nuovo le parole toccando quelle che hai digitato"</string>
+    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocca per correggere di nuovo le parole"</string>
+    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Puoi correggere di nuovo le parole toccando quelle che hai digitato"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema della tastiera"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"tastiera"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"vocale"</string>
