@@ -90,6 +90,10 @@ public class LatinKeyboard extends Keyboard {
     // TODO: generalize for any keyboardId
     private boolean mIsBlackSym;
 
+    // TODO: remove this attribute when either Keyboard.mDefaultVerticalGap or Key.parent becomes
+    // non-private.
+    private final int mVerticalGap;
+
     private static final int SHIFT_OFF = 0;
     private static final int SHIFT_ON = 1;
     private static final int SHIFT_LOCKED = 2;
@@ -120,9 +124,7 @@ public class LatinKeyboard extends Keyboard {
         mRes = res;
         mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
-        mShiftLockPreviewIcon.setBounds(0, 0, 
-                mShiftLockPreviewIcon.getIntrinsicWidth(),
-                mShiftLockPreviewIcon.getIntrinsicHeight());
+        setDefaultBounds(mShiftLockPreviewIcon);
         mSpaceIcon = res.getDrawable(R.drawable.sym_keyboard_space);
         mSpaceAutoCompletionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mSpacePreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_space);
@@ -140,6 +142,8 @@ public class LatinKeyboard extends Keyboard {
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
         mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
         initializeNumberHintResources(context);
+        // TODO remove this initialization after cleanup
+        mVerticalGap = super.getVerticalGap();
     }
 
     private void initializeNumberHintResources(Context context) {
@@ -196,6 +200,7 @@ public class LatinKeyboard extends Keyboard {
     }
 
     void setImeOptions(Resources res, int mode, int options) {
+        // TODO should clean up this method
         if (mEnterKey != null) {
             // Reset some of the rarely used attributes.
             mEnterKey.popupCharacters = null;
@@ -247,9 +252,7 @@ public class LatinKeyboard extends Keyboard {
             }
             // Set the initial size of the preview icon
             if (mEnterKey.iconPreview != null) {
-                mEnterKey.iconPreview.setBounds(0, 0, 
-                        mEnterKey.iconPreview.getIntrinsicWidth(),
-                        mEnterKey.iconPreview.getIntrinsicHeight());
+                setDefaultBounds(mEnterKey.iconPreview);
             }
         }
     }
@@ -736,6 +739,7 @@ public class LatinKeyboard extends Keyboard {
         return textSize;
     }
 
+    // TODO LatinKey could be static class
     class LatinKey extends Keyboard.Key {
 
         // functional normal state (with properties)
@@ -784,6 +788,8 @@ public class LatinKeyboard extends Keyboard {
          */
         @Override
         public boolean isInside(int x, int y) {
+            // TODO This should be done by parent.isInside(this, x, y)
+            // if Key.parent were protected.
             boolean result = LatinKeyboard.this.isInside(this, x, y);
             return result;
         }
@@ -802,6 +808,15 @@ public class LatinKeyboard extends Keyboard {
                 }
             }
             return super.getCurrentDrawableState();
+        }
+
+        @Override
+        public int squaredDistanceFrom(int x, int y) {
+            // We should count vertical gap between rows to calculate the center of this Key.
+            final int verticalGap = LatinKeyboard.this.mVerticalGap;
+            final int xDist = this.x + width / 2 - x;
+            final int yDist = this.y + (height + verticalGap) / 2 - y;
+            return xDist * xDist + yDist * yDist;
         }
     }
 
@@ -828,8 +843,7 @@ public class LatinKeyboard extends Keyboard {
 
         public SlidingLocaleDrawable(Drawable background, int width, int height) {
             mBackground = background;
-            mBackground.setBounds(0, 0,
-                    mBackground.getIntrinsicWidth(), mBackground.getIntrinsicHeight());
+            setDefaultBounds(mBackground);
             mWidth = width;
             mHeight = height;
             mTextPaint = new TextPaint();
@@ -887,7 +901,7 @@ public class LatinKeyboard extends Keyboard {
                 canvas.drawText(mNextLanguage, diff - width / 2, baseline, paint);
                 canvas.drawText(mPrevLanguage, diff + width + width / 2, baseline, paint);
 
-                lArrow.setBounds(0, 0, lArrow.getIntrinsicWidth(), lArrow.getIntrinsicHeight());
+                setDefaultBounds(lArrow);
                 rArrow.setBounds(width - rArrow.getIntrinsicWidth(), 0, width,
                         rArrow.getIntrinsicHeight());
                 lArrow.draw(canvas);
