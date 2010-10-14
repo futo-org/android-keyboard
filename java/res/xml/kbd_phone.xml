@@ -41,6 +41,7 @@
         <Key
             android:keyLabel="-"
             android:keyWidth="20%p"
+            android:isModifier="true"
             android:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -57,6 +58,7 @@
         <Key
             android:keyLabel="."
             android:keyWidth="20%p"
+            android:isModifier="true"
             android:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -75,6 +77,7 @@
             android:keyIcon="@drawable/sym_keyboard_delete"
             android:iconPreview="@drawable/sym_keyboard_feedback_delete"
             android:keyWidth="20%p"
+            android:isModifier="true"
             android:isRepeatable="true"
             android:keyEdgeFlags="right" />
     </Row>
@@ -84,7 +87,8 @@
         <Key
             android:codes="@integer/key_symbol"
             android:keyIcon="@drawable/sym_keyboard_numalt"
-            android:iconPreview="@drawable/sym_keyboard_feedback_numalt" />
+            android:iconPreview="@drawable/sym_keyboard_feedback_numalt"
+            android:keyEdgeFlags="left" />
         <Key
             android:codes="48"
             android:keyIcon="@drawable/sym_keyboard_num0" />
@@ -96,6 +100,7 @@
             android:codes="@integer/key_return"
             android:keyIcon="@drawable/sym_keyboard_return"
             android:keyWidth="20%p"
+            android:isModifier="true"
             android:keyEdgeFlags="right" />
     </Row>
 </Keyboard>
