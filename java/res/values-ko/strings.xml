@@ -128,12 +128,12 @@
     <string name="selectInputMethod" msgid="315076553378705821">"입력 방법 선택"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"입력 언어"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"손가락을 스페이스바에서 미끄러지듯 움직여 언어 변경"</string>
-    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← 저장하려면 다시 누르세요."</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← 저장하려면 다시 터치하세요."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"사용자 의견 사용"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"사용 통계 및 충돌 보고서를 Google에 자동으로 전송하여 입력 방법 편집기의 개선에 도움을 줍니다."</string>
-    <!-- outdated translation 4966265843750259377 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"눌러서 단어 다시 수정"</string>
-    <!-- outdated translation 8181745740388568396 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"입력한 단어를 누르면 다시 수정할 수 있습니다."</string>
+    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"터치하여 단어 다시 수정"</string>
+    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"입력한 단어를 터치하면 다시 수정할 수 있습니다."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"키보드 테마"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"키보드"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"음성"</string>

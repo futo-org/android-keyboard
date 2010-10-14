@@ -48,7 +48,7 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Mostrar palabras sugeridas mientras escribe"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Completar automát."</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"La barra espaciadora o la puntuación insertan automáticamente la palabra resaltada."</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de parámetros de configuración"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de configuración"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automático"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostrar siempre"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Ocultar siempre"</string>
@@ -128,12 +128,12 @@
     <string name="selectInputMethod" msgid="315076553378705821">"Seleccionar método de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Deslizarse manualmente por la barra espaciadora para cambiar el idioma"</string>
-    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Presionar nuevamente para guardar"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tocar de nuevo para guardar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionario disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar los comentarios del usuario"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de introducción de texto al enviar las estadísticas de uso y los informes de error a Google."</string>
-    <!-- outdated translation 4966265843750259377 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Puntea para volver a corregir las palabras"</string>
-    <!-- outdated translation 8181745740388568396 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Puedes volver a corregir las palabras punteando las que ya has escrito"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corregir palabras"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Toca las palabras ingresadas que desees corregir"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema del teclado"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"Teclado"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"Voz"</string>
