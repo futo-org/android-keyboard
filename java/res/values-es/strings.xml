@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible."</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de introducción de texto enviando estadísticas de uso e informes de error a Google."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corregir palabras"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Para corregir palabras, toca las que hayas escrito."</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corregir palabras"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Tocar palabras introducidas para corregirlas"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema de teclado"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"teclado"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"voz"</string>
