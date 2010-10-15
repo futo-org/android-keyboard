@@ -38,6 +38,7 @@
         <Key
             latin:keyLabel="-"
             latin:keyWidth="20%p"
+            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -54,6 +55,7 @@
         <Key
             latin:keyLabel="."
             latin:keyWidth="20%p"
+            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -73,6 +75,7 @@
             latin:keyIcon="@drawable/sym_keyboard_delete"
             latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
             latin:keyWidth="20%p"
+            latin:isModifier="true"
             latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
     </Row>
@@ -93,6 +96,7 @@
             latin:codes="@integer/key_return"
             latin:keyIcon="@drawable/sym_keyboard_return"
             latin:keyWidth="20%p"
+            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>
