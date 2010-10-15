@@ -202,7 +202,7 @@
             android:keyWidth="20%p"
             android:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="/" />
+            android:codes="@integer/key_f1" />
         <Key
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
@@ -229,7 +229,7 @@
             android:keyWidth="20%p"
             android:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="\@" />
+            android:codes="@integer/key_f1" />
         <Key
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
@@ -350,7 +350,7 @@
             android:keyIcon="@drawable/sym_bkeyboard_settings"
             android:iconPreview="@drawable/sym_keyboard_feedback_settings" />
         <Key
-            android:keyLabel="/" />
+            android:codes="@integer/key_f1" />
         <Key
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"
@@ -381,7 +381,7 @@
             android:keyIcon="@drawable/sym_bkeyboard_settings"
             android:iconPreview="@drawable/sym_keyboard_feedback_settings" />
         <Key
-            android:keyLabel="\@" />
+            android:codes="@integer/key_f1" />
         <Key
             android:codes="@integer/key_space"
             android:keyIcon="@drawable/sym_bkeyboard_space"

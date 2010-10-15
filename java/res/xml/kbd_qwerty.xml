@@ -186,7 +186,7 @@
             android:isModifier="true"
             android:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="/"
+            android:codes="@integer/key_f1"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
@@ -217,7 +217,7 @@
             android:isModifier="true"
             android:keyEdgeFlags="left" />
         <Key
-            android:keyLabel="\@"
+            android:codes="@integer/key_f1"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
@@ -357,7 +357,7 @@
             android:iconPreview="@drawable/sym_keyboard_feedback_settings"
             android:isModifier="true" />
         <Key
-            android:keyLabel="/"
+            android:codes="@integer/key_f1"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"
@@ -393,7 +393,7 @@
             android:iconPreview="@drawable/sym_keyboard_feedback_settings"
             android:isModifier="true" />
         <Key
-            android:keyLabel="\@"
+            android:codes="@integer/key_f1"
             android:isModifier="true" />
         <Key
             android:codes="@integer/key_space"

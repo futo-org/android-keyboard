@@ -850,7 +850,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
                 // Usually don't draw icon if label is not null, but we draw icon for the number
                 // hint.
-                shouldDrawIcon = isCommaKeyLabelOrNumberAtEdgeOfPopupChars(key);
+                shouldDrawIcon = isNonMicLatinF1KeyOrNumberAtEdgeOfPopupChars(key);
             }
             if (key.icon != null && shouldDrawIcon) {
                 // Special handing for the upper-right number hint icons
@@ -943,7 +943,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         if (key == null)
             return;
         // Should not draw number hint icons
-        if (key.icon != null && !isCommaKeyLabelOrNumberAtEdgeOfPopupChars(key)) {
+        if (key.icon != null && !isNonMicLatinF1KeyOrNumberAtEdgeOfPopupChars(key)) {
             mPreviewText.setCompoundDrawables(null, null, null,
                     key.iconPreview != null ? key.iconPreview : key.icon);
             mPreviewText.setText(null);
@@ -1226,12 +1226,13 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return false;
     }
 
-    private static boolean isCommaKeyLabelOrNumberAtEdgeOfPopupChars(Key key) {
-        return isNumberAtEdgeOfPopupChars(key) || isCommaKeyLabel(key);
+    private boolean isNonMicLatinF1KeyOrNumberAtEdgeOfPopupChars(Key key) {
+        return isNumberAtEdgeOfPopupChars(key) || isNonMicLatinF1Key(key);
     }
 
-    private static boolean isCommaKeyLabel(Key key) {
-        return ",".equals(key.label);
+    private boolean isNonMicLatinF1Key(Key key) {
+        return (mKeyboard instanceof LatinKeyboard)
+                && ((LatinKeyboard)mKeyboard).isF1Key(key) && key.label != null;
     }
 
     private static boolean isNumberAtEdgeOfPopupChars(Key key) {
