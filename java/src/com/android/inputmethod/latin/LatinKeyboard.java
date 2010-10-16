@@ -74,6 +74,7 @@ public class LatinKeyboard extends Keyboard {
     private LanguageSwitcher mLanguageSwitcher;
     private final Resources mRes;
     private final Context mContext;
+    private int mMode;
     // Whether this keyboard has voice icon on it
     private boolean mHasVoiceButton;
     // Whether voice icon is enabled at all
@@ -122,6 +123,7 @@ public class LatinKeyboard extends Keyboard {
         super(context, xmlLayoutResId, mode);
         final Resources res = context.getResources();
         mContext = context;
+        mMode = mode;
         mRes = res;
         mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
@@ -202,6 +204,7 @@ public class LatinKeyboard extends Keyboard {
     }
 
     void setImeOptions(Resources res, int mode, int options) {
+        mMode = mode;
         // TODO should clean up this method
         if (mEnterKey != null) {
             // Reset some of the rarely used attributes.
@@ -354,6 +357,11 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void updateDynamicKeys() {
+        update123Key();
+        updateF1Key();
+    }
+
+    private void update123Key() {
         // Update KEYCODE_MODE_CHANGE key only on alphabet mode, not on symbol mode.
         if (m123Key != null && mIsAlphaKeyboard) {
             if (mVoiceEnabled && !mHasVoiceButton) {
@@ -366,28 +374,63 @@ public class LatinKeyboard extends Keyboard {
                 m123Key.label = m123Label;
             }
         }
+    }
 
-        // Update KEYCODE_F1 key. Please note that some keyboard layout has no F1 key.
-        if (mF1Key != null) {
-            if (mHasVoiceButton && mVoiceEnabled) {
-                mF1Key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
-                mF1Key.label = null;
-                // HACK: draw mMicIcon and mF1HintIcon at the same time
-                mF1Key.icon = new BitmapDrawable(mRes, drawSynthesizedSettingsHintImage(
-                        mF1Key.width, mF1Key.height + mVerticalGap, mMicIcon, mF1HintIcon));
-                mF1Key.iconPreview = mMicPreviewIcon;
-                mF1Key.popupResId = R.xml.popup_mic;
+    private void updateF1Key() {
+        // Update KEYCODE_F1 key. Please note that some keyboard layouts have no F1 key.
+        if (mF1Key == null)
+            return;
+
+        if (mIsAlphaKeyboard) {
+            if (mMode == KeyboardSwitcher.MODE_URL) {
+                setNonMicF1Key(mF1Key, "/", R.xml.popup_slash);
+            } else if (mMode == KeyboardSwitcher.MODE_EMAIL) {
+                setNonMicF1Key(mF1Key, "@", R.xml.popup_at);
             } else {
-                mF1Key.label = ",";
-                mF1Key.codes = new int[] { ',' };
-                // HACK: draw only mF1HintIcon on offscreen buffer to adjust position of '...' to
-                // the above synthesized icon
-                mF1Key.icon = new BitmapDrawable(mRes, drawSynthesizedSettingsHintImage(
-                        mF1Key.width, mF1Key.height + mVerticalGap, null, mF1HintIcon));
-                mF1Key.iconPreview = null;
-                mF1Key.popupResId = R.xml.popup_comma;
+                if (mVoiceEnabled && mHasVoiceButton) {
+                    setMicF1Key(mF1Key);
+                } else {
+                    setNonMicF1Key(mF1Key, ",", R.xml.popup_comma);
+                }
+            }
+        } else {  // Symbols keyboard
+            if (mVoiceEnabled && mHasVoiceButton) {
+                setMicF1Key(mF1Key);
+            } else {
+                setNonMicF1Key(mF1Key, ",", R.xml.popup_comma);
             }
         }
+    }
+
+    private void setMicF1Key(Key key) {
+        // HACK: draw mMicIcon and mF1HintIcon at the same time
+        final Drawable micWithSettingsHintDrawable = new BitmapDrawable(mRes,
+                drawSynthesizedSettingsHintImage(key.width, key.height + mVerticalGap,
+                        mMicIcon, mF1HintIcon));
+
+        key.label = null;
+        key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
+        key.popupResId = R.xml.popup_mic;
+        key.icon = micWithSettingsHintDrawable;
+        key.iconPreview = mMicPreviewIcon;
+    }
+
+    private void setNonMicF1Key(Key key, String label, int popupResId) {
+        // HACK: draw only mF1HintIcon on offscreen buffer to adjust position of '...' to
+        // the mic+hint synthesized icon
+        final Drawable onlySettingsHintDrawable = new BitmapDrawable(mRes,
+                drawSynthesizedSettingsHintImage(key.width, key.height + mVerticalGap,
+                        null, mF1HintIcon));
+
+        key.label = label;
+        key.codes = new int[] { label.charAt(0) };
+        key.popupResId = popupResId;
+        key.icon = onlySettingsHintDrawable;
+        key.iconPreview = null;
+    }
+
+    public boolean isF1Key(Key key) {
+        return key == mF1Key;
     }
 
     /**
