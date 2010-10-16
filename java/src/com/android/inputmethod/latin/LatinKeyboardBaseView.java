@@ -210,7 +210,10 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private OnKeyboardActionListener mKeyboardActionListener;
 
     private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
+
+    // TODO: Let the PointerTracker class manage this pointer queue
     private final PointerQueue mPointerQueue = new PointerQueue();
+
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
 
@@ -1036,8 +1039,10 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         boolean result = onLongPress(popupKey);
         if (result) {
             dismissKeyPreview();
-            tracker.setAlreadyProcessed();
             mMiniKeyboardTrackerId = tracker.mPointerId;
+            // Mark this tracker "already processed" and remove it from the pointer queue
+            tracker.setAlreadyProcessed();
+            mPointerQueue.remove(tracker);
         }
         return result;
     }
