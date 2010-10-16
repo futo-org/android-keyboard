@@ -22,7 +22,7 @@
     <integer name="config_delay_before_preview">0</integer>
     <integer name="config_delay_after_preview">10</integer>
     <integer name="config_preview_fadein_anim_time">0</integer>
-    <integer name="config_preview_fadeout_anim_time">90</integer>
+    <integer name="config_preview_fadeout_anim_time">70</integer>
     <integer name="config_mini_keyboard_fadein_anim_time">0</integer>
     <integer name="config_mini_keyboard_fadeout_anim_time">100</integer>
     <integer name="config_delay_before_key_repeat_start">400</integer>
