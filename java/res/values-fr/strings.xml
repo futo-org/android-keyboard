@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Autoriser les commentaires des utilisateurs"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Contribuer à l\'amélioration de cet éditeur du mode de saisie grâce à l\'envoi automatique de statistiques d\'utilisation et de rapports d\'incident à Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Toucher pour corriger"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Toucher les mots saisis pour les corriger"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Appuyer pour corriger les suggestions"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Appuyer sur les mots saisis pour les corriger"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Thème du clavier"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"clavier"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"voix"</string>
