@@ -858,7 +858,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 final int drawableHeight;
                 final int drawableX;
                 final int drawableY;
-                if (isNumberAtEdgeOfPopupChars(key)) {
+                if (isLatinF1KeyOrNumberAtEdgeOfPopupChars(key)) {
                     drawableWidth = key.width;
                     drawableHeight = key.height;
                     drawableX = 0;
@@ -1226,13 +1226,20 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return false;
     }
 
+    private boolean isLatinF1KeyOrNumberAtEdgeOfPopupChars(Key key) {
+        return isNumberAtEdgeOfPopupChars(key) || isLatinF1Key(key);
+    }
+
     private boolean isNonMicLatinF1KeyOrNumberAtEdgeOfPopupChars(Key key) {
         return isNumberAtEdgeOfPopupChars(key) || isNonMicLatinF1Key(key);
     }
 
+    private boolean isLatinF1Key(Key key) {
+        return (mKeyboard instanceof LatinKeyboard) && ((LatinKeyboard)mKeyboard).isF1Key(key);
+    }
+
     private boolean isNonMicLatinF1Key(Key key) {
-        return (mKeyboard instanceof LatinKeyboard)
-                && ((LatinKeyboard)mKeyboard).isF1Key(key) && key.label != null;
+        return isLatinF1Key(key) && key.label != null;
     }
 
     private static boolean isNumberAtEdgeOfPopupChars(Key key) {

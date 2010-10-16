@@ -61,7 +61,7 @@ public class LatinKeyboard extends Keyboard {
     private Key mShiftKey;
     private Key mEnterKey;
     private Key mF1Key;
-    private Drawable mF1HintIcon;
+    private final Drawable mF1HintIcon;
     private Key mSpaceKey;
     private Key m123Key;
     private final int NUMBER_HINT_COUNT = 10;
@@ -405,8 +405,7 @@ public class LatinKeyboard extends Keyboard {
     private void setMicF1Key(Key key) {
         // HACK: draw mMicIcon and mF1HintIcon at the same time
         final Drawable micWithSettingsHintDrawable = new BitmapDrawable(mRes,
-                drawSynthesizedSettingsHintImage(key.width, key.height + mVerticalGap,
-                        mMicIcon, mF1HintIcon));
+                drawSynthesizedSettingsHintImage(key.width, key.height, mMicIcon, mF1HintIcon));
 
         key.label = null;
         key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
@@ -416,16 +415,10 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void setNonMicF1Key(Key key, String label, int popupResId) {
-        // HACK: draw only mF1HintIcon on offscreen buffer to adjust position of '...' to
-        // the mic+hint synthesized icon
-        final Drawable onlySettingsHintDrawable = new BitmapDrawable(mRes,
-                drawSynthesizedSettingsHintImage(key.width, key.height + mVerticalGap,
-                        null, mF1HintIcon));
-
         key.label = label;
         key.codes = new int[] { label.charAt(0) };
         key.popupResId = popupResId;
-        key.icon = onlySettingsHintDrawable;
+        key.icon = mF1HintIcon;
         key.iconPreview = null;
     }
 
@@ -477,24 +470,29 @@ public class LatinKeyboard extends Keyboard {
         return bounds.width();
     }
 
-    // Overlay two images.  Note that mainIcon can be null.
+    // Overlay two images: mainIcon and hintIcon.
     private Bitmap drawSynthesizedSettingsHintImage(
             int width, int height, Drawable mainIcon, Drawable hintIcon) {
-        if (hintIcon == null)
+        if (mainIcon == null || hintIcon == null)
             return null;
+        Rect hintIconPadding = new Rect(0, 0, 0, 0);
+        hintIcon.getPadding(hintIconPadding);
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
         canvas.drawColor(mRes.getColor(R.color.latinkeyboard_transparent), PorterDuff.Mode.CLEAR);
-        // draw main icon at centered position
-        if (mainIcon != null) {
-            setDefaultBounds(mainIcon);
-            final int drawableX = (width - mainIcon.getIntrinsicWidth()) / 2;
-            final int drawableY = (height - mainIcon.getIntrinsicHeight()) / 2;
-            canvas.translate(drawableX, drawableY);
-            mainIcon.draw(canvas);
-            canvas.translate(-drawableX, -drawableY);
-        }
-        // draw hint icon fully in the key
+
+        // Draw main icon at the center of the key visual
+        // Assuming the hintIcon shares the same padding with the key's background drawable
+        final int drawableX = (width + hintIconPadding.left - hintIconPadding.right
+                - mainIcon.getIntrinsicWidth()) / 2;
+        final int drawableY = (height + hintIconPadding.top - hintIconPadding.bottom
+                - mainIcon.getIntrinsicHeight()) / 2;
+        setDefaultBounds(mainIcon);
+        canvas.translate(drawableX, drawableY);
+        mainIcon.draw(canvas);
+        canvas.translate(-drawableX, -drawableY);
+
+        // Draw hint icon fully in the key
         hintIcon.setBounds(0, 0, width, height);
         hintIcon.draw(canvas);
         return buffer;
