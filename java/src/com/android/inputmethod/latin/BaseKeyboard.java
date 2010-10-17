@@ -150,9 +150,9 @@ public class BaseKeyboard {
         /** The keyboard mode for this row */
         public int mode;
 
-        private BaseKeyboard parent;
+        private final BaseKeyboard parent;
 
-        public Row(BaseKeyboard parent) {
+        private Row(BaseKeyboard parent) {
             this.parent = parent;
         }
 
@@ -232,7 +232,7 @@ public class BaseKeyboard {
         /** Whether this is a modifier key, such as Shift or Alt */
         public boolean modifier;
         /** The BaseKeyboard that this key belongs to */
-        private BaseKeyboard keyboard;
+        protected final BaseKeyboard keyboard;
         /**
          * If this key pops up a mini keyboard, this is the resource id for the XML layout for that
          * keyboard.
@@ -361,7 +361,7 @@ public class BaseKeyboard {
             }
         }
 
-        int[] parseCSV(String value) {
+        private int[] parseCSV(String value) {
             int count = 0;
             int lastIndex = 0;
             if (value.length() > 0) {
@@ -413,8 +413,11 @@ public class BaseKeyboard {
          * @return the square of the distance of the point from the center of the key
          */
         public int squaredDistanceFrom(int x, int y) {
+            // We should count vertical gap between rows to calculate the center of this Key.
+            // TODO: We should re-think how we define the center of the key.
+            final int verticalGap = keyboard.getVerticalGap();
             int xDist = this.x + width / 2 - x;
-            int yDist = this.y + height / 2 - y;
+            int yDist = this.y + (height + verticalGap) / 2 - y;
             return xDist * xDist + yDist * yDist;
         }
 

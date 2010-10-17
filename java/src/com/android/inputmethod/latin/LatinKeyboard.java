@@ -92,10 +92,6 @@ public class LatinKeyboard extends BaseKeyboard {
     // TODO: generalize for any keyboardId
     private boolean mIsBlackSym;
 
-    // TODO: remove this attribute when either Keyboard.mDefaultVerticalGap or Key.parent becomes
-    // non-private.
-    private final int mVerticalGap;
-
     private static final int SHIFT_OFF = 0;
     private static final int SHIFT_ON = 1;
     private static final int SHIFT_LOCKED = 2;
@@ -143,8 +139,7 @@ public class LatinKeyboard extends BaseKeyboard {
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
         mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
-        // TODO remove this initialization after cleanup
-        mVerticalGap = super.getVerticalGap();
+
         if (mEnterKey != null) {
             mDefaultEnterIcon = mEnterKey.icon;
             mDefaultEnterPreview = mEnterKey.iconPreview;
@@ -280,7 +275,7 @@ public class LatinKeyboard extends BaseKeyboard {
         return mIsAlphaKeyboard && isShifted() && !isShiftLocked();
     }
 
-    /* package */ boolean isAlphaKeyboard() {
+    public boolean isAlphaKeyboard() {
         return mIsAlphaKeyboard;
     }
 
@@ -521,12 +516,12 @@ public class LatinKeyboard extends BaseKeyboard {
         return mCurrentlyInSpace;
     }
 
-    void setPreferredLetters(int[] frequencies) {
+    public void setPreferredLetters(int[] frequencies) {
         mPrefLetterFrequencies = frequencies;
         mPrefLetter = 0;
     }
 
-    void keyReleased() {
+    public void keyReleased() {
         mCurrentlyInSpace = false;
         mSpaceDragLastDiff = 0;
         mPrefLetter = 0;
@@ -542,10 +537,9 @@ public class LatinKeyboard extends BaseKeyboard {
      * Does the magic of locking the touch gesture into the spacebar when
      * switching input languages.
      */
-    boolean isInside(LatinKey key, int x, int y) {
+    public boolean isInside(LatinKey key, int x, int y) {
         final int code = key.codes[0];
-        if (code == KEYCODE_SHIFT ||
-                code == KEYCODE_DELETE) {
+        if (code == KEYCODE_SHIFT || code == KEYCODE_DELETE) {
             y -= key.height / 10;
             if (code == KEYCODE_SHIFT) x += key.width / 6;
             if (code == KEYCODE_DELETE) x -= key.width / 6;
@@ -689,8 +683,7 @@ public class LatinKeyboard extends BaseKeyboard {
         return textSize;
     }
 
-    // TODO LatinKey could be static class
-    class LatinKey extends BaseKeyboard.Key {
+    public static class LatinKey extends BaseKeyboard.Key {
 
         // functional normal state (with properties)
         private final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
@@ -738,13 +731,12 @@ public class LatinKeyboard extends BaseKeyboard {
          */
         @Override
         public boolean isInside(int x, int y) {
-            // TODO This should be done by parent.isInside(this, x, y)
-            // if Key.parent were protected.
-            boolean result = LatinKeyboard.this.isInside(this, x, y);
+            boolean result = (keyboard instanceof LatinKeyboard)
+                    && ((LatinKeyboard)keyboard).isInside(this, x, y);
             return result;
         }
 
-        boolean isInsideSuper(int x, int y) {
+        private boolean isInsideSuper(int x, int y) {
             return super.isInside(x, y);
         }
 
@@ -759,15 +751,6 @@ public class LatinKeyboard extends BaseKeyboard {
             }
             return super.getCurrentDrawableState();
         }
-
-        @Override
-        public int squaredDistanceFrom(int x, int y) {
-            // We should count vertical gap between rows to calculate the center of this Key.
-            final int verticalGap = LatinKeyboard.this.mVerticalGap;
-            final int xDist = this.x + width / 2 - x;
-            final int yDist = this.y + (height + verticalGap) / 2 - y;
-            return xDist * xDist + yDist * yDist;
-        }
     }
 
     /**
@@ -775,7 +758,7 @@ public class LatinKeyboard extends BaseKeyboard {
      * languages by swiping the spacebar. It draws the current, previous and
      * next languages and moves them by the delta of touch movement on the spacebar.
      */
-    class SlidingLocaleDrawable extends Drawable {
+    private class SlidingLocaleDrawable extends Drawable {
 
         private final int mWidth;
         private final int mHeight;
