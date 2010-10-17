@@ -83,6 +83,12 @@ public class LatinKeyboard extends BaseKeyboard {
     private int mPrefLetterY;
     private int mPrefDistance;
 
+    // Default Enter key attributes
+    private final Drawable mDefaultEnterIcon;
+    private final Drawable mDefaultEnterPreview;
+    private final CharSequence mDefaultEnterLabel;
+    private final CharSequence mDefaultEnterText;
+
     // TODO: generalize for any keyboardId
     private boolean mIsBlackSym;
 
@@ -139,6 +145,15 @@ public class LatinKeyboard extends BaseKeyboard {
         mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
         // TODO remove this initialization after cleanup
         mVerticalGap = super.getVerticalGap();
+        if (mEnterKey != null) {
+            mDefaultEnterIcon = mEnterKey.icon;
+            mDefaultEnterPreview = mEnterKey.iconPreview;
+            mDefaultEnterLabel = mEnterKey.label;
+            mDefaultEnterText = mEnterKey.text;
+        } else {
+            mDefaultEnterIcon = mDefaultEnterPreview = null;
+            mDefaultEnterLabel = mDefaultEnterText = null;
+        }
     }
 
     @Override
@@ -194,6 +209,12 @@ public class LatinKeyboard extends BaseKeyboard {
             break;
         case EditorInfo.IME_ACTION_SEND:
             resetKeyAttributes(mEnterKey, res.getText(R.string.label_send_key));
+            break;
+        default:
+            resetKeyAttributes(mEnterKey, mDefaultEnterLabel);
+            mEnterKey.text = mDefaultEnterText;
+            mEnterKey.icon = mDefaultEnterIcon;
+            mEnterKey.iconPreview = mDefaultEnterPreview;
             break;
         }
         // Set the initial size of the preview icon
