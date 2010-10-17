@@ -43,6 +43,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -184,6 +185,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     private int mKeyboardVerticalGap;
 
     // Key preview popup
+    private boolean mInForeground;
     private TextView mPreviewText;
     private PopupWindow mPreviewPopup;
     private int mPreviewTextSizeLarge;
@@ -573,7 +575,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     /**
      * Attaches a keyboard to this view. The keyboard can be switched at any time and the
      * view will re-layout itself to accommodate the keyboard.
-     * @see Keyboard
+     * @see BaseKeyboard
      * @see #getKeyboard()
      * @param keyboard the keyboard to display in this view
      */
@@ -603,7 +605,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     /**
      * Returns the current keyboard being displayed by this view.
      * @return the currently attached keyboard
-     * @see #setKeyboard(Keyboard)
+     * @see #setKeyboard(BaseKeyboard)
      */
     public BaseKeyboard getKeyboard() {
         return mKeyboard;
@@ -918,6 +920,10 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mDirtyRect.setEmpty();
     }
 
+    public void setForeground(boolean foreground) {
+        mInForeground = foreground;
+    }
+
     // TODO: clean up this method.
     private void dismissKeyPreview() {
         for (PointerTracker tracker : mPointerTrackers)
@@ -951,7 +957,10 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     // TODO Must fix popup preview on xlarge layout
     private void showKey(final int keyIndex, PointerTracker tracker) {
         Key key = tracker.getKey(keyIndex);
-        if (key == null)
+        // If keyIndex is invalid or IME is already closed, we must not show key preview.
+        // Trying to show preview PopupWindow while root window is closed causes
+        // WindowManager.BadTokenException.
+        if (key == null || !mInForeground)
             return;
         // Should not draw number hint icons
         if (key.icon != null && key.label == null) {
@@ -1012,13 +1021,18 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             popupPreviewY += popupHeight;
         }
 
-        if (mPreviewPopup.isShowing()) {
-            mPreviewPopup.update(popupPreviewX, popupPreviewY, popupWidth, popupHeight);
-        } else {
-            mPreviewPopup.setWidth(popupWidth);
-            mPreviewPopup.setHeight(popupHeight);
-            mPreviewPopup.showAtLocation(mMiniKeyboardParent, Gravity.NO_GRAVITY,
-                    popupPreviewX, popupPreviewY);
+        try {
+            if (mPreviewPopup.isShowing()) {
+                mPreviewPopup.update(popupPreviewX, popupPreviewY, popupWidth, popupHeight);
+            } else {
+                mPreviewPopup.setWidth(popupWidth);
+                mPreviewPopup.setHeight(popupHeight);
+                mPreviewPopup.showAtLocation(mMiniKeyboardParent, Gravity.NO_GRAVITY,
+                        popupPreviewX, popupPreviewY);
+            }
+        } catch (WindowManager.BadTokenException e) {
+            // Swallow the exception which will be happened when IME is already closed.
+            Log.w(TAG, "LatinIME is already closed when tried showing key preview.");
         }
         // Record popup preview position to display mini-keyboard later at the same positon
         mPopupPreviewDisplayedY = popupPreviewY;

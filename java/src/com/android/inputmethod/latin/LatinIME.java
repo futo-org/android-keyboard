@@ -680,6 +680,7 @@ public class LatinIME extends InputMethodService
         // If we just entered a text field, maybe it has some old text that requires correction
         checkReCorrectionOnStart();
         checkTutorial(attribute.privateImeOptions);
+        inputView.setForeground(true);
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
@@ -731,6 +732,9 @@ public class LatinIME extends InputMethodService
     @Override
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
+        LatinKeyboardBaseView inputView = mKeyboardSwitcher.getInputView();
+        if (inputView != null)
+            inputView.setForeground(false);
         // Remove penging messages related to update suggestions
         mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
         mHandler.removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
