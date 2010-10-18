@@ -56,6 +56,8 @@ import java.util.WeakHashMap;
  * A view that renders a virtual {@link LatinKeyboard}. It handles rendering of keys and
  * detecting key presses and touch movements.
  *
+ * TODO: References to LatinKeyboard in this class should be replaced with ones to its base class.
+ *
  * @attr ref R.styleable#LatinKeyboardBaseView_keyBackground
  * @attr ref R.styleable#LatinKeyboardBaseView_keyPreviewLayout
  * @attr ref R.styleable#LatinKeyboardBaseView_keyPreviewOffset
@@ -849,8 +851,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 paint.setShadowLayer(0, 0, 0, 0);
 
                 // Usually don't draw icon if label is not null, but we draw icon for the number
-                // hint.
-                shouldDrawIcon = isNonMicLatinF1KeyOrNumberAtEdgeOfPopupChars(key);
+                // hint and popup hint.
+                shouldDrawIcon = shouldDrawLabelAndIcon(key);
             }
             if (key.icon != null && shouldDrawIcon) {
                 // Special handing for the upper-right number hint icons
@@ -858,7 +860,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 final int drawableHeight;
                 final int drawableX;
                 final int drawableY;
-                if (isLatinF1KeyOrNumberAtEdgeOfPopupChars(key)) {
+                if (shouldDrawIconFully(key)) {
                     drawableWidth = key.width;
                     drawableHeight = key.height;
                     drawableX = 0;
@@ -866,10 +868,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 } else {
                     drawableWidth = key.icon.getIntrinsicWidth();
                     drawableHeight = key.icon.getIntrinsicHeight();
-                    drawableX = (key.width - padding.left - padding.right - drawableWidth)
-                            / 2 + padding.left;
-                    drawableY = (key.height - padding.top - padding.bottom - drawableHeight)
-                            / 2 + padding.top;
+                    drawableX = (key.width + padding.left - padding.right - drawableWidth) / 2;
+                    drawableY = (key.height + padding.top - padding.bottom - drawableHeight) / 2;
                 }
                 canvas.translate(drawableX, drawableY);
                 key.icon.setBounds(0, 0, drawableWidth, drawableHeight);
@@ -942,8 +942,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         Key key = tracker.getKey(keyIndex);
         if (key == null)
             return;
-        // Should not draw number hint icons
-        if (key.icon != null && !isNonMicLatinF1KeyOrNumberAtEdgeOfPopupChars(key)) {
+        // Should not draw hint icon in key preview
+        if (key.icon != null && !shouldDrawLabelAndIcon(key)) {
             mPreviewText.setCompoundDrawables(null, null, null,
                     key.iconPreview != null ? key.iconPreview : key.icon);
             mPreviewText.setText(null);
@@ -1226,12 +1226,14 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return false;
     }
 
-    private boolean isLatinF1KeyOrNumberAtEdgeOfPopupChars(Key key) {
-        return isNumberAtEdgeOfPopupChars(key) || isLatinF1Key(key);
+    private boolean shouldDrawIconFully(Key key) {
+        return isNumberAtEdgeOfPopupChars(key) || isLatinF1Key(key)
+                || LatinKeyboard.hasPuncOrSmileysPopup(key);
     }
 
-    private boolean isNonMicLatinF1KeyOrNumberAtEdgeOfPopupChars(Key key) {
-        return isNumberAtEdgeOfPopupChars(key) || isNonMicLatinF1Key(key);
+    private boolean shouldDrawLabelAndIcon(Key key) {
+        return isNumberAtEdgeOfPopupChars(key) || isNonMicLatinF1Key(key)
+                || LatinKeyboard.hasPuncOrSmileysPopup(key);
     }
 
     private boolean isLatinF1Key(Key key) {

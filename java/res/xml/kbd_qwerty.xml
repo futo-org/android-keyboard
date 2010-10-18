@@ -165,6 +165,7 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
@@ -196,6 +197,7 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
@@ -227,6 +229,7 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
@@ -258,11 +261,13 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
             android:keyLabel=":-)"
             android:keyOutputText=":-) "
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_smileys"
             android:keyWidth="20%p"
             android:isModifier="true"
@@ -295,6 +300,7 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
@@ -331,6 +337,7 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
@@ -367,6 +374,7 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
@@ -403,6 +411,7 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
@@ -439,11 +448,13 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
             android:keyLabel=":-)"
             android:keyOutputText=":-) "
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_smileys"
             android:keyWidth="25%p"
             android:isModifier="true"
@@ -480,6 +491,7 @@
             android:isModifier="true" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation"
             android:isModifier="true" />
         <Key
