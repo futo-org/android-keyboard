@@ -61,7 +61,7 @@ public class LatinKeyboard extends Keyboard {
     private Key mShiftKey;
     private Key mEnterKey;
     private Key mF1Key;
-    private final Drawable mF1HintIcon;
+    private final Drawable mHintIcon;
     private Key mSpaceKey;
     private Key m123Key;
     private final int NUMBER_HINT_COUNT = 10;
@@ -138,7 +138,7 @@ public class LatinKeyboard extends Keyboard {
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
         m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);
         m123MicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_123_mic);
-        mF1HintIcon = res.getDrawable(R.drawable.hint_settings);
+        mHintIcon = res.getDrawable(R.drawable.hint_popup);
         setDefaultBounds(m123MicPreviewIcon);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
@@ -241,7 +241,7 @@ public class LatinKeyboard extends Keyboard {
                     break;
                 default:
                     if (mode == KeyboardSwitcher.MODE_IM) {
-                        mEnterKey.icon = null;
+                        mEnterKey.icon = mHintIcon;
                         mEnterKey.iconPreview = null;
                         mEnterKey.label = ":-)";
                         mEnterKey.text = ":-) ";
@@ -403,9 +403,9 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void setMicF1Key(Key key) {
-        // HACK: draw mMicIcon and mF1HintIcon at the same time
+        // HACK: draw mMicIcon and mHintIcon at the same time
         final Drawable micWithSettingsHintDrawable = new BitmapDrawable(mRes,
-                drawSynthesizedSettingsHintImage(key.width, key.height, mMicIcon, mF1HintIcon));
+                drawSynthesizedSettingsHintImage(key.width, key.height, mMicIcon, mHintIcon));
 
         key.label = null;
         key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
@@ -418,12 +418,16 @@ public class LatinKeyboard extends Keyboard {
         key.label = label;
         key.codes = new int[] { label.charAt(0) };
         key.popupResId = popupResId;
-        key.icon = mF1HintIcon;
+        key.icon = mHintIcon;
         key.iconPreview = null;
     }
 
     public boolean isF1Key(Key key) {
         return key == mF1Key;
+    }
+
+    public static boolean hasPuncOrSmileysPopup(Key key) {
+        return key.popupResId == R.xml.popup_punctuation || key.popupResId == R.xml.popup_smileys;
     }
 
     /**

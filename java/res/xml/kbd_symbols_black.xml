@@ -159,6 +159,7 @@
             android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
@@ -189,6 +190,7 @@
             android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"

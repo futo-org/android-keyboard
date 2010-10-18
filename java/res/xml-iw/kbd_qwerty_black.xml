@@ -121,6 +121,7 @@
             android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
@@ -148,6 +149,7 @@
             android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
@@ -175,6 +177,7 @@
             android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
@@ -202,10 +205,12 @@
             android:keyWidth="40%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:keyLabel=":-)"
             android:keyOutputText=":-) "
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_smileys"
             android:keyWidth="20%p"
             android:keyEdgeFlags="right" />
@@ -234,6 +239,7 @@
             android:keyWidth="20%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
@@ -265,6 +271,7 @@
             android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
@@ -296,6 +303,7 @@
             android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
@@ -327,6 +335,7 @@
             android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
@@ -358,10 +367,12 @@
             android:keyWidth="30%p" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:keyLabel=":-)"
             android:keyOutputText=":-) "
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_smileys"
             android:keyWidth="25%p"
             android:keyEdgeFlags="right" />
@@ -393,6 +404,7 @@
             android:iconPreview="@drawable/sym_keyboard_feedback_tab" />
         <Key
             android:keyLabel="."
+            android:keyIcon="@drawable/hint_popup"
             android:popupKeyboard="@xml/popup_punctuation" />
         <Key
             android:codes="@integer/key_return"
