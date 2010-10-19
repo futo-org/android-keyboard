@@ -2333,8 +2333,8 @@ public class LatinIME extends InputMethodService
 
     private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo attribute) {
         return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext)
-                && !(attribute != null && attribute.privateImeOptions != null
-                        && attribute.privateImeOptions.equals(IME_OPTION_NO_MICROPHONE))
+                && !(attribute != null
+                        && IME_OPTION_NO_MICROPHONE.equals(attribute.privateImeOptions))
                 && SpeechRecognizer.isRecognitionAvailable(this);
     }
 

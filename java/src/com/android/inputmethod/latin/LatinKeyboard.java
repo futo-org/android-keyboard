@@ -60,6 +60,7 @@ public class LatinKeyboard extends BaseKeyboard {
     private final Drawable mButtonArrowRightIcon;
     private Key mEnterKey;
     private Key mF1Key;
+    private final Drawable mHintIcon;
     private Key mSpaceKey;
     private Key m123Key;
     private int mSpaceKeyIndex = -1;
@@ -69,6 +70,7 @@ public class LatinKeyboard extends BaseKeyboard {
     private LanguageSwitcher mLanguageSwitcher;
     private final Resources mRes;
     private final Context mContext;
+    private int mMode;  // TODO: remove this and use the corresponding mode in the parent class
     // Whether this keyboard has voice icon on it
     private boolean mHasVoiceButton;
     // Whether voice icon is enabled at all
@@ -119,6 +121,7 @@ public class LatinKeyboard extends BaseKeyboard {
         super(context, xmlLayoutResId, mode);
         final Resources res = context.getResources();
         mContext = context;
+        mMode = mode;
         mRes = res;
         mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
@@ -133,6 +136,7 @@ public class LatinKeyboard extends BaseKeyboard {
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
         m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);
         m123MicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_123_mic);
+        mHintIcon = res.getDrawable(R.drawable.hint_popup);
         setDefaultBounds(m123MicPreviewIcon);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
@@ -180,10 +184,12 @@ public class LatinKeyboard extends BaseKeyboard {
         key.text = null;
         key.iconPreview = null;
         key.icon = null;
+        key.hintIcon = null;
         key.label = label;
     }
 
     public void setImeOptions(Resources res, int mode, int options) {
+        mMode = mode;
         if (mEnterKey == null)
             return;
         switch (options & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
@@ -292,7 +298,7 @@ public class LatinKeyboard extends BaseKeyboard {
             mMicIcon = mRes.getDrawable(R.drawable.sym_keyboard_mic);
             m123MicIcon = mRes.getDrawable(R.drawable.sym_keyboard_123_mic);
         }
-        updateF1Key();
+        updateDynamicKeys();
         if (mSpaceKey != null) {
             updateSpaceBarForLocale(isAutoCompletion, isBlack);
         }
@@ -301,11 +307,16 @@ public class LatinKeyboard extends BaseKeyboard {
     public void setVoiceMode(boolean hasVoiceButton, boolean hasVoice) {
         mHasVoiceButton = hasVoiceButton;
         mVoiceEnabled = hasVoice;
+        updateDynamicKeys();
+    }
+
+    private void updateDynamicKeys() {
+        update123Key();
         updateF1Key();
     }
 
-    private void updateF1Key() {
-        if (mF1Key == null) return;
+    private void update123Key() {
+        // Update KEYCODE_MODE_CHANGE key only on alphabet mode, not on symbol mode.
         if (m123Key != null && mIsAlphaKeyboard) {
             if (mVoiceEnabled && !mHasVoiceButton) {
                 m123Key.icon = m123MicIcon;
@@ -317,20 +328,50 @@ public class LatinKeyboard extends BaseKeyboard {
                 m123Key.label = m123Label;
             }
         }
+    }
 
-        if (mHasVoiceButton && mVoiceEnabled) {
-            mF1Key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
-            mF1Key.label = null;
-            mF1Key.icon = mMicIcon;
-            mF1Key.iconPreview = mMicPreviewIcon;
-            mF1Key.popupResId = R.xml.popup_mic;
-        } else {
-            mF1Key.label = ",";
-            mF1Key.codes = new int[] { ',' };
-            mF1Key.icon = null;
-            mF1Key.iconPreview = null;
-            mF1Key.popupResId = R.xml.popup_comma;
+    private void updateF1Key() {
+        // Update KEYCODE_F1 key. Please note that some keyboard layouts have no F1 key.
+        if (mF1Key == null)
+            return;
+
+        if (mIsAlphaKeyboard) {
+            if (mMode == KeyboardSwitcher.MODE_URL) {
+                setNonMicF1Key(mF1Key, "/", R.xml.popup_slash);
+            } else if (mMode == KeyboardSwitcher.MODE_EMAIL) {
+                setNonMicF1Key(mF1Key, "@", R.xml.popup_at);
+            } else {
+                if (mVoiceEnabled && mHasVoiceButton) {
+                    setMicF1Key(mF1Key);
+                } else {
+                    setNonMicF1Key(mF1Key, ",", R.xml.popup_comma);
+                }
+            }
+        } else {  // Symbols keyboard
+            if (mVoiceEnabled && mHasVoiceButton) {
+                setMicF1Key(mF1Key);
+            } else {
+                setNonMicF1Key(mF1Key, ",", R.xml.popup_comma);
+            }
         }
+    }
+
+    private void setMicF1Key(Key key) {
+        key.label = null;
+        key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
+        key.popupResId = R.xml.popup_mic;
+        key.icon = mMicIcon;
+        key.hintIcon = mHintIcon;
+        key.iconPreview = mMicPreviewIcon;
+    }
+
+    private void setNonMicF1Key(Key key, String label, int popupResId) {
+        key.label = label;
+        key.codes = new int[] { label.charAt(0) };
+        key.popupResId = popupResId;
+        key.icon = null;
+        key.hintIcon = mHintIcon;
+        key.iconPreview = null;
     }
 
     /**

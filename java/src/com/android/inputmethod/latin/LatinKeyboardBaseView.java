@@ -57,6 +57,8 @@ import java.util.WeakHashMap;
  * A view that renders a virtual {@link LatinKeyboard}. It handles rendering of keys and
  * detecting key presses and touch movements.
  *
+ * TODO: References to LatinKeyboard in this class should be replaced with ones to its base class.
+ *
  * @attr ref R.styleable#LatinKeyboardBaseView_keyBackground
  * @attr ref R.styleable#LatinKeyboardBaseView_keyPreviewLayout
  * @attr ref R.styleable#LatinKeyboardBaseView_keyPreviewOffset
@@ -160,7 +162,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     // Miscellaneous constants
     /* package */ static final int NOT_A_KEY = -1;
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
-    private static final int NUMBER_HINT_VERTICAL_ADJUSTMENT_PIXEL = -1;
+    private static final int HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
     // XML attribute
     private int mKeyTextSize;
@@ -861,32 +863,20 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 // Turn off drop shadow
                 paint.setShadowLayer(0, 0, 0, 0);
             }
-            Drawable icon = null;
-            if (key.label == null && key.icon != null)
-                icon = key.icon;
-            if (icon == null && key.hintIcon != null && drawHintIcon)
-                icon = key.hintIcon;
-            if (icon != null) {
-                // Special handing for the upper-right number hint icons
-                final int drawableWidth;
-                final int drawableHeight;
-                final int drawableX;
-                final int drawableY;
-                if (icon == key.hintIcon) {
-                    drawableWidth = key.width;
-                    drawableHeight = key.height;
-                    drawableX = 0;
-                    drawableY = NUMBER_HINT_VERTICAL_ADJUSTMENT_PIXEL;
-                } else {
-                    drawableWidth = key.icon.getIntrinsicWidth();
-                    drawableHeight = key.icon.getIntrinsicHeight();
-                    drawableX = (key.width + padding.left - padding.right - drawableWidth) / 2;
-                    drawableY = (key.height + padding.top - padding.bottom - drawableHeight) / 2;
-                }
-                canvas.translate(drawableX, drawableY);
-                icon.setBounds(0, 0, drawableWidth, drawableHeight);
-                icon.draw(canvas);
-                canvas.translate(-drawableX, -drawableY);
+            if (key.label == null && key.icon != null) {
+                int drawableWidth = key.icon.getIntrinsicWidth();
+                int drawableHeight = key.icon.getIntrinsicHeight();
+                int drawableX = (key.width + padding.left - padding.right - drawableWidth) / 2;
+                int drawableY = (key.height + padding.top - padding.bottom - drawableHeight) / 2;
+                drawIcon(canvas, key.icon, drawableX, drawableY, drawableWidth, drawableHeight);
+
+            }
+            if (key.hintIcon != null && drawHintIcon) {
+                int drawableWidth = key.width;
+                int drawableHeight = key.height;
+                int drawableX = 0;
+                int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
+                drawIcon(canvas, key.hintIcon, drawableX, drawableY, drawableWidth, drawableHeight);
             }
             canvas.translate(-key.x - kbdPaddingLeft, -key.y - kbdPaddingTop);
         }
@@ -918,6 +908,13 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
         mDrawPending = false;
         mDirtyRect.setEmpty();
+    }
+
+    private void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width, int height) {
+        canvas.translate(x, y);
+        icon.setBounds(0, 0, width, height);
+        icon.draw(canvas);
+        canvas.translate(-x, -y);
     }
 
     public void setForeground(boolean foreground) {
@@ -962,8 +959,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // WindowManager.BadTokenException.
         if (key == null || !mInForeground)
             return;
-        // Should not draw number hint icons
-        if (key.icon != null && key.label == null) {
+        if (key.icon != null) {
             mPreviewText.setCompoundDrawables(null, null, null,
                     key.iconPreview != null ? key.iconPreview : key.icon);
             mPreviewText.setText(null);
