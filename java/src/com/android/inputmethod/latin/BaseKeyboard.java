@@ -61,6 +61,7 @@ public class BaseKeyboard {
     private static final String TAG_KEYBOARD = "Keyboard";
     private static final String TAG_ROW = "Row";
     private static final String TAG_KEY = "Key";
+    private static final String TAG_SPACER = "Spacer";
     private static final String TAG_INCLUDE = "include";
     private static final String TAG_MERGE = "merge";
 
@@ -273,8 +274,8 @@ public class BaseKeyboard {
         public Key(Row parent) {
             keyboard = parent.parent;
             height = parent.defaultHeight;
-            width = parent.defaultWidth;
             gap = parent.defaultHorizontalGap;
+            width = parent.defaultWidth - gap;
             edgeFlags = parent.rowEdgeFlags;
         }
 
@@ -290,21 +291,21 @@ public class BaseKeyboard {
         public Key(Resources res, Row parent, int x, int y, XmlResourceParser parser) {
             this(parent);
 
-            this.x = x;
-            this.y = y;
-
             TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.BaseKeyboard);
-
-            width = getDimensionOrFraction(a, R.styleable.BaseKeyboard_keyWidth,
-                    keyboard.mDisplayWidth, parent.defaultWidth);
             height = getDimensionOrFraction(a, R.styleable.BaseKeyboard_keyHeight,
                     keyboard.mDisplayHeight, parent.defaultHeight);
             gap = getDimensionOrFraction(a, R.styleable.BaseKeyboard_horizontalGap,
                     keyboard.mDisplayWidth, parent.defaultHorizontalGap);
+            width = getDimensionOrFraction(a, R.styleable.BaseKeyboard_keyWidth,
+                    keyboard.mDisplayWidth, parent.defaultWidth) - gap;
             a.recycle();
             a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.BaseKeyboard_Key);
-            this.x += gap;
+
+            // Horizontal gap is divided equally to both sides of the key.
+            this.x = x + gap / 2;
+            this.y = y;
+
             TypedValue codesValue = new TypedValue();
             a.getValue(R.styleable.BaseKeyboard_Key_codes, codesValue);
             if (codesValue.type == TypedValue.TYPE_INT_DEC
@@ -731,6 +732,10 @@ public class BaseKeyboard {
             mTotalHeight = mCurrentY - defaultVerticalGap;
         }
 
+        public void setSpacer(int gap) {
+            mCurrentX += gap;
+        }
+
         public int getMaxRowWidth() {
             return mMaxRowWidth;
         }
@@ -774,6 +779,8 @@ public class BaseKeyboard {
                     mKeys.add(key);
                     if (key.codes[0] == KEYCODE_SHIFT)
                         mShiftKeys.add(key);
+                } else if (TAG_SPACER.equals(tag)) {
+                    parseSpacerAttribute(res, parser, state);
                 } else if (TAG_KEYBOARD.equals(tag)) {
                     parseKeyboardAttributes(res, parser);
                 } else if (TAG_INCLUDE.equals(tag)) {
@@ -791,6 +798,8 @@ public class BaseKeyboard {
                     state.endKey(key);
                 } else if (TAG_ROW.equals(tag)) {
                     state.endRow();
+                } else if (TAG_SPACER.equals(tag)) {
+                    ;
                 } else if (TAG_KEYBOARD.equals(tag)) {
                     state.endKeyboard(mDefaultVerticalGap);
                 } else if (TAG_INCLUDE.equals(tag)) {
@@ -802,6 +811,15 @@ public class BaseKeyboard {
                 }
             }
         }
+    }
+
+    private void parseSpacerAttribute(Resources res, XmlResourceParser parser,
+            KeyboardParseState state) {
+        TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.BaseKeyboard);
+        int gap = getDimensionOrFraction(a,
+                R.styleable.BaseKeyboard_horizontalGap, mDisplayWidth, 0);
+        a.recycle();
+        state.setSpacer(gap);
     }
 
     private void parseInclude(Resources res, XmlResourceParser parent, KeyboardParseState state)
@@ -848,19 +866,14 @@ public class BaseKeyboard {
     private void parseKeyboardAttributes(Resources res, XmlResourceParser parser) {
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.BaseKeyboard);
-
         mDefaultWidth = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_keyWidth,
-                mDisplayWidth, mDisplayWidth / 10);
+                R.styleable.BaseKeyboard_keyWidth, mDisplayWidth, mDisplayWidth / 10);
         mDefaultHeight = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_keyHeight,
-                mDisplayHeight, 50);
+                R.styleable.BaseKeyboard_keyHeight, mDisplayHeight, 50);
         mDefaultHorizontalGap = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_horizontalGap,
-                mDisplayWidth, 0);
+                R.styleable.BaseKeyboard_horizontalGap, mDisplayWidth, 0);
         mDefaultVerticalGap = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_verticalGap,
-                mDisplayHeight, 0);
+                R.styleable.BaseKeyboard_verticalGap, mDisplayHeight, 0);
         mProximityThreshold = (int) (mDefaultWidth * SEARCH_DISTANCE);
         mProximityThreshold = mProximityThreshold * mProximityThreshold;
         a.recycle();

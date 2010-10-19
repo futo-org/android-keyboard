@@ -21,7 +21,8 @@
 <resources>
     <!-- key_height + key_bottom_gap = popup_key_height -->
     <dimen name="key_height">0.450in</dimen>
-    <dimen name="key_bottom_gap">0.0in</dimen>
+    <dimen name="key_bottom_gap">0.03in</dimen>
+    <dimen name="key_horizontal_gap">0.03in</dimen>
     <dimen name="popup_key_height">0.450in</dimen>
     <dimen name="keyboard_bottom_padding">0.10in</dimen>
     <!-- key_height x 1.6 -->

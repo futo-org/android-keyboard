@@ -21,7 +21,7 @@
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:keyWidth="7.5%p"
-    latin:horizontalGap="0px"
+    latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
@@ -30,62 +30,63 @@
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="Tab"
+            latin:keyWidth="7.0%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="q"
-            latin:keyHintIcon="@drawable/keyboard_hint_1"
+            latin:keyHintIcon="@drawable/key_hint_1_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_q" />
         <Key
             latin:keyLabel="w"
-            latin:keyHintIcon="@drawable/keyboard_hint_2"
+            latin:keyHintIcon="@drawable/key_hint_2_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_w" />
         <Key
             latin:keyLabel="e"
-            latin:keyHintIcon="@drawable/keyboard_hint_3"
+            latin:keyHintIcon="@drawable/key_hint_3_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
-            latin:keyHintIcon="@drawable/keyboard_hint_4"
+            latin:keyHintIcon="@drawable/key_hint_4_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
-            latin:keyHintIcon="@drawable/keyboard_hint_5"
+            latin:keyHintIcon="@drawable/key_hint_5_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_t" />
         <Key
             latin:keyLabel="y"
-            latin:keyHintIcon="@drawable/keyboard_hint_6"
+            latin:keyHintIcon="@drawable/key_hint_6_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_y" />
         <Key
             latin:keyLabel="u"
-            latin:keyHintIcon="@drawable/keyboard_hint_7"
+            latin:keyHintIcon="@drawable/key_hint_7_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
-            latin:keyHintIcon="@drawable/keyboard_hint_8"
+            latin:keyHintIcon="@drawable/key_hint_8_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
-            latin:keyHintIcon="@drawable/keyboard_hint_9"
+            latin:keyHintIcon="@drawable/key_hint_9_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
-            latin:keyHintIcon="@drawable/keyboard_hint_0"
+            latin:keyHintIcon="@drawable/key_hint_0_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyLabel="="
             latin:temporaryShiftKeyLabel="+"
-            latin:keyHintIcon="@drawable/keyboard_hint_plus"
+            latin:keyHintIcon="@drawable/key_hint_plus_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="+" />
         <Key
@@ -138,13 +139,13 @@
         <Key
             latin:keyLabel=";"
             latin:temporaryShiftKeyLabel=":"
-            latin:keyHintIcon="@drawable/keyboard_hint_colon"
+            latin:keyHintIcon="@drawable/key_hint_colon_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters=":" />
         <Key
             latin:keyLabel="\'"
             latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/keyboard_hint_quote"
+            latin:keyHintIcon="@drawable/key_hint_quote_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&quot;" />
         <Key
@@ -195,13 +196,13 @@
         <Key
             latin:keyLabel=";"
             latin:temporaryShiftKeyLabel=":"
-            latin:keyHintIcon="@drawable/keyboard_hint_colon"
+            latin:keyHintIcon="@drawable/key_hint_colon_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters=":" />
         <Key
             latin:keyLabel="\'"
             latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/keyboard_hint_quote"
+            latin:keyHintIcon="@drawable/key_hint_quote_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&quot;" />
         <Key
@@ -254,7 +255,7 @@
         <Key
             latin:keyLabel="\'"
             latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/keyboard_hint_quote"
+            latin:keyHintIcon="@drawable/key_hint_quote_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&quot;" />
         <Key
@@ -305,13 +306,13 @@
         <Key
             latin:keyLabel=";"
             latin:temporaryShiftKeyLabel=":"
-            latin:keyHintIcon="@drawable/keyboard_hint_colon"
+            latin:keyHintIcon="@drawable/key_hint_colon_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters=":" />
         <Key
             latin:keyLabel="\'"
             latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/keyboard_hint_quote"
+            latin:keyHintIcon="@drawable/key_hint_quote_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&quot;" />
         <Key
@@ -362,13 +363,13 @@
         <Key
             latin:keyLabel=";"
             latin:temporaryShiftKeyLabel=":"
-            latin:keyHintIcon="@drawable/keyboard_hint_colon"
+            latin:keyHintIcon="@drawable/key_hint_colon_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters=":" />
         <Key
             latin:keyLabel="\'"
             latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/keyboard_hint_quote"
+            latin:keyHintIcon="@drawable/key_hint_quote_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&quot;" />
         <Key
@@ -415,19 +416,19 @@
         <Key
             latin:keyLabel=","
             latin:temporaryShiftKeyLabel="*"
-            latin:keyHintIcon="@drawable/keyboard_hint_star"
+            latin:keyHintIcon="@drawable/key_hint_star_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="*" />
         <Key
             latin:keyLabel="."
             latin:temporaryShiftKeyLabel="!"
-            latin:keyHintIcon="@drawable/keyboard_hint_exclamation"
+            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="!" />
         <Key
             latin:keyLabel="/"
             latin:temporaryShiftKeyLabel="\?"
-            latin:keyHintIcon="@drawable/keyboard_hint_question"
+            latin:keyHintIcon="@drawable/key_hint_question_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\?" />
         <Key
@@ -475,19 +476,19 @@
         <Key
             latin:keyLabel=","
             latin:temporaryShiftKeyLabel="*"
-            latin:keyHintIcon="@drawable/keyboard_hint_star"
+            latin:keyHintIcon="@drawable/key_hint_star_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="*" />
         <Key
             latin:keyLabel="."
             latin:temporaryShiftKeyLabel="!"
-            latin:keyHintIcon="@drawable/keyboard_hint_exclamation"
+            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="!" />
         <Key
             latin:keyLabel="/"
             latin:temporaryShiftKeyLabel="\?"
-            latin:keyHintIcon="@drawable/keyboard_hint_question"
+            latin:keyHintIcon="@drawable/key_hint_question_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\?" />
         <Key
@@ -583,19 +584,19 @@
         <Key
             latin:keyLabel=","
             latin:temporaryShiftKeyLabel="*"
-            latin:keyHintIcon="@drawable/keyboard_hint_star"
+            latin:keyHintIcon="@drawable/key_hint_star_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="*" />
         <Key
             latin:keyLabel="."
             latin:temporaryShiftKeyLabel="!"
-            latin:keyHintIcon="@drawable/keyboard_hint_exclamation"
+            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="!" />
         <Key
             latin:keyLabel="/"
             latin:temporaryShiftKeyLabel="\?"
-            latin:keyHintIcon="@drawable/keyboard_hint_question"
+            latin:keyHintIcon="@drawable/key_hint_question_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\?" />
         <Key
@@ -643,19 +644,19 @@
         <Key
             latin:keyLabel=","
             latin:temporaryShiftKeyLabel="*"
-            latin:keyHintIcon="@drawable/keyboard_hint_star"
+            latin:keyHintIcon="@drawable/key_hint_star_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="*" />
         <Key
             latin:keyLabel="."
             latin:temporaryShiftKeyLabel="!"
-            latin:keyHintIcon="@drawable/keyboard_hint_exclamation"
+            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="!" />
         <Key
             latin:keyLabel="/"
             latin:temporaryShiftKeyLabel="\?"
-            latin:keyHintIcon="@drawable/keyboard_hint_question"
+            latin:keyHintIcon="@drawable/key_hint_question_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\?" />
         <Key
@@ -671,17 +672,18 @@
     <Row
         latin:keyboardMode="@+id/mode_normal"
     >
+        <Spacer
+            latin:horizontalGap="16.25%p" />
         <Key
             latin:keyLabel="("
             latin:temporaryShiftKeyLabel="&lt;"
-            latin:keyHintIcon="@drawable/keyboard_hint_smaller"
+            latin:keyHintIcon="@drawable/key_hint_smaller_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&lt;"
-            latin:horizontalGap="16.25%p" />
+            latin:popupCharacters="&lt;" />
         <Key
             latin:keyLabel=")"
             latin:temporaryShiftKeyLabel="&gt;"
-            latin:keyHintIcon="@drawable/keyboard_hint_greater"
+            latin:keyHintIcon="@drawable/key_hint_larger_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&gt;" />
         <Key
@@ -693,7 +695,7 @@
         <Key
             latin:keyLabel="_"
             latin:temporaryShiftKeyLabel="\@"
-            latin:keyHintIcon="@drawable/keyboard_hint_at"
+            latin:keyHintIcon="@drawable/key_hint_at_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\@" />
         <Key
@@ -706,11 +708,12 @@
     <Row
         latin:keyboardMode="@+id/mode_url"
     >
+        <Spacer
+            latin:horizontalGap="16.25%p" />
         <Key
             latin:keyLabel=".com"
-	    latin:keyOutputText=".com"
-	    latin:keyWidth="15.0%p"
-            latin:horizontalGap="16.25%p" />
+    	    latin:keyOutputText=".com"
+            latin:keyWidth="15.0%p" />
         <Key
             latin:codes="@integer/key_space"
             latin:keyIcon="@drawable/sym_keyboard_space"
@@ -720,7 +723,7 @@
         <Key
             latin:keyLabel="_"
             latin:temporaryShiftKeyLabel="\@"
-            latin:keyHintIcon="@drawable/keyboard_hint_at"
+            latin:keyHintIcon="@drawable/key_hint_at_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\@" />
         <Key
@@ -733,11 +736,12 @@
     <Row
         latin:keyboardMode="@+id/mode_email"
     >
+        <Spacer
+            latin:horizontalGap="16.25%p" />
         <Key
             latin:keyLabel=".com"
-	    latin:keyOutputText=".com"
-	    latin:keyWidth="15.0%p"
-            latin:horizontalGap="16.25%p" />
+            latin:keyOutputText=".com"
+            latin:keyWidth="15.0%p" />
         <Key
             latin:codes="@integer/key_space"
             latin:keyIcon="@drawable/sym_keyboard_space"
@@ -752,12 +756,13 @@
     <Row
         latin:keyboardMode="@+id/mode_im"
     >
+        <Spacer
+            latin:horizontalGap="16.25%p" />
         <Key
             latin:keyLabel=":-)"
             latin:keyOutputText=":-)"
             latin:popupKeyboard="@xml/popup_smileys"
-            latin:keyWidth="15.0%p"
-            latin:horizontalGap="16.25%p" />
+            latin:keyWidth="15.0%p" />
         <Key
             latin:codes="@integer/key_space"
             latin:keyIcon="@drawable/sym_keyboard_space"
@@ -767,7 +772,7 @@
         <Key
             latin:keyLabel="_"
             latin:temporaryShiftKeyLabel="\@"
-            latin:keyHintIcon="@drawable/keyboard_hint_at"
+            latin:keyHintIcon="@drawable/key_hint_at_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\@" />
         <Key
@@ -780,17 +785,18 @@
     <Row
         latin:keyboardMode="@+id/mode_webentry"
     >
+        <Spacer
+            latin:horizontalGap="16.25%p" />
         <Key
             latin:keyLabel="("
             latin:temporaryShiftKeyLabel="&lt;"
-            latin:keyHintIcon="@drawable/keyboard_hint_smaller"
+            latin:keyHintIcon="@drawable/key_hint_smaller_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&lt;"
-            latin:horizontalGap="16.25%p" />
+            latin:popupCharacters="&lt;" />
         <Key
             latin:keyLabel=")"
             latin:temporaryShiftKeyLabel="&gt;"
-            latin:keyHintIcon="@drawable/keyboard_hint_greater"
+            latin:keyHintIcon="@drawable/key_hint_larger_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="&gt;" />
         <Key
@@ -802,7 +808,7 @@
         <Key
             latin:keyLabel="_"
             latin:temporaryShiftKeyLabel="\@"
-            latin:keyHintIcon="@drawable/keyboard_hint_at"
+            latin:keyHintIcon="@drawable/key_hint_at_holo"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\@" />
         <Key
