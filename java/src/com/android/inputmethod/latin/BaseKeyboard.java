@@ -121,7 +121,7 @@ public class BaseKeyboard {
 
     /**
      * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate.
-     * Some of the key size defaults can be overridden per row from what the {@link Keyboard}
+     * Some of the key size defaults can be overridden per row from what the {@link BaseKeyboard}
      * defines.
      */
     public static class Row {
@@ -135,7 +135,7 @@ public class BaseKeyboard {
         public int verticalGap;
         /**
          * Edge flags for this row of keys. Possible values that can be assigned are
-         * {@link Keyboard#EDGE_TOP EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM EDGE_BOTTOM}
+         * {@link BaseKeyboard#EDGE_TOP EDGE_TOP} and {@link BaseKeyboard#EDGE_BOTTOM EDGE_BOTTOM}
          */
         public int rowEdgeFlags;
 
@@ -217,8 +217,8 @@ public class BaseKeyboard {
         /**
          * Flags that specify the anchoring to edges of the keyboard for detecting touch events
          * that are just out of the boundary of the key. This is a bit mask of
-         * {@link Keyboard#EDGE_LEFT}, {@link Keyboard#EDGE_RIGHT}, {@link Keyboard#EDGE_TOP} and
-         * {@link Keyboard#EDGE_BOTTOM}.
+         * {@link BaseKeyboard#EDGE_LEFT}, {@link BaseKeyboard#EDGE_RIGHT},
+         * {@link BaseKeyboard#EDGE_TOP} and {@link BaseKeyboard#EDGE_BOTTOM}.
          */
         public int edgeFlags;
         /** Whether this is a modifier key, such as Shift or Alt */
@@ -274,7 +274,7 @@ public class BaseKeyboard {
          * the XML parser.
          * @param res resources associated with the caller's context
          * @param parent the row that this key belongs to. The row must already be attached to
-         * a {@link Keyboard}.
+         * a {@link BaseKeyboard}.
          * @param x the x coordinate of the top-left
          * @param y the y coordinate of the top-left
          * @param parser the XML parser containing the attributes for this key
