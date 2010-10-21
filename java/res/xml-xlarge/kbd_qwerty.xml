@@ -27,795 +27,83 @@
 >
     <!-- This row is intentionally not marked as a top row -->
     <Row>
-        <Key
-            latin:codes="@integer/key_tab"
-            latin:keyLabel="Tab"
-            latin:keyWidth="7.0%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="q"
-            latin:keyHintIcon="@drawable/key_hint_1_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_q" />
-        <Key
-            latin:keyLabel="w"
-            latin:keyHintIcon="@drawable/key_hint_2_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_w" />
-        <Key
-            latin:keyLabel="e"
-            latin:keyHintIcon="@drawable/key_hint_3_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_e" />
-        <Key
-            latin:keyLabel="r"
-            latin:keyHintIcon="@drawable/key_hint_4_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_r" />
-        <Key
-            latin:keyLabel="t"
-            latin:keyHintIcon="@drawable/key_hint_5_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_t" />
-        <Key
-            latin:keyLabel="y"
-            latin:keyHintIcon="@drawable/key_hint_6_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_y" />
-        <Key
-            latin:keyLabel="u"
-            latin:keyHintIcon="@drawable/key_hint_7_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_u" />
-        <Key
-            latin:keyLabel="i"
-            latin:keyHintIcon="@drawable/key_hint_8_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_i" />
-        <Key
-            latin:keyLabel="o"
-            latin:keyHintIcon="@drawable/key_hint_9_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_o" />
-        <Key
-            latin:keyLabel="p"
-            latin:keyHintIcon="@drawable/key_hint_0_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_p" />
-        <Key
-            latin:keyLabel="="
-            latin:temporaryShiftKeyLabel="+"
-            latin:keyHintIcon="@drawable/key_hint_plus_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="+" />
-        <Key
-            latin:codes="@integer/key_delete"
-            latin:keyIcon="@drawable/sym_keyboard_delete"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            latin:keyWidth="10.5%p"
-            latin:isModifier="true"
-            latin:isRepeatable="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row1_common" />
     </Row>
     <!-- TODO: We should have new attributes for <Key> to eliminate these excess duplications -->
     <Row
         latin:keyboardMode="@+id/mode_normal"
     >
-        <Key
-            latin:codes="@integer/key_symbol"
-            latin:keyLabel="@string/label_symbol_key"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="a"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_a" />
-        <Key
-            latin:keyLabel="s"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_s" />
-        <Key
-            latin:keyLabel="d"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_d" />
-        <Key
-            latin:keyLabel="f" />
-        <Key
-            latin:keyLabel="g"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_g" />
-        <Key
-            latin:keyLabel="h" />
-        <Key
-            latin:keyLabel="j" />
-        <Key
-            latin:keyLabel="k" />
-        <Key
-            latin:keyLabel="l"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_l" />
-        <Key
-            latin:keyLabel=";"
-            latin:temporaryShiftKeyLabel=":"
-            latin:keyHintIcon="@drawable/key_hint_colon_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters=":" />
-        <Key
-            latin:keyLabel="\'"
-            latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/key_hint_quote_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&quot;" />
-        <Key
-            latin:codes="@integer/key_return"
-            latin:keyIcon="@drawable/sym_keyboard_return"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_common" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_url"
     >
-        <Key
-            latin:codes="@integer/key_symbol"
-            latin:keyLabel="@string/label_symbol_key"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="a"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_a" />
-        <Key
-            latin:keyLabel="s"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_s" />
-        <Key
-            latin:keyLabel="d"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_d" />
-        <Key
-            latin:keyLabel="f" />
-        <Key
-            latin:keyLabel="g"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_g" />
-        <Key
-            latin:keyLabel="h" />
-        <Key
-            latin:keyLabel="j" />
-        <Key
-            latin:keyLabel="k" />
-        <Key
-            latin:keyLabel="l"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_l" />
-        <Key
-            latin:keyLabel=";"
-            latin:temporaryShiftKeyLabel=":"
-            latin:keyHintIcon="@drawable/key_hint_colon_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters=":" />
-        <Key
-            latin:keyLabel="\'"
-            latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/key_hint_quote_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&quot;" />
-        <Key
-            latin:codes="@integer/key_return"
-            latin:keyIcon="@drawable/sym_keyboard_return"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_common" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_email"
     >
-        <Key
-            latin:codes="@integer/key_symbol"
-            latin:keyLabel="@string/label_symbol_key"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="a"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_a" />
-        <Key
-            latin:keyLabel="s"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_s" />
-        <Key
-            latin:keyLabel="d"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_d" />
-        <Key
-            latin:keyLabel="f" />
-        <Key
-            latin:keyLabel="g"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_g" />
-        <Key
-            latin:keyLabel="h" />
-        <Key
-            latin:keyLabel="j" />
-        <Key
-            latin:keyLabel="k" />
-        <Key
-            latin:keyLabel="l"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_l" />
-        <Key
-            latin:keyLabel=";" />
-        <Key
-            latin:keyLabel="\'"
-            latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/key_hint_quote_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&quot;" />
-        <Key
-            latin:codes="@integer/key_return"
-            latin:keyIcon="@drawable/sym_keyboard_return"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_email" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_im"
     >
-        <Key
-            latin:codes="@integer/key_symbol"
-            latin:keyLabel="@string/label_symbol_key"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="a"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_a" />
-        <Key
-            latin:keyLabel="s"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_s" />
-        <Key
-            latin:keyLabel="d"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_d" />
-        <Key
-            latin:keyLabel="f" />
-        <Key
-            latin:keyLabel="g"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_g" />
-        <Key
-            latin:keyLabel="h" />
-        <Key
-            latin:keyLabel="j" />
-        <Key
-            latin:keyLabel="k" />
-        <Key
-            latin:keyLabel="l"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_l" />
-        <Key
-            latin:keyLabel=";"
-            latin:temporaryShiftKeyLabel=":"
-            latin:keyHintIcon="@drawable/key_hint_colon_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters=":" />
-        <Key
-            latin:keyLabel="\'"
-            latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/key_hint_quote_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&quot;" />
-        <Key
-            latin:codes="@integer/key_return"
-            latin:keyIcon="@drawable/sym_keyboard_return"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_common" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_webentry"
     >
-        <Key
-            latin:codes="@integer/key_symbol"
-            latin:keyLabel="@string/label_symbol_key"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="a"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_a" />
-        <Key
-            latin:keyLabel="s"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_s" />
-        <Key
-            latin:keyLabel="d"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_d" />
-        <Key
-            latin:keyLabel="f" />
-        <Key
-            latin:keyLabel="g"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_g" />
-        <Key
-            latin:keyLabel="h" />
-        <Key
-            latin:keyLabel="j" />
-        <Key
-            latin:keyLabel="k" />
-        <Key
-            latin:keyLabel="l"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_l" />
-        <Key
-            latin:keyLabel=";"
-            latin:temporaryShiftKeyLabel=":"
-            latin:keyHintIcon="@drawable/key_hint_colon_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters=":" />
-        <Key
-            latin:keyLabel="\'"
-            latin:temporaryShiftKeyLabel="&quot;"
-            latin:keyHintIcon="@drawable/key_hint_quote_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&quot;" />
-        <Key
-            latin:codes="@integer/key_return"
-            latin:keyIcon="@drawable/sym_keyboard_return"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-            latin:keyWidth="8.75%p"
-            latin:isModifier="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_common" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_normal"
     >
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="z"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_z" />
-        <Key
-            latin:keyLabel="x" />
-        <Key
-            latin:keyLabel="c"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_c" />
-        <Key
-            latin:keyLabel="v"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_v" />
-        <Key
-            latin:keyLabel="b" />
-        <Key
-            latin:keyLabel="n"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_n" />
-        <Key
-            latin:keyLabel="m" />
-        <Key
-            latin:keyLabel=","
-            latin:temporaryShiftKeyLabel="*"
-            latin:keyHintIcon="@drawable/key_hint_star_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="*" />
-        <Key
-            latin:keyLabel="."
-            latin:temporaryShiftKeyLabel="!"
-            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="!" />
-        <Key
-            latin:keyLabel="/"
-            latin:temporaryShiftKeyLabel="\?"
-            latin:keyHintIcon="@drawable/key_hint_question_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="\?" />
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_common" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_url"
     >
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="z"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_z" />
-        <Key
-            latin:keyLabel="x" />
-        <Key
-            latin:keyLabel="c"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_c" />
-        <Key
-            latin:keyLabel="v"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_v" />
-        <Key
-            latin:keyLabel="b" />
-        <Key
-            latin:keyLabel="n"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_n" />
-        <Key
-            latin:keyLabel="m" />
-        <Key
-            latin:keyLabel=","
-            latin:temporaryShiftKeyLabel="*"
-            latin:keyHintIcon="@drawable/key_hint_star_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="*" />
-        <Key
-            latin:keyLabel="."
-            latin:temporaryShiftKeyLabel="!"
-            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="!" />
-        <Key
-            latin:keyLabel="/"
-            latin:temporaryShiftKeyLabel="\?"
-            latin:keyHintIcon="@drawable/key_hint_question_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="\?" />
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_common" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_email"
     >
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="z"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_z" />
-        <Key
-            latin:keyLabel="x" />
-        <Key
-            latin:keyLabel="c"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_c" />
-        <Key
-            latin:keyLabel="v"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_v" />
-        <Key
-            latin:keyLabel="b" />
-        <Key
-            latin:keyLabel="n"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_n" />
-        <Key
-            latin:keyLabel="m" />
-        <Key
-            latin:keyLabel="," />
-        <Key
-            latin:keyLabel="." />
-        <Key
-            latin:keyLabel="\@" />
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_email" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_im"
     >
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="z"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_z" />
-        <Key
-            latin:keyLabel="x" />
-        <Key
-            latin:keyLabel="c"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_c" />
-        <Key
-            latin:keyLabel="v"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_v" />
-        <Key
-            latin:keyLabel="b" />
-        <Key
-            latin:keyLabel="n"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_n" />
-        <Key
-            latin:keyLabel="m" />
-        <Key
-            latin:keyLabel=","
-            latin:temporaryShiftKeyLabel="*"
-            latin:keyHintIcon="@drawable/key_hint_star_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="*" />
-        <Key
-            latin:keyLabel="."
-            latin:temporaryShiftKeyLabel="!"
-            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="!" />
-        <Key
-            latin:keyLabel="/"
-            latin:temporaryShiftKeyLabel="\?"
-            latin:keyHintIcon="@drawable/key_hint_question_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="\?" />
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_common" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_webentry"
     >
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="z"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_z" />
-        <Key
-            latin:keyLabel="x" />
-        <Key
-            latin:keyLabel="c"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_c" />
-        <Key
-            latin:keyLabel="v"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_v" />
-        <Key
-            latin:keyLabel="b" />
-        <Key
-            latin:keyLabel="n"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="@string/alternates_for_n" />
-        <Key
-            latin:keyLabel="m" />
-        <Key
-            latin:keyLabel=","
-            latin:temporaryShiftKeyLabel="*"
-            latin:keyHintIcon="@drawable/key_hint_star_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="*" />
-        <Key
-            latin:keyLabel="."
-            latin:temporaryShiftKeyLabel="!"
-            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="!" />
-        <Key
-            latin:keyLabel="/"
-            latin:temporaryShiftKeyLabel="\?"
-            latin:keyHintIcon="@drawable/key_hint_question_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="\?" />
-        <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
-            latin:keyEdgeFlags="right" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_common" />
     </Row>
     <!-- This row is intentionally not marked as a bottom row -->
     <Row
         latin:keyboardMode="@+id/mode_normal"
     >
-        <Spacer
-            latin:horizontalGap="16.25%p" />
-        <Key
-            latin:keyLabel="("
-            latin:temporaryShiftKeyLabel="&lt;"
-            latin:keyHintIcon="@drawable/key_hint_smaller_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&lt;" />
-        <Key
-            latin:keyLabel=")"
-            latin:temporaryShiftKeyLabel="&gt;"
-            latin:keyHintIcon="@drawable/key_hint_larger_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&gt;" />
-        <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.5%p"
-            latin:isModifier="true" />
-        <Key
-            latin:keyLabel="_"
-            latin:temporaryShiftKeyLabel="\@"
-            latin:keyHintIcon="@drawable/key_hint_at_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="\@" />
-        <Key
-            latin:keyLabel="-"
-            latin:temporaryShiftKeyLabel="#"
-            latin:keyHintIcon="@drawable/keyboard_hint_doublecross"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="#" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_common" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_url"
     >
-        <Spacer
-            latin:horizontalGap="16.25%p" />
-        <Key
-            latin:keyLabel=".com"
-    	    latin:keyOutputText=".com"
-            latin:keyWidth="15.0%p" />
-        <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.5%p"
-            latin:isModifier="true" />
-        <Key
-            latin:keyLabel="_"
-            latin:temporaryShiftKeyLabel="\@"
-            latin:keyHintIcon="@drawable/key_hint_at_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="\@" />
-        <Key
-            latin:keyLabel="-"
-            latin:temporaryShiftKeyLabel="#"
-            latin:keyHintIcon="@drawable/keyboard_hint_doublecross"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="#" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_url" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_email"
     >
-        <Spacer
-            latin:horizontalGap="16.25%p" />
-        <Key
-            latin:keyLabel=".com"
-            latin:keyOutputText=".com"
-            latin:keyWidth="15.0%p" />
-        <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.5%p"
-            latin:isModifier="true" />
-        <Key
-            latin:keyLabel="_" />
-        <Key
-            latin:keyLabel="-" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_email" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_im"
     >
-        <Spacer
-            latin:horizontalGap="16.25%p" />
-        <Key
-            latin:keyLabel=":-)"
-            latin:keyOutputText=":-)"
-            latin:popupKeyboard="@xml/popup_smileys"
-            latin:keyWidth="15.0%p" />
-        <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.5%p"
-            latin:isModifier="true" />
-        <Key
-            latin:keyLabel="_"
-            latin:temporaryShiftKeyLabel="\@"
-            latin:keyHintIcon="@drawable/key_hint_at_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="\@" />
-        <Key
-            latin:keyLabel="-"
-            latin:temporaryShiftKeyLabel="#"
-            latin:keyHintIcon="@drawable/keyboard_hint_doublecross"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="#" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_im" />
     </Row>
     <Row
         latin:keyboardMode="@+id/mode_webentry"
     >
-        <Spacer
-            latin:horizontalGap="16.25%p" />
-        <Key
-            latin:keyLabel="("
-            latin:temporaryShiftKeyLabel="&lt;"
-            latin:keyHintIcon="@drawable/key_hint_smaller_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&lt;" />
-        <Key
-            latin:keyLabel=")"
-            latin:temporaryShiftKeyLabel="&gt;"
-            latin:keyHintIcon="@drawable/key_hint_larger_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="&gt;" />
-        <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.5%p"
-            latin:isModifier="true" />
-        <Key
-            latin:keyLabel="_"
-            latin:temporaryShiftKeyLabel="\@"
-            latin:keyHintIcon="@drawable/key_hint_at_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="\@" />
-        <Key
-            latin:keyLabel="-"
-            latin:temporaryShiftKeyLabel="#"
-            latin:keyHintIcon="@drawable/keyboard_hint_doublecross"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="#" />
+        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_common" />
     </Row>
 </Keyboard>
