@@ -57,14 +57,6 @@ public class BaseKeyboard {
 
     static final String TAG = "BaseKeyboard";
 
-    // Keyboard XML Tags
-    private static final String TAG_KEYBOARD = "Keyboard";
-    private static final String TAG_ROW = "Row";
-    private static final String TAG_KEY = "Key";
-    private static final String TAG_SPACER = "Spacer";
-    private static final String TAG_INCLUDE = "include";
-    private static final String TAG_MERGE = "merge";
-
     public static final int EDGE_LEFT = 0x01;
     public static final int EDGE_RIGHT = 0x02;
     public static final int EDGE_TOP = 0x04;
@@ -161,16 +153,16 @@ public class BaseKeyboard {
             this.parent = parent;
             TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.BaseKeyboard);
-            defaultWidth = getDimensionOrFraction(a,
+            defaultWidth = BaseKeyboardParser.getDimensionOrFraction(a,
                     R.styleable.BaseKeyboard_keyWidth,
                     parent.mDisplayWidth, parent.mDefaultWidth);
-            defaultHeight = getDimensionOrFraction(a,
+            defaultHeight = BaseKeyboardParser.getDimensionOrFraction(a,
                     R.styleable.BaseKeyboard_keyHeight,
                     parent.mDisplayHeight, parent.mDefaultHeight);
-            defaultHorizontalGap = getDimensionOrFraction(a,
+            defaultHorizontalGap = BaseKeyboardParser.getDimensionOrFraction(a,
                     R.styleable.BaseKeyboard_horizontalGap,
                     parent.mDisplayWidth, parent.mDefaultHorizontalGap);
-            verticalGap = getDimensionOrFraction(a,
+            verticalGap = BaseKeyboardParser.getDimensionOrFraction(a,
                     R.styleable.BaseKeyboard_verticalGap,
                     parent.mDisplayHeight, parent.mDefaultVerticalGap);
             a.recycle();
@@ -293,11 +285,14 @@ public class BaseKeyboard {
 
             TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.BaseKeyboard);
-            height = getDimensionOrFraction(a, R.styleable.BaseKeyboard_keyHeight,
+            height = BaseKeyboardParser.getDimensionOrFraction(a,
+                    R.styleable.BaseKeyboard_keyHeight,
                     keyboard.mDisplayHeight, parent.defaultHeight);
-            gap = getDimensionOrFraction(a, R.styleable.BaseKeyboard_horizontalGap,
+            gap = BaseKeyboardParser.getDimensionOrFraction(a,
+                    R.styleable.BaseKeyboard_horizontalGap,
                     keyboard.mDisplayWidth, parent.defaultHorizontalGap);
-            width = getDimensionOrFraction(a, R.styleable.BaseKeyboard_keyWidth,
+            width = BaseKeyboardParser.getDimensionOrFraction(a,
+                    R.styleable.BaseKeyboard_keyWidth,
                     keyboard.mDisplayWidth, parent.defaultWidth) - gap;
             a.recycle();
             a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.BaseKeyboard_Key);
@@ -388,9 +383,9 @@ public class BaseKeyboard {
          * Detects if a point falls inside this key.
          * @param x the x-coordinate of the point
          * @param y the y-coordinate of the point
-         * @return whether or not the point falls inside the key. If the key is attached to an edge,
-         * it will assume that all points between the key and the edge are considered to be inside
-         * the key.
+         * @return whether or not the point falls inside the key. If the key is attached to an
+         * edge, it will assume that all points between the key and the edge are considered to be
+         * inside the key.
          */
         public boolean isInside(int x, int y) {
             boolean leftEdge = (edgeFlags & EDGE_LEFT) > 0;
@@ -476,11 +471,11 @@ public class BaseKeyboard {
         mDisplayHeight = height;
 
         mDefaultHorizontalGap = 0;
-        mDefaultWidth = mDisplayWidth / 10;
+        setKeyWidth(mDisplayWidth / 10);
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
         mKeyboardMode = modeId;
-        loadKeyboard(context, context.getResources().getXml(xmlLayoutResId));
+        loadKeyboard(context, xmlLayoutResId);
     }
 
     /**
@@ -497,11 +492,11 @@ public class BaseKeyboard {
         //Log.v(TAG, "keyboard's display metrics:" + dm);
 
         mDefaultHorizontalGap = 0;
-        mDefaultWidth = mDisplayWidth / 10;
+        setKeyWidth(mDisplayWidth / 10);
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
         mKeyboardMode = modeId;
-        loadKeyboard(context, context.getResources().getXml(xmlLayoutResId));
+        loadKeyboard(context, xmlLayoutResId);
     }
 
     /**
@@ -590,6 +585,8 @@ public class BaseKeyboard {
 
     protected void setKeyWidth(int width) {
         mDefaultWidth = width;
+        final int threshold = (int) (width * SEARCH_DISTANCE);
+        mProximityThreshold = threshold * threshold;
     }
 
     /**
@@ -602,6 +599,18 @@ public class BaseKeyboard {
 
     public int getMinWidth() {
         return mTotalWidth;
+    }
+
+    public int getKeyboardHeight() {
+        return mDisplayHeight;
+    }
+
+    public int getKeyboardWidth() {
+        return mDisplayWidth;
+    }
+
+    public int getKeyboardMode() {
+        return mKeyboardMode;
     }
 
     public boolean setShifted(boolean shiftState) {
@@ -636,11 +645,12 @@ public class BaseKeyboard {
                 int count = 0;
                 for (int i = 0; i < mKeys.size(); i++) {
                     final Key key = mKeys.get(i);
-                    if (key.squaredDistanceFrom(x, y) < mProximityThreshold ||
-                            key.squaredDistanceFrom(x + mCellWidth - 1, y) < mProximityThreshold ||
+                    final int threshold = mProximityThreshold;
+                    if (key.squaredDistanceFrom(x, y) < threshold ||
+                            key.squaredDistanceFrom(x + mCellWidth - 1, y) < threshold ||
                             key.squaredDistanceFrom(x + mCellWidth - 1, y + mCellHeight - 1)
-                                < mProximityThreshold ||
-                            key.squaredDistanceFrom(x, y + mCellHeight - 1) < mProximityThreshold) {
+                                < threshold ||
+                            key.squaredDistanceFrom(x, y + mCellHeight - 1) < threshold) {
                         indices[count++] = i;
                     }
                 }
@@ -670,26 +680,41 @@ public class BaseKeyboard {
     }
 
     // TODO should be private
-    protected Row createRowFromXml(Resources res, XmlResourceParser parser) {
-        return new Row(res, this, parser);
+    protected BaseKeyboard.Row createRowFromXml(Resources res, XmlResourceParser parser) {
+        return new BaseKeyboard.Row(res, this, parser);
     }
 
     // TODO should be private
-    protected Key createKeyFromXml(Resources res, Row parent, int x, int y,
+    protected BaseKeyboard.Key createKeyFromXml(Resources res, Row parent, int x, int y,
             XmlResourceParser parser) {
-        return new Key(res, parent, x, y, parser);
+        return new BaseKeyboard.Key(res, parent, x, y, parser);
     }
 
-    private static class KeyboardParseState {
-        private final int mKeyboardMode;
+    private static class BaseKeyboardParser {
+        // Keyboard XML Tags
+        private static final String TAG_KEYBOARD = "Keyboard";
+        private static final String TAG_ROW = "Row";
+        private static final String TAG_KEY = "Key";
+        private static final String TAG_SPACER = "Spacer";
+        private static final String TAG_INCLUDE = "include";
+        private static final String TAG_MERGE = "merge";
+
+        private final BaseKeyboard mKeyboard;
+        private final List<Key> mKeys;
+        private final List<Key> mShiftKeys;
+        private final Resources mResources;
+
         private int mCurrentX = 0;
         private int mCurrentY = 0;
         private int mMaxRowWidth = 0;
         private int mTotalHeight = 0;
         private Row mCurrentRow = null;
 
-        public KeyboardParseState(int keyboardMode) {
-            mKeyboardMode = keyboardMode;
+        public BaseKeyboardParser(BaseKeyboard keyboard, Resources res) {
+            mKeyboard = keyboard;
+            mKeys = keyboard.getKeys();
+            mShiftKeys = keyboard.getShiftKeys();
+            mResources = res;
         }
 
         public int getX() {
@@ -708,7 +733,7 @@ public class BaseKeyboard {
         public boolean startRow(Row row) {
             mCurrentX = 0;
             mCurrentRow = row;
-            return row.mode == 0 || row.mode == mKeyboardMode;
+            return row.mode == 0 || row.mode == mKeyboard.getKeyboardMode();
         }
 
         public void skipRow() {
@@ -743,152 +768,156 @@ public class BaseKeyboard {
         public int getTotalHeight() {
             return mTotalHeight;
         }
+
+        private void parseKeyboard(XmlResourceParser parser)
+                throws XmlPullParserException, IOException {
+            Key key = null;
+
+            int event;
+            while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
+                if (event == XmlResourceParser.START_TAG) {
+                    String tag = parser.getName();
+                    if (TAG_ROW.equals(tag)) {
+                        // TODO createRowFromXml should not be called from
+                        // BaseKeyboard constructor.
+                        Row row = mKeyboard.createRowFromXml(mResources, parser);
+                        if (!startRow(row))
+                            skipToEndOfRow(parser);
+                    } else if (TAG_KEY.equals(tag)) {
+                        // TODO createKeyFromXml should not be called from
+                        // BaseKeyboard constructor.
+                        key = mKeyboard.createKeyFromXml(mResources, getRow(), getX(), getY(),
+                                parser);
+                        mKeys.add(key);
+                        if (key.codes[0] == KEYCODE_SHIFT)
+                            mShiftKeys.add(key);
+                    } else if (TAG_SPACER.equals(tag)) {
+                        parseSpacerAttribute(parser);
+                    } else if (TAG_KEYBOARD.equals(tag)) {
+                        parseKeyboardAttributes(parser);
+                    } else if (TAG_INCLUDE.equals(tag)) {
+                        if (parser.getDepth() == 0)
+                            throw new InflateException("<include /> cannot be the root element");
+                        parseInclude(parser);
+                    } else if (TAG_MERGE.equals(tag)) {
+                        throw new InflateException(
+                                "<merge> must not be appeared in keyboard XML file");
+                    } else {
+                        throw new InflateException("unknown start tag: " + tag);
+                    }
+                } else if (event == XmlResourceParser.END_TAG) {
+                    String tag = parser.getName();
+                    if (TAG_KEY.equals(tag)) {
+                        endKey(key);
+                    } else if (TAG_ROW.equals(tag)) {
+                        endRow();
+                    } else if (TAG_SPACER.equals(tag)) {
+                        ;
+                    } else if (TAG_KEYBOARD.equals(tag)) {
+                        endKeyboard(mKeyboard.getVerticalGap());
+                    } else if (TAG_INCLUDE.equals(tag)) {
+                        ;
+                    } else if (TAG_MERGE.equals(tag)) {
+                        return;
+                    } else {
+                        throw new InflateException("unknown end tag: " + tag);
+                    }
+                }
+            }
+        }
+
+        private void parseSpacerAttribute(XmlResourceParser parser) {
+            TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                    R.styleable.BaseKeyboard);
+            int gap = getDimensionOrFraction(a, R.styleable.BaseKeyboard_horizontalGap,
+                    mKeyboard.getKeyboardWidth(), 0);
+            a.recycle();
+            setSpacer(gap);
+        }
+
+        private void parseInclude(XmlResourceParser parent)
+                throws XmlPullParserException, IOException {
+            final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parent),
+                    R.styleable.BaseKeyboard_Include);
+            final int keyboardLayout = a.getResourceId(
+                    R.styleable.BaseKeyboard_Include_keyboardLayout, 0);
+            a.recycle();
+            if (keyboardLayout == 0)
+                throw new InflateException("<include /> must have keyboardLayout attribute");
+            final XmlResourceParser parser = mResources.getLayout(keyboardLayout);
+
+            int event;
+            while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
+                if (event == XmlResourceParser.START_TAG) {
+                    String name = parser.getName();
+                    if (TAG_MERGE.equals(name)) {
+                        parseKeyboard(parser);
+                        return;
+                    } else {
+                        throw new InflateException(
+                                "include keyboard layout must have <merge> root element");
+                    }
+                }
+            }
+        }
+
+        private void skipToEndOfRow(XmlResourceParser parser)
+                throws XmlPullParserException, IOException {
+            int event;
+            while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
+                if (event == XmlResourceParser.END_TAG) {
+                    String tag = parser.getName();
+                    if (TAG_ROW.equals(tag)) {
+                        skipRow();
+                        return;
+                    }
+                }
+            }
+            throw new InflateException("can not find </Row>");
+        }
+
+        private void parseKeyboardAttributes(XmlResourceParser parser) {
+            TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                    R.styleable.BaseKeyboard);
+            final int width = mKeyboard.getKeyboardWidth();
+            final int height = mKeyboard.getKeyboardHeight();
+            mKeyboard.setKeyWidth(getDimensionOrFraction(a,
+                    R.styleable.BaseKeyboard_keyWidth, width, width / 10));
+            mKeyboard.setKeyHeight(getDimensionOrFraction(a,
+                    R.styleable.BaseKeyboard_keyHeight, height, 50));
+            mKeyboard.setHorizontalGap(getDimensionOrFraction(a,
+                    R.styleable.BaseKeyboard_horizontalGap, width, 0));
+            mKeyboard.setVerticalGap(getDimensionOrFraction(a,
+                    R.styleable.BaseKeyboard_verticalGap, height, 0));
+            a.recycle();
+        }
+
+        public static int getDimensionOrFraction(TypedArray a, int index, int base, int defValue) {
+            TypedValue value = a.peekValue(index);
+            if (value == null)
+                return defValue;
+            if (value.type == TypedValue.TYPE_DIMENSION) {
+                return a.getDimensionPixelOffset(index, defValue);
+            } else if (value.type == TypedValue.TYPE_FRACTION) {
+                // Round it to avoid values like 47.9999 from getting truncated
+                return Math.round(a.getFraction(index, base, base, defValue));
+            }
+            return defValue;
+        }
     }
 
-    private void loadKeyboard(Context context, XmlResourceParser parser) {
+    private void loadKeyboard(Context context, int xmlLayoutResId) {
         try {
-            KeyboardParseState state = new KeyboardParseState(mKeyboardMode);
-            parseKeyboard(context.getResources(), parser, state);
+            BaseKeyboardParser parser = new BaseKeyboardParser(this, context.getResources());
+            parser.parseKeyboard(context.getResources().getXml(xmlLayoutResId));
             // mTotalWidth is the width of this keyboard which is maximum width of row.
-            mTotalWidth = state.getMaxRowWidth();
-            mTotalHeight = state.getTotalHeight();
+            mTotalWidth = parser.getMaxRowWidth();
+            mTotalHeight = parser.getTotalHeight();
         } catch (XmlPullParserException e) {
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private void parseKeyboard(Resources res, XmlResourceParser parser, KeyboardParseState state)
-            throws XmlPullParserException, IOException {
-        Key key = null;
-
-        int event;
-        while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
-            if (event == XmlResourceParser.START_TAG) {
-                String tag = parser.getName();
-                if (TAG_ROW.equals(tag)) {
-                    // TODO createRowFromXml should not be called from BaseKeyboard constructor.
-                    Row row = createRowFromXml(res, parser);
-                    if (!state.startRow(row))
-                        skipToEndOfRow(parser, state);
-                } else if (TAG_KEY.equals(tag)) {
-                    // TODO createKeyFromXml should not be called from BaseKeyboard constructor.
-                    key = createKeyFromXml(res, state.getRow(), state.getX(), state.getY(),
-                            parser);
-                    mKeys.add(key);
-                    if (key.codes[0] == KEYCODE_SHIFT)
-                        mShiftKeys.add(key);
-                } else if (TAG_SPACER.equals(tag)) {
-                    parseSpacerAttribute(res, parser, state);
-                } else if (TAG_KEYBOARD.equals(tag)) {
-                    parseKeyboardAttributes(res, parser);
-                } else if (TAG_INCLUDE.equals(tag)) {
-                    if (parser.getDepth() == 0)
-                        throw new InflateException("<include /> cannot be the root element");
-                    parseInclude(res, parser, state);
-                } else if (TAG_MERGE.equals(tag)) {
-                    throw new InflateException("<merge> must not be appeared in keyboard XML file");
-                } else {
-                    throw new InflateException("unknown start tag: " + tag);
-                }
-            } else if (event == XmlResourceParser.END_TAG) {
-                String tag = parser.getName();
-                if (TAG_KEY.equals(tag)) {
-                    state.endKey(key);
-                } else if (TAG_ROW.equals(tag)) {
-                    state.endRow();
-                } else if (TAG_SPACER.equals(tag)) {
-                    ;
-                } else if (TAG_KEYBOARD.equals(tag)) {
-                    state.endKeyboard(mDefaultVerticalGap);
-                } else if (TAG_INCLUDE.equals(tag)) {
-                    ;
-                } else if (TAG_MERGE.equals(tag)) {
-                    return;
-                } else {
-                    throw new InflateException("unknown end tag: " + tag);
-                }
-            }
-        }
-    }
-
-    private void parseSpacerAttribute(Resources res, XmlResourceParser parser,
-            KeyboardParseState state) {
-        TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.BaseKeyboard);
-        int gap = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_horizontalGap, mDisplayWidth, 0);
-        a.recycle();
-        state.setSpacer(gap);
-    }
-
-    private void parseInclude(Resources res, XmlResourceParser parent, KeyboardParseState state)
-            throws XmlPullParserException, IOException {
-        final TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parent),
-                R.styleable.BaseKeyboard_Include);
-        final int keyboardLayout = a.getResourceId(
-                R.styleable.BaseKeyboard_Include_keyboardLayout, 0);
-        a.recycle();
-        if (keyboardLayout == 0)
-            throw new InflateException("<include /> must have keyboardLayout attribute");
-        final XmlResourceParser parser = res.getLayout(keyboardLayout);
-
-        int event;
-        while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
-            if (event == XmlResourceParser.START_TAG) {
-                String name = parser.getName();
-                if (TAG_MERGE.equals(name)) {
-                    parseKeyboard(res, parser, state);
-                    return;
-                } else {
-                    throw new InflateException(
-                            "include keyboard layout must have <merge> root element");
-                }
-            }
-        }
-    }
-
-    private void skipToEndOfRow(XmlResourceParser parser, KeyboardParseState state)
-            throws XmlPullParserException, IOException {
-        int event;
-        while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
-            if (event == XmlResourceParser.END_TAG) {
-                String tag = parser.getName();
-                if (TAG_ROW.equals(tag)) {
-                    state.skipRow();
-                    return;
-                }
-            }
-        }
-        throw new InflateException("can not find </Row>");
-    }
-
-    private void parseKeyboardAttributes(Resources res, XmlResourceParser parser) {
-        TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.BaseKeyboard);
-        mDefaultWidth = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_keyWidth, mDisplayWidth, mDisplayWidth / 10);
-        mDefaultHeight = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_keyHeight, mDisplayHeight, 50);
-        mDefaultHorizontalGap = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_horizontalGap, mDisplayWidth, 0);
-        mDefaultVerticalGap = getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_verticalGap, mDisplayHeight, 0);
-        mProximityThreshold = (int) (mDefaultWidth * SEARCH_DISTANCE);
-        mProximityThreshold = mProximityThreshold * mProximityThreshold;
-        a.recycle();
-    }
-
-    static int getDimensionOrFraction(TypedArray a, int index, int base, int defValue) {
-        TypedValue value = a.peekValue(index);
-        if (value == null) return defValue;
-        if (value.type == TypedValue.TYPE_DIMENSION) {
-            return a.getDimensionPixelOffset(index, defValue);
-        } else if (value.type == TypedValue.TYPE_FRACTION) {
-            // Round it to avoid values like 47.9999 from getting truncated
-            return Math.round(a.getFraction(index, base, base, defValue));
-        }
-        return defValue;
     }
 
     protected static void setDefaultBounds(Drawable drawable)  {
