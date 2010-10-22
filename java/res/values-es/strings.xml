@@ -88,7 +88,7 @@
     <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"La introducción de voz es una función en fase experimental que utiliza la tecnología de reconocimiento de voz en red de Google."</string>
     <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Para desactivar la función de introducción de voz, accede a la configuración del teclado."</string>
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Para utilizar la función de introducción de voz, pulsa el botón de micrófono o desliza el dedo por el teclado en pantalla."</string>
-    <string name="voice_listening" msgid="467518160751321844">"Hablar ahora"</string>
+    <string name="voice_listening" msgid="467518160751321844">"Habla ahora"</string>
     <string name="voice_working" msgid="6666937792815731889">"En curso"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"Se ha producido un error. Inténtalo de nuevo."</string>
