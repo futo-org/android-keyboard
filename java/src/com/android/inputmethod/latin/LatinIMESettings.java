@@ -96,6 +96,11 @@ public class LatinIMESettings extends PreferenceActivity
         mAutoCompletionThreshold = (ListPreference) findPreference(PREF_AUTO_COMPLETION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
         ensureConsistencyOfAutoCompletionSettings();
+
+        final boolean showSettingsKeyOption = getResources().getBoolean(
+                R.bool.config_enable_show_settings_key_option);
+        if (!showSettingsKeyOption)
+            getPreferenceScreen().removePreference(mSettingsKeyPreference);
     }
 
     @Override
