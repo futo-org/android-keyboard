@@ -32,4 +32,5 @@
     <bool name="config_long_press_comma_for_settings_enabled">true</bool>
     <bool name="config_enable_show_settings_key_option">true</bool>
     <bool name="config_dynamic_key_top_enter_key">true</bool>
+    <bool name="config_dynamic_key_top_symbol_key">true</bool>
 </resources>
