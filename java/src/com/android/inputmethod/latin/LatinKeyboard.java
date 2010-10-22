@@ -192,31 +192,35 @@ public class LatinKeyboard extends BaseKeyboard {
         mMode = mode;
         if (mEnterKey == null)
             return;
-        switch (options & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
-        case EditorInfo.IME_ACTION_GO:
-            resetKeyAttributes(mEnterKey, res.getText(R.string.label_go_key));
-            break;
-        case EditorInfo.IME_ACTION_NEXT:
-            resetKeyAttributes(mEnterKey, res.getText(R.string.label_next_key));
-            break;
-        case EditorInfo.IME_ACTION_DONE:
-            resetKeyAttributes(mEnterKey, res.getText(R.string.label_done_key));
-            break;
-        case EditorInfo.IME_ACTION_SEARCH:
-            resetKeyAttributes(mEnterKey, null);
-            mEnterKey.iconPreview = res.getDrawable(R.drawable.sym_keyboard_feedback_search);
-            mEnterKey.icon = res.getDrawable(mIsBlackSym ? R.drawable.sym_bkeyboard_search
-                    : R.drawable.sym_keyboard_search);
-            break;
-        case EditorInfo.IME_ACTION_SEND:
-            resetKeyAttributes(mEnterKey, res.getText(R.string.label_send_key));
-            break;
-        default:
-            resetKeyAttributes(mEnterKey, mDefaultEnterLabel);
-            mEnterKey.text = mDefaultEnterText;
-            mEnterKey.icon = mDefaultEnterIcon;
-            mEnterKey.iconPreview = mDefaultEnterPreview;
-            break;
+        final boolean configDynamicKeyToEnterKey = res.getBoolean(
+                R.bool.config_dynamic_key_top_enter_key);
+        if (configDynamicKeyToEnterKey) {
+            switch (options & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
+            case EditorInfo.IME_ACTION_GO:
+                resetKeyAttributes(mEnterKey, res.getText(R.string.label_go_key));
+                break;
+            case EditorInfo.IME_ACTION_NEXT:
+                resetKeyAttributes(mEnterKey, res.getText(R.string.label_next_key));
+                break;
+            case EditorInfo.IME_ACTION_DONE:
+                resetKeyAttributes(mEnterKey, res.getText(R.string.label_done_key));
+                break;
+            case EditorInfo.IME_ACTION_SEARCH:
+                resetKeyAttributes(mEnterKey, null);
+                mEnterKey.iconPreview = res.getDrawable(R.drawable.sym_keyboard_feedback_search);
+                mEnterKey.icon = res.getDrawable(mIsBlackSym ? R.drawable.sym_bkeyboard_search
+                        : R.drawable.sym_keyboard_search);
+                break;
+            case EditorInfo.IME_ACTION_SEND:
+                resetKeyAttributes(mEnterKey, res.getText(R.string.label_send_key));
+                break;
+            default:
+                resetKeyAttributes(mEnterKey, mDefaultEnterLabel);
+                mEnterKey.text = mDefaultEnterText;
+                mEnterKey.icon = mDefaultEnterIcon;
+                mEnterKey.iconPreview = mDefaultEnterPreview;
+                break;
+            }
         }
         // Set the initial size of the preview icon
         setDefaultBounds(mEnterKey.iconPreview);
