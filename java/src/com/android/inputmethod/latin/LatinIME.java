@@ -142,9 +142,10 @@ public class LatinIME extends InputMethodService
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
 
-    static final int KEYCODE_ENTER = '\n';
-    static final int KEYCODE_SPACE = ' ';
-    static final int KEYCODE_PERIOD = '.';
+    public static final int KEYCODE_ENTER = '\n';
+    public static final int KEYCODE_TAB = '\t';
+    public static final int KEYCODE_SPACE = ' ';
+    public static final int KEYCODE_PERIOD = '.';
 
     // Contextual menu positions
     private static final int POS_METHOD = 0;
@@ -1190,66 +1191,68 @@ public class LatinIME extends InputMethodService
 
     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
         long when = SystemClock.uptimeMillis();
-        if (primaryCode != BaseKeyboard.KEYCODE_DELETE ||
-                when > mLastKeyTime + QUICK_PRESS) {
+        if (primaryCode != BaseKeyboard.KEYCODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
         final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
         switch (primaryCode) {
-            case BaseKeyboard.KEYCODE_DELETE:
-                handleBackspace();
-                mDeleteCount++;
-                LatinImeLogger.logOnDelete();
-                break;
-            case BaseKeyboard.KEYCODE_SHIFT:
-                // Shift key is handled in onPress() when device has distinct multi-touch panel.
-                if (!distinctMultiTouch)
-                    handleShift();
-                break;
-            case BaseKeyboard.KEYCODE_MODE_CHANGE:
-                // Symbol key is handled in onPress() when device has distinct multi-touch panel.
-                if (!distinctMultiTouch)
-                    changeKeyboardMode();
-                break;
-            case BaseKeyboard.KEYCODE_CANCEL:
-                if (!isShowingOptionDialog()) {
-                    handleClose();
-                }
-                break;
-            case LatinKeyboardView.KEYCODE_OPTIONS:
-                onOptionKeyPressed();
-                break;
-            case LatinKeyboardView.KEYCODE_OPTIONS_LONGPRESS:
-                onOptionKeyLongPressed();
-                break;
-            case LatinKeyboardView.KEYCODE_NEXT_LANGUAGE:
-                toggleLanguage(false, true);
-                break;
-            case LatinKeyboardView.KEYCODE_PREV_LANGUAGE:
-                toggleLanguage(false, false);
-                break;
-            case LatinKeyboardView.KEYCODE_VOICE:
-                if (VOICE_INSTALLED) {
-                    startListening(false /* was a button press, was not a swipe */);
-                }
-                break;
-            case 9 /*Tab*/:
-                sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
-                break;
-            default:
-                if (primaryCode != KEYCODE_ENTER) {
-                    mJustAddedAutoSpace = false;
-                }
-                RingCharBuffer.getInstance().push((char)primaryCode, x, y);
-                LatinImeLogger.logOnInputChar();
-                if (isWordSeparator(primaryCode)) {
-                    handleSeparator(primaryCode);
-                } else {
-                    handleCharacter(primaryCode, keyCodes);
-                }
-                // Cancel the just reverted state
-                mJustRevertedSeparator = null;
+        case BaseKeyboard.KEYCODE_DELETE:
+            handleBackspace();
+            mDeleteCount++;
+            LatinImeLogger.logOnDelete();
+            break;
+        case BaseKeyboard.KEYCODE_SHIFT:
+            // Shift key is handled in onPress() when device has distinct multi-touch panel.
+            if (!distinctMultiTouch)
+                handleShift();
+            break;
+        case BaseKeyboard.KEYCODE_MODE_CHANGE:
+            // Symbol key is handled in onPress() when device has distinct multi-touch panel.
+            if (!distinctMultiTouch)
+                changeKeyboardMode();
+            break;
+        case BaseKeyboard.KEYCODE_CANCEL:
+            if (!isShowingOptionDialog()) {
+                handleClose();
+            }
+            break;
+        case LatinKeyboardView.KEYCODE_OPTIONS:
+            onOptionKeyPressed();
+            break;
+        case LatinKeyboardView.KEYCODE_OPTIONS_LONGPRESS:
+            onOptionKeyLongPressed();
+            break;
+        case LatinKeyboardView.KEYCODE_NEXT_LANGUAGE:
+            toggleLanguage(false, true);
+            break;
+        case LatinKeyboardView.KEYCODE_PREV_LANGUAGE:
+            toggleLanguage(false, false);
+            break;
+        case LatinKeyboardView.KEYCODE_CAPSLOCK:
+            handleCapsLock();
+            break;
+        case LatinKeyboardView.KEYCODE_VOICE:
+            if (VOICE_INSTALLED) {
+                startListening(false /* was a button press, was not a swipe */);
+            }
+            break;
+        case KEYCODE_TAB:
+            sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
+            break;
+        default:
+            if (primaryCode != KEYCODE_ENTER) {
+                mJustAddedAutoSpace = false;
+            }
+            RingCharBuffer.getInstance().push((char)primaryCode, x, y);
+            LatinImeLogger.logOnInputChar();
+            if (isWordSeparator(primaryCode)) {
+                handleSeparator(primaryCode);
+            } else {
+                handleCharacter(primaryCode, keyCodes);
+            }
+            // Cancel the just reverted state
+            mJustRevertedSeparator = null;
         }
         if (mKeyboardSwitcher.onKey(primaryCode)) {
             changeKeyboardMode();
@@ -1363,21 +1366,34 @@ public class LatinIME extends InputMethodService
     private void handleShiftInternal(boolean forceNormal) {
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
-        LatinKeyboardView inputView = switcher.getInputView();
         if (switcher.isAlphabetMode()) {
+            LatinKeyboardView inputView = switcher.getInputView();
             if (mCapsLock || forceNormal) {
                 mCapsLock = false;
                 switcher.setShifted(false);
             } else if (inputView != null) {
-                if (inputView.isShifted()) {
-                    mCapsLock = true;
-                    switcher.setShiftLocked(true);
-                } else {
-                    switcher.setShifted(true);
-                }
+                switcher.setShifted(!inputView.isShifted());
             }
         } else {
             switcher.toggleShift();
+        }
+    }
+
+    private void handleCapsLock() {
+        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        if (switcher.isAlphabetMode()) {
+            if (mCapsLock) {
+                mCapsLock = false;
+                // LatinKeyboard.setShifted(false) also disable shift locked state.
+                // Note: Caps lock LED is off when Key.on is false.
+                switcher.setShifted(false);
+            } else {
+                mCapsLock = true;
+                // LatinKeyboard.setShiftLocked(true) enable shift state too.
+                // Note: Caps lock LED is on when Key.on is true.
+                switcher.setShiftLocked(true);
+            }
         }
     }
 
@@ -2291,7 +2307,9 @@ public class LatinIME extends InputMethodService
         final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
             mShiftKeyState.onPress();
-            handleShift();
+            // Not in caps lock mode, shift key is in effect on pressed.
+            if (mKeyboardSwitcher.isAlphabetMode() && !mCapsLock)
+                handleShift();
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
             mSymbolKeyState.onPress();
             changeKeyboardMode();
@@ -2309,6 +2327,9 @@ public class LatinIME extends InputMethodService
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
             if (mShiftKeyState.isMomentary())
                 resetShift();
+            // In caps lock mode, shift key is in effect on released.
+            if (mKeyboardSwitcher.isAlphabetMode() && mCapsLock)
+                handleShift();
             mShiftKeyState.onRelease();
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
             if (mSymbolKeyState.isMomentary())

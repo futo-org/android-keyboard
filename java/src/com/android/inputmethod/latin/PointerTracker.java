@@ -40,6 +40,7 @@ public class PointerTracker {
     // Timing constants
     private final int mDelayBeforeKeyRepeatStart;
     private final int mLongPressKeyTimeout;
+    private final int mLongPressShiftKeyTimeout;
     private final int mMultiTapKeyTimeout;
 
     // Miscellaneous constants
@@ -175,6 +176,7 @@ public class PointerTracker {
         mHasDistinctMultitouch = proxy.hasDistinctMultitouch();
         mDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
         mLongPressKeyTimeout = res.getInteger(R.integer.config_long_press_key_timeout);
+        mLongPressShiftKeyTimeout = res.getInteger(R.integer.config_long_press_shift_key_timeout);
         mMultiTapKeyTimeout = res.getInteger(R.integer.config_multi_tap_key_timeout);
         resetMultiTap();
     }
@@ -223,9 +225,11 @@ public class PointerTracker {
         return key != null && key.codes[0] == LatinIME.KEYCODE_SPACE;
     }
 
-    public void updateKey(int keyIndex) {
-        if (mKeyAlreadyProcessed)
-            return;
+    public void releaseKey() {
+        updateKeyGraphics(NOT_A_KEY);
+    }
+
+    private void updateKeyGraphics(int keyIndex) {
         int oldKeyIndex = mPreviousKey;
         mPreviousKey = keyIndex;
         if (keyIndex != oldKeyIndex) {
@@ -287,7 +291,7 @@ public class PointerTracker {
             }
             startLongPressTimer(keyIndex);
         }
-        showKeyPreviewAndUpdateKey(keyIndex);
+        showKeyPreviewAndUpdateKeyGraphics(keyIndex);
     }
 
     public void onMoveEvent(int x, int y, long eventTime) {
@@ -317,12 +321,13 @@ public class PointerTracker {
                 mHandler.cancelLongPressTimer();
             }
         }
-        showKeyPreviewAndUpdateKey(mKeyState.getKeyIndex());
+        showKeyPreviewAndUpdateKeyGraphics(mKeyState.getKeyIndex());
     }
 
     public void onUpEvent(int x, int y, long eventTime) {
         if (DEBUG)
             debugLog("onUpEvent  :", x, y);
+        showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
         if (mKeyAlreadyProcessed)
             return;
         mHandler.cancelKeyTimers();
@@ -334,7 +339,6 @@ public class PointerTracker {
             x = mKeyState.getKeyX();
             y = mKeyState.getKeyY();
         }
-        showKeyPreviewAndUpdateKey(NOT_A_KEY);
         if (!mIsRepeatableKey) {
             detectAndSendKey(keyIndex, x, y, eventTime);
         }
@@ -348,7 +352,7 @@ public class PointerTracker {
             debugLog("onCancelEvt:", x, y);
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
-        showKeyPreviewAndUpdateKey(NOT_A_KEY);
+        showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
         int keyIndex = mKeyState.getKeyIndex();
         if (isValidKeyIndex(keyIndex))
            mProxy.invalidateKey(mKeys[keyIndex]);
@@ -409,8 +413,8 @@ public class PointerTracker {
         return dx * dx + dy * dy;
     }
 
-    private void showKeyPreviewAndUpdateKey(int keyIndex) {
-        updateKey(keyIndex);
+    private void showKeyPreviewAndUpdateKeyGraphics(int keyIndex) {
+        updateKeyGraphics(keyIndex);
         // The modifier key, such as shift key, should not be shown as preview when multi-touch is
         // supported. On thge other hand, if multi-touch is not supported, the modifier key should
         // be shown as preview.
@@ -423,11 +427,17 @@ public class PointerTracker {
 
     private void startLongPressTimer(int keyIndex) {
         Key key = getKey(keyIndex);
-        // If keyboard is in temporary upper case state and the key has temporary shift label,
-        // long press should not be started.
-        if (isTemporaryUpperCase() && key.temporaryShiftLabel != null)
-            return;
-        mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
+        if (key.codes[0] == BaseKeyboard.KEYCODE_SHIFT) {
+            mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
+        } else {
+            // If keyboard is in temporary upper case state and the key has temporary shift label,
+            // non-shift long press should not be started.  On distinct multi touch device, when
+            // pressing shift key (in temporary upper case), hint icon should not be drawn on key
+            // top. So we should disable long press for such key.
+            if (isTemporaryUpperCase() && key.temporaryShiftLabel != null)
+                return;
+            mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
+        }
     }
 
     private boolean isTemporaryUpperCase() {

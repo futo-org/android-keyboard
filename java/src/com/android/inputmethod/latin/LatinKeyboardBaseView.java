@@ -261,6 +261,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         private static final int MSG_DISMISS_PREVIEW = 2;
         private static final int MSG_REPEAT_KEY = 3;
         private static final int MSG_LONGPRESS_KEY = 4;
+        private static final int MSG_LONGPRESS_SHIFT_KEY = 5;
 
         private boolean mInKeyRepeat;
 
@@ -282,6 +283,11 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 case MSG_LONGPRESS_KEY: {
                     final PointerTracker tracker = (PointerTracker)msg.obj;
                     openPopupIfRequired(msg.arg1, tracker);
+                    break;
+                }
+                case MSG_LONGPRESS_SHIFT_KEY: {
+                    final PointerTracker tracker = (PointerTracker)msg.obj;
+                    onLongPressShiftKey(tracker);
                     break;
                 }
             }
@@ -335,9 +341,20 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             removeMessages(MSG_LONGPRESS_KEY);
         }
 
+        public void startLongPressShiftTimer(long delay, int keyIndex, PointerTracker tracker) {
+            removeMessages(MSG_LONGPRESS_SHIFT_KEY);
+            sendMessageDelayed(
+                    obtainMessage(MSG_LONGPRESS_SHIFT_KEY, keyIndex, 0, tracker), delay);
+        }
+
+        public void cancelLongPressShiftTimer() {
+            removeMessages(MSG_LONGPRESS_SHIFT_KEY);
+        }
+
         public void cancelKeyTimers() {
             cancelKeyRepeatTimer();
             cancelLongPressTimer();
+            cancelLongPressShiftTimer();
         }
 
         public void cancelAllMessages() {
@@ -869,7 +886,6 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 int drawableX = (key.width + padding.left - padding.right - drawableWidth) / 2;
                 int drawableY = (key.height + padding.top - padding.bottom - drawableHeight) / 2;
                 drawIcon(canvas, key.icon, drawableX, drawableY, drawableWidth, drawableHeight);
-
             }
             if (key.hintIcon != null && drawHintIcon) {
                 int drawableWidth = key.width;
@@ -924,7 +940,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     // TODO: clean up this method.
     private void dismissKeyPreview() {
         for (PointerTracker tracker : mPointerTrackers)
-            tracker.updateKey(NOT_A_KEY);
+            tracker.releaseKey();
         showPreview(NOT_A_KEY, null);
     }
 
@@ -959,11 +975,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // WindowManager.BadTokenException.
         if (key == null || !mInForeground)
             return;
-        if (key.icon != null) {
-            mPreviewText.setCompoundDrawables(null, null, null,
-                    key.iconPreview != null ? key.iconPreview : key.icon);
-            mPreviewText.setText(null);
-        } else {
+        // What we show as preview should match what we show on key top in onBufferDraw(). 
+        if (key.label != null) {
             // TODO Should take care of temporaryShiftLabel here.
             mPreviewText.setCompoundDrawables(null, null, null, null);
             mPreviewText.setText(adjustCase(tracker.getPreviewText(key)));
@@ -974,6 +987,10 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                 mPreviewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSizeLarge);
                 mPreviewText.setTypeface(mKeyTextStyle);
             }
+        } else {
+            mPreviewText.setCompoundDrawables(null, null, null,
+                    key.iconPreview != null ? key.iconPreview : key.icon);
+            mPreviewText.setText(null);
         }
         mPreviewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
@@ -1084,6 +1101,12 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             mPointerQueue.remove(tracker);
         }
         return result;
+    }
+
+    private void onLongPressShiftKey(PointerTracker tracker) {
+        tracker.setAlreadyProcessed();
+        mPointerQueue.remove(tracker);
+        mKeyboardActionListener.onKey(LatinKeyboardView.KEYCODE_CAPSLOCK, null, 0, 0);
     }
 
     private View inflateMiniKeyboardContainer(Key popupKey) {

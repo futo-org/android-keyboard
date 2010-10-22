@@ -236,6 +236,7 @@ public class LatinKeyboard extends BaseKeyboard {
     }
 
     public void setShiftLocked(boolean shiftLocked) {
+        // TODO: cleanup this method with BaseKeyboard.Key
         for (final Key key : getShiftKeys()) {
             key.on = shiftLocked;
             key.icon = mShiftLockIcon;
@@ -249,6 +250,7 @@ public class LatinKeyboard extends BaseKeyboard {
 
     @Override
     public boolean setShifted(boolean shiftState) {
+        // TODO: cleanup this method with BaseKeyboard.Key.
         boolean shiftChanged = false;
         if (getShiftKeys().size() > 0) {
             for (final Key key : getShiftKeys()) {

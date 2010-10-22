@@ -32,12 +32,13 @@ import java.util.List;
 
 public class LatinKeyboardView extends LatinKeyboardBaseView {
 
-    static final int KEYCODE_OPTIONS = -100;
-    static final int KEYCODE_OPTIONS_LONGPRESS = -101;
-    static final int KEYCODE_VOICE = -102;
-    static final int KEYCODE_F1 = -103;
-    static final int KEYCODE_NEXT_LANGUAGE = -104;
-    static final int KEYCODE_PREV_LANGUAGE = -105;
+    public static final int KEYCODE_OPTIONS = -100;
+    public static final int KEYCODE_OPTIONS_LONGPRESS = -101;
+    public static final int KEYCODE_VOICE = -102;
+    public static final int KEYCODE_F1 = -103;
+    public static final int KEYCODE_NEXT_LANGUAGE = -104;
+    public static final int KEYCODE_PREV_LANGUAGE = -105;
+    public static final int KEYCODE_CAPSLOCK = -106;
 
     private BaseKeyboard mPhoneKeyboard;
 

@@ -28,6 +28,7 @@
     <integer name="config_delay_before_key_repeat_start">400</integer>
     <integer name="config_key_repeat_interval">50</integer>
     <integer name="config_long_press_key_timeout">400</integer>
+    <integer name="config_long_press_shift_key_timeout">1000</integer>
     <integer name="config_multi_tap_key_timeout">800</integer>
     <string-array name="auto_complete_threshold_values">
         <!-- Off, When auto completing setting is Off, this value is not used. -->
