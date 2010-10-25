@@ -40,7 +40,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     public static final int KEYCODE_PREV_LANGUAGE = -105;
     public static final int KEYCODE_CAPSLOCK = -106;
 
-    private BaseKeyboard mPhoneKeyboard;
+    private LatinKeyboard mPhoneKeyboard;
 
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
@@ -62,13 +62,13 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         super(context, attrs, defStyle);
     }
 
-    public void setPhoneKeyboard(BaseKeyboard phoneKeyboard) {
+    public void setPhoneKeyboard(LatinKeyboard phoneKeyboard) {
         mPhoneKeyboard = phoneKeyboard;
     }
 
     @Override
     public void setPreviewEnabled(boolean previewEnabled) {
-        if (getKeyboard() == mPhoneKeyboard) {
+        if (getLatinKeyboard() == mPhoneKeyboard) {
             // Phone keyboard never shows popup preview (except language switch).
             super.setPreviewEnabled(false);
         } else {
@@ -76,8 +76,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         }
     }
 
-    @Override
-    public void setKeyboard(BaseKeyboard k) {
+    public void setLatinKeyboard(LatinKeyboard k) {
         super.setKeyboard(k);
         // One-seventh of the keyboard width seems like a reasonable threshold
         mJumpThresholdSquare = k.getMinWidth() / 7;
@@ -87,12 +86,21 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         setKeyboardLocal(k);
     }
 
+    public LatinKeyboard getLatinKeyboard() {
+        BaseKeyboard keyboard = getKeyboard();
+        if (keyboard instanceof LatinKeyboard) {
+            return (LatinKeyboard)keyboard;
+        } else {
+            return null;
+        }
+    }
+
     @Override
     protected boolean onLongPress(Key key) {
         int primaryCode = key.codes[0];
         if (primaryCode == KEYCODE_OPTIONS) {
             return invokeOnKey(KEYCODE_OPTIONS_LONGPRESS);
-        } else if (primaryCode == '0' && getKeyboard() == mPhoneKeyboard) {
+        } else if (primaryCode == '0' && getLatinKeyboard() == mPhoneKeyboard) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
         } else {
@@ -109,9 +117,8 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     @Override
     protected CharSequence adjustCase(CharSequence label) {
-        BaseKeyboard keyboard = getKeyboard();
-        if (keyboard instanceof LatinKeyboard
-                && ((LatinKeyboard) keyboard).isAlphaKeyboard()
+        LatinKeyboard keyboard = getLatinKeyboard();
+        if (keyboard.isAlphaKeyboard()
                 && keyboard.isShifted()
                 && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
@@ -121,13 +128,10 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     }
 
     public boolean setShiftLocked(boolean shiftLocked) {
-        BaseKeyboard keyboard = getKeyboard();
-        if (keyboard instanceof LatinKeyboard) {
-            ((LatinKeyboard)keyboard).setShiftLocked(shiftLocked);
-            invalidateAllKeys();
-            return true;
-        }
-        return false;
+        LatinKeyboard keyboard = getLatinKeyboard();
+        keyboard.setShiftLocked(shiftLocked);
+        invalidateAllKeys();
+        return true;
     }
 
     /**
@@ -209,7 +213,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-        LatinKeyboard keyboard = (LatinKeyboard) getKeyboard();
+        LatinKeyboard keyboard = getLatinKeyboard();
         if (DEBUG_LINE) {
             mLastX = (int) me.getX();
             mLastY = (int) me.getY();
@@ -258,7 +262,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     private int mLastY;
     private Paint mPaint;
 
-    private void setKeyboardLocal(BaseKeyboard k) {
+    private void setKeyboardLocal(LatinKeyboard k) {
         if (DEBUG_AUTO_PLAY) {
             findKeys();
             if (mHandler2 == null) {
@@ -319,7 +323,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     }
 
     private void findKeys() {
-        List<Key> keys = getKeyboard().getKeys();
+        List<Key> keys = getLatinKeyboard().getKeys();
         // Get the keys on this keyboard
         for (int i = 0; i < keys.size(); i++) {
             int code = keys.get(i).codes[0];

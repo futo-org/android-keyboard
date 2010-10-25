@@ -1791,7 +1791,7 @@ public class LatinIME extends InputMethodService
 
     private void updateSuggestions() {
         LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-        ((LatinKeyboard) inputView.getKeyboard()).setPreferredLetters(null);
+        inputView.getLatinKeyboard().setPreferredLetters(null);
 
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !isPredictionOn()) && !mVoiceInputHighlighted) {
@@ -1813,7 +1813,7 @@ public class LatinIME extends InputMethodService
 
     private void showCorrections(WordAlternatives alternatives) {
         List<CharSequence> stringList = alternatives.getAlternatives();
-        ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).setPreferredLetters(null);
+        mKeyboardSwitcher.getInputView().getLatinKeyboard().setPreferredLetters(null);
         showSuggestions(stringList, alternatives.getOriginalWord(), false, false);
     }
 
@@ -1829,7 +1829,7 @@ public class LatinIME extends InputMethodService
 
         int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
 
-        ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).setPreferredLetters(
+        mKeyboardSwitcher.getInputView().getLatinKeyboard().setPreferredLetters(
                 nextLettersFrequencies);
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasMinimalCorrection();
@@ -2018,7 +2018,7 @@ public class LatinIME extends InputMethodService
         saveWordInHistory(suggestion);
         mPredicting = false;
         mCommittedLength = suggestion.length();
-        ((LatinKeyboard) inputView.getKeyboard()).setPreferredLetters(null);
+        inputView.getLatinKeyboard().setPreferredLetters(null);
         // If we just corrected a word, then don't show punctuations
         if (!correcting) {
             setNextSuggestions();
@@ -2321,7 +2321,7 @@ public class LatinIME extends InputMethodService
 
     public void onRelease(int primaryCode) {
         // Reset any drag flags in the keyboard
-        ((LatinKeyboard) mKeyboardSwitcher.getInputView().getKeyboard()).keyReleased();
+        mKeyboardSwitcher.getInputView().getLatinKeyboard().keyReleased();
         //vibrate();
         final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {

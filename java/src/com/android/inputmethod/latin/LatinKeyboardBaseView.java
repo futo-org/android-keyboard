@@ -598,7 +598,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
      * @see #getKeyboard()
      * @param keyboard the keyboard to display in this view
      */
-    public void setKeyboard(BaseKeyboard keyboard) {
+    protected void setKeyboard(BaseKeyboard keyboard) {
         if (mKeyboard != null) {
             dismissKeyPreview();
         }
@@ -626,7 +626,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
      * @return the currently attached keyboard
      * @see #setKeyboard(BaseKeyboard)
      */
-    public BaseKeyboard getKeyboard() {
+    protected BaseKeyboard getKeyboard() {
         return mKeyboard;
     }
 
