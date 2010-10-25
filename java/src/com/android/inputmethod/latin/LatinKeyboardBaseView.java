@@ -639,34 +639,6 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     }
 
     /**
-     * Sets the state of the shift key of the keyboard, if any.
-     * @param shifted whether or not to enable the state of the shift key
-     * @return true if the shift key state changed, false if there was no change
-     */
-    public boolean setShifted(boolean shifted) {
-        if (mKeyboard != null) {
-            if (mKeyboard.setShifted(shifted)) {
-                // The whole keyboard probably needs to be redrawn
-                invalidateAllKeys();
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Returns the state of the shift key of the keyboard, if any.
-     * @return true if the shift is in a pressed state, false otherwise. If there is
-     * no shift key on the keyboard or there is no keyboard attached, it returns false.
-     */
-    public boolean isShifted() {
-        if (mKeyboard != null) {
-            return mKeyboard.isShifted();
-        }
-        return false;
-    }
-
-    /**
      * Enables or disables the key feedback popup. This is a popup that shows a magnified
      * version of the depressed key. By default the preview is enabled.
      * @param previewEnabled whether or not to enable the key feedback popup
@@ -1247,7 +1219,12 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         mMiniKeyboardOriginX = adjustedX + container.getPaddingLeft() - mWindowOffset[0];
         mMiniKeyboardOriginY = y + container.getPaddingTop() - mWindowOffset[1];
         mMiniKeyboard.setPopupOffset(adjustedX, y);
-        mMiniKeyboard.setShifted(isShifted());
+        // TODO: change the below line to use getLatinKeyboard() instead of getKeyboard()
+        BaseKeyboard baseMiniKeyboard = mMiniKeyboard.getKeyboard();
+        if (baseMiniKeyboard != null && baseMiniKeyboard.setShifted(mKeyboard == null
+                ? false : mKeyboard.isShifted())) {
+            mMiniKeyboard.invalidateAllKeys();
+        }
         // Mini keyboard needs no pop-up key preview displayed.
         mMiniKeyboard.setPreviewEnabled(false);
         mMiniKeyboardPopup.setContentView(container);

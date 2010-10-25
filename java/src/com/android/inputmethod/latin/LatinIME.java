@@ -993,7 +993,8 @@ public class LatinIME extends InputMethodService
                 LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
                 // Enable shift key and DPAD to do selections
                 if (inputView != null && inputView.isShown()
-                        && inputView.isShifted()) {
+                        && inputView.getLatinKeyboard() != null
+                                && inputView.getLatinKeyboard().isShifted()) {
                     event = new KeyEvent(event.getDownTime(), event.getEventTime(),
                             event.getAction(), event.getKeyCode(), event.getRepeatCount(),
                             event.getDeviceId(), event.getScanCode(),
@@ -1372,7 +1373,10 @@ public class LatinIME extends InputMethodService
                 mCapsLock = false;
                 switcher.setShifted(false);
             } else if (inputView != null) {
-                switcher.setShifted(!inputView.isShifted());
+                LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
+                if (latinKeyboard != null) {
+                    switcher.setShifted(!latinKeyboard.isShifted());
+                }
             }
         } else {
             switcher.toggleShift();
@@ -1425,7 +1429,8 @@ public class LatinIME extends InputMethodService
                 mWord.reset();
             }
         }
-        if (mKeyboardSwitcher.getInputView().isShifted()) {
+        LatinKeyboard latinKeyboard = mKeyboardSwitcher.getInputView().getLatinKeyboard();
+        if (latinKeyboard != null && latinKeyboard.isShifted()) {
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
                 return;
@@ -1444,7 +1449,7 @@ public class LatinIME extends InputMethodService
             }
         }
         if (mPredicting) {
-            if (mKeyboardSwitcher.getInputView().isShifted()
+            if (latinKeyboard != null && latinKeyboard.isShifted()
                     && mKeyboardSwitcher.isAlphabetMode()
                     && mComposing.length() == 0) {
                 mWord.setFirstCharCapitalized(true);
@@ -1739,7 +1744,8 @@ public class LatinIME extends InputMethodService
         final List<CharSequence> nBest = new ArrayList<CharSequence>();
         boolean capitalizeFirstWord = preferCapitalization()
                 || (mKeyboardSwitcher.isAlphabetMode()
-                        && mKeyboardSwitcher.getInputView().isShifted());
+                        && mKeyboardSwitcher.getInputView().getLatinKeyboard() != null
+                                && mKeyboardSwitcher.getInputView().getLatinKeyboard().isShifted());
         for (String c : mVoiceResults.candidates) {
             if (capitalizeFirstWord) {
                 c = Character.toUpperCase(c.charAt(0)) + c.substring(1, c.length());
@@ -1791,7 +1797,10 @@ public class LatinIME extends InputMethodService
 
     private void updateSuggestions() {
         LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-        inputView.getLatinKeyboard().setPreferredLetters(null);
+        LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
+        if (latinKeyboard != null) {
+            latinKeyboard.setPreferredLetters(null);
+        }
 
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !isPredictionOn()) && !mVoiceInputHighlighted) {
@@ -1813,7 +1822,10 @@ public class LatinIME extends InputMethodService
 
     private void showCorrections(WordAlternatives alternatives) {
         List<CharSequence> stringList = alternatives.getAlternatives();
-        mKeyboardSwitcher.getInputView().getLatinKeyboard().setPreferredLetters(null);
+        LatinKeyboard latinKeyboard = mKeyboardSwitcher.getInputView().getLatinKeyboard();
+        if (latinKeyboard != null) {
+            latinKeyboard.setPreferredLetters(null);
+        }
         showSuggestions(stringList, alternatives.getOriginalWord(), false, false);
     }
 
@@ -1829,8 +1841,10 @@ public class LatinIME extends InputMethodService
 
         int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
 
-        mKeyboardSwitcher.getInputView().getLatinKeyboard().setPreferredLetters(
-                nextLettersFrequencies);
+        LatinKeyboard latinKeyboard = mKeyboardSwitcher.getInputView().getLatinKeyboard();
+        if (latinKeyboard != null) {
+            latinKeyboard.setPreferredLetters(nextLettersFrequencies);
+        }
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasMinimalCorrection();
         //|| mCorrectionMode == mSuggest.CORRECTION_FULL;
@@ -2002,11 +2016,12 @@ public class LatinIME extends InputMethodService
      */
     private void pickSuggestion(CharSequence suggestion, boolean correcting) {
         LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
         if (mCapsLock) {
             suggestion = suggestion.toString().toUpperCase();
         } else if (preferCapitalization()
                 || (mKeyboardSwitcher.isAlphabetMode()
-                        && inputView.isShifted())) {
+                        && latinKeyboard != null && latinKeyboard.isShifted())) {
             suggestion = suggestion.toString().toUpperCase().charAt(0)
                     + suggestion.subSequence(1, suggestion.length()).toString();
         }
@@ -2018,7 +2033,9 @@ public class LatinIME extends InputMethodService
         saveWordInHistory(suggestion);
         mPredicting = false;
         mCommittedLength = suggestion.length();
-        inputView.getLatinKeyboard().setPreferredLetters(null);
+        if (latinKeyboard != null) {
+            latinKeyboard.setPreferredLetters(null);
+        }
         // If we just corrected a word, then don't show punctuations
         if (!correcting) {
             setNextSuggestions();
@@ -2321,7 +2338,10 @@ public class LatinIME extends InputMethodService
 
     public void onRelease(int primaryCode) {
         // Reset any drag flags in the keyboard
-        mKeyboardSwitcher.getInputView().getLatinKeyboard().keyReleased();
+        LatinKeyboard latinKeyboard = mKeyboardSwitcher.getInputView().getLatinKeyboard();
+        if (latinKeyboard != null) {
+            latinKeyboard.keyReleased();
+        }
         //vibrate();
         final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {

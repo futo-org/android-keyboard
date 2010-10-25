@@ -392,7 +392,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     public void setShifted(boolean shifted) {
         if (mInputView != null) {
-            mInputView.setShifted(shifted);
+            LatinKeyboard latinKeyboard = mInputView.getLatinKeyboard();
+            if (latinKeyboard != null && latinKeyboard.setShifted(shifted)) {
+                mInputView.invalidateAllKeys();
+            }
         }
     }
 
