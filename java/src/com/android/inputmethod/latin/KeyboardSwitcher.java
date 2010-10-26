@@ -391,18 +391,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void setShifted(boolean shifted) {
-        if (mInputView != null) {
-            LatinKeyboard latinKeyboard = mInputView.getLatinKeyboard();
-            if (latinKeyboard != null && latinKeyboard.setShifted(shifted)) {
-                mInputView.invalidateAllKeys();
-            }
+        if (mInputView == null) return;
+        LatinKeyboard latinKeyboard = mInputView.getLatinKeyboard();
+        if (latinKeyboard == null) return;
+        if (latinKeyboard.setShifted(shifted)) {
+            mInputView.invalidateAllKeys();
         }
     }
 
     public void setShiftLocked(boolean shiftLocked) {
-        if (mInputView != null) {
-            mInputView.setShiftLocked(shiftLocked);
-        }
+        if (mInputView == null) return;
+        mInputView.setShiftLocked(shiftLocked);
     }
 
     public void toggleShift() {

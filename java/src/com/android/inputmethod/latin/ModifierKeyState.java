@@ -19,7 +19,9 @@ package com.android.inputmethod.latin;
 class ModifierKeyState {
     private static final int RELEASING = 0;
     private static final int PRESSING = 1;
-    private static final int MOMENTARY = 2;
+    private static final int PRESSING_ON_SHIFTED = 2; // both temporary shifted & shift locked
+    private static final int MOMENTARY = 3;
+    private static final int IGNORING = 4;
 
     private int mState = RELEASING;
 
@@ -27,16 +29,31 @@ class ModifierKeyState {
         mState = PRESSING;
     }
 
+    public void onPressOnShifted() {
+        mState = PRESSING_ON_SHIFTED;
+    }
+
     public void onRelease() {
         mState = RELEASING;
     }
 
     public void onOtherKeyPressed() {
-        if (mState == PRESSING)
+        if (mState == PRESSING) {
             mState = MOMENTARY;
+        } else if (mState == PRESSING_ON_SHIFTED) {
+            mState = IGNORING;
+        }
     }
 
     public boolean isMomentary() {
         return mState == MOMENTARY;
+    }
+
+    public boolean isPressingOnShifted() {
+        return mState == PRESSING_ON_SHIFTED;
+    }
+
+    public boolean isIgnoring() {
+        return mState == IGNORING;
     }
 }

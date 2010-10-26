@@ -151,7 +151,6 @@ public class LatinIME extends InputMethodService
     private static final int POS_METHOD = 0;
     private static final int POS_SETTINGS = 1;
 
-    //private LatinKeyboardView mInputView;
     private LinearLayout mCandidateViewContainer;
     private CandidateView mCandidateView;
     private Suggest mSuggest;
@@ -1056,7 +1055,8 @@ public class LatinIME extends InputMethodService
         if (inputView == null) return;
         LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
         if (latinKeyboard == null) return;
-        if (ic != null && attr != null && mKeyboardSwitcher.isAlphabetMode()) {
+        if (ic != null && attr != null && mKeyboardSwitcher.isAlphabetMode()
+                && !mShiftKeyState.isIgnoring()) {
             mKeyboardSwitcher.setShifted(mShiftKeyState.isMomentary()
                     || latinKeyboard.isShiftLocked() || getCursorCapsMode(ic, attr) != 0);
         }
@@ -2331,9 +2331,12 @@ public class LatinIME extends InputMethodService
         LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
         if (latinKeyboard == null) return;
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
-            mShiftKeyState.onPress();
-            // Not in caps lock mode, shift key is in effect on pressed.
-            if (mKeyboardSwitcher.isAlphabetMode() && !latinKeyboard.isShiftLocked()) {
+            // In alphabet mode, we call handleShift() to go into the shifted mode in this
+            // method, onPress(), only when we are in the small letter mode.
+            if (mKeyboardSwitcher.isAlphabetMode() && latinKeyboard.isShifted()) {
+                mShiftKeyState.onPressOnShifted();
+            } else {
+                mShiftKeyState.onPress();
                 handleShift();
             }
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
@@ -2345,6 +2348,8 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    // TODO: Bug - onRelease() could be dropped if the user slides finger out of the key.  It's OK
+    // for general keys, but we need to obtain onRelease() for the shift key even in such case.
     public void onRelease(int primaryCode) {
         // Reset any drag flags in the keyboard
         LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
@@ -2358,9 +2363,13 @@ public class LatinIME extends InputMethodService
             if (mShiftKeyState.isMomentary()) {
                 resetShift();
             }
-            // In caps lock mode, shift key is in effect on released.
-            if (mKeyboardSwitcher.isAlphabetMode() && latinKeyboard.isShiftLocked()) {
-                handleShift();
+            if (mKeyboardSwitcher.isAlphabetMode()) {
+                // In alphabet mode, we call handleShift() to go into the small letter mode in this
+                // method, onRelease(), only when we are in the shifted modes -- temporary shifted
+                // mode or caps lock mode.
+                if (latinKeyboard.isShifted() && mShiftKeyState.isPressingOnShifted()) {
+                    handleShift();
+                }
             }
             mShiftKeyState.onRelease();
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
