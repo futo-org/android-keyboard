@@ -22,12 +22,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Klawiatura Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Ustawienia klawiatury Android"</string>
-    <!-- no translation found for english_ime_input_options (3909945612939668554) -->
-    <skip />
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Opcje wprowadzania"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Wibracja przy naciśnięciu"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Dźwięk przy naciśnięciu"</string>
-    <!-- no translation found for popup_on_keypress (123894815723512944) -->
-    <skip />
+    <string name="popup_on_keypress" msgid="123894815723512944">"Wyświetlaj po naciśnięciu klawisza"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Popraw błędy pisowni"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Włącz poprawianie błędów wprowadzania"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Błędy wprowadzania w orientacji poziomej"</string>
@@ -48,19 +46,21 @@
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Poprawia częste błędy wpisywania"</string>
     <string name="show_suggestions" msgid="507074425254289133">"Pokaż sugestie"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Wyświetl sugerowane słowa podczas wpisywania"</string>
-    <string name="auto_complete" msgid="1103196318775486023">"Autouzupełnianie"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Spacja i znaki przestankowe wstawiają wyróżnione słowo"</string>
-    <!-- no translation found for prefs_settings_key (4623341240804046498) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_auto_name (2993460277873684680) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_show_name (3047567041784760575) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
-    <skip />
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Pokaż klawisz ustawień"</string>
+    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatycznie"</string>
+    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Zawsze pokazuj"</string>
+    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Zawsze ukrywaj"</string>
     <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
     <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
     <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
+    <string name="auto_complete" msgid="1103196318775486023">"Autouzupełnianie"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"Spacja i znaki przestankowe wstawiają wyróżnione słowo"</string>
+    <string name="auto_completion_threshold_mode_off" msgid="8100705925921970219">"Wyłączone"</string>
+    <string name="auto_completion_threshold_mode_modest" msgid="1639075698991437157">"Umiarkowane"</string>
+    <string name="auto_completion_threshold_mode_aggeressive" msgid="1153130653281397959">"Agresywne"</string>
+    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
+    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
+    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
     <string name="bigram_suggestion" msgid="1323347224043514969">"Sugestie dla bigramów"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Używaj poprzedniego wyrazu, aby polepszyć sugestię"</string>
   <string-array name="prediction_modes">
@@ -89,6 +89,13 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <string name="label_more_key" msgid="3760239494604948502">"Więcej"</string>
+    <!-- no translation found for label_tab_key (6532779603382157482) -->
+    <skip />
+    <!-- no translation found for label_pause_key (181098308428035340) -->
+    <skip />
+    <!-- no translation found for label_wait_key (6402152600878093134) -->
+    <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Wprowadzanie głosowe"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Wprowadzanie głosowe obecnie nie jest obsługiwane w Twoim języku, ale działa w języku angielskim."</string>
     <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"Wprowadzanie głosowe to funkcja eksperymentalna wykorzystująca funkcję firmy Google umożliwiającą rozpoznawanie mowy przy użyciu sieci."</string>
@@ -103,7 +110,7 @@
     <string name="voice_audio_error" msgid="5072707727016414454">"Problem z dźwiękiem"</string>
     <string name="voice_server_error" msgid="7807129913977261644">"Błąd serwera"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Nie wykryto mowy"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Nie znaleziono żadnych wyników"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Brak wyników"</string>
     <string name="voice_not_installed" msgid="5552450909753842415">"Wyszukiwanie głosowe nie jest zainstalowane"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Wskazówka:"</b>" przesuń palcem po klawiaturze, aby mówić."</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Wskazówka:"</b>" następnym razem spróbuj wypowiadać nazwy znaków interpunkcyjnych: „kropka”, „przecinek” lub „pytajnik”."</string>
@@ -131,24 +138,16 @@
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
     <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
-    <!-- no translation found for selectInputMethod (315076553378705821) -->
-    <skip />
+    <string name="selectInputMethod" msgid="315076553378705821">"Wybierz metodę wprowadzania"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Języki wprowadzania"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Przesuń palcem po spacji, aby zmienić język"</string>
-    <string name="hint_add_to_dictionary" msgid="8058519710062071085">"← Dotknij ponownie, aby zapisać"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Dotknij ponownie, aby zapisać"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Słownik dostępny"</string>
-    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
-    <skip />
-    <!-- no translation found for prefs_description_log (5827825607258246003) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection (4966265843750259377) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection_summary (8181745740388568396) -->
-    <skip />
-    <!-- no translation found for keyboard_layout (437433231038683666) -->
-    <skip />
-    <!-- no translation found for subtype_mode_keyboard (2242090416595003881) -->
-    <skip />
-    <!-- no translation found for subtype_mode_voice (4394113125441627771) -->
-    <skip />
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Włącz przesyłanie opinii użytkownika"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Pomóż ulepszyć edytor tej metody wprowadzania, automatycznie wysyłając do Google statystyki użycia i raporty o awariach."</string>
+    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dotknij, aby ponownie poprawić słowa"</string>
+    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Możesz ponownie poprawiać wprowadzone słowa, dotykając ich"</string>
+    <string name="keyboard_layout" msgid="437433231038683666">"Motyw klawiatury"</string>
+    <string name="subtype_mode_keyboard" msgid="2242090416595003881">"klawiatura"</string>
+    <string name="subtype_mode_voice" msgid="4394113125441627771">"głosowe"</string>
 </resources>
