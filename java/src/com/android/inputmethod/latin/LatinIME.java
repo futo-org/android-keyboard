@@ -2022,13 +2022,6 @@ public class LatinIME extends InputMethodService
         if (inputView == null) return;
         LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
         if (latinKeyboard == null) return;
-        if (latinKeyboard.isShiftLocked()) {
-            suggestion = suggestion.toString().toUpperCase();
-        } else if (preferCapitalization()
-                || (mKeyboardSwitcher.isAlphabetMode() && latinKeyboard.isShifted())) {
-            suggestion = suggestion.toString().toUpperCase().charAt(0)
-                    + suggestion.subSequence(1, suggestion.length()).toString();
-        }
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             rememberReplacedWord(suggestion);
