@@ -44,7 +44,7 @@
     <Key
         latin:keyLabel="-"
         latin:temporaryShiftKeyLabel="#"
-        latin:keyHintIcon="@drawable/keyboard_hint_doublecross"
+        latin:keyHintIcon="@drawable/key_hint_doublecross_holo"
         latin:popupKeyboard="@xml/kbd_popup_template"
         latin:popupCharacters="#" />
 </merge>
