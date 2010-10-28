@@ -272,11 +272,12 @@ public class PointerTracker {
         mIsRepeatableKey = false;
         checkMultiTap(eventTime, keyIndex);
         if (mListener != null) {
-            int primaryCode = isValidKeyIndex(keyIndex) ? mKeys[keyIndex].codes[0] : 0;
-            mListener.onPress(primaryCode);
-            // This onPress call may have changed keyboard layout and have updated mKeyIndex.
-            // If that's the case, mKeyIndex has been updated in setKeyboard().
-            keyIndex = mKeyState.getKeyIndex();
+            if (isValidKeyIndex(keyIndex)) {
+                mListener.onPress(mKeys[keyIndex].codes[0]);
+                // This onPress call may have changed keyboard layout and have updated mKeyIndex.
+                // If that's the case, mKeyIndex has been updated in setKeyboard().
+                keyIndex = mKeyState.getKeyIndex();
+            }
         }
         if (isValidKeyIndex(keyIndex)) {
             if (mKeys[keyIndex].repeatable) {
