@@ -715,7 +715,9 @@ public class LatinKeyboard extends BaseKeyboard {
         if (mCurrentlyInSpace) {
             return new int[] { mSpaceKeyIndex };
         } else {
-            return super.getNearestKeys(x, y);
+            // Avoid dead pixels at edges of the keyboard
+            return super.getNearestKeys(Math.max(0, Math.min(x, getMinWidth() - 1)),
+                    Math.max(0, Math.min(y, getHeight() - 1)));
         }
     }
 
