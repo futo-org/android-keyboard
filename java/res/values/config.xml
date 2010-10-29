@@ -27,6 +27,8 @@
     <integer name="config_mini_keyboard_fadeout_anim_time">100</integer>
     <integer name="config_delay_before_key_repeat_start">400</integer>
     <integer name="config_key_repeat_interval">50</integer>
+    <integer name="config_keyboard_grid_width">32</integer>
+    <integer name="config_keyboard_grid_height">16</integer>
     <integer name="config_long_press_key_timeout">400</integer>
     <integer name="config_long_press_shift_key_timeout">1200</integer>
     <integer name="config_multi_tap_key_timeout">800</integer>

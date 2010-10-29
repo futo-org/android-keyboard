@@ -109,9 +109,9 @@ public class BaseKeyboard {
 
     // Variables for pre-computing nearest keys.
 
-    private static final int GRID_WIDTH = 10;
-    private static final int GRID_HEIGHT = 5;
-    private static final int GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
+    private final int GRID_WIDTH;
+    private final int GRID_HEIGHT;
+    private final int GRID_SIZE;
     private int mCellWidth;
     private int mCellHeight;
     private int[][] mGridNeighbors;
@@ -466,6 +466,11 @@ public class BaseKeyboard {
      * @param height sets height of keyboard
      */
     public BaseKeyboard(Context context, int xmlLayoutResId, int modeId, int width, int height) {
+        Resources res = context.getResources();
+        GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
+        GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
+        GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
+
         mDisplayWidth = width;
         mDisplayHeight = height;
 
@@ -485,17 +490,9 @@ public class BaseKeyboard {
      * @param modeId keyboard mode identifier
      */
     public BaseKeyboard(Context context, int xmlLayoutResId, int modeId) {
-        DisplayMetrics dm = context.getResources().getDisplayMetrics();
-        mDisplayWidth = dm.widthPixels;
-        mDisplayHeight = dm.heightPixels;
-        //Log.v(TAG, "keyboard's display metrics:" + dm);
-
-        mDefaultHorizontalGap = 0;
-        setKeyWidth(mDisplayWidth / 10);
-        mDefaultVerticalGap = 0;
-        mDefaultHeight = mDefaultWidth;
-        mKeyboardMode = modeId;
-        loadKeyboard(context, xmlLayoutResId);
+        this(context, xmlLayoutResId, modeId,
+                context.getResources().getDisplayMetrics().widthPixels,
+                context.getResources().getDisplayMetrics().heightPixels);
     }
 
     /**
