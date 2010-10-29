@@ -36,10 +36,6 @@
     <dimen name="key_text_size">0.175in</dimen>
     <dimen name="key_label_text_size">0.100in</dimen>
     <dimen name="key_preview_text_size_large">0.245in</dimen>
-    <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
-         to user's finger. -->
-    <dimen name="keyboard_vertical_correction">0.0in</dimen>
 
     <dimen name="candidate_strip_height">46dip</dimen>
-    <dimen name="spacebar_vertical_correction">0dip</dimen>
 </resources>
