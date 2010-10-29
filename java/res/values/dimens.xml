@@ -33,10 +33,10 @@
     <dimen name="max_height_for_fullscreen">2.5in</dimen>
     <dimen name="key_text_size">0.13in</dimen>
     <dimen name="key_label_text_size">0.083in</dimen>
-    <dimen name="key_preview_text_size_large">0.236in</dimen>
+    <dimen name="key_preview_text_size_large">40sp</dimen>
     <dimen name="key_preview_offset">0.000in</dimen>
-    <!-- key_height x 1.6 -->
-    <dimen name="key_preview_height">0.464in</dimen>
+    <!-- key_preview_text_size_large x 2 -->
+    <dimen name="key_preview_height">80sp</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.7 -->
     <dimen name="mini_keyboard_slide_allowance">0.553in</dimen>
