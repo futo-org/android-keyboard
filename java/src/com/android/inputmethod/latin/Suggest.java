@@ -337,8 +337,25 @@ public class Suggest implements Dictionary.WordCallback {
                 String suggestedWord = mSuggestions.get(i).toString().toLowerCase();
                 CharSequence autoText =
                         AutoText.get(suggestedWord, 0, suggestedWord.length(), view);
-                // Is there an AutoText correction?
+                // Is there an AutoText (also known as Quick Fixes) correction?
                 boolean canAdd = autoText != null;
+                // Capitalize as needed
+                final int autoTextLength = autoText != null ? autoText.length() : 0;
+                if (autoTextLength > 0 && (mIsAllUpperCase || mIsFirstCharCapitalized)) {
+                    int poolSize = mStringPool.size();
+                    StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(
+                            poolSize - 1) : new StringBuilder(getApproxMaxWordLength());
+                    sb.setLength(0);
+                    if (mIsAllUpperCase) {
+                        sb.append(autoText.toString().toUpperCase());
+                    } else if (mIsFirstCharCapitalized) {
+                        sb.append(Character.toUpperCase(autoText.charAt(0)));
+                        if (autoTextLength > 1) {
+                            sb.append(autoText.subSequence(1, autoTextLength));
+                        }
+                    }
+                    autoText = sb.toString();
+                }
                 // Is that correction already the current prediction (or original word)?
                 canAdd &= !TextUtils.equals(autoText, mSuggestions.get(i));
                 // Is that correction already the next predicted word?
@@ -461,8 +478,7 @@ public class Suggest implements Dictionary.WordCallback {
             return true;
         }
 
-        System.arraycopy(priorities, pos, priorities, pos + 1,
-                prefMaxSuggestions - pos - 1);
+        System.arraycopy(priorities, pos, priorities, pos + 1, prefMaxSuggestions - pos - 1);
         priorities[pos] = freq;
         int poolSize = mStringPool.size();
         StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1) 
