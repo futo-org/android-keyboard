@@ -26,7 +26,7 @@
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
         android:settingsActivity="com.android.inputmethod.latin.LatinIMESettings"
         android:isDefault="@bool/im_is_default">
-    <subtype android:icon="@drawable/ic_sybtype_us_keyboard"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:imeSubtypeLocale="cs"
             android:imeSubtypeMode="@string/subtype_mode_keyboard"
     />
@@ -38,7 +38,7 @@
             android:imeSubtypeLocale="de"
             android:imeSubtypeMode="@string/subtype_mode_keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
+    <subtype android:icon="@drawable/ic_subtype_us_keyboard"
             android:imeSubtypeLocale="en"
             android:imeSubtypeMode="@string/subtype_mode_keyboard"
     />
