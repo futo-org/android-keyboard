@@ -162,8 +162,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int SETTINGS_KEY_MODE_AUTO = R.string.settings_key_mode_auto;
     private static final int SETTINGS_KEY_MODE_ALWAYS_SHOW =
             R.string.settings_key_mode_always_show;
-    private static final int SETTINGS_KEY_MODE_ALWAYS_HIDE =
-            R.string.settings_key_mode_always_hide;
+    // NOTE: No need to have SETTINGS_KEY_MODE_ALWAYS_HIDE here because it's not being referred to
+    // in the source code now.
+    // Default is SETTINGS_KEY_MODE_AUTO.
+    private static final int DEFAULT_SETTINGS_KEY_MODE = SETTINGS_KEY_MODE_AUTO;
 
     private int mLastDisplayWidth;
     private LanguageSwitcher mLanguageSwitcher;
@@ -546,18 +548,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         Resources resources = mInputMethodService.getResources();
         final boolean showSettingsKeyOption = resources.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
-        final int defaultSettingsKeyMode = showSettingsKeyOption
-                ? SETTINGS_KEY_MODE_AUTO : SETTINGS_KEY_MODE_ALWAYS_HIDE;
-        final String settingsKeyMode = prefs.getString(LatinIMESettings.PREF_SETTINGS_KEY,
-                resources.getString(defaultSettingsKeyMode));
-        // We show the settings key when 1) SETTINGS_KEY_MODE_ALWAYS_SHOW or
-        // 2) SETTINGS_KEY_MODE_AUTO and there are two or more enabled IMEs on the system
-        if (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
-                || (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_AUTO))
-                        && LatinIMEUtil.hasMultipleEnabledIMEs(mInputMethodService))) {
-            mHasSettingsKey = true;
-        } else {
-            mHasSettingsKey = false;
+        if (showSettingsKeyOption) {
+            final String settingsKeyMode = prefs.getString(LatinIMESettings.PREF_SETTINGS_KEY,
+                    resources.getString(DEFAULT_SETTINGS_KEY_MODE));
+            // We show the settings key when 1) SETTINGS_KEY_MODE_ALWAYS_SHOW or
+            // 2) SETTINGS_KEY_MODE_AUTO and there are two or more enabled IMEs on the system
+            if (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
+                    || (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_AUTO))
+                            && LatinIMEUtil.hasMultipleEnabledIMEs(mInputMethodService))) {
+                mHasSettingsKey = true;
+                return;
+            }
         }
+        mHasSettingsKey = false;
     }
 }
