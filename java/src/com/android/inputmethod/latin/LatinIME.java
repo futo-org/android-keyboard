@@ -548,6 +548,17 @@ public class LatinIME extends InputMethodService
         return mCandidateViewContainer;
     }
 
+    private static boolean isPasswordVariation(int variation) {
+        return variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD
+                || variation == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                || variation == EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD;
+    }
+
+    private static boolean isEmailVariation(int variation) {
+        return variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                || variation == EditorInfo.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
+    }
+
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
@@ -570,8 +581,7 @@ public class LatinIME extends InputMethodService
         // the switch statement) whether we want to enable the voice button.
         mPasswordText = false;
         int variation = attribute.inputType & EditorInfo.TYPE_MASK_VARIATION;
-        if (variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD ||
-                variation == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+        if (isPasswordVariation(variation)) {
             mPasswordText = true;
         }
 
@@ -605,17 +615,16 @@ public class LatinIME extends InputMethodService
                 //startPrediction();
                 mPredictionOn = true;
                 // Make sure that passwords are not displayed in candidate view
-                if (variation == EditorInfo.TYPE_TEXT_VARIATION_PASSWORD ||
-                        variation == EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD ) {
+                if (isPasswordVariation(variation)) {
                     mPredictionOn = false;
                 }
-                if (variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                if (isEmailVariation(variation)
                         || variation == EditorInfo.TYPE_TEXT_VARIATION_PERSON_NAME) {
                     mAutoSpace = false;
                 } else {
                     mAutoSpace = true;
                 }
-                if (variation == EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS) {
+                if (isEmailVariation(variation)) {
                     mPredictionOn = false;
                     mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_EMAIL,
                             attribute.imeOptions, enableVoiceButton);
