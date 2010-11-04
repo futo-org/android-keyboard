@@ -20,114 +20,173 @@
 <!-- The attributes in this XML file provide configuration information -->
 <!-- for the Input Method Manager. -->
 
-<!-- cs, da, de, en, es, fr, it, iw, nb, nl, ru, sr, sv -->
+<!-- Keyboard: en_US, cs, da, de, en_GB, es, es_rUS, fr, fr_rCA, it, nb, nl, sr, sv -->
+<!-- Voice: cs, da, de, en_AU, en_GB, en_IN, en_NZ, en_US, es, fr, ko, ja, pl, pt, ru, tr, zh_CN, zh_TW -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- TODO: use <lang>_mic icon instead of a common mic icon. -->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
         android:settingsActivity="com.android.inputmethod.latin.LatinIMESettings"
         android:isDefault="@bool/im_is_default">
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="cs"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="da"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="de"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
+    <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
+         subtype.-->
     <subtype android:icon="@drawable/ic_subtype_us_keyboard"
-            android:imeSubtypeLocale="en"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
+            android:label="@string/subtype_mode_en_US_keyboard"
+            android:imeSubtypeLocale="en_US"
+            android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="es"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="fr"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="it"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="iw"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="nb"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="nl"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="ru"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="sr"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:imeSubtypeLocale="sv"
-            android:imeSubtypeMode="@string/subtype_mode_keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_cs_keyboard"
             android:imeSubtypeLocale="cs"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_da_keyboard"
             android:imeSubtypeLocale="da"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_de_keyboard"
             android:imeSubtypeLocale="de"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:imeSubtypeLocale="en"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_en_GB_keyboard"
+            android:imeSubtypeLocale="en_GB"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_es_keyboard"
             android:imeSubtypeLocale="es"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_es_rUS_keyboard"
+            android:imeSubtypeLocale="es_rUS"
+            android:imeSubtypeMode="keyboard"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_fr_keyboard"
             android:imeSubtypeLocale="fr"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_fr_rCA_keyboard"
+            android:imeSubtypeLocale="fr_rCA"
+            android:imeSubtypeMode="keyboard"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_it_keyboard"
             android:imeSubtypeLocale="it"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:imeSubtypeLocale="iw"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_nb_keyboard"
             android:imeSubtypeLocale="nb"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_nl_keyboard"
             android:imeSubtypeLocale="nl"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_ru_keyboard"
             android:imeSubtypeLocale="ru"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_sr_keyboard"
             android:imeSubtypeLocale="sr"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:imeSubtypeMode="keyboard"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_sv_keyboard"
+            android:imeSubtypeLocale="sv"
+            android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_mic"
-            android:imeSubtypeLocale="sv"
-            android:imeSubtypeMode="@string/subtype_mode_voice"
+            android:label="@string/subtype_mode_cs_voice"
+            android:imeSubtypeLocale="cs"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_de_voice"
+            android:imeSubtypeLocale="de"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_en_AU_voice"
+            android:imeSubtypeLocale="en_AU"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_en_GB_voice"
+            android:imeSubtypeLocale="en_GB"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_en_IN_voice"
+            android:imeSubtypeLocale="en_IN"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_en_NZ_voice"
+            android:imeSubtypeLocale="en_NZ"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_en_US_voice"
+            android:imeSubtypeLocale="en_US"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_es_voice"
+            android:imeSubtypeLocale="es"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_fr_voice"
+            android:imeSubtypeLocale="fr"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_ko_voice"
+            android:imeSubtypeLocale="ko"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_ja_voice"
+            android:imeSubtypeLocale="ja"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_pl_voice"
+            android:imeSubtypeLocale="pl"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_pt_voice"
+            android:imeSubtypeLocale="pt"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_ru_voice"
+            android:imeSubtypeLocale="ru"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_tr_voice"
+            android:imeSubtypeLocale="tr"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_zh_CN_voice"
+            android:imeSubtypeLocale="zh_CN"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_zh_TW_voice"
+            android:imeSubtypeLocale="zh_TW"
+            android:imeSubtypeMode="voice"
     />
 </input-method>

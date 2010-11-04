@@ -400,6 +400,39 @@
 
     <string name="subtype_mode_keyboard">keyboard</string>
     <string name="subtype_mode_voice">voice</string>
+    <string name="subtype_mode_cs_keyboard">Czech Keyboard</string>
+    <string name="subtype_mode_da_keyboard">Danish Keyboard</string>
+    <string name="subtype_mode_de_keyboard">German Keyboard</string>
+    <string name="subtype_mode_en_US_keyboard">English (United States) Keyboard</string>
+    <string name="subtype_mode_en_GB_keyboard">English (Great Britain) Keyboard</string>
+    <string name="subtype_mode_es_keyboard">Spanish Keyboard</string>
+    <string name="subtype_mode_es_rUS_keyboard">Spanish (United States) Keyboard</string>
+    <string name="subtype_mode_fr_keyboard">French Keyboard</string>
+    <string name="subtype_mode_fr_rCA_keyboard">French (Canada) Keyboard</string>
+    <string name="subtype_mode_it_keyboard">Italian Keyboard</string>
+    <string name="subtype_mode_nb_keyboard">Norwegian Keyboard</string>
+    <string name="subtype_mode_nl_keyboard">Dutch Keyboard</string>
+    <string name="subtype_mode_ru_keyboard">Russian Keyboard</string>
+    <string name="subtype_mode_sr_keyboard">Serbian Keyboard</string>
+    <string name="subtype_mode_sv_keyboard">Swedish Keyboard</string>
+
+    <string name="subtype_mode_cs_voice">Czech　Voice</string>
+    <string name="subtype_mode_de_voice">German Voice</string>
+    <string name="subtype_mode_en_AU_voice">English (Australia) Voice</string>
+    <string name="subtype_mode_en_GB_voice">English (Great Britain) Voice</string>
+    <string name="subtype_mode_en_IN_voice">English (India) Voice</string>
+    <string name="subtype_mode_en_NZ_voice">English (New Zealand) Voice</string>
+    <string name="subtype_mode_en_US_voice">English (United States) Voice</string>
+    <string name="subtype_mode_es_voice">Spanish Voice</string>
+    <string name="subtype_mode_fr_voice">French Voice</string>
+    <string name="subtype_mode_ja_voice">Japanese Voice</string>
+    <string name="subtype_mode_ko_voice">Korean Voice</string>
+    <string name="subtype_mode_pl_voice">Polish Voice</string>
+    <string name="subtype_mode_pt_voice">Portuguese Voice</string>
+    <string name="subtype_mode_ru_voice">Russian Voice</string>
+    <string name="subtype_mode_tr_voice">Turkish Voice</string>
+    <string name="subtype_mode_zh_CN_voice">Chinese (China) Voice</string>
+    <string name="subtype_mode_zh_TW_voice">Chinese (Taiwan) Voice</string>
 
     <!-- Title for Latin keyboard debug settings activity / dialog -->
     <string name="english_ime_debug_settings" translatable="false">Android keyboard Debug settings</string>
