@@ -71,6 +71,7 @@ import java.util.WeakHashMap;
 public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private static final String TAG = "BaseKeyboardView";
     private static final boolean DEBUG = false;
+    private static final boolean DEBUG_KEYBOARD_GRID = false;
 
     public static final int NOT_A_TOUCH_COORDINATE = -1;
 
@@ -183,8 +184,6 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     // Main keyboard
     private BaseKeyboard mKeyboard;
     private Key[] mKeys;
-    // TODO this attribute should be gotten from Keyboard.
-    private int mKeyboardVerticalGap;
 
     // Key preview popup
     private boolean mInForeground;
@@ -609,7 +608,6 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         LatinImeLogger.onSetKeyboard(keyboard);
         mKeys = mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
-        mKeyboardVerticalGap = (int)getResources().getDimension(R.dimen.key_bottom_gap);
         for (PointerTracker tracker : mPointerTrackers) {
             tracker.setKeyboard(keyboard, mKeys, mKeyHysteresisDistance);
         }
@@ -617,7 +615,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         // Hint to reallocate the buffer if the size changed
         mKeyboardChanged = true;
         invalidateAllKeys();
-        computeProximityThreshold(keyboard);
+        computeProximityThreshold(keyboard, mKeys);
         mMiniKeyboardCache.clear();
     }
 
@@ -713,23 +711,27 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * Compute the average distance between adjacent keys (horizontally and vertically)
-     * and square it to get the proximity threshold. We use a square here and in computing
-     * the touch distance from a key's center to avoid taking a square root.
+     * Compute the most common key width and use it as proximity key detection threshold.
      * @param keyboard
+     * @param keys
      */
-    private void computeProximityThreshold(BaseKeyboard keyboard) {
-        if (keyboard == null) return;
-        final Key[] keys = mKeys;
-        if (keys == null) return;
-        int length = keys.length;
-        int dimensionSum = 0;
-        for (int i = 0; i < length; i++) {
-            Key key = keys[i];
-            dimensionSum += Math.min(key.width, key.height + mKeyboardVerticalGap) + key.gap;
+    private void computeProximityThreshold(BaseKeyboard keyboard, Key[] keys) {
+        if (keyboard == null || keys == null || keys.length == 0) return;
+        final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
+        int maxCount = 0;
+        int mostCommonWidth = 0;
+        for (Key key : keys) {
+            final Integer width = key.width + key.gap;
+            Integer count = histogram.get(width);
+            if (count == null)
+                count = 0;
+            histogram.put(width, ++count);
+            if (count > maxCount) {
+                maxCount = count;
+                mostCommonWidth = width;
+            }
         }
-        if (dimensionSum < 0 || length == 0) return;
-        mKeyDetector.setProximityThreshold((int) (dimensionSum * 1.4f / length));
+        mKeyDetector.setProximityThreshold(mostCommonWidth);
     }
 
     @Override
@@ -868,6 +870,20 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             }
             canvas.translate(-key.x - kbdPaddingLeft, -key.y - kbdPaddingTop);
         }
+
+        if (DEBUG_KEYBOARD_GRID) {
+            Paint p = new Paint();
+            p.setStyle(Paint.Style.STROKE);
+            p.setStrokeWidth(1.0f);
+            p.setColor(0x800000c0);
+            int cw = (mKeyboard.getMinWidth() + mKeyboard.GRID_WIDTH - 1) / mKeyboard.GRID_WIDTH;
+            int ch = (mKeyboard.getHeight() + mKeyboard.GRID_HEIGHT - 1) / mKeyboard.GRID_HEIGHT;
+            for (int i = 0; i <= mKeyboard.GRID_WIDTH; i++)
+                canvas.drawLine(i * cw, 0, i * cw, ch * mKeyboard.GRID_HEIGHT, p);
+            for (int i = 0; i <= mKeyboard.GRID_HEIGHT; i++)
+                canvas.drawLine(0, i * ch, cw * mKeyboard.GRID_WIDTH, i * ch, p);
+        }
+
         mInvalidatedKey = null;
         // Overlay a dark rectangle to dim the keyboard
         if (mMiniKeyboard != null) {

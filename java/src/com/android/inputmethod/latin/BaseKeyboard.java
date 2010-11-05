@@ -24,7 +24,6 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.util.Xml;
@@ -109,15 +108,16 @@ public class BaseKeyboard {
 
     // Variables for pre-computing nearest keys.
 
-    private final int GRID_WIDTH;
-    private final int GRID_HEIGHT;
+    public final int GRID_WIDTH;
+    public final int GRID_HEIGHT;
     private final int GRID_SIZE;
     private int mCellWidth;
     private int mCellHeight;
     private int[][] mGridNeighbors;
     private int mProximityThreshold;
+    private static int[] EMPTY_INT_ARRAY = new int[0];
     /** Number of key widths from current touch point to search for nearest keys. */
-    private static float SEARCH_DISTANCE = 1.8f;
+    private static float SEARCH_DISTANCE = 1.2f;
 
     /**
      * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate.
@@ -402,18 +402,21 @@ public class BaseKeyboard {
         }
 
         /**
-         * Returns the square of the distance between the center of the key and the given point.
+         * Returns the square of the distance to the nearest edge of the key and the given point.
          * @param x the x-coordinate of the point
          * @param y the y-coordinate of the point
-         * @return the square of the distance of the point from the center of the key
+         * @return the square of the distance of the point from the nearest edge of the key
          */
-        public int squaredDistanceFrom(int x, int y) {
-            // We should count vertical gap between rows to calculate the center of this Key.
-            // TODO: We should re-think how we define the center of the key.
-            final int verticalGap = keyboard.getVerticalGap();
-            int xDist = this.x + width / 2 - x;
-            int yDist = this.y + (height + verticalGap) / 2 - y;
-            return xDist * xDist + yDist * yDist;
+        public int squaredDistanceToEdge(int x, int y) {
+            final int left = this.x;
+            final int right = left + this.width;
+            final int top = this.y;
+            final int bottom = top + this.height;
+            final int edgeX = x < left ? left : (x > right ? right : x);
+            final int edgeY = y < top ? top : (y > bottom ? bottom : y);
+            final int dx = x - edgeX;
+            final int dy = y - edgeY;
+            return dx * dx + dy * dy;
         }
 
         /**
@@ -633,24 +636,21 @@ public class BaseKeyboard {
         mCellWidth = (getMinWidth() + GRID_WIDTH - 1) / GRID_WIDTH;
         mCellHeight = (getHeight() + GRID_HEIGHT - 1) / GRID_HEIGHT;
         mGridNeighbors = new int[GRID_SIZE][];
-        int[] indices = new int[mKeys.size()];
+        final int[] indices = new int[mKeys.size()];
         final int gridWidth = GRID_WIDTH * mCellWidth;
         final int gridHeight = GRID_HEIGHT * mCellHeight;
+        final int threshold = mProximityThreshold;
         for (int x = 0; x < gridWidth; x += mCellWidth) {
             for (int y = 0; y < gridHeight; y += mCellHeight) {
+                final int centerX = x + mCellWidth / 2;
+                final int centerY = y + mCellHeight / 2;
                 int count = 0;
                 for (int i = 0; i < mKeys.size(); i++) {
                     final Key key = mKeys.get(i);
-                    final int threshold = mProximityThreshold;
-                    if (key.squaredDistanceFrom(x, y) < threshold ||
-                            key.squaredDistanceFrom(x + mCellWidth - 1, y) < threshold ||
-                            key.squaredDistanceFrom(x + mCellWidth - 1, y + mCellHeight - 1)
-                                < threshold ||
-                            key.squaredDistanceFrom(x, y + mCellHeight - 1) < threshold) {
+                    if (key.squaredDistanceToEdge(centerX, centerY) < threshold)
                         indices[count++] = i;
-                    }
                 }
-                int [] cell = new int[count];
+                final int[] cell = new int[count];
                 System.arraycopy(indices, 0, cell, 0, count);
                 mGridNeighbors[(y / mCellHeight) * GRID_WIDTH + (x / mCellWidth)] = cell;
             }
@@ -672,7 +672,7 @@ public class BaseKeyboard {
                 return mGridNeighbors[index];
             }
         }
-        return new int[0];
+        return EMPTY_INT_ARRAY;
     }
 
     // TODO should be private

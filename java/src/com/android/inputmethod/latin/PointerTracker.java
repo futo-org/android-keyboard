@@ -396,22 +396,10 @@ public class PointerTracker {
         if (newKey == curKey) {
             return true;
         } else if (isValidKeyIndex(curKey)) {
-            return getSquareDistanceToKeyEdge(x, y, mKeys[curKey]) < mKeyHysteresisDistanceSquared;
+            return mKeys[curKey].squaredDistanceToEdge(x, y) < mKeyHysteresisDistanceSquared;
         } else {
             return false;
         }
-    }
-
-    private static int getSquareDistanceToKeyEdge(int x, int y, Key key) {
-        final int left = key.x;
-        final int right = key.x + key.width;
-        final int top = key.y;
-        final int bottom = key.y + key.height;
-        final int edgeX = x < left ? left : (x > right ? right : x);
-        final int edgeY = y < top ? top : (y > bottom ? bottom : y);
-        final int dx = x - edgeX;
-        final int dy = y - edgeY;
-        return dx * dx + dy * dy;
     }
 
     private void showKeyPreviewAndUpdateKeyGraphics(int keyIndex) {

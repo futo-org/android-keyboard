@@ -28,8 +28,8 @@
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
     <dimen name="spacebar_vertical_correction">2dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
-    <!-- popup_key_height x 1.7 -->
-    <dimen name="mini_keyboard_slide_allowance">0.459in</dimen>
+    <!-- popup_key_height x 1.2 -->
+    <dimen name="mini_keyboard_slide_allowance">0.324in</dimen>
     <!-- popup_key_height x 1.0 -->
     <dimen name="mini_keyboard_vertical_correction">-0.270in</dimen>
 </resources>
