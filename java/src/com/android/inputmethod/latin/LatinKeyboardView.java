@@ -30,7 +30,7 @@ import android.view.MotionEvent;
 
 import java.util.List;
 
-public class LatinKeyboardView extends LatinKeyboardBaseView {
+public class LatinKeyboardView extends BaseKeyboardView {
 
     public static final int KEYCODE_OPTIONS = -100;
     public static final int KEYCODE_OPTIONS_LONGPRESS = -101;
@@ -110,8 +110,8 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     private boolean invokeOnKey(int primaryCode) {
         getOnKeyboardActionListener().onKey(primaryCode, null,
-                LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
-                LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
+                BaseKeyboardView.NOT_A_TOUCH_COORDINATE,
+                BaseKeyboardView.NOT_A_TOUCH_COORDINATE);
         return true;
     }
 

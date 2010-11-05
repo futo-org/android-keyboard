@@ -79,7 +79,7 @@ import java.util.Map;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService
-        implements LatinKeyboardBaseView.OnKeyboardActionListener,
+        implements BaseKeyboardView.OnKeyboardActionListener,
         VoiceInput.UiListener,
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIME";
@@ -741,7 +741,7 @@ public class LatinIME extends InputMethodService
     @Override
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
-        LatinKeyboardBaseView inputView = mKeyboardSwitcher.getInputView();
+        BaseKeyboardView inputView = mKeyboardSwitcher.getInputView();
         if (inputView != null)
             inputView.setForeground(false);
         // Remove penging messages related to update suggestions
@@ -1954,8 +1954,8 @@ public class LatinIME extends InputMethodService
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions);
             final char primaryCode = suggestion.charAt(0);
-            onKey(primaryCode, new int[]{primaryCode}, LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE,
-                    LatinKeyboardBaseView.NOT_A_TOUCH_COORDINATE);
+            onKey(primaryCode, new int[]{primaryCode}, BaseKeyboardView.NOT_A_TOUCH_COORDINATE,
+                    BaseKeyboardView.NOT_A_TOUCH_COORDINATE);
             if (ic != null) {
                 ic.endBatchEdit();
             }

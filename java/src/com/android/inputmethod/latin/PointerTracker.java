@@ -17,8 +17,8 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.latin.BaseKeyboard.Key;
-import com.android.inputmethod.latin.LatinKeyboardBaseView.OnKeyboardActionListener;
-import com.android.inputmethod.latin.LatinKeyboardBaseView.UIHandler;
+import com.android.inputmethod.latin.BaseKeyboardView.OnKeyboardActionListener;
+import com.android.inputmethod.latin.BaseKeyboardView.UIHandler;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -44,7 +44,7 @@ public class PointerTracker {
     private final int mMultiTapKeyTimeout;
 
     // Miscellaneous constants
-    private static final int NOT_A_KEY = LatinKeyboardBaseView.NOT_A_KEY;
+    private static final int NOT_A_KEY = BaseKeyboardView.NOT_A_KEY;
     private static final int[] KEY_DELETE = { BaseKeyboard.KEYCODE_DELETE };
 
     private final UIProxy mProxy;

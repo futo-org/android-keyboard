@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <style name="LatinKeyboardBaseView">
+    <style name="BaseKeyboardView">
         <item name="android:background">@drawable/keyboard_background</item>
 
         <item name="keyBackground">@drawable/btn_keyboard_key</item>

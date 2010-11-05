@@ -36,8 +36,8 @@ class ProximityKeyDetector extends KeyDetector {
         final Key[] keys = getKeys();
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
-        int primaryIndex = LatinKeyboardBaseView.NOT_A_KEY;
-        int closestKey = LatinKeyboardBaseView.NOT_A_KEY;
+        int primaryIndex = BaseKeyboardView.NOT_A_KEY;
+        int closestKey = BaseKeyboardView.NOT_A_KEY;
         int closestKeyDist = mProximityThresholdSquare + 1;
         int[] distances = mDistances;
         Arrays.fill(distances, Integer.MAX_VALUE);
@@ -78,7 +78,7 @@ class ProximityKeyDetector extends KeyDetector {
                 }
             }
         }
-        if (primaryIndex == LatinKeyboardBaseView.NOT_A_KEY) {
+        if (primaryIndex == BaseKeyboardView.NOT_A_KEY) {
             primaryIndex = closestKey;
         }
         return primaryIndex;

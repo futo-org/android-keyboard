@@ -59,17 +59,17 @@ import java.util.WeakHashMap;
  *
  * TODO: References to LatinKeyboard in this class should be replaced with ones to its base class.
  *
- * @attr ref R.styleable#LatinKeyboardBaseView_keyBackground
- * @attr ref R.styleable#LatinKeyboardBaseView_keyPreviewLayout
- * @attr ref R.styleable#LatinKeyboardBaseView_keyPreviewOffset
- * @attr ref R.styleable#LatinKeyboardBaseView_labelTextSize
- * @attr ref R.styleable#LatinKeyboardBaseView_keyTextSize
- * @attr ref R.styleable#LatinKeyboardBaseView_keyTextColor
- * @attr ref R.styleable#LatinKeyboardBaseView_verticalCorrection
- * @attr ref R.styleable#LatinKeyboardBaseView_popupLayout
+ * @attr ref R.styleable#BaseKeyboardView_keyBackground
+ * @attr ref R.styleable#BaseKeyboardView_keyPreviewLayout
+ * @attr ref R.styleable#BaseKeyboardView_keyPreviewOffset
+ * @attr ref R.styleable#BaseKeyboardView_labelTextSize
+ * @attr ref R.styleable#BaseKeyboardView_keyTextSize
+ * @attr ref R.styleable#BaseKeyboardView_keyTextColor
+ * @attr ref R.styleable#BaseKeyboardView_verticalCorrection
+ * @attr ref R.styleable#BaseKeyboardView_popupLayout
  */
-public class LatinKeyboardBaseView extends View implements PointerTracker.UIProxy {
-    private static final String TAG = "LatinKeyboardBaseView";
+public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
+    private static final String TAG = "BaseKeyboardView";
     private static final boolean DEBUG = false;
 
     public static final int NOT_A_TOUCH_COORDINATE = -1;
@@ -204,7 +204,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
 
     // Popup mini keyboard
     private PopupWindow mMiniKeyboardPopup;
-    private LatinKeyboardBaseView mMiniKeyboard;
+    private BaseKeyboardView mMiniKeyboard;
     private View mMiniKeyboardParent;
     private final WeakHashMap<Key, View> mMiniKeyboardCache = new WeakHashMap<Key, View>();
     private int mMiniKeyboardOriginX;
@@ -412,15 +412,15 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         }
     }
 
-    public LatinKeyboardBaseView(Context context, AttributeSet attrs) {
+    public BaseKeyboardView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
 
-    public LatinKeyboardBaseView(Context context, AttributeSet attrs, int defStyle) {
+    public BaseKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.LatinKeyboardBaseView, defStyle, R.style.LatinKeyboardBaseView);
+                attrs, R.styleable.BaseKeyboardView, defStyle, R.style.BaseKeyboardView);
         LayoutInflater inflate =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         int previewLayout = 0;
@@ -432,48 +432,48 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             int attr = a.getIndex(i);
 
             switch (attr) {
-            case R.styleable.LatinKeyboardBaseView_keyBackground:
+            case R.styleable.BaseKeyboardView_keyBackground:
                 mKeyBackground = a.getDrawable(attr);
                 break;
-            case R.styleable.LatinKeyboardBaseView_keyHysteresisDistance:
+            case R.styleable.BaseKeyboardView_keyHysteresisDistance:
                 mKeyHysteresisDistance = a.getDimensionPixelOffset(attr, 0);
                 break;
-            case R.styleable.LatinKeyboardBaseView_verticalCorrection:
+            case R.styleable.BaseKeyboardView_verticalCorrection:
                 mVerticalCorrection = a.getDimensionPixelOffset(attr, 0);
                 break;
-            case R.styleable.LatinKeyboardBaseView_keyPreviewLayout:
+            case R.styleable.BaseKeyboardView_keyPreviewLayout:
                 previewLayout = a.getResourceId(attr, 0);
                 break;
-            case R.styleable.LatinKeyboardBaseView_keyPreviewOffset:
+            case R.styleable.BaseKeyboardView_keyPreviewOffset:
                 mPreviewOffset = a.getDimensionPixelOffset(attr, 0);
                 break;
-            case R.styleable.LatinKeyboardBaseView_keyPreviewHeight:
+            case R.styleable.BaseKeyboardView_keyPreviewHeight:
                 mPreviewHeight = a.getDimensionPixelSize(attr, 80);
                 break;
-            case R.styleable.LatinKeyboardBaseView_keyTextSize:
+            case R.styleable.BaseKeyboardView_keyTextSize:
                 mKeyTextSize = a.getDimensionPixelSize(attr, 18);
                 break;
-            case R.styleable.LatinKeyboardBaseView_keyTextColor:
+            case R.styleable.BaseKeyboardView_keyTextColor:
                 mKeyTextColor = a.getColor(attr, 0xFF000000);
                 break;
-            case R.styleable.LatinKeyboardBaseView_labelTextSize:
+            case R.styleable.BaseKeyboardView_labelTextSize:
                 mLabelTextSize = a.getDimensionPixelSize(attr, 14);
                 break;
-            case R.styleable.LatinKeyboardBaseView_popupLayout:
+            case R.styleable.BaseKeyboardView_popupLayout:
                 mPopupLayout = a.getResourceId(attr, 0);
                 break;
-            case R.styleable.LatinKeyboardBaseView_shadowColor:
+            case R.styleable.BaseKeyboardView_shadowColor:
                 mShadowColor = a.getColor(attr, 0);
                 break;
-            case R.styleable.LatinKeyboardBaseView_shadowRadius:
+            case R.styleable.BaseKeyboardView_shadowRadius:
                 mShadowRadius = a.getFloat(attr, 0f);
                 break;
             // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
-            case R.styleable.LatinKeyboardBaseView_backgroundDimAmount:
+            case R.styleable.BaseKeyboardView_backgroundDimAmount:
                 mBackgroundDimAmount = a.getFloat(attr, 0.5f);
                 break;
             //case android.R.styleable.
-            case R.styleable.LatinKeyboardBaseView_keyTextStyle:
+            case R.styleable.BaseKeyboardView_keyTextStyle:
                 int textStyle = a.getInt(attr, 0);
                 switch (textStyle) {
                     case 0:
@@ -487,7 +487,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
                         break;
                 }
                 break;
-            case R.styleable.LatinKeyboardBaseView_symbolColorScheme:
+            case R.styleable.BaseKeyboardView_symbolColorScheme:
                 mSymbolColorScheme = a.getInt(attr, 0);
                 break;
             }
@@ -1089,8 +1089,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         if (container == null)
             throw new NullPointerException();
 
-        LatinKeyboardBaseView miniKeyboard =
-                (LatinKeyboardBaseView)container.findViewById(R.id.LatinKeyboardBaseView);
+        BaseKeyboardView miniKeyboard =
+                (BaseKeyboardView)container.findViewById(R.id.BaseKeyboardView);
         miniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
             public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
                 mKeyboardActionListener.onKey(primaryCode, keyCodes, x, y);
@@ -1174,7 +1174,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
             container = inflateMiniKeyboardContainer(popupKey);
             mMiniKeyboardCache.put(popupKey, container);
         }
-        mMiniKeyboard = (LatinKeyboardBaseView)container.findViewById(R.id.LatinKeyboardBaseView);
+        mMiniKeyboard = (BaseKeyboardView)container.findViewById(R.id.BaseKeyboardView);
         if (mWindowOffset == null) {
             mWindowOffset = new int[2];
             getLocationInWindow(mWindowOffset);

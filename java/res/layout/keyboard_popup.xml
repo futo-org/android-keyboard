@@ -26,9 +26,9 @@
         android:paddingLeft="16dip"
         android:paddingRight="16dip"
         >
-    <com.android.inputmethod.latin.LatinKeyboardBaseView
+    <com.android.inputmethod.latin.BaseKeyboardView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-            android:id="@+id/LatinKeyboardBaseView"
+            android:id="@+id/BaseKeyboardView"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
