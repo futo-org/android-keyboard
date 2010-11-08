@@ -22,27 +22,29 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Spacer
-        latin:horizontalGap="16.25%p" />
+        latin:horizontalGap="15.1%p" />
     <Key
         latin:keyLabel=".com"
         latin:keyOutputText=".com"
-        latin:keyWidth="15.0%p" />
+        latin:keyHintIcon="@drawable/hint_popup"
+        latin:popupKeyboard="@xml/popup_domains"
+        latin:keyWidth="16.4%p" />
     <Key
         latin:codes="@integer/key_space"
         latin:keyIcon="@drawable/sym_keyboard_space"
         latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-        latin:keyWidth="37.5%p"
+        latin:keyWidth="37.0%p"
         latin:isModifier="true" />
     <Key
-        latin:keyLabel="_"
-        latin:temporaryShiftKeyLabel="\@"
-        latin:keyHintIcon="@drawable/key_hint_at_holo"
-        latin:popupKeyboard="@xml/kbd_popup_template"
-        latin:popupCharacters="\@" />
-    <Key
         latin:keyLabel="-"
-        latin:temporaryShiftKeyLabel="#"
-        latin:keyHintIcon="@drawable/key_hint_doublecross_holo"
+        latin:temporaryShiftKeyLabel="/"
+        latin:keyHintIcon="@drawable/key_hint_slash_holo"
         latin:popupKeyboard="@xml/kbd_popup_template"
-        latin:popupCharacters="#" />
+        latin:popupCharacters="/" />
+    <Key
+        latin:keyLabel="_"
+        latin:temporaryShiftKeyLabel=":"
+        latin:keyHintIcon="@drawable/key_hint_colon_holo"
+        latin:popupKeyboard="@xml/kbd_popup_template"
+        latin:popupCharacters=":" />
 </merge>

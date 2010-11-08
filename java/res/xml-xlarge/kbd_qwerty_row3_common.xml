@@ -25,7 +25,7 @@
         latin:codes="@integer/key_shift"
         latin:keyIcon="@drawable/sym_keyboard_shift"
         latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-        latin:keyWidth="12.5%p"
+        latin:keyWidth="13.1%p"
         latin:isModifier="true"
         latin:isSticky="true"
         latin:keyEdgeFlags="left" />
@@ -53,18 +53,12 @@
         latin:keyLabel="m" />
     <Key
         latin:keyLabel=","
-        latin:temporaryShiftKeyLabel="*"
-        latin:keyHintIcon="@drawable/key_hint_star_holo"
-        latin:popupKeyboard="@xml/kbd_popup_template"
-        latin:popupCharacters="*" />
-    <Key
-        latin:keyLabel="."
         latin:temporaryShiftKeyLabel="!"
         latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
         latin:popupKeyboard="@xml/kbd_popup_template"
         latin:popupCharacters="!" />
     <Key
-        latin:keyLabel="/"
+        latin:keyLabel="."
         latin:temporaryShiftKeyLabel="\?"
         latin:keyHintIcon="@drawable/key_hint_question_holo"
         latin:popupKeyboard="@xml/kbd_popup_template"
@@ -73,7 +67,7 @@
         latin:codes="@integer/key_shift"
         latin:keyIcon="@drawable/sym_keyboard_shift"
         latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-        latin:keyWidth="12.5%p"
+        latin:keyWidth="13.1%p"
         latin:isModifier="true"
         latin:isSticky="true"
         latin:keyEdgeFlags="right" />

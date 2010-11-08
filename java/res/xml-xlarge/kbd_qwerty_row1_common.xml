@@ -68,16 +68,10 @@
         latin:popupKeyboard="@xml/kbd_popup_template"
         latin:popupCharacters="@string/alternates_for_p" />
     <Key
-        latin:keyLabel="="
-        latin:temporaryShiftKeyLabel="+"
-        latin:keyHintIcon="@drawable/key_hint_plus_holo"
-        latin:popupKeyboard="@xml/kbd_popup_template"
-        latin:popupCharacters="+" />
-    <Key
         latin:codes="@integer/key_delete"
         latin:keyIcon="@drawable/sym_keyboard_delete"
         latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
-        latin:keyWidth="10.5%p"
+        latin:keyWidth="11.0%p"
         latin:isModifier="true"
         latin:isRepeatable="true"
         latin:keyEdgeFlags="right" />

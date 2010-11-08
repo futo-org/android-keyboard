@@ -20,7 +20,7 @@
 
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyWidth="7.5%p"
+    latin:keyWidth="8.2%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
@@ -34,9 +34,9 @@
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="∞" />
+            latin:keyLabel="~" />
         <Key
-            latin:keyLabel="±" />
+            latin:keyLabel="`" />
         <Key
             latin:keyLabel="|" />
         <Key
@@ -50,16 +50,14 @@
         <Key
             latin:keyLabel="×" />
         <Key
-            latin:keyLabel="±" />
+            latin:keyLabel="{" />
         <Key
-            latin:keyLabel="∆" />
-        <Key
-            latin:keyLabel="≈" />
+            latin:keyLabel="}" />
         <Key
             latin:codes="@integer/key_delete"
             latin:keyIcon="@drawable/sym_keyboard_delete"
             latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            latin:keyWidth="10.5%p"
+            latin:keyWidth="11.0%p"
             latin:isModifier="true"
             latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
@@ -68,7 +66,7 @@
         <Key
             latin:codes="@integer/key_symbol"
             latin:keyLabel="@string/label_alpha_key"
-            latin:keyWidth="8.75%p"
+            latin:keyWidth="9.7%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
@@ -76,28 +74,26 @@
         <Key
             latin:keyLabel="¢" />
         <Key
-            latin:keyLabel="¥" />
-        <Key
             latin:keyLabel="€" />
         <Key
-            latin:keyLabel="¼" />
+            latin:keyLabel="¥" />
         <Key
-            latin:keyLabel="½" />
-        <Key
-            latin:keyLabel="¾" />
+            latin:keyLabel="^" />
         <Key
             latin:keyLabel="_" />
         <Key
             latin:keyLabel="=" />
         <Key
-            latin:keyLabel="{" />
+            latin:keyLabel="±" />
         <Key
-            latin:keyLabel="}" />
+            latin:keyLabel="[" />
+        <Key
+            latin:keyLabel="]" />
         <Key
             latin:codes="@integer/key_return"
             latin:keyIcon="@drawable/sym_keyboard_return"
             latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-            latin:keyWidth="8.75%p"
+            latin:keyWidth="8.3%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
@@ -106,35 +102,33 @@
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_more_key"
             latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
+            latin:keyWidth="13.1%p"
             latin:isModifier="true"
             latin:isSticky="true"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="¡" />
+            latin:keyLabel="&lt;" />
         <Key
-            latin:keyLabel="°" />
+            latin:keyLabel="&gt;" />
         <Key
             latin:keyLabel="©" />
         <Key
             latin:keyLabel="®" />
         <Key
-            latin:keyLabel="¶" />
+            latin:keyLabel="\\" />
         <Key
-            latin:keyLabel="§" />
+            latin:keyLabel="°" />
         <Key
-            latin:keyLabel="¤" />
+            latin:keyLabel="∞" />
         <Key
-            latin:keyLabel="¬" />
-        <Key
-            latin:keyLabel="…" />
+            latin:keyLabel="¡" />
         <Key
             latin:keyLabel="¿" />
         <Key
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_more_key"
             latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-            latin:keyWidth="12.5%p"
+            latin:keyWidth="13.1%p"
             latin:isModifier="true"
             latin:isSticky="true"
             latin:keyEdgeFlags="right" />
@@ -142,20 +136,12 @@
     <!-- This row is intentionally not marked as a bottom row -->
     <Row>
         <Spacer
-            latin:horizontalGap="16.25%p" />
-        <Key
-            latin:keyLabel="≤" />
-        <Key
-            latin:keyLabel="≥" />
+            latin:horizontalGap="31.5%p" />
         <Key
             latin:codes="@integer/key_space"
             latin:keyIcon="@drawable/sym_keyboard_space"
             latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.5%p"
+            latin:keyWidth="37.0%p"
             latin:isModifier="true" />
-        <Key
-            latin:keyLabel="²" />
-        <Key
-            latin:keyLabel="³" />
     </Row>
 </Keyboard>

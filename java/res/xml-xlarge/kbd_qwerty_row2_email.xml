@@ -24,7 +24,7 @@
     <Key
         latin:codes="@integer/key_symbol"
         latin:keyLabel="@string/label_symbol_key"
-        latin:keyWidth="8.75%p"
+        latin:keyWidth="9.7%p"
         latin:isModifier="true"
         latin:keyEdgeFlags="left" />
     <Key
@@ -56,18 +56,12 @@
         latin:popupKeyboard="@xml/kbd_popup_template"
         latin:popupCharacters="@string/alternates_for_l" />
     <Key
-        latin:keyLabel=";" />
-    <Key
-        latin:keyLabel="\'"
-        latin:temporaryShiftKeyLabel="&quot;"
-        latin:keyHintIcon="@drawable/key_hint_quote_holo"
-        latin:popupKeyboard="@xml/kbd_popup_template"
-        latin:popupCharacters="&quot;" />
+        latin:keyLabel="\@" />
     <Key
         latin:codes="@integer/key_return"
         latin:keyIcon="@drawable/sym_keyboard_return"
         latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-        latin:keyWidth="8.75%p"
+        latin:keyWidth="8.3%p"
         latin:isModifier="true"
         latin:keyEdgeFlags="right" />
 </merge>
