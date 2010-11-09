@@ -332,28 +332,24 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         }
 
         public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {
-            removeMessages(MSG_LONGPRESS_KEY);
+            cancelLongPressTimers();
             sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, keyIndex, 0, tracker), delay);
         }
 
-        public void cancelLongPressTimer() {
-            removeMessages(MSG_LONGPRESS_KEY);
-        }
-
         public void startLongPressShiftTimer(long delay, int keyIndex, PointerTracker tracker) {
-            removeMessages(MSG_LONGPRESS_SHIFT_KEY);
+            cancelLongPressTimers();
             sendMessageDelayed(
                     obtainMessage(MSG_LONGPRESS_SHIFT_KEY, keyIndex, 0, tracker), delay);
         }
 
-        public void cancelLongPressShiftTimer() {
+        public void cancelLongPressTimers() {
+            removeMessages(MSG_LONGPRESS_KEY);
             removeMessages(MSG_LONGPRESS_SHIFT_KEY);
         }
 
         public void cancelKeyTimers() {
             cancelKeyRepeatTimer();
-            cancelLongPressTimer();
-            cancelLongPressShiftTimer();
+            cancelLongPressTimers();
         }
 
         public void cancelAllMessages() {

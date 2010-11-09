@@ -315,11 +315,11 @@ public class PointerTracker {
         } else {
             if (keyState.getKeyIndex() != NOT_A_KEY) {
                 keyState.onMoveToNewKey(keyIndex, x ,y);
-                mHandler.cancelLongPressTimer();
+                mHandler.cancelLongPressTimers();
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
                 resetMultiTap();
                 keyState.onMoveToNewKey(keyIndex, x ,y);
-                mHandler.cancelLongPressTimer();
+                mHandler.cancelLongPressTimers();
             }
         }
         showKeyPreviewAndUpdateKeyGraphics(mKeyState.getKeyIndex());
