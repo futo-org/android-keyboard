@@ -298,8 +298,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mImeOptions = imeOptions;
         makeSymbolsKeyboardIds();
         if (enableVoice != mHasVoice) {
-            // TODO clean up this unnecessary recursive call.
-            setVoiceMode(enableVoice, mVoiceOnPrimary);
+            mKeyboards.clear();
+            mHasVoice = enableVoice;
         }
         mIsSymbols = isSymbols;
 

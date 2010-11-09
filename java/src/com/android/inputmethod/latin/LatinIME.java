@@ -585,9 +585,6 @@ public class LatinIME extends InputMethodService
             mPasswordText = true;
         }
 
-        mEnableVoiceButton = shouldShowVoiceButton(makeFieldContext(), attribute);
-        final boolean enableVoiceButton = mEnableVoiceButton && mEnableVoice;
-
         mAfterVoiceInput = false;
         mImmediatelyAfterVoiceInput = false;
         mShowingVoiceSuggestions = false;
@@ -598,6 +595,7 @@ public class LatinIME extends InputMethodService
         mCompletions = null;
         mEnteredText = null;
 
+        final int mode;
         switch (attribute.inputType & EditorInfo.TYPE_MASK_CLASS) {
             case EditorInfo.TYPE_CLASS_NUMBER:
             case EditorInfo.TYPE_CLASS_DATETIME:
@@ -606,12 +604,9 @@ public class LatinIME extends InputMethodService
                 // a dedicated number entry keypad.
                 // TODO: Use a dedicated number entry keypad here when we get one.
             case EditorInfo.TYPE_CLASS_PHONE:
-                mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_PHONE,
-                        attribute.imeOptions, enableVoiceButton);
+                mode = KeyboardSwitcher.MODE_PHONE;
                 break;
             case EditorInfo.TYPE_CLASS_TEXT:
-                mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_TEXT,
-                        attribute.imeOptions, enableVoiceButton);
                 //startPrediction();
                 mPredictionOn = true;
                 // Make sure that passwords are not displayed in candidate view
@@ -626,25 +621,24 @@ public class LatinIME extends InputMethodService
                 }
                 if (isEmailVariation(variation)) {
                     mPredictionOn = false;
-                    mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_EMAIL,
-                            attribute.imeOptions, enableVoiceButton);
+                    mode = KeyboardSwitcher.MODE_EMAIL;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_URI) {
                     mPredictionOn = false;
-                    mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_URL,
-                            attribute.imeOptions, enableVoiceButton);
+                    mode = KeyboardSwitcher.MODE_URL;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE) {
-                    mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_IM,
-                            attribute.imeOptions, enableVoiceButton);
+                    mode = KeyboardSwitcher.MODE_IM;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_FILTER) {
                     mPredictionOn = false;
+                    mode = KeyboardSwitcher.MODE_TEXT;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
-                    mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_WEB,
-                            attribute.imeOptions, enableVoiceButton);
+                    mode = KeyboardSwitcher.MODE_WEB;
                     // If it's a browser edit field and auto correct is not ON explicitly, then
                     // disable auto correction, but keep suggestions on.
                     if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
                         mInputTypeNoAutoCorrect = true;
                     }
+                } else {
+                    mode = KeyboardSwitcher.MODE_TEXT;
                 }
 
                 // If NO_SUGGESTIONS is set, don't do prediction.
@@ -663,15 +657,19 @@ public class LatinIME extends InputMethodService
                 }
                 break;
             default:
-                mKeyboardSwitcher.setKeyboardMode(KeyboardSwitcher.MODE_TEXT,
-                        attribute.imeOptions, enableVoiceButton);
+                mode = KeyboardSwitcher.MODE_TEXT;
+                break;
         }
         inputView.closing();
         mComposing.setLength(0);
         mPredicting = false;
         mDeleteCount = 0;
         mJustAddedAutoSpace = false;
+
         loadSettings();
+        mEnableVoiceButton = shouldShowVoiceButton(makeFieldContext(), attribute);
+        mKeyboardSwitcher.setKeyboardMode(mode, attribute.imeOptions,
+                mEnableVoiceButton && mEnableVoice);
         updateShiftKeyState(attribute);
 
         setCandidatesViewShownInternal(isCandidateStripVisible() || mCompletionOn,
