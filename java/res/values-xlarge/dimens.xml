@@ -20,18 +20,19 @@
 
 <resources>
     <!-- key_height + key_bottom_gap = popup_key_height -->
-    <dimen name="key_height">14.00mm</dimen>
+    <dimen name="key_height">13.0mm</dimen>
     <dimen name="key_bottom_gap">2.0mm</dimen>
     <dimen name="key_horizontal_gap">2.0mm</dimen>
-    <dimen name="popup_key_height">0.450in</dimen>
-    <dimen name="keyboard_bottom_padding">0.10in</dimen>
+    <dimen name="popup_key_height">15.0mm</dimen>
+    <dimen name="keyboard_top_padding">1.0mm</dimen>
+    <dimen name="keyboard_bottom_padding">1.0mm</dimen>
     <!-- key_height x 1.6 -->
-    <dimen name="key_preview_height">0.720in</dimen>
+    <dimen name="key_preview_height">20.8mm</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
-    <dimen name="mini_keyboard_slide_allowance">0.540in</dimen>
-    <!-- popup_key_height x 1.0 -->
-    <dimen name="mini_keyboard_vertical_correction">-0.450in</dimen>
+    <dimen name="mini_keyboard_slide_allowance">15.6mm</dimen>
+    <!-- popup_key_height x -1.0 -->
+    <dimen name="mini_keyboard_vertical_correction">-13.0mm</dimen>
 
     <dimen name="key_text_size">0.175in</dimen>
     <dimen name="key_label_text_size">0.100in</dimen>

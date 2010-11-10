@@ -23,6 +23,7 @@
     <dimen name="key_height">0.250in</dimen>
     <dimen name="key_bottom_gap">0.020in</dimen>
     <dimen name="popup_key_height">0.270in</dimen>
+    <dimen name="keyboard_top_padding">0.0in</dimen>
     <dimen name="keyboard_bottom_padding">0.0in</dimen>
     <dimen name="candidate_strip_height">38dip</dimen>
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
@@ -30,6 +31,6 @@
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
     <dimen name="mini_keyboard_slide_allowance">0.324in</dimen>
-    <!-- popup_key_height x 1.0 -->
+    <!-- popup_key_height x -1.0 -->
     <dimen name="mini_keyboard_vertical_correction">-0.270in</dimen>
 </resources>
