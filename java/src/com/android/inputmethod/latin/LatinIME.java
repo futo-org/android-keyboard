@@ -667,7 +667,7 @@ public class LatinIME extends InputMethodService
                 mVoiceButtonOnPrimary);
         updateShiftKeyState(attribute);
 
-        setCandidatesViewShownInternal(isCandidateStripVisible() || mCompletionOn,
+        setCandidatesViewShownInternal(isCandidateStripVisible(),
                 false /* needsInputViewShown */ );
         updateSuggestions();
 
@@ -827,7 +827,7 @@ public class LatinIME extends InputMethodService
                         if (mCandidateView != null
                                 && !mSuggestPuncList.equals(mCandidateView.getSuggestions())
                                         && !mCandidateView.isShowingAddToDictionaryHint()) {
-                            setNextSuggestions();
+                            setPunctuationSuggestions();
                         }
                     }
                 }
@@ -1408,6 +1408,8 @@ public class LatinIME extends InputMethodService
 
     private void abortCorrection(boolean force) {
         if (force || TextEntryState.isCorrecting()) {
+            TextEntryState.onAbortCorrection();
+            setCandidatesViewShown(isCandidateStripVisible());
             getCurrentInputConnection().finishComposingText();
             clearSuggestions();
         }
@@ -1598,7 +1600,8 @@ public class LatinIME extends InputMethodService
     }
 
     private boolean isCandidateStripVisible() {
-        return isPredictionOn() && mShowSuggestions;
+        return (isPredictionOn() && mShowSuggestions) || mCompletionOn
+                || mCandidateView.isShowingAddToDictionaryHint() || TextEntryState.isCorrecting();
     }
 
     public void onCancelVoice() {
@@ -1614,7 +1617,7 @@ public class LatinIME extends InputMethodService
               if (mKeyboardSwitcher.getInputView() != null) {
                 setInputView(mKeyboardSwitcher.getInputView());
               }
-              setCandidatesViewShown(true);
+              setCandidatesViewShown(isCandidateStripVisible());
               updateInputViewShown();
               postUpdateSuggestions();
           }});
@@ -1815,7 +1818,7 @@ public class LatinIME extends InputMethodService
         }
 
         if (!mPredicting) {
-            setNextSuggestions();
+            setPunctuationSuggestions();
             return;
         }
         showSuggestions(mWord);
@@ -1883,7 +1886,7 @@ public class LatinIME extends InputMethodService
         } else {
             mBestWord = null;
         }
-        setCandidatesViewShown(isCandidateStripVisible() || mCompletionOn);
+        setCandidatesViewShown(isCandidateStripVisible());
     }
 
     private boolean pickDefaultSuggestion() {
@@ -1977,7 +1980,7 @@ public class LatinIME extends InputMethodService
             // we just did a correction, in which case we need to stay in
             // TextEntryState.State.PICKED_SUGGESTION state.
             TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
-            setNextSuggestions();
+            setPunctuationSuggestions();
         } else if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
@@ -2039,7 +2042,7 @@ public class LatinIME extends InputMethodService
         }
         // If we just corrected a word, then don't show punctuations
         if (!correcting) {
-            setNextSuggestions();
+            setPunctuationSuggestions();
         }
         updateShiftKeyState(getCurrentInputEditorInfo());
     }
@@ -2148,14 +2151,16 @@ public class LatinIME extends InputMethodService
                 ic.endBatchEdit();
             } else {
                 abortCorrection(true);
-                setNextSuggestions();  // Show the punctuation suggestions list
+                setPunctuationSuggestions();  // Show the punctuation suggestions list
             }
         } else {
             abortCorrection(true);
         }
     }
 
-    private void setNextSuggestions() {
+    private void setPunctuationSuggestions() {
+        TextEntryState.onShowPunctuationsList();
+        setCandidatesViewShown(isCandidateStripVisible());
         setSuggestions(mSuggestPuncList, false, false, false);
     }
 

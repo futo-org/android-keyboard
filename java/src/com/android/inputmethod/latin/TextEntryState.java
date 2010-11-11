@@ -62,7 +62,8 @@ public class TextEntryState {
         SPACE_AFTER_PICKED,
         UNDO_COMMIT,
         CORRECTING,
-        PICKED_CORRECTION;
+        PICKED_CORRECTION,
+        SHOWING_PUNCTUATIONS_LIST;
     }
 
     private static State sState = State.UNKNOWN;
@@ -97,7 +98,7 @@ public class TextEntryState {
         }
         try {
             sKeyLocationFile.close();
-            // Write to log file            
+            // Write to log file
             // Write timestamp, settings,
             String out = DateFormat.format("MM:dd hh:mm:ss", Calendar.getInstance().getTime())
                     .toString()
@@ -166,6 +167,18 @@ public class TextEntryState {
 
     public static void selectedForCorrection() {
         sState = State.CORRECTING;
+        displayState();
+    }
+
+    public static void onAbortCorrection() {
+        if (isCorrecting()) {
+            sState = State.START;
+        }
+        displayState();
+    }
+
+    public static void onShowPunctuationsList() {
+        sState = State.SHOWING_PUNCTUATIONS_LIST;
         displayState();
     }
 
