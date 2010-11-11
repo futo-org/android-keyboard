@@ -25,6 +25,7 @@ import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
@@ -47,6 +48,7 @@ public class LatinIMESettings extends PreferenceActivity
     private static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
     private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     /* package */ static final String PREF_SETTINGS_KEY = "settings_key";
+    /* package */ static final String PREF_VIBRATE_ON = "vibrate_on";
 
     private static final String TAG = "LatinIMESettings";
 
@@ -101,6 +103,12 @@ public class LatinIMESettings extends PreferenceActivity
                 R.bool.config_enable_show_settings_key_option);
         if (!showSettingsKeyOption)
             getPreferenceScreen().removePreference(mSettingsKeyPreference);
+
+        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        if (vibrator == null || !vibrator.hasVibrator()) {
+            getPreferenceScreen().removePreference(
+                    getPreferenceScreen().findPreference(PREF_VIBRATE_ON));
+        }
     }
 
     @Override
