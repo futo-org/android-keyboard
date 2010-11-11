@@ -186,7 +186,6 @@ public class LatinIME extends InputMethodService
     private boolean mImmediatelyAfterVoiceInput;
     private boolean mShowingVoiceSuggestions;
     private boolean mVoiceInputHighlighted;
-    private boolean mEnableVoiceButton;
     private CharSequence mBestWord;
     private boolean mPredictionOn;
     private boolean mCompletionOn;
@@ -209,8 +208,8 @@ public class LatinIME extends InputMethodService
     private boolean mShowSuggestions;
     private boolean mIsShowingHint;
     private int     mCorrectionMode;
-    private boolean mEnableVoice = true;
-    private boolean mVoiceOnPrimary;
+    private boolean mVoiceButtonEnabled;
+    private boolean mVoiceButtonOnPrimary;
     private int     mOrientation;
     private List<CharSequence> mSuggestPuncList;
     // Keep track of the last selection range to decide if we need to show word alternatives
@@ -530,16 +529,13 @@ public class LatinIME extends InputMethodService
     @Override
     public View onCreateInputView() {
         mKeyboardSwitcher.recreateInputView();
-        mKeyboardSwitcher.makeKeyboards(true);
-        mKeyboardSwitcher.setKeyboardMode(
-                KeyboardSwitcher.MODE_TEXT, 0,
-                shouldShowVoiceButton(makeFieldContext(), getCurrentInputEditorInfo()));
+        mKeyboardSwitcher.refreshKeyboardCache(true);
         return mKeyboardSwitcher.getInputView();
     }
 
     @Override
     public View onCreateCandidatesView() {
-        mKeyboardSwitcher.makeKeyboards(true);
+        mKeyboardSwitcher.refreshKeyboardCache(true);
         mCandidateViewContainer = (LinearLayout) getLayoutInflater().inflate(
                 R.layout.candidates, null);
         mCandidateView = (CandidateView) mCandidateViewContainer.findViewById(R.id.candidates);
@@ -572,7 +568,7 @@ public class LatinIME extends InputMethodService
             toggleLanguage(true, true);
         }
 
-        mKeyboardSwitcher.makeKeyboards(false);
+        mKeyboardSwitcher.refreshKeyboardCache(false);
 
         TextEntryState.newSession(this);
 
@@ -666,10 +662,9 @@ public class LatinIME extends InputMethodService
         mDeleteCount = 0;
         mJustAddedAutoSpace = false;
 
-        loadSettings();
-        mEnableVoiceButton = shouldShowVoiceButton(makeFieldContext(), attribute);
-        mKeyboardSwitcher.setKeyboardMode(mode, attribute.imeOptions,
-                mEnableVoiceButton && mEnableVoice);
+        loadSettings(attribute);
+        mKeyboardSwitcher.setKeyboardMode(mode, attribute.imeOptions, mVoiceButtonEnabled,
+                mVoiceButtonOnPrimary);
         updateShiftKeyState(attribute);
 
         setCandidatesViewShownInternal(isCandidateStripVisible() || mCompletionOn,
@@ -1031,11 +1026,8 @@ public class LatinIME extends InputMethodService
 
     private void reloadKeyboards() {
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
-        if (mKeyboardSwitcher.getInputView() != null
-                && mKeyboardSwitcher.getKeyboardMode() != KeyboardSwitcher.MODE_NONE) {
-            mKeyboardSwitcher.setVoiceMode(mEnableVoice && mEnableVoiceButton, mVoiceOnPrimary);
-        }
-        mKeyboardSwitcher.makeKeyboards(true);
+        int mode = mKeyboardSwitcher.getKeyboardMode();
+        mKeyboardSwitcher.setKeyboardMode(mode, 0, mVoiceButtonEnabled, mVoiceButtonOnPrimary);
     }
 
     private void commitTyped(InputConnection inputConnection) {
@@ -2287,9 +2279,9 @@ public class LatinIME extends InputMethodService
         }
         int currentKeyboardMode = mKeyboardSwitcher.getKeyboardMode();
         reloadKeyboards();
-        mKeyboardSwitcher.makeKeyboards(true);
-        mKeyboardSwitcher.setKeyboardMode(currentKeyboardMode, 0,
-                mEnableVoiceButton && mEnableVoice);
+        mKeyboardSwitcher.refreshKeyboardCache(true);
+        mKeyboardSwitcher.setKeyboardMode(currentKeyboardMode, 0, mVoiceButtonEnabled,
+                mVoiceButtonOnPrimary);
         initSuggest(mLanguageSwitcher.getInputLanguage());
         mLanguageSwitcher.persist();
         updateShiftKeyState(getCurrentInputEditorInfo());
@@ -2525,7 +2517,7 @@ public class LatinIME extends InputMethodService
         launchSettings(LatinIMEDebugSettings.class);
     }
 
-    protected void launchSettings (Class<? extends PreferenceActivity> settingsClass) {
+    protected void launchSettings(Class<? extends PreferenceActivity> settingsClass) {
         handleClose();
         Intent intent = new Intent();
         intent.setClass(LatinIME.this, settingsClass);
@@ -2533,7 +2525,7 @@ public class LatinIME extends InputMethodService
         startActivity(intent);
     }
 
-    private void loadSettings() {
+    private void loadSettings(EditorInfo attribute) {
         // Get the settings preferences
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
         mVibrateOn = sp.getBoolean(PREF_VIBRATE_ON, false);
@@ -2568,15 +2560,9 @@ public class LatinIME extends InputMethodService
         if (VOICE_INSTALLED) {
             final String voiceMode = sp.getString(PREF_VOICE_MODE,
                     getString(R.string.voice_mode_main));
-            boolean enableVoice = !voiceMode.equals(getString(R.string.voice_mode_off))
-                    && mEnableVoiceButton;
-            boolean voiceOnPrimary = voiceMode.equals(getString(R.string.voice_mode_main));
-            if (mKeyboardSwitcher != null &&
-                    (enableVoice != mEnableVoice || voiceOnPrimary != mVoiceOnPrimary)) {
-                mKeyboardSwitcher.setVoiceMode(enableVoice, voiceOnPrimary);
-            }
-            mEnableVoice = enableVoice;
-            mVoiceOnPrimary = voiceOnPrimary;
+            mVoiceButtonEnabled = !voiceMode.equals(getString(R.string.voice_mode_off))
+                    && shouldShowVoiceButton(makeFieldContext(), attribute);
+            mVoiceButtonOnPrimary = voiceMode.equals(getString(R.string.voice_mode_main));
         }
         updateCorrectionMode();
         updateAutoTextEnabled(mResources.getConfiguration().locale);

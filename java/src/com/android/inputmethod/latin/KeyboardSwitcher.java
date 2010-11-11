@@ -153,8 +153,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     /** mIsAutoCompletionActive indicates that auto completed word will be input instead of
      * what user actually typed. */
     private boolean mIsAutoCompletionActive;
-    private boolean mHasVoice;
-    private boolean mVoiceOnPrimary;
+    private boolean mVoiceButtonEnabled;
+    private boolean mVoiceButtonOnPrimary;
     private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
 
     // Indicates whether or not we have the settings key
@@ -197,26 +197,26 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputLocale = mLanguageSwitcher.getInputLocale();
     }
 
-    private KeyboardId makeSymbolsId(boolean hasVoice) {
+    private KeyboardId makeSymbolsId(boolean voiceButtonEnabled) {
         final int mode = mMode == MODE_NONE ? MODE_TEXT : mMode;
         return new KeyboardId(KBD_SYMBOLS[getCharColorId()], mHasSettingsKey ?
                 SYMBOLS_WITH_SETTINGS_KEY_MODES[mode] : SYMBOLS_MODES[mode],
-                false, hasVoice);
+                false, voiceButtonEnabled);
     }
 
-    private KeyboardId makeSymbolsShiftedId(boolean hasVoice) {
+    private KeyboardId makeSymbolsShiftedId(boolean voiceButtonEnabled) {
         final int mode = mMode == MODE_NONE ? MODE_TEXT : mMode;
         return new KeyboardId(KBD_SYMBOLS_SHIFT[getCharColorId()], mHasSettingsKey ?
                 SYMBOLS_WITH_SETTINGS_KEY_MODES[mode] : SYMBOLS_MODES[mode],
-                false, hasVoice);
+                false, voiceButtonEnabled);
     }
 
     private void makeSymbolsKeyboardIds() {
-        mSymbolsId = makeSymbolsId(mHasVoice && !mVoiceOnPrimary);
-        mSymbolsShiftedId = makeSymbolsShiftedId(mHasVoice && !mVoiceOnPrimary);
+        mSymbolsId = makeSymbolsId(mVoiceButtonEnabled && !mVoiceButtonOnPrimary);
+        mSymbolsShiftedId = makeSymbolsShiftedId(mVoiceButtonEnabled && !mVoiceButtonOnPrimary);
     }
 
-    public void makeKeyboards(boolean forceCreate) {
+    public void refreshKeyboardCache(boolean forceCreate) {
         makeSymbolsKeyboardIds();
         if (forceCreate) mKeyboards.clear();
         // Configuration change is coming after the keyboard gets recreated. So don't rely on that.
@@ -237,18 +237,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         public final int mXml;
         public final int mKeyboardMode; /** A KEYBOARDMODE_XXX value */
         public final boolean mEnableShiftLock;
-        public final boolean mHasVoice;
+        public final boolean mVoiceButtonEnabled;
 
         private final int mHashCode;
 
-        public KeyboardId(int xml, int mode, boolean enableShiftLock, boolean hasVoice) {
+        public KeyboardId(int xml, int mode, boolean enableShiftLock, boolean voiceButtonEnabled) {
             this.mXml = xml;
             this.mKeyboardMode = mode;
             this.mEnableShiftLock = enableShiftLock;
-            this.mHasVoice = hasVoice;
+            this.mVoiceButtonEnabled = voiceButtonEnabled;
 
             this.mHashCode = Arrays.hashCode(new Object[] {
-               xml, mode, enableShiftLock, hasVoice
+               xml, mode, enableShiftLock, voiceButtonEnabled
             });
         }
 
@@ -261,7 +261,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             return other.mXml == this.mXml
                 && other.mKeyboardMode == this.mKeyboardMode
                 && other.mEnableShiftLock == this.mEnableShiftLock
-                && other.mHasVoice == this.mHasVoice;
+                && other.mVoiceButtonEnabled == this.mVoiceButtonEnabled;
         }
 
         @Override
@@ -270,36 +270,31 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    public void setVoiceMode(boolean enableVoice, boolean voiceOnPrimary) {
-        if (enableVoice != mHasVoice || voiceOnPrimary != mVoiceOnPrimary) {
-            mKeyboards.clear();
-        }
-        mHasVoice = enableVoice;
-        mVoiceOnPrimary = voiceOnPrimary;
-        setKeyboardMode(mMode, mImeOptions, mHasVoice, mIsSymbols);
-    }
-
     private boolean hasVoiceButton(boolean isSymbols) {
-        return mHasVoice && (isSymbols != mVoiceOnPrimary);
+        return mVoiceButtonEnabled && (isSymbols != mVoiceButtonOnPrimary);
     }
 
-    public void setKeyboardMode(int mode, int imeOptions, boolean enableVoice) {
+    public void setKeyboardMode(int mode, int imeOptions, boolean voiceButtonEnabled,
+            boolean voiceButtonOnPrimary) {
         mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
         try {
-            setKeyboardMode(mode, imeOptions, enableVoice, false);
+            setKeyboardModeInternal(mode, imeOptions, voiceButtonEnabled, voiceButtonOnPrimary,
+                    false);
         } catch (RuntimeException e) {
             LatinImeLogger.logOnException(mode + "," + imeOptions, e);
         }
     }
 
-    private void setKeyboardMode(int mode, int imeOptions, boolean enableVoice, boolean isSymbols) {
+    private void setKeyboardModeInternal(int mode, int imeOptions, boolean voiceButtonEnabled,
+            boolean voiceButtonOnPrimary, boolean isSymbols) {
         if (mInputView == null) return;
         mMode = mode;
         mImeOptions = imeOptions;
         makeSymbolsKeyboardIds();
-        if (enableVoice != mHasVoice) {
+        if (voiceButtonEnabled != mVoiceButtonEnabled || voiceButtonOnPrimary != mVoiceButtonOnPrimary) {
             mKeyboards.clear();
-            mHasVoice = enableVoice;
+            mVoiceButtonEnabled = voiceButtonEnabled;
+            mVoiceButtonOnPrimary = voiceButtonOnPrimary;
         }
         mIsSymbols = isSymbols;
 
@@ -333,7 +328,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             orig.updateConfiguration(conf, null);
             keyboard = new LatinKeyboard(mInputMethodService, id.mXml, id.mKeyboardMode);
             keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols
-                    || id.mXml == R.xml.kbd_symbols_black), mHasVoice);
+                    || id.mXml == R.xml.kbd_symbols_black), mVoiceButtonEnabled);
             keyboard.setLanguageSwitcher(mLanguageSwitcher, mIsAutoCompletionActive, isBlackSym());
 
             if (id.mEnableShiftLock) {
@@ -434,7 +429,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void toggleSymbols() {
-        setKeyboardMode(mMode, mImeOptions, mHasVoice, !mIsSymbols);
+        setKeyboardModeInternal(mMode, mImeOptions, mVoiceButtonEnabled, mVoiceButtonOnPrimary,
+                !mIsSymbols);
         if (mIsSymbols) {
             mSymbolsModeState = SYMBOLS_MODE_STATE_BEGIN;
         } else {
