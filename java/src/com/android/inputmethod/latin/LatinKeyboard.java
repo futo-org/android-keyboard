@@ -70,7 +70,7 @@ public class LatinKeyboard extends BaseKeyboard {
     private LanguageSwitcher mLanguageSwitcher;
     private final Resources mRes;
     private final Context mContext;
-    private int mMode;  // TODO: remove this and use the corresponding mode in the parent class
+    private int mMode; // TODO: remove this and use the corresponding mode in the parent class
     // Whether this keyboard has voice icon on it
     private boolean mHasVoiceButton;
     // Whether voice icon is enabled at all
@@ -113,14 +113,12 @@ public class LatinKeyboard extends BaseKeyboard {
 
     private static int sSpacebarVerticalCorrection;
 
-    public LatinKeyboard(Context context, int xmlLayoutResId, int mode, int colorScheme,
-            boolean hasSettingsKey, boolean hasVoiceKey, int imeOptions) {
-        // TODO: to be used: colorScheme, hasSettingsKey, hasVoiceKey, imeOptions.
-        super(context, xmlLayoutResId, mode);
+    public LatinKeyboard(Context context, KeyboardSwitcher.KeyboardId id) {
+        super(context, id);
         final Resources res = context.getResources();
         mContext = context;
         mRes = res;
-        mMode = mode;
+        mMode = id.mMode;
         mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
         setDefaultBounds(mShiftLockPreviewIcon);
@@ -138,6 +136,7 @@ public class LatinKeyboard extends BaseKeyboard {
         setDefaultBounds(m123MicPreviewIcon);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
+        final int xmlLayoutResId = id.getXmlId();
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
         mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);

@@ -25,85 +25,8 @@
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
-    <!-- This row is intentionally not marked as a top row -->
-    <Row>
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row1_common" />
-    </Row>
-    <!-- TODO: We should have new attributes for <Key> to eliminate these excess duplications -->
-    <Row
-        latin:keyboardMode="@+id/mode_normal"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_url"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_email"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_email" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_im"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_webentry"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row2_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_normal"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_url"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_email"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_email" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_im"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_webentry"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row3_common" />
-    </Row>
-    <!-- This row is intentionally not marked as a bottom row -->
-    <Row
-        latin:keyboardMode="@+id/mode_normal"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_url"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_url" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_email"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_email" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_im"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_common" />
-    </Row>
-    <Row
-        latin:keyboardMode="@+id/mode_webentry"
-    >
-        <include latin:keyboardLayout="@xml/kbd_qwerty_row4_common" />
-    </Row>
+    <include latin:keyboardLayout="@xml/kbd_qwerty_row1" />
+    <include latin:keyboardLayout="@xml/kbd_qwerty_row2" />
+    <include latin:keyboardLayout="@xml/kbd_qwerty_row3" />
+    <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </Keyboard>

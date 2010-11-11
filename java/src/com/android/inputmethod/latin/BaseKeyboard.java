@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.KeyboardSwitcher.KeyboardId;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
@@ -103,8 +105,7 @@ public class BaseKeyboard {
     /** Height of the screen */
     private final int mDisplayHeight;
 
-    /** Keyboard mode, or zero, if none.  */
-    private final int mKeyboardMode;
+    protected final KeyboardId mId;
 
     // Variables for pre-computing nearest keys.
 
@@ -139,9 +140,6 @@ public class BaseKeyboard {
          */
         public int rowEdgeFlags;
 
-        /** The keyboard mode for this row */
-        public int mode;
-
         private final BaseKeyboard parent;
 
         private Row(BaseKeyboard parent) {
@@ -168,7 +166,6 @@ public class BaseKeyboard {
             a = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.BaseKeyboard_Row);
             rowEdgeFlags = a.getInt(R.styleable.BaseKeyboard_Row_rowEdgeFlags, 0);
-            mode = a.getResourceId(R.styleable.BaseKeyboard_Row_keyboardMode, 0);
         }
     }
 
@@ -456,19 +453,32 @@ public class BaseKeyboard {
      * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
      */
     public BaseKeyboard(Context context, int xmlLayoutResId) {
-        this(context, xmlLayoutResId, 0);
+        this(context, xmlLayoutResId, null);
     }
 
     /**
-     * Creates a keyboard from the given xml key layout file. Weeds out rows
-     * that have a keyboard mode defined but don't match the specified mode.
+     * Creates a keyboard from the given keyboard identifier.
+     * @param context the application or service context
+     * @param id keyboard identifier
+     */
+    public BaseKeyboard(Context context, KeyboardId id) {
+        this(context, id.getXmlId(), id);
+    }
+
+    /**
+     * Creates a keyboard from the given xml key layout file.
      * @param context the application or service context
      * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
-     * @param modeId keyboard mode identifier
-     * @param width sets width of keyboard
-     * @param height sets height of keyboard
+     * @param id keyboard identifier
      */
-    public BaseKeyboard(Context context, int xmlLayoutResId, int modeId, int width, int height) {
+    private BaseKeyboard(Context context, int xmlLayoutResId, KeyboardId id) {
+        this(context, xmlLayoutResId, id,
+                context.getResources().getDisplayMetrics().widthPixels,
+                context.getResources().getDisplayMetrics().heightPixels);
+    }
+
+    private BaseKeyboard(Context context, int xmlLayoutResId, KeyboardId id, int width,
+            int height) {
         Resources res = context.getResources();
         GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
@@ -481,21 +491,8 @@ public class BaseKeyboard {
         setKeyWidth(mDisplayWidth / 10);
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
-        mKeyboardMode = modeId;
+        mId = id;
         loadKeyboard(context, xmlLayoutResId);
-    }
-
-    /**
-     * Creates a keyboard from the given xml key layout file. Weeds out rows
-     * that have a keyboard mode defined but don't match the specified mode.
-     * @param context the application or service context
-     * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
-     * @param modeId keyboard mode identifier
-     */
-    public BaseKeyboard(Context context, int xmlLayoutResId, int modeId) {
-        this(context, xmlLayoutResId, modeId,
-                context.getResources().getDisplayMetrics().widthPixels,
-                context.getResources().getDisplayMetrics().heightPixels);
     }
 
     /**
@@ -606,10 +603,6 @@ public class BaseKeyboard {
 
     public int getKeyboardWidth() {
         return mDisplayWidth;
-    }
-
-    public int getKeyboardMode() {
-        return mKeyboardMode;
     }
 
     public boolean setShifted(boolean shiftState) {

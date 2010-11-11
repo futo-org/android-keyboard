@@ -112,9 +112,6 @@
         <attr name="keyIcon" format="reference" />
         <!-- The hint icon to display on the key in conjunction with the label -->
         <attr name="keyHintIcon" format="reference" />
-        <!-- Mode of the keyboard. If the mode doesn't match the
-             requested keyboard mode, the key will be skipped. -->
-        <attr name="keyboardMode" />
     </declare-styleable>
 
     <declare-styleable name="BaseKeyboard_Row">
@@ -125,12 +122,15 @@
             <!-- Row is anchored to the bottom of the keyboard. -->
             <flag name="bottom" value="8" />
         </attr>
-        <!-- Mode of the keyboard. If the mode doesn't match the
-             requested keyboard mode, the row will be skipped. -->
-        <attr name="keyboardMode" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="BaseKeyboard_Include">
         <attr name="keyboardLayout" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="BaseKeyboard_Case">
+        <attr name="mode" format="string" />
+        <attr name="settingsKey" format="string" />
+        <attr name="voiceKey" format="string" />
     </declare-styleable>
 </resources>

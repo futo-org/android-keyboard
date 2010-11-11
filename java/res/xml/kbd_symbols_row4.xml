@@ -22,7 +22,6 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row
-        latin:keyWidth="10%p"
         latin:rowEdgeFlags="bottom"
     >
         <switch>
@@ -31,38 +30,24 @@
             >
                 <Key
                     latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_symbol_key"
+                    latin:keyLabel="@string/label_alpha_key"
                     latin:keyWidth="20%p"
+                    latin:isModifier="true"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:codes="@integer/key_f1" />
-                <switch>
-                    <case
-                        latin:mode="web"
-                    >
-                        <Key
-                            latin:codes="@integer/key_space"
-                            latin:keyIcon="@drawable/sym_bkeyboard_space"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                            latin:keyWidth="20%p" />
-                        <Key
-                            latin:codes="@integer/key_tab"
-                            latin:keyIcon="@drawable/sym_bkeyboard_tab"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_tab"
-                            latin:keyWidth="20%p" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:codes="@integer/key_space"
-                            latin:keyIcon="@drawable/sym_bkeyboard_space"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                            latin:keyWidth="40%p" />
-                    </default>
-                </switch>
+                    latin:codes="@integer/key_f1"
+                    latin:isModifier="true" />
+                <Key
+                    latin:codes="@integer/key_space"
+                    latin:keyIcon="@drawable/sym_keyboard_space"
+                    latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+                    latin:keyWidth="40%p"
+                    latin:isModifier="true" />
                 <Key
                     latin:keyLabel="."
                     latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupKeyboard="@xml/popup_punctuation" />
+                    latin:popupKeyboard="@xml/popup_punctuation"
+                    latin:isModifier="true" />
                 <switch>
                     <case
                         latin:mode="im"
@@ -73,14 +58,16 @@
                             latin:keyHintIcon="@drawable/hint_popup"
                             latin:popupKeyboard="@xml/popup_smileys"
                             latin:keyWidth="20%p"
+                            latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
                     </case>
                     <default>
                         <Key
                             latin:codes="@integer/key_return"
-                            latin:keyIcon="@drawable/sym_bkeyboard_return"
+                            latin:keyIcon="@drawable/sym_keyboard_return"
                             latin:iconPreview="@drawable/sym_keyboard_feedback_return"
                             latin:keyWidth="20%p"
+                            latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
                     </default>
                 </switch>
@@ -90,41 +77,29 @@
             >
                 <Key
                     latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_symbol_key"
+                    latin:keyLabel="@string/label_alpha_key"
                     latin:keyWidth="15%p"
+                    latin:isModifier="true"
                     latin:keyEdgeFlags="left" />
                 <Key
                     latin:codes="@integer/key_settings"
-                    latin:keyIcon="@drawable/sym_bkeyboard_settings"
-                    latin:iconPreview="@drawable/sym_keyboard_feedback_settings" />
+                    latin:keyIcon="@drawable/sym_keyboard_settings"
+                    latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
+                    latin:isModifier="true" />
                 <Key
-                    latin:codes="@integer/key_f1" />
-                <switch>
-                    <case
-                        latin:mode="web"
-                    >
-                        <Key
-                            latin:codes="@integer/key_space"
-                            latin:keyIcon="@drawable/sym_bkeyboard_space"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                            latin:keyWidth="30%p" />
-                        <Key
-                            latin:codes="@integer/key_tab"
-                            latin:keyIcon="@drawable/sym_bkeyboard_tab"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_tab" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:codes="@integer/key_space"
-                            latin:keyIcon="@drawable/sym_bkeyboard_space"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                            latin:keyWidth="30%p" />
-                    </default>
-                </switch>
+                    latin:codes="@integer/key_f1"
+                    latin:isModifier="true" />
+                <Key
+                    latin:codes="@integer/key_space"
+                    latin:keyIcon="@drawable/sym_keyboard_space"
+                    latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+                    latin:keyWidth="30%p"
+                    latin:isModifier="true" />
                 <Key
                     latin:keyLabel="."
                     latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupKeyboard="@xml/popup_punctuation" />
+                    latin:popupKeyboard="@xml/popup_punctuation"
+                    latin:isModifier="true" />
                 <switch>
                     <case
                         latin:mode="im"
@@ -135,24 +110,16 @@
                             latin:keyHintIcon="@drawable/hint_popup"
                             latin:popupKeyboard="@xml/popup_smileys"
                             latin:keyWidth="25%p"
-                            latin:keyEdgeFlags="right" />
-                    </case>
-                    <case
-                        latin:mode="web"
-                    >
-                        <Key
-                            latin:codes="@integer/key_return"
-                            latin:keyIcon="@drawable/sym_bkeyboard_return"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-                            latin:keyWidth="15%p"
+                            latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
                     </case>
                     <default>
                         <Key
                             latin:codes="@integer/key_return"
-                            latin:keyIcon="@drawable/sym_bkeyboard_return"
+                            latin:keyIcon="@drawable/sym_keyboard_return"
                             latin:iconPreview="@drawable/sym_keyboard_feedback_return"
                             latin:keyWidth="25%p"
+                            latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
                     </default>
                 </switch>
