@@ -348,8 +348,7 @@ public class LatinIME extends InputMethodService
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mLanguageSwitcher = new LanguageSwitcher(this);
         mLanguageSwitcher.loadLocales(prefs);
-        mKeyboardSwitcher = new KeyboardSwitcher(this);
-        mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
+        mKeyboardSwitcher = new KeyboardSwitcher(this, mLanguageSwitcher);
         mSystemLocale = conf.locale.toString();
         mLanguageSwitcher.setSystemLocale(conf.locale);
         String inputLanguage = mLanguageSwitcher.getInputLanguage();
@@ -501,14 +500,10 @@ public class LatinIME extends InputMethodService
         final String systemLocale = conf.locale.toString();
         if (!TextUtils.equals(systemLocale, mSystemLocale)) {
             mSystemLocale = systemLocale;
-            if (mLanguageSwitcher != null) {
-                mLanguageSwitcher.loadLocales(
-                        PreferenceManager.getDefaultSharedPreferences(this));
-                mLanguageSwitcher.setSystemLocale(conf.locale);
-                toggleLanguage(true, true);
-            } else {
-                reloadKeyboards();
-            }
+            mLanguageSwitcher.loadLocales(
+                    PreferenceManager.getDefaultSharedPreferences(this));
+            mLanguageSwitcher.setSystemLocale(conf.locale);
+            toggleLanguage(true, true);
         }
         // If orientation changed while predicting, commit the change
         if (conf.orientation != mOrientation) {
@@ -516,8 +511,12 @@ public class LatinIME extends InputMethodService
             commitTyped(ic);
             if (ic != null) ic.finishComposingText(); // For voice input
             mOrientation = conf.orientation;
-            reloadKeyboards();
+            final int mode = mKeyboardSwitcher.getKeyboardMode();
+            final EditorInfo attribute = getCurrentInputEditorInfo();
+            mKeyboardSwitcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
+                    mVoiceButtonOnPrimary);
         }
+
         mConfigurationChanging = true;
         super.onConfigurationChanged(conf);
         if (mRecognizing) {
@@ -528,14 +527,12 @@ public class LatinIME extends InputMethodService
 
     @Override
     public View onCreateInputView() {
-        mKeyboardSwitcher.recreateInputView();
-        mKeyboardSwitcher.refreshKeyboardCache(true);
+        mKeyboardSwitcher.loadKeyboardView();
         return mKeyboardSwitcher.getInputView();
     }
 
     @Override
     public View onCreateCandidatesView() {
-        mKeyboardSwitcher.refreshKeyboardCache(true);
         mCandidateViewContainer = (LinearLayout) getLayoutInflater().inflate(
                 R.layout.candidates, null);
         mCandidateView = (CandidateView) mCandidateViewContainer.findViewById(R.id.candidates);
@@ -567,8 +564,6 @@ public class LatinIME extends InputMethodService
             mRefreshKeyboardRequired = false;
             toggleLanguage(true, true);
         }
-
-        mKeyboardSwitcher.refreshKeyboardCache(false);
 
         TextEntryState.newSession(this);
 
@@ -663,7 +658,7 @@ public class LatinIME extends InputMethodService
         mJustAddedAutoSpace = false;
 
         loadSettings(attribute);
-        mKeyboardSwitcher.setKeyboardMode(mode, attribute.imeOptions, mVoiceButtonEnabled,
+        mKeyboardSwitcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
                 mVoiceButtonOnPrimary);
         updateShiftKeyState(attribute);
 
@@ -1022,12 +1017,6 @@ public class LatinIME extends InputMethodService
         if (ic != null) ic.finishComposingText();
         updateSuggestions();
         mVoiceInputHighlighted = false;
-    }
-
-    private void reloadKeyboards() {
-        mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
-        int mode = mKeyboardSwitcher.getKeyboardMode();
-        mKeyboardSwitcher.setKeyboardMode(mode, 0, mVoiceButtonEnabled, mVoiceButtonOnPrimary);
     }
 
     private void commitTyped(InputConnection inputConnection) {
@@ -2282,10 +2271,9 @@ public class LatinIME extends InputMethodService
                 mLanguageSwitcher.prev();
             }
         }
-        int currentKeyboardMode = mKeyboardSwitcher.getKeyboardMode();
-        reloadKeyboards();
-        mKeyboardSwitcher.refreshKeyboardCache(true);
-        mKeyboardSwitcher.setKeyboardMode(currentKeyboardMode, 0, mVoiceButtonEnabled,
+        final int mode = mKeyboardSwitcher.getKeyboardMode();
+        final EditorInfo attribute = getCurrentInputEditorInfo();
+        mKeyboardSwitcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
                 mVoiceButtonOnPrimary);
         initSuggest(mLanguageSwitcher.getInputLanguage());
         mLanguageSwitcher.persist();

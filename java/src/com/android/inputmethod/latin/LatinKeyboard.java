@@ -113,11 +113,9 @@ public class LatinKeyboard extends BaseKeyboard {
 
     private static int sSpacebarVerticalCorrection;
 
-    public LatinKeyboard(Context context, int xmlLayoutResId) {
-        this(context, xmlLayoutResId, 0);
-    }
-
-    public LatinKeyboard(Context context, int xmlLayoutResId, int mode) {
+    public LatinKeyboard(Context context, int xmlLayoutResId, int mode, int colorScheme,
+            boolean hasSettingsKey, boolean hasVoiceKey, int imeOptions) {
+        // TODO: to be used: colorScheme, hasSettingsKey, hasVoiceKey, imeOptions.
         super(context, xmlLayoutResId, mode);
         final Resources res = context.getResources();
         mContext = context;
@@ -291,7 +289,7 @@ public class LatinKeyboard extends BaseKeyboard {
         return mIsAlphaKeyboard;
     }
 
-    public void setColorOfSymbolIcons(boolean isAutoCompletion, boolean isBlack) {
+    public void setColorOfSymbolIcons(boolean isBlack) {
         mIsBlackSym = isBlack;
         final Resources res = mRes;
         if (isBlack) {
@@ -306,9 +304,6 @@ public class LatinKeyboard extends BaseKeyboard {
             m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);
         }
         updateDynamicKeys();
-        if (mSpaceKey != null) {
-            updateSpaceBarForLocale(isAutoCompletion, isBlack);
-        }
     }
 
     public void setVoiceMode(boolean hasVoiceButton, boolean hasVoice) {
@@ -547,8 +542,7 @@ public class LatinKeyboard extends BaseKeyboard {
         return mSpaceDragLastDiff > 0 ? 1 : -1;
     }
 
-    public void setLanguageSwitcher(LanguageSwitcher switcher, boolean isAutoCompletion,
-            boolean isBlackSym) {
+    public void setLanguageSwitcher(LanguageSwitcher switcher) {
         mLanguageSwitcher = switcher;
         Locale locale = mLanguageSwitcher.getLocaleCount() > 0
                 ? mLanguageSwitcher.getInputLocale()
@@ -561,7 +555,6 @@ public class LatinKeyboard extends BaseKeyboard {
             locale = null;
         }
         mLocale = locale;
-        setColorOfSymbolIcons(isAutoCompletion, isBlackSym);
     }
 
     boolean isCurrentlyInSpace() {

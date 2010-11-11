@@ -16,12 +16,13 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.Locale;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Keeps track of list of selected input languages and the current
@@ -29,8 +30,8 @@ import android.text.TextUtils;
  */
 public class LanguageSwitcher {
 
-    private Locale[] mLocales;
-    private LatinIME mIme;
+    private final ArrayList<Locale> mLocales = new ArrayList<Locale>();
+    private final LatinIME mIme;
     private String[] mSelectedLanguageArray;
     private String   mSelectedLanguages;
     private int      mCurrentIndex = 0;
@@ -40,15 +41,10 @@ public class LanguageSwitcher {
 
     public LanguageSwitcher(LatinIME ime) {
         mIme = ime;
-        mLocales = new Locale[0];
-    }
-
-    public Locale[]  getLocales() {
-        return mLocales;
     }
 
     public int getLocaleCount() {
-        return mLocales.length;
+        return mLocales.size();
     }
 
     /**
@@ -61,10 +57,10 @@ public class LanguageSwitcher {
         String currentLanguage   = sp.getString(LatinIME.PREF_INPUT_LANGUAGE, null);
         if (selectedLanguages == null || selectedLanguages.length() < 1) {
             loadDefaults();
-            if (mLocales.length == 0) {
+            if (mLocales.size() == 0) {
                 return false;
             }
-            mLocales = new Locale[0];
+            mLocales.clear();
             return true;
         }
         if (selectedLanguages.equals(mSelectedLanguages)) {
@@ -77,7 +73,7 @@ public class LanguageSwitcher {
         if (currentLanguage != null) {
             // Find the index
             mCurrentIndex = 0;
-            for (int i = 0; i < mLocales.length; i++) {
+            for (int i = 0; i < mLocales.size(); i++) {
                 if (mSelectedLanguageArray[i].equals(currentLanguage)) {
                     mCurrentIndex = i;
                     break;
@@ -96,11 +92,11 @@ public class LanguageSwitcher {
     }
 
     private void constructLocales() {
-        mLocales = new Locale[mSelectedLanguageArray.length];
-        for (int i = 0; i < mLocales.length; i++) {
-            final String lang = mSelectedLanguageArray[i];
-            mLocales[i] = new Locale(lang.substring(0, 2),
+        mLocales.clear();
+        for (final String lang : mSelectedLanguageArray) {
+            final Locale locale = new Locale(lang.substring(0, 2),
                     lang.length() > 4 ? lang.substring(3, 5) : "");
+            mLocales.add(locale);
         }
     }
 
@@ -129,7 +125,17 @@ public class LanguageSwitcher {
     public Locale getInputLocale() {
         if (getLocaleCount() == 0) return mDefaultInputLocale;
 
-        return mLocales[mCurrentIndex];
+        return mLocales.get(mCurrentIndex);
+    }
+
+    private int nextLocaleIndex() {
+        final int size = mLocales.size();
+        return (mCurrentIndex + 1) % size;
+    }
+
+    private int prevLocaleIndex() {
+        final int size = mLocales.size();
+        return (mCurrentIndex - 1 + size) % size;
     }
 
     /**
@@ -139,8 +145,7 @@ public class LanguageSwitcher {
      */
     public Locale getNextInputLocale() {
         if (getLocaleCount() == 0) return mDefaultInputLocale;
-
-        return mLocales[(mCurrentIndex + 1) % mLocales.length];
+        return mLocales.get(nextLocaleIndex());
     }
 
     /**
@@ -166,8 +171,7 @@ public class LanguageSwitcher {
      */
     public Locale getPrevInputLocale() {
         if (getLocaleCount() == 0) return mDefaultInputLocale;
-
-        return mLocales[(mCurrentIndex - 1 + mLocales.length) % mLocales.length];
+        return mLocales.get(prevLocaleIndex());
     }
 
     public void reset() {
@@ -175,13 +179,11 @@ public class LanguageSwitcher {
     }
 
     public void next() {
-        mCurrentIndex++;
-        if (mCurrentIndex >= mLocales.length) mCurrentIndex = 0; // Wrap around
+        mCurrentIndex = nextLocaleIndex();
     }
 
     public void prev() {
-        mCurrentIndex--;
-        if (mCurrentIndex < 0) mCurrentIndex = mLocales.length - 1; // Wrap around
+        mCurrentIndex = prevLocaleIndex();
     }
 
     public void persist() {
