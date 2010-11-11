@@ -39,12 +39,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public static final int MODE_NONE = -1;
 
     // Main keyboard layouts without the settings key
-    public static final int KEYBOARDMODE_NORMAL = R.id.mode_normal;
-    public static final int KEYBOARDMODE_URL = R.id.mode_url;
-    public static final int KEYBOARDMODE_EMAIL = R.id.mode_email;
-    public static final int KEYBOARDMODE_IM = R.id.mode_im;
-    public static final int KEYBOARDMODE_WEB = R.id.mode_webentry;
-    public static final int[] QWERTY_MODES = {
+    private static final int KEYBOARDMODE_NORMAL = R.id.mode_normal;
+    private static final int KEYBOARDMODE_URL = R.id.mode_url;
+    private static final int KEYBOARDMODE_EMAIL = R.id.mode_email;
+    private static final int KEYBOARDMODE_IM = R.id.mode_im;
+    private static final int KEYBOARDMODE_WEB = R.id.mode_webentry;
+    private static final int[] QWERTY_MODES = {
             KEYBOARDMODE_NORMAL,
             KEYBOARDMODE_URL,
             KEYBOARDMODE_EMAIL,
@@ -52,31 +52,34 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             KEYBOARDMODE_WEB,
             0 /* for MODE_PHONE */ };
     // Main keyboard layouts with the settings key
-    public static final int KEYBOARDMODE_NORMAL_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_NORMAL_WITH_SETTINGS_KEY =
             R.id.mode_normal_with_settings_key;
-    public static final int KEYBOARDMODE_URL_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_URL_WITH_SETTINGS_KEY =
             R.id.mode_url_with_settings_key;
-    public static final int KEYBOARDMODE_EMAIL_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_EMAIL_WITH_SETTINGS_KEY =
             R.id.mode_email_with_settings_key;
-    public static final int KEYBOARDMODE_IM_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_IM_WITH_SETTINGS_KEY =
             R.id.mode_im_with_settings_key;
-    public static final int KEYBOARDMODE_WEB_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_WEB_WITH_SETTINGS_KEY =
             R.id.mode_webentry_with_settings_key;
-    public static final int[] QWERTY_WITH_SETTINGS_KEY_MODES = {
+    private static final int[] QWERTY_WITH_SETTINGS_KEY_MODES = {
             KEYBOARDMODE_NORMAL_WITH_SETTINGS_KEY,
             KEYBOARDMODE_URL_WITH_SETTINGS_KEY,
             KEYBOARDMODE_EMAIL_WITH_SETTINGS_KEY,
             KEYBOARDMODE_IM_WITH_SETTINGS_KEY,
             KEYBOARDMODE_WEB_WITH_SETTINGS_KEY,
             0 /* for MODE_PHONE */ };
+    private static final int[][] QWERTY_KEYBOARD_MODES = {
+            QWERTY_MODES, QWERTY_WITH_SETTINGS_KEY_MODES
+    };
 
     // Symbols keyboard layouts without the settings key
-    public static final int KEYBOARDMODE_SYMBOLS_NORMAL = R.id.mode_symbols_normal;
-    public static final int KEYBOARDMODE_SYMBOLS_URL = R.id.mode_symbols_url;
-    public static final int KEYBOARDMODE_SYMBOLS_EMAIL = R.id.mode_symbols_email;
-    public static final int KEYBOARDMODE_SYMBOLS_IM = R.id.mode_symbols_im;
-    public static final int KEYBOARDMODE_SYMBOLS_WEB = R.id.mode_symbols_webentry;
-    public static final int[] SYMBOLS_MODES = {
+    private static final int KEYBOARDMODE_SYMBOLS_NORMAL = R.id.mode_symbols_normal;
+    private static final int KEYBOARDMODE_SYMBOLS_URL = R.id.mode_symbols_url;
+    private static final int KEYBOARDMODE_SYMBOLS_EMAIL = R.id.mode_symbols_email;
+    private static final int KEYBOARDMODE_SYMBOLS_IM = R.id.mode_symbols_im;
+    private static final int KEYBOARDMODE_SYMBOLS_WEB = R.id.mode_symbols_webentry;
+    private static final int[] SYMBOLS_MODES = {
             KEYBOARDMODE_SYMBOLS_NORMAL,
             KEYBOARDMODE_SYMBOLS_URL,
             KEYBOARDMODE_SYMBOLS_EMAIL,
@@ -84,23 +87,26 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             KEYBOARDMODE_SYMBOLS_WEB,
             0 /* for MODE_PHONE */ };
     // Symbols keyboard layouts with the settings key
-    public static final int KEYBOARDMODE_SYMBOLS_NORMAL_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_SYMBOLS_NORMAL_WITH_SETTINGS_KEY =
             R.id.mode_symbols_normal_with_settings_key;
-    public static final int KEYBOARDMODE_SYMBOLS_URL_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_SYMBOLS_URL_WITH_SETTINGS_KEY =
             R.id.mode_symbols_url_with_settings_key;
-    public static final int KEYBOARDMODE_SYMBOLS_EMAIL_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_SYMBOLS_EMAIL_WITH_SETTINGS_KEY =
             R.id.mode_symbols_email_with_settings_key;
-    public static final int KEYBOARDMODE_SYMBOLS_IM_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_SYMBOLS_IM_WITH_SETTINGS_KEY =
             R.id.mode_symbols_im_with_settings_key;
-    public static final int KEYBOARDMODE_SYMBOLS_WEB_WITH_SETTINGS_KEY =
+    private static final int KEYBOARDMODE_SYMBOLS_WEB_WITH_SETTINGS_KEY =
             R.id.mode_symbols_webentry_with_settings_key;
-    public static final int[] SYMBOLS_WITH_SETTINGS_KEY_MODES = {
+    private static final int[] SYMBOLS_WITH_SETTINGS_KEY_MODES = {
             KEYBOARDMODE_SYMBOLS_NORMAL_WITH_SETTINGS_KEY,
             KEYBOARDMODE_SYMBOLS_URL_WITH_SETTINGS_KEY,
             KEYBOARDMODE_SYMBOLS_EMAIL_WITH_SETTINGS_KEY,
             KEYBOARDMODE_SYMBOLS_IM_WITH_SETTINGS_KEY,
             KEYBOARDMODE_SYMBOLS_WEB_WITH_SETTINGS_KEY,
             0 /* for MODE_PHONE */ };
+    private static final int[][] SYMBOLS_KEYBOARD_MODES = {
+            SYMBOLS_MODES, SYMBOLS_WITH_SETTINGS_KEY_MODES
+    };
 
     public static final String DEFAULT_LAYOUT_ID = "4";
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20100902";
@@ -127,18 +133,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int SYMBOLS_MODE_STATE_SYMBOL = 2;
 
     private LatinKeyboardView mInputView;
-    private static final int[] ALPHABET_MODES = {
-        KEYBOARDMODE_NORMAL,
-        KEYBOARDMODE_URL,
-        KEYBOARDMODE_EMAIL,
-        KEYBOARDMODE_IM,
-        KEYBOARDMODE_WEB,
-        KEYBOARDMODE_NORMAL_WITH_SETTINGS_KEY,
-        KEYBOARDMODE_URL_WITH_SETTINGS_KEY,
-        KEYBOARDMODE_EMAIL_WITH_SETTINGS_KEY,
-        KEYBOARDMODE_IM_WITH_SETTINGS_KEY,
-        KEYBOARDMODE_WEB_WITH_SETTINGS_KEY };
-
     private final LatinIME mInputMethodService;
 
     private KeyboardId mSymbolsId;
@@ -198,17 +192,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private KeyboardId makeSymbolsId(boolean voiceButtonEnabled) {
+        final Configuration conf = mInputMethodService.getResources().getConfiguration();
         final int mode = mMode == MODE_NONE ? MODE_TEXT : mMode;
-        return new KeyboardId(KBD_SYMBOLS[getCharColorId()], mHasSettingsKey ?
-                SYMBOLS_WITH_SETTINGS_KEY_MODES[mode] : SYMBOLS_MODES[mode],
-                false, voiceButtonEnabled);
+        return new KeyboardId(mInputLocale, conf.orientation, SYMBOLS_KEYBOARD_MODES, mode,
+                KBD_SYMBOLS, getCharColorId(), mHasSettingsKey, voiceButtonEnabled, false);
     }
 
     private KeyboardId makeSymbolsShiftedId(boolean voiceButtonEnabled) {
+        final Configuration conf = mInputMethodService.getResources().getConfiguration();
         final int mode = mMode == MODE_NONE ? MODE_TEXT : mMode;
-        return new KeyboardId(KBD_SYMBOLS_SHIFT[getCharColorId()], mHasSettingsKey ?
-                SYMBOLS_WITH_SETTINGS_KEY_MODES[mode] : SYMBOLS_MODES[mode],
-                false, voiceButtonEnabled);
+        return new KeyboardId(mInputLocale, conf.orientation, SYMBOLS_KEYBOARD_MODES, mode,
+                KBD_SYMBOLS_SHIFT, getCharColorId(), mHasSettingsKey, voiceButtonEnabled, false);
     }
 
     private void makeSymbolsKeyboardIds() {
@@ -233,22 +227,34 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
      * which also serve as a unique identifier for each keyboard type.
      */
     private static class KeyboardId {
-        // TODO: should have locale and portrait/landscape orientation?
-        public final int mXml;
-        public final int mKeyboardMode; /** A KEYBOARDMODE_XXX value */
-        public final boolean mEnableShiftLock;
+        public final Locale mLocale;
+        public final int mOrientation;
+        public final int[][] mKeyboardModes;
+        public final int mMode;
+        public final int[] mXmlArray;
+        public final int mColorScheme;
+        public final boolean mHasSettings;
         public final boolean mVoiceButtonEnabled;
+        public final boolean mEnableShiftLock;
 
         private final int mHashCode;
 
-        public KeyboardId(int xml, int mode, boolean enableShiftLock, boolean voiceButtonEnabled) {
-            this.mXml = xml;
-            this.mKeyboardMode = mode;
-            this.mEnableShiftLock = enableShiftLock;
+        public KeyboardId(Locale locale, int orientation, int[][] keyboardModes, int mode,
+                int[] xmlArray, int colorScheme, boolean hasSettings, boolean voiceButtonEnabled,
+                boolean enableShiftLock) {
+            this.mLocale = locale;
+            this.mOrientation = orientation;
+            this.mKeyboardModes = keyboardModes;
+            this.mMode = mode;
+            this.mXmlArray = xmlArray;
+            this.mColorScheme = colorScheme;
+            this.mHasSettings = hasSettings;
             this.mVoiceButtonEnabled = voiceButtonEnabled;
+            this.mEnableShiftLock = enableShiftLock;
 
             this.mHashCode = Arrays.hashCode(new Object[] {
-               xml, mode, enableShiftLock, voiceButtonEnabled
+                    locale, orientation, keyboardModes, mode, xmlArray, colorScheme, hasSettings,
+                    voiceButtonEnabled, enableShiftLock,
             });
         }
 
@@ -258,10 +264,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
 
         private boolean equals(KeyboardId other) {
-            return other.mXml == this.mXml
-                && other.mKeyboardMode == this.mKeyboardMode
-                && other.mEnableShiftLock == this.mEnableShiftLock
-                && other.mVoiceButtonEnabled == this.mVoiceButtonEnabled;
+            return other.mLocale.equals(this.mLocale)
+                && other.mOrientation == this.mOrientation
+                && other.mKeyboardModes == this.mKeyboardModes
+                && other.mMode == this.mMode
+                && other.mXmlArray == this.mXmlArray
+                && other.mColorScheme == this.mColorScheme
+                && other.mHasSettings == this.mHasSettings
+                && other.mVoiceButtonEnabled == this.mVoiceButtonEnabled
+                && other.mEnableShiftLock == this.mEnableShiftLock;
         }
 
         @Override
@@ -270,7 +281,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    private boolean hasVoiceButton(boolean isSymbols) {
+    private boolean isVoiceButtonEnabled(boolean isSymbols) {
         return mVoiceButtonEnabled && (isSymbols != mVoiceButtonOnPrimary);
     }
 
@@ -291,7 +302,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mMode = mode;
         mImeOptions = imeOptions;
         makeSymbolsKeyboardIds();
-        if (voiceButtonEnabled != mVoiceButtonEnabled || voiceButtonOnPrimary != mVoiceButtonOnPrimary) {
+        if (voiceButtonEnabled != mVoiceButtonEnabled
+                || voiceButtonOnPrimary != mVoiceButtonOnPrimary) {
             mKeyboards.clear();
             mVoiceButtonEnabled = voiceButtonEnabled;
             mVoiceButtonOnPrimary = voiceButtonOnPrimary;
@@ -321,14 +333,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         SoftReference<LatinKeyboard> ref = mKeyboards.get(id);
         LatinKeyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
-            Resources orig = mInputMethodService.getResources();
-            Configuration conf = orig.getConfiguration();
+            Resources res = mInputMethodService.getResources();
+            Configuration conf = res.getConfiguration();
             Locale saveLocale = conf.locale;
             conf.locale = mInputLocale;
-            orig.updateConfiguration(conf, null);
-            keyboard = new LatinKeyboard(mInputMethodService, id.mXml, id.mKeyboardMode);
-            keyboard.setVoiceMode(hasVoiceButton(id.mXml == R.xml.kbd_symbols
-                    || id.mXml == R.xml.kbd_symbols_black), mVoiceButtonEnabled);
+            res.updateConfiguration(conf, null);
+            final int keyboardMode = id.mKeyboardModes[id.mHasSettings ? 1 : 0][id.mMode];
+            final int xml = id.mXmlArray[id.mColorScheme];
+            keyboard = new LatinKeyboard(mInputMethodService, xml, keyboardMode);
+            keyboard.setVoiceMode(isVoiceButtonEnabled(xml == R.xml.kbd_symbols
+                    || xml == R.xml.kbd_symbols_black), mVoiceButtonEnabled);
             keyboard.setLanguageSwitcher(mLanguageSwitcher, mIsAutoCompletionActive, isBlackSym());
 
             if (id.mEnableShiftLock) {
@@ -337,17 +351,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mKeyboards.put(id, new SoftReference<LatinKeyboard>(keyboard));
 
             conf.locale = saveLocale;
-            orig.updateConfiguration(conf, null);
+            res.updateConfiguration(conf, null);
         }
         return keyboard;
     }
 
     private KeyboardId getKeyboardId(int mode, int imeOptions, boolean isSymbols) {
-        final boolean hasVoice = hasVoiceButton(isSymbols);
+        final boolean voiceButtonEnabled = isVoiceButtonEnabled(isSymbols);
         final int charColorId = getCharColorId();
-        final int keyboardRowsResId;
+        final int[] xmlArray;
         final boolean enableShiftLock;
-        final int keyboardMode;
+        final int[][] keyboardModes;
 
         if (mode == MODE_NONE) {
             LatinImeLogger.logOnWarning(
@@ -355,19 +369,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mode = MODE_TEXT;
         }
         if (isSymbols) {
-            keyboardRowsResId = mode == MODE_PHONE
-                    ? KBD_PHONE_SYMBOLS[charColorId] : KBD_SYMBOLS[charColorId];
+            keyboardModes = SYMBOLS_KEYBOARD_MODES;
+            xmlArray = mode == MODE_PHONE ? KBD_PHONE_SYMBOLS : KBD_SYMBOLS;
             enableShiftLock = false;
-            keyboardMode = mHasSettingsKey
-                    ? SYMBOLS_WITH_SETTINGS_KEY_MODES[mode] : SYMBOLS_MODES[mode];
         } else {  // QWERTY
-            keyboardRowsResId = mode == MODE_PHONE
-                    ? KBD_PHONE[charColorId] : KBD_QWERTY[charColorId];
+            keyboardModes = QWERTY_KEYBOARD_MODES;
+            xmlArray = mode == MODE_PHONE ? KBD_PHONE : KBD_QWERTY;
             enableShiftLock = mode == MODE_PHONE ? false : true;
-            keyboardMode = mHasSettingsKey
-                    ? QWERTY_WITH_SETTINGS_KEY_MODES[mode] : QWERTY_MODES[mode];
         }
-        return new KeyboardId(keyboardRowsResId, keyboardMode, enableShiftLock, hasVoice);
+        final Configuration conf = mInputMethodService.getResources().getConfiguration();
+        return new KeyboardId(mInputLocale, conf.orientation, keyboardModes, mode, xmlArray,
+                charColorId, mHasSettingsKey, voiceButtonEnabled, enableShiftLock);
     }
 
     public int getKeyboardMode() {
@@ -375,16 +387,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
     
     public boolean isAlphabetMode() {
-        if (mCurrentId == null) {
-            return false;
-        }
-        int currentMode = mCurrentId.mKeyboardMode;
-        for (Integer mode : ALPHABET_MODES) {
-            if (currentMode == mode) {
-                return true;
-            }
-        }
-        return false;
+        return mCurrentId != null && mCurrentId.mKeyboardModes == QWERTY_KEYBOARD_MODES;
     }
 
     public void setShifted(boolean shifted) {
