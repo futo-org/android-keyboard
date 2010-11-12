@@ -513,7 +513,8 @@ public class LatinIME extends InputMethodService
             mOrientation = conf.orientation;
             final int mode = mKeyboardSwitcher.getKeyboardMode();
             final EditorInfo attribute = getCurrentInputEditorInfo();
-            mKeyboardSwitcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
+            final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
+            mKeyboardSwitcher.loadKeyboard(mode, imeOptions, mVoiceButtonEnabled,
                     mVoiceButtonOnPrimary);
         }
 
@@ -2273,7 +2274,8 @@ public class LatinIME extends InputMethodService
         }
         final int mode = mKeyboardSwitcher.getKeyboardMode();
         final EditorInfo attribute = getCurrentInputEditorInfo();
-        mKeyboardSwitcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
+        final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
+        mKeyboardSwitcher.loadKeyboard(mode, imeOptions, mVoiceButtonEnabled,
                 mVoiceButtonOnPrimary);
         initSuggest(mLanguageSwitcher.getInputLanguage());
         mLanguageSwitcher.persist();
