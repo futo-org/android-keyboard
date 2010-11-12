@@ -55,6 +55,10 @@ public class ModifierKeyState {
             Log.d(TAG, mName + ".onOtherKeyPressed: " + toString(oldState) + " > " + this);
     }
 
+    public boolean isReleasing() {
+        return mState == RELEASING;
+    }
+
     public boolean isMomentary() {
         return mState == MOMENTARY;
     }

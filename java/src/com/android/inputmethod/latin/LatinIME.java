@@ -572,7 +572,8 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        final KeyboardSwitcher switcher = mKeyboardSwitcher;
+        LatinKeyboardView inputView = switcher.getInputView();
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
             return;
@@ -678,9 +679,9 @@ public class LatinIME extends InputMethodService
         mJustAddedAutoSpace = false;
 
         loadSettings(attribute);
-        mKeyboardSwitcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
+        switcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
                 mVoiceButtonOnPrimary);
-        mKeyboardSwitcher.updateShiftState();
+        switcher.updateShiftState();
 
         setCandidatesViewShownInternal(isCandidateStripVisible(),
                 false /* needsInputViewShown */ );
@@ -1228,7 +1229,7 @@ public class LatinIME extends InputMethodService
             }
             break;
         case KEYCODE_TAB:
-            sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
+            handleTab();
             break;
         default:
             if (primaryCode != KEYCODE_ENTER) {
@@ -1341,6 +1342,30 @@ public class LatinIME extends InputMethodService
         }
         mJustReverted = false;
         ic.endBatchEdit();
+    }
+
+    private void handleTab() {
+        final int imeOptions = getCurrentInputEditorInfo().imeOptions;
+        final int navigationFlags =
+                EditorInfo.IME_FLAG_NAVIGATE_NEXT | EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS;
+        if ((imeOptions & navigationFlags) == 0) {
+            sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
+            return;
+        }
+
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic == null)
+            return;
+
+        // True if keyboard is in either chording shift or manual temporary upper case mode.
+        final boolean isManualTemporaryUpperCase = mKeyboardSwitcher.isManualTemporaryUpperCase();
+        if ((imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0
+                && !isManualTemporaryUpperCase) {
+            ic.performEditorAction(EditorInfo.IME_ACTION_NEXT);
+        } else if ((imeOptions & EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS) != 0
+                && isManualTemporaryUpperCase) {
+            ic.performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
+        }
     }
 
     private void abortCorrection(boolean force) {

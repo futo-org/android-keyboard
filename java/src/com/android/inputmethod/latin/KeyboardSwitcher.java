@@ -462,17 +462,25 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void updateShiftState() {
+        final ShiftKeyState shiftKeyState = mShiftKeyState;
         if (DEBUG_STATE)
             Log.d(TAG, "updateShiftState:"
                     + " autoCaps=" + mInputMethodService.getCurrentAutoCapsState()
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
-                    + " shiftKeyState=" + mShiftKeyState);
-        if (isAlphabetMode() && !isShiftLocked() && !mShiftKeyState.isIgnoring()) {
-            if (mInputMethodService.getCurrentAutoCapsState()) {
-                setAutomaticTemporaryUpperCase();
-            } else {
-                setManualTemporaryUpperCase(mShiftKeyState.isMomentary());
+                    + " shiftKeyState=" + shiftKeyState);
+        if (isAlphabetMode()) {
+            if (!isShiftLocked() && !shiftKeyState.isIgnoring()) {
+                if (shiftKeyState.isReleasing() && mInputMethodService.getCurrentAutoCapsState()) {
+                    // Only when shift key is releasing, automatic temporary upper case will be set.
+                    setAutomaticTemporaryUpperCase();
+                } else {
+                    setManualTemporaryUpperCase(shiftKeyState.isMomentary());
+                }
             }
+        } else {
+            // In symbol keyboard mode, we should clear shift key state because only alphabet
+            // keyboard has shift key.
+            shiftKeyState.onRelease();
         }
     }
 
@@ -565,6 +573,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onOtherKeyPressed() {
+        if (DEBUG_STATE)
+            Log.d(TAG, "onOtherKeyPressed:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " shiftKeyState=" + mShiftKeyState
+                    + " symbolKeyState=" + mSymbolKeyState);
         mShiftKeyState.onOtherKeyPressed();
         mSymbolKeyState.onOtherKeyPressed();
     }

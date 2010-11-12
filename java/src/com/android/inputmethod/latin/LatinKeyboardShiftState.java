@@ -30,7 +30,7 @@ public class LatinKeyboardShiftState {
                             }
         }
         if (DEBUG)
-            Log.d(TAG, "setShifted: " + toString(oldState) + " > " + this);
+            Log.d(TAG, "setShifted(" + newShiftState + "): " + toString(oldState) + " > " + this);
         return mState != oldState;
     }
 
@@ -44,7 +44,8 @@ public class LatinKeyboardShiftState {
                 mState = NORMAL;
         }
         if (DEBUG)
-            Log.d(TAG, "setShiftLocked: " + toString(oldState) + " > " + this);
+            Log.d(TAG, "setShiftLocked(" + newShiftLockState + "): " + toString(oldState)
+                    + " > " + this);
     }
 
     public void setAutomaticTemporaryUpperCase() {
