@@ -40,11 +40,15 @@
         <Key
             latin:keyLabel="|" />
         <Key
-            latin:keyLabel="•" />
+            latin:keyLabel="•"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="♪♥♠♦♣" />
         <Key
             latin:keyLabel="√" />
         <Key
-            latin:keyLabel="π" />
+            latin:keyLabel="π"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="Π" />
         <Key
             latin:keyLabel="÷" />
         <Key
@@ -78,11 +82,15 @@
         <Key
             latin:keyLabel="¥" />
         <Key
-            latin:keyLabel="^" />
-        <Key
+            latin:keyLabel="^"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="↑↓←→" />
+         <Key
             latin:keyLabel="_" />
         <Key
-            latin:keyLabel="=" />
+            latin:keyLabel="="
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="≠≈∞" />
         <Key
             latin:keyLabel="±" />
         <Key
@@ -107,17 +115,25 @@
             latin:isSticky="true"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="&lt;" />
+            latin:keyLabel="&lt;"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="≤«‹" />
         <Key
-            latin:keyLabel="&gt;" />
+            latin:keyLabel="&gt;"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="≥»›" />
         <Key
             latin:keyLabel="©" />
         <Key
-            latin:keyLabel="®" />
+            latin:keyLabel="®"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="™" />
         <Key
             latin:keyLabel="\\" />
         <Key
-            latin:keyLabel="°" />
+            latin:keyLabel="°"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="¶§" />
         <Key
             latin:keyLabel="∞" />
         <Key

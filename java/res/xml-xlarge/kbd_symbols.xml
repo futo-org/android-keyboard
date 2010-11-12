@@ -34,25 +34,39 @@
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="1" />
+            latin:keyLabel="1"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="¹½⅓¼⅛" />
         <Key
-            latin:keyLabel="2" />
+            latin:keyLabel="2"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="²⅔" />
         <Key
-            latin:keyLabel="3" />
+            latin:keyLabel="3"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="³¾⅜" />
         <Key
-            latin:keyLabel="4" />
+            latin:keyLabel="4"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="⁴" />
         <Key
-            latin:keyLabel="5" />
+            latin:keyLabel="5"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="⅝" />
         <Key
             latin:keyLabel="6" />
         <Key
-            latin:keyLabel="7" />
+            latin:keyLabel="7"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="⅞" />
         <Key
             latin:keyLabel="8" />
         <Key
             latin:keyLabel="9" />
         <Key
-            latin:keyLabel="0" />
+            latin:keyLabel="0"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="ⁿ∅" />
         <Key
             latin:codes="@integer/key_delete"
             latin:keyIcon="@drawable/sym_keyboard_delete"
@@ -74,21 +88,35 @@
         <Key
             latin:keyLabel="#" />
         <Key
-            latin:keyLabel="$" />
+            latin:keyLabel="$"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="¢£€¥₣₤₱" />
         <Key
-            latin:keyLabel="%" />
+            latin:keyLabel="%"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="‰" />
         <Key
             latin:keyLabel="&amp;" />
         <Key
-            latin:keyLabel="*" />
+            latin:keyLabel="*"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="†‡★" />
         <Key
-            latin:keyLabel="-" />
+            latin:keyLabel="-"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="_–—" />
         <Key
-            latin:keyLabel="+" />
+            latin:keyLabel="+"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="±" />
         <Key
-            latin:keyLabel="(" />
+            latin:keyLabel="("
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="[{&lt;" />
         <Key
-            latin:keyLabel=")" />
+            latin:keyLabel=")"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="]}&gt;" />
         <Key
             latin:codes="@integer/key_return"
             latin:keyIcon="@drawable/sym_keyboard_return"
@@ -107,7 +135,9 @@
             latin:isSticky="true"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="&quot;" />
+            latin:keyLabel="&quot;"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="“”«»˝" />
         <Key
             latin:keyLabel="\'" />
         <Key
@@ -121,9 +151,13 @@
         <Key
             latin:keyLabel="." />
         <Key
-            latin:keyLabel="!" />
+            latin:keyLabel="!"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="¡" />
         <Key
-            latin:keyLabel="\?" />
+            latin:keyLabel="\?"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="¿" />
         <Key
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_more_key"
