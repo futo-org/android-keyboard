@@ -95,7 +95,7 @@ public class LatinIME extends InputMethodService
     private static final String PREF_POPUP_ON = "popup_on";
     private static final String PREF_AUTO_CAP = "auto_cap";
     private static final String PREF_QUICK_FIXES = "quick_fixes";
-    private static final String PREF_SHOW_SUGGESTIONS = "show_suggestions";
+    private static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
     private static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
     private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     private static final String PREF_VOICE_MODE = "voice_mode";
@@ -155,6 +155,20 @@ public class LatinIME extends InputMethodService
     private static final int POS_METHOD = 0;
     private static final int POS_SETTINGS = 1;
 
+    private int mSuggestionVisibility;
+    private static final int SUGGESTION_VISIBILILTY_SHOW_VALUE
+            = R.string.prefs_suggestion_visibility_show_value;
+    private static final int SUGGESTION_VISIBILILTY_SHOW_ONLY_PORTRAIT_VALUE
+            = R.string.prefs_suggestion_visibility_show_only_portrait_value;
+    private static final int SUGGESTION_VISIBILILTY_HIDE_VALUE
+            = R.string.prefs_suggestion_visibility_hide_value;
+
+    private static final int[] SUGGESTION_VISIBILITY_VALUE_ARRAY = new int[] {
+        SUGGESTION_VISIBILILTY_SHOW_VALUE,
+        SUGGESTION_VISIBILILTY_SHOW_ONLY_PORTRAIT_VALUE,
+        SUGGESTION_VISIBILILTY_HIDE_VALUE
+    };
+
     private LinearLayout mCandidateViewContainer;
     private CandidateView mCandidateView;
     private Suggest mSuggest;
@@ -206,7 +220,6 @@ public class LatinIME extends InputMethodService
     private boolean mHasUsedVoiceInput;
     private boolean mHasUsedVoiceInputUnsupportedLocale;
     private boolean mLocaleSupportedForVoiceInput;
-    private boolean mShowSuggestions;
     private boolean mIsShowingHint;
     private int     mCorrectionMode;
     private boolean mVoiceButtonEnabled;
@@ -674,7 +687,7 @@ public class LatinIME extends InputMethodService
 
         inputView.setPreviewEnabled(mPopupOn);
         inputView.setProximityCorrectionEnabled(true);
-        mPredictionOn = mPredictionOn && (mCorrectionMode > 0 || mShowSuggestions);
+        mPredictionOn = mPredictionOn && (mCorrectionMode > 0 || isSuggestionShown());
         // If we just entered a text field, maybe it has some old text that requires correction
         checkReCorrectionOnStart();
         checkTutorial(attribute.privateImeOptions);
@@ -819,9 +832,8 @@ public class LatinIME extends InputMethodService
                         abortCorrection(false);
                         // Show the punctuation suggestions list if the current one is not
                         // and if not showing "Touch again to save".
-                        if (mCandidateView != null
-                                && !mSuggestPuncList.equals(mCandidateView.getSuggestions())
-                                        && !mCandidateView.isShowingAddToDictionaryHint()) {
+                        if (mCandidateView != null && !isShowingPunctuationList()
+                                && !mCandidateView.isShowingAddToDictionaryHint()) {
                             setPunctuationSuggestions();
                         }
                     }
@@ -1574,9 +1586,21 @@ public class LatinIME extends InputMethodService
         return mPredictionOn;
     }
 
+    private boolean isShowingPunctuationList() {
+        return mSuggestPuncList.equals(mCandidateView.getSuggestions());
+    }
+
+    private boolean isSuggestionShown() {
+        return (mSuggestionVisibility == SUGGESTION_VISIBILILTY_SHOW_VALUE)
+                || (mSuggestionVisibility == SUGGESTION_VISIBILILTY_SHOW_ONLY_PORTRAIT_VALUE
+                        && mOrientation == Configuration.ORIENTATION_PORTRAIT);
+    }
+
     private boolean isCandidateStripVisible() {
-        return (isPredictionOn() && mShowSuggestions) || mCompletionOn
-                || mCandidateView.isShowingAddToDictionaryHint() || TextEntryState.isCorrecting();
+        boolean forceVisible = mCandidateView.isShowingAddToDictionaryHint()
+                || TextEntryState.isCorrecting();
+        return forceVisible || (isSuggestionShown()
+                && (isPredictionOn() || mCompletionOn || isShowingPunctuationList()));
     }
 
     public void onCancelVoice() {
@@ -2470,6 +2494,18 @@ public class LatinIME extends InputMethodService
         mSuggest.setAutoTextEnabled(!different && mQuickFixes);
     }
 
+    private void updateSuggestionVisibility(SharedPreferences prefs) {
+        final String suggestionVisiblityStr = prefs.getString(
+                PREF_SHOW_SUGGESTIONS_SETTING, mResources.getString(
+                        R.string.prefs_suggestion_visibility_default_value));
+        for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
+            if (suggestionVisiblityStr.equals(mResources.getString(visibility))) {
+                mSuggestionVisibility = visibility;
+                break;
+            }
+        }
+    }
+
     protected void launchSettings() {
         launchSettings(LatinIMESettings.class);
     }
@@ -2515,8 +2551,7 @@ public class LatinIME extends InputMethodService
 
         mLocaleSupportedForVoiceInput = voiceInputSupportedLocales.contains(mInputLocale);
 
-        mShowSuggestions = sp.getBoolean(PREF_SHOW_SUGGESTIONS, true);
-        mAutoCorrectEnabled = mShowSuggestions && isAutoCorrectEnabled(sp);
+        mAutoCorrectEnabled = isAutoCorrectEnabled(sp);
         mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(sp);
         loadAndSetAutoCompletionThreshold(sp);
 
@@ -2529,6 +2564,7 @@ public class LatinIME extends InputMethodService
         }
         updateCorrectionMode();
         updateAutoTextEnabled(mResources.getConfiguration().locale);
+        updateSuggestionVisibility(sp);
         mLanguageSwitcher.loadLocales(sp);
     }
 

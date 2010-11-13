@@ -90,12 +90,14 @@
             android:defaultValue="true"
             />
 
-        <CheckBoxPreference
-            android:key="show_suggestions"
-            android:title="@string/show_suggestions"
-            android:summary="@string/show_suggestions_summary"
+        <ListPreference
+            android:key="show_suggestions_setting"
+            android:summary="@string/prefs_show_suggestions_summary"
+            android:title="@string/prefs_show_suggestions"
             android:persistent="true"
-            android:defaultValue="true"
+            android:entryValues="@array/prefs_suggestion_visibility_values"
+            android:entries="@array/prefs_suggestion_visibilities"
+            android:defaultValue="@string/prefs_suggestion_visibility_default_value"
             />
 
         <ListPreference

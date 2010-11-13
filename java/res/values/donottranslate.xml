@@ -32,4 +32,14 @@
     <string name="settings_key_mode_always_show" translatable="false">1</string>
     <!-- Always hide the settings key -->
     <string name="settings_key_mode_always_hide" translatable="false">2</string>
+
+    <!--  Always show the suggestion strip -->
+    <string name="prefs_suggestion_visibility_show_value" translatable="false">0</string>
+    <!--  Show the suggestion strip only on portrait mode -->
+    <string name="prefs_suggestion_visibility_show_only_portrait_value" translatable="false">1</string>
+    <!--  Always hide the suggestion strip -->
+    <string name="prefs_suggestion_visibility_hide_value" translatable="false">2</string>
+    <!--  Default value of the visibility of the suggestion strip -->
+    <string name="prefs_suggestion_visibility_default_value" translatable="false">0</string>
+
 </resources>

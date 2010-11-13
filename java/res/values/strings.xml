@@ -82,10 +82,24 @@
     <string name="quick_fixes_summary">Corrects commonly typed mistakes</string>
     
     <!-- Option to enable showing suggestions -->
-    <string name="show_suggestions">Show suggestions</string>
+    <string name="prefs_show_suggestions">Show suggestions</string>
     <!-- Description for show suggestions -->
-    <string name="show_suggestions_summary">Display suggested words while typing</string>
-    
+    <string name="prefs_show_suggestions_summary">Display suggested words while typing</string>
+    <!--  Option to show/hide the suggestion strip -->
+    <string-array name="prefs_suggestion_visibility_values" translatable="false">
+       <item>@string/prefs_suggestion_visibility_show_value</item>
+       <item>@string/prefs_suggestion_visibility_show_only_portrait_value</item>
+       <item>@string/prefs_suggestion_visibility_hide_value</item>
+    </string-array>
+    <string name="prefs_suggestion_visibility_show_name">Always show</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name">Show on portrait mode</string>
+    <string name="prefs_suggestion_visibility_hide_name">Always hide</string>
+    <string-array name="prefs_suggestion_visibilities" translatable="false">
+       <item>@string/prefs_suggestion_visibility_show_name</item>
+       <item>@string/prefs_suggestion_visibility_show_only_portrait_name</item>
+       <item>@string/prefs_suggestion_visibility_hide_name</item>
+    </string-array>
+
     <!-- Option to show/hide the settings key -->
     <string name="prefs_settings_key">Show settings key</string>
     <!-- Array of the settings key mode values -->
