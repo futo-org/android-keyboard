@@ -82,7 +82,8 @@ import java.util.Map;
 public class LatinIME extends InputMethodService
         implements BaseKeyboardView.OnKeyboardActionListener,
         VoiceInput.UiListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        Tutorial.TutorialListener {
     private static final String TAG = "LatinIME";
     private static final boolean PERF_DEBUG = false;
     static final boolean DEBUG = false;
@@ -162,7 +163,7 @@ public class LatinIME extends InputMethodService
     private AlertDialog mOptionsDialog;
     private AlertDialog mVoiceWarningDialog;
 
-    /* package */ KeyboardSwitcher mKeyboardSwitcher;
+    private KeyboardSwitcher mKeyboardSwitcher;
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
@@ -177,7 +178,7 @@ public class LatinIME extends InputMethodService
     private String mSystemLocale;
     private LanguageSwitcher mLanguageSwitcher;
 
-    private StringBuilder mComposing = new StringBuilder();
+    private final StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
     private int mCommittedLength;
     private boolean mPredicting;
@@ -226,21 +227,21 @@ public class LatinIME extends InputMethodService
     private long mLastKeyTime;
 
     // Modifier keys state
-    private ModifierKeyState mShiftKeyState = new ModifierKeyState();
-    private ModifierKeyState mSymbolKeyState = new ModifierKeyState();
+    private final ModifierKeyState mShiftKeyState = new ModifierKeyState();
+    private final ModifierKeyState mSymbolKeyState = new ModifierKeyState();
 
     private Tutorial mTutorial;
 
     private AudioManager mAudioManager;
     // Align sound effect volume on music volume
-    private final float FX_VOLUME = -1.0f;
+    private static final float FX_VOLUME = -1.0f;
     private boolean mSilentMode;
 
     /* package */ String mWordSeparators;
     private String mSentenceSeparators;
     private String mSuggestPuncs;
     private VoiceInput mVoiceInput;
-    private VoiceResults mVoiceResults = new VoiceResults();
+    private final VoiceResults mVoiceResults = new VoiceResults();
     private boolean mConfigurationChanging;
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
@@ -248,10 +249,10 @@ public class LatinIME extends InputMethodService
     private boolean mRefreshKeyboardRequired;
 
     // For each word, a list of potential replacements, usually from voice.
-    private Map<String, List<CharSequence>> mWordToSuggestions =
+    private final Map<String, List<CharSequence>> mWordToSuggestions =
             new HashMap<String, List<CharSequence>>();
 
-    private ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
+    private final ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
 
     private class VoiceResults {
         List<String> candidates;
@@ -319,8 +320,7 @@ public class LatinIME extends InputMethodService
                 case MSG_START_TUTORIAL:
                     if (mTutorial == null) {
                         if (mKeyboardSwitcher.isInputViewShown()) {
-                            mTutorial = new Tutorial(
-                                    LatinIME.this, mKeyboardSwitcher.getInputView());
+                            mTutorial = new Tutorial(LatinIME.this, mKeyboardSwitcher);
                             mTutorial.start();
                         } else {
                             // Try again soon if the view is not yet showing
@@ -395,7 +395,7 @@ public class LatinIME extends InputMethodService
      * Loads a dictionary or multiple separated dictionary
      * @return returns array of dictionary resource ids
      */
-    /* package */ static int[] getDictionary(Resources res) {
+    public static int[] getDictionary(Resources res) {
         String packageName = LatinIME.class.getPackage().getName();
         XmlResourceParser xrp = res.getXml(R.xml.dictionary);
         ArrayList<Integer> dictionaries = new ArrayList<Integer>();
@@ -2430,20 +2430,22 @@ public class LatinIME extends InputMethodService
         mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_START_TUTORIAL), 500);
     }
 
-    /* package */ void tutorialDone() {
+    // Tutorial.TutorialListener
+    public void onTutorialDone() {
+        sendDownUpKeyEvents(-1); // Inform the setupwizard that tutorial is in last bubble
         mTutorial = null;
     }
 
-    /* package */ void promoteToUserDictionary(String word, int frequency) {
+    public void promoteToUserDictionary(String word, int frequency) {
         if (mUserDictionary.isValidWord(word)) return;
         mUserDictionary.addWord(word, frequency);
     }
 
-    /* package */ WordComposer getCurrentWord() {
+    public WordComposer getCurrentWord() {
         return mWord;
     }
 
-    /* package */ boolean getPopupOn() {
+    public boolean getPopupOn() {
         return mPopupOn;
     }
 

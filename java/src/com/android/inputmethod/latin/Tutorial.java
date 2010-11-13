@@ -32,20 +32,24 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tutorial implements OnTouchListener {
-    
-    private List<Bubble> mBubbles = new ArrayList<Bubble>();
-    private View mInputView;
-    private LatinIME mIme;
-    private int[] mLocation = new int[2];
-    
+
+    public interface TutorialListener {
+        public void onTutorialDone();
+    }
+
+    private final ArrayList<Bubble> mBubbles = new ArrayList<Bubble>();
+    private final KeyboardSwitcher mKeyboardSwitcher;
+    private final View mInputView;
+    private final TutorialListener mListener;
+    private final int[] mLocation = new int[2];
+
     private static final int MSG_SHOW_BUBBLE = 0;
-    
+
     private int mBubbleIndex;
-    
-    Handler mHandler = new Handler() {
+
+    private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
@@ -57,20 +61,18 @@ public class Tutorial implements OnTouchListener {
         }
     };
 
-    class Bubble {
-        Drawable bubbleBackground;
-        int x;
-        int y;
-        int width;
-        int gravity;
-        CharSequence text;
-        boolean dismissOnTouch;
-        boolean dismissOnClose;
-        PopupWindow window;
-        TextView textView;
-        View inputView;
-        
-        Bubble(Context context, View inputView,
+    private class Bubble {
+        private final Drawable bubbleBackground;
+        private final int x;
+        private final int y;
+        private final int width;
+        private final int gravity;
+        private final CharSequence text;
+        private final PopupWindow window;
+        private final TextView textView;
+        private final View inputView;
+
+        private Bubble(Context context, View inputView,
                 int backgroundResource, int bx, int by, int textResource1, int textResource2) {
             bubbleBackground = context.getResources().getDrawable(backgroundResource);
             x = bx;
@@ -81,8 +83,6 @@ public class Tutorial implements OnTouchListener {
                 .append(context.getResources().getText(textResource1))
                 .append("\n") 
                 .append(context.getResources().getText(textResource2));
-            this.dismissOnTouch = true;
-            this.dismissOnClose = false;
             this.inputView = inputView;
             window = new PopupWindow(context);
             window.setBackgroundDrawable(null);
@@ -124,7 +124,7 @@ public class Tutorial implements OnTouchListener {
             return l.getHeight();
         }
 
-        void show(int offx, int offy) {
+        private void show(int offx, int offy) {
             int textHeight = chooseSize(window, inputView, text, textView);
             offy -= textView.getPaddingTop() + textHeight;
             if (inputView.getVisibility() == View.VISIBLE 
@@ -144,63 +144,66 @@ public class Tutorial implements OnTouchListener {
                 }
             }
         }
-        
-        void hide() {
+
+        private void hide() {
             if (window.isShowing()) {
                 textView.setOnTouchListener(null);
                 window.dismiss();
             }
         }
-        
-        boolean isShowing() {
+
+        private boolean isShowing() {
             return window.isShowing();
         }
     }
-    
-    public Tutorial(LatinIME ime, LatinKeyboardView inputView) {
+
+    public Tutorial(TutorialListener listener, KeyboardSwitcher keyboardSwitcher) {
+        mListener = listener;
+        mKeyboardSwitcher = keyboardSwitcher;
+        LatinKeyboardView inputView = keyboardSwitcher.getInputView();
+        mInputView = inputView;
         Context context = inputView.getContext();
-        mIme = ime;
         int inputWidth = inputView.getWidth();
         final int x = inputWidth / 20; // Half of 1/10th
+        ArrayList<Bubble> bubbles = mBubbles;
         Bubble bWelcome = new Bubble(context, inputView, 
                 R.drawable.dialog_bubble_step02, x, 0, 
                 R.string.tip_to_open_keyboard, R.string.touch_to_continue);
-        mBubbles.add(bWelcome);
+        bubbles.add(bWelcome);
         Bubble bAccents = new Bubble(context, inputView, 
                 R.drawable.dialog_bubble_step02, x, 0, 
                 R.string.tip_to_view_accents, R.string.touch_to_continue);
-        mBubbles.add(bAccents);
+        bubbles.add(bAccents);
         Bubble b123 = new Bubble(context, inputView, 
                 R.drawable.dialog_bubble_step07, x, 0, 
                 R.string.tip_to_open_symbols, R.string.touch_to_continue);
-        mBubbles.add(b123);
+        bubbles.add(b123);
         Bubble bABC = new Bubble(context, inputView, 
                 R.drawable.dialog_bubble_step07, x, 0, 
                 R.string.tip_to_close_symbols, R.string.touch_to_continue);
-        mBubbles.add(bABC);
+        bubbles.add(bABC);
         Bubble bSettings = new Bubble(context, inputView, 
                 R.drawable.dialog_bubble_step07, x, 0, 
                 R.string.tip_to_launch_settings, R.string.touch_to_continue);
-        mBubbles.add(bSettings);
+        bubbles.add(bSettings);
         Bubble bDone = new Bubble(context, inputView, 
                 R.drawable.dialog_bubble_step02, x, 0, 
                 R.string.tip_to_start_typing, R.string.touch_to_finish);
-        mBubbles.add(bDone);
-        mInputView = inputView;
+        bubbles.add(bDone);
     }
-    
-    void start() {
+
+    public void start() {
         mInputView.getLocationInWindow(mLocation);
         mBubbleIndex = -1;
         mInputView.setOnTouchListener(this);
         next();
     }
 
-    boolean next() {
+    private void next() {
         if (mBubbleIndex >= 0) {
             // If the bubble is not yet showing, don't move to the next.
             if (!mBubbles.get(mBubbleIndex).isShowing()) {
-                return true;
+                return;
             }
             // Hide all previous bubbles as well, as they may have had a delayed show
             for (int i = 0; i <= mBubbleIndex; i++) {
@@ -210,26 +213,25 @@ public class Tutorial implements OnTouchListener {
         mBubbleIndex++;
         if (mBubbleIndex >= mBubbles.size()) {
             mInputView.setOnTouchListener(null);
-            mIme.sendDownUpKeyEvents(-1); // Inform the setupwizard that tutorial is in last bubble
-            mIme.tutorialDone();
-            return false;
+            mListener.onTutorialDone();
+            return;
         }
         if (mBubbleIndex == 3 || mBubbleIndex == 4) {
-            mIme.mKeyboardSwitcher.toggleSymbols();
+            mKeyboardSwitcher.toggleSymbols();
         }
         mHandler.sendMessageDelayed(
                 mHandler.obtainMessage(MSG_SHOW_BUBBLE, mBubbles.get(mBubbleIndex)), 500);
-        return true;
+        return;
     }
-    
-    void hide() {
-        for (int i = 0; i < mBubbles.size(); i++) {
-            mBubbles.get(i).hide();
+
+    private void hide() {
+        for (Bubble bubble : mBubbles) {
+            bubble.hide();
         }
         mInputView.setOnTouchListener(null);
     }
 
-    boolean close() {
+    public boolean close() {
         mHandler.removeMessages(MSG_SHOW_BUBBLE);
         hide();
         return true;
