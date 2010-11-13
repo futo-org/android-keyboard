@@ -331,7 +331,7 @@ public class LatinIME extends InputMethodService
                 setOldSuggestions();
                 break;
             case MSG_UPDATE_SHIFT_STATE:
-                updateShiftKeyState(getCurrentInputEditorInfo());
+                mKeyboardSwitcher.updateShiftState();
                 break;
             case MSG_VOICE_RESULTS:
                 handleVoiceResults();
@@ -714,7 +714,7 @@ public class LatinIME extends InputMethodService
         loadSettings(attribute);
         mKeyboardSwitcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
                 mVoiceButtonOnPrimary);
-        updateShiftKeyState(attribute);
+        mKeyboardSwitcher.updateShiftState();
 
         setCandidatesViewShownInternal(isCandidateStripVisible(),
                 false /* needsInputViewShown */ );
@@ -1081,25 +1081,13 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    public void updateShiftKeyState(EditorInfo attr) {
+    public boolean getCurrentAutoCapsState() {
         InputConnection ic = getCurrentInputConnection();
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (!switcher.isKeyboardAvailable())
-            return;
-        if (ic != null && attr != null && switcher.isAlphabetMode()
-                && !switcher.isShiftIgnoring()) {
-            switcher.setShifted(switcher.isShiftMomentary()
-                    || switcher.isShiftLocked() || getCursorCapsMode(ic, attr) != 0);
-        }
-    }
-
-    private int getCursorCapsMode(InputConnection ic, EditorInfo attr) {
-        int caps = 0;
         EditorInfo ei = getCurrentInputEditorInfo();
-        if (mAutoCap && ei != null && ei.inputType != EditorInfo.TYPE_NULL) {
-            caps = ic.getCursorCapsMode(attr.inputType);
+        if (mAutoCap && ic != null && ei != null && ei.inputType != EditorInfo.TYPE_NULL) {
+            return ic.getCursorCapsMode(ei.inputType) != 0;
         }
-        return caps;
+        return false;
     }
 
     private void swapPunctuationAndSpace() {
@@ -1112,7 +1100,7 @@ public class LatinIME extends InputMethodService
             ic.deleteSurroundingText(2, 0);
             ic.commitText(lastTwo.charAt(1) + " ", 1);
             ic.endBatchEdit();
-            updateShiftKeyState(getCurrentInputEditorInfo());
+            mKeyboardSwitcher.updateShiftState();
             mJustAddedAutoSpace = true;
         }
     }
@@ -1129,7 +1117,7 @@ public class LatinIME extends InputMethodService
             ic.deleteSurroundingText(3, 0);
             ic.commitText(" ..", 1);
             ic.endBatchEdit();
-            updateShiftKeyState(getCurrentInputEditorInfo());
+            mKeyboardSwitcher.updateShiftState();
         }
     }
 
@@ -1146,7 +1134,7 @@ public class LatinIME extends InputMethodService
             ic.deleteSurroundingText(2, 0);
             ic.commitText(". ", 1);
             ic.endBatchEdit();
-            updateShiftKeyState(getCurrentInputEditorInfo());
+            mKeyboardSwitcher.updateShiftState();
             mJustAddedAutoSpace = true;
         }
     }
@@ -1229,7 +1217,8 @@ public class LatinIME extends InputMethodService
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
-        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         switch (primaryCode) {
         case BaseKeyboard.KEYCODE_DELETE:
             handleBackspace();
@@ -1239,12 +1228,12 @@ public class LatinIME extends InputMethodService
         case BaseKeyboard.KEYCODE_SHIFT:
             // Shift key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch)
-                handleShift();
+                switcher.toggleShift();
             break;
         case BaseKeyboard.KEYCODE_MODE_CHANGE:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch)
-                changeKeyboardMode();
+                switcher.changeKeyboardMode();
             break;
         case BaseKeyboard.KEYCODE_CANCEL:
             if (!isShowingOptionDialog()) {
@@ -1264,7 +1253,7 @@ public class LatinIME extends InputMethodService
             toggleLanguage(false, false);
             break;
         case LatinKeyboardView.KEYCODE_CAPSLOCK:
-            handleCapsLock();
+            switcher.toggleCapsLock();
             break;
         case LatinKeyboardView.KEYCODE_VOICE:
             if (VOICE_INSTALLED) {
@@ -1288,9 +1277,7 @@ public class LatinIME extends InputMethodService
             // Cancel the just reverted state
             mJustReverted = false;
         }
-        if (mKeyboardSwitcher.onKey(primaryCode)) {
-            changeKeyboardMode();
-        }
+        switcher.onKey(primaryCode);
         // Reset after any single keystroke
         mEnteredText = null;
     }
@@ -1309,7 +1296,7 @@ public class LatinIME extends InputMethodService
         maybeRemovePreviousPeriod(text);
         ic.commitText(text, 1);
         ic.endBatchEdit();
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        mKeyboardSwitcher.updateShiftState();
         mJustReverted = false;
         mJustAddedAutoSpace = false;
         mEnteredText = text;
@@ -1389,48 +1376,6 @@ public class LatinIME extends InputMethodService
         ic.endBatchEdit();
     }
 
-    private void resetShift() {
-        handleShiftInternal(true);
-    }
-
-    private void handleShift() {
-        handleShiftInternal(false);
-    }
-
-    private void handleShiftInternal(boolean forceNormal) {
-        mHandler.cancelUpdateShiftState();
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (switcher.isAlphabetMode()) {
-            if (!switcher.isKeyboardAvailable())
-                return;
-            if (switcher.isShiftLocked() || forceNormal) {
-                switcher.setShifted(false);
-            } else {
-                switcher.setShifted(!switcher.isShifted());
-            }
-        } else {
-            switcher.toggleShift();
-        }
-    }
-
-    private void handleCapsLock() {
-        mHandler.cancelUpdateShiftState();
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (switcher.isAlphabetMode()) {
-            if (!switcher.isKeyboardAvailable())
-                return;
-            if (switcher.isShiftLocked()) {
-                // KeyboardSwitcher.setShifted(false) also disable shift locked state.
-                // Note: Caps lock LED is off when Key.on is false.
-                switcher.setShifted(false);
-            } else {
-                // KeyboardSwitcher.setShiftLocked(true) enable shift state too.
-                // Note: Caps lock LED is on when Key.on is true.
-                switcher.setShiftLocked(true);
-            }
-        }
-    }
-
     private void abortCorrection(boolean force) {
         if (force || TextEntryState.isCorrecting()) {
             TextEntryState.onAbortCorrection();
@@ -1490,8 +1435,7 @@ public class LatinIME extends InputMethodService
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
                 if (mWord.size() == 1) {
-                    mWord.setAutoCapitalized(
-                            getCursorCapsMode(ic, getCurrentInputEditorInfo()) != 0);
+                    mWord.setAutoCapitalized(getCurrentAutoCapsState());
                 }
                 ic.setComposingText(mComposing, 1);
             }
@@ -1499,7 +1443,7 @@ public class LatinIME extends InputMethodService
         } else {
             sendKeyChar((char)primaryCode);
         }
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        switcher.updateShiftState();
         if (LatinIME.PERF_DEBUG) measureCps();
         TextEntryState.typedCharacter((char) primaryCode, isWordSeparator(primaryCode));
     }
@@ -1565,7 +1509,7 @@ public class LatinIME extends InputMethodService
         if (pickedDefault) {
             TextEntryState.backToAcceptedDefault(mWord.getTypedWord());
         }
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        mKeyboardSwitcher.updateShiftState();
         if (ic != null) {
             ic.endBatchEdit();
         }
@@ -1937,7 +1881,7 @@ public class LatinIME extends InputMethodService
             if (mCandidateView != null) {
                 mCandidateView.clear();
             }
-            updateShiftKeyState(getCurrentInputEditorInfo());
+            mKeyboardSwitcher.updateShiftState();
             if (ic != null) {
                 ic.endBatchEdit();
             }
@@ -2030,7 +1974,8 @@ public class LatinIME extends InputMethodService
      *            word.
      */
     private void pickSuggestion(CharSequence suggestion, boolean correcting) {
-        if (!mKeyboardSwitcher.isKeyboardAvailable())
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        if (!switcher.isKeyboardAvailable())
             return;
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
@@ -2040,12 +1985,12 @@ public class LatinIME extends InputMethodService
         saveWordInHistory(suggestion);
         mPredicting = false;
         mCommittedLength = suggestion.length();
-        mKeyboardSwitcher.setPreferredLetters(null);
+        switcher.setPreferredLetters(null);
         // If we just corrected a word, then don't show punctuations
         if (!correcting) {
             setPunctuationSuggestions();
         }
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        switcher.updateShiftState();
     }
 
     /**
@@ -2264,7 +2209,7 @@ public class LatinIME extends InputMethodService
 
     private void sendSpace() {
         sendKeyChar((char)KEYCODE_SPACE);
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        mKeyboardSwitcher.updateShiftState();
         //onKey(KEY_SPACE[0], KEY_SPACE);
     }
 
@@ -2282,14 +2227,15 @@ public class LatinIME extends InputMethodService
                 mLanguageSwitcher.prev();
             }
         }
-        final int mode = mKeyboardSwitcher.getKeyboardMode();
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        final int mode = switcher.getKeyboardMode();
         final EditorInfo attribute = getCurrentInputEditorInfo();
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
-        mKeyboardSwitcher.loadKeyboard(mode, imeOptions, mVoiceButtonEnabled,
+        switcher.loadKeyboard(mode, imeOptions, mVoiceButtonEnabled,
                 mVoiceButtonOnPrimary);
         initSuggest(mLanguageSwitcher.getInputLanguage());
         mLanguageSwitcher.persist();
-        updateShiftKeyState(getCurrentInputEditorInfo());
+        switcher.updateShiftState();
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
@@ -2328,21 +2274,11 @@ public class LatinIME extends InputMethodService
         vibrate();
         playKeyClick(primaryCode);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (!switcher.isKeyboardAvailable())
-            return;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
-            // In alphabet mode, we call handleShift() to go into the shifted mode in this
-            // method, onPress(), only when we are in the small letter mode.
-            if (switcher.isAlphabetMode() && switcher.isShifted()) {
-                switcher.onPressShiftOnShifted();
-            } else {
-                switcher.onPressShift();
-                handleShift();
-            }
+            switcher.onPressShift();
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
             switcher.onPressSymbol();
-            changeKeyboardMode();
         } else {
             switcher.onOtherKeyPressed();
         }
@@ -2350,28 +2286,12 @@ public class LatinIME extends InputMethodService
 
     public void onRelease(int primaryCode) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (!switcher.isKeyboardAvailable())
-            return;
         // Reset any drag flags in the keyboard
         switcher.keyReleased();
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
-            if (switcher.isShiftMomentary()) {
-                resetShift();
-            }
-            if (switcher.isAlphabetMode()) {
-                // In alphabet mode, we call handleShift() to go into the small letter mode in this
-                // method, onRelease(), only when we are in the shifted modes -- temporary shifted
-                // mode or caps lock mode.
-                if (switcher.isShifted() && switcher.isShiftPressingOnShifted()) {
-                    handleShift();
-                }
-            }
             switcher.onReleaseShift();
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
-            if (switcher.isSymbolMomentary()) {
-                changeKeyboardMode();
-            }
             switcher.onReleaseSymbol();
         }
     }
@@ -2677,18 +2597,6 @@ public class LatinIME extends InputMethodService
         window.setAttributes(lp);
         window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         mOptionsDialog.show();
-    }
-
-    private void changeKeyboardMode() {
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
-        switcher.toggleSymbols();
-        if (!switcher.isKeyboardAvailable())
-            return;
-        if (switcher.isShiftLocked() && switcher.isAlphabetMode()) {
-            switcher.setShiftLocked(true);
-        }
-
-        updateShiftKeyState(getCurrentInputEditorInfo());
     }
 
     public static <E> ArrayList<E> newArrayList(E... elements) {

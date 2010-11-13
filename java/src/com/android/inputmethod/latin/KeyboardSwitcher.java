@@ -344,81 +344,147 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public boolean isKeyboardAvailable() {
-        return mInputView != null && mInputView.getLatinKeyboard() != null;
+        if (mInputView != null)
+            return mInputView.getLatinKeyboard() != null;
+        return false;
+    }
+
+    private LatinKeyboard getLatinKeyboard() {
+        if (mInputView != null)
+            return mInputView.getLatinKeyboard();
+        return null;
     }
 
     public void setPreferredLetters(int[] frequencies) {
-        LatinKeyboard latinKeyboard;
-        if (mInputView != null && (latinKeyboard = mInputView.getLatinKeyboard()) != null)
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null)
             latinKeyboard.setPreferredLetters(frequencies);
     }
 
     public void keyReleased() {
-        LatinKeyboard latinKeyboard;
-        if (mInputView != null && (latinKeyboard = mInputView.getLatinKeyboard()) != null)
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null)
             latinKeyboard.keyReleased();
     }
 
     public boolean isShifted() {
-        LatinKeyboard latinKeyboard;
-        return mInputView != null && (latinKeyboard = mInputView.getLatinKeyboard()) != null
-                && latinKeyboard.isShifted();
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null)
+            return latinKeyboard.isShifted();
+        return false;
     }
 
     public boolean isShiftLocked() {
-        LatinKeyboard latinKeyboard;
-        return mInputView != null && (latinKeyboard = mInputView.getLatinKeyboard()) != null
-                && latinKeyboard.isShiftLocked();
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null)
+            return latinKeyboard.isShiftLocked();
+        return false;
     }
 
-    public void setShifted(boolean shifted) {
-        if (mInputView == null) return;
-        LatinKeyboard latinKeyboard = mInputView.getLatinKeyboard();
-        if (latinKeyboard == null) return;
-        if (latinKeyboard.setShifted(shifted)) {
+    private void setShifted(boolean shifted) {
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null && latinKeyboard.setShifted(shifted)) {
             mInputView.invalidateAllKeys();
         }
     }
 
-    public void setShiftLocked(boolean shiftLocked) {
-        if (mInputView == null) return;
-        mInputView.setShiftLocked(shiftLocked);
+    private void setShiftLocked(boolean shiftLocked) {
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null && latinKeyboard.setShiftLocked(shiftLocked)) {
+            mInputView.invalidateAllKeys();
+        }
+    }
+
+    public void toggleShift() {
+        handleShiftInternal(false);
+    }
+
+    private void resetShift() {
+        handleShiftInternal(true);
+    }
+
+    private void handleShiftInternal(boolean forceNormal) {
+        mInputMethodService.mHandler.cancelUpdateShiftState();
+        if (isAlphabetMode()) {
+            if (forceNormal) {
+                setShifted(false);
+            } else {
+                setShifted(!isShifted());
+            }
+        } else {
+            toggleShiftInSymbol();
+        }
+    }
+
+    public void toggleCapsLock() {
+        mInputMethodService.mHandler.cancelUpdateShiftState();
+        if (isAlphabetMode()) {
+            if (isShiftLocked()) {
+                // setShifted(false) also disable shift locked state.
+                // Note: Caps lock LED is off when Key.on is false.
+                setShifted(false);
+            } else {
+                // setShiftLocked(true) enable shift state too.
+                // Note: Caps lock LED is on when Key.on is true.
+                setShiftLocked(true);
+            }
+        }
+    }
+
+    public void updateShiftState() {
+        if (isAlphabetMode() && !mShiftState.isIgnoring()) {
+            final boolean autoCapsMode = mInputMethodService.getCurrentAutoCapsState();
+            setShifted(mShiftState.isMomentary() || isShiftLocked() || autoCapsMode);
+        }
+    }
+
+    public void changeKeyboardMode() {
+        toggleKeyboardMode();
+        if (isShiftLocked() && isAlphabetMode())
+            setShiftLocked(true);
+        updateShiftState();
     }
 
     public void onPressShift() {
-        mShiftState.onPress();
-    }
-
-    public void onPressShiftOnShifted() {
-        mShiftState.onPressOnShifted();
+        if (!isKeyboardAvailable())
+            return;
+        if (isAlphabetMode() && isShifted()) {
+            // In alphabet mode, we don't call toggleShift() when we are already in the shifted
+            // state.
+            mShiftState.onPressOnShifted();
+        } else {
+            // In alphabet mode, we call toggleShift() to go into the shifted mode only when we are
+            // not in the shifted state.
+            // This else clause also handles shift key pressing in symbol mode.
+            mShiftState.onPress();
+            toggleShift();
+        }
     }
 
     public void onReleaseShift() {
+        if (!isKeyboardAvailable())
+            return;
+        if (isAlphabetMode()) {
+            if (mShiftState.isMomentary()) {
+                resetShift();
+            } else if (isShifted() && mShiftState.isPressingOnShifted()) {
+                // In alphabet mode, we call toggleShift() to go into the non shifted state only
+                // when we are in the shifted state -- temporary shifted mode or caps lock mode.
+                toggleShift();
+            }
+        }
         mShiftState.onRelease();
     }
 
-    public boolean isShiftMomentary() {
-        return mShiftState.isMomentary();
-    }
-
-    public boolean isShiftPressingOnShifted() {
-        return mShiftState.isPressingOnShifted();
-    }
-
-    public boolean isShiftIgnoring() {
-        return mShiftState.isIgnoring();
-    }
-
     public void onPressSymbol() {
+        changeKeyboardMode();
         mSymbolKeyState.onPress();
     }
 
     public void onReleaseSymbol() {
+        if (mSymbolKeyState.isMomentary())
+            changeKeyboardMode();
         mSymbolKeyState.onRelease();
-    }
-
-    public boolean isSymbolMomentary() {
-        return mSymbolKeyState.isMomentary();
     }
 
     public void onOtherKeyPressed() {
@@ -426,7 +492,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mSymbolKeyState.onOtherKeyPressed();
     }
 
-    public void toggleShift() {
+    private void toggleShiftInSymbol() {
         if (isAlphabetMode())
             return;
         final LatinKeyboard keyboard;
@@ -448,7 +514,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputView.setKeyboard(keyboard);
     }
 
-    public void toggleSymbols() {
+    public void toggleKeyboardMode() {
         loadKeyboardInternal(mMode, mImeOptions, mVoiceButtonEnabled, mVoiceButtonOnPrimary,
                 !mIsSymbols);
         if (mIsSymbols) {
@@ -464,22 +530,22 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     /**
      * Updates state machine to figure out when to automatically switch back to alpha mode.
-     * Returns true if the keyboard needs to switch back 
      */
-    public boolean onKey(int key) {
-        // Switch back to alpha mode if user types one or more non-space/enter characters
-        // followed by a space/enter
+    public void onKey(int key) {
+        // Switch back to alpha mode if user types one or more non-space/enter
+        // characters followed by a space/enter
         switch (mSymbolsModeState) {
-            case SYMBOLS_MODE_STATE_BEGIN:
-                if (key != LatinIME.KEYCODE_SPACE && key != LatinIME.KEYCODE_ENTER && key > 0) {
-                    mSymbolsModeState = SYMBOLS_MODE_STATE_SYMBOL;
-                }
-                break;
-            case SYMBOLS_MODE_STATE_SYMBOL:
-                if (key == LatinIME.KEYCODE_ENTER || key == LatinIME.KEYCODE_SPACE) return true;
-                break;
+        case SYMBOLS_MODE_STATE_BEGIN:
+            if (key != LatinIME.KEYCODE_SPACE && key != LatinIME.KEYCODE_ENTER && key > 0) {
+                mSymbolsModeState = SYMBOLS_MODE_STATE_SYMBOL;
+            }
+            break;
+        case SYMBOLS_MODE_STATE_SYMBOL:
+            if (key == LatinIME.KEYCODE_ENTER || key == LatinIME.KEYCODE_SPACE) {
+                changeKeyboardMode();
+            }
+            break;
         }
-        return false;
     }
 
     public LatinKeyboardView getInputView() {

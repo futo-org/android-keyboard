@@ -232,13 +232,14 @@ public class LatinKeyboard extends BaseKeyboard {
         }
     }
 
-    public void setShiftLocked(boolean shiftLocked) {
+    public boolean setShiftLocked(boolean shiftLocked) {
         // TODO: cleanup this method with BaseKeyboard.Key
         for (final Key key : getShiftKeys()) {
             key.on = shiftLocked;
             key.icon = mShiftLockIcon;
         }
         mShiftState = shiftLocked ? SHIFT_LOCKED : SHIFT_ON;
+        return true;
     }
 
     public boolean isShiftLocked() {

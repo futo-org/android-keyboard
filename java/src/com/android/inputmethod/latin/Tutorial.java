@@ -217,7 +217,7 @@ public class Tutorial implements OnTouchListener {
             return;
         }
         if (mBubbleIndex == 3 || mBubbleIndex == 4) {
-            mKeyboardSwitcher.toggleSymbols();
+            mKeyboardSwitcher.toggleKeyboardMode();
         }
         mHandler.sendMessageDelayed(
                 mHandler.obtainMessage(MSG_SHOW_BUBBLE, mBubbles.get(mBubbleIndex)), 500);
