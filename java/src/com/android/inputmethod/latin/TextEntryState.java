@@ -63,7 +63,6 @@ public class TextEntryState {
         UNDO_COMMIT,
         CORRECTING,
         PICKED_CORRECTION,
-        SHOWING_PUNCTUATIONS_LIST;
     }
 
     private static State sState = State.UNKNOWN;
@@ -174,11 +173,6 @@ public class TextEntryState {
         if (isCorrecting()) {
             sState = State.START;
         }
-        displayState();
-    }
-
-    public static void onShowPunctuationsList() {
-        sState = State.SHOWING_PUNCTUATIONS_LIST;
         displayState();
     }
 

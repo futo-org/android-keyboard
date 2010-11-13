@@ -2149,7 +2149,6 @@ public class LatinIME extends InputMethodService
     }
 
     private void setPunctuationSuggestions() {
-        TextEntryState.onShowPunctuationsList();
         setCandidatesViewShown(isCandidateStripVisible());
         setSuggestions(mSuggestPuncList, false, false, false);
     }
