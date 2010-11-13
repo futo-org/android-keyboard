@@ -318,7 +318,7 @@ public class LatinIME extends InputMethodService
                     break;
                 case MSG_START_TUTORIAL:
                     if (mTutorial == null) {
-                        if (mKeyboardSwitcher.getInputView().isShown()) {
+                        if (mKeyboardSwitcher.isInputViewShown()) {
                             mTutorial = new Tutorial(
                                     LatinIME.this, mKeyboardSwitcher.getInputView());
                             mTutorial.start();
@@ -720,9 +720,9 @@ public class LatinIME extends InputMethodService
             mVoiceInput.flushLogs();
             mVoiceInput.cancel();
         }
-        if (mKeyboardSwitcher.getInputView() != null) {
-            mKeyboardSwitcher.getInputView().closing();
-        }
+        BaseKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        if (inputView != null)
+            inputView.closing();
         if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
         if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
     }
@@ -805,8 +805,7 @@ public class LatinIME extends InputMethodService
 
         if (mReCorrectionEnabled) {
             // Don't look for corrections if the keyboard is not visible
-            if (mKeyboardSwitcher != null && mKeyboardSwitcher.getInputView() != null
-                    && mKeyboardSwitcher.getInputView().isShown()) {
+            if (mKeyboardSwitcher.isInputViewShown()) {
                 // Check if we should go in or out of correction mode.
                 if (isPredictionOn()
                         && mJustRevertedSeparator == null
@@ -919,8 +918,8 @@ public class LatinIME extends InputMethodService
     private void setCandidatesViewShownInternal(boolean shown, boolean needsInputViewShown) {
         // TODO: Remove this if we support candidates with hard keyboard
         if (onEvaluateInputViewShown()) {
-            super.setCandidatesViewShown(shown && mKeyboardSwitcher.getInputView() != null
-                    && (needsInputViewShown ? mKeyboardSwitcher.getInputView().isShown() : true));
+            super.setCandidatesViewShown(shown
+                    && (needsInputViewShown ? mKeyboardSwitcher.isInputViewShown() : true));
         }
     }
 
@@ -987,12 +986,8 @@ public class LatinIME extends InputMethodService
                 if (mTutorial != null) {
                     return true;
                 }
-                LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-                if (inputView == null) break;
-                LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-                if (latinKeyboard == null) break;
                 // Enable shift key and DPAD to do selections
-                if (inputView.isShown() && latinKeyboard.isShifted()) {
+                if (mKeyboardSwitcher.isInputViewShown() && mKeyboardSwitcher.isShifted()) {
                     event = new KeyEvent(event.getDownTime(), event.getEventTime(),
                             event.getAction(), event.getKeyCode(), event.getRepeatCount(),
                             event.getDeviceId(), event.getScanCode(),
@@ -1043,14 +1038,13 @@ public class LatinIME extends InputMethodService
 
     public void updateShiftKeyState(EditorInfo attr) {
         InputConnection ic = getCurrentInputConnection();
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-        if (inputView == null) return;
-        LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-        if (latinKeyboard == null) return;
-        if (ic != null && attr != null && mKeyboardSwitcher.isAlphabetMode()
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        if (!switcher.isKeyboardAvailable())
+            return;
+        if (ic != null && attr != null && switcher.isAlphabetMode()
                 && !mShiftKeyState.isIgnoring()) {
-            mKeyboardSwitcher.setShifted(mShiftKeyState.isMomentary()
-                    || latinKeyboard.isShiftLocked() || getCursorCapsMode(ic, attr) != 0);
+            switcher.setShifted(mShiftKeyState.isMomentary()
+                    || switcher.isShiftLocked() || getCursorCapsMode(ic, attr) != 0);
         }
     }
 
@@ -1362,14 +1356,12 @@ public class LatinIME extends InputMethodService
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isAlphabetMode()) {
-            LatinKeyboardView inputView = switcher.getInputView();
-            if (inputView == null) return;
-            LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-            if (latinKeyboard == null) return;
-            if (latinKeyboard.isShiftLocked() || forceNormal) {
+            if (!switcher.isKeyboardAvailable())
+                return;
+            if (switcher.isShiftLocked() || forceNormal) {
                 switcher.setShifted(false);
             } else {
-                switcher.setShifted(!latinKeyboard.isShifted());
+                switcher.setShifted(!switcher.isShifted());
             }
         } else {
             switcher.toggleShift();
@@ -1380,16 +1372,14 @@ public class LatinIME extends InputMethodService
         mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isAlphabetMode()) {
-            LatinKeyboardView inputView = switcher.getInputView();
-            if (inputView == null) return;
-            LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-            if (latinKeyboard == null) return;
-            if (latinKeyboard.isShiftLocked()) {
-                // LatinKeyboard.setShifted(false) also disable shift locked state.
+            if (!switcher.isKeyboardAvailable())
+                return;
+            if (switcher.isShiftLocked()) {
+                // KeyboardSwitcher.setShifted(false) also disable shift locked state.
                 // Note: Caps lock LED is off when Key.on is false.
                 switcher.setShifted(false);
             } else {
-                // LatinKeyboard.setShiftLocked(true) enable shift state too.
+                // KeyboardSwitcher.setShiftLocked(true) enable shift state too.
                 // Note: Caps lock LED is on when Key.on is true.
                 switcher.setShiftLocked(true);
             }
@@ -1426,14 +1416,14 @@ public class LatinIME extends InputMethodService
                 mWord.reset();
             }
         }
-        LatinKeyboard latinKeyboard = mKeyboardSwitcher.getInputView().getLatinKeyboard();
-        if (latinKeyboard != null && latinKeyboard.isShifted()) {
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        if (switcher.isShifted()) {
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
                 return;
             }
             primaryCode = keyCodes[0];
-            if (mKeyboardSwitcher.isAlphabetMode() && Character.isLowerCase(primaryCode)) {
+            if (switcher.isAlphabetMode() && Character.isLowerCase(primaryCode)) {
                 int upperCaseCode = Character.toUpperCase(primaryCode);
                 if (upperCaseCode != primaryCode) {
                     primaryCode = upperCaseCode;
@@ -1446,9 +1436,7 @@ public class LatinIME extends InputMethodService
             }
         }
         if (mPredicting) {
-            if (latinKeyboard != null && latinKeyboard.isShifted()
-                    && mKeyboardSwitcher.isAlphabetMode()
-                    && mComposing.length() == 0) {
+            if (mComposing.length() == 0 && switcher.isAlphabetMode() && switcher.isShifted()) {
                 mWord.setFirstCharCapitalized(true);
             }
             mComposing.append((char) primaryCode);
@@ -1547,12 +1535,9 @@ public class LatinIME extends InputMethodService
             mVoiceInput.cancel();
         }
         requestHideSelf(0);
-        if (mKeyboardSwitcher != null) {
-            LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-            if (inputView != null) {
-                inputView.closing();
-            }
-        }
+        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        if (inputView != null)
+            inputView.closing();
         TextEntryState.endSession();
     }
 
@@ -1605,7 +1590,7 @@ public class LatinIME extends InputMethodService
           public void run() {
               mRecognizing = false;
               if (mKeyboardSwitcher.getInputView() != null) {
-                setInputView(mKeyboardSwitcher.getInputView());
+                  setInputView(mKeyboardSwitcher.getInputView());
               }
               setCandidatesViewShown(isCandidateStripVisible());
               updateInputViewShown();
@@ -1742,10 +1727,9 @@ public class LatinIME extends InputMethodService
         switchToKeyboardView();
 
         final List<CharSequence> nBest = new ArrayList<CharSequence>();
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
         boolean capitalizeFirstWord = preferCapitalization()
-                || (mKeyboardSwitcher.isAlphabetMode()
-                        && mKeyboardSwitcher.getInputView().getLatinKeyboard() != null
-                                && mKeyboardSwitcher.getInputView().getLatinKeyboard().isShifted());
+                || (switcher.isAlphabetMode() && switcher.isShifted());
         for (String c : mVoiceResults.candidates) {
             if (capitalizeFirstWord) {
                 c = Character.toUpperCase(c.charAt(0)) + c.substring(1, c.length());
@@ -1796,11 +1780,7 @@ public class LatinIME extends InputMethodService
     }
 
     private void updateSuggestions() {
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-        LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-        if (latinKeyboard != null) {
-            latinKeyboard.setPreferredLetters(null);
-        }
+        mKeyboardSwitcher.setPreferredLetters(null);
 
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !isPredictionOn()) && !mVoiceInputHighlighted) {
@@ -1821,11 +1801,8 @@ public class LatinIME extends InputMethodService
     }
 
     private void showCorrections(WordAlternatives alternatives) {
+        mKeyboardSwitcher.setPreferredLetters(null);
         List<CharSequence> stringList = alternatives.getAlternatives();
-        LatinKeyboard latinKeyboard = mKeyboardSwitcher.getInputView().getLatinKeyboard();
-        if (latinKeyboard != null) {
-            latinKeyboard.setPreferredLetters(null);
-        }
         showSuggestions(stringList, alternatives.getOriginalWord(), false, false);
     }
 
@@ -1840,11 +1817,7 @@ public class LatinIME extends InputMethodService
         // Log.d("LatinIME","Suggest Total Time - " + (stopTime - startTime));
 
         int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
-
-        LatinKeyboard latinKeyboard = mKeyboardSwitcher.getInputView().getLatinKeyboard();
-        if (latinKeyboard != null) {
-            latinKeyboard.setPreferredLetters(nextLettersFrequencies);
-        }
+        mKeyboardSwitcher.setPreferredLetters(nextLettersFrequencies);
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasMinimalCorrection();
         //|| mCorrectionMode == mSuggest.CORRECTION_FULL;
@@ -2015,10 +1988,8 @@ public class LatinIME extends InputMethodService
      *            word.
      */
     private void pickSuggestion(CharSequence suggestion, boolean correcting) {
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-        if (inputView == null) return;
-        LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-        if (latinKeyboard == null) return;
+        if (!mKeyboardSwitcher.isKeyboardAvailable())
+            return;
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             rememberReplacedWord(suggestion);
@@ -2027,9 +1998,7 @@ public class LatinIME extends InputMethodService
         saveWordInHistory(suggestion);
         mPredicting = false;
         mCommittedLength = suggestion.length();
-        if (latinKeyboard != null) {
-            latinKeyboard.setPreferredLetters(null);
-        }
+        mKeyboardSwitcher.setPreferredLetters(null);
         // If we just corrected a word, then don't show punctuations
         if (!correcting) {
             setPunctuationSuggestions();
@@ -2316,15 +2285,14 @@ public class LatinIME extends InputMethodService
     public void onPress(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
-        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-        if (inputView == null) return;
-        LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-        if (latinKeyboard == null) return;
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        if (!switcher.isKeyboardAvailable())
+            return;
+        final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
             // In alphabet mode, we call handleShift() to go into the shifted mode in this
             // method, onPress(), only when we are in the small letter mode.
-            if (mKeyboardSwitcher.isAlphabetMode() && latinKeyboard.isShifted()) {
+            if (switcher.isAlphabetMode() && switcher.isShifted()) {
                 mShiftKeyState.onPressOnShifted();
             } else {
                 mShiftKeyState.onPress();
@@ -2339,26 +2307,22 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    // TODO: Bug - onRelease() could be dropped if the user slides finger out of the key.  It's OK
-    // for general keys, but we need to obtain onRelease() for the shift key even in such case.
     public void onRelease(int primaryCode) {
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        if (!switcher.isKeyboardAvailable())
+            return;
         // Reset any drag flags in the keyboard
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-        if (inputView == null) return;
-        LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-        if (latinKeyboard == null) return;
-        latinKeyboard.keyReleased();
-        //vibrate();
-        final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
+        switcher.keyReleased();
+        final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
             if (mShiftKeyState.isMomentary()) {
                 resetShift();
             }
-            if (mKeyboardSwitcher.isAlphabetMode()) {
+            if (switcher.isAlphabetMode()) {
                 // In alphabet mode, we call handleShift() to go into the small letter mode in this
                 // method, onRelease(), only when we are in the shifted modes -- temporary shifted
                 // mode or caps lock mode.
-                if (latinKeyboard.isShifted() && mShiftKeyState.isPressingOnShifted()) {
+                if (switcher.isShifted() && mShiftKeyState.isPressingOnShifted()) {
                     handleShift();
                 }
             }
@@ -2441,8 +2405,9 @@ public class LatinIME extends InputMethodService
         if (!mVibrateOn) {
             return;
         }
-        if (mKeyboardSwitcher.getInputView() != null) {
-            mKeyboardSwitcher.getInputView().performHapticFeedback(
+        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        if (inputView != null) {
+            inputView.performHapticFeedback(
                     HapticFeedbackConstants.KEYBOARD_TAP,
                     HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
         }
@@ -2664,13 +2629,12 @@ public class LatinIME extends InputMethodService
     }
 
     private void changeKeyboardMode() {
-        mKeyboardSwitcher.toggleSymbols();
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
-        if (inputView == null) return;
-        LatinKeyboard latinKeyboard = inputView.getLatinKeyboard();
-        if (latinKeyboard == null) return;
-        if (latinKeyboard.isShiftLocked() && mKeyboardSwitcher.isAlphabetMode()) {
-            mKeyboardSwitcher.setShiftLocked(true);
+        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        switcher.toggleSymbols();
+        if (!switcher.isKeyboardAvailable())
+            return;
+        if (switcher.isShiftLocked() && switcher.isAlphabetMode()) {
+            switcher.setShiftLocked(true);
         }
 
         updateShiftKeyState(getCurrentInputEditorInfo());

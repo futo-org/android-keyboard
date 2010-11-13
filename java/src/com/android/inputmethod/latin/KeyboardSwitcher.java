@@ -306,8 +306,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         keyboard.onAutoCompletionStateChanged(mIsAutoCompletionActive);
         keyboard.setShifted(false);
-        // TODO: delete this?
-        keyboard.setShiftLocked(keyboard.isShiftLocked());
         return keyboard;
     }
 
@@ -333,9 +331,41 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public int getKeyboardMode() {
         return mMode;
     }
-    
+
     public boolean isAlphabetMode() {
         return mCurrentId != null && mCurrentId.isAlphabetMode();
+    }
+
+    public boolean isInputViewShown() {
+        return mInputView != null && mInputView.isShown();
+    }
+
+    public boolean isKeyboardAvailable() {
+        return mInputView != null && mInputView.getLatinKeyboard() != null;
+    }
+
+    public void setPreferredLetters(int[] frequencies) {
+        LatinKeyboard latinKeyboard;
+        if (mInputView != null && (latinKeyboard = mInputView.getLatinKeyboard()) != null)
+            latinKeyboard.setPreferredLetters(frequencies);
+    }
+
+    public void keyReleased() {
+        LatinKeyboard latinKeyboard;
+        if (mInputView != null && (latinKeyboard = mInputView.getLatinKeyboard()) != null)
+            latinKeyboard.keyReleased();
+    }
+
+    public boolean isShifted() {
+        LatinKeyboard latinKeyboard;
+        return mInputView != null && (latinKeyboard = mInputView.getLatinKeyboard()) != null
+                && latinKeyboard.isShifted();
+    }
+
+    public boolean isShiftLocked() {
+        LatinKeyboard latinKeyboard;
+        return mInputView != null && (latinKeyboard = mInputView.getLatinKeyboard()) != null
+                && latinKeyboard.isShiftLocked();
     }
 
     public void setShifted(boolean shifted) {
