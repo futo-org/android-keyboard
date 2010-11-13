@@ -55,10 +55,11 @@
                     latin:popupKeyboard="@xml/popup_smileys" />
                 <Key
                     latin:keyLabel="="
-                    latin:temporaryShiftKeyLabel="+"
+                    latin:manualTemporaryUpperCaseCode="43"
                     latin:keyHintIcon="@drawable/key_hint_plus_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
                     latin:popupKeyboard="@xml/kbd_popup_template"
-                    latin:popupCharacters="&gt;" />
+                    latin:popupCharacters="+" />
             </default>
         </switch>
         <Key
@@ -77,8 +78,9 @@
             <default>
                 <Key
                     latin:keyLabel="-"
-                    latin:temporaryShiftKeyLabel="/"
+                    latin:manualTemporaryUpperCaseCode="47"
                     latin:keyHintIcon="@drawable/key_hint_slash_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_slash_large_holo"
                     latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters="/" />
             </default>
@@ -95,16 +97,18 @@
             >
                 <Key
                     latin:keyLabel="_"
-                    latin:temporaryShiftKeyLabel=":"
+                    latin:manualTemporaryUpperCaseCode="58"
                     latin:keyHintIcon="@drawable/key_hint_colon_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_colon_large_holo"
                     latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters=":" />
             </case>
             <default>
                 <Key
                     latin:keyLabel="_"
-                    latin:temporaryShiftKeyLabel="\@"
+                    latin:manualTemporaryUpperCaseCode="64"
                     latin:keyHintIcon="@drawable/key_hint_at_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_at_large_holo"
                     latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters="\@" />
             </default>

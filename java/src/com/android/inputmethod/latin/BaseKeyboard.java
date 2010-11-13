@@ -178,17 +178,23 @@ public class BaseKeyboard {
          * being the most important.
          */
         public int[] codes;
+        /** The unicode that this key generates in manual temporary upper case mode. */
+        public int manualTemporaryUpperCaseCode;
 
         /** Label to display */
         public CharSequence label;
-        /** Label to display when keyboard is in temporary shift mode */
-        public CharSequence temporaryShiftLabel;
 
         /** Icon to display instead of a label. Icon takes precedence over a label */
         public Drawable icon;
         /** Hint icon to display on the key in conjunction with the label */
         public Drawable hintIcon;
         /** Preview version of the icon, for the preview popup */
+        /**
+         * The hint icon to display on the key when keyboard is in manual temporary upper case
+         * mode.
+         */
+        public Drawable manualTemporaryUpperCaseHintIcon;
+
         public Drawable iconPreview;
         /** Width of the key, not including the gap */
         public int width;
@@ -320,9 +326,13 @@ public class BaseKeyboard {
             setDefaultBounds(icon);
             hintIcon = a.getDrawable(R.styleable.BaseKeyboard_Key_keyHintIcon);
             setDefaultBounds(hintIcon);
+            manualTemporaryUpperCaseHintIcon = a.getDrawable(
+                    R.styleable.BaseKeyboard_Key_manualTemporaryUpperCaseHintIcon);
+            setDefaultBounds(manualTemporaryUpperCaseHintIcon);
 
             label = a.getText(R.styleable.BaseKeyboard_Key_keyLabel);
-            temporaryShiftLabel = a.getText(R.styleable.BaseKeyboard_Key_temporaryShiftKeyLabel);
+            manualTemporaryUpperCaseCode = a.getInt(
+                    R.styleable.BaseKeyboard_Key_manualTemporaryUpperCaseCode, 0);
             text = a.getText(R.styleable.BaseKeyboard_Key_keyOutputText);
 
             if (codes == null && !TextUtils.isEmpty(label)) {

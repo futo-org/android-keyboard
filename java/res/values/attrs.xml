@@ -106,12 +106,15 @@
         <attr name="keyOutputText" format="string" />
         <!-- The label to display on the key. -->
         <attr name="keyLabel" format="string" />
-        <!-- The label to display on the key when keyboard is in temporary shift mode. -->
-        <attr name="temporaryShiftKeyLabel" format="string" />
+        <!-- The unicode that this key generates in manual temporary upper case mode. -->
+        <attr name="manualTemporaryUpperCaseCode" format="integer" />
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="reference" />
         <!-- The hint icon to display on the key in conjunction with the label -->
         <attr name="keyHintIcon" format="reference" />
+        <!-- The hint icon to display on the key when keyboard is in manual temporary upper case
+             mode. -->
+        <attr name="manualTemporaryUpperCaseHintIcon" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="BaseKeyboard_Row">

@@ -419,12 +419,6 @@ public class PointerTracker {
         if (key.codes[0] == BaseKeyboard.KEYCODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
         } else {
-            // If keyboard is in temporary upper case state and the key has temporary shift label,
-            // non-shift long press should not be started.  On distinct multi touch device, when
-            // pressing shift key (in temporary upper case), hint icon should not be drawn on key
-            // top. So we should disable long press for such key.
-            if (isTemporaryUpperCase() && key.temporaryShiftLabel != null)
-                return;
             mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
         }
     }
@@ -462,10 +456,10 @@ public class PointerTracker {
                     code = key.codes[mTapCount];
                 }
 
-                // If keyboard is in temporary upper case state and key has temporary shift label,
-                // alternate character code should be sent.
-                if (isTemporaryUpperCase() && key.temporaryShiftLabel != null) {
-                    code = key.temporaryShiftLabel.charAt(0);
+                // If keyboard is in manual temporary upper case state and key has manual temporary
+                // shift code, alternate character code should be sent.
+                if (isTemporaryUpperCase() && key.manualTemporaryUpperCaseCode != 0) {
+                    code = key.manualTemporaryUpperCaseCode;
                     codes[0] = code;
                 }
 

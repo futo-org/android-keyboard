@@ -66,8 +66,9 @@
             <default>
                 <Key
                     latin:keyLabel="\'"
-                    latin:temporaryShiftKeyLabel="&quot;"
+                    latin:manualTemporaryUpperCaseCode="34"
                     latin:keyHintIcon="@drawable/key_hint_quote_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_quote_large_holo"
                     latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters="&quot;" />
             </default>

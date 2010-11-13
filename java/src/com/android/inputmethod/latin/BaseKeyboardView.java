@@ -772,6 +772,8 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         final int kbdPaddingTop = getPaddingTop();
         final Key[] keys = mKeys;
         final Key invalidKey = mInvalidatedKey;
+        final boolean isTemporaryUpperCase = (mKeyboard instanceof LatinKeyboard
+                && ((LatinKeyboard)mKeyboard).isTemporaryUpperCase());
 
         paint.setColor(mKeyTextColor);
         boolean drawSingleKey = false;
@@ -807,17 +809,6 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
 
             boolean drawHintIcon = true;
             if (label != null) {
-                // If keyboard is multi-touch capable and in temporary upper case state and key has
-                // tempoarary shift label, label should be hint character and hint icon should not
-                // be drawn.
-                if (mHasDistinctMultitouch
-                        && mKeyboard instanceof LatinKeyboard
-                        && ((LatinKeyboard)mKeyboard).isTemporaryUpperCase()
-                        && key.temporaryShiftLabel != null) {
-                    label = key.temporaryShiftLabel.toString();
-                    drawHintIcon = false;
-                }
-
                 // For characters, use large font. For labels like "Done", use small font.
                 final int labelSize;
                 if (label.length() > 1 && key.codes.length < 2) {
@@ -862,7 +853,10 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                 int drawableHeight = key.height;
                 int drawableX = 0;
                 int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
-                drawIcon(canvas, key.hintIcon, drawableX, drawableY, drawableWidth, drawableHeight);
+                Drawable icon = (isTemporaryUpperCase
+                        && key.manualTemporaryUpperCaseHintIcon != null)
+                        ? key.manualTemporaryUpperCaseHintIcon : key.hintIcon;
+                drawIcon(canvas, icon, drawableX, drawableY, drawableWidth, drawableHeight);
             }
             canvas.translate(-key.x - kbdPaddingLeft, -key.y - kbdPaddingTop);
         }
