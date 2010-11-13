@@ -1004,7 +1004,8 @@ public class LatinIME extends InputMethodService
                     return true;
                 }
                 // Enable shift key and DPAD to do selections
-                if (mKeyboardSwitcher.isInputViewShown() && mKeyboardSwitcher.isShifted()) {
+                if (mKeyboardSwitcher.isInputViewShown()
+                        && mKeyboardSwitcher.isShiftedOrShiftLocked()) {
                     event = new KeyEvent(event.getDownTime(), event.getEventTime(),
                             event.getAction(), event.getKeyCode(), event.getRepeatCount(),
                             event.getDeviceId(), event.getScanCode(),
@@ -1373,7 +1374,7 @@ public class LatinIME extends InputMethodService
             }
         }
         KeyboardSwitcher switcher = mKeyboardSwitcher;
-        if (switcher.isShifted()) {
+        if (switcher.isShiftedOrShiftLocked()) {
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
                 return;
@@ -1392,7 +1393,8 @@ public class LatinIME extends InputMethodService
             }
         }
         if (mPredicting) {
-            if (mComposing.length() == 0 && switcher.isAlphabetMode() && switcher.isShifted()) {
+            if (mComposing.length() == 0 && switcher.isAlphabetMode()
+                    && switcher.isShiftedOrShiftLocked()) {
                 mWord.setFirstCharCapitalized(true);
             }
             mComposing.append((char) primaryCode);
@@ -1677,7 +1679,7 @@ public class LatinIME extends InputMethodService
         final List<CharSequence> nBest = new ArrayList<CharSequence>();
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         boolean capitalizeFirstWord = preferCapitalization()
-                || (switcher.isAlphabetMode() && switcher.isShifted());
+                || (switcher.isAlphabetMode() && switcher.isShiftedOrShiftLocked());
         for (String c : mVoiceResults.candidates) {
             if (capitalizeFirstWord) {
                 c = Character.toUpperCase(c.charAt(0)) + c.substring(1, c.length());

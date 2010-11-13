@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -32,6 +31,7 @@ import java.util.Locale;
 public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "KeyboardSwitcher";
     private static final boolean DEBUG = false;
+    public static final boolean DEBUG_STATE = false;
 
     public static final int MODE_TEXT = 0;
     public static final int MODE_URL = 1;
@@ -76,8 +76,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private LatinKeyboardView mInputView;
     private LatinIME mInputMethodService;
 
-    private ShiftKeyState mShiftState = new ShiftKeyState();
-    private ModifierKeyState mSymbolKeyState = new ModifierKeyState();
+    private ShiftKeyState mShiftKeyState = new ShiftKeyState("Shift");
+    private ModifierKeyState mSymbolKeyState = new ModifierKeyState("Symbol");
 
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
@@ -374,10 +374,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             latinKeyboard.keyReleased();
     }
 
-    public boolean isShifted() {
+    public boolean isShiftedOrShiftLocked() {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null)
-            return latinKeyboard.isShifted();
+            return latinKeyboard.isShiftedOrShiftLocked();
         return false;
     }
 
@@ -388,7 +388,21 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return false;
     }
 
-    private void setShifted(boolean shifted) {
+    public boolean isAutomaticTemporaryUpperCase() {
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null)
+            return latinKeyboard.isAutomaticTemporaryUpperCase();
+        return false;
+    }
+
+    public boolean isManualTemporaryUpperCase() {
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null)
+            return latinKeyboard.isManualTemporaryUpperCase();
+        return false;
+    }
+
+    private void setManualTemporaryUpperCase(boolean shifted) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null && latinKeyboard.setShifted(shifted)) {
             mInputView.invalidateAllKeys();
@@ -403,21 +417,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void toggleShift() {
-        handleShiftInternal(false);
-    }
-
-    private void resetShift() {
-        handleShiftInternal(true);
-    }
-
-    private void handleShiftInternal(boolean forceNormal) {
         mInputMethodService.mHandler.cancelUpdateShiftState();
+        if (DEBUG_STATE)
+            Log.d(TAG, "toggleShift:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " shiftKeyState=" + mShiftKeyState);
         if (isAlphabetMode()) {
-            if (forceNormal) {
-                setShifted(false);
-            } else {
-                setShifted(!isShifted());
-            }
+            setManualTemporaryUpperCase(!isShiftedOrShiftLocked());
         } else {
             toggleShiftInSymbol();
         }
@@ -425,27 +431,50 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     public void toggleCapsLock() {
         mInputMethodService.mHandler.cancelUpdateShiftState();
+        if (DEBUG_STATE)
+            Log.d(TAG, "toggleCapsLock:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " shiftKeyState=" + mShiftKeyState);
         if (isAlphabetMode()) {
             if (isShiftLocked()) {
-                // setShifted(false) also disable shift locked state.
-                // Note: Caps lock LED is off when Key.on is false.
-                setShifted(false);
+                // Shift key is long pressed while caps lock state, we will toggle back to normal
+                // state. And mark as if shift key is released.
+                setShiftLocked(false);
+                mShiftKeyState.onRelease();
             } else {
-                // setShiftLocked(true) enable shift state too.
-                // Note: Caps lock LED is on when Key.on is true.
                 setShiftLocked(true);
             }
         }
     }
 
+    private void setAutomaticTemporaryUpperCase() {
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null) {
+            latinKeyboard.setAutomaticTemporaryUpperCase();
+            mInputView.invalidateAllKeys();
+        }
+    }
+
     public void updateShiftState() {
-        if (isAlphabetMode() && !mShiftState.isIgnoring()) {
-            final boolean autoCapsMode = mInputMethodService.getCurrentAutoCapsState();
-            setShifted(mShiftState.isMomentary() || isShiftLocked() || autoCapsMode);
+        if (DEBUG_STATE)
+            Log.d(TAG, "updateShiftState:"
+                    + " autoCaps=" + mInputMethodService.getCurrentAutoCapsState()
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " shiftKeyState=" + mShiftKeyState);
+        if (isAlphabetMode() && !isShiftLocked() && !mShiftKeyState.isIgnoring()) {
+            if (mInputMethodService.getCurrentAutoCapsState()) {
+                setAutomaticTemporaryUpperCase();
+            } else {
+                setManualTemporaryUpperCase(mShiftKeyState.isMomentary());
+            }
         }
     }
 
     public void changeKeyboardMode() {
+        if (DEBUG_STATE)
+            Log.d(TAG, "changeKeyboardMode:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " shiftKeyState=" + mShiftKeyState);
         toggleKeyboardMode();
         if (isShiftLocked() && isAlphabetMode())
             setShiftLocked(true);
@@ -455,47 +484,82 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void onPressShift() {
         if (!isKeyboardAvailable())
             return;
-        if (isAlphabetMode() && isShifted()) {
-            // In alphabet mode, we don't call toggleShift() when we are already in the shifted
-            // state.
-            mShiftState.onPressOnShifted();
+        ShiftKeyState shiftKeyState = mShiftKeyState;
+        if (DEBUG_STATE)
+            Log.d(TAG, "onPressShift:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " shiftKeyState=" + shiftKeyState);
+        if (isAlphabetMode()) {
+            if (isShiftLocked()) {
+                // Shift key is pressed while caps lock state, we will treat this state as shifted
+                // caps lock state and mark as if shift key pressed while normal state.
+                setManualTemporaryUpperCase(true);
+                shiftKeyState.onPress();
+            } else if (isAutomaticTemporaryUpperCase()) {
+                // Shift key is pressed while automatic temporary upper case, we have to move to
+                // manual temporary upper case.
+                setManualTemporaryUpperCase(true);
+                shiftKeyState.onPressOnShifted();
+            } else if (isShiftedOrShiftLocked()) {
+                // In manual upper case state, we just record shift key has been pressing while
+                // shifted state.
+                shiftKeyState.onPressOnShifted();
+            } else {
+                // In base layout, chording or manual temporary upper case mode is started.
+                toggleShift();
+                shiftKeyState.onPress();
+            }
         } else {
-            // In alphabet mode, we call toggleShift() to go into the shifted mode only when we are
-            // not in the shifted state.
-            // This else clause also handles shift key pressing in symbol mode.
-            mShiftState.onPress();
+            // In symbol mode, just toggle symbol and symbol more keyboard.
             toggleShift();
+            shiftKeyState.onPress();
         }
     }
 
     public void onReleaseShift() {
         if (!isKeyboardAvailable())
             return;
+        ShiftKeyState shiftKeyState = mShiftKeyState;
+        if (DEBUG_STATE)
+            Log.d(TAG, "onReleaseShift:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " shiftKeyState=" + shiftKeyState);
         if (isAlphabetMode()) {
-            if (mShiftState.isMomentary()) {
-                resetShift();
-            } else if (isShifted() && mShiftState.isPressingOnShifted()) {
-                // In alphabet mode, we call toggleShift() to go into the non shifted state only
-                // when we are in the shifted state -- temporary shifted mode or caps lock mode.
+            if (shiftKeyState.isMomentary()) {
+                // After chording input while normal state.
+                toggleShift();
+            } else if (isShiftLocked() && !shiftKeyState.isIgnoring()) {
+                // Shift has been pressed without chording while caps lock state.
+                toggleCapsLock();
+            } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()) {
+                // Shift has been pressed without chording while shifted state.
                 toggleShift();
             }
         }
-        mShiftState.onRelease();
+        shiftKeyState.onRelease();
     }
 
     public void onPressSymbol() {
+        if (DEBUG_STATE)
+            Log.d(TAG, "onReleaseShift:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " symbolKeyState=" + mSymbolKeyState);
         changeKeyboardMode();
         mSymbolKeyState.onPress();
     }
 
     public void onReleaseSymbol() {
+        if (DEBUG_STATE)
+            Log.d(TAG, "onReleaseShift:"
+                    + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
+                    + " symbolKeyState=" + mSymbolKeyState);
         if (mSymbolKeyState.isMomentary())
             changeKeyboardMode();
         mSymbolKeyState.onRelease();
     }
 
     public void onOtherKeyPressed() {
-        mShiftState.onOtherKeyPressed();
+        mShiftKeyState.onOtherKeyPressed();
         mSymbolKeyState.onOtherKeyPressed();
     }
 
@@ -521,7 +585,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputView.setKeyboard(keyboard);
     }
 
-    public void toggleKeyboardMode() {
+    private void toggleKeyboardMode() {
         loadKeyboardInternal(mMode, mImeOptions, mVoiceButtonEnabled, mVoiceButtonOnPrimary,
                 !mIsSymbols);
         if (mIsSymbols) {

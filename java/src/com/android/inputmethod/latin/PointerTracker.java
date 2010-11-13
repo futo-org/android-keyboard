@@ -423,9 +423,9 @@ public class PointerTracker {
         }
     }
 
-    private boolean isTemporaryUpperCase() {
+    private boolean isManualTemporaryUpperCase() {
         return mKeyboard instanceof LatinKeyboard
-                && ((LatinKeyboard)mKeyboard).isTemporaryUpperCase();
+                && ((LatinKeyboard)mKeyboard).isManualTemporaryUpperCase();
     }
 
     private void detectAndSendKey(int index, int x, int y, long eventTime) {
@@ -458,7 +458,7 @@ public class PointerTracker {
 
                 // If keyboard is in manual temporary upper case state and key has manual temporary
                 // shift code, alternate character code should be sent.
-                if (isTemporaryUpperCase() && key.manualTemporaryUpperCaseCode != 0) {
+                if (isManualTemporaryUpperCase() && key.manualTemporaryUpperCaseCode != 0) {
                     code = key.manualTemporaryUpperCaseCode;
                     codes[0] = code;
                 }

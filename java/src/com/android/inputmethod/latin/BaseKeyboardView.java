@@ -683,7 +683,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     protected CharSequence adjustCase(CharSequence label) {
-        if (mKeyboard.isShifted() && label != null && label.length() < 3
+        if (mKeyboard.isShiftedOrShiftLocked() && label != null && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
             label = label.toString().toUpperCase();
         }
@@ -772,8 +772,8 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         final int kbdPaddingTop = getPaddingTop();
         final Key[] keys = mKeys;
         final Key invalidKey = mInvalidatedKey;
-        final boolean isTemporaryUpperCase = (mKeyboard instanceof LatinKeyboard
-                && ((LatinKeyboard)mKeyboard).isTemporaryUpperCase());
+        final boolean isManualTemporaryUpperCase = (mKeyboard instanceof LatinKeyboard
+                && ((LatinKeyboard)mKeyboard).isManualTemporaryUpperCase());
 
         paint.setColor(mKeyTextColor);
         boolean drawSingleKey = false;
@@ -853,7 +853,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                 int drawableHeight = key.height;
                 int drawableX = 0;
                 int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
-                Drawable icon = (isTemporaryUpperCase
+                Drawable icon = (isManualTemporaryUpperCase
                         && key.manualTemporaryUpperCaseHintIcon != null)
                         ? key.manualTemporaryUpperCaseHintIcon : key.hintIcon;
                 drawIcon(canvas, icon, drawableX, drawableY, drawableWidth, drawableHeight);
@@ -1226,7 +1226,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         // TODO: change the below line to use getLatinKeyboard() instead of getKeyboard()
         BaseKeyboard baseMiniKeyboard = mMiniKeyboard.getKeyboard();
         if (baseMiniKeyboard != null && baseMiniKeyboard.setShifted(mKeyboard == null
-                ? false : mKeyboard.isShifted())) {
+                ? false : mKeyboard.isShiftedOrShiftLocked())) {
             mMiniKeyboard.invalidateAllKeys();
         }
         // Mini keyboard needs no pop-up key preview displayed.

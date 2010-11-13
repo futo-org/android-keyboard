@@ -46,9 +46,9 @@ public class LatinKeyboard extends BaseKeyboard {
     private static final int OPACITY_FULLY_OPAQUE = 255;
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
-    private Drawable mShiftLockIcon;
+    private Drawable mShiftedIcon;
     private Drawable mShiftLockPreviewIcon;
-    private final HashMap<Key, Drawable> mOldShiftIcons = new HashMap<Key, Drawable>();
+    private final HashMap<Key, Drawable> mNormalShiftIcons = new HashMap<Key, Drawable>();
     private Drawable mSpaceIcon;
     private Drawable mSpaceAutoCompletionIndicator;
     private Drawable mSpacePreviewIcon;
@@ -92,11 +92,7 @@ public class LatinKeyboard extends BaseKeyboard {
     // TODO: generalize for any keyboardId
     private boolean mIsBlackSym;
 
-    private static final int SHIFT_OFF = 0;
-    private static final int SHIFT_ON = 1;
-    private static final int SHIFT_LOCKED = 2;
-    
-    private int mShiftState = SHIFT_OFF;
+    private LatinKeyboardShiftState mShiftState = new LatinKeyboardShiftState();
 
     private static final float SPACEBAR_DRAG_THRESHOLD = 0.8f;
     private static final float OVERLAP_PERCENTAGE_LOW_PROB = 0.70f;
@@ -117,7 +113,7 @@ public class LatinKeyboard extends BaseKeyboard {
         mContext = context;
         mRes = res;
         mMode = id.mMode;
-        mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
+        mShiftedIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
         setDefaultBounds(mShiftLockPreviewIcon);
         mSpaceIcon = res.getDrawable(R.drawable.sym_keyboard_space);
@@ -226,61 +222,62 @@ public class LatinKeyboard extends BaseKeyboard {
             if (key instanceof LatinKey) {
                 ((LatinKey)key).enableShiftLock();
             }
-            mOldShiftIcons.put(key, key.icon);
+            mNormalShiftIcons.put(key, key.icon);
         }
     }
 
-    public boolean setShiftLocked(boolean shiftLocked) {
-        // TODO: cleanup this method with BaseKeyboard.Key
+    public boolean setShiftLocked(boolean newShiftLockState) {
         for (final Key key : getShiftKeys()) {
-            key.on = shiftLocked;
-            key.icon = mShiftLockIcon;
+            key.on = newShiftLockState;
+            key.icon = newShiftLockState ? mShiftedIcon : mNormalShiftIcons.get(key);
         }
-        mShiftState = shiftLocked ? SHIFT_LOCKED : SHIFT_ON;
+        mShiftState.setShiftLocked(newShiftLockState);
         return true;
     }
 
     public boolean isShiftLocked() {
-        return mShiftState == SHIFT_LOCKED;
+        return mShiftState.isShiftLocked();
     }
 
     @Override
-    public boolean setShifted(boolean shiftState) {
-        // TODO: cleanup this method with BaseKeyboard.Key.
-        boolean shiftChanged = false;
-        if (getShiftKeys().size() > 0) {
-            for (final Key key : getShiftKeys()) {
-                if (shiftState == false) {
-                    key.on = false;
-                    key.icon = mOldShiftIcons.get(key);
-                } else if (mShiftState == SHIFT_OFF) {
-                    key.icon = mShiftLockIcon;
-                }
+    public boolean setShifted(boolean newShiftState) {
+        if (getShiftKeys().size() == 0)
+            return super.setShifted(newShiftState);
+
+        for (final Key key : getShiftKeys()) {
+            if (!newShiftState && !mShiftState.isShiftLocked()) {
+                key.icon = mNormalShiftIcons.get(key);
+            } else if (newShiftState && !mShiftState.isShiftedOrShiftLocked()) {
+                key.icon = mShiftedIcon;
             }
-            if (shiftState == false) {
-                shiftChanged = mShiftState != SHIFT_OFF;
-                mShiftState = SHIFT_OFF;
-            } else if (mShiftState == SHIFT_OFF) {
-                shiftChanged = mShiftState == SHIFT_OFF;
-                mShiftState = SHIFT_ON;
-            }
-            return shiftChanged;
-        } else {
-            return super.setShifted(shiftState);
         }
+        return mShiftState.setShifted(newShiftState);
     }
 
     @Override
-    public boolean isShifted() {
+    public boolean isShiftedOrShiftLocked() {
         if (getShiftKeys().size() > 0) {
-            return mShiftState != SHIFT_OFF;
+            return mShiftState.isShiftedOrShiftLocked();
         } else {
-            return super.isShifted();
+            return super.isShiftedOrShiftLocked();
         }
     }
 
-    public boolean isTemporaryUpperCase() {
-        return mIsAlphaKeyboard && isShifted() && !isShiftLocked();
+    public void setAutomaticTemporaryUpperCase() {
+        setShifted(true);
+        mShiftState.setAutomaticTemporaryUpperCase();
+    }
+
+    public boolean isAutomaticTemporaryUpperCase() {
+        return mIsAlphaKeyboard && mShiftState.isAutomaticTemporaryUpperCase();
+    }
+
+    public boolean isManualTemporaryUpperCase() {
+        return mIsAlphaKeyboard && mShiftState.isManualTemporaryUpperCase();
+    }
+
+    /* package */ LatinKeyboardShiftState getKeyboardShiftState() {
+        return mShiftState;
     }
 
     public boolean isAlphaKeyboard() {
@@ -291,12 +288,12 @@ public class LatinKeyboard extends BaseKeyboard {
         mIsBlackSym = isBlack;
         final Resources res = mRes;
         if (isBlack) {
-            mShiftLockIcon = res.getDrawable(R.drawable.sym_bkeyboard_shift_locked);
+            mShiftedIcon = res.getDrawable(R.drawable.sym_bkeyboard_shift_locked);
             mSpaceIcon = res.getDrawable(R.drawable.sym_bkeyboard_space);
             mMicIcon = res.getDrawable(R.drawable.sym_bkeyboard_mic);
             m123MicIcon = res.getDrawable(R.drawable.sym_bkeyboard_123_mic);
         } else {
-            mShiftLockIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
+            mShiftedIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
             mSpaceIcon = res.getDrawable(R.drawable.sym_keyboard_space);
             mMicIcon = res.getDrawable(R.drawable.sym_keyboard_mic);
             m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);

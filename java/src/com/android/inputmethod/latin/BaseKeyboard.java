@@ -626,7 +626,7 @@ public class BaseKeyboard {
         return false;
     }
 
-    public boolean isShifted() {
+    public boolean isShiftedOrShiftLocked() {
         return mShifted;
     }
 

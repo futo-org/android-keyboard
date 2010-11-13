@@ -16,26 +16,60 @@
 
 package com.android.inputmethod.latin;
 
+import android.util.Log;
+
 public class ModifierKeyState {
+    protected static final String TAG = "ModifierKeyState";
+    protected static final boolean DEBUG = KeyboardSwitcher.DEBUG_STATE;
+
     protected static final int RELEASING = 0;
     protected static final int PRESSING = 1;
     protected static final int MOMENTARY = 2;
 
+    protected final String mName;
     protected int mState = RELEASING;
 
+    public ModifierKeyState(String name) {
+        mName = name;
+    }
+
     public void onPress() {
+        final int oldState = mState;
         mState = PRESSING;
+        if (DEBUG)
+            Log.d(TAG, mName + ".onPress: " + toString(oldState) + " > " + this);
     }
 
     public void onRelease() {
+        final int oldState = mState;
         mState = RELEASING;
+        if (DEBUG)
+            Log.d(TAG, mName + ".onRelease: " + toString(oldState) + " > " + this);
     }
 
     public void onOtherKeyPressed() {
-        mState = MOMENTARY;
+        final int oldState = mState;
+        if (mState == PRESSING)
+            mState = MOMENTARY;
+        if (DEBUG)
+            Log.d(TAG, mName + ".onOtherKeyPressed: " + toString(oldState) + " > " + this);
     }
 
     public boolean isMomentary() {
         return mState == MOMENTARY;
+    }
+
+    @Override
+    public String toString() {
+        return toString(mState);
+    }
+
+    protected static String toString(int state) {
+        switch (state) {
+        case RELEASING: return "RELEASING";
+        case PRESSING: return "PRESSING";
+        case MOMENTARY: return "MOMENTARY";
+        default: return "UNKNOWN";
+        }
     }
 }

@@ -119,7 +119,7 @@ public class LatinKeyboardView extends BaseKeyboardView {
     protected CharSequence adjustCase(CharSequence label) {
         LatinKeyboard keyboard = getLatinKeyboard();
         if (keyboard.isAlphaKeyboard()
-                && keyboard.isShifted()
+                && keyboard.isShiftedOrShiftLocked()
                 && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
             label = label.toString().toUpperCase();
