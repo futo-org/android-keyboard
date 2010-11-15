@@ -117,6 +117,13 @@
             android:persistent="true"
             android:defaultValue="true"
             />
-    </PreferenceCategory>            
+    </PreferenceCategory>
+
+    <CheckBoxPreference
+            android:key="usability_study_mode"
+            android:title="@string/prefs_usability_study_mode"
+            android:persistent="true"
+            android:defaultValue="false"
+            />
 
 </PreferenceScreen>

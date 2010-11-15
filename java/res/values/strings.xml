@@ -451,4 +451,6 @@
     <!-- Title for Latin keyboard debug settings activity / dialog -->
     <string name="english_ime_debug_settings" translatable="false">Android keyboard Debug settings</string>
     <string name="prefs_debug_mode" translatable="false">Debug Mode</string>
+    <!-- Title of an option for usability study mode -->
+    <string name="prefs_usability_study_mode">Usability Study Mode</string>
 </resources>
