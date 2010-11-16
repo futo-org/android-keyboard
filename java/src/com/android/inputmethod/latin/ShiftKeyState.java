@@ -16,26 +16,28 @@
 
 package com.android.inputmethod.latin;
 
-public class ModifierKeyState {
-    protected static final int RELEASING = 0;
-    protected static final int PRESSING = 1;
-    protected static final int MOMENTARY = 2;
+public class ShiftKeyState extends ModifierKeyState {
+    private static final int PRESSING_ON_SHIFTED = 3; // both temporary shifted & shift locked
+    private static final int IGNORING = 4;
 
-    protected int mState = RELEASING;
-
-    public void onPress() {
-        mState = PRESSING;
-    }
-
-    public void onRelease() {
-        mState = RELEASING;
-    }
-
+    @Override
     public void onOtherKeyPressed() {
-        mState = MOMENTARY;
+        if (mState == PRESSING) {
+            mState = MOMENTARY;
+        } else if (mState == PRESSING_ON_SHIFTED) {
+            mState = IGNORING;
+        }
     }
 
-    public boolean isMomentary() {
-        return mState == MOMENTARY;
+    public void onPressOnShifted() {
+        mState = PRESSING_ON_SHIFTED;
+    }
+
+    public boolean isPressingOnShifted() {
+        return mState == PRESSING_ON_SHIFTED;
+    }
+
+    public boolean isIgnoring() {
+        return mState == IGNORING;
     }
 }

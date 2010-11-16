@@ -235,9 +235,6 @@ public class LatinIME extends InputMethodService
     private int mDeleteCount;
     private long mLastKeyTime;
 
-    // Modifier keys state
-    private final ModifierKeyState mShiftKeyState = new ModifierKeyState();
-
     private Tutorial mTutorial;
 
     private AudioManager mAudioManager;
@@ -1091,8 +1088,8 @@ public class LatinIME extends InputMethodService
         if (!switcher.isKeyboardAvailable())
             return;
         if (ic != null && attr != null && switcher.isAlphabetMode()
-                && !mShiftKeyState.isIgnoring()) {
-            switcher.setShifted(mShiftKeyState.isMomentary()
+                && !switcher.isShiftIgnoring()) {
+            switcher.setShifted(switcher.isShiftMomentary()
                     || switcher.isShiftLocked() || getCursorCapsMode(ic, attr) != 0);
         }
     }
@@ -2342,16 +2339,15 @@ public class LatinIME extends InputMethodService
             // In alphabet mode, we call handleShift() to go into the shifted mode in this
             // method, onPress(), only when we are in the small letter mode.
             if (switcher.isAlphabetMode() && switcher.isShifted()) {
-                mShiftKeyState.onPressOnShifted();
+                switcher.onPressShiftOnShifted();
             } else {
-                mShiftKeyState.onPress();
+                switcher.onPressShift();
                 handleShift();
             }
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
             switcher.onPressSymbol();
             changeKeyboardMode();
         } else {
-            mShiftKeyState.onOtherKeyPressed();
             switcher.onOtherKeyPressed();
         }
     }
@@ -2364,18 +2360,18 @@ public class LatinIME extends InputMethodService
         switcher.keyReleased();
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
-            if (mShiftKeyState.isMomentary()) {
+            if (switcher.isShiftMomentary()) {
                 resetShift();
             }
             if (switcher.isAlphabetMode()) {
                 // In alphabet mode, we call handleShift() to go into the small letter mode in this
                 // method, onRelease(), only when we are in the shifted modes -- temporary shifted
                 // mode or caps lock mode.
-                if (switcher.isShifted() && mShiftKeyState.isPressingOnShifted()) {
+                if (switcher.isShifted() && switcher.isShiftPressingOnShifted()) {
                     handleShift();
                 }
             }
-            mShiftKeyState.onRelease();
+            switcher.onReleaseShift();
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
             if (switcher.isSymbolMomentary()) {
                 changeKeyboardMode();

@@ -75,7 +75,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private final LatinIME mInputMethodService;
     private final LanguageSwitcher mLanguageSwitcher;
 
+    private ShiftKeyState mShiftState = new ShiftKeyState();
     private ModifierKeyState mSymbolKeyState = new ModifierKeyState();
+
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
 
@@ -383,6 +385,30 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputView.setShiftLocked(shiftLocked);
     }
 
+    public void onPressShift() {
+        mShiftState.onPress();
+    }
+
+    public void onPressShiftOnShifted() {
+        mShiftState.onPressOnShifted();
+    }
+
+    public void onReleaseShift() {
+        mShiftState.onRelease();
+    }
+
+    public boolean isShiftMomentary() {
+        return mShiftState.isMomentary();
+    }
+
+    public boolean isShiftPressingOnShifted() {
+        return mShiftState.isPressingOnShifted();
+    }
+
+    public boolean isShiftIgnoring() {
+        return mShiftState.isIgnoring();
+    }
+
     public void onPressSymbol() {
         mSymbolKeyState.onPress();
     }
@@ -396,7 +422,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onOtherKeyPressed() {
-        // TODO: shift key state will be handled too.
+        mShiftState.onOtherKeyPressed();
         mSymbolKeyState.onOtherKeyPressed();
     }
 
