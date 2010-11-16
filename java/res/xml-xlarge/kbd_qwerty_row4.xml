@@ -72,8 +72,6 @@
                 latin:mode="email"
             >
                 <Key
-                    latin:keyLabel="_" />
-                <Key
                     latin:keyLabel="-" />
             </case>
             <default>
@@ -83,6 +81,26 @@
                     latin:keyHintIcon="@drawable/key_hint_slash_holo"
                     latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters="/" />
+            </default>
+        </switch>
+        <switch>
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="_" />
+            </case>
+            <case
+                latin:mode="url"
+            >
+                <Key
+                    latin:keyLabel="_"
+                    latin:temporaryShiftKeyLabel=":"
+                    latin:keyHintIcon="@drawable/key_hint_colon_holo"
+                    latin:popupKeyboard="@xml/kbd_popup_template"
+                    latin:popupCharacters=":" />
+            </case>
+            <default>
                 <Key
                     latin:keyLabel="_"
                     latin:temporaryShiftKeyLabel="\@"
