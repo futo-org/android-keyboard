@@ -231,7 +231,7 @@ public class LatinIME extends InputMethodService
 
     // Indicates whether the suggestion strip is to be on in landscape
     private boolean mJustAccepted;
-    private CharSequence mJustRevertedSeparator;
+    private boolean mJustReverted;
     private int mDeleteCount;
     private long mLastKeyTime;
 
@@ -860,8 +860,7 @@ public class LatinIME extends InputMethodService
             // Don't look for corrections if the keyboard is not visible
             if (mKeyboardSwitcher.isInputViewShown()) {
                 // Check if we should go in or out of correction mode.
-                if (isPredictionOn()
-                        && mJustRevertedSeparator == null
+                if (isPredictionOn() && !mJustReverted
                         && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
                                 || TextEntryState.isCorrecting())
                                 && (newSelStart < newSelEnd - 1 || (!mPredicting))
@@ -1287,7 +1286,7 @@ public class LatinIME extends InputMethodService
                 handleCharacter(primaryCode, keyCodes);
             }
             // Cancel the just reverted state
-            mJustRevertedSeparator = null;
+            mJustReverted = false;
         }
         if (mKeyboardSwitcher.onKey(primaryCode)) {
             changeKeyboardMode();
@@ -1311,7 +1310,7 @@ public class LatinIME extends InputMethodService
         ic.commitText(text, 1);
         ic.endBatchEdit();
         updateShiftKeyState(getCurrentInputEditorInfo());
-        mJustRevertedSeparator = null;
+        mJustReverted = false;
         mJustAddedAutoSpace = false;
         mEnteredText = text;
     }
@@ -1386,7 +1385,7 @@ public class LatinIME extends InputMethodService
                 }
             }
         }
-        mJustRevertedSeparator = null;
+        mJustReverted = false;
         ic.endBatchEdit();
     }
 
@@ -1532,10 +1531,7 @@ public class LatinIME extends InputMethodService
             // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
-            if (mAutoCorrectOn && primaryCode != '\'' &&
-                    (mJustRevertedSeparator == null
-                            || mJustRevertedSeparator.length() == 0
-                            || mJustRevertedSeparator.charAt(0) != primaryCode)) {
+            if (mAutoCorrectOn && primaryCode != '\'' && !mJustReverted) {
                 pickedDefault = pickDefaultSuggestion();
                 // Picked the suggestion by the space key.  We consider this
                 // as "added an auto space".
@@ -2235,7 +2231,7 @@ public class LatinIME extends InputMethodService
         if (!mPredicting && length > 0) {
             final InputConnection ic = getCurrentInputConnection();
             mPredicting = true;
-            mJustRevertedSeparator = ic.getTextBeforeCursor(1, 0);
+            mJustReverted = true;
             if (deleteChar) ic.deleteSurroundingText(1, 0);
             int toDelete = mCommittedLength;
             CharSequence toTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
@@ -2249,7 +2245,7 @@ public class LatinIME extends InputMethodService
             mHandler.postUpdateSuggestions();
         } else {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
-            mJustRevertedSeparator = null;
+            mJustReverted = false;
         }
     }
 
