@@ -19,9 +19,21 @@ package com.android.inputmethod.latin;
 import android.view.inputmethod.InputMethodManager;
 
 import android.content.Context;
+import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
 import android.text.format.DateUtils;
+import android.text.format.Time;
 import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LatinIMEUtil {
 
@@ -86,8 +98,9 @@ public class LatinIMEUtil {
         private static final char PLACEHOLDER_DELIMITER_CHAR = '\uFFFC';
         private static final int INVALID_COORDINATE = -2;
         /* package */ static final int BUFSIZE = 20;
-        private Context mContext;
+        private InputMethodService mContext;
         private boolean mEnabled = false;
+        private boolean mUsabilityStudy = false;
         private int mEnd = 0;
         /* package */ int mLength = 0;
         private char[] mCharBuf = new char[BUFSIZE];
@@ -99,9 +112,12 @@ public class LatinIMEUtil {
         public static RingCharBuffer getInstance() {
             return sRingCharBuffer;
         }
-        public static RingCharBuffer init(Context context, boolean enabled) {
+        public static RingCharBuffer init(InputMethodService context, boolean enabled,
+                boolean usabilityStudy) {
             sRingCharBuffer.mContext = context;
-            sRingCharBuffer.mEnabled = enabled;
+            sRingCharBuffer.mEnabled = enabled || usabilityStudy;
+            sRingCharBuffer.mUsabilityStudy = usabilityStudy;
+            UsabilityStudyLogUtils.getInstance().init(context);
             return sRingCharBuffer;
         }
         private int normalize(int in) {
@@ -110,6 +126,9 @@ public class LatinIMEUtil {
         }
         public void push(char c, int x, int y) {
             if (!mEnabled) return;
+            if (mUsabilityStudy) {
+                UsabilityStudyLogUtils.getInstance().writeChar(c, x, y);
+            }
             mCharBuf[mEnd] = c;
             mXBuf[mEnd] = x;
             mYBuf[mEnd] = y;
@@ -221,5 +240,128 @@ public class LatinIMEUtil {
         // so, 0 <= distance / afterLength <= 1
         final double weight = 1.0 - (double) distance / afterLength;
         return (score / maximumScore) * weight;
+    }
+
+    public static class UsabilityStudyLogUtils {
+        private static final String TAG = "UsabilityStudyLogUtils";
+        private static final String FILENAME = "log.txt";
+        private static final UsabilityStudyLogUtils sInstance =
+                new UsabilityStudyLogUtils();
+        private File mFile;
+        private File mDirectory;
+        private InputMethodService mIms;
+        private PrintWriter mWriter;
+        private Date mDate;
+        private SimpleDateFormat mDateFormat;
+
+        private UsabilityStudyLogUtils() {
+            mDate = new Date();
+            mDateFormat = new SimpleDateFormat("dd MMM HH:mm:ss.SSS");
+        }
+
+        public static UsabilityStudyLogUtils getInstance() {
+            return sInstance;
+        }
+
+        public void init(InputMethodService ims) {
+            mIms = ims;
+            mDirectory = ims.getFilesDir();
+            createLogFileIfNotExist();
+        }
+
+        private void createLogFileIfNotExist() {
+            if ((mFile == null || !mFile.exists())
+                    && (mDirectory != null && mDirectory.exists())) {
+                try {
+                    mWriter = getPrintWriter(mDirectory, FILENAME, false);
+                } catch (IOException e) {
+                    Log.e(TAG, "Can't create log file.");
+                }
+            }
+        }
+
+        public void writeChar(char c, int x, int y) {
+            String inputChar = String.valueOf(c);
+            switch (c) {
+                case '\n':
+                    inputChar = "<enter>";
+                    break;
+                case '\t':
+                    inputChar = "<tab>";
+                    break;
+                case ' ':
+                    inputChar = "<space>";
+                    break;
+            }
+            UsabilityStudyLogUtils.getInstance().write(inputChar + "\t" + x + "\t" + y);
+            LatinImeLogger.onPrintAllUsabilityStudtyLogs();
+        }
+
+        private void write(String log) {
+            createLogFileIfNotExist();
+            final long currentTime = System.currentTimeMillis();
+            mDate.setTime(currentTime);
+
+            final String printString = String.format("%s\t%d\t%s\n", mDateFormat.format(mDate),
+                    currentTime, log);
+            if (LatinImeLogger.sDBG) {
+                Log.d(TAG, "Write: " + log);
+            }
+            mWriter.print(printString);
+            mWriter.flush();
+        }
+
+        public void printAll() {
+            StringBuffer sb = new StringBuffer();
+            BufferedReader br = getBufferedReader();
+            String line;
+            try {
+                while ((line = br.readLine()) != null) {
+                    sb.append('\n');
+                    sb.append(line);
+                }
+            } catch (IOException e) {
+                Log.e(TAG, "Can't read log file.");
+            } finally {
+                if (LatinImeLogger.sDBG) {
+                    Log.d(TAG, "output all logs\n" + sb.toString());
+                }
+                mIms.getCurrentInputConnection().commitText(sb.toString(), 0);
+                try {
+                    br.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        public void clearAll() {
+            if (mFile != null && mFile.exists()) {
+                if (LatinImeLogger.sDBG) {
+                    Log.d(TAG, "Delete log file.");
+                }
+                mFile.delete();
+                mWriter.close();
+            }
+        }
+
+        private BufferedReader getBufferedReader() {
+            createLogFileIfNotExist();
+            try {
+                return new BufferedReader(new FileReader(mFile));
+            } catch (FileNotFoundException e) {
+                return null;
+            }
+        }
+
+        private PrintWriter getPrintWriter(
+                File dir, String filename, boolean renew) throws IOException {
+            mFile = new File(dir, filename);
+            if (mFile.exists()) {
+                if (renew) {
+                    mFile.delete();
+                }
+            }
+            return new PrintWriter(new FileOutputStream(mFile));
+        }
     }
 }
