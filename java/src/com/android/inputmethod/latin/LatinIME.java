@@ -132,14 +132,10 @@ public class LatinIME extends InputMethodService
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     private static final String PREF_RECORRECTION_ENABLED = "recorrection_enabled";
 
-    private static final int MSG_UPDATE_SUGGESTIONS = 0;
-    private static final int MSG_START_TUTORIAL = 1;
-    private static final int MSG_UPDATE_SHIFT_STATE = 2;
-    private static final int MSG_VOICE_RESULTS = 3;
-    private static final int MSG_UPDATE_OLD_SUGGESTIONS = 4;
-
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
+    private static final int DELAY_UPDATE_SHIFT_STATE = 300;
+    private static final int DELAY_START_TUTORIAL = 500;
 
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
@@ -319,36 +315,84 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    /* package */ Handler mHandler = new Handler() {
+    /* package */ UIHandler mHandler = new UIHandler();
+
+    /* package */ class UIHandler extends Handler {
+        private static final int MSG_UPDATE_SUGGESTIONS = 0;
+        private static final int MSG_UPDATE_OLD_SUGGESTIONS = 1;
+        private static final int MSG_UPDATE_SHIFT_STATE = 2;
+        private static final int MSG_VOICE_RESULTS = 3;
+        private static final int MSG_START_TUTORIAL = 4;
+
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_UPDATE_SUGGESTIONS:
-                    updateSuggestions();
-                    break;
-                case MSG_UPDATE_OLD_SUGGESTIONS:
-                    setOldSuggestions();
-                    break;
-                case MSG_START_TUTORIAL:
-                    if (mTutorial == null) {
-                        if (mKeyboardSwitcher.isInputViewShown()) {
-                            mTutorial = new Tutorial(LatinIME.this, mKeyboardSwitcher);
-                            mTutorial.start();
-                        } else {
-                            // Try again soon if the view is not yet showing
-                            sendMessageDelayed(obtainMessage(MSG_START_TUTORIAL), 100);
-                        }
+            case MSG_UPDATE_SUGGESTIONS:
+                updateSuggestions();
+                break;
+            case MSG_UPDATE_OLD_SUGGESTIONS:
+                setOldSuggestions();
+                break;
+            case MSG_UPDATE_SHIFT_STATE:
+                updateShiftKeyState(getCurrentInputEditorInfo());
+                break;
+            case MSG_VOICE_RESULTS:
+                handleVoiceResults();
+                break;
+            case MSG_START_TUTORIAL:
+                if (mTutorial == null) {
+                    if (mKeyboardSwitcher.isInputViewShown()) {
+                        mTutorial = new Tutorial(LatinIME.this, mKeyboardSwitcher);
+                        mTutorial.start();
+                    } else {
+                        // Try again soon if the view is not yet showing
+                        sendMessageDelayed(obtainMessage(MSG_START_TUTORIAL), 100);
                     }
-                    break;
-                case MSG_UPDATE_SHIFT_STATE:
-                    updateShiftKeyState(getCurrentInputEditorInfo());
-                    break;
-                case MSG_VOICE_RESULTS:
-                    handleVoiceResults();
-                    break;
+                }
+                break;
             }
         }
-    };
+
+        public void postUpdateSuggestions() {
+            removeMessages(MSG_UPDATE_SUGGESTIONS);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), DELAY_UPDATE_SUGGESTIONS);
+        }
+
+        public void cancelUpdateSuggestions() {
+            removeMessages(MSG_UPDATE_SUGGESTIONS);
+        }
+
+        public boolean hasPendingUpdateSuggestions() {
+            return hasMessages(MSG_UPDATE_SUGGESTIONS);
+        }
+
+        public void postUpdateOldSuggestions() {
+            removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_OLD_SUGGESTIONS),
+                    DELAY_UPDATE_OLD_SUGGESTIONS);
+        }
+
+        public void cancelUpdateOldSuggestions() {
+            removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
+        }
+
+        public void postUpdateShiftKeyState() {
+            removeMessages(MSG_UPDATE_SHIFT_STATE);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE), DELAY_UPDATE_SHIFT_STATE);
+        }
+
+        public void cancelUpdateShiftState() {
+            removeMessages(MSG_UPDATE_SHIFT_STATE);
+        }
+
+        public void updateVoiceResults() {
+            sendMessage(obtainMessage(MSG_VOICE_RESULTS));
+        }
+
+        public void startTutorial() {
+            sendMessageDelayed(obtainMessage(MSG_START_TUTORIAL), DELAY_START_TUTORIAL);
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -712,7 +756,7 @@ public class LatinIME extends InputMethodService
 
             // Then look for possible corrections in a delayed fashion
             if (!TextUtils.isEmpty(et.text) && isCursorTouchingWord()) {
-                postUpdateOldSuggestions();
+                mHandler.postUpdateOldSuggestions();
             }
         }
     }
@@ -745,9 +789,9 @@ public class LatinIME extends InputMethodService
         BaseKeyboardView inputView = mKeyboardSwitcher.getInputView();
         if (inputView != null)
             inputView.setForeground(false);
-        // Remove penging messages related to update suggestions
-        mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
-        mHandler.removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
+        // Remove pending messages related to update suggestions
+        mHandler.cancelUpdateSuggestions();
+        mHandler.cancelUpdateOldSuggestions();
     }
 
     @Override
@@ -791,7 +835,7 @@ public class LatinIME extends InputMethodService
                 && mLastSelectionStart != newSelStart)) {
             mComposing.setLength(0);
             mPredicting = false;
-            postUpdateSuggestions();
+            mHandler.postUpdateSuggestions();
             TextEntryState.reset();
             InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
@@ -809,7 +853,7 @@ public class LatinIME extends InputMethodService
             }
         }
         mJustAccepted = false;
-        postUpdateShiftKeyState();
+        mHandler.postUpdateShiftKeyState();
 
         // Make a note of the cursor position
         mLastSelectionStart = newSelStart;
@@ -826,7 +870,7 @@ public class LatinIME extends InputMethodService
                                 && (newSelStart < newSelEnd - 1 || (!mPredicting))
                                 && !mVoiceInputHighlighted) {
                     if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
-                        postUpdateOldSuggestions();
+                        mHandler.postUpdateOldSuggestions();
                     } else {
                         abortCorrection(false);
                         // Show the punctuation suggestions list if the current one is not
@@ -1041,12 +1085,6 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private void postUpdateShiftKeyState() {
-        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
-        // TODO: Should remove this 300ms delay?
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SHIFT_STATE), 300);
-    }
-
     public void updateShiftKeyState(EditorInfo attr) {
         InputConnection ic = getCurrentInputConnection();
         KeyboardSwitcher switcher = mKeyboardSwitcher;
@@ -1146,7 +1184,7 @@ public class LatinIME extends InputMethodService
         mUserDictionary.addWord(word, 128);
         // Suggestion strip should be updated after the operation of adding word to the
         // user dictionary
-        postUpdateSuggestions();
+        mHandler.postUpdateSuggestions();
         return true;
     }
 
@@ -1319,14 +1357,14 @@ public class LatinIME extends InputMethodService
                 if (mComposing.length() == 0) {
                     mPredicting = false;
                 }
-                postUpdateSuggestions();
+                mHandler.postUpdateSuggestions();
             } else {
                 ic.deleteSurroundingText(1, 0);
             }
         } else {
             deleteChar = true;
         }
-        postUpdateShiftKeyState();
+        mHandler.postUpdateShiftKeyState();
         TextEntryState.backspace();
         if (TextEntryState.getState() == TextEntryState.State.UNDO_COMMIT) {
             revertLastWord(deleteChar);
@@ -1364,7 +1402,7 @@ public class LatinIME extends InputMethodService
     }
 
     private void handleShiftInternal(boolean forceNormal) {
-        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
+        mHandler.cancelUpdateShiftState();
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isAlphabetMode()) {
             if (!switcher.isKeyboardAvailable())
@@ -1380,7 +1418,7 @@ public class LatinIME extends InputMethodService
     }
 
     private void handleCapsLock() {
-        mHandler.removeMessages(MSG_UPDATE_SHIFT_STATE);
+        mHandler.cancelUpdateShiftState();
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isAlphabetMode()) {
             if (!switcher.isKeyboardAvailable())
@@ -1461,7 +1499,7 @@ public class LatinIME extends InputMethodService
                 }
                 ic.setComposingText(mComposing, 1);
             }
-            postUpdateSuggestions();
+            mHandler.postUpdateSuggestions();
         } else {
             sendKeyChar((char)primaryCode);
         }
@@ -1482,7 +1520,7 @@ public class LatinIME extends InputMethodService
 
         // Should dismiss the "Touch again to save" message when handling separator
         if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
-            postUpdateSuggestions();
+            mHandler.postUpdateSuggestions();
         }
 
         boolean pickedDefault = false;
@@ -1569,18 +1607,6 @@ public class LatinIME extends InputMethodService
         mWordHistory.add(entry);
     }
 
-    private void postUpdateSuggestions() {
-        mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_SUGGESTIONS),
-                DELAY_UPDATE_SUGGESTIONS);
-    }
-
-    private void postUpdateOldSuggestions() {
-        mHandler.removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_UPDATE_OLD_SUGGESTIONS),
-                DELAY_UPDATE_OLD_SUGGESTIONS);
-    }
-
     private boolean isPredictionOn() {
         return mPredictionOn;
     }
@@ -1617,7 +1643,7 @@ public class LatinIME extends InputMethodService
               }
               setCandidatesViewShown(isCandidateStripVisible());
               updateInputViewShown();
-              postUpdateSuggestions();
+              mHandler.postUpdateSuggestions();
           }});
     }
 
@@ -1730,7 +1756,7 @@ public class LatinIME extends InputMethodService
         }
         mVoiceResults.candidates = candidates;
         mVoiceResults.alternatives = alternatives;
-        mHandler.sendMessage(mHandler.obtainMessage(MSG_VOICE_RESULTS));
+        mHandler.updateVoiceResults();
     }
 
     private void handleVoiceResults() {
@@ -1877,8 +1903,8 @@ public class LatinIME extends InputMethodService
 
     private boolean pickDefaultSuggestion() {
         // Complete any pending candidate query first
-        if (mHandler.hasMessages(MSG_UPDATE_SUGGESTIONS)) {
-            mHandler.removeMessages(MSG_UPDATE_SUGGESTIONS);
+        if (mHandler.hasPendingUpdateSuggestions()) {
+            mHandler.cancelUpdateSuggestions();
             updateSuggestions();
         }
         if (mBestWord != null && mBestWord.length() > 0) {
@@ -1971,7 +1997,7 @@ public class LatinIME extends InputMethodService
             // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
             clearSuggestions();
-            postUpdateOldSuggestions();
+            mHandler.postUpdateOldSuggestions();
         }
         if (showingAddToDictionaryHint) {
             mCandidateView.showAddToDictionaryHint(suggestion);
@@ -2223,7 +2249,7 @@ public class LatinIME extends InputMethodService
             ic.deleteSurroundingText(toDelete, 0);
             ic.setComposingText(mComposing, 1);
             TextEntryState.backspace();
-            postUpdateSuggestions();
+            mHandler.postUpdateSuggestions();
         } else {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
             mJustRevertedSeparator = null;
@@ -2439,7 +2465,7 @@ public class LatinIME extends InputMethodService
     private void checkTutorial(String privateImeOptions) {
         if (privateImeOptions == null) return;
         if (privateImeOptions.equals("com.android.setupwizard:ShowTutorial")) {
-            if (mTutorial == null) startTutorial();
+            if (mTutorial == null) mHandler.startTutorial();
         } else if (privateImeOptions.equals("com.android.setupwizard:HideTutorial")) {
             if (mTutorial != null) {
                 if (mTutorial.close()) {
@@ -2447,10 +2473,6 @@ public class LatinIME extends InputMethodService
                 }
             }
         }
-    }
-
-    private void startTutorial() {
-        mHandler.sendMessageDelayed(mHandler.obtainMessage(MSG_START_TUTORIAL), 500);
     }
 
     // Tutorial.TutorialListener
