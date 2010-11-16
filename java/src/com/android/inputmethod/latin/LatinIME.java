@@ -241,7 +241,6 @@ public class LatinIME extends InputMethodService
 
     // Modifier keys state
     private final ModifierKeyState mShiftKeyState = new ModifierKeyState();
-    private final ModifierKeyState mSymbolKeyState = new ModifierKeyState();
 
     private Tutorial mTutorial;
 
@@ -2323,11 +2322,11 @@ public class LatinIME extends InputMethodService
                 handleShift();
             }
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
-            mSymbolKeyState.onPress();
+            switcher.onPressSymbol();
             changeKeyboardMode();
         } else {
             mShiftKeyState.onOtherKeyPressed();
-            mSymbolKeyState.onOtherKeyPressed();
+            switcher.onOtherKeyPressed();
         }
     }
 
@@ -2352,10 +2351,10 @@ public class LatinIME extends InputMethodService
             }
             mShiftKeyState.onRelease();
         } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
-            if (mSymbolKeyState.isMomentary()) {
+            if (switcher.isSymbolMomentary()) {
                 changeKeyboardMode();
             }
-            mSymbolKeyState.onRelease();
+            switcher.onReleaseSymbol();
         }
     }
 
