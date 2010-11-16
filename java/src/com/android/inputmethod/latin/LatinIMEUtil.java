@@ -280,6 +280,10 @@ public class LatinIMEUtil {
             }
         }
 
+        public void writeBackSpace() {
+            UsabilityStudyLogUtils.getInstance().write("<backspace>\t0\t0");
+        }
+
         public void writeChar(char c, int x, int y) {
             String inputChar = String.valueOf(c);
             switch (c) {
@@ -297,7 +301,7 @@ public class LatinIMEUtil {
             LatinImeLogger.onPrintAllUsabilityStudtyLogs();
         }
 
-        private void write(String log) {
+        public void write(String log) {
             createLogFileIfNotExist();
             final long currentTime = System.currentTimeMillis();
             mDate.setTime(currentTime);
