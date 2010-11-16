@@ -24,6 +24,8 @@ import java.util.List;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    public static boolean sDBG = false;
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     }
 
@@ -67,4 +69,6 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void onSetKeyboard(BaseKeyboard kb) {
     }
 
+    public static void onPrintAllUsabilityStudtyLogs() {
+    }
 }
