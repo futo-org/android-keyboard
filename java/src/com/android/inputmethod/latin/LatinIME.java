@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.latin.LatinIMEUtil.RingCharBuffer;
 import com.android.inputmethod.voice.FieldContext;
-import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceInput;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -63,6 +62,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
 import android.widget.LinearLayout;
 
 import java.io.FileDescriptor;
@@ -70,7 +70,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -108,20 +107,6 @@ public class LatinIME extends InputMethodService
     // For example, the user has a Chinese UI but activates voice input.
     private static final String PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE =
             "has_used_voice_input_unsupported_locale";
-
-    // A list of locales which are supported by default for voice input, unless we get a
-    // different list from Gservices.
-    public static final String DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES =
-            "en " +
-            "en_US " +
-            "en_GB " +
-            "en_AU " +
-            "en_CA " +
-            "en_IE " +
-            "en_IN " +
-            "en_NZ " +
-            "en_SG " +
-            "en_ZA ";
 
     // The private IME option used to indicate that no microphone should be shown for a
     // given text field. For instance this is specified by the search dialog when the
@@ -174,6 +159,7 @@ public class LatinIME extends InputMethodService
     private AlertDialog mVoiceWarningDialog;
 
     private KeyboardSwitcher mKeyboardSwitcher;
+    private SubtypeSwitcher mSubtypeSwitcher;
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
@@ -183,10 +169,6 @@ public class LatinIME extends InputMethodService
     private Hints mHints;
 
     private Resources mResources;
-
-    private String mInputLocale;
-    private String mSystemLocale;
-    private LanguageSwitcher mLanguageSwitcher;
 
     private final StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
@@ -394,20 +376,15 @@ public class LatinIME extends InputMethodService
     @Override
     public void onCreate() {
         LatinImeLogger.init(this);
+        SubtypeSwitcher.init(this);
+        KeyboardSwitcher.init(this);
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
         mResources = getResources();
         final Configuration conf = mResources.getConfiguration();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mLanguageSwitcher = new LanguageSwitcher(this);
-        mLanguageSwitcher.loadLocales(prefs);
-        mKeyboardSwitcher = new KeyboardSwitcher(this, mLanguageSwitcher);
-        mSystemLocale = conf.locale.toString();
-        mLanguageSwitcher.setSystemLocale(conf.locale);
-        String inputLanguage = mLanguageSwitcher.getInputLanguage();
-        if (inputLanguage == null) {
-            inputLanguage = conf.locale.toString();
-        }
+        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
+        mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mReCorrectionEnabled = prefs.getBoolean(PREF_RECORRECTION_ENABLED,
                 getResources().getBoolean(R.bool.default_recorrection_enabled));
 
@@ -415,10 +392,10 @@ public class LatinIME extends InputMethodService
         boolean tryGC = true;
         for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
-                initSuggest(inputLanguage);
+                initSuggest();
                 tryGC = false;
             } catch (OutOfMemoryError e) {
-                tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(inputLanguage, e);
+                tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait("InitSuggest", e);
             }
         }
 
@@ -483,14 +460,12 @@ public class LatinIME extends InputMethodService
         return dict;
     }
 
-    private void initSuggest(String locale) {
-        mInputLocale = locale;
+    private void initSuggest() {
+        updateAutoTextEnabled();
+        String locale = mSubtypeSwitcher.getInputLanguage();
 
         Resources orig = getResources();
-        Configuration conf = orig.getConfiguration();
-        Locale saveLocale = conf.locale;
-        conf.locale = new Locale(locale);
-        orig.updateConfiguration(conf, orig.getDisplayMetrics());
+        Locale savedLocale = mSubtypeSwitcher.changeSystemLocale(new Locale(locale));
         if (mSuggest != null) {
             mSuggest.close();
         }
@@ -500,21 +475,19 @@ public class LatinIME extends InputMethodService
         int[] dictionaries = getDictionary(orig);
         mSuggest = new Suggest(this, dictionaries);
         loadAndSetAutoCompletionThreshold(sp);
-        updateAutoTextEnabled(saveLocale);
         if (mUserDictionary != null) mUserDictionary.close();
-        mUserDictionary = new UserDictionary(this, mInputLocale);
+        mUserDictionary = new UserDictionary(this, locale);
         if (mContactsDictionary == null) {
             mContactsDictionary = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
         }
         if (mAutoDictionary != null) {
             mAutoDictionary.close();
         }
-        mAutoDictionary = new AutoDictionary(this, this, mInputLocale, Suggest.DIC_AUTO);
+        mAutoDictionary = new AutoDictionary(this, this, locale, Suggest.DIC_AUTO);
         if (mUserBigramDictionary != null) {
             mUserBigramDictionary.close();
         }
-        mUserBigramDictionary = new UserBigramDictionary(this, this, mInputLocale,
-                Suggest.DIC_USER);
+        mUserBigramDictionary = new UserBigramDictionary(this, this, locale, Suggest.DIC_USER);
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
         mSuggest.setUserDictionary(mUserDictionary);
         mSuggest.setContactsDictionary(mContactsDictionary);
@@ -523,8 +496,7 @@ public class LatinIME extends InputMethodService
         mWordSeparators = mResources.getString(R.string.word_separators);
         mSentenceSeparators = mResources.getString(R.string.sentence_separators);
 
-        conf.locale = saveLocale;
-        orig.updateConfiguration(conf, orig.getDisplayMetrics());
+        mSubtypeSwitcher.changeSystemLocale(savedLocale);
     }
 
     @Override
@@ -546,18 +518,9 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void onConfigurationChanged(Configuration conf) {
-        // If the system locale changes and is different from the saved
-        // locale (mSystemLocale), then reload the input locale list from the
-        // latin ime settings (shared prefs) and reset the input locale
-        // to the first one.
-        final String systemLocale = conf.locale.toString();
-        if (!TextUtils.equals(systemLocale, mSystemLocale)) {
-            mSystemLocale = systemLocale;
-            mLanguageSwitcher.loadLocales(
-                    PreferenceManager.getDefaultSharedPreferences(this));
-            mLanguageSwitcher.setSystemLocale(conf.locale);
-            toggleLanguage(true, true);
-        }
+        mSubtypeSwitcher.onConfigurationChanged(conf);
+        updateAutoTextEnabled();
+
         // If orientation changed while predicting, commit the change
         if (conf.orientation != mOrientation) {
             InputConnection ic = getCurrentInputConnection();
@@ -1637,11 +1600,7 @@ public class LatinIME extends InputMethodService
         // Clear N-best suggestions
         clearSuggestions();
 
-        FieldContext context = new FieldContext(
-            getCurrentInputConnection(),
-            getCurrentInputEditorInfo(),
-            mLanguageSwitcher.getInputLanguage(),
-            mLanguageSwitcher.getEnabledLanguages());
+        FieldContext context = makeFieldContext();
         mVoiceInput.startListening(context, swipe);
         switchToRecognitionStatusView();
     }
@@ -2218,30 +2177,21 @@ public class LatinIME extends InputMethodService
     }
 
     private void toggleLanguage(boolean reset, boolean next) {
-        if (reset) {
-            mLanguageSwitcher.reset();
-        } else {
-            if (next) {
-                mLanguageSwitcher.next();
-            } else {
-                mLanguageSwitcher.prev();
-            }
-        }
+        mSubtypeSwitcher.toggleLanguage(reset, next);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final int mode = switcher.getKeyboardMode();
         final EditorInfo attribute = getCurrentInputEditorInfo();
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         switcher.loadKeyboard(mode, imeOptions, mVoiceButtonEnabled,
                 mVoiceButtonOnPrimary);
-        initSuggest(mLanguageSwitcher.getInputLanguage());
-        mLanguageSwitcher.persist();
+        initSuggest();
         switcher.updateShiftState();
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
+        mSubtypeSwitcher.onSharedPreferenceChanged(sharedPreferences, key);
         if (PREF_SELECTED_LANGUAGES.equals(key)) {
-            mLanguageSwitcher.loadLocales(sharedPreferences);
             mRefreshKeyboardRequired = true;
         } else if (PREF_RECORRECTION_ENABLED.equals(key)) {
             mReCorrectionEnabled = sharedPreferences.getBoolean(PREF_RECORRECTION_ENABLED,
@@ -2267,7 +2217,6 @@ public class LatinIME extends InputMethodService
     }
 
     public void swipeUp() {
-        //launchSettings();
     }
 
     public void onPress(int primaryCode) {
@@ -2300,8 +2249,8 @@ public class LatinIME extends InputMethodService
         return new FieldContext(
                 getCurrentInputConnection(),
                 getCurrentInputEditorInfo(),
-                mLanguageSwitcher.getInputLanguage(),
-                mLanguageSwitcher.getEnabledLanguages());
+                mSubtypeSwitcher.getInputLanguage(),
+                mSubtypeSwitcher.getEnabledLanguages());
     }
 
     private boolean fieldCanDoVoice(FieldContext fieldContext) {
@@ -2420,11 +2369,10 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private void updateAutoTextEnabled(Locale systemLocale) {
+    private void updateAutoTextEnabled() {
         if (mSuggest == null) return;
-        boolean different =
-                !systemLocale.getLanguage().equalsIgnoreCase(mInputLocale.substring(0, 2));
-        mSuggest.setAutoTextEnabled(!different && mQuickFixes);
+        mSuggest.setAutoTextEnabled(mQuickFixes
+                && SubtypeSwitcher.getInstance().isSystemLocaleSameAsInputLocale());
     }
 
     private void updateSuggestionVisibility(SharedPreferences prefs) {
@@ -2470,19 +2418,8 @@ public class LatinIME extends InputMethodService
         mHasUsedVoiceInputUnsupportedLocale =
                 sp.getBoolean(PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE, false);
 
-        // Get the current list of supported locales and check the current locale against that
-        // list. We cache this value so as not to check it every time the user starts a voice
-        // input. Because this method is called by onStartInputView, this should mean that as
-        // long as the locale doesn't change while the user is keeping the IME open, the
-        // value should never be stale.
-        String supportedLocalesString = SettingsUtil.getSettingsString(
-                getContentResolver(),
-                SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
-                DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
-        ArrayList<String> voiceInputSupportedLocales =
-                newArrayList(supportedLocalesString.split("\\s+"));
-
-        mLocaleSupportedForVoiceInput = voiceInputSupportedLocales.contains(mInputLocale);
+        mLocaleSupportedForVoiceInput = SubtypeSwitcher.getInstance().isVoiceSupported(
+                SubtypeSwitcher.getInstance().getInputLanguage());
 
         mAutoCorrectEnabled = isAutoCorrectEnabled(sp);
         mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(sp);
@@ -2496,9 +2433,9 @@ public class LatinIME extends InputMethodService
             mVoiceButtonOnPrimary = voiceMode.equals(getString(R.string.voice_mode_main));
         }
         updateCorrectionMode();
-        updateAutoTextEnabled(mResources.getConfiguration().locale);
+        updateAutoTextEnabled();
         updateSuggestionVisibility(sp);
-        mLanguageSwitcher.loadLocales(sp);
+        SubtypeSwitcher.getInstance().loadSettings(sp);
     }
 
     /**
@@ -2599,13 +2536,6 @@ public class LatinIME extends InputMethodService
         mOptionsDialog.show();
     }
 
-    public static <E> ArrayList<E> newArrayList(E... elements) {
-        int capacity = (elements.length * 110) / 100 + 5;
-        ArrayList<E> list = new ArrayList<E>(capacity);
-        Collections.addAll(list, elements);
-        return list;
-    }
-
     @Override
     protected void dump(FileDescriptor fd, PrintWriter fout, String[] args) {
         super.dump(fd, fout, args);
@@ -2646,5 +2576,10 @@ public class LatinIME extends InputMethodService
 
     public void onAutoCompletionStateChanged(boolean isAutoCompletion) {
         mKeyboardSwitcher.onAutoCompletionStateChanged(isAutoCompletion);
+    }
+
+    @Override
+    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
+        SubtypeSwitcher.getInstance().onCurrentInputMethodSubtypeChanged(subtype);
     }
 }

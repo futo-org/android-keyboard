@@ -182,13 +182,7 @@ public class LatinIMESettings extends PreferenceActivity
                 // Get the current list of supported locales and check the current locale against
                 // that list, to decide whether to put a warning that voice input will not work in
                 // the current language as part of the pop-up confirmation dialog.
-                String supportedLocalesString = SettingsUtil.getSettingsString(
-                        getContentResolver(),
-                        SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
-                        LatinIME.DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
-                ArrayList<String> voiceInputSupportedLocales =
-                        LatinIME.newArrayList(supportedLocalesString.split("\\s+"));
-                boolean localeSupported = voiceInputSupportedLocales.contains(
+                boolean localeSupported = SubtypeSwitcher.getInstance().isVoiceSupported(
                         Locale.getDefault().toString());
 
                 if (localeSupported) {

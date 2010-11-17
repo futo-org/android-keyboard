@@ -386,10 +386,6 @@ public class LatinKeyboard extends BaseKeyboard {
         return mSpaceKey;
     }
 
-    public boolean isLanguageSwitchEnabled() {
-        return mLocale != null;
-    }
-
     private void updateSpaceBarForLocale(boolean isAutoCompletion, boolean isBlack) {
         final Resources res = mRes;
         // If application locales are explicitly selected.
