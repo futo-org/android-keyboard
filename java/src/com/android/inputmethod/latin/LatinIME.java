@@ -1805,8 +1805,8 @@ public class LatinIME extends InputMethodService
         int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
         mKeyboardSwitcher.setPreferredLetters(nextLettersFrequencies);
 
-        boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasMinimalCorrection();
-        //|| mCorrectionMode == mSuggest.CORRECTION_FULL;
+        boolean correctionAvailable = !mInputTypeNoAutoCorrect && !mJustReverted
+                && mSuggest.hasMinimalCorrection();
         CharSequence typedWord = word.getTypedWord();
         // If we're in basic correct
         boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
