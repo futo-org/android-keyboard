@@ -297,7 +297,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             keyboard.setVoiceMode(
                     hasVoiceKey(xml == R.xml.kbd_symbols || xml == R.xml.kbd_symbols_black),
                     mVoiceButtonEnabled);
-            keyboard.setLanguageSwitcher(mSubtypeSwitcher.getLanguageSwitcher());
             keyboard.setImeOptions(res, id.mMode, id.mImeOptions);
             keyboard.setColorOfSymbolIcons(isBlackSym(id.mColorScheme));
 

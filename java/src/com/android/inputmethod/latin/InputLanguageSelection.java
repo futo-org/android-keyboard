@@ -74,7 +74,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
             CheckBoxPreference pref = new CheckBoxPreference(this);
             Locale locale = mAvailableLanguages.get(i).locale;
-            pref.setTitle(LanguageSwitcher.toTitleCase(locale.getDisplayName(locale)));
+            pref.setTitle(SubtypeSwitcher.getLanguageName(locale));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
             if (hasDictionary(locale)) {
@@ -167,7 +167,7 @@ public class InputLanguageSelection extends PreferenceActivity {
 
                 if (finalSize == 0) {
                     preprocess[finalSize++] =
-                            new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(l)), l);
+                            new Loc(SubtypeSwitcher.getLanguageName(l), l);
                 } else {
                     // check previous entry:
                     //  same lang and a country -> upgrade to full name and
@@ -175,15 +175,15 @@ public class InputLanguageSelection extends PreferenceActivity {
                     //  diff lang -> insert ours with lang-only name
                     if (preprocess[finalSize-1].locale.getLanguage().equals(
                             language)) {
-                        preprocess[finalSize-1].label = LanguageSwitcher.toTitleCase(
-                                preprocess[finalSize-1].locale.getDisplayName());
+                        preprocess[finalSize-1].label = SubtypeSwitcher.getLanguageName(
+                                preprocess[finalSize-1].locale);
                         preprocess[finalSize++] =
-                                new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName()), l);
+                                new Loc(SubtypeSwitcher.getLanguageName(l), l);
                     } else {
                         String displayName;
                         if (s.equals("zz_ZZ")) {
                         } else {
-                            displayName = LanguageSwitcher.toTitleCase(l.getDisplayName(l));
+                            displayName = SubtypeSwitcher.getLanguageName(l);
                             preprocess[finalSize++] = new Loc(displayName, l);
                         }
                     }

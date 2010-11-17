@@ -932,7 +932,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                 || tracker.isSpaceKey(keyIndex) || tracker.isSpaceKey(oldKeyIndex);
         // If key changed and preview is on or the key is space (language switch is enabled)
         if (oldKeyIndex != keyIndex && (mShowPreview || (hidePreviewOrShowSpaceKeyPreview
-                && SubtypeSwitcher.getInstance().isLanguageSwitchEnabled()))) {
+                && SubtypeSwitcher.getInstance().needsToDisplayLanguage()))) {
             if (keyIndex == NOT_A_KEY) {
                 mHandler.cancelPopupPreview();
                 mHandler.dismissPreview(mDelayAfterPreview);
