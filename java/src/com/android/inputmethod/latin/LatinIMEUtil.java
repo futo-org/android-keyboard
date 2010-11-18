@@ -21,6 +21,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Process;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.util.Log;
@@ -172,7 +175,7 @@ public class LatinIMEUtil {
             }
         }
         public String getLastString() {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             for (int i = 0; i < mLength; ++i) {
                 char c = mCharBuf[normalize(mEnd - 1 - i)];
                 if (!((LatinIME)mContext).isWordSeparator(c)) {
@@ -247,16 +250,22 @@ public class LatinIMEUtil {
         private static final String FILENAME = "log.txt";
         private static final UsabilityStudyLogUtils sInstance =
                 new UsabilityStudyLogUtils();
+        private final Handler mLoggingHandler;
         private File mFile;
         private File mDirectory;
         private InputMethodService mIms;
         private PrintWriter mWriter;
-        private Date mDate;
-        private SimpleDateFormat mDateFormat;
+        private final Date mDate;
+        private final SimpleDateFormat mDateFormat;
 
         private UsabilityStudyLogUtils() {
             mDate = new Date();
             mDateFormat = new SimpleDateFormat("dd MMM HH:mm:ss.SSS");
+
+            HandlerThread handlerThread = new HandlerThread("UsabilityStudyLogUtils logging task",
+                    Process.THREAD_PRIORITY_BACKGROUND);
+            handlerThread.start();
+            mLoggingHandler = new Handler(handlerThread.getLooper());
         }
 
         public static UsabilityStudyLogUtils getInstance() {
@@ -266,7 +275,6 @@ public class LatinIMEUtil {
         public void init(InputMethodService ims) {
             mIms = ims;
             mDirectory = ims.getFilesDir();
-            createLogFileIfNotExist();
         }
 
         private void createLogFileIfNotExist() {
@@ -301,51 +309,63 @@ public class LatinIMEUtil {
             LatinImeLogger.onPrintAllUsabilityStudtyLogs();
         }
 
-        public void write(String log) {
-            createLogFileIfNotExist();
-            final long currentTime = System.currentTimeMillis();
-            mDate.setTime(currentTime);
+        public void write(final String log) {
+            mLoggingHandler.post(new Runnable() {
+                public void run() {
+                    createLogFileIfNotExist();
+                    final long currentTime = System.currentTimeMillis();
+                    mDate.setTime(currentTime);
 
-            final String printString = String.format("%s\t%d\t%s\n", mDateFormat.format(mDate),
-                    currentTime, log);
-            if (LatinImeLogger.sDBG) {
-                Log.d(TAG, "Write: " + log);
-            }
-            mWriter.print(printString);
-            mWriter.flush();
+                    final String printString = String.format("%s\t%d\t%s\n",
+                            mDateFormat.format(mDate), currentTime, log);
+                    if (LatinImeLogger.sDBG) {
+                        Log.d(TAG, "Write: " + log);
+                    }
+                    mWriter.print(printString);
+                }
+            });
         }
 
         public void printAll() {
-            StringBuffer sb = new StringBuffer();
-            BufferedReader br = getBufferedReader();
-            String line;
-            try {
-                while ((line = br.readLine()) != null) {
-                    sb.append('\n');
-                    sb.append(line);
+            mLoggingHandler.post(new Runnable() {
+                public void run() {
+                    mWriter.flush();
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader br = getBufferedReader();
+                    String line;
+                    try {
+                        while ((line = br.readLine()) != null) {
+                            sb.append('\n');
+                            sb.append(line);
+                        }
+                    } catch (IOException e) {
+                        Log.e(TAG, "Can't read log file.");
+                    } finally {
+                        if (LatinImeLogger.sDBG) {
+                            Log.d(TAG, "output all logs\n" + sb.toString());
+                        }
+                        mIms.getCurrentInputConnection().commitText(sb.toString(), 0);
+                        try {
+                            br.close();
+                        } catch (IOException e) {
+                        }
+                    }
                 }
-            } catch (IOException e) {
-                Log.e(TAG, "Can't read log file.");
-            } finally {
-                if (LatinImeLogger.sDBG) {
-                    Log.d(TAG, "output all logs\n" + sb.toString());
-                }
-                mIms.getCurrentInputConnection().commitText(sb.toString(), 0);
-                try {
-                    br.close();
-                } catch (IOException e) {
-                }
-            }
+            });
         }
 
         public void clearAll() {
-            if (mFile != null && mFile.exists()) {
-                if (LatinImeLogger.sDBG) {
-                    Log.d(TAG, "Delete log file.");
+            mLoggingHandler.post(new Runnable() {
+                public void run() {
+                    if (mFile != null && mFile.exists()) {
+                        if (LatinImeLogger.sDBG) {
+                            Log.d(TAG, "Delete log file.");
+                        }
+                        mFile.delete();
+                        mWriter.close();
+                    }
                 }
-                mFile.delete();
-                mWriter.close();
-            }
+            });
         }
 
         private BufferedReader getBufferedReader() {
@@ -365,7 +385,7 @@ public class LatinIMEUtil {
                     mFile.delete();
                 }
             }
-            return new PrintWriter(new FileOutputStream(mFile));
+            return new PrintWriter(new FileOutputStream(mFile), true /* autoFlush */);
         }
     }
 }
