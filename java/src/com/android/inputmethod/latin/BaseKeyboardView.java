@@ -929,10 +929,11 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         // the space key preview and 3) pointer moves off the space key to other letter key, we
         // should hide the preview of the previous key.
         final boolean hidePreviewOrShowSpaceKeyPreview = (tracker == null)
-                || tracker.isSpaceKey(keyIndex) || tracker.isSpaceKey(oldKeyIndex);
+                || (SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER
+                        && SubtypeSwitcher.getInstance().needsToDisplayLanguage()
+                        && (tracker.isSpaceKey(keyIndex) || tracker.isSpaceKey(oldKeyIndex)));
         // If key changed and preview is on or the key is space (language switch is enabled)
-        if (oldKeyIndex != keyIndex && (mShowPreview || (hidePreviewOrShowSpaceKeyPreview
-                && SubtypeSwitcher.getInstance().needsToDisplayLanguage()))) {
+        if (oldKeyIndex != keyIndex && (mShowPreview || (hidePreviewOrShowSpaceKeyPreview))) {
             if (keyIndex == NOT_A_KEY) {
                 mHandler.cancelPopupPreview();
                 mHandler.dismissPreview(mDelayAfterPreview);

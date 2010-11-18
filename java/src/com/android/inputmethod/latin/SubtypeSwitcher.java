@@ -74,7 +74,7 @@ public class SubtypeSwitcher {
     // TODO: Cache the value
     public boolean needsToDisplayLanguage() {
      // TODO: Takes care of two-char locale such as "en" in addition to "en_US"
-        return !(getEnabledKeyboardLocaleCount() == 1 && getSystemLocale().getLanguage(
+        return !(getEnabledKeyboardLocaleCount() <= 1 && getSystemLocale().getLanguage(
                 ).equalsIgnoreCase(getInputLocale().getLanguage()));
     }
 
