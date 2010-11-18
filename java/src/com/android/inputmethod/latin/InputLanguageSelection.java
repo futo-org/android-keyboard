@@ -37,7 +37,7 @@ public class InputLanguageSelection extends PreferenceActivity {
     private String mSelectedLanguages;
     private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
     private static final String[] BLACKLIST_LANGUAGES = {
-        "ko", "ja", "zh", "el"
+        "ko", "ja", "zh", "el", "zz"
     };
 
     private static class Loc implements Comparable<Object> {
@@ -74,7 +74,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
             CheckBoxPreference pref = new CheckBoxPreference(this);
             Locale locale = mAvailableLanguages.get(i).locale;
-            pref.setTitle(SubtypeSwitcher.getLanguageName(locale));
+            pref.setTitle(SubtypeSwitcher.getFullDisplayName(locale, true));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
             if (hasDictionary(locale)) {
@@ -167,7 +167,7 @@ public class InputLanguageSelection extends PreferenceActivity {
 
                 if (finalSize == 0) {
                     preprocess[finalSize++] =
-                            new Loc(SubtypeSwitcher.getLanguageName(l), l);
+                            new Loc(SubtypeSwitcher.getFullDisplayName(l, true), l);
                 } else {
                     // check previous entry:
                     //  same lang and a country -> upgrade to full name and
@@ -175,15 +175,15 @@ public class InputLanguageSelection extends PreferenceActivity {
                     //  diff lang -> insert ours with lang-only name
                     if (preprocess[finalSize-1].locale.getLanguage().equals(
                             language)) {
-                        preprocess[finalSize-1].label = SubtypeSwitcher.getLanguageName(
-                                preprocess[finalSize-1].locale);
+                        preprocess[finalSize-1].label = SubtypeSwitcher.getFullDisplayName(
+                                preprocess[finalSize-1].locale, false);
                         preprocess[finalSize++] =
-                                new Loc(SubtypeSwitcher.getLanguageName(l), l);
+                                new Loc(SubtypeSwitcher.getFullDisplayName(l, false), l);
                     } else {
                         String displayName;
                         if (s.equals("zz_ZZ")) {
                         } else {
-                            displayName = SubtypeSwitcher.getLanguageName(l);
+                            displayName = SubtypeSwitcher.getFullDisplayName(l, true);
                             preprocess[finalSize++] = new Loc(displayName, l);
                         }
                     }

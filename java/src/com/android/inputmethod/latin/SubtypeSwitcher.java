@@ -18,14 +18,18 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.voice.SettingsUtil;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -33,12 +37,34 @@ import java.util.Locale;
 public class SubtypeSwitcher {
     // This flag indicates if we support language switching by swipe on space bar.
     // We may or may not draw the current language on space bar regardless of this flag.
-    public static final boolean USE_SPACEBAR_LANGUAGE_SWITCHER = true;
+    public static final boolean USE_SPACEBAR_LANGUAGE_SWITCHER = false;
+    private static final boolean DBG = false;
     private static final String TAG = "SubtypeSwitcher";
+
+    private static final char LOCALE_SEPARATER = '_';
+    private static final String KEYBOARD_MODE = "keyboard";
+    private static final String VOICE_MODE = "voice";
+    private final TextUtils.SimpleStringSplitter mLocaleSplitter =
+            new TextUtils.SimpleStringSplitter(LOCALE_SEPARATER);
+
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
-    private InputMethodService mService;
-    private Resources mResources;
+    private /* final */ InputMethodService mService;
+    private /* final */ InputMethodManager mImm;
+    private /* final */ Resources mResources;
+    private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
+            new ArrayList<InputMethodSubtype>();
+    private final ArrayList<String> mEnabledLanguagesOfCurrentInputMethod = new ArrayList<String>();
+
+    /*-----------------------------------------------------------*/
+    // Variants which should be changed only by reload functions.
     private Locale mSystemLocale;
+    private Locale mInputLocale;
+    private String mInputLocaleStr;
+    private String mMode;
+    private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
+    private boolean mNeedsToDisplayLanguage;
+    private boolean mIsSystemLanguageSameAsInputLanguage;
+    /*-----------------------------------------------------------*/
 
     public static SubtypeSwitcher getInstance() {
         return sInstance;
@@ -47,16 +73,97 @@ public class SubtypeSwitcher {
     public static void init(LatinIME service) {
         sInstance.mService = service;
         sInstance.mResources = service.getResources();
-        sInstance.mSystemLocale = sInstance.mResources.getConfiguration().locale;
+        sInstance.mImm = (InputMethodManager) service.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
             sInstance.initLanguageSwitcher(service);
         }
+
+        sInstance.updateAllParameters();
     }
 
     private SubtypeSwitcher() {
     }
 
-    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
+    // Update all parameters stored in SubtypeSwitcher.
+    // Only configuration changed event is allowed to call this because this is heavy.
+    private void updateAllParameters() {
+        mSystemLocale = mResources.getConfiguration().locale;
+        updateSubtype(mImm.getCurrentInputMethodSubtype());
+        updateParametersOnStartInputView();
+    }
+
+    // Update parameters which are changed outside LatinIME. This parameters affect UI so they
+    // should be updated every time onStartInputview.
+    public void updateParametersOnStartInputView() {
+        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+            updateForSpaceBarLanguageSwitch();
+        } else {
+            updateEnabledSubtypes();
+        }
+    }
+
+    // Reload enabledSubtypes from the framework.
+    private void updateEnabledSubtypes() {
+        boolean foundCurrentSubtypeBecameDisabled = true;
+        mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(null);
+        mEnabledLanguagesOfCurrentInputMethod.clear();
+        mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
+        for (InputMethodSubtype ims: mAllEnabledSubtypesOfCurrentInputMethod) {
+            final String locale = ims.getLocale();
+            final String mode = ims.getMode();
+            mLocaleSplitter.setString(locale);
+            if (mLocaleSplitter.hasNext()) {
+                mEnabledLanguagesOfCurrentInputMethod.add(mLocaleSplitter.next());
+            }
+            if (locale.equals(mInputLocaleStr) && mode.equals(mMode)) {
+                foundCurrentSubtypeBecameDisabled = false;
+            }
+            if (KEYBOARD_MODE.equals(ims.getMode())) {
+                mEnabledKeyboardSubtypesOfCurrentInputMethod.add(ims);
+            }
+        }
+        mNeedsToDisplayLanguage = !(getEnabledKeyboardLocaleCount() <= 1
+                && mIsSystemLanguageSameAsInputLanguage);
+        if (foundCurrentSubtypeBecameDisabled) {
+            updateSubtype(mImm.getCurrentInputMethodSubtype());
+        }
+    }
+
+    // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
+    public void updateSubtype(InputMethodSubtype newSubtype) {
+        if (DBG) {
+            Log.w(TAG, "Update subtype to:" + newSubtype.getLocale() + "," + newSubtype.getMode());
+        }
+        updateInputLocale(newSubtype.getLocale());
+        mMode = newSubtype.getMode();
+    }
+
+    // Update the current input locale from Locale string.
+    private void updateInputLocale(String inputLocaleStr) {
+        // example: inputLocaleStr = "en_US" "en" ""
+        // "en_US" --> language: en  & country: US
+        // "en" --> language: en
+        // "" --> the system locale
+        mLocaleSplitter.setString(inputLocaleStr);
+        if (mLocaleSplitter.hasNext()) {
+            String language = mLocaleSplitter.next();
+            if (mLocaleSplitter.hasNext()) {
+                mInputLocale = new Locale(language, mLocaleSplitter.next());
+            } else {
+                mInputLocale = new Locale(language);
+            }
+            mInputLocaleStr = inputLocaleStr;
+        } else {
+            mInputLocale = mSystemLocale;
+            String country = mSystemLocale.getCountry();
+            mInputLocaleStr = mSystemLocale.getLanguage()
+                    + (TextUtils.isEmpty(country) ? "" : "_" + mSystemLocale.getLanguage());
+        }
+        mIsSystemLanguageSameAsInputLanguage = getSystemLocale().getLanguage().equalsIgnoreCase(
+                getInputLocale().getLanguage());
+        mNeedsToDisplayLanguage = !(getEnabledKeyboardLocaleCount() <= 1
+                && mIsSystemLanguageSameAsInputLanguage);
     }
 
     //////////////////////////////////
@@ -66,82 +173,94 @@ public class SubtypeSwitcher {
     public int getEnabledKeyboardLocaleCount() {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
             return mLanguageSwitcher.getLocaleCount();
+        } else {
+            return mEnabledKeyboardSubtypesOfCurrentInputMethod.size();
         }
-        // TODO: Implement for no legacy mode
-        return 0;
     }
 
-    // TODO: Cache the value
     public boolean needsToDisplayLanguage() {
-     // TODO: Takes care of two-char locale such as "en" in addition to "en_US"
-        return !(getEnabledKeyboardLocaleCount() <= 1 && getSystemLocale().getLanguage(
-                ).equalsIgnoreCase(getInputLocale().getLanguage()));
+        return mNeedsToDisplayLanguage;
     }
 
     public Locale getInputLocale() {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
             return mLanguageSwitcher.getInputLocale();
+        } else {
+            return mInputLocale;
         }
-        // TODO: Implement for no legacy mode
-        return null;
     }
 
-    public String getInputLanguage() {
-        String inputLanguage = null;
+    public String getInputLocaleStr() {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+            String inputLanguage = null;
             inputLanguage = mLanguageSwitcher.getInputLanguage();
+            // Should return system locale if there is no Language available.
+            if (inputLanguage == null) {
+                inputLanguage = getSystemLocale().getLanguage();
+            }
+            return inputLanguage;
+        } else {
+            return mInputLocaleStr;
         }
-        // Should return system locale if there is no Language available.
-        if (inputLanguage == null) {
-            inputLanguage = getSystemLocale().getLanguage();
-        }
-        return inputLanguage;
     }
 
     public String[] getEnabledLanguages() {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
             return mLanguageSwitcher.getEnabledLanguages();
+        } else {
+            return mEnabledLanguagesOfCurrentInputMethod.toArray(
+                    new String[mEnabledLanguagesOfCurrentInputMethod.size()]);
         }
-        // TODO: Implement for no legacy mode
-        return null;
     }
 
     public Locale getSystemLocale() {
-        return mSystemLocale;
+        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+            return mLanguageSwitcher.getSystemLocale();
+        } else {
+            return mSystemLocale;
+        }
     }
 
-    // TODO: Cache the value for faster processing.
-    public boolean isSystemLocaleSameAsInputLocale() {
-        // TODO: Takes care of two-char locale such as "en" in addition to "en_US"
-        return getSystemLocale().getLanguage().equalsIgnoreCase(
-                getInputLanguage().substring(0, 2));
+    public boolean isSystemLanguageSameAsInputLanguage() {
+        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+            return getSystemLocale().getLanguage().equalsIgnoreCase(
+                    getInputLocaleStr().substring(0, 2));
+        } else {
+            return mIsSystemLanguageSameAsInputLanguage;
+        }
     }
 
     public void onConfigurationChanged(Configuration conf) {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
-            // If the system locale changes and is different from the saved
-            // locale (mSystemLocale), then reload the input locale list from the
-            // latin ime settings (shared prefs) and reset the input locale
-            // to the first one.
-            final Locale systemLocale = conf.locale;
-            if (!TextUtils.equals(systemLocale.toString(), mSystemLocale.toString())) {
-                mSystemLocale = systemLocale;
-                mLanguageSwitcher.loadLocales(
-                        PreferenceManager.getDefaultSharedPreferences(mService));
+        final Locale systemLocale = conf.locale;
+        // If system configuration was changed, update all parameters.
+        if (!TextUtils.equals(systemLocale.toString(), mSystemLocale.toString())) {
+            if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+                // If the system locale changes and is different from the saved
+                // locale (mSystemLocale), then reload the input locale list from the
+                // latin ime settings (shared prefs) and reset the input locale
+                // to the first one.
+                mLanguageSwitcher.loadLocales(PreferenceManager
+                        .getDefaultSharedPreferences(mService));
                 mLanguageSwitcher.setSystemLocale(systemLocale);
-                toggleLanguage(true, true);
+            } else {
+                updateAllParameters();
             }
-            return;
         }
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
-            mLanguageSwitcher.loadLocales(sharedPreferences);
-            return;
+            if (LatinIME.PREF_SELECTED_LANGUAGES.equals(key)) {
+                mLanguageSwitcher.loadLocales(sharedPreferences);
+            }
         }
     }
 
+    /**
+     * Change system locale for this application
+     * @param newLocale
+     * @return oldLocale
+     */
     public Locale changeSystemLocale(Locale newLocale) {
         Configuration conf = mResources.getConfiguration();
         Locale oldLocale = conf.locale;
@@ -150,16 +269,25 @@ public class SubtypeSwitcher {
         return oldLocale;
     }
 
-    ////////////////////////////////////////////
-    // Legacy Language Switch support //
-    ////////////////////////////////////////////
+    //////////////////////////////////////
+    // SpaceBar Language Switch support //
+    //////////////////////////////////////
+
     private LanguageSwitcher mLanguageSwitcher;
 
-    public static String getLanguageName(Locale locale) {
+    public static String getFullDisplayName(Locale locale, boolean returnsNameInThisLocale) {
+        if (returnsNameInThisLocale) {
+            return toTitleCase(locale.getDisplayName(locale));
+        } else {
+            return toTitleCase(locale.getDisplayName());
+        }
+    }
+
+    public static String getDisplayLanguage(Locale locale) {
         return toTitleCase(locale.getDisplayLanguage(locale));
     }
 
-    public static String getShortLanguageName(Locale locale) {
+    public static String getShortDisplayLanguage(Locale locale) {
         return toTitleCase(locale.getLanguage());
     }
 
@@ -170,25 +298,34 @@ public class SubtypeSwitcher {
         return Character.toUpperCase(s.charAt(0)) + s.substring(1);
     }
 
+    private void updateForSpaceBarLanguageSwitch() {
+        // We need to update mNeedsToDisplayLanguage in onStartInputView because
+        // getEnabledKeyboardLocaleCount could have been changed.
+        mNeedsToDisplayLanguage = !(getEnabledKeyboardLocaleCount() <= 1
+                && getSystemLocale().getLanguage().equalsIgnoreCase(
+                        getInputLocale().getLanguage()));
+    }
+
     public String getInputLanguageName() {
-        return getLanguageName(getInputLocale());
+        return getDisplayLanguage(getInputLocale());
     }
 
     public String getNextInputLanguageName() {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
-            return getLanguageName(mLanguageSwitcher.getNextInputLocale());
+            return getDisplayLanguage(mLanguageSwitcher.getNextInputLocale());
+        } else {
+            return "";
         }
-        return "";
     }
 
     public String getPreviousInputLanguageName() {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
-            return getLanguageName(mLanguageSwitcher.getPrevInputLocale());
+            return getDisplayLanguage(mLanguageSwitcher.getPrevInputLocale());
+        } else {
+            return "";
         }
-        return "";
     }
 
-    // TODO: This can be an array of String
     // A list of locales which are supported by default for voice input, unless we get a
     // different list from Gservices.
     private static final String DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES =
@@ -225,16 +362,18 @@ public class SubtypeSwitcher {
     }
 
     public void toggleLanguage(boolean reset, boolean next) {
-        if (reset) {
-            mLanguageSwitcher.reset();
-        } else {
-            if (next) {
-                mLanguageSwitcher.next();
+        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+            if (reset) {
+                mLanguageSwitcher.reset();
             } else {
-                mLanguageSwitcher.prev();
+                if (next) {
+                    mLanguageSwitcher.next();
+                } else {
+                    mLanguageSwitcher.prev();
+                }
             }
+            mLanguageSwitcher.persist();
         }
-        mLanguageSwitcher.persist();
     }
 
     private void initLanguageSwitcher(LatinIME service) {

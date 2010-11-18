@@ -419,7 +419,7 @@ public class LatinKeyboard extends BaseKeyboard {
         final Rect bounds = new Rect();
 
         // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = SubtypeSwitcher.getLanguageName(locale);
+        String language = SubtypeSwitcher.getDisplayLanguage(locale);
         int textWidth = getTextWidth(paint, language, origTextSize, bounds);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(maxTextWidth / textWidth, 1.0f);
@@ -435,7 +435,7 @@ public class LatinKeyboard extends BaseKeyboard {
             textSize = origTextSize;
         }
         if (useShortName) {
-            language = SubtypeSwitcher.getShortLanguageName(locale);
+            language = SubtypeSwitcher.getShortDisplayLanguage(locale);
             textWidth = getTextWidth(paint, language, origTextSize, bounds);
             textSize = origTextSize * Math.min(maxTextWidth / textWidth, 1.0f);
         }
