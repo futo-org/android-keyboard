@@ -80,7 +80,7 @@
         latin:rowEdgeFlags="bottom"
     >
         <Key
-            latin:codes="@integer/key_symbol"
+            latin:codes="@integer/key_switch_alpha_symbol"
             latin:keyLabel="@string/label_phone_key"
             latin:keyEdgeFlags="left" />
         <Key

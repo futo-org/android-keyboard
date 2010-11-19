@@ -25,6 +25,8 @@
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
+    <include
+        latin:keyboardLayout="@xml/kbd_functional_key_style" />
     <Row
         latin:rowEdgeFlags="top"
     >
@@ -40,8 +42,8 @@
             latin:keyIcon="@drawable/sym_keyboard_num3" />
         <Key
             latin:keyLabel="-"
+            latin:keyStyle="functionalKeyStyle"
             latin:keyWidth="20%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -57,8 +59,8 @@
             latin:keyIcon="@drawable/sym_keyboard_num6" />
         <Key
             latin:keyLabel="."
+            latin:keyStyle="functionalKeyStyle"
             latin:keyWidth="20%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -73,19 +75,15 @@
             latin:codes="57"
             latin:keyIcon="@drawable/sym_keyboard_num9" />
         <Key
-            latin:codes="@integer/key_delete"
-            latin:keyIcon="@drawable/sym_keyboard_delete"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="20%p"
-            latin:isModifier="true"
-            latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
         latin:rowEdgeFlags="bottom"
     >
         <Key
-            latin:codes="@integer/key_symbol"
+            latin:codes="@integer/key_switch_alpha_symbol"
             latin:keyIcon="@drawable/sym_keyboard_numalt"
             latin:iconPreview="@drawable/sym_keyboard_feedback_numalt"
             latin:keyEdgeFlags="left" />
@@ -97,10 +95,8 @@
             latin:keyIcon="@drawable/sym_keyboard_space"
             latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
         <Key
-            latin:codes="@integer/key_return"
-            latin:keyIcon="@drawable/sym_keyboard_return"
+            latin:keyStyle="returnKeyStyle"
             latin:keyWidth="20%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

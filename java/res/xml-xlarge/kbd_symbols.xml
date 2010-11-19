@@ -82,8 +82,8 @@
         latin:keyWidth="8.157%p"
     >
         <Key
-            latin:codes="@integer/key_symbol"
-            latin:keyLabel="@string/label_alpha_key"
+            latin:codes="@integer/key_switch_alpha_symbol"
+            latin:keyLabel="@string/label_to_alpha_key"
             latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:keyWidth="11.167%p"
             latin:isModifier="true"

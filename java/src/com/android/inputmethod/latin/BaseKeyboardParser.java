@@ -83,27 +83,25 @@ import java.util.List;
  *     &gt;/default&lt;
  *   &gt;/switch&lt;
  * </pre>
- *
- * TODO: These are some random ideas to improve this parser.
- * - can specify keyWidth attribute by multiplication of default keyWidth
- *   for example: keyWidth="200%b" ("b" stands for "base")
- * - can declare style and specify styles within tags.
- *   for example:
+ * You can declare Key style and specify styles within Key tags.
+ * <pre>
  *     &gt;switch&lt;
  *       &gt;case colorScheme="white"&lt;
- *         &gt;declare-style name="shift-key" parentStyle="modifier-key"&lt;
- *           &gt;item name="keyIcon"&lt;@drawable/sym_keyboard_shift"&gt;/item&lt;
- *         &gt;/declare-style&lt;
+ *         &gt;key-style styleName="shift-key" parentStyle="modifier-key"
+ *           keyIcon="@drawable/sym_keyboard_shift"
+ *         /&lt;
  *       &gt;/case&lt;
  *       &gt;case colorScheme="black"&lt;
- *         &gt;declare-style name="shift-key" parentStyle="modifier-key"&lt;
- *           &gt;item name="keyIcon"&lt;@drawable/sym_bkeyboard_shift"&gt;/item&lt;
- *         &gt;/declare-style&lt;
+ *         &gt;key-style styleName="shift-key" parentStyle="modifier-key"
+ *           keyIcon="@drawable/sym_bkeyboard_shift"
+ *         /&lt;
  *       &gt;/case&lt;
  *     &gt;/switch&lt;
  *     ...
- *     &gt;Key include-style="shift-key" ... /&lt;
+ *     &gt;Key keyStyle="shift-key" ... /&lt;
+ * </pre>
  */
+
 public class BaseKeyboardParser {
     private static final String TAG = "BaseKeyboardParser";
     private static final boolean DEBUG_TAG = false;
@@ -118,6 +116,7 @@ public class BaseKeyboardParser {
     private static final String TAG_SWITCH = "switch";
     private static final String TAG_CASE = "case";
     private static final String TAG_DEFAULT = "default";
+    private static final String TAG_KEY_STYLE = "key-style";
 
     private final BaseKeyboard mKeyboard;
     private final Resources mResources;
@@ -127,6 +126,7 @@ public class BaseKeyboardParser {
     private int mMaxRowWidth = 0;
     private int mTotalHeight = 0;
     private Row mCurrentRow = null;
+    private final KeyStyles mKeyStyles = new KeyStyles();
 
     public BaseKeyboardParser(BaseKeyboard keyboard, Resources res) {
         mKeyboard = keyboard;
@@ -192,6 +192,8 @@ public class BaseKeyboardParser {
                     parseIncludeKeyboardContent(parser, keys);
                 } else if (TAG_SWITCH.equals(tag)) {
                     parseSwitchKeyboardContent(parser, keys);
+                } else if (TAG_KEY_STYLE.equals(tag)) {
+                    parseKeyStyle(parser, keys);
                 } else {
                     throw new IllegalStartTag(parser, TAG_ROW);
                 }
@@ -205,6 +207,8 @@ public class BaseKeyboardParser {
                     break;
                 } else if (TAG_MERGE.equals(tag)) {
                     break;
+                } else if (TAG_KEY_STYLE.equals(tag)) {
+                    continue;
                 } else {
                     throw new IllegalEndTag(parser, TAG_ROW);
                 }
@@ -227,6 +231,8 @@ public class BaseKeyboardParser {
                     parseIncludeRowContent(parser, row, keys);
                 } else if (TAG_SWITCH.equals(tag)) {
                     parseSwitchRowContent(parser, row, keys);
+                } else if (TAG_KEY_STYLE.equals(tag)) {
+                    parseKeyStyle(parser, keys);
                 } else {
                     throw new IllegalStartTag(parser, TAG_KEY);
                 }
@@ -241,6 +247,8 @@ public class BaseKeyboardParser {
                     break;
                 } else if (TAG_MERGE.equals(tag)) {
                     break;
+                } else if (TAG_KEY_STYLE.equals(tag)) {
+                    continue;
                 } else {
                     throw new IllegalEndTag(parser, TAG_KEY);
                 }
@@ -253,7 +261,8 @@ public class BaseKeyboardParser {
         if (keys == null) {
             checkEndTag(TAG_KEY, parser);
         } else {
-            Key key = mKeyboard.createKeyFromXml(mResources, row, mCurrentX, mCurrentY, parser);
+            Key key = mKeyboard.createKeyFromXml(mResources, row, mCurrentX, mCurrentY, parser,
+                    mKeyStyles);
             checkEndTag(TAG_KEY, parser);
             keys.add(key);
             if (key.codes[0] == BaseKeyboard.KEYCODE_SHIFT)
@@ -439,6 +448,24 @@ public class BaseKeyboardParser {
         return true;
     }
 
+    private void parseKeyStyle(XmlResourceParser parser, List<Key> keys)
+            throws XmlPullParserException, IOException {
+        TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                R.styleable.BaseKeyboard_KeyStyle);
+        TypedArray keyAttrs = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                R.styleable.BaseKeyboard_Key);
+        try {
+            if (!a.hasValue(R.styleable.BaseKeyboard_KeyStyle_styleName))
+                throw new ParseException("<" + TAG_KEY_STYLE
+                        + "/> needs styleName attribute", parser);
+            if (keys != null)
+                mKeyStyles.parseKeyStyleAttributes(a, keyAttrs, parser);
+        } finally {
+            a.recycle();
+            keyAttrs.recycle();
+        }
+    }
+
     private static void checkEndTag(String tag, XmlResourceParser parser)
             throws XmlPullParserException, IOException {
         if (parser.next() == XmlResourceParser.END_TAG && tag.equals(parser.getName()))
@@ -486,7 +513,7 @@ public class BaseKeyboardParser {
     }
 
     @SuppressWarnings("serial")
-    private static class ParseException extends InflateException {
+    public static class ParseException extends InflateException {
         public ParseException(String msg, XmlResourceParser parser) {
             super(msg + " at line " + parser.getLineNumber());
         }

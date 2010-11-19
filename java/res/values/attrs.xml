@@ -123,6 +123,8 @@
         <!-- The hint icon to display on the key when keyboard is in manual temporary upper case
              mode. -->
         <attr name="manualTemporaryUpperCaseHintIcon" format="reference" />
+        <!-- The key style to specify a set of key attributes defined by <key_style/> -->
+        <attr name="keyStyle" format="string" />
     </declare-styleable>
 
     <declare-styleable name="BaseKeyboard_Row">
@@ -152,5 +154,10 @@
         <attr name="hasSettingsKey" format="string" />
         <attr name="voiceKeyEnabled" format="string" />
         <attr name="hasVoiceKey" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="BaseKeyboard_KeyStyle">
+        <attr name="styleName" format="string" />
+        <attr name="parentStyle" format="string" />
     </declare-styleable>
 </resources>

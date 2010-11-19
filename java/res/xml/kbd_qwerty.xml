@@ -25,6 +25,8 @@
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
+    <include
+        latin:keyboardLayout="@xml/kbd_functional_key_style" />
     <Row
         latin:rowEdgeFlags="top"
     >
@@ -117,12 +119,8 @@
     </Row>
     <Row>
         <Key
-            latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="15%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="z"
@@ -147,13 +145,10 @@
         <Key
             latin:keyLabel="m" />
         <Key
-            latin:codes="@integer/key_delete"
-            latin:keyIcon="@drawable/sym_keyboard_delete"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="15%p"
-            latin:isModifier="true"
-            latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
     </Row>
-    <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />
+    <include
+        latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </Keyboard>

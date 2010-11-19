@@ -82,7 +82,7 @@
         latin:rowEdgeFlags="bottom"
     >
         <Key
-            latin:codes="@integer/key_symbol"
+            latin:codes="@integer/key_switch_alpha_symbol"
             latin:keyIcon="@drawable/sym_bkeyboard_numalt"
             latin:iconPreview="@drawable/sym_keyboard_feedback_numalt" />
         <Key

@@ -26,12 +26,7 @@
             latin:hasVoiceKey="true"
         >
             <Key
-                latin:codes="@integer/key_voice"
-                latin:popupKeyboard="@xml/popup_mic"
-                latin:keyIcon="@drawable/sym_keyboard_mic"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
-                latin:keyHintIcon="@drawable/hint_popup"
-                latin:isModifier="true" />
+                latin:keyStyle="micKeyStyle" />
         </case>
         <case
             latin:hasVoiceKey="false"
@@ -40,7 +35,7 @@
                 latin:keyLabel=","
                 latin:popupKeyboard="@xml/popup_comma"
                 latin:keyHintIcon="@drawable/hint_popup"
-                latin:isModifier="true" />
+                latin:keyStyle="functionalKeyStyle" />
         </case>
     </switch>
 </merge>

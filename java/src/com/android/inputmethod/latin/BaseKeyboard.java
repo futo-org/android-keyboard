@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.BaseKeyboardParser.ParseException;
+import com.android.inputmethod.latin.KeyStyles.KeyStyle;
 import com.android.inputmethod.latin.KeyboardSwitcher.KeyboardId;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -26,14 +28,11 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
-import android.util.TypedValue;
 import android.util.Xml;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.StringTokenizer;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -284,7 +283,8 @@ public class BaseKeyboard {
          * @param y the y coordinate of the top-left
          * @param parser the XML parser containing the attributes for this key
          */
-        public Key(Resources res, Row parent, int x, int y, XmlResourceParser parser) {
+        public Key(Resources res, Row parent, int x, int y, XmlResourceParser parser,
+                KeyStyles keyStyles) {
             this(parent);
 
             TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
@@ -299,44 +299,47 @@ public class BaseKeyboard {
                     R.styleable.BaseKeyboard_keyWidth,
                     keyboard.mDisplayWidth, parent.defaultWidth) - gap;
             a.recycle();
+
             a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.BaseKeyboard_Key);
+
+            final KeyStyle style;
+            if (a.hasValue(R.styleable.BaseKeyboard_Key_keyStyle)) {
+                String styleName = a.getString(R.styleable.BaseKeyboard_Key_keyStyle);
+                style = keyStyles.getKeyStyle(styleName);
+                if (style == null)
+                    throw new ParseException("Unknown key style: " + styleName, parser);
+            } else {
+                style = keyStyles.getEmptyKeyStyle();
+            }
 
             // Horizontal gap is divided equally to both sides of the key.
             this.x = x + gap / 2;
             this.y = y;
 
-            TypedValue codesValue = new TypedValue();
-            a.getValue(R.styleable.BaseKeyboard_Key_codes, codesValue);
-            if (codesValue.type == TypedValue.TYPE_INT_DEC
-                    || codesValue.type == TypedValue.TYPE_INT_HEX) {
-                codes = new int[] { codesValue.data };
-            } else if (codesValue.type == TypedValue.TYPE_STRING) {
-                codes = parseCSV(codesValue.string.toString());
-            }
-
-            iconPreview = a.getDrawable(R.styleable.BaseKeyboard_Key_iconPreview);
+            codes = style.getIntArray(a, R.styleable.BaseKeyboard_Key_codes);
+            iconPreview = style.getDrawable(a, R.styleable.BaseKeyboard_Key_iconPreview);
             setDefaultBounds(iconPreview);
-            popupCharacters = a.getText(R.styleable.BaseKeyboard_Key_popupCharacters);
-            popupResId = a.getResourceId(R.styleable.BaseKeyboard_Key_popupKeyboard, 0);
-            repeatable = a.getBoolean(R.styleable.BaseKeyboard_Key_isRepeatable, false);
-            modifier = a.getBoolean(R.styleable.BaseKeyboard_Key_isModifier, false);
-            sticky = a.getBoolean(R.styleable.BaseKeyboard_Key_isSticky, false);
-            edgeFlags = a.getInt(R.styleable.BaseKeyboard_Key_keyEdgeFlags, 0);
+            popupCharacters = style.getText(a, R.styleable.BaseKeyboard_Key_popupCharacters);
+            popupResId = style.getResourceId(a, R.styleable.BaseKeyboard_Key_popupKeyboard, 0);
+            repeatable = style.getBoolean(a, R.styleable.BaseKeyboard_Key_isRepeatable, false);
+            modifier = style.getBoolean(a, R.styleable.BaseKeyboard_Key_isModifier, false);
+            sticky = style.getBoolean(a, R.styleable.BaseKeyboard_Key_isSticky, false);
+            edgeFlags = style.getFlag(a, R.styleable.BaseKeyboard_Key_keyEdgeFlags, 0);
             edgeFlags |= parent.rowEdgeFlags;
 
-            icon = a.getDrawable(R.styleable.BaseKeyboard_Key_keyIcon);
+            icon = style.getDrawable(a, R.styleable.BaseKeyboard_Key_keyIcon);
             setDefaultBounds(icon);
-            hintIcon = a.getDrawable(R.styleable.BaseKeyboard_Key_keyHintIcon);
+            hintIcon = style.getDrawable(a, R.styleable.BaseKeyboard_Key_keyHintIcon);
             setDefaultBounds(hintIcon);
-            manualTemporaryUpperCaseHintIcon = a.getDrawable(
+            manualTemporaryUpperCaseHintIcon = style.getDrawable(a,
                     R.styleable.BaseKeyboard_Key_manualTemporaryUpperCaseHintIcon);
             setDefaultBounds(manualTemporaryUpperCaseHintIcon);
 
-            label = a.getText(R.styleable.BaseKeyboard_Key_keyLabel);
-            labelOption = a.getInt(R.styleable.BaseKeyboard_Key_keyLabelOption, 0);
-            manualTemporaryUpperCaseCode = a.getInt(
+            label = style.getText(a, R.styleable.BaseKeyboard_Key_keyLabel);
+            labelOption = style.getFlag(a, R.styleable.BaseKeyboard_Key_keyLabelOption, 0);
+            manualTemporaryUpperCaseCode = style.getInt(a,
                     R.styleable.BaseKeyboard_Key_manualTemporaryUpperCaseCode, 0);
-            text = a.getText(R.styleable.BaseKeyboard_Key_keyOutputText);
+            text = style.getText(a, R.styleable.BaseKeyboard_Key_keyOutputText);
 
             if (codes == null && !TextUtils.isEmpty(label)) {
                 codes = new int[] { label.charAt(0) };
@@ -364,28 +367,6 @@ public class BaseKeyboard {
             if (sticky) {
                 on = !on;
             }
-        }
-
-        private int[] parseCSV(String value) {
-            int count = 0;
-            int lastIndex = 0;
-            if (value.length() > 0) {
-                count++;
-                while ((lastIndex = value.indexOf(",", lastIndex + 1)) > 0) {
-                    count++;
-                }
-            }
-            int[] values = new int[count];
-            count = 0;
-            StringTokenizer st = new StringTokenizer(value, ",");
-            while (st.hasMoreTokens()) {
-                try {
-                    values[count++] = Integer.parseInt(st.nextToken());
-                } catch (NumberFormatException nfe) {
-                    Log.e(TAG, "Error parsing keycodes " + value);
-                }
-            }
-            return values;
         }
 
         /**
@@ -560,6 +541,10 @@ public class BaseKeyboard {
         mTotalHeight = y + mDefaultHeight;
     }
 
+    public KeyboardId getKeyboardId() {
+        return mId;
+    }
+
     public List<Key> getKeys() {
         return mKeys;
     }
@@ -688,14 +673,15 @@ public class BaseKeyboard {
 
     // TODO should be private
     protected BaseKeyboard.Key createKeyFromXml(Resources res, Row parent, int x, int y,
-            XmlResourceParser parser) {
-        return new BaseKeyboard.Key(res, parent, x, y, parser);
+            XmlResourceParser parser, KeyStyles keyStyles) {
+        return new BaseKeyboard.Key(res, parent, x, y, parser, keyStyles);
     }
 
     private void loadKeyboard(Context context, int xmlLayoutResId) {
         try {
-            BaseKeyboardParser parser = new BaseKeyboardParser(this, context.getResources());
-            parser.parseKeyboard(context.getResources().getXml(xmlLayoutResId));
+            final Resources res = context.getResources();
+            BaseKeyboardParser parser = new BaseKeyboardParser(this, res);
+            parser.parseKeyboard(res.getXml(xmlLayoutResId));
             // mTotalWidth is the width of this keyboard which is maximum width of row.
             mTotalWidth = parser.getMaxRowWidth();
             mTotalHeight = parser.getTotalHeight();

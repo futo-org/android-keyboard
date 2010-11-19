@@ -73,7 +73,7 @@
     </Row>
     <Row>
         <Key
-            latin:codes="@integer/key_symbol"
+            latin:codes="@integer/key_switch_alpha_symbol"
             latin:keyLabel="@string/label_more_key"
             latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:isModifier="true"

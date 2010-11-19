@@ -29,8 +29,8 @@
                 latin:hasSettingsKey="false"
             >
                 <Key
-                    latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_alpha_key"
+                    latin:codes="@integer/key_switch_alpha_symbol"
+                    latin:keyLabel="@string/label_to_alpha_key"
                     latin:keyWidth="20%p"
                     latin:keyEdgeFlags="left" />
                 <include
@@ -70,8 +70,8 @@
                 latin:hasSettingsKey="true"
             >
                 <Key
-                    latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_alpha_key"
+                    latin:codes="@integer/key_switch_alpha_symbol"
+                    latin:keyLabel="@string/label_to_alpha_key"
                     latin:keyWidth="15%p"
                     latin:keyEdgeFlags="left" />
                 <Key

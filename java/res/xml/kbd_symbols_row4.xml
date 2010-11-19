@@ -29,44 +29,32 @@
                 latin:hasSettingsKey="false"
             >
                 <Key
-                    latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_alpha_key"
+                    latin:keyStyle="toAlphaKeyStyle"
                     latin:keyWidth="20%p"
-                    latin:isModifier="true"
                     latin:keyEdgeFlags="left" />
                 <include
                     latin:keyboardLayout="@xml/kbd_symbols_f1" />
                 <Key
-                    latin:codes="@integer/key_space"
-                    latin:keyIcon="@drawable/sym_keyboard_space"
-                    latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                    latin:keyWidth="40%p"
-                    latin:isModifier="true" />
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="40%p" />
                 <Key
                     latin:keyLabel="."
                     latin:keyHintIcon="@drawable/hint_popup"
                     latin:popupKeyboard="@xml/popup_punctuation"
-                    latin:isModifier="true" />
+                    latin:keyStyle="functionalKeyStyle" />
                 <switch>
                     <case
                         latin:mode="im"
                     >
                         <Key
-                            latin:keyLabel=":-)"
-                            latin:keyOutputText=":-) "
-                            latin:keyHintIcon="@drawable/hint_popup"
-                            latin:popupKeyboard="@xml/popup_smileys"
+                            latin:keyStyle="smileyKeyStyle"
                             latin:keyWidth="20%p"
-                            latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
                     </case>
                     <default>
                         <Key
-                            latin:codes="@integer/key_return"
-                            latin:keyIcon="@drawable/sym_keyboard_return"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+                            latin:keyStyle="returnKeyStyle"
                             latin:keyWidth="20%p"
-                            latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
                     </default>
                 </switch>
@@ -75,49 +63,34 @@
                 latin:hasSettingsKey="true"
             >
                 <Key
-                    latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_alpha_key"
+                    latin:keyStyle="toAlphaKeyStyle"
                     latin:keyWidth="15%p"
-                    latin:isModifier="true"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:codes="@integer/key_settings"
-                    latin:keyIcon="@drawable/sym_keyboard_settings"
-                    latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
-                    latin:isModifier="true" />
+                    latin:keyStyle="settingsKeyStyle" />
                 <include
                     latin:keyboardLayout="@xml/kbd_symbols_f1" />
                 <Key
-                    latin:codes="@integer/key_space"
-                    latin:keyIcon="@drawable/sym_keyboard_space"
-                    latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                    latin:keyWidth="30%p"
-                    latin:isModifier="true" />
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="30%p" />
                 <Key
                     latin:keyLabel="."
                     latin:keyHintIcon="@drawable/hint_popup"
                     latin:popupKeyboard="@xml/popup_punctuation"
-                    latin:isModifier="true" />
+                    latin:keyStyle="functionalKeyStyle" />
                 <switch>
                     <case
                         latin:mode="im"
                     >
                         <Key
-                            latin:keyLabel=":-)"
-                            latin:keyOutputText=":-) "
-                            latin:keyHintIcon="@drawable/hint_popup"
-                            latin:popupKeyboard="@xml/popup_smileys"
+                            latin:keyStyle="smileyKeyStyle"
                             latin:keyWidth="25%p"
-                            latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
                     </case>
                     <default>
                         <Key
-                            latin:codes="@integer/key_return"
-                            latin:keyIcon="@drawable/sym_keyboard_return"
-                            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+                            latin:keyStyle="returnKeyStyle"
                             latin:keyWidth="25%p"
-                            latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
                     </default>
                 </switch>

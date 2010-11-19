@@ -127,8 +127,8 @@ public class LatinKeyboard extends BaseKeyboard {
 
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y, 
-            XmlResourceParser parser) {
-        Key key = new LatinKey(res, parent, x, y, parser);
+            XmlResourceParser parser, KeyStyles keyStyles) {
+        Key key = new LatinKey(res, parent, x, y, parser, keyStyles);
         switch (key.codes[0]) {
         case LatinIME.KEYCODE_ENTER:
             mEnterKey = key;
@@ -619,8 +619,8 @@ public class LatinKeyboard extends BaseKeyboard {
         private boolean mShiftLockEnabled;
 
         public LatinKey(Resources res, BaseKeyboard.Row parent, int x, int y,
-                XmlResourceParser parser) {
-            super(res, parent, x, y, parser);
+                XmlResourceParser parser, KeyStyles keyStyles) {
+            super(res, parent, x, y, parser, keyStyles);
             if (popupCharacters != null && popupCharacters.length() == 0) {
                 // If there is a keyboard with no keys specified in popupCharacters
                 popupResId = 0;
