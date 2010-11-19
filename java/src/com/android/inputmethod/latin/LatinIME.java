@@ -462,7 +462,7 @@ public class LatinIME extends InputMethodService
 
     private void initSuggest() {
         updateAutoTextEnabled();
-        String locale = mSubtypeSwitcher.getInputLanguage();
+        String locale = mSubtypeSwitcher.getInputLocaleStr();
 
         Resources orig = getResources();
         Locale savedLocale = mSubtypeSwitcher.changeSystemLocale(new Locale(locale));
@@ -519,6 +519,7 @@ public class LatinIME extends InputMethodService
     @Override
     public void onConfigurationChanged(Configuration conf) {
         mSubtypeSwitcher.onConfigurationChanged(conf);
+        onLanguageChanged();
         updateAutoTextEnabled();
 
         // If orientation changed while predicting, commit the change
@@ -577,9 +578,11 @@ public class LatinIME extends InputMethodService
             return;
         }
 
+        SubtypeSwitcher.getInstance().updateParametersOnStartInputView();
+
         if (mRefreshKeyboardRequired) {
             mRefreshKeyboardRequired = false;
-            toggleLanguage(true, true);
+            onLanguageChanged();
         }
 
         TextEntryState.newSession(this);
@@ -2176,8 +2179,18 @@ public class LatinIME extends InputMethodService
         return mWord.isFirstCharCapitalized();
     }
 
+    // Notify that Language has been changed and toggleLanguage will update KeyboaredID according
+    // to new Language.
+    private void onLanguageChanged() {
+        toggleLanguage(true, true);
+    }
+
+    // "reset" and "next" are used only for USE_SPACEBAR_LANGUAGE_SWITCHER.
     private void toggleLanguage(boolean reset, boolean next) {
-        mSubtypeSwitcher.toggleLanguage(reset, next);
+        if (SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER) {
+            mSubtypeSwitcher.toggleLanguage(reset, next);
+        }
+        // Reload keyboard because the current language has been changed.
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final int mode = switcher.getKeyboardMode();
         final EditorInfo attribute = getCurrentInputEditorInfo();
@@ -2249,7 +2262,7 @@ public class LatinIME extends InputMethodService
         return new FieldContext(
                 getCurrentInputConnection(),
                 getCurrentInputEditorInfo(),
-                mSubtypeSwitcher.getInputLanguage(),
+                mSubtypeSwitcher.getInputLocaleStr(),
                 mSubtypeSwitcher.getEnabledLanguages());
     }
 
@@ -2372,7 +2385,7 @@ public class LatinIME extends InputMethodService
     private void updateAutoTextEnabled() {
         if (mSuggest == null) return;
         mSuggest.setAutoTextEnabled(mQuickFixes
-                && SubtypeSwitcher.getInstance().isSystemLocaleSameAsInputLocale());
+                && SubtypeSwitcher.getInstance().isSystemLanguageSameAsInputLanguage());
     }
 
     private void updateSuggestionVisibility(SharedPreferences prefs) {
@@ -2419,7 +2432,7 @@ public class LatinIME extends InputMethodService
                 sp.getBoolean(PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE, false);
 
         mLocaleSupportedForVoiceInput = SubtypeSwitcher.getInstance().isVoiceSupported(
-                SubtypeSwitcher.getInstance().getInputLanguage());
+                SubtypeSwitcher.getInstance().getInputLocaleStr());
 
         mAutoCorrectEnabled = isAutoCorrectEnabled(sp);
         mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(sp);
@@ -2580,6 +2593,7 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        SubtypeSwitcher.getInstance().onCurrentInputMethodSubtypeChanged(subtype);
+        SubtypeSwitcher.getInstance().updateSubtype(subtype);
+        onLanguageChanged();
     }
 }
