@@ -499,26 +499,26 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (isShiftLocked()) {
                 // Shift key is pressed while caps lock state, we will treat this state as shifted
                 // caps lock state and mark as if shift key pressed while normal state.
-                setManualTemporaryUpperCase(true);
                 shiftKeyState.onPress();
+                setManualTemporaryUpperCase(true);
             } else if (isAutomaticTemporaryUpperCase()) {
                 // Shift key is pressed while automatic temporary upper case, we have to move to
                 // manual temporary upper case.
+                shiftKeyState.onPress();
                 setManualTemporaryUpperCase(true);
-                shiftKeyState.onPressOnShifted();
             } else if (isShiftedOrShiftLocked()) {
                 // In manual upper case state, we just record shift key has been pressing while
                 // shifted state.
                 shiftKeyState.onPressOnShifted();
             } else {
                 // In base layout, chording or manual temporary upper case mode is started.
-                toggleShift();
                 shiftKeyState.onPress();
+                toggleShift();
             }
         } else {
             // In symbol mode, just toggle symbol and symbol more keyboard.
-            toggleShift();
             shiftKeyState.onPress();
+            toggleShift();
         }
     }
 
