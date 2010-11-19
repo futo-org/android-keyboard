@@ -40,11 +40,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public static final int MODE_WEB = 4;
     public static final int MODE_PHONE = 5;
 
-    public static final String DEFAULT_LAYOUT_ID = "4";
+    // Changing DEFAULT_LAYOUT_ID also requires prefs_for_debug.xml to be matched with.
+    public static final String DEFAULT_LAYOUT_ID = "5";
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20100902";
     private static final int[] THEMES = new int [] {
-        R.layout.input_basic, R.layout.input_basic_highcontrast, R.layout.input_stone_normal,
-        R.layout.input_stone_bold, R.layout.input_gingerbread};
+        R.layout.input_basic,
+        R.layout.input_basic_highcontrast,
+        R.layout.input_stone_normal,
+        R.layout.input_stone_bold,
+        R.layout.input_gingerbread,
+        R.layout.input_honeycomb, // DEFAULT_LAYOUT_ID
+    };
 
     // Ids for each characters' color in the keyboard
     private static final int CHAR_THEME_COLOR_WHITE = 0;
