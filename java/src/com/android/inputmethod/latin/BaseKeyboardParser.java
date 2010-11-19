@@ -120,14 +120,6 @@ public class BaseKeyboardParser {
     private static final String TAG_CASE = "case";
     private static final String TAG_DEFAULT = "default";
 
-    // String representation of KeyboardSwitcher.MODE_xxx.
-    private static final String MODE_TEXT = "text";
-    private static final String MODE_URL = "url";
-    private static final String MODE_EMAIL = "email";
-    private static final String MODE_IM = "im";
-    private static final String MODE_WEB = "web";
-    private static final String MODE_PHONE = "phone";
-
     private final BaseKeyboard mKeyboard;
     private final Resources mResources;
 
@@ -411,7 +403,7 @@ public class BaseKeyboardParser {
         final BaseKeyboard keyboard = mKeyboard;
         final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.BaseKeyboard_Case);
-        final String mode = a.getString(R.styleable.BaseKeyboard_Case_mode);
+        final int mode = a.getInt(R.styleable.BaseKeyboard_Case_mode, -1);
         final String settingsKey = a.getString(R.styleable.BaseKeyboard_Case_settingsKey);
         final String voiceKey = a.getString(R.styleable.BaseKeyboard_Case_voiceKey);
         a.recycle();
@@ -419,8 +411,7 @@ public class BaseKeyboardParser {
         final KeyboardId id = keyboard.mId;
         if (id == null)
             return true;
-        final boolean modeMatched = (mode == null
-                || id.mMode == parseModeString(mode));
+        final boolean modeMatched = (mode == -1 || id.mMode == mode);
         final boolean settingsKeyMatched = (settingsKey == null
                 || id.mHasSettingsKey == Boolean.parseBoolean(settingsKey));
         final boolean voiceKeyMatched = (voiceKey == null
@@ -428,21 +419,11 @@ public class BaseKeyboardParser {
         final boolean selected = modeMatched && settingsKeyMatched && voiceKeyMatched;
         if (DEBUG_TAG) {
             Log.d(TAG, "parseCaseCondition: " + Boolean.toString(selected).toUpperCase()
-                    + (mode != null ? " mode=" + mode : "")
+                    + (mode != -1 ? " mode=" + mode : "")
                     + (settingsKey != null ? " settingsKey="+settingsKey : "")
                     + (voiceKey != null ? " voiceKey=" + voiceKey : ""));
         }
         return selected;
-    }
-
-    private static int parseModeString(String mode) {
-        if (mode.equals(MODE_TEXT)) return KeyboardSwitcher.MODE_TEXT;
-        if (mode.equals(MODE_URL)) return KeyboardSwitcher.MODE_URL;
-        if (mode.equals(MODE_EMAIL)) return KeyboardSwitcher.MODE_EMAIL;
-        if (mode.equals(MODE_IM)) return KeyboardSwitcher.MODE_IM;
-        if (mode.equals(MODE_WEB)) return KeyboardSwitcher.MODE_WEB;
-        if (mode.equals(MODE_PHONE)) return KeyboardSwitcher.MODE_PHONE;
-        throw new RuntimeException("uknown mode attribute in Keyboard XML: " + mode);
     }
 
     private boolean parseDefault(XmlResourceParser parser, Row row, List<Key> keys)
