@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_name" msgid="7252517407088836577">"صفحه کلید Android"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"تنظیمات صفحه کلید Android"</string>
+    <!-- no translation found for english_ime_input_options (3909945612939668554) -->
+    <skip />
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"لرزش با فشار کلید"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"صدا با فشار کلید"</string>
+    <!-- no translation found for popup_on_keypress (123894815723512944) -->
+    <skip />
+    <string name="hit_correction" msgid="4855351009261318389">"تصحیح خطاهای تایپی"</string>
+    <string name="hit_correction_summary" msgid="8761701873008070796">"فعال کردن تصحیح خطای ورودی"</string>
+    <string name="hit_correction_land" msgid="2567691684825205448">"خطاهای ورود افقی"</string>
+    <string name="hit_correction_land_summary" msgid="4076803842198368328">"فعال کردن تصحیح خطای ورودی"</string>
+    <string name="auto_correction" msgid="7911639788808958255">"پیشنهادات کلمه"</string>
+    <string name="auto_correction_summary" msgid="6881047311475758267">"تصحیح خودکار کلمه قبلی"</string>
+    <string name="prediction" msgid="466220283138359837">"پیشنهادات کلمه"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"تنظیمات پیشنهاد کلمه"</string>
+    <string name="prediction_summary" msgid="459788228830873110">"فعال کردن تکمیل خودکار در حین تایپ"</string>
+    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"تکمیل خودکار"</string>
+    <string name="prediction_landscape" msgid="4874601565593216183">"افزایش اندازه قسمت متنی"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"پنهان کردن پیشنهادات کلمه در نمای افقی"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"نوشتن با حروف بزرگ خودکار"</string>
+    <string name="auto_cap_summary" msgid="3260681697600786825">"بزرگ کردن اول هر جمله"</string>
+    <string name="auto_punctuate" msgid="7276672334264521751">"نشان گذاری خودکار"</string>
+    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
+    <string name="quick_fixes" msgid="5353213327680897927">"راه حل های سریع"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"تصحیح خطاهای تایپی رایج"</string>
+    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
+    <skip />
+    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
+    <skip />
+    <!-- no translation found for prefs_settings_key (4623341240804046498) -->
+    <skip />
+    <!-- no translation found for settings_key_mode_auto_name (2993460277873684680) -->
+    <skip />
+    <!-- no translation found for settings_key_mode_always_show_name (3047567041784760575) -->
+    <skip />
+    <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
+    <skip />
+    <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
+    <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
+    <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
+    <string name="auto_complete" msgid="1103196318775486023">"تکمیل خودکار"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"کلید خط فاصله و علائم نگارشی به صورت خودکار کلمه برجسته شده را وارد می کنند."</string>
+    <!-- no translation found for auto_completion_threshold_mode_off (8100705925921970219) -->
+    <skip />
+    <!-- no translation found for auto_completion_threshold_mode_modest (1639075698991437157) -->
+    <skip />
+    <!-- no translation found for auto_completion_threshold_mode_aggeressive (1153130653281397959) -->
+    <skip />
+    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
+    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
+    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
+    <!-- no translation found for bigram_suggestion (1323347224043514969) -->
+    <skip />
+    <!-- no translation found for bigram_suggestion_summary (4383845146070101531) -->
+    <skip />
+  <string-array name="prediction_modes">
+    <item msgid="4870266572388153286">"هیچکدام"</item>
+    <item msgid="1669461741568287396">"پایه"</item>
+    <item msgid="4894328801530136615">"پیشرفته"</item>
+  </string-array>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : ذخیره شد"</string>
+    <string name="tip_long_press" msgid="6101270866284343344">"برای مشاهده علائم تکیه (ø، ö و موارد دیگر) کلیدی را پایین نگه دارید"</string>
+    <string name="tip_dismiss" msgid="7585579046862204381">"برای بستن صفحه کلید در هر نقطه که بخواهید، کلید برگشت ↶ را فشار دهید"</string>
+    <string name="tip_access_symbols" msgid="6344098517525531652">"دسترسی به اعداد و نمادها"</string>
+    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"انتهای سمت چپ واژه را برای افزودن آن به فرهنگ لغت فشار داده و نگه دارید"</string>
+    <string name="touch_to_continue" msgid="7869803257948414531">"این نکته را برای ادامه لمس کنید »"</string>
+    <string name="touch_to_finish" msgid="7990196086480585789">"برای بستن این نکته و شروع تایپ، اینجا را لمس کنید!"</string>
+    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"هر زمان که قسمت متنی را لمس می کنید، صفحه کلید باز می شود"</b></string>
+    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"یک کلید را برای مشاهده تکیه های صدا لمس کرده و نگه دارید (ø، ö، ô، ó و موارد دیگر)"\n</b></string>
+    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"تغییر شماره ها و نمادها با لمس این کلید"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"با لمس مجدد این کلید، به حروف برگردید"</b></string>
+    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"این کلید را برای تغییر تنظیمات صفحه کلید مانند تکمیل خودکار لمس کرده و فشار دهید"</b></string>
+    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"امتحان کنید!"</b></string>
+    <string name="label_go_key" msgid="1635148082137219148">"برو"</string>
+    <string name="label_next_key" msgid="362972844525672568">"بعدی"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"انجام شد"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"ارسال"</string>
+    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
+    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <!-- no translation found for label_more_key (3760239494604948502) -->
+    <skip />
+    <!-- no translation found for label_tab_key (6532779603382157482) -->
+    <skip />
+    <!-- no translation found for label_pause_key (181098308428035340) -->
+    <skip />
+    <!-- no translation found for label_wait_key (6402152600878093134) -->
+    <skip />
+    <string name="voice_warning_title" msgid="4419354150908395008">"ورودی صوتی"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ورودی صوتی در حال حاضر برای زبان شما پشتیبانی نمی شود اما برای زبان انگلیسی فعال است."</string>
+    <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"ورودی صوتی یک ویژگی آزمایشی با استفاده از تشخیص گفتار شبکه Google است."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"برای خاموش کردن ورودی صدا، به تنظیمات صفحه کلید بروید."</string>
+    <string name="voice_hint_dialog_message" msgid="6892342981545727994">"برای استفاده از ورودی صوتی، دکمه میکروفن را فشار دهید یا انگشت خود را روی صفحه کلید روی صفحه حرکت دهید."</string>
+    <string name="voice_listening" msgid="467518160751321844">"اکنون صحبت کنید"</string>
+    <string name="voice_working" msgid="6666937792815731889">"در حال کار"</string>
+    <string name="voice_initializing" msgid="661962047129906646"></string>
+    <string name="voice_error" msgid="5140896300312186162">"خطا: لطفاً دوباره امتحان کنید."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"متصل نشد"</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"خطا، گفتار بسیار زیاد است."</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"مشکل صوتی"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"خطای سرور"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"گفتاری شنیده نشد"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"مورد منطبقی یافت نشد"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"جستجوی صوتی نصب نشده است"</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"نکته: "</b>" برای صحبت روی صفحه کلید ضربه بزنید"</string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"نکته: دفعه دیگر، از نشانه گذاری های گفتاری مانند \"نقطه\"، \"کاما\" یا \"علامت سؤال\" استفاده کنید."</b></string>
+    <string name="cancel" msgid="6830980399865683324">"لغو"</string>
+    <string name="ok" msgid="7898366843681727667">"تأیید"</string>
+    <string name="voice_input" msgid="2466640768843347841">"ورودی صوتی"</string>
+  <string-array name="voice_input_modes">
+    <item msgid="1349082139076086774">"در صفحه کلید اصلی"</item>
+    <item msgid="8529385602829095903">"در صفحه کلید نمادها"</item>
+    <item msgid="7283103513488381103">"خاموش"</item>
+  </string-array>
+  <string-array name="voice_input_modes_summary">
+    <item msgid="554248625705084903">"میکروفن در صفحه کلید اصلی"</item>
+    <item msgid="6907837061058876770">"میکروفن در صفحه کلید نمادها"</item>
+    <item msgid="3664304608587798036">"ورودی صوتی غیر فعال شده است"</item>
+  </string-array>
+    <string name="auto_submit" msgid="9151008027068358518">"ارائه خودکار بعد از صدا"</string>
+    <string name="auto_submit_summary" msgid="4961875269610384226">"هنگام جستجو یا رفتن به قسمت بعدی، Enter را به صورت خودکار فشار دهید."</string>
+    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"صفحه کلید را باز کنید"\n</b></font><font size="3">\n</font>"هر قسمت متنی را لمس کنید."</string>
+    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"بستن صفحه کلید"\n</b></font><font size="3">\n</font>"کلید برگشت را فشار دهید."</string>
+    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"یک کلید را برای گزینه های"\n</b></font><font size="3">\n</font>" دسترسی به علائم نگارشی و تکیه های صدا لمس کرده و نگه دارید."</string>
+    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"تنظیمات صفحه کلید"\n</b></font><font size="3">\n</font>"کلید "<b>"?123"</b>" را لمس کرده و نگهدارید."</string>
+    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
+    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
+    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
+    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
+    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
+    <!-- no translation found for selectInputMethod (315076553378705821) -->
+    <skip />
+    <string name="language_selection_title" msgid="1651299598555326750">"زبان های ورودی"</string>
+    <string name="language_selection_summary" msgid="187110938289512256">"برای تغییر زبان انگشت را روی کلید فاصله بلغزانید"</string>
+    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← جهت ذخیره دوباره ضربه بزنید"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
+    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <skip />
+    <!-- no translation found for prefs_description_log (5827825607258246003) -->
+    <skip />
+    <!-- no translation found for prefs_enable_recorrection (4588408906649533582) -->
+    <skip />
+    <!-- no translation found for prefs_enable_recorrection_summary (1056068922330206170) -->
+    <skip />
+    <!-- no translation found for keyboard_layout (437433231038683666) -->
+    <skip />
+    <!-- no translation found for subtype_mode_keyboard (2242090416595003881) -->
+    <skip />
+    <!-- no translation found for subtype_mode_voice (4394113125441627771) -->
+    <skip />
+    <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
+    <skip />
+    <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->
+    <skip />
+    <!-- no translation found for subtype_mode_de_keyboard (5111274665584117449) -->
+    <skip />
+    <!-- no translation found for subtype_mode_en_US_keyboard (2979257184475020604) -->
+    <skip />
+    <!-- no translation found for subtype_mode_en_GB_keyboard (2339748210942078577) -->
+    <skip />
+    <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
+    <skip />
+    <!-- no translation found for subtype_mode_es_rUS_keyboard (7848274169401733488) -->
+    <skip />
+    <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
+    <skip />
+    <!-- no translation found for subtype_mode_fr_rCA_keyboard (5566052860502435312) -->
+    <skip />
+    <!-- no translation found for subtype_mode_it_keyboard (2281078537437195027) -->
+    <skip />
+    <!-- no translation found for subtype_mode_nb_keyboard (1175783216100212360) -->
+    <skip />
+    <!-- no translation found for subtype_mode_nl_keyboard (5090278083256037936) -->
+    <skip />
+    <!-- no translation found for subtype_mode_ru_keyboard (1383995915064277943) -->
+    <skip />
+    <!-- no translation found for subtype_mode_sr_keyboard (5019440799612208168) -->
+    <skip />
+    <!-- no translation found for subtype_mode_sv_keyboard (4933838139861753401) -->
+    <skip />
+    <!-- no translation found for subtype_mode_cs_voice (157536957128878726) -->
+    <skip />
+    <!-- no translation found for subtype_mode_de_voice (309350321180102217) -->
+    <skip />
+    <!-- no translation found for subtype_mode_en_AU_voice (1103892562629586486) -->
+    <skip />
+    <!-- no translation found for subtype_mode_en_GB_voice (3773764031764533262) -->
+    <skip />
+    <!-- no translation found for subtype_mode_en_IN_voice (4834879535045820293) -->
+    <skip />
+    <!-- no translation found for subtype_mode_en_NZ_voice (2739391364469645636) -->
+    <skip />
+    <!-- no translation found for subtype_mode_en_US_voice (1582519352222847297) -->
+    <skip />
+    <!-- no translation found for subtype_mode_es_voice (1323473601346507487) -->
+    <skip />
+    <!-- no translation found for subtype_mode_fr_voice (4675914209337824269) -->
+    <skip />
+    <!-- no translation found for subtype_mode_ja_voice (6604859132669646367) -->
+    <skip />
+    <!-- no translation found for subtype_mode_ko_voice (4890391190762324561) -->
+    <skip />
+    <!-- no translation found for subtype_mode_pl_voice (2076196021014840487) -->
+    <skip />
+    <!-- no translation found for subtype_mode_pt_voice (8036522712795994397) -->
+    <skip />
+    <!-- no translation found for subtype_mode_ru_voice (8034596947963787529) -->
+    <skip />
+    <!-- no translation found for subtype_mode_tr_voice (3402067436761140005) -->
+    <skip />
+    <!-- no translation found for subtype_mode_zh_CN_voice (3154514897179707124) -->
+    <skip />
+    <!-- no translation found for subtype_mode_zh_TW_voice (1524137359275360490) -->
+    <skip />
+    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
+    <skip />
+</resources>
