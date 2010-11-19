@@ -70,12 +70,13 @@
             android:defaultValue="@string/voice_mode_main"
             />
 
-
+    <!-- TODO: Filter subtypes by IME in SubtypeEnabler -->
+    <!-- TODO: Maybe use this only for phone? -->
     <PreferenceScreen
             android:title="@string/language_selection_title"
             android:summary="@string/language_selection_summary">
         <intent
-                android:action="com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION"/>
+                android:action="android.settings.INPUT_METHOD_AND_SUBTYPE_ENABLER"/>
     </PreferenceScreen>
 
     <PreferenceCategory
