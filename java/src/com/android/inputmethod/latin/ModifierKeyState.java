@@ -49,7 +49,7 @@ public class ModifierKeyState {
 
     public void onOtherKeyPressed() {
         final int oldState = mState;
-        if (mState == PRESSING)
+        if (oldState == PRESSING)
             mState = MOMENTARY;
         if (DEBUG)
             Log.d(TAG, mName + ".onOtherKeyPressed: " + toString(oldState) + " > " + this);
@@ -64,7 +64,7 @@ public class ModifierKeyState {
         return toString(mState);
     }
 
-    protected static String toString(int state) {
+    protected String toString(int state) {
         switch (state) {
         case RELEASING: return "RELEASING";
         case PRESSING: return "PRESSING";

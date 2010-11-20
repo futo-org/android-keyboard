@@ -29,9 +29,9 @@ public class ShiftKeyState extends ModifierKeyState {
     @Override
     public void onOtherKeyPressed() {
         int oldState = mState;
-        if (mState == PRESSING) {
+        if (oldState == PRESSING) {
             mState = MOMENTARY;
-        } else if (mState == PRESSING_ON_SHIFTED) {
+        } else if (oldState == PRESSING_ON_SHIFTED) {
             mState = IGNORING;
         }
         if (DEBUG)
@@ -58,11 +58,12 @@ public class ShiftKeyState extends ModifierKeyState {
         return toString(mState);
     }
 
-    protected static String toString(int state) {
+    @Override
+    protected String toString(int state) {
         switch (state) {
         case PRESSING_ON_SHIFTED: return "PRESSING_ON_SHIFTED";
         case IGNORING: return "IGNORING";
-        default: return ModifierKeyState.toString(state);
+        default: return super.toString(state);
         }
     }
 }
