@@ -200,7 +200,7 @@ public class LatinIME extends InputMethodService
     private boolean mLocaleSupportedForVoiceInput;
     private boolean mIsShowingHint;
     private int     mCorrectionMode;
-    private boolean mVoiceButtonEnabled;
+    private boolean mVoiceKeyEnabled;
     private boolean mVoiceButtonOnPrimary;
     private int     mOrientation;
     private List<CharSequence> mSuggestPuncList;
@@ -531,7 +531,7 @@ public class LatinIME extends InputMethodService
             final int mode = mKeyboardSwitcher.getKeyboardMode();
             final EditorInfo attribute = getCurrentInputEditorInfo();
             final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
-            mKeyboardSwitcher.loadKeyboard(mode, imeOptions, mVoiceButtonEnabled,
+            mKeyboardSwitcher.loadKeyboard(mode, imeOptions, mVoiceKeyEnabled,
                     mVoiceButtonOnPrimary);
         }
 
@@ -679,8 +679,7 @@ public class LatinIME extends InputMethodService
         mJustAddedAutoSpace = false;
 
         loadSettings(attribute);
-        switcher.loadKeyboard(mode, attribute.imeOptions, mVoiceButtonEnabled,
-                mVoiceButtonOnPrimary);
+        switcher.loadKeyboard(mode, attribute.imeOptions, mVoiceKeyEnabled, mVoiceButtonOnPrimary);
         switcher.updateShiftState();
 
         setCandidatesViewShownInternal(isCandidateStripVisible(),
@@ -2222,7 +2221,7 @@ public class LatinIME extends InputMethodService
         final int mode = switcher.getKeyboardMode();
         final EditorInfo attribute = getCurrentInputEditorInfo();
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
-        switcher.loadKeyboard(mode, imeOptions, mVoiceButtonEnabled,
+        switcher.loadKeyboard(mode, imeOptions, mVoiceKeyEnabled,
                 mVoiceButtonOnPrimary);
         initSuggest();
         switcher.updateShiftState();
@@ -2468,7 +2467,7 @@ public class LatinIME extends InputMethodService
         if (VOICE_INSTALLED) {
             final String voiceMode = sp.getString(PREF_VOICE_MODE,
                     getString(R.string.voice_mode_main));
-            mVoiceButtonEnabled = !voiceMode.equals(getString(R.string.voice_mode_off))
+            mVoiceKeyEnabled = !voiceMode.equals(getString(R.string.voice_mode_off))
                     && shouldShowVoiceButton(makeFieldContext(), attribute);
             mVoiceButtonOnPrimary = voiceMode.equals(getString(R.string.voice_mode_main));
         }

@@ -27,17 +27,12 @@
     >
         <switch>
             <case
-                latin:settingsKey="false"
+                latin:hasSettingsKey="false"
             >
-                <Key
-                    latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_symbol_key"
-                    latin:keyWidth="20%p"
-                    latin:isModifier="true"
-                    latin:keyEdgeFlags="left" />
-                <Key
-                    latin:codes="@integer/key_f1"
-                    latin:isModifier="true" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_symbol" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_f1" />
                 <switch>
                     <case
                         latin:mode="web"
@@ -94,22 +89,17 @@
                 </switch>
             </case>
             <case
-                latin:settingsKey="true"
+                latin:hasSettingsKey="true"
             >
-                <Key
-                    latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_symbol_key"
-                    latin:keyWidth="15%p"
-                    latin:isModifier="true"
-                    latin:keyEdgeFlags="left" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_symbol" />
                 <Key
                     latin:codes="@integer/key_settings"
                     latin:keyIcon="@drawable/sym_keyboard_settings"
                     latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
                     latin:isModifier="true" />
-                <Key
-                    latin:codes="@integer/key_f1"
-                    latin:isModifier="true" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_f1" />
                 <switch>
                     <case
                         latin:mode="web"
@@ -163,7 +153,7 @@
                             latin:keyWidth="15%p"
                             latin:isModifier="true"
                             latin:keyEdgeFlags="right" />
-                     </case>
+                    </case>
                     <default>
                         <Key
                             latin:codes="@integer/key_return"

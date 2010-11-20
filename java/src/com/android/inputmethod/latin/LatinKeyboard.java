@@ -52,29 +52,16 @@ public class LatinKeyboard extends BaseKeyboard {
     private Drawable mSpaceIcon;
     private Drawable mSpaceAutoCompletionIndicator;
     private Drawable mSpacePreviewIcon;
-    private Drawable mMicIcon;
-    private Drawable mMicPreviewIcon;
-    private Drawable m123MicIcon;
-    private Drawable m123MicPreviewIcon;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
     private Key mEnterKey;
-    private Key mF1Key;
-    private final Drawable mHintIcon;
     private Key mSpaceKey;
-    private Key m123Key;
     private int mSpaceKeyIndex = -1;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
     private final Resources mRes;
     private final Context mContext;
-    private int mMode; // TODO: remove this and use the corresponding mode in the parent class
-    // Whether this keyboard has voice icon on it
-    private boolean mHasVoiceButton;
-    // Whether voice icon is enabled at all
-    private boolean mVoiceEnabled;
     private final boolean mIsAlphaKeyboard;
-    private CharSequence m123Label;
     private boolean mCurrentlyInSpace;
     private SlidingLocaleDrawable mSlidingLocaleIcon;
     private int[] mPrefLetterFrequencies;
@@ -112,22 +99,14 @@ public class LatinKeyboard extends BaseKeyboard {
         final Resources res = context.getResources();
         mContext = context;
         mRes = res;
-        mMode = id.mMode;
         mShiftedIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
         setDefaultBounds(mShiftLockPreviewIcon);
         mSpaceIcon = res.getDrawable(R.drawable.sym_keyboard_space);
         mSpaceAutoCompletionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mSpacePreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_space);
-        mMicIcon = res.getDrawable(R.drawable.sym_keyboard_mic);
-        mMicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_mic);
-        setDefaultBounds(mMicPreviewIcon);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
-        m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);
-        m123MicPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_123_mic);
-        mHintIcon = res.getDrawable(R.drawable.hint_popup);
-        setDefaultBounds(m123MicPreviewIcon);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
         final int xmlLayoutResId = id.getXmlId();
@@ -154,15 +133,8 @@ public class LatinKeyboard extends BaseKeyboard {
         case LatinIME.KEYCODE_ENTER:
             mEnterKey = key;
             break;
-        case LatinKeyboardView.KEYCODE_F1:
-            mF1Key = key;
-            break;
         case LatinIME.KEYCODE_SPACE:
             mSpaceKey = key;
-            break;
-        case KEYCODE_MODE_CHANGE:
-            m123Key = key;
-            m123Label = key.label;
             break;
         }
 
@@ -180,7 +152,6 @@ public class LatinKeyboard extends BaseKeyboard {
     }
 
     public void setImeOptions(Resources res, int mode, int options) {
-        mMode = mode;
         if (mEnterKey == null)
             return;
         final boolean configDynamicKeyTopEnterKey = res.getBoolean(
@@ -290,87 +261,10 @@ public class LatinKeyboard extends BaseKeyboard {
         if (isBlack) {
             mShiftedIcon = res.getDrawable(R.drawable.sym_bkeyboard_shift_locked);
             mSpaceIcon = res.getDrawable(R.drawable.sym_bkeyboard_space);
-            mMicIcon = res.getDrawable(R.drawable.sym_bkeyboard_mic);
-            m123MicIcon = res.getDrawable(R.drawable.sym_bkeyboard_123_mic);
         } else {
             mShiftedIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
             mSpaceIcon = res.getDrawable(R.drawable.sym_keyboard_space);
-            mMicIcon = res.getDrawable(R.drawable.sym_keyboard_mic);
-            m123MicIcon = res.getDrawable(R.drawable.sym_keyboard_123_mic);
         }
-        updateDynamicKeys();
-    }
-
-    public void setVoiceMode(boolean hasVoiceButton, boolean hasVoice) {
-        mHasVoiceButton = hasVoiceButton;
-        mVoiceEnabled = hasVoice;
-        updateDynamicKeys();
-    }
-
-    private void updateDynamicKeys() {
-        update123Key();
-        updateF1Key();
-    }
-
-    private void update123Key() {
-        final boolean configDynamicKeyTopSymbolKey = mRes.getBoolean(
-                R.bool.config_dynamic_key_top_symbol_key);
-        // Update KEYCODE_MODE_CHANGE key only on alphabet mode, not on symbol mode.
-        if (m123Key != null && mIsAlphaKeyboard) {
-            if (configDynamicKeyTopSymbolKey && mVoiceEnabled && !mHasVoiceButton) {
-                m123Key.icon = m123MicIcon;
-                m123Key.iconPreview = m123MicPreviewIcon;
-                m123Key.label = null;
-            } else {
-                m123Key.icon = null;
-                m123Key.iconPreview = null;
-                m123Key.label = m123Label;
-            }
-        }
-    }
-
-    private void updateF1Key() {
-        // Update KEYCODE_F1 key. Please note that some keyboard layouts have no F1 key.
-        if (mF1Key == null)
-            return;
-
-        if (mIsAlphaKeyboard) {
-            if (mMode == KeyboardSwitcher.MODE_URL) {
-                setNonMicF1Key(mF1Key, "/", R.xml.popup_slash);
-            } else if (mMode == KeyboardSwitcher.MODE_EMAIL) {
-                setNonMicF1Key(mF1Key, "@", R.xml.popup_at);
-            } else {
-                if (mVoiceEnabled && mHasVoiceButton) {
-                    setMicF1Key(mF1Key);
-                } else {
-                    setNonMicF1Key(mF1Key, ",", R.xml.popup_comma);
-                }
-            }
-        } else {  // Symbols keyboard
-            if (mVoiceEnabled && mHasVoiceButton) {
-                setMicF1Key(mF1Key);
-            } else {
-                setNonMicF1Key(mF1Key, ",", R.xml.popup_comma);
-            }
-        }
-    }
-
-    private void setMicF1Key(Key key) {
-        key.label = null;
-        key.codes = new int[] { LatinKeyboardView.KEYCODE_VOICE };
-        key.popupResId = R.xml.popup_mic;
-        key.icon = mMicIcon;
-        key.hintIcon = mHintIcon;
-        key.iconPreview = mMicPreviewIcon;
-    }
-
-    private void setNonMicF1Key(Key key, String label, int popupResId) {
-        key.label = label;
-        key.codes = new int[] { label.charAt(0) };
-        key.popupResId = popupResId;
-        key.icon = null;
-        key.hintIcon = mHintIcon;
-        key.iconPreview = null;
     }
 
     /**

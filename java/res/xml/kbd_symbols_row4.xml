@@ -26,7 +26,7 @@
     >
         <switch>
             <case
-                latin:settingsKey="false"
+                latin:hasSettingsKey="false"
             >
                 <Key
                     latin:codes="@integer/key_symbol"
@@ -34,9 +34,8 @@
                     latin:keyWidth="20%p"
                     latin:isModifier="true"
                     latin:keyEdgeFlags="left" />
-                <Key
-                    latin:codes="@integer/key_f1"
-                    latin:isModifier="true" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_symbols_f1" />
                 <Key
                     latin:codes="@integer/key_space"
                     latin:keyIcon="@drawable/sym_keyboard_space"
@@ -73,7 +72,7 @@
                 </switch>
             </case>
             <case
-                latin:settingsKey="true"
+                latin:hasSettingsKey="true"
             >
                 <Key
                     latin:codes="@integer/key_symbol"
@@ -86,9 +85,8 @@
                     latin:keyIcon="@drawable/sym_keyboard_settings"
                     latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
                     latin:isModifier="true" />
-                <Key
-                    latin:codes="@integer/key_f1"
-                    latin:isModifier="true" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_symbols_f1" />
                 <Key
                     latin:codes="@integer/key_space"
                     latin:keyIcon="@drawable/sym_keyboard_space"

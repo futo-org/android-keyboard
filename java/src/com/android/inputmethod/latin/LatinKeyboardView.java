@@ -34,8 +34,8 @@ public class LatinKeyboardView extends BaseKeyboardView {
 
     public static final int KEYCODE_OPTIONS = -100;
     public static final int KEYCODE_OPTIONS_LONGPRESS = -101;
+    // TODO: remove this once LatinIME stops referring to this.
     public static final int KEYCODE_VOICE = -102;
-    public static final int KEYCODE_F1 = -103;
     public static final int KEYCODE_NEXT_LANGUAGE = -104;
     public static final int KEYCODE_PREV_LANGUAGE = -105;
     public static final int KEYCODE_CAPSLOCK = -106;

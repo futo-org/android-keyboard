@@ -27,15 +27,12 @@
     >
         <switch>
             <case
-                latin:settingsKey="false"
+                latin:hasSettingsKey="false"
             >
-                <Key
-                    latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_symbol_key"
-                    latin:keyWidth="20%p"
-                    latin:keyEdgeFlags="left" />
-                <Key
-                    latin:codes="@integer/key_f1" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_black_symbol" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_black_f1" />
                 <switch>
                     <case
                         latin:mode="web"
@@ -86,19 +83,16 @@
                 </switch>
             </case>
             <case
-                latin:settingsKey="true"
+                latin:hasSettingsKey="true"
             >
-                <Key
-                    latin:codes="@integer/key_symbol"
-                    latin:keyLabel="@string/label_symbol_key"
-                    latin:keyWidth="15%p"
-                    latin:keyEdgeFlags="left" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_black_symbol" />
                 <Key
                     latin:codes="@integer/key_settings"
                     latin:keyIcon="@drawable/sym_bkeyboard_settings"
                     latin:iconPreview="@drawable/sym_keyboard_feedback_settings" />
-                <Key
-                    latin:codes="@integer/key_f1" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_black_f1" />
                 <switch>
                     <case
                         latin:mode="web"

@@ -22,5 +22,4 @@
     <bool name="default_popup_preview">false</bool>
     <bool name="config_enable_show_settings_key_option">false</bool>
     <bool name="config_dynamic_key_top_enter_key">false</bool>
-    <bool name="config_dynamic_key_top_symbol_key">false</bool>
 </resources>

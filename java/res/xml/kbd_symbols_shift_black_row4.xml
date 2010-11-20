@@ -26,7 +26,7 @@
     >
         <switch>
             <case
-                latin:settingsKey="false"
+                latin:hasSettingsKey="false"
             >
                 <Key
                     latin:codes="@integer/key_symbol"
@@ -65,7 +65,7 @@
                 </switch>
             </case>
             <case
-                latin:settingsKey="true"
+                latin:hasSettingsKey="true"
             >
                 <Key
                     latin:codes="@integer/key_symbol"

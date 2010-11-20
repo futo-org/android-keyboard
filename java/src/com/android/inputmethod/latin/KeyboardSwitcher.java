@@ -98,7 +98,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     /** mIsAutoCompletionActive indicates that auto completed word will be input instead of
      * what user actually typed. */
     private boolean mIsAutoCompletionActive;
-    private boolean mVoiceButtonEnabled;
+    private boolean mVoiceKeyEnabled;
     private boolean mVoiceButtonOnPrimary;
     private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
 
@@ -139,12 +139,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final int mode = mMode;
         final int colorScheme = getCharColorId();
         final boolean hasSettingsKey = mHasSettingsKey;
-        final boolean hasVoiceKey = mVoiceButtonEnabled && !mVoiceButtonOnPrimary;
+        final boolean voiceKeyEnabled = mVoiceKeyEnabled;
+        final boolean hasVoiceKey = voiceKeyEnabled && !mVoiceButtonOnPrimary;
         final int imeOptions = mImeOptions;
-        mSymbolsId = new KeyboardId(locale, orientation, mode,
-                KBD_SYMBOLS, colorScheme, hasSettingsKey, hasVoiceKey, imeOptions, true);
-        mSymbolsShiftedId = new KeyboardId(locale, orientation, mode,
-                KBD_SYMBOLS_SHIFT, colorScheme, hasSettingsKey, hasVoiceKey, imeOptions, true);
+        mSymbolsId = new KeyboardId(locale, orientation, mode, KBD_SYMBOLS,
+                colorScheme, hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
+        mSymbolsShiftedId = new KeyboardId(locale, orientation, mode, KBD_SYMBOLS_SHIFT,
+                colorScheme, hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
     }
 
     /**
@@ -158,6 +159,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         public final int[] mXmlArray;
         public final int mColorScheme;
         public final boolean mHasSettingsKey;
+        public final boolean mVoiceKeyEnabled;
         public final boolean mHasVoiceKey;
         public final int mImeOptions;
         public final boolean mEnableShiftLock;
@@ -165,14 +167,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         private final int mHashCode;
 
         public KeyboardId(Locale locale, int orientation, int mode,
-                int[] xmlArray, int colorScheme, boolean hasSettingsKey, boolean hasVoiceKey,
-                int imeOptions, boolean enableShiftLock) {
+                int[] xmlArray, int colorScheme, boolean hasSettingsKey, boolean voiceKeyEnabled,
+                boolean hasVoiceKey, int imeOptions, boolean enableShiftLock) {
             this.mLocale = locale;
             this.mOrientation = orientation;
             this.mMode = mode;
             this.mXmlArray = xmlArray;
             this.mColorScheme = colorScheme;
             this.mHasSettingsKey = hasSettingsKey;
+            this.mVoiceKeyEnabled = voiceKeyEnabled;
             this.mHasVoiceKey = hasVoiceKey;
             this.mImeOptions = imeOptions;
             this.mEnableShiftLock = enableShiftLock;
@@ -184,6 +187,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     xmlArray,
                     colorScheme,
                     hasSettingsKey,
+                    voiceKeyEnabled,
                     hasVoiceKey,
                     imeOptions,
                     enableShiftLock,
@@ -210,6 +214,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 && other.mXmlArray == this.mXmlArray
                 && other.mColorScheme == this.mColorScheme
                 && other.mHasSettingsKey == this.mHasSettingsKey
+                && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
                 && other.mHasVoiceKey == this.mHasVoiceKey
                 && other.mImeOptions == this.mImeOptions
                 && other.mEnableShiftLock == this.mEnableShiftLock;
@@ -222,7 +227,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         @Override
         public String toString() {
-            return String.format("[%s %s %5s imeOptions=0x%08x xml=0x%08x %s%s%s%s]",
+            return String.format("[%s %s %5s imeOptions=0x%08x xml=0x%08x %s%s%s%s%s]",
                     mLocale,
                     (mOrientation == 1 ? "port" : "land"),
                     modeName(mMode),
@@ -230,6 +235,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     mXmlArray[0],
                     (mColorScheme == CHAR_THEME_COLOR_WHITE ? "white" : "black"),
                     (mHasSettingsKey ? " hasSettingsKey" : ""),
+                    (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
                     (mHasVoiceKey ? " hasVoiceKey" : ""),
                     (mEnableShiftLock ? " enableShiftLock" : ""));
         }
@@ -248,14 +254,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private boolean hasVoiceKey(boolean isSymbols) {
-        return mVoiceButtonEnabled && (isSymbols != mVoiceButtonOnPrimary);
+        return mVoiceKeyEnabled && (isSymbols != mVoiceButtonOnPrimary);
     }
 
-    public void loadKeyboard(int mode, int imeOptions, boolean voiceButtonEnabled,
+    public void loadKeyboard(int mode, int imeOptions, boolean voiceKeyEnabled,
             boolean voiceButtonOnPrimary) {
         mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
         try {
-            loadKeyboardInternal(mode, imeOptions, voiceButtonEnabled, voiceButtonOnPrimary,
+            loadKeyboardInternal(mode, imeOptions, voiceKeyEnabled, voiceButtonOnPrimary,
                     false);
         } catch (RuntimeException e) {
             Log.w(TAG, e);
@@ -270,7 +276,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         mMode = mode;
         mImeOptions = imeOptions;
-        mVoiceButtonEnabled = voiceButtonEnabled;
+        mVoiceKeyEnabled = voiceButtonEnabled;
         mVoiceButtonOnPrimary = voiceButtonOnPrimary;
         mIsSymbols = isSymbols;
         // Update the settings key state because number of enabled IMEs could have been changed
@@ -298,11 +304,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             final Locale savedLocale =  mSubtypeSwitcher.changeSystemLocale(
                     mSubtypeSwitcher.getInputLocale());
 
-            final int xml = id.getXmlId();
             keyboard = new LatinKeyboard(mInputMethodService, id);
-            keyboard.setVoiceMode(
-                    hasVoiceKey(xml == R.xml.kbd_symbols || xml == R.xml.kbd_symbols_black),
-                    mVoiceButtonEnabled);
             keyboard.setImeOptions(res, id.mMode, id.mImeOptions);
             keyboard.setColorOfSymbolIcons(isBlackSym(id.mColorScheme));
 
@@ -340,8 +342,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
         final int orientation = mInputMethodService.getResources().getConfiguration().orientation;
         final Locale locale = mSubtypeSwitcher.getInputLocale();
-        return new KeyboardId(locale, orientation, mode, xmlArray,
-                charColorId, mHasSettingsKey, hasVoiceKey, imeOptions, enableShiftLock);
+        return new KeyboardId(locale, orientation, mode, xmlArray, charColorId,
+                mHasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, imeOptions, enableShiftLock);
     }
 
     public int getKeyboardMode() {
@@ -605,7 +607,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private void toggleKeyboardMode() {
-        loadKeyboardInternal(mMode, mImeOptions, mVoiceButtonEnabled, mVoiceButtonOnPrimary,
+        loadKeyboardInternal(mMode, mImeOptions, mVoiceKeyEnabled, mVoiceButtonOnPrimary,
                 !mIsSymbols);
         if (mIsSymbols) {
             mSymbolsModeState = SYMBOLS_MODE_STATE_BEGIN;
