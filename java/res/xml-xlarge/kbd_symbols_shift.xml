@@ -29,7 +29,8 @@
     <Row>
         <Key
             latin:codes="@integer/key_tab"
-            latin:keyLabel="Tab"
+            latin:keyLabel="@string/label_tab_key"
+            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:keyWidth="7.0%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
@@ -70,6 +71,7 @@
         <Key
             latin:codes="@integer/key_symbol"
             latin:keyLabel="@string/label_alpha_key"
+            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:keyWidth="9.7%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
@@ -99,8 +101,8 @@
             latin:keyLabel="]" />
         <Key
             latin:codes="@integer/key_return"
-            latin:keyIcon="@drawable/sym_keyboard_return"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+            latin:keyLabel="@string/label_return_key"
+            latin:keyLabelOption="fontItalic|alignRight|alignBottom"
             latin:keyWidth="8.3%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="right" />
@@ -109,7 +111,7 @@
         <Key
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_more_key"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:keyWidth="13.1%p"
             latin:isModifier="true"
             latin:isSticky="true"
@@ -143,7 +145,7 @@
         <Key
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_more_key"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyLabelOption="fontItalic|alignRight|alignBottom"
             latin:keyWidth="13.1%p"
             latin:isModifier="true"
             latin:isSticky="true"

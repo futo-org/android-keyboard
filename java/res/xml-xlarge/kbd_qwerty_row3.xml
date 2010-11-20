@@ -24,9 +24,9 @@
     <Row>
         <Key
             latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyLabel="@string/label_shift_key"
             latin:keyWidth="13.1%p"
+            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:isModifier="true"
             latin:isSticky="true"
             latin:keyEdgeFlags="left" />
@@ -80,8 +80,8 @@
         </switch>
         <Key
             latin:codes="@integer/key_shift"
-            latin:keyIcon="@drawable/sym_keyboard_shift"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+            latin:keyLabel="@string/label_shift_key"
+            latin:keyLabelOption="fontItalic|alignRight|alignBottom"
             latin:keyWidth="13.1%p"
             latin:isModifier="true"
             latin:isSticky="true"

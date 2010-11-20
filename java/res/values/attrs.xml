@@ -106,6 +106,14 @@
         <attr name="keyOutputText" format="string" />
         <!-- The label to display on the key. -->
         <attr name="keyLabel" format="string" />
+        <!-- The key label option -->
+        <attr name="keyLabelOption">
+            <!-- This should be aligned with BaseKeyboardView.KEY_LABEL_OPTION_* -->
+            <flag name="alignLeft" value="1" />
+            <flag name="alignRight" value="2" />
+            <flag name="alignBottom" value="8" />
+            <flag name="fontItalic" value="16" />
+        </attr>
         <!-- The unicode that this key generates in manual temporary upper case mode. -->
         <attr name="manualTemporaryUpperCaseCode" format="integer" />
         <!-- The icon to display on the key instead of the label. -->
@@ -132,14 +140,14 @@
     </declare-styleable>
 
     <declare-styleable name="BaseKeyboard_Case">
-        <!-- This should be matched with KeyboardSwitcher.MODE_* -->
+        <!-- This should be aligned with KeyboardSwitcher.MODE_* -->
         <attr name="mode">
-            <flag name="text" value="0" />
-            <flag name="url" value="1" />
-            <flag name="email" value="2" />
-            <flag name="im" value="3" />
-            <flag name="web" value="4" />
-            <flag name="phone" value="5" />
+            <enum name="text" value="0" />
+            <enum name="url" value="1" />
+            <enum name="email" value="2" />
+            <enum name="im" value="3" />
+            <enum name="web" value="4" />
+            <enum name="phone" value="5" />
         </attr>
         <attr name="settingsKey" format="string" />
         <attr name="voiceKey" format="string" />

@@ -25,7 +25,8 @@
     <Row>
         <Key
             latin:codes="@integer/key_tab"
-            latin:keyLabel="Tab"
+            latin:keyLabel="@string/label_tab_key"
+            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:keyWidth="7.0%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />

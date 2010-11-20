@@ -30,6 +30,7 @@
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="@string/label_tab_key"
+            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:keyWidth="12.1%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
@@ -64,8 +65,8 @@
             latin:horizontalGap="4.0%p" />
         <Key
             latin:codes="@integer/key_delete"
-            latin:keyIcon="@drawable/sym_keyboard_delete"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            latin:keyLabel="@string/label_backspace_key"
+            latin:keyLabelOption="fontItalic|alignRight|alignBottom"
             latin:keyWidth="15.0%p"
             latin:isModifier="true"
             latin:isRepeatable="true"
@@ -75,6 +76,7 @@
         <Key
             latin:codes="@integer/key_symbol"
             latin:keyLabel="@string/label_more_key"
+            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
             latin:keyWidth="12.1%p"
             latin:isModifier="true"
             latin:isSticky="true"
@@ -110,8 +112,8 @@
             latin:horizontalGap="4.0%p" />
         <Key
             latin:codes="@integer/key_return"
-            latin:keyIcon="@drawable/sym_keyboard_return"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+            latin:keyLabel="@string/label_return_key"
+            latin:keyLabelOption="fontItalic|alignRight|alignBottom"
             latin:keyWidth="15.0%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="right" />

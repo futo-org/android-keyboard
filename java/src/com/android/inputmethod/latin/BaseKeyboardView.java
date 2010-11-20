@@ -249,9 +249,20 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private final Rect mClipRegion = new Rect(0, 0, 0, 0);
     // This map caches key label text height in pixel as value and key label text size as map key.
     private final HashMap<Integer, Integer> mTextHeightCache = new HashMap<Integer, Integer>();
-    // Distance from horizontal center of the key, proportional to key label text height.
-    private final float KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR = 0.55f;
-    private final String KEY_LABEL_HEIGHT_REFERENCE_CHAR = "H";
+    // This map caches key label text width in pixel as value and key label text size as map key.
+    private final HashMap<Integer, Integer> mTextWidthCache = new HashMap<Integer, Integer>();
+    // Distance from horizontal center of the key, proportional to key label text height and width.
+    private final float KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR_CENTER = 0.55f;
+    private final float KEY_LABEL_VERTICAL_PADDING_FACTOR = 1.60f;
+    private final float KEY_LABEL_HORIZONTAL_PADDING_FACTOR = 0.80f;
+    private final String KEY_LABEL_REFERENCE_CHAR = "H";
+    private final int KEY_LABEL_OPTION_ALIGN_LEFT = 1;
+    private final int KEY_LABEL_OPTION_ALIGN_RIGHT = 2;
+    private final int KEY_LABEL_OPTION_ALIGN_BOTTOM = 8;
+    private final int KEY_LABEL_OPTION_FONT_ITALIC = 16;
+    // TODO: Currently we don't have san-serif italic type face. This is actually san-serif
+    // non-italic type face.
+    private final Typeface TYPEFACE_ITALIC = Typeface.create(Typeface.SANS_SERIF, Typeface.ITALIC);
 
     private final UIHandler mHandler = new UIHandler();
 
@@ -808,12 +819,17 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             keyBackground.draw(canvas);
 
             boolean drawHintIcon = true;
+            // Draw key label
             if (label != null) {
                 // For characters, use large font. For labels like "Done", use small font.
                 final int labelSize;
                 if (label.length() > 1 && key.codes.length < 2) {
                     labelSize = mLabelTextSize;
-                    paint.setTypeface(Typeface.DEFAULT_BOLD);
+                    if ((key.labelOption & KEY_LABEL_OPTION_FONT_ITALIC) != 0) {
+                        paint.setTypeface(TYPEFACE_ITALIC);
+                    } else {
+                        paint.setTypeface(Typeface.DEFAULT_BOLD);
+                    }
                 } else {
                     labelSize = mKeyTextSize;
                     paint.setTypeface(mKeyTextStyle);
@@ -821,26 +837,51 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                 paint.setTextSize(labelSize);
 
                 Integer labelHeightValue = mTextHeightCache.get(labelSize);
-                final int labelHeight;
+                final int labelCharHeight;
+                final int labelCharWidth;
                 if (labelHeightValue != null) {
-                    labelHeight = labelHeightValue;
+                    labelCharHeight = labelHeightValue;
+                    labelCharWidth = mTextWidthCache.get(labelSize);
                 } else {
                     Rect textBounds = new Rect();
-                    paint.getTextBounds(KEY_LABEL_HEIGHT_REFERENCE_CHAR, 0, 1, textBounds);
-                    labelHeight = textBounds.height();
-                    mTextHeightCache.put(labelSize, labelHeight);
+                    paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, textBounds);
+                    labelCharHeight = textBounds.height();
+                    labelCharWidth = textBounds.width();
+                    mTextHeightCache.put(labelSize, labelCharHeight);
+                    mTextWidthCache.put(labelSize, labelCharWidth);
                 }
 
-                // Draw a drop shadow for the text
+                // Vertical label text alignment.
+                final float baseline;
+                if ((key.labelOption & KEY_LABEL_OPTION_ALIGN_BOTTOM) != 0) {
+                    baseline = key.height -
+                            + labelCharHeight * KEY_LABEL_VERTICAL_PADDING_FACTOR;
+                } else { // Align center
+                    final float centerY = (key.height + padding.top - padding.bottom) / 2;
+                    baseline = centerY
+                            + labelCharHeight * KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR_CENTER;
+                }
+                // Horizontal label text alignment
+                final int positionX;
+                if ((key.labelOption & KEY_LABEL_OPTION_ALIGN_LEFT) != 0) {
+                    positionX = (int)(
+                            labelCharWidth * KEY_LABEL_HORIZONTAL_PADDING_FACTOR + padding.left);
+                    paint.setTextAlign(Align.LEFT);
+                } else if ((key.labelOption & KEY_LABEL_OPTION_ALIGN_RIGHT) != 0) {
+                    positionX = (int)(key.width
+                            - labelCharWidth * KEY_LABEL_HORIZONTAL_PADDING_FACTOR - padding.right);
+                    paint.setTextAlign(Align.RIGHT);
+                } else {
+                    positionX = (key.width + padding.left - padding.right) / 2;
+                    paint.setTextAlign(Align.CENTER);
+                }
+                // Set a drop shadow for the text
                 paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
-                final int centerX = (key.width + padding.left - padding.right) / 2;
-                final int centerY = (key.height + padding.top - padding.bottom) / 2;
-                final float baseline = centerY
-                        + labelHeight * KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR;
-                canvas.drawText(label, centerX, baseline, paint);
+                canvas.drawText(label, positionX, baseline, paint);
                 // Turn off drop shadow
                 paint.setShadowLayer(0, 0, 0, 0);
             }
+            // Draw key icon
             if (key.label == null && key.icon != null) {
                 int drawableWidth = key.icon.getIntrinsicWidth();
                 int drawableHeight = key.icon.getIntrinsicHeight();

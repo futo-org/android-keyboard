@@ -183,6 +183,8 @@ public class BaseKeyboard {
 
         /** Label to display */
         public CharSequence label;
+        /** Option of the label */
+        public int labelOption;
 
         /** Icon to display instead of a label. Icon takes precedence over a label */
         public Drawable icon;
@@ -331,6 +333,7 @@ public class BaseKeyboard {
             setDefaultBounds(manualTemporaryUpperCaseHintIcon);
 
             label = a.getText(R.styleable.BaseKeyboard_Key_keyLabel);
+            labelOption = a.getInt(R.styleable.BaseKeyboard_Key_keyLabelOption, 0);
             manualTemporaryUpperCaseCode = a.getInt(
                     R.styleable.BaseKeyboard_Key_manualTemporaryUpperCaseCode, 0);
             text = a.getText(R.styleable.BaseKeyboard_Key_keyOutputText);
