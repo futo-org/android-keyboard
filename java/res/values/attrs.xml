@@ -155,6 +155,17 @@
         <attr name="hasSettingsKey" format="string" />
         <attr name="voiceKeyEnabled" format="string" />
         <attr name="hasVoiceKey" format="string" />
+        <attr name="imeOptions">
+            <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
+            <flag name="actionUnspecified" value="0" />
+            <flag name="actionNone" value="1" />
+            <flag name="actionGo" value="2" />
+            <flag name="actionSearch" value="3" />
+            <flag name="actionSend" value="4" />
+            <flag name="actionNext" value="5" />
+            <flag name="actionDone" value="6" />
+            <flag name="actionPrevious" value="7" />
+        </attr>
     </declare-styleable>
 
     <declare-styleable name="BaseKeyboard_KeyStyle">

@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.inputmethod.EditorInfo;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
@@ -165,7 +166,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             this.mHasSettingsKey = hasSettingsKey;
             this.mVoiceKeyEnabled = voiceKeyEnabled;
             this.mHasVoiceKey = hasVoiceKey;
-            this.mImeOptions = imeOptions;
+            // We are interested only in IME_MASK_ACTION enum value and IME_FLAG_NO_ENTER_ACTION.
+            this.mImeOptions = imeOptions
+                    & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
             this.mEnableShiftLock = enableShiftLock;
 
             this.mHashCode = Arrays.hashCode(new Object[] {
@@ -301,7 +304,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     mSubtypeSwitcher.getInputLocale());
 
             keyboard = new LatinKeyboard(mInputMethodService, id);
-            keyboard.setImeOptions(res, id.mMode, id.mImeOptions);
 
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();

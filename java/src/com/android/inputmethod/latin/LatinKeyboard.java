@@ -33,7 +33,6 @@ import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.util.Log;
 import android.view.ViewConfiguration;
-import android.view.inputmethod.EditorInfo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,9 +53,7 @@ public class LatinKeyboard extends BaseKeyboard {
     private Drawable mSpacePreviewIcon;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
-    private final Drawable mSearchIcon;
     private final int mSpaceBarTextShadowColor;
-    private Key mEnterKey;
     private Key mSpaceKey;
     private int mSpaceKeyIndex = -1;
     private int mSpaceDragStartX;
@@ -70,12 +67,6 @@ public class LatinKeyboard extends BaseKeyboard {
     private int mPrefLetterX;
     private int mPrefLetterY;
     private int mPrefDistance;
-
-    // Default Enter key attributes
-    private final Drawable mDefaultEnterIcon;
-    private final Drawable mDefaultEnterPreview;
-    private final CharSequence mDefaultEnterLabel;
-    private final CharSequence mDefaultEnterText;
 
     private LatinKeyboardShiftState mShiftState = new LatinKeyboardShiftState();
 
@@ -98,14 +89,10 @@ public class LatinKeyboard extends BaseKeyboard {
         mContext = context;
         mRes = res;
         if (id.mColorScheme == BaseKeyboardView.COLOR_SCHEME_BLACK) {
-            // TODO: use <case imeOptions> and <case colorScheme> in XML to load search icon
-            mSearchIcon = res.getDrawable(R.drawable.sym_bkeyboard_search);
             mShiftedIcon = res.getDrawable(R.drawable.sym_bkeyboard_shift_locked);
             mSpaceBarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_black);
         } else { // default color scheme is BaseKeyboardView.COLOR_SCHEME_WHITE
-            // TODO: use <case imeOptions> and <case colorScheme> in XML to load search icon
-            mSearchIcon = res.getDrawable(R.drawable.sym_keyboard_search);
             mShiftedIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
             mSpaceBarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_white);
@@ -118,16 +105,6 @@ public class LatinKeyboard extends BaseKeyboard {
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
         mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
-
-        if (mEnterKey != null) {
-            mDefaultEnterIcon = mEnterKey.icon;
-            mDefaultEnterPreview = mEnterKey.iconPreview;
-            mDefaultEnterLabel = mEnterKey.label;
-            mDefaultEnterText = mEnterKey.text;
-        } else {
-            mDefaultEnterIcon = mDefaultEnterPreview = null;
-            mDefaultEnterLabel = mDefaultEnterText = null;
-        }
     }
 
     @Override
@@ -135,9 +112,6 @@ public class LatinKeyboard extends BaseKeyboard {
             XmlResourceParser parser, KeyStyles keyStyles) {
         Key key = new LatinKey(res, parent, x, y, parser, keyStyles);
         switch (key.codes[0]) {
-        case LatinIME.KEYCODE_ENTER:
-            mEnterKey = key;
-            break;
         case LatinIME.KEYCODE_SPACE:
             mSpaceKey = key;
             mSpaceIcon = key.icon;
@@ -146,53 +120,6 @@ public class LatinKeyboard extends BaseKeyboard {
         }
 
         return key;
-    }
-
-    private static void resetKeyAttributes(Key key, CharSequence label) {
-        key.popupCharacters = null;
-        key.popupResId = 0;
-        key.text = null;
-        key.iconPreview = null;
-        key.icon = null;
-        key.hintIcon = null;
-        key.label = label;
-    }
-
-    // TODO: remove this method and use <case imeOptions> in XML
-    public void setImeOptions(Resources res, int mode, int options) {
-        if (mEnterKey == null)
-            return;
-        final boolean configDynamicKeyTopEnterKey = res.getBoolean(
-                R.bool.config_dynamic_key_top_enter_key);
-        if (configDynamicKeyTopEnterKey) {
-            switch (options & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION)) {
-            case EditorInfo.IME_ACTION_GO:
-                resetKeyAttributes(mEnterKey, res.getText(R.string.label_go_key));
-                break;
-            case EditorInfo.IME_ACTION_NEXT:
-                resetKeyAttributes(mEnterKey, res.getText(R.string.label_next_key));
-                break;
-            case EditorInfo.IME_ACTION_DONE:
-                resetKeyAttributes(mEnterKey, res.getText(R.string.label_done_key));
-                break;
-            case EditorInfo.IME_ACTION_SEARCH:
-                resetKeyAttributes(mEnterKey, null);
-                mEnterKey.iconPreview = res.getDrawable(R.drawable.sym_keyboard_feedback_search);
-                mEnterKey.icon = mSearchIcon;
-                break;
-            case EditorInfo.IME_ACTION_SEND:
-                resetKeyAttributes(mEnterKey, res.getText(R.string.label_send_key));
-                break;
-            default:
-                resetKeyAttributes(mEnterKey, mDefaultEnterLabel);
-                mEnterKey.text = mDefaultEnterText;
-                mEnterKey.icon = mDefaultEnterIcon;
-                mEnterKey.iconPreview = mDefaultEnterPreview;
-                break;
-            }
-        }
-        // Set the initial size of the preview icon
-        setDefaultBounds(mEnterKey.iconPreview);
     }
 
     public void enableShiftLock() {

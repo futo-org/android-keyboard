@@ -407,23 +407,27 @@ public class BaseKeyboardParser {
                     R.styleable.BaseKeyboard_Case_hasVoiceKey, id.mHasVoiceKey);
             final boolean colorSchemeMatched = matchInteger(viewAttr,
                     R.styleable.BaseKeyboardView_colorScheme, id.mColorScheme);
-
-            final boolean selected = modeMatched && settingsKeyMatched
-                    && voiceEnabledMatched && voiceKeyMatched && colorSchemeMatched;
+            // As noted at KeyboardSwitcher.KeyboardId class, we are interested only in
+            // enum value masked by IME_MASK_ACTION and IME_FLAG_NO_ENTER_ACTION. So matching
+            // this attribute with id.mImeOptions as integer value is enough for our purpose.
+            final boolean imeOptionsMatched = matchInteger(a,
+                    R.styleable.BaseKeyboard_Case_imeOptions, id.mImeOptions);
+            final boolean selected = modeMatched && settingsKeyMatched && voiceEnabledMatched
+                    && voiceKeyMatched && colorSchemeMatched && imeOptionsMatched;
 
             if (DEBUG_TAG) {
-            Log.d(TAG, "parseCaseCondition: " + Boolean.toString(selected).toUpperCase()
-                    + debugInteger(a,
-                            R.styleable.BaseKeyboard_Case_mode, "mode")
-                    + debugBoolean(a,
-                            R.styleable.BaseKeyboard_Case_hasSettingsKey, "hasSettingsKey")
-                    + debugBoolean(a,
-                            R.styleable.BaseKeyboard_Case_voiceKeyEnabled, "voiceKeyEnabled")
-                    + debugBoolean(a,
-                            R.styleable.BaseKeyboard_Case_hasVoiceKey, "hasVoiceKey")
-                    + debugInteger(viewAttr,
-                            R.styleable.BaseKeyboardView_colorScheme, "colorScheme")
-                    );
+                Log.d(TAG, String.format(
+                        "parseCaseCondition: %s%s%s%s%s%s%s",
+                        Boolean.toString(selected).toUpperCase(),
+                        debugInteger(a, R.styleable.BaseKeyboard_Case_mode, "mode"),
+                        debugBoolean(a, R.styleable.BaseKeyboard_Case_hasSettingsKey,
+                                "hasSettingsKey"),
+                        debugBoolean(a, R.styleable.BaseKeyboard_Case_voiceKeyEnabled,
+                                "voiceKeyEnabled"),
+                        debugBoolean(a, R.styleable.BaseKeyboard_Case_hasVoiceKey, "hasVoiceKey"),
+                        debugInteger(viewAttr, R.styleable.BaseKeyboardView_colorScheme,
+                                "colorScheme"),
+                        debugInteger(a, R.styleable.BaseKeyboard_Case_imeOptions, "imeOptions")));
             }
 
             return selected;
