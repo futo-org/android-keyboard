@@ -41,6 +41,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -78,12 +79,14 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     private boolean mVoiceButtonOnPrimary;
     private boolean mVoiceInputHighlighted;
 
+    private InputMethodManager mImm;
     private LatinIME mContext;
     private AlertDialog mVoiceWarningDialog;
     private VoiceInput mVoiceInput;
     private final VoiceResults mVoiceResults = new VoiceResults();
     private Hints mHints;
     private UIHandler mHandler;
+    private SubtypeSwitcher mSubtypeSwitcher;
     // For each word, a list of potential replacements, usually from voice.
     private final Map<String, List<CharSequence>> mWordToSuggestions =
             new HashMap<String, List<CharSequence>>();
@@ -96,6 +99,8 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     private void initInternal(LatinIME context, UIHandler h) {
         mContext = context;
         mHandler = h;
+        mImm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         if (VOICE_INSTALLED) {
             mVoiceInput = new VoiceInput(context, this);
             mHints = new Hints(context, new Hints.Display() {
@@ -376,7 +381,6 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             }
         }
         mContext.vibrate();
-        mContext.switchToKeyboardView();
 
         final List<CharSequence> nBest = new ArrayList<CharSequence>();
         for (String c : mVoiceResults.candidates) {
@@ -399,6 +403,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
         mVoiceInputHighlighted = true;
         mWordToSuggestions.putAll(mVoiceResults.alternatives);
+        onCancelVoice();
     }
 
     public void switchToRecognitionStatusView(final boolean configurationChanging) {
@@ -410,7 +415,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                 View v = mVoiceInput.getView();
                 ViewParent p = v.getParent();
                 if (p != null && p instanceof ViewGroup) {
-                    ((ViewGroup)v.getParent()).removeView(v);
+                    ((ViewGroup)p).removeView(v);
                 }
                 mContext.setInputView(v);
                 mContext.updateInputViewShown();
@@ -499,6 +504,10 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         }
     }
 
+    public void onStartInputView() {
+        mSubtypeSwitcher.setVoiceInput(mVoiceInput);
+    }
+
     public void onConfigurationChanged(boolean configurationChanging) {
         if (mRecognizing) {
             switchToRecognitionStatusView(configurationChanging);
@@ -507,8 +516,21 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     @Override
     public void onCancelVoice() {
         if (mRecognizing) {
-            mRecognizing = false;
-            mContext.switchToKeyboardView();
+            if (mSubtypeSwitcher.isVoiceMode()) {
+                // If voice mode is being canceled within LatinIME (i.e. time-out or user
+                // cancellation etc.), onCancelVoice() will be called first. LatinIME thinks it's
+                // still in voice mode. LatinIME needs to call switchToLastInputMethod().
+                // Note that onCancelVoice() will be called again from SubtypeSwitcher.
+                IBinder token = mContext.getWindow().getWindow().getAttributes().token;
+                mImm.switchToLastInputMethod(token);
+            } else if (mSubtypeSwitcher.isKeyboardMode()) {
+                // If voice mode is being canceled out of LatinIME (i.e. by user's IME switching or
+                // as a result of switchToLastInputMethod() etc.),
+                // onCurrentInputMethodSubtypeChanged() will be called first. LatinIME will know
+                // that it's in keyboard mode and SubtypeSwitcher will call onCancelVoice().
+                mRecognizing = false;
+                mContext.switchToKeyboardView();
+            }
         }
     }
 
