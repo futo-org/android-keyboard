@@ -20,7 +20,7 @@
 
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyWidth="8.2%p"
+    latin:keyWidth="11.949%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
@@ -31,43 +31,42 @@
             latin:codes="@integer/key_tab"
             latin:keyLabel="@string/label_tab_key"
             latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
-            latin:keyWidth="12.1%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Spacer
-            latin:horizontalGap="4.0%p" />
+            latin:horizontalGap="4.458%p" />
         <Key
             latin:codes="45"
-            latin:keyLabel=" - " />
+            latin:keyLabel=" - "
+            latin:keyWidth="8.042%p" />
         <Key
             latin:codes="43"
-            latin:keyLabel=" + " />
+            latin:keyLabel=" + "
+            latin:keyWidth="8.042%p" />
         <Key
             latin:codes="44"
-            latin:keyLabel="@string/label_pause_key" />
+            latin:keyLabel="@string/label_pause_key"
+            latin:keyWidth="8.042%p" />
         <!-- To match one character label size with "Tab" and "Pause, I placed spaces around the
              char '-' and '+'. -->
         <Spacer
-            latin:horizontalGap="4.0%p" />
+            latin:horizontalGap="4.458%p" />
         <Key
             latin:codes="49"
-            latin:keyIcon="@drawable/sym_keyboard_num1"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num1" />
         <Key
             latin:codes="50"
-            latin:keyIcon="@drawable/sym_keyboard_num2"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num2" />
         <Key
             latin:codes="51"
-            latin:keyIcon="@drawable/sym_keyboard_num3"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num3" />
         <Spacer
-            latin:horizontalGap="4.0%p" />
+            latin:horizontalGap="4.458%p" />
         <Key
             latin:codes="@integer/key_delete"
             latin:keyLabel="@string/label_backspace_key"
             latin:keyLabelOption="fontItalic|alignRight|alignBottom"
-            latin:keyWidth="15.0%p"
+            latin:keyWidth="14.706%p"
             latin:isModifier="true"
             latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
@@ -77,44 +76,43 @@
             latin:codes="@integer/key_symbol"
             latin:keyLabel="@string/label_more_key"
             latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
-            latin:keyWidth="12.1%p"
             latin:isModifier="true"
             latin:isSticky="true"
             latin:keyEdgeFlags="left" />
         <Spacer
-            latin:horizontalGap="4.0%p" />
+            latin:horizontalGap="4.458%p" />
         <Key
             latin:codes="44"
-            latin:keyLabel=" , " />
+            latin:keyLabel=" , "
+            latin:keyWidth="8.042%p" />
         <Key
             latin:codes="46"
-            latin:keyLabel=" . " />
+            latin:keyLabel=" . "
+            latin:keyWidth="8.042%p" />
         <Key
             latin:codes="59"
-            latin:keyLabel="@string/label_wait_key" />
+            latin:keyLabel="@string/label_wait_key"
+            latin:keyWidth="8.042%p" />
         <!-- To match one character label size with "More" and "Wait", I placed spaces around the
              char ',' and '.'. -->
         <Spacer
-            latin:horizontalGap="4.0%p" />
+            latin:horizontalGap="4.458%p" />
         <Key
             latin:codes="52"
-            latin:keyIcon="@drawable/sym_keyboard_num4"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num4" />
         <Key
             latin:codes="53"
-            latin:keyIcon="@drawable/sym_keyboard_num5"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num5" />
         <Key
             latin:codes="54"
-            latin:keyIcon="@drawable/sym_keyboard_num6"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num6" />
         <Spacer
-            latin:horizontalGap="4.0%p" />
+            latin:horizontalGap="4.458%p" />
         <Key
             latin:codes="@integer/key_return"
             latin:keyLabel="@string/label_return_key"
             latin:keyLabelOption="fontItalic|alignRight|alignBottom"
-            latin:keyWidth="15.0%p"
+            latin:keyWidth="14.706%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
@@ -124,30 +122,30 @@
         <!-- There is an empty area bellow the "More" key and left of the "(" key.  To ignore
              the touch event on the area, "(" is intentionally not marked as a left edge key. -->
         <Spacer
-            latin:horizontalGap="16.1%p" />
+            latin:horizontalGap="16.406%p" />
         <Key
             latin:codes="40"
-            latin:keyLabel=" ( " />
+            latin:keyLabel=" ( "
+            latin:keyWidth="8.042%p" />
         <Key
             latin:codes="41"
-            latin:keyLabel=" ) " />
+            latin:keyLabel=" ) "
+            latin:keyWidth="8.042%p" />
         <Key
             latin:codes="78"
-            latin:keyLabel=" N " />
+            latin:keyLabel=" N "
+            latin:keyWidth="8.042%p" />
         <Spacer
-            latin:horizontalGap="4.0%p" />
+            latin:horizontalGap="4.458%p" />
         <Key
             latin:codes="55"
-            latin:keyIcon="@drawable/sym_keyboard_num7"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num7" />
         <Key
             latin:codes="56"
-            latin:keyIcon="@drawable/sym_keyboard_num8"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num8" />
         <Key
             latin:codes="57"
-            latin:keyIcon="@drawable/sym_keyboard_num9"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num9" />
         <!-- There is an empty area bellow the "Enter" key and right of the "9" key.  To ignore
              the touch event on the area, "9" is intentionally not marked as a right edge key. -->
     </Row>
@@ -156,26 +154,23 @@
         <!-- There is an empty area bellow the "More" key and left of the "space" key.  To ignore
              the touch event on the area, "space" is intentionally not marked as a left edge key. -->
         <Spacer
-            latin:horizontalGap="16.1%p" />
+            latin:horizontalGap="16.406%p" />
         <Key
             latin:codes="@integer/key_space"
             latin:keyIcon="@drawable/sym_keyboard_space"
             latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="24.6%p" />
+            latin:keyWidth="24.127%p" />
         <Spacer
-            latin:horizontalGap="4.0%p" />
+            latin:horizontalGap="4.458%p" />
         <Key
             latin:codes="42"
-            latin:keyIcon="@drawable/sym_keyboard_numstar"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_numstar" />
         <Key
             latin:codes="48"
-            latin:keyIcon="@drawable/sym_keyboard_num0"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_num0" />
         <Key
             latin:codes="35"
-            latin:keyIcon="@drawable/sym_keyboard_numpound"
-            latin:keyWidth="12.1%p " />
+            latin:keyIcon="@drawable/sym_keyboard_numpound" />
         <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
              the touch event on the area, "#" is intentionally not marked as a right edge key. -->
     </Row>

@@ -20,18 +20,19 @@
 
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyWidth="8.2%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
     <!-- This row is intentionally not marked as a top row -->
-    <Row>
+    <Row
+        latin:keyWidth="8.272%p"
+    >
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="@string/label_tab_key"
             latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
-            latin:keyWidth="7.0%p"
+            latin:keyWidth="7.949%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
@@ -72,21 +73,21 @@
             latin:codes="@integer/key_delete"
             latin:keyIcon="@drawable/sym_keyboard_delete"
             latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            latin:keyWidth="11.0%p"
+            latin:keyWidth="9.331%p"
             latin:isModifier="true"
             latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
     </Row>
-    <Row>
+    <Row
+        latin:keyWidth="8.157%p"
+    >
         <Key
             latin:codes="@integer/key_symbol"
             latin:keyLabel="@string/label_alpha_key"
             latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
-            latin:keyWidth="9.7%p"
+            latin:keyWidth="11.167%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="\@" />
         <Key
             latin:keyLabel="#" />
         <Key
@@ -123,35 +124,39 @@
             latin:codes="@integer/key_return"
             latin:keyLabel="@string/label_return_key"
             latin:keyLabelOption="fontItalic|alignRight|alignBottom"
-            latin:keyWidth="8.3%p"
+            latin:keyWidth="15.750%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
-    <Row>
+    <Row
+        latin:keyWidth="8.042%p"
+    >
         <Key
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_more_key"
             latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
-            latin:keyWidth="13.1%p"
+            latin:keyWidth="15.192%p"
             latin:isModifier="true"
             latin:isSticky="true"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="&quot;"
+            latin:keyLabel="&lt;"
             latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="“”«»˝" />
+            latin:popupCharacters="≤«‹" />
         <Key
-            latin:keyLabel="\'" />
+            latin:keyLabel="&gt;"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="≥»›" />
+        <Key
+            latin:keyLabel="[" />
+        <Key
+            latin:keyLabel="]" />
+        <Key
+            latin:keyLabel="=" />
         <Key
             latin:keyLabel=":" />
         <Key
             latin:keyLabel=";" />
-        <Key
-            latin:keyLabel="/" />
-        <Key
-            latin:keyLabel="," />
-        <Key
-            latin:keyLabel="." />
         <Key
             latin:keyLabel="!"
             latin:popupKeyboard="@xml/kbd_popup_template"
@@ -165,20 +170,32 @@
             latin:keyLabel="@string/label_more_key"
             latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
             latin:keyLabelOption="fontItalic|alignRight|alignBottom"
-            latin:keyWidth="13.1%p"
+            latin:keyWidth="12.430%p"
             latin:isModifier="true"
             latin:isSticky="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <!-- This row is intentionally not marked as a bottom row -->
-    <Row>
+    <Row
+        latin:keyWidth="8.042%p"
+    >
         <Spacer
-            latin:horizontalGap="31.5%p" />
+            latin:horizontalGap="16.404%p" />
+        <Key
+            latin:keyLabel="/" />
+        <Key
+            latin:keyLabel="\@" />
         <Key
             latin:codes="@integer/key_space"
             latin:keyIcon="@drawable/sym_keyboard_space"
             latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.0%p"
+            latin:keyWidth="37.454%p"
             latin:isModifier="true" />
+        <Key
+            latin:keyLabel="&quot;"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="“”«»˝" />
+        <Key
+            latin:keyLabel="_" />
     </Row>
 </Keyboard>

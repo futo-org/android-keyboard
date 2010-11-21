@@ -22,12 +22,14 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <!-- This row is intentionally not marked as a top row -->
-    <Row>
+    <Row
+        latin:keyWidth="8.272%p"
+    >
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="@string/label_tab_key"
             latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
-            latin:keyWidth="7.0%p"
+            latin:keyWidth="7.949%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
@@ -74,7 +76,7 @@
             latin:codes="@integer/key_delete"
             latin:keyIcon="@drawable/sym_keyboard_delete"
             latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            latin:keyWidth="11.0%p"
+            latin:keyWidth="9.331%p"
             latin:isModifier="true"
             latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
