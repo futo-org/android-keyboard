@@ -26,20 +26,127 @@
     latin:keyHeight="@dimen/key_height"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_functional_key_style" />
+        latin:keyboardLayout="@xml/kbd_key_styles" />
+    <switch>
+        <case
+            latin:colorScheme="white"
+        >
+            <key-style
+                latin:styleName="num0KeyStyle"
+                latin:codes="48"
+                latin:keyIcon="@drawable/sym_keyboard_num0" />
+            <key-style
+                latin:styleName="num1KeyStyle"
+                latin:codes="49"
+                latin:keyIcon="@drawable/sym_keyboard_num1" />
+            <key-style
+                latin:styleName="num2KeyStyle"
+                latin:codes="50"
+                latin:keyIcon="@drawable/sym_keyboard_num2" />
+            <key-style
+                latin:styleName="num3KeyStyle"
+                latin:codes="51"
+                latin:keyIcon="@drawable/sym_keyboard_num3" />
+            <key-style
+                latin:styleName="num4KeyStyle"
+                latin:codes="52"
+                latin:keyIcon="@drawable/sym_keyboard_num4" />
+            <key-style
+                latin:styleName="num5KeyStyle"
+                latin:codes="53"
+                latin:keyIcon="@drawable/sym_keyboard_num5" />
+            <key-style
+                latin:styleName="num6KeyStyle"
+                latin:codes="54"
+                latin:keyIcon="@drawable/sym_keyboard_num6" />
+            <key-style
+                latin:styleName="num7KeyStyle"
+                latin:codes="55"
+                latin:keyIcon="@drawable/sym_keyboard_num7" />
+            <key-style
+                latin:styleName="num8KeyStyle"
+                latin:codes="56"
+                latin:keyIcon="@drawable/sym_keyboard_num8" />
+            <key-style
+                latin:styleName="num9KeyStyle"
+                latin:codes="57"
+                latin:keyIcon="@drawable/sym_keyboard_num9" />
+            <key-style
+                latin:styleName="numAltKeyStyle"
+                latin:codes="@integer/key_switch_alpha_symbol"
+                latin:keyIcon="@drawable/sym_keyboard_numalt"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_numalt" />
+            <key-style
+                latin:styleName="numSpaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_keyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+        </case>
+        <case
+            latin:colorScheme="black"
+        >
+            <key-style
+                latin:styleName="num0KeyStyle"
+                latin:codes="48"
+                latin:keyIcon="@drawable/sym_bkeyboard_num0" />
+            <key-style
+                latin:styleName="num1KeyStyle"
+                latin:codes="49"
+                latin:keyIcon="@drawable/sym_bkeyboard_num1" />
+            <key-style
+                latin:styleName="num2KeyStyle"
+                latin:codes="50"
+                latin:keyIcon="@drawable/sym_bkeyboard_num2" />
+            <key-style
+                latin:styleName="num3KeyStyle"
+                latin:codes="51"
+                latin:keyIcon="@drawable/sym_bkeyboard_num3" />
+            <key-style
+                latin:styleName="num4KeyStyle"
+                latin:codes="52"
+                latin:keyIcon="@drawable/sym_bkeyboard_num4" />
+            <key-style
+                latin:styleName="num5KeyStyle"
+                latin:codes="53"
+                latin:keyIcon="@drawable/sym_bkeyboard_num5" />
+            <key-style
+                latin:styleName="num6KeyStyle"
+                latin:codes="54"
+                latin:keyIcon="@drawable/sym_bkeyboard_num6" />
+            <key-style
+                latin:styleName="num7KeyStyle"
+                latin:codes="55"
+                latin:keyIcon="@drawable/sym_bkeyboard_num7" />
+            <key-style
+                latin:styleName="num8KeyStyle"
+                latin:codes="56"
+                latin:keyIcon="@drawable/sym_bkeyboard_num8" />
+            <key-style
+                latin:styleName="num9KeyStyle"
+                latin:codes="57"
+                latin:keyIcon="@drawable/sym_bkeyboard_num9" />
+            <key-style
+                latin:styleName="numAltKeyStyle"
+                latin:codes="@integer/key_switch_alpha_symbol"
+                latin:keyIcon="@drawable/sym_bkeyboard_numalt"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_numalt" />
+            <key-style
+                latin:styleName="numSpaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_bkeyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+        </case>
+    </switch>
     <Row
         latin:rowEdgeFlags="top"
     >
         <Key
-            latin:codes="49"
-            latin:keyIcon="@drawable/sym_keyboard_num1"
+            latin:keyStyle="num1KeyStyle"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:codes="50"
-            latin:keyIcon="@drawable/sym_keyboard_num2" />
+            latin:keyStyle="num2KeyStyle" />
         <Key
-            latin:codes="51"
-            latin:keyIcon="@drawable/sym_keyboard_num3" />
+            latin:keyStyle="num3KeyStyle" />
         <Key
             latin:keyLabel="-"
             latin:keyStyle="functionalKeyStyle"
@@ -48,15 +155,12 @@
     </Row>
     <Row>
         <Key
-            latin:codes="52"
-            latin:keyIcon="@drawable/sym_keyboard_num4"
+            latin:keyStyle="num4KeyStyle"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:codes="53"
-            latin:keyIcon="@drawable/sym_keyboard_num5" />
+            latin:keyStyle="num5KeyStyle" />
         <Key
-            latin:codes="54"
-            latin:keyIcon="@drawable/sym_keyboard_num6" />
+            latin:keyStyle="num6KeyStyle" />
         <Key
             latin:keyLabel="."
             latin:keyStyle="functionalKeyStyle"
@@ -65,15 +169,12 @@
     </Row>
     <Row>
         <Key
-            latin:codes="55"
-            latin:keyIcon="@drawable/sym_keyboard_num7"
+            latin:keyStyle="num7KeyStyle"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:codes="56"
-            latin:keyIcon="@drawable/sym_keyboard_num8" />
+            latin:keyStyle="num8KeyStyle" />
         <Key
-            latin:codes="57"
-            latin:keyIcon="@drawable/sym_keyboard_num9" />
+            latin:keyStyle="num9KeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="20%p"
@@ -83,17 +184,12 @@
         latin:rowEdgeFlags="bottom"
     >
         <Key
-            latin:codes="@integer/key_switch_alpha_symbol"
-            latin:keyIcon="@drawable/sym_keyboard_numalt"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_numalt"
+            latin:keyStyle="numAltKeyStyle"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:codes="48"
-            latin:keyIcon="@drawable/sym_keyboard_num0" />
+            latin:keyStyle="num0KeyStyle" />
         <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            latin:keyStyle="numSpaceKeyStyle" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyWidth="20%p"

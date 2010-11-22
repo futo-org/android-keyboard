@@ -30,6 +30,6 @@
         latin:keyBackground="@drawable/btn_keyboard_key_stone"
         latin:keyTextColor="@color/latinkeyboard_key_color_black"
         latin:shadowColor="@color/latinkeyboard_key_color_white"
-        latin:symbolColorScheme="black"
+        latin:colorScheme="black"
         latin:popupLayout="@layout/input_stone_popup"
         />

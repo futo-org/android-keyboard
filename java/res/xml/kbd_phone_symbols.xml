@@ -25,7 +25,46 @@
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
-    <include latin:keyboardLayout="@xml/kbd_functional_key_style" />
+    <include
+        latin:keyboardLayout="@xml/kbd_key_styles" />
+    <switch>
+        <case
+            latin:colorScheme="white"
+        >
+            <key-style
+                latin:styleName="numStarKeyStyle"
+                latin:codes="42"
+                latin:keyIcon="@drawable/sym_keyboard_numstar"
+                latin:keyEdgeFlags="left" />
+            <key-style
+                latin:styleName="numPoundKeyStyle"
+                latin:codes="35"
+                latin:keyIcon="@drawable/sym_keyboard_numpound" />
+            <key-style
+                latin:styleName="numSpaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_keyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+        </case>
+        <case
+            latin:colorScheme="black"
+        >
+            <key-style
+                latin:styleName="numStarKeyStyle"
+                latin:codes="42"
+                latin:keyIcon="@drawable/sym_bkeyboard_numstar"
+                latin:keyEdgeFlags="left" />
+            <key-style
+                latin:styleName="numPoundKeyStyle"
+                latin:codes="35"
+                latin:keyIcon="@drawable/sym_bkeyboard_numpound" />
+            <key-style
+                latin:styleName="numSpaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_bkeyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+        </case>
+    </switch>
     <Row
         latin:rowEdgeFlags="top"
     >
@@ -61,16 +100,14 @@
     </Row>
     <Row>
         <Key
-            latin:codes="42"
-            latin:keyIcon="@drawable/sym_keyboard_numstar"
+            latin:keyStyle="numStarKeyStyle"
             latin:keyEdgeFlags="left" />
         <!-- Wait is a semicolon. -->
         <Key
             latin:codes="59"
             latin:keyLabel="Wait" />
         <Key
-            latin:codes="35"
-            latin:keyIcon="@drawable/sym_keyboard_numpound" />
+            latin:keyStyle="numPoundKeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="20%p"
@@ -86,9 +123,7 @@
         <Key
             latin:keyLabel="+" />
         <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            latin:keyStyle="numSpaceKeyStyle" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyWidth="20%p"

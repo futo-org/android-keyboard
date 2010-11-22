@@ -73,6 +73,9 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_KEYBOARD_GRID = false;
 
+    public static final int COLOR_SCHEME_WHITE = 0;
+    public static final int COLOR_SCHEME_BLACK = 1;
+
     public static final int NOT_A_TOUCH_COORDINATE = -1;
 
     public interface OnKeyboardActionListener {
@@ -170,7 +173,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private int mKeyTextColor;
     private Typeface mKeyTextStyle = Typeface.DEFAULT;
     private int mLabelTextSize;
-    private int mSymbolColorScheme = 0;
+    private int mColorScheme = COLOR_SCHEME_WHITE;
     private int mShadowColor;
     private float mShadowRadius;
     private Drawable mKeyBackground;
@@ -490,8 +493,8 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                         break;
                 }
                 break;
-            case R.styleable.BaseKeyboardView_symbolColorScheme:
-                mSymbolColorScheme = a.getInt(attr, 0);
+            case R.styleable.BaseKeyboardView_colorScheme:
+                mColorScheme = a.getInt(attr, COLOR_SCHEME_WHITE);
                 break;
             }
         }
@@ -659,8 +662,8 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         return mShowPreview;
     }
 
-    public int getSymbolColorScheme() {
-        return mSymbolColorScheme;
+    public int getColorScheme() {
+        return mColorScheme;
     }
 
     public void setPopupParent(View v) {

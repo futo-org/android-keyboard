@@ -168,8 +168,8 @@
         <Key
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_more_key"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
             latin:keyLabelOption="fontNormal|alignRight|alignBottom"
+            latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
             latin:keyWidth="12.430%p"
             latin:isModifier="true"
             latin:isSticky="true"

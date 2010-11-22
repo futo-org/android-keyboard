@@ -31,7 +31,7 @@
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
-        <item name="symbolColorScheme">white</item>
+        <item name="colorScheme">white</item>
     </style>
     <style name="KeyPreviewAnimation">
         <item name="android:windowEnterAnimation">@anim/key_preview_fadein</item>

@@ -26,7 +26,7 @@
     latin:keyHeight="@dimen/key_height"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_functional_key_style" />
+        latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
         latin:rowEdgeFlags="top"
     >

@@ -394,18 +394,22 @@ public class BaseKeyboardParser {
 
         final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.BaseKeyboard_Case);
+        final TypedArray viewAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                R.styleable.BaseKeyboardView);
         try {
-            final boolean modeMatched = matchInteger(
-                    a, R.styleable.BaseKeyboard_Case_mode, id.mMode);
-            final boolean settingsKeyMatched = matchBoolean(
-                    a, R.styleable.BaseKeyboard_Case_hasSettingsKey, id.mHasSettingsKey);
-            final boolean voiceEnabledMatched = matchBoolean(
-                    a, R.styleable.BaseKeyboard_Case_voiceKeyEnabled, id.mVoiceKeyEnabled);
-            final boolean voiceKeyMatched = matchBoolean(
-                    a, R.styleable.BaseKeyboard_Case_hasVoiceKey, id.mHasVoiceKey);
+            final boolean modeMatched = matchInteger(a,
+                    R.styleable.BaseKeyboard_Case_mode, id.mMode);
+            final boolean settingsKeyMatched = matchBoolean(a,
+                    R.styleable.BaseKeyboard_Case_hasSettingsKey, id.mHasSettingsKey);
+            final boolean voiceEnabledMatched = matchBoolean(a,
+                    R.styleable.BaseKeyboard_Case_voiceKeyEnabled, id.mVoiceKeyEnabled);
+            final boolean voiceKeyMatched = matchBoolean(a,
+                    R.styleable.BaseKeyboard_Case_hasVoiceKey, id.mHasVoiceKey);
+            final boolean colorSchemeMatched = matchInteger(viewAttr,
+                    R.styleable.BaseKeyboardView_colorScheme, id.mColorScheme);
 
             final boolean selected = modeMatched && settingsKeyMatched
-                    && voiceEnabledMatched && voiceKeyMatched;
+                    && voiceEnabledMatched && voiceKeyMatched && colorSchemeMatched;
 
             if (DEBUG_TAG) {
             Log.d(TAG, "parseCaseCondition: " + Boolean.toString(selected).toUpperCase()
@@ -417,12 +421,15 @@ public class BaseKeyboardParser {
                             R.styleable.BaseKeyboard_Case_voiceKeyEnabled, "voiceKeyEnabled")
                     + debugBoolean(a,
                             R.styleable.BaseKeyboard_Case_hasVoiceKey, "hasVoiceKey")
+                    + debugInteger(viewAttr,
+                            R.styleable.BaseKeyboardView_colorScheme, "colorScheme")
                     );
             }
 
             return selected;
         } finally {
             a.recycle();
+            viewAttr.recycle();
         }
     }
 
