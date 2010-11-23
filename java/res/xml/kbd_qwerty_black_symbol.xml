@@ -44,7 +44,7 @@
                 <default>
                     <Key
                         latin:codes="@integer/key_switch_alpha_symbol"
-                        latin:keyLabel="@string/label_symbol_key"
+                        latin:keyLabel="@string/label_to_symbol_key"
                         latin:keyWidth="20%p"
                         latin:isModifier="true"
                         latin:keyEdgeFlags="left" />
@@ -73,7 +73,7 @@
                 <default>
                     <Key
                         latin:codes="@integer/key_switch_alpha_symbol"
-                        latin:keyLabel="@string/label_symbol_key"
+                        latin:keyLabel="@string/label_to_symbol_key"
                         latin:keyWidth="15%p"
                         latin:isModifier="true"
                         latin:keyEdgeFlags="left" />

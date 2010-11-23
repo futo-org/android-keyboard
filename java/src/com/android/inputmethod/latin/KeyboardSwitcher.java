@@ -142,9 +142,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final boolean voiceKeyEnabled = mVoiceKeyEnabled;
         final boolean hasVoiceKey = voiceKeyEnabled && !mVoiceButtonOnPrimary;
         final int imeOptions = mImeOptions;
-        mSymbolsId = new KeyboardId(locale, orientation, mode, KBD_SYMBOLS,
+        // Note: This comment is only applied for phone number keyboard layout.
+        // On non-xlarge device, "@integer/key_switch_alpha_symbol" key code is used to switch
+        // between "phone keyboard" and "phone symbols keyboard".  But on xlarge device,
+        // "@integer/key_shift" key code is used for that purpose in order to properly display
+        // "more" and "locked more" key labels.  To achieve these behavior, we should initialize
+        // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
+        // respectively here for xlarge device's layout switching.
+        mSymbolsId = new KeyboardId(locale, orientation, mode,
+                mode == MODE_PHONE ? KBD_PHONE : KBD_SYMBOLS,
                 colorScheme, hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
-        mSymbolsShiftedId = new KeyboardId(locale, orientation, mode, KBD_SYMBOLS_SHIFT,
+        mSymbolsShiftedId = new KeyboardId(locale, orientation, mode,
+                mode == MODE_PHONE ? KBD_PHONE_SYMBOLS : KBD_SYMBOLS_SHIFT,
                 colorScheme, hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
     }
 
