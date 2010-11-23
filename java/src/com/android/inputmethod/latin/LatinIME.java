@@ -35,6 +35,7 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Debug;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -48,6 +49,8 @@ import android.util.Printer;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
@@ -458,7 +461,7 @@ public class LatinIME extends InputMethodService
     @Override
     public void onConfigurationChanged(Configuration conf) {
         mSubtypeSwitcher.onConfigurationChanged(conf);
-        onLanguageChanged();
+        onKeyboardLanguageChanged();
         updateAutoTextEnabled();
 
         // If orientation changed while predicting, commit the change
@@ -512,6 +515,7 @@ public class LatinIME extends InputMethodService
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getInputView();
+
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
             return;
@@ -521,7 +525,7 @@ public class LatinIME extends InputMethodService
 
         if (mRefreshKeyboardRequired) {
             mRefreshKeyboardRequired = false;
-            onLanguageChanged();
+            onKeyboardLanguageChanged();
         }
 
         TextEntryState.newSession(this);
@@ -629,6 +633,10 @@ public class LatinIME extends InputMethodService
         checkReCorrectionOnStart();
         checkTutorial(attribute.privateImeOptions);
         inputView.setForeground(true);
+
+        // TODO: Not to show keyboard if IME starts in Voice One shot mode.
+        mVoiceConnector.onStartInputView();
+
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
@@ -709,10 +717,8 @@ public class LatinIME extends InputMethodService
         // If the current selection in the text view changes, we should
         // clear whatever candidate text we have.
         if ((((mComposing.length() > 0 && mPredicting)
-                || mVoiceConnector.isVoiceInputHighlighted())
-                && (newSelStart != candidatesEnd
-                    || newSelEnd != candidatesEnd)
-                && mLastSelectionStart != newSelStart)) {
+                || mVoiceConnector.isVoiceInputHighlighted()) && (newSelStart != candidatesEnd
+                        || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart)) {
             mComposing.setLength(0);
             mPredicting = false;
             mHandler.postUpdateSuggestions();
@@ -1418,8 +1424,17 @@ public class LatinIME extends InputMethodService
     public void switchToKeyboardView() {
       mHandler.post(new Runnable() {
           public void run() {
-              if (mKeyboardSwitcher.getInputView() != null) {
-                  setInputView(mKeyboardSwitcher.getInputView());
+              if (DEBUG) {
+                  Log.d(TAG, "Switch to keyboard view.");
+              }
+              View v = mKeyboardSwitcher.getInputView();
+              if (v != null) {
+                  // Confirms that the keyboard view doesn't have parent view.
+                  ViewParent p = v.getParent();
+                  if (p != null && p instanceof ViewGroup) {
+                      ((ViewGroup)p).removeView(v);
+                  }
+                  setInputView(v);
               }
               setCandidatesViewShown(isCandidateStripVisible());
               updateInputViewShown();
@@ -1844,7 +1859,7 @@ public class LatinIME extends InputMethodService
 
     // Notify that Language has been changed and toggleLanguage will update KeyboaredID according
     // to new Language.
-    private void onLanguageChanged() {
+    public void onKeyboardLanguageChanged() {
         toggleLanguage(true, true);
     }
 
@@ -2226,6 +2241,5 @@ public class LatinIME extends InputMethodService
     @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
         SubtypeSwitcher.getInstance().updateSubtype(subtype);
-        onLanguageChanged();
     }
 }

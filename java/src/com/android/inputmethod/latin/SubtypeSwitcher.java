@@ -17,12 +17,12 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.voice.SettingsUtil;
+import com.android.inputmethod.voice.VoiceInput;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.inputmethodservice.InputMethodService;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -39,7 +39,7 @@ public class SubtypeSwitcher {
     // We may or may not draw the current language on space bar regardless of this flag.
     public static final boolean USE_SPACEBAR_LANGUAGE_SWITCHER = false;
     private static final boolean DBG = false;
-    private static final String TAG = "SubtypeSwitcher";
+    private static final String TAG = "InputMethodSubtypeSwitcher";
 
     private static final char LOCALE_SEPARATER = '_';
     private static final String KEYBOARD_MODE = "keyboard";
@@ -48,7 +48,7 @@ public class SubtypeSwitcher {
             new TextUtils.SimpleStringSplitter(LOCALE_SEPARATER);
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
-    private /* final */ InputMethodService mService;
+    private /* final */ LatinIME mService;
     private /* final */ InputMethodManager mImm;
     private /* final */ Resources mResources;
     private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
@@ -62,6 +62,7 @@ public class SubtypeSwitcher {
     private String mInputLocaleStr;
     private String mMode;
     private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
+    private VoiceInput mVoiceInput;
     private boolean mNeedsToDisplayLanguage;
     private boolean mIsSystemLanguageSameAsInputLanguage;
     /*-----------------------------------------------------------*/
@@ -71,10 +72,7 @@ public class SubtypeSwitcher {
     }
 
     public static void init(LatinIME service) {
-        sInstance.mService = service;
-        sInstance.mResources = service.getResources();
-        sInstance.mImm = (InputMethodManager) service.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
+        sInstance.resetParams(service);
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
             sInstance.initLanguageSwitcher(service);
         }
@@ -83,6 +81,21 @@ public class SubtypeSwitcher {
     }
 
     private SubtypeSwitcher() {
+    }
+
+    private void resetParams(LatinIME service) {
+        mService = service;
+        mResources = service.getResources();
+        mImm = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
+        mEnabledLanguagesOfCurrentInputMethod.clear();
+        mSystemLocale = null;
+        mInputLocale = null;
+        mInputLocaleStr = null;
+        mMode = null;
+        mAllEnabledSubtypesOfCurrentInputMethod = null;
+        // TODO: Voice input should be created here
+        mVoiceInput = null;
     }
 
     // Update all parameters stored in SubtypeSwitcher.
@@ -126,17 +139,65 @@ public class SubtypeSwitcher {
         mNeedsToDisplayLanguage = !(getEnabledKeyboardLocaleCount() <= 1
                 && mIsSystemLanguageSameAsInputLanguage);
         if (foundCurrentSubtypeBecameDisabled) {
+            if (DBG) {
+                Log.w(TAG, "Last subtype was disabled. Update to the current one.");
+            }
             updateSubtype(mImm.getCurrentInputMethodSubtype());
         }
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
     public void updateSubtype(InputMethodSubtype newSubtype) {
-        if (DBG) {
-            Log.w(TAG, "Update subtype to:" + newSubtype.getLocale() + "," + newSubtype.getMode());
+        final String newLocale;
+        final String newMode;
+        if (newSubtype == null) {
+            // Normally, newSubtype shouldn't be null. But just in case if newSubtype was null,
+            // fallback to the default locale and mode.
+            Log.e(TAG, "Couldn't get the current subtype.");
+            newLocale = "en_US";
+            newMode =KEYBOARD_MODE;
+        } else {
+            newLocale = newSubtype.getLocale();
+            newMode = newSubtype.getMode();
         }
-        updateInputLocale(newSubtype.getLocale());
-        mMode = newSubtype.getMode();
+        if (DBG) {
+            Log.w(TAG, "Update subtype to:" + newLocale + "," + newMode
+                    + ", from: " + mInputLocaleStr + ", " + mMode);
+        }
+        boolean languageChanged = false;
+        if (!newLocale.equals(mInputLocaleStr)) {
+            if (mInputLocaleStr != null) {
+                languageChanged = true;
+            }
+            updateInputLocale(newLocale);
+        }
+        boolean modeChanged = false;
+        String oldMode = mMode;
+        if (!newMode.equals(mMode)) {
+            if (mMode != null) {
+                modeChanged = true;
+            }
+            mMode = newMode;
+        }
+        if (isKeyboardMode()) {
+            if (modeChanged) {
+                if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
+                    mVoiceInput.cancel();
+                }
+            }
+            if (languageChanged) {
+                mService.onKeyboardLanguageChanged();
+            }
+        } else if (isVoiceMode()) {
+            if (languageChanged || modeChanged) {
+                if (mVoiceInput != null) {
+                    // TODO: Call proper function to trigger VoiceIME
+                    mService.onKey(LatinKeyboardView.KEYCODE_VOICE, null, 0, 0);
+                }
+            }
+        } else {
+            Log.w(TAG, "Unknown subtype mode: " + mMode);
+        }
     }
 
     // Update the current input locale from Locale string.
@@ -267,6 +328,37 @@ public class SubtypeSwitcher {
         conf.locale = newLocale;
         mResources.updateConfiguration(conf, mResources.getDisplayMetrics());
         return oldLocale;
+    }
+
+    public boolean isKeyboardMode() {
+        return KEYBOARD_MODE.equals(mMode);
+    }
+
+
+    ///////////////////////////
+    // Voice Input functions //
+    ///////////////////////////
+
+    public boolean setVoiceInput(VoiceInput vi) {
+        if (mVoiceInput == null) {
+            // TODO: Remove requirements to construct KeyboardSwitcher
+            // when IME was enabled with Voice mode
+            mService.onKeyboardLanguageChanged();
+            mVoiceInput = vi;
+            if (isVoiceMode() && mVoiceInput != null) {
+                if (DBG) {
+                    Log.d(TAG, "Set and call voice input.");
+                }
+                // TODO: Call proper function to enable VoiceIME
+                mService.onKey(LatinKeyboardView.KEYCODE_VOICE, null, 0, 0);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isVoiceMode() {
+        return VOICE_MODE.equals(mMode);
     }
 
     //////////////////////////////////////
