@@ -35,8 +35,9 @@
                     latin:keyLabel=".com"
                     latin:keyOutputText=".com"
                     latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupKeyboard="@xml/popup_domains"
-                    latin:keyWidth="16.084%p" />
+                    latin:popupKeyboard="@xml/popup_domains" />
+                <Key
+                    latin:keyLabel="\@" />
             </case>
             <!-- TODO: implement logical OR for <case> attribute -->
             <case
