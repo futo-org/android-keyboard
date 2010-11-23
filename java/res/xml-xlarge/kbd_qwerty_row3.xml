@@ -27,7 +27,7 @@
         <Key
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_shift_key"
-            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
+            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
             latin:keyWidth="15.192%p"
             latin:isModifier="true"
             latin:isSticky="true"
@@ -83,7 +83,7 @@
         <Key
             latin:codes="@integer/key_shift"
             latin:keyLabel="@string/label_shift_key"
-            latin:keyLabelOption="fontItalic|alignRight|alignBottom"
+            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
             latin:keyWidth="12.430%p"
             latin:isModifier="true"
             latin:isSticky="true"

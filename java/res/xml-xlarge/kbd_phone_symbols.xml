@@ -30,7 +30,7 @@
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="@string/label_tab_key"
-            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
+            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Spacer
@@ -65,7 +65,7 @@
         <Key
             latin:codes="@integer/key_delete"
             latin:keyLabel="@string/label_backspace_key"
-            latin:keyLabelOption="fontItalic|alignRight|alignBottom"
+            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
             latin:keyWidth="14.706%p"
             latin:isModifier="true"
             latin:isRepeatable="true"
@@ -75,7 +75,7 @@
         <Key
             latin:codes="@integer/key_switch_alpha_symbol"
             latin:keyLabel="@string/label_more_key"
-            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
+            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
             latin:isModifier="true"
             latin:isSticky="true"
             latin:keyEdgeFlags="left" />
@@ -111,7 +111,7 @@
         <Key
             latin:codes="@integer/key_return"
             latin:keyLabel="@string/label_return_key"
-            latin:keyLabelOption="fontItalic|alignRight|alignBottom"
+            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
             latin:keyWidth="14.706%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="right" />
