@@ -33,6 +33,8 @@
     <string name="alternates_for_z">źžż</string>
     <string name="alternates_for_l">ł</string>
     <string name="alternates_for_v">w</string>
-    <string name="alternates_for_ae">ä</string>
-    <string name="alternates_for_oe">öœ</string>
+    <string name="keylabel_for_scandinavia_row2_10">æ</string>
+    <string name="keylabel_for_scandinavia_row2_11">ø</string>
+    <string name="alternates_for_scandinavia_row2_10">ä</string>
+    <string name="alternates_for_scandinavia_row2_11">öœ</string>
 </resources>

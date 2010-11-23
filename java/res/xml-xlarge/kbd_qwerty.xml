@@ -25,13 +25,5 @@
     latin:keyHeight="@dimen/key_height"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_key_styles" />
-    <include
-        latin:keyboardLayout="@xml/kbd_qwerty_row1" />
-    <include
-        latin:keyboardLayout="@xml/kbd_qwerty_row2" />
-    <include
-        latin:keyboardLayout="@xml/kbd_qwerty_row3" />
-    <include
-        latin:keyboardLayout="@xml/kbd_qwerty_row4" />
+        latin:keyboardLayout="@xml/kbd_qwerty_rows" />
 </Keyboard>
