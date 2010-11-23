@@ -35,7 +35,7 @@
     <dimen name="mini_keyboard_vertical_correction">-13.0mm</dimen>
 
     <dimen name="key_text_size">0.175in</dimen>
-    <dimen name="key_label_text_size">0.100in</dimen>
+    <dimen name="key_label_text_size">0.110in</dimen>
     <dimen name="key_preview_text_size_large">0.245in</dimen>
 
     <dimen name="candidate_strip_height">46dip</dimen>

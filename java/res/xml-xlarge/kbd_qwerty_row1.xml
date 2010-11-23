@@ -28,7 +28,7 @@
         <Key
             latin:codes="@integer/key_tab"
             latin:keyLabel="@string/label_tab_key"
-            latin:keyLabelOption="fontItalic|alignLeft|alignBottom"
+            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
             latin:keyWidth="7.949%p"
             latin:isModifier="true"
             latin:keyEdgeFlags="left" />

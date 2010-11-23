@@ -112,7 +112,7 @@
             <flag name="alignLeft" value="1" />
             <flag name="alignRight" value="2" />
             <flag name="alignBottom" value="8" />
-            <flag name="fontItalic" value="16" />
+            <flag name="fontNormal" value="16" />
         </attr>
         <!-- The unicode that this key generates in manual temporary upper case mode. -->
         <attr name="manualTemporaryUpperCaseCode" format="integer" />

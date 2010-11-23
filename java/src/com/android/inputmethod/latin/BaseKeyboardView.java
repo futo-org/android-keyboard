@@ -259,10 +259,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private final int KEY_LABEL_OPTION_ALIGN_LEFT = 1;
     private final int KEY_LABEL_OPTION_ALIGN_RIGHT = 2;
     private final int KEY_LABEL_OPTION_ALIGN_BOTTOM = 8;
-    private final int KEY_LABEL_OPTION_FONT_ITALIC = 16;
-    // TODO: Currently we don't have san-serif italic type face. This is actually san-serif
-    // non-italic type face.
-    private final Typeface TYPEFACE_ITALIC = Typeface.create(Typeface.SANS_SERIF, Typeface.ITALIC);
+    private final int KEY_LABEL_OPTION_FONT_NORMAL = 16;
 
     private final UIHandler mHandler = new UIHandler();
 
@@ -825,8 +822,8 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                 final int labelSize;
                 if (label.length() > 1 && key.codes.length < 2) {
                     labelSize = mLabelTextSize;
-                    if ((key.labelOption & KEY_LABEL_OPTION_FONT_ITALIC) != 0) {
-                        paint.setTypeface(TYPEFACE_ITALIC);
+                    if ((key.labelOption & KEY_LABEL_OPTION_FONT_NORMAL) != 0) {
+                        paint.setTypeface(Typeface.DEFAULT);
                     } else {
                         paint.setTypeface(Typeface.DEFAULT_BOLD);
                     }
