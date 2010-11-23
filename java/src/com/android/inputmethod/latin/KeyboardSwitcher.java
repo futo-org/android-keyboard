@@ -412,8 +412,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private void setManualTemporaryUpperCase(boolean shifted) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null && latinKeyboard.setShifted(shifted)) {
-            mInputView.invalidateAllKeys();
+        if (latinKeyboard != null) {
+            // On non-distinct multi touch panel device, we should also turn off the shift locked
+            // state when shift key is pressed to go to normal mode.
+            // On the other hand, on distinct multi touch panel device, turning off the shift locked
+            // state with shift key pressing is handled by onReleaseShift().
+            if (!hasDistinctMultitouch() && !shifted && latinKeyboard.isShiftLocked()) {
+                latinKeyboard.setShiftLocked(false);
+            }
+            if (latinKeyboard.setShifted(shifted)) {
+                mInputView.invalidateAllKeys();
+            }
         }
     }
 
@@ -424,6 +433,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    /**
+     * Toggle keyboard shift state triggered by user touch event.
+     */
     public void toggleShift() {
         mInputMethodService.mHandler.cancelUpdateShiftState();
         if (DEBUG_STATE)
@@ -463,6 +475,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    /**
+     * Update keyboard shift state triggered by connected EditText status change.
+     */
     public void updateShiftState() {
         final ShiftKeyState shiftKeyState = mShiftKeyState;
         if (DEBUG_STATE)
