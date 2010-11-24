@@ -632,8 +632,7 @@ public class LatinIME extends InputMethodService
         checkTutorial(attribute.privateImeOptions);
         inputView.setForeground(true);
 
-        // TODO: Not to show keyboard if IME starts in Voice One shot mode.
-        mVoiceConnector.onStartInputView();
+        mVoiceConnector.onStartInputView(mKeyboardSwitcher.getInputView().getWindowToken());
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }

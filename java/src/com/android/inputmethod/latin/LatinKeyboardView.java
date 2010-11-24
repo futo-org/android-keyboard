@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.latin.BaseKeyboard.Key;
+import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -365,5 +366,11 @@ public class LatinKeyboardView extends BaseKeyboardView {
             c.drawLine(mLastX, 0, mLastX, getHeight(), mPaint);
             c.drawLine(0, mLastY, getWidth(), mLastY, mPaint);
         }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        // Token is available from here.
+        VoiceIMEConnector.getInstance().onAttachedToWindow();
     }
 }

@@ -96,6 +96,10 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         return sInstance;
     }
 
+    public static VoiceIMEConnector getInstance() {
+        return sInstance;
+    }
+
     private void initInternal(LatinIME context, UIHandler h) {
         mContext = context;
         mHandler = h;
@@ -150,18 +154,32 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
     private void showVoiceWarningDialog(final boolean swipe, IBinder token,
             final boolean configurationChanging) {
+        if (mVoiceWarningDialog != null && mVoiceWarningDialog.isShowing()) {
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setCancelable(true);
         builder.setIcon(R.drawable.ic_mic_dialog);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 mVoiceInput.logKeyboardWarningDialogOk();
                 reallyStartListening(swipe, configurationChanging);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 mVoiceInput.logKeyboardWarningDialogCancel();
+                switchToLastInputMethod();
+            }
+        });
+        // When the dialog is dismissed by user's cancellation, swith back to the last input method.
+        builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface arg0) {
+                mVoiceInput.logKeyboardWarningDialogCancel();
+                switchToLastInputMethod();
             }
         });
 
@@ -243,6 +261,11 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
     public boolean isRecognizing() {
         return mRecognizing;
+    }
+
+    public boolean needsToShowWarningDialog() {
+        return !mHasUsedVoiceInput
+                || (!mLocaleSupportedForVoiceInput && !mHasUsedVoiceInputUnsupportedLocale);
     }
 
     public boolean getAndResetIsShowingHint() {
@@ -425,7 +448,15 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         }});
     }
 
+    private void switchToLastInputMethod() {
+        IBinder token = mContext.getWindow().getWindow().getAttributes().token;
+        mImm.switchToLastInputMethod(token);
+    }
+
     private void reallyStartListening(boolean swipe, final boolean configurationChanging) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (!mHasUsedVoiceInput) {
             // The user has started a voice input, so remember that in the
             // future (so we don't show the warning dialog after the first run).
@@ -456,9 +487,9 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
     public void startListening(final boolean swipe, IBinder token,
             final boolean configurationChanging) {
+        // TODO: remove swipe which is no longer used.
         if (VOICE_INSTALLED) {
-            if (!mHasUsedVoiceInput ||
-                    (!mLocaleSupportedForVoiceInput && !mHasUsedVoiceInputUnsupportedLocale)) {
+            if (needsToShowWarningDialog()) {
                 // Calls reallyStartListening if user clicks OK, does nothing if user clicks Cancel.
                 showVoiceWarningDialog(swipe, token, configurationChanging);
             } else {
@@ -504,7 +535,17 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         }
     }
 
-    public void onStartInputView() {
+    public void onStartInputView(IBinder token) {
+        // If IME is in voice mode, but still needs to show the voice warning dialog,
+        // keep showing the warning.
+        if (mSubtypeSwitcher.isVoiceMode() && needsToShowWarningDialog() && token != null) {
+            showVoiceWarningDialog(false, token, false);
+        }
+    }
+
+    public void onAttachedToWindow() {
+        // After onAttachedToWindow, we can show the voice warning dialog. See startListening()
+        // above.
         mSubtypeSwitcher.setVoiceInput(mVoiceInput);
     }
 
@@ -513,6 +554,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             switchToRecognitionStatusView(configurationChanging);
         }
     }
+
     @Override
     public void onCancelVoice() {
         if (mRecognizing) {
@@ -521,8 +563,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                 // cancellation etc.), onCancelVoice() will be called first. LatinIME thinks it's
                 // still in voice mode. LatinIME needs to call switchToLastInputMethod().
                 // Note that onCancelVoice() will be called again from SubtypeSwitcher.
-                IBinder token = mContext.getWindow().getWindow().getAttributes().token;
-                mImm.switchToLastInputMethod(token);
+                switchToLastInputMethod();
             } else if (mSubtypeSwitcher.isKeyboardMode()) {
                 // If voice mode is being canceled out of LatinIME (i.e. by user's IME switching or
                 // as a result of switchToLastInputMethod() etc.),

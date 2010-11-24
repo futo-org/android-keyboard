@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.voice.SettingsUtil;
+import com.android.inputmethod.voice.VoiceIMEConnector;
 import com.android.inputmethod.voice.VoiceInput;
 
 import android.content.Context;
@@ -189,7 +190,10 @@ public class SubtypeSwitcher {
                 mService.onKeyboardLanguageChanged();
             }
         } else if (isVoiceMode()) {
-            if (languageChanged || modeChanged) {
+            // If needsToShowWarningDialog is true, voice input need to show warning before
+            // show recognition view.
+            if (languageChanged || modeChanged
+                    || VoiceIMEConnector.getInstance().needsToShowWarningDialog()) {
                 if (mVoiceInput != null) {
                     // TODO: Call proper function to trigger VoiceIME
                     mService.onKey(LatinKeyboardView.KEYCODE_VOICE, null, 0, 0);
@@ -340,16 +344,15 @@ public class SubtypeSwitcher {
     ///////////////////////////
 
     public boolean setVoiceInput(VoiceInput vi) {
-        if (mVoiceInput == null) {
+        if (mVoiceInput == null && vi != null) {
             // TODO: Remove requirements to construct KeyboardSwitcher
             // when IME was enabled with Voice mode
             mService.onKeyboardLanguageChanged();
             mVoiceInput = vi;
-            if (isVoiceMode() && mVoiceInput != null) {
+            if (isVoiceMode()) {
                 if (DBG) {
                     Log.d(TAG, "Set and call voice input.");
                 }
-                // TODO: Call proper function to enable VoiceIME
                 mService.onKey(LatinKeyboardView.KEYCODE_VOICE, null, 0, 0);
                 return true;
             }

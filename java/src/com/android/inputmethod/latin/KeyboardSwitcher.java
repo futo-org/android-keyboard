@@ -700,6 +700,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mInputView.setOnKeyboardActionListener(mInputMethodService);
             mLayoutId = newLayout;
         }
+        // TODO: Not to post if this function was called from loadKeyboardView
         mInputMethodService.mHandler.post(new Runnable() {
             public void run() {
                 if (mInputView != null) {
