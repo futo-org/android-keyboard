@@ -71,6 +71,7 @@ import java.util.WeakHashMap;
 public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private static final String TAG = "BaseKeyboardView";
     private static final boolean DEBUG = false;
+    private static final boolean DEBUG_SHOW_ALIGN = false;
     private static final boolean DEBUG_KEYBOARD_GRID = false;
 
     public static final int COLOR_SCHEME_WHITE = 0;
@@ -252,17 +253,15 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private final Rect mClipRegion = new Rect(0, 0, 0, 0);
     // This map caches key label text height in pixel as value and key label text size as map key.
     private final HashMap<Integer, Integer> mTextHeightCache = new HashMap<Integer, Integer>();
-    // This map caches key label text width in pixel as value and key label text size as map key.
-    private final HashMap<Integer, Integer> mTextWidthCache = new HashMap<Integer, Integer>();
     // Distance from horizontal center of the key, proportional to key label text height and width.
     private final float KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR_CENTER = 0.55f;
     private final float KEY_LABEL_VERTICAL_PADDING_FACTOR = 1.60f;
-    private final float KEY_LABEL_HORIZONTAL_PADDING_FACTOR = 0.80f;
     private final String KEY_LABEL_REFERENCE_CHAR = "H";
     private final int KEY_LABEL_OPTION_ALIGN_LEFT = 1;
     private final int KEY_LABEL_OPTION_ALIGN_RIGHT = 2;
     private final int KEY_LABEL_OPTION_ALIGN_BOTTOM = 8;
     private final int KEY_LABEL_OPTION_FONT_NORMAL = 16;
+    private final int mKeyLabelHorizontalPadding;
 
     private final UIHandler mHandler = new UIHandler();
 
@@ -514,6 +513,8 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         mPreviewPopup.setAnimationStyle(R.style.KeyPreviewAnimation);
         mDelayBeforePreview = res.getInteger(R.integer.config_delay_before_preview);
         mDelayAfterPreview = res.getInteger(R.integer.config_delay_after_preview);
+        mKeyLabelHorizontalPadding = (int)res.getDimension(
+                R.dimen.key_label_horizontal_alignment_padding);
 
         mMiniKeyboardParent = this;
         mMiniKeyboardPopup = new PopupWindow(context);
@@ -818,44 +819,22 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             canvas.translate(key.x + kbdPaddingLeft, key.y + kbdPaddingTop);
             keyBackground.draw(canvas);
 
+            final int rowHeight = padding.top + key.height;
             boolean drawHintIcon = true;
             // Draw key label
             if (label != null) {
                 // For characters, use large font. For labels like "Done", use small font.
-                final int labelSize;
-                if (label.length() > 1 && key.codes.length < 2) {
-                    labelSize = mLabelTextSize;
-                    if ((key.labelOption & KEY_LABEL_OPTION_FONT_NORMAL) != 0) {
-                        paint.setTypeface(Typeface.DEFAULT);
-                    } else {
-                        paint.setTypeface(Typeface.DEFAULT_BOLD);
-                    }
-                } else {
-                    labelSize = mKeyTextSize;
-                    paint.setTypeface(mKeyTextStyle);
-                }
-                paint.setTextSize(labelSize);
-
-                Integer labelHeightValue = mTextHeightCache.get(labelSize);
-                final int labelCharHeight;
-                final int labelCharWidth;
-                if (labelHeightValue != null) {
-                    labelCharHeight = labelHeightValue;
-                    labelCharWidth = mTextWidthCache.get(labelSize);
-                } else {
-                    Rect textBounds = new Rect();
-                    paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, textBounds);
-                    labelCharHeight = textBounds.height();
-                    labelCharWidth = textBounds.width();
-                    mTextHeightCache.put(labelSize, labelCharHeight);
-                    mTextWidthCache.put(labelSize, labelCharWidth);
-                }
+                final int labelSize = getLabelSizeAndSetPaint(label, key, paint);
+                final int labelCharHeight = getLabelCharHeight(labelSize, paint);
 
                 // Vertical label text alignment.
                 final float baseline;
                 if ((key.labelOption & KEY_LABEL_OPTION_ALIGN_BOTTOM) != 0) {
                     baseline = key.height -
                             + labelCharHeight * KEY_LABEL_VERTICAL_PADDING_FACTOR;
+                    if (DEBUG_SHOW_ALIGN)
+                        drawHorizontalLine(canvas, (int)baseline, key.width, 0xc0008000,
+                                new Paint());
                 } else { // Align center
                     final float centerY = (key.height + padding.top - padding.bottom) / 2;
                     baseline = centerY
@@ -864,16 +843,20 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                 // Horizontal label text alignment
                 final int positionX;
                 if ((key.labelOption & KEY_LABEL_OPTION_ALIGN_LEFT) != 0) {
-                    positionX = (int)(
-                            labelCharWidth * KEY_LABEL_HORIZONTAL_PADDING_FACTOR + padding.left);
+                    positionX = mKeyLabelHorizontalPadding + padding.left;
                     paint.setTextAlign(Align.LEFT);
+                    if (DEBUG_SHOW_ALIGN)
+                        drawVerticalLine(canvas, positionX, rowHeight, 0xc0800080, new Paint());
                 } else if ((key.labelOption & KEY_LABEL_OPTION_ALIGN_RIGHT) != 0) {
-                    positionX = (int)(key.width
-                            - labelCharWidth * KEY_LABEL_HORIZONTAL_PADDING_FACTOR - padding.right);
+                    positionX = key.width - mKeyLabelHorizontalPadding - padding.right;
                     paint.setTextAlign(Align.RIGHT);
+                    if (DEBUG_SHOW_ALIGN)
+                        drawVerticalLine(canvas, positionX, rowHeight, 0xc0808000, new Paint());
                 } else {
                     positionX = (key.width + padding.left - padding.right) / 2;
                     paint.setTextAlign(Align.CENTER);
+                    if (DEBUG_SHOW_ALIGN && label.length() > 1)
+                        drawVerticalLine(canvas, positionX, rowHeight, 0xc0008080, new Paint());
                 }
                 // Set a drop shadow for the text
                 paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
@@ -883,21 +866,44 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             }
             // Draw key icon
             if (key.label == null && key.icon != null) {
-                int drawableWidth = key.icon.getIntrinsicWidth();
-                int drawableHeight = key.icon.getIntrinsicHeight();
-                int drawableX = (key.width + padding.left - padding.right - drawableWidth) / 2;
-                int drawableY = (key.height + padding.top - padding.bottom - drawableHeight) / 2;
+                final int drawableWidth = key.icon.getIntrinsicWidth();
+                final int drawableHeight = key.icon.getIntrinsicHeight();
+                final int drawableX;
+                final int drawableY = (
+                        key.height + padding.top - padding.bottom - drawableHeight) / 2;
+                if ((key.labelOption & KEY_LABEL_OPTION_ALIGN_LEFT) != 0) {
+                    drawableX = padding.left + mKeyLabelHorizontalPadding;
+                    if (DEBUG_SHOW_ALIGN)
+                        drawVerticalLine(canvas, drawableX, rowHeight, 0xc0800080, new Paint());
+                } else if ((key.labelOption & KEY_LABEL_OPTION_ALIGN_RIGHT) != 0) {
+                    drawableX = key.width - padding.right - mKeyLabelHorizontalPadding
+                            - drawableWidth;
+                    if (DEBUG_SHOW_ALIGN)
+                        drawVerticalLine(canvas, drawableX + drawableWidth, rowHeight,
+                                0xc0808000, new Paint());
+                } else { // Align center
+                    drawableX = (key.width + padding.left - padding.right - drawableWidth) / 2;
+                    if (DEBUG_SHOW_ALIGN)
+                        drawVerticalLine(canvas, drawableX + drawableWidth / 2, rowHeight,
+                                0xc0008080, new Paint());
+                }
                 drawIcon(canvas, key.icon, drawableX, drawableY, drawableWidth, drawableHeight);
+                if (DEBUG_SHOW_ALIGN)
+                    drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,
+                            0x80c00000, new Paint());
             }
             if (key.hintIcon != null && drawHintIcon) {
-                int drawableWidth = key.width;
-                int drawableHeight = key.height;
-                int drawableX = 0;
-                int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
+                final int drawableWidth = key.width;
+                final int drawableHeight = key.height;
+                final int drawableX = 0;
+                final int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
                 Drawable icon = (isManualTemporaryUpperCase
                         && key.manualTemporaryUpperCaseHintIcon != null)
                         ? key.manualTemporaryUpperCaseHintIcon : key.hintIcon;
                 drawIcon(canvas, icon, drawableX, drawableY, drawableWidth, drawableHeight);
+                if (DEBUG_SHOW_ALIGN)
+                    drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,
+                            0x80c0c000, new Paint());
             }
             canvas.translate(-key.x - kbdPaddingLeft, -key.y - kbdPaddingTop);
         }
@@ -945,10 +951,67 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         mDirtyRect.setEmpty();
     }
 
-    private void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width, int height) {
+    private int getLabelSizeAndSetPaint(CharSequence label, Key key, Paint paint) {
+        // For characters, use large font. For labels like "Done", use small font.
+        final int labelSize;
+        if (label.length() > 1 && key.codes.length < 2) {
+            labelSize = mLabelTextSize;
+            if ((key.labelOption & KEY_LABEL_OPTION_FONT_NORMAL) != 0) {
+                paint.setTypeface(Typeface.DEFAULT);
+            } else {
+                paint.setTypeface(Typeface.DEFAULT_BOLD);
+            }
+        } else {
+            labelSize = mKeyTextSize;
+            paint.setTypeface(mKeyTextStyle);
+        }
+        paint.setTextSize(labelSize);
+        return labelSize;
+    }
+
+    private int getLabelCharHeight(int labelSize, Paint paint) {
+        Integer labelHeightValue = mTextHeightCache.get(labelSize);
+        final int labelCharHeight;
+        if (labelHeightValue != null) {
+            labelCharHeight = labelHeightValue;
+        } else {
+            Rect textBounds = new Rect();
+            paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, textBounds);
+            labelCharHeight = textBounds.height();
+            mTextHeightCache.put(labelSize, labelCharHeight);
+        }
+        return labelCharHeight;
+    }
+
+    private static void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width,
+            int height) {
         canvas.translate(x, y);
         icon.setBounds(0, 0, width, height);
         icon.draw(canvas);
+        canvas.translate(-x, -y);
+    }
+
+    private static void drawHorizontalLine(Canvas canvas, int y, int w, int color, Paint paint) {
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1.0f);
+        paint.setColor(color);
+        canvas.drawLine(0, y, w, y, paint);
+    }
+
+    private static void drawVerticalLine(Canvas canvas, int x, int h, int color, Paint paint) {
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1.0f);
+        paint.setColor(color);
+        canvas.drawLine(x, 0, x, h, paint);
+    }
+
+    private static void drawRectangle(Canvas canvas, int x, int y, int w, int h, int color,
+            Paint paint) {
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(1.0f);
+        paint.setColor(color);
+        canvas.translate(x, y);
+        canvas.drawRect(0, 0, w, h, paint);
         canvas.translate(-x, -y);
     }
 

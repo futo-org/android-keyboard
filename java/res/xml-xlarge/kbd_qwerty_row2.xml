@@ -25,11 +25,9 @@
         latin:keyWidth="8.157%p"
     >
         <Key
-            latin:codes="@integer/key_switch_alpha_symbol"
-            latin:keyLabel="@string/label_to_symbol_key"
-            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
+            latin:keyStyle="toSymbolKeyStyle"
+            latin:keyLabelOption="alignLeft"
             latin:keyWidth="11.167%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="a"
@@ -60,11 +58,8 @@
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_l" />
         <Key
-            latin:codes="@integer/key_return"
-            latin:keyLabel="@string/label_return_key"
-            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
+            latin:keyStyle="returnKeyStyle"
             latin:keyWidth="15.750%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

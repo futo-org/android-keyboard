@@ -104,7 +104,7 @@ public class KeyStyles {
                 try {
                     values[count++] = Integer.parseInt(st.nextToken());
                 } catch (NumberFormatException nfe) {
-                    Log.e(TAG, "Error parsing integer CSV " + value);
+                    Log.w(TAG, "Error parsing integer CSV " + value);
                 }
             }
             return values;
@@ -163,6 +163,7 @@ public class KeyStyles {
             readDrawable(a, R.styleable.BaseKeyboard_Key_keyIcon);
             readDrawable(a, R.styleable.BaseKeyboard_Key_iconPreview);
             readDrawable(a, R.styleable.BaseKeyboard_Key_keyHintIcon);
+            readDrawable(a, R.styleable.BaseKeyboard_Key_shiftedIcon);
             readResourceId(a, R.styleable.BaseKeyboard_Key_popupKeyboard);
             readBoolean(a, R.styleable.BaseKeyboard_Key_isModifier);
             readBoolean(a, R.styleable.BaseKeyboard_Key_isSticky);

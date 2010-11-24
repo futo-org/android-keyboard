@@ -33,6 +33,7 @@
                 latin:styleName="shiftKeyStyle"
                 latin:codes="@integer/key_shift"
                 latin:keyIcon="@drawable/sym_keyboard_shift"
+                latin:shiftedIcon="@drawable/sym_keyboard_shift_locked"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
                 latin:parentStyle="functionalKeyStyle"
                 latin:isSticky="true" />
@@ -109,6 +110,7 @@
                 latin:styleName="shiftKeyStyle"
                 latin:codes="@integer/key_shift"
                 latin:keyIcon="@drawable/sym_bkeyboard_shift"
+                latin:shiftedIcon="@drawable/sym_bkeyboard_shift_locked"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
                 latin:parentStyle="functionalKeyStyle"
                 latin:isSticky="true" />

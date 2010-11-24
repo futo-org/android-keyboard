@@ -24,16 +24,16 @@
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
+    <include
+        latin:keyboardLayout="@xml/kbd_key_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row
         latin:keyWidth="8.272%p"
     >
         <Key
-            latin:codes="@integer/key_tab"
-            latin:keyLabel="@string/label_tab_key"
-            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
+            latin:keyStyle="tabKeyStyle"
+            latin:keyLabelOption="alignLeft"
             latin:keyWidth="7.949%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="~" />
@@ -60,23 +60,17 @@
         <Key
             latin:keyLabel="}" />
         <Key
-            latin:codes="@integer/key_delete"
-            latin:keyIcon="@drawable/sym_keyboard_delete"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+            latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="9.331%p"
-            latin:isModifier="true"
-            latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
         latin:keyWidth="8.157%p"
     >
         <Key
-            latin:codes="@integer/key_switch_alpha_symbol"
-            latin:keyLabel="@string/label_to_alpha_key"
-            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
+            latin:keyStyle="toAlphaKeyStyle"
+            latin:keyLabelOption="alignLeft"
             latin:keyWidth="11.167%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="£" />
@@ -101,23 +95,17 @@
         <Key
             latin:keyLabel="]" />
         <Key
-            latin:codes="@integer/key_return"
-            latin:keyLabel="@string/label_return_key"
-            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
+            latin:keyStyle="returnKeyStyle"
             latin:keyWidth="15.750%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
         latin:keyWidth="8.042%p"
     >
         <Key
-            latin:codes="@integer/key_shift"
-            latin:keyLabel="@string/label_more_key"
-            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
+            latin:keyStyle="moreKeyStyle"
+            latin:keyLabelOption="alignLeft"
             latin:keyWidth="15.192%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="©" />
@@ -142,12 +130,9 @@
         <Key
             latin:keyLabel="¿" />
         <Key
-            latin:codes="@integer/key_shift"
-            latin:keyLabel="@string/label_more_key"
-            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
-            latin:keyWidth="12.430%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
+            latin:keyStyle="moreKeyStyle"
+            latin:keyLabelOption="alignRight"
+            latin:keyWidth="12.530%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <!-- This row is intentionally not marked as a bottom row -->
@@ -157,10 +142,7 @@
         <Spacer
             latin:horizontalGap="32.488%p" />
         <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.454%p"
-            latin:isModifier="true" />
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyWidth="37.454%p" />
     </Row>
 </Keyboard>

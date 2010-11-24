@@ -37,6 +37,8 @@
     <dimen name="key_text_size">0.13in</dimen>
     <dimen name="key_label_text_size">0.083in</dimen>
     <dimen name="key_preview_text_size_large">40sp</dimen>
+    <!-- left or right padding for of label alignment -->
+    <dimen name="key_label_horizontal_alignment_padding">0.13in</dimen>
     <dimen name="key_preview_offset">0.000in</dimen>
     <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
          to user's finger. -->

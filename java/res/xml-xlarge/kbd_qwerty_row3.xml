@@ -25,12 +25,8 @@
         latin:keyWidth="8.042%p"
     >
         <Key
-            latin:codes="@integer/key_shift"
-            latin:keyLabel="@string/label_shift_key"
-            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
+            latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="15.192%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="z"
@@ -81,12 +77,8 @@
             </default>
         </switch>
         <Key
-            latin:codes="@integer/key_shift"
-            latin:keyLabel="@string/label_shift_key"
-            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
-            latin:keyWidth="12.430%p"
-            latin:isModifier="true"
-            latin:isSticky="true"
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="12.530%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

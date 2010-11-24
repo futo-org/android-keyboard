@@ -25,13 +25,13 @@
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
+    <include
+        latin:keyboardLayout="@xml/kbd_key_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row>
         <Key
-            latin:codes="@integer/key_tab"
-            latin:keyLabel="@string/label_tab_key"
-            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
-            latin:isModifier="true"
+            latin:keyStyle="tabKeyStyle"
+            latin:keyLabelOption="alignLeft"
             latin:keyEdgeFlags="left" />
         <Spacer
             latin:horizontalGap="4.458%p" />
@@ -55,12 +55,8 @@
         <Spacer
             latin:horizontalGap="9.360%p" />
         <Key
-            latin:codes="@integer/key_delete"
-            latin:keyLabel="@string/label_backspace_key"
-            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
+            latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="9.804%p"
-            latin:isModifier="true"
-            latin:isRepeatable="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -86,11 +82,8 @@
         <Spacer
             latin:horizontalGap="4.458%p" />
         <Key
-            latin:codes="@integer/key_return"
-            latin:keyLabel="@string/label_return_key"
-            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
+            latin:keyStyle="returnKeyStyle"
             latin:keyWidth="14.706%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -125,9 +118,7 @@
         <Spacer
             latin:horizontalGap="16.406%p" />
         <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+            latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
             latin:keyWidth="24.127%p" />
         <Spacer
             latin:horizontalGap="4.458%p" />

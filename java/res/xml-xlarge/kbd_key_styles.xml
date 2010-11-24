@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <!-- Functional key styles -->
+    <switch>
+        <case
+            latin:colorScheme="white"
+        >
+            <key-style
+                latin:styleName="functionalKeyStyle"
+                latin:isModifier="true" />
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:codes="@integer/key_shift"
+                latin:keyIcon="@drawable/sym_keyboard_shift_holo"
+                latin:shiftedIcon="@drawable/sym_keyboard_shift_locked_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+                latin:parentStyle="functionalKeyStyle"
+                latin:isSticky="true" />
+            <key-style
+                latin:styleName="deleteKeyStyle"
+                latin:codes="@integer/key_delete"
+                latin:keyIcon="@drawable/sym_keyboard_delete_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+                latin:parentStyle="functionalKeyStyle"
+                latin:isRepeatable="true" />
+            <key-style
+                latin:styleName="returnKeyStyle"
+                latin:codes="@integer/key_return"
+                latin:keyIcon="@drawable/sym_keyboard_return_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+                latin:parentStyle="functionalKeyStyle" />
+            1
+            <key-style
+                latin:styleName="spaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_keyboard_space_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+                latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_keyboard_space_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            <key-style
+                latin:styleName="smileyKeyStyle"
+                latin:codes="0"
+                latin:keyIcon="@drawable/sym_keyboard_smiley_holo"
+                latin:keyOutputText=";-) "
+                latin:keyHintIcon="@drawable/hint_popup_holo"
+                latin:popupKeyboard="@xml/popup_smileys" />
+        </case>
+        <case
+            latin:colorScheme="black"
+        >
+            <key-style
+                latin:styleName="functionalKeyStyle" />
+            <key-style
+                latin:styleName="shiftKeyStyle"
+                latin:codes="@integer/key_shift"
+                latin:keyIcon="@drawable/sym_bkeyboard_shift"
+                latin:shiftedIcon="@drawable/sym_bkeyboard_shift_locked"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
+                latin:parentStyle="functionalKeyStyle"
+                latin:isSticky="true" />
+            <key-style
+                latin:styleName="deleteKeyStyle"
+                latin:codes="@integer/key_delete"
+                latin:keyIcon="@drawable/sym_bkeyboard_delete"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
+                latin:parentStyle="functionalKeyStyle"
+                latin:isRepeatable="true" />
+            <key-style
+                latin:styleName="returnKeyStyle"
+                latin:codes="@integer/key_return"
+                latin:keyIcon="@drawable/sym_bkeyboard_return"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+                latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="spaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_bkeyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+                latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_bkeyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            <key-style
+                latin:styleName="smileyKeyStyle"
+                latin:keyLabel=";-)"
+                latin:keyOutputText=";-) "
+                latin:keyHintIcon="@drawable/hint_popup_holo"
+                latin:popupKeyboard="@xml/popup_smileys" />
+        </case>
+    </switch>
+    <key-style
+        latin:styleName="tabKeyStyle"
+        latin:codes="@integer/key_tab"
+        latin:keyLabel="@string/label_tab_key"
+        latin:keyLabelOption="fontNormal"
+        latin:parentStyle="functionalKeyStyle" />
+    <key-style
+        latin:styleName="toSymbolKeyStyle"
+        latin:codes="@integer/key_switch_alpha_symbol"
+        latin:keyLabel="@string/label_to_symbol_key"
+        latin:keyLabelOption="fontNormal"
+        latin:parentStyle="functionalKeyStyle" />
+    <key-style
+        latin:styleName="toAlphaKeyStyle"
+        latin:codes="@integer/key_switch_alpha_symbol"
+        latin:keyLabel="@string/label_to_alpha_key"
+        latin:keyLabelOption="fontNormal"
+        latin:parentStyle="functionalKeyStyle" />
+    <key-style
+        latin:styleName="moreKeyStyle"
+        latin:codes="@integer/key_shift"
+        latin:keyLabel="@string/label_more_key"
+        latin:keyLabelOption="fontNormal"
+        latin:parentStyle="functionalKeyStyle"
+        latin:isSticky="true" />
+    <key-style
+        latin:styleName="comKeyStyle"
+        latin:keyLabel=".com"
+        latin:keyLabelOption="fontNormal"
+        latin:keyHintIcon="@drawable/hint_popup_holo"
+        latin:popupKeyboard="@xml/popup_domains" />
+</merge>

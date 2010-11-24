@@ -691,9 +691,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                             ).inflate(THEMES[newLayout], null);
                     tryGC = false;
                 } catch (OutOfMemoryError e) {
+                    Log.w(TAG, "load keyboard failed: " + e);
                     tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(
                             mLayoutId + "," + newLayout, e);
                 } catch (InflateException e) {
+                    Log.w(TAG, "load keyboard failed: " + e);
                     tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(
                             mLayoutId + "," + newLayout, e);
                 }

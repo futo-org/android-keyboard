@@ -28,11 +28,14 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Xml;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -85,6 +88,9 @@ public class BaseKeyboard {
 
     /** List of shift keys in this keyboard */
     private final List<Key> mShiftKeys = new ArrayList<Key>();
+
+    /** List of shift keys and its shifted state icon */
+    private final HashMap<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
 
     /** Total height of the keyboard, including the padding and keys */
     private int mTotalHeight;
@@ -340,6 +346,10 @@ public class BaseKeyboard {
             manualTemporaryUpperCaseCode = style.getInt(a,
                     R.styleable.BaseKeyboard_Key_manualTemporaryUpperCaseCode, 0);
             text = style.getText(a, R.styleable.BaseKeyboard_Key_keyOutputText);
+            final Drawable shiftedIcon = style.getDrawable(a,
+                    R.styleable.BaseKeyboard_Key_shiftedIcon);
+            if (shiftedIcon != null)
+                keyboard.getShiftedIcons().put(this, shiftedIcon);
 
             if (codes == null && !TextUtils.isEmpty(label)) {
                 codes = new int[] { label.charAt(0) };
@@ -622,6 +632,10 @@ public class BaseKeyboard {
         return mShiftKeys;
     }
 
+    public Map<Key, Drawable> getShiftedIcons() {
+        return mShiftedIcons;
+    }
+
     private void computeNearestNeighbors() {
         // Round-up so we don't have any pixels outside the grid
         mCellWidth = (getMinWidth() + GRID_WIDTH - 1) / GRID_WIDTH;
@@ -686,8 +700,10 @@ public class BaseKeyboard {
             mTotalWidth = parser.getMaxRowWidth();
             mTotalHeight = parser.getTotalHeight();
         } catch (XmlPullParserException e) {
+            Log.w(TAG, "keyboard XML parse error: " + e);
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
+            Log.w(TAG, "keyboard XML parse error: " + e);
             throw new RuntimeException(e);
         }
     }

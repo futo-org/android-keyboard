@@ -37,6 +37,7 @@ import android.view.ViewConfiguration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class LatinKeyboard extends BaseKeyboard {
 
@@ -45,7 +46,6 @@ public class LatinKeyboard extends BaseKeyboard {
     private static final int OPACITY_FULLY_OPAQUE = 255;
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
-    private final Drawable mShiftedIcon;
     private Drawable mShiftLockPreviewIcon;
     private final HashMap<Key, Drawable> mNormalShiftIcons = new HashMap<Key, Drawable>();
     private Drawable mSpaceIcon;
@@ -89,11 +89,9 @@ public class LatinKeyboard extends BaseKeyboard {
         mContext = context;
         mRes = res;
         if (id.mColorScheme == BaseKeyboardView.COLOR_SCHEME_BLACK) {
-            mShiftedIcon = res.getDrawable(R.drawable.sym_bkeyboard_shift_locked);
             mSpaceBarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_black);
         } else { // default color scheme is BaseKeyboardView.COLOR_SCHEME_WHITE
-            mShiftedIcon = res.getDrawable(R.drawable.sym_keyboard_shift_locked);
             mSpaceBarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_white);
         }
@@ -132,9 +130,10 @@ public class LatinKeyboard extends BaseKeyboard {
     }
 
     public boolean setShiftLocked(boolean newShiftLockState) {
+        final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
         for (final Key key : getShiftKeys()) {
             key.on = newShiftLockState;
-            key.icon = newShiftLockState ? mShiftedIcon : mNormalShiftIcons.get(key);
+            key.icon = newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key);
         }
         mShiftState.setShiftLocked(newShiftLockState);
         return true;
@@ -149,11 +148,12 @@ public class LatinKeyboard extends BaseKeyboard {
         if (getShiftKeys().size() == 0)
             return super.setShifted(newShiftState);
 
+        final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
         for (final Key key : getShiftKeys()) {
             if (!newShiftState && !mShiftState.isShiftLocked()) {
                 key.icon = mNormalShiftIcons.get(key);
             } else if (newShiftState && !mShiftState.isShiftedOrShiftLocked()) {
-                key.icon = mShiftedIcon;
+                key.icon = shiftedIcons.get(key);
             }
         }
         return mShiftState.setShifted(newShiftState);

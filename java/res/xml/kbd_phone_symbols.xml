@@ -27,44 +27,8 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
-    <switch>
-        <case
-            latin:colorScheme="white"
-        >
-            <key-style
-                latin:styleName="numStarKeyStyle"
-                latin:codes="42"
-                latin:keyIcon="@drawable/sym_keyboard_numstar"
-                latin:keyEdgeFlags="left" />
-            <key-style
-                latin:styleName="numPoundKeyStyle"
-                latin:codes="35"
-                latin:keyIcon="@drawable/sym_keyboard_numpound" />
-            <key-style
-                latin:styleName="numSpaceKeyStyle"
-                latin:codes="@integer/key_space"
-                latin:keyIcon="@drawable/sym_keyboard_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
-        </case>
-        <case
-            latin:colorScheme="black"
-        >
-            <key-style
-                latin:styleName="numStarKeyStyle"
-                latin:codes="42"
-                latin:keyIcon="@drawable/sym_bkeyboard_numstar"
-                latin:keyEdgeFlags="left" />
-            <key-style
-                latin:styleName="numPoundKeyStyle"
-                latin:codes="35"
-                latin:keyIcon="@drawable/sym_bkeyboard_numpound" />
-            <key-style
-                latin:styleName="numSpaceKeyStyle"
-                latin:codes="@integer/key_space"
-                latin:keyIcon="@drawable/sym_bkeyboard_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
-        </case>
-    </switch>
+    <include
+        latin:keyboardLayout="@xml/kbd_numkey_styles" />
     <Row
         latin:rowEdgeFlags="top"
     >

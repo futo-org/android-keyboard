@@ -174,6 +174,7 @@ public class BaseKeyboardParser {
         keyboard.setVerticalGap(getDimensionOrFraction(a,
                 R.styleable.BaseKeyboard_verticalGap, height, 0));
         a.recycle();
+        if (DEBUG_TAG) Log.d(TAG, "id=" + keyboard.mId);
     }
 
     private void parseKeyboardContent(XmlResourceParser parser, List<Key> keys)
@@ -310,6 +311,7 @@ public class BaseKeyboardParser {
             checkEndTag(TAG_INCLUDE, parser);
             if (keyboardLayout == 0)
                 throw new ParseException("No keyboardLayout attribute in <include/>", parser);
+            if (DEBUG_TAG) Log.d(TAG, String.format("  keyboardLayout=0x%08x", keyboardLayout));
             parseMerge(mResources.getLayout(keyboardLayout), row, keys);
         }
     }
@@ -560,10 +562,10 @@ public class BaseKeyboardParser {
     }
 
     private static String debugInteger(TypedArray a, int index, String name) {
-        return a.hasValue(index) ? name + "=" + a.getInt(index, 0) : "";
+        return a.hasValue(index) ? " " + name + "=" + a.getInt(index, 0) : "";
     }
 
     private static String debugBoolean(TypedArray a, int index, String name) {
-        return a.hasValue(index) ? name + "=" + a.getBoolean(index, false) : "";
+        return a.hasValue(index) ? " " + name + "=" + a.getBoolean(index, false) : "";
     }
 }

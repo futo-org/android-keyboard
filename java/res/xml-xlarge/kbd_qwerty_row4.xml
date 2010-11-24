@@ -32,10 +32,7 @@
                 latin:mode="email"
             >
                 <Key
-                    latin:keyLabel=".com"
-                    latin:keyOutputText=".com"
-                    latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupKeyboard="@xml/popup_domains" />
+                    latin:keyStyle="comKeyStyle" />
                 <Key
                     latin:keyLabel="\@" />
             </case>
@@ -44,18 +41,12 @@
                 latin:mode="url"
             >
                 <Key
-                    latin:keyLabel=".com"
-                    latin:keyOutputText=".com"
-                    latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupKeyboard="@xml/popup_domains"
+                    latin:keyStyle="comKeyStyle"
                     latin:keyWidth="16.084%p" />
             </case>
             <default>
                 <Key
-                    latin:keyLabel=":-)"
-                    latin:keyOutputText=":-)"
-                    latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupKeyboard="@xml/popup_smileys" />
+                    latin:keyStyle="smileyKeyStyle" />
                 <Key
                     latin:keyLabel="/"
                     latin:manualTemporaryUpperCaseCode="64"
@@ -66,11 +57,8 @@
             </default>
         </switch>
         <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-            latin:keyWidth="37.454%p"
-            latin:isModifier="true" />
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyWidth="37.454%p" />
         <switch>
             <case
                 latin:mode="email"

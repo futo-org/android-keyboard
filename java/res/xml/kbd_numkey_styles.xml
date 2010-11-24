@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <switch>
+        <case
+            latin:colorScheme="white"
+        >
+            <key-style
+                latin:styleName="num0KeyStyle"
+                latin:codes="48"
+                latin:keyIcon="@drawable/sym_keyboard_num0" />
+            <key-style
+                latin:styleName="num1KeyStyle"
+                latin:codes="49"
+                latin:keyIcon="@drawable/sym_keyboard_num1" />
+            <key-style
+                latin:styleName="num2KeyStyle"
+                latin:codes="50"
+                latin:keyIcon="@drawable/sym_keyboard_num2" />
+            <key-style
+                latin:styleName="num3KeyStyle"
+                latin:codes="51"
+                latin:keyIcon="@drawable/sym_keyboard_num3" />
+            <key-style
+                latin:styleName="num4KeyStyle"
+                latin:codes="52"
+                latin:keyIcon="@drawable/sym_keyboard_num4" />
+            <key-style
+                latin:styleName="num5KeyStyle"
+                latin:codes="53"
+                latin:keyIcon="@drawable/sym_keyboard_num5" />
+            <key-style
+                latin:styleName="num6KeyStyle"
+                latin:codes="54"
+                latin:keyIcon="@drawable/sym_keyboard_num6" />
+            <key-style
+                latin:styleName="num7KeyStyle"
+                latin:codes="55"
+                latin:keyIcon="@drawable/sym_keyboard_num7" />
+            <key-style
+                latin:styleName="num8KeyStyle"
+                latin:codes="56"
+                latin:keyIcon="@drawable/sym_keyboard_num8" />
+            <key-style
+                latin:styleName="num9KeyStyle"
+                latin:codes="57"
+                latin:keyIcon="@drawable/sym_keyboard_num9" />
+            <key-style
+                latin:styleName="numStarKeyStyle"
+                latin:codes="42"
+                latin:keyIcon="@drawable/sym_keyboard_numstar" />
+            <key-style
+                latin:styleName="numPoundKeyStyle"
+                latin:codes="35"
+                latin:keyIcon="@drawable/sym_keyboard_numpound" />
+            <key-style
+                latin:styleName="numAltKeyStyle"
+                latin:codes="@integer/key_switch_alpha_symbol"
+                latin:keyIcon="@drawable/sym_keyboard_numalt"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_numalt" />
+            <key-style
+                latin:styleName="numSpaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_keyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+        </case>
+        <case
+            latin:colorScheme="black"
+        >
+            <key-style
+                latin:styleName="num0KeyStyle"
+                latin:codes="48"
+                latin:keyIcon="@drawable/sym_bkeyboard_num0" />
+            <key-style
+                latin:styleName="num1KeyStyle"
+                latin:codes="49"
+                latin:keyIcon="@drawable/sym_bkeyboard_num1" />
+            <key-style
+                latin:styleName="num2KeyStyle"
+                latin:codes="50"
+                latin:keyIcon="@drawable/sym_bkeyboard_num2" />
+            <key-style
+                latin:styleName="num3KeyStyle"
+                latin:codes="51"
+                latin:keyIcon="@drawable/sym_bkeyboard_num3" />
+            <key-style
+                latin:styleName="num4KeyStyle"
+                latin:codes="52"
+                latin:keyIcon="@drawable/sym_bkeyboard_num4" />
+            <key-style
+                latin:styleName="num5KeyStyle"
+                latin:codes="53"
+                latin:keyIcon="@drawable/sym_bkeyboard_num5" />
+            <key-style
+                latin:styleName="num6KeyStyle"
+                latin:codes="54"
+                latin:keyIcon="@drawable/sym_bkeyboard_num6" />
+            <key-style
+                latin:styleName="num7KeyStyle"
+                latin:codes="55"
+                latin:keyIcon="@drawable/sym_bkeyboard_num7" />
+            <key-style
+                latin:styleName="num8KeyStyle"
+                latin:codes="56"
+                latin:keyIcon="@drawable/sym_bkeyboard_num8" />
+            <key-style
+                latin:styleName="num9KeyStyle"
+                latin:codes="57"
+                latin:keyIcon="@drawable/sym_bkeyboard_num9" />
+            <key-style
+                latin:styleName="numStarKeyStyle"
+                latin:codes="42"
+                latin:keyIcon="@drawable/sym_bkeyboard_numstar" />
+            <key-style
+                latin:styleName="numPoundKeyStyle"
+                latin:codes="35"
+                latin:keyIcon="@drawable/sym_bkeyboard_numpound" />
+            <key-style
+                latin:styleName="numAltKeyStyle"
+                latin:codes="@integer/key_switch_alpha_symbol"
+                latin:keyIcon="@drawable/sym_bkeyboard_numalt"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_numalt" />
+            <key-style
+                latin:styleName="numSpaceKeyStyle"
+                latin:codes="@integer/key_space"
+                latin:keyIcon="@drawable/sym_bkeyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+        </case>
+    </switch>
+</merge>

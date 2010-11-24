@@ -126,6 +126,8 @@
         <attr name="manualTemporaryUpperCaseHintIcon" format="reference" />
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
+        <!-- Shift key icon for shifted state -->
+        <attr name="shiftedIcon" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="BaseKeyboard_Row">

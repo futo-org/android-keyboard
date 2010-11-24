@@ -25,13 +25,15 @@
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:keyHeight="@dimen/key_height"
 >
+    <include
+        latin:keyboardLayout="@xml/kbd_key_styles" />
+    <include
+        latin:keyboardLayout="@xml/kbd_numkey_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row>
         <Key
-            latin:codes="@integer/key_tab"
-            latin:keyLabel="@string/label_tab_key"
-            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
-            latin:isModifier="true"
+            latin:keyStyle="tabKeyStyle"
+            latin:keyLabelOption="alignLeft"
             latin:keyEdgeFlags="left" />
         <Spacer
             latin:horizontalGap="4.458%p" />
@@ -52,32 +54,22 @@
         <Spacer
             latin:horizontalGap="4.458%p" />
         <Key
-            latin:codes="49"
-            latin:keyIcon="@drawable/sym_keyboard_num1" />
+            latin:keyStyle="num1KeyStyle" />
         <Key
-            latin:codes="50"
-            latin:keyIcon="@drawable/sym_keyboard_num2" />
+            latin:keyStyle="num2KeyStyle" />
         <Key
-            latin:codes="51"
-            latin:keyIcon="@drawable/sym_keyboard_num3" />
+            latin:keyStyle="num3KeyStyle" />
         <Spacer
-            latin:horizontalGap="4.458%p" />
+            latin:horizontalGap="9.360%p" />
         <Key
-            latin:codes="@integer/key_delete"
-            latin:keyLabel="@string/label_backspace_key"
-            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
-            latin:keyWidth="14.706%p"
-            latin:isModifier="true"
-            latin:isRepeatable="true"
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="9.804%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
-            latin:codes="@integer/key_shift"
-            latin:keyLabel="@string/label_more_key"
-            latin:keyLabelOption="fontNormal|alignLeft|alignBottom"
-            latin:isModifier="true"
-            latin:isSticky="true"
+            latin:keyStyle="moreKeyStyle"
+            latin:keyLabelOption="alignLeft"
             latin:keyEdgeFlags="left" />
         <Spacer
             latin:horizontalGap="4.458%p" />
@@ -98,22 +90,16 @@
         <Spacer
             latin:horizontalGap="4.458%p" />
         <Key
-            latin:codes="52"
-            latin:keyIcon="@drawable/sym_keyboard_num4" />
+            latin:keyStyle="num4KeyStyle" />
         <Key
-            latin:codes="53"
-            latin:keyIcon="@drawable/sym_keyboard_num5" />
+            latin:keyStyle="num5KeyStyle" />
         <Key
-            latin:codes="54"
-            latin:keyIcon="@drawable/sym_keyboard_num6" />
+            latin:keyStyle="num6KeyStyle" />
         <Spacer
             latin:horizontalGap="4.458%p" />
         <Key
-            latin:codes="@integer/key_return"
-            latin:keyLabel="@string/label_return_key"
-            latin:keyLabelOption="fontNormal|alignRight|alignBottom"
+            latin:keyStyle="returnKeyStyle"
             latin:keyWidth="14.706%p"
-            latin:isModifier="true"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -138,14 +124,11 @@
         <Spacer
             latin:horizontalGap="4.458%p" />
         <Key
-            latin:codes="55"
-            latin:keyIcon="@drawable/sym_keyboard_num7" />
+            latin:keyStyle="num7KeyStyle" />
         <Key
-            latin:codes="56"
-            latin:keyIcon="@drawable/sym_keyboard_num8" />
+            latin:keyStyle="num8KeyStyle" />
         <Key
-            latin:codes="57"
-            latin:keyIcon="@drawable/sym_keyboard_num9" />
+            latin:keyStyle="num9KeyStyle" />
         <!-- There is an empty area bellow the "Enter" key and right of the "9" key.  To ignore
              the touch event on the area, "9" is intentionally not marked as a right edge key. -->
     </Row>
@@ -156,21 +139,16 @@
         <Spacer
             latin:horizontalGap="16.406%p" />
         <Key
-            latin:codes="@integer/key_space"
-            latin:keyIcon="@drawable/sym_keyboard_space"
-            latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+            latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
             latin:keyWidth="24.127%p" />
         <Spacer
             latin:horizontalGap="4.458%p" />
         <Key
-            latin:codes="42"
-            latin:keyIcon="@drawable/sym_keyboard_numstar" />
+            latin:keyStyle="numStarKeyStyle" />
         <Key
-            latin:codes="48"
-            latin:keyIcon="@drawable/sym_keyboard_num0" />
+            latin:keyStyle="num0KeyStyle" />
         <Key
-            latin:codes="35"
-            latin:keyIcon="@drawable/sym_keyboard_numpound" />
+            latin:keyStyle="numPoundKeyStyle" />
         <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
              the touch event on the area, "#" is intentionally not marked as a right edge key. -->
     </Row>
