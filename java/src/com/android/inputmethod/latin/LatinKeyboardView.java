@@ -40,8 +40,6 @@ public class LatinKeyboardView extends BaseKeyboardView {
     public static final int KEYCODE_PREV_LANGUAGE = -105;
     public static final int KEYCODE_CAPSLOCK = -106;
 
-    private LatinKeyboard mPhoneKeyboard;
-
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
     /**
@@ -62,14 +60,12 @@ public class LatinKeyboardView extends BaseKeyboardView {
         super(context, attrs, defStyle);
     }
 
-    public void setPhoneKeyboard(LatinKeyboard phoneKeyboard) {
-        mPhoneKeyboard = phoneKeyboard;
-    }
-
     @Override
     public void setPreviewEnabled(boolean previewEnabled) {
-        if (getLatinKeyboard() == mPhoneKeyboard) {
-            // Phone keyboard never shows popup preview (except language switch).
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null
+                && (latinKeyboard.isPhoneKeyboard() || latinKeyboard.isNumberKeyboard())) {
+            // Phone and number keyboard never shows popup preview (except language switch).
             super.setPreviewEnabled(false);
         } else {
             super.setPreviewEnabled(previewEnabled);
@@ -100,7 +96,7 @@ public class LatinKeyboardView extends BaseKeyboardView {
         int primaryCode = key.codes[0];
         if (primaryCode == KEYCODE_OPTIONS) {
             return invokeOnKey(KEYCODE_OPTIONS_LONGPRESS);
-        } else if (primaryCode == '0' && getLatinKeyboard() == mPhoneKeyboard) {
+        } else if (primaryCode == '0' && getLatinKeyboard().isPhoneKeyboard()) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
         } else {

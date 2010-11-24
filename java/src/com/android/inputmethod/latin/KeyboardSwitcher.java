@@ -40,6 +40,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public static final int MODE_IM = 3;
     public static final int MODE_WEB = 4;
     public static final int MODE_PHONE = 5;
+    public static final int MODE_NUMBER = 6;
 
     // Changing DEFAULT_LAYOUT_ID also requires prefs_for_debug.xml to be matched with.
     public static final String DEFAULT_LAYOUT_ID = "5";
@@ -239,6 +240,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             case MODE_IM: return "im";
             case MODE_WEB: return "web";
             case MODE_PHONE: return "phone";
+            case MODE_NUMBER: return "number";
             }
             return null;
         }
@@ -287,10 +289,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
         LatinKeyboard keyboard = getKeyboard(id);
 
-        if (mode == MODE_PHONE) {
-            mInputView.setPhoneKeyboard(keyboard);
-        }
-
         mCurrentId = id;
         mInputView.setKeyboard(keyboard);
     }
@@ -331,11 +329,26 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final boolean enableShiftLock;
 
         if (isSymbols) {
-            xmlId = mode == MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols;
+            if (mode == MODE_PHONE) {
+                xmlId = R.xml.kbd_phone_symbols;
+            } else if (mode == MODE_NUMBER) {
+                // Note: MODE_NUMBER keyboard layout has no "switch alpha symbol" key.
+                xmlId = R.xml.kbd_number;
+            } else {
+                xmlId = R.xml.kbd_symbols;
+            }
             enableShiftLock = false;
-        } else {  // QWERTY
-            xmlId = mode == MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_qwerty;
-            enableShiftLock = mode == MODE_PHONE ? false : true;
+        } else {
+            if (mode == MODE_PHONE) {
+                xmlId = R.xml.kbd_phone;
+                enableShiftLock = false;
+            } else if (mode == MODE_NUMBER) {
+                xmlId = R.xml.kbd_number;
+                enableShiftLock = false;
+            } else {
+                xmlId = R.xml.kbd_qwerty;
+                enableShiftLock = true;
+            }
         }
         final int orientation = mInputMethodService.getResources().getConfiguration().orientation;
         final Locale locale = mSubtypeSwitcher.getInputLocale();

@@ -189,6 +189,14 @@ public class LatinKeyboard extends BaseKeyboard {
         return mId.getXmlId() == R.xml.kbd_qwerty;
     }
 
+    public boolean isPhoneKeyboard() {
+        return mId.mMode == KeyboardSwitcher.MODE_PHONE;
+    }
+
+    public boolean isNumberKeyboard() {
+        return mId.mMode == KeyboardSwitcher.MODE_NUMBER;
+    }
+
     /**
      * @return a key which should be invalidated.
      */
