@@ -39,7 +39,7 @@ public class SubtypeSwitcher {
     // We may or may not draw the current language on space bar regardless of this flag.
     public static final boolean USE_SPACEBAR_LANGUAGE_SWITCHER = false;
     private static final boolean DBG = false;
-    private static final String TAG = "InputMethodSubtypeSwitcher";
+    private static final String TAG = "SubtypeSwitcher";
 
     private static final char LOCALE_SEPARATER = '_';
     private static final String KEYBOARD_MODE = "keyboard";
@@ -153,9 +153,9 @@ public class SubtypeSwitcher {
         final String newLocale;
         final String newMode;
         if (newSubtype == null) {
-            // Normally, newSubtype shouldn't be null. But just in case if newSubtype was null,
+            // Normally, newSubtype shouldn't be null. But just in case newSubtype was null,
             // fallback to the default locale and mode.
-            Log.e(TAG, "Couldn't get the current subtype.");
+            Log.w(TAG, "Couldn't get the current subtype.");
             newLocale = "en_US";
             newMode =KEYBOARD_MODE;
         } else {
@@ -345,14 +345,11 @@ public class SubtypeSwitcher {
 
     public boolean setVoiceInput(VoiceInput vi) {
         if (mVoiceInput == null && vi != null) {
-            // TODO: Remove requirements to construct KeyboardSwitcher
-            // when IME was enabled with Voice mode
             mVoiceInput = vi;
             if (isVoiceMode()) {
                 if (DBG) {
                     Log.d(TAG, "Set and call voice input.");
                 }
-                mService.onKeyboardLanguageChanged();
                 mService.onKey(LatinKeyboardView.KEYCODE_VOICE, null, 0, 0);
                 return true;
             }

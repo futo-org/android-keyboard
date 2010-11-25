@@ -464,7 +464,8 @@ public class LatinIME extends InputMethodService
     @Override
     public void onConfigurationChanged(Configuration conf) {
         mSubtypeSwitcher.onConfigurationChanged(conf);
-        onKeyboardLanguageChanged();
+        if (mSubtypeSwitcher.isKeyboardMode())
+            onKeyboardLanguageChanged();
         updateAutoTextEnabled();
 
         // If orientation changed while predicting, commit the change
@@ -489,8 +490,7 @@ public class LatinIME extends InputMethodService
 
     @Override
     public View onCreateInputView() {
-        mKeyboardSwitcher.loadKeyboardView();
-        return mKeyboardSwitcher.getInputView();
+        return mKeyboardSwitcher.onCreateInputView();
     }
 
     @Override
@@ -524,7 +524,7 @@ public class LatinIME extends InputMethodService
             return;
         }
 
-        SubtypeSwitcher.getInstance().updateParametersOnStartInputView();
+        mSubtypeSwitcher.updateParametersOnStartInputView();
 
         if (mRefreshKeyboardRequired) {
             mRefreshKeyboardRequired = false;
@@ -614,9 +614,12 @@ public class LatinIME extends InputMethodService
         mJustAddedAutoSpace = false;
 
         loadSettings(attribute);
-        switcher.loadKeyboard(mode, attribute.imeOptions, mVoiceConnector.isVoiceButtonEnabled(),
-                mVoiceConnector.isVoiceButtonOnPrimary());
-        switcher.updateShiftState();
+        if (mSubtypeSwitcher.isKeyboardMode()) {
+            switcher.loadKeyboard(mode, attribute.imeOptions,
+                    mVoiceConnector.isVoiceButtonEnabled(),
+                    mVoiceConnector.isVoiceButtonOnPrimary());
+            switcher.updateShiftState();
+        }
 
         setCandidatesViewShownInternal(isCandidateStripVisible(),
                 false /* needsInputViewShown */ );

@@ -296,7 +296,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final SoftReference<LatinKeyboard> ref = mKeyboardCache.get(id);
         LatinKeyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
-            final Resources res = mInputMethodService.getResources();
             final Locale savedLocale =  mSubtypeSwitcher.changeSystemLocale(
                     mSubtypeSwitcher.getInputLocale());
 
@@ -668,11 +667,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return mInputView;
     }
 
-    public void loadKeyboardView() {
-        loadKeyboardViewInternal(mLayoutId, true);
+    public LatinKeyboardView onCreateInputView() {
+        createInputViewInternal(mLayoutId, true);
+        return mInputView;
     }
 
-    private void loadKeyboardViewInternal(int newLayout, boolean forceReset) {
+    private void createInputViewInternal(int newLayout, boolean forceReset) {
         if (mLayoutId != newLayout || mInputView == null || forceReset) {
             if (mInputView != null) {
                 mInputView.closing();
@@ -701,24 +701,31 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mInputView.setOnKeyboardActionListener(mInputMethodService);
             mLayoutId = newLayout;
         }
-        // TODO: Not to post if this function was called from loadKeyboardView
+    }
+
+    private void postSetInputView() {
         mInputMethodService.mHandler.post(new Runnable() {
+            @Override
             public void run() {
                 if (mInputView != null) {
                     mInputMethodService.setInputView(mInputView);
                 }
                 mInputMethodService.updateInputViewShown();
-            }});
+            }
+        });
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (PREF_KEYBOARD_LAYOUT.equals(key)) {
             final int layoutId = Integer.valueOf(
                     sharedPreferences.getString(key, DEFAULT_LAYOUT_ID));
-            loadKeyboardViewInternal(layoutId, false);
+            createInputViewInternal(layoutId, false);
+            postSetInputView();
         } else if (LatinIMESettings.PREF_SETTINGS_KEY.equals(key)) {
             mHasSettingsKey = getSettingsKeyMode(sharedPreferences, mInputMethodService);
-            loadKeyboardViewInternal(mLayoutId, true);
+            createInputViewInternal(mLayoutId, true);
+            postSetInputView();
         }
     }
 
