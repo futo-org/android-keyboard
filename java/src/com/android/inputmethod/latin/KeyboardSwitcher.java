@@ -23,6 +23,7 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
@@ -746,7 +747,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // 2) SETTINGS_KEY_MODE_AUTO and there are two or more enabled IMEs on the system
             if (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
                     || (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_AUTO))
-                            && LatinIMEUtil.hasMultipleEnabledIMEs(context))) {
+                            && LatinIMEUtil.hasMultipleEnabledIMEsOrSubtypes(
+                                    ((InputMethodManager) context.getSystemService(
+                                            Context.INPUT_METHOD_SERVICE))))) {
                 return true;
             }
         }

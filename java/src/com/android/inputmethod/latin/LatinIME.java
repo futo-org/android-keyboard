@@ -134,6 +134,7 @@ public class LatinIME extends InputMethodService
 
     private AlertDialog mOptionsDialog;
 
+    private InputMethodManager mImm;
     private KeyboardSwitcher mKeyboardSwitcher;
     private SubtypeSwitcher mSubtypeSwitcher;
     private VoiceIMEConnector mVoiceConnector;
@@ -147,9 +148,8 @@ public class LatinIME extends InputMethodService
 
     private final StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
-    private int mCommittedLength;
-    private boolean mPredicting;
     private CharSequence mBestWord;
+    private boolean mPredicting;
     private boolean mPredictionOn;
     private boolean mCompletionOn;
     private boolean mHasDictionary;
@@ -164,13 +164,14 @@ public class LatinIME extends InputMethodService
     private boolean mPopupOn;
     private boolean mAutoCap;
     private boolean mQuickFixes;
-    private int     mCorrectionMode;
 
-    private int     mOrientation;
-    private List<CharSequence> mSuggestPuncList;
+    private int mCorrectionMode;
+    private int mCommittedLength;
+    private int mOrientation;
     // Keep track of the last selection range to decide if we need to show word alternatives
-    private int     mLastSelectionStart;
-    private int     mLastSelectionEnd;
+    private int mLastSelectionStart;
+    private int mLastSelectionEnd;
+    private List<CharSequence> mSuggestPuncList;
 
     // Input type is such that we should not auto-correct
     private boolean mInputTypeNoAutoCorrect;
@@ -337,6 +338,7 @@ public class LatinIME extends InputMethodService
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
         mResources = getResources();
+        mImm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
         final Configuration conf = mResources.getConfiguration();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
@@ -1041,14 +1043,9 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private void showInputMethodSubtypePicker() {
-        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                .showInputMethodSubtypePicker();
-    }
-
     private void onOptionKeyPressed() {
         if (!isShowingOptionDialog()) {
-            if (LatinIMEUtil.hasMultipleEnabledIMEs(this)) {
+            if (LatinIMEUtil.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
                 showOptionsMenu();
             } else {
                 launchSettings();
@@ -1058,8 +1055,8 @@ public class LatinIME extends InputMethodService
 
     private void onOptionKeyLongPressed() {
         if (!isShowingOptionDialog()) {
-            if (LatinIMEUtil.hasMultipleEnabledIMEs(this)) {
-                showInputMethodSubtypePicker();
+            if (LatinIMEUtil.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
+                mImm.showInputMethodPicker();
             } else {
                 launchSettings();
             }
@@ -2177,7 +2174,7 @@ public class LatinIME extends InputMethodService
                         launchSettings();
                         break;
                     case POS_METHOD:
-                        showInputMethodSubtypePicker();
+                        mImm.showInputMethodPicker();
                         break;
                 }
             }

@@ -91,9 +91,11 @@ public class LatinIMEUtil {
         }
     }
 
-    public static boolean hasMultipleEnabledIMEs(Context context) {
-        return ((InputMethodManager) context.getSystemService(
-                Context.INPUT_METHOD_SERVICE)).getEnabledInputMethodList().size() > 1;
+    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManager imm) {
+        return imm.getEnabledInputMethodList().size() > 1
+        // imm.getEnabledInputMethodSubtypeList(null) will return the current IME's enabled input
+        // method subtype (The current IME should be LatinIME.)
+                || imm.getEnabledInputMethodSubtypeList(null).size() > 1;
     }
 
     /* package */ static class RingCharBuffer {
