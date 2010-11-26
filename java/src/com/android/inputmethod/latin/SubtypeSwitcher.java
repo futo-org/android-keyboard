@@ -50,6 +50,7 @@ public class SubtypeSwitcher {
 
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
     private /* final */ LatinIME mService;
+    private /* final */ SharedPreferences mPrefs;
     private /* final */ InputMethodManager mImm;
     private /* final */ Resources mResources;
     private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
@@ -72,7 +73,8 @@ public class SubtypeSwitcher {
         return sInstance;
     }
 
-    public static void init(LatinIME service) {
+    public static void init(LatinIME service, SharedPreferences prefs) {
+        sInstance.mPrefs = prefs;
         sInstance.resetParams(service);
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
             sInstance.initLanguageSwitcher(service);
@@ -304,8 +306,7 @@ public class SubtypeSwitcher {
                 // locale (mSystemLocale), then reload the input locale list from the
                 // latin ime settings (shared prefs) and reset the input locale
                 // to the first one.
-                mLanguageSwitcher.loadLocales(PreferenceManager
-                        .getDefaultSharedPreferences(mService));
+                mLanguageSwitcher.loadLocales(mPrefs);
                 mLanguageSwitcher.setSystemLocale(systemLocale);
             } else {
                 updateAllParameters();
@@ -450,9 +451,9 @@ public class SubtypeSwitcher {
         return voiceInputSupportedLocales.contains(locale);
     }
 
-    public void loadSettings(SharedPreferences prefs) {
+    public void loadSettings() {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
-            mLanguageSwitcher.loadLocales(prefs);
+            mLanguageSwitcher.loadLocales(mPrefs);
         }
     }
 
@@ -467,15 +468,14 @@ public class SubtypeSwitcher {
                     mLanguageSwitcher.prev();
                 }
             }
-            mLanguageSwitcher.persist();
+            mLanguageSwitcher.persist(mPrefs);
         }
     }
 
     private void initLanguageSwitcher(LatinIME service) {
         final Configuration conf = service.getResources().getConfiguration();
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(service);
         mLanguageSwitcher = new LanguageSwitcher(service);
-        mLanguageSwitcher.loadLocales(prefs);
+        mLanguageSwitcher.loadLocales(mPrefs);
         mLanguageSwitcher.setSystemLocale(conf.locale);
     }
 }

@@ -34,6 +34,7 @@ import android.text.TextUtils;
 
 public class InputLanguageSelection extends PreferenceActivity {
 
+    private SharedPreferences mPrefs;
     private String mSelectedLanguages;
     private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
     private static final String[] BLACKLIST_LANGUAGES = {
@@ -66,8 +67,8 @@ public class InputLanguageSelection extends PreferenceActivity {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.language_prefs);
         // Get the settings preferences
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mSelectedLanguages = sp.getString(LatinIME.PREF_SELECTED_LANGUAGES, "");
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mSelectedLanguages = mPrefs.getString(LatinIME.PREF_SELECTED_LANGUAGES, "");
         String[] languageList = mSelectedLanguages.split(",");
         mAvailableLanguages = getUniqueLocales();
         PreferenceGroup parent = getPreferenceScreen();
@@ -140,8 +141,7 @@ public class InputLanguageSelection extends PreferenceActivity {
             }
         }
         if (checkedLanguages.length() < 1) checkedLanguages = null; // Save null
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Editor editor = sp.edit();
+        Editor editor = mPrefs.edit();
         editor.putString(LatinIME.PREF_SELECTED_LANGUAGES, checkedLanguages);
         SharedPreferencesCompat.apply(editor);
     }

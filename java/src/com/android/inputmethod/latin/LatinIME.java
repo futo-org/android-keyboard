@@ -145,6 +145,7 @@ public class LatinIME extends InputMethodService
     private AutoDictionary mAutoDictionary;
 
     private Resources mResources;
+    private SharedPreferences mPrefs;
 
     private final StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
@@ -332,15 +333,16 @@ public class LatinIME extends InputMethodService
 
     @Override
     public void onCreate() {
-        LatinImeLogger.init(this);
-        SubtypeSwitcher.init(this);
-        KeyboardSwitcher.init(this);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mPrefs = prefs;
+        LatinImeLogger.init(this, prefs);
+        SubtypeSwitcher.init(this, prefs);
+        KeyboardSwitcher.init(this, prefs);
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
         mResources = getResources();
         mImm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
         final Configuration conf = mResources.getConfiguration();
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mReCorrectionEnabled = prefs.getBoolean(PREF_RECORRECTION_ENABLED,
@@ -363,7 +365,7 @@ public class LatinIME extends InputMethodService
         // register to receive ringer mode changes for silent mode
         IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
         registerReceiver(mReceiver, filter);
-        mVoiceConnector = VoiceIMEConnector.init(this, mHandler);
+        mVoiceConnector = VoiceIMEConnector.init(this, prefs, mHandler);
         prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -415,12 +417,12 @@ public class LatinIME extends InputMethodService
         if (mSuggest != null) {
             mSuggest.close();
         }
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mQuickFixes = sp.getBoolean(PREF_QUICK_FIXES, true);
+        final SharedPreferences prefs = mPrefs;
+        mQuickFixes = prefs.getBoolean(PREF_QUICK_FIXES, true);
 
         int[] dictionaries = getDictionary(orig);
         mSuggest = new Suggest(this, dictionaries);
-        loadAndSetAutoCompletionThreshold(sp);
+        loadAndSetAutoCompletionThreshold(prefs);
         if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this, locale);
         if (mContactsDictionary == null) {
@@ -2070,26 +2072,26 @@ public class LatinIME extends InputMethodService
 
     private void loadSettings(EditorInfo attribute) {
         // Get the settings preferences
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        final SharedPreferences prefs = mPrefs;
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrateOn = vibrator != null && vibrator.hasVibrator()
-                && sp.getBoolean(LatinIMESettings.PREF_VIBRATE_ON, false);
-        mSoundOn = sp.getBoolean(PREF_SOUND_ON, false);
-        mPopupOn = sp.getBoolean(PREF_POPUP_ON,
+                && prefs.getBoolean(LatinIMESettings.PREF_VIBRATE_ON, false);
+        mSoundOn = prefs.getBoolean(PREF_SOUND_ON, false);
+        mPopupOn = prefs.getBoolean(PREF_POPUP_ON,
                 mResources.getBoolean(R.bool.default_popup_preview));
-        mAutoCap = sp.getBoolean(PREF_AUTO_CAP, true);
-        mQuickFixes = sp.getBoolean(PREF_QUICK_FIXES, true);
+        mAutoCap = prefs.getBoolean(PREF_AUTO_CAP, true);
+        mQuickFixes = prefs.getBoolean(PREF_QUICK_FIXES, true);
 
-        mAutoCorrectEnabled = isAutoCorrectEnabled(sp);
-        mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(sp);
-        loadAndSetAutoCompletionThreshold(sp);
+        mAutoCorrectEnabled = isAutoCorrectEnabled(prefs);
+        mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(prefs);
+        loadAndSetAutoCompletionThreshold(prefs);
 
-        mVoiceConnector.loadSettings(attribute, sp);
+        mVoiceConnector.loadSettings(attribute, prefs);
 
         updateCorrectionMode();
         updateAutoTextEnabled();
-        updateSuggestionVisibility(sp);
-        SubtypeSwitcher.getInstance().loadSettings(sp);
+        updateSuggestionVisibility(prefs);
+        SubtypeSwitcher.getInstance().loadSettings();
     }
 
     /**

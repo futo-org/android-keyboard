@@ -186,9 +186,8 @@ public class LanguageSwitcher {
         mCurrentIndex = prevLocaleIndex();
     }
 
-    public void persist() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mIme);
-        Editor editor = sp.edit();
+    public void persist(SharedPreferences prefs) {
+        Editor editor = prefs.edit();
         editor.putString(LatinIME.PREF_INPUT_LANGUAGE, getInputLanguage());
         SharedPreferencesCompat.apply(editor);
     }

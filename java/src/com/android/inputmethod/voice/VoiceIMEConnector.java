@@ -17,7 +17,6 @@
 package com.android.inputmethod.voice;
 
 import com.android.inputmethod.latin.EditingUtil;
-import com.android.inputmethod.latin.Hints;
 import com.android.inputmethod.latin.KeyboardSwitcher;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
@@ -91,8 +90,8 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     private final Map<String, List<CharSequence>> mWordToSuggestions =
             new HashMap<String, List<CharSequence>>();
 
-    public static VoiceIMEConnector init(LatinIME context, UIHandler h) {
-        sInstance.initInternal(context, h);
+    public static VoiceIMEConnector init(LatinIME context, SharedPreferences prefs, UIHandler h) {
+        sInstance.initInternal(context, prefs, h);
         return sInstance;
     }
 
@@ -100,14 +99,14 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         return sInstance;
     }
 
-    private void initInternal(LatinIME context, UIHandler h) {
+    private void initInternal(LatinIME context, SharedPreferences prefs, UIHandler h) {
         mContext = context;
         mHandler = h;
         mImm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         if (VOICE_INSTALLED) {
             mVoiceInput = new VoiceInput(context, this);
-            mHints = new Hints(context, new Hints.Display() {
+            mHints = new Hints(context, prefs, new Hints.Display() {
                 public void showHint(int viewResource) {
                     LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                             Context.LAYOUT_INFLATER_SERVICE);

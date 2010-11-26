@@ -60,6 +60,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int SYMBOLS_MODE_STATE_SYMBOL = 2;
 
     private SubtypeSwitcher mSubtypeSwitcher;
+    private SharedPreferences mPrefs;
 
     private LatinKeyboardView mInputView;
     private LatinIME mInputMethodService;
@@ -105,11 +106,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private KeyboardSwitcher() {
     }
 
-    public static void init(LatinIME ims) {
+    public static void init(LatinIME ims, SharedPreferences prefs) {
         sInstance.mInputMethodService = ims;
+        sInstance.mPrefs = prefs;
         sInstance.mSubtypeSwitcher = SubtypeSwitcher.getInstance();
 
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ims);
         sInstance.mLayoutId = Integer.valueOf(
                 prefs.getString(PREF_KEYBOARD_LAYOUT, DEFAULT_LAYOUT_ID));
         prefs.registerOnSharedPreferenceChangeListener(sInstance);
@@ -282,9 +283,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mVoiceButtonOnPrimary = voiceButtonOnPrimary;
         mIsSymbols = isSymbols;
         // Update the settings key state because number of enabled IMEs could have been changed
-        mHasSettingsKey = getSettingsKeyMode(
-                PreferenceManager.getDefaultSharedPreferences(mInputMethodService),
-                mInputMethodService);
+        mHasSettingsKey = getSettingsKeyMode(mPrefs, mInputMethodService);
         makeSymbolsKeyboardIds();
 
         KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);

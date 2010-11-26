@@ -14,9 +14,10 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.voice;
 
-import com.android.inputmethod.voice.SettingsUtil;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SharedPreferencesCompat;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -47,8 +48,9 @@ public class Hints {
     private static final int DEFAULT_SWIPE_HINT_MAX_DAYS_TO_SHOW = 7;
     private static final int DEFAULT_PUNCTUATION_HINT_MAX_DISPLAYS = 7;
 
-    private Context mContext;
-    private Display mDisplay;
+    private final Context mContext;
+    private final SharedPreferences mPrefs;
+    private final Display mDisplay;
     private boolean mVoiceResultContainedPunctuation;
     private int mSwipeHintMaxDaysToShow;
     private int mPunctuationHintMaxDisplays;
@@ -62,8 +64,9 @@ public class Hints {
         SPEAKABLE_PUNCTUATION.put("?", "question mark");
     }
 
-    public Hints(Context context, Display display) {
+    public Hints(Context context, SharedPreferences prefs, Display display) {
         mContext = context;
+        mPrefs = prefs;
         mDisplay = display;
 
         ContentResolver cr = mContext.getContentResolver();
@@ -103,8 +106,7 @@ public class Hints {
 
     public void registerVoiceResult(String text) {
         // Update the current time as the last time voice input was used.
-        SharedPreferences.Editor editor =
-                PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+        SharedPreferences.Editor editor = mPrefs.edit();
         editor.putLong(PREF_VOICE_INPUT_LAST_TIME_USED, System.currentTimeMillis());
         SharedPreferencesCompat.apply(editor);
 
@@ -118,14 +120,14 @@ public class Hints {
     }
 
     private boolean shouldShowSwipeHint() {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final SharedPreferences prefs = mPrefs;
 
-        int numUniqueDaysShown = sp.getInt(PREF_VOICE_HINT_NUM_UNIQUE_DAYS_SHOWN, 0);
+        int numUniqueDaysShown = prefs.getInt(PREF_VOICE_HINT_NUM_UNIQUE_DAYS_SHOWN, 0);
 
         // If we've already shown the hint for enough days, we'll return false.
         if (numUniqueDaysShown < mSwipeHintMaxDaysToShow) {
 
-            long lastTimeVoiceWasUsed = sp.getLong(PREF_VOICE_INPUT_LAST_TIME_USED, 0);
+            long lastTimeVoiceWasUsed = prefs.getLong(PREF_VOICE_INPUT_LAST_TIME_USED, 0);
 
             // If the user has used voice today, we'll return false. (We don't show the hint on
             // any day that the user has already used voice.)
@@ -156,16 +158,16 @@ public class Hints {
     }
 
     private void showHint(int hintViewResource) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
+        final SharedPreferences prefs = mPrefs;
 
-        int numUniqueDaysShown = sp.getInt(PREF_VOICE_HINT_NUM_UNIQUE_DAYS_SHOWN, 0);
-        long lastTimeHintWasShown = sp.getLong(PREF_VOICE_HINT_LAST_TIME_SHOWN, 0);
+        int numUniqueDaysShown = prefs.getInt(PREF_VOICE_HINT_NUM_UNIQUE_DAYS_SHOWN, 0);
+        long lastTimeHintWasShown = prefs.getLong(PREF_VOICE_HINT_LAST_TIME_SHOWN, 0);
 
         // If this is the first time the hint is being shown today, increase the saved values
         // to represent that. We don't need to increase the last time the hint was shown unless
         // it is a different day from the current value.
         if (!isFromToday(lastTimeHintWasShown)) {
-            SharedPreferences.Editor editor = sp.edit();
+            SharedPreferences.Editor editor = prefs.edit();
             editor.putInt(PREF_VOICE_HINT_NUM_UNIQUE_DAYS_SHOWN, numUniqueDaysShown + 1);
             editor.putLong(PREF_VOICE_HINT_LAST_TIME_SHOWN, System.currentTimeMillis());
             SharedPreferencesCompat.apply(editor);
@@ -177,9 +179,9 @@ public class Hints {
     }
 
     private int getAndIncrementPref(String pref) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(mContext);
-        int value = sp.getInt(pref, 0);
-        SharedPreferences.Editor editor = sp.edit();
+        final SharedPreferences prefs = mPrefs;
+        int value = prefs.getInt(pref, 0);
+        SharedPreferences.Editor editor = prefs.edit();
         editor.putInt(pref, value + 1);
         SharedPreferencesCompat.apply(editor);
         return value;
