@@ -347,12 +347,12 @@ public class SubtypeSwitcher {
         if (mVoiceInput == null && vi != null) {
             // TODO: Remove requirements to construct KeyboardSwitcher
             // when IME was enabled with Voice mode
-            mService.onKeyboardLanguageChanged();
             mVoiceInput = vi;
             if (isVoiceMode()) {
                 if (DBG) {
                     Log.d(TAG, "Set and call voice input.");
                 }
+                mService.onKeyboardLanguageChanged();
                 mService.onKey(LatinKeyboardView.KEYCODE_VOICE, null, 0, 0);
                 return true;
             }
