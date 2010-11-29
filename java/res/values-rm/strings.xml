@@ -26,8 +26,7 @@
     <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar cun smatgar in buttun"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Tun cun smatgar in buttun"</string>
-    <!-- no translation found for popup_on_keypress (123894815723512944) -->
-    <skip />
+    <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up cun smatgar ina tasta"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Curreger sbagls d\'endataziun"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Activar la correctura da sbagls d\'endataziun"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Sbagls d\'endataziun en il format orizontal"</string>
@@ -78,10 +77,8 @@
     <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
     <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
     <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
-    <!-- no translation found for bigram_suggestion (1323347224043514969) -->
-    <skip />
-    <!-- no translation found for bigram_suggestion_summary (4383845146070101531) -->
-    <skip />
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Propostas da tip bigram"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Meglierar la proposta cun agid dal pled precedent"</string>
   <string-array name="prediction_modes">
     <item msgid="4870266572388153286">"Nagin"</item>
     <item msgid="1669461741568287396">"Simpel"</item>
@@ -104,10 +101,18 @@
     <string name="label_next_key" msgid="362972844525672568">"Vinavant"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Finì"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Trametter"</string>
-    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <!-- no translation found for label_to_symbol_key (8516904117128967293) -->
+    <skip />
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
-    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
+    <skip />
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <!-- no translation found for label_backspace_key (1565088006686703828) -->
+    <skip />
+    <!-- no translation found for label_shift_key (1244253491349109696) -->
+    <skip />
+    <!-- no translation found for label_return_key (9063335866574194922) -->
+    <skip />
     <!-- no translation found for label_more_key (3760239494604948502) -->
     <skip />
     <!-- no translation found for label_tab_key (6532779603382157482) -->
@@ -164,20 +169,15 @@
     <string name="language_selection_summary" msgid="187110938289512256">"Stritgar cun il det sur la tasta da vid per midar la lingua"</string>
     <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tippar danovamain per memorisar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
-    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
-    <skip />
-    <!-- no translation found for prefs_description_log (5827825607258246003) -->
-    <skip />
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Activar il feedback da l\'utilisader"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Gidai a meglierar quest editur da la metoda d\'endataziun cun trametter automaticamain datas statisticas davart l\'utilisaziun e rapports da collaps a Google."</string>
     <!-- no translation found for prefs_enable_recorrection (4588408906649533582) -->
     <skip />
     <!-- no translation found for prefs_enable_recorrection_summary (1056068922330206170) -->
     <skip />
-    <!-- no translation found for keyboard_layout (437433231038683666) -->
-    <skip />
-    <!-- no translation found for subtype_mode_keyboard (2242090416595003881) -->
-    <skip />
-    <!-- no translation found for subtype_mode_voice (4394113125441627771) -->
-    <skip />
+    <string name="keyboard_layout" msgid="437433231038683666">"Design da la tastatura"</string>
+    <string name="subtype_mode_keyboard" msgid="2242090416595003881">"tastatura"</string>
+    <string name="subtype_mode_voice" msgid="4394113125441627771">"vusch"</string>
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />
     <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->

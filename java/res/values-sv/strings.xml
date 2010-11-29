@@ -86,17 +86,25 @@
     <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Tangentbordet öppnas när du trycker på ett textfält"</b></string>
     <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Tryck och håll nere en tangent om du vill visa accenter"\n"(ø, ö, ô, ó och så vidare)"</b></string>
     <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Växla till siffror och symboler med den här tangenten"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Återgå till bokstäver genom att trycka på tangenten en gång till"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Återvänd till bokstäver genom att trycka på tangenten en gång till"</b></string>
     <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Tryck och håll ned tangenten om du vill ändra inställningarna för tangentbordet, till exempel Komplettera automatiskt"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Testa!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Kör"</string>
     <string name="label_next_key" msgid="362972844525672568">"Nästa"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Färdig"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Skicka"</string>
-    <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
+    <!-- no translation found for label_to_symbol_key (8516904117128967293) -->
+    <skip />
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
-    <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
+    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
+    <skip />
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
+    <!-- no translation found for label_backspace_key (1565088006686703828) -->
+    <skip />
+    <!-- no translation found for label_shift_key (1244253491349109696) -->
+    <skip />
+    <!-- no translation found for label_return_key (9063335866574194922) -->
+    <skip />
     <string name="label_more_key" msgid="3760239494604948502">"Mer"</string>
     <!-- no translation found for label_tab_key (6532779603382157482) -->
     <skip />
