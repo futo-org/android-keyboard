@@ -22,7 +22,6 @@ import com.android.inputmethod.latin.SharedPreferencesCompat;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.view.inputmethod.InputConnection;
 
 import java.util.Calendar;

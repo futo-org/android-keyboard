@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import java.util.ArrayList;

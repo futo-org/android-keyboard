@@ -28,12 +28,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.speech.RecognitionListener;
-import android.speech.SpeechRecognizer;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
-import android.view.inputmethod.InputConnection;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputConnection;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

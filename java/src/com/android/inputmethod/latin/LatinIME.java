@@ -35,7 +35,6 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Debug;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.os.Vibrator;

@@ -16,15 +16,15 @@
 
 package com.android.inputmethod.latin;
 
-import java.io.InputStream;
+import android.content.Context;
+import android.util.Log;
+
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.Channels;
 import java.util.Arrays;
-
-import android.content.Context;
-import android.util.Log;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.

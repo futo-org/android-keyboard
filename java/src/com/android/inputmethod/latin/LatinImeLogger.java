@@ -20,6 +20,7 @@ import com.android.inputmethod.latin.Dictionary.DataType;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import java.util.List;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {

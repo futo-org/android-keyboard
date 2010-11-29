@@ -16,10 +16,10 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.LinkedList;
-
 import android.content.Context;
 import android.os.AsyncTask;
+
+import java.util.LinkedList;
 
 /**
  * Base class for an in-memory dictionary that can grow dynamically and can

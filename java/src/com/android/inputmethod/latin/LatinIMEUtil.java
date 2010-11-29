@@ -16,17 +16,14 @@
 
 package com.android.inputmethod.latin;
 
-import android.view.inputmethod.InputMethodManager;
-
-import android.content.Context;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.text.format.DateUtils;
-import android.text.format.Time;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 
 import java.io.BufferedReader;
 import java.io.File;

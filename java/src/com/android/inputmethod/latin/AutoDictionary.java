@@ -16,10 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,6 +25,10 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.AsyncTask;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Stores new words temporarily until they are promoted to the user dictionary

@@ -16,7 +16,8 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.Locale;
+import com.android.inputmethod.voice.VoiceIMEConnector;
+import com.android.inputmethod.voice.VoiceInputLogger;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -33,8 +34,7 @@ import android.speech.SpeechRecognizer;
 import android.text.AutoText;
 import android.util.Log;
 
-import com.android.inputmethod.voice.VoiceIMEConnector;
-import com.android.inputmethod.voice.VoiceInputLogger;
+import java.util.Locale;
 
 public class LatinIMESettings extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,

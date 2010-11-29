@@ -17,6 +17,7 @@
 package com.android.inputmethod.voice;
 
 import android.os.Bundle;
+
 import java.util.ArrayList;
 import java.util.List;
 

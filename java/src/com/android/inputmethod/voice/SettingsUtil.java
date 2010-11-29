@@ -17,10 +17,7 @@
 package com.android.inputmethod.voice;
 
 import android.content.ContentResolver;
-import android.database.Cursor;
-import android.net.Uri;
 import android.provider.Settings;
-import android.util.Log;
 
 /**
  * Utility for retrieving settings from Settings.Secure.

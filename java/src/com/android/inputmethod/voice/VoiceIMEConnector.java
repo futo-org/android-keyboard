@@ -19,10 +19,10 @@ package com.android.inputmethod.voice;
 import com.android.inputmethod.latin.EditingUtil;
 import com.android.inputmethod.latin.KeyboardSwitcher;
 import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.LatinIME.UIHandler;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.LatinIME.UIHandler;
 
 import android.app.AlertDialog;
 import android.content.Context;

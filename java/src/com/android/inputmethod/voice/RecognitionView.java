@@ -16,12 +16,7 @@
 
 package com.android.inputmethod.voice;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import com.android.inputmethod.latin.R;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -43,7 +38,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.inputmethod.latin.R;
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The user interface for the "Speak now" and "working" states.
