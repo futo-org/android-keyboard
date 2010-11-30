@@ -226,12 +226,6 @@
     <string name="label_to_alpha_key">ABC</string>
     <!-- Label for ALT modifier key.  Must be short to fit on key! -->
     <string name="label_alt_key">ALT</string>
-    <!-- Label for Backspace modifier key.  Must be short to fit on key! -->
-    <string name="label_backspace_key">Backspace</string>
-    <!-- Label for Shift modifier key.  Must be short to fit on key! -->
-    <string name="label_shift_key">Shift</string>
-    <!-- Label for Return key.  Must be short to fit on key! -->
-    <string name="label_return_key">Return</string>
     <!-- Label for Shift modifier key of symbol keyboard.  Must be short to fit on key! -->
     <string name="label_more_key">More</string>
     <!-- Label for "Tab" key.  Must be short to fit on key! [CHAR LIMIT=4]-->
