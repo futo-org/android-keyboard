@@ -72,7 +72,7 @@
     <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Tangentbordet öppnas när du trycker på ett textfält"</b></string>
     <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Tryck och håll nere en tangent om du vill visa accenter"\n"(ø, ö, ô, ó och så vidare)"</b></string>
     <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Växla till siffror och symboler med den här tangenten"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Återgå till bokstäver genom att trycka på tangenten en gång till"</b></string>
+    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Återvänd till bokstäver genom att trycka på tangenten en gång till"</b></string>
     <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Tryck och håll ned tangenten om du vill ändra inställningarna för tangentbordet, till exempel Komplettera automatiskt"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Testa!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Kör"</string>
