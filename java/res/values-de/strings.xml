@@ -98,7 +98,7 @@
     <string name="voice_server_error" msgid="7807129913977261644">"Serverfehler"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Keine Sprache zu hören"</string>
     <string name="voice_no_match" msgid="4285117547030179174">"Keine Treffer gefunden"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Sprach-Suche nicht installiert"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Sprachsuche nicht installiert"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Hinweis:"</b>" Ziehen Sie zum Sprechen den Finger über die Tastatur."</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hinweis:"</b>" Versuchen Sie beim nächsten Mal, Satzzeichen wie \"Punkt\", \"Komma\" oder \"Fragezeichen\" per Sprachbefehl einzugeben."</string>
     <string name="cancel" msgid="6830980399865683324">"Abbrechen"</string>

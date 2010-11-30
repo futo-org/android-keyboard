@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"入力オプション"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"キー操作バイブ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"キー操作音"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"キー押下時に文字をポップアップ表示"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"キー押下時ポップアップ"</string>
     <string name="hit_correction" msgid="4855351009261318389">"入力ミス補正"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"入力間違いを自動修正する"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"横表示での入力修正"</string>
