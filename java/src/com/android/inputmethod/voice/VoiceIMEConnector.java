@@ -27,11 +27,23 @@ import com.android.inputmethod.latin.SubtypeSwitcher;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.provider.Browser;
 import android.speech.SpeechRecognizer;
+import android.text.Layout;
+import android.text.Selection;
+import android.text.Spannable;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.method.MovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.URLSpan;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -41,6 +53,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,7 +186,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                 switchToLastInputMethod();
             }
         });
-        // When the dialog is dismissed by user's cancellation, swith back to the last input method.
+        // When the dialog is dismissed by user's cancellation, switch back to the last input method
         builder.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface arg0) {
@@ -182,16 +195,18 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             }
         });
 
+        final CharSequence message;
         if (mLocaleSupportedForVoiceInput) {
-            String message = mContext.getString(R.string.voice_warning_may_not_understand)
-                    + "\n\n" + mContext.getString(R.string.voice_warning_how_to_turn_off);
-            builder.setMessage(message);
+            message = TextUtils.concat(
+                    mContext.getText(R.string.voice_warning_may_not_understand), "\n\n",
+                            mContext.getText(R.string.voice_warning_how_to_turn_off));
         } else {
-            String message = mContext.getString(R.string.voice_warning_locale_not_supported)
-                    + "\n\n" + mContext.getString(R.string.voice_warning_may_not_understand)
-                    + "\n\n" + mContext.getString(R.string.voice_warning_how_to_turn_off);
-            builder.setMessage(message);
+            message = TextUtils.concat(
+                    mContext.getText(R.string.voice_warning_locale_not_supported), "\n\n",
+                            mContext.getText(R.string.voice_warning_may_not_understand), "\n\n",
+                                    mContext.getText(R.string.voice_warning_how_to_turn_off));
         }
+        builder.setMessage(message);
 
         builder.setTitle(R.string.voice_warning_title);
         mVoiceWarningDialog = builder.create();
@@ -203,6 +218,79 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         mVoiceInput.logKeyboardWarningDialogShown();
         mVoiceWarningDialog.show();
+        // Make URL in the dialog message clickable
+        TextView textView = (TextView) mVoiceWarningDialog.findViewById(android.R.id.message);
+        if (textView != null) {
+            final CustomLinkMovementMethod method = CustomLinkMovementMethod.getInstance();
+            method.setVoiceWarningDialog(mVoiceWarningDialog);
+            textView.setMovementMethod(method);
+        }
+    }
+
+    private static class CustomLinkMovementMethod extends LinkMovementMethod {
+        private static CustomLinkMovementMethod sInstance = new CustomLinkMovementMethod();
+        private AlertDialog mAlertDialog;
+
+        public void setVoiceWarningDialog(AlertDialog alertDialog) {
+            mAlertDialog = alertDialog;
+        }
+
+        public static CustomLinkMovementMethod getInstance() {
+            return sInstance;
+        }
+
+        // Almost the same as LinkMovementMethod.onTouchEvent(), but overrides it for
+        // FLAG_ACTIVITY_NEW_TASK and mAlertDialog.cancel().
+        @Override
+        public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
+            int action = event.getAction();
+
+            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                int x = (int) event.getX();
+                int y = (int) event.getY();
+
+                x -= widget.getTotalPaddingLeft();
+                y -= widget.getTotalPaddingTop();
+
+                x += widget.getScrollX();
+                y += widget.getScrollY();
+
+                Layout layout = widget.getLayout();
+                int line = layout.getLineForVertical(y);
+                int off = layout.getOffsetForHorizontal(line, x);
+
+                ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
+
+                if (link.length != 0) {
+                    if (action == MotionEvent.ACTION_UP) {
+                        if (link[0] instanceof URLSpan) {
+                            URLSpan urlSpan = (URLSpan) link[0];
+                            Uri uri = Uri.parse(urlSpan.getURL());
+                            Context context = widget.getContext();
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
+                            if (mAlertDialog != null) {
+                                // Go back to the previous IME for now.
+                                // TODO: If we can find a way to bring the new activity to front
+                                // while keeping the warning dialog, we don't need to cancel here.
+                                mAlertDialog.cancel();
+                            }
+                            context.startActivity(intent);
+                        } else {
+                            link[0].onClick(widget);
+                        }
+                    } else if (action == MotionEvent.ACTION_DOWN) {
+                        Selection.setSelection(buffer, buffer.getSpanStart(link[0]),
+                                buffer.getSpanEnd(link[0]));
+                    }
+                    return true;
+                } else {
+                    Selection.removeSelection(buffer);
+                }
+            }
+            return super.onTouchEvent(widget, buffer, event);
+        }
     }
 
     public void showPunctuationHintIfNecessary() {

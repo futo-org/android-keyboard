@@ -32,7 +32,10 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.speech.SpeechRecognizer;
 import android.text.AutoText;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.widget.TextView;
 
 import java.util.Locale;
 
@@ -59,6 +62,8 @@ public class LatinIMESettings extends PreferenceActivity
     private ListPreference mAutoCompletionThreshold;
     private CheckBoxPreference mBigramSuggestion;
     private boolean mVoiceOn;
+
+    private AlertDialog mDialog;
 
     private VoiceInputLogger mLogger;
 
@@ -91,8 +96,15 @@ public class LatinIMESettings extends PreferenceActivity
 
         final boolean showSettingsKeyOption = getResources().getBoolean(
                 R.bool.config_enable_show_settings_key_option);
-        if (!showSettingsKeyOption)
+        if (!showSettingsKeyOption) {
             getPreferenceScreen().removePreference(mSettingsKeyPreference);
+        }
+
+        final boolean showVoiceKeyOption = getResources().getBoolean(
+                R.bool.config_enable_show_voice_key_option);
+        if (!showVoiceKeyOption) {
+            getPreferenceScreen().removePreference(mVoicePreference);
+        }
 
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (vibrator == null || !vibrator.hasVibrator()) {
@@ -149,6 +161,13 @@ public class LatinIMESettings extends PreferenceActivity
     private void showVoiceConfirmation() {
         mOkClicked = false;
         showDialog(VOICE_INPUT_CONFIRM_DIALOG);
+        // Make URL in the dialog message clickable
+        if (mDialog != null) {
+            TextView textView = (TextView) mDialog.findViewById(android.R.id.message);
+            if (textView != null) {
+                textView.setMovementMethod(LinkMovementMethod.getInstance());
+            }
+        }
     }
 
     private void updateVoiceModeSummary() {
@@ -184,18 +203,20 @@ public class LatinIMESettings extends PreferenceActivity
                 boolean localeSupported = SubtypeSwitcher.getInstance().isVoiceSupported(
                         Locale.getDefault().toString());
 
+                final CharSequence message;
                 if (localeSupported) {
-                    String message = getString(R.string.voice_warning_may_not_understand) + "\n\n" +
-                            getString(R.string.voice_hint_dialog_message);
-                    builder.setMessage(message);
+                    message = TextUtils.concat(
+                            getText(R.string.voice_warning_may_not_understand), "\n\n",
+                                    getText(R.string.voice_hint_dialog_message));
                 } else {
-                    String message = getString(R.string.voice_warning_locale_not_supported) +
-                            "\n\n" + getString(R.string.voice_warning_may_not_understand) + "\n\n" +
-                            getString(R.string.voice_hint_dialog_message);
-                    builder.setMessage(message);
+                    message = TextUtils.concat(
+                            getText(R.string.voice_warning_locale_not_supported), "\n\n",
+                                    getText(R.string.voice_warning_may_not_understand), "\n\n",
+                                            getText(R.string.voice_hint_dialog_message));
                 }
-
+                builder.setMessage(message);
                 AlertDialog dialog = builder.create();
+                mDialog = dialog;
                 dialog.setOnDismissListener(this);
                 mLogger.settingsWarningDialogShown();
                 return dialog;
