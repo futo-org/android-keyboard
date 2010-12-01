@@ -110,12 +110,6 @@
     <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
     <skip />
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
-    <!-- no translation found for label_backspace_key (1565088006686703828) -->
-    <skip />
-    <!-- no translation found for label_shift_key (1244253491349109696) -->
-    <skip />
-    <!-- no translation found for label_return_key (9063335866574194922) -->
-    <skip />
     <!-- no translation found for label_more_key (3760239494604948502) -->
     <skip />
     <!-- no translation found for label_tab_key (6532779603382157482) -->
@@ -126,9 +120,9 @@
     <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Balss ievade"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Balss ievade jūsu valodā pašlaik netiek atbalstīta, taču tā ir pieejama angļu valodā."</string>
-    <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"Balss ievade ir izmēģinājuma funkcija, kuras pamatā ir Google tīkla runas atpazīšanas līdzeklis."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Lai izslēgtu balss ievadi, atveriet tastatūras iestatījumus."</string>
-    <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Lai izmantotu balss ievadi, nospiediet mikrofona pogu vai slidiniet pirkstus pāri ekrāna tastatūrai."</string>
+    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Balss ievade ir izmēģinājuma funkcija, kuras pamatā ir Google tīkla runas atpazīšanas līdzeklis."</string>
+    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Lai izslēgtu balss ievadi, atveriet tastatūras iestatījumus."</string>
+    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Lai izmantotu balss ievadi, nospiediet mikrofona pogu vai slidiniet pirkstus pāri ekrāna tastatūrai."</string>
     <string name="voice_listening" msgid="467518160751321844">"Runājiet!"</string>
     <string name="voice_working" msgid="6666937792815731889">"Notiek apstrāde"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -178,7 +172,7 @@
     <skip />
     <!-- no translation found for prefs_enable_recorrection (4588408906649533582) -->
     <skip />
-    <!-- no translation found for prefs_enable_recorrection_summary (1056068922330206170) -->
+    <!-- no translation found for prefs_enable_recorrection_summary (5082041365862396329) -->
     <skip />
     <!-- no translation found for keyboard_layout (437433231038683666) -->
     <skip />
@@ -198,11 +192,13 @@
     <skip />
     <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
     <skip />
-    <!-- no translation found for subtype_mode_es_rUS_keyboard (7848274169401733488) -->
+    <!-- no translation found for subtype_mode_es_US_keyboard (6418688989436457122) -->
     <skip />
     <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
     <skip />
-    <!-- no translation found for subtype_mode_fr_rCA_keyboard (5566052860502435312) -->
+    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
+    <skip />
+    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
     <skip />
     <!-- no translation found for subtype_mode_it_keyboard (2281078537437195027) -->
     <skip />
