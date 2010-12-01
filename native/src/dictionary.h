@@ -48,7 +48,10 @@ public:
     ~Dictionary();
 
 private:
-
+    void initSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
+            int maxWordLength, int maxWords, int maxAlternatives);
+    int getSuggestionCandidates(int inputLength, int maxWords, int skipPos, int *nextLetters,
+            int nextLettersSize);
     void getVersionNumber();
     bool checkIfDictVersionIsLatest();
     int getAddress(int *pos);
@@ -70,9 +73,9 @@ private:
     bool addWordBigram(unsigned short *word, int length, int frequency);
     unsigned short toLowerCase(unsigned short c);
     void getWordsRec(int pos, int depth, int maxDepth, bool completion, int frequency,
-            int inputIndex, int diffs);
+            int inputIndex, int diffs, int skipPos, int *nextLetters, int nextLettersSize);
     int isValidWordRec(int pos, unsigned short *word, int offset, int length);
-    void registerNextLetter(unsigned short c);
+    void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
 
     unsigned char *mDict;
     void *mAsset;
@@ -88,13 +91,10 @@ private:
     int mInputLength;
     int mMaxAlternatives;
     unsigned short mWord[128];
-    int mSkipPos;
     int mMaxEditDistance;
 
     int mFullWordMultiplier;
     int mTypedLetterMultiplier;
-    int *mNextLettersFrequencies;
-    int mNextLettersSize;
     int mVersion;
     int mBigram;
 };

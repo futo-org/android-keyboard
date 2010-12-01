@@ -37,6 +37,10 @@
 #define DICTIONARY_HEADER_SIZE 2
 #define NOT_VALID_WORD -99
 
+#define SUGGEST_MISSING_CHARACTERS true
+#define SUGGEST_MISSING_CHARACTERS_THRESHOLD 5
+
+
 namespace latinime {
 
 Dictionary::Dictionary(void *dict, int typedLetterMultiplier, int fullWordMultiplier)
@@ -56,7 +60,42 @@ int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWor
         int maxWordLength, int maxWords, int maxAlternatives, int skipPos,
         int *nextLetters, int nextLettersSize)
 {
-    int suggWords;
+
+    initSuggestions(codes, codesSize, outWords, frequencies, maxWordLength, maxWords,
+            maxAlternatives);
+
+    int suggestedWordsCount = getSuggestionCandidates(codesSize, maxWords, skipPos, nextLetters,
+            nextLettersSize);
+
+    // If there aren't sufficient suggestions, search for words by allowing wild cards at
+    // the different character positions. This feature is not ready for prime-time as we need
+    // to figure out the best ranking for such words compared to proximity corrections and
+    // completions.
+    if (SUGGEST_MISSING_CHARACTERS && suggestedWordsCount < SUGGEST_MISSING_CHARACTERS_THRESHOLD) {
+        for (int i = 0; i < codesSize; ++i) {
+            int tempCount = getSuggestionCandidates(codesSize, maxWords, i, NULL, 0);
+            if (tempCount > suggestedWordsCount) {
+                suggestedWordsCount = tempCount;
+                break;
+            }
+        }
+    }
+
+    if (DEBUG_DICT) {
+        LOGI("Returning %d words", suggestedWordsCount);
+        LOGI("Next letters: ");
+        for (int k = 0; k < nextLettersSize; k++) {
+            if (nextLetters[k] > 0) {
+                LOGI("%c = %d,", k, nextLetters[k]);
+            }
+        }
+        LOGI("\n");
+    }
+    return suggestedWordsCount;
+}
+
+void Dictionary::initSuggestions(int *codes, int codesSize, unsigned short *outWords,
+        int *frequencies, int maxWordLength, int maxWords, int maxAlternatives) {
     mFrequencies = frequencies;
     mOutputChars = outWords;
     mInputCodes = codes;
@@ -64,39 +103,29 @@ int Dictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWor
     mMaxAlternatives = maxAlternatives;
     mMaxWordLength = maxWordLength;
     mMaxWords = maxWords;
-    mSkipPos = skipPos;
     mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
-    mNextLettersFrequencies = nextLetters;
-    mNextLettersSize = nextLettersSize;
+}
 
+int Dictionary::getSuggestionCandidates(int inputLength, int maxWords, int skipPos,
+        int *nextLetters, int nextLettersSize) {
     if (checkIfDictVersionIsLatest()) {
-        getWordsRec(DICTIONARY_HEADER_SIZE, 0, mInputLength * 3, false, 1, 0, 0);
+        getWordsRec(DICTIONARY_HEADER_SIZE, 0, inputLength * 3, false, 1, 0, 0, skipPos,
+                nextLetters, nextLettersSize);
     } else {
-        getWordsRec(0, 0, mInputLength * 3, false, 1, 0, 0);
+        getWordsRec(0, 0, inputLength * 3, false, 1, 0, 0, skipPos, nextLetters, nextLettersSize);
     }
 
     // Get the word count
-    suggWords = 0;
-    while (suggWords < mMaxWords && mFrequencies[suggWords] > 0) suggWords++;
-    if (DEBUG_DICT) LOGI("Returning %d words", suggWords);
-
-    if (DEBUG_DICT) {
-        LOGI("Next letters: ");
-        for (int k = 0; k < nextLettersSize; k++) {
-            if (mNextLettersFrequencies[k] > 0) {
-                LOGI("%c = %d,", k, mNextLettersFrequencies[k]);
-            }
-        }
-        LOGI("\n");
+    int suggestedWordsCount = 0;
+    while (suggestedWordsCount < maxWords && mFrequencies[suggestedWordsCount] > 0) {
+        suggestedWordsCount++;
     }
-    return suggWords;
+    return suggestedWordsCount;
 }
 
-void
-Dictionary::registerNextLetter(unsigned short c)
-{
-    if (c < mNextLettersSize) {
-        mNextLettersFrequencies[c]++;
+void Dictionary::registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize) {
+    if (c < nextLettersSize) {
+        nextLetters[c]++;
     }
 }
 
@@ -287,7 +316,7 @@ static char QUOTE = '\'';
 
 void
 Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int snr, int inputIndex,
-                        int diffs)
+                        int diffs, int skipPos, int *nextLetters, int nextLettersSize)
 {
     // Optimization: Prune out words that are too long compared to how much was typed.
     if (depth > maxDepth) {
@@ -321,19 +350,20 @@ Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int s
             mWord[depth] = c;
             if (terminal) {
                 addWord(mWord, depth + 1, freq * snr);
-                if (depth >= mInputLength && mSkipPos < 0) {
-                    registerNextLetter(mWord[mInputLength]);
+                if (depth >= mInputLength && skipPos < 0) {
+                    registerNextLetter(mWord[mInputLength], nextLetters, nextLettersSize);
                 }
             }
             if (childrenAddress != 0) {
-                getWordsRec(childrenAddress, depth + 1, maxDepth,
-                            completion, snr, inputIndex, diffs);
+                getWordsRec(childrenAddress, depth + 1, maxDepth, completion, snr, inputIndex,
+                        diffs, skipPos, nextLetters, nextLettersSize);
             }
-        } else if ((c == QUOTE && currentChars[0] != QUOTE) || mSkipPos == depth) {
+        } else if ((c == QUOTE && currentChars[0] != QUOTE) || skipPos == depth) {
             // Skip the ' or other letter and continue deeper
             mWord[depth] = c;
             if (childrenAddress != 0) {
-                getWordsRec(childrenAddress, depth + 1, maxDepth, false, snr, inputIndex, diffs);
+                getWordsRec(childrenAddress, depth + 1, maxDepth, false, snr, inputIndex, diffs,
+                        skipPos, nextLetters, nextLettersSize);
             }
         } else {
             int j = 0;
@@ -346,22 +376,23 @@ Dictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int s
                             if (//INCLUDE_TYPED_WORD_IF_VALID ||
                                 !sameAsTyped(mWord, depth + 1)) {
                                 int finalFreq = freq * snr * addedWeight;
-                                if (mSkipPos < 0) finalFreq *= mFullWordMultiplier;
+                                if (skipPos < 0) finalFreq *= mFullWordMultiplier;
                                 addWord(mWord, depth + 1, finalFreq);
                             }
                         }
                         if (childrenAddress != 0) {
                             getWordsRec(childrenAddress, depth + 1,
                                     maxDepth, true, snr * addedWeight, inputIndex + 1,
-                                    diffs + (j > 0));
+                                    diffs + (j > 0), skipPos, nextLetters, nextLettersSize);
                         }
                     } else if (childrenAddress != 0) {
                         getWordsRec(childrenAddress, depth + 1, maxDepth,
-                                false, snr * addedWeight, inputIndex + 1, diffs + (j > 0));
+                                false, snr * addedWeight, inputIndex + 1, diffs + (j > 0),
+                                skipPos, nextLetters, nextLettersSize);
                     }
                 }
                 j++;
-                if (mSkipPos >= 0) break;
+                if (skipPos >= 0) break;
             }
         }
     }

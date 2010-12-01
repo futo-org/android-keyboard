@@ -45,7 +45,6 @@ public class BinaryDictionary extends Dictionary {
     private static final int MAX_BIGRAMS = 60;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
-    private static final boolean ENABLE_MISSED_CHARACTERS = true;
 
     private int mDicTypeId;
     private int mNativeDict;
@@ -199,26 +198,10 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(mOutputChars, (char) 0);
         Arrays.fill(mFrequencies, 0);
 
-        int count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize,
-                mOutputChars, mFrequencies,
-                MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, -1,
+        int count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize, mOutputChars,
+                mFrequencies, MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, -1,
                 nextLettersFrequencies,
                 nextLettersFrequencies != null ? nextLettersFrequencies.length : 0);
-
-        // If there aren't sufficient suggestions, search for words by allowing wild cards at
-        // the different character positions. This feature is not ready for prime-time as we need
-        // to figure out the best ranking for such words compared to proximity corrections and
-        // completions.
-        if (ENABLE_MISSED_CHARACTERS && count < 5) {
-            for (int skip = 0; skip < codesSize; skip++) {
-                int tempCount = getSuggestionsNative(mNativeDict, mInputCodes, codesSize,
-                        mOutputChars, mFrequencies,
-                        MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES, skip,
-                        null, 0);
-                count = Math.max(count, tempCount);
-                if (tempCount > 0) break;
-            }
-        }
 
         for (int j = 0; j < count; j++) {
             if (mFrequencies[j] < 1) break;
