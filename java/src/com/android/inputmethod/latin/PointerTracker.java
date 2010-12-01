@@ -301,19 +301,23 @@ public class PointerTracker {
         if (mKeyAlreadyProcessed)
             return;
         KeyState keyState = mKeyState;
-        int keyIndex = keyState.onMoveKey(x, y);
-        Key key = getKey(keyIndex);
-        if (key != null) {
-            if (keyState.getKeyIndex() == NOT_A_KEY) {
+        final int keyIndex = keyState.onMoveKey(x, y);
+        final Key oldKey = getKey(keyState.getKeyIndex());
+        if (isValidKeyIndex(keyIndex)) {
+            if (oldKey == null) {
                 keyState.onMoveToNewKey(keyIndex, x, y);
                 startLongPressTimer(keyIndex);
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
+                if (mListener != null)
+                    mListener.onRelease(oldKey.codes[0]);
                 resetMultiTap();
                 keyState.onMoveToNewKey(keyIndex, x, y);
                 startLongPressTimer(keyIndex);
             }
         } else {
-            if (keyState.getKeyIndex() != NOT_A_KEY) {
+            if (oldKey != null) {
+                if (mListener != null)
+                    mListener.onRelease(oldKey.codes[0]);
                 keyState.onMoveToNewKey(keyIndex, x ,y);
                 mHandler.cancelLongPressTimers();
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
@@ -405,7 +409,7 @@ public class PointerTracker {
     private void showKeyPreviewAndUpdateKeyGraphics(int keyIndex) {
         updateKeyGraphics(keyIndex);
         // The modifier key, such as shift key, should not be shown as preview when multi-touch is
-        // supported. On thge other hand, if multi-touch is not supported, the modifier key should
+        // supported. On the other hand, if multi-touch is not supported, the modifier key should
         // be shown as preview.
         if (mHasDistinctMultitouch && isModifier()) {
             mProxy.showPreview(NOT_A_KEY, this);
