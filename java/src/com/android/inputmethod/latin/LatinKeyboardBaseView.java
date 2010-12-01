@@ -226,7 +226,7 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
     protected KeyDetector mKeyDetector = new ProximityKeyDetector();
 
     // Swipe gesture detector
-    private final GestureDetector mGestureDetector;
+    private GestureDetector mGestureDetector;
     private final SwipeTracker mSwipeTracker = new SwipeTracker();
     private final int mSwipeThreshold;
     private final boolean mDisambiguateSwipe;
@@ -1106,6 +1106,8 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         });
         // Override default ProximityKeyDetector.
         miniKeyboard.mKeyDetector = new MiniKeyboardKeyDetector(mMiniKeyboardSlideAllowance);
+        // Remove gesture detector on mini-keyboard
+        miniKeyboard.mGestureDetector = null;
 
         Keyboard keyboard;
         if (popupKey.popupCharacters != null) {
@@ -1307,8 +1309,9 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         // Track the last few movements to look for spurious swipes.
         mSwipeTracker.addMovement(me);
 
-        // We must disable gesture detector while mini-keyboard is on the screen.
-        if (mMiniKeyboard == null && mGestureDetector.onTouchEvent(me)) {
+        // Gesture detector must be enabled only when mini-keyboard is not on the screen.
+        if (mMiniKeyboard == null
+                && mGestureDetector != null && mGestureDetector.onTouchEvent(me)) {
             dismissKeyPreview();
             mHandler.cancelKeyTimers();
             return true;
