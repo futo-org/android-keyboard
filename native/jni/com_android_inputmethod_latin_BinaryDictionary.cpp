@@ -42,21 +42,23 @@ static void throwException(JNIEnv *env, const char* ex, const char* fmt, int dat
 
 static jint latinime_BinaryDictionary_open
         (JNIEnv *env, jobject object, jobject dictDirectBuffer,
-         jint typedLetterMultiplier, jint fullWordMultiplier)
+         jint typedLetterMultiplier, jint fullWordMultiplier, jint maxWordLength, jint maxWords,
+         jint maxAlternatives)
 {
     void *dict = env->GetDirectBufferAddress(dictDirectBuffer);
     if (dict == NULL) {
         fprintf(stderr, "DICT: Dictionary buffer is null\n");
         return 0;
     }
-    Dictionary *dictionary = new Dictionary(dict, typedLetterMultiplier, fullWordMultiplier);
+    Dictionary *dictionary = new Dictionary(dict, typedLetterMultiplier, fullWordMultiplier,
+            maxWordLength, maxWords, maxAlternatives);
     return (jint) dictionary;
 }
 
 static int latinime_BinaryDictionary_getSuggestions(
         JNIEnv *env, jobject object, jint dict, jintArray inputArray, jint arraySize,
-        jcharArray outputArray, jintArray frequencyArray, jint maxWordLength, jint maxWords,
-        jint maxAlternatives, jint skipPos, jintArray nextLettersArray, jint nextLettersSize)
+        jcharArray outputArray, jintArray frequencyArray,
+        jintArray nextLettersArray, jint nextLettersSize)
 {
     Dictionary *dictionary = (Dictionary*) dict;
     if (dictionary == NULL) return 0;
@@ -68,8 +70,7 @@ static int latinime_BinaryDictionary_getSuggestions(
             : NULL;
 
     int count = dictionary->getSuggestions(inputCodes, arraySize, (unsigned short*) outputChars,
-            frequencies, maxWordLength, maxWords, maxAlternatives, skipPos, nextLetters,
-            nextLettersSize);
+            frequencies, nextLetters, nextLettersSize);
 
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
@@ -123,17 +124,16 @@ static jboolean latinime_BinaryDictionary_isValidWord
 static void latinime_BinaryDictionary_close
         (JNIEnv *env, jobject object, jint dict)
 {
-    Dictionary *dictionary = (Dictionary*) dict;
     delete (Dictionary*) dict;
 }
 
 // ----------------------------------------------------------------------------
 
 static JNINativeMethod gMethods[] = {
-    {"openNative",           "(Ljava/nio/ByteBuffer;II)I",
+    {"openNative",           "(Ljava/nio/ByteBuffer;IIIII)I",
                                           (void*)latinime_BinaryDictionary_open},
     {"closeNative",          "(I)V",            (void*)latinime_BinaryDictionary_close},
-    {"getSuggestionsNative", "(I[II[C[IIIII[II)I",  (void*)latinime_BinaryDictionary_getSuggestions},
+    {"getSuggestionsNative", "(I[II[C[I[II)I",  (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative",    "(I[CI)Z",         (void*)latinime_BinaryDictionary_isValidWord},
     {"getBigramsNative",    "(I[CI[II[C[IIII)I",         (void*)latinime_BinaryDictionary_getBigrams}
 };
