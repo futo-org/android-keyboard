@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2008, The Android Open Source Project
+** Copyright 2010, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -28,70 +28,72 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
+    <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:rowEdgeFlags="top"
+        latin:keyWidth="7.520%p"
     >
         <Key
-            latin:keyLabel="љ"
-            latin:keyHintIcon="@drawable/keyboard_hint_1"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="1"
+            latin:keyStyle="tabKeyStyle"
+            latin:keyLabelOption="alignLeft"
+            latin:keyWidth="7.949%p"
             latin:keyEdgeFlags="left" />
         <Key
+            latin:keyLabel="љ"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="1" />
+        <Key
             latin:keyLabel="њ"
-            latin:keyHintIcon="@drawable/keyboard_hint_2"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="е"
-            latin:keyHintIcon="@drawable/keyboard_hint_3"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="р"
-            latin:keyHintIcon="@drawable/keyboard_hint_4"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="т"
-            latin:keyHintIcon="@drawable/keyboard_hint_5"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="5" />
         <Key
             latin:keyLabel="з"
-            latin:keyHintIcon="@drawable/keyboard_hint_6"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="у"
-            latin:keyHintIcon="@drawable/keyboard_hint_7"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="и"
-            latin:keyHintIcon="@drawable/keyboard_hint_8"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="о"
-            latin:keyHintIcon="@drawable/keyboard_hint_9"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="п"
-            latin:keyHintIcon="@drawable/keyboard_hint_0"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="0" />
         <Key
-            latin:keyLabel="ш"
+            latin:keyLabel="ш" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="9.331%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.333%p"
+        latin:keyWidth="7.520%p"
     >
         <Key
-            latin:keyLabel="а"
+            latin:keyStyle="toSymbolKeyStyle"
+            latin:keyLabelOption="alignLeft"
+            latin:keyWidth="7.949%p"
             latin:keyEdgeFlags="left" />
+        <Key
+            latin:keyLabel="а" />
         <Key
             latin:keyLabel="с" />
         <Key
@@ -113,16 +115,19 @@
         <Key
             latin:keyLabel="ћ" />
         <Key
-            latin:keyLabel="ђ"
+            latin:keyStyle="returnKeyStyle"
+            latin:keyWidth="9.331%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.5%p"
+        latin:keyWidth="7.520%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="11.75%p"
+            latin:keyWidth="12.400%p"
             latin:keyEdgeFlags="left" />
+        <Key
+            latin:keyLabel="ђ" />
         <Key
             latin:keyLabel="ж" />
         <Key
@@ -138,8 +143,22 @@
         <Key
             latin:keyLabel="м" />
         <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="11.75%p"
+            latin:keyLabel=","
+            latin:manualTemporaryUpperCaseCode="33"
+            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
+            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="!" />
+        <Key
+            latin:keyLabel="."
+            latin:manualTemporaryUpperCaseCode="63"
+            latin:keyHintIcon="@drawable/key_hint_question_holo"
+            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="\?" />
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="12.400%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
