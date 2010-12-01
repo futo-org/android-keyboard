@@ -19,15 +19,20 @@
 #include <fcntl.h>
 #include <sys/mman.h>
 #include <string.h>
-//#define LOG_TAG "dictionary.cpp"
-//#include <cutils/log.h>
+
+#ifdef FLAG_DBG
+#define LOG_TAG "LatinIME: dictionary.cpp"
+#include <cutils/log.h>
+#define DEBUG_DICT 1
+#else // FLAG_DBG
 #define LOGI
+#define DEBUG_DICT 0
+#endif // FLAG_DBG
 
 #include "dictionary.h"
 #include "basechars.h"
 #include "char_utils.h"
 
-#define DEBUG_DICT 0
 #define DICTIONARY_VERSION_MIN 200
 #define DICTIONARY_HEADER_SIZE 2
 #define NOT_VALID_WORD -99
@@ -36,6 +41,7 @@ namespace latinime {
 
 Dictionary::Dictionary(void *dict, int typedLetterMultiplier, int fullWordMultiplier)
 {
+    LOGI("Dictionary - constructor");
     mDict = (unsigned char*) dict;
     mTypedLetterMultiplier = typedLetterMultiplier;
     mFullWordMultiplier = fullWordMultiplier;
