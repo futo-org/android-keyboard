@@ -144,6 +144,7 @@
         latin:styleName="comKeyStyle"
         latin:keyLabel=".com"
         latin:keyLabelOption="fontNormal"
+        latin:keyOutputText=".com"
         latin:keyHintIcon="@drawable/hint_popup_holo"
         latin:popupKeyboard="@xml/popup_domains" />
 </merge>
