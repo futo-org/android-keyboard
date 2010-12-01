@@ -59,7 +59,7 @@
             android:imeSubtypeLocale="es"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
+    <subtype android:icon="@drawable/ic_subtype_keyboard_es_us"
             android:label="@string/subtype_mode_es_US_keyboard"
             android:imeSubtypeLocale="es_US"
             android:imeSubtypeMode="keyboard"
@@ -69,7 +69,7 @@
             android:imeSubtypeLocale="fr"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
+    <subtype android:icon="@drawable/ic_subtype_keyboard_fr_ca"
             android:label="@string/subtype_mode_fr_CA_keyboard"
             android:imeSubtypeLocale="fr_CA"
             android:imeSubtypeMode="keyboard"
