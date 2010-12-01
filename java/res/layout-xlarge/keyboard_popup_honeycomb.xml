@@ -23,8 +23,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/keyboard_popup_panel_background_holo"
-        android:paddingLeft="44dip"
-        android:paddingRight="32dip"
+        android:paddingLeft="40dip"
+        android:paddingRight="40dip"
         >
     <com.android.inputmethod.latin.BaseKeyboardView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"

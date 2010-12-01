@@ -537,7 +537,8 @@ public class BaseKeyboard {
                 column = 0;
             }
             final Key key = new Key(row);
-            key.x = x;
+            // Horizontal gap is divided equally to both sides of the key.
+            key.x = x + key.gap / 2;
             key.y = y;
             key.label = String.valueOf(c);
             key.codes = new int[] { c };

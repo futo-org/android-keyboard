@@ -69,7 +69,6 @@
     <Row>
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyLabelOption="alignLeft"
             latin:keyEdgeFlags="left" />
         <Spacer
             latin:horizontalGap="4.458%p" />

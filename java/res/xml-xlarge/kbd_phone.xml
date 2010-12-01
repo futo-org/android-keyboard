@@ -65,7 +65,6 @@
     <Row>
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyLabelOption="alignLeft"
             latin:keyEdgeFlags="left" />
         <!-- To match one character label size with "More", I placed spaces around the char ','
              and '.'. -->

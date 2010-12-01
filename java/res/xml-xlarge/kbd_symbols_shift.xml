@@ -104,7 +104,6 @@
     >
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyLabelOption="alignLeft"
             latin:keyWidth="15.192%p"
             latin:keyEdgeFlags="left" />
         <Key
@@ -131,7 +130,6 @@
             latin:keyLabel="¿" />
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyLabelOption="alignRight"
             latin:keyWidth="12.530%p"
             latin:keyEdgeFlags="right" />
     </Row>
