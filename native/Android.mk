@@ -8,11 +8,22 @@ LOCAL_SRC_FILES := \
 	src/dictionary.cpp \
 	src/char_utils.cpp
 
-LOCAL_NDK_VERSION := 4
+#FLAG_DBG := true
+
+ifneq ($(FLAG_DBG), true)
+    LOCAL_NDK_VERSION := 4
+endif
+
 LOCAL_SDK_VERSION := 8
 
 LOCAL_MODULE := libjni_latinime
 
 LOCAL_MODULE_TAGS := user
+
+ifeq ($(FLAG_DBG), true)
+    $(warning "Making debug build.")
+    LOCAL_CFLAGS += -DFLAG_DBG
+    LOCAL_SHARED_LIBRARIES := libcutils libutils
+endif
 
 include $(BUILD_SHARED_LIBRARY)
