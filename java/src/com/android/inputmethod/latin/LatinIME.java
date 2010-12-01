@@ -641,7 +641,7 @@ public class LatinIME extends InputMethodService
     }
 
     private void checkReCorrectionOnStart() {
-        if (mReCorrectionEnabled && isPredictionOn()) {
+        if (mReCorrectionEnabled && isSuggestionShown() && isPredictionOn()) {
             // First get the cursor position. This is required by setOldSuggestions(), so that
             // it can pass the correct range to setComposingRegion(). At this point, we don't
             // have valid values for mLastSelectionStart/Stop because onUpdateSelection() has
@@ -745,7 +745,7 @@ public class LatinIME extends InputMethodService
         mLastSelectionStart = newSelStart;
         mLastSelectionEnd = newSelEnd;
 
-        if (mReCorrectionEnabled) {
+        if (mReCorrectionEnabled && isSuggestionShown()) {
             // Don't look for corrections if the keyboard is not visible
             if (mKeyboardSwitcher.isInputViewShown()) {
                 // Check if we should go in or out of correction mode.
