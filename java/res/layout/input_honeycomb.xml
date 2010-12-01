@@ -28,10 +28,12 @@
         android:paddingTop="@dimen/keyboard_top_padding"
         android:paddingBottom="@dimen/keyboard_bottom_padding"
         android:background="@drawable/keyboard_background_holo"
-        android:textStyle="bold"
 
         latin:keyBackground="@drawable/btn_keyboard_key_honeycomb"
         latin:keyPreviewLayout="@layout/key_preview_honeycomb"
         latin:popupLayout="@layout/keyboard_popup_honeycomb"
-        latin:keyTextStyle="bold"
+        latin:keyTextColorDisabled="#FF353535"
+        latin:keyLetterStyle="bold"
+        latin:shadowColor="#00000000"
+        latin:shadowRadius="0.0"
         />

@@ -170,9 +170,10 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private static final int HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
     // XML attribute
-    private int mKeyTextSize;
+    private int mKeyLetterSize;
     private int mKeyTextColor;
-    private Typeface mKeyTextStyle = Typeface.DEFAULT;
+    private int mKeyTextColorDisabled;
+    private Typeface mKeyLetterStyle = Typeface.DEFAULT;
     private int mLabelTextSize;
     private int mColorScheme = COLOR_SCHEME_WHITE;
     private int mShadowColor;
@@ -455,11 +456,14 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             case R.styleable.BaseKeyboardView_keyPreviewHeight:
                 mPreviewHeight = a.getDimensionPixelSize(attr, 80);
                 break;
-            case R.styleable.BaseKeyboardView_keyTextSize:
-                mKeyTextSize = a.getDimensionPixelSize(attr, 18);
+            case R.styleable.BaseKeyboardView_keyLetterSize:
+                mKeyLetterSize = a.getDimensionPixelSize(attr, 18);
                 break;
             case R.styleable.BaseKeyboardView_keyTextColor:
                 mKeyTextColor = a.getColor(attr, 0xFF000000);
+                break;
+            case R.styleable.BaseKeyboardView_keyTextColorDisabled:
+                mKeyTextColorDisabled = a.getColor(attr, 0xFF000000);
                 break;
             case R.styleable.BaseKeyboardView_labelTextSize:
                 mLabelTextSize = a.getDimensionPixelSize(attr, 14);
@@ -477,20 +481,8 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             case R.styleable.BaseKeyboardView_backgroundDimAmount:
                 mBackgroundDimAmount = a.getFloat(attr, 0.5f);
                 break;
-            //case android.R.styleable.
-            case R.styleable.BaseKeyboardView_keyTextStyle:
-                int textStyle = a.getInt(attr, 0);
-                switch (textStyle) {
-                    case 0:
-                        mKeyTextStyle = Typeface.DEFAULT;
-                        break;
-                    case 1:
-                        mKeyTextStyle = Typeface.DEFAULT_BOLD;
-                        break;
-                    default:
-                        mKeyTextStyle = Typeface.defaultFromStyle(textStyle);
-                        break;
-                }
+            case R.styleable.BaseKeyboardView_keyLetterStyle:
+                mKeyLetterStyle = Typeface.defaultFromStyle(a.getInt(attr, Typeface.NORMAL));
                 break;
             case R.styleable.BaseKeyboardView_colorScheme:
                 mColorScheme = a.getInt(attr, COLOR_SCHEME_WHITE);
@@ -787,7 +779,6 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         final boolean isManualTemporaryUpperCase = (mKeyboard instanceof LatinKeyboard
                 && ((LatinKeyboard)mKeyboard).isManualTemporaryUpperCase());
 
-        paint.setColor(mKeyTextColor);
         boolean drawSingleKey = false;
         if (invalidKey != null && canvas.getClipBounds(clipRegion)) {
             // TODO we should use Rect.inset and Rect.contains here.
@@ -820,7 +811,6 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             keyBackground.draw(canvas);
 
             final int rowHeight = padding.top + key.height;
-            boolean drawHintIcon = true;
             // Draw key label
             if (label != null) {
                 // For characters, use large font. For labels like "Done", use small font.
@@ -858,6 +848,11 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                     if (DEBUG_SHOW_ALIGN && label.length() > 1)
                         drawVerticalLine(canvas, positionX, rowHeight, 0xc0008080, new Paint());
                 }
+                if (key.manualTemporaryUpperCaseHintIcon != null && isManualTemporaryUpperCase) {
+                    paint.setColor(mKeyTextColorDisabled);
+                } else {
+                    paint.setColor(mKeyTextColor);
+                }
                 // Set a drop shadow for the text
                 paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
                 canvas.drawText(label, positionX, baseline, paint);
@@ -892,7 +887,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
                     drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,
                             0x80c00000, new Paint());
             }
-            if (key.hintIcon != null && drawHintIcon) {
+            if (key.hintIcon != null) {
                 final int drawableWidth = key.width;
                 final int drawableHeight = key.height;
                 final int drawableX = 0;
@@ -954,18 +949,20 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private int getLabelSizeAndSetPaint(CharSequence label, Key key, Paint paint) {
         // For characters, use large font. For labels like "Done", use small font.
         final int labelSize;
+        final Typeface labelStyle;
         if (label.length() > 1 && key.codes.length < 2) {
             labelSize = mLabelTextSize;
             if ((key.labelOption & KEY_LABEL_OPTION_FONT_NORMAL) != 0) {
-                paint.setTypeface(Typeface.DEFAULT);
+                labelStyle = Typeface.DEFAULT;
             } else {
-                paint.setTypeface(Typeface.DEFAULT_BOLD);
+                labelStyle = Typeface.DEFAULT_BOLD;
             }
         } else {
-            labelSize = mKeyTextSize;
-            paint.setTypeface(mKeyTextStyle);
+            labelSize = mKeyLetterSize;
+            labelStyle = mKeyLetterStyle;
         }
         paint.setTextSize(labelSize);
+        paint.setTypeface(labelStyle);
         return labelSize;
     }
 
@@ -1061,11 +1058,11 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             mPreviewText.setCompoundDrawables(null, null, null, null);
             mPreviewText.setText(adjustCase(tracker.getPreviewText(key)));
             if (key.label.length() > 1 && key.codes.length < 2) {
-                mPreviewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mKeyTextSize);
+                mPreviewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mKeyLetterSize);
                 mPreviewText.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
                 mPreviewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSizeLarge);
-                mPreviewText.setTypeface(mKeyTextStyle);
+                mPreviewText.setTypeface(mKeyLetterStyle);
             }
         } else {
             mPreviewText.setCompoundDrawables(null, null, null,
