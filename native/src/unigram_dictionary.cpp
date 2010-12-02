@@ -20,39 +20,26 @@
 #include <sys/mman.h>
 #include <string.h>
 
-#ifdef FLAG_DBG
-#define LOG_TAG "LatinIME: dictionary.cpp"
-#include <cutils/log.h>
-#define DEBUG_DICT 1
-#else // FLAG_DBG
-#define LOGI
-#define DEBUG_DICT 0
-#endif // FLAG_DBG
+#define LOG_TAG "LatinIME: unigram_dictionary.cpp"
 
-#include "unigram_dictionary.h"
 #include "basechars.h"
 #include "char_utils.h"
-
-#define DICTIONARY_VERSION_MIN 200
-#define DICTIONARY_HEADER_SIZE 2
-#define NOT_VALID_WORD -99
-
-#define SUGGEST_MISSING_CHARACTERS true
-#define SUGGEST_MISSING_CHARACTERS_THRESHOLD 5
-
+#include "dictionary.h"
+#include "unigram_dictionary.h"
 
 namespace latinime {
 
-UnigramDictionary::UnigramDictionary(void *dict, int typedLetterMultiplier, int fullWordMultiplier,
-        int maxWordLength, int maxWords, int maxAlternatives, Dictionary *parentDictionary)
-    : MAX_WORD_LENGTH(maxWordLength),MAX_WORDS(maxWords), MAX_ALTERNATIVES(maxAlternatives)
+UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterMultiplier,
+        int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives,
+        const bool isLatestDictVersion, const bool hasBigram, Dictionary *parentDictionary)
+    : DICT(dict), MAX_WORD_LENGTH(maxWordLength),MAX_WORDS(maxWords),
+    MAX_ALTERNATIVES(maxAlternatives), IS_LATEST_DICT_VERSION(isLatestDictVersion),
+    HAS_BIGRAM(hasBigram), mParentDictionary(parentDictionary)
 {
     LOGI("UnigramDictionary - constructor");
-    mDict = (unsigned char*) dict;
+    LOGI("Has Bigram : %d \n", hasBigram);
     mTypedLetterMultiplier = typedLetterMultiplier;
     mFullWordMultiplier = fullWordMultiplier;
-    mParentDictionary = parentDictionary;
-    getVersionNumber();
 }
 
 UnigramDictionary::~UnigramDictionary()
@@ -106,7 +93,7 @@ void UnigramDictionary::initSuggestions(int *codes, int codesSize, unsigned shor
 
 int UnigramDictionary::getSuggestionCandidates(int inputLength, int skipPos,
         int *nextLetters, int nextLettersSize) {
-    if (checkIfDictVersionIsLatest()) {
+    if (IS_LATEST_DICT_VERSION) {
         getWordsRec(DICTIONARY_HEADER_SIZE, 0, inputLength * 3, false, 1, 0, 0, skipPos,
                 nextLetters, nextLettersSize);
     } else {
@@ -125,72 +112,6 @@ void UnigramDictionary::registerNextLetter(unsigned short c, int *nextLetters, i
     if (c < nextLettersSize) {
         nextLetters[c]++;
     }
-}
-
-// TODO: Should be const static variable calculate in the constructor
-void
-UnigramDictionary::getVersionNumber()
-{
-    mVersion = (mDict[0] & 0xFF);
-    mBigram = (mDict[1] & 0xFF);
-    LOGI("IN NATIVE SUGGEST Version: %d Bigram : %d \n", mVersion, mBigram);
-}
-
-// TODO: Should be const static variable calculate in the constructor
-// Checks whether it has the latest dictionary or the old dictionary
-bool
-UnigramDictionary::checkIfDictVersionIsLatest()
-{
-    return (mVersion >= DICTIONARY_VERSION_MIN) && (mBigram == 1 || mBigram == 0);
-}
-
-unsigned short
-UnigramDictionary::getChar(int *pos)
-{
-    unsigned short ch = (unsigned short) (mDict[(*pos)++] & 0xFF);
-    // If the code is 255, then actual 16 bit code follows (in big endian)
-    if (ch == 0xFF) {
-        ch = ((mDict[*pos] & 0xFF) << 8) | (mDict[*pos + 1] & 0xFF);
-        (*pos) += 2;
-    }
-    return ch;
-}
-
-int
-UnigramDictionary::getAddress(int *pos)
-{
-    int address = 0;
-    if ((mDict[*pos] & FLAG_ADDRESS_MASK) == 0) {
-        *pos += 1;
-    } else {
-        address += (mDict[*pos] & (ADDRESS_MASK >> 16)) << 16;
-        address += (mDict[*pos + 1] & 0xFF) << 8;
-        address += (mDict[*pos + 2] & 0xFF);
-        *pos += 3;
-    }
-    return address;
-}
-
-int
-UnigramDictionary::getFreq(int *pos)
-{
-    int freq = mDict[(*pos)++] & 0xFF;
-
-    if (checkIfDictVersionIsLatest()) {
-        // skipping bigram
-        int bigramExist = (mDict[*pos] & FLAG_BIGRAM_READ);
-        if (bigramExist > 0) {
-            int nextBigramExist = 1;
-            while (nextBigramExist > 0) {
-                (*pos) += 3;
-                nextBigramExist = (mDict[(*pos)++] & FLAG_BIGRAM_CONTINUED);
-            }
-        } else {
-            (*pos)++;
-        }
-    }
-
-    return freq;
 }
 
 int
@@ -325,7 +246,7 @@ UnigramDictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion
     if (diffs > mMaxEditDistance) {
         return;
     }
-    int count = getCount(&pos);
+    int count = Dictionary::getCount(DICT, &pos);
     int *currentChars = NULL;
     if (mInputLength <= inputIndex) {
         completion = true;
@@ -335,14 +256,14 @@ UnigramDictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion
 
     for (int i = 0; i < count; i++) {
         // -- at char
-        unsigned short c = getChar(&pos);
+        unsigned short c = Dictionary::getChar(DICT, &pos);
         // -- at flag/add
         unsigned short lowerC = toLowerCase(c);
-        bool terminal = getTerminal(&pos);
-        int childrenAddress = getAddress(&pos);
+        bool terminal = Dictionary::getTerminal(DICT, &pos);
+        int childrenAddress = Dictionary::getAddress(DICT, &pos);
         // -- after address or flag
         int freq = 1;
-        if (terminal) freq = getFreq(&pos);
+        if (terminal) freq = Dictionary::getFreq(DICT, IS_LATEST_DICT_VERSION, &pos);
         // -- after add or freq
 
         // If we are only doing completions, no need to look at the typed characters.
@@ -403,9 +324,9 @@ UnigramDictionary::getBigramAddress(int *pos, bool advance)
 {
     int address = 0;
 
-    address += (mDict[*pos] & 0x3F) << 16;
-    address += (mDict[*pos + 1] & 0xFF) << 8;
-    address += (mDict[*pos + 2] & 0xFF);
+    address += (DICT[*pos] & 0x3F) << 16;
+    address += (DICT[*pos + 1] & 0xFF) << 8;
+    address += (DICT[*pos + 2] & 0xFF);
 
     if (advance) {
         *pos += 3;
@@ -417,7 +338,7 @@ UnigramDictionary::getBigramAddress(int *pos, bool advance)
 int
 UnigramDictionary::getBigramFreq(int *pos)
 {
-    int freq = mDict[(*pos)++] & FLAG_BIGRAM_FREQ;
+    int freq = DICT[(*pos)++] & FLAG_BIGRAM_FREQ;
 
     return freq;
 }
@@ -434,8 +355,8 @@ UnigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, int 
     mInputLength = codesSize;
     mMaxBigrams = maxBigrams;
 
-    if (mBigram == 1 && checkIfDictVersionIsLatest()) {
-        int pos = isValidWordRec(
+    if (HAS_BIGRAM && IS_LATEST_DICT_VERSION) {
+        int pos = mParentDictionary->isValidWordRec(
                 DICTIONARY_HEADER_SIZE, prevWord, 0, prevWordLength);
         LOGI("Pos -> %d\n", pos);
         if (pos < 0) {
@@ -443,15 +364,15 @@ UnigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, int 
         }
 
         int bigramCount = 0;
-        int bigramExist = (mDict[pos] & FLAG_BIGRAM_READ);
+        int bigramExist = (DICT[pos] & FLAG_BIGRAM_READ);
         if (bigramExist > 0) {
             int nextBigramExist = 1;
             while (nextBigramExist > 0 && bigramCount < maxBigrams) {
                 int bigramAddress = getBigramAddress(&pos, true);
-                int frequency = (FLAG_BIGRAM_FREQ & mDict[pos]);
+                int frequency = (FLAG_BIGRAM_FREQ & DICT[pos]);
                 // search for all bigrams and store them
                 searchForTerminalNode(bigramAddress, frequency);
-                nextBigramExist = (mDict[pos++] & FLAG_BIGRAM_CONTINUED);
+                nextBigramExist = (DICT[pos++] & FLAG_BIGRAM_CONTINUED);
                 bigramCount++;
             }
         }
@@ -482,7 +403,7 @@ UnigramDictionary::searchForTerminalNode(int addressLookingFor, int frequency)
             word[depth] = (unsigned short) followingChar;
         }
         pos = followDownBranchAddress; // pos start at count
-        int count = mDict[pos] & 0xFF;
+        int count = DICT[pos] & 0xFF;
         LOGI("count - %d\n",count);
         pos++;
         for (int i = 0; i < count; i++) {
@@ -502,7 +423,7 @@ UnigramDictionary::searchForTerminalNode(int addressLookingFor, int frequency)
                         }
                     } else {
                         followDownBranchAddress = addr;
-                        followingChar = (char)(0xFF & mDict[pos-1]);
+                        followingChar = (char)(0xFF & DICT[pos-1]);
                         if (firstAddress) {
                             firstAddress = false;
                             haveToSearchAll = false;
@@ -513,7 +434,7 @@ UnigramDictionary::searchForTerminalNode(int addressLookingFor, int frequency)
             } else if (getFirstBitOfByte(&pos)) { // terminal
                 if (addressLookingFor == (pos-1)) { // found !!
                     depth++;
-                    word[depth] = (0xFF & mDict[pos-1]);
+                    word[depth] = (0xFF & DICT[pos-1]);
                     found = true;
                     break;
                 }
@@ -530,7 +451,7 @@ UnigramDictionary::searchForTerminalNode(int addressLookingFor, int frequency)
                             }
                         } else {
                             followDownBranchAddress = addr;
-                            followingChar = (char)(0xFF & mDict[pos-1]);
+                            followingChar = (char)(0xFF & DICT[pos-1]);
                             if (firstAddress) {
                                 firstAddress = false;
                                 haveToSearchAll = true;
@@ -543,12 +464,12 @@ UnigramDictionary::searchForTerminalNode(int addressLookingFor, int frequency)
                 }
 
                 // skipping bigram
-                int bigramExist = (mDict[pos] & FLAG_BIGRAM_READ);
+                int bigramExist = (DICT[pos] & FLAG_BIGRAM_READ);
                 if (bigramExist > 0) {
                     int nextBigramExist = 1;
                     while (nextBigramExist > 0) {
                         pos += 3;
-                        nextBigramExist = (mDict[pos++] & FLAG_BIGRAM_CONTINUED);
+                        nextBigramExist = (DICT[pos++] & FLAG_BIGRAM_CONTINUED);
                     }
                 } else {
                     pos++;
@@ -584,48 +505,4 @@ UnigramDictionary::checkFirstCharacter(unsigned short *word)
     return false;
 }
 
-// TODO: Move to parent dictionary
-bool
-UnigramDictionary::isValidWord(unsigned short *word, int length)
-{
-    if (checkIfDictVersionIsLatest()) {
-        return (isValidWordRec(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
-    } else {
-        return (isValidWordRec(0, word, 0, length) != NOT_VALID_WORD);
-    }
-}
-
-int
-UnigramDictionary::isValidWordRec(int pos, unsigned short *word, int offset, int length) {
-    // returns address of bigram data of that word
-    // return -99 if not found
-
-    int count = getCount(&pos);
-    unsigned short currentChar = (unsigned short) word[offset];
-    for (int j = 0; j < count; j++) {
-        unsigned short c = getChar(&pos);
-        int terminal = getTerminal(&pos);
-        int childPos = getAddress(&pos);
-        if (c == currentChar) {
-            if (offset == length - 1) {
-                if (terminal) {
-                    return (pos+1);
-                }
-            } else {
-                if (childPos != 0) {
-                    int t = isValidWordRec(childPos, word, offset + 1, length);
-                    if (t > 0) {
-                        return t;
-                    }
-                }
-            }
-        }
-        if (terminal) {
-            getFreq(&pos);
-        }
-        // There could be two instances of each alphabet - upper and lower case. So continue
-        // looking ...
-    }
-    return NOT_VALID_WORD;
-}
 } // namespace latinime

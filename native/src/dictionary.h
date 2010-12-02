@@ -18,23 +18,10 @@
 #define LATINIME_DICTIONARY_H
 
 #include "bigram_dictionary.h"
+#include "defines.h"
 #include "unigram_dictionary.h"
 
 namespace latinime {
-
-// 22-bit address = ~4MB dictionary size limit, which on average would be about 200k-300k words
-#define ADDRESS_MASK 0x3FFFFF
-
-// The bit that decides if an address follows in the next 22 bits
-#define FLAG_ADDRESS_MASK 0x40
-// The bit that decides if this is a terminal node for a word. The node could still have children,
-// if the word has other endings.
-#define FLAG_TERMINAL_MASK 0x80
-
-#define FLAG_BIGRAM_READ 0x80
-#define FLAG_BIGRAM_CHILDEXIST 0x40
-#define FLAG_BIGRAM_CONTINUED 0x80
-#define FLAG_BIGRAM_FREQ 0x7F
 
 class Dictionary {
 public:
@@ -53,21 +40,82 @@ public:
         return mUnigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
                 maxWordLength, maxBigrams, maxAlternatives);
     }
-    bool isValidWord(unsigned short *word, int length) {
-        return mUnigramDictionary->isValidWord(word, length);
-    }
+    bool isValidWord(unsigned short *word, int length);
+    int isValidWordRec(int pos, unsigned short *word, int offset, int length);
     void setAsset(void *asset) { mAsset = asset; }
     void *getAsset() { return mAsset; }
     ~Dictionary();
 
+    // public static utility methods
+    // static inline methods should be defined in the header file
+    static unsigned short getChar(const unsigned char *dict, int *pos);
+    static int getCount(const unsigned char *dict, int *pos);
+    static bool getTerminal(const unsigned char *dict, int *pos);
+    static int getAddress(const unsigned char *dict, int *pos);
+    static int getFreq(const unsigned char *dict, const bool isLatestDictVersion, int *pos);
+
 private:
+    bool hasBigram();
+
+    const unsigned char *DICT;
+    const bool IS_LATEST_DICT_VERSION;
     void *mAsset;
     BigramDictionary *mBigramDictionary;
     UnigramDictionary *mUnigramDictionary;
 };
 
 // ----------------------------------------------------------------------------
+// public static utility methods
+// static inline methods should be defined in the header file
+inline unsigned short Dictionary::getChar(const unsigned char *dict, int *pos) {
+    unsigned short ch = (unsigned short) (dict[(*pos)++] & 0xFF);
+    // If the code is 255, then actual 16 bit code follows (in big endian)
+    if (ch == 0xFF) {
+        ch = ((dict[*pos] & 0xFF) << 8) | (dict[*pos + 1] & 0xFF);
+        (*pos) += 2;
+    }
+    return ch;
+}
+
+inline int Dictionary::getCount(const unsigned char *dict, int *pos) {
+    return dict[(*pos)++] & 0xFF;
+}
+
+inline bool Dictionary::getTerminal(const unsigned char *dict, int *pos) {
+    return (dict[*pos] & FLAG_TERMINAL_MASK) > 0;
+}
+
+inline int Dictionary::getAddress(const unsigned char *dict, int *pos) {
+    int address = 0;
+    if ((dict[*pos] & FLAG_ADDRESS_MASK) == 0) {
+        *pos += 1;
+    } else {
+        address += (dict[*pos] & (ADDRESS_MASK >> 16)) << 16;
+        address += (dict[*pos + 1] & 0xFF) << 8;
+        address += (dict[*pos + 2] & 0xFF);
+        *pos += 3;
+    }
+    return address;
+}
+
+inline int Dictionary::getFreq(const unsigned char *dict,
+        const bool isLatestDictVersion, int *pos) {
+    int freq = dict[(*pos)++] & 0xFF;
+    if (isLatestDictVersion) {
+        // skipping bigram
+        int bigramExist = (dict[*pos] & FLAG_BIGRAM_READ);
+        if (bigramExist > 0) {
+            int nextBigramExist = 1;
+            while (nextBigramExist > 0) {
+                (*pos) += 3;
+                nextBigramExist = (dict[(*pos)++] & FLAG_BIGRAM_CONTINUED);
+            }
+        } else {
+            (*pos)++;
+        }
+    }
+    return freq;
+}
 
 }; // namespace latinime
-
 #endif // LATINIME_DICTIONARY_H
