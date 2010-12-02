@@ -16,16 +16,19 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.InflateException;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import java.lang.ref.SoftReference;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -33,14 +36,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final String TAG = "KeyboardSwitcher";
     private static final boolean DEBUG = false;
     public static final boolean DEBUG_STATE = false;
-
-    public static final int MODE_TEXT = 0;
-    public static final int MODE_URL = 1;
-    public static final int MODE_EMAIL = 2;
-    public static final int MODE_IM = 3;
-    public static final int MODE_WEB = 4;
-    public static final int MODE_PHONE = 5;
-    public static final int MODE_NUMBER = 6;
 
     // Changing DEFAULT_LAYOUT_ID also requires prefs_for_debug.xml to be matched with.
     public static final String DEFAULT_LAYOUT_ID = "5";
@@ -74,7 +69,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboardCache =
             new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
 
-    private int mMode = MODE_TEXT; /* default value */
+    private int mMode = KeyboardId.MODE_TEXT; /* default value */
     private int mImeOptions;
     private boolean mIsSymbols;
     /** mIsAutoCompletionActive indicates that auto completed word will be input instead of
@@ -132,127 +127,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
         // respectively here for xlarge device's layout switching.
         mSymbolsId = new KeyboardId(locale, orientation, mode,
-                mode == MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols,
+                mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols,
                 colorScheme, hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
         mSymbolsShiftedId = new KeyboardId(locale, orientation, mode,
-                mode == MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift,
+                mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift,
                 colorScheme, hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
-    }
-
-    /**
-     * Represents the parameters necessary to construct a new LatinKeyboard,
-     * which also serve as a unique identifier for each keyboard type.
-     */
-    public static class KeyboardId {
-        public final Locale mLocale;
-        public final int mOrientation;
-        public final int mMode;
-        public final int mXmlId;
-        public final int mColorScheme;
-        public final boolean mHasSettingsKey;
-        public final boolean mVoiceKeyEnabled;
-        public final boolean mHasVoiceKey;
-        public final int mImeOptions;
-        public final boolean mEnableShiftLock;
-
-        private final int mHashCode;
-
-        public KeyboardId(Locale locale, int orientation, int mode,
-                int xmlId, int colorScheme, boolean hasSettingsKey, boolean voiceKeyEnabled,
-                boolean hasVoiceKey, int imeOptions, boolean enableShiftLock) {
-            this.mLocale = locale;
-            this.mOrientation = orientation;
-            this.mMode = mode;
-            this.mXmlId = xmlId;
-            this.mColorScheme = colorScheme;
-            this.mHasSettingsKey = hasSettingsKey;
-            this.mVoiceKeyEnabled = voiceKeyEnabled;
-            this.mHasVoiceKey = hasVoiceKey;
-            // We are interested only in IME_MASK_ACTION enum value and IME_FLAG_NO_ENTER_ACTION.
-            this.mImeOptions = imeOptions
-                    & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
-            this.mEnableShiftLock = enableShiftLock;
-
-            this.mHashCode = Arrays.hashCode(new Object[] {
-                    locale,
-                    orientation,
-                    mode,
-                    xmlId,
-                    colorScheme,
-                    hasSettingsKey,
-                    voiceKeyEnabled,
-                    hasVoiceKey,
-                    imeOptions,
-                    enableShiftLock,
-            });
-        }
-
-        public int getXmlId() {
-            return mXmlId;
-        }
-
-        public boolean isAlphabetMode() {
-            return mXmlId == R.xml.kbd_qwerty;
-        }
-
-        @Override
-        public boolean equals(Object other) {
-            return other instanceof KeyboardId && equals((KeyboardId) other);
-        }
-
-        private boolean equals(KeyboardId other) {
-            return other.mLocale.equals(this.mLocale)
-                && other.mOrientation == this.mOrientation
-                && other.mMode == this.mMode
-                && other.mXmlId == this.mXmlId
-                && other.mColorScheme == this.mColorScheme
-                && other.mHasSettingsKey == this.mHasSettingsKey
-                && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
-                && other.mHasVoiceKey == this.mHasVoiceKey
-                && other.mImeOptions == this.mImeOptions
-                && other.mEnableShiftLock == this.mEnableShiftLock;
-        }
-
-        @Override
-        public int hashCode() {
-            return mHashCode;
-        }
-
-        @Override
-        public String toString() {
-            return String.format("[%s %s %5s imeOptions=0x%08x xml=0x%08x %s%s%s%s%s]",
-                    mLocale,
-                    (mOrientation == 1 ? "port" : "land"),
-                    modeName(mMode),
-                    mImeOptions,
-                    mXmlId,
-                    colorSchemeName(mColorScheme),
-                    (mHasSettingsKey ? " hasSettingsKey" : ""),
-                    (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
-                    (mHasVoiceKey ? " hasVoiceKey" : ""),
-                    (mEnableShiftLock ? " enableShiftLock" : ""));
-        }
-
-        private static String modeName(int mode) {
-            switch (mode) {
-            case MODE_TEXT: return "text";
-            case MODE_URL: return "url";
-            case MODE_EMAIL: return "email";
-            case MODE_IM: return "im";
-            case MODE_WEB: return "web";
-            case MODE_PHONE: return "phone";
-            case MODE_NUMBER: return "number";
-            }
-            return null;
-        }
-
-        private static String colorSchemeName(int colorScheme) {
-            switch (colorScheme) {
-            case BaseKeyboardView.COLOR_SCHEME_WHITE: return "white";
-            case BaseKeyboardView.COLOR_SCHEME_BLACK: return "black";
-            }
-            return null;
-        }
     }
 
     private boolean hasVoiceKey(boolean isSymbols) {
@@ -327,9 +206,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final boolean enableShiftLock;
 
         if (isSymbols) {
-            if (mode == MODE_PHONE) {
+            if (mode == KeyboardId.MODE_PHONE) {
                 xmlId = R.xml.kbd_phone_symbols;
-            } else if (mode == MODE_NUMBER) {
+            } else if (mode == KeyboardId.MODE_NUMBER) {
                 // Note: MODE_NUMBER keyboard layout has no "switch alpha symbol" key.
                 xmlId = R.xml.kbd_number;
             } else {
@@ -337,10 +216,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
             enableShiftLock = false;
         } else {
-            if (mode == MODE_PHONE) {
+            if (mode == KeyboardId.MODE_PHONE) {
                 xmlId = R.xml.kbd_phone;
                 enableShiftLock = false;
-            } else if (mode == MODE_NUMBER) {
+            } else if (mode == KeyboardId.MODE_NUMBER) {
                 xmlId = R.xml.kbd_number;
                 enableShiftLock = false;
             } else {
@@ -731,7 +610,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private int getColorScheme() {
         return (mInputView != null)
-                ? mInputView.getColorScheme() : BaseKeyboardView.COLOR_SCHEME_WHITE;
+                ? mInputView.getColorScheme() : KeyboardView.COLOR_SCHEME_WHITE;
     }
 
     public void onAutoCompletionStateChanged(boolean isAutoCompletion) {

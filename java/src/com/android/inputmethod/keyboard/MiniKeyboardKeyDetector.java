@@ -14,11 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.BaseKeyboard.Key;
-
-class MiniKeyboardKeyDetector extends KeyDetector {
+public class MiniKeyboardKeyDetector extends KeyDetector {
     private static final int MAX_NEARBY_KEYS = 1;
 
     private final int mSlideAllowanceSquare;
@@ -42,7 +40,7 @@ class MiniKeyboardKeyDetector extends KeyDetector {
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
-        int closestKeyIndex = BaseKeyboardView.NOT_A_KEY;
+        int closestKeyIndex = NOT_A_KEY;
         int closestKeyDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
         final int keyCount = keys.length;
         for (int index = 0; index < keyCount; index++) {
@@ -53,7 +51,7 @@ class MiniKeyboardKeyDetector extends KeyDetector {
             }
         }
 
-        if (allKeys != null && closestKeyIndex != BaseKeyboardView.NOT_A_KEY)
+        if (allKeys != null && closestKeyIndex != NOT_A_KEY)
             allKeys[0] = keys[closestKeyIndex].codes[0];
         return closestKeyIndex;
     }

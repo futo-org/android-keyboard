@@ -39,7 +39,6 @@ import android.text.Selection;
 import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.method.MovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
 import android.view.LayoutInflater;
@@ -120,6 +119,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         if (VOICE_INSTALLED) {
             mVoiceInput = new VoiceInput(context, this);
             mHints = new Hints(context, prefs, new Hints.Display() {
+                @Override
                 public void showHint(int viewResource) {
                     LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
                             Context.LAYOUT_INFLATER_SERVICE);
@@ -519,6 +519,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     public void switchToRecognitionStatusView(final boolean configurationChanging) {
         final boolean configChanged = configurationChanging;
         mHandler.post(new Runnable() {
+            @Override
             public void run() {
                 mContext.setCandidatesViewShown(false);
                 mRecognizing = true;

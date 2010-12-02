@@ -14,13 +14,11 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
-
-import com.android.inputmethod.latin.BaseKeyboard.Key;
+package com.android.inputmethod.keyboard;
 
 import java.util.Arrays;
 
-class ProximityKeyDetector extends KeyDetector {
+public class ProximityKeyDetector extends KeyDetector {
     private static final int MAX_NEARBY_KEYS = 12;
 
     // working area
@@ -37,8 +35,8 @@ class ProximityKeyDetector extends KeyDetector {
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
-        int primaryIndex = BaseKeyboardView.NOT_A_KEY;
-        int closestKeyIndex = BaseKeyboardView.NOT_A_KEY;
+        int primaryIndex = NOT_A_KEY;
+        int closestKeyIndex = NOT_A_KEY;
         int closestKeyDist = mProximityThresholdSquare + 1;
         final int[] distances = mDistances;
         Arrays.fill(distances, Integer.MAX_VALUE);
@@ -72,6 +70,6 @@ class ProximityKeyDetector extends KeyDetector {
             }
         }
 
-        return primaryIndex == BaseKeyboardView.NOT_A_KEY ? closestKeyIndex : primaryIndex;
+        return primaryIndex == NOT_A_KEY ? closestKeyIndex : primaryIndex;
     }
 }

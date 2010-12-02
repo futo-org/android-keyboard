@@ -14,15 +14,15 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
-
-import com.android.inputmethod.latin.BaseKeyboard.Key;
+package com.android.inputmethod.keyboard;
 
 import java.util.Arrays;
 import java.util.List;
 
-abstract class KeyDetector {
-    protected BaseKeyboard mKeyboard;
+public abstract class KeyDetector {
+    public static final int NOT_A_KEY = -1;
+
+    protected Keyboard mKeyboard;
 
     private Key[] mKeys;
 
@@ -34,7 +34,7 @@ abstract class KeyDetector {
 
     protected int mProximityThresholdSquare;
 
-    public Key[] setKeyboard(BaseKeyboard keyboard, float correctionX, float correctionY) {
+    public Key[] setKeyboard(Keyboard keyboard, float correctionX, float correctionY) {
         if (keyboard == null)
             throw new NullPointerException();
         mCorrectionX = (int)correctionX;
@@ -84,7 +84,7 @@ abstract class KeyDetector {
      */
     public int[] newCodeArray() {
         int[] codes = new int[getMaxNearbyKeys()];
-        Arrays.fill(codes, BaseKeyboardView.NOT_A_KEY);
+        Arrays.fill(codes, NOT_A_KEY);
         return codes;
     }
 

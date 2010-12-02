@@ -31,6 +31,7 @@ import android.content.Intent;
  * on on the VoiceSearch side.
  */
 public class VoiceInputLogger {
+    @SuppressWarnings("unused")
     private static final String TAG = VoiceInputLogger.class.getSimpleName();
 
     private static VoiceInputLogger sVoiceInputLogger;

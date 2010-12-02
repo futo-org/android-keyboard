@@ -97,6 +97,7 @@ public class UserDictionary extends ExpandableDictionary {
 
         final ContentResolver contentResolver = getContext().getContentResolver();
         new Thread("addWord") {
+            @Override
             public void run() {
                 contentResolver.insert(Words.CONTENT_URI, values);
             }

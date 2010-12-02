@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,9 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.BaseKeyboard.Key;
+import com.android.inputmethod.latin.LatinIMEUtil;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import android.content.Context;
@@ -31,15 +31,7 @@ import android.view.MotionEvent;
 
 import java.util.List;
 
-public class LatinKeyboardView extends BaseKeyboardView {
-
-    public static final int KEYCODE_OPTIONS = -100;
-    public static final int KEYCODE_OPTIONS_LONGPRESS = -101;
-    // TODO: remove this once LatinIME stops referring to this.
-    public static final int KEYCODE_VOICE = -102;
-    public static final int KEYCODE_NEXT_LANGUAGE = -104;
-    public static final int KEYCODE_PREV_LANGUAGE = -105;
-    public static final int KEYCODE_CAPSLOCK = -106;
+public class LatinKeyboardView extends KeyboardView {
 
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
@@ -84,7 +76,7 @@ public class LatinKeyboardView extends BaseKeyboardView {
     }
 
     public LatinKeyboard getLatinKeyboard() {
-        BaseKeyboard keyboard = getKeyboard();
+        Keyboard keyboard = getKeyboard();
         if (keyboard instanceof LatinKeyboard) {
             return (LatinKeyboard)keyboard;
         } else {
@@ -95,8 +87,8 @@ public class LatinKeyboardView extends BaseKeyboardView {
     @Override
     protected boolean onLongPress(Key key) {
         int primaryCode = key.codes[0];
-        if (primaryCode == KEYCODE_OPTIONS) {
-            return invokeOnKey(KEYCODE_OPTIONS_LONGPRESS);
+        if (primaryCode == LatinKeyboard.KEYCODE_OPTIONS) {
+            return invokeOnKey(LatinKeyboard.KEYCODE_OPTIONS_LONGPRESS);
         } else if (primaryCode == '0' && getLatinKeyboard().isPhoneKeyboard()) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
@@ -107,8 +99,8 @@ public class LatinKeyboardView extends BaseKeyboardView {
 
     private boolean invokeOnKey(int primaryCode) {
         getOnKeyboardActionListener().onKey(primaryCode, null,
-                BaseKeyboardView.NOT_A_TOUCH_COORDINATE,
-                BaseKeyboardView.NOT_A_TOUCH_COORDINATE);
+                KeyboardView.NOT_A_TOUCH_COORDINATE,
+                KeyboardView.NOT_A_TOUCH_COORDINATE);
         return true;
     }
 
@@ -223,7 +215,8 @@ public class LatinKeyboardView extends BaseKeyboardView {
             int languageDirection = keyboard.getLanguageChangeDirection();
             if (languageDirection != 0) {
                 getOnKeyboardActionListener().onKey(
-                        languageDirection == 1 ? KEYCODE_NEXT_LANGUAGE : KEYCODE_PREV_LANGUAGE,
+                        languageDirection == 1
+                        ? LatinKeyboard.KEYCODE_NEXT_LANGUAGE : LatinKeyboard.KEYCODE_PREV_LANGUAGE,
                         null, mLastX, mLastY);
                 me.setAction(MotionEvent.ACTION_CANCEL);
                 keyboard.keyReleased();
@@ -236,8 +229,8 @@ public class LatinKeyboardView extends BaseKeyboardView {
 
     /****************************  INSTRUMENTATION  *******************************/
 
-    static final boolean DEBUG_AUTO_PLAY = false;
-    static final boolean DEBUG_LINE = false;
+    public static final boolean DEBUG_AUTO_PLAY = false;
+    public static final boolean DEBUG_LINE = false;
     private static final int MSG_TOUCH_DOWN = 1;
     private static final int MSG_TOUCH_UP = 2;
 

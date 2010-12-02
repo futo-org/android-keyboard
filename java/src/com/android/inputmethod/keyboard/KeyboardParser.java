@@ -14,11 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.BaseKeyboard.Key;
-import com.android.inputmethod.latin.BaseKeyboard.Row;
-import com.android.inputmethod.latin.KeyboardSwitcher.KeyboardId;
+import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -36,7 +34,7 @@ import java.util.List;
 /**
  * Parser for BaseKeyboard.
  *
- * This class parses Keyboard XML file and fill out keys in BaseKeyboard.
+ * This class parses Keyboard XML file and fill out keys in Keyboard.
  * The Keyboard XML file looks like:
  * <pre>
  *   &gt;!-- xml/keyboard.xml --&lt;
@@ -102,8 +100,8 @@ import java.util.List;
  * </pre>
  */
 
-public class BaseKeyboardParser {
-    private static final String TAG = "BaseKeyboardParser";
+public class KeyboardParser {
+    private static final String TAG = "KeyboardParser";
     private static final boolean DEBUG_TAG = false;
 
     // Keyboard XML Tags
@@ -118,7 +116,7 @@ public class BaseKeyboardParser {
     private static final String TAG_DEFAULT = "default";
     private static final String TAG_KEY_STYLE = "key-style";
 
-    private final BaseKeyboard mKeyboard;
+    private final Keyboard mKeyboard;
     private final Resources mResources;
 
     private int mCurrentX = 0;
@@ -128,7 +126,7 @@ public class BaseKeyboardParser {
     private Row mCurrentRow = null;
     private final KeyStyles mKeyStyles = new KeyStyles();
 
-    public BaseKeyboardParser(BaseKeyboard keyboard, Resources res) {
+    public KeyboardParser(Keyboard keyboard, Resources res) {
         mKeyboard = keyboard;
         mResources = res;
     }
@@ -160,19 +158,19 @@ public class BaseKeyboardParser {
     }
 
     private void parseKeyboardAttributes(XmlResourceParser parser) {
-        final BaseKeyboard keyboard = mKeyboard;
+        final Keyboard keyboard = mKeyboard;
         final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.BaseKeyboard);
+                R.styleable.Keyboard);
         final int width = keyboard.getKeyboardWidth();
         final int height = keyboard.getKeyboardHeight();
         keyboard.setKeyWidth(getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_keyWidth, width, width / 10));
+                R.styleable.Keyboard_keyWidth, width, width / 10));
         keyboard.setKeyHeight(getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_keyHeight, height, 50));
+                R.styleable.Keyboard_keyHeight, height, 50));
         keyboard.setHorizontalGap(getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_horizontalGap, width, 0));
+                R.styleable.Keyboard_horizontalGap, width, 0));
         keyboard.setVerticalGap(getDimensionOrFraction(a,
-                R.styleable.BaseKeyboard_verticalGap, height, 0));
+                R.styleable.Keyboard_verticalGap, height, 0));
         a.recycle();
         if (DEBUG_TAG) Log.d(TAG, "id=" + keyboard.mId);
     }
@@ -266,7 +264,7 @@ public class BaseKeyboardParser {
                     mKeyStyles);
             checkEndTag(TAG_KEY, parser);
             keys.add(key);
-            if (key.codes[0] == BaseKeyboard.KEYCODE_SHIFT)
+            if (key.codes[0] == Keyboard.KEYCODE_SHIFT)
                 mKeyboard.getShiftKeys().add(key);
             endKey(key);
         }
@@ -278,8 +276,8 @@ public class BaseKeyboardParser {
             checkEndTag(TAG_SPACER, parser);
         } else {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                    R.styleable.BaseKeyboard);
-            final int gap = getDimensionOrFraction(a, R.styleable.BaseKeyboard_horizontalGap,
+                    R.styleable.Keyboard);
+            final int gap = getDimensionOrFraction(a, R.styleable.Keyboard_horizontalGap,
                     mKeyboard.getKeyboardWidth(), 0);
             a.recycle();
             checkEndTag(TAG_SPACER, parser);
@@ -303,9 +301,9 @@ public class BaseKeyboardParser {
             checkEndTag(TAG_INCLUDE, parser);
         } else {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                    R.styleable.BaseKeyboard_Include);
+                    R.styleable.Keyboard_Include);
             final int keyboardLayout = a.getResourceId(
-                    R.styleable.BaseKeyboard_Include_keyboardLayout, 0);
+                    R.styleable.Keyboard_Include_keyboardLayout, 0);
             a.recycle();
 
             checkEndTag(TAG_INCLUDE, parser);
@@ -395,25 +393,25 @@ public class BaseKeyboardParser {
             return true;
 
         final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.BaseKeyboard_Case);
+                R.styleable.Keyboard_Case);
         final TypedArray viewAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.BaseKeyboardView);
+                R.styleable.KeyboardView);
         try {
             final boolean modeMatched = matchInteger(a,
-                    R.styleable.BaseKeyboard_Case_mode, id.mMode);
+                    R.styleable.Keyboard_Case_mode, id.mMode);
             final boolean settingsKeyMatched = matchBoolean(a,
-                    R.styleable.BaseKeyboard_Case_hasSettingsKey, id.mHasSettingsKey);
+                    R.styleable.Keyboard_Case_hasSettingsKey, id.mHasSettingsKey);
             final boolean voiceEnabledMatched = matchBoolean(a,
-                    R.styleable.BaseKeyboard_Case_voiceKeyEnabled, id.mVoiceKeyEnabled);
+                    R.styleable.Keyboard_Case_voiceKeyEnabled, id.mVoiceKeyEnabled);
             final boolean voiceKeyMatched = matchBoolean(a,
-                    R.styleable.BaseKeyboard_Case_hasVoiceKey, id.mHasVoiceKey);
+                    R.styleable.Keyboard_Case_hasVoiceKey, id.mHasVoiceKey);
             final boolean colorSchemeMatched = matchInteger(viewAttr,
-                    R.styleable.BaseKeyboardView_colorScheme, id.mColorScheme);
+                    R.styleable.KeyboardView_colorScheme, id.mColorScheme);
             // As noted at KeyboardSwitcher.KeyboardId class, we are interested only in
             // enum value masked by IME_MASK_ACTION and IME_FLAG_NO_ENTER_ACTION. So matching
             // this attribute with id.mImeOptions as integer value is enough for our purpose.
             final boolean imeOptionsMatched = matchInteger(a,
-                    R.styleable.BaseKeyboard_Case_imeOptions, id.mImeOptions);
+                    R.styleable.Keyboard_Case_imeOptions, id.mImeOptions);
             final boolean selected = modeMatched && settingsKeyMatched && voiceEnabledMatched
                     && voiceKeyMatched && colorSchemeMatched && imeOptionsMatched;
 
@@ -421,15 +419,15 @@ public class BaseKeyboardParser {
                 Log.d(TAG, String.format(
                         "parseCaseCondition: %s%s%s%s%s%s%s",
                         Boolean.toString(selected).toUpperCase(),
-                        debugInteger(a, R.styleable.BaseKeyboard_Case_mode, "mode"),
-                        debugBoolean(a, R.styleable.BaseKeyboard_Case_hasSettingsKey,
+                        debugInteger(a, R.styleable.Keyboard_Case_mode, "mode"),
+                        debugBoolean(a, R.styleable.Keyboard_Case_hasSettingsKey,
                                 "hasSettingsKey"),
-                        debugBoolean(a, R.styleable.BaseKeyboard_Case_voiceKeyEnabled,
+                        debugBoolean(a, R.styleable.Keyboard_Case_voiceKeyEnabled,
                                 "voiceKeyEnabled"),
-                        debugBoolean(a, R.styleable.BaseKeyboard_Case_hasVoiceKey, "hasVoiceKey"),
-                        debugInteger(viewAttr, R.styleable.BaseKeyboardView_colorScheme,
+                        debugBoolean(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
+                        debugInteger(viewAttr, R.styleable.KeyboardView_colorScheme,
                                 "colorScheme"),
-                        debugInteger(a, R.styleable.BaseKeyboard_Case_imeOptions, "imeOptions")));
+                        debugInteger(a, R.styleable.Keyboard_Case_imeOptions, "imeOptions")));
             }
 
             return selected;
@@ -464,11 +462,11 @@ public class BaseKeyboardParser {
     private void parseKeyStyle(XmlResourceParser parser, List<Key> keys)
             throws XmlPullParserException, IOException {
         TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.BaseKeyboard_KeyStyle);
+                R.styleable.Keyboard_KeyStyle);
         TypedArray keyAttrs = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.BaseKeyboard_Key);
+                R.styleable.Keyboard_Key);
         try {
-            if (!a.hasValue(R.styleable.BaseKeyboard_KeyStyle_styleName))
+            if (!a.hasValue(R.styleable.Keyboard_KeyStyle_styleName))
                 throw new ParseException("<" + TAG_KEY_STYLE
                         + "/> needs styleName attribute", parser);
             if (keys != null)

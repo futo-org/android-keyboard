@@ -137,6 +137,7 @@ public class LatinIMESettings extends PreferenceActivity
         super.onDestroy();
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         (new BackupManager(this)).dataChanged();
         // If turning on voice input, show dialog
@@ -181,6 +182,7 @@ public class LatinIMESettings extends PreferenceActivity
         switch (id) {
             case VOICE_INPUT_CONFIRM_DIALOG:
                 DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (whichButton == DialogInterface.BUTTON_NEGATIVE) {
                             mVoicePreference.setValue(mVoiceModeOff);
@@ -226,6 +228,7 @@ public class LatinIMESettings extends PreferenceActivity
         }
     }
 
+    @Override
     public void onDismiss(DialogInterface dialog) {
         mLogger.settingsWarningDialogDismissed();
         if (!mOkClicked) {
