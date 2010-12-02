@@ -15,6 +15,8 @@
 ** limitations under the License.
 */
 
+#define LOG_TAG "LatinIME: bigram_dictionary.cpp"
+
 #include "bigram_dictionary.h"
 
 namespace latinime {
