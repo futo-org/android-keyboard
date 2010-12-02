@@ -29,6 +29,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -51,20 +52,32 @@ import java.util.Map;
  * </pre>
  */
 public class Keyboard {
-
-    static final String TAG = "Keyboard";
+    private static final String TAG = "Keyboard";
 
     public static final int EDGE_LEFT = 0x01;
     public static final int EDGE_RIGHT = 0x02;
     public static final int EDGE_TOP = 0x04;
     public static final int EDGE_BOTTOM = 0x08;
 
-    public static final int KEYCODE_SHIFT = -1;
-    public static final int KEYCODE_MODE_CHANGE = -2;
-    public static final int KEYCODE_CANCEL = -3;
-    public static final int KEYCODE_DONE = -4;
-    public static final int KEYCODE_DELETE = -5;
-    public static final int KEYCODE_ALT = -6;
+    public static final int CODE_ENTER = '\n';
+    public static final int CODE_TAB = '\t';
+    public static final int CODE_SPACE = ' ';
+    public static final int CODE_PERIOD = '.';
+
+    public static final int CODE_SHIFT = -1;
+    public static final int CODE_MODE_CHANGE = -2;
+    public static final int CODE_CANCEL = -3;
+    public static final int CODE_DONE = -4;
+    public static final int CODE_DELETE = -5;
+    public static final int CODE_ALT = -6;
+
+    public static final int CODE_OPTIONS = -100;
+    public static final int CODE_OPTIONS_LONGPRESS = -101;
+    public static final int CODE_CAPSLOCK = -103;
+    public static final int CODE_NEXT_LANGUAGE = -104;
+    public static final int CODE_PREV_LANGUAGE = -105;
+    // TODO: remove this once LatinIME stops referring to this.
+    public static final int CODE_VOICE = -109;
 
     /** Horizontal gap default for all rows */
     int mDefaultHorizontalGap;
@@ -78,14 +91,17 @@ public class Keyboard {
     /** Default gap between rows */
     int mDefaultVerticalGap;
 
-    /** Is the keyboard in the shifted state */
-    private boolean mShifted;
-
-    /** List of shift keys in this keyboard */
+    /** List of shift keys in this keyboard and its icons and state */
     private final List<Key> mShiftKeys = new ArrayList<Key>();
-
-    /** List of shift keys and its shifted state icon */
     private final HashMap<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
+    private final HashMap<Key, Drawable> mNormalShiftIcons = new HashMap<Key, Drawable>();
+    private final HashSet<Key> mShiftLockEnabled = new HashSet<Key>();
+    private final KeyboardShiftState mShiftState = new KeyboardShiftState();
+
+    /** Space key and its icons */
+    protected Key mSpaceKey;
+    protected Drawable mSpaceIcon;
+    protected Drawable mSpacePreviewIcon;
 
     /** Total height of the keyboard, including the padding and keys */
     private int mTotalHeight;
@@ -191,11 +207,11 @@ public class Keyboard {
         mTotalWidth = 0;
 
         Row row = new Row(this);
-        row.defaultHeight = mDefaultHeight;
-        row.defaultWidth = mDefaultWidth;
-        row.defaultHorizontalGap = mDefaultHorizontalGap;
-        row.verticalGap = mDefaultVerticalGap;
-        row.rowEdgeFlags = EDGE_TOP | EDGE_BOTTOM;
+        row.mDefaultHeight = mDefaultHeight;
+        row.mDefaultWidth = mDefaultWidth;
+        row.mDefaultHorizontalGap = mDefaultHorizontalGap;
+        row.mVerticalGap = mDefaultVerticalGap;
+        row.mRowEdgeFlags = EDGE_TOP | EDGE_BOTTOM;
         final int maxColumns = columns == -1 ? Integer.MAX_VALUE : columns;
         for (int i = 0; i < characters.length(); i++) {
             char c = characters.charAt(i);
@@ -207,12 +223,12 @@ public class Keyboard {
             }
             final Key key = new Key(row);
             // Horizontal gap is divided equally to both sides of the key.
-            key.x = x + key.gap / 2;
-            key.y = y;
-            key.label = String.valueOf(c);
-            key.codes = new int[] { c };
+            key.mX = x + key.mGap / 2;
+            key.mY = y;
+            key.mLabel = String.valueOf(c);
+            key.mCodes = new int[] { c };
             column++;
-            x += key.width + key.gap;
+            x += key.mWidth + key.mGap;
             mKeys.add(key);
             if (x > mTotalWidth) {
                 mTotalWidth = x;
@@ -283,27 +299,88 @@ public class Keyboard {
         return mDisplayWidth;
     }
 
-    public boolean setShifted(boolean shiftState) {
-        for (final Key key : mShiftKeys) {
-            key.on = shiftState;
-        }
-        if (mShifted != shiftState) {
-            mShifted = shiftState;
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isShiftedOrShiftLocked() {
-        return mShifted;
-    }
-
     public List<Key> getShiftKeys() {
         return mShiftKeys;
     }
 
     public Map<Key, Drawable> getShiftedIcons() {
         return mShiftedIcons;
+    }
+
+    public void enableShiftLock() {
+        for (final Key key : getShiftKeys()) {
+            mShiftLockEnabled.add(key);
+            mNormalShiftIcons.put(key, key.mIcon);
+        }
+    }
+
+    public boolean isShiftLockEnabled(Key key) {
+        return mShiftLockEnabled.contains(key);
+    }
+
+    public boolean setShiftLocked(boolean newShiftLockState) {
+        final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
+        for (final Key key : getShiftKeys()) {
+            key.mOn = newShiftLockState;
+            key.mIcon = newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key);
+        }
+        mShiftState.setShiftLocked(newShiftLockState);
+        return true;
+    }
+
+    public boolean isShiftLocked() {
+        return mShiftState.isShiftLocked();
+    }
+
+    public boolean setShifted(boolean newShiftState) {
+        final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
+        for (final Key key : getShiftKeys()) {
+            if (!newShiftState && !mShiftState.isShiftLocked()) {
+                key.mIcon = mNormalShiftIcons.get(key);
+            } else if (newShiftState && !mShiftState.isShiftedOrShiftLocked()) {
+                key.mIcon = shiftedIcons.get(key);
+            }
+        }
+        return mShiftState.setShifted(newShiftState);
+    }
+
+    public boolean isShiftedOrShiftLocked() {
+        return mShiftState.isShiftedOrShiftLocked();
+    }
+
+    public void setAutomaticTemporaryUpperCase() {
+        setShifted(true);
+        mShiftState.setAutomaticTemporaryUpperCase();
+    }
+
+    public boolean isAutomaticTemporaryUpperCase() {
+        return isAlphaKeyboard() && mShiftState.isAutomaticTemporaryUpperCase();
+    }
+
+    public boolean isManualTemporaryUpperCase() {
+        return isAlphaKeyboard() && mShiftState.isManualTemporaryUpperCase();
+    }
+
+    public KeyboardShiftState getKeyboardShiftState() {
+        return mShiftState;
+    }
+
+    public boolean isAlphaKeyboard() {
+        return mId.isAlphabetKeyboard();
+    }
+
+    public boolean isPhoneKeyboard() {
+        return mId.isPhoneKeyboard();
+    }
+
+    public boolean isNumberKeyboard() {
+        return mId.isNumberKeyboard();
+    }
+
+    public void setSpaceKey(Key space) {
+        mSpaceKey = space;
+        mSpaceIcon = space.mIcon;
+        mSpacePreviewIcon = space.mPreviewIcon;
     }
 
     private void computeNearestNeighbors() {

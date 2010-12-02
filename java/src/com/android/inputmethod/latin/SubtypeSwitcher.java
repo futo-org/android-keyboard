@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 import com.android.inputmethod.voice.VoiceInput;
@@ -198,7 +198,7 @@ public class SubtypeSwitcher {
                     || VoiceIMEConnector.getInstance().needsToShowWarningDialog()) {
                 if (mVoiceInput != null) {
                     // TODO: Call proper function to trigger VoiceIME
-                    mService.onKey(LatinKeyboard.KEYCODE_VOICE, null, 0, 0);
+                    mService.onKey(Keyboard.CODE_VOICE, null, 0, 0);
                 }
             }
         } else {
@@ -351,7 +351,7 @@ public class SubtypeSwitcher {
                 if (DBG) {
                     Log.d(TAG, "Set and call voice input.");
                 }
-                mService.onKey(LatinKeyboard.KEYCODE_VOICE, null, 0, 0);
+                mService.onKey(Keyboard.CODE_VOICE, null, 0, 0);
                 return true;
             }
         }

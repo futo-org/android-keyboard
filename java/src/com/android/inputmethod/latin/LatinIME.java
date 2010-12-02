@@ -19,8 +19,8 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.LatinIMEUtil.RingCharBuffer;
 import com.android.inputmethod.voice.VoiceIMEConnector;
@@ -108,11 +108,6 @@ public class LatinIME extends InputMethodService
     private static final int DELETE_ACCELERATE_AT = 20;
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
-
-    public static final int KEYCODE_ENTER = '\n';
-    public static final int KEYCODE_TAB = '\t';
-    public static final int KEYCODE_SPACE = ' ';
-    public static final int KEYCODE_PERIOD = '.';
 
     // Contextual menu positions
     private static final int POS_METHOD = 0;
@@ -255,7 +250,7 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    /* package */ final UIHandler mHandler = new UIHandler();
+    public final UIHandler mHandler = new UIHandler();
 
     public class UIHandler extends Handler {
         private static final int MSG_UPDATE_SUGGESTIONS = 0;
@@ -968,7 +963,8 @@ public class LatinIME extends InputMethodService
         if (ic == null) return;
         CharSequence lastTwo = ic.getTextBeforeCursor(2, 0);
         if (lastTwo != null && lastTwo.length() == 2
-                && lastTwo.charAt(0) == KEYCODE_SPACE && isSentenceSeparator(lastTwo.charAt(1))) {
+                && lastTwo.charAt(0) == Keyboard.CODE_SPACE
+                && isSentenceSeparator(lastTwo.charAt(1))) {
             ic.beginBatchEdit();
             ic.deleteSurroundingText(2, 0);
             ic.commitText(lastTwo.charAt(1) + " ", 1);
@@ -983,9 +979,9 @@ public class LatinIME extends InputMethodService
         if (ic == null) return;
         CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
-                && lastThree.charAt(0) == KEYCODE_PERIOD
-                && lastThree.charAt(1) == KEYCODE_SPACE
-                && lastThree.charAt(2) == KEYCODE_PERIOD) {
+                && lastThree.charAt(0) == Keyboard.CODE_PERIOD
+                && lastThree.charAt(1) == Keyboard.CODE_SPACE
+                && lastThree.charAt(2) == Keyboard.CODE_PERIOD) {
             ic.beginBatchEdit();
             ic.deleteSurroundingText(3, 0);
             ic.commitText(" ..", 1);
@@ -1002,7 +998,8 @@ public class LatinIME extends InputMethodService
         CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
                 && Character.isLetterOrDigit(lastThree.charAt(0))
-                && lastThree.charAt(1) == KEYCODE_SPACE && lastThree.charAt(2) == KEYCODE_SPACE) {
+                && lastThree.charAt(1) == Keyboard.CODE_SPACE
+                && lastThree.charAt(2) == Keyboard.CODE_SPACE) {
             ic.beginBatchEdit();
             ic.deleteSurroundingText(2, 0);
             ic.commitText(". ", 1);
@@ -1020,8 +1017,8 @@ public class LatinIME extends InputMethodService
         // if there is one.
         CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == KEYCODE_PERIOD
-                && text.charAt(0) == KEYCODE_PERIOD) {
+                && lastOne.charAt(0) == Keyboard.CODE_PERIOD
+                && text.charAt(0) == Keyboard.CODE_PERIOD) {
             ic.deleteSurroundingText(1, 0);
         }
     }
@@ -1032,7 +1029,7 @@ public class LatinIME extends InputMethodService
 
         CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
         if (lastOne != null && lastOne.length() == 1
-                && lastOne.charAt(0) == KEYCODE_SPACE) {
+                && lastOne.charAt(0) == Keyboard.CODE_SPACE) {
             ic.deleteSurroundingText(1, 0);
         }
     }
@@ -1082,57 +1079,57 @@ public class LatinIME extends InputMethodService
     @Override
     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
         long when = SystemClock.uptimeMillis();
-        if (primaryCode != Keyboard.KEYCODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
+        if (primaryCode != Keyboard.CODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         switch (primaryCode) {
-        case Keyboard.KEYCODE_DELETE:
+        case Keyboard.CODE_DELETE:
             handleBackspace();
             mDeleteCount++;
             LatinImeLogger.logOnDelete();
             break;
-        case Keyboard.KEYCODE_SHIFT:
+        case Keyboard.CODE_SHIFT:
             // Shift key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch)
                 switcher.toggleShift();
             break;
-        case Keyboard.KEYCODE_MODE_CHANGE:
+        case Keyboard.CODE_MODE_CHANGE:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch)
                 switcher.changeKeyboardMode();
             break;
-        case Keyboard.KEYCODE_CANCEL:
+        case Keyboard.CODE_CANCEL:
             if (!isShowingOptionDialog()) {
                 handleClose();
             }
             break;
-        case LatinKeyboard.KEYCODE_OPTIONS:
+        case Keyboard.CODE_OPTIONS:
             onOptionKeyPressed();
             break;
-        case LatinKeyboard.KEYCODE_OPTIONS_LONGPRESS:
+        case Keyboard.CODE_OPTIONS_LONGPRESS:
             onOptionKeyLongPressed();
             break;
-        case LatinKeyboard.KEYCODE_NEXT_LANGUAGE:
+        case Keyboard.CODE_NEXT_LANGUAGE:
             toggleLanguage(false, true);
             break;
-        case LatinKeyboard.KEYCODE_PREV_LANGUAGE:
+        case Keyboard.CODE_PREV_LANGUAGE:
             toggleLanguage(false, false);
             break;
-        case LatinKeyboard.KEYCODE_CAPSLOCK:
+        case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
             break;
-        case LatinKeyboard.KEYCODE_VOICE: /* was a button press, was not a swipe */
+        case Keyboard.CODE_VOICE: /* was a button press, was not a swipe */
             mVoiceConnector.startListening(false,
                     mKeyboardSwitcher.getInputView().getWindowToken(), mConfigurationChanging);
             break;
-        case KEYCODE_TAB:
+        case Keyboard.CODE_TAB:
             handleTab();
             break;
         default:
-            if (primaryCode != KEYCODE_ENTER) {
+            if (primaryCode != Keyboard.CODE_ENTER) {
                 mJustAddedAutoSpace = false;
             }
             RingCharBuffer.getInstance().push((char)primaryCode, x, y);
@@ -1344,14 +1341,14 @@ public class LatinIME extends InputMethodService
                 pickedDefault = pickDefaultSuggestion();
                 // Picked the suggestion by the space key.  We consider this
                 // as "added an auto space".
-                if (primaryCode == KEYCODE_SPACE) {
+                if (primaryCode == Keyboard.CODE_SPACE) {
                     mJustAddedAutoSpace = true;
                 }
             } else {
                 commitTyped(ic);
             }
         }
-        if (mJustAddedAutoSpace && primaryCode == KEYCODE_ENTER) {
+        if (mJustAddedAutoSpace && primaryCode == Keyboard.CODE_ENTER) {
             removeTrailingSpace();
             mJustAddedAutoSpace = false;
         }
@@ -1360,15 +1357,15 @@ public class LatinIME extends InputMethodService
         // Handle the case of ". ." -> " .." with auto-space if necessary
         // before changing the TextEntryState.
         if (TextEntryState.getState() == TextEntryState.State.PUNCTUATION_AFTER_ACCEPTED
-                && primaryCode == KEYCODE_PERIOD) {
+                && primaryCode == Keyboard.CODE_PERIOD) {
             reswapPeriodAndSpace();
         }
 
         TextEntryState.typedCharacter((char) primaryCode, true);
         if (TextEntryState.getState() == TextEntryState.State.PUNCTUATION_AFTER_ACCEPTED
-                && primaryCode != KEYCODE_ENTER) {
+                && primaryCode != Keyboard.CODE_ENTER) {
             swapPunctuationAndSpace();
-        } else if (isPredictionOn() && primaryCode == KEYCODE_SPACE) {
+        } else if (isPredictionOn() && primaryCode == Keyboard.CODE_SPACE) {
             doubleSpace();
         }
         if (pickedDefault) {
@@ -1629,7 +1626,7 @@ public class LatinIME extends InputMethodService
             // Fool the state watcher so that a subsequent backspace will not do a revert, unless
             // we just did a correction, in which case we need to stay in
             // TextEntryState.State.PICKED_SUGGESTION state.
-            TextEntryState.typedCharacter((char) KEYCODE_SPACE, true);
+            TextEntryState.typedCharacter((char) Keyboard.CODE_SPACE, true);
             setPunctuationSuggestions();
         } else if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
@@ -1857,7 +1854,7 @@ public class LatinIME extends InputMethodService
     }
 
     private void sendSpace() {
-        sendKeyChar((char)KEYCODE_SPACE);
+        sendKeyChar((char)Keyboard.CODE_SPACE);
         mKeyboardSwitcher.updateShiftState();
         //onKey(KEY_SPACE[0], KEY_SPACE);
     }
@@ -1930,9 +1927,9 @@ public class LatinIME extends InputMethodService
         playKeyClick(primaryCode);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
-        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
+        if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
             switcher.onPressShift();
-        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+        } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_MODE_CHANGE) {
             switcher.onPressSymbol();
         } else {
             switcher.onOtherKeyPressed();
@@ -1945,9 +1942,9 @@ public class LatinIME extends InputMethodService
         // Reset any drag flags in the keyboard
         switcher.keyReleased();
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
-        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
+        if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
             switcher.onReleaseShift();
-        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
+        } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_MODE_CHANGE) {
             switcher.onReleaseSymbol();
         }
     }
@@ -1984,13 +1981,13 @@ public class LatinIME extends InputMethodService
             // FIXME: These should be triggered after auto-repeat logic
             int sound = AudioManager.FX_KEYPRESS_STANDARD;
             switch (primaryCode) {
-                case Keyboard.KEYCODE_DELETE:
+                case Keyboard.CODE_DELETE:
                     sound = AudioManager.FX_KEYPRESS_DELETE;
                     break;
-                case KEYCODE_ENTER:
+                case Keyboard.CODE_ENTER:
                     sound = AudioManager.FX_KEYPRESS_RETURN;
                     break;
-                case KEYCODE_SPACE:
+                case Keyboard.CODE_SPACE:
                     sound = AudioManager.FX_KEYPRESS_SPACEBAR;
                     break;
             }

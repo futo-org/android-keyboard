@@ -30,44 +30,44 @@ import android.util.Xml;
  */
 public class Row {
     /** Default width of a key in this row. */
-    public int defaultWidth;
+    public int mDefaultWidth;
     /** Default height of a key in this row. */
-    public int defaultHeight;
+    public int mDefaultHeight;
     /** Default horizontal gap between keys in this row. */
-    public int defaultHorizontalGap;
+    public int mDefaultHorizontalGap;
     /** Vertical gap following this row. */
-    public int verticalGap;
+    public int mVerticalGap;
     /**
      * Edge flags for this row of keys. Possible values that can be assigned are
      * {@link Keyboard#EDGE_TOP EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM EDGE_BOTTOM}
      */
-    public int rowEdgeFlags;
+    public int mRowEdgeFlags;
 
-    final Keyboard parent;
+    /* package */ final Keyboard mParent;
 
-    Row(Keyboard parent) {
-        this.parent = parent;
+    /* package */ Row(Keyboard parent) {
+        this.mParent = parent;
     }
 
     public Row(Resources res, Keyboard parent, XmlResourceParser parser) {
-        this.parent = parent;
+        this.mParent = parent;
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
-        defaultWidth = KeyboardParser.getDimensionOrFraction(a,
+        mDefaultWidth = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyWidth,
                 parent.mDisplayWidth, parent.mDefaultWidth);
-        defaultHeight = KeyboardParser.getDimensionOrFraction(a,
+        mDefaultHeight = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyHeight,
                 parent.mDisplayHeight, parent.mDefaultHeight);
-        defaultHorizontalGap = KeyboardParser.getDimensionOrFraction(a,
+        mDefaultHorizontalGap = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_horizontalGap,
                 parent.mDisplayWidth, parent.mDefaultHorizontalGap);
-        verticalGap = KeyboardParser.getDimensionOrFraction(a,
+        mVerticalGap = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_verticalGap,
                 parent.mDisplayHeight, parent.mDefaultVerticalGap);
         a.recycle();
         a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Row);
-        rowEdgeFlags = a.getInt(R.styleable.Keyboard_Row_rowEdgeFlags, 0);
+        mRowEdgeFlags = a.getInt(R.styleable.Keyboard_Row_rowEdgeFlags, 0);
     }
 }

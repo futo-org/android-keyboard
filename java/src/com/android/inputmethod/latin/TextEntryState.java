@@ -261,13 +261,13 @@ public class TextEntryState {
     }
 
     public static void keyPressedAt(Key key, int x, int y) {
-        if (LOGGING && sKeyLocationFile != null && key.codes[0] >= 32) {
-            String out = 
-                    "KEY: " + (char) key.codes[0] 
-                    + " X: " + x 
+        if (LOGGING && sKeyLocationFile != null && key.mCodes[0] >= 32) {
+            String out =
+                    "KEY: " + (char) key.mCodes[0]
+                    + " X: " + x
                     + " Y: " + y
-                    + " MX: " + (key.x + key.width / 2)
-                    + " MY: " + (key.y + key.height / 2) 
+                    + " MX: " + (key.mX + key.mWidth / 2)
+                    + " MY: " + (key.mY + key.mHeight / 2)
                     + "\n";
             try {
                 sKeyLocationFile.write(out.getBytes());

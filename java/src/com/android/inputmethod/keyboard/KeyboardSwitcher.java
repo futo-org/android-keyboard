@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,12 +14,14 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.LatinKeyboard;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.LatinIMESettings;
+import com.android.inputmethod.latin.LatinIMEUtil;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -238,7 +240,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public boolean isAlphabetMode() {
-        return mCurrentId != null && mCurrentId.isAlphabetMode();
+        return mCurrentId != null && mCurrentId.isAlphabetKeyboard();
     }
 
     public boolean isInputViewShown() {
@@ -530,12 +532,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // characters followed by a space/enter
         switch (mSymbolsModeState) {
         case SYMBOLS_MODE_STATE_BEGIN:
-            if (key != LatinIME.KEYCODE_SPACE && key != LatinIME.KEYCODE_ENTER && key > 0) {
+            if (key != Keyboard.CODE_SPACE && key != Keyboard.CODE_ENTER && key > 0) {
                 mSymbolsModeState = SYMBOLS_MODE_STATE_SYMBOL;
             }
             break;
         case SYMBOLS_MODE_STATE_SYMBOL:
-            if (key == LatinIME.KEYCODE_ENTER || key == LatinIME.KEYCODE_SPACE) {
+            if (key == Keyboard.CODE_ENTER || key == Keyboard.CODE_SPACE) {
                 changeKeyboardMode();
             }
             break;

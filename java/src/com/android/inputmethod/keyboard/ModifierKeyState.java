@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.keyboard;
 
 import android.util.Log;
 

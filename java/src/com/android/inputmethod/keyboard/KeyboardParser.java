@@ -264,8 +264,10 @@ public class KeyboardParser {
                     mKeyStyles);
             checkEndTag(TAG_KEY, parser);
             keys.add(key);
-            if (key.codes[0] == Keyboard.KEYCODE_SHIFT)
+            if (key.mCodes[0] == Keyboard.CODE_SHIFT)
                 mKeyboard.getShiftKeys().add(key);
+            if (key.mCodes[0] == Keyboard.CODE_SPACE)
+                mKeyboard.setSpaceKey(key);
             endKey(key);
         }
     }
@@ -492,12 +494,12 @@ public class KeyboardParser {
     private void endRow() {
         if (mCurrentRow == null)
             throw new InflateException("orphant end row tag");
-        mCurrentY += mCurrentRow.verticalGap + mCurrentRow.defaultHeight;
+        mCurrentY += mCurrentRow.mVerticalGap + mCurrentRow.mDefaultHeight;
         mCurrentRow = null;
     }
 
     private void endKey(Key key) {
-        mCurrentX += key.gap + key.width;
+        mCurrentX += key.mGap + key.mWidth;
         if (mCurrentX > mMaxRowWidth)
             mMaxRowWidth = mCurrentX;
     }

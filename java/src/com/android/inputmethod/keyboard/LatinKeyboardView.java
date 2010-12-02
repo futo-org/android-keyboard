@@ -31,6 +31,7 @@ import android.view.MotionEvent;
 
 import java.util.List;
 
+// TODO: We should remove this class
 public class LatinKeyboardView extends KeyboardView {
 
     /** Whether we've started dropping move events because we found a big jump */
@@ -86,9 +87,9 @@ public class LatinKeyboardView extends KeyboardView {
 
     @Override
     protected boolean onLongPress(Key key) {
-        int primaryCode = key.codes[0];
-        if (primaryCode == LatinKeyboard.KEYCODE_OPTIONS) {
-            return invokeOnKey(LatinKeyboard.KEYCODE_OPTIONS_LONGPRESS);
+        int primaryCode = key.mCodes[0];
+        if (primaryCode == Keyboard.CODE_OPTIONS) {
+            return invokeOnKey(Keyboard.CODE_OPTIONS_LONGPRESS);
         } else if (primaryCode == '0' && getLatinKeyboard().isPhoneKeyboard()) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
@@ -216,7 +217,7 @@ public class LatinKeyboardView extends KeyboardView {
             if (languageDirection != 0) {
                 getOnKeyboardActionListener().onKey(
                         languageDirection == 1
-                        ? LatinKeyboard.KEYCODE_NEXT_LANGUAGE : LatinKeyboard.KEYCODE_PREV_LANGUAGE,
+                        ? Keyboard.CODE_NEXT_LANGUAGE : Keyboard.CODE_PREV_LANGUAGE,
                         null, mLastX, mLastY);
                 me.setAction(MotionEvent.ACTION_CANCEL);
                 keyboard.keyReleased();
@@ -271,8 +272,8 @@ public class LatinKeyboardView extends KeyboardView {
                                     }
                                     c = mStringToPlay.charAt(mStringIndex);
                                 }
-                                int x = mAsciiKeys[c].x + 10;
-                                int y = mAsciiKeys[c].y + 26;
+                                int x = mAsciiKeys[c].mX + 10;
+                                int y = mAsciiKeys[c].mY + 26;
                                 MotionEvent me = MotionEvent.obtain(SystemClock.uptimeMillis(),
                                         SystemClock.uptimeMillis(),
                                         MotionEvent.ACTION_DOWN, x, y, 0);
@@ -284,8 +285,8 @@ public class LatinKeyboardView extends KeyboardView {
                                 break;
                             case MSG_TOUCH_UP:
                                 char cUp = mStringToPlay.charAt(mStringIndex);
-                                int x2 = mAsciiKeys[cUp].x + 10;
-                                int y2 = mAsciiKeys[cUp].y + 26;
+                                int x2 = mAsciiKeys[cUp].mX + 10;
+                                int y2 = mAsciiKeys[cUp].mY + 26;
                                 mStringIndex++;
 
                                 MotionEvent me2 = MotionEvent.obtain(SystemClock.uptimeMillis(),
@@ -309,7 +310,7 @@ public class LatinKeyboardView extends KeyboardView {
         List<Key> keys = getLatinKeyboard().getKeys();
         // Get the keys on this keyboard
         for (int i = 0; i < keys.size(); i++) {
-            int code = keys.get(i).codes[0];
+            int code = keys.get(i).mCodes[0];
             if (code >= 0 && code <= 255) {
                 mAsciiKeys[code] = keys.get(i);
             }

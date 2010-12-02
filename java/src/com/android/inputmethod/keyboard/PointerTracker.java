@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 
 import android.content.res.Resources;
@@ -45,7 +44,7 @@ public class PointerTracker {
 
     // Miscellaneous constants
     private static final int NOT_A_KEY = KeyDetector.NOT_A_KEY;
-    private static final int[] KEY_DELETE = { Keyboard.KEYCODE_DELETE };
+    private static final int[] KEY_DELETE = { Keyboard.CODE_DELETE };
 
     private final UIProxy mProxy;
     private final UIHandler mHandler;
@@ -207,9 +206,9 @@ public class PointerTracker {
         Key key = getKey(keyIndex);
         if (key == null)
             return false;
-        int primaryCode = key.codes[0];
-        return primaryCode == Keyboard.KEYCODE_SHIFT
-                || primaryCode == Keyboard.KEYCODE_MODE_CHANGE;
+        int primaryCode = key.mCodes[0];
+        return primaryCode == Keyboard.CODE_SHIFT
+                || primaryCode == Keyboard.CODE_MODE_CHANGE;
     }
 
     public boolean isModifier() {
@@ -222,7 +221,7 @@ public class PointerTracker {
 
     public boolean isSpaceKey(int keyIndex) {
         Key key = getKey(keyIndex);
-        return key != null && key.codes[0] == LatinIME.KEYCODE_SPACE;
+        return key != null && key.mCodes[0] == Keyboard.CODE_SPACE;
     }
 
     public void releaseKey() {
@@ -278,14 +277,14 @@ public class PointerTracker {
         checkMultiTap(eventTime, keyIndex);
         if (mListener != null) {
             if (isValidKeyIndex(keyIndex)) {
-                mListener.onPress(mKeys[keyIndex].codes[0]);
+                mListener.onPress(mKeys[keyIndex].mCodes[0]);
                 // This onPress call may have changed keyboard layout and have updated mKeyIndex.
                 // If that's the case, mKeyIndex has been updated in setKeyboard().
                 keyIndex = mKeyState.getKeyIndex();
             }
         }
         if (isValidKeyIndex(keyIndex)) {
-            if (mKeys[keyIndex].repeatable) {
+            if (mKeys[keyIndex].mRepeatable) {
                 repeatKey(keyIndex);
                 mHandler.startKeyRepeatTimer(mDelayBeforeKeyRepeatStart, keyIndex, this);
                 mIsRepeatableKey = true;
@@ -309,7 +308,7 @@ public class PointerTracker {
                 startLongPressTimer(keyIndex);
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
                 if (mListener != null)
-                    mListener.onRelease(oldKey.codes[0]);
+                    mListener.onRelease(oldKey.mCodes[0]);
                 resetMultiTap();
                 keyState.onMoveToNewKey(keyIndex, x, y);
                 startLongPressTimer(keyIndex);
@@ -317,7 +316,7 @@ public class PointerTracker {
         } else {
             if (oldKey != null) {
                 if (mListener != null)
-                    mListener.onRelease(oldKey.codes[0]);
+                    mListener.onRelease(oldKey.mCodes[0]);
                 keyState.onMoveToNewKey(keyIndex, x ,y);
                 mHandler.cancelLongPressTimers();
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
@@ -368,7 +367,7 @@ public class PointerTracker {
         if (key != null) {
             // While key is repeating, because there is no need to handle multi-tap key, we can
             // pass -1 as eventTime argument.
-            detectAndSendKey(keyIndex, key.x, key.y, -1);
+            detectAndSendKey(keyIndex, key.mX, key.mY, -1);
         }
     }
 
@@ -420,16 +419,11 @@ public class PointerTracker {
 
     private void startLongPressTimer(int keyIndex) {
         Key key = getKey(keyIndex);
-        if (key.codes[0] == Keyboard.KEYCODE_SHIFT) {
+        if (key.mCodes[0] == Keyboard.CODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
         } else {
             mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
         }
-    }
-
-    private boolean isManualTemporaryUpperCase() {
-        return mKeyboard instanceof LatinKeyboard
-                && ((LatinKeyboard)mKeyboard).isManualTemporaryUpperCase();
     }
 
     private void detectAndSendKey(int index, int x, int y, long eventTime) {
@@ -440,30 +434,31 @@ public class PointerTracker {
             if (listener != null)
                 listener.onCancel();
         } else {
-            if (key.text != null) {
+            if (key.mOutputText != null) {
                 if (listener != null) {
-                    listener.onText(key.text);
+                    listener.onText(key.mOutputText);
                     listener.onRelease(NOT_A_KEY);
                 }
             } else {
-                int code = key.codes[0];
+                int code = key.mCodes[0];
                 //TextEntryState.keyPressedAt(key, x, y);
                 int[] codes = mKeyDetector.newCodeArray();
                 mKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
                 // Multi-tap
                 if (mInMultiTap) {
                     if (mTapCount != -1) {
-                        mListener.onKey(Keyboard.KEYCODE_DELETE, KEY_DELETE, x, y);
+                        mListener.onKey(Keyboard.CODE_DELETE, KEY_DELETE, x, y);
                     } else {
                         mTapCount = 0;
                     }
-                    code = key.codes[mTapCount];
+                    code = key.mCodes[mTapCount];
                 }
 
                 // If keyboard is in manual temporary upper case state and key has manual temporary
                 // shift code, alternate character code should be sent.
-                if (isManualTemporaryUpperCase() && key.manualTemporaryUpperCaseCode != 0) {
-                    code = key.manualTemporaryUpperCaseCode;
+                if (mKeyboard.isManualTemporaryUpperCase()
+                        && key.mManualTemporaryUpperCaseCode != 0) {
+                    code = key.mManualTemporaryUpperCaseCode;
                     codes[0] = code;
                 }
 
@@ -493,10 +488,10 @@ public class PointerTracker {
         if (mInMultiTap) {
             // Multi-tap
             mPreviewLabel.setLength(0);
-            mPreviewLabel.append((char) key.codes[mTapCount < 0 ? 0 : mTapCount]);
+            mPreviewLabel.append((char) key.mCodes[mTapCount < 0 ? 0 : mTapCount]);
             return mPreviewLabel;
         } else {
-            return key.label;
+            return key.mLabel;
         }
     }
 
@@ -514,10 +509,10 @@ public class PointerTracker {
 
         final boolean isMultiTap =
                 (eventTime < mLastTapTime + mMultiTapKeyTimeout && keyIndex == mLastSentIndex);
-        if (key.codes.length > 1) {
+        if (key.mCodes.length > 1) {
             mInMultiTap = true;
             if (isMultiTap) {
-                mTapCount = (mTapCount + 1) % key.codes.length;
+                mTapCount = (mTapCount + 1) % key.mCodes.length;
                 return;
             } else {
                 mTapCount = -1;
@@ -536,7 +531,7 @@ public class PointerTracker {
         if (key == null) {
             code = "----";
         } else {
-            int primaryCode = key.codes[0];
+            int primaryCode = key.mCodes[0];
             code = String.format((primaryCode < 0) ? "%4d" : "0x%02x", primaryCode);
         }
         Log.d(TAG, String.format("%s%s[%d] %3d,%3d %3d(%s) %s", title,

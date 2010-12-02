@@ -16,12 +16,10 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.KeyboardSwitcher;
-
 import android.util.Log;
 
-public class LatinKeyboardShiftState {
-    private static final String TAG = "LatinKeyboardShiftState";
+public class KeyboardShiftState {
+    private static final String TAG = "KeyboardShiftState";
     private static final boolean DEBUG = KeyboardSwitcher.DEBUG_STATE;
 
     private static final int NORMAL = 0;

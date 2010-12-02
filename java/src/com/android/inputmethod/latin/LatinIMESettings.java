@@ -48,7 +48,7 @@ public class LatinIMESettings extends PreferenceActivity
     private static final String VOICE_SETTINGS_KEY = "voice_mode";
     private static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
     private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
-    /* package */ static final String PREF_SETTINGS_KEY = "settings_key";
+    public static final String PREF_SETTINGS_KEY = "settings_key";
     /* package */ static final String PREF_VIBRATE_ON = "vibrate_on";
 
     private static final String TAG = "LatinIMESettings";

@@ -19,47 +19,11 @@ package com.android.inputmethod.keyboard;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 
+// TODO: We should remove this class
 public class LatinKey extends Key {
-
-    // functional normal state (with properties)
-    private final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
-            android.R.attr.state_single
-    };
-
-    // functional pressed state (with properties)
-    private final int[] KEY_STATE_FUNCTIONAL_PRESSED = {
-            android.R.attr.state_single,
-            android.R.attr.state_pressed
-    };
-
-    private boolean mShiftLockEnabled;
-
     public LatinKey(Resources res, Row parent, int x, int y,
             XmlResourceParser parser, KeyStyles keyStyles) {
         super(res, parent, x, y, parser, keyStyles);
-        if (popupCharacters != null && popupCharacters.length() == 0) {
-            // If there is a keyboard with no keys specified in popupCharacters
-            popupResId = 0;
-        }
-    }
-
-    void enableShiftLock() {
-        mShiftLockEnabled = true;
-    }
-
-    // sticky is used for shift key.  If a key is not sticky and is modifier,
-    // the key will be treated as functional.
-    private boolean isFunctionalKey() {
-        return !sticky && modifier;
-    }
-
-    @Override
-    public void onReleased(boolean inside) {
-        if (!mShiftLockEnabled) {
-            super.onReleased(inside);
-        } else {
-            pressed = !pressed;
-        }
     }
 
     /**
@@ -67,24 +31,12 @@ public class LatinKey extends Key {
      */
     @Override
     public boolean isInside(int x, int y) {
-        boolean result = (keyboard instanceof LatinKeyboard)
-                && ((LatinKeyboard)keyboard).isInside(this, x, y);
+        boolean result = (mKeyboard instanceof LatinKeyboard)
+                && ((LatinKeyboard)mKeyboard).isInside(this, x, y);
         return result;
     }
 
     boolean isInsideSuper(int x, int y) {
         return super.isInside(x, y);
-    }
-
-    @Override
-    public int[] getCurrentDrawableState() {
-        if (isFunctionalKey()) {
-            if (pressed) {
-                return KEY_STATE_FUNCTIONAL_PRESSED;
-            } else {
-                return KEY_STATE_FUNCTIONAL_NORMAL;
-            }
-        }
-        return super.getCurrentDrawableState();
     }
 }

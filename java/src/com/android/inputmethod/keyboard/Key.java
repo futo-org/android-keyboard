@@ -35,47 +35,47 @@ public class Key {
      * All the key codes (unicode or custom code) that this key could generate, zero'th
      * being the most important.
      */
-    public int[] codes;
+    public int[] mCodes;
     /** The unicode that this key generates in manual temporary upper case mode. */
-    public int manualTemporaryUpperCaseCode;
+    public int mManualTemporaryUpperCaseCode;
 
     /** Label to display */
-    public CharSequence label;
+    public CharSequence mLabel;
     /** Option of the label */
-    public int labelOption;
+    public int mLabelOption;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
-    public Drawable icon;
+    public Drawable mIcon;
     /** Hint icon to display on the key in conjunction with the label */
-    public Drawable hintIcon;
+    public Drawable mHintIcon;
     /** Preview version of the icon, for the preview popup */
     /**
      * The hint icon to display on the key when keyboard is in manual temporary upper case
      * mode.
      */
-    public Drawable manualTemporaryUpperCaseHintIcon;
+    public Drawable mManualTemporaryUpperCaseHintIcon;
 
-    public Drawable iconPreview;
+    public Drawable mPreviewIcon;
     /** Width of the key, not including the gap */
-    public int width;
+    public int mWidth;
     /** Height of the key, not including the gap */
-    public int height;
+    public int mHeight;
     /** The horizontal gap before this key */
-    public int gap;
+    public int mGap;
     /** Whether this key is sticky, i.e., a toggle key */
-    public boolean sticky;
+    public boolean mSticky;
     /** X coordinate of the key in the keyboard layout */
-    public int x;
+    public int mX;
     /** Y coordinate of the key in the keyboard layout */
-    public int y;
+    public int mY;
     /** The current pressed state of this key */
-    public boolean pressed;
+    public boolean mPressed;
     /** If this is a sticky key, is it on? */
-    public boolean on;
+    public boolean mOn;
     /** Text to output when pressed. This can be multiple characters, like ".com" */
-    public CharSequence text;
+    public CharSequence mOutputText;
     /** Popup characters */
-    public CharSequence popupCharacters;
+    public CharSequence mPopupCharacters;
 
     /**
      * Flags that specify the anchoring to edges of the keyboard for detecting touch events
@@ -83,18 +83,18 @@ public class Key {
      * {@link Keyboard#EDGE_LEFT}, {@link Keyboard#EDGE_RIGHT},
      * {@link Keyboard#EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM}.
      */
-    public int edgeFlags;
+    public int mEdgeFlags;
     /** Whether this is a modifier key, such as Shift or Alt */
-    public boolean modifier;
+    public boolean mModifier;
     /** The Keyboard that this key belongs to */
-    protected final Keyboard keyboard;
+    protected final Keyboard mKeyboard;
     /**
      * If this key pops up a mini keyboard, this is the resource id for the XML layout for that
      * keyboard.
      */
-    public int popupResId;
+    public int mPopupResId;
     /** Whether this key repeats itself when held down */
-    public boolean repeatable;
+    public boolean mRepeatable;
 
 
     private final static int[] KEY_STATE_NORMAL_ON = {
@@ -124,13 +124,24 @@ public class Key {
         android.R.attr.state_pressed
     };
 
+    // functional normal state (with properties)
+    private static final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
+            android.R.attr.state_single
+    };
+
+    // functional pressed state (with properties)
+    private static final int[] KEY_STATE_FUNCTIONAL_PRESSED = {
+            android.R.attr.state_single,
+            android.R.attr.state_pressed
+    };
+
     /** Create an empty key with no attributes. */
     public Key(Row parent) {
-        keyboard = parent.parent;
-        height = parent.defaultHeight;
-        gap = parent.defaultHorizontalGap;
-        width = parent.defaultWidth - gap;
-        edgeFlags = parent.rowEdgeFlags;
+        mKeyboard = parent.mParent;
+        mHeight = parent.mDefaultHeight;
+        mGap = parent.mDefaultHorizontalGap;
+        mWidth = parent.mDefaultWidth - mGap;
+        mEdgeFlags = parent.mRowEdgeFlags;
     }
 
     /** Create a key with the given top-left coordinate and extract its attributes from
@@ -148,15 +159,15 @@ public class Key {
 
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
-        height = KeyboardParser.getDimensionOrFraction(a,
+        mHeight = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyHeight,
-                keyboard.mDisplayHeight, parent.defaultHeight);
-        gap = KeyboardParser.getDimensionOrFraction(a,
+                mKeyboard.mDisplayHeight, parent.mDefaultHeight);
+        mGap = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_horizontalGap,
-                keyboard.mDisplayWidth, parent.defaultHorizontalGap);
-        width = KeyboardParser.getDimensionOrFraction(a,
+                mKeyboard.mDisplayWidth, parent.mDefaultHorizontalGap);
+        mWidth = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyWidth,
-                keyboard.mDisplayWidth, parent.defaultWidth) - gap;
+                mKeyboard.mDisplayWidth, parent.mDefaultWidth) - mGap;
         a.recycle();
 
         a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
@@ -172,42 +183,48 @@ public class Key {
         }
 
         // Horizontal gap is divided equally to both sides of the key.
-        this.x = x + gap / 2;
-        this.y = y;
+        this.mX = x + mGap / 2;
+        this.mY = y;
 
-        codes = style.getIntArray(a, R.styleable.Keyboard_Key_codes);
-        iconPreview = style.getDrawable(a, R.styleable.Keyboard_Key_iconPreview);
-        Keyboard.setDefaultBounds(iconPreview);
-        popupCharacters = style.getText(a, R.styleable.Keyboard_Key_popupCharacters);
-        popupResId = style.getResourceId(a, R.styleable.Keyboard_Key_popupKeyboard, 0);
-        repeatable = style.getBoolean(a, R.styleable.Keyboard_Key_isRepeatable, false);
-        modifier = style.getBoolean(a, R.styleable.Keyboard_Key_isModifier, false);
-        sticky = style.getBoolean(a, R.styleable.Keyboard_Key_isSticky, false);
-        edgeFlags = style.getFlag(a, R.styleable.Keyboard_Key_keyEdgeFlags, 0);
-        edgeFlags |= parent.rowEdgeFlags;
+        mCodes = style.getIntArray(a, R.styleable.Keyboard_Key_codes);
+        mPreviewIcon = style.getDrawable(a, R.styleable.Keyboard_Key_iconPreview);
+        Keyboard.setDefaultBounds(mPreviewIcon);
+        mPopupCharacters = style.getText(a, R.styleable.Keyboard_Key_popupCharacters);
+        mPopupResId = style.getResourceId(a, R.styleable.Keyboard_Key_popupKeyboard, 0);
+        mRepeatable = style.getBoolean(a, R.styleable.Keyboard_Key_isRepeatable, false);
+        mModifier = style.getBoolean(a, R.styleable.Keyboard_Key_isModifier, false);
+        mSticky = style.getBoolean(a, R.styleable.Keyboard_Key_isSticky, false);
+        mEdgeFlags = style.getFlag(a, R.styleable.Keyboard_Key_keyEdgeFlags, 0);
+        mEdgeFlags |= parent.mRowEdgeFlags;
 
-        icon = style.getDrawable(a, R.styleable.Keyboard_Key_keyIcon);
-        Keyboard.setDefaultBounds(icon);
-        hintIcon = style.getDrawable(a, R.styleable.Keyboard_Key_keyHintIcon);
-        Keyboard.setDefaultBounds(hintIcon);
-        manualTemporaryUpperCaseHintIcon = style.getDrawable(a,
+        mIcon = style.getDrawable(a, R.styleable.Keyboard_Key_keyIcon);
+        Keyboard.setDefaultBounds(mIcon);
+        mHintIcon = style.getDrawable(a, R.styleable.Keyboard_Key_keyHintIcon);
+        Keyboard.setDefaultBounds(mHintIcon);
+        mManualTemporaryUpperCaseHintIcon = style.getDrawable(a,
                 R.styleable.Keyboard_Key_manualTemporaryUpperCaseHintIcon);
-        Keyboard.setDefaultBounds(manualTemporaryUpperCaseHintIcon);
+        Keyboard.setDefaultBounds(mManualTemporaryUpperCaseHintIcon);
 
-        label = style.getText(a, R.styleable.Keyboard_Key_keyLabel);
-        labelOption = style.getFlag(a, R.styleable.Keyboard_Key_keyLabelOption, 0);
-        manualTemporaryUpperCaseCode = style.getInt(a,
+        mLabel = style.getText(a, R.styleable.Keyboard_Key_keyLabel);
+        mLabelOption = style.getFlag(a, R.styleable.Keyboard_Key_keyLabelOption, 0);
+        mManualTemporaryUpperCaseCode = style.getInt(a,
                 R.styleable.Keyboard_Key_manualTemporaryUpperCaseCode, 0);
-        text = style.getText(a, R.styleable.Keyboard_Key_keyOutputText);
+        mOutputText = style.getText(a, R.styleable.Keyboard_Key_keyOutputText);
         final Drawable shiftedIcon = style.getDrawable(a,
                 R.styleable.Keyboard_Key_shiftedIcon);
-        if (shiftedIcon != null)
-            keyboard.getShiftedIcons().put(this, shiftedIcon);
-
-        if (codes == null && !TextUtils.isEmpty(label)) {
-            codes = new int[] { label.charAt(0) };
-        }
         a.recycle();
+
+        if (shiftedIcon != null)
+            mKeyboard.getShiftedIcons().put(this, shiftedIcon);
+
+        if (mCodes == null && !TextUtils.isEmpty(mLabel)) {
+            mCodes = new int[] { mLabel.charAt(0) };
+        }
+
+        if (mPopupCharacters == null || mPopupCharacters.length() == 0) {
+            // If there is a keyboard with no keys specified in popupCharacters
+            mPopupResId = 0;
+        }
     }
 
     /**
@@ -216,7 +233,7 @@ public class Key {
      * @see #onReleased(boolean)
      */
     public void onPressed() {
-        pressed = !pressed;
+        mPressed = !mPressed;
     }
 
     /**
@@ -226,10 +243,9 @@ public class Key {
      * @see #onPressed()
      */
     public void onReleased(boolean inside) {
-        pressed = !pressed;
-        if (sticky) {
-            on = !on;
-        }
+        mPressed = !mPressed;
+        if (mSticky && !mKeyboard.isShiftLockEnabled(this))
+            mOn = !mOn;
     }
 
     /**
@@ -241,14 +257,14 @@ public class Key {
      * inside the key.
      */
     public boolean isInside(int x, int y) {
-        boolean leftEdge = (edgeFlags & Keyboard.EDGE_LEFT) > 0;
-        boolean rightEdge = (edgeFlags & Keyboard.EDGE_RIGHT) > 0;
-        boolean topEdge = (edgeFlags & Keyboard.EDGE_TOP) > 0;
-        boolean bottomEdge = (edgeFlags & Keyboard.EDGE_BOTTOM) > 0;
-        if ((x >= this.x || (leftEdge && x <= this.x + this.width))
-                && (x < this.x + this.width || (rightEdge && x >= this.x))
-                && (y >= this.y || (topEdge && y <= this.y + this.height))
-                && (y < this.y + this.height || (bottomEdge && y >= this.y))) {
+        boolean leftEdge = (mEdgeFlags & Keyboard.EDGE_LEFT) > 0;
+        boolean rightEdge = (mEdgeFlags & Keyboard.EDGE_RIGHT) > 0;
+        boolean topEdge = (mEdgeFlags & Keyboard.EDGE_TOP) > 0;
+        boolean bottomEdge = (mEdgeFlags & Keyboard.EDGE_BOTTOM) > 0;
+        if ((x >= this.mX || (leftEdge && x <= this.mX + this.mWidth))
+                && (x < this.mX + this.mWidth || (rightEdge && x >= this.mX))
+                && (y >= this.mY || (topEdge && y <= this.mY + this.mHeight))
+                && (y < this.mY + this.mHeight || (bottomEdge && y >= this.mY))) {
             return true;
         } else {
             return false;
@@ -262,15 +278,21 @@ public class Key {
      * @return the square of the distance of the point from the nearest edge of the key
      */
     public int squaredDistanceToEdge(int x, int y) {
-        final int left = this.x;
-        final int right = left + this.width;
-        final int top = this.y;
-        final int bottom = top + this.height;
+        final int left = this.mX;
+        final int right = left + this.mWidth;
+        final int top = this.mY;
+        final int bottom = top + this.mHeight;
         final int edgeX = x < left ? left : (x > right ? right : x);
         final int edgeY = y < top ? top : (y > bottom ? bottom : y);
         final int dx = x - edgeX;
         final int dy = y - edgeY;
         return dx * dx + dy * dy;
+    }
+
+    // sticky is used for shift key.  If a key is not sticky and is modifier,
+    // the key will be treated as functional.
+    private boolean isFunctionalKey() {
+        return !mSticky && mModifier;
     }
 
     /**
@@ -279,23 +301,31 @@ public class Key {
      * @see android.graphics.drawable.StateListDrawable#setState(int[])
      */
     public int[] getCurrentDrawableState() {
+        if (isFunctionalKey()) {
+            if (mPressed) {
+                return KEY_STATE_FUNCTIONAL_PRESSED;
+            } else {
+                return KEY_STATE_FUNCTIONAL_NORMAL;
+            }
+        }
+
         int[] states = KEY_STATE_NORMAL;
 
-        if (on) {
-            if (pressed) {
+        if (mOn) {
+            if (mPressed) {
                 states = KEY_STATE_PRESSED_ON;
             } else {
                 states = KEY_STATE_NORMAL_ON;
             }
         } else {
-            if (sticky) {
-                if (pressed) {
+            if (mSticky) {
+                if (mPressed) {
                     states = KEY_STATE_PRESSED_OFF;
                 } else {
                     states = KEY_STATE_NORMAL_OFF;
                 }
             } else {
-                if (pressed) {
+                if (mPressed) {
                     states = KEY_STATE_PRESSED;
                 }
             }

@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
@@ -34,36 +33,23 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
+// TODO: We should remove this class
 public class LatinKeyboard extends Keyboard {
 
     private static final boolean DEBUG_PREFERRED_LETTER = false;
     private static final String TAG = "LatinKeyboard";
 
-    public static final int KEYCODE_OPTIONS = -100;
-    public static final int KEYCODE_OPTIONS_LONGPRESS = -101;
-    // TODO: remove this once LatinIME stops referring to this.
-    public static final int KEYCODE_VOICE = -102;
-    public static final int KEYCODE_NEXT_LANGUAGE = -104;
-    public static final int KEYCODE_PREV_LANGUAGE = -105;
-    public static final int KEYCODE_CAPSLOCK = -106;
-
-    static final int OPACITY_FULLY_OPAQUE = 255;
+    public static final int OPACITY_FULLY_OPAQUE = 255;
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
     private Drawable mShiftLockPreviewIcon;
-    private final HashMap<Key, Drawable> mNormalShiftIcons = new HashMap<Key, Drawable>();
-    private Drawable mSpaceIcon;
     private Drawable mSpaceAutoCompletionIndicator;
-    private Drawable mSpacePreviewIcon;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
     private final int mSpaceBarTextShadowColor;
-    private Key mSpaceKey;
     private int mSpaceKeyIndex = -1;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
@@ -76,8 +62,6 @@ public class LatinKeyboard extends Keyboard {
     private int mPrefLetterX;
     private int mPrefLetterY;
     private int mPrefDistance;
-
-    private LatinKeyboardShiftState mShiftState = new LatinKeyboardShiftState();
 
     private static final float SPACEBAR_DRAG_THRESHOLD = 0.8f;
     private static final float OVERLAP_PERCENTAGE_LOW_PROB = 0.70f;
@@ -111,99 +95,13 @@ public class LatinKeyboard extends Keyboard {
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
-        mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
+        mSpaceKeyIndex = indexOf(CODE_SPACE);
     }
 
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y, 
             XmlResourceParser parser, KeyStyles keyStyles) {
-        Key key = new LatinKey(res, parent, x, y, parser, keyStyles);
-        switch (key.codes[0]) {
-        case LatinIME.KEYCODE_SPACE:
-            mSpaceKey = key;
-            mSpaceIcon = key.icon;
-            mSpacePreviewIcon = key.iconPreview;
-            break;
-        }
-
-        return key;
-    }
-
-    public void enableShiftLock() {
-        for (final Key key : getShiftKeys()) {
-            if (key instanceof LatinKey) {
-                ((LatinKey)key).enableShiftLock();
-            }
-            mNormalShiftIcons.put(key, key.icon);
-        }
-    }
-
-    public boolean setShiftLocked(boolean newShiftLockState) {
-        final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
-        for (final Key key : getShiftKeys()) {
-            key.on = newShiftLockState;
-            key.icon = newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key);
-        }
-        mShiftState.setShiftLocked(newShiftLockState);
-        return true;
-    }
-
-    public boolean isShiftLocked() {
-        return mShiftState.isShiftLocked();
-    }
-
-    @Override
-    public boolean setShifted(boolean newShiftState) {
-        if (getShiftKeys().size() == 0)
-            return super.setShifted(newShiftState);
-
-        final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
-        for (final Key key : getShiftKeys()) {
-            if (!newShiftState && !mShiftState.isShiftLocked()) {
-                key.icon = mNormalShiftIcons.get(key);
-            } else if (newShiftState && !mShiftState.isShiftedOrShiftLocked()) {
-                key.icon = shiftedIcons.get(key);
-            }
-        }
-        return mShiftState.setShifted(newShiftState);
-    }
-
-    @Override
-    public boolean isShiftedOrShiftLocked() {
-        if (getShiftKeys().size() > 0) {
-            return mShiftState.isShiftedOrShiftLocked();
-        } else {
-            return super.isShiftedOrShiftLocked();
-        }
-    }
-
-    public void setAutomaticTemporaryUpperCase() {
-        setShifted(true);
-        mShiftState.setAutomaticTemporaryUpperCase();
-    }
-
-    public boolean isAutomaticTemporaryUpperCase() {
-        return isAlphaKeyboard() && mShiftState.isAutomaticTemporaryUpperCase();
-    }
-
-    public boolean isManualTemporaryUpperCase() {
-        return isAlphaKeyboard() && mShiftState.isManualTemporaryUpperCase();
-    }
-
-    public LatinKeyboardShiftState getKeyboardShiftState() {
-        return mShiftState;
-    }
-
-    public boolean isAlphaKeyboard() {
-        return mId.getXmlId() == R.xml.kbd_qwerty;
-    }
-
-    public boolean isPhoneKeyboard() {
-        return mId.mMode == KeyboardId.MODE_PHONE;
-    }
-
-    public boolean isNumberKeyboard() {
-        return mId.mMode == KeyboardId.MODE_NUMBER;
+        return new LatinKey(res, parent, x, y, parser, keyStyles);
     }
 
     /**
@@ -218,15 +116,15 @@ public class LatinKeyboard extends Keyboard {
         final Resources res = mRes;
         // If application locales are explicitly selected.
         if (SubtypeSwitcher.getInstance().needsToDisplayLanguage()) {
-            mSpaceKey.icon = new BitmapDrawable(res,
+            mSpaceKey.mIcon = new BitmapDrawable(res,
                     drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion));
         } else {
             // sym_keyboard_space_led can be shared with Black and White symbol themes.
             if (isAutoCompletion) {
-                mSpaceKey.icon = new BitmapDrawable(res,
+                mSpaceKey.mIcon = new BitmapDrawable(res,
                         drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion));
             } else {
-                mSpaceKey.icon = mSpaceIcon;
+                mSpaceKey.mIcon = mSpaceIcon;
             }
         }
     }
@@ -283,7 +181,7 @@ public class LatinKeyboard extends Keyboard {
 
     @SuppressWarnings("unused")
     private Bitmap drawSpaceBar(int opacity, boolean isAutoCompletion) {
-        final int width = mSpaceKey.width;
+        final int width = mSpaceKey.mWidth;
         final int height = mSpaceIcon.getIntrinsicHeight();
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
@@ -341,26 +239,26 @@ public class LatinKeyboard extends Keyboard {
 
     private void updateLocaleDrag(int diff) {
         if (mSlidingLocaleIcon == null) {
-            final int width = Math.max(mSpaceKey.width,
+            final int width = Math.max(mSpaceKey.mWidth,
                     (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
             final int height = mSpacePreviewIcon.getIntrinsicHeight();
             mSlidingLocaleIcon =
                     new SlidingLocaleDrawable(mContext, mSpacePreviewIcon, width, height);
             mSlidingLocaleIcon.setBounds(0, 0, width, height);
-            mSpaceKey.iconPreview = mSlidingLocaleIcon;
+            mSpaceKey.mPreviewIcon = mSlidingLocaleIcon;
         }
         mSlidingLocaleIcon.setDiff(diff);
         if (Math.abs(diff) == Integer.MAX_VALUE) {
-            mSpaceKey.iconPreview = mSpacePreviewIcon;
+            mSpaceKey.mPreviewIcon = mSpacePreviewIcon;
         } else {
-            mSpaceKey.iconPreview = mSlidingLocaleIcon;
+            mSpaceKey.mPreviewIcon = mSlidingLocaleIcon;
         }
-        mSpaceKey.iconPreview.invalidateSelf();
+        mSpaceKey.mPreviewIcon.invalidateSelf();
     }
 
     public int getLanguageChangeDirection() {
         if (mSpaceKey == null || SubtypeSwitcher.getInstance().getEnabledKeyboardLocaleCount() <= 1
-                || Math.abs(mSpaceDragLastDiff) < mSpaceKey.width * SPACEBAR_DRAG_THRESHOLD) {
+                || Math.abs(mSpaceDragLastDiff) < mSpaceKey.mWidth * SPACEBAR_DRAG_THRESHOLD) {
             return 0; // No change
         }
         return mSpaceDragLastDiff > 0 ? 1 : -1;
@@ -393,12 +291,12 @@ public class LatinKeyboard extends Keyboard {
      */
     @SuppressWarnings("unused")
     public boolean isInside(LatinKey key, int x, int y) {
-        final int code = key.codes[0];
-        if (code == KEYCODE_SHIFT || code == KEYCODE_DELETE) {
-            y -= key.height / 10;
-            if (code == KEYCODE_SHIFT) x += key.width / 6;
-            if (code == KEYCODE_DELETE) x -= key.width / 6;
-        } else if (code == LatinIME.KEYCODE_SPACE) {
+        final int code = key.mCodes[0];
+        if (code == CODE_SHIFT || code == CODE_DELETE) {
+            y -= key.mHeight / 10;
+            if (code == CODE_SHIFT) x += key.mWidth / 6;
+            if (code == CODE_DELETE) x -= key.mWidth / 6;
+        } else if (code == CODE_SPACE) {
             y += LatinKeyboard.sSpacebarVerticalCorrection;
             if (SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER
                     && SubtypeSwitcher.getInstance().getEnabledKeyboardLocaleCount() > 1) {
@@ -447,11 +345,11 @@ public class LatinKeyboard extends Keyboard {
                         mPrefLetterY = y;
                         for (int i = 0; i < nearby.length; i++) {
                             Key k = nearbyKeys.get(nearby[i]);
-                            if (k != key && inPrefList(k.codes[0], pref)) {
+                            if (k != key && inPrefList(k.mCodes[0], pref)) {
                                 final int dist = distanceFrom(k, x, y);
-                                if (dist < (int) (k.width * OVERLAP_PERCENTAGE_LOW_PROB) &&
-                                        (pref[k.codes[0]] > pref[mPrefLetter] * 3))  {
-                                    mPrefLetter = k.codes[0];
+                                if (dist < (int) (k.mWidth * OVERLAP_PERCENTAGE_LOW_PROB) &&
+                                        (pref[k.mCodes[0]] > pref[mPrefLetter] * 3))  {
+                                    mPrefLetter = k.mCodes[0];
                                     mPrefDistance = dist;
                                     if (DEBUG_PREFERRED_LETTER) {
                                         Log.d(TAG, "CORRECTED ALTHOUGH PREFERRED !!!!!!");
@@ -475,11 +373,11 @@ public class LatinKeyboard extends Keyboard {
 
                 for (int i = 0; i < nearby.length; i++) {
                     Key k = nearbyKeys.get(nearby[i]);
-                    if (inPrefList(k.codes[0], pref)) {
+                    if (inPrefList(k.mCodes[0], pref)) {
                         final int dist = distanceFrom(k, x, y);
-                        if (dist < (int) (k.width * OVERLAP_PERCENTAGE_HIGH_PROB)
+                        if (dist < (int) (k.mWidth * OVERLAP_PERCENTAGE_HIGH_PROB)
                                 && dist < mPrefDistance)  {
-                            mPrefLetter = k.codes[0];
+                            mPrefLetter = k.mCodes[0];
                             mPrefLetterX = x;
                             mPrefLetterY = y;
                             mPrefDistance = dist;
@@ -507,8 +405,8 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private int distanceFrom(Key k, int x, int y) {
-        if (y > k.y && y < k.y + k.height) {
-            return Math.abs(k.x + k.width / 2 - x);
+        if (y > k.mY && y < k.mY + k.mHeight) {
+            return Math.abs(k.mX + k.mWidth / 2 - x);
         } else {
             return Integer.MAX_VALUE;
         }
@@ -529,7 +427,7 @@ public class LatinKeyboard extends Keyboard {
         List<Key> keys = getKeys();
         int count = keys.size();
         for (int i = 0; i < count; i++) {
-            if (keys.get(i).codes[0] == code) return i;
+            if (keys.get(i).mCodes[0] == code) return i;
         }
         return -1;
     }

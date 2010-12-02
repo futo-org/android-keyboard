@@ -53,7 +53,7 @@ public class ProximityKeyDetector extends KeyDetector {
                 }
 
                 if (allKeys == null) continue;
-                final int nCodes = key.codes.length;
+                final int nCodes = key.mCodes.length;
                 // Find insertion point
                 for (int j = 0; j < distances.length; j++) {
                     if (distances[j] > dist) {
@@ -62,7 +62,7 @@ public class ProximityKeyDetector extends KeyDetector {
                                 distances.length - (j + nCodes));
                         System.arraycopy(allKeys, j, allKeys, j + nCodes,
                                 allKeys.length - (j + nCodes));
-                        System.arraycopy(key.codes, 0, allKeys, j, nCodes);
+                        System.arraycopy(key.mCodes, 0, allKeys, j, nCodes);
                         Arrays.fill(distances, j, j + nCodes, dist);
                         break;
                     }
