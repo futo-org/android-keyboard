@@ -139,7 +139,9 @@
         <Key
             latin:keyLabel="]" />
         <Key
-            latin:keyLabel="=" />
+            latin:keyLabel="="
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="≠≈" />
         <Key
             latin:keyLabel=":" />
         <Key
