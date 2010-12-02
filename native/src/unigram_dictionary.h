@@ -42,9 +42,16 @@ private:
     bool sameAsTyped(unsigned short *word, int length);
     bool addWord(unsigned short *word, int length, int frequency);
     unsigned short toLowerCase(unsigned short c);
-    void getWordsRec(int pos, int depth, int maxDepth, bool completion, int frequency,
+    void getWordsRec(int pos, int depth, int maxDepth, bool completion, int snr,
             int inputIndex, int diffs, int skipPos, int *nextLetters, int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
+
+    void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
+            const int mInputLength, const int depth, const int snr, int *nextLetters,
+            const int nextLettersSize, const int skipPos, const int freq);
+
+    void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word, const int depth,
+            const int snr, const int skipPos, const int freq, const int addedWeight);
 
     const unsigned char *DICT;
     const int MAX_WORDS;
@@ -58,7 +65,8 @@ private:
     unsigned short *mOutputChars;
     int *mInputCodes;
     int mInputLength;
-    unsigned short mWord[128];
+    // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
+    unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
     int mMaxEditDistance;
 };
 

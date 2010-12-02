@@ -102,7 +102,8 @@ int UnigramDictionary::getSuggestionCandidates(int inputLength, int skipPos,
     return suggestedWordsCount;
 }
 
-void UnigramDictionary::registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize) {
+void UnigramDictionary::registerNextLetter(
+        unsigned short c, int *nextLetters, int nextLettersSize) {
     if (c < nextLettersSize) {
         nextLetters[c]++;
     }
@@ -121,9 +122,8 @@ UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     // Find the right insertion point
     int insertAt = 0;
     while (insertAt < MAX_WORDS) {
-        if (frequency > mFrequencies[insertAt]
-                 || (mFrequencies[insertAt] == frequency
-                     && length < Dictionary::wideStrLen(mOutputChars + insertAt * MAX_WORD_LENGTH))) {
+        if (frequency > mFrequencies[insertAt] || (mFrequencies[insertAt] == frequency
+                && length < Dictionary::wideStrLen(mOutputChars + insertAt * MAX_WORD_LENGTH))) {
             break;
         }
         insertAt++;
@@ -134,9 +134,9 @@ UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
                (MAX_WORDS - insertAt - 1) * sizeof(mFrequencies[0]));
         mFrequencies[insertAt] = frequency;
         memmove((char*) mOutputChars + (insertAt + 1) * MAX_WORD_LENGTH * sizeof(short),
-               (char*) mOutputChars + (insertAt    ) * MAX_WORD_LENGTH * sizeof(short),
+               (char*) mOutputChars + insertAt * MAX_WORD_LENGTH * sizeof(short),
                (MAX_WORDS - insertAt - 1) * sizeof(short) * MAX_WORD_LENGTH);
-        unsigned short *dest = mOutputChars + (insertAt    ) * MAX_WORD_LENGTH;
+        unsigned short *dest = mOutputChars + insertAt * MAX_WORD_LENGTH;
         while (length--) {
             *dest++ = *word++;
         }
@@ -177,8 +177,9 @@ UnigramDictionary::sameAsTyped(unsigned short *word, int length)
     return true;
 }
 
-static char QUOTE = '\'';
+static const char QUOTE = '\'';
 
+// snr : frequency?
 void
 UnigramDictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion, int snr,
         int inputIndex, int diffs, int skipPos, int *nextLetters, int nextLettersSize)
@@ -190,8 +191,10 @@ UnigramDictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion
     if (diffs > mMaxEditDistance) {
         return;
     }
+    // get the count of nodes and increment pos.
     int count = Dictionary::getCount(DICT, &pos);
     int *currentChars = NULL;
+    // If inputIndex is greater than mInputLength, that means there are no proximity chars.
     if (mInputLength <= inputIndex) {
         completion = true;
     } else {
@@ -205,8 +208,10 @@ UnigramDictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion
         unsigned short lowerC = toLowerCase(c);
         bool terminal = Dictionary::getTerminal(DICT, &pos);
         int childrenAddress = Dictionary::getAddress(DICT, &pos);
+        const bool needsToContinue = childrenAddress != 0;
         // -- after address or flag
         int freq = 1;
+        // If terminal, increment pos
         if (terminal) freq = Dictionary::getFreq(DICT, IS_LATEST_DICT_VERSION, &pos);
         // -- after add or freq
 
@@ -214,53 +219,70 @@ UnigramDictionary::getWordsRec(int pos, int depth, int maxDepth, bool completion
         if (completion) {
             mWord[depth] = c;
             if (terminal) {
-                addWord(mWord, depth + 1, freq * snr);
-                if (depth >= mInputLength && skipPos < 0) {
-                    registerNextLetter(mWord[mInputLength], nextLetters, nextLettersSize);
-                }
+                onTerminalWhenUserTypedLengthIsGreaterThanInputLength(mWord, mInputLength, depth,
+                        snr, nextLetters, nextLettersSize, skipPos, freq);
             }
-            if (childrenAddress != 0) {
-                getWordsRec(childrenAddress, depth + 1, maxDepth, completion, snr, inputIndex,
+            if (needsToContinue) {
+                // No need to do proximity suggest any more.
+                getWordsRec(childrenAddress, depth + 1, maxDepth, true, snr, inputIndex,
                         diffs, skipPos, nextLetters, nextLettersSize);
             }
         } else if ((c == QUOTE && currentChars[0] != QUOTE) || skipPos == depth) {
             // Skip the ' or other letter and continue deeper
             mWord[depth] = c;
-            if (childrenAddress != 0) {
-                getWordsRec(childrenAddress, depth + 1, maxDepth, false, snr, inputIndex, diffs,
-                        skipPos, nextLetters, nextLettersSize);
+            if (needsToContinue) {
+                getWordsRec(childrenAddress, depth + 1, maxDepth, false, snr, inputIndex,
+                        diffs, skipPos, nextLetters, nextLettersSize);
             }
         } else {
             int j = 0;
             while (currentChars[j] > 0) {
+                // Move to child node
                 if (currentChars[j] == lowerC || currentChars[j] == c) {
-                    int addedWeight = j == 0 ? TYPED_LETTER_MULTIPLIER : 1;
                     mWord[depth] = c;
-                    if (mInputLength == inputIndex + 1) {
+                    const int addedWeight = j == 0 ? TYPED_LETTER_MULTIPLIER : 1;
+                    const bool isSameAsUserTypedLength = mInputLength == inputIndex + 1;
+                    // If inputIndex is greater than mInputLength, that means there is no
+                    // proximity chars. So, we don't need to check proximity.
+                    if (isSameAsUserTypedLength) {
                         if (terminal) {
-                            if (//INCLUDE_TYPED_WORD_IF_VALID ||
-                                !sameAsTyped(mWord, depth + 1)) {
-                                int finalFreq = freq * snr * addedWeight;
-                                if (skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
-                                addWord(mWord, depth + 1, finalFreq);
-                            }
+                            onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, depth, snr,
+                                    skipPos, freq, addedWeight);
                         }
-                        if (childrenAddress != 0) {
-                            getWordsRec(childrenAddress, depth + 1,
-                                    maxDepth, true, snr * addedWeight, inputIndex + 1,
-                                    diffs + (j > 0), skipPos, nextLetters, nextLettersSize);
-                        }
-                    } else if (childrenAddress != 0) {
+                    }
+                    if (needsToContinue) {
                         getWordsRec(childrenAddress, depth + 1, maxDepth,
-                                false, snr * addedWeight, inputIndex + 1, diffs + (j > 0),
-                                skipPos, nextLetters, nextLettersSize);
+                                isSameAsUserTypedLength, snr * addedWeight, inputIndex + 1,
+                                diffs + (j > 0), skipPos, nextLetters, nextLettersSize);
                     }
                 }
-                j++;
+                ++j;
+                // If skipPos is defined, not to search proximity collections.
+                // First char is what user typed.
                 if (skipPos >= 0) break;
             }
         }
     }
 }
 
+inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsGreaterThanInputLength(
+        unsigned short *word, const int inputLength, const int depth, const int snr,
+        int *nextLetters, const int nextLettersSize, const int skipPos, const int freq) {
+    addWord(word, depth + 1, freq * snr);
+    if (depth >= inputLength && skipPos < 0) {
+        registerNextLetter(mWord[mInputLength], nextLetters, nextLettersSize);
+    }
+}
+
+inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsSameAsInputLength(
+        unsigned short *word, const int depth, const int snr, const int skipPos, const int freq,
+        const int addedWeight) {
+    if (!sameAsTyped(word, depth + 1)) {
+        int finalFreq = freq * snr * addedWeight;
+        // Proximity collection will promote a word of the same length as
+        // what user typed.
+        if (skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
+        addWord(word, depth + 1, finalFreq);
+    }
+}
 } // namespace latinime
