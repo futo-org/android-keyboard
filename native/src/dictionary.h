@@ -37,7 +37,7 @@ public:
     int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
             unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
             int maxAlternatives) {
-        return mUnigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
+        return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
                 maxWordLength, maxBigrams, maxAlternatives);
     }
     bool isValidWord(unsigned short *word, int length);
@@ -53,6 +53,7 @@ public:
     static bool getTerminal(const unsigned char *dict, int *pos);
     static int getAddress(const unsigned char *dict, int *pos);
     static int getFreq(const unsigned char *dict, const bool isLatestDictVersion, int *pos);
+    static int wideStrLen(unsigned short *str);
 
 private:
     bool hasBigram();
@@ -115,6 +116,15 @@ inline int Dictionary::getFreq(const unsigned char *dict,
         }
     }
     return freq;
+}
+
+
+inline int Dictionary::wideStrLen(unsigned short *str) {
+    if (!str) return 0;
+    unsigned short *end = str;
+    while (*end)
+        end++;
+    return end - str;
 }
 
 }; // namespace latinime

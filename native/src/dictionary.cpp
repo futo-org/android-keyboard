@@ -31,10 +31,9 @@ Dictionary::Dictionary(void *dict, int typedLetterMultiplier, int fullWordMultip
 {
     LOGI("IN NATIVE SUGGEST Version: %d \n", (DICT[0] & 0xFF));
     mUnigramDictionary = new UnigramDictionary(DICT, typedLetterMultiplier, fullWordMultiplier,
-            maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION,
-            hasBigram(), this);
-    mBigramDictionary = new BigramDictionary(dict, typedLetterMultiplier, fullWordMultiplier,
-            maxWordLength, maxWords, maxAlternatives, this);
+            maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION);
+    mBigramDictionary = new BigramDictionary(DICT, maxWordLength, maxAlternatives,
+            IS_LATEST_DICT_VERSION, hasBigram(), this);
 }
 
 Dictionary::~Dictionary()

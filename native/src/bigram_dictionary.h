@@ -22,10 +22,33 @@ namespace latinime {
 class Dictionary;
 class BigramDictionary {
 public:
-    BigramDictionary(void *dict, int typedLetterMultipler, int fullWordMultiplier, int maxWordLength,
-            int maxWords, int maxAlternatives, Dictionary *parentDictionary);
+    BigramDictionary(const unsigned char *dict, int maxWordLength, int maxAlternatives,
+            const bool isLatestDictVersion, const bool hasBigram, Dictionary *parentDictionary);
+    int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
+            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
+            int maxAlternatives);
     ~BigramDictionary();
 private:
+    bool addWordBigram(unsigned short *word, int length, int frequency);
+    int getBigramAddress(int *pos, bool advance);
+    int getBigramFreq(int *pos);
+    void searchForTerminalNode(int addressLookingFor, int frequency);
+    bool getFirstBitOfByte(int *pos) { return (DICT[*pos] & 0x80) > 0; }
+    bool getSecondBitOfByte(int *pos) { return (DICT[*pos] & 0x40) > 0; }
+    bool checkFirstCharacter(unsigned short *word);
+
+    const unsigned char *DICT;
+    const int MAX_WORD_LENGTH;
+    const int MAX_ALTERNATIVES;
+    const bool IS_LATEST_DICT_VERSION;
+    const bool HAS_BIGRAM;
+
+    Dictionary *mParentDictionary;
+    int *mBigramFreq;
+    int mMaxBigrams;
+    unsigned short *mBigramChars;
+    int *mInputCodes;
+    int mInputLength;
 };
 // ----------------------------------------------------------------------------
 }; // namespace latinime
