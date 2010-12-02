@@ -14,11 +14,11 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.BaseKeyboard.Key;
-import com.android.inputmethod.latin.BaseKeyboardView.OnKeyboardActionListener;
-import com.android.inputmethod.latin.BaseKeyboardView.UIHandler;
+import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.R;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -44,16 +44,16 @@ public class PointerTracker {
     private final int mMultiTapKeyTimeout;
 
     // Miscellaneous constants
-    private static final int NOT_A_KEY = BaseKeyboardView.NOT_A_KEY;
-    private static final int[] KEY_DELETE = { BaseKeyboard.KEYCODE_DELETE };
+    private static final int NOT_A_KEY = KeyDetector.NOT_A_KEY;
+    private static final int[] KEY_DELETE = { Keyboard.KEYCODE_DELETE };
 
     private final UIProxy mProxy;
     private final UIHandler mHandler;
     private final KeyDetector mKeyDetector;
-    private OnKeyboardActionListener mListener;
+    private KeyboardActionListener mListener;
     private final boolean mHasDistinctMultitouch;
 
-    private BaseKeyboard mKeyboard;
+    private Keyboard mKeyboard;
     private Key[] mKeys;
     private int mKeyHysteresisDistanceSquared = -1;
 
@@ -181,11 +181,11 @@ public class PointerTracker {
         resetMultiTap();
     }
 
-    public void setOnKeyboardActionListener(OnKeyboardActionListener listener) {
+    public void setOnKeyboardActionListener(KeyboardActionListener listener) {
         mListener = listener;
     }
 
-    public void setKeyboard(BaseKeyboard keyboard, Key[] keys, float keyHysteresisDistance) {
+    public void setKeyboard(Keyboard keyboard, Key[] keys, float keyHysteresisDistance) {
         if (keyboard == null || keys == null || keyHysteresisDistance < 0)
             throw new IllegalArgumentException();
         mKeyboard = keyboard;
@@ -208,8 +208,8 @@ public class PointerTracker {
         if (key == null)
             return false;
         int primaryCode = key.codes[0];
-        return primaryCode == BaseKeyboard.KEYCODE_SHIFT
-                || primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE;
+        return primaryCode == Keyboard.KEYCODE_SHIFT
+                || primaryCode == Keyboard.KEYCODE_MODE_CHANGE;
     }
 
     public boolean isModifier() {
@@ -420,7 +420,7 @@ public class PointerTracker {
 
     private void startLongPressTimer(int keyIndex) {
         Key key = getKey(keyIndex);
-        if (key.codes[0] == BaseKeyboard.KEYCODE_SHIFT) {
+        if (key.codes[0] == Keyboard.KEYCODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
         } else {
             mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
@@ -433,7 +433,7 @@ public class PointerTracker {
     }
 
     private void detectAndSendKey(int index, int x, int y, long eventTime) {
-        final OnKeyboardActionListener listener = mListener;
+        final KeyboardActionListener listener = mListener;
         final Key key = getKey(index);
 
         if (key == null) {
@@ -453,7 +453,7 @@ public class PointerTracker {
                 // Multi-tap
                 if (mInMultiTap) {
                     if (mTapCount != -1) {
-                        mListener.onKey(BaseKeyboard.KEYCODE_DELETE, KEY_DELETE, x, y);
+                        mListener.onKey(Keyboard.KEYCODE_DELETE, KEY_DELETE, x, y);
                     } else {
                         mTapCount = 0;
                     }

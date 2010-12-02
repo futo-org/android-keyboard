@@ -86,6 +86,7 @@ public class VoiceInput implements OnClickListener {
     private static final String ALTERNATES_BUNDLE = "alternates_bundle";
 
     //  This is copied from the VoiceSearch app.
+    @SuppressWarnings("unused")
     private static final class AlternatesBundleKeys {
         public static final String ALTERNATES = "alternates";
         public static final String CONFIDENCE = "confidence";
@@ -405,6 +406,7 @@ public class VoiceInput implements OnClickListener {
     /**
      * Handle the cancel button.
      */
+    @Override
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.button:
@@ -556,36 +558,43 @@ public class VoiceInput implements OnClickListener {
         int mSpeechStart;
         private boolean mEndpointed = false;
 
+        @Override
         public void onReadyForSpeech(Bundle noiseParams) {
             mRecognitionView.showListening();
         }
 
+        @Override
         public void onBeginningOfSpeech() {
             mEndpointed = false;
             mSpeechStart = mWaveBuffer.size();
         }
 
+        @Override
         public void onRmsChanged(float rmsdB) {
             mRecognitionView.updateVoiceMeter(rmsdB);
         }
 
+        @Override
         public void onBufferReceived(byte[] buf) {
             try {
                 mWaveBuffer.write(buf);
             } catch (IOException e) {}
         }
 
+        @Override
         public void onEndOfSpeech() {
             mEndpointed = true;
             mState = WORKING;
             mRecognitionView.showWorking(mWaveBuffer, mSpeechStart, mWaveBuffer.size());
         }
 
+        @Override
         public void onError(int errorType) {
             mState = ERROR;
             VoiceInput.this.onError(errorType, mEndpointed);
         }
 
+        @Override
         public void onResults(Bundle resultsBundle) {
             List<String> results = resultsBundle
                     .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
@@ -638,10 +647,12 @@ public class VoiceInput implements OnClickListener {
             mRecognitionView.finish();
         }
 
+        @Override
         public void onPartialResults(final Bundle partialResults) {
             // currently - do nothing
         }
 
+        @Override
         public void onEvent(int eventType, Bundle params) {
             // do nothing - reserved for events that might be added in the future
         }

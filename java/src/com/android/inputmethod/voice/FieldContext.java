@@ -73,6 +73,7 @@ public class FieldContext {
         bundle.putInt(IME_OPTIONS, info.imeOptions);
     }
 
+    @SuppressWarnings("static-access")
     private static void addInputConnectionToBundle(
         InputConnection conn, Bundle bundle) {
         if (conn == null) {
@@ -96,6 +97,7 @@ public class FieldContext {
         return mFieldInfo;
     }
 
+    @Override
     public String toString() {
         return mFieldInfo.toString();
     }

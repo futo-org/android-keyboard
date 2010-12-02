@@ -14,9 +14,10 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.BaseKeyboardParser.ParseException;
+import com.android.inputmethod.keyboard.KeyboardParser.ParseException;
+import com.android.inputmethod.latin.R;
 
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
@@ -48,30 +49,37 @@ public class KeyStyles {
         private EmptyKeyStyle() {
         }
 
+        @Override
         public int[] getIntArray(TypedArray a, int index) {
             return parseIntArray(a, index);
         }
 
+        @Override
         public Drawable getDrawable(TypedArray a, int index) {
             return a.getDrawable(index);
         }
 
+        @Override
         public CharSequence getText(TypedArray a, int index) {
             return a.getText(index);
         }
 
+        @Override
         public int getResourceId(TypedArray a, int index, int defaultValue) {
             return a.getResourceId(index, defaultValue);
         }
 
+        @Override
         public int getInt(TypedArray a, int index, int defaultValue) {
             return a.getInt(index, defaultValue);
         }
 
+        @Override
         public int getFlag(TypedArray a, int index, int defaultValue) {
             return a.getInt(index, defaultValue);
         }
 
+        @Override
         public boolean getBoolean(TypedArray a, int index, boolean defaultValue) {
             return a.getBoolean(index, defaultValue);
         }
@@ -156,18 +164,18 @@ public class KeyStyles {
 
         private void parseKeyStyleAttributes(TypedArray a) {
             // TODO: Currently not all Key attributes can be declared as style.
-            readIntArray(a, R.styleable.BaseKeyboard_Key_codes);
-            readText(a, R.styleable.BaseKeyboard_Key_keyLabel);
-            readFlag(a, R.styleable.BaseKeyboard_Key_keyLabelOption);
-            readText(a, R.styleable.BaseKeyboard_Key_keyOutputText);
-            readDrawable(a, R.styleable.BaseKeyboard_Key_keyIcon);
-            readDrawable(a, R.styleable.BaseKeyboard_Key_iconPreview);
-            readDrawable(a, R.styleable.BaseKeyboard_Key_keyHintIcon);
-            readDrawable(a, R.styleable.BaseKeyboard_Key_shiftedIcon);
-            readResourceId(a, R.styleable.BaseKeyboard_Key_popupKeyboard);
-            readBoolean(a, R.styleable.BaseKeyboard_Key_isModifier);
-            readBoolean(a, R.styleable.BaseKeyboard_Key_isSticky);
-            readBoolean(a, R.styleable.BaseKeyboard_Key_isRepeatable);
+            readIntArray(a, R.styleable.Keyboard_Key_codes);
+            readText(a, R.styleable.Keyboard_Key_keyLabel);
+            readFlag(a, R.styleable.Keyboard_Key_keyLabelOption);
+            readText(a, R.styleable.Keyboard_Key_keyOutputText);
+            readDrawable(a, R.styleable.Keyboard_Key_keyIcon);
+            readDrawable(a, R.styleable.Keyboard_Key_iconPreview);
+            readDrawable(a, R.styleable.Keyboard_Key_keyHintIcon);
+            readDrawable(a, R.styleable.Keyboard_Key_shiftedIcon);
+            readResourceId(a, R.styleable.Keyboard_Key_popupKeyboard);
+            readBoolean(a, R.styleable.Keyboard_Key_isModifier);
+            readBoolean(a, R.styleable.Keyboard_Key_isSticky);
+            readBoolean(a, R.styleable.Keyboard_Key_isRepeatable);
         }
 
         private void readDrawable(TypedArray a, int index) {
@@ -211,14 +219,14 @@ public class KeyStyles {
 
     public void parseKeyStyleAttributes(TypedArray a, TypedArray keyAttrs,
             XmlResourceParser parser) {
-        String styleName = a.getString(R.styleable.BaseKeyboard_KeyStyle_styleName);
+        String styleName = a.getString(R.styleable.Keyboard_KeyStyle_styleName);
         if (mStyles.containsKey(styleName))
             throw new ParseException("duplicate key style declared: " + styleName, parser);
 
         final DeclaredKeyStyle style = new DeclaredKeyStyle();
-        if (a.hasValue(R.styleable.BaseKeyboard_KeyStyle_parentStyle)) {
+        if (a.hasValue(R.styleable.Keyboard_KeyStyle_parentStyle)) {
             String parentStyle = a.getString(
-                    R.styleable.BaseKeyboard_KeyStyle_parentStyle);
+                    R.styleable.Keyboard_KeyStyle_parentStyle);
             final DeclaredKeyStyle parent = mStyles.get(parentStyle);
             if (parent == null)
                 throw new ParseException("Unknown parentStyle " + parent, parser);

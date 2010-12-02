@@ -423,6 +423,7 @@ public class Suggest implements Dictionary.WordCallback {
         return false;
     }
 
+    @Override
     public boolean addWord(final char[] word, final int offset, final int length, int freq,
             final int dicTypeId, final Dictionary.DataType dataType) {
         Dictionary.DataType dataTypeForLog = dataType;

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.BaseKeyboard.Key;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -49,27 +51,26 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.WeakHashMap;
 
 /**
- * A view that renders a virtual {@link LatinKeyboard}. It handles rendering of keys and
- * detecting key presses and touch movements.
+ * A view that renders a virtual {@link Keyboard}. It handles rendering of keys and detecting key
+ * presses and touch movements.
  *
  * TODO: References to LatinKeyboard in this class should be replaced with ones to its base class.
  *
- * @attr ref R.styleable#BaseKeyboardView_keyBackground
- * @attr ref R.styleable#BaseKeyboardView_keyPreviewLayout
- * @attr ref R.styleable#BaseKeyboardView_keyPreviewOffset
- * @attr ref R.styleable#BaseKeyboardView_labelTextSize
- * @attr ref R.styleable#BaseKeyboardView_keyTextSize
- * @attr ref R.styleable#BaseKeyboardView_keyTextColor
- * @attr ref R.styleable#BaseKeyboardView_verticalCorrection
- * @attr ref R.styleable#BaseKeyboardView_popupLayout
+ * @attr ref R.styleable#KeyboardView_keyBackground
+ * @attr ref R.styleable#KeyboardView_keyPreviewLayout
+ * @attr ref R.styleable#KeyboardView_keyPreviewOffset
+ * @attr ref R.styleable#KeyboardView_labelTextSize
+ * @attr ref R.styleable#KeyboardView_keyTextSize
+ * @attr ref R.styleable#KeyboardView_keyTextColor
+ * @attr ref R.styleable#KeyboardView_verticalCorrection
+ * @attr ref R.styleable#KeyboardView_popupLayout
  */
-public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
-    private static final String TAG = "BaseKeyboardView";
+public class KeyboardView extends View implements PointerTracker.UIProxy {
+    private static final String TAG = "KeyboardView";
     private static final boolean DEBUG = false;
     private static final boolean DEBUG_SHOW_ALIGN = false;
     private static final boolean DEBUG_KEYBOARD_GRID = false;
@@ -79,93 +80,10 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
 
     public static final int NOT_A_TOUCH_COORDINATE = -1;
 
-    public interface OnKeyboardActionListener {
-
-        /**
-         * Called when the user presses a key. This is sent before the
-         * {@link #onKey} is called. For keys that repeat, this is only
-         * called once.
-         *
-         * @param primaryCode
-         *            the unicode of the key being pressed. If the touch is
-         *            not on a valid key, the value will be zero.
-         */
-        void onPress(int primaryCode);
-
-        /**
-         * Called when the user releases a key. This is sent after the
-         * {@link #onKey} is called. For keys that repeat, this is only
-         * called once.
-         *
-         * @param primaryCode
-         *            the code of the key that was released
-         */
-        void onRelease(int primaryCode);
-
-        /**
-         * Send a key press to the listener.
-         *
-         * @param primaryCode
-         *            this is the key that was pressed
-         * @param keyCodes
-         *            the codes for all the possible alternative keys with
-         *            the primary code being the first. If the primary key
-         *            code is a single character such as an alphabet or
-         *            number or symbol, the alternatives will include other
-         *            characters that may be on the same key or adjacent
-         *            keys. These codes are useful to correct for
-         *            accidental presses of a key adjacent to the intended
-         *            key.
-         * @param x
-         *            x-coordinate pixel of touched event. If onKey is not called by onTouchEvent,
-         *            the value should be NOT_A_TOUCH_COORDINATE.
-         * @param y
-         *            y-coordinate pixel of touched event. If onKey is not called by onTouchEvent,
-         *            the value should be NOT_A_TOUCH_COORDINATE.
-         */
-        void onKey(int primaryCode, int[] keyCodes, int x, int y);
-
-        /**
-         * Sends a sequence of characters to the listener.
-         *
-         * @param text
-         *            the sequence of characters to be displayed.
-         */
-        void onText(CharSequence text);
-
-        /**
-         * Called when user released a finger outside any key.
-         */
-        void onCancel();
-
-        /**
-         * Called when the user quickly moves the finger from right to
-         * left.
-         */
-        void swipeLeft();
-
-        /**
-         * Called when the user quickly moves the finger from left to
-         * right.
-         */
-        void swipeRight();
-
-        /**
-         * Called when the user quickly moves the finger from up to down.
-         */
-        void swipeDown();
-
-        /**
-         * Called when the user quickly moves the finger from down to up.
-         */
-        void swipeUp();
-    }
-
     // Timing constants
     private final int mKeyRepeatInterval;
 
     // Miscellaneous constants
-    /* package */ static final int NOT_A_KEY = -1;
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
     private static final int HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
@@ -187,7 +105,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private int mPopupLayout;
 
     // Main keyboard
-    private BaseKeyboard mKeyboard;
+    private Keyboard mKeyboard;
     private Key[] mKeys;
 
     // Key preview popup
@@ -196,7 +114,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private PopupWindow mPreviewPopup;
     private int mPreviewTextSizeLarge;
     private int[] mOffsetInWindow;
-    private int mOldPreviewKeyIndex = NOT_A_KEY;
+    private int mOldPreviewKeyIndex = KeyDetector.NOT_A_KEY;
     private boolean mShowPreview = true;
     private boolean mShowTouchPoints = true;
     private int mPopupPreviewOffsetX;
@@ -208,7 +126,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
 
     // Popup mini keyboard
     private PopupWindow mMiniKeyboardPopup;
-    private BaseKeyboardView mMiniKeyboard;
+    private KeyboardView mMiniKeyboard;
     private View mMiniKeyboardParent;
     private final WeakHashMap<Key, View> mMiniKeyboardCache = new WeakHashMap<Key, View>();
     private int mMiniKeyboardOriginX;
@@ -218,13 +136,13 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private final float mMiniKeyboardSlideAllowance;
     private int mMiniKeyboardTrackerId;
 
-    /** Listener for {@link OnKeyboardActionListener}. */
-    private OnKeyboardActionListener mKeyboardActionListener;
+    /** Listener for {@link KeyboardActionListener}. */
+    private KeyboardActionListener mKeyboardActionListener;
 
     private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
 
     // TODO: Let the PointerTracker class manage this pointer queue
-    private final PointerQueue mPointerQueue = new PointerQueue();
+    private final PointerTrackerQueue mPointerQueue = new PointerTrackerQueue();
 
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
@@ -370,63 +288,15 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         }
     };
 
-    static class PointerQueue {
-        private LinkedList<PointerTracker> mQueue = new LinkedList<PointerTracker>();
-
-        public void add(PointerTracker tracker) {
-            mQueue.add(tracker);
-        }
-
-        public int lastIndexOf(PointerTracker tracker) {
-            LinkedList<PointerTracker> queue = mQueue;
-            for (int index = queue.size() - 1; index >= 0; index--) {
-                PointerTracker t = queue.get(index);
-                if (t == tracker)
-                    return index;
-            }
-            return -1;
-        }
-
-        public void releaseAllPointersOlderThan(PointerTracker tracker, long eventTime) {
-            LinkedList<PointerTracker> queue = mQueue;
-            int oldestPos = 0;
-            for (PointerTracker t = queue.get(oldestPos); t != tracker; t = queue.get(oldestPos)) {
-                if (t.isModifier()) {
-                    oldestPos++;
-                } else {
-                    t.onUpEvent(t.getLastX(), t.getLastY(), eventTime);
-                    t.setAlreadyProcessed();
-                    queue.remove(oldestPos);
-                }
-            }
-        }
-
-        public void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
-            for (PointerTracker t : mQueue) {
-                if (t == tracker)
-                    continue;
-                t.onUpEvent(t.getLastX(), t.getLastY(), eventTime);
-                t.setAlreadyProcessed();
-            }
-            mQueue.clear();
-            if (tracker != null)
-                mQueue.add(tracker);
-        }
-
-        public void remove(PointerTracker tracker) {
-            mQueue.remove(tracker);
-        }
-    }
-
-    public BaseKeyboardView(Context context, AttributeSet attrs) {
+    public KeyboardView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
 
-    public BaseKeyboardView(Context context, AttributeSet attrs, int defStyle) {
+    public KeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.BaseKeyboardView, defStyle, R.style.BaseKeyboardView);
+                attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         LayoutInflater inflate =
                 (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         int previewLayout = 0;
@@ -438,53 +308,53 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             int attr = a.getIndex(i);
 
             switch (attr) {
-            case R.styleable.BaseKeyboardView_keyBackground:
+            case R.styleable.KeyboardView_keyBackground:
                 mKeyBackground = a.getDrawable(attr);
                 break;
-            case R.styleable.BaseKeyboardView_keyHysteresisDistance:
+            case R.styleable.KeyboardView_keyHysteresisDistance:
                 mKeyHysteresisDistance = a.getDimensionPixelOffset(attr, 0);
                 break;
-            case R.styleable.BaseKeyboardView_verticalCorrection:
+            case R.styleable.KeyboardView_verticalCorrection:
                 mVerticalCorrection = a.getDimensionPixelOffset(attr, 0);
                 break;
-            case R.styleable.BaseKeyboardView_keyPreviewLayout:
+            case R.styleable.KeyboardView_keyPreviewLayout:
                 previewLayout = a.getResourceId(attr, 0);
                 break;
-            case R.styleable.BaseKeyboardView_keyPreviewOffset:
+            case R.styleable.KeyboardView_keyPreviewOffset:
                 mPreviewOffset = a.getDimensionPixelOffset(attr, 0);
                 break;
-            case R.styleable.BaseKeyboardView_keyPreviewHeight:
+            case R.styleable.KeyboardView_keyPreviewHeight:
                 mPreviewHeight = a.getDimensionPixelSize(attr, 80);
                 break;
-            case R.styleable.BaseKeyboardView_keyLetterSize:
+            case R.styleable.KeyboardView_keyLetterSize:
                 mKeyLetterSize = a.getDimensionPixelSize(attr, 18);
                 break;
-            case R.styleable.BaseKeyboardView_keyTextColor:
+            case R.styleable.KeyboardView_keyTextColor:
                 mKeyTextColor = a.getColor(attr, 0xFF000000);
                 break;
-            case R.styleable.BaseKeyboardView_keyTextColorDisabled:
+            case R.styleable.KeyboardView_keyTextColorDisabled:
                 mKeyTextColorDisabled = a.getColor(attr, 0xFF000000);
                 break;
-            case R.styleable.BaseKeyboardView_labelTextSize:
+            case R.styleable.KeyboardView_labelTextSize:
                 mLabelTextSize = a.getDimensionPixelSize(attr, 14);
                 break;
-            case R.styleable.BaseKeyboardView_popupLayout:
+            case R.styleable.KeyboardView_popupLayout:
                 mPopupLayout = a.getResourceId(attr, 0);
                 break;
-            case R.styleable.BaseKeyboardView_shadowColor:
+            case R.styleable.KeyboardView_shadowColor:
                 mShadowColor = a.getColor(attr, 0);
                 break;
-            case R.styleable.BaseKeyboardView_shadowRadius:
+            case R.styleable.KeyboardView_shadowRadius:
                 mShadowRadius = a.getFloat(attr, 0f);
                 break;
             // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
-            case R.styleable.BaseKeyboardView_backgroundDimAmount:
+            case R.styleable.KeyboardView_backgroundDimAmount:
                 mBackgroundDimAmount = a.getFloat(attr, 0.5f);
                 break;
-            case R.styleable.BaseKeyboardView_keyLetterStyle:
+            case R.styleable.KeyboardView_keyLetterStyle:
                 mKeyLetterStyle = Typeface.defaultFromStyle(a.getInt(attr, Typeface.NORMAL));
                 break;
-            case R.styleable.BaseKeyboardView_colorScheme:
+            case R.styleable.KeyboardView_colorScheme:
                 mColorScheme = a.getInt(attr, COLOR_SCHEME_WHITE);
                 break;
             }
@@ -575,7 +445,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
     }
 
-    public void setOnKeyboardActionListener(OnKeyboardActionListener listener) {
+    public void setOnKeyboardActionListener(KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
         for (PointerTracker tracker : mPointerTrackers) {
             tracker.setOnKeyboardActionListener(listener);
@@ -583,21 +453,21 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * Returns the {@link OnKeyboardActionListener} object.
+     * Returns the {@link KeyboardActionListener} object.
      * @return the listener attached to this keyboard
      */
-    protected OnKeyboardActionListener getOnKeyboardActionListener() {
+    protected KeyboardActionListener getOnKeyboardActionListener() {
         return mKeyboardActionListener;
     }
 
     /**
      * Attaches a keyboard to this view. The keyboard can be switched at any time and the
      * view will re-layout itself to accommodate the keyboard.
-     * @see BaseKeyboard
+     * @see Keyboard
      * @see #getKeyboard()
      * @param keyboard the keyboard to display in this view
      */
-    protected void setKeyboard(BaseKeyboard keyboard) {
+    public void setKeyboard(Keyboard keyboard) {
         if (mKeyboard != null) {
             dismissKeyPreview();
         }
@@ -622,9 +492,9 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     /**
      * Returns the current keyboard being displayed by this view.
      * @return the currently attached keyboard
-     * @see #setKeyboard(BaseKeyboard)
+     * @see #setKeyboard(Keyboard)
      */
-    protected BaseKeyboard getKeyboard() {
+    public Keyboard getKeyboard() {
         return mKeyboard;
     }
 
@@ -632,6 +502,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
      * Return whether the device has distinct multi-touch panel.
      * @return true if the device has distinct multi-touch panel.
      */
+    @Override
     public boolean hasDistinctMultitouch() {
         return mHasDistinctMultitouch;
     }
@@ -670,7 +541,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * When enabled, calls to {@link OnKeyboardActionListener#onKey} will include key
+     * When enabled, calls to {@link KeyboardActionListener#onKey} will include key
      * codes for adjacent keys.  When disabled, only the primary key code will be
      * reported.
      * @param enabled whether or not the proximity correction is enabled
@@ -715,7 +586,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
      * @param keyboard
      * @param keys
      */
-    private void computeProximityThreshold(BaseKeyboard keyboard, Key[] keys) {
+    private void computeProximityThreshold(Keyboard keyboard, Key[] keys) {
         if (keyboard == null || keys == null || keys.length == 0) return;
         final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
         int maxCount = 0;
@@ -750,6 +621,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         canvas.drawBitmap(mBuffer, 0, 0, null);
     }
 
+    @SuppressWarnings("unused")
     private void onBufferDraw() {
         if (mBuffer == null || mKeyboardChanged) {
             if (mBuffer == null || mKeyboardChanged &&
@@ -1020,22 +892,24 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private void dismissKeyPreview() {
         for (PointerTracker tracker : mPointerTrackers)
             tracker.releaseKey();
-        showPreview(NOT_A_KEY, null);
+        showPreview(KeyDetector.NOT_A_KEY, null);
     }
 
+    @Override
     public void showPreview(int keyIndex, PointerTracker tracker) {
         int oldKeyIndex = mOldPreviewKeyIndex;
         mOldPreviewKeyIndex = keyIndex;
         // We should re-draw popup preview when 1) we need to hide the preview, 2) we will show
         // the space key preview and 3) pointer moves off the space key to other letter key, we
         // should hide the preview of the previous key.
+        @SuppressWarnings("unused")
         final boolean hidePreviewOrShowSpaceKeyPreview = (tracker == null)
                 || (SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER
                         && SubtypeSwitcher.getInstance().needsToDisplayLanguage()
                         && (tracker.isSpaceKey(keyIndex) || tracker.isSpaceKey(oldKeyIndex)));
         // If key changed and preview is on or the key is space (language switch is enabled)
         if (oldKeyIndex != keyIndex && (mShowPreview || (hidePreviewOrShowSpaceKeyPreview))) {
-            if (keyIndex == NOT_A_KEY) {
+            if (keyIndex == KeyDetector.NOT_A_KEY) {
                 mHandler.cancelPopupPreview();
                 mHandler.dismissPreview(mDelayAfterPreview);
             } else if (tracker != null) {
@@ -1145,9 +1019,10 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
      * Invalidates a key so that it will be redrawn on the next repaint. Use this method if only
      * one key is changing it's content. Any changes that affect the position or size of the key
      * may not be honored.
-     * @param key key in the attached {@link BaseKeyboard}.
+     * @param key key in the attached {@link Keyboard}.
      * @see #invalidateAllKeys
      */
+    @Override
     public void invalidateKey(Key key) {
         if (key == null)
             return;
@@ -1183,7 +1058,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private void onLongPressShiftKey(PointerTracker tracker) {
         tracker.setAlreadyProcessed();
         mPointerQueue.remove(tracker);
-        mKeyboardActionListener.onKey(LatinKeyboardView.KEYCODE_CAPSLOCK, null, 0, 0);
+        mKeyboardActionListener.onKey(LatinKeyboard.KEYCODE_CAPSLOCK, null, 0, 0);
     }
 
     private View inflateMiniKeyboardContainer(Key popupKey) {
@@ -1194,34 +1069,43 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         if (container == null)
             throw new NullPointerException();
 
-        BaseKeyboardView miniKeyboard =
-                (BaseKeyboardView)container.findViewById(R.id.BaseKeyboardView);
-        miniKeyboard.setOnKeyboardActionListener(new OnKeyboardActionListener() {
+        KeyboardView miniKeyboard =
+                (KeyboardView)container.findViewById(R.id.KeyboardView);
+        miniKeyboard.setOnKeyboardActionListener(new KeyboardActionListener() {
+            @Override
             public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
                 mKeyboardActionListener.onKey(primaryCode, keyCodes, x, y);
                 dismissPopupKeyboard();
             }
 
+            @Override
             public void onText(CharSequence text) {
                 mKeyboardActionListener.onText(text);
                 dismissPopupKeyboard();
             }
 
+            @Override
             public void onCancel() {
                 dismissPopupKeyboard();
             }
 
+            @Override
             public void swipeLeft() {
             }
+            @Override
             public void swipeRight() {
             }
+            @Override
             public void swipeUp() {
             }
+            @Override
             public void swipeDown() {
             }
+            @Override
             public void onPress(int primaryCode) {
                 mKeyboardActionListener.onPress(primaryCode);
             }
+            @Override
             public void onRelease(int primaryCode) {
                 mKeyboardActionListener.onRelease(primaryCode);
             }
@@ -1231,12 +1115,12 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         // Remove gesture detector on mini-keyboard
         miniKeyboard.mGestureDetector = null;
 
-        BaseKeyboard keyboard;
+        Keyboard keyboard;
         if (popupKey.popupCharacters != null) {
-            keyboard = new BaseKeyboard(getContext(), popupKeyboardId, popupKey.popupCharacters,
+            keyboard = new Keyboard(getContext(), popupKeyboardId, popupKey.popupCharacters,
                     -1, getPaddingLeft() + getPaddingRight());
         } else {
-            keyboard = new BaseKeyboard(getContext(), popupKeyboardId);
+            keyboard = new Keyboard(getContext(), popupKeyboardId);
         }
         miniKeyboard.setKeyboard(keyboard);
         miniKeyboard.setPopupParent(this);
@@ -1256,8 +1140,8 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         // and bottom edge flags on.
         // When you want to use one row mini-keyboard from xml file, make sure that the row has
         // both top and bottom edge flags set.
-        return (edgeFlags & BaseKeyboard.EDGE_TOP) != 0
-                && (edgeFlags & BaseKeyboard.EDGE_BOTTOM) != 0;
+        return (edgeFlags & Keyboard.EDGE_TOP) != 0
+                && (edgeFlags & Keyboard.EDGE_BOTTOM) != 0;
     }
 
     /**
@@ -1279,7 +1163,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
             container = inflateMiniKeyboardContainer(popupKey);
             mMiniKeyboardCache.put(popupKey, container);
         }
-        mMiniKeyboard = (BaseKeyboardView)container.findViewById(R.id.BaseKeyboardView);
+        mMiniKeyboard = (KeyboardView)container.findViewById(R.id.KeyboardView);
         if (mWindowOffset == null) {
             mWindowOffset = new int[2];
             getLocationInWindow(mWindowOffset);
@@ -1325,7 +1209,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
         mMiniKeyboardOriginY = y + container.getPaddingTop() - mWindowOffset[1];
         mMiniKeyboard.setPopupOffset(adjustedX, y);
         // TODO: change the below line to use getLatinKeyboard() instead of getKeyboard()
-        BaseKeyboard baseMiniKeyboard = mMiniKeyboard.getKeyboard();
+        Keyboard baseMiniKeyboard = mMiniKeyboard.getKeyboard();
         if (baseMiniKeyboard != null && baseMiniKeyboard.setShifted(mKeyboard == null
                 ? false : mKeyboard.isShiftedOrShiftLocked())) {
             mMiniKeyboard.invalidateAllKeys();
@@ -1376,7 +1260,7 @@ public class BaseKeyboardView extends View implements PointerTracker.UIProxy {
     private PointerTracker getPointerTracker(final int id) {
         final ArrayList<PointerTracker> pointers = mPointerTrackers;
         final Key[] keys = mKeys;
-        final OnKeyboardActionListener listener = mKeyboardActionListener;
+        final KeyboardActionListener listener = mKeyboardActionListener;
 
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = pointers.size(); i <= id; i++) {

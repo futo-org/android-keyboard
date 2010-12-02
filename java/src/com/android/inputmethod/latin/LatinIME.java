@@ -16,6 +16,12 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.LatinIMEUtil.RingCharBuffer;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 
@@ -73,7 +79,7 @@ import java.util.Locale;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService
-        implements BaseKeyboardView.OnKeyboardActionListener,
+        implements KeyboardActionListener,
         SharedPreferences.OnSharedPreferenceChangeListener,
         Tutorial.TutorialListener {
     private static final String TAG = "LatinIME";
@@ -548,10 +554,10 @@ public class LatinIME extends InputMethodService
         switch (attribute.inputType & EditorInfo.TYPE_MASK_CLASS) {
             case EditorInfo.TYPE_CLASS_NUMBER:
             case EditorInfo.TYPE_CLASS_DATETIME:
-                mode = KeyboardSwitcher.MODE_NUMBER;
+                mode = KeyboardId.MODE_NUMBER;
                 break;
             case EditorInfo.TYPE_CLASS_PHONE:
-                mode = KeyboardSwitcher.MODE_PHONE;
+                mode = KeyboardId.MODE_PHONE;
                 break;
             case EditorInfo.TYPE_CLASS_TEXT:
                 //startPrediction();
@@ -568,24 +574,24 @@ public class LatinIME extends InputMethodService
                 }
                 if (isEmailVariation(variation)) {
                     mPredictionOn = false;
-                    mode = KeyboardSwitcher.MODE_EMAIL;
+                    mode = KeyboardId.MODE_EMAIL;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_URI) {
                     mPredictionOn = false;
-                    mode = KeyboardSwitcher.MODE_URL;
+                    mode = KeyboardId.MODE_URL;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_SHORT_MESSAGE) {
-                    mode = KeyboardSwitcher.MODE_IM;
+                    mode = KeyboardId.MODE_IM;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_FILTER) {
                     mPredictionOn = false;
-                    mode = KeyboardSwitcher.MODE_TEXT;
+                    mode = KeyboardId.MODE_TEXT;
                 } else if (variation == EditorInfo.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
-                    mode = KeyboardSwitcher.MODE_WEB;
+                    mode = KeyboardId.MODE_WEB;
                     // If it's a browser edit field and auto correct is not ON explicitly, then
                     // disable auto correction, but keep suggestions on.
                     if ((attribute.inputType & EditorInfo.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
                         mInputTypeNoAutoCorrect = true;
                     }
                 } else {
-                    mode = KeyboardSwitcher.MODE_TEXT;
+                    mode = KeyboardId.MODE_TEXT;
                 }
 
                 // If NO_SUGGESTIONS is set, don't do prediction.
@@ -604,7 +610,7 @@ public class LatinIME extends InputMethodService
                 }
                 break;
             default:
-                mode = KeyboardSwitcher.MODE_TEXT;
+                mode = KeyboardId.MODE_TEXT;
                 break;
         }
         inputView.closing();
@@ -675,7 +681,7 @@ public class LatinIME extends InputMethodService
 
         mVoiceConnector.flushVoiceInputLogs(mConfigurationChanging);
 
-        BaseKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        KeyboardView inputView = mKeyboardSwitcher.getInputView();
         if (inputView != null)
             inputView.closing();
         if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
@@ -685,7 +691,7 @@ public class LatinIME extends InputMethodService
     @Override
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
-        BaseKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        KeyboardView inputView = mKeyboardSwitcher.getInputView();
         if (inputView != null)
             inputView.setForeground(false);
         // Remove pending messages related to update suggestions
@@ -1073,51 +1079,52 @@ public class LatinIME extends InputMethodService
 
     // Implementation of KeyboardViewListener
 
+    @Override
     public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
         long when = SystemClock.uptimeMillis();
-        if (primaryCode != BaseKeyboard.KEYCODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
+        if (primaryCode != Keyboard.KEYCODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
         }
         mLastKeyTime = when;
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         switch (primaryCode) {
-        case BaseKeyboard.KEYCODE_DELETE:
+        case Keyboard.KEYCODE_DELETE:
             handleBackspace();
             mDeleteCount++;
             LatinImeLogger.logOnDelete();
             break;
-        case BaseKeyboard.KEYCODE_SHIFT:
+        case Keyboard.KEYCODE_SHIFT:
             // Shift key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch)
                 switcher.toggleShift();
             break;
-        case BaseKeyboard.KEYCODE_MODE_CHANGE:
+        case Keyboard.KEYCODE_MODE_CHANGE:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch)
                 switcher.changeKeyboardMode();
             break;
-        case BaseKeyboard.KEYCODE_CANCEL:
+        case Keyboard.KEYCODE_CANCEL:
             if (!isShowingOptionDialog()) {
                 handleClose();
             }
             break;
-        case LatinKeyboardView.KEYCODE_OPTIONS:
+        case LatinKeyboard.KEYCODE_OPTIONS:
             onOptionKeyPressed();
             break;
-        case LatinKeyboardView.KEYCODE_OPTIONS_LONGPRESS:
+        case LatinKeyboard.KEYCODE_OPTIONS_LONGPRESS:
             onOptionKeyLongPressed();
             break;
-        case LatinKeyboardView.KEYCODE_NEXT_LANGUAGE:
+        case LatinKeyboard.KEYCODE_NEXT_LANGUAGE:
             toggleLanguage(false, true);
             break;
-        case LatinKeyboardView.KEYCODE_PREV_LANGUAGE:
+        case LatinKeyboard.KEYCODE_PREV_LANGUAGE:
             toggleLanguage(false, false);
             break;
-        case LatinKeyboardView.KEYCODE_CAPSLOCK:
+        case LatinKeyboard.KEYCODE_CAPSLOCK:
             switcher.toggleCapsLock();
             break;
-        case LatinKeyboardView.KEYCODE_VOICE: /* was a button press, was not a swipe */
+        case LatinKeyboard.KEYCODE_VOICE: /* was a button press, was not a swipe */
             mVoiceConnector.startListening(false,
                     mKeyboardSwitcher.getInputView().getWindowToken(), mConfigurationChanging);
             break;
@@ -1143,6 +1150,7 @@ public class LatinIME extends InputMethodService
         mEnteredText = null;
     }
 
+    @Override
     public void onText(CharSequence text) {
         mVoiceConnector.commitVoiceInput();
         InputConnection ic = getCurrentInputConnection();
@@ -1161,6 +1169,7 @@ public class LatinIME extends InputMethodService
         mEnteredText = text;
     }
 
+    @Override
     public void onCancel() {
         // User released a finger outside any key
     }
@@ -1420,24 +1429,26 @@ public class LatinIME extends InputMethodService
     }
 
     public void switchToKeyboardView() {
-      mHandler.post(new Runnable() {
-          public void run() {
-              if (DEBUG) {
-                  Log.d(TAG, "Switch to keyboard view.");
-              }
-              View v = mKeyboardSwitcher.getInputView();
-              if (v != null) {
-                  // Confirms that the keyboard view doesn't have parent view.
-                  ViewParent p = v.getParent();
-                  if (p != null && p instanceof ViewGroup) {
-                      ((ViewGroup)p).removeView(v);
-                  }
-                  setInputView(v);
-              }
-              setCandidatesViewShown(isCandidateStripVisible());
-              updateInputViewShown();
-              mHandler.postUpdateSuggestions();
-          }});
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (DEBUG) {
+                    Log.d(TAG, "Switch to keyboard view.");
+                }
+                View v = mKeyboardSwitcher.getInputView();
+                if (v != null) {
+                    // Confirms that the keyboard view doesn't have parent view.
+                    ViewParent p = v.getParent();
+                    if (p != null && p instanceof ViewGroup) {
+                        ((ViewGroup) p).removeView(v);
+                    }
+                    setInputView(v);
+                }
+                setCandidatesViewShown(isCandidateStripVisible());
+                updateInputViewShown();
+                mHandler.postUpdateSuggestions();
+            }
+        });
     }
 
     public void clearSuggestions() {
@@ -1586,8 +1597,8 @@ public class LatinIME extends InputMethodService
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions);
             final char primaryCode = suggestion.charAt(0);
-            onKey(primaryCode, new int[]{primaryCode}, BaseKeyboardView.NOT_A_TOUCH_COORDINATE,
-                    BaseKeyboardView.NOT_A_TOUCH_COORDINATE);
+            onKey(primaryCode, new int[]{primaryCode}, KeyboardView.NOT_A_TOUCH_COORDINATE,
+                    KeyboardView.NOT_A_TOUCH_COORDINATE);
             if (ic != null) {
                 ic.endBatchEdit();
             }
@@ -1877,6 +1888,7 @@ public class LatinIME extends InputMethodService
         switcher.updateShiftState();
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         mSubtypeSwitcher.onSharedPreferenceChanged(sharedPreferences, key);
@@ -1888,6 +1900,7 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    @Override
     public void swipeRight() {
         if (LatinKeyboardView.DEBUG_AUTO_PLAY) {
             CharSequence text = ((android.text.ClipboardManager)getSystemService(
@@ -1898,38 +1911,43 @@ public class LatinIME extends InputMethodService
         }
     }
 
+    @Override
     public void swipeLeft() {
     }
 
+    @Override
     public void swipeDown() {
         handleClose();
     }
 
+    @Override
     public void swipeUp() {
     }
 
+    @Override
     public void onPress(int primaryCode) {
         vibrate();
         playKeyClick(primaryCode);
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
-        if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
+        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
             switcher.onPressShift();
-        } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
+        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
             switcher.onPressSymbol();
         } else {
             switcher.onOtherKeyPressed();
         }
     }
 
+    @Override
     public void onRelease(int primaryCode) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         // Reset any drag flags in the keyboard
         switcher.keyReleased();
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
-        if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_SHIFT) {
+        if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
             switcher.onReleaseShift();
-        } else if (distinctMultiTouch && primaryCode == BaseKeyboard.KEYCODE_MODE_CHANGE) {
+        } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
             switcher.onReleaseSymbol();
         }
     }
@@ -1966,7 +1984,7 @@ public class LatinIME extends InputMethodService
             // FIXME: These should be triggered after auto-repeat logic
             int sound = AudioManager.FX_KEYPRESS_STANDARD;
             switch (primaryCode) {
-                case BaseKeyboard.KEYCODE_DELETE:
+                case Keyboard.KEYCODE_DELETE:
                     sound = AudioManager.FX_KEYPRESS_DELETE;
                     break;
                 case KEYCODE_ENTER:
@@ -2006,6 +2024,7 @@ public class LatinIME extends InputMethodService
     }
 
     // Tutorial.TutorialListener
+    @Override
     public void onTutorialDone() {
         sendDownUpKeyEvents(-1); // Inform the setupwizard that tutorial is in last bubble
         mTutorial = null;
@@ -2171,6 +2190,7 @@ public class LatinIME extends InputMethodService
                 itemInputMethod, itemSettings},
                 new DialogInterface.OnClickListener() {
 
+            @Override
             public void onClick(DialogInterface di, int position) {
                 di.dismiss();
                 switch (position) {

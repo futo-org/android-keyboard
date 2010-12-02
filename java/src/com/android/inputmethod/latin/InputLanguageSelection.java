@@ -57,6 +57,7 @@ public class InputLanguageSelection extends PreferenceActivity {
             return this.label;
         }
 
+        @Override
         public int compareTo(Object o) {
             return sCollator.compare(this.label, ((Loc) o).label);
         }

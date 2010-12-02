@@ -16,7 +16,7 @@
 
 <resources>
 
-    <declare-styleable name="BaseKeyboardView">
+    <declare-styleable name="KeyboardView">
         <!-- Default KeyboardView style. -->
         <attr name="keyboardViewStyle" format="reference" />
 
@@ -68,14 +68,14 @@
         </attr>
 
         <attr name="colorScheme">
-            <!-- This should be aligned with BaseKeyboardView.COLOR_SCHEME_* -->
+            <!-- This should be aligned with KeyboardView.COLOR_SCHEME_* -->
             <enum name="white" value="0" />
             <enum name="black" value="1" />
         </attr>
 
     </declare-styleable>
 
-    <declare-styleable name="BaseKeyboard">
+    <declare-styleable name="Keyboard">
         <!-- Default width of a key, in pixels or percentage of display width. -->
         <attr name="keyWidth" format="dimension|fraction" />
         <!-- Default height of a key, in pixels or percentage of display width. -->
@@ -86,7 +86,7 @@
         <attr name="verticalGap" format="dimension|fraction" />
     </declare-styleable>
 
-    <declare-styleable name="BaseKeyboard_Key">
+    <declare-styleable name="Keyboard_Key">
         <!-- The unicode value or comma-separated values that this key outputs. -->
         <attr name="codes" format="integer|string" />
         <!-- The XML keyboard layout of any popup keyboard. -->
@@ -114,7 +114,7 @@
         <attr name="keyLabel" format="string" />
         <!-- The key label option -->
         <attr name="keyLabelOption">
-            <!-- This should be aligned with BaseKeyboardView.KEY_LABEL_OPTION_* -->
+            <!-- This should be aligned with KeyboardView.KEY_LABEL_OPTION_* -->
             <flag name="alignLeft" value="1" />
             <flag name="alignRight" value="2" />
             <flag name="alignBottom" value="8" />
@@ -135,7 +135,7 @@
         <attr name="shiftedIcon" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="BaseKeyboard_Row">
+    <declare-styleable name="Keyboard_Row">
         <!-- Row edge flags. -->
         <attr name="rowEdgeFlags">
             <!-- Row is anchored to the top of the keyboard. -->
@@ -145,12 +145,12 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="BaseKeyboard_Include">
+    <declare-styleable name="Keyboard_Include">
         <attr name="keyboardLayout" format="reference" />
     </declare-styleable>
 
-    <declare-styleable name="BaseKeyboard_Case">
-        <!-- This should be aligned with KeyboardSwitcher.MODE_* -->
+    <declare-styleable name="Keyboard_Case">
+        <!-- This should be aligned with KeyboardId.MODE_* -->
         <attr name="mode">
             <enum name="text" value="0" />
             <enum name="url" value="1" />
@@ -175,7 +175,7 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="BaseKeyboard_KeyStyle">
+    <declare-styleable name="Keyboard_KeyStyle">
         <attr name="styleName" format="string" />
         <attr name="parentStyle" format="string" />
     </declare-styleable>

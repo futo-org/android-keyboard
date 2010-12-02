@@ -310,6 +310,7 @@ public class LatinIMEUtil {
 
         public void write(final String log) {
             mLoggingHandler.post(new Runnable() {
+                @Override
                 public void run() {
                     createLogFileIfNotExist();
                     final long currentTime = System.currentTimeMillis();
@@ -327,6 +328,7 @@ public class LatinIMEUtil {
 
         public void printAll() {
             mLoggingHandler.post(new Runnable() {
+                @Override
                 public void run() {
                     mWriter.flush();
                     StringBuilder sb = new StringBuilder();
@@ -355,6 +357,7 @@ public class LatinIMEUtil {
 
         public void clearAll() {
             mLoggingHandler.post(new Runnable() {
+                @Override
                 public void run() {
                     if (mFile != null && mFile.exists()) {
                         if (LatinImeLogger.sDBG) {

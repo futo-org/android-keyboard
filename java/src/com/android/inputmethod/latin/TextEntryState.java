@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.BaseKeyboard.Key;
+import com.android.inputmethod.keyboard.Key;
 
 import android.content.Context;
 import android.text.format.DateFormat;

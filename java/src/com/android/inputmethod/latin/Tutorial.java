@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.LatinKeyboardView;
+
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
@@ -133,6 +135,7 @@ public class Tutorial implements OnTouchListener {
                     if ((gravity & Gravity.BOTTOM) == Gravity.BOTTOM) offy -= window.getHeight();
                     if ((gravity & Gravity.RIGHT) == Gravity.RIGHT) offx -= window.getWidth();
                     textView.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
                         public boolean onTouch(View view, MotionEvent me) {
                             Tutorial.this.next();
                             return true;
@@ -237,6 +240,7 @@ public class Tutorial implements OnTouchListener {
         return true;
     }
 
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             next();

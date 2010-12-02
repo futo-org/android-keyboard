@@ -43,6 +43,7 @@ public class LatinIMEDebugSettings extends PreferenceActivity
         updateDebugMode();
     }
 
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (key.equals(DEBUG_MODE_KEY)) {
             if (mDebugMode != null) {
