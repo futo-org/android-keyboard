@@ -22,7 +22,6 @@ import com.android.inputmethod.latin.SubtypeSwitcher;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -96,12 +95,6 @@ public class LatinKeyboard extends Keyboard {
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
         mSpaceKeyIndex = indexOf(CODE_SPACE);
-    }
-
-    @Override
-    protected Key createKeyFromXml(Resources res, Row parent, int x, int y, 
-            XmlResourceParser parser, KeyStyles keyStyles) {
-        return new LatinKey(res, parent, x, y, parser, keyStyles);
     }
 
     /**
@@ -264,10 +257,6 @@ public class LatinKeyboard extends Keyboard {
         return mSpaceDragLastDiff > 0 ? 1 : -1;
     }
 
-    boolean isCurrentlyInSpace() {
-        return mCurrentlyInSpace;
-    }
-
     public void setPreferredLetters(int[] frequencies) {
         mPrefLetterFrequencies = frequencies;
         mPrefLetter = 0;
@@ -289,8 +278,9 @@ public class LatinKeyboard extends Keyboard {
      * Does the magic of locking the touch gesture into the spacebar when
      * switching input languages.
      */
-    @SuppressWarnings("unused")
-    public boolean isInside(LatinKey key, int x, int y) {
+    @Override
+    @SuppressWarnings("unused") // SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER is constant
+    public boolean isInside(Key key, int x, int y) {
         final int code = key.mCodes[0];
         if (code == CODE_SHIFT || code == CODE_DELETE) {
             y -= key.mHeight / 10;
@@ -308,13 +298,13 @@ public class LatinKeyboard extends Keyboard {
                     mSpaceDragLastDiff = diff;
                     return true;
                 } else {
-                    boolean insideSpace = key.isInsideSuper(x, y);
-                    if (insideSpace) {
+                    boolean isOnSpace = key.isOnKey(x, y);
+                    if (isOnSpace) {
                         mCurrentlyInSpace = true;
                         mSpaceDragStartX = x;
                         updateLocaleDrag(0);
                     }
-                    return insideSpace;
+                    return isOnSpace;
                 }
             }
         } else if (mPrefLetterFrequencies != null) {
@@ -327,16 +317,16 @@ public class LatinKeyboard extends Keyboard {
             final int[] pref = mPrefLetterFrequencies;
             if (mPrefLetter > 0) {
                 if (DEBUG_PREFERRED_LETTER) {
-                    if (mPrefLetter == code && !key.isInsideSuper(x, y)) {
+                    if (mPrefLetter == code && !key.isOnKey(x, y)) {
                         Log.d(TAG, "CORRECTED !!!!!!");
                     }
                 }
                 return mPrefLetter == code;
             } else {
-                final boolean inside = key.isInsideSuper(x, y);
+                final boolean isOnKey = key.isOnKey(x, y);
                 int[] nearby = getNearestKeys(x, y);
                 List<Key> nearbyKeys = getKeys();
-                if (inside) {
+                if (isOnKey) {
                     // If it's a preferred letter
                     if (inPrefList(code, pref)) {
                         // Check if its frequency is much lower than a nearby key
@@ -386,7 +376,7 @@ public class LatinKeyboard extends Keyboard {
                 }
                 // Didn't find any
                 if (mPrefLetter == 0) {
-                    return inside;
+                    return isOnKey;
                 } else {
                     return mPrefLetter == code;
                 }
@@ -396,7 +386,7 @@ public class LatinKeyboard extends Keyboard {
         // Lock into the spacebar
         if (mCurrentlyInSpace) return false;
 
-        return key.isInsideSuper(x, y);
+        return key.isOnKey(x, y);
     }
 
     private boolean inPrefList(int code, int[] pref) {

@@ -248,27 +248,29 @@ public class Key {
             mOn = !mOn;
     }
 
+    public boolean isInside(int x, int y) {
+        return mKeyboard.isInside(this, x, y);
+    }
+
     /**
-     * Detects if a point falls inside this key.
+     * Detects if a point falls on this key.
      * @param x the x-coordinate of the point
      * @param y the y-coordinate of the point
-     * @return whether or not the point falls inside the key. If the key is attached to an
-     * edge, it will assume that all points between the key and the edge are considered to be
-     * inside the key.
+     * @return whether or not the point falls on the key. If the key is attached to an edge, it will
+     * assume that all points between the key and the edge are considered to be on the key.
      */
-    public boolean isInside(int x, int y) {
-        boolean leftEdge = (mEdgeFlags & Keyboard.EDGE_LEFT) > 0;
-        boolean rightEdge = (mEdgeFlags & Keyboard.EDGE_RIGHT) > 0;
-        boolean topEdge = (mEdgeFlags & Keyboard.EDGE_TOP) > 0;
-        boolean bottomEdge = (mEdgeFlags & Keyboard.EDGE_BOTTOM) > 0;
-        if ((x >= this.mX || (leftEdge && x <= this.mX + this.mWidth))
-                && (x < this.mX + this.mWidth || (rightEdge && x >= this.mX))
-                && (y >= this.mY || (topEdge && y <= this.mY + this.mHeight))
-                && (y < this.mY + this.mHeight || (bottomEdge && y >= this.mY))) {
-            return true;
-        } else {
-            return false;
-        }
+    public boolean isOnKey(int x, int y) {
+        final int flags = mEdgeFlags;
+        final boolean leftEdge = (flags & Keyboard.EDGE_LEFT) != 0;
+        final boolean rightEdge = (flags & Keyboard.EDGE_RIGHT) != 0;
+        final boolean topEdge = (flags & Keyboard.EDGE_TOP) != 0;
+        final boolean bottomEdge = (flags & Keyboard.EDGE_BOTTOM) != 0;
+        final int left = this.mX;
+        final int right = left + this.mWidth;
+        final int top = this.mY;
+        final int bottom = top + this.mHeight;
+        return (x >= left || leftEdge) && (x < right || rightEdge)
+                && (y >= top || topEdge) && (y < bottom || bottomEdge);
     }
 
     /**
