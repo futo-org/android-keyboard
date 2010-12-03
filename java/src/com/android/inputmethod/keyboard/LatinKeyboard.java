@@ -109,15 +109,15 @@ public class LatinKeyboard extends Keyboard {
         final Resources res = mRes;
         // If application locales are explicitly selected.
         if (SubtypeSwitcher.getInstance().needsToDisplayLanguage()) {
-            mSpaceKey.mIcon = new BitmapDrawable(res,
-                    drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion));
+            mSpaceKey.setIcon(new BitmapDrawable(res,
+                    drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion)));
         } else {
             // sym_keyboard_space_led can be shared with Black and White symbol themes.
             if (isAutoCompletion) {
-                mSpaceKey.mIcon = new BitmapDrawable(res,
-                        drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion));
+                mSpaceKey.setIcon(new BitmapDrawable(res,
+                        drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion)));
             } else {
-                mSpaceKey.mIcon = mSpaceIcon;
+                mSpaceKey.setIcon(mSpaceIcon);
             }
         }
     }
@@ -238,15 +238,15 @@ public class LatinKeyboard extends Keyboard {
             mSlidingLocaleIcon =
                     new SlidingLocaleDrawable(mContext, mSpacePreviewIcon, width, height);
             mSlidingLocaleIcon.setBounds(0, 0, width, height);
-            mSpaceKey.mPreviewIcon = mSlidingLocaleIcon;
+            mSpaceKey.setPreviewIcon(mSlidingLocaleIcon);
         }
         mSlidingLocaleIcon.setDiff(diff);
         if (Math.abs(diff) == Integer.MAX_VALUE) {
-            mSpaceKey.mPreviewIcon = mSpacePreviewIcon;
+            mSpaceKey.setPreviewIcon(mSpacePreviewIcon);
         } else {
-            mSpaceKey.mPreviewIcon = mSlidingLocaleIcon;
+            mSpaceKey.setPreviewIcon(mSlidingLocaleIcon);
         }
-        mSpaceKey.mPreviewIcon.invalidateSelf();
+        mSpaceKey.getPreviewIcon().invalidateSelf();
     }
 
     public int getLanguageChangeDirection() {

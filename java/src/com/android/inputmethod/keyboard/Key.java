@@ -35,47 +35,48 @@ public class Key {
      * All the key codes (unicode or custom code) that this key could generate, zero'th
      * being the most important.
      */
-    public int[] mCodes;
+    public final int[] mCodes;
     /** The unicode that this key generates in manual temporary upper case mode. */
-    public int mManualTemporaryUpperCaseCode;
+    public final int mManualTemporaryUpperCaseCode;
 
     /** Label to display */
-    public CharSequence mLabel;
+    public final CharSequence mLabel;
     /** Option of the label */
-    public int mLabelOption;
+    public final int mLabelOption;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
-    public Drawable mIcon;
-    /** Hint icon to display on the key in conjunction with the label */
-    public Drawable mHintIcon;
+    private Drawable mIcon;
     /** Preview version of the icon, for the preview popup */
+    private Drawable mPreviewIcon;
+    /** Hint icon to display on the key in conjunction with the label */
+    public final Drawable mHintIcon;
     /**
      * The hint icon to display on the key when keyboard is in manual temporary upper case
      * mode.
      */
-    public Drawable mManualTemporaryUpperCaseHintIcon;
+    public final Drawable mManualTemporaryUpperCaseHintIcon;
 
-    public Drawable mPreviewIcon;
     /** Width of the key, not including the gap */
-    public int mWidth;
+    public final int mWidth;
     /** Height of the key, not including the gap */
-    public int mHeight;
+    public final int mHeight;
     /** The horizontal gap before this key */
-    public int mGap;
+    public final int mGap;
     /** Whether this key is sticky, i.e., a toggle key */
-    public boolean mSticky;
+    public final boolean mSticky;
     /** X coordinate of the key in the keyboard layout */
-    public int mX;
+    public final int mX;
     /** Y coordinate of the key in the keyboard layout */
-    public int mY;
-    /** The current pressed state of this key */
-    public boolean mPressed;
-    /** If this is a sticky key, is it on? */
-    public boolean mOn;
+    public final int mY;
     /** Text to output when pressed. This can be multiple characters, like ".com" */
-    public CharSequence mOutputText;
+    public final CharSequence mOutputText;
     /** Popup characters */
-    public CharSequence mPopupCharacters;
+    public final CharSequence mPopupCharacters;
+    /**
+     * If this key pops up a mini keyboard, this is the resource id for the XML layout for that
+     * keyboard.
+     */
+    public final int mPopupResId;
 
     /**
      * Flags that specify the anchoring to edges of the keyboard for detecting touch events
@@ -83,19 +84,19 @@ public class Key {
      * {@link Keyboard#EDGE_LEFT}, {@link Keyboard#EDGE_RIGHT},
      * {@link Keyboard#EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM}.
      */
-    public int mEdgeFlags;
+    public final int mEdgeFlags;
     /** Whether this is a modifier key, such as Shift or Alt */
-    public boolean mModifier;
-    /** The Keyboard that this key belongs to */
-    protected final Keyboard mKeyboard;
-    /**
-     * If this key pops up a mini keyboard, this is the resource id for the XML layout for that
-     * keyboard.
-     */
-    public int mPopupResId;
+    public final boolean mModifier;
     /** Whether this key repeats itself when held down */
-    public boolean mRepeatable;
+    public final boolean mRepeatable;
 
+    /** The Keyboard that this key belongs to */
+    private final Keyboard mKeyboard;
+
+    /** The current pressed state of this key */
+    public boolean mPressed;
+    /** If this is a sticky key, is it on? */
+    public boolean mOn;
 
     private final static int[] KEY_STATE_NORMAL_ON = {
         android.R.attr.state_checkable,
@@ -136,38 +137,53 @@ public class Key {
     };
 
     /** Create an empty key with no attributes. */
-    public Key(Row parent) {
-        mKeyboard = parent.mParent;
-        mHeight = parent.mDefaultHeight;
-        mGap = parent.mDefaultHorizontalGap;
-        mWidth = parent.mDefaultWidth - mGap;
-        mEdgeFlags = parent.mRowEdgeFlags;
+    public Key(Row row, char letter, int x, int y) {
+        mKeyboard = row.getKeyboard();
+        mHeight = row.mDefaultHeight;
+        mGap = row.mDefaultHorizontalGap;
+        mWidth = row.mDefaultWidth - mGap;
+        mEdgeFlags = row.mRowEdgeFlags;
+        mHintIcon = null;
+        mManualTemporaryUpperCaseHintIcon = null;
+        mManualTemporaryUpperCaseCode = 0;
+        mLabelOption = 0;
+        mModifier = false;
+        mSticky = false;
+        mRepeatable = false;
+        mOutputText = null;
+        mPopupCharacters = null;
+        mPopupResId = 0;
+        mLabel = String.valueOf(letter);
+        mCodes = new int[] { letter };
+        // Horizontal gap is divided equally to both sides of the key.
+        mX = x + mGap / 2;
+        mY = y;
     }
 
     /** Create a key with the given top-left coordinate and extract its attributes from
      * the XML parser.
      * @param res resources associated with the caller's context
-     * @param parent the row that this key belongs to. The row must already be attached to
+     * @param row the row that this key belongs to. The row must already be attached to
      * a {@link Keyboard}.
      * @param x the x coordinate of the top-left
      * @param y the y coordinate of the top-left
      * @param parser the XML parser containing the attributes for this key
      */
-    public Key(Resources res, Row parent, int x, int y, XmlResourceParser parser,
+    public Key(Resources res, Row row, int x, int y, XmlResourceParser parser,
             KeyStyles keyStyles) {
-        this(parent);
+        mKeyboard = row.getKeyboard();
 
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
         mHeight = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyHeight,
-                mKeyboard.mDisplayHeight, parent.mDefaultHeight);
+                mKeyboard.getKeyboardHeight(), row.mDefaultHeight);
         mGap = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_horizontalGap,
-                mKeyboard.mDisplayWidth, parent.mDefaultHorizontalGap);
+                mKeyboard.getKeyboardWidth(), row.mDefaultHorizontalGap);
         mWidth = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyWidth,
-                mKeyboard.mDisplayWidth, parent.mDefaultWidth) - mGap;
+                mKeyboard.getKeyboardWidth(), row.mDefaultWidth) - mGap;
         a.recycle();
 
         a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
@@ -186,7 +202,7 @@ public class Key {
         this.mX = x + mGap / 2;
         this.mY = y;
 
-        mCodes = style.getIntArray(a, R.styleable.Keyboard_Key_codes);
+        int[] codes = style.getIntArray(a, R.styleable.Keyboard_Key_codes);
         mPreviewIcon = style.getDrawable(a, R.styleable.Keyboard_Key_iconPreview);
         Keyboard.setDefaultBounds(mPreviewIcon);
         mPopupCharacters = style.getText(a, R.styleable.Keyboard_Key_popupCharacters);
@@ -194,8 +210,8 @@ public class Key {
         mRepeatable = style.getBoolean(a, R.styleable.Keyboard_Key_isRepeatable, false);
         mModifier = style.getBoolean(a, R.styleable.Keyboard_Key_isModifier, false);
         mSticky = style.getBoolean(a, R.styleable.Keyboard_Key_isSticky, false);
-        mEdgeFlags = style.getFlag(a, R.styleable.Keyboard_Key_keyEdgeFlags, 0);
-        mEdgeFlags |= parent.mRowEdgeFlags;
+        mEdgeFlags = style.getFlag(a, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
+                | row.mRowEdgeFlags;
 
         mIcon = style.getDrawable(a, R.styleable.Keyboard_Key_keyIcon);
         Keyboard.setDefaultBounds(mIcon);
@@ -217,9 +233,25 @@ public class Key {
         if (shiftedIcon != null)
             mKeyboard.getShiftedIcons().put(this, shiftedIcon);
 
-        if (mCodes == null && !TextUtils.isEmpty(mLabel)) {
-            mCodes = new int[] { mLabel.charAt(0) };
-        }
+        if (codes == null && !TextUtils.isEmpty(mLabel))
+            codes = new int[] { mLabel.charAt(0) };
+        mCodes = codes;
+    }
+
+    public Drawable getIcon() {
+        return mIcon;
+    }
+
+    public Drawable getPreviewIcon() {
+        return mPreviewIcon;
+    }
+
+    public void setIcon(Drawable icon) {
+        mIcon = icon;
+    }
+
+    public void setPreviewIcon(Drawable icon) {
+        mPreviewIcon = icon;
     }
 
     /**

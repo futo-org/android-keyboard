@@ -758,9 +758,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 paint.setShadowLayer(0, 0, 0, 0);
             }
             // Draw key icon
-            if (key.mLabel == null && key.mIcon != null) {
-                final int drawableWidth = key.mIcon.getIntrinsicWidth();
-                final int drawableHeight = key.mIcon.getIntrinsicHeight();
+            final Drawable icon = key.getIcon();
+            if (key.mLabel == null && icon != null) {
+                final int drawableWidth = icon.getIntrinsicWidth();
+                final int drawableHeight = icon.getIntrinsicHeight();
                 final int drawableX;
                 final int drawableY = (
                         key.mHeight + padding.top - padding.bottom - drawableHeight) / 2;
@@ -780,7 +781,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                         drawVerticalLine(canvas, drawableX + drawableWidth / 2, rowHeight,
                                 0xc0008080, new Paint());
                 }
-                drawIcon(canvas, key.mIcon, drawableX, drawableY, drawableWidth, drawableHeight);
+                drawIcon(canvas, icon, drawableX, drawableY, drawableWidth, drawableHeight);
                 if (DEBUG_SHOW_ALIGN)
                     drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,
                             0x80c00000, new Paint());
@@ -790,10 +791,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 final int drawableHeight = key.mHeight;
                 final int drawableX = 0;
                 final int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
-                Drawable icon = (isManualTemporaryUpperCase
+                Drawable hintIcon = (isManualTemporaryUpperCase
                         && key.mManualTemporaryUpperCaseHintIcon != null)
                         ? key.mManualTemporaryUpperCaseHintIcon : key.mHintIcon;
-                drawIcon(canvas, icon, drawableX, drawableY, drawableWidth, drawableHeight);
+                drawIcon(canvas, hintIcon, drawableX, drawableY, drawableWidth, drawableHeight);
                 if (DEBUG_SHOW_ALIGN)
                     drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,
                             0x80c0c000, new Paint());
@@ -965,8 +966,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 mPreviewText.setTypeface(mKeyLetterStyle);
             }
         } else {
+            final Drawable previewIcon = key.getPreviewIcon();
             mPreviewText.setCompoundDrawables(null, null, null,
-                    key.mPreviewIcon != null ? key.mPreviewIcon : key.mIcon);
+                   previewIcon != null ? previewIcon : key.getIcon());
             mPreviewText.setText(null);
         }
         mPreviewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),

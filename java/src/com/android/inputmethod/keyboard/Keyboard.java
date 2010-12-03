@@ -80,16 +80,16 @@ public class Keyboard {
     public static final int CODE_VOICE = -109;
 
     /** Horizontal gap default for all rows */
-    int mDefaultHorizontalGap;
+    private int mDefaultHorizontalGap;
 
     /** Default key width */
-    int mDefaultWidth;
+    private int mDefaultWidth;
 
     /** Default key height */
-    int mDefaultHeight;
+    private int mDefaultHeight;
 
     /** Default gap between rows */
-    int mDefaultVerticalGap;
+    private int mDefaultVerticalGap;
 
     /** List of shift keys in this keyboard and its icons and state */
     private final List<Key> mShiftKeys = new ArrayList<Key>();
@@ -116,12 +116,12 @@ public class Keyboard {
     private final List<Key> mKeys = new ArrayList<Key>();
 
     /** Width of the screen available to fit the keyboard */
-    final int mDisplayWidth;
+    private final int mDisplayWidth;
 
     /** Height of the screen */
-    final int mDisplayHeight;
+    private final int mDisplayHeight;
 
-    protected final KeyboardId mId;
+    public final KeyboardId mId;
 
     // Variables for pre-computing nearest keys.
 
@@ -206,12 +206,7 @@ public class Keyboard {
         int column = 0;
         mTotalWidth = 0;
 
-        Row row = new Row(this);
-        row.mDefaultHeight = mDefaultHeight;
-        row.mDefaultWidth = mDefaultWidth;
-        row.mDefaultHorizontalGap = mDefaultHorizontalGap;
-        row.mVerticalGap = mDefaultVerticalGap;
-        row.mRowEdgeFlags = EDGE_TOP | EDGE_BOTTOM;
+        final Row row = new Row(this);
         final int maxColumns = columns == -1 ? Integer.MAX_VALUE : columns;
         for (int i = 0; i < characters.length(); i++) {
             char c = characters.charAt(i);
@@ -221,12 +216,7 @@ public class Keyboard {
                 y += mDefaultVerticalGap + mDefaultHeight;
                 column = 0;
             }
-            final Key key = new Key(row);
-            // Horizontal gap is divided equally to both sides of the key.
-            key.mX = x + key.mGap / 2;
-            key.mY = y;
-            key.mLabel = String.valueOf(c);
-            key.mCodes = new int[] { c };
+            final Key key = new Key(row, c, x, y);
             column++;
             x += key.mWidth + key.mGap;
             mKeys.add(key);
@@ -237,43 +227,39 @@ public class Keyboard {
         mTotalHeight = y + mDefaultHeight;
     }
 
-    public KeyboardId getKeyboardId() {
-        return mId;
-    }
-
     public List<Key> getKeys() {
         return mKeys;
     }
 
-    protected int getHorizontalGap() {
+    public int getHorizontalGap() {
         return mDefaultHorizontalGap;
     }
 
-    protected void setHorizontalGap(int gap) {
+    public void setHorizontalGap(int gap) {
         mDefaultHorizontalGap = gap;
     }
 
-    protected int getVerticalGap() {
+    public int getVerticalGap() {
         return mDefaultVerticalGap;
     }
 
-    protected void setVerticalGap(int gap) {
+    public void setVerticalGap(int gap) {
         mDefaultVerticalGap = gap;
     }
 
-    protected int getKeyHeight() {
+    public int getKeyHeight() {
         return mDefaultHeight;
     }
 
-    protected void setKeyHeight(int height) {
+    public void setKeyHeight(int height) {
         mDefaultHeight = height;
     }
 
-    protected int getKeyWidth() {
+    public int getKeyWidth() {
         return mDefaultWidth;
     }
 
-    protected void setKeyWidth(int width) {
+    public void setKeyWidth(int width) {
         mDefaultWidth = width;
         final int threshold = (int) (width * SEARCH_DISTANCE);
         mProximityThreshold = threshold * threshold;
@@ -310,7 +296,7 @@ public class Keyboard {
     public void enableShiftLock() {
         for (final Key key : getShiftKeys()) {
             mShiftLockEnabled.add(key);
-            mNormalShiftIcons.put(key, key.mIcon);
+            mNormalShiftIcons.put(key, key.getIcon());
         }
     }
 
@@ -322,7 +308,7 @@ public class Keyboard {
         final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
         for (final Key key : getShiftKeys()) {
             key.mOn = newShiftLockState;
-            key.mIcon = newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key);
+            key.setIcon(newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key));
         }
         mShiftState.setShiftLocked(newShiftLockState);
         return true;
@@ -336,9 +322,9 @@ public class Keyboard {
         final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
         for (final Key key : getShiftKeys()) {
             if (!newShiftState && !mShiftState.isShiftLocked()) {
-                key.mIcon = mNormalShiftIcons.get(key);
+                key.setIcon(mNormalShiftIcons.get(key));
             } else if (newShiftState && !mShiftState.isShiftedOrShiftLocked()) {
-                key.mIcon = shiftedIcons.get(key);
+                key.setIcon(shiftedIcons.get(key));
             }
         }
         return mShiftState.setShifted(newShiftState);
@@ -379,8 +365,8 @@ public class Keyboard {
 
     public void setSpaceKey(Key space) {
         mSpaceKey = space;
-        mSpaceIcon = space.mIcon;
-        mSpacePreviewIcon = space.mPreviewIcon;
+        mSpaceIcon = space.getIcon();
+        mSpacePreviewIcon = space.getPreviewIcon();
     }
 
     private void computeNearestNeighbors() {
