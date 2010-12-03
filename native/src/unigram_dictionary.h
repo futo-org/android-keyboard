@@ -53,6 +53,12 @@ private:
     void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word, const int depth,
             const int snr, const int skipPos, const int freq, const int addedWeight);
 
+    bool needsToSkipCurrentNode(const unsigned short c,
+            const unsigned short userTypedChar, const int skipPos, const int depth);
+
+    int getMatchedProximityId(const int *currentChars, const unsigned short lowerC,
+            const unsigned short c, const int skipPos);
+
     const unsigned char *DICT;
     const int MAX_WORDS;
     const int MAX_WORD_LENGTH;
