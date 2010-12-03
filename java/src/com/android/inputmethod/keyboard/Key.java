@@ -220,11 +220,6 @@ public class Key {
         if (mCodes == null && !TextUtils.isEmpty(mLabel)) {
             mCodes = new int[] { mLabel.charAt(0) };
         }
-
-        if (mPopupCharacters == null || mPopupCharacters.length() == 0) {
-            // If there is a keyboard with no keys specified in popupCharacters
-            mPopupResId = 0;
-        }
     }
 
     /**
