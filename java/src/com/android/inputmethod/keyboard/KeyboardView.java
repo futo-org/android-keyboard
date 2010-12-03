@@ -73,6 +73,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final boolean DEBUG_SHOW_ALIGN = false;
     private static final boolean DEBUG_KEYBOARD_GRID = false;
 
+    private static final boolean ENABLE_CAPSLOCK_BY_LONGPRESS = false;
+    private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
+
     public static final int COLOR_SCHEME_WHITE = 0;
     public static final int COLOR_SCHEME_BLACK = 1;
 
@@ -265,8 +268,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         public void startLongPressShiftTimer(long delay, int keyIndex, PointerTracker tracker) {
             cancelLongPressTimers();
-            sendMessageDelayed(
-                    obtainMessage(MSG_LONGPRESS_SHIFT_KEY, keyIndex, 0, tracker), delay);
+            if (ENABLE_CAPSLOCK_BY_LONGPRESS) {
+                sendMessageDelayed(
+                        obtainMessage(MSG_LONGPRESS_SHIFT_KEY, keyIndex, 0, tracker), delay);
+            }
         }
 
         public void cancelLongPressTimers() {
@@ -397,6 +402,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         GestureDetector.SimpleOnGestureListener listener =
                 new GestureDetector.SimpleOnGestureListener() {
+            private boolean mProcessingDoubleTapEvent = false;
+
             @Override
             public boolean onFling(MotionEvent me1, MotionEvent me2, float velocityX,
                     float velocityY) {
@@ -431,6 +438,28 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                     }
                 }
                 return false;
+            }
+
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (ENABLE_CAPSLOCK_BY_DOUBLETAP && mKeyboard instanceof LatinKeyboard
+                        && ((LatinKeyboard) mKeyboard).isAlphaKeyboard()) {
+                    final int pointerIndex = e.getActionIndex();
+                    final int id = e.getPointerId(pointerIndex);
+                    final PointerTracker tracker = getPointerTracker(id);
+                    if (tracker.isOnShiftKey((int)e.getX(), (int)e.getY())) {
+                        onDoubleTapShiftKey(tracker);
+                        mProcessingDoubleTapEvent = true;
+                        return true;
+                    }
+                }
+                mProcessingDoubleTapEvent = false;
+                return false;
+            }
+
+            @Override
+            public boolean onDoubleTapEvent(MotionEvent e) {
+                return mProcessingDoubleTapEvent;
             }
         };
 
@@ -1055,6 +1084,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private void onLongPressShiftKey(PointerTracker tracker) {
         tracker.setAlreadyProcessed();
         mPointerQueue.remove(tracker);
+        mKeyboardActionListener.onKey(Keyboard.CODE_CAPSLOCK, null, 0, 0);
+    }
+
+    private void onDoubleTapShiftKey(PointerTracker tracker) {
+        // When shift key is double tapped, the first tap is correctly processed as usual tap. And
+        // the second tap is treated as this double tap event, so that we need not mark tracker
+        // calling setAlreadyProcessed() nor remove the tracker from mPointerQueueueue.
         mKeyboardActionListener.onKey(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 

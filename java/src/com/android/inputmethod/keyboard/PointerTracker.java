@@ -219,6 +219,11 @@ public class PointerTracker {
         return isModifierInternal(mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null));
     }
 
+    public boolean isOnShiftKey(int x, int y) {
+        final Key key = getKey(mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null));
+        return key != null && key.mCodes[0] == Keyboard.CODE_SHIFT;
+    }
+
     public boolean isSpaceKey(int keyIndex) {
         Key key = getKey(keyIndex);
         return key != null && key.mCodes[0] == Keyboard.CODE_SPACE;

@@ -64,4 +64,16 @@ public class PointerTrackerQueue {
     public void remove(PointerTracker tracker) {
         mQueue.remove(tracker);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (PointerTracker tracker : mQueue) {
+            if (sb.length() > 1)
+                sb.append(" ");
+            sb.append(String.format("%d", tracker.mPointerId));
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }
