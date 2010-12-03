@@ -366,15 +366,15 @@ public class Keyboard {
     }
 
     public boolean isAlphaKeyboard() {
-        return mId.isAlphabetKeyboard();
+        return mId != null && mId.isAlphabetKeyboard();
     }
 
     public boolean isPhoneKeyboard() {
-        return mId.isPhoneKeyboard();
+        return mId != null && mId.isPhoneKeyboard();
     }
 
     public boolean isNumberKeyboard() {
-        return mId.isNumberKeyboard();
+        return mId != null && mId.isNumberKeyboard();
     }
 
     public void setSpaceKey(Key space) {
