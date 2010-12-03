@@ -1864,13 +1864,14 @@ public class LatinIME extends InputMethodService
     }
 
     public void pickSuggestionManually(int index, CharSequence suggestion) {
-        if (mAfterVoiceInput && mShowingVoiceSuggestions) mVoiceInput.logNBestChoose(index);
         List<CharSequence> suggestions = mCandidateView.getSuggestions();
 
-        if (mAfterVoiceInput && !mShowingVoiceSuggestions) {
+        if (mAfterVoiceInput && mShowingVoiceSuggestions) {
             mVoiceInput.flushAllTextModificationCounters();
             // send this intent AFTER logging any prior aggregated edits.
-            mVoiceInput.logTextModifiedByChooseSuggestion(suggestion.length());
+            mVoiceInput.logTextModifiedByChooseSuggestion(suggestion.toString(), index,
+                                                          mWordSeparators,
+                                                          getCurrentInputConnection());
         }
 
         final boolean correcting = TextEntryState.isCorrecting();
