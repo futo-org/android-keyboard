@@ -15,9 +15,9 @@
 ** limitations under the License.
 */
 
+#include <assert.h>
 #include <stdio.h>
 #include <fcntl.h>
-#include <sys/mman.h>
 #include <string.h>
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
@@ -185,66 +185,24 @@ void UnigramDictionary::getWords(const int initialPos, const int inputLength, co
 void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, const int depth,
         const int maxDepth, const bool traverseAllNodes, const int snr, const int inputIndex,
         const int diffs, const int skipPos, int *nextLetters, const int nextLettersSize) {
-    int position = pos;
-    // If inputIndex is greater than mInputLength, that means there are no proximity chars.
+    int siblingPos = pos;
     for (int i = 0; i < childrenCount; ++i) {
-        // -- at char
-        const unsigned short c = Dictionary::getChar(DICT, &position);
-        // -- at flag/add
-        const unsigned short lowerC = toLowerCase(c);
-        const bool terminal = Dictionary::getTerminal(DICT, &position);
-        int childrenPosition = Dictionary::getAddress(DICT, &position);
-        int matchedProximityCharId = -1;
-        const bool needsToTraverseNextNode = childrenPosition != 0;
-        // -- after address or flag
-        int freq = 1;
-        // If terminal, increment pos
-        if (terminal) freq = Dictionary::getFreq(DICT, IS_LATEST_DICT_VERSION, &position);
-        // -- after add or freq
-        bool newTraverseAllNodes = traverseAllNodes;
-        int newSnr = snr;
-        int newDiffs = diffs;
-        int newInputIndex = inputIndex;
-        const int newDepth = depth + 1;
+        int newCount;
+        int newChildPosition;
+        int newDepth;
+        bool newTraverseAllNodes;
+        int newSnr;
+        int newInputIndex;
+        int newDiffs;
+        int newSiblingPos;
+        const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, depth, maxDepth,
+                traverseAllNodes, snr, inputIndex, diffs, skipPos, nextLetters, nextLettersSize,
+                &newCount, &newChildPosition, &newDepth, &newTraverseAllNodes, &newSnr,
+                &newInputIndex, &newDiffs, &newSiblingPos);
+        siblingPos = newSiblingPos;
 
-        // If we are only doing traverseAllNodes, no need to look at the typed characters.
-        if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
-            mWord[depth] = c;
-            if (traverseAllNodes && terminal) {
-                onTerminalWhenUserTypedLengthIsGreaterThanInputLength(mWord, mInputLength, depth,
-                        snr, nextLetters, nextLettersSize, skipPos, freq);
-            }
-        } else {
-            int *currentChars = mInputCodes + (inputIndex * MAX_ALTERNATIVES);
-            matchedProximityCharId = getMatchedProximityId(currentChars, lowerC, c, skipPos);
-            if (matchedProximityCharId < 0) continue;
-            mWord[depth] = c;
-            // If inputIndex is greater than mInputLength, that means there is no
-            // proximity chars. So, we don't need to check proximity.
-            const int addedWeight = matchedProximityCharId == 0 ? TYPED_LETTER_MULTIPLIER : 1;
-            const bool isSameAsUserTypedLength = mInputLength == inputIndex + 1;
-            if (isSameAsUserTypedLength && terminal) {
-                onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, depth, snr,
-                        skipPos, freq, addedWeight);
-            }
-            if (!needsToTraverseNextNode) continue;
-            // Start traversing all nodes after the index exceeds the user typed length
-            newTraverseAllNodes = isSameAsUserTypedLength;
-            newSnr *= addedWeight;
-            newDiffs += (matchedProximityCharId > 0);
-            ++newInputIndex;
-        }
-        // Optimization: Prune out words that are too long compared to how much was typed.
-        if (newDepth > maxDepth || newDiffs > mMaxEditDistance) {
-            continue;
-        }
-        if (mInputLength <= newInputIndex) {
-            newTraverseAllNodes = true;
-        }
-        if (needsToTraverseNextNode) {
-            // get the count of nodes and increment childAddress.
-            const int count = Dictionary::getCount(DICT, &childrenPosition);
-            getWordsRec(count, childrenPosition, newDepth, maxDepth, newTraverseAllNodes,
+        if (needsToTraverseChildrenNodes) {
+            getWordsRec(newCount, newChildPosition, newDepth, maxDepth, newTraverseAllNodes,
                     newSnr, newInputIndex, newDiffs, skipPos, nextLetters, nextLettersSize);
         }
     }
@@ -279,7 +237,8 @@ inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
 }
 
 inline int UnigramDictionary::getMatchedProximityId(const int *currentChars,
-        const unsigned short lowerC, const unsigned short c, const int skipPos) {
+        const unsigned short c, const int skipPos) {
+    const unsigned short lowerC = toLowerCase(c);
     int j = 0;
     while (currentChars[j] > 0) {
         const bool matched = (currentChars[j] == lowerC || currentChars[j] == c);
@@ -293,6 +252,70 @@ inline int UnigramDictionary::getMatchedProximityId(const int *currentChars,
         ++j;
     }
     return -1;
+}
+
+inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
+        const int maxDepth, const bool traverseAllNodes, const int snr, const int inputIndex,
+        const int diffs, const int skipPos, int *nextLetters, const int nextLettersSize,
+        int *newCount, int *newChildPosition, int *newDepth, bool *newTraverseAllNodes,
+        int *newSnr, int*newInputIndex, int *newDiffs, int *nextSiblingPosition) {
+    unsigned short c;
+    int childPosition;
+    bool terminal;
+    int freq;
+    *nextSiblingPosition = Dictionary::setDictionaryValues(DICT, IS_LATEST_DICT_VERSION, pos, &c,
+            &childPosition, &terminal, &freq);
+
+    const bool needsToTraverseChildrenNodes = childPosition != 0;
+
+    // If we are only doing traverseAllNodes, no need to look at the typed characters.
+    if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
+        mWord[depth] = c;
+        if (traverseAllNodes && terminal) {
+            onTerminalWhenUserTypedLengthIsGreaterThanInputLength(mWord, mInputLength, depth,
+                    snr, nextLetters, nextLettersSize, skipPos, freq);
+        }
+        if (!needsToTraverseChildrenNodes) return false;
+        *newTraverseAllNodes = traverseAllNodes;
+        *newSnr = snr;
+        *newDiffs = diffs;
+        *newInputIndex = inputIndex;
+        *newDepth = depth + 1;
+    } else {
+        int *currentChars = mInputCodes + (inputIndex * MAX_ALTERNATIVES);
+        int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos);
+        if (matchedProximityCharId < 0) return false;
+        mWord[depth] = c;
+        // If inputIndex is greater than mInputLength, that means there is no
+        // proximity chars. So, we don't need to check proximity.
+        const int addedWeight = matchedProximityCharId == 0 ? TYPED_LETTER_MULTIPLIER : 1;
+        const bool isSameAsUserTypedLength = mInputLength == inputIndex + 1;
+        if (isSameAsUserTypedLength && terminal) {
+            onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, depth, snr,
+                    skipPos, freq, addedWeight);
+        }
+        if (!needsToTraverseChildrenNodes) return false;
+        // Start traversing all nodes after the index exceeds the user typed length
+        *newTraverseAllNodes = isSameAsUserTypedLength;
+        *newSnr = snr * addedWeight;
+        *newDiffs = diffs + (matchedProximityCharId > 0);
+        *newInputIndex = inputIndex + 1;
+        *newDepth = depth + 1;
+    }
+    // Optimization: Prune out words that are too long compared to how much was typed.
+    if (*newDepth > maxDepth || *newDiffs > mMaxEditDistance) {
+        return false;
+    }
+
+    // If inputIndex is greater than mInputLength, that means there are no proximity chars.
+    if (mInputLength <= *newInputIndex) {
+        *newTraverseAllNodes = true;
+    }
+    // get the count of nodes and increment childAddress.
+    *newCount = Dictionary::getCount(DICT, &childPosition);
+    *newChildPosition = childPosition;
+    if (DEBUG_DICT) assert(needsToTraverseChildrenNodes);
+    return needsToTraverseChildrenNodes;
 }
 
 } // namespace latinime

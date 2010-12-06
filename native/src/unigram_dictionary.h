@@ -54,9 +54,12 @@ private:
             const int snr, const int skipPos, const int freq, const int addedWeight);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
-    int getMatchedProximityId(const int *currentChars, const unsigned short lowerC,
-            const unsigned short c, const int skipPos);
-
+    int getMatchedProximityId(const int *currentChars, const unsigned short c, const int skipPos);
+    bool processCurrentNode(const int pos, const int depth,
+            const int maxDepth, const bool traverseAllNodes, const int snr, const int inputIndex,
+            const int diffs, const int skipPos, int *nextLetters, const int nextLettersSize,
+            int *newCount, int *newChildPosition, int *newDepth, bool *newTraverseAllNodes,
+            int *newSnr, int*newInputIndex, int *newDiffs, int *nextSiblingPosition);
     const unsigned char *DICT;
     const int MAX_WORDS;
     const int MAX_WORD_LENGTH;

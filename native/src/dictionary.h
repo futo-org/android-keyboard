@@ -54,6 +54,10 @@ public:
     static int getAddress(const unsigned char *dict, int *pos);
     static int getFreq(const unsigned char *dict, const bool isLatestDictVersion, int *pos);
     static int wideStrLen(unsigned short *str);
+    // returns next sibling's position
+    static int setDictionaryValues(const unsigned char *dict, const bool isLatestDictVersion,
+            const int pos, unsigned short *c, int *childrenPosition,
+            bool *terminal, int *freq);
 
 private:
     bool hasBigram();
@@ -125,6 +129,21 @@ inline int Dictionary::wideStrLen(unsigned short *str) {
     while (*end)
         end++;
     return end - str;
+}
+
+inline int Dictionary::setDictionaryValues(const unsigned char *dict,
+        const bool isLatestDictVersion, const int pos, unsigned short *c,int *childrenPosition,
+        bool *terminal, int *freq) {
+    int position = pos;
+    // -- at char
+    *c = Dictionary::getChar(dict, &position);
+    // -- at flag/add
+    *terminal = Dictionary::getTerminal(dict, &position);
+    *childrenPosition = Dictionary::getAddress(dict, &position);
+    // -- after address or flag
+    *freq = (*terminal) ? Dictionary::getFreq(dict, isLatestDictVersion, &position) : 1;
+    // returns next sibling's position
+    return position;
 }
 
 }; // namespace latinime
