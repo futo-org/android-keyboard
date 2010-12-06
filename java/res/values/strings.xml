@@ -395,15 +395,15 @@
     <string name="subtype_mode_voice">voice</string>
     <string name="subtype_mode_cs_keyboard">Czech Keyboard</string>
     <string name="subtype_mode_da_keyboard">Danish Keyboard</string>
-    <string name="subtype_mode_de_keyboard">German Keyboard</string>
+    <string name="subtype_mode_de_keyboard">German Keyboard</string>
+    <string name="subtype_mode_en_GB_keyboard">English (United Kingdom) Keyboard</string>
     <string name="subtype_mode_en_US_keyboard">English (United States) Keyboard</string>
-    <string name="subtype_mode_en_GB_keyboard">English (Great Britain) Keyboard</string>
     <string name="subtype_mode_es_keyboard">Spanish Keyboard</string>
     <string name="subtype_mode_es_US_keyboard">Spanish (United States) Keyboard</string>
     <string name="subtype_mode_fr_keyboard">French Keyboard</string>
     <string name="subtype_mode_fr_CA_keyboard">French (Canada) Keyboard</string>
     <string name="subtype_mode_fr_CH_keyboard">French (Switzerland) Keyboard</string>
-    <string name="subtype_mode_it_keyboard">Italian Keyboard</string>
+    <string name="subtype_mode_it_keyboard">Italian Keyboard</string>
     <string name="subtype_mode_nb_keyboard">Norwegian Keyboard</string>
     <string name="subtype_mode_nl_keyboard">Dutch Keyboard</string>
     <string name="subtype_mode_ru_keyboard">Russian Keyboard</string>
@@ -411,9 +411,9 @@
     <string name="subtype_mode_sv_keyboard">Swedish Keyboard</string>
 
     <string name="subtype_mode_cs_voice">Czech Voice</string>
-    <string name="subtype_mode_de_voice">German Voice</string>
+    <string name="subtype_mode_de_voice">German Voice</string>
     <string name="subtype_mode_en_AU_voice">English (Australia) Voice</string>
-    <string name="subtype_mode_en_GB_voice">English (Great Britain) Voice</string>
+    <string name="subtype_mode_en_GB_voice">English (United Kingdom) Voice</string>
     <string name="subtype_mode_en_IN_voice">English (India) Voice</string>
     <string name="subtype_mode_en_NZ_voice">English (New Zealand) Voice</string>
     <string name="subtype_mode_en_US_voice">English (United States) Voice</string>
