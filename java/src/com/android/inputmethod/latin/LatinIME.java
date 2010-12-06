@@ -1050,7 +1050,7 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private void onOptionKeyPressed() {
+    private void onSettingsKeyPressed() {
         if (!isShowingOptionDialog()) {
             if (LatinIMEUtil.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
                 showOptionsMenu();
@@ -1060,7 +1060,7 @@ public class LatinIME extends InputMethodService
         }
     }
 
-    private void onOptionKeyLongPressed() {
+    private void onSettingsKeyLongPressed() {
         if (!isShowingOptionDialog()) {
             if (LatinIMEUtil.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
                 mImm.showInputMethodPicker();
@@ -1096,7 +1096,7 @@ public class LatinIME extends InputMethodService
             if (!distinctMultiTouch)
                 switcher.toggleShift();
             break;
-        case Keyboard.CODE_MODE_CHANGE:
+        case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
             if (!distinctMultiTouch)
                 switcher.changeKeyboardMode();
@@ -1106,11 +1106,11 @@ public class LatinIME extends InputMethodService
                 handleClose();
             }
             break;
-        case Keyboard.CODE_OPTIONS:
-            onOptionKeyPressed();
+        case Keyboard.CODE_SETTINGS:
+            onSettingsKeyPressed();
             break;
-        case Keyboard.CODE_OPTIONS_LONGPRESS:
-            onOptionKeyLongPressed();
+        case Keyboard.CODE_SETTINGS_LONGPRESS:
+            onSettingsKeyLongPressed();
             break;
         case Keyboard.CODE_NEXT_LANGUAGE:
             toggleLanguage(false, true);
@@ -1929,7 +1929,7 @@ public class LatinIME extends InputMethodService
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
             switcher.onPressShift();
-        } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_MODE_CHANGE) {
+        } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             switcher.onPressSymbol();
         } else {
             switcher.onOtherKeyPressed();
@@ -1944,7 +1944,7 @@ public class LatinIME extends InputMethodService
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
             switcher.onReleaseShift();
-        } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_MODE_CHANGE) {
+        } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             switcher.onReleaseSymbol();
         }
     }

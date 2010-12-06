@@ -208,7 +208,7 @@ public class PointerTracker {
             return false;
         int primaryCode = key.mCodes[0];
         return primaryCode == Keyboard.CODE_SHIFT
-                || primaryCode == Keyboard.CODE_MODE_CHANGE;
+                || primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL;
     }
 
     public boolean isModifier() {

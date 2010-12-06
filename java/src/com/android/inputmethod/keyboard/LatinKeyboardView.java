@@ -88,8 +88,8 @@ public class LatinKeyboardView extends KeyboardView {
     @Override
     protected boolean onLongPress(Key key) {
         int primaryCode = key.mCodes[0];
-        if (primaryCode == Keyboard.CODE_OPTIONS) {
-            return invokeOnKey(Keyboard.CODE_OPTIONS_LONGPRESS);
+        if (primaryCode == Keyboard.CODE_SETTINGS) {
+            return invokeOnKey(Keyboard.CODE_SETTINGS_LONGPRESS);
         } else if (primaryCode == '0' && getLatinKeyboard().isPhoneKeyboard()) {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');

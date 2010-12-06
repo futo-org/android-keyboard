@@ -59,25 +59,26 @@ public class Keyboard {
     public static final int EDGE_TOP = 0x04;
     public static final int EDGE_BOTTOM = 0x08;
 
+    /** Some common keys code.  These should be aligned with values/keycodes.xml */
     public static final int CODE_ENTER = '\n';
     public static final int CODE_TAB = '\t';
     public static final int CODE_SPACE = ' ';
     public static final int CODE_PERIOD = '.';
 
+    /** Special keys code.  These should be aligned with values/keycodes.xml */
     public static final int CODE_SHIFT = -1;
-    public static final int CODE_MODE_CHANGE = -2;
+    public static final int CODE_SWITCH_ALPHA_SYMBOL = -2;
     public static final int CODE_CANCEL = -3;
     public static final int CODE_DONE = -4;
     public static final int CODE_DELETE = -5;
     public static final int CODE_ALT = -6;
-
-    public static final int CODE_OPTIONS = -100;
-    public static final int CODE_OPTIONS_LONGPRESS = -101;
+    public static final int CODE_SETTINGS = -100;
+    public static final int CODE_SETTINGS_LONGPRESS = -101;
+    // TODO: remove this once LatinIME stops referring to this.
+    public static final int CODE_VOICE = -102;
     public static final int CODE_CAPSLOCK = -103;
     public static final int CODE_NEXT_LANGUAGE = -104;
     public static final int CODE_PREV_LANGUAGE = -105;
-    // TODO: remove this once LatinIME stops referring to this.
-    public static final int CODE_VOICE = -109;
 
     /** Horizontal gap default for all rows */
     private int mDefaultHorizontalGap;

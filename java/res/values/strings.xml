@@ -410,7 +410,7 @@
     <string name="subtype_mode_sr_keyboard">Serbian Keyboard</string>
     <string name="subtype_mode_sv_keyboard">Swedish Keyboard</string>
 
-    <string name="subtype_mode_cs_voice">Czech　Voice</string>
+    <string name="subtype_mode_cs_voice">Czech Voice</string>
     <string name="subtype_mode_de_voice">German Voice</string>
     <string name="subtype_mode_en_AU_voice">English (Australia) Voice</string>
     <string name="subtype_mode_en_GB_voice">English (Great Britain) Voice</string>
