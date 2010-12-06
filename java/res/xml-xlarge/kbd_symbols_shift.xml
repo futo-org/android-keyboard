@@ -56,9 +56,11 @@
         <Key
             latin:keyLabel="×" />
         <Key
-            latin:keyLabel="{" />
+            latin:keyLabel="§"
+            latin:popupKeyboard="@xml/kbd_popup_template"
+            latin:popupCharacters="¶" />
         <Key
-            latin:keyLabel="}" />
+            latin:keyLabel="Δ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="9.331%p"
@@ -85,17 +87,15 @@
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="↑↓←→" />
         <Key
-            latin:keyLabel="°"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="¶§" />
+            latin:keyLabel="°" />
         <Key
             latin:keyLabel="±"
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="∞" />
         <Key
-            latin:keyLabel="[" />
+            latin:keyLabel="{" />
         <Key
-            latin:keyLabel="]" />
+            latin:keyLabel="}" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyWidth="15.750%p"
@@ -113,13 +113,11 @@
         <Key
             latin:keyLabel="©" />
         <Key
-            latin:keyLabel="®"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="™" />
+            latin:keyLabel="®" />
         <Key
-            latin:keyLabel="{" />
+            latin:keyLabel="™" />
         <Key
-            latin:keyLabel="}" />
+            latin:keyLabel="℅" />
         <Key
             latin:keyLabel="," />
         <Key
