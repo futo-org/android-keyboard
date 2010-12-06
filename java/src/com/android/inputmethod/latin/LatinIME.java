@@ -645,13 +645,18 @@ public class LatinIME extends InputMethodService
     }
 
     private void checkReCorrectionOnStart() {
-        if (mReCorrectionEnabled && isSuggestionShown() && isPredictionOn()) {
+        if (!mReCorrectionEnabled) return;
+
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+        // There could be a pending composing span.  Clean it up first.
+        ic.finishComposingText();
+
+        if (isSuggestionShown() && isPredictionOn()) {
             // First get the cursor position. This is required by setOldSuggestions(), so that
             // it can pass the correct range to setComposingRegion(). At this point, we don't
             // have valid values for mLastSelectionStart/Stop because onUpdateSelection() has
             // not been called yet.
-            InputConnection ic = getCurrentInputConnection();
-            if (ic == null) return;
             ExtractedTextRequest etr = new ExtractedTextRequest();
             etr.token = 0; // anything is fine here
             ExtractedText et = ic.getExtractedText(etr, 0);
@@ -677,8 +682,7 @@ public class LatinIME extends InputMethodService
         mVoiceConnector.flushVoiceInputLogs(mConfigurationChanging);
 
         KeyboardView inputView = mKeyboardSwitcher.getInputView();
-        if (inputView != null)
-            inputView.closing();
+        if (inputView != null) inputView.closing();
         if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
         if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
     }
@@ -687,8 +691,7 @@ public class LatinIME extends InputMethodService
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         KeyboardView inputView = mKeyboardSwitcher.getInputView();
-        if (inputView != null)
-            inputView.setForeground(false);
+        if (inputView != null) inputView.setForeground(false);
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestions();
         mHandler.cancelUpdateOldSuggestions();
