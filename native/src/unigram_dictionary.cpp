@@ -87,12 +87,11 @@ void UnigramDictionary::initSuggestions(int *codes, int codesSize, unsigned shor
 
 int UnigramDictionary::getSuggestionCandidates(int inputLength, int skipPos,
         int *nextLetters, int nextLettersSize) {
+    int initialPos = 0;
     if (IS_LATEST_DICT_VERSION) {
-        getWordsRec(DICTIONARY_HEADER_SIZE, 0, inputLength * 3, false, 1, 0, 0, skipPos,
-                nextLetters, nextLettersSize);
-    } else {
-        getWordsRec(0, 0, inputLength * 3, false, 1, 0, 0, skipPos, nextLetters, nextLettersSize);
+        initialPos = DICTIONARY_HEADER_SIZE;
     }
+    getWords(initialPos, inputLength, skipPos, nextLetters, nextLettersSize);
 
     // Get the word count
     int suggestedWordsCount = 0;
@@ -174,50 +173,49 @@ bool UnigramDictionary::sameAsTyped(unsigned short *word, int length) {
 
 static const char QUOTE = '\'';
 
-// snr : frequency?
-void UnigramDictionary::getWordsRec(int pos, int depth, int maxDepth, bool traverseAllNodes,
-        int snr, int inputIndex, int diffs, int skipPos, int *nextLetters, int nextLettersSize) {
-    // Optimization: Prune out words that are too long compared to how much was typed.
-    if (depth > maxDepth || diffs > mMaxEditDistance) {
-        return;
-    }
-    // get the count of nodes and increment pos.
-    int count = Dictionary::getCount(DICT, &pos);
-    int *currentChars = NULL;
-    // If inputIndex is greater than mInputLength, that means there are no proximity chars.
-    if (mInputLength <= inputIndex) {
-        traverseAllNodes = true;
-    } else {
-        currentChars = mInputCodes + (inputIndex * MAX_ALTERNATIVES);
-    }
+void UnigramDictionary::getWords(const int initialPos, const int inputLength, const int skipPos,
+        int *nextLetters, const int nextLettersSize) {
+    int initialPosition = initialPos;
+    const int count = Dictionary::getCount(DICT, &initialPosition);
+    getWordsRec(count, initialPosition, 0, inputLength * MAX_DEPTH_MULTIPLIER,
+            mInputLength <= 0, 1, 0, 0, skipPos, nextLetters, nextLettersSize);
+}
 
-    for (int i = 0; i < count; ++i) {
+// snr : frequency?
+void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, const int depth,
+        const int maxDepth, const bool traverseAllNodes, const int snr, const int inputIndex,
+        const int diffs, const int skipPos, int *nextLetters, const int nextLettersSize) {
+    int position = pos;
+    // If inputIndex is greater than mInputLength, that means there are no proximity chars.
+    for (int i = 0; i < childrenCount; ++i) {
         // -- at char
-        const unsigned short c = Dictionary::getChar(DICT, &pos);
+        const unsigned short c = Dictionary::getChar(DICT, &position);
         // -- at flag/add
         const unsigned short lowerC = toLowerCase(c);
-        const bool terminal = Dictionary::getTerminal(DICT, &pos);
-        const int childrenAddress = Dictionary::getAddress(DICT, &pos);
+        const bool terminal = Dictionary::getTerminal(DICT, &position);
+        int childrenPosition = Dictionary::getAddress(DICT, &position);
         int matchedProximityCharId = -1;
-        const bool needsToTraverseNextNode = childrenAddress != 0;
+        const bool needsToTraverseNextNode = childrenPosition != 0;
         // -- after address or flag
         int freq = 1;
         // If terminal, increment pos
-        if (terminal) freq = Dictionary::getFreq(DICT, IS_LATEST_DICT_VERSION, &pos);
+        if (terminal) freq = Dictionary::getFreq(DICT, IS_LATEST_DICT_VERSION, &position);
         // -- after add or freq
         bool newTraverseAllNodes = traverseAllNodes;
         int newSnr = snr;
         int newDiffs = diffs;
         int newInputIndex = inputIndex;
+        const int newDepth = depth + 1;
 
         // If we are only doing traverseAllNodes, no need to look at the typed characters.
-        if (traverseAllNodes || needsToSkipCurrentNode(c, currentChars[0], skipPos, depth)) {
+        if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
             mWord[depth] = c;
             if (traverseAllNodes && terminal) {
                 onTerminalWhenUserTypedLengthIsGreaterThanInputLength(mWord, mInputLength, depth,
                         snr, nextLetters, nextLettersSize, skipPos, freq);
             }
         } else {
+            int *currentChars = mInputCodes + (inputIndex * MAX_ALTERNATIVES);
             matchedProximityCharId = getMatchedProximityId(currentChars, lowerC, c, skipPos);
             if (matchedProximityCharId < 0) continue;
             mWord[depth] = c;
@@ -236,8 +234,17 @@ void UnigramDictionary::getWordsRec(int pos, int depth, int maxDepth, bool trave
             newDiffs += (matchedProximityCharId > 0);
             ++newInputIndex;
         }
+        // Optimization: Prune out words that are too long compared to how much was typed.
+        if (newDepth > maxDepth || newDiffs > mMaxEditDistance) {
+            continue;
+        }
+        if (mInputLength <= newInputIndex) {
+            newTraverseAllNodes = true;
+        }
         if (needsToTraverseNextNode) {
-            getWordsRec(childrenAddress, depth + 1, maxDepth, newTraverseAllNodes,
+            // get the count of nodes and increment childAddress.
+            const int count = Dictionary::getCount(DICT, &childrenPosition);
+            getWordsRec(count, childrenPosition, newDepth, maxDepth, newTraverseAllNodes,
                     newSnr, newInputIndex, newDiffs, skipPos, nextLetters, nextLettersSize);
         }
     }
@@ -265,17 +272,17 @@ inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsSameAsInputLength(
 }
 
 inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
-        const unsigned short userTypedChar, const int skipPos, const int depth) {
+        const int inputIndex, const int skipPos, const int depth) {
+    const unsigned short userTypedChar = (mInputCodes + (inputIndex * MAX_ALTERNATIVES))[0];
     // Skip the ' or other letter and continue deeper
     return (c == QUOTE && userTypedChar != QUOTE) || skipPos == depth;
 }
 
 inline int UnigramDictionary::getMatchedProximityId(const int *currentChars,
         const unsigned short lowerC, const unsigned short c, const int skipPos) {
-    bool matched = false;
     int j = 0;
     while (currentChars[j] > 0) {
-        matched = (currentChars[j] == lowerC || currentChars[j] == c);
+        const bool matched = (currentChars[j] == lowerC || currentChars[j] == c);
         // If skipPos is defined, not to search proximity collections.
         // First char is what user typed.
         if (matched) {

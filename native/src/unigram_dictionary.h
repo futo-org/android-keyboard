@@ -38,24 +38,22 @@ private:
     int getAddress(int *pos);
     int getFreq(int *pos);
     int wideStrLen(unsigned short *str);
-
     bool sameAsTyped(unsigned short *word, int length);
     bool addWord(unsigned short *word, int length, int frequency);
     unsigned short toLowerCase(unsigned short c);
-    void getWordsRec(int pos, int depth, int maxDepth, bool completion, int snr,
-            int inputIndex, int diffs, int skipPos, int *nextLetters, int nextLettersSize);
+    void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
+            const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
+            const int skipPos, int *nextLetters, const int nextLettersSize);
+    void getWords(const int initialPos, const int inputLength, const int skipPos, int *nextLetters,
+            const int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
-
     void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
             const int mInputLength, const int depth, const int snr, int *nextLetters,
             const int nextLettersSize, const int skipPos, const int freq);
-
     void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word, const int depth,
             const int snr, const int skipPos, const int freq, const int addedWeight);
-
     bool needsToSkipCurrentNode(const unsigned short c,
-            const unsigned short userTypedChar, const int skipPos, const int depth);
-
+            const int inputIndex, const int skipPos, const int depth);
     int getMatchedProximityId(const int *currentChars, const unsigned short lowerC,
             const unsigned short c, const int skipPos);
 
