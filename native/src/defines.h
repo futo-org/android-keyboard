@@ -50,8 +50,12 @@
 #define SUGGEST_MISSING_CHARACTERS true
 #define SUGGEST_MISSING_CHARACTERS_THRESHOLD 5
 
-#define MAX_WORD_LENGTH_INTERNAL 64
+// This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
+// This is only used for the size of array. Not to be used in c functions.
+#define MAX_WORD_LENGTH_INTERNAL 48
 
 #define MAX_DEPTH_MULTIPLIER 3
+
+#define min(a,b) ((a)<(b)?(a):(b))
 
 #endif // LATINIME_DEFINES_H

@@ -146,7 +146,7 @@ void BigramDictionary::searchForTerminalNode(int addressLookingFor, int frequenc
         bool firstAddress = true;
         bool haveToSearchAll = true;
 
-        if (depth >= 0) {
+        if (depth < MAX_WORD_LENGTH && depth >= 0) {
             word[depth] = (unsigned short) followingChar;
         }
         pos = followDownBranchAddress; // pos start at count
