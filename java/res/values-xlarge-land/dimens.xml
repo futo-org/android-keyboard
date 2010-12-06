@@ -22,4 +22,5 @@
     <dimen name="key_label_text_size">18dip</dimen>
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_alignment_padding">18dip</dimen>
+    <dimen name="candidate_strip_padding">40.0mm</dimen>
 </resources>
