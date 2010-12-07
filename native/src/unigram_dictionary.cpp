@@ -179,13 +179,63 @@ bool UnigramDictionary::sameAsTyped(unsigned short *word, int length) {
 
 static const char QUOTE = '\'';
 
-void UnigramDictionary::getWords(const int initialPos, const int inputLength, const int skipPos,
+// Keep this for comparing spec to new getWords
+void UnigramDictionary::getWordsOld(const int initialPos, const int inputLength, const int skipPos,
         int *nextLetters, const int nextLettersSize) {
     int initialPosition = initialPos;
     const int count = Dictionary::getCount(DICT, &initialPosition);
     getWordsRec(count, initialPosition, 0,
             min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH),
             mInputLength <= 0, 1, 0, 0, skipPos, nextLetters, nextLettersSize);
+}
+
+void UnigramDictionary::getWords(const int rootPos, const int inputLength, const int skipPos,
+        int *nextLetters, const int nextLettersSize) {
+    int rootPosition = rootPos;
+    const int MAX_DEPTH = min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
+    // Get the number of child of root, then increment the position
+    int childCount = Dictionary::getCount(DICT, &rootPosition);
+    int depth = 0;
+
+    mStackChildCount[0] = childCount;
+    mStackTraverseAll[0] = (mInputLength <= 0);
+    mStackNodeFreq[0] = 1;
+    mStackInputIndex[0] = 0;
+    mStackDiffs[0] = 0;
+    mStackSiblingPos[0] = rootPosition;
+
+    while (depth >= 0) {
+        if (mStackChildCount[depth] > 0) {
+            --mStackChildCount[depth];
+            bool traverseAllNodes = mStackTraverseAll[depth];
+            int snr = mStackNodeFreq[depth];
+            int inputIndex = mStackInputIndex[depth];
+            int diffs = mStackDiffs[depth];
+            int siblingPos = mStackSiblingPos[depth];
+            int firstChildPos;
+            // depth will never be greater than MAX_DEPTH because in that case,
+            // needsToTraverseChildrenNodes should be false
+            const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, depth,
+                    MAX_DEPTH, traverseAllNodes, snr, inputIndex, diffs, skipPos, nextLetters,
+                    nextLettersSize, &childCount, &firstChildPos, &traverseAllNodes, &snr,
+                    &inputIndex, &diffs, &siblingPos);
+            // Next sibling pos
+            mStackSiblingPos[depth] = siblingPos;
+            if (needsToTraverseChildrenNodes) {
+                // Goes to child node
+                ++depth;
+                mStackChildCount[depth] = childCount;
+                mStackTraverseAll[depth] = traverseAllNodes;
+                mStackNodeFreq[depth] = snr;
+                mStackInputIndex[depth] = inputIndex;
+                mStackDiffs[depth] = diffs;
+                mStackSiblingPos[depth] = firstChildPos;
+            }
+        } else {
+            // Goes to parent node
+            --depth;
+        }
+    }
 }
 
 // snr : frequency?
@@ -196,7 +246,7 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
     for (int i = 0; i < childrenCount; ++i) {
         int newCount;
         int newChildPosition;
-        int newDepth;
+        const int newDepth = depth + 1;
         bool newTraverseAllNodes;
         int newSnr;
         int newInputIndex;
@@ -204,7 +254,7 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
         int newSiblingPos;
         const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, depth, maxDepth,
                 traverseAllNodes, snr, inputIndex, diffs, skipPos, nextLetters, nextLettersSize,
-                &newCount, &newChildPosition, &newDepth, &newTraverseAllNodes, &newSnr,
+                &newCount, &newChildPosition, &newTraverseAllNodes, &newSnr,
                 &newInputIndex, &newDiffs, &newSiblingPos);
         siblingPos = newSiblingPos;
 
@@ -264,7 +314,7 @@ inline int UnigramDictionary::getMatchedProximityId(const int *currentChars,
 inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
         const int maxDepth, const bool traverseAllNodes, const int snr, const int inputIndex,
         const int diffs, const int skipPos, int *nextLetters, const int nextLettersSize,
-        int *newCount, int *newChildPosition, int *newDepth, bool *newTraverseAllNodes,
+        int *newCount, int *newChildPosition, bool *newTraverseAllNodes,
         int *newSnr, int*newInputIndex, int *newDiffs, int *nextSiblingPosition) {
     unsigned short c;
     int childPosition;
@@ -287,7 +337,6 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         *newSnr = snr;
         *newDiffs = diffs;
         *newInputIndex = inputIndex;
-        *newDepth = depth + 1;
     } else {
         int *currentChars = mInputCodes + (inputIndex * MAX_ALTERNATIVES);
         int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos);
@@ -307,10 +356,9 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         *newSnr = snr * addedWeight;
         *newDiffs = diffs + (matchedProximityCharId > 0);
         *newInputIndex = inputIndex + 1;
-        *newDepth = depth + 1;
     }
     // Optimization: Prune out words that are too long compared to how much was typed.
-    if (*newDepth > maxDepth || *newDiffs > mMaxEditDistance) {
+    if (depth >= maxDepth || *newDiffs > mMaxEditDistance) {
         return false;
     }
 
