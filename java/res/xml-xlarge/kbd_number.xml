@@ -128,6 +128,9 @@
             latin:keyLabel="0" />
         <Key
             latin:keyLabel="#" />
+        <Key
+            latin:keyStyle="micKeyStyle"
+            latin:keyWidth="8.042%p" />
         <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
              the touch event on the area, "#" is intentionally not marked as a right edge key. -->
     </Row>

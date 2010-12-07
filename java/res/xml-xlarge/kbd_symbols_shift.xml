@@ -142,5 +142,7 @@
         <Key
             latin:keyStyle="spaceKeyStyle"
             latin:keyWidth="37.454%p" />
+        <Key
+            latin:keyStyle="micKeyStyle" />
     </Row>
 </Keyboard>

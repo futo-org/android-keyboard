@@ -178,5 +178,7 @@
             latin:popupCharacters="“”«»˝" />
         <Key
             latin:keyLabel="_" />
+        <Key
+            latin:keyStyle="micKeyStyle" />
     </Row>
 </Keyboard>

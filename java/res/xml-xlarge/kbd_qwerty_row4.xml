@@ -104,5 +104,7 @@
                     latin:popupCharacters="_" />
             </default>
         </switch>
+        <Key
+            latin:keyStyle="micKeyStyle" />
     </Row>
 </merge>
