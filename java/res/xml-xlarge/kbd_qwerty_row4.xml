@@ -45,8 +45,23 @@
                     latin:keyWidth="16.084%p" />
             </case>
             <default>
-                <Key
-                    latin:keyStyle="smileyKeyStyle" />
+                <switch>
+                    <case
+                        latin:imeOptions="actionSearch"
+                    >
+                        <Key
+                            latin:keyLabel=":"
+                            latin:manualTemporaryUpperCaseCode="43"
+                            latin:keyHintIcon="@drawable/key_hint_plus_holo"
+                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
+                            latin:popupKeyboard="@xml/kbd_popup_template"
+                            latin:popupCharacters="+" />
+                    </case>
+                    <default>
+                        <Key
+                            latin:keyStyle="smileyKeyStyle" />
+                    </default>
+                </switch>
                 <Key
                     latin:keyLabel="/"
                     latin:manualTemporaryUpperCaseCode="64"
