@@ -50,7 +50,6 @@
                 latin:keyIcon="@drawable/sym_keyboard_return_holo"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_return"
                 latin:parentStyle="functionalKeyStyle" />
-            1
             <key-style
                 latin:styleName="spaceKeyStyle"
                 latin:codes="@integer/key_space"
@@ -69,6 +68,12 @@
                 latin:keyOutputText=";-) "
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupKeyboard="@xml/popup_smileys" />
+            <key-style
+                latin:styleName="micKeyStyle"
+                latin:codes="@integer/key_voice"
+                latin:keyIcon="@drawable/sym_keyboard_mic"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
+                latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
             latin:colorScheme="black"
@@ -113,6 +118,12 @@
                 latin:keyOutputText=";-) "
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupKeyboard="@xml/popup_smileys" />
+            <key-style
+                latin:styleName="micKeyStyle"
+                latin:codes="@integer/key_voice"
+                latin:keyIcon="@drawable/sym_bkeyboard_mic"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
+                latin:parentStyle="functionalKeyStyle" />
         </case>
     </switch>
     <key-style
