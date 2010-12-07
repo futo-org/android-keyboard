@@ -44,8 +44,11 @@ private:
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, int *nextLetters, const int nextLettersSize);
-    void getWords(const int initialPos, const int inputLength, const int skipPos, int *nextLetters,
-            const int nextLettersSize);
+    void getWords(const int rootPos, const int inputLength, const int skipPos,
+            int *nextLetters, const int nextLettersSize);
+    // Keep getWordsOld for comparing performance between getWords and getWordsOld
+    void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
+            int *nextLetters, const int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
     void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
             const int mInputLength, const int depth, const int snr, int *nextLetters,
@@ -58,7 +61,7 @@ private:
     bool processCurrentNode(const int pos, const int depth,
             const int maxDepth, const bool traverseAllNodes, const int snr, const int inputIndex,
             const int diffs, const int skipPos, int *nextLetters, const int nextLettersSize,
-            int *newCount, int *newChildPosition, int *newDepth, bool *newTraverseAllNodes,
+            int *newCount, int *newChildPosition, bool *newTraverseAllNodes,
             int *newSnr, int*newInputIndex, int *newDiffs, int *nextSiblingPosition);
     const unsigned char *DICT;
     const int MAX_WORDS;
@@ -75,6 +78,13 @@ private:
     // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
     int mMaxEditDistance;
+
+    int mStackChildCount[MAX_WORD_LENGTH_INTERNAL];
+    bool mStackTraverseAll[MAX_WORD_LENGTH_INTERNAL];
+    int mStackNodeFreq[MAX_WORD_LENGTH_INTERNAL];
+    int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];
+    int mStackDiffs[MAX_WORD_LENGTH_INTERNAL];
+    int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];
 };
 
 // ----------------------------------------------------------------------------
