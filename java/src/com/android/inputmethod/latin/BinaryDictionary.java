@@ -170,12 +170,12 @@ public class BinaryDictionary extends Dictionary {
                 mOutputChars_bigrams, mFrequencies_bigrams, MAX_WORD_LENGTH, MAX_BIGRAMS,
                 MAX_ALTERNATIVES);
 
-        for (int j = 0; j < count; j++) {
+        for (int j = 0; j < count; ++j) {
             if (mFrequencies_bigrams[j] < 1) break;
-            int start = j * MAX_WORD_LENGTH;
+            final int start = j * MAX_WORD_LENGTH;
             int len = 0;
-            while (mOutputChars_bigrams[start + len] != 0) {
-                len++;
+            while (len <  MAX_WORD_LENGTH && mOutputChars_bigrams[start + len] != 0) {
+                ++len;
             }
             if (len > 0) {
                 callback.addWord(mOutputChars_bigrams, start, len, mFrequencies_bigrams[j],
@@ -204,12 +204,12 @@ public class BinaryDictionary extends Dictionary {
                 mFrequencies, nextLettersFrequencies,
                 nextLettersFrequencies != null ? nextLettersFrequencies.length : 0);
 
-        for (int j = 0; j < count; j++) {
+        for (int j = 0; j < count; ++j) {
             if (mFrequencies[j] < 1) break;
-            int start = j * MAX_WORD_LENGTH;
+            final int start = j * MAX_WORD_LENGTH;
             int len = 0;
-            while (mOutputChars[start + len] != 0) {
-                len++;
+            while (len < MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
+                ++len;
             }
             if (len > 0) {
                 callback.addWord(mOutputChars, start, len, mFrequencies[j], mDicTypeId,

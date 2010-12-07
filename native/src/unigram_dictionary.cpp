@@ -16,8 +16,8 @@
 */
 
 #include <assert.h>
-#include <stdio.h>
 #include <fcntl.h>
+#include <stdio.h>
 #include <string.h>
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
@@ -78,6 +78,7 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
 
 void UnigramDictionary::initSuggestions(int *codes, int codesSize, unsigned short *outWords,
         int *frequencies) {
+    if (DEBUG_DICT) LOGI("initSuggest");
     mFrequencies = frequencies;
     mOutputChars = outWords;
     mInputCodes = codes;
@@ -87,6 +88,7 @@ void UnigramDictionary::initSuggestions(int *codes, int codesSize, unsigned shor
 
 int UnigramDictionary::getSuggestionCandidates(int inputLength, int skipPos,
         int *nextLetters, int nextLettersSize) {
+    if (DEBUG_DICT) LOGI("getSuggestionCandidates");
     int initialPos = 0;
     if (IS_LATEST_DICT_VERSION) {
         initialPos = DICTIONARY_HEADER_SIZE;
@@ -114,6 +116,10 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
         char s[length + 1];
         for (int i = 0; i <= length; i++) s[i] = word[i];
         LOGI("Found word = %s, freq = %d : \n", s, frequency);
+    }
+    if (length > MAX_WORD_LENGTH) {
+        if (DEBUG_DICT) LOGI("Exceeded max word length.");
+        return false;
     }
 
     // Find the right insertion point
@@ -177,7 +183,8 @@ void UnigramDictionary::getWords(const int initialPos, const int inputLength, co
         int *nextLetters, const int nextLettersSize) {
     int initialPosition = initialPos;
     const int count = Dictionary::getCount(DICT, &initialPosition);
-    getWordsRec(count, initialPosition, 0, inputLength * MAX_DEPTH_MULTIPLIER,
+    getWordsRec(count, initialPosition, 0,
+            min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH),
             mInputLength <= 0, 1, 0, 0, skipPos, nextLetters, nextLettersSize);
 }
 
