@@ -202,11 +202,19 @@ public class Key {
         this.mX = x + mGap / 2;
         this.mY = y;
 
-        int[] codes = style.getIntArray(a, R.styleable.Keyboard_Key_codes);
         mPreviewIcon = style.getDrawable(a, R.styleable.Keyboard_Key_iconPreview);
         Keyboard.setDefaultBounds(mPreviewIcon);
-        mPopupCharacters = style.getText(a, R.styleable.Keyboard_Key_popupCharacters);
-        mPopupResId = style.getResourceId(a, R.styleable.Keyboard_Key_popupKeyboard, 0);
+        final CharSequence popupCharacters = style.getText(a,
+                R.styleable.Keyboard_Key_popupCharacters);
+        final int popupResId = style.getResourceId(a, R.styleable.Keyboard_Key_popupKeyboard, 0);
+        // Set popup keyboard resource and characters only when both are specified.
+        if (popupResId != 0 && !TextUtils.isEmpty(popupCharacters)) {
+            mPopupResId = popupResId;
+            mPopupCharacters = popupCharacters;
+        } else {
+            mPopupResId = 0;
+            mPopupCharacters = null;
+        }
         mRepeatable = style.getBoolean(a, R.styleable.Keyboard_Key_isRepeatable, false);
         mModifier = style.getBoolean(a, R.styleable.Keyboard_Key_isModifier, false);
         mSticky = style.getBoolean(a, R.styleable.Keyboard_Key_isSticky, false);
@@ -226,16 +234,20 @@ public class Key {
         mManualTemporaryUpperCaseCode = style.getInt(a,
                 R.styleable.Keyboard_Key_manualTemporaryUpperCaseCode, 0);
         mOutputText = style.getText(a, R.styleable.Keyboard_Key_keyOutputText);
+        // Choose the first letter of the label as primary code if not specified.
+        final int[] codes = style.getIntArray(a, R.styleable.Keyboard_Key_codes);
+        if (codes == null && !TextUtils.isEmpty(mLabel)) {
+            mCodes = new int[] { mLabel.charAt(0) };
+        } else {
+            mCodes = codes;
+        }
+
         final Drawable shiftedIcon = style.getDrawable(a,
                 R.styleable.Keyboard_Key_shiftedIcon);
-        a.recycle();
-
         if (shiftedIcon != null)
             mKeyboard.getShiftedIcons().put(this, shiftedIcon);
 
-        if (codes == null && !TextUtils.isEmpty(mLabel))
-            codes = new int[] { mLabel.charAt(0) };
-        mCodes = codes;
+        a.recycle();
     }
 
     public Drawable getIcon() {
