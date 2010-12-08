@@ -202,25 +202,27 @@ public class Key {
         this.mX = x + mGap / 2;
         this.mY = y;
 
-        mPreviewIcon = style.getDrawable(a, R.styleable.Keyboard_Key_iconPreview);
-        Keyboard.setDefaultBounds(mPreviewIcon);
         final CharSequence popupCharacters = style.getText(a,
                 R.styleable.Keyboard_Key_popupCharacters);
         final int popupResId = style.getResourceId(a, R.styleable.Keyboard_Key_popupKeyboard, 0);
-        // Set popup keyboard resource and characters only when both are specified.
-        if (popupResId != 0 && !TextUtils.isEmpty(popupCharacters)) {
-            mPopupResId = popupResId;
-            mPopupCharacters = popupCharacters;
-        } else {
+        // We should not display mini keyboard when both popupResId and popupCharacters are
+        // specified but popupCharacters is empty string.
+        if (popupResId != 0 && popupCharacters != null && popupCharacters.length() == 0) {
             mPopupResId = 0;
             mPopupCharacters = null;
+        } else {
+            mPopupResId = popupResId;
+            mPopupCharacters = popupCharacters;
         }
+
         mRepeatable = style.getBoolean(a, R.styleable.Keyboard_Key_isRepeatable, false);
         mModifier = style.getBoolean(a, R.styleable.Keyboard_Key_isModifier, false);
         mSticky = style.getBoolean(a, R.styleable.Keyboard_Key_isSticky, false);
         mEdgeFlags = style.getFlag(a, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
                 | row.mRowEdgeFlags;
 
+        mPreviewIcon = style.getDrawable(a, R.styleable.Keyboard_Key_iconPreview);
+        Keyboard.setDefaultBounds(mPreviewIcon);
         mIcon = style.getDrawable(a, R.styleable.Keyboard_Key_keyIcon);
         Keyboard.setDefaultBounds(mIcon);
         mHintIcon = style.getDrawable(a, R.styleable.Keyboard_Key_keyHintIcon);
