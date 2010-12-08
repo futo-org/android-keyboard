@@ -76,10 +76,15 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard">
+        <!-- Default keyboard height -->
+        <attr name="keyboardHeight" format="dimension" />
+        <!-- Maximum keyboard height, in pixels or percentage of display height -->
+        <attr name="maxKeyboardHeight" format="dimension|fraction" />
         <!-- Default width of a key, in pixels or percentage of display width. -->
         <attr name="keyWidth" format="dimension|fraction" />
-        <!-- Default height of a key, in pixels or percentage of display width. -->
-        <attr name="keyHeight" format="dimension|fraction" />
+        <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
+             keyboard height. -->
+        <attr name="rowHeight" format="dimension|fraction" />
         <!-- Default horizontal gap between keys. -->
         <attr name="horizontalGap" format="dimension|fraction" />
         <!-- Default vertical gap between rows of keys. -->

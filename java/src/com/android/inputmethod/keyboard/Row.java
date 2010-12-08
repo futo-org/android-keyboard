@@ -47,7 +47,7 @@ public class Row {
 
     public Row(Keyboard keyboard) {
         this.mKeyboard = keyboard;
-        mDefaultHeight = keyboard.getKeyHeight();
+        mDefaultHeight = keyboard.getRowHeight();
         mDefaultWidth = keyboard.getKeyWidth();
         mDefaultHorizontalGap = keyboard.getHorizontalGap();
         mVerticalGap = keyboard.getVerticalGap();
@@ -56,14 +56,14 @@ public class Row {
 
     public Row(Resources res, Keyboard keyboard, XmlResourceParser parser) {
         this.mKeyboard = keyboard;
-        final int keyboardWidth = keyboard.getKeyboardWidth();
+        final int keyboardWidth = keyboard.getDisplayWidth();
         final int keyboardHeight = keyboard.getKeyboardHeight();
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
         mDefaultWidth = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyWidth, keyboardWidth, keyboard.getKeyWidth());
         mDefaultHeight = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_keyHeight, keyboardHeight, keyboard.getKeyHeight());
+                R.styleable.Keyboard_rowHeight, keyboardHeight, keyboard.getRowHeight());
         mDefaultHorizontalGap = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_horizontalGap, keyboardWidth, keyboard.getHorizontalGap());
         mVerticalGap = KeyboardParser.getDimensionOrFraction(a,

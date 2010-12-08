@@ -20,10 +20,12 @@
 
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    latin:keyboardHeight="@dimen/keyboardHeight"
+    latin:maxKeyboardHeight="50%p"
+    latin:rowHeight="25%p"
     latin:keyWidth="10%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
-    latin:keyHeight="@dimen/key_height"
 >
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_rows" />

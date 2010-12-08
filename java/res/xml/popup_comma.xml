@@ -23,7 +23,7 @@
     latin:keyWidth="10%p"
     latin:horizontalGap="0px"
     latin:verticalGap="0px"
-    latin:keyHeight="@dimen/popup_key_height"
+    latin:rowHeight="@dimen/popup_key_height"
 >
     <Row
         latin:rowEdgeFlags="top|bottom"

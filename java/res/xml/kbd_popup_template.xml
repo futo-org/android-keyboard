@@ -22,6 +22,6 @@
     latin:keyWidth="10%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="0px"
-    latin:keyHeight="@dimen/popup_key_height"
+    latin:rowHeight="@dimen/popup_key_height"
     >
 </Keyboard>

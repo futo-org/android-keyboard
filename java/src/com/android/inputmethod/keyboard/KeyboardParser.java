@@ -161,12 +161,20 @@ public class KeyboardParser {
         final Keyboard keyboard = mKeyboard;
         final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
-        final int width = keyboard.getKeyboardWidth();
-        final int height = keyboard.getKeyboardHeight();
+        final int displayHeight = keyboard.getDisplayHeight();
+        final int keyboardHeight = (int)a.getDimension(
+                R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
+        final int maxKeyboardHeight = getDimensionOrFraction(a,
+                R.styleable.Keyboard_maxKeyboardHeight, displayHeight,  displayHeight / 2);
+        // Keyboard height will not exceed maxKeyboardHeight.
+        final int height = Math.min(keyboardHeight, maxKeyboardHeight);
+        final int width = keyboard.getDisplayWidth();
+
+        keyboard.setKeyboardHeight(height);
         keyboard.setKeyWidth(getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyWidth, width, width / 10));
-        keyboard.setKeyHeight(getDimensionOrFraction(a,
-                R.styleable.Keyboard_keyHeight, height, 50));
+        keyboard.setRowHeight(getDimensionOrFraction(a,
+                R.styleable.Keyboard_rowHeight, height, 50));
         keyboard.setHorizontalGap(getDimensionOrFraction(a,
                 R.styleable.Keyboard_horizontalGap, width, 0));
         keyboard.setVerticalGap(getDimensionOrFraction(a,
@@ -280,7 +288,7 @@ public class KeyboardParser {
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard);
             final int gap = getDimensionOrFraction(a, R.styleable.Keyboard_horizontalGap,
-                    mKeyboard.getKeyboardWidth(), 0);
+                    mKeyboard.getDisplayWidth(), 0);
             a.recycle();
             checkEndTag(TAG_SPACER, parser);
             setSpacer(gap);
@@ -494,7 +502,7 @@ public class KeyboardParser {
     private void endRow() {
         if (mCurrentRow == null)
             throw new InflateException("orphant end row tag");
-        mCurrentY += mCurrentRow.mVerticalGap + mCurrentRow.mDefaultHeight;
+        mCurrentY += mCurrentRow.mDefaultHeight;
         mCurrentRow = null;
     }
 

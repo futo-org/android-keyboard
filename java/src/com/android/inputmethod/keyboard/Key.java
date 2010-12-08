@@ -139,7 +139,7 @@ public class Key {
     /** Create an empty key with no attributes. */
     public Key(Row row, char letter, int x, int y) {
         mKeyboard = row.getKeyboard();
-        mHeight = row.mDefaultHeight;
+        mHeight = row.mDefaultHeight - row.mVerticalGap;
         mGap = row.mDefaultHorizontalGap;
         mWidth = row.mDefaultWidth - mGap;
         mEdgeFlags = row.mRowEdgeFlags;
@@ -176,14 +176,14 @@ public class Key {
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
         mHeight = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_keyHeight,
-                mKeyboard.getKeyboardHeight(), row.mDefaultHeight);
+                R.styleable.Keyboard_rowHeight,
+                mKeyboard.getKeyboardHeight(), row.mDefaultHeight) - row.mVerticalGap;
         mGap = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_horizontalGap,
-                mKeyboard.getKeyboardWidth(), row.mDefaultHorizontalGap);
+                mKeyboard.getDisplayWidth(), row.mDefaultHorizontalGap);
         mWidth = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyWidth,
-                mKeyboard.getKeyboardWidth(), row.mDefaultWidth) - mGap;
+                mKeyboard.getDisplayWidth(), row.mDefaultWidth) - mGap;
         a.recycle();
 
         a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);

@@ -122,6 +122,9 @@ public class Keyboard {
     /** Height of the screen */
     private final int mDisplayHeight;
 
+    /** Height of keyboard */
+    private int mKeyboardHeight;
+
     public final KeyboardId mId;
 
     // Variables for pre-computing nearest keys.
@@ -248,11 +251,11 @@ public class Keyboard {
         mDefaultVerticalGap = gap;
     }
 
-    public int getKeyHeight() {
+    public int getRowHeight() {
         return mDefaultHeight;
     }
 
-    public void setKeyHeight(int height) {
+    public void setRowHeight(int height) {
         mDefaultHeight = height;
     }
 
@@ -278,12 +281,20 @@ public class Keyboard {
         return mTotalWidth;
     }
 
-    public int getKeyboardHeight() {
+    public int getDisplayHeight() {
         return mDisplayHeight;
     }
 
-    public int getKeyboardWidth() {
+    public int getDisplayWidth() {
         return mDisplayWidth;
+    }
+
+    public int getKeyboardHeight() {
+        return mKeyboardHeight;
+    }
+
+    public void setKeyboardHeight(int height) {
+        mKeyboardHeight = height;
     }
 
     public List<Key> getShiftKeys() {

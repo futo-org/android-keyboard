@@ -21,10 +21,12 @@
 <!-- Serbian keyboard layout, based on the X11 layout for Serbian -->
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    latin:keyboardHeight="@dimen/keyboardHeight"
+    latin:maxKeyboardHeight="50%p"
+    latin:rowHeight="25%p"
     latin:keyWidth="9.09%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
-    latin:keyHeight="@dimen/key_height"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
