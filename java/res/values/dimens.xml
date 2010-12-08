@@ -46,6 +46,8 @@
 
     <dimen name="candidate_strip_height">42dip</dimen>
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
+    <dimen name="candidate_strip_padding">0dip</dimen>
+    <dimen name="candidate_text_size">18dip</dimen>
     <dimen name="spacebar_vertical_correction">4dip</dimen>
     <!-- If the screen height in landscape is larger than the below value, then the keyboard
          will not go into extract (fullscreen) mode. -->

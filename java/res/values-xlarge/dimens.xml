@@ -40,5 +40,7 @@
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_alignment_padding">4dip</dimen>
 
-    <dimen name="candidate_strip_height">46dip</dimen>
+    <dimen name="candidate_strip_height">56dip</dimen>
+    <dimen name="candidate_strip_padding">15.0mm</dimen>
+    <dimen name="candidate_text_size">22dip</dimen>
 </resources>

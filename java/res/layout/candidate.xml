@@ -20,26 +20,30 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/candidate_strip_height"
-    android:background="@drawable/keyboard_suggest_strip"
-    android:paddingRight="@dimen/candidate_strip_padding"
-    android:paddingLeft="@dimen/candidate_strip_padding"
+    android:orientation="horizontal"
 >
-    <HorizontalScrollView
-        android:id="@+id/candidates_scroll_view"
+    <ImageView
+        android:id="@+id/candidate_divider"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/candidate_strip_height"
-        android:fadingEdge="horizontal"
-        android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
-        android:scrollbars="none"
-    >
-        <com.android.inputmethod.latin.CandidateView
-            android:id="@+id/candidates"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/candidate_strip_height"
-            android:background="@drawable/keyboard_suggest_strip" />
-    </HorizontalScrollView>
+        android:visibility="gone"
+        android:focusable="false"
+        android:clickable="false"
+        android:src="@drawable/keyboard_suggest_strip_divider"
+        android:gravity="center_vertical|center_horizontal" />
+    <Button
+        android:id="@+id/candidate_word"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/candidate_strip_height"
+        android:minWidth="@dimen/candidate_min_touchable_width"
+        android:textSize="@dimen/candidate_text_size"
+        android:textColor="@color/candidate_normal"
+        android:background="@drawable/btn_candidate"
+        android:focusable="true"
+        android:clickable="true"
+        android:gravity="center_vertical|center_horizontal"
+        android:paddingLeft="12dip"
+        android:paddingRight="12dip" />
 </LinearLayout>

@@ -51,8 +51,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
+import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -65,6 +67,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
+import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import java.io.FileDescriptor;
@@ -127,7 +130,7 @@ public class LatinIME extends InputMethodService
         SUGGESTION_VISIBILILTY_HIDE_VALUE
     };
 
-    private LinearLayout mCandidateViewContainer;
+    private View mCandidateViewContainer;
     private CandidateView mCandidateView;
     private Suggest mSuggest;
     private CompletionInfo[] mCompletions;
@@ -496,12 +499,19 @@ public class LatinIME extends InputMethodService
 
     @Override
     public View onCreateCandidatesView() {
-        mCandidateViewContainer = (LinearLayout) getLayoutInflater().inflate(
-                R.layout.candidates, null);
-        mCandidateView = (CandidateView) mCandidateViewContainer.findViewById(R.id.candidates);
+        LayoutInflater inflater = getLayoutInflater();
+        LinearLayout container = (LinearLayout)inflater.inflate(R.layout.candidates, null);
+        mCandidateViewContainer = container;
+        if (container.getPaddingRight() != 0) {
+            HorizontalScrollView scrollView =
+                    (HorizontalScrollView) container.findViewById(R.id.candidates_scroll_view);
+            scrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            container.setGravity(Gravity.CENTER_HORIZONTAL);
+        }
+        mCandidateView = (CandidateView) container.findViewById(R.id.candidates);
         mCandidateView.setService(this);
         setCandidatesViewShown(true);
-        return mCandidateViewContainer;
+        return container;
     }
 
     private static boolean isPasswordVariation(int variation) {
