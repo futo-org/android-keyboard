@@ -23,10 +23,12 @@
 #ifndef LOG_TAG
 #define LOG_TAG "LatinIME: "
 #endif
-#define DEBUG_DICT 1
+#define DEBUG_DICT true
+#define DEBUG_SHOW_FOUND_WORD false
 #else // FLAG_DBG
 #define LOGI
-#define DEBUG_DICT 0
+#define DEBUG_DICT false
+#define DEBUG_SHOW_FOUND_WORD false
 #endif // FLAG_DBG
 
 // 22-bit address = ~4MB dictionary size limit, which on average would be about 200k-300k words
@@ -48,7 +50,8 @@
 #define NOT_VALID_WORD -99
 
 #define SUGGEST_MISSING_CHARACTERS true
-#define SUGGEST_MISSING_CHARACTERS_THRESHOLD 5
+
+#define SUGGEST_EXCESSIVE_CHARACTERS true
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.

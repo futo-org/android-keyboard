@@ -31,7 +31,7 @@ public:
 
 private:
     void initSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies);
-    int getSuggestionCandidates(int inputLength, int skipPos, int *nextLetters,
+    int getSuggestionCandidates(int inputLength, int skipPos, int excessivePos, int *nextLetters,
             int nextLettersSize);
     void getVersionNumber();
     bool checkIfDictVersionIsLatest();
@@ -43,12 +43,12 @@ private:
     unsigned short toLowerCase(unsigned short c);
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
-            const int skipPos, int *nextLetters, const int nextLettersSize);
+            const int skipPos, const int excessivePos, int *nextLetters, const int nextLettersSize);
     void getWords(const int rootPos, const int inputLength, const int skipPos,
-            int *nextLetters, const int nextLettersSize);
+            const int excessivePos, int *nextLetters, const int nextLettersSize);
     // Keep getWordsOld for comparing performance between getWords and getWordsOld
     void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
-            int *nextLetters, const int nextLettersSize);
+            const int excessivePos, int *nextLetters, const int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
     void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
             const int mInputLength, const int depth, const int snr, int *nextLetters,
@@ -59,10 +59,11 @@ private:
             const int inputIndex, const int skipPos, const int depth);
     int getMatchedProximityId(const int *currentChars, const unsigned short c, const int skipPos);
     bool processCurrentNode(const int pos, const int depth,
-            const int maxDepth, const bool traverseAllNodes, const int snr, const int inputIndex,
-            const int diffs, const int skipPos, int *nextLetters, const int nextLettersSize,
-            int *newCount, int *newChildPosition, bool *newTraverseAllNodes,
-            int *newSnr, int*newInputIndex, int *newDiffs, int *nextSiblingPosition);
+            const int maxDepth, const bool traverseAllNodes, const int snr, int inputIndex,
+            const int diffs, const int skipPos, const int excessivePos, int *nextLetters,
+            const int nextLettersSize, int *newCount, int *newChildPosition,
+            bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
+            int *nextSiblingPosition);
     const unsigned char *DICT;
     const int MAX_WORDS;
     const int MAX_WORD_LENGTH;

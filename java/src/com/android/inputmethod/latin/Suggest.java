@@ -34,6 +34,8 @@ import java.util.List;
  */
 public class Suggest implements Dictionary.WordCallback {
 
+    public static final String TAG = "Suggest";
+
     public static final int APPROX_MAX_WORD_LENGTH = 32;
 
     public static final int CORRECTION_NONE = 0;
@@ -188,33 +190,6 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    private boolean haveSufficientCommonality(String original, CharSequence suggestion) {
-        final int originalLength = original.length();
-        final int suggestionLength = suggestion.length();
-        final int minLength = Math.min(originalLength, suggestionLength);
-        if (minLength <= 2) return true;
-        int matching = 0;
-        int lessMatching = 0; // Count matches if we skip one character
-        int i;
-        for (i = 0; i < minLength; i++) {
-            final char origChar = ExpandableDictionary.toLowerCase(original.charAt(i));
-            if (origChar == ExpandableDictionary.toLowerCase(suggestion.charAt(i))) {
-                matching++;
-                lessMatching++;
-            } else if (i + 1 < suggestionLength
-                    && origChar == ExpandableDictionary.toLowerCase(suggestion.charAt(i + 1))) {
-                lessMatching++;
-            }
-        }
-        matching = Math.max(matching, lessMatching);
-
-        if (minLength <= 4) {
-            return matching >= 2;
-        } else {
-            return matching > minLength / 2;
-        }
-    }
-
     /**
      * Returns a list of words that match the list of character codes passed in.
      * This list will be overwritten the next time this function is called.
@@ -311,6 +286,11 @@ public class Suggest implements Dictionary.WordCallback {
                 //       the normalized score of the second suggestion, behave less aggressive.
                 final double normalizedScore = LatinIMEUtil.calcNormalizedScore(
                         mOriginalWord, mSuggestions.get(0), mPriorities[0]);
+                if (LatinImeLogger.sDBG) {
+                    Log.d(TAG, "Normalized " + mOriginalWord + "," + mSuggestions.get(0) + ","
+                            + mPriorities[0] + normalizedScore
+                            + "(" + mAutoCompleteThreshold + ")");
+                }
                 if (normalizedScore >= mAutoCompleteThreshold) {
                     mHaveCorrection = true;
                 }
@@ -318,15 +298,6 @@ public class Suggest implements Dictionary.WordCallback {
         }
         if (mOriginalWord != null) {
             mSuggestions.add(0, mOriginalWord.toString());
-        }
-
-        // Check if the first suggestion has a minimum number of characters in common
-        if (wordComposer.size() > 1 && mSuggestions.size() > 1
-                && (mCorrectionMode == CORRECTION_FULL
-                || mCorrectionMode == CORRECTION_FULL_BIGRAM)) {
-            if (!haveSufficientCommonality(mLowerOriginalWord, mSuggestions.get(1))) {
-                mHaveCorrection = false;
-            }
         }
         if (mAutoTextEnabled) {
             int i = 0;
