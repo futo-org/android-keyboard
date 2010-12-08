@@ -138,19 +138,20 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             TextView tv = (TextView)v.findViewById(R.id.candidate_word);
             tv.setTypeface(Typeface.DEFAULT);
             tv.setTextColor(mColorNormal);
-            if (mConfigCandidateHighlightFontColorEnabled) {
-                if (haveMinimalSuggestion
-                        && ((i == 1 && !typedWordValid) || (i == 0 && typedWordValid))) {
-                    tv.setTypeface(Typeface.DEFAULT_BOLD);
-                    tv.setTextColor(mColorRecommended);
-                    existsAutoCompletion = true;
-                } else if (i != 0 || (wordLength == 1 && count > 1)) {
-                    // HACK: even if i == 0, we use mColorOther when this suggestion's length is 1
-                    // and there are multiple suggestions, such as the default punctuation list.
-                    tv.setTextColor(mColorOther);
-                }
-            } else {
+            if (haveMinimalSuggestion
+                    && ((i == 1 && !typedWordValid) || (i == 0 && typedWordValid))) {
                 // TODO: Display underline for the auto-correction word
+                tv.setTypeface(Typeface.DEFAULT_BOLD);
+                if (mConfigCandidateHighlightFontColorEnabled)
+                    tv.setTextColor(mColorRecommended);
+                existsAutoCompletion = true;
+            } else if (i != 0 || (wordLength == 1 && count > 1)) {
+                // HACK: even if i == 0, we use mColorOther when this
+                // suggestion's length is 1
+                // and there are multiple suggestions, such as the default
+                // punctuation list.
+                if (mConfigCandidateHighlightFontColorEnabled)
+                    tv.setTextColor(mColorOther);
             }
             tv.setText(suggestion);
             tv.setClickable(true);
