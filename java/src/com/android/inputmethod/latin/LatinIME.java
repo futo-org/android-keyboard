@@ -1120,9 +1120,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
             break;
-        case Keyboard.CODE_VOICE: /* was a button press, was not a swipe */
-            mVoiceConnector.startListening(false,
-                    mKeyboardSwitcher.getInputView().getWindowToken(), mConfigurationChanging);
+        case Keyboard.CODE_VOICE:
+            mSubtypeSwitcher.switchToShortcutIME();
             break;
         case Keyboard.CODE_TAB:
             handleTab();
