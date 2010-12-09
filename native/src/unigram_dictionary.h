@@ -32,7 +32,8 @@ public:
 private:
     void initSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies);
     void getSuggestionCandidates(const int inputLength, const int skipPos, const int excessivePos,
-            int *nextLetters, const int nextLettersSize);
+            const int transposedPos, int *nextLetters, const int nextLettersSize,
+            const int maxDepth);
     void getVersionNumber();
     bool checkIfDictVersionIsLatest();
     int getAddress(int *pos);
@@ -43,25 +44,30 @@ private:
     unsigned short toLowerCase(unsigned short c);
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
-            const int skipPos, const int excessivePos, int *nextLetters, const int nextLettersSize);
+            const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
+            const int nextLettersSize);
     bool getMissingSpaceWords(const int inputLength, const int missingSpacePos);
     // Keep getWordsOld for comparing performance between getWords and getWordsOld
     void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
-            const int excessivePos, int *nextLetters, const int nextLettersSize);
+            const int excessivePos, const int transposedPos, int *nextLetters,
+            const int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
     void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
             const int mInputLength, const int depth, const int snr, int *nextLetters,
-            const int nextLettersSize, const int skipPos, const int freq);
+            const int nextLettersSize, const int skipPos, const int excessivePos,
+            const int transposedPos, const int freq);
     void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word, const int depth,
-            const int snr, const int skipPos, const int freq, const int addedWeight);
+            const int snr, const int skipPos, const int excessivePos, const int transposedPos,
+            const int freq, const int addedWeight);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
-    int getMatchedProximityId(const int *currentChars, const unsigned short c, const int skipPos);
+    int getMatchedProximityId(const int *currentChars, const unsigned short c, const int skipPos,
+            const int excessivePos, const int transposedPos);
     // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int pos, const int depth,
             const int maxDepth, const bool traverseAllNodes, const int snr, int inputIndex,
-            const int diffs, const int skipPos, const int excessivePos, int *nextLetters,
-            const int nextLettersSize, int *newCount, int *newChildPosition,
+            const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
+            int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
             bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
             int *nextSiblingPosition);
     int getBestWordFreq(const int startInputIndex, const int inputLength, unsigned short *word);
