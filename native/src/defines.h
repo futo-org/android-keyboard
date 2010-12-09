@@ -25,10 +25,12 @@
 #endif
 #define DEBUG_DICT true
 #define DEBUG_SHOW_FOUND_WORD false
+#define DEBUG_NODE true
 #else // FLAG_DBG
 #define LOGI
 #define DEBUG_DICT false
 #define DEBUG_SHOW_FOUND_WORD false
+#define DEBUG_NODE false
 #endif // FLAG_DBG
 
 #ifndef U_SHORT_MAX

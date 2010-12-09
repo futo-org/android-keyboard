@@ -64,11 +64,11 @@ private:
             const int nextLettersSize, int *newCount, int *newChildPosition,
             bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
             int *nextSiblingPosition);
-    int getWordFreq(const int startInputIndex, const int inputLength);
+    int getBestWordFreq(const int startInputIndex, const int inputLength, unsigned short *word);
     // Process a node by considering missing space
-    bool processCurrentNodeForExactMatch(const int firstChildPos, const int count,
-            const int inputIndex, int *newChildPosition, int *newCount, bool *newTerminal,
-            int *newFreq);
+    bool processCurrentNodeForExactMatch(const int firstChildPos,
+            const int startInputIndex, const int depth, unsigned short *word,
+            int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
 
     const unsigned char *DICT;
     const int MAX_WORDS;
