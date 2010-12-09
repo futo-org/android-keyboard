@@ -30,8 +30,8 @@ BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
     : DICT(dict), MAX_WORD_LENGTH(maxWordLength),
     MAX_ALTERNATIVES(maxAlternatives), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     HAS_BIGRAM(hasBigram), mParentDictionary(parentDictionary) {
-    LOGI("BigramDictionary - constructor");
-    LOGI("Has Bigram : %d \n", hasBigram);
+    if (DEBUG_DICT) LOGI("BigramDictionary - constructor");
+    if (DEBUG_DICT) LOGI("Has Bigram : %d \n", hasBigram);
 }
 
 BigramDictionary::~BigramDictionary() {
@@ -54,7 +54,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
         }
         insertAt++;
     }
-    LOGI("Bigram: InsertAt -> %d maxBigrams: %d\n", insertAt, mMaxBigrams);
+    if (DEBUG_DICT) LOGI("Bigram: InsertAt -> %d maxBigrams: %d\n", insertAt, mMaxBigrams);
     if (insertAt < mMaxBigrams) {
         memmove((char*) mBigramFreq + (insertAt + 1) * sizeof(mBigramFreq[0]),
                (char*) mBigramFreq + insertAt * sizeof(mBigramFreq[0]),
@@ -107,7 +107,7 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
     if (HAS_BIGRAM && IS_LATEST_DICT_VERSION) {
         int pos = mParentDictionary->isValidWordRec(
                 DICTIONARY_HEADER_SIZE, prevWord, 0, prevWordLength);
-        LOGI("Pos -> %d\n", pos);
+        if (DEBUG_DICT) LOGI("Pos -> %d\n", pos);
         if (pos < 0) {
             return 0;
         }
@@ -151,7 +151,7 @@ void BigramDictionary::searchForTerminalNode(int addressLookingFor, int frequenc
         }
         pos = followDownBranchAddress; // pos start at count
         int count = DICT[pos] & 0xFF;
-        LOGI("count - %d\n",count);
+        if (DEBUG_DICT) LOGI("count - %d\n",count);
         pos++;
         for (int i = 0; i < count; i++) {
             // pos at data
@@ -225,7 +225,7 @@ void BigramDictionary::searchForTerminalNode(int addressLookingFor, int frequenc
         }
         depth++;
         if (followDownBranchAddress == 0) {
-            LOGI("ERROR!!! Cannot find bigram!!");
+            if (DEBUG_DICT) LOGI("ERROR!!! Cannot find bigram!!");
             break;
         }
     }

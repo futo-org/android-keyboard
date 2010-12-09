@@ -27,20 +27,21 @@ Dictionary::Dictionary(void *dict, int typedLetterMultiplier, int fullWordMultip
         int maxWordLength, int maxWords, int maxAlternatives)
     : DICT((unsigned char*) dict),
     // Checks whether it has the latest dictionary or the old dictionary
-    IS_LATEST_DICT_VERSION((((unsigned char*) dict)[0] & 0xFF) >= DICTIONARY_VERSION_MIN)
-{
-    if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
-        LOGI("Max word length (%d) is greater than %d", maxWordLength, MAX_WORD_LENGTH_INTERNAL);
+    IS_LATEST_DICT_VERSION((((unsigned char*) dict)[0] & 0xFF) >= DICTIONARY_VERSION_MIN) {
+    if (DEBUG_DICT) {
+        if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
+            LOGI("Max word length (%d) is greater than %d",
+                    maxWordLength, MAX_WORD_LENGTH_INTERNAL);
+            LOGI("IN NATIVE SUGGEST Version: %d \n", (DICT[0] & 0xFF));
+        }
     }
-    LOGI("IN NATIVE SUGGEST Version: %d \n", (DICT[0] & 0xFF));
     mUnigramDictionary = new UnigramDictionary(DICT, typedLetterMultiplier, fullWordMultiplier,
             maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION);
     mBigramDictionary = new BigramDictionary(DICT, maxWordLength, maxAlternatives,
             IS_LATEST_DICT_VERSION, hasBigram(), this);
 }
 
-Dictionary::~Dictionary()
-{
+Dictionary::~Dictionary() {
     delete mUnigramDictionary;
     delete mBigramDictionary;
 }

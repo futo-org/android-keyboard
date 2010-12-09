@@ -24,15 +24,15 @@ namespace latinime {
 class UnigramDictionary {
 public:
     UnigramDictionary(const unsigned char *dict, int typedLetterMultipler, int fullWordMultiplier,
-            int maxWordLength, int maxWords, int maxAlternatives,  const bool isLatestDictVersion);
+            int maxWordLength, int maxWords, int maxProximityChars, const bool isLatestDictVersion);
     int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
             int *nextLetters, int nextLettersSize);
     ~UnigramDictionary();
 
 private:
     void initSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies);
-    int getSuggestionCandidates(int inputLength, int skipPos, int excessivePos, int *nextLetters,
-            int nextLettersSize);
+    void getSuggestionCandidates(const int inputLength, const int skipPos, const int excessivePos,
+            int *nextLetters, const int nextLettersSize);
     void getVersionNumber();
     bool checkIfDictVersionIsLatest();
     int getAddress(int *pos);
@@ -44,8 +44,7 @@ private:
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, int *nextLetters, const int nextLettersSize);
-    void getWords(const int rootPos, const int inputLength, const int skipPos,
-            const int excessivePos, int *nextLetters, const int nextLettersSize);
+    bool getMissingSpaceWords(const int inputLength, const int missingSpacePos);
     // Keep getWordsOld for comparing performance between getWords and getWordsOld
     void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
             const int excessivePos, int *nextLetters, const int nextLettersSize);
@@ -58,17 +57,25 @@ private:
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     int getMatchedProximityId(const int *currentChars, const unsigned short c, const int skipPos);
+    // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int pos, const int depth,
             const int maxDepth, const bool traverseAllNodes, const int snr, int inputIndex,
             const int diffs, const int skipPos, const int excessivePos, int *nextLetters,
             const int nextLettersSize, int *newCount, int *newChildPosition,
             bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
             int *nextSiblingPosition);
+    int getWordFreq(const int startInputIndex, const int inputLength);
+    // Process a node by considering missing space
+    bool processCurrentNodeForExactMatch(const int firstChildPos, const int count,
+            const int inputIndex, int *newChildPosition, int *newCount, bool *newTerminal,
+            int *newFreq);
+
     const unsigned char *DICT;
     const int MAX_WORDS;
     const int MAX_WORD_LENGTH;
-    const int MAX_ALTERNATIVES;
+    const int MAX_PROXIMITY_CHARS;
     const bool IS_LATEST_DICT_VERSION;
+    const int ROOT_POS;
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
 

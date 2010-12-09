@@ -31,6 +31,10 @@
 #define DEBUG_SHOW_FOUND_WORD false
 #endif // FLAG_DBG
 
+#ifndef U_SHORT_MAX
+#define U_SHORT_MAX 1 << 16
+#endif
+
 // 22-bit address = ~4MB dictionary size limit, which on average would be about 200k-300k words
 #define ADDRESS_MASK 0x3FFFFF
 
@@ -49,15 +53,17 @@
 #define DICTIONARY_HEADER_SIZE 2
 #define NOT_VALID_WORD -99
 
-#define SUGGEST_MISSING_CHARACTERS true
-
-#define SUGGEST_EXCESSIVE_CHARACTERS true
+#define SUGGEST_WORDS_WITH_MISSING_CHARACTER true
+#define SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER true
+#define SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER true
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
 #define MAX_WORD_LENGTH_INTERNAL 48
 
 #define MAX_DEPTH_MULTIPLIER 3
+
+#define MIN_SUGGEST_DEPTH 2
 
 #define min(a,b) ((a)<(b)?(a):(b))
 
