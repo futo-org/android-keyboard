@@ -24,10 +24,10 @@ import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
 
-public class LatinIMEDebugSettings extends PreferenceActivity
+public class DebugSettings extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private static final String TAG = "LatinIMEDebugSettings";
+    private static final String TAG = "DebugSettings";
     private static final String DEBUG_MODE_KEY = "debug_mode";
 
     private CheckBoxPreference mDebugMode;

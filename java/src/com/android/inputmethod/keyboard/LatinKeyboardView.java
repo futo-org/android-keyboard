@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.LatinIMEUtil;
+import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import android.content.Context;
@@ -330,14 +330,14 @@ public class LatinKeyboardView extends KeyboardView {
 
     @Override
     public void draw(Canvas c) {
-        LatinIMEUtil.GCUtils.getInstance().reset();
+        Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
-        for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
                 super.draw(c);
                 tryGC = false;
             } catch (OutOfMemoryError e) {
-                tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait("LatinKeyboardView", e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait("LatinKeyboardView", e);
             }
         }
         if (DEBUG_AUTO_PLAY) {

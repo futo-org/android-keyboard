@@ -22,7 +22,7 @@ import android.app.backup.SharedPreferencesBackupHelper;
 /**
  * Backs up the Latin IME shared preferences.
  */
-public class LatinIMEBackupAgent extends BackupAgentHelper {
+public class BackupAgent extends BackupAgentHelper {
 
     @Override
     public void onCreate() {

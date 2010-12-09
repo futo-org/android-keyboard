@@ -69,7 +69,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         addPreferencesFromResource(R.xml.language_prefs);
         // Get the settings preferences
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        mSelectedLanguages = mPrefs.getString(LatinIME.PREF_SELECTED_LANGUAGES, "");
+        mSelectedLanguages = mPrefs.getString(Settings.PREF_SELECTED_LANGUAGES, "");
         String[] languageList = mSelectedLanguages.split(",");
         mAvailableLanguages = getUniqueLocales();
         PreferenceGroup parent = getPreferenceScreen();
@@ -143,7 +143,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         }
         if (checkedLanguages.length() < 1) checkedLanguages = null; // Save null
         Editor editor = mPrefs.edit();
-        editor.putString(LatinIME.PREF_SELECTED_LANGUAGES, checkedLanguages);
+        editor.putString(Settings.PREF_SELECTED_LANGUAGES, checkedLanguages);
         SharedPreferencesCompat.apply(editor);
     }
 

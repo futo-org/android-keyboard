@@ -35,7 +35,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class LatinIMEUtil {
+public class Utils {
 
     /**
      * Cancel an {@link AsyncTask}.

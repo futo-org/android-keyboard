@@ -52,8 +52,8 @@ public class LanguageSwitcher {
      * @return whether there was any change
      */
     public boolean loadLocales(SharedPreferences sp) {
-        String selectedLanguages = sp.getString(LatinIME.PREF_SELECTED_LANGUAGES, null);
-        String currentLanguage   = sp.getString(LatinIME.PREF_INPUT_LANGUAGE, null);
+        String selectedLanguages = sp.getString(Settings.PREF_SELECTED_LANGUAGES, null);
+        String currentLanguage   = sp.getString(Settings.PREF_INPUT_LANGUAGE, null);
         if (selectedLanguages == null || selectedLanguages.length() < 1) {
             loadDefaults();
             if (mLocales.size() == 0) {
@@ -187,7 +187,7 @@ public class LanguageSwitcher {
 
     public void persist(SharedPreferences prefs) {
         Editor editor = prefs.edit();
-        editor.putString(LatinIME.PREF_INPUT_LANGUAGE, getInputLanguage());
+        editor.putString(Settings.PREF_INPUT_LANGUAGE, getInputLanguage());
         SharedPreferencesCompat.apply(editor);
     }
 }

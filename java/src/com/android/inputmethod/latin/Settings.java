@@ -39,19 +39,26 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
-public class LatinIMESettings extends PreferenceActivity
+public class Settings extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
         DialogInterface.OnDismissListener {
+    private static final String TAG = "Settings";
 
-    private static final String QUICK_FIXES_KEY = "quick_fixes";
-    private static final String PREDICTION_SETTINGS_KEY = "prediction_settings";
-    private static final String VOICE_SETTINGS_KEY = "voice_mode";
-    private static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
-    private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
+    public static final String PREF_VIBRATE_ON = "vibrate_on";
+    public static final String PREF_SOUND_ON = "sound_on";
+    public static final String PREF_POPUP_ON = "popup_on";
+    public static final String PREF_RECORRECTION_ENABLED = "recorrection_enabled";
+    public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_SETTINGS_KEY = "settings_key";
-    /* package */ static final String PREF_VIBRATE_ON = "vibrate_on";
+    public static final String PREF_VOICE_SETTINGS_KEY = "voice_mode";
+    public static final String PREF_INPUT_LANGUAGE = "input_language";
+    public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
 
-    private static final String TAG = "LatinIMESettings";
+    public static final String PREF_PREDICTION_SETTINGS_KEY = "prediction_settings";
+    public static final String PREF_QUICK_FIXES = "quick_fixes";
+    public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
+    public static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
+    public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
 
     // Dialog ids
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
@@ -80,14 +87,15 @@ public class LatinIMESettings extends PreferenceActivity
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs);
-        mQuickFixes = (CheckBoxPreference) findPreference(QUICK_FIXES_KEY);
-        mVoicePreference = (ListPreference) findPreference(VOICE_SETTINGS_KEY);
+        mQuickFixes = (CheckBoxPreference) findPreference(PREF_QUICK_FIXES);
+        mVoicePreference = (ListPreference) findPreference(PREF_VOICE_SETTINGS_KEY);
         mSettingsKeyPreference = (ListPreference) findPreference(PREF_SETTINGS_KEY);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
         mVoiceModeOff = getString(R.string.voice_mode_off);
-        mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
+        mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
+                .equals(mVoiceModeOff));
         mLogger = VoiceInputLogger.getLogger(this);
 
         mAutoCompletionThreshold = (ListPreference) findPreference(PREF_AUTO_COMPLETION_THRESHOLD);
@@ -118,7 +126,7 @@ public class LatinIMESettings extends PreferenceActivity
         super.onResume();
         int autoTextSize = AutoText.getSize(getListView());
         if (autoTextSize < 1) {
-            ((PreferenceGroup) findPreference(PREDICTION_SETTINGS_KEY))
+            ((PreferenceGroup) findPreference(PREF_PREDICTION_SETTINGS_KEY))
                     .removePreference(mQuickFixes);
         }
         if (!VoiceIMEConnector.VOICE_INSTALLED
@@ -141,14 +149,15 @@ public class LatinIMESettings extends PreferenceActivity
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         (new BackupManager(this)).dataChanged();
         // If turning on voice input, show dialog
-        if (key.equals(VOICE_SETTINGS_KEY) && !mVoiceOn) {
-            if (!prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff)
+        if (key.equals(PREF_VOICE_SETTINGS_KEY) && !mVoiceOn) {
+            if (!prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
                     .equals(mVoiceModeOff)) {
                 showVoiceConfirmation();
             }
         }
         ensureConsistencyOfAutoCompletionSettings();
-        mVoiceOn = !(prefs.getString(VOICE_SETTINGS_KEY, mVoiceModeOff).equals(mVoiceModeOff));
+        mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
+                .equals(mVoiceModeOff));
         updateVoiceModeSummary();
         updateSettingsKeySummary();
     }
