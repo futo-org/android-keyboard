@@ -21,7 +21,12 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.CharacterStyle;
+import android.text.style.StyleSpan;
+import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -50,6 +55,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final int mColorNormal;
     private final int mColorRecommended;
     private final int mColorOther;
+    private static final StyleSpan BOLD_SPAN = new StyleSpan(Typeface.BOLD);
+    private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
 
     private boolean mShowingCompletions;
 
@@ -136,14 +143,17 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
             View v = mWords.get(i);
             TextView tv = (TextView)v.findViewById(R.id.candidate_word);
-            tv.setTypeface(Typeface.DEFAULT);
             tv.setTextColor(mColorNormal);
             if (haveMinimalSuggestion
                     && ((i == 1 && !typedWordValid) || (i == 0 && typedWordValid))) {
-                // TODO: Display underline for the auto-correction word
-                tv.setTypeface(Typeface.DEFAULT_BOLD);
-                if (mConfigCandidateHighlightFontColorEnabled)
+                final Spannable word = new SpannableString(suggestion);
+                if (mConfigCandidateHighlightFontColorEnabled) {
+                    word.setSpan(BOLD_SPAN, 0, wordLength, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                     tv.setTextColor(mColorRecommended);
+                } else {
+                    word.setSpan(UNDERLINE_SPAN, 0, wordLength, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                }
+                suggestion = word;
                 existsAutoCompletion = true;
             } else if (i != 0 || (wordLength == 1 && count > 1)) {
                 // HACK: even if i == 0, we use mColorOther when this
