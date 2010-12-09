@@ -81,10 +81,8 @@ import java.util.Locale;
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
-public class LatinIME extends InputMethodService
-        implements KeyboardActionListener,
-        SharedPreferences.OnSharedPreferenceChangeListener,
-        Tutorial.TutorialListener {
+public class LatinIME extends InputMethodService implements KeyboardActionListener,
+        SharedPreferences.OnSharedPreferenceChangeListener, Tutorial.TutorialListener {
     private static final String TAG = "LatinIME";
     private static final boolean PERF_DEBUG = false;
     private static final boolean DEBUG = false;
@@ -1167,9 +1165,7 @@ public class LatinIME extends InputMethodService
         if (ic == null) return;
         abortCorrection(false);
         ic.beginBatchEdit();
-        if (mPredicting) {
-            commitTyped(ic);
-        }
+        commitTyped(ic);
         maybeRemovePreviousPeriod(text);
         ic.commitText(text, 1);
         ic.endBatchEdit();
@@ -1382,7 +1378,14 @@ public class LatinIME extends InputMethodService
             doubleSpace();
         }
         if (pickedDefault) {
-            TextEntryState.backToAcceptedDefault(mWord.getTypedWord());
+            CharSequence typedWord = mWord.getTypedWord();
+            TextEntryState.backToAcceptedDefault(typedWord);
+            if (!TextUtils.isEmpty(typedWord) && !typedWord.equals(mBestWord)) {
+                // TODO: Will call InputConnection.commitCorrection() here.
+                if (mCandidateView != null)
+                    mCandidateView.onAutoCorrectionInverted(mBestWord);
+            }
+            setPunctuationSuggestions();
         }
         mKeyboardSwitcher.updateShiftState();
         if (ic != null) {
@@ -1564,7 +1567,7 @@ public class LatinIME extends InputMethodService
         if (mBestWord != null && mBestWord.length() > 0) {
             TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord);
             mJustAccepted = true;
-            pickSuggestion(mBestWord, false);
+            pickSuggestion(mBestWord);
             // Add the word to the auto dictionary if it's not a known word
             addToDictionaries(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
             return true;
@@ -1615,7 +1618,7 @@ public class LatinIME extends InputMethodService
             return;
         }
         mJustAccepted = true;
-        pickSuggestion(suggestion, correcting);
+        pickSuggestion(suggestion);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
             addToDictionaries(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
@@ -1660,10 +1663,8 @@ public class LatinIME extends InputMethodService
      * retrieval.
      * @param suggestion the suggestion picked by the user to be committed to
      *            the text field
-     * @param correcting whether this is due to a correction of an existing
-     *            word.
      */
-    private void pickSuggestion(CharSequence suggestion, boolean correcting) {
+    private void pickSuggestion(CharSequence suggestion) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (!switcher.isKeyboardAvailable())
             return;
@@ -1676,11 +1677,6 @@ public class LatinIME extends InputMethodService
         mPredicting = false;
         mCommittedLength = suggestion.length();
         switcher.setPreferredLetters(null);
-        // If we just corrected a word, then don't show punctuations
-        if (!correcting) {
-            setPunctuationSuggestions();
-        }
-        switcher.updateShiftState();
     }
 
     /**

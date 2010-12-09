@@ -24,7 +24,9 @@ import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
+import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
@@ -57,21 +59,75 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final int mColorOther;
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
+    private final CharacterStyle mInvertedForegroundColorSpan;
+    private final CharacterStyle mInvertedBackgroundColorSpan;
 
     private boolean mShowingCompletions;
+    private boolean mShowingAutoCorrectionInverted;
 
     private boolean mShowingAddToDictionary;
 
-    private static final long DELAY_HIDE_PREVIEW = 1000;
-    private static final int MSG_HIDE_PREVIEW = 0;
-    private final Handler mHandler = new Handler() {
+    private final UiHandler mHandler = new UiHandler();
+
+    private static class UpdateSuggestionsArgs {
+        public final List<CharSequence> mSuggestions;
+        public final boolean mCompletions;
+        public final boolean mTypedWordValid;
+        public final boolean mHaveMinimalSuggestion;
+        public UpdateSuggestionsArgs(List<CharSequence> suggestions, boolean completions,
+                boolean typedWordValid, boolean haveMinimalSuggestion) {
+            mSuggestions = suggestions;
+            mCompletions = completions;
+            mTypedWordValid = typedWordValid;
+            mHaveMinimalSuggestion = haveMinimalSuggestion;
+        }
+    }
+
+    private class UiHandler extends Handler {
+        private static final int MSG_HIDE_PREVIEW = 0;
+        private static final int MSG_UPDATE_SUGGESTION = 1;
+
+        private static final long DELAY_HIDE_PREVIEW = 1000;
+        private static final long DELAY_UPDATE_SUGGESTION = 300;
+
         @Override
         public void dispatchMessage(Message msg) {
             switch (msg.what) {
             case MSG_HIDE_PREVIEW:
                 hidePreview();
                 break;
+            case MSG_UPDATE_SUGGESTION:
+                UpdateSuggestionsArgs args = (UpdateSuggestionsArgs)msg.obj;
+                updateSuggestions(args.mSuggestions, args.mCompletions, args.mTypedWordValid,
+                        args.mHaveMinimalSuggestion);
+                break;
             }
+        }
+
+        public void postHidePreview() {
+            cancelHidePreview();
+            sendMessageDelayed(obtainMessage(MSG_HIDE_PREVIEW), DELAY_HIDE_PREVIEW);
+        }
+
+        public void cancelHidePreview() {
+            removeMessages(MSG_HIDE_PREVIEW);
+        }
+
+        public void postUpdateSuggestions(List<CharSequence> suggestions, boolean completions,
+                boolean typedWordValid, boolean haveMinimalSuggestion) {
+            cancelUpdateSuggestions();
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION, new UpdateSuggestionsArgs(
+                    suggestions, completions, typedWordValid, haveMinimalSuggestion)),
+                    DELAY_UPDATE_SUGGESTION);
+        }
+
+        public void cancelUpdateSuggestions() {
+            removeMessages(MSG_UPDATE_SUGGESTION);
+        }
+
+        public void cancelAllMessages() {
+            cancelHidePreview();
+            cancelUpdateSuggestions();
         }
     };
 
@@ -96,6 +152,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mColorNormal = res.getColor(R.color.candidate_normal);
         mColorRecommended = res.getColor(R.color.candidate_recommended);
         mColorOther = res.getColor(R.color.candidate_other);
+        mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorNormal ^ 0x00ffffff);
+        mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorNormal);
 
         for (int i = 0; i < MAX_SUGGESTIONS; i++) {
             View v = inflater.inflate(R.layout.candidate, null);
@@ -123,6 +181,16 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     public void setSuggestions(List<CharSequence> suggestions, boolean completions,
             boolean typedWordValid, boolean haveMinimalSuggestion) {
+        if (mShowingAutoCorrectionInverted) {
+            mHandler.postUpdateSuggestions(suggestions, completions, typedWordValid,
+                    haveMinimalSuggestion);
+        } else {
+            updateSuggestions(suggestions, completions, typedWordValid, haveMinimalSuggestion);
+        }
+    }
+
+    private void updateSuggestions(List<CharSequence> suggestions, boolean completions,
+            boolean typedWordValid, boolean haveMinimalSuggestion) {
         clear();
         if (suggestions != null) {
             int insertCount = Math.min(suggestions.size(), MAX_SUGGESTIONS);
@@ -141,8 +209,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             if (suggestion == null) continue;
             final int wordLength = suggestion.length();
 
-            View v = mWords.get(i);
-            TextView tv = (TextView)v.findViewById(R.id.candidate_word);
+            final View v = mWords.get(i);
+            final TextView tv = (TextView)v.findViewById(R.id.candidate_word);
             tv.setTextColor(mColorNormal);
             if (haveMinimalSuggestion
                     && ((i == 1 && !typedWordValid) || (i == 0 && typedWordValid))) {
@@ -179,6 +247,22 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         requestLayout();
     }
 
+    public void onAutoCorrectionInverted(CharSequence autoCorrectedWord) {
+        // Displaying auto corrected word as inverted is enabled only when highlighting candidate
+        // with color is disabled.
+        if (mConfigCandidateHighlightFontColorEnabled)
+            return;
+        final TextView tv = (TextView)mWords.get(1).findViewById(R.id.candidate_word);
+        final Spannable word = new SpannableString(autoCorrectedWord);
+        final int wordLength = word.length();
+        word.setSpan(mInvertedBackgroundColorSpan, 0, wordLength,
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        word.setSpan(mInvertedForegroundColorSpan, 0, wordLength,
+                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        tv.setText(word);
+        mShowingAutoCorrectionInverted = true;
+    }
+
     public boolean isShowingAddToDictionaryHint() {
         return mShowingAddToDictionary;
     }
@@ -209,6 +293,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         // in LatinIME.pickSuggestionManually().
         mSuggestions.clear();
         mShowingAddToDictionary = false;
+        mShowingAutoCorrectionInverted = false;
         removeAllViews();
     }
 
@@ -236,8 +321,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             previewPopup.showAtLocation(this, Gravity.NO_GRAVITY, posX, posY);
         }
         previewText.setVisibility(VISIBLE);
-        mHandler.sendMessageDelayed(
-                mHandler.obtainMessage(MSG_HIDE_PREVIEW), DELAY_HIDE_PREVIEW);
+        mHandler.postHidePreview();
     }
 
     private void addToDictionary(CharSequence word) {
@@ -273,7 +357,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mHandler.removeMessages(MSG_HIDE_PREVIEW);
+        mHandler.cancelAllMessages();
         hidePreview();
     }
 }
