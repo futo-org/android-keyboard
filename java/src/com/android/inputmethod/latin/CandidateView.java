@@ -55,7 +55,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final int mColorNormal;
     private final int mColorRecommended;
     private final int mColorOther;
-    private static final StyleSpan BOLD_SPAN = new StyleSpan(Typeface.BOLD);
+    private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
 
     private boolean mShowingCompletions;
@@ -146,13 +146,15 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             tv.setTextColor(mColorNormal);
             if (haveMinimalSuggestion
                     && ((i == 1 && !typedWordValid) || (i == 0 && typedWordValid))) {
-                final Spannable word = new SpannableString(suggestion);
+                final CharacterStyle style;
                 if (mConfigCandidateHighlightFontColorEnabled) {
-                    word.setSpan(BOLD_SPAN, 0, wordLength, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                    style = BOLD_SPAN;
                     tv.setTextColor(mColorRecommended);
                 } else {
-                    word.setSpan(UNDERLINE_SPAN, 0, wordLength, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                    style = UNDERLINE_SPAN;
                 }
+                final Spannable word = new SpannableString(suggestion);
+                word.setSpan(style, 0, wordLength, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
                 suggestion = word;
                 existsAutoCompletion = true;
             } else if (i != 0 || (wordLength == 1 && count > 1)) {
