@@ -58,8 +58,10 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
     // Suggestion with excessive character
     if (SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER) {
         for (int i = 0; i < codesSize; ++i) {
-            if (DEBUG_DICT) LOGI("--- Suggest excessive characters %d", i);
-            getSuggestionCandidates(codesSize, -1, i, NULL, 0);
+            if (existsAdjacentProximityChars(i, codesSize)) {
+                if (DEBUG_DICT) LOGI("--- Suggest excessive characters %d", i);
+                getSuggestionCandidates(codesSize, -1, i, NULL, 0);
+            }
         }
     }
 
@@ -331,11 +333,34 @@ inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
     return (c == QUOTE && userTypedChar != QUOTE) || skipPos == depth;
 }
 
+inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex,
+        const int inputLength) {
+    if (inputIndex < 0 || inputIndex >= inputLength) return false;
+    const int currentChar = *getInputCharsAt(inputIndex);
+    const int leftIndex = inputIndex - 1;
+    if (leftIndex >= 0) {
+        int *leftChars = getInputCharsAt(leftIndex);
+        int i = 0;
+        while (leftChars[i] > 0 && i < MAX_PROXIMITY_CHARS) {
+            if (leftChars[i++] == currentChar) return true;
+        }
+    }
+    const int rightIndex = inputIndex + 1;
+    if (rightIndex < inputLength) {
+        int *rightChars = getInputCharsAt(rightIndex);
+        int i = 0;
+        while (rightChars[i] > 0 && i < MAX_PROXIMITY_CHARS) {
+            if (rightChars[i++] == currentChar) return true;
+        }
+    }
+    return false;
+}
+
 inline int UnigramDictionary::getMatchedProximityId(const int *currentChars,
         const unsigned short c, const int skipPos) {
     const unsigned short lowerC = toLowerCase(c);
     int j = 0;
-    while (currentChars[j] > 0) {
+    while (currentChars[j] > 0 && j < MAX_PROXIMITY_CHARS) {
         const bool matched = (currentChars[j] == lowerC || currentChars[j] == c);
         // If skipPos is defined, not to search proximity collections.
         // First char is what user typed.
