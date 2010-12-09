@@ -22,7 +22,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
-import com.android.inputmethod.latin.LatinIMEUtil.RingCharBuffer;
+import com.android.inputmethod.latin.Utils.RingCharBuffer;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -87,18 +87,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final boolean PERF_DEBUG = false;
     private static final boolean DEBUG = false;
     private static final boolean TRACE = false;
-
-    private static final String PREF_SOUND_ON = "sound_on";
-    private static final String PREF_POPUP_ON = "popup_on";
-    private static final String PREF_AUTO_CAP = "auto_cap";
-    private static final String PREF_QUICK_FIXES = "quick_fixes";
-    private static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
-    private static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
-    private static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
-
-    public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
-    public static final String PREF_INPUT_LANGUAGE = "input_language";
-    private static final String PREF_RECORRECTION_ENABLED = "recorrection_enabled";
 
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
@@ -346,17 +334,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final Configuration conf = mResources.getConfiguration();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
-        mReCorrectionEnabled = prefs.getBoolean(PREF_RECORRECTION_ENABLED,
+        mReCorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
                 getResources().getBoolean(R.bool.default_recorrection_enabled));
 
-        LatinIMEUtil.GCUtils.getInstance().reset();
+        Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
-        for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
                 initSuggest();
                 tryGC = false;
             } catch (OutOfMemoryError e) {
-                tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait("InitSuggest", e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait("InitSuggest", e);
             }
         }
 
@@ -419,7 +407,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggest.close();
         }
         final SharedPreferences prefs = mPrefs;
-        mQuickFixes = prefs.getBoolean(PREF_QUICK_FIXES, true);
+        mQuickFixes = prefs.getBoolean(Settings.PREF_QUICK_FIXES, true);
 
         int[] dictionaries = getDictionary(orig);
         mSuggest = new Suggest(this, dictionaries);
@@ -1063,7 +1051,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onSettingsKeyPressed() {
         if (!isShowingOptionDialog()) {
-            if (LatinIMEUtil.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
+            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
                 showOptionsMenu();
             } else {
                 launchSettings();
@@ -1073,7 +1061,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onSettingsKeyLongPressed() {
         if (!isShowingOptionDialog()) {
-            if (LatinIMEUtil.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
+            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
                 mImm.showInputMethodPicker();
             } else {
                 launchSettings();
@@ -1898,10 +1886,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
             String key) {
         mSubtypeSwitcher.onSharedPreferenceChanged(sharedPreferences, key);
-        if (PREF_SELECTED_LANGUAGES.equals(key)) {
+        if (Settings.PREF_SELECTED_LANGUAGES.equals(key)) {
             mRefreshKeyboardRequired = true;
-        } else if (PREF_RECORRECTION_ENABLED.equals(key)) {
-            mReCorrectionEnabled = sharedPreferences.getBoolean(PREF_RECORRECTION_ENABLED,
+        } else if (Settings.PREF_RECORRECTION_ENABLED.equals(key)) {
+            mReCorrectionEnabled = sharedPreferences.getBoolean(
+                    Settings.PREF_RECORRECTION_ENABLED,
                     getResources().getBoolean(R.bool.default_recorrection_enabled));
         }
     }
@@ -2071,8 +2060,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void updateSuggestionVisibility(SharedPreferences prefs) {
         final String suggestionVisiblityStr = prefs.getString(
-                PREF_SHOW_SUGGESTIONS_SETTING, mResources.getString(
-                        R.string.prefs_suggestion_visibility_default_value));
+                Settings.PREF_SHOW_SUGGESTIONS_SETTING,
+                mResources.getString(R.string.prefs_suggestion_visibility_default_value));
         for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
             if (suggestionVisiblityStr.equals(mResources.getString(visibility))) {
                 mSuggestionVisibility = visibility;
@@ -2082,11 +2071,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     protected void launchSettings() {
-        launchSettings(LatinIMESettings.class);
+        launchSettings(Settings.class);
     }
 
     public void launchDebugSettings() {
-        launchSettings(LatinIMEDebugSettings.class);
+        launchSettings(DebugSettings.class);
     }
 
     protected void launchSettings(Class<? extends PreferenceActivity> settingsClass) {
@@ -2102,12 +2091,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SharedPreferences prefs = mPrefs;
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrateOn = vibrator != null && vibrator.hasVibrator()
-                && prefs.getBoolean(LatinIMESettings.PREF_VIBRATE_ON, false);
-        mSoundOn = prefs.getBoolean(PREF_SOUND_ON, false);
-        mPopupOn = prefs.getBoolean(PREF_POPUP_ON,
+                && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
+        mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON, false);
+        mPopupOn = prefs.getBoolean(Settings.PREF_POPUP_ON,
                 mResources.getBoolean(R.bool.default_popup_preview));
-        mAutoCap = prefs.getBoolean(PREF_AUTO_CAP, true);
-        mQuickFixes = prefs.getBoolean(PREF_QUICK_FIXES, true);
+        mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
+        mQuickFixes = prefs.getBoolean(Settings.PREF_QUICK_FIXES, true);
 
         mAutoCorrectEnabled = isAutoCorrectEnabled(prefs);
         mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(prefs);
@@ -2131,7 +2120,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // When auto completion setting is turned off, the threshold is ignored.
         if (!isAutoCorrectEnabled(sp)) return;
 
-        final String currentAutoCompletionSetting = sp.getString(PREF_AUTO_COMPLETION_THRESHOLD,
+        final String currentAutoCompletionSetting = sp.getString(
+                Settings.PREF_AUTO_COMPLETION_THRESHOLD,
                 mResources.getString(R.string.auto_completion_threshold_mode_value_modest));
         final String[] autoCompletionThresholdValues = mResources.getStringArray(
                 R.array.auto_complete_threshold_values);
@@ -2159,7 +2149,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean isAutoCorrectEnabled(SharedPreferences sp) {
-        final String currentAutoCompletionSetting = sp.getString(PREF_AUTO_COMPLETION_THRESHOLD,
+        final String currentAutoCompletionSetting = sp.getString(
+                Settings.PREF_AUTO_COMPLETION_THRESHOLD,
                 mResources.getString(R.string.auto_completion_threshold_mode_value_modest));
         final String autoCompletionOff = mResources.getString(
                 R.string.auto_completion_threshold_mode_value_off);
@@ -2168,7 +2159,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private boolean isBigramSuggestionEnabled(SharedPreferences sp) {
        // TODO: Define default value instead of 'true'.
-       return sp.getBoolean(PREF_BIGRAM_SUGGESTIONS, true);
+       return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTIONS, true);
     }
 
     private void initSuggestPuncList() {

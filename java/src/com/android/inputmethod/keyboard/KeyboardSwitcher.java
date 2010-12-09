@@ -17,8 +17,8 @@
 package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.LatinIMESettings;
-import com.android.inputmethod.latin.LatinIMEUtil;
+import com.android.inputmethod.latin.Settings;
+import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -562,20 +562,20 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 newLayout = Integer.valueOf(DEFAULT_LAYOUT_ID);
             }
 
-            LatinIMEUtil.GCUtils.getInstance().reset();
+            Utils.GCUtils.getInstance().reset();
             boolean tryGC = true;
-            for (int i = 0; i < LatinIMEUtil.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+            for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
                 try {
                     mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater(
                             ).inflate(THEMES[newLayout], null);
                     tryGC = false;
                 } catch (OutOfMemoryError e) {
                     Log.w(TAG, "load keyboard failed: " + e);
-                    tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(
+                    tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
                             mLayoutId + "," + newLayout, e);
                 } catch (InflateException e) {
                     Log.w(TAG, "load keyboard failed: " + e);
-                    tryGC = LatinIMEUtil.GCUtils.getInstance().tryGCOrWait(
+                    tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
                             mLayoutId + "," + newLayout, e);
                 }
             }
@@ -603,7 +603,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     sharedPreferences.getString(key, DEFAULT_LAYOUT_ID));
             createInputViewInternal(layoutId, false);
             postSetInputView();
-        } else if (LatinIMESettings.PREF_SETTINGS_KEY.equals(key)) {
+        } else if (Settings.PREF_SETTINGS_KEY.equals(key)) {
             mHasSettingsKey = getSettingsKeyMode(sharedPreferences, mInputMethodService);
             createInputViewInternal(mLayoutId, true);
             postSetInputView();
@@ -629,13 +629,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final boolean showSettingsKeyOption = resources.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
         if (showSettingsKeyOption) {
-            final String settingsKeyMode = prefs.getString(LatinIMESettings.PREF_SETTINGS_KEY,
+            final String settingsKeyMode = prefs.getString(Settings.PREF_SETTINGS_KEY,
                     resources.getString(DEFAULT_SETTINGS_KEY_MODE));
             // We show the settings key when 1) SETTINGS_KEY_MODE_ALWAYS_SHOW or
             // 2) SETTINGS_KEY_MODE_AUTO and there are two or more enabled IMEs on the system
             if (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
                     || (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_AUTO))
-                            && LatinIMEUtil.hasMultipleEnabledIMEsOrSubtypes(
+                            && Utils.hasMultipleEnabledIMEsOrSubtypes(
                                     ((InputMethodManager) context.getSystemService(
                                             Context.INPUT_METHOD_SERVICE))))) {
                 return true;

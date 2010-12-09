@@ -316,7 +316,7 @@ public class SubtypeSwitcher {
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
-            if (LatinIME.PREF_SELECTED_LANGUAGES.equals(key)) {
+            if (Settings.PREF_SELECTED_LANGUAGES.equals(key)) {
                 mLanguageSwitcher.loadLocales(sharedPreferences);
             }
         }
