@@ -69,7 +69,8 @@ private:
     bool processCurrentNodeForExactMatch(const int firstChildPos,
             const int startInputIndex, const int depth, unsigned short *word,
             int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
-
+    bool existsAdjacentProximityChars(const int inputIndex, const int inputLength);
+    int* getInputCharsAt(const int index) {return mInputCodes + (index * MAX_PROXIMITY_CHARS);}
     const unsigned char *DICT;
     const int MAX_WORDS;
     const int MAX_WORD_LENGTH;
