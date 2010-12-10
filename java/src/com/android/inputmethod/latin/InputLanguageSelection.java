@@ -42,24 +42,28 @@ public class InputLanguageSelection extends PreferenceActivity {
     };
 
     private static class Loc implements Comparable<Object> {
-        static Collator sCollator = Collator.getInstance();
+        private static Collator sCollator = Collator.getInstance();
 
-        String label;
-        Locale locale;
+        private String mLabel;
+        public final Locale mLocale;
 
         public Loc(String label, Locale locale) {
-            this.label = label;
-            this.locale = locale;
+            this.mLabel = label;
+            this.mLocale = locale;
+        }
+
+        public void setLabel(String label) {
+            this.mLabel = label;
         }
 
         @Override
         public String toString() {
-            return this.label;
+            return this.mLabel;
         }
 
         @Override
         public int compareTo(Object o) {
-            return sCollator.compare(this.label, ((Loc) o).label);
+            return sCollator.compare(this.mLabel, ((Loc) o).mLabel);
         }
     }
 
@@ -75,7 +79,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         PreferenceGroup parent = getPreferenceScreen();
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
             CheckBoxPreference pref = new CheckBoxPreference(this);
-            Locale locale = mAvailableLanguages.get(i).locale;
+            Locale locale = mAvailableLanguages.get(i).mLocale;
             pref.setTitle(SubtypeSwitcher.getFullDisplayName(locale, true));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
@@ -137,7 +141,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < count; i++) {
             CheckBoxPreference pref = (CheckBoxPreference) parent.getPreference(i);
             if (pref.isChecked()) {
-                Locale locale = mAvailableLanguages.get(i).locale;
+                Locale locale = mAvailableLanguages.get(i).mLocale;
                 checkedLanguages += get5Code(locale) + ",";
             }
         }
@@ -147,7 +151,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         SharedPreferencesCompat.apply(editor);
     }
 
-    ArrayList<Loc> getUniqueLocales() {
+    public ArrayList<Loc> getUniqueLocales() {
         String[] locales = getAssets().getLocales();
         Arrays.sort(locales);
         ArrayList<Loc> uniqueLocales = new ArrayList<Loc>();
@@ -174,15 +178,16 @@ public class InputLanguageSelection extends PreferenceActivity {
                     //  same lang and a country -> upgrade to full name and
                     //    insert ours with full name
                     //  diff lang -> insert ours with lang-only name
-                    if (preprocess[finalSize-1].locale.getLanguage().equals(
+                    if (preprocess[finalSize-1].mLocale.getLanguage().equals(
                             language)) {
-                        preprocess[finalSize-1].label = SubtypeSwitcher.getFullDisplayName(
-                                preprocess[finalSize-1].locale, false);
+                        preprocess[finalSize-1].setLabel(SubtypeSwitcher.getFullDisplayName(
+                                preprocess[finalSize-1].mLocale, false));
                         preprocess[finalSize++] =
                                 new Loc(SubtypeSwitcher.getFullDisplayName(l, false), l);
                     } else {
                         String displayName;
                         if (s.equals("zz_ZZ")) {
+                            // ignore this locale
                         } else {
                             displayName = SubtypeSwitcher.getFullDisplayName(l, true);
                             preprocess[finalSize++] = new Loc(displayName, l);

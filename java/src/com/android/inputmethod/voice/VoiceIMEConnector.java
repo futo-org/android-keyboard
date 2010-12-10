@@ -16,8 +16,7 @@
 
 package com.android.inputmethod.voice;
 
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.latin.EditingUtil;
+import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinIME.UIHandler;
 import com.android.inputmethod.latin.R;
@@ -133,6 +132,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
     private VoiceIMEConnector() {
+        // Intentional empty constructor for singleton.
     }
 
     public void resetVoiceStates(boolean isPasswordText) {
@@ -228,7 +228,8 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
     private static class CustomLinkMovementMethod extends LinkMovementMethod {
-        private static CustomLinkMovementMethod sInstance = new CustomLinkMovementMethod();
+        private static CustomLinkMovementMethod sLinkMovementMethodInstance =
+                new CustomLinkMovementMethod();
         private AlertDialog mAlertDialog;
 
         public void setVoiceWarningDialog(AlertDialog alertDialog) {
@@ -236,7 +237,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         }
 
         public static CustomLinkMovementMethod getInstance() {
-            return sInstance;
+            return sLinkMovementMethodInstance;
         }
 
         // Almost the same as LinkMovementMethod.onTouchEvent(), but overrides it for
@@ -391,9 +392,8 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     public void rememberReplacedWord(CharSequence suggestion,String wordSeparators) {
         if (mShowingVoiceSuggestions) {
             // Retain the replaced word in the alternatives array.
-            EditingUtil.Range range = new EditingUtil.Range();
-            String wordToBeReplaced = EditingUtil.getWordAtCursor(
-                    mContext.getCurrentInputConnection(), wordSeparators, range);
+            String wordToBeReplaced = EditingUtils.getWordAtCursor(
+                    mContext.getCurrentInputConnection(), wordSeparators);
             if (!mWordToSuggestions.containsKey(wordToBeReplaced)) {
                 wordToBeReplaced = wordToBeReplaced.toLowerCase();
             }
@@ -415,9 +415,9 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
      * @param touching The word that the cursor is touching, with position information
      * @return true if an alternative was found, false otherwise.
      */
-    public boolean applyVoiceAlternatives(EditingUtil.SelectedWord touching) {
+    public boolean applyVoiceAlternatives(EditingUtils.SelectedWord touching) {
         // Search for result in spoken word alternatives
-        String selectedWord = touching.word.toString().trim();
+        String selectedWord = touching.mWord.toString().trim();
         if (!mWordToSuggestions.containsKey(selectedWord)) {
             selectedWord = selectedWord.toLowerCase();
         }
@@ -426,7 +426,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
             // If the first letter of touching is capitalized, make all the suggestions
             // start with a capital letter.
-            if (Character.isUpperCase(touching.word.charAt(0))) {
+            if (Character.isUpperCase(touching.mWord.charAt(0))) {
                 for (int i = 0; i < suggestions.size(); i++) {
                     String origSugg = (String) suggestions.get(i);
                     String capsSugg = origSugg.toUpperCase().charAt(0)
@@ -478,7 +478,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
 
-    public void handleVoiceResults(KeyboardSwitcher switcher, boolean capitalizeFirstWord) {
+    public void handleVoiceResults(boolean capitalizeFirstWord) {
         mAfterVoiceInput = true;
         mImmediatelyAfterVoiceInput = true;
 
@@ -508,7 +508,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
         if (ic != null) ic.beginBatchEdit(); // To avoid extra updates on committing older text
         mContext.commitTyped(ic);
-        EditingUtil.appendText(ic, bestResult);
+        EditingUtils.appendText(ic, bestResult);
         if (ic != null) ic.endBatchEdit();
 
         mVoiceInputHighlighted = true;

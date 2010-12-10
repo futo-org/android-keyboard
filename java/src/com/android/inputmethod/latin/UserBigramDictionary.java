@@ -108,25 +108,25 @@ public class UserBigramDictionary extends ExpandableDictionary {
     private static DatabaseHelper sOpenHelper = null;
 
     private static class Bigram {
-        String word1;
-        String word2;
-        int frequency;
+        public final String mWord1;
+        public final String mWord2;
+        public final int frequency;
 
         Bigram(String word1, String word2, int frequency) {
-            this.word1 = word1;
-            this.word2 = word2;
+            this.mWord1 = word1;
+            this.mWord2 = word2;
             this.frequency = frequency;
         }
 
         @Override
         public boolean equals(Object bigram) {
             Bigram bigram2 = (Bigram) bigram;
-            return (word1.equals(bigram2.word1) && word2.equals(bigram2.word2));
+            return (mWord1.equals(bigram2.mWord1) && mWord2.equals(bigram2.mWord2));
         }
 
         @Override
         public int hashCode() {
-            return (word1 + " " + word2).hashCode();
+            return (mWord1 + " " + mWord2).hashCode();
         }
     }
 
@@ -357,7 +357,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
                 Cursor c = db.query(MAIN_TABLE_NAME, new String[] { MAIN_COLUMN_ID },
                         MAIN_COLUMN_WORD1 + "=? AND " + MAIN_COLUMN_WORD2 + "=? AND "
                         + MAIN_COLUMN_LOCALE + "=?",
-                        new String[] { bi.word1, bi.word2, mLocale }, null, null, null);
+                        new String[] { bi.mWord1, bi.mWord2, mLocale }, null, null, null);
 
                 int pairId;
                 if (c.moveToFirst()) {
@@ -368,7 +368,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
                 } else {
                     // new pair
                     Long pairIdLong = db.insert(MAIN_TABLE_NAME, null,
-                            getContentValues(bi.word1, bi.word2, mLocale));
+                            getContentValues(bi.mWord1, bi.mWord2, mLocale));
                     pairId = pairIdLong.intValue();
                 }
                 c.close();

@@ -299,7 +299,7 @@ public class PointerTracker {
         showKeyPreviewAndUpdateKeyGraphics(keyIndex);
     }
 
-    public void onMoveEvent(int x, int y, long eventTime) {
+    public void onMoveEvent(int x, int y, @SuppressWarnings("unused") long eventTime) {
         if (DEBUG_MOVE)
             debugLog("onMoveEvent:", x, y);
         if (mKeyAlreadyProcessed)
@@ -333,7 +333,9 @@ public class PointerTracker {
         showKeyPreviewAndUpdateKeyGraphics(mKeyState.getKeyIndex());
     }
 
-    public void onUpEvent(int x, int y, long eventTime) {
+    public void onUpEvent(int pointX, int pointY, long eventTime) {
+        int x = pointX;
+        int y = pointY;
         if (DEBUG)
             debugLog("onUpEvent  :", x, y);
         showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
@@ -356,7 +358,7 @@ public class PointerTracker {
             mProxy.invalidateKey(mKeys[keyIndex]);
     }
 
-    public void onCancelEvent(int x, int y, long eventTime) {
+    public void onCancelEvent(int x, int y, @SuppressWarnings("unused") long eventTime) {
         if (DEBUG)
             debugLog("onCancelEvt:", x, y);
         mHandler.cancelKeyTimers();

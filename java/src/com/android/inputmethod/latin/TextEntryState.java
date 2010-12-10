@@ -113,7 +113,7 @@ public class TextEntryState {
             sKeyLocationFile = null;
             sUserActionFile = null;
         } catch (IOException ioe) {
-            
+            // ignore
         }
     }
     
@@ -135,16 +135,18 @@ public class TextEntryState {
     public static void backToAcceptedDefault(CharSequence typedWord) {
         if (typedWord == null) return;
         switch (sState) {
-            case SPACE_AFTER_ACCEPTED:
-            case PUNCTUATION_AFTER_ACCEPTED:
-            case IN_WORD:
-                sState = State.ACCEPTED_DEFAULT;
-                break;
+        case SPACE_AFTER_ACCEPTED:
+        case PUNCTUATION_AFTER_ACCEPTED:
+        case IN_WORD:
+            sState = State.ACCEPTED_DEFAULT;
+            break;
+        default:
+            break;
         }
         displayState();
     }
 
-    public static void acceptedTyped(CharSequence typedWord) {
+    public static void acceptedTyped(@SuppressWarnings("unused") CharSequence typedWord) {
         sWordNotInDictionaryCount++;
         sState = State.PICKED_SUGGESTION;
         displayState();

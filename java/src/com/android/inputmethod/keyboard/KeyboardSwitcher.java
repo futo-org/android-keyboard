@@ -100,6 +100,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private KeyboardSwitcher() {
+        // Intentional empty constructor for singleton.
     }
 
     public static void init(LatinIME ims, SharedPreferences prefs) {
@@ -554,12 +555,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private void createInputViewInternal(int newLayout, boolean forceReset) {
-        if (mLayoutId != newLayout || mInputView == null || forceReset) {
+        int layoutId = newLayout;
+        if (mLayoutId != layoutId || mInputView == null || forceReset) {
             if (mInputView != null) {
                 mInputView.closing();
             }
-            if (THEMES.length <= newLayout) {
-                newLayout = Integer.valueOf(DEFAULT_LAYOUT_ID);
+            if (THEMES.length <= layoutId) {
+                layoutId = Integer.valueOf(DEFAULT_LAYOUT_ID);
             }
 
             Utils.GCUtils.getInstance().reset();
@@ -567,20 +569,20 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
                 try {
                     mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater(
-                            ).inflate(THEMES[newLayout], null);
+                            ).inflate(THEMES[layoutId], null);
                     tryGC = false;
                 } catch (OutOfMemoryError e) {
                     Log.w(TAG, "load keyboard failed: " + e);
                     tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
-                            mLayoutId + "," + newLayout, e);
+                            mLayoutId + "," + layoutId, e);
                 } catch (InflateException e) {
                     Log.w(TAG, "load keyboard failed: " + e);
                     tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
-                            mLayoutId + "," + newLayout, e);
+                            mLayoutId + "," + layoutId, e);
                 }
             }
             mInputView.setOnKeyboardActionListener(mInputMethodService);
-            mLayoutId = newLayout;
+            mLayoutId = layoutId;
         }
     }
 

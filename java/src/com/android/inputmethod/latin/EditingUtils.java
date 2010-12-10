@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
 /**
  * Utility methods to deal with editing text through an InputConnection.
  */
-public class EditingUtil {
+public class EditingUtils {
     /**
      * Number of characters we want to look back in order to identify the previous word
      */
@@ -39,7 +39,9 @@ public class EditingUtil {
     private static Method sMethodGetSelectedText;
     private static Method sMethodSetComposingRegion;
 
-    private EditingUtil() {};
+    private EditingUtils() {
+        // Unintentional empty constructor for singleton.
+    }
 
     /**
      * Append newText to the text field represented by connection.
@@ -54,14 +56,15 @@ public class EditingUtil {
         connection.finishComposingText();
 
         // Add a space if the field already has text.
+        String text = newText;
         CharSequence charBeforeCursor = connection.getTextBeforeCursor(1, 0);
         if (charBeforeCursor != null
                 && !charBeforeCursor.equals(" ")
                 && (charBeforeCursor.length() > 0)) {
-            newText = " " + newText;
+            text = " " + text;
         }
 
-        connection.setComposingText(newText, 1);
+        connection.setComposingText(text, 1);
     }
 
     private static int getCursorPosition(InputConnection connection) {
@@ -76,33 +79,29 @@ public class EditingUtil {
     /**
      * @param connection connection to the current text field.
      * @param sep characters which may separate words
-     * @param range the range object to store the result into
      * @return the word that surrounds the cursor, including up to one trailing
      *   separator. For example, if the field contains "he|llo world", where |
      *   represents the cursor, then "hello " will be returned.
      */
-    public static String getWordAtCursor(
-            InputConnection connection, String separators, Range range) {
-        Range r = getWordRangeAtCursor(connection, separators, range);
-        return (r == null) ? null : r.word;
+    public static String getWordAtCursor(InputConnection connection, String separators) {
+        Range r = getWordRangeAtCursor(connection, separators);
+        return (r == null) ? null : r.mWord;
     }
 
     /**
      * Removes the word surrounding the cursor. Parameters are identical to
      * getWordAtCursor.
      */
-    public static void deleteWordAtCursor(
-        InputConnection connection, String separators) {
-
-        Range range = getWordRangeAtCursor(connection, separators, null);
+    public static void deleteWordAtCursor(InputConnection connection, String separators) {
+        Range range = getWordRangeAtCursor(connection, separators);
         if (range == null) return;
 
         connection.finishComposingText();
         // Move cursor to beginning of word, to avoid crash when cursor is outside
         // of valid range after deleting text.
-        int newCursor = getCursorPosition(connection) - range.charsBefore;
+        int newCursor = getCursorPosition(connection) - range.mCharsBefore;
         connection.setSelection(newCursor, newCursor);
-        connection.deleteSurroundingText(0, range.charsBefore + range.charsAfter);
+        connection.deleteSurroundingText(0, range.mCharsBefore + range.mCharsAfter);
     }
 
     /**
@@ -110,31 +109,28 @@ public class EditingUtil {
      */
     public static class Range {
         /** Characters before selection start */
-        public int charsBefore;
+        public final int mCharsBefore;
 
         /**
          * Characters after selection start, including one trailing word
          * separator.
          */
-        public int charsAfter;
+        public final int mCharsAfter;
 
         /** The actual characters that make up a word */
-        public String word;
-
-        public Range() {}
+        public final String mWord;
 
         public Range(int charsBefore, int charsAfter, String word) {
             if (charsBefore < 0 || charsAfter < 0) {
                 throw new IndexOutOfBoundsException();
             }
-            this.charsBefore = charsBefore;
-            this.charsAfter = charsAfter;
-            this.word = word;
+            this.mCharsBefore = charsBefore;
+            this.mCharsAfter = charsAfter;
+            this.mWord = word;
         }
     }
 
-    private static Range getWordRangeAtCursor(
-            InputConnection connection, String sep, Range range) {
+    private static Range getWordRangeAtCursor(InputConnection connection, String sep) {
         if (connection == null || sep == null) {
             return null;
         }
@@ -150,18 +146,15 @@ public class EditingUtil {
 
         // Find last word separator after the cursor
         int end = -1;
-        while (++end < after.length() && !isWhitespace(after.charAt(end), sep));
+        while (++end < after.length() && !isWhitespace(after.charAt(end), sep)) {
+            // Nothing to do here.
+        }
 
         int cursor = getCursorPosition(connection);
         if (start >= 0 && cursor + end <= after.length() + before.length()) {
             String word = before.toString().substring(start, before.length())
                     + after.toString().substring(0, end);
-
-            Range returnRange = range != null? range : new Range();
-            returnRange.charsBefore = before.length() - start;
-            returnRange.charsAfter = end;
-            returnRange.word = word;
-            return returnRange;
+            return new Range(before.length() - start, end, word);
         }
 
         return null;
@@ -193,9 +186,15 @@ public class EditingUtil {
     }
 
     public static class SelectedWord {
-        public int start;
-        public int end;
-        public CharSequence word;
+        public final int mStart;
+        public final int mEnd;
+        public final CharSequence mWord;
+
+        public SelectedWord(int start, int end, CharSequence word) {
+            mStart = start;
+            mEnd = end;
+            mWord = word;
+        }
     }
 
     /**
@@ -223,14 +222,10 @@ public class EditingUtil {
             int selStart, int selEnd, String wordSeparators) {
         if (selStart == selEnd) {
             // There is just a cursor, so get the word at the cursor
-            EditingUtil.Range range = new EditingUtil.Range();
-            CharSequence touching = getWordAtCursor(ic, wordSeparators, range);
-            if (!TextUtils.isEmpty(touching)) {
-                SelectedWord selWord = new SelectedWord();
-                selWord.word = touching;
-                selWord.start = selStart - range.charsBefore;
-                selWord.end = selEnd + range.charsAfter;
-                return selWord;
+            EditingUtils.Range range = getWordRangeAtCursor(ic, wordSeparators);
+            if (range != null && !TextUtils.isEmpty(range.mWord)) {
+                return new SelectedWord(selStart - range.mCharsBefore, selEnd + range.mCharsAfter,
+                        range.mWord);
             }
         } else {
             // Is the previous character empty or a word separator? If not, return null.
@@ -256,11 +251,7 @@ public class EditingUtil {
                 }
             }
             // Prepare the selected word
-            SelectedWord selWord = new SelectedWord();
-            selWord.start = selStart;
-            selWord.end = selEnd;
-            selWord.word = touching;
-            return selWord;
+            return new SelectedWord(selStart, selEnd, touching);
         }
         return null;
     }
@@ -324,7 +315,7 @@ public class EditingUtil {
         }
         if (sMethodSetComposingRegion != null) {
             try {
-                sMethodSetComposingRegion.invoke(ic, word.start, word.end);
+                sMethodSetComposingRegion.invoke(ic, word.mStart, word.mEnd);
             } catch (InvocationTargetException exc) {
                 // Ignore
             } catch (IllegalArgumentException e) {

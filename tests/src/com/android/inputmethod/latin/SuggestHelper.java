@@ -116,13 +116,6 @@ public class SuggestHelper {
         return word;
     }
 
-    private void showList(String title, List<CharSequence> suggestions) {
-        Log.i(TAG, title);
-        for (int i = 0; i < suggestions.size(); i++) {
-            Log.i(title, suggestions.get(i) + ", ");
-        }
-    }
-
     private boolean isDefaultSuggestion(List<CharSequence> suggestions, CharSequence word) {
         // Check if either the word is what you typed or the first alternative
         return suggestions.size() > 0 &&
@@ -191,8 +184,6 @@ public class SuggestHelper {
 
     boolean isUserBigramSuggestion(CharSequence previous, char typed,
            CharSequence expected) {
-        WordComposer word = createWordComposer(Character.toString(typed));
-
         if (mUserBigram == null) return false;
 
         flushUserBigrams();

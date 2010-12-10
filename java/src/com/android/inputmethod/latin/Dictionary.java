@@ -20,7 +20,7 @@ package com.android.inputmethod.latin;
  * Abstract base class for a dictionary that can do a fuzzy search for words based on a set of key
  * strokes.
  */
-abstract public class Dictionary {
+public abstract class Dictionary {
     /**
      * Whether or not to replicate the typed word in the suggested list, even if it's valid.
      */
@@ -42,11 +42,11 @@ abstract public class Dictionary {
     public interface WordCallback {
         /**
          * Adds a word to a list of suggestions. The word is expected to be ordered based on
-         * the provided frequency. 
+         * the provided frequency.
          * @param word the character array containing the word
          * @param wordOffset starting offset of the word in the character array
          * @param wordLength length of valid characters in the character array
-         * @param frequency the frequency of occurence. This is normalized between 1 and 255, but
+         * @param frequency the frequency of occurrence. This is normalized between 1 and 255, but
          * can exceed those limits
          * @param dicTypeId of the dictionary where word was from
          * @param dataType tells type of this data
@@ -74,6 +74,7 @@ abstract public class Dictionary {
      * Searches for pairs in the bigram dictionary that matches the previous word and all the
      * possible words following are added through the callback object.
      * @param composer the key sequence to match
+     * @param previousWord the word before
      * @param callback the callback object to send possible word following previous word
      * @param nextLettersFrequencies array of frequencies of next letters that could follow the
      *        word so far. For instance, "bracke" can be followed by "t", so array['t'] will have
@@ -116,5 +117,6 @@ abstract public class Dictionary {
      * Override to clean up any resources.
      */
     public void close() {
+        // empty base implementation
     }
 }

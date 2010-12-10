@@ -23,6 +23,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
@@ -35,6 +36,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -129,7 +131,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             cancelHidePreview();
             cancelUpdateSuggestions();
         }
-    };
+    }
 
     /**
      * Construct a CandidateView for showing suggested words for completion.
@@ -143,7 +145,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mPreviewPopup = new PopupWindow(context);
         LayoutInflater inflater = LayoutInflater.from(context);
         mPreviewText = (TextView) inflater.inflate(R.layout.candidate_preview, null);
-        mPreviewPopup.setWindowLayoutMode(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        mPreviewPopup.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
         mPreviewPopup.setAnimationStyle(R.style.KeyPreviewAnimation);
@@ -222,7 +225,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                     style = UNDERLINE_SPAN;
                 }
                 final Spannable word = new SpannableString(suggestion);
-                word.setSpan(style, 0, wordLength, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+                word.setSpan(style, 0, wordLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                 suggestion = word;
                 existsAutoCompletion = true;
             } else if (i != 0 || (wordLength == 1 && count > 1)) {
@@ -255,10 +258,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         final TextView tv = (TextView)mWords.get(1).findViewById(R.id.candidate_word);
         final Spannable word = new SpannableString(autoCorrectedWord);
         final int wordLength = word.length();
-        word.setSpan(mInvertedBackgroundColorSpan, 0, wordLength,
-                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-        word.setSpan(mInvertedForegroundColorSpan, 0, wordLength,
-                Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+        word.setSpan(mInvertedBackgroundColorSpan, 0, wordLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        word.setSpan(mInvertedForegroundColorSpan, 0, wordLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         tv.setText(word);
         mShowingAutoCorrectionInverted = true;
     }

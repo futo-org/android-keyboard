@@ -92,6 +92,7 @@ public class SubtypeSwitcher {
     }
 
     private SubtypeSwitcher() {
+        // Intentional empty constructor for singleton.
     }
 
     private void resetParams(LatinIME service) {

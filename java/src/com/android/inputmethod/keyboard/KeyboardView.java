@@ -289,7 +289,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             cancelPopupPreview();
             cancelDismissPreview();
         }
-    };
+    }
 
     public KeyboardView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
@@ -587,7 +587,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     protected CharSequence adjustCase(CharSequence label) {
         if (mKeyboard.isShiftedOrShiftLocked() && label != null && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
-            label = label.toString().toUpperCase();
+            return label.toString().toUpperCase();
         }
         return label;
     }
@@ -1089,7 +1089,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mKeyboardActionListener.onKey(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
-    private void onDoubleTapShiftKey(PointerTracker tracker) {
+    private void onDoubleTapShiftKey(@SuppressWarnings("unused") PointerTracker tracker) {
         // When shift key is double tapped, the first tap is correctly processed as usual tap. And
         // the second tap is treated as this double tap event, so that we need not mark tracker
         // calling setAlreadyProcessed() nor remove the tracker from mPointerQueueueue.
@@ -1126,15 +1126,19 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
             @Override
             public void swipeLeft() {
+                // Nothing to do.
             }
             @Override
             public void swipeRight() {
+                // Nothing to do.
             }
             @Override
             public void swipeUp() {
+                // Nothing to do.
             }
             @Override
             public void swipeDown() {
+                // Nothing to do.
             }
             @Override
             public void onPress(int primaryCode) {

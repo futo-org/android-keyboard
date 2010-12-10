@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.voice;
 
-import com.android.inputmethod.latin.EditingUtil;
+import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.R;
 
 import android.content.ContentResolver;
@@ -241,7 +241,7 @@ public class VoiceInput implements OnClickListener {
     }
 
     public void incrementTextModificationInsertPunctuationCount(int count){
-        mAfterVoiceInputInsertPunctuationCount += 1;
+        mAfterVoiceInputInsertPunctuationCount += count;
         if (mAfterVoiceInputSelectionSpan > 0) {
             // If text was highlighted before inserting the char, count this as
             // a delete.
@@ -429,8 +429,7 @@ public class VoiceInput implements OnClickListener {
 
     public void logTextModifiedByChooseSuggestion(String suggestion, int index,
                                                   String wordSeparators, InputConnection ic) {
-        EditingUtil.Range range = new EditingUtil.Range();
-        String wordToBeReplaced = EditingUtil.getWordAtCursor(ic, wordSeparators, range);
+        String wordToBeReplaced = EditingUtils.getWordAtCursor(ic, wordSeparators);
         // If we enable phrase-based alternatives, only send up the first word
         // in suggestion and wordToBeReplaced.
         mLogger.textModifiedByChooseSuggestion(suggestion.length(), wordToBeReplaced.length(),
@@ -578,7 +577,9 @@ public class VoiceInput implements OnClickListener {
         public void onBufferReceived(byte[] buf) {
             try {
                 mWaveBuffer.write(buf);
-            } catch (IOException e) {}
+            } catch (IOException e) {
+                // ignore.
+            }
         }
 
         @Override

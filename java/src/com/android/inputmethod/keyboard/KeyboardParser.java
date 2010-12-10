@@ -18,6 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.latin.R;
 
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.res.Resources;
@@ -142,8 +143,8 @@ public class KeyboardParser {
     public void parseKeyboard(XmlResourceParser parser)
             throws XmlPullParserException, IOException {
         int event;
-        while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
-            if (event == XmlResourceParser.START_TAG) {
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (DEBUG_TAG) debugStartTag("parseKeyboard", tag, false);
                 if (TAG_KEYBOARD.equals(tag)) {
@@ -186,8 +187,8 @@ public class KeyboardParser {
     private void parseKeyboardContent(XmlResourceParser parser, List<Key> keys)
             throws XmlPullParserException, IOException {
         int event;
-        while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
-            if (event == XmlResourceParser.START_TAG) {
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (DEBUG_TAG) debugStartTag("parseKeyboardContent", tag, keys == null);
                 if (TAG_ROW.equals(tag)) {
@@ -204,7 +205,7 @@ public class KeyboardParser {
                 } else {
                     throw new IllegalStartTag(parser, TAG_ROW);
                 }
-            } else if (event == XmlResourceParser.END_TAG) {
+            } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
                 if (DEBUG_TAG) debugEndTag("parseKeyboardContent", tag, keys == null);
                 if (TAG_KEYBOARD.equals(tag)) {
@@ -226,8 +227,8 @@ public class KeyboardParser {
     private void parseRowContent(XmlResourceParser parser, Row row, List<Key> keys)
             throws XmlPullParserException, IOException {
         int event;
-        while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
-            if (event == XmlResourceParser.START_TAG) {
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (DEBUG_TAG) debugStartTag("parseRowContent", tag, keys == null);
                 if (TAG_KEY.equals(tag)) {
@@ -243,7 +244,7 @@ public class KeyboardParser {
                 } else {
                     throw new IllegalStartTag(parser, TAG_KEY);
                 }
-            } else if (event == XmlResourceParser.END_TAG) {
+            } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
                 if (DEBUG_TAG) debugEndTag("parseRowContent", tag, keys == null);
                 if (TAG_ROW.equals(tag)) {
@@ -327,8 +328,8 @@ public class KeyboardParser {
     private void parseMerge(XmlResourceParser parser, Row row, List<Key> keys)
             throws XmlPullParserException, IOException {
         int event;
-        while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
-            if (event == XmlResourceParser.START_TAG) {
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (DEBUG_TAG) debugStartTag("parseMerge", tag, keys == null);
                 if (TAG_MERGE.equals(tag)) {
@@ -361,8 +362,8 @@ public class KeyboardParser {
         boolean selected = false;
         int event;
         if (DEBUG_TAG) Log.d(TAG, "parseSwitchInternal: id=" + mKeyboard.mId);
-        while ((event = parser.next()) != XmlResourceParser.END_DOCUMENT) {
-            if (event == XmlResourceParser.START_TAG) {
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (DEBUG_TAG) debugStartTag("parseSwitchInternal", tag, keys == null);
                 if (TAG_CASE.equals(tag)) {
@@ -372,7 +373,7 @@ public class KeyboardParser {
                 } else {
                     throw new IllegalStartTag(parser, TAG_KEY);
                 }
-            } else if (event == XmlResourceParser.END_TAG) {
+            } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
                 if (DEBUG_TAG) debugEndTag("parseRowContent", tag, keys == null);
                 if (TAG_SWITCH.equals(tag)) {
@@ -469,8 +470,7 @@ public class KeyboardParser {
         return true;
     }
 
-    private void parseKeyStyle(XmlResourceParser parser, List<Key> keys)
-            throws XmlPullParserException, IOException {
+    private void parseKeyStyle(XmlResourceParser parser, List<Key> keys) {
         TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_KeyStyle);
         TypedArray keyAttrs = mResources.obtainAttributes(Xml.asAttributeSet(parser),
@@ -489,7 +489,7 @@ public class KeyboardParser {
 
     private static void checkEndTag(String tag, XmlResourceParser parser)
             throws XmlPullParserException, IOException {
-        if (parser.next() == XmlResourceParser.END_TAG && tag.equals(parser.getName()))
+        if (parser.next() == XmlPullParser.END_TAG && tag.equals(parser.getName()))
             return;
         throw new NonEmptyTag(tag, parser);
     }

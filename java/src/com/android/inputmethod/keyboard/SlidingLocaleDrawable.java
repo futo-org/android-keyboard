@@ -58,7 +58,7 @@ public class SlidingLocaleDrawable extends Drawable {
         mContext = context;
         mRes = context.getResources();
         mBackground = background;
-        LatinKeyboard.setDefaultBounds(mBackground);
+        Keyboard.setDefaultBounds(mBackground);
         mWidth = width;
         mHeight = height;
         final TextPaint textPaint = new TextPaint();
@@ -123,7 +123,7 @@ public class SlidingLocaleDrawable extends Drawable {
             canvas.drawText(mNextLanguage, diff - width / 2, baseline, paint);
             canvas.drawText(mPrevLanguage, diff + width + width / 2, baseline, paint);
 
-            LatinKeyboard.setDefaultBounds(lArrow);
+            Keyboard.setDefaultBounds(lArrow);
             rArrow.setBounds(width - rArrow.getIntrinsicWidth(), 0, width,
                     rArrow.getIntrinsicHeight());
             lArrow.draw(canvas);

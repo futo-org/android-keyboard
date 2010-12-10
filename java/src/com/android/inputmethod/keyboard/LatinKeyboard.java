@@ -280,7 +280,9 @@ public class LatinKeyboard extends Keyboard {
      */
     @Override
     @SuppressWarnings("unused") // SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER is constant
-    public boolean isInside(Key key, int x, int y) {
+    public boolean isInside(Key key, int pointX, int pointY) {
+        int x = pointX;
+        int y = pointY;
         final int code = key.mCodes[0];
         if (code == CODE_SHIFT || code == CODE_DELETE) {
             y -= key.mHeight / 10;

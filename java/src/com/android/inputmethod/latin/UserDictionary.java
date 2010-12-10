@@ -66,7 +66,7 @@ public class UserDictionary extends ExpandableDictionary {
     @Override
     public void loadDictionaryAsync() {
         Cursor cursor = getContext().getContentResolver()
-                .query(Words.CONTENT_URI, PROJECTION, "(locale IS NULL) or (locale=?)", 
+                .query(Words.CONTENT_URI, PROJECTION, "(locale IS NULL) or (locale=?)",
                         new String[] { mLocale }, null);
         addWords(cursor);
     }

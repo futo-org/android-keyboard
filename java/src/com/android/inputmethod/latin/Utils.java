@@ -110,6 +110,7 @@ public class Utils {
         private int[] mYBuf = new int[BUFSIZE];
 
         private RingCharBuffer() {
+            // Intentional empty constructor for singleton.
         }
         public static RingCharBuffer getInstance() {
             return sRingCharBuffer;
@@ -349,6 +350,7 @@ public class Utils {
                         try {
                             br.close();
                         } catch (IOException e) {
+                            // ignore.
                         }
                     }
                 }

@@ -47,6 +47,7 @@ public class KeyStyles {
 
     public static class EmptyKeyStyle implements KeyStyle {
         private EmptyKeyStyle() {
+            // Nothing to do.
         }
 
         @Override
