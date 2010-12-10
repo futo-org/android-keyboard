@@ -184,6 +184,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     public void setSuggestions(List<CharSequence> suggestions, boolean completions,
             boolean typedWordValid, boolean haveMinimalSuggestion) {
+        // Don't update suggestions when there is zero or only one suggestion found.
+        if (suggestions != null && suggestions.size() <= 1)
+            return;
         if (mShowingAutoCorrectionInverted) {
             mHandler.postUpdateSuggestions(suggestions, completions, typedWordValid,
                     haveMinimalSuggestion);
