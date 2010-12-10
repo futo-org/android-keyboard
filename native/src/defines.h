@@ -24,13 +24,17 @@
 #define LOG_TAG "LatinIME: "
 #endif
 #define DEBUG_DICT true
-#define DEBUG_SHOW_FOUND_WORD false
-#define DEBUG_NODE true
+#define DEBUG_DICT_FULL true
+#define DEBUG_SHOW_FOUND_WORD DEBUG_DICT_FULL
+#define DEBUG_NODE DEBUG_DICT_FULL
+#define DEBUG_TRACE DEBUG_DICT_FULL
 #else // FLAG_DBG
 #define LOGI
 #define DEBUG_DICT false
+#define DEBUG_DICT_FULL false
 #define DEBUG_SHOW_FOUND_WORD false
 #define DEBUG_NODE false
+#define DEBUG_TRACE false
 #endif // FLAG_DBG
 
 #ifndef U_SHORT_MAX
@@ -58,6 +62,12 @@
 #define SUGGEST_WORDS_WITH_MISSING_CHARACTER true
 #define SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER true
 #define SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER true
+#define SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS true
+
+#define WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE 75
+#define WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE 80
+#define WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE 75
+#define WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE 60
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
