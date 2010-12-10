@@ -25,12 +25,10 @@ import android.view.View;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of 
  * characters. This includes corrections and completions.
- * @hide pending API Council Approval
  */
 public class Suggest implements Dictionary.WordCallback {
 
@@ -191,14 +189,21 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     /**
-     * Returns a list of words that match the list of character codes passed in.
-     * This list will be overwritten the next time this function is called.
+     * Returns a object which represents suggested words that match the list of character codes
+     * passed in. This object contents will be overwritten the next time this function is called.
      * @param view a view for retrieving the context for AutoText
      * @param wordComposer contains what is currently being typed
      * @param prevWordForBigram previous word (used only for bigram)
-     * @return list of suggestions.
+     * @return suggested words object.
      */
-    public List<CharSequence> getSuggestions(View view, WordComposer wordComposer, 
+    public SuggestedWords getSuggestions(View view, WordComposer wordComposer,
+            boolean includeTypedWordIfValid, CharSequence prevWordForBigram) {
+        return getSuggestedWordBuilder(view, wordComposer, includeTypedWordIfValid,
+                prevWordForBigram).build();
+    }
+
+    // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
+    public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
             boolean includeTypedWordIfValid, CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mHaveCorrection = false;
@@ -342,7 +347,7 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
         removeDupes();
-        return mSuggestions;
+        return new SuggestedWords.Builder().setWords(mSuggestions);
     }
 
     public int[] getNextLettersFrequencies() {

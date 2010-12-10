@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.LatinIME.UIHandler;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
 import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.SuggestedWords;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -424,17 +425,20 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         if (mWordToSuggestions.containsKey(selectedWord)) {
             mShowingVoiceSuggestions = true;
             List<CharSequence> suggestions = mWordToSuggestions.get(selectedWord);
+            SuggestedWords.Builder builder = new SuggestedWords.Builder();
             // If the first letter of touching is capitalized, make all the suggestions
             // start with a capital letter.
             if (Character.isUpperCase(touching.mWord.charAt(0))) {
-                for (int i = 0; i < suggestions.size(); i++) {
-                    String origSugg = (String) suggestions.get(i);
-                    String capsSugg = origSugg.toUpperCase().charAt(0)
-                            + origSugg.subSequence(1, origSugg.length()).toString();
-                    suggestions.set(i, capsSugg);
+                for (CharSequence word : suggestions) {
+                    String str = word.toString();
+                    word = Character.toUpperCase(str.charAt(0)) + str.substring(1);
+                    builder.addWord(word);
                 }
+            } else {
+                builder.setWords(suggestions);
             }
-            mContext.setSuggestions(suggestions, false, true, true);
+            builder.setTypedWordValid(true).setHasMinimalSuggestion(true);
+            mContext.setSuggestions(builder.build());
             mContext.setCandidatesViewShown(true);
             return true;
         }
