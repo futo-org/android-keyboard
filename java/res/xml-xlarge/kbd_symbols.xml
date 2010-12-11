@@ -137,10 +137,6 @@
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="≥»›" />
         <Key
-            latin:keyLabel="[" />
-        <Key
-            latin:keyLabel="]" />
-        <Key
             latin:keyLabel="="
             latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="≠≈" />
@@ -148,6 +144,10 @@
             latin:keyLabel=":" />
         <Key
             latin:keyLabel=";" />
+        <Key
+            latin:keyLabel="," />
+        <Key
+            latin:keyLabel="." />
         <Key
             latin:keyLabel="!"
             latin:popupKeyboard="@xml/kbd_popup_template"
