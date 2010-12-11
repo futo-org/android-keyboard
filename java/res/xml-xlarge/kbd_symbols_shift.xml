@@ -121,9 +121,9 @@
         <Key
             latin:keyLabel="℅" />
         <Key
-            latin:keyLabel="," />
+            latin:keyLabel="[" />
         <Key
-            latin:keyLabel="." />
+            latin:keyLabel="]" />
         <Key
             latin:keyLabel="¡" />
         <Key
