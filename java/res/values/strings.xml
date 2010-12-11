@@ -34,181 +34,53 @@
     <!-- Option to control whether or not to show a popup with a larger font on each key press. -->
     <string name="popup_on_keypress">Popup on keypress</string>
 
-    <!-- Option to enable using nearby keys when correcting/predicting -->
-    <string name="hit_correction">Correct typing errors</string>
-    
-    <!-- Description for hit_correction  -->
-    <string name="hit_correction_summary">Enable input error correction</string>
-    
-    <!-- Option to enable using nearby keys when correcting/predicting in landscape-->
-    <string name="hit_correction_land">Landscape input errors</string>
-    
-    <!-- Description for hit_correction in landscape -->
-    <string name="hit_correction_land_summary">Enable input error correction</string>
-    
-    <!-- Option to automatically correct word on hitting space -->
-    <string name="auto_correction">Word suggestions</string> 
-    
-    <!-- Description for auto_correction -->
-    <string name="auto_correction_summary">Automatically correct the previous word</string>
-	
-    <!-- Option to enable text prediction -->
-    <string name="prediction">Word suggestions</string>
     <!-- Category title for text prediction -->
     <string name="prediction_category">Word suggestion settings</string>
-    <!-- Description for text prediction -->
-    <string name="prediction_summary">Enable auto completion while typing</string>
-	
-    <!-- Dialog title for auto complete choices -->
-    <string name="auto_complete_dialog_title">Auto completion</string>
-    
-    <!-- Option to enable text prediction in landscape -->
-    <string name="prediction_landscape">Increase text field size</string> 
-    <!-- Description for text prediction -->
-    <string name="prediction_landscape_summary">Hide word suggestions in landscape view</string>
 	
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string> 
-    <!-- Description for auto cap -->
-    <string name="auto_cap_summary">Capitalize the start of a sentence</string>
-    <!-- Option to enable auto punctuate -->
-    <string name="auto_punctuate">Auto-punctuate</string> 
-    <!-- Description for auto punctuate -->
-    <string name="auto_punctuate_summary"></string>
-    
+
     <!-- Option to enable quick fixes -->
     <string name="quick_fixes">Quick fixes</string>
     <!-- Description for quick fixes -->
     <string name="quick_fixes_summary">Corrects commonly typed mistakes</string>
-    
+
     <!-- Option to enable showing suggestions -->
     <string name="prefs_show_suggestions">Show suggestions</string>
     <!-- Description for show suggestions -->
     <string name="prefs_show_suggestions_summary">Display suggested words while typing</string>
-    <!--  Option to show/hide the suggestion strip -->
-    <string-array name="prefs_suggestion_visibility_values" translatable="false">
-       <item>@string/prefs_suggestion_visibility_show_value</item>
-       <item>@string/prefs_suggestion_visibility_show_only_portrait_value</item>
-       <item>@string/prefs_suggestion_visibility_hide_value</item>
-    </string-array>
     <string name="prefs_suggestion_visibility_show_name">Always show</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name">Show on portrait mode</string>
     <string name="prefs_suggestion_visibility_hide_name">Always hide</string>
-    <string-array name="prefs_suggestion_visibilities" translatable="false">
-       <item>@string/prefs_suggestion_visibility_show_name</item>
-       <item>@string/prefs_suggestion_visibility_show_only_portrait_name</item>
-       <item>@string/prefs_suggestion_visibility_hide_name</item>
-    </string-array>
 
     <!-- Option to show/hide the settings key -->
     <string name="prefs_settings_key">Show settings key</string>
-    <!-- Array of the settings key mode values -->
-    <string-array name="settings_key_modes_values" translatable="false">
-        <item>@string/settings_key_mode_auto</item>
-        <item>@string/settings_key_mode_always_show</item>
-        <item>@string/settings_key_mode_always_hide</item>
-    </string-array>
     <!-- Option to automatically decide to show/hide the settings key -->
     <string name="settings_key_mode_auto_name">Automatic</string>
     <!-- Option to always show the settings key -->
     <string name="settings_key_mode_always_show_name">Always show</string>
     <!-- Option to always hide the settings key -->
     <string name="settings_key_mode_always_hide_name">Always hide</string>
-    <!-- Array of the settings key modes -->
-    <string-array name="settings_key_modes">
-        <item>@string/settings_key_mode_auto_name</item>
-        <item>@string/settings_key_mode_always_show_name</item>
-        <item>@string/settings_key_mode_always_hide_name</item>
-    </string-array>
 
-    <!-- Option to decide the auto completion threshold score -->
-    <!-- Option to enable auto completion -->
-    <string name="auto_complete">Auto-complete</string>
-    <!-- Description for auto completion -->
-    <string name="auto_complete_summary">Spacebar and punctuation automatically insert highlighted word</string>
-    <string name="auto_completion_threshold_mode_value_off" translatable="false">0</string>
-    <string name="auto_completion_threshold_mode_value_modest" translatable="false">1</string>
-    <string name="auto_completion_threshold_mode_value_aggeressive" translatable="false">2</string>
-    <string-array name="auto_completion_threshold_mode_values" translatable="false">
-      <item>@string/auto_completion_threshold_mode_value_off</item>
-      <item>@string/auto_completion_threshold_mode_value_modest</item>
-      <item>@string/auto_completion_threshold_mode_value_aggeressive</item>
-    </string-array>
-    <!-- Option to disable auto completion. -->
-    <string name="auto_completion_threshold_mode_off">Off</string>
+    <!-- Option to decide the auto correction threshold score -->
+    <!-- Option to enable auto correction -->
+    <string name="auto_correction">Auto correction</string>
+    <!-- Description for auto correction -->
+    <string name="auto_correction_summary">Spacebar and punctuation automatically insert highlighted word</string>
+    <!-- Option to disable auto correction. -->
+    <string name="auto_correction_threshold_mode_off">Off</string>
     <!-- Option to use modest auto completion. -->
-    <string name="auto_completion_threshold_mode_modest">Modest</string>
+    <string name="auto_correction_threshold_mode_modest">Modest</string>
     <!-- Option to use aggressive auto completion. -->
-    <string name="auto_completion_threshold_mode_aggeressive">Aggressive</string>
-    <string-array name="auto_completion_threshold_modes">
-      <item>@string/auto_completion_threshold_mode_off</item>
-      <item>@string/auto_completion_threshold_mode_modest</item>
-      <item>@string/auto_completion_threshold_mode_aggeressive</item>
-    </string-array>
+    <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
 
     <!-- Option to enable bigram completion -->
     <string name="bigram_suggestion">Bigram Suggestions</string>
     <!-- Description for auto completion -->
     <string name="bigram_suggestion_summary">Use previous word to improve suggestion</string>
 
-    <!-- Array of prediction modes -->
-    <string-array name="prediction_modes">
-        <item>None</item>
-        <item>Basic</item>
-        <item>Advanced</item>
-    </string-array>
-    
-    <!-- Don't translate -->
-    <string name="prediction_none" translatable="false">0</string>
-    <!-- Don't translate -->
-    <string name="prediction_basic" translatable="false">1</string>
-    <!-- Don't translate -->
-    <string name="prediction_full"  translatable="false">2</string>
-
-    <string-array name="prediction_modes_values" translatable="false">
-        <item>@string/prediction_none</item>
-        <item>@string/prediction_basic</item>
-        <item>@string/prediction_full</item>
-    </string-array>
-
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
-    
-    <!-- Tip to long press on keys -->
-    <string name="tip_long_press">Hold a key down to see accents (ø, ö, etc.)</string>
-    <!-- Tip to dismiss keyboard -->
-    <string name="tip_dismiss">Press the back key \u21B6 to close the keyboard at any point</string>
-    <!-- Tip to press ?123 to access numbers and symbols -->
-    <string name="tip_access_symbols">Access numbers and symbols</string>    
-    <!-- Tip to long press on typed word to add to dictionary -->
-    <string name="tip_add_to_dictionary">Press and hold the left-most word to add it to the dictionary
-        </string>
-        
-    <!-- Instruction to touch the bubble to continue -->
-    <string name="touch_to_continue">Touch this hint to continue »</string>
-    
-    <!-- Instruction to touch the bubble to start typing -->
-    <string name="touch_to_finish">Touch here to close this hint and start typing!</string>
-    
-    <!-- Tutorial tip 1 - The keyboard opens any time you touch a text field -->
-    <string name="tip_to_open_keyboard"><b>The keyboard opens any time you touch a text field</b></string>
-    
-    <!-- Tutorial tip 2 - Touch and hold a key to view accents (examples) -->
-    <string name="tip_to_view_accents"><b>Touch &amp; hold a key to view accents\n(ø, ö, ô, ó, and so on)</b>
-    </string>
-    
-    <!-- Tutorial tip 3 - How to switch to number/symbol keyboard -->
-    <string name="tip_to_open_symbols"><b>Switch to numbers and symbols by touching this key</b></string>
-    
-    <!-- Tutorial tip 4 - How to switch back to alphabet keyboard -->
-    <string name="tip_to_close_symbols"><b>Go back to letters by touching this key again</b></string>
-    
-    <!-- Tutorial tip 5 - How to launch keyboard settings -->
-    <string name="tip_to_launch_settings"><b>Touch &amp; hold this key to change keyboard settings, like auto complete</b></string>
-    
-    <!-- Tutorial tip 6 - Done with the tutorial -->
-    <string name="tip_to_start_typing"><b>Try it!</b></string>
-    
     
     <!-- Label for soft enter key when it performs GO action.  Must be short to fit on key! -->
     <string name="label_go_key">Go</string>
@@ -308,62 +180,14 @@
     <!-- Preferences item for enabling speech input -->
     <string name="voice_input">Voice input</string>
 
-    <!-- Array of Voice Input modes -->
-    <string-array name="voice_input_modes">
-        <item>On main keyboard</item>
-        <item>On symbols keyboard</item>
-        <item>Off</item>
-    </string-array>
-
-    <!-- Don't translate -->
-    <string name="voice_mode_main" translatable="false">0</string>
-    <!-- Don't translate -->
-    <string name="voice_mode_symbols" translatable="false">1</string>
-    <!-- Don't translate -->
-    <string name="voice_mode_off"  translatable="false">2</string>
-
-    <string-array name="voice_input_modes_values" translatable="false">
-        <item>@string/voice_mode_main</item>
-        <item>@string/voice_mode_symbols</item>
-        <item>@string/voice_mode_off</item>
-    </string-array>
-
-    <!-- Array of Voice Input modes summary -->
-    <string-array name="voice_input_modes_summary">
-        <item>Mic on main keyboard</item>
-        <item>Mic on symbols keyboard</item>
-        <item>Voice input is disabled</item>
-    </string-array>
-
-    <!-- Press the "enter" key after the user speaks. Option on settings.-->
-    <string name="auto_submit">Auto submit after voice</string>
-
-    <!-- Press the "enter" key after the user speaks. Summary of option in settings.-->
-    <string name="auto_submit_summary">Automatically press enter when searching or going to the next field.</string>
-
-    <!-- IME Tutorial screen (ROMAN) --><skip />
-    <!-- appears above image showing the user to click on a TextView to show the IME -->
-    <string name="open_the_keyboard"><font size="17"><b>Open the keyboard\n</b></font><font size="3">\n</font>Touch any text field.</string>
-
-    <!-- appears above the image showing the back button used to close the keyboard -->
-    <string name="close_the_keyboard"><font size="17"><b>Close the keyboard\n</b></font><font size="3">\n</font>Press the Back key.</string>
-
-    <!-- appears above image showing how to use touch and hold -->
-    <string name="touch_and_hold"><font size="17"><b>Touch \u0026 hold a key for options\n</b></font><font size="3">\n</font>Access punctuation and accents.</string>
-
-    <!-- appears above image showing how to access keyboard settings -->
-    <string name="keyboard_settings"><font size="17"><b>Keyboard settings\n</b></font><font size="3">\n</font>Touch \u0026 hold the <b>\?123\</b> key.</string>
-
-    <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
-    <string name="popular_domain_0">".com"</string>
-    <!-- popular web domains for the locale - item 1, displayed in the popup -->
-    <string name="popular_domain_1">".net"</string>
-    <!-- popular web domains for the locale - item 2, displayed in the popup -->
-    <string name="popular_domain_2">".org"</string>
-    <!-- popular web domains for the locale - item 3, displayed in the popup -->
-    <string name="popular_domain_3">".gov"</string>
-    <!-- popular web domains for the locale - item 4, displayed in the popup -->
-    <string name="popular_domain_4">".edu"</string>
+    <!-- Voice Input modes -->
+    <string name="voice_input_modes_main_keyboard">On main keyboard</string>
+    <string name="voice_input_modes_symbols_keyboard">On symbols keyboard</string>
+    <string name="voice_input_modes_off">Off</string>
+    <!-- Voice Input modes summary -->
+    <string name="voice_input_modes_summary_main_keyboard">Mic on main keyboard</string>
+    <string name="voice_input_modes_summary_symbols_keyboard">Mic on symbols keyboard</string>
+    <string name="voice_input_modes_summary_off">Voice input is disabled</string>
 
     <!-- Menu item for launching Input method picker -->
     <string name="selectInputMethod">Select input method</string>
@@ -391,8 +215,6 @@
     <!-- Description for keyboard theme switcher -->
     <string name="keyboard_layout">Keyboard Theme</string>
 
-    <string name="subtype_mode_keyboard">keyboard</string>
-    <string name="subtype_mode_voice">voice</string>
     <string name="subtype_mode_cs_keyboard">Czech Keyboard</string>
     <string name="subtype_mode_da_keyboard">Danish Keyboard</string>
     <string name="subtype_mode_de_keyboard">German Keyboard</string>
@@ -428,9 +250,6 @@
     <string name="subtype_mode_zh_CN_voice">Chinese (China) Voice</string>
     <string name="subtype_mode_zh_TW_voice">Chinese (Taiwan) Voice</string>
 
-    <!-- Title for Latin keyboard debug settings activity / dialog -->
-    <string name="english_ime_debug_settings" translatable="false">Android keyboard Debug settings</string>
-    <string name="prefs_debug_mode" translatable="false">Debug Mode</string>
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability Study Mode</string>
 </resources>

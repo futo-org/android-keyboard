@@ -74,9 +74,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private int mMode = KeyboardId.MODE_TEXT; /* default value */
     private int mImeOptions;
     private boolean mIsSymbols;
-    /** mIsAutoCompletionActive indicates that auto completed word will be input instead of
+    /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
-    private boolean mIsAutoCompletionActive;
+    private boolean mIsAutoCorrectionActive;
     private boolean mVoiceKeyEnabled;
     private boolean mVoiceButtonOnPrimary;
     private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
@@ -197,7 +197,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id);
         }
 
-        keyboard.onAutoCompletionStateChanged(mIsAutoCompletionActive);
+        keyboard.onAutoCorrectionStateChanged(mIsAutoCorrectionActive);
         keyboard.setShifted(false);
         return keyboard;
     }
@@ -617,12 +617,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 ? mInputView.getColorScheme() : KeyboardView.COLOR_SCHEME_WHITE;
     }
 
-    public void onAutoCompletionStateChanged(boolean isAutoCompletion) {
-        if (isAutoCompletion != mIsAutoCompletionActive) {
+    public void onAutoCorrectionStateChanged(boolean isAutoCorrection) {
+        if (isAutoCorrection != mIsAutoCorrectionActive) {
             LatinKeyboardView keyboardView = getInputView();
-            mIsAutoCompletionActive = isAutoCompletion;
+            mIsAutoCorrectionActive = isAutoCorrection;
             keyboardView.invalidateKey(((LatinKeyboard) keyboardView.getKeyboard())
-                    .onAutoCompletionStateChanged(isAutoCompletion));
+                    .onAutoCorrectionStateChanged(isAutoCorrection));
         }
     }
 

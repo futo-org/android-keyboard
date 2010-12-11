@@ -27,31 +27,93 @@
 
     <!-- Option values to show/hide the settings key in onscreen keyboard -->
     <!-- Automatically decide to show or hide the settings key -->
-    <string name="settings_key_mode_auto" translatable="false">0</string>
+    <string name="settings_key_mode_auto">0</string>
     <!-- Always show the settings key -->
-    <string name="settings_key_mode_always_show" translatable="false">1</string>
+    <string name="settings_key_mode_always_show">1</string>
     <!-- Always hide the settings key -->
-    <string name="settings_key_mode_always_hide" translatable="false">2</string>
+    <string name="settings_key_mode_always_hide">2</string>
+    <!-- Array of the settings key mode values -->
+    <string-array name="settings_key_modes_values">
+        <item>@string/settings_key_mode_auto</item>
+        <item>@string/settings_key_mode_always_show</item>
+        <item>@string/settings_key_mode_always_hide</item>
+    </string-array>
+    <!-- Array of the settings key modes -->
+    <string-array name="settings_key_modes">
+        <item>@string/settings_key_mode_auto_name</item>
+        <item>@string/settings_key_mode_always_show_name</item>
+        <item>@string/settings_key_mode_always_hide_name</item>
+    </string-array>
 
     <!--  Always show the suggestion strip -->
-    <string name="prefs_suggestion_visibility_show_value" translatable="false">0</string>
+    <string name="prefs_suggestion_visibility_show_value">0</string>
     <!--  Show the suggestion strip only on portrait mode -->
-    <string name="prefs_suggestion_visibility_show_only_portrait_value" translatable="false">1</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_value">1</string>
     <!--  Always hide the suggestion strip -->
-    <string name="prefs_suggestion_visibility_hide_value" translatable="false">2</string>
+    <string name="prefs_suggestion_visibility_hide_value">2</string>
     <!--  Default value of the visibility of the suggestion strip -->
-    <string name="prefs_suggestion_visibility_default_value" translatable="false">0</string>
+    <string name="prefs_suggestion_visibility_default_value">0</string>
+    <!--  Option to show/hide the suggestion strip -->
+    <string-array name="prefs_suggestion_visibility_values">
+       <item>@string/prefs_suggestion_visibility_show_value</item>
+       <item>@string/prefs_suggestion_visibility_show_only_portrait_value</item>
+       <item>@string/prefs_suggestion_visibility_hide_value</item>
+    </string-array>
+    <string-array name="prefs_suggestion_visibilities">
+       <item>@string/prefs_suggestion_visibility_show_name</item>
+       <item>@string/prefs_suggestion_visibility_show_only_portrait_name</item>
+       <item>@string/prefs_suggestion_visibility_hide_name</item>
+    </string-array>
+
+    <string name="auto_correction_threshold_mode_value_off">0</string>
+    <string name="auto_correction_threshold_mode_value_modest">1</string>
+    <string name="auto_correction_threshold_mode_value_aggeressive">2</string>
+    <string-array name="auto_correction_threshold_mode_values">
+      <item>@string/auto_correction_threshold_mode_value_off</item>
+      <item>@string/auto_correction_threshold_mode_value_modest</item>
+      <item>@string/auto_correction_threshold_mode_value_aggeressive</item>
+    </string-array>
+    <string-array name="auto_correction_threshold_modes">
+      <item>@string/auto_correction_threshold_mode_off</item>
+      <item>@string/auto_correction_threshold_mode_modest</item>
+      <item>@string/auto_correction_threshold_mode_aggeressive</item>
+    </string-array>
+
+    <string name="voice_mode_main">0</string>
+    <string name="voice_mode_symbols">1</string>
+    <string name="voice_mode_off">2</string>
+    <string-array name="voice_input_modes_values">
+        <item>@string/voice_mode_main</item>
+        <item>@string/voice_mode_symbols</item>
+        <item>@string/voice_mode_off</item>
+    </string-array>
+    <!-- Array of Voice Input modes -->
+    <string-array name="voice_input_modes">
+        <item>@string/voice_input_modes_main_keyboard</item>
+        <item>@string/voice_input_modes_symbols_keyboard</item>
+        <item>@string/voice_input_modes_off</item>
+    </string-array>
+    <!-- Array of Voice Input modes summary -->
+    <string-array name="voice_input_modes_summary">
+        <item>@string/voice_input_modes_summary_main_keyboard</item>
+        <item>@string/voice_input_modes_summary_symbols_keyboard</item>
+        <item>@string/voice_input_modes_summary_off</item>
+    </string-array>
+
+    <!-- Title for Latin keyboard debug settings activity / dialog -->
+    <string name="english_ime_debug_settings">Android keyboard Debug settings</string>
+    <string name="prefs_debug_mode">Debug Mode</string>
 
     <!-- Keyboard theme names -->
-    <string name="layout_basic" translatable="false">Basic</string>
-    <string name="layout_high_contrast" translatable="false">Basic (High Contrast)</string>
-    <string name="layout_stone_bold"  translatable="false">Stone (bold)</string>
-    <string name="layout_stone_normal"  translatable="false">Stone (normal)</string>
-    <string name="layout_gingerbread"  translatable="false">Gingerbread</string>
-    <string name="layout_honeycomb"  translatable="false">Honeycomb</string>
+    <string name="layout_basic">Basic</string>
+    <string name="layout_high_contrast">Basic (High Contrast)</string>
+    <string name="layout_stone_bold">Stone (bold)</string>
+    <string name="layout_stone_normal">Stone (normal)</string>
+    <string name="layout_gingerbread">Gingerbread</string>
+    <string name="layout_honeycomb">Honeycomb</string>
 
     <!-- For keyboard theme switcher dialog -->
-    <string-array name="keyboard_layout_modes" translatable="false">
+    <string-array name="keyboard_layout_modes">
         <item>@string/layout_basic</item>
         <item>@string/layout_high_contrast</item>
         <item>@string/layout_stone_normal</item>
@@ -59,7 +121,7 @@
         <item>@string/layout_gingerbread</item>
         <item>@string/layout_honeycomb</item>
     </string-array>
-    <string-array name="keyboard_layout_modes_values" translatable="false">
+    <string-array name="keyboard_layout_modes_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>

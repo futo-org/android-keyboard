@@ -45,7 +45,7 @@ public class LatinKeyboard extends Keyboard {
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
     private Drawable mShiftLockPreviewIcon;
-    private Drawable mSpaceAutoCompletionIndicator;
+    private Drawable mSpaceAutoCorrectionIndicator;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
     private final int mSpaceBarTextShadowColor;
@@ -89,7 +89,7 @@ public class LatinKeyboard extends Keyboard {
         }
         mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
         setDefaultBounds(mShiftLockPreviewIcon);
-        mSpaceAutoCompletionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
+        mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
@@ -100,22 +100,22 @@ public class LatinKeyboard extends Keyboard {
     /**
      * @return a key which should be invalidated.
      */
-    public Key onAutoCompletionStateChanged(boolean isAutoCompletion) {
-        updateSpaceBarForLocale(isAutoCompletion);
+    public Key onAutoCorrectionStateChanged(boolean isAutoCorrection) {
+        updateSpaceBarForLocale(isAutoCorrection);
         return mSpaceKey;
     }
 
-    private void updateSpaceBarForLocale(boolean isAutoCompletion) {
+    private void updateSpaceBarForLocale(boolean isAutoCorrection) {
         final Resources res = mRes;
         // If application locales are explicitly selected.
         if (SubtypeSwitcher.getInstance().needsToDisplayLanguage()) {
             mSpaceKey.setIcon(new BitmapDrawable(res,
-                    drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion)));
+                    drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCorrection)));
         } else {
             // sym_keyboard_space_led can be shared with Black and White symbol themes.
-            if (isAutoCompletion) {
+            if (isAutoCorrection) {
                 mSpaceKey.setIcon(new BitmapDrawable(res,
-                        drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCompletion)));
+                        drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCorrection)));
             } else {
                 mSpaceKey.setIcon(mSpaceIcon);
             }
@@ -173,7 +173,7 @@ public class LatinKeyboard extends Keyboard {
     }
 
     @SuppressWarnings("unused")
-    private Bitmap drawSpaceBar(int opacity, boolean isAutoCompletion) {
+    private Bitmap drawSpaceBar(int opacity, boolean isAutoCorrection) {
         final int width = mSpaceKey.mWidth;
         final int height = mSpaceIcon.getIntrinsicHeight();
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -212,13 +212,13 @@ public class LatinKeyboard extends Keyboard {
         }
 
         // Draw the spacebar icon at the bottom
-        if (isAutoCompletion) {
+        if (isAutoCorrection) {
             final int iconWidth = width * SPACE_LED_LENGTH_PERCENT / 100;
-            final int iconHeight = mSpaceAutoCompletionIndicator.getIntrinsicHeight();
+            final int iconHeight = mSpaceAutoCorrectionIndicator.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
             int y = height - iconHeight;
-            mSpaceAutoCompletionIndicator.setBounds(x, y, x + iconWidth, y + iconHeight);
-            mSpaceAutoCompletionIndicator.draw(canvas);
+            mSpaceAutoCorrectionIndicator.setBounds(x, y, x + iconWidth, y + iconHeight);
+            mSpaceAutoCorrectionIndicator.draw(canvas);
         } else {
             final int iconWidth = mSpaceIcon.getIntrinsicWidth();
             final int iconHeight = mSpaceIcon.getIntrinsicHeight();

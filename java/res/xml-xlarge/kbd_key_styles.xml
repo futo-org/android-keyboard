@@ -153,9 +153,9 @@
         latin:isSticky="true" />
     <key-style
         latin:styleName="comKeyStyle"
-        latin:keyLabel=".com"
+        latin:keyLabel="@string/popular_domain_0"
         latin:keyLabelOption="fontNormal"
-        latin:keyOutputText=".com"
+        latin:keyOutputText="@string/popular_domain_0"
         latin:keyHintIcon="@drawable/hint_popup_holo"
         latin:popupKeyboard="@xml/popup_domains" />
 </merge>

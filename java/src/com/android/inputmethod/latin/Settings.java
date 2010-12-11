@@ -57,7 +57,7 @@ public class Settings extends PreferenceActivity
     public static final String PREF_PREDICTION_SETTINGS_KEY = "prediction_settings";
     public static final String PREF_QUICK_FIXES = "quick_fixes";
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
-    public static final String PREF_AUTO_COMPLETION_THRESHOLD = "auto_completion_threshold";
+    public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
 
     // Dialog ids
@@ -66,7 +66,7 @@ public class Settings extends PreferenceActivity
     private CheckBoxPreference mQuickFixes;
     private ListPreference mVoicePreference;
     private ListPreference mSettingsKeyPreference;
-    private ListPreference mAutoCompletionThreshold;
+    private ListPreference mAutoCorrectionThreshold;
     private CheckBoxPreference mBigramSuggestion;
     private boolean mVoiceOn;
 
@@ -77,11 +77,11 @@ public class Settings extends PreferenceActivity
     private boolean mOkClicked = false;
     private String mVoiceModeOff;
 
-    private void ensureConsistencyOfAutoCompletionSettings() {
-        final String autoCompletionOff = getResources().getString(
-                R.string.auto_completion_threshold_mode_value_off);
-        final String currentSetting = mAutoCompletionThreshold.getValue();
-        mBigramSuggestion.setEnabled(!currentSetting.equals(autoCompletionOff));
+    private void ensureConsistencyOfAutoCorrectionSettings() {
+        final String autoCorrectionOff = getResources().getString(
+                R.string.auto_correction_threshold_mode_value_off);
+        final String currentSetting = mAutoCorrectionThreshold.getValue();
+        mBigramSuggestion.setEnabled(!currentSetting.equals(autoCorrectionOff));
     }
     @Override
     protected void onCreate(Bundle icicle) {
@@ -98,9 +98,9 @@ public class Settings extends PreferenceActivity
                 .equals(mVoiceModeOff));
         mLogger = VoiceInputLogger.getLogger(this);
 
-        mAutoCompletionThreshold = (ListPreference) findPreference(PREF_AUTO_COMPLETION_THRESHOLD);
+        mAutoCorrectionThreshold = (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
-        ensureConsistencyOfAutoCompletionSettings();
+        ensureConsistencyOfAutoCorrectionSettings();
 
         final boolean showSettingsKeyOption = getResources().getBoolean(
                 R.bool.config_enable_show_settings_key_option);
@@ -155,7 +155,7 @@ public class Settings extends PreferenceActivity
                 showVoiceConfirmation();
             }
         }
-        ensureConsistencyOfAutoCompletionSettings();
+        ensureConsistencyOfAutoCorrectionSettings();
         mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
                 .equals(mVoiceModeOff));
         updateVoiceModeSummary();

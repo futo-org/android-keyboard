@@ -81,7 +81,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private boolean mAutoTextEnabled;
 
-    private double mAutoCompleteThreshold;
+    private double mAutoCorrectionThreshold;
     private int[] mPriorities = new int[mPrefMaxSuggestions];
     private int[] mBigramPriorities = new int[PREF_MAX_BIGRAMS];
 
@@ -164,8 +164,8 @@ public class Suggest implements Dictionary.WordCallback {
         mUserBigramDictionary = userBigramDictionary;
     }
 
-    public void setAutoCompleteThreshold(double threshold) {
-        mAutoCompleteThreshold = threshold;
+    public void setAutoCorrectionThreshold(double threshold) {
+        mAutoCorrectionThreshold = threshold;
     }
 
     /**
@@ -294,9 +294,9 @@ public class Suggest implements Dictionary.WordCallback {
                 if (LatinImeLogger.sDBG) {
                     Log.d(TAG, "Normalized " + mOriginalWord + "," + mSuggestions.get(0) + ","
                             + mPriorities[0] + normalizedScore
-                            + "(" + mAutoCompleteThreshold + ")");
+                            + "(" + mAutoCorrectionThreshold + ")");
                 }
-                if (normalizedScore >= mAutoCompleteThreshold) {
+                if (normalizedScore >= mAutoCorrectionThreshold) {
                     mHaveCorrection = true;
                 }
             }
