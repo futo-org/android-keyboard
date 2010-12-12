@@ -43,11 +43,9 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CandidateView extends LinearLayout implements OnClickListener, OnLongClickListener {
     private LatinIME mService;
-    private final ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     private final ArrayList<View> mWords = new ArrayList<View>();
 
     private final TextView mPreviewText;
@@ -64,26 +62,11 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final CharacterStyle mInvertedForegroundColorSpan;
     private final CharacterStyle mInvertedBackgroundColorSpan;
 
-    private boolean mShowingCompletions;
+    private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
     private boolean mShowingAutoCorrectionInverted;
-
     private boolean mShowingAddToDictionary;
 
     private final UiHandler mHandler = new UiHandler();
-
-    private static class UpdateSuggestionsArgs {
-        public final List<CharSequence> mSuggestions;
-        public final boolean mCompletions;
-        public final boolean mTypedWordValid;
-        public final boolean mHaveMinimalSuggestion;
-        public UpdateSuggestionsArgs(List<CharSequence> suggestions, boolean completions,
-                boolean typedWordValid, boolean haveMinimalSuggestion) {
-            mSuggestions = suggestions;
-            mCompletions = completions;
-            mTypedWordValid = typedWordValid;
-            mHaveMinimalSuggestion = haveMinimalSuggestion;
-        }
-    }
 
     private class UiHandler extends Handler {
         private static final int MSG_HIDE_PREVIEW = 0;
@@ -99,9 +82,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 hidePreview();
                 break;
             case MSG_UPDATE_SUGGESTION:
-                UpdateSuggestionsArgs args = (UpdateSuggestionsArgs)msg.obj;
-                updateSuggestions(args.mSuggestions, args.mCompletions, args.mTypedWordValid,
-                        args.mHaveMinimalSuggestion);
+                updateSuggestions((SuggestedWords)msg.obj);
                 break;
             }
         }
@@ -115,11 +96,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             removeMessages(MSG_HIDE_PREVIEW);
         }
 
-        public void postUpdateSuggestions(List<CharSequence> suggestions, boolean completions,
-                boolean typedWordValid, boolean haveMinimalSuggestion) {
+        public void postUpdateSuggestions(SuggestedWords suggestions) {
             cancelUpdateSuggestions();
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION, new UpdateSuggestionsArgs(
-                    suggestions, completions, typedWordValid, haveMinimalSuggestion)),
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION, suggestions),
                     DELAY_UPDATE_SUGGESTION);
         }
 
@@ -167,7 +146,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 tv.setOnLongClickListener(this);
             ImageView divider = (ImageView)v.findViewById(R.id.candidate_divider);
             // Do not display divider of first candidate.
-            divider.setVisibility(i == 0 ? View.GONE : View.VISIBLE);
+            divider.setVisibility(i == 0 ? GONE : VISIBLE);
             mWords.add(v);
         }
 
@@ -182,44 +161,35 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mService = listener;
     }
 
-    public void setSuggestions(List<CharSequence> suggestions, boolean completions,
-            boolean typedWordValid, boolean haveMinimalSuggestion) {
-        // Don't update suggestions when there is zero or only one suggestion found.
-        if (suggestions != null && suggestions.size() <= 1)
+    public void setSuggestions(SuggestedWords suggestions) {
+        // Don't update suggestions when there is only one suggestion found.
+        // Empty (size zero) suggestions will be passed in order to clear candidate view.
+        if (suggestions == null || suggestions.size() == 1)
             return;
         if (mShowingAutoCorrectionInverted) {
-            mHandler.postUpdateSuggestions(suggestions, completions, typedWordValid,
-                    haveMinimalSuggestion);
+            mHandler.postUpdateSuggestions(suggestions);
         } else {
-            updateSuggestions(suggestions, completions, typedWordValid, haveMinimalSuggestion);
+            updateSuggestions(suggestions);
         }
     }
 
-    private void updateSuggestions(List<CharSequence> suggestions, boolean completions,
-            boolean typedWordValid, boolean haveMinimalSuggestion) {
+    private void updateSuggestions(SuggestedWords suggestions) {
         clear();
-        if (suggestions != null) {
-            int insertCount = Math.min(suggestions.size(), MAX_SUGGESTIONS);
-            for (CharSequence suggestion : suggestions) {
-                mSuggestions.add(suggestion);
-                if (--insertCount == 0)
-                    break;
-            }
-        }
-
-        final int count = mSuggestions.size();
-        boolean existsAutoCompletion = false;
-
+        mSuggestions = suggestions;
+        final int count = suggestions.size();
+        final Object[] debugInfo = suggestions.mDebugInfo;
         for (int i = 0; i < count; i++) {
-            CharSequence suggestion = mSuggestions.get(i);
-            if (suggestion == null) continue;
-            final int wordLength = suggestion.length();
+            CharSequence word = suggestions.getWord(i);
+            if (word == null) continue;
+            final int wordLength = word.length();
 
             final View v = mWords.get(i);
             final TextView tv = (TextView)v.findViewById(R.id.candidate_word);
+            final TextView dv = (TextView)v.findViewById(R.id.candidate_debug_info);
             tv.setTextColor(mColorNormal);
-            if (haveMinimalSuggestion
-                    && ((i == 1 && !typedWordValid) || (i == 0 && typedWordValid))) {
+            if (suggestions.mHasMinimalSuggestion
+                    && ((i == 1 && !suggestions.mTypedWordValid) ||
+                            (i == 0 && suggestions.mTypedWordValid))) {
                 final CharacterStyle style;
                 if (mConfigCandidateHighlightFontColorEnabled) {
                     style = BOLD_SPAN;
@@ -227,10 +197,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 } else {
                     style = UNDERLINE_SPAN;
                 }
-                final Spannable word = new SpannableString(suggestion);
-                word.setSpan(style, 0, wordLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                suggestion = word;
-                existsAutoCompletion = true;
+                final Spannable spannedWord = new SpannableString(word);
+                spannedWord.setSpan(style, 0, wordLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                word = spannedWord;
             } else if (i != 0 || (wordLength == 1 && count > 1)) {
                 // HACK: even if i == 0, we use mColorOther when this
                 // suggestion's length is 1
@@ -239,15 +208,17 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 if (mConfigCandidateHighlightFontColorEnabled)
                     tv.setTextColor(mColorOther);
             }
-            tv.setText(suggestion);
+            tv.setText(word);
             tv.setClickable(true);
+            if (debugInfo != null && i < debugInfo.length && debugInfo[i] != null
+                    && !TextUtils.isEmpty(debugInfo[i].toString())) {
+                dv.setText(debugInfo[i].toString());
+                dv.setVisibility(VISIBLE);
+            } else {
+                dv.setVisibility(GONE);
+            }
             addView(v);
         }
-
-        mShowingCompletions = completions;
-        // TODO: Move this call back to LatinIME
-        if (mConfigCandidateHighlightFontColorEnabled)
-            mService.onAutoCompletionStateChanged(existsAutoCompletion);
 
         scrollTo(0, getScrollY());
         requestLayout();
@@ -267,15 +238,19 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mShowingAutoCorrectionInverted = true;
     }
 
+    public boolean isConfigCandidateHighlightFontColorEnabled() {
+        return mConfigCandidateHighlightFontColorEnabled;
+    }
+
     public boolean isShowingAddToDictionaryHint() {
         return mShowingAddToDictionary;
     }
 
     public void showAddToDictionaryHint(CharSequence word) {
-        ArrayList<CharSequence> suggestions = new ArrayList<CharSequence>();
-        suggestions.add(word);
-        suggestions.add(getContext().getText(R.string.hint_add_to_dictionary));
-        setSuggestions(suggestions, false, false, false);
+        SuggestedWords.Builder builder = new SuggestedWords.Builder()
+                .addWord(word)
+                .addWord(getContext().getText(R.string.hint_add_to_dictionary));
+        setSuggestions(builder.build());
         mShowingAddToDictionary = true;
         // Disable R.string.hint_add_to_dictionary button
         TextView tv = (TextView)getChildAt(1).findViewById(R.id.candidate_word);
@@ -288,14 +263,11 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         return true;
     }
 
-    /* package */ List<CharSequence> getSuggestions() {
+    public SuggestedWords getSuggestions() {
         return mSuggestions;
     }
 
     public void clear() {
-        // Don't call mSuggestions.clear() because it's being used for logging
-        // in LatinIME.pickSuggestionManually().
-        mSuggestions.clear();
         mShowingAddToDictionary = false;
         mShowingAutoCorrectionInverted = false;
         removeAllViews();
@@ -337,7 +309,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     @Override
     public boolean onLongClick(View view) {
         int index = (Integer) view.getTag();
-        CharSequence word = mSuggestions.get(index);
+        CharSequence word = mSuggestions.getWord(index);
         if (word.length() < 2)
             return false;
         addToDictionary(word);
@@ -347,12 +319,12 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     @Override
     public void onClick(View view) {
         int index = (Integer) view.getTag();
-        CharSequence word = mSuggestions.get(index);
+        CharSequence word = mSuggestions.getWord(index);
         if (mShowingAddToDictionary && index == 0) {
             addToDictionary(word);
         } else {
-            if (!mShowingCompletions) {
-                TextEntryState.acceptedSuggestion(mSuggestions.get(0), word);
+            if (!mSuggestions.mIsApplicationSpecifiedCompletions) {
+                TextEntryState.acceptedSuggestion(mSuggestions.getWord(0), word);
             }
             mService.pickSuggestionManually(index, word);
         }
