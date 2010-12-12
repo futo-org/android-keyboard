@@ -633,7 +633,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (isSuggestionShown() && isPredictionOn()) {
             // First get the cursor position. This is required by setOldSuggestions(), so that
             // it can pass the correct range to setComposingRegion(). At this point, we don't
-            // have valid values for mLastSelectionStart/Stop because onUpdateSelection() has
+            // have valid values for mLastSelectionStart/End because onUpdateSelection() has
             // not been called yet.
             ExtractedTextRequest etr = new ExtractedTextRequest();
             etr.token = 0; // anything is fine here
@@ -1339,7 +1339,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             CharSequence typedWord = mWord.getTypedWord();
             TextEntryState.backToAcceptedDefault(typedWord);
             if (!TextUtils.isEmpty(typedWord) && !typedWord.equals(mBestWord)) {
-                // TODO: Will call InputConnection.commitCorrection() here.
+                if (ic != null) {
+                    CorrectionInfo correctionInfo = new CorrectionInfo(
+                            mLastSelectionEnd - typedWord.length(), typedWord, mBestWord);
+                    ic.commitCorrection(correctionInfo);
+                }
                 if (mCandidateView != null)
                     mCandidateView.onAutoCorrectionInverted(mBestWord);
             }
