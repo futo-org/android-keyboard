@@ -53,6 +53,7 @@ public class Settings extends PreferenceActivity
     public static final String PREF_VOICE_SETTINGS_KEY = "voice_mode";
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
+    public static final String PREF_SUBTYPES = "subtype_settings";
 
     public static final String PREF_PREDICTION_SETTINGS_KEY = "prediction_settings";
     public static final String PREF_QUICK_FIXES = "quick_fixes";
@@ -118,6 +119,12 @@ public class Settings extends PreferenceActivity
         if (vibrator == null || !vibrator.hasVibrator()) {
             getPreferenceScreen().removePreference(
                     getPreferenceScreen().findPreference(PREF_VIBRATE_ON));
+        }
+
+        final boolean showSubtypeSettings = getResources().getBoolean(
+                R.bool.config_enable_show_subtype_settings);
+        if (!showSubtypeSettings) {
+            getPreferenceScreen().removePreference(findPreference(PREF_SUBTYPES));
         }
     }
 

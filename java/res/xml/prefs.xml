@@ -73,6 +73,7 @@
     <!-- TODO: Filter subtypes by IME in SubtypeEnabler -->
     <!-- TODO: Maybe use this only for phone? -->
     <PreferenceScreen
+            android:key="subtype_settings"
             android:title="@string/language_selection_title"
             android:summary="@string/language_selection_summary">
         <intent
