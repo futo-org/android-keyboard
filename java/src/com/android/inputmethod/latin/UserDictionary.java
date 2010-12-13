@@ -21,6 +21,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.UserDictionary.Words;
 
 public class UserDictionary extends ExpandableDictionary {
@@ -80,7 +81,7 @@ public class UserDictionary extends ExpandableDictionary {
      * @TODO use a higher or float range for frequency
      */
     @Override
-    public synchronized void addWord(String word, int frequency) {
+    public synchronized void addWord(final String word, final int frequency) {
         // Force load the dictionary here synchronously
         if (getRequiresReload()) loadDictionaryAsync();
         // Safeguard against adding long words. Can cause stack overflow.
@@ -99,7 +100,22 @@ public class UserDictionary extends ExpandableDictionary {
         new Thread("addWord") {
             @Override
             public void run() {
-                contentResolver.insert(Words.CONTENT_URI, values);
+                Cursor cursor = contentResolver.query(Words.CONTENT_URI, PROJECTION,
+                        "word=? and ((locale IS NULL) or (locale=?))",
+                        new String[] { word, mLocale }, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    String locale = cursor.getString(cursor.getColumnIndex(Words.LOCALE));
+                    // If locale is null, we will not override the entry.
+                    if (locale != null && locale.equals(mLocale.toString())) {
+                        long id = cursor.getLong(cursor.getColumnIndex(Words._ID));
+                        Uri uri = Uri.withAppendedPath(Words.CONTENT_URI, Long.toString(id));
+                        // Update the entry with new frequency value.
+                        contentResolver.update(uri, values, null, null);
+                    }
+                } else {
+                    // Insert new entry.
+                    contentResolver.insert(Words.CONTENT_URI, values);
+                }
             }
         }.start();
 
