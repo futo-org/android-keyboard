@@ -31,7 +31,7 @@ public:
 
 private:
     void initSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies);
-    void getSuggestionCandidates(const int inputLength, const int skipPos, const int excessivePos,
+    void getSuggestionCandidates(const int skipPos, const int excessivePos,
             const int transposedPos, int *nextLetters, const int nextLettersSize,
             const int maxDepth);
     void getVersionNumber();
@@ -52,13 +52,15 @@ private:
             const int excessivePos, const int transposedPos, int *nextLetters,
             const int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
+    int calculateFinalFreq(const int inputIndex, const int snr, const int skipPos,
+            const int excessivePos, const int transposedPos, const int freq, const bool sameLength);
     void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
-            const int mInputLength, const int depth, const int snr, int *nextLetters,
+            const int inputIndex, const int depth, const int snr, int *nextLetters,
             const int nextLettersSize, const int skipPos, const int excessivePos,
             const int transposedPos, const int freq);
-    void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word, const int depth,
-            const int snr, const int skipPos, const int excessivePos, const int transposedPos,
-            const int freq, const int addedWeight);
+    void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word,
+            const int inputIndex, const int depth, const int snr, const int skipPos,
+            const int excessivePos, const int transposedPos, const int freq, const int addedWeight);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     int getMatchedProximityId(const int *currentChars, const unsigned short c, const int skipPos,
