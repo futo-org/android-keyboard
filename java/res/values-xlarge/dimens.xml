@@ -44,5 +44,7 @@
 
     <dimen name="candidate_strip_height">46dip</dimen>
     <dimen name="candidate_strip_padding">15.0mm</dimen>
+    <dimen name="candidate_min_width">0.3in</dimen>
+    <dimen name="candidate_padding">12dip</dimen>
     <dimen name="candidate_text_size">22dip</dimen>
 </resources>
