@@ -53,7 +53,11 @@ public class SuggestedWords {
     }
 
     public boolean hasAutoCorrectionWord() {
-        return mHasMinimalSuggestion && ((size() >= 1 && !mTypedWordValid) || mTypedWordValid);
+        return mHasMinimalSuggestion && size() > 1 && !mTypedWordValid;
+    }
+
+    public boolean hasWordAboveAutoCorrectionScoreThreshold() {
+        return mHasMinimalSuggestion && ((size() > 1 && !mTypedWordValid) || mTypedWordValid);
     }
 
     public static class Builder {

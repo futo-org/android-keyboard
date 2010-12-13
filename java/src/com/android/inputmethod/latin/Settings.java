@@ -79,7 +79,7 @@ public class Settings extends PreferenceActivity
 
     private void ensureConsistencyOfAutoCorrectionSettings() {
         final String autoCorrectionOff = getResources().getString(
-                R.string.auto_correction_threshold_mode_value_off);
+                R.string.auto_correction_threshold_mode_index_off);
         final String currentSetting = mAutoCorrectionThreshold.getValue();
         mBigramSuggestion.setEnabled(!currentSetting.equals(autoCorrectionOff));
     }

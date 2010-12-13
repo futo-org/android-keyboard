@@ -65,13 +65,13 @@
        <item>@string/prefs_suggestion_visibility_hide_name</item>
     </string-array>
 
-    <string name="auto_correction_threshold_mode_value_off">0</string>
-    <string name="auto_correction_threshold_mode_value_modest">1</string>
-    <string name="auto_correction_threshold_mode_value_aggeressive">2</string>
-    <string-array name="auto_correction_threshold_mode_values">
-      <item>@string/auto_correction_threshold_mode_value_off</item>
-      <item>@string/auto_correction_threshold_mode_value_modest</item>
-      <item>@string/auto_correction_threshold_mode_value_aggeressive</item>
+    <string name="auto_correction_threshold_mode_index_off">0</string>
+    <string name="auto_correction_threshold_mode_index_modest">1</string>
+    <string name="auto_correction_threshold_mode_index_aggeressive">2</string>
+    <string-array name="auto_correction_threshold_mode_indexes">
+      <item>@string/auto_correction_threshold_mode_index_off</item>
+      <item>@string/auto_correction_threshold_mode_index_modest</item>
+      <item>@string/auto_correction_threshold_mode_index_aggeressive</item>
     </string-array>
     <string-array name="auto_correction_threshold_modes">
       <item>@string/auto_correction_threshold_mode_off</item>

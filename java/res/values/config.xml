@@ -32,14 +32,14 @@
     <integer name="config_long_press_key_timeout">400</integer>
     <integer name="config_long_press_shift_key_timeout">1200</integer>
     <integer name="config_multi_tap_key_timeout">800</integer>
-    <string-array name="auto_complete_threshold_values">
-        <!-- Off, When auto completing setting is Off, this value is not used. -->
+    <string-array name="auto_correction_threshold_values">
+        <!-- Off, When auto correction setting is Off, this value is not used. -->
         <item></item>
         <!-- Modest : Suggestion whose normalized score is greater than this value
-             will be subject to auto-completion. -->
+             will be subject to auto-correction. -->
         <item>0.22</item>
         <!-- Aggressive : Suggestion whose normalized score is greater than this value
-             will be subject to auto-completion. -->
+             will be subject to auto-correction. -->
         <item>0</item>
     </string-array>
 </resources>

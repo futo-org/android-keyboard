@@ -1438,8 +1438,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         if (mCandidateView != null) {
             mCandidateView.setSuggestions(words);
-            if (mCandidateView.isConfigCandidateHighlightFontColorEnabled())
-                mKeyboardSwitcher.onAutoCorrectionStateChanged(words.hasAutoCorrectionWord());
+            if (mCandidateView.isConfigCandidateHighlightFontColorEnabled()) {
+                mKeyboardSwitcher.onAutoCorrectionStateChanged(
+                        words.hasWordAboveAutoCorrectionScoreThreshold());
+            }
         }
     }
 
@@ -1460,8 +1462,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private SuggestedWords.Builder getTypedSuggestions(WordComposer word) {
-        return mSuggest.getSuggestedWordBuilder(
-                mKeyboardSwitcher.getInputView(), word, false, null);
+        return mSuggest.getSuggestedWordBuilder(mKeyboardSwitcher.getInputView(), word, null);
     }
 
     private void showCorrections(WordAlternatives alternatives) {
@@ -1477,9 +1478,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
                 mWordSeparators);
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
-                mKeyboardSwitcher.getInputView(), word, false, prevWord);
-        // long stopTime = System.currentTimeMillis(); // TIME MEASUREMENT!
-        // Log.d("LatinIME","Suggest Total Time - " + (stopTime - startTime));
+                mKeyboardSwitcher.getInputView(), word, prevWord);
 
         int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
         mKeyboardSwitcher.setPreferredLetters(nextLettersFrequencies);
@@ -1506,8 +1505,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void showSuggestions(SuggestedWords suggestedWords, CharSequence typedWord) {
         setSuggestions(suggestedWords);
         if (suggestedWords.size() > 0) {
-            if (suggestedWords.mHasMinimalSuggestion
-                    && !suggestedWords.mTypedWordValid && suggestedWords.size() > 1) {
+            if (suggestedWords.hasAutoCorrectionWord()) {
                 mBestWord = suggestedWords.getWord(1);
             } else {
                 mBestWord = typedWord;
@@ -2067,9 +2065,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final String currentAutoCorrectionSetting = sp.getString(
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD,
-                mResources.getString(R.string.auto_correction_threshold_mode_value_modest));
+                mResources.getString(R.string.auto_correction_threshold_mode_index_modest));
         final String[] autoCorrectionThresholdValues = mResources.getStringArray(
-                R.array.auto_correction_threshold_mode_values);
+                R.array.auto_correction_threshold_values);
         // When autoCrrectionThreshold is greater than 1.0, auto correction is virtually turned off.
         double autoCorrectionThreshold = Double.MAX_VALUE;
         try {
@@ -2094,9 +2092,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean isAutoCorrectEnabled(SharedPreferences sp) {
         final String currentAutoCorrectionSetting = sp.getString(
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD,
-                mResources.getString(R.string.auto_correction_threshold_mode_value_modest));
+                mResources.getString(R.string.auto_correction_threshold_mode_index_modest));
         final String autoCorrectionOff = mResources.getString(
-                R.string.auto_correction_threshold_mode_value_off);
+                R.string.auto_correction_threshold_mode_index_off);
         return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
     }
 

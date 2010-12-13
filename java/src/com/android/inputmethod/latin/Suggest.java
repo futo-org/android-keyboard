@@ -95,7 +95,6 @@ public class Suggest implements Dictionary.WordCallback {
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
     private boolean mHaveCorrection;
-    private CharSequence mOriginalWord;
     private String mLowerOriginalWord;
 
     // TODO: Remove these member variables by passing more context to addWord() callback method
@@ -197,14 +196,13 @@ public class Suggest implements Dictionary.WordCallback {
      * @return suggested words object.
      */
     public SuggestedWords getSuggestions(View view, WordComposer wordComposer,
-            boolean includeTypedWordIfValid, CharSequence prevWordForBigram) {
-        return getSuggestedWordBuilder(view, wordComposer, includeTypedWordIfValid,
-                prevWordForBigram).build();
+            CharSequence prevWordForBigram) {
+        return getSuggestedWordBuilder(view, wordComposer, prevWordForBigram).build();
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
-            boolean includeTypedWordIfValid, CharSequence prevWordForBigram) {
+            CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mHaveCorrection = false;
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
@@ -214,13 +212,13 @@ public class Suggest implements Dictionary.WordCallback {
         Arrays.fill(mNextLettersFrequencies, 0);
 
         // Save a lowercase version of the original word
-        mOriginalWord = wordComposer.getTypedWord();
-        if (mOriginalWord != null) {
-            final String mOriginalWordString = mOriginalWord.toString();
-            mOriginalWord = mOriginalWordString;
-            mLowerOriginalWord = mOriginalWordString.toLowerCase();
+        CharSequence typedWord = wordComposer.getTypedWord();
+        if (typedWord != null) {
+            final String typedWordString = typedWord.toString();
+            typedWord = typedWordString;
+            mLowerOriginalWord = typedWordString.toLowerCase();
             // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-            LatinImeLogger.onAddSuggestedWord(mOriginalWordString, Suggest.DIC_USER_TYPED,
+            LatinImeLogger.onAddSuggestedWord(typedWordString, Suggest.DIC_USER_TYPED,
                     Dictionary.DataType.UNIGRAM);
         } else {
             mLowerOriginalWord = "";
@@ -278,7 +276,7 @@ public class Suggest implements Dictionary.WordCallback {
                     mContactsDictionary.getWords(wordComposer, this, mNextLettersFrequencies);
                 }
 
-                if (mSuggestions.size() > 0 && isValidWord(mOriginalWord)
+                if (mSuggestions.size() > 0 && isValidWord(typedWord)
                         && (mCorrectionMode == CORRECTION_FULL
                         || mCorrectionMode == CORRECTION_FULL_BIGRAM)) {
                     mHaveCorrection = true;
@@ -290,9 +288,9 @@ public class Suggest implements Dictionary.WordCallback {
                 // TODO: when the normalized score of the first suggestion is nearly equals to
                 //       the normalized score of the second suggestion, behave less aggressive.
                 final double normalizedScore = Utils.calcNormalizedScore(
-                        mOriginalWord, mSuggestions.get(0), mPriorities[0]);
+                        typedWord, mSuggestions.get(0), mPriorities[0]);
                 if (LatinImeLogger.sDBG) {
-                    Log.d(TAG, "Normalized " + mOriginalWord + "," + mSuggestions.get(0) + ","
+                    Log.d(TAG, "Normalized " + typedWord + "," + mSuggestions.get(0) + ","
                             + mPriorities[0] + normalizedScore
                             + "(" + mAutoCorrectionThreshold + ")");
                 }
@@ -301,8 +299,8 @@ public class Suggest implements Dictionary.WordCallback {
                 }
             }
         }
-        if (mOriginalWord != null) {
-            mSuggestions.add(0, mOriginalWord.toString());
+        if (typedWord != null) {
+            mSuggestions.add(0, typedWord.toString());
         }
         if (mAutoTextEnabled) {
             int i = 0;
