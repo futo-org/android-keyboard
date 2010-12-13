@@ -603,7 +603,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         setCandidatesViewShownInternal(isCandidateStripVisible(),
                 false /* needsInputViewShown */ );
-        updateSuggestions();
+        // Delay updating suggestions because keyboard input view may not be shown at this point.
+        mHandler.postUpdateSuggestions();
 
         // If the dictionary is not big enough, don't auto correct
         mHasDictionary = mSuggest.hasMainDictionary();

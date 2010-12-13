@@ -49,6 +49,8 @@
     <dimen name="candidate_strip_height">42dip</dimen>
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
     <dimen name="candidate_strip_padding">0dip</dimen>
+    <dimen name="candidate_min_width">0.3in</dimen>
+    <dimen name="candidate_padding">0dip</dimen>
     <dimen name="candidate_text_size">18dip</dimen>
     <dimen name="spacebar_vertical_correction">4dip</dimen>
     <!-- If the screen height in landscape is larger than the below value, then the keyboard
@@ -57,5 +59,4 @@
     <dimen name="bubble_pointer_offset">22dip</dimen>
 
     <dimen name="key_hysteresis_distance">0.05in</dimen>
-    <dimen name="candidate_min_touchable_width">0.3in</dimen>
 </resources>
