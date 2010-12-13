@@ -45,24 +45,25 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
         int *frequencies, int *nextLetters, int nextLettersSize)
 {
     initSuggestions(codes, codesSize, outWords, frequencies);
+    if (DEBUG_DICT) assert(codesSize == mInputLength);
+
     const int MAX_DEPTH = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
-    getSuggestionCandidates(codesSize, -1, -1, -1, nextLetters, nextLettersSize, MAX_DEPTH);
+    getSuggestionCandidates(-1, -1, -1, nextLetters, nextLettersSize, MAX_DEPTH);
 
     // Suggestion with missing character
     if (SUGGEST_WORDS_WITH_MISSING_CHARACTER) {
         for (int i = 0; i < codesSize; ++i) {
             if (DEBUG_DICT) LOGI("--- Suggest missing characters %d", i);
-            getSuggestionCandidates(codesSize, i, -1, -1, NULL, 0, MAX_DEPTH);
+            getSuggestionCandidates(i, -1, -1, NULL, 0, MAX_DEPTH);
         }
     }
 
     // Suggestion with excessive character
-    if (SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER && mInputLength > MIN_SUGGEST_DEPTH) {
+    if (SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER
+            && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION) {
         for (int i = 0; i < codesSize; ++i) {
-            if (existsAdjacentProximityChars(i, codesSize)) {
-                if (DEBUG_DICT) LOGI("--- Suggest excessive characters %d", i);
-                getSuggestionCandidates(codesSize, -1, i, -1, NULL, 0, MAX_DEPTH);
-            }
+            if (DEBUG_DICT) LOGI("--- Suggest excessive characters %d", i);
+            getSuggestionCandidates(-1, i, -1, NULL, 0, MAX_DEPTH);
         }
     }
 
@@ -71,12 +72,13 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
     if (SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS) {
         for (int i = 0; i < codesSize; ++i) {
             if (DEBUG_DICT) LOGI("--- Suggest transposed characters %d", i);
-            getSuggestionCandidates(codesSize, -1, -1, i, NULL, 0, mInputLength - 1);
+            getSuggestionCandidates(-1, -1, i, NULL, 0, mInputLength - 1);
         }
     }
 
     // Suggestions with missing space
-    if (SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER && mInputLength > MIN_SUGGEST_DEPTH) {
+    if (SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER
+            && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION) {
         for (int i = 1; i < codesSize; ++i) {
             if (DEBUG_DICT) LOGI("--- Suggest missing space characters %d", i);
             getMissingSpaceWords(mInputLength, i);
@@ -196,13 +198,15 @@ bool UnigramDictionary::sameAsTyped(unsigned short *word, int length) {
 static const char QUOTE = '\'';
 static const char SPACE = ' ';
 
-void UnigramDictionary::getSuggestionCandidates(const int inputLength, const int skipPos,
+void UnigramDictionary::getSuggestionCandidates(const int skipPos,
         const int excessivePos, const int transposedPos, int *nextLetters,
         const int nextLettersSize, const int maxDepth) {
-    if (DEBUG_DICT) LOGI("getSuggestionCandidates %d", maxDepth);
-    if (DEBUG_DICT) assert(transposedPos + 1 < inputLength);
-    if (DEBUG_DICT) assert(excessivePos < inputLength);
-    if (DEBUG_DICT) assert(missingPos < inputLength);
+    if (DEBUG_DICT) {
+        LOGI("getSuggestionCandidates %d", maxDepth);
+        assert(transposedPos + 1 < mInputLength);
+        assert(excessivePos < mInputLength);
+        assert(missingPos < mInputLength);
+    }
     int rootPosition = ROOT_POS;
     // Get the number of child of root, then increment the position
     int childCount = Dictionary::getCount(DICT, &rootPosition);
@@ -321,41 +325,46 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
     }
 }
 
-inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsGreaterThanInputLength(
-        unsigned short *word, const int inputLength, const int depth, const int snr,
-        int *nextLetters, const int nextLettersSize, const int skipPos, const int excessivePos,
-        const int transposedPos, const int freq) {
-    int finalFreq = freq * snr;
+inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int snr,
+        const int skipPos, const int excessivePos, const int transposedPos, const int freq,
+        const bool sameLength) {
     // TODO: Demote by edit distance
+    int finalFreq = freq * snr;
     if (skipPos >= 0) finalFreq = finalFreq * WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE / 100;
-    if (excessivePos >= 0) finalFreq = finalFreq
-            * WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE / 100;
     if (transposedPos >= 0) finalFreq = finalFreq
             * WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE / 100;
+    if (excessivePos >= 0) {
+        finalFreq = finalFreq * WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE / 100;
+        if (!existsAdjacentProximityChars(inputIndex, mInputLength)) {
+            finalFreq = finalFreq
+                    * WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE / 100;
+        }
+    }
+    if (sameLength && skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
+    return finalFreq;
+}
 
+inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsGreaterThanInputLength(
+        unsigned short *word, const int inputIndex, const int depth, const int snr,
+        int *nextLetters, const int nextLettersSize, const int skipPos, const int excessivePos,
+        const int transposedPos, const int freq) {
+    const int finalFreq = calculateFinalFreq(inputIndex, snr, skipPos, excessivePos, transposedPos,
+            freq, false);
     if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
-    if (depth >= inputLength && skipPos < 0) {
+    if (depth >= mInputLength && skipPos < 0) {
         registerNextLetter(mWord[mInputLength], nextLetters, nextLettersSize);
     }
 }
 
 inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsSameAsInputLength(
-        unsigned short *word, const int depth, const int snr, const int skipPos,
-        const int excessivePos, const int transposedPos, const int freq, const int addedWeight) {
-    if (!sameAsTyped(word, depth + 1)) {
-        int finalFreq = freq * snr * addedWeight;
-        // TODO: Demote by edit distance
-        if (skipPos >= 0) finalFreq = finalFreq * WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE / 100;
-        if (excessivePos >= 0) finalFreq = finalFreq
-                * WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE / 100;
-        if (transposedPos >= 0) finalFreq = finalFreq
-                * WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE / 100;
-
-        // Proximity collection will promote a word of the same length as
-        // what user typed.
-        if (skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
-        if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
-    }
+        unsigned short *word, const int inputIndex, const int depth, const int snr,
+        const int skipPos, const int excessivePos, const int transposedPos, const int freq,
+        const int addedWeight) {
+    if (sameAsTyped(word, depth + 1)) return;
+    const int finalFreq = calculateFinalFreq(inputIndex, snr * addedWeight, skipPos,
+            excessivePos, transposedPos, freq, true);
+    // Proximity collection will promote a word of the same length as what user typed.
+    if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
 }
 
 inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
@@ -437,7 +446,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
     if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
         mWord[depth] = c;
         if (traverseAllNodes && terminal) {
-            onTerminalWhenUserTypedLengthIsGreaterThanInputLength(mWord, mInputLength, depth,
+            onTerminalWhenUserTypedLengthIsGreaterThanInputLength(mWord, inputIndex, depth,
                     snr, nextLetters, nextLettersSize, skipPos, excessivePos, transposedPos, freq);
         }
         if (!needsToTraverseChildrenNodes) return false;
@@ -462,7 +471,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         const int addedWeight = matchedProximityCharId == 0 ? TYPED_LETTER_MULTIPLIER : 1;
         const bool isSameAsUserTypedLength = mInputLength == inputIndex + 1;
         if (isSameAsUserTypedLength && terminal) {
-            onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, depth, snr,
+            onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, inputIndex, depth, snr,
                     skipPos, excessivePos, transposedPos, freq, addedWeight);
         }
         if (!needsToTraverseChildrenNodes) return false;
