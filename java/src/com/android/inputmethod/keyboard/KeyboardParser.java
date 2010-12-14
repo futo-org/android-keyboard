@@ -30,6 +30,7 @@ import android.util.Xml;
 import android.view.InflateException;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -103,7 +104,7 @@ import java.util.List;
 
 public class KeyboardParser {
     private static final String TAG = "KeyboardParser";
-    private static final boolean DEBUG_TAG = false;
+    private static final boolean DEBUG = false;
 
     // Keyboard XML Tags
     private static final String TAG_KEYBOARD = "Keyboard";
@@ -115,7 +116,7 @@ public class KeyboardParser {
     private static final String TAG_SWITCH = "switch";
     private static final String TAG_CASE = "case";
     private static final String TAG_DEFAULT = "default";
-    private static final String TAG_KEY_STYLE = "key-style";
+    public static final String TAG_KEY_STYLE = "key-style";
 
     private final Keyboard mKeyboard;
     private final Resources mResources;
@@ -140,13 +141,13 @@ public class KeyboardParser {
         return mTotalHeight;
     }
 
-    public void parseKeyboard(XmlResourceParser parser)
-            throws XmlPullParserException, IOException {
+    public void parseKeyboard(int resId) throws XmlPullParserException, IOException {
+        if (DEBUG) Log.d(TAG, String.format("<%s> %s", TAG_KEYBOARD, mKeyboard.mId));
+        final XmlResourceParser parser = mResources.getXml(resId);
         int event;
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
-                if (DEBUG_TAG) debugStartTag("parseKeyboard", tag, false);
                 if (TAG_KEYBOARD.equals(tag)) {
                     parseKeyboardAttributes(parser);
                     parseKeyboardContent(parser, mKeyboard.getKeys());
@@ -160,28 +161,38 @@ public class KeyboardParser {
 
     private void parseKeyboardAttributes(XmlResourceParser parser) {
         final Keyboard keyboard = mKeyboard;
-        final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+        final TypedArray keyboardAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
-        final int displayHeight = keyboard.getDisplayHeight();
-        final int keyboardHeight = (int)a.getDimension(
-                R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
-        final int maxKeyboardHeight = getDimensionOrFraction(a,
-                R.styleable.Keyboard_maxKeyboardHeight, displayHeight,  displayHeight / 2);
-        // Keyboard height will not exceed maxKeyboardHeight.
-        final int height = Math.min(keyboardHeight, maxKeyboardHeight);
-        final int width = keyboard.getDisplayWidth();
+        final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                R.styleable.Keyboard_Key);
+        try {
+            final int displayHeight = keyboard.getDisplayHeight();
+            final int keyboardHeight = (int)keyboardAttr.getDimension(
+                    R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
+            final int maxKeyboardHeight = getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_maxKeyboardHeight, displayHeight,  displayHeight / 2);
+            // Keyboard height will not exceed maxKeyboardHeight.
+            final int height = Math.min(keyboardHeight, maxKeyboardHeight);
+            final int width = keyboard.getDisplayWidth();
 
-        keyboard.setKeyboardHeight(height);
-        keyboard.setKeyWidth(getDimensionOrFraction(a,
-                R.styleable.Keyboard_keyWidth, width, width / 10));
-        keyboard.setRowHeight(getDimensionOrFraction(a,
-                R.styleable.Keyboard_rowHeight, height, 50));
-        keyboard.setHorizontalGap(getDimensionOrFraction(a,
-                R.styleable.Keyboard_horizontalGap, width, 0));
-        keyboard.setVerticalGap(getDimensionOrFraction(a,
-                R.styleable.Keyboard_verticalGap, height, 0));
-        a.recycle();
-        if (DEBUG_TAG) Log.d(TAG, "id=" + keyboard.mId);
+            keyboard.setKeyboardHeight(height);
+            keyboard.setKeyWidth(getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyWidth, width, width / 10));
+            keyboard.setRowHeight(getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_rowHeight, height, 50));
+            keyboard.setHorizontalGap(getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_horizontalGap, width, 0));
+            keyboard.setVerticalGap(getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_verticalGap, height, 0));
+            keyboard.setPopupKeyboardResId(keyboardAttr.getResourceId(
+                    R.styleable.Keyboard_popupKeyboardTemplate, 0));
+
+            keyboard.setMaxPopupKeyboardColumn(keyAttr.getInt(
+                    R.styleable.Keyboard_Key_maxPopupKeyboardColumn, 5));
+        } finally {
+            keyAttr.recycle();
+            keyboardAttr.recycle();
+        }
     }
 
     private void parseKeyboardContent(XmlResourceParser parser, List<Key> keys)
@@ -190,9 +201,9 @@ public class KeyboardParser {
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
-                if (DEBUG_TAG) debugStartTag("parseKeyboardContent", tag, keys == null);
                 if (TAG_ROW.equals(tag)) {
-                    Row row = mKeyboard.createRowFromXml(mResources, parser);
+                    Row row = new Row(mResources, mKeyboard, parser);
+                    if (DEBUG) Log.d(TAG, String.format("<%s>", TAG_ROW));
                     if (keys != null)
                         startRow(row);
                     parseRowContent(parser, row, keys);
@@ -207,13 +218,12 @@ public class KeyboardParser {
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
-                if (DEBUG_TAG) debugEndTag("parseKeyboardContent", tag, keys == null);
                 if (TAG_KEYBOARD.equals(tag)) {
                     endKeyboard(mKeyboard.getVerticalGap());
                     break;
-                } else if (TAG_CASE.equals(tag) || TAG_DEFAULT.equals(tag)) {
-                    break;
-                } else if (TAG_MERGE.equals(tag)) {
+                } else if (TAG_CASE.equals(tag) || TAG_DEFAULT.equals(tag)
+                        || TAG_MERGE.equals(tag)) {
+                    if (DEBUG) Log.d(TAG, String.format("</%s>", tag));
                     break;
                 } else if (TAG_KEY_STYLE.equals(tag)) {
                     continue;
@@ -230,7 +240,6 @@ public class KeyboardParser {
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
-                if (DEBUG_TAG) debugStartTag("parseRowContent", tag, keys == null);
                 if (TAG_KEY.equals(tag)) {
                     parseKey(parser, row, keys);
                 } else if (TAG_SPACER.equals(tag)) {
@@ -246,14 +255,14 @@ public class KeyboardParser {
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
-                if (DEBUG_TAG) debugEndTag("parseRowContent", tag, keys == null);
                 if (TAG_ROW.equals(tag)) {
+                    if (DEBUG) Log.d(TAG, String.format("</%s>", TAG_ROW));
                     if (keys != null)
                         endRow();
                     break;
-                } else if (TAG_CASE.equals(tag) || TAG_DEFAULT.equals(tag)) {
-                    break;
-                } else if (TAG_MERGE.equals(tag)) {
+                } else if (TAG_CASE.equals(tag) || TAG_DEFAULT.equals(tag)
+                        || TAG_MERGE.equals(tag)) {
+                    if (DEBUG) Log.d(TAG, String.format("</%s>", tag));
                     break;
                 } else if (TAG_KEY_STYLE.equals(tag)) {
                     continue;
@@ -269,8 +278,10 @@ public class KeyboardParser {
         if (keys == null) {
             checkEndTag(TAG_KEY, parser);
         } else {
-            Key key = mKeyboard.createKeyFromXml(mResources, row, mCurrentX, mCurrentY, parser,
-                    mKeyStyles);
+            Key key = new Key(mResources, row, mCurrentX, mCurrentY, parser, mKeyStyles);
+            if (DEBUG) Log.d(TAG, String.format("<%s keyLabel=%s codes=%s popupCharacters=%s />",
+                    TAG_KEY, key.mLabel, Arrays.toString(key.mCodes),
+                    Arrays.toString(key.mPopupCharacters)));
             checkEndTag(TAG_KEY, parser);
             keys.add(key);
             if (key.mCodes[0] == Keyboard.CODE_SHIFT)
@@ -286,6 +297,7 @@ public class KeyboardParser {
         if (keys == null) {
             checkEndTag(TAG_SPACER, parser);
         } else {
+            if (DEBUG) Log.d(TAG, String.format("<%s />", TAG_SPACER));
             final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard);
             final int gap = getDimensionOrFraction(a, R.styleable.Keyboard_horizontalGap,
@@ -320,7 +332,8 @@ public class KeyboardParser {
             checkEndTag(TAG_INCLUDE, parser);
             if (keyboardLayout == 0)
                 throw new ParseException("No keyboardLayout attribute in <include/>", parser);
-            if (DEBUG_TAG) Log.d(TAG, String.format("  keyboardLayout=0x%08x", keyboardLayout));
+            if (DEBUG) Log.d(TAG, String.format("<%s keyboardLayout=%s />",
+                    TAG_INCLUDE, mResources.getResourceEntryName(keyboardLayout)));
             parseMerge(mResources.getLayout(keyboardLayout), row, keys);
         }
     }
@@ -331,7 +344,6 @@ public class KeyboardParser {
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
-                if (DEBUG_TAG) debugStartTag("parseMerge", tag, keys == null);
                 if (TAG_MERGE.equals(tag)) {
                     if (row == null) {
                         parseKeyboardContent(parser, keys);
@@ -359,13 +371,12 @@ public class KeyboardParser {
 
     private void parseSwitchInternal(XmlResourceParser parser, Row row, List<Key> keys)
             throws XmlPullParserException, IOException {
+        if (DEBUG) Log.d(TAG, String.format("<%s> %s", TAG_SWITCH, mKeyboard.mId));
         boolean selected = false;
         int event;
-        if (DEBUG_TAG) Log.d(TAG, "parseSwitchInternal: id=" + mKeyboard.mId);
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
-                if (DEBUG_TAG) debugStartTag("parseSwitchInternal", tag, keys == null);
                 if (TAG_CASE.equals(tag)) {
                     selected |= parseCase(parser, row, selected ? null : keys);
                 } else if (TAG_DEFAULT.equals(tag)) {
@@ -375,8 +386,8 @@ public class KeyboardParser {
                 }
             } else if (event == XmlPullParser.END_TAG) {
                 final String tag = parser.getName();
-                if (DEBUG_TAG) debugEndTag("parseRowContent", tag, keys == null);
                 if (TAG_SWITCH.equals(tag)) {
+                    if (DEBUG) Log.d(TAG, String.format("</%s>", TAG_SWITCH));
                     break;
                 } else {
                     throw new IllegalEndTag(parser, TAG_KEY);
@@ -426,20 +437,17 @@ public class KeyboardParser {
             final boolean selected = modeMatched && settingsKeyMatched && voiceEnabledMatched
                     && voiceKeyMatched && colorSchemeMatched && imeOptionsMatched;
 
-            if (DEBUG_TAG) {
-                Log.d(TAG, String.format(
-                        "parseCaseCondition: %s%s%s%s%s%s%s",
-                        Boolean.toString(selected).toUpperCase(),
-                        debugInteger(a, R.styleable.Keyboard_Case_mode, "mode"),
-                        debugBoolean(a, R.styleable.Keyboard_Case_hasSettingsKey,
-                                "hasSettingsKey"),
-                        debugBoolean(a, R.styleable.Keyboard_Case_voiceKeyEnabled,
-                                "voiceKeyEnabled"),
-                        debugBoolean(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
-                        debugInteger(viewAttr, R.styleable.KeyboardView_colorScheme,
-                                "colorScheme"),
-                        debugInteger(a, R.styleable.Keyboard_Case_imeOptions, "imeOptions")));
-            }
+            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s> %s", TAG_CASE,
+                    textAttr(KeyboardId.modeName(
+                            a.getInt(R.styleable.Keyboard_Case_mode, -1)), "mode"),
+                    textAttr(KeyboardId.colorSchemeName(
+                            a.getInt(R.styleable.KeyboardView_colorScheme, -1)), "colorSchemeName"),
+                    booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),
+                    booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
+                    booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
+                    textAttr(KeyboardId.imeOptionsName(
+                            a.getInt(R.styleable.Keyboard_Case_imeOptions, -1)), "imeOptions"),
+                    Boolean.toString(selected)));
 
             return selected;
         } finally {
@@ -462,6 +470,7 @@ public class KeyboardParser {
 
     private boolean parseDefault(XmlResourceParser parser, Row row, List<Key> keys)
             throws XmlPullParserException, IOException {
+        if (DEBUG) Log.d(TAG, String.format("<%s>", TAG_DEFAULT));
         if (row == null) {
             parseKeyboardContent(parser, keys);
         } else {
@@ -471,18 +480,18 @@ public class KeyboardParser {
     }
 
     private void parseKeyStyle(XmlResourceParser parser, List<Key> keys) {
-        TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+        TypedArray keyStyleAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_KeyStyle);
         TypedArray keyAttrs = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
         try {
-            if (!a.hasValue(R.styleable.Keyboard_KeyStyle_styleName))
+            if (!keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_styleName))
                 throw new ParseException("<" + TAG_KEY_STYLE
                         + "/> needs styleName attribute", parser);
             if (keys != null)
-                mKeyStyles.parseKeyStyleAttributes(a, keyAttrs, parser);
+                mKeyStyles.parseKeyStyleAttributes(keyStyleAttr, keyAttrs, parser);
         } finally {
-            a.recycle();
+            keyStyleAttr.recycle();
             keyAttrs.recycle();
         }
     }
@@ -561,19 +570,11 @@ public class KeyboardParser {
         }
     }
 
-    private static void debugStartTag(String title, String tag, boolean skip) {
-        Log.d(TAG, title + ": <" + tag + ">" + (skip ? " skip" : ""));
+    private static String textAttr(String value, String name) {
+        return value != null ? String.format(" %s=%s", name, value) : "";
     }
 
-    private static void debugEndTag(String title, String tag, boolean skip) {
-        Log.d(TAG, title + ": </" + tag + ">" + (skip ? " skip" : ""));
-    }
-
-    private static String debugInteger(TypedArray a, int index, String name) {
-        return a.hasValue(index) ? " " + name + "=" + a.getInt(index, 0) : "";
-    }
-
-    private static String debugBoolean(TypedArray a, int index, String name) {
-        return a.hasValue(index) ? " " + name + "=" + a.getBoolean(index, false) : "";
+    private static String booleanAttr(TypedArray a, int index, String name) {
+        return a.hasValue(index) ? String.format(" %s=%s", name, a.getBoolean(index, false)) : "";
     }
 }

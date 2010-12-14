@@ -25,6 +25,8 @@
     latin:rowHeight="25%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
+    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
+    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
@@ -45,13 +47,11 @@
             latin:keyLabel="|" />
         <Key
             latin:keyLabel="•"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="♪♥♠♦♣" />
+            latin:popupCharacters="♪,♥,♠,♦,♣" />
         <Key
             latin:keyLabel="√" />
         <Key
             latin:keyLabel="π"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="Π" />
         <Key
             latin:keyLabel="÷" />
@@ -59,7 +59,6 @@
             latin:keyLabel="×" />
         <Key
             latin:keyLabel="§"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="¶" />
         <Key
             latin:keyLabel="Δ" />
@@ -86,13 +85,11 @@
             latin:keyLabel="¥" />
         <Key
             latin:keyLabel="^"
-            latin:popupKeyboard="@xml/kbd_popup_template"
-            latin:popupCharacters="↑↓←→" />
+            latin:popupCharacters="↑,↓,←,→" />
         <Key
             latin:keyLabel="°" />
         <Key
             latin:keyLabel="±"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="∞" />
         <Key
             latin:keyLabel="{" />

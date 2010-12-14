@@ -62,11 +62,11 @@
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="smileyKeyStyle"
-                latin:codes="0"
                 latin:keyIcon="@drawable/sym_keyboard_smiley_holo"
                 latin:keyOutputText=";-) "
                 latin:keyHintIcon="@drawable/hint_popup_holo"
-                latin:popupKeyboard="@xml/popup_smileys" />
+                latin:popupCharacters="@string/alternates_for_smiley"
+                latin:maxPopupKeyboardColumn="5" />
             <key-style
                 latin:styleName="micKeyStyle"
                 latin:codes="@integer/key_voice"
@@ -115,7 +115,8 @@
                 latin:keyLabel=";-)"
                 latin:keyOutputText=";-) "
                 latin:keyHintIcon="@drawable/hint_popup_holo"
-                latin:popupKeyboard="@xml/popup_smileys" />
+                latin:popupCharacters="@string/alternates_for_smiley"
+                latin:maxPopupKeyboardColumn="5" />
             <key-style
                 latin:styleName="micKeyStyle"
                 latin:codes="@integer/key_voice"
@@ -151,9 +152,9 @@
         latin:isSticky="true" />
     <key-style
         latin:styleName="comKeyStyle"
-        latin:keyLabel="@string/popular_domain_0"
+        latin:keyLabel="@string/keylabel_for_popular_domain"
         latin:keyLabelOption="fontNormal"
-        latin:keyOutputText="@string/popular_domain_0"
+        latin:keyOutputText="@string/keylabel_for_popular_domain"
         latin:keyHintIcon="@drawable/hint_popup_holo"
-        latin:popupKeyboard="@xml/popup_domains" />
+        latin:popupCharacters="@string/alternates_for_popular_domain" />
 </merge>

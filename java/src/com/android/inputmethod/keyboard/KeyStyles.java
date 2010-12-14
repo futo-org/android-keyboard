@@ -25,11 +25,13 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.util.TypedValue;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringTokenizer;
 
 public class KeyStyles {
     private static final String TAG = "KeyStyles";
+    private static final boolean DEBUG = false;
 
     private final HashMap<String, DeclaredKeyStyle> mStyles =
             new HashMap<String, DeclaredKeyStyle>();
@@ -37,15 +39,15 @@ public class KeyStyles {
 
     public interface KeyStyle {
         public int[] getIntArray(TypedArray a, int index);
+        public CharSequence[] getTextArray(TypedArray a, int index);
         public Drawable getDrawable(TypedArray a, int index);
         public CharSequence getText(TypedArray a, int index);
-        public int getResourceId(TypedArray a, int index, int defaultValue);
         public int getInt(TypedArray a, int index, int defaultValue);
         public int getFlag(TypedArray a, int index, int defaultValue);
         public boolean getBoolean(TypedArray a, int index, boolean defaultValue);
     }
 
-    public static class EmptyKeyStyle implements KeyStyle {
+    /* package */ static class EmptyKeyStyle implements KeyStyle {
         private EmptyKeyStyle() {
             // Nothing to do.
         }
@@ -56,6 +58,11 @@ public class KeyStyles {
         }
 
         @Override
+        public CharSequence[] getTextArray(TypedArray a, int index) {
+            return parseTextArray(a, index);
+        }
+
+        @Override
         public Drawable getDrawable(TypedArray a, int index) {
             return a.getDrawable(index);
         }
@@ -63,11 +70,6 @@ public class KeyStyles {
         @Override
         public CharSequence getText(TypedArray a, int index) {
             return a.getText(index);
-        }
-
-        @Override
-        public int getResourceId(TypedArray a, int index, int defaultValue) {
-            return a.getResourceId(index, defaultValue);
         }
 
         @Override
@@ -85,19 +87,71 @@ public class KeyStyles {
             return a.getBoolean(index, defaultValue);
         }
 
+        protected static CharSequence[] parseTextArray(TypedArray a, int index) {
+            if (!a.hasValue(index))
+                return null;
+            final CharSequence text = a.getText(index);
+            return parseCsvText(text);
+        }
+
+        /* package */ static CharSequence[] parseCsvText(CharSequence text) {
+            final int size = text.length();
+            if (size == 0) return null;
+            if (size == 1) return new CharSequence[] { text };
+            final StringBuilder sb = new StringBuilder();
+            ArrayList<CharSequence> list = null;
+            int start = 0;
+            for (int pos = 0; pos < size; pos++) {
+                final char c = text.charAt(pos);
+                if (c == ',') {
+                    if (list == null) list = new ArrayList<CharSequence>();
+                    if (sb.length() == 0) {
+                        list.add(text.subSequence(start, pos));
+                    } else {
+                        list.add(sb.toString());
+                        sb.setLength(0);
+                    }
+                    start = pos + 1;
+                    continue;
+                } else if (c == '\\') {
+                    if (start == pos) {
+                        // Skip escape character at the beginning of the value.
+                        start++;
+                        pos++;
+                    } else {
+                        if (start < pos && sb.length() == 0)
+                            sb.append(text.subSequence(start, pos));
+                        pos++;
+                        if (pos < size)
+                            sb.append(text.charAt(pos));
+                    }
+                } else if (sb.length() > 0) {
+                    sb.append(c);
+                }
+            }
+            if (list == null) {
+                return new CharSequence[] { sb.length() > 0 ? sb : text.subSequence(start, size) };
+            } else {
+                list.add(sb.length() > 0 ? sb : text.subSequence(start, size));
+                return list.toArray(new CharSequence[list.size()]);
+            }
+        }
+
         protected static int[] parseIntArray(TypedArray a, int index) {
+            if (!a.hasValue(index))
+                return null;
             TypedValue v = new TypedValue();
             a.getValue(index, v);
             if (v.type == TypedValue.TYPE_INT_DEC || v.type == TypedValue.TYPE_INT_HEX) {
                 return new int[] { v.data };
             } else if (v.type == TypedValue.TYPE_STRING) {
-                return parseCSV(v.string.toString());
+                return parseCsvInt(v.string.toString());
             } else {
                 return null;
             }
         }
 
-        private static int[] parseCSV(String value) {
+        /* package */ static int[] parseCsvInt(String value) {
             int count = 0;
             int lastIndex = 0;
             if (value.length() > 0) {
@@ -110,23 +164,25 @@ public class KeyStyles {
             count = 0;
             StringTokenizer st = new StringTokenizer(value, ",");
             while (st.hasMoreTokens()) {
-                try {
-                    values[count++] = Integer.parseInt(st.nextToken());
-                } catch (NumberFormatException nfe) {
-                    Log.w(TAG, "Error parsing integer CSV " + value);
-                }
+                values[count++] = Integer.parseInt(st.nextToken());
             }
             return values;
         }
     }
 
-    public static class DeclaredKeyStyle extends EmptyKeyStyle {
+    private static class DeclaredKeyStyle extends EmptyKeyStyle {
         private final HashMap<Integer, Object> mAttributes = new HashMap<Integer, Object>();
 
         @Override
         public int[] getIntArray(TypedArray a, int index) {
             return a.hasValue(index)
                     ? super.getIntArray(a, index) : (int[])mAttributes.get(index);
+        }
+
+        @Override
+        public CharSequence[] getTextArray(TypedArray a, int index) {
+            return a.hasValue(index)
+                    ? super.getTextArray(a, index) : (CharSequence[])mAttributes.get(index);
         }
 
         @Override
@@ -142,9 +198,9 @@ public class KeyStyles {
         }
 
         @Override
-        public int getResourceId(TypedArray a, int index, int defaultValue) {
+        public int getInt(TypedArray a, int index, int defaultValue) {
             final Integer value = (Integer)mAttributes.get(index);
-            return super.getResourceId(a, index, (value != null) ? value : defaultValue);
+            return super.getInt(a, index, (value != null) ? value : defaultValue);
         }
 
         @Override
@@ -163,20 +219,21 @@ public class KeyStyles {
             super();
         }
 
-        private void parseKeyStyleAttributes(TypedArray a) {
+        private void parseKeyStyleAttributes(TypedArray keyAttr) {
             // TODO: Currently not all Key attributes can be declared as style.
-            readIntArray(a, R.styleable.Keyboard_Key_codes);
-            readText(a, R.styleable.Keyboard_Key_keyLabel);
-            readFlag(a, R.styleable.Keyboard_Key_keyLabelOption);
-            readText(a, R.styleable.Keyboard_Key_keyOutputText);
-            readDrawable(a, R.styleable.Keyboard_Key_keyIcon);
-            readDrawable(a, R.styleable.Keyboard_Key_iconPreview);
-            readDrawable(a, R.styleable.Keyboard_Key_keyHintIcon);
-            readDrawable(a, R.styleable.Keyboard_Key_shiftedIcon);
-            readResourceId(a, R.styleable.Keyboard_Key_popupKeyboard);
-            readBoolean(a, R.styleable.Keyboard_Key_isModifier);
-            readBoolean(a, R.styleable.Keyboard_Key_isSticky);
-            readBoolean(a, R.styleable.Keyboard_Key_isRepeatable);
+            readIntArray(keyAttr, R.styleable.Keyboard_Key_codes);
+            readText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+            readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption);
+            readTextArray(keyAttr, R.styleable.Keyboard_Key_popupCharacters);
+            readInt(keyAttr, R.styleable.Keyboard_Key_maxPopupKeyboardColumn);
+            readText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
+            readDrawable(keyAttr, R.styleable.Keyboard_Key_keyIcon);
+            readDrawable(keyAttr, R.styleable.Keyboard_Key_iconPreview);
+            readDrawable(keyAttr, R.styleable.Keyboard_Key_keyHintIcon);
+            readDrawable(keyAttr, R.styleable.Keyboard_Key_shiftedIcon);
+            readBoolean(keyAttr, R.styleable.Keyboard_Key_isModifier);
+            readBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky);
+            readBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable);
         }
 
         private void readDrawable(TypedArray a, int index) {
@@ -189,9 +246,9 @@ public class KeyStyles {
                 mAttributes.put(index, a.getText(index));
         }
 
-        private void readResourceId(TypedArray a, int index) {
+        private void readInt(TypedArray a, int index) {
             if (a.hasValue(index))
-                mAttributes.put(index, a.getResourceId(index, 0));
+                mAttributes.put(index, a.getInt(index, 0));
         }
 
         private void readFlag(TypedArray a, int index) {
@@ -206,11 +263,15 @@ public class KeyStyles {
         }
 
         private void readIntArray(TypedArray a, int index) {
-            if (a.hasValue(index)) {
-                final int[] value = parseIntArray(a, index);
-                if (value != null)
-                    mAttributes.put(index, value);
-            }
+            final int[] value = parseIntArray(a, index);
+            if (value != null)
+                mAttributes.put(index, value);
+        }
+
+        private void readTextArray(TypedArray a, int index) {
+            final CharSequence[] value = parseTextArray(a, index);
+            if (value != null)
+                mAttributes.put(index, value);
         }
 
         private void addParent(DeclaredKeyStyle parentStyle) {
@@ -218,15 +279,17 @@ public class KeyStyles {
         }
     }
 
-    public void parseKeyStyleAttributes(TypedArray a, TypedArray keyAttrs,
+    public void parseKeyStyleAttributes(TypedArray keyStyleAttr, TypedArray keyAttrs,
             XmlResourceParser parser) {
-        String styleName = a.getString(R.styleable.Keyboard_KeyStyle_styleName);
+        String styleName = keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName);
+        if (DEBUG) Log.d(TAG, String.format("<%s styleName=%s />",
+                KeyboardParser.TAG_KEY_STYLE, styleName));
         if (mStyles.containsKey(styleName))
             throw new ParseException("duplicate key style declared: " + styleName, parser);
 
         final DeclaredKeyStyle style = new DeclaredKeyStyle();
-        if (a.hasValue(R.styleable.Keyboard_KeyStyle_parentStyle)) {
-            String parentStyle = a.getString(
+        if (keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_parentStyle)) {
+            String parentStyle = keyStyleAttr.getString(
                     R.styleable.Keyboard_KeyStyle_parentStyle);
             final DeclaredKeyStyle parent = mStyles.get(parentStyle);
             if (parent == null)

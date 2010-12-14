@@ -30,23 +30,19 @@
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="z"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_z" />
         <Key
             latin:keyLabel="x" />
         <Key
             latin:keyLabel="c"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_c" />
         <Key
             latin:keyLabel="v"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_v" />
         <Key
             latin:keyLabel="b" />
         <Key
             latin:keyLabel="n"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_n" />
         <Key
             latin:keyLabel="m" />

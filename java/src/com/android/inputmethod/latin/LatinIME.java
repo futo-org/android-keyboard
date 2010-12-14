@@ -2039,7 +2039,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON, false);
         mPopupOn = prefs.getBoolean(Settings.PREF_POPUP_ON,
-                mResources.getBoolean(R.bool.default_popup_preview));
+                mResources.getBoolean(R.bool.config_default_popup_preview));
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
         mQuickFixes = prefs.getBoolean(Settings.PREF_QUICK_FIXES, true);
 

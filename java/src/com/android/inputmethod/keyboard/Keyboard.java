@@ -22,7 +22,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -92,6 +91,12 @@ public class Keyboard {
     /** Default gap between rows */
     private int mDefaultVerticalGap;
 
+    /** Popup keyboard template */
+    private int mPopupKeyboardResId;
+
+    /** Maximum column for popup keyboard */
+    private int mMaxPopupColumn;
+
     /** List of shift keys in this keyboard and its icons and state */
     private final List<Key> mShiftKeys = new ArrayList<Key>();
     private final HashMap<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
@@ -108,10 +113,10 @@ public class Keyboard {
     private int mTotalHeight;
 
     /**
-     * Total width of the keyboard, including left side gaps and keys, but not any gaps on the
-     * right side.
+     * Total width (minimum width) of the keyboard, including left side gaps and keys, but not any
+     * gaps on the right side.
      */
-    private int mTotalWidth;
+    private int mMinWidth;
 
     /** List of keys in this keyboard */
     private final List<Key> mKeys = new ArrayList<Key>();
@@ -144,27 +149,9 @@ public class Keyboard {
      * Creates a keyboard from the given xml key layout file.
      * @param context the application or service context
      * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
-     */
-    public Keyboard(Context context, int xmlLayoutResId) {
-        this(context, xmlLayoutResId, null);
-    }
-
-    /**
-     * Creates a keyboard from the given keyboard identifier.
-     * @param context the application or service context
      * @param id keyboard identifier
      */
-    public Keyboard(Context context, KeyboardId id) {
-        this(context, id.getXmlId(), id);
-    }
-
-    /**
-     * Creates a keyboard from the given xml key layout file.
-     * @param context the application or service context
-     * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
-     * @param id keyboard identifier
-     */
-    private Keyboard(Context context, int xmlLayoutResId, KeyboardId id) {
+    public Keyboard(Context context, int xmlLayoutResId, KeyboardId id) {
         this(context, xmlLayoutResId, id,
                 context.getResources().getDisplayMetrics().widthPixels,
                 context.getResources().getDisplayMetrics().heightPixels);
@@ -186,49 +173,6 @@ public class Keyboard {
         mDefaultHeight = mDefaultWidth;
         mId = id;
         loadKeyboard(context, xmlLayoutResId);
-    }
-
-    /**
-     * <p>Creates a blank keyboard from the given resource file and populates it with the specified
-     * characters in left-to-right, top-to-bottom fashion, using the specified number of columns.
-     * </p>
-     * <p>If the specified number of columns is -1, then the keyboard will fit as many keys as
-     * possible in each row.</p>
-     * @param context the application or service context
-     * @param layoutTemplateResId the layout template file, containing no keys.
-     * @param characters the list of characters to display on the keyboard. One key will be created
-     * for each character.
-     * @param columns the number of columns of keys to display. If this number is greater than the
-     * number of keys that can fit in a row, it will be ignored. If this number is -1, the
-     * keyboard will fit as many keys as possible in each row.
-     */
-    public Keyboard(Context context, int layoutTemplateResId,
-            CharSequence characters, int columns, int horizontalPadding) {
-        this(context, layoutTemplateResId);
-        int x = 0;
-        int y = 0;
-        int column = 0;
-        mTotalWidth = 0;
-
-        final Row row = new Row(this);
-        final int maxColumns = columns == -1 ? Integer.MAX_VALUE : columns;
-        for (int i = 0; i < characters.length(); i++) {
-            char c = characters.charAt(i);
-            if (column >= maxColumns
-                    || x + mDefaultWidth + horizontalPadding > mDisplayWidth) {
-                x = 0;
-                y += mDefaultVerticalGap + mDefaultHeight;
-                column = 0;
-            }
-            final Key key = new Key(row, c, x, y);
-            column++;
-            x += key.mWidth + key.mGap;
-            mKeys.add(key);
-            if (x > mTotalWidth) {
-                mTotalWidth = x;
-            }
-        }
-        mTotalHeight = y + mDefaultHeight;
     }
 
     public List<Key> getKeys() {
@@ -277,8 +221,16 @@ public class Keyboard {
         return mTotalHeight;
     }
 
+    public void setHeight(int height) {
+        mTotalHeight = height;
+    }
+
     public int getMinWidth() {
-        return mTotalWidth;
+        return mMinWidth;
+    }
+
+    public void setMinWidth(int minWidth) {
+        mMinWidth = minWidth;
     }
 
     public int getDisplayHeight() {
@@ -295,6 +247,22 @@ public class Keyboard {
 
     public void setKeyboardHeight(int height) {
         mKeyboardHeight = height;
+    }
+
+    public int getPopupKeyboardResId() {
+        return mPopupKeyboardResId;
+    }
+
+    public void setPopupKeyboardResId(int resId) {
+        mPopupKeyboardResId = resId;
+    }
+
+    public int getMaxPopupKeyboardColumn() {
+        return mMaxPopupColumn;
+    }
+
+    public void setMaxPopupKeyboardColumn(int column) {
+        mMaxPopupColumn = column;
     }
 
     public List<Key> getShiftKeys() {
@@ -429,24 +397,12 @@ public class Keyboard {
         return EMPTY_INT_ARRAY;
     }
 
-    // TODO should be private
-    protected Row createRowFromXml(Resources res, XmlResourceParser parser) {
-        return new Row(res, this, parser);
-    }
-
-    // TODO should be private
-    protected Key createKeyFromXml(Resources res, Row parent, int x, int y,
-            XmlResourceParser parser, KeyStyles keyStyles) {
-        return new Key(res, parent, x, y, parser, keyStyles);
-    }
-
     private void loadKeyboard(Context context, int xmlLayoutResId) {
         try {
-            final Resources res = context.getResources();
-            KeyboardParser parser = new KeyboardParser(this, res);
-            parser.parseKeyboard(res.getXml(xmlLayoutResId));
-            // mTotalWidth is the width of this keyboard which is maximum width of row.
-            mTotalWidth = parser.getMaxRowWidth();
+            KeyboardParser parser = new KeyboardParser(this, context.getResources());
+            parser.parseKeyboard(xmlLayoutResId);
+            // mMinWidth is the width of this keyboard which is maximum width of row.
+            mMinWidth = parser.getMaxRowWidth();
             mTotalHeight = parser.getTotalHeight();
         } catch (XmlPullParserException e) {
             Log.w(TAG, "keyboard XML parse error: " + e);

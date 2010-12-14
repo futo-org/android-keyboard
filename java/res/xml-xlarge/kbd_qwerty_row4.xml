@@ -54,7 +54,6 @@
                             latin:manualTemporaryUpperCaseCode="43"
                             latin:keyHintIcon="@drawable/key_hint_plus_holo"
                             latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
-                            latin:popupKeyboard="@xml/kbd_popup_template"
                             latin:popupCharacters="+" />
                     </case>
                     <default>
@@ -67,7 +66,6 @@
                     latin:manualTemporaryUpperCaseCode="64"
                     latin:keyHintIcon="@drawable/key_hint_at_holo"
                     latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_at_large_holo"
-                    latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters="\@" />
             </default>
         </switch>
@@ -89,7 +87,6 @@
                     latin:manualTemporaryUpperCaseCode="58"
                     latin:keyHintIcon="@drawable/key_hint_colon_holo"
                     latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_colon_large_holo"
-                    latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters=":" />
             </case>
             <default>
@@ -98,7 +95,6 @@
                     latin:manualTemporaryUpperCaseCode="34"
                     latin:keyHintIcon="@drawable/key_hint_quote_holo"
                     latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_quote_large_holo"
-                    latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters="&quot;" />
             </default>
         </switch>
@@ -115,7 +111,6 @@
                     latin:manualTemporaryUpperCaseCode="95"
                     latin:keyHintIcon="@drawable/key_hint_underline_holo"
                     latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_underline_large_holo"
-                    latin:popupKeyboard="@xml/kbd_popup_template"
                     latin:popupCharacters="_" />
             </default>
         </switch>

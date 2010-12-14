@@ -27,6 +27,8 @@
     latin:keyWidth="9.09%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
+    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
+    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
@@ -41,43 +43,33 @@
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="љ"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="1" />
         <Key
             latin:keyLabel="њ"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="е"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="р"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="т"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="5" />
         <Key
             latin:keyLabel="з"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="у"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="и"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="о"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="п"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="ш" />
@@ -149,14 +141,12 @@
             latin:manualTemporaryUpperCaseCode="33"
             latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
             latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="!" />
         <Key
             latin:keyLabel="."
             latin:manualTemporaryUpperCaseCode="63"
             latin:keyHintIcon="@drawable/key_hint_question_holo"
             latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="\?" />
         <Key
             latin:keyStyle="shiftKeyStyle"

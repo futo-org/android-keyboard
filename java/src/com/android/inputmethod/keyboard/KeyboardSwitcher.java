@@ -115,7 +115,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private void makeSymbolsKeyboardIds() {
         final Locale locale = mSubtypeSwitcher.getInputLocale();
-        final int orientation = mInputMethodService.getResources().getConfiguration().orientation;
+        final Resources res = mInputMethodService.getResources();
+        final int orientation = res.getConfiguration().orientation;
         final int mode = mMode;
         final int colorScheme = getColorScheme();
         final boolean hasSettingsKey = mHasSettingsKey;
@@ -129,12 +130,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // "more" and "locked more" key labels.  To achieve these behavior, we should initialize
         // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
         // respectively here for xlarge device's layout switching.
-        mSymbolsId = new KeyboardId(locale, orientation, mode,
-                mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols,
-                colorScheme, hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
-        mSymbolsShiftedId = new KeyboardId(locale, orientation, mode,
-                mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift,
-                colorScheme, hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
+        int xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols;
+        mSymbolsId = new KeyboardId(
+                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mode, colorScheme,
+                hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
+        xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift;
+        mSymbolsShiftedId = new KeyboardId(
+                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mode, colorScheme,
+                hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
     }
 
     private boolean hasVoiceKey(boolean isSymbols) {
@@ -230,9 +233,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 enableShiftLock = true;
             }
         }
-        final int orientation = mInputMethodService.getResources().getConfiguration().orientation;
+        final Resources res = mInputMethodService.getResources();
+        final int orientation = res.getConfiguration().orientation;
         final Locale locale = mSubtypeSwitcher.getInputLocale();
-        return new KeyboardId(locale, orientation, mode, xmlId, charColorId,
+        return new KeyboardId(
+                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mode, charColorId,
                 mHasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, imeOptions, enableShiftLock);
     }
 

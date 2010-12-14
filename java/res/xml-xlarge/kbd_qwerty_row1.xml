@@ -32,43 +32,33 @@
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="q"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_q" />
         <Key
             latin:keyLabel="w"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_w" />
         <Key
             latin:keyLabel="e"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_t" />
         <Key
             latin:keyLabel="y"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_y" />
         <Key
             latin:keyLabel="u"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyStyle="deleteKeyStyle"

@@ -44,15 +44,13 @@ public class LatinKeyboard extends Keyboard {
     public static final int OPACITY_FULLY_OPAQUE = 255;
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
-    private Drawable mShiftLockPreviewIcon;
-    private Drawable mSpaceAutoCorrectionIndicator;
+    private final Drawable mSpaceAutoCorrectionIndicator;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
     private final int mSpaceBarTextShadowColor;
     private int mSpaceKeyIndex = -1;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
-    private final Resources mRes;
     private final Context mContext;
     private boolean mCurrentlyInSpace;
     private SlidingLocaleDrawable mSlidingLocaleIcon;
@@ -79,10 +77,9 @@ public class LatinKeyboard extends Keyboard {
     private static final String MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "medium";
 
     public LatinKeyboard(Context context, KeyboardId id) {
-        super(context, id);
+        super(context, id.getXmlId(), id);
         final Resources res = context.getResources();
         mContext = context;
-        mRes = res;
         if (id.mColorScheme == KeyboardView.COLOR_SCHEME_BLACK) {
             mSpaceBarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_black);
@@ -90,8 +87,6 @@ public class LatinKeyboard extends Keyboard {
             mSpaceBarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_white);
         }
-        mShiftLockPreviewIcon = res.getDrawable(R.drawable.sym_keyboard_feedback_shift_locked);
-        setDefaultBounds(mShiftLockPreviewIcon);
         mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
@@ -109,7 +104,7 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void updateSpaceBarForLocale(boolean isAutoCorrection) {
-        final Resources res = mRes;
+        final Resources res = mContext.getResources();
         // If application locales are explicitly selected.
         if (SubtypeSwitcher.getInstance().needsToDisplayLanguage()) {
             mSpaceKey.setIcon(new BitmapDrawable(res,
@@ -181,7 +176,7 @@ public class LatinKeyboard extends Keyboard {
         final int height = mSpaceIcon.getIntrinsicHeight();
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
-        final Resources res = mRes;
+        final Resources res = mContext.getResources();
         canvas.drawColor(res.getColor(R.color.latinkeyboard_transparent), PorterDuff.Mode.CLEAR);
 
         SubtypeSwitcher subtypeSwitcher = SubtypeSwitcher.getInstance();

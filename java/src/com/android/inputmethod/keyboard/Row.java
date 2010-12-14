@@ -45,13 +45,13 @@ public class Row {
 
     private final Keyboard mKeyboard;
 
-    public Row(Keyboard keyboard) {
+    public Row(Keyboard keyboard, int rowFlags) {
         this.mKeyboard = keyboard;
         mDefaultHeight = keyboard.getRowHeight();
         mDefaultWidth = keyboard.getKeyWidth();
         mDefaultHorizontalGap = keyboard.getHorizontalGap();
         mVerticalGap = keyboard.getVerticalGap();
-        mRowEdgeFlags = Keyboard.EDGE_TOP | Keyboard.EDGE_BOTTOM;
+        mRowEdgeFlags = rowFlags;
     }
 
     public Row(Resources res, Keyboard keyboard, XmlResourceParser parser) {

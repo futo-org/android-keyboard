@@ -46,12 +46,13 @@ public class KeyboardId {
     public final boolean mHasVoiceKey;
     public final int mImeOptions;
     public final boolean mEnableShiftLock;
+    public final String mXmlName;
 
     private final int mHashCode;
 
-    public KeyboardId(Locale locale, int orientation, int mode,
-            int xmlId, int colorScheme, boolean hasSettingsKey, boolean voiceKeyEnabled,
-            boolean hasVoiceKey, int imeOptions, boolean enableShiftLock) {
+    public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int mode,
+            int colorScheme, boolean hasSettingsKey, boolean voiceKeyEnabled, boolean hasVoiceKey,
+            int imeOptions, boolean enableShiftLock) {
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mMode = mode;
@@ -64,6 +65,7 @@ public class KeyboardId {
         this.mImeOptions = imeOptions
                 & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
         this.mEnableShiftLock = enableShiftLock;
+        this.mXmlName = xmlName;
 
         this.mHashCode = Arrays.hashCode(new Object[] {
                 locale,
@@ -120,12 +122,12 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s %s %5s imeOptions=0x%08x xml=0x%08x %s%s%s%s%s]",
+        return String.format("[%s.xml %s %s %s imeOptions=%s %s%s%s%s%s]",
+                mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"),
                 modeName(mMode),
-                mImeOptions,
-                mXmlId,
+                imeOptionsName(mImeOptions),
                 colorSchemeName(mColorScheme),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
@@ -133,7 +135,7 @@ public class KeyboardId {
                 (mEnableShiftLock ? " enableShiftLock" : ""));
     }
 
-    private static String modeName(int mode) {
+    public static String modeName(int mode) {
         switch (mode) {
         case MODE_TEXT: return "text";
         case MODE_URL: return "url";
@@ -146,11 +148,33 @@ public class KeyboardId {
         return null;
     }
 
-    private static String colorSchemeName(int colorScheme) {
+    public static String colorSchemeName(int colorScheme) {
         switch (colorScheme) {
         case KeyboardView.COLOR_SCHEME_WHITE: return "white";
         case KeyboardView.COLOR_SCHEME_BLACK: return "black";
         }
         return null;
     }
+
+    public static String imeOptionsName(int imeOptions) {
+        if (imeOptions == -1) return null;
+        final int actionNo = imeOptions & EditorInfo.IME_MASK_ACTION;
+        final String action;
+        switch (actionNo) {
+        case EditorInfo.IME_ACTION_UNSPECIFIED: action = "actionUnspecified"; break;
+        case EditorInfo.IME_ACTION_NONE: action = "actionNone"; break;
+        case EditorInfo.IME_ACTION_GO: action = "actionGo"; break;
+        case EditorInfo.IME_ACTION_SEARCH: action = "actionSearch"; break;
+        case EditorInfo.IME_ACTION_SEND: action = "actionSend"; break;
+        case EditorInfo.IME_ACTION_DONE: action = "actionDone"; break;
+        case EditorInfo.IME_ACTION_PREVIOUS: action = "actionPrevious"; break;
+        default: action = "actionUnknown(" + actionNo + ")"; break;
+        }
+        if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+            return "flagNoEnterAction|" + action;
+        } else {
+            return action;
+        }
+    }
 }
+
