@@ -84,7 +84,7 @@
     >
         <Key
             latin:codes="@integer/key_switch_alpha_symbol"
-            latin:keyLabel="@string/label_phone_key"
+            latin:keyLabel="@string/label_to_numeric_key"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="+" />
