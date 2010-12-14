@@ -163,7 +163,7 @@ public class MakeBinaryDictionary {
                 public void endElement(String uri, String localName,
                         String qName) {
                     if (qName.equals("w")) {
-                        if (wordBuilder.length() > 1) {
+                        if (wordBuilder.length() >= 1) {
                             addWordTop(wordBuilder.toString(), freq);
                             mWordCount++;
                         }
