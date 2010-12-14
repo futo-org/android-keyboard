@@ -28,22 +28,8 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Klavišo paspaudimo garsas"</string>
     <!-- no translation found for popup_on_keypress (123894815723512944) -->
     <skip />
-    <string name="hit_correction" msgid="4855351009261318389">"Taisyti rašybos klaidas"</string>
-    <string name="hit_correction_summary" msgid="8761701873008070796">"Įgalinti įvesties klaidos taisymą"</string>
-    <string name="hit_correction_land" msgid="2567691684825205448">"Gulsčia įvestis"</string>
-    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Įgalinti įvesties klaidos taisymą"</string>
-    <string name="auto_correction" msgid="7911639788808958255">"Žodžių pasiūlymai"</string>
-    <string name="auto_correction_summary" msgid="6881047311475758267">"Automatiškai taisyti ankstesnį žodį"</string>
-    <string name="prediction" msgid="466220283138359837">"Žodžių pasiūlymai"</string>
     <string name="prediction_category" msgid="7027100625580696660">"Žodžių pasiūlymo nustatymai"</string>
-    <string name="prediction_summary" msgid="459788228830873110">"Įgalinti automatinį užbaigimą, kai įvedinėjamas tekstas"</string>
-    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Automatinis užbaigimas"</string>
-    <string name="prediction_landscape" msgid="4874601565593216183">"Padidinti teksto lauko dydį"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Gulsčiame rodinyje slėpti žodžių pasiūlymus"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatinis didžiųjų raidžių rašymas"</string>
-    <string name="auto_cap_summary" msgid="3260681697600786825">"Sakinio pradžią rašyti didžiąja raide"</string>
-    <string name="auto_punctuate" msgid="7276672334264521751">"Automatiškai dėti skyrybos ženklus"</string>
-    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Greiti pataisymai"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Taiso dažnai padarytas rašybos klaidas"</string>
     <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
@@ -64,42 +50,19 @@
     <skip />
     <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
     <skip />
-    <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
-    <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
-    <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
-    <string name="auto_complete" msgid="1103196318775486023">"Automatiškai užbaigti"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Tarpo klavišas ir skyrybos ženklai automatiškai įterpia paryškintą žodį"</string>
-    <!-- no translation found for auto_completion_threshold_mode_off (8100705925921970219) -->
+    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Žodžių pasiūlymai"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Automatiškai taisyti ankstesnį žodį"</string>
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_mode_modest (1639075698991437157) -->
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_mode_aggeressive (1153130653281397959) -->
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
-    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
-    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
     <!-- no translation found for bigram_suggestion (1323347224043514969) -->
     <skip />
     <!-- no translation found for bigram_suggestion_summary (4383845146070101531) -->
     <skip />
-  <string-array name="prediction_modes">
-    <item msgid="4870266572388153286">"Nėra"</item>
-    <item msgid="1669461741568287396">"Paprastas"</item>
-    <item msgid="4894328801530136615">"Išplėstinis"</item>
-  </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: išsaugota"</string>
-    <string name="tip_long_press" msgid="6101270866284343344">"Laikykite klavišą nuspaudę, kad pamatytumėte kirčius (ø, ö ir t. t.)"</string>
-    <string name="tip_dismiss" msgid="7585579046862204381">"Paspauskite klavišą „Atgal“ ↶, kad uždarytumėte klaviatūrą"</string>
-    <string name="tip_access_symbols" msgid="6344098517525531652">"Pasiekti skaičius ir simbolius"</string>
-    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Paspauskite ir laikykite nuspaudę kairiausią žodį, kad pridėtumėte jį prie žodyno"</string>
-    <string name="touch_to_continue" msgid="7869803257948414531">"Palieskite šią užuominą, jei norite tęsti »"</string>
-    <string name="touch_to_finish" msgid="7990196086480585789">"Paleiskite čia, kad uždarytumėte šią užuominą ir pradėtumėte įvedinėti tekstą!"</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Klaviatūra atsidarys kaskart, kai paliesite teksto lauką"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Palieskite ir laikykite klavišą, kad pamatytumėte kirčius"\n"(ø, ö, ô, ó, and so on)"</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Perjunkite į skaičius ir simbolius, paliesdami šį klavišą"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Grįžkite prie raidžių dar kartą paliesdami šį klavišą"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Palieskite ir laikykite šį klavišą, kad pakeistumėte klaviatūros nustatymus, pvz., automatinį užbaigimą"</b></string>
-    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Išbandykite tai!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Pradėti"</string>
     <string name="label_next_key" msgid="362972844525672568">"Kitas"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Atlikta"</string>
@@ -133,27 +96,18 @@
     <string name="cancel" msgid="6830980399865683324">"Atšaukti"</string>
     <string name="ok" msgid="7898366843681727667">"Gerai"</string>
     <string name="voice_input" msgid="2466640768843347841">"Balso įvestis"</string>
-  <string-array name="voice_input_modes">
-    <item msgid="1349082139076086774">"Pagrindinėje klaviatūroje"</item>
-    <item msgid="8529385602829095903">"Simbolių klaviatūroje"</item>
-    <item msgid="7283103513488381103">"Išjungta"</item>
-  </string-array>
-  <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"Pagrindinės klaviatūros mikrofonas"</item>
-    <item msgid="6907837061058876770">"Mikrofonas simbolių klaviatūroje"</item>
-    <item msgid="3664304608587798036">"Balso įvestis išjungta"</item>
-  </string-array>
-    <string name="auto_submit" msgid="9151008027068358518">"Automatiškai pateikti po balso"</string>
-    <string name="auto_submit_summary" msgid="4961875269610384226">"Automatiškai spausti „Įvesti“ ieškant ar einant į kitą lauką."</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Atidarykite klaviatūrą"\n</b></font><font size="3">\n</font>"Palieskite bet kurį teksto lauką."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Uždarykite klaviatūrą"\n</b></font><font size="3">\n</font>"Paspauskite klavišą „Atgal“."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Palieskite ir laikykite klavišą, kad pamatytumėte parinktis"\n</b></font><font size="3">\n</font>"Pasiekite skyrybos ženklus ir kirčius."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Klaviatūros nustatymai"\n</b></font><font size="3">\n</font>"Palieskite ir laikykite klavišą "<b>"?123"</b>"."</string>
-    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
-    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
-    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
     <!-- no translation found for selectInputMethod (315076553378705821) -->
     <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Įvesties kalbos"</string>
@@ -169,10 +123,6 @@
     <!-- no translation found for prefs_enable_recorrection_summary (5082041365862396329) -->
     <skip />
     <!-- no translation found for keyboard_layout (437433231038683666) -->
-    <skip />
-    <!-- no translation found for subtype_mode_keyboard (2242090416595003881) -->
-    <skip />
-    <!-- no translation found for subtype_mode_voice (4394113125441627771) -->
     <skip />
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />

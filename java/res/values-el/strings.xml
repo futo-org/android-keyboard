@@ -26,22 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Δόνηση κατά το πάτημα πλήκτρων"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Ήχος κατά το πάτημα πλήκτρων"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Εμφάνιση με το πάτημα πλήκτρου"</string>
-    <string name="hit_correction" msgid="4855351009261318389">"Διόρθωση σφαλμάτων πληκτρολόγησης"</string>
-    <string name="hit_correction_summary" msgid="8761701873008070796">"Ενεργοποίηση διόρθωσης σφαλμάτων εισόδου"</string>
-    <string name="hit_correction_land" msgid="2567691684825205448">"Σφάλματα οριζόντιας εισαγωγής"</string>
-    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Ενεργοποίηση διόρθωσης σφαλμάτων εισόδου"</string>
-    <string name="auto_correction" msgid="7911639788808958255">"Υποδείξεις λέξεων"</string>
-    <string name="auto_correction_summary" msgid="6881047311475758267">"Αυτόματη διόρθωση της προηγούμενης λέξης"</string>
-    <string name="prediction" msgid="466220283138359837">"Υποδείξεις λέξεων"</string>
     <string name="prediction_category" msgid="7027100625580696660">"Ρυθμίσεις υποδείξεων λέξεων"</string>
-    <string name="prediction_summary" msgid="459788228830873110">"Ενεργοποίηση αυτόματης συμπλήρωσης κατά την πληκτρολόγηση"</string>
-    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Αυτόματη συμπλήρωση"</string>
-    <string name="prediction_landscape" msgid="4874601565593216183">"Αυξήστε το μέγεθος του πεδίου κειμένου"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Απόκρυψη υποδείξεων λέξεων στην οριζόντια προβολή"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Αυτόματη χρήση κεφαλαίων"</string>
-    <string name="auto_cap_summary" msgid="3260681697600786825">"Κεφαλαίο το πρώτο γράμμα της πρότασης"</string>
-    <string name="auto_punctuate" msgid="7276672334264521751">"Αυτόματος τονισμός"</string>
-    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Γρήγορες διορθώσεις"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Διορθώνει συνηθισμένα λάθη πληκτρολόγησης"</string>
     <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
@@ -58,37 +44,17 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Αυτόματο"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Να εμφανίζεται πάντα"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Πάντα απόκρυψη"</string>
-    <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
-    <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
-    <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
-    <string name="auto_complete" msgid="1103196318775486023">"Αυτόματη συμπλήρωση"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Τα πλήκ.διαστήμ.και τονισμού εισάγ.αυτόμ.την επιλ.λέξη"</string>
-    <string name="auto_completion_threshold_mode_off" msgid="8100705925921970219">"Απενεργοποιημένη"</string>
-    <string name="auto_completion_threshold_mode_modest" msgid="1639075698991437157">"Μέτρια"</string>
-    <string name="auto_completion_threshold_mode_aggeressive" msgid="1153130653281397959">"Υψηλή"</string>
-    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
-    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
-    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
+    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Υποδείξεις λέξεων"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Αυτόματη διόρθωση της προηγούμενης λέξης"</string>
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
+    <skip />
     <string name="bigram_suggestion" msgid="1323347224043514969">"Προτάσεις bigram"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Χρήση προηγούμενης λέξης για τη βελτίωση πρότασης"</string>
-  <string-array name="prediction_modes">
-    <item msgid="4870266572388153286">"Καμία"</item>
-    <item msgid="1669461741568287396">"Βασική"</item>
-    <item msgid="4894328801530136615">"Σύνθετη"</item>
-  </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Αποθηκεύτηκε"</string>
-    <string name="tip_long_press" msgid="6101270866284343344">"Κρατήστε πατημένο ένα πλήκτρο για να δείτε τους τονισμένους χαρακτήρες (ø, ö, κ.τ.λ.)"</string>
-    <string name="tip_dismiss" msgid="7585579046862204381">"Πατήστε το πλήκτρο Πίσω ↶ για να κλείσετε το πληκτρολόγιο ανά πάσα στιγμή"</string>
-    <string name="tip_access_symbols" msgid="6344098517525531652">"Πρόσβαση σε αριθμούς και σύμβολα"</string>
-    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Κρατήστε πατημένη τη λέξη στην άκρη αριστερά, για να την προσθέσετε στο λεξικό"</string>
-    <string name="touch_to_continue" msgid="7869803257948414531">"Αγγίξτε αυτή τη συμβουλή για να συνεχίσετε »"</string>
-    <string name="touch_to_finish" msgid="7990196086480585789">"Αγγίξτε εδώ για να κλείσετε τη συμβουλή και να ξεκινήσετε την πληκτρολόγηση!"</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Το πληκτρολόγιο ανοίγει κάθε φορά που αγγίζετε ένα πεδίο κειμένου"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Αγγίξτε και κρατήστε κάποιο πλήκτρο για να προβάλετε τους τονισμένους χαρακτήρες"\n"(ø, ö, ô, ó κ.τ.λ.)"</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Αλλαγή σε αριθμούς και σύμβολα με το πάτημα αυτού του πλήκτρου"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Επιστρέψτε στα γράμματα αγγίζοντας ξανά αυτό το πλήκτρο"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Αγγίξτε και κρατήστε πατημένο αυτό το πληκτρολόγιο για να αλλάξετε τις ρυθμίσεις πληκτρολογίου, όπως η αυτόματη συμπλήρωση"</b></string>
-    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Δοκιμάστε το!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Μετάβαση"</string>
     <string name="label_next_key" msgid="362972844525672568">"Επόμενο"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Τέλος"</string>
@@ -119,27 +85,18 @@
     <string name="cancel" msgid="6830980399865683324">"Ακύρωση"</string>
     <string name="ok" msgid="7898366843681727667">"ΟΚ"</string>
     <string name="voice_input" msgid="2466640768843347841">"Φωνητική είσοδος"</string>
-  <string-array name="voice_input_modes">
-    <item msgid="1349082139076086774">"Στο κύριο πληκτρολόγιο"</item>
-    <item msgid="8529385602829095903">"Πληκτρολόγιο συμβόλων ενεργοποίησης"</item>
-    <item msgid="7283103513488381103">"Απενεργοποίηση"</item>
-  </string-array>
-  <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"Μικρόφωνο στο κύριο πληκτρολόγιο"</item>
-    <item msgid="6907837061058876770">"Μικρόφωνο στο πληκτρολόγιο συμβόλων"</item>
-    <item msgid="3664304608587798036">"Η φωνητική είσοδος είναι απενεργοποιημένη"</item>
-  </string-array>
-    <string name="auto_submit" msgid="9151008027068358518">"Αυτόματη υποβολή μετά από ήχο"</string>
-    <string name="auto_submit_summary" msgid="4961875269610384226">"Πατήστε enter αυτόματα κατά την αναζήτηση ή τη μετάβαση στο επόμενο πεδίο."</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Ανοίξτε το πληκτρολόγιο"\n</b></font><font size="3">\n</font>"Αγγίξτε οποιοδήποτε πεδίο κειμένου."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Κλείστε το πληκτρολόγιο"\n</b></font><font size="3">\n</font>"Πατήστε το πλήκτρο Πίσω."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Αγγίξτε και κρατήστε ένα πλήκτρο για ορισμό επιλογών"\n</b></font><font size="3">\n</font>"Πρόσβαση στα σημεία στίξης και τονισμού."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Ρυθμίσεις πληκτρολογίου"\n</b></font><font size="3">\n</font>"Αγγίξτε και κρατήστε το πλήκτρο "<b>"?123"</b>"."</string>
-    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
-    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
-    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
     <string name="selectInputMethod" msgid="315076553378705821">"Επιλογή μεθόδου εισόδου"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Γλώσσες εισόδου"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Σύρετε το δάχτυλο στο πλήκτρο διαστήματος για να αλλάξετε γλώσσα"</string>
@@ -150,8 +107,6 @@
     <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Αγγίξτε για να διορθώσετε ξανά τις λέξεις"</string>
     <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Μπορείτε να διορθώσετε ξανά τις λέξεις αγγίζοντας τις λέξεις που έχετε πληκτρολογήσει"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Θέμα πληκτρολογίου"</string>
-    <string name="subtype_mode_keyboard" msgid="2242090416595003881">"πληκτρολόγιο"</string>
-    <string name="subtype_mode_voice" msgid="4394113125441627771">"φωνητική"</string>
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />
     <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->

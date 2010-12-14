@@ -28,22 +28,8 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"صوت عند الضغط على مفتاح"</string>
     <!-- no translation found for popup_on_keypress (123894815723512944) -->
     <skip />
-    <string name="hit_correction" msgid="4855351009261318389">"تصحيح أخطاء الكتابة"</string>
-    <string name="hit_correction_summary" msgid="8761701873008070796">"تمكين تصحيح خطأ الإدخال"</string>
-    <string name="hit_correction_land" msgid="2567691684825205448">"أخطاء في الإدخال الأفقي"</string>
-    <string name="hit_correction_land_summary" msgid="4076803842198368328">"تمكين تصحيح خطأ الإدخال"</string>
-    <string name="auto_correction" msgid="7911639788808958255">"اقتراحات الكلمات"</string>
-    <string name="auto_correction_summary" msgid="6881047311475758267">"تصحيح الكلمة السابقة تلقائيًا"</string>
-    <string name="prediction" msgid="466220283138359837">"اقتراحات الكلمات"</string>
     <string name="prediction_category" msgid="7027100625580696660">"إعدادات اقتراحات الكلمات"</string>
-    <string name="prediction_summary" msgid="459788228830873110">"تمكين الإكمال التلقائي أثناء الكتابة"</string>
-    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"إكمال تلقائي"</string>
-    <string name="prediction_landscape" msgid="4874601565593216183">"زيادة حجم الحقل النصي"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"إخفاء اقتراحات الكلمات في طريقة العرض الأفقية"</string>
     <string name="auto_cap" msgid="1719746674854628252">"استخدام الأحرف الكبيرة تلقائيًا"</string>
-    <string name="auto_cap_summary" msgid="3260681697600786825">"استخدام الأحرف الكبيرة في بداية الجملة"</string>
-    <string name="auto_punctuate" msgid="7276672334264521751">"ترقيم تلقائي"</string>
-    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"إصلاحات سريعة"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"تصحيح الأخطاء المكتوبة الشائعة"</string>
     <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
@@ -64,42 +50,19 @@
     <skip />
     <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
     <skip />
-    <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
-    <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
-    <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
-    <string name="auto_complete" msgid="1103196318775486023">"إكمال تلقائي"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"مفتاح المسافة والترقيم لإدخال كلمة محددة تلقائيًا"</string>
-    <!-- no translation found for auto_completion_threshold_mode_off (8100705925921970219) -->
+    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"اقتراحات الكلمات"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"تصحيح الكلمة السابقة تلقائيًا"</string>
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_mode_modest (1639075698991437157) -->
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_mode_aggeressive (1153130653281397959) -->
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
-    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
-    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
     <!-- no translation found for bigram_suggestion (1323347224043514969) -->
     <skip />
     <!-- no translation found for bigram_suggestion_summary (4383845146070101531) -->
     <skip />
-  <string-array name="prediction_modes">
-    <item msgid="4870266572388153286">"لا شيء"</item>
-    <item msgid="1669461741568287396">"أساسي"</item>
-    <item msgid="4894328801530136615">"متقدم"</item>
-  </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : تم الحفظ"</string>
-    <string name="tip_long_press" msgid="6101270866284343344">"اضغط باستمرار على أحد المفاتيح لأسفل لمشاهدة علامات التشكيل"</string>
-    <string name="tip_dismiss" msgid="7585579046862204381">"اضغط على مفتاح الرجوع ↶ لإغلاق لوحة المفاتيح في أي نقطة"</string>
-    <string name="tip_access_symbols" msgid="6344098517525531652">"الدخول إلى الأرقام والرموز"</string>
-    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"اضغط مع الاستمرار على أقصى يمين الكلمة لإضافتها إلى القاموس"</string>
-    <string name="touch_to_continue" msgid="7869803257948414531">"المس هذا التلميح للمتابعة »"</string>
-    <string name="touch_to_finish" msgid="7990196086480585789">"المس هنا لإغلاق هذا التلميح وبدء الكتابة!"</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"تفتح لوحة المفاتيح في أي وقت تلمس فيه حقلًا نصيًا"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"المس مع الاستمرار أحد المفاتيح لعرض علامات التشكيل"\n"(ø, ö, ô, ó, وهكذا)"</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"التبديل إلى الأرقام والرموز من خلال لمس هذا الزر"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"يمكنك الرجوع إلى الأحرف من خلال لمس هذا المفتاح مرة أخرى"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"المس هذا المفتاح مع الاستمرار لتغيير إعدادات لوحة المفاتيح، مثل الإكمال التلقائي"</b></string>
-    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"جربه!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"تنفيذ"</string>
     <string name="label_next_key" msgid="362972844525672568">"التالي"</string>
     <string name="label_done_key" msgid="2441578748772529288">"تم"</string>
@@ -133,27 +96,18 @@
     <string name="cancel" msgid="6830980399865683324">"إلغاء"</string>
     <string name="ok" msgid="7898366843681727667">"موافق"</string>
     <string name="voice_input" msgid="2466640768843347841">"الإدخال الصوتي"</string>
-  <string-array name="voice_input_modes">
-    <item msgid="1349082139076086774">"في لوحة المفاتيح الرئيسية"</item>
-    <item msgid="8529385602829095903">"على لوحة مفاتيح الرموز"</item>
-    <item msgid="7283103513488381103">"إيقاف"</item>
-  </string-array>
-  <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"الميكروفون في لوحة المفاتيح الرئيسية"</item>
-    <item msgid="6907837061058876770">"الميكروفون على لوحة مفاتيح الرموز"</item>
-    <item msgid="3664304608587798036">"تم تعطيل الإدخال الصوتي"</item>
-  </string-array>
-    <string name="auto_submit" msgid="9151008027068358518">"إرسال تلقائي بعد الصوت"</string>
-    <string name="auto_submit_summary" msgid="4961875269610384226">"الضغط تلقائيًا على المفتاح enter عند البحث أو الانتقال إلى الحقل التالي."</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"افتح لوحة المفاتيح"\n</b></font><font size="3">\n</font>"المس أي حقل نصي."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"إغلاق لوحة المفاتيح"\n</b></font><font size="3">\n</font>"اضغط على المفتاح \"رجوع\"."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"المس أحد مفاتيح الخيارات مع الاستمرار"\n</b></font><font size="3">\n</font>"الدخول إلى الترقيم والحركات."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"إعدادات لوحة المفاتيح"\n</b></font><font size="3">\n</font>"المس مع الاستمرار المفتاح "<b>"?123"</b>"."</string>
-    <string name="popular_domain_0" msgid="3745279225122472969">"com."</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">"net."</string>
-    <string name="popular_domain_2" msgid="3036812463748402878">"org."</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">"gov."</string>
-    <string name="popular_domain_4" msgid="35359437471311470">"edu."</string>
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
     <!-- no translation found for selectInputMethod (315076553378705821) -->
     <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"لغات الإدخال"</string>
@@ -169,10 +123,6 @@
     <!-- no translation found for prefs_enable_recorrection_summary (5082041365862396329) -->
     <skip />
     <!-- no translation found for keyboard_layout (437433231038683666) -->
-    <skip />
-    <!-- no translation found for subtype_mode_keyboard (2242090416595003881) -->
-    <skip />
-    <!-- no translation found for subtype_mode_voice (4394113125441627771) -->
     <skip />
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />

@@ -26,22 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer à chaque touche"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son à chaque touche"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères à chaque touche"</string>
-    <string name="hit_correction" msgid="4855351009261318389">"Corriger les fautes de frappe"</string>
-    <string name="hit_correction_summary" msgid="8761701873008070796">"Activer la correction des erreurs de saisie"</string>
-    <string name="hit_correction_land" msgid="2567691684825205448">"Erreurs de saisie en mode paysage"</string>
-    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Activer la correction des erreurs de saisie"</string>
-    <string name="auto_correction" msgid="7911639788808958255">"Saisie prédictive"</string>
-    <string name="auto_correction_summary" msgid="6881047311475758267">"Corriger automatiquement le mot précédent"</string>
-    <string name="prediction" msgid="466220283138359837">"Saisie prédictive"</string>
     <string name="prediction_category" msgid="7027100625580696660">"Paramètres de la saisie prédictive"</string>
-    <string name="prediction_summary" msgid="459788228830873110">"Activer la saisie semi-automatique"</string>
-    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Saisie semi-automatique"</string>
-    <string name="prediction_landscape" msgid="4874601565593216183">"Agrandir le champ de texte"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Masquer la saisie prédictive en mode paysage"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Majuscules auto"</string>
-    <string name="auto_cap_summary" msgid="3260681697600786825">"Mettre en majuscule la première lettre de chaque phrase"</string>
-    <string name="auto_punctuate" msgid="7276672334264521751">"Ponctuation automatique"</string>
-    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Corrections rapides"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrige les fautes de frappe courantes"</string>
     <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
@@ -58,37 +44,17 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatique"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Toujours afficher"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Toujours masquer"</string>
-    <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
-    <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
-    <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
-    <string name="auto_complete" msgid="1103196318775486023">"Saisie semi-automatique"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Insérer auto. le terme surligné avec barre espace/ponctuation"</string>
-    <string name="auto_completion_threshold_mode_off" msgid="8100705925921970219">"Désactivée"</string>
-    <string name="auto_completion_threshold_mode_modest" msgid="1639075698991437157">"Simple"</string>
-    <string name="auto_completion_threshold_mode_aggeressive" msgid="1153130653281397959">"Proactive"</string>
-    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
-    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
-    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
+    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Saisie prédictive"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Corriger automatiquement le mot précédent"</string>
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
+    <skip />
     <string name="bigram_suggestion" msgid="1323347224043514969">"Suggestions de type bigramme"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Améliorer la suggestion en fonction du mot précédent"</string>
-  <string-array name="prediction_modes">
-    <item msgid="4870266572388153286">"Aucun"</item>
-    <item msgid="1669461741568287396">"Simple"</item>
-    <item msgid="4894328801530136615">"Avancé"</item>
-  </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : enregistré"</string>
-    <string name="tip_long_press" msgid="6101270866284343344">"Maintenir une touche enfoncée pour afficher les accents (à, é, etc.)"</string>
-    <string name="tip_dismiss" msgid="7585579046862204381">"Appuyez sur la touche Retour ↶ pour fermer le clavier à tout moment."</string>
-    <string name="tip_access_symbols" msgid="6344098517525531652">"Accéder aux chiffres et symboles"</string>
-    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Appuyer et maintenir le doigt sur le mot le plus à gauche pour l\'ajouter au dictionnaire"</string>
-    <string name="touch_to_continue" msgid="7869803257948414531">"Touchez ce conseil pour continuer »"</string>
-    <string name="touch_to_finish" msgid="7990196086480585789">"Touchez ici pour fermer ce conseil et commencer à saisir votre texte."</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Le clavier s\'affiche à chaque fois que vous touchez une zone de texte."</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Maintenez une touche enfoncée pour afficher les accents"\n"(ø, ö, ô, ó, etc.)"</b>"."</string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Appuyez sur cette touche pour basculer vers les chiffres et les symboles."</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Appuyez de nouveau sur cette touche pour retourner aux lettres."</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Maintenez cette touche enfoncée afin de modifier les paramètres du clavier, tels que la saisie semi-automatique."</b></string>
-    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Essayez !"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
     <string name="label_next_key" msgid="362972844525672568">"Suivant"</string>
     <string name="label_done_key" msgid="2441578748772529288">"OK"</string>
@@ -119,27 +85,18 @@
     <string name="cancel" msgid="6830980399865683324">"Annuler"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="2466640768843347841">"Saisie vocale"</string>
-  <string-array name="voice_input_modes">
-    <item msgid="1349082139076086774">"Sur le clavier principal"</item>
-    <item msgid="8529385602829095903">"Sur le clavier des symboles"</item>
-    <item msgid="7283103513488381103">"Désactivée"</item>
-  </string-array>
-  <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"Micro sur le clavier principal"</item>
-    <item msgid="6907837061058876770">"Micro sur le clavier des symboles"</item>
-    <item msgid="3664304608587798036">"Saisie vocale désactivée"</item>
-  </string-array>
-    <string name="auto_submit" msgid="9151008027068358518">"Envoi automatique après la saisie vocale"</string>
-    <string name="auto_submit_summary" msgid="4961875269610384226">"Appuyez automatiquement sur Entrée pour effectuer une recherche ou accéder au champ suivant."</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Ouvrir le clavier"\n</b></font><font size="3">\n</font>"Appuyez sur un champ de texte."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Fermer le clavier"\n</b></font><font size="3">\n</font>"Appuyez sur la touche Retour."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Appuyez sur une touche de manière prolongée pour accéder aux options"\n</b></font><font size="3">\n</font>"Accédez aux signes de ponctuation et aux accents."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Paramètres du clavier"\n</b></font><font size="3">\n</font>"Appuyez sur la touche "<b>"?123"</b>" de manière prolongée."</string>
-    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
-    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">".gouv"</string>
-    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
     <string name="selectInputMethod" msgid="315076553378705821">"Sélectionner un mode de saisie."</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Langues de saisie"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Faites glisser votre doigt sur la barre d\'espacement pour changer la langue."</string>
@@ -150,8 +107,6 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Appuyer pour corriger les suggestions"</string>
     <!-- outdated translation 1056068922330206170 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Appuyer sur les mots saisis pour les corriger"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Thème du clavier"</string>
-    <string name="subtype_mode_keyboard" msgid="2242090416595003881">"clavier"</string>
-    <string name="subtype_mode_voice" msgid="4394113125441627771">"voix"</string>
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />
     <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->

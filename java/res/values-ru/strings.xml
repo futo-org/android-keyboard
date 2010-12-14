@@ -26,22 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Показывать при нажатии"</string>
-    <string name="hit_correction" msgid="4855351009261318389">"Исправлять опечатки"</string>
-    <string name="hit_correction_summary" msgid="8761701873008070796">"Включить исправление ошибок при вводе"</string>
-    <string name="hit_correction_land" msgid="2567691684825205448">"Ошибки при вводе в горизонтальной ориентации"</string>
-    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Включить исправление ошибок при вводе"</string>
-    <string name="auto_correction" msgid="7911639788808958255">"Предложение слов"</string>
-    <string name="auto_correction_summary" msgid="6881047311475758267">"Автоматически исправлять предыдущее слово"</string>
-    <string name="prediction" msgid="466220283138359837">"Предложение слов"</string>
     <string name="prediction_category" msgid="7027100625580696660">"Настройки подсказок"</string>
-    <string name="prediction_summary" msgid="459788228830873110">"Включить автоматическое завершение слов при вводе"</string>
-    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Автоматическое завершение"</string>
-    <string name="prediction_landscape" msgid="4874601565593216183">"Увеличить размер текстового поля"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Скрывать предложение слов в горизонтальной ориентации"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
-    <string name="auto_cap_summary" msgid="3260681697600786825">"Делать заглавной первую букву предложения"</string>
-    <string name="auto_punctuate" msgid="7276672334264521751">"Автопунктуация"</string>
-    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Быстрое исправление"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Исправлять распространенные опечатки"</string>
     <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
@@ -58,37 +44,17 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Автоматически"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Всегда показывать"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Всегда скрывать"</string>
-    <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
-    <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
-    <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
-    <string name="auto_complete" msgid="1103196318775486023">"Автозавершение"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"При нажатии пробела вставлять предложенное слово"</string>
-    <string name="auto_completion_threshold_mode_off" msgid="8100705925921970219">"Выключено"</string>
-    <string name="auto_completion_threshold_mode_modest" msgid="1639075698991437157">"Умеренное"</string>
-    <string name="auto_completion_threshold_mode_aggeressive" msgid="1153130653281397959">"Активное"</string>
-    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
-    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
-    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
+    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Предложение слов"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Автоматически исправлять предыдущее слово"</string>
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
+    <skip />
     <string name="bigram_suggestion" msgid="1323347224043514969">"Биграммные подсказки"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Используйте предыдущее слово, чтобы исправить подсказку"</string>
-  <string-array name="prediction_modes">
-    <item msgid="4870266572388153286">"Нет"</item>
-    <item msgid="1669461741568287396">"Основной"</item>
-    <item msgid="4894328801530136615">"Дополнительно"</item>
-  </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: сохранено"</string>
-    <string name="tip_long_press" msgid="6101270866284343344">"Удерживайте клавишу, чтобы увидеть варианты с диакритическими знаками (ø, ö и т.д.)"</string>
-    <string name="tip_dismiss" msgid="7585579046862204381">"Нажмите клавишу \"Назад\" ↶, чтобы закрыть клавиатуру в любой момент"</string>
-    <string name="tip_access_symbols" msgid="6344098517525531652">"Открыть цифры и символы"</string>
-    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Нажмите и удерживайте слово слева, чтобы добавить его в словарь"</string>
-    <string name="touch_to_continue" msgid="7869803257948414531">"Чтобы продолжить, нажмите на эту подсказку »"</string>
-    <string name="touch_to_finish" msgid="7990196086480585789">"Нажмите здесь, чтобы закрыть подсказку и начать вводить текст."</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Клавиатура появляется автоматически при касании текстового поля"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Нажмите и удерживайте клавишу для отображения вариантов с диакритическими знаками "\n"(ø, ö, ô, ó и т. п.)"</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Для переключения между вводом цифр и символов используйте эту клавишу"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Чтобы вернуться к буквенной клавиатуре, снова нажмите на эту клавишу"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Чтобы изменить настройки клавиатуры (такие как автозавершение), нажмите и удерживайте эту клавишу"</b></string>
-    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Попробуйте!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Поиск"</string>
     <string name="label_next_key" msgid="362972844525672568">"Далее"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Готово"</string>
@@ -119,27 +85,18 @@
     <string name="cancel" msgid="6830980399865683324">"Отмена"</string>
     <string name="ok" msgid="7898366843681727667">"ОК"</string>
     <string name="voice_input" msgid="2466640768843347841">"Голосовой ввод"</string>
-  <string-array name="voice_input_modes">
-    <item msgid="1349082139076086774">"На основной клавиатуре"</item>
-    <item msgid="8529385602829095903">"На клавиатуре символов"</item>
-    <item msgid="7283103513488381103">"Выкл."</item>
-  </string-array>
-  <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"Микрофон на основной клавиатуре"</item>
-    <item msgid="6907837061058876770">"Микрофон на клавиатуре символов"</item>
-    <item msgid="3664304608587798036">"Голосовой ввод отключен"</item>
-  </string-array>
-    <string name="auto_submit" msgid="9151008027068358518">"Автоматически отправлять по окончании голосового ввода"</string>
-    <string name="auto_submit_summary" msgid="4961875269610384226">"Автоматически нажимать \"Ввод\" при поиске или переходе к следующему полю."</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Открытие клавиатуры"\n</b></font><font size="3">\n</font>"Нажмите на любое текстовое поле."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Закрытие клавиатуры"\n</b></font><font size="3">\n</font>"Нажмите клавишу \"Назад\"."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Нажмите и удерживайте клавишу для вызова параметров"\n</b></font><font size="3">\n</font>"Доступ к пунктуационным и диакритическим знакам."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Настройки клавиатуры"\n</b></font><font size="3">\n</font>"Нажмите и удерживайте клавишу "<b>"?123"</b>"."</string>
-    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
-    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
-    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
     <string name="selectInputMethod" msgid="315076553378705821">"Выбрать способ ввода"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Для изменения языка проведите пальцем по пробелу"</string>
@@ -150,8 +107,6 @@
     <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Исправление нажатием"</string>
     <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Нажмите на слово, чтобы исправить его"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Вид клавиатуры"</string>
-    <string name="subtype_mode_keyboard" msgid="2242090416595003881">"клавиатура"</string>
-    <string name="subtype_mode_voice" msgid="4394113125441627771">"голосовой"</string>
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />
     <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->

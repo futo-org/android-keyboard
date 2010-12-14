@@ -26,22 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonar al pulsar las teclas"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Aviso emergente sobre keypress"</string>
-    <string name="hit_correction" msgid="4855351009261318389">"Corregir errores de escritura"</string>
-    <string name="hit_correction_summary" msgid="8761701873008070796">"Habilitar corrección de error de entrada"</string>
-    <string name="hit_correction_land" msgid="2567691684825205448">"Errores de entrada apaisada"</string>
-    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Habilitar corrección de error de entrada"</string>
-    <string name="auto_correction" msgid="7911639788808958255">"Sugerencias de palabras"</string>
-    <string name="auto_correction_summary" msgid="6881047311475758267">"Corregir automáticamente la palabra anterior"</string>
-    <string name="prediction" msgid="466220283138359837">"Sugerencias de palabras"</string>
     <string name="prediction_category" msgid="7027100625580696660">"Configuración de sugerencia de palabra"</string>
-    <string name="prediction_summary" msgid="459788228830873110">"Habilitar finalización automática al escribir"</string>
-    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Finalización automática"</string>
-    <string name="prediction_landscape" msgid="4874601565593216183">"Aumentar el tamaño del campo de texto"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Ocultar sugerencias de palabras en vista apaisada"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
-    <string name="auto_cap_summary" msgid="3260681697600786825">"Poner en mayúscula el inicio de una oración"</string>
-    <string name="auto_punctuate" msgid="7276672334264521751">"Puntuación automática"</string>
-    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Arreglos rápidos"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrige errores de escritura comunes"</string>
     <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
@@ -58,37 +44,17 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automático"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostrar siempre"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Ocultar siempre"</string>
-    <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
-    <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
-    <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
-    <string name="auto_complete" msgid="1103196318775486023">"Completar automát."</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"La barra espaciadora o la puntuación insertan automáticamente la palabra resaltada."</string>
-    <string name="auto_completion_threshold_mode_off" msgid="8100705925921970219">"Apagado"</string>
-    <string name="auto_completion_threshold_mode_modest" msgid="1639075698991437157">"Moderado"</string>
-    <string name="auto_completion_threshold_mode_aggeressive" msgid="1153130653281397959">"Intenso"</string>
-    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
-    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
-    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
+    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Sugerencias de palabras"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Corregir automáticamente la palabra anterior"</string>
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
+    <skip />
     <string name="bigram_suggestion" msgid="1323347224043514969">"Sugerencias de Vigoran"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Utiliza la palabra anterior para mejorar la sugerencia"</string>
-  <string-array name="prediction_modes">
-    <item msgid="4870266572388153286">"Ninguno"</item>
-    <item msgid="1669461741568287396">"Básico"</item>
-    <item msgid="4894328801530136615">"Avanzado"</item>
-  </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: guardada"</string>
-    <string name="tip_long_press" msgid="6101270866284343344">"Mantén una tecla presionada para ver los acentos (ø, ö, etc.)"</string>
-    <string name="tip_dismiss" msgid="7585579046862204381">"Pulsa la tecla hacia atrás ↶ para cerrar el teclado en cualquier momento"</string>
-    <string name="tip_access_symbols" msgid="6344098517525531652">"Acceder a números y símbolos"</string>
-    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Presiona y mantén presionada la palabra de la izquierda para agregarla al diccionario"</string>
-    <string name="touch_to_continue" msgid="7869803257948414531">"Toca esta sugerencia para continuar »"</string>
-    <string name="touch_to_finish" msgid="7990196086480585789">"Toca aquí para cerrar esta sugerencia y comenzar a escribir."</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"El teclado se abre cada vez que tocas un campo de texto."</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Toca y mantén presionada una tecla para ver los acentos"\n"(ø, ö, ô, ó, y así sucesivamente)."</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Cambia de números a símbolos tocando esta tecla."</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Vuelve a letras tocando esta tecla nuevamente."</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Toca y mantén presionada esta tecla para cambiar la configuración del teclado, como completar automáticamente."</b></string>
-    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"¡Pruébalo!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Siguiente"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Hecho"</string>
@@ -119,27 +85,18 @@
     <string name="cancel" msgid="6830980399865683324">"Cancelar"</string>
     <string name="ok" msgid="7898366843681727667">"Aceptar"</string>
     <string name="voice_input" msgid="2466640768843347841">"Entrada por voz"</string>
-  <string-array name="voice_input_modes">
-    <item msgid="1349082139076086774">"En el teclado principal"</item>
-    <item msgid="8529385602829095903">"En el teclado de símbolos"</item>
-    <item msgid="7283103513488381103">"Apagado"</item>
-  </string-array>
-  <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"Micrófono en el teclado principal"</item>
-    <item msgid="6907837061058876770">"Micrófono en el teclado de símbolos"</item>
-    <item msgid="3664304608587798036">"La entrada por voz está inhabilitada."</item>
-  </string-array>
-    <string name="auto_submit" msgid="9151008027068358518">"Enviar automáticamente después del audio"</string>
-    <string name="auto_submit_summary" msgid="4961875269610384226">"Presionar automáticamente Ingresar al buscar o ir al campo siguiente."</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Abrir el teclado"\n</b></font><font size="3">\n</font>"Tocar cualquier campo de texto."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Cerrar el teclado"\n</b></font><font size="3">\n</font>"Presionar la tecla Atrás."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Tocar &amp; y mantener presionada una tecla para las opciones"\n</b></font><font size="3">\n</font>"Acceder a puntuación y acentos."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Configuración del teclado"\n</b></font><font size="3">\n</font>"Tocar &amp; y mantener presionada la tecla "<b>"?123"</b>"."</string>
-    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
-    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
-    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
     <string name="selectInputMethod" msgid="315076553378705821">"Seleccionar método de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Deslizarse manualmente por la barra espaciadora para cambiar el idioma"</string>
@@ -150,8 +107,6 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corregir palabras"</string>
     <!-- outdated translation 1056068922330206170 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Toca las palabras ingresadas que desees corregir"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema del teclado"</string>
-    <string name="subtype_mode_keyboard" msgid="2242090416595003881">"Teclado"</string>
-    <string name="subtype_mode_voice" msgid="4394113125441627771">"Voz"</string>
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />
     <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->

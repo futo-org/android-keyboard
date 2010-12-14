@@ -28,22 +28,8 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sunet la apăsarea tastei"</string>
     <!-- no translation found for popup_on_keypress (123894815723512944) -->
     <skip />
-    <string name="hit_correction" msgid="4855351009261318389">"Corectaţi erorile de dactilografiere"</string>
-    <string name="hit_correction_summary" msgid="8761701873008070796">"Activaţi corectarea erorii de intrare"</string>
-    <string name="hit_correction_land" msgid="2567691684825205448">"Erori de introducere în modul peisaj"</string>
-    <string name="hit_correction_land_summary" msgid="4076803842198368328">"Activaţi corectarea erorii de intrare"</string>
-    <string name="auto_correction" msgid="7911639788808958255">"Sugestii de cuvinte"</string>
-    <string name="auto_correction_summary" msgid="6881047311475758267">"Corecţie automată a cuvântului anterior"</string>
-    <string name="prediction" msgid="466220283138359837">"Sugestii de cuvinte"</string>
     <string name="prediction_category" msgid="7027100625580696660">"Setările sugestiei de cuvinte"</string>
-    <string name="prediction_summary" msgid="459788228830873110">"Activaţi completarea automată în timpul introducerii textului"</string>
-    <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Completare automată"</string>
-    <string name="prediction_landscape" msgid="4874601565593216183">"Măriţi dimensiunea câmpului text"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Ascundeţi sugestiile de cuvinte în vizualizarea de tip peisaj"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalizare"</string>
-    <string name="auto_cap_summary" msgid="3260681697600786825">"Doresc să se scrie cu majusculă începutul propoziţiilor"</string>
-    <string name="auto_punctuate" msgid="7276672334264521751">"Punctuaţie automată"</string>
-    <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
     <string name="quick_fixes" msgid="5353213327680897927">"Remedieri rapide"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corectează greşelile introduse frecvent"</string>
     <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
@@ -64,42 +50,19 @@
     <skip />
     <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
     <skip />
-    <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
-    <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
-    <!-- no translation found for settings_key_modes:2 (7317310620171067848) -->
-    <string name="auto_complete" msgid="1103196318775486023">"Completare automată"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Bara de spaţiu şi punctuaţia inserează automat un cuvânt evidenţiat"</string>
-    <!-- no translation found for auto_completion_threshold_mode_off (8100705925921970219) -->
+    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Sugestii de cuvinte"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Corecţie automată a cuvântului anterior"</string>
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_mode_modest (1639075698991437157) -->
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_mode_aggeressive (1153130653281397959) -->
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
     <skip />
-    <!-- no translation found for auto_completion_threshold_modes:0 (3772724687113374811) -->
-    <!-- no translation found for auto_completion_threshold_modes:1 (7483119907292449051) -->
-    <!-- no translation found for auto_completion_threshold_modes:2 (532410375228539727) -->
     <!-- no translation found for bigram_suggestion (1323347224043514969) -->
     <skip />
     <!-- no translation found for bigram_suggestion_summary (4383845146070101531) -->
     <skip />
-  <string-array name="prediction_modes">
-    <item msgid="4870266572388153286">"Niciunul"</item>
-    <item msgid="1669461741568287396">"De bază"</item>
-    <item msgid="4894328801530136615">"Avansat"</item>
-  </string-array>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: salvat"</string>
-    <string name="tip_long_press" msgid="6101270866284343344">"Ţineţi o tastă apăsată pentru a vedea accentele (ø, ö, etc.)"</string>
-    <string name="tip_dismiss" msgid="7585579046862204381">"Apăsaţi tasta Înapoi ↶ pentru a închide oricând tastatura"</string>
-    <string name="tip_access_symbols" msgid="6344098517525531652">"Accesaţi numere şi simboluri"</string>
-    <string name="tip_add_to_dictionary" msgid="1487293888469227817">"Apăsaţi şi ţineţi apăsat pe cuvântul cel mai din stânga, pentru a-l adăuga la dicţionar"</string>
-    <string name="touch_to_continue" msgid="7869803257948414531">"Atingeţi acest indiciu pentru a continua »"</string>
-    <string name="touch_to_finish" msgid="7990196086480585789">"Atingeţi aici pentru a închide acest indiciu şi începeţi să introduceţi text!"</string>
-    <string name="tip_to_open_keyboard" msgid="6821200275486950452"><b>"Tastatura se deschide de fiecare dată când atingeţi un câmp text"</b></string>
-    <string name="tip_to_view_accents" msgid="5433158573693308501"><b>"Atingeţi şi ţineţi apăsată o tastă pentru a vizualiza accentele"\n"(ø, ö, ô, ó etc.)"</b></string>
-    <string name="tip_to_open_symbols" msgid="7345139325622444880"><b>"Comutaţi între numere şi simboluri atingând această tastă"</b></string>
-    <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Reveniţi la litere prin atingerea acestei taste din nou"</b></string>
-    <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Apăsaţi şi ţineţi apăsată această tastă pentru a schimba setările tastaturii, cum ar fi completarea automată"</b></string>
-    <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Încercaţi!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"Accesaţi"</string>
     <string name="label_next_key" msgid="362972844525672568">"Înainte"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Terminat"</string>
@@ -133,27 +96,18 @@
     <string name="cancel" msgid="6830980399865683324">"Anulaţi"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="2466640768843347841">"Intrare voce"</string>
-  <string-array name="voice_input_modes">
-    <item msgid="1349082139076086774">"Pe tastatura principală"</item>
-    <item msgid="8529385602829095903">"Pe tastatura de simboluri"</item>
-    <item msgid="7283103513488381103">"Dezactivat"</item>
-  </string-array>
-  <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"Microfon pe tastatura principală"</item>
-    <item msgid="6907837061058876770">"Microfon pe tastatura de simboluri"</item>
-    <item msgid="3664304608587798036">"Intrarea vocală este dezactivată"</item>
-  </string-array>
-    <string name="auto_submit" msgid="9151008027068358518">"Trimitere automată după intrarea vocală"</string>
-    <string name="auto_submit_summary" msgid="4961875269610384226">"Apăsaţi automat tasta Enter atunci când se face o căutare sau când se trece la câmpul următor."</string>
-    <string name="open_the_keyboard" msgid="2215920976029260466"><font size="17"><b>"Deschideţi tastatura"\n</b></font><font size="3">\n</font>"Atingeţi orice câmp de text."</string>
-    <string name="close_the_keyboard" msgid="6251022259044940103"><font size="17"><b>"Închideţi tastatura"\n</b></font><font size="3">\n</font>"Apăsaţi pe tasta Înapoi."</string>
-    <string name="touch_and_hold" msgid="6154166367273010534"><font size="17"><b>"Atingeţi şi ţineţi apăsată o tastă pentru opţiuni"\n</b></font><font size="3">\n</font>"Accesaţi punctuaţia şi accentele."</string>
-    <string name="keyboard_settings" msgid="4585753477617374032"><font size="17"><b>"Setările tastaturii"\n</b></font><font size="3">\n</font>"Atingeţi şi ţineţi apăsată tasta "<b>"?123"</b>"."</string>
-    <string name="popular_domain_0" msgid="3745279225122472969">".com"</string>
-    <string name="popular_domain_1" msgid="1370572248164278467">".net"</string>
-    <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
-    <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
-    <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
     <!-- no translation found for selectInputMethod (315076553378705821) -->
     <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
@@ -169,10 +123,6 @@
     <!-- no translation found for prefs_enable_recorrection_summary (5082041365862396329) -->
     <skip />
     <!-- no translation found for keyboard_layout (437433231038683666) -->
-    <skip />
-    <!-- no translation found for subtype_mode_keyboard (2242090416595003881) -->
-    <skip />
-    <!-- no translation found for subtype_mode_voice (4394113125441627771) -->
     <skip />
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />

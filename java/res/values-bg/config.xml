@@ -20,6 +20,6 @@
 
 <resources xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- no translation found for auto_complete_threshold_values:1 (1149464960325799386) -->
-    <!-- no translation found for auto_complete_threshold_values:2 (7684739510048377673) -->
+    <!-- no translation found for auto_correction_threshold_values:1 (162196081188429793) -->
+    <!-- no translation found for auto_correction_threshold_values:2 (861483375701275215) -->
 </resources>
