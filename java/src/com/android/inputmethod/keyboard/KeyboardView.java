@@ -174,7 +174,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     // This map caches key label text height in pixel as value and key label text size as map key.
     private final HashMap<Integer, Integer> mTextHeightCache = new HashMap<Integer, Integer>();
     // Distance from horizontal center of the key, proportional to key label text height and width.
-    private final float KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR_CENTER = 0.55f;
+    private final float KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR_CENTER = 0.45f;
     private final float KEY_LABEL_VERTICAL_PADDING_FACTOR = 1.60f;
     private final String KEY_LABEL_REFERENCE_CHAR = "H";
     private final int KEY_LABEL_OPTION_ALIGN_LEFT = 1;
@@ -727,6 +727,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                     final float centerY = (key.mHeight + padding.top - padding.bottom) / 2;
                     baseline = centerY
                             + labelCharHeight * KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR_CENTER;
+                    if (DEBUG_SHOW_ALIGN)
+                        drawHorizontalLine(canvas, (int)baseline, key.mWidth, 0xc0008000,
+                                new Paint());
                 }
                 // Horizontal label text alignment
                 final int positionX;
