@@ -75,6 +75,9 @@ public class LatinKeyboard extends Keyboard {
 
     private static int sSpacebarVerticalCorrection;
 
+    private static final String SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "small";
+    private static final String MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "medium";
+
     public LatinKeyboard(Context context, KeyboardId id) {
         super(context, id);
         final Resources res = context.getResources();
@@ -189,10 +192,23 @@ public class LatinKeyboard extends Keyboard {
             paint.setAntiAlias(true);
             paint.setTextAlign(Align.CENTER);
 
+            final String textSizeOfLanguageOnSpacebar = res.getString(
+                    R.string.config_text_size_of_language_on_spacebar,
+                    SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR);
+            final int textStyle;
+            final int defaultTextSize;
+            if (MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR.equals(textSizeOfLanguageOnSpacebar)) {
+                textStyle = android.R.style.TextAppearance_Medium;
+                defaultTextSize = 18;
+            } else {
+                textStyle = android.R.style.TextAppearance_Small;
+                defaultTextSize = 14;
+            }
+
             final boolean allowVariableTextSize = true;
             final String language = layoutSpaceBar(paint, subtypeSwitcher.getInputLocale(),
                     mButtonArrowLeftIcon, mButtonArrowRightIcon, width, height,
-                    getTextSizeFromTheme(android.R.style.TextAppearance_Small, 14),
+                    getTextSizeFromTheme(textStyle, defaultTextSize),
                     allowVariableTextSize);
 
             // Draw language text with shadow
