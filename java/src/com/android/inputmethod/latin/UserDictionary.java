@@ -26,14 +26,16 @@ import android.provider.UserDictionary.Words;
 
 public class UserDictionary extends ExpandableDictionary {
     
-    private static final String[] PROJECTION = {
-        Words._ID,
+    private static final String[] PROJECTION_QUERY = {
         Words.WORD,
-        Words.FREQUENCY
+        Words.FREQUENCY,
     };
     
-    private static final int INDEX_WORD = 1;
-    private static final int INDEX_FREQUENCY = 2;
+    private static final String[] PROJECTION_ADD = {
+        Words._ID,
+        Words.FREQUENCY,
+        Words.LOCALE,
+    };
     
     private ContentObserver mObserver;
     private String mLocale;
@@ -67,7 +69,7 @@ public class UserDictionary extends ExpandableDictionary {
     @Override
     public void loadDictionaryAsync() {
         Cursor cursor = getContext().getContentResolver()
-                .query(Words.CONTENT_URI, PROJECTION, "(locale IS NULL) or (locale=?)",
+                .query(Words.CONTENT_URI, PROJECTION_QUERY, "(locale IS NULL) or (locale=?)",
                         new String[] { mLocale }, null);
         addWords(cursor);
     }
@@ -100,7 +102,7 @@ public class UserDictionary extends ExpandableDictionary {
         new Thread("addWord") {
             @Override
             public void run() {
-                Cursor cursor = contentResolver.query(Words.CONTENT_URI, PROJECTION,
+                Cursor cursor = contentResolver.query(Words.CONTENT_URI, PROJECTION_ADD,
                         "word=? and ((locale IS NULL) or (locale=?))",
                         new String[] { word, mLocale }, null);
                 if (cursor != null && cursor.moveToFirst()) {
@@ -139,9 +141,11 @@ public class UserDictionary extends ExpandableDictionary {
 
         final int maxWordLength = getMaxWordLength();
         if (cursor.moveToFirst()) {
+            final int indexWord = cursor.getColumnIndex(Words.WORD);
+            final int indexFrequency = cursor.getColumnIndex(Words.FREQUENCY);
             while (!cursor.isAfterLast()) {
-                String word = cursor.getString(INDEX_WORD);
-                int frequency = cursor.getInt(INDEX_FREQUENCY);
+                String word = cursor.getString(indexWord);
+                int frequency = cursor.getInt(indexFrequency);
                 // Safeguard against adding really long words. Stack may overflow due
                 // to recursion
                 if (word.length() < maxWordLength) {
