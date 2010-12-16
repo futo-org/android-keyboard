@@ -63,20 +63,20 @@
     <string name="settings_key_mode_always_hide_name">Always hide</string>
 
     <!-- Option to decide the auto correction threshold score -->
-    <!-- Option to enable auto correction -->
+    <!-- Option to enable auto correction [CHAR LIMIT=20]-->
     <string name="auto_correction">Auto correction</string>
-    <!-- Description for auto correction -->
+    <!-- Description for auto correction [CHAR LIMIT=35] -->
     <string name="auto_correction_summary">Spacebar and punctuation automatically insert highlighted word</string>
-    <!-- Option to disable auto correction. -->
+    <!-- Option to disable auto correction. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_off">Off</string>
-    <!-- Option to use modest auto completion. -->
+    <!-- Option to use modest auto correction. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_modest">Modest</string>
-    <!-- Option to use aggressive auto completion. -->
+    <!-- Option to use aggressive auto correction. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
 
-    <!-- Option to enable bigram completion -->
+    <!-- Option to enable bigram correction -->
     <string name="bigram_suggestion">Bigram Suggestions</string>
-    <!-- Description for auto completion -->
+    <!-- Description for auto correction -->
     <string name="bigram_suggestion_summary">Use previous word to improve suggestion</string>
 
     <!-- Indicates that a word has been added to the dictionary -->
@@ -172,12 +172,18 @@
     <string name="voice_input">Voice input</string>
 
     <!-- Voice Input modes -->
+    <!-- On settings screen, voice input pop-up menu option to show voice key on main keyboard [CHAR LIMIT=20] -->
     <string name="voice_input_modes_main_keyboard">On main keyboard</string>
+    <!-- On settings screen, voice input pop-up menu option to show voice key on symbols keyboard [CHAR LIMIT=20] -->
     <string name="voice_input_modes_symbols_keyboard">On symbols keyboard</string>
+    <!-- On settings screen, voice input pop-up menu option to never show voice key [CHAR LIMIT=20] -->
     <string name="voice_input_modes_off">Off</string>
     <!-- Voice Input modes summary -->
+    <!-- On settings screen, voice input pop-up menu summary text to show voice key on main keyboard [CHAR LIMIT=20] -->
     <string name="voice_input_modes_summary_main_keyboard">Mic on main keyboard</string>
+    <!-- On settings screen, voice input pop-up menu summary text to show voice key on symbols keyboard [CHAR LIMIT=20] -->
     <string name="voice_input_modes_summary_symbols_keyboard">Mic on symbols keyboard</string>
+    <!-- On settings screen, voice input pop-up menu summary text to never show voice key [CHAR LIMIT=20] -->
     <string name="voice_input_modes_summary_off">Voice input is disabled</string>
 
     <!-- Menu item for launching Input method picker -->
