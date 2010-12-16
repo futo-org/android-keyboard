@@ -282,6 +282,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             return;
 
         final TextView previewText = mPreviewText;
+        previewText.setTextColor(mColorNormal);
         previewText.setText(word);
         previewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
