@@ -32,6 +32,7 @@
     <integer name="config_long_press_key_timeout">400</integer>
     <integer name="config_long_press_shift_key_timeout">1200</integer>
     <integer name="config_multi_tap_key_timeout">800</integer>
+    <string name="config_text_size_of_language_on_spacebar">small</string>
     <string-array name="auto_correction_threshold_values">
         <!-- Off, When auto correction setting is Off, this value is not used. -->
         <item></item>

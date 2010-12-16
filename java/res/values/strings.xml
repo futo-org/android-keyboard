@@ -36,9 +36,9 @@
 
     <!-- Category title for text prediction -->
     <string name="prediction_category">Word suggestion settings</string>
-	
+
     <!-- Option to enable auto capitalization of sentences -->
-    <string name="auto_cap">Auto-capitalization</string> 
+    <string name="auto_cap">Auto-capitalization</string>
 
     <!-- Option to enable quick fixes -->
     <string name="quick_fixes">Quick fixes</string>
@@ -81,7 +81,7 @@
 
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
-    
+
     <!-- Label for soft enter key when it performs GO action.  Must be short to fit on key! -->
     <string name="label_go_key">Go</string>
     <!-- Label for soft enter key when it performs NEXT action.  Must be short to fit on key! -->
@@ -104,16 +104,16 @@
     <!-- Title of the warning dialog that shows when a user initiates voice input for
          the first time. -->
     <string name="voice_warning_title">Voice input</string>
-    
+
     <!-- Message that gets put at the top of the warning dialog if the user is attempting to use
          voice input in a currently unsupported locale. Voice input will work for such a user,
          but it will only recognize them in English. -->
     <string name="voice_warning_locale_not_supported">Voice input is not currently supported for your language, but does work in English.</string>
-    
+
     <!-- Message of the warning dialog that shows when a user initiates voice input for
          the first time, or turns it on in settings. -->
     <string name="voice_warning_may_not_understand">Voice input uses Google\'s speech recognition. <a href="http://m.google.com/privacy">The Mobile Privacy Policy</a> applies.</string>
-    
+
     <!-- An additional part of the warning dialog for voice input that only shows when the user
          actually initiates voice input, rather than just turning it on in settings. -->
     <string name="voice_warning_how_to_turn_off">To turn off voice input, go to input method settings.</string>
@@ -121,7 +121,7 @@
     <!-- Message to show when user enables the voice input settings (which says
         "Press the microphone button"). -->
     <string name="voice_hint_dialog_message">To use voice input, press the microphone button.</string>
-    
+
     <!-- Short message to tell the user the system is ready for them to speak. -->
     <string name="voice_listening">Speak now</string>
 
@@ -136,7 +136,7 @@
 
     <!-- Short message shown for a network error. -->
     <string name="voice_network_error">Couldn\'t connect</string>
-    
+
     <!-- Short message shown for a network error where the utterance was really long,
          in which case we should suggest that the user speak less. -->
     <string name="voice_too_much_speech">Error, too much speech.</string>
@@ -153,8 +153,7 @@
     <!-- Short message shown when the server couldn't parse any speech. -->
     <string name="voice_no_match">No matches found</string>
 
-    <!-- Short message shown when the user initiates voice and voice
-	search is not installed. -->
+    <!-- Short message shown when the user initiates voice and voice search is not installed. -->
     <string name="voice_not_installed">Voice search not installed</string>
 
     <!-- Short hint shown in candidate view to explain voice input. -->
@@ -188,10 +187,10 @@
     <string name="language_selection_title">Input languages</string>
     <!-- Title summary for input language selection screen -->
     <string name="language_selection_summary">Slide finger on spacebar to change language</string>
-    
+
     <!-- Add to dictionary hint -->
     <string name="hint_add_to_dictionary">\u2190 Touch again to save</string>
-    
+
     <!-- Inform the user that a particular language has an available dictionary -->
     <string name="has_dictionary">Dictionary available</string>
 
@@ -210,10 +209,10 @@
     <string name="subtype_mode_cs_keyboard">Czech Keyboard</string>
     <string name="subtype_mode_da_keyboard">Danish Keyboard</string>
     <string name="subtype_mode_de_keyboard">German Keyboard</string>
-    <string name="subtype_mode_en_GB_keyboard">English (United Kingdom) Keyboard</string>
-    <string name="subtype_mode_en_US_keyboard">English (United States) Keyboard</string>
+    <string name="subtype_mode_en_GB_keyboard">English (UK) Keyboard</string>
+    <string name="subtype_mode_en_US_keyboard">English (US) Keyboard</string>
     <string name="subtype_mode_es_keyboard">Spanish Keyboard</string>
-    <string name="subtype_mode_es_US_keyboard">Spanish (United States) Keyboard</string>
+    <string name="subtype_mode_es_US_keyboard">Spanish (US) Keyboard</string>
     <string name="subtype_mode_fr_keyboard">French Keyboard</string>
     <string name="subtype_mode_fr_CA_keyboard">French (Canada) Keyboard</string>
     <string name="subtype_mode_fr_CH_keyboard">French (Switzerland) Keyboard</string>
@@ -227,10 +226,10 @@
     <string name="subtype_mode_cs_voice">Czech Voice</string>
     <string name="subtype_mode_de_voice">German Voice</string>
     <string name="subtype_mode_en_AU_voice">English (Australia) Voice</string>
-    <string name="subtype_mode_en_GB_voice">English (United Kingdom) Voice</string>
+    <string name="subtype_mode_en_GB_voice">English (UK) Voice</string>
     <string name="subtype_mode_en_IN_voice">English (India) Voice</string>
     <string name="subtype_mode_en_NZ_voice">English (New Zealand) Voice</string>
-    <string name="subtype_mode_en_US_voice">English (United States) Voice</string>
+    <string name="subtype_mode_en_US_voice">English (US) Voice</string>
     <string name="subtype_mode_es_voice">Spanish Voice</string>
     <string name="subtype_mode_fr_voice">French Voice</string>
     <string name="subtype_mode_ja_voice">Japanese Voice</string>
@@ -239,8 +238,8 @@
     <string name="subtype_mode_pt_voice">Portuguese Voice</string>
     <string name="subtype_mode_ru_voice">Russian Voice</string>
     <string name="subtype_mode_tr_voice">Turkish Voice</string>
-    <string name="subtype_mode_zh_CN_voice">Chinese (China) Voice</string>
-    <string name="subtype_mode_zh_TW_voice">Chinese (Taiwan) Voice</string>
+    <string name="subtype_mode_zh_CN_voice">Chinese (China, Simplified) Voice</string>
+    <string name="subtype_mode_zh_TW_voice">Chinese (Taiwan, Traditional) Voice</string>
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability Study Mode</string>
