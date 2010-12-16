@@ -54,8 +54,7 @@
                 latin:styleName="spaceKeyStyle"
                 latin:codes="@integer/key_space"
                 latin:keyIcon="@drawable/sym_keyboard_space_holo"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
                 latin:codes="@integer/key_space"
@@ -105,8 +104,7 @@
                 latin:styleName="spaceKeyStyle"
                 latin:codes="@integer/key_space"
                 latin:keyIcon="@drawable/sym_bkeyboard_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
                 latin:codes="@integer/key_space"
