@@ -26,7 +26,7 @@
     <dimen name="key_bottom_gap">0.0mm</dimen>
     <dimen name="key_horizontal_gap">0.0mm</dimen>
     <dimen name="popup_key_height">10.0mm</dimen>
-    <dimen name="keyboard_top_padding">0.0mm</dimen>
+    <dimen name="keyboard_top_padding">1.1mm</dimen>
     <dimen name="keyboard_bottom_padding">0.0mm</dimen>
     <!-- key_height x 1.0 -->
     <dimen name="key_preview_height">13.0mm</dimen>
