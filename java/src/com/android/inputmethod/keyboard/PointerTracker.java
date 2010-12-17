@@ -56,6 +56,9 @@ public class PointerTracker {
     private final boolean mHasDistinctMultitouch;
     private final boolean mConfigSlidingKeyInputEnabled;
 
+    private final int mTouchNoiseThresholdMillis;
+    private final int mTouchNoiseThresholdDistanceSquared;
+
     private Keyboard mKeyboard;
     private Key[] mKeys;
     private int mKeyHysteresisDistanceSquared = -1;
@@ -108,6 +111,11 @@ public class PointerTracker {
         mDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
         mLongPressKeyTimeout = res.getInteger(R.integer.config_long_press_key_timeout);
         mLongPressShiftKeyTimeout = res.getInteger(R.integer.config_long_press_shift_key_timeout);
+        mTouchNoiseThresholdMillis = res.getInteger(R.integer.config_touch_noise_threshold_millis);
+        final float touchNoiseThresholdDistance = res.getDimension(
+                R.dimen.config_touch_noise_threshold_distance);
+        mTouchNoiseThresholdDistanceSquared = (int)(
+                touchNoiseThresholdDistance * touchNoiseThresholdDistance);
     }
 
     public void setOnKeyboardActionListener(KeyboardActionListener listener) {
@@ -253,6 +261,24 @@ public class PointerTracker {
         if (DEBUG_EVENT)
             printTouchEvent("onDownEvent:", x, y, eventTime);
 
+        // TODO: up-to-down filter, if (down-up) is less than threshold, removeMessage(UP, this) in
+        // Handler, and just ignore this down event.
+        // TODO: down-to-up filter, just record down time. do not enqueue pointer now.
+
+        // Naive up-to-down noise filter.
+        final long deltaT = eventTime - mKeyState.getUpTime();
+        if (deltaT < mTouchNoiseThresholdMillis) {
+            final int dx = x - mKeyState.getLastX();
+            final int dy = y - mKeyState.getLastY();
+            final int distanceSquared = (dx * dx + dy * dy);
+            if (distanceSquared < mTouchNoiseThresholdDistanceSquared) {
+                Log.w(TAG, "onDownEvent: ignore potential noise: time=" + deltaT
+                        + " distance=" + distanceSquared);
+                setAlreadyProcessed();
+                return;
+            }
+        }
+
         if (queue != null) {
             if (isOnModifierKey(x, y)) {
                 // Before processing a down event of modifier key, all pointers already being
@@ -264,7 +290,7 @@ public class PointerTracker {
         onDownEventInternal(x, y, eventTime);
     }
 
-    public void onDownEventInternal(int x, int y, long eventTime) {
+    private void onDownEventInternal(int x, int y, long eventTime) {
         int keyIndex = mKeyState.onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
         // from modifier key, or 3) this pointer is on mini-keyboard.
@@ -297,6 +323,10 @@ public class PointerTracker {
         if (mKeyAlreadyProcessed)
             return;
         final PointerTrackerKeyState keyState = mKeyState;
+
+        // TODO: down-to-up filter, if (eventTime-downTime) is less than threshold, just ignore
+        // this move event. Otherwise fire {@link onDownEventInternal} and continue.
+
         final int keyIndex = keyState.onMoveKey(x, y);
         final Key oldKey = getKey(keyState.getKeyIndex());
         if (isValidKeyIndex(keyIndex)) {
@@ -342,10 +372,16 @@ public class PointerTracker {
         showKeyPreviewAndUpdateKeyGraphics(mKeyState.getKeyIndex());
     }
 
+    // TODO: up-to-down filter, if delayed UP message is fired, invoke {@link onUpEventInternal}.
+
     public void onUpEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
         if (ENABLE_ASSERTION) checkAssertion(queue);
         if (DEBUG_EVENT)
             printTouchEvent("onUpEvent  :", x, y, eventTime);
+
+        // TODO: up-to-down filter, just sendDelayedMessage(UP, this) to Handler.
+        // TODO: down-to-up filter, if (eventTime-downTime) is less than threshold, just ignore
+        // this up event. Otherwise fire {@link onDownEventInternal} and {@link onUpEventInternal}.
 
         if (queue != null) {
             if (isModifier()) {
@@ -374,7 +410,7 @@ public class PointerTracker {
         if (mKeyAlreadyProcessed)
             return;
         final PointerTrackerKeyState keyState = mKeyState;
-        int keyIndex = keyState.onUpKey(x, y);
+        int keyIndex = keyState.onUpKey(x, y, eventTime);
         if (isMinorMoveBounce(x, y, keyIndex)) {
             // Use previous fixed key index and coordinates.
             keyIndex = keyState.getKeyIndex();
@@ -396,10 +432,10 @@ public class PointerTracker {
 
         if (queue != null)
             queue.remove(this);
-        onCancelEventInternal(x, y, eventTime);
+        onCancelEventInternal();
     }
 
-    private void onCancelEventInternal(int x, int y, long eventTime) {
+    private void onCancelEventInternal() {
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);

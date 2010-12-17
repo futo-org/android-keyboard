@@ -26,6 +26,7 @@ package com.android.inputmethod.keyboard;
     private int mStartX;
     private int mStartY;
     private long mDownTime;
+    private long mUpTime;
 
     // The current key index where this pointer is.
     private int mKeyIndex = KeyDetector.NOT_A_KEY;
@@ -65,6 +66,10 @@ package com.android.inputmethod.keyboard;
         return mDownTime;
     }
 
+    public long getUpTime() {
+        return mUpTime;
+    }
+
     public int getLastX() {
         return mLastX;
     }
@@ -77,7 +82,6 @@ package com.android.inputmethod.keyboard;
         mStartX = x;
         mStartY = y;
         mDownTime = eventTime;
-
         return onMoveToNewKey(onMoveKeyInternal(x, y), x, y);
     }
 
@@ -98,7 +102,8 @@ package com.android.inputmethod.keyboard;
         return keyIndex;
     }
 
-    public int onUpKey(int x, int y) {
+    public int onUpKey(int x, int y, long eventTime) {
+        mUpTime = eventTime;
         return onMoveKeyInternal(x, y);
     }
 
