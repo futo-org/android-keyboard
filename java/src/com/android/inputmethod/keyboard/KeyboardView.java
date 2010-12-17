@@ -1000,7 +1000,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         }
         // Set the preview background state
         mPreviewText.getBackground().setState(
-                key.mPopupResId != 0 ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
+                key.mPopupCharacters != null ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
         popupPreviewX += mOffsetInWindow[0];
         popupPreviewY += mOffsetInWindow[1];
 
@@ -1100,7 +1100,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     private View inflateMiniKeyboardContainer(Key popupKey) {
-        int popupKeyboardId = popupKey.mPopupResId;
+        int popupKeyboardResId = mKeyboard.getPopupKeyboardResId();
         LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         View container = inflater.inflate(mPopupLayout, null);
@@ -1157,13 +1157,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // Remove gesture detector on mini-keyboard
         miniKeyboard.mGestureDetector = null;
 
-        Keyboard keyboard;
-        if (popupKey.mPopupCharacters != null) {
-            keyboard = new Keyboard(getContext(), popupKeyboardId, popupKey.mPopupCharacters,
-                    -1, getPaddingLeft() + getPaddingRight());
-        } else {
-            keyboard = new Keyboard(getContext(), popupKeyboardId);
-        }
+        Keyboard keyboard = new MiniKeyboardBuilder(getContext(), popupKeyboardResId, popupKey)
+                .build();
         miniKeyboard.setKeyboard(keyboard);
         miniKeyboard.setPopupParent(this);
 
@@ -1194,7 +1189,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
      * method on the base class if the subclass doesn't wish to handle the call.
      */
     protected boolean onLongPress(Key popupKey) {
-        if (popupKey.mPopupResId == 0)
+        if (popupKey.mPopupCharacters == null)
             return false;
 
         View container = mMiniKeyboardCache.get(popupKey);
@@ -1272,15 +1267,14 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     private static boolean hasMultiplePopupChars(Key key) {
-        if (key.mPopupCharacters != null && key.mPopupCharacters.length() > 1) {
+        if (key.mPopupCharacters != null && key.mPopupCharacters.length > 1) {
             return true;
         }
         return false;
     }
 
     private static boolean isNumberAtLeftmostPopupChar(Key key) {
-        if (key.mPopupCharacters != null && key.mPopupCharacters.length() > 0
-                && isAsciiDigit(key.mPopupCharacters.charAt(0))) {
+        if (key.mPopupCharacters != null && isAsciiDigit(key.mPopupCharacters[0].charAt(0))) {
             return true;
         }
         return false;

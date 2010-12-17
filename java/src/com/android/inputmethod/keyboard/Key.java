@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.keyboard.KeyboardParser.ParseException;
 import com.android.inputmethod.keyboard.KeyStyles.KeyStyle;
+import com.android.inputmethod.keyboard.KeyboardParser.ParseException;
 import com.android.inputmethod.latin.R;
 
 import android.content.res.Resources;
@@ -71,12 +71,9 @@ public class Key {
     /** Text to output when pressed. This can be multiple characters, like ".com" */
     public final CharSequence mOutputText;
     /** Popup characters */
-    public final CharSequence mPopupCharacters;
-    /**
-     * If this key pops up a mini keyboard, this is the resource id for the XML layout for that
-     * keyboard.
-     */
-    public final int mPopupResId;
+    public final CharSequence[] mPopupCharacters;
+    /** Popup keyboard maximum column number */
+    public final int mMaxPopupColumn;
 
     /**
      * Flags that specify the anchoring to edges of the keyboard for detecting touch events
@@ -136,8 +133,13 @@ public class Key {
             android.R.attr.state_pressed
     };
 
-    /** Create an empty key with no attributes. */
-    public Key(Row row, char letter, int x, int y) {
+    private static final int[] DUMMY_CODES = { 0 };
+
+    /**
+     * Create an empty key with no attributes.
+     * This constructor is being used only for key in mini popup keyboard.
+     */
+    public Key(Resources res, Row row, CharSequence popupCharacter, int x, int y) {
         mKeyboard = row.getKeyboard();
         mHeight = row.mDefaultHeight - row.mVerticalGap;
         mGap = row.mDefaultHorizontalGap;
@@ -150,18 +152,21 @@ public class Key {
         mModifier = false;
         mSticky = false;
         mRepeatable = false;
-        mOutputText = null;
         mPopupCharacters = null;
-        mPopupResId = 0;
-        mLabel = String.valueOf(letter);
-        mCodes = new int[] { letter };
+        mMaxPopupColumn = 0;
+        final String popupSpecification = popupCharacter.toString();
+        mLabel = PopupCharactersParser.getLabel(popupSpecification);
+        mOutputText = PopupCharactersParser.getOutputText(popupSpecification);
+        mCodes = PopupCharactersParser.getCodes(res, popupSpecification);
+        mIcon = PopupCharactersParser.getIcon(res, popupSpecification);
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mGap / 2;
         mY = y;
     }
 
-    /** Create a key with the given top-left coordinate and extract its attributes from
-     * the XML parser.
+    /**
+     * Create a key with the given top-left coordinate and extract its attributes from the XML
+     * parser.
      * @param res resources associated with the caller's context
      * @param row the row that this key belongs to. The row must already be attached to
      * a {@link Keyboard}.
@@ -173,83 +178,84 @@ public class Key {
             KeyStyles keyStyles) {
         mKeyboard = row.getKeyboard();
 
-        TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
+        final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
-        mHeight = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_rowHeight,
-                mKeyboard.getKeyboardHeight(), row.mDefaultHeight) - row.mVerticalGap;
-        mGap = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_horizontalGap,
-                mKeyboard.getDisplayWidth(), row.mDefaultHorizontalGap);
-        mWidth = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_keyWidth,
-                mKeyboard.getDisplayWidth(), row.mDefaultWidth) - mGap;
-        a.recycle();
-
-        a = res.obtainAttributes(Xml.asAttributeSet(parser), R.styleable.Keyboard_Key);
-
-        final KeyStyle style;
-        if (a.hasValue(R.styleable.Keyboard_Key_keyStyle)) {
-            String styleName = a.getString(R.styleable.Keyboard_Key_keyStyle);
-            style = keyStyles.getKeyStyle(styleName);
-            if (style == null)
-                throw new ParseException("Unknown key style: " + styleName, parser);
-        } else {
-            style = keyStyles.getEmptyKeyStyle();
+        try {
+            mHeight = KeyboardParser.getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_rowHeight,
+                    mKeyboard.getKeyboardHeight(), row.mDefaultHeight) - row.mVerticalGap;
+            mGap = KeyboardParser.getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_horizontalGap,
+                    mKeyboard.getDisplayWidth(), row.mDefaultHorizontalGap);
+            mWidth = KeyboardParser.getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyWidth,
+                    mKeyboard.getDisplayWidth(), row.mDefaultWidth) - mGap;
+        } finally {
+            keyboardAttr.recycle();
         }
 
         // Horizontal gap is divided equally to both sides of the key.
         this.mX = x + mGap / 2;
         this.mY = y;
 
-        final CharSequence popupCharacters = style.getText(a,
-                R.styleable.Keyboard_Key_popupCharacters);
-        final int popupResId = style.getResourceId(a, R.styleable.Keyboard_Key_popupKeyboard, 0);
-        // We should not display mini keyboard when both popupResId and popupCharacters are
-        // specified but popupCharacters is empty string.
-        if (popupResId != 0 && popupCharacters != null && popupCharacters.length() == 0) {
-            mPopupResId = 0;
-            mPopupCharacters = null;
-        } else {
-            mPopupResId = popupResId;
-            mPopupCharacters = popupCharacters;
+        final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
+                R.styleable.Keyboard_Key);
+        try {
+            final KeyStyle style;
+            if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyStyle)) {
+                String styleName = keyAttr.getString(R.styleable.Keyboard_Key_keyStyle);
+                style = keyStyles.getKeyStyle(styleName);
+                if (style == null)
+                    throw new ParseException("Unknown key style: " + styleName, parser);
+            } else {
+                style = keyStyles.getEmptyKeyStyle();
+            }
+
+            mPopupCharacters = style.getTextArray(keyAttr,
+                    R.styleable.Keyboard_Key_popupCharacters);
+            mMaxPopupColumn = style.getInt(keyboardAttr,
+                    R.styleable.Keyboard_Key_maxPopupKeyboardColumn,
+                    mKeyboard.getMaxPopupKeyboardColumn());
+
+            mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
+            mModifier = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isModifier, false);
+            mSticky = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky, false);
+            mEdgeFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
+                    | row.mRowEdgeFlags;
+
+            mPreviewIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_iconPreview);
+            Keyboard.setDefaultBounds(mPreviewIcon);
+            mIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_keyIcon);
+            Keyboard.setDefaultBounds(mIcon);
+            mHintIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_keyHintIcon);
+            Keyboard.setDefaultBounds(mHintIcon);
+            mManualTemporaryUpperCaseHintIcon = style.getDrawable(keyAttr,
+                    R.styleable.Keyboard_Key_manualTemporaryUpperCaseHintIcon);
+            Keyboard.setDefaultBounds(mManualTemporaryUpperCaseHintIcon);
+
+            mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+            mLabelOption = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption, 0);
+            mManualTemporaryUpperCaseCode = style.getInt(keyAttr,
+                    R.styleable.Keyboard_Key_manualTemporaryUpperCaseCode, 0);
+            mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
+            // Choose the first letter of the label as primary code if not
+            // specified.
+            final int[] codes = style.getIntArray(keyAttr, R.styleable.Keyboard_Key_codes);
+            if (codes == null && !TextUtils.isEmpty(mLabel)) {
+                mCodes = new int[] { mLabel.charAt(0) };
+            } else if (codes != null) {
+                mCodes = codes;
+            } else {
+                mCodes = DUMMY_CODES;
+            }
+
+            final Drawable shiftedIcon = style.getDrawable(keyAttr,
+                    R.styleable.Keyboard_Key_shiftedIcon);
+            if (shiftedIcon != null)
+                mKeyboard.getShiftedIcons().put(this, shiftedIcon);
+        } finally {
+            keyAttr.recycle();
         }
-
-        mRepeatable = style.getBoolean(a, R.styleable.Keyboard_Key_isRepeatable, false);
-        mModifier = style.getBoolean(a, R.styleable.Keyboard_Key_isModifier, false);
-        mSticky = style.getBoolean(a, R.styleable.Keyboard_Key_isSticky, false);
-        mEdgeFlags = style.getFlag(a, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
-                | row.mRowEdgeFlags;
-
-        mPreviewIcon = style.getDrawable(a, R.styleable.Keyboard_Key_iconPreview);
-        Keyboard.setDefaultBounds(mPreviewIcon);
-        mIcon = style.getDrawable(a, R.styleable.Keyboard_Key_keyIcon);
-        Keyboard.setDefaultBounds(mIcon);
-        mHintIcon = style.getDrawable(a, R.styleable.Keyboard_Key_keyHintIcon);
-        Keyboard.setDefaultBounds(mHintIcon);
-        mManualTemporaryUpperCaseHintIcon = style.getDrawable(a,
-                R.styleable.Keyboard_Key_manualTemporaryUpperCaseHintIcon);
-        Keyboard.setDefaultBounds(mManualTemporaryUpperCaseHintIcon);
-
-        mLabel = style.getText(a, R.styleable.Keyboard_Key_keyLabel);
-        mLabelOption = style.getFlag(a, R.styleable.Keyboard_Key_keyLabelOption, 0);
-        mManualTemporaryUpperCaseCode = style.getInt(a,
-                R.styleable.Keyboard_Key_manualTemporaryUpperCaseCode, 0);
-        mOutputText = style.getText(a, R.styleable.Keyboard_Key_keyOutputText);
-        // Choose the first letter of the label as primary code if not specified.
-        final int[] codes = style.getIntArray(a, R.styleable.Keyboard_Key_codes);
-        if (codes == null && !TextUtils.isEmpty(mLabel)) {
-            mCodes = new int[] { mLabel.charAt(0) };
-        } else {
-            mCodes = codes;
-        }
-
-        final Drawable shiftedIcon = style.getDrawable(a,
-                R.styleable.Keyboard_Key_shiftedIcon);
-        if (shiftedIcon != null)
-            mKeyboard.getShiftedIcons().put(this, shiftedIcon);
-
-        a.recycle();
     }
 
     public Drawable getIcon() {

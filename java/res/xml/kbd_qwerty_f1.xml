@@ -27,8 +27,8 @@
         >
             <Key
                 latin:keyLabel="/"
-                latin:popupKeyboard="@xml/popup_slash"
                 latin:keyHintIcon="@drawable/hint_popup"
+                latin:popupCharacters="@string/alternates_for_settings_slash"
                 latin:isModifier="true" />
         </case>
         <case
@@ -36,8 +36,8 @@
         >
             <Key
                 latin:keyLabel="\@"
-                latin:popupKeyboard="@xml/popup_at"
                 latin:keyHintIcon="@drawable/hint_popup"
+                latin:popupCharacters="@string/alternates_for_settings_at"
                 latin:isModifier="true" />
         </case>
         <default>
@@ -53,8 +53,8 @@
                 >
                     <Key
                         latin:keyLabel=","
-                        latin:popupKeyboard="@xml/popup_comma"
                         latin:keyHintIcon="@drawable/hint_popup"
+                        latin:popupCharacters="@string/alternates_for_settings_comma"
                         latin:isModifier="true" />
                 </case>
             </switch>

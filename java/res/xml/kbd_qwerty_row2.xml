@@ -28,22 +28,18 @@
             latin:horizontalGap="5%p" />
         <Key
             latin:keyLabel="a"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_a"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="s"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_s" />
         <Key
             latin:keyLabel="d"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_d" />
         <Key
             latin:keyLabel="f" />
         <Key
             latin:keyLabel="g"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_g" />
         <Key
             latin:keyLabel="h" />
@@ -53,7 +49,6 @@
             latin:keyLabel="k" />
         <Key
             latin:keyLabel="l"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_l"
             latin:keyEdgeFlags="right" />
     </Row>

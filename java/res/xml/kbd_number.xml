@@ -26,10 +26,12 @@
     latin:keyWidth="26.67%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
+    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
+    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
-   <switch>
+    <switch>
         <case
             latin:colorScheme="white"
         >

@@ -33,8 +33,8 @@
         >
             <Key
                 latin:keyLabel=","
-                latin:popupKeyboard="@xml/popup_comma"
                 latin:keyHintIcon="@drawable/hint_popup"
+                latin:popupCharacters="@string/alternates_for_settings_comma"
                 latin:keyStyle="functionalKeyStyle" />
         </case>
     </switch>

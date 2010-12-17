@@ -34,7 +34,7 @@
             android:key="popup_on"
             android:title="@string/popup_on_keypress"
             android:persistent="true"
-            android:defaultValue="@bool/default_popup_preview"
+            android:defaultValue="@bool/config_default_popup_preview"
             />
 
     <CheckBoxPreference

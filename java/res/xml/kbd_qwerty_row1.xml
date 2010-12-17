@@ -28,53 +28,43 @@
         <Key
             latin:keyLabel="q"
             latin:keyHintIcon="@drawable/keyboard_hint_1"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_q"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="w"
             latin:keyHintIcon="@drawable/keyboard_hint_2"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_w" />
         <Key
             latin:keyLabel="e"
             latin:keyHintIcon="@drawable/keyboard_hint_3"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
             latin:keyHintIcon="@drawable/keyboard_hint_4"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
             latin:keyHintIcon="@drawable/keyboard_hint_5"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_t" />
         <Key
             latin:keyLabel="y"
             latin:keyHintIcon="@drawable/keyboard_hint_6"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_y" />
         <Key
             latin:keyLabel="u"
             latin:keyHintIcon="@drawable/keyboard_hint_7"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
             latin:keyHintIcon="@drawable/keyboard_hint_8"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
             latin:keyHintIcon="@drawable/keyboard_hint_9"
-            latin:popupKeyboard="@xml/kbd_popup_narrow_template"
             latin:popupCharacters="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
             latin:keyHintIcon="@drawable/keyboard_hint_0"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_p"
             latin:keyEdgeFlags="right" />
     </Row>

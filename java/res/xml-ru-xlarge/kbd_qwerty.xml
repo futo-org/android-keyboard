@@ -26,6 +26,8 @@
     latin:keyWidth="9.091%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
+    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
+    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
@@ -40,43 +42,33 @@
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="й"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="1" />
         <Key
             latin:keyLabel="ц"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="у"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="к"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="е"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_cyrillic_e" />
         <Key
             latin:keyLabel="н"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="г"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="ш"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="щ"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="з"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="х" />
@@ -141,7 +133,6 @@
             latin:keyLabel="т" />
         <Key
             latin:keyLabel="ь"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="@string/alternates_for_cyrillic_soft_sign" />
         <Key
             latin:keyLabel="б" />

@@ -55,7 +55,8 @@
                 <Key
                     latin:keyLabel="."
                     latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupKeyboard="@xml/popup_punctuation"
+                    latin:popupCharacters="@string/alternates_for_punctuation"
+                    latin:maxPopupKeyboardColumn="7"
                     latin:keyStyle="functionalKeyStyle" />
                 <switch>
                     <case
@@ -104,7 +105,8 @@
                 <Key
                     latin:keyLabel="."
                     latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupKeyboard="@xml/popup_punctuation"
+                    latin:popupCharacters="@string/alternates_for_punctuation"
+                    latin:maxPopupKeyboardColumn="7"
                     latin:keyStyle="functionalKeyStyle" />
                 <switch>
                     <case

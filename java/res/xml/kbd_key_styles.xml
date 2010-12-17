@@ -88,10 +88,10 @@
             <key-style
                 latin:styleName="micKeyStyle"
                 latin:codes="@integer/key_voice"
-                latin:popupKeyboard="@xml/popup_mic"
                 latin:keyIcon="@drawable/sym_keyboard_mic"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:keyHintIcon="@drawable/hint_popup"
+                latin:popupCharacters="@string/alternates_for_mic"
                 latin:parentStyle="functionalKeyStyle" />
             <!-- Note: This key style is not for functional tab key. This is used for the tab key
                  which is laid out as normal letter key. -->
@@ -165,10 +165,10 @@
             <key-style
                 latin:styleName="micKeyStyle"
                 latin:codes="@integer/key_voice"
-                latin:popupKeyboard="@xml/popup_mic"
                 latin:keyIcon="@drawable/sym_bkeyboard_mic"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:keyHintIcon="@drawable/hint_popup"
+                latin:popupCharacters="@string/alternates_for_mic"
                 latin:parentStyle="functionalKeyStyle" />
             <!-- Note: This key style is not for functional tab key. This is used for the tab key
                  which is laid out as normal letter key. -->
@@ -284,6 +284,7 @@
         latin:keyLabel=":-)"
         latin:keyOutputText=":-) "
         latin:keyHintIcon="@drawable/hint_popup"
-        latin:popupKeyboard="@xml/popup_smileys"
+        latin:popupCharacters="@string/alternates_for_smiley"
+        latin:maxPopupKeyboardColumn="5"
         latin:parentStyle="functionalKeyStyle" />
 </merge>

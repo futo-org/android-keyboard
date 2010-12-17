@@ -18,15 +18,15 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_a">àáâãäåæ</string>
-    <string name="alternates_for_e">èéêë</string>
-    <string name="alternates_for_i">ìíîï</string>
-    <string name="alternates_for_o">òóôõöœø</string>
-    <string name="alternates_for_u">ùúûü</string>
-    <string name="alternates_for_s">§ß</string>
+    <string name="alternates_for_a">à,á,â,ã,ä,å,æ</string>
+    <string name="alternates_for_e">3,è,é,ê,ë</string>
+    <string name="alternates_for_i">ì,í,î,ï,8</string>
+    <string name="alternates_for_o">ò,ó,ô,õ,ö,œ,ø,9</string>
+    <string name="alternates_for_u">ù,ú,û,ü,7</string>
+    <string name="alternates_for_s">§,ß</string>
     <string name="alternates_for_n">ñ</string>
     <string name="alternates_for_c">ç</string>
-    <string name="alternates_for_y">ýÿ</string>
+    <string name="alternates_for_y">ý,ÿ,6</string>
     <string name="alternates_for_q">1</string>
     <string name="alternates_for_w">2</string>
     <string name="alternates_for_d"></string>
@@ -43,14 +43,13 @@
     <string name="alternates_for_scandinavia_row2_11"></string>
     <string name="alternates_for_cyrillic_e"></string>
     <string name="alternates_for_cyrillic_soft_sign"></string>
+    <string name="alternates_for_mic">"\@drawable/sym_keyboard_settings|\@integer/key_settings,\@drawable/sym_keyboard_mic|\@integer/key_voice"</string>
+    <string name="alternates_for_smiley">":-)|:-) ,:-(|:-( ,;-)|;-) ,:-P|:-P ,=-O|=-O ,:-*|:-* ,:O|:O ,B-)|B-) ,:-$|:-$ ,:-!|:-! ,:-[|:-[ ,O:-)|O:-) ,:-\\\\\\\\|:-\\\\\\\\ ,:\'(|:\'( ,:-D|:-D "</string>
+    <string name="alternates_for_settings_slash">"\@drawable/sym_keyboard_settings|\@integer/key_settings,/"</string>
+    <string name="alternates_for_settings_at">"\@drawable/sym_keyboard_settings|\@integer/key_settings,\@"</string>
+    <string name="alternates_for_settings_comma">"\@drawable/sym_keyboard_settings|\@integer/key_settings,\\,"</string>
+    <string name="alternates_for_punctuation">":,/,&amp;,(,),-,+,;,\@,\',\",\?,!,\\,"</string>
+    <string name="keylabel_for_popular_domain">".com"</string>
     <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
-    <string name="popular_domain_0">".com"</string>
-    <!-- popular web domains for the locale - item 1, displayed in the popup -->
-    <string name="popular_domain_1">".net"</string>
-    <!-- popular web domains for the locale - item 2, displayed in the popup -->
-    <string name="popular_domain_2">".org"</string>
-    <!-- popular web domains for the locale - item 3, displayed in the popup -->
-    <string name="popular_domain_3">".gov"</string>
-    <!-- popular web domains for the locale - item 4, displayed in the popup -->
-    <string name="popular_domain_4">".edu"</string>
+    <string name="alternates_for_popular_domain">".net,.org,.gov,.edu"</string>
 </resources>

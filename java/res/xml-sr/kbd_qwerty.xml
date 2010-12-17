@@ -27,6 +27,8 @@
     latin:keyWidth="9.09%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
+    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
+    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
@@ -36,53 +38,43 @@
         <Key
             latin:keyLabel="љ"
             latin:keyHintIcon="@drawable/keyboard_hint_1"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="1"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="њ"
             latin:keyHintIcon="@drawable/keyboard_hint_2"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="е"
             latin:keyHintIcon="@drawable/keyboard_hint_3"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="р"
             latin:keyHintIcon="@drawable/keyboard_hint_4"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="т"
             latin:keyHintIcon="@drawable/keyboard_hint_5"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="5" />
         <Key
             latin:keyLabel="з"
             latin:keyHintIcon="@drawable/keyboard_hint_6"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="у"
             latin:keyHintIcon="@drawable/keyboard_hint_7"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="и"
             latin:keyHintIcon="@drawable/keyboard_hint_8"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="о"
             latin:keyHintIcon="@drawable/keyboard_hint_9"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="п"
             latin:keyHintIcon="@drawable/keyboard_hint_0"
-            latin:popupKeyboard="@xml/kbd_popup_template"
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="ш"
