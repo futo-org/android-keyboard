@@ -10,6 +10,7 @@ LOCAL_PACKAGE_NAME := LatinIME
 LOCAL_CERTIFICATE := shared
 
 LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
+LOCAL_REQUIRED_MODULES := libjni_latinime
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common
 LOCAL_STATIC_JAVA_LIBRARIES += inputmethod-common
