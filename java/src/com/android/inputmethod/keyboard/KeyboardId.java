@@ -89,6 +89,10 @@ public class KeyboardId {
         return mXmlId == R.xml.kbd_qwerty;
     }
 
+    public boolean isSymbolsKeyboard() {
+        return mXmlId == R.xml.kbd_symbols;
+    }
+
     public boolean isPhoneKeyboard() {
         return mMode == MODE_PHONE;
     }

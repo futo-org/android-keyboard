@@ -1308,15 +1308,21 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         return pointers.get(id);
     }
 
+    public int getPointerCount() {
+        return mOldPointerCount;
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-        final int pointerCount = me.getPointerCount();
         final int action = me.getActionMasked();
+        final int pointerCount = me.getPointerCount();
+        final int oldPointerCount = mOldPointerCount;
+        mOldPointerCount = pointerCount;
 
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // If the device does not have distinct multi-touch support panel, ignore all multi-touch
         // events except a transition from/to single-touch.
-        if (!mHasDistinctMultitouch && pointerCount > 1 && mOldPointerCount > 1) {
+        if (!mHasDistinctMultitouch && pointerCount > 1 && oldPointerCount > 1) {
             return true;
         }
 
@@ -1372,7 +1378,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         if (!mHasDistinctMultitouch) {
             // Use only main (id=0) pointer tracker.
             PointerTracker tracker = getPointerTracker(0);
-            int oldPointerCount = mOldPointerCount;
             if (pointerCount == 1 && oldPointerCount == 2) {
                 // Multi-touch to single touch transition.
                 // Send a down event for the latest pointer.
@@ -1387,7 +1392,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 Log.w(TAG, "Unknown touch panel behavior: pointer count is " + pointerCount
                         + " (old " + oldPointerCount + ")");
             }
-            mOldPointerCount = pointerCount;
             return true;
         }
 

@@ -55,6 +55,10 @@ public class ModifierKeyState {
             Log.d(TAG, mName + ".onOtherKeyPressed: " + toString(oldState) + " > " + this);
     }
 
+    public boolean isPressing() {
+        return mState == PRESSING;
+    }
+
     public boolean isReleasing() {
         return mState == RELEASING;
     }

@@ -50,6 +50,7 @@ public class PointerTracker {
     private final UIHandler mHandler;
     private final KeyDetector mKeyDetector;
     private KeyboardActionListener mListener;
+    private final KeyboardSwitcher mKeyboardSwitcher;
     private final boolean mHasDistinctMultitouch;
     private final boolean mConfigSlidingKeyInputEnabled;
 
@@ -175,6 +176,7 @@ public class PointerTracker {
         mProxy = proxy;
         mHandler = handler;
         mKeyDetector = keyDetector;
+        mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mKeyState = new KeyState(keyDetector);
         mHasDistinctMultitouch = proxy.hasDistinctMultitouch();
         mConfigSlidingKeyInputEnabled = res.getBoolean(R.bool.config_sliding_key_input_enabled);
@@ -318,13 +320,22 @@ public class PointerTracker {
         final Key oldKey = getKey(keyState.getKeyIndex());
         if (isValidKeyIndex(keyIndex)) {
             if (oldKey == null) {
+                // The pointer has been slid in to the new key, but the finger was not on any keys.
+                // In this case, we must call onPress() to notify that the new key is being pressed.
+                if (mListener != null)
+                    mListener.onPress(getKey(keyIndex).mCodes[0]);
                 keyState.onMoveToNewKey(keyIndex, x, y);
                 startLongPressTimer(keyIndex);
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
+                // The pointer has been slid in to the new key from the previous key, we must call
+                // onRelease() first to notify that the previous key has been released, then call
+                // onPress() to notify that the new key is being pressed.
                 if (mListener != null)
                     mListener.onRelease(oldKey.mCodes[0]);
                 if (mIsAllowedSlidingKeyInput) {
                     resetMultiTap();
+                    if (mListener != null)
+                        mListener.onPress(getKey(keyIndex).mCodes[0]);
                     keyState.onMoveToNewKey(keyIndex, x, y);
                     startLongPressTimer(keyIndex);
                 } else {
@@ -334,7 +345,10 @@ public class PointerTracker {
                 }
             }
         } else {
+            // TODO: we should check isMinorMoveDebounce() first.
             if (oldKey != null) {
+                // The pointer has been slid out from the previous key, we must call onRelease() to
+                // notify that the previous key has been released.
                 if (mListener != null)
                     mListener.onRelease(oldKey.mCodes[0]);
                 if (mIsAllowedSlidingKeyInput) {
@@ -449,6 +463,9 @@ public class PointerTracker {
         Key key = getKey(keyIndex);
         if (key.mCodes[0] == Keyboard.CODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
+        } else if (mKeyboardSwitcher.isInMomentaryAutoModeSwitchState()) {
+            // We use longer timeout for sliding finger input started from the symbols mode key.
+            mHandler.startLongPressTimer(mLongPressKeyTimeout * 2, keyIndex, this);
         } else {
             mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
         }
