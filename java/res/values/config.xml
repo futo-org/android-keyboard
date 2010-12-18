@@ -26,6 +26,7 @@
     <bool name="config_enable_show_subtype_settings">true</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
     <bool name="config_candidate_highlight_font_color_enabled">true</bool>
+    <bool name="config_sliding_key_input_enabled">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">true</bool>
     <integer name="config_delay_before_preview">0</integer>

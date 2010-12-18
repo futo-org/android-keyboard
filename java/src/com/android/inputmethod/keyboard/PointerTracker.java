@@ -51,6 +51,7 @@ public class PointerTracker {
     private final KeyDetector mKeyDetector;
     private KeyboardActionListener mListener;
     private final boolean mHasDistinctMultitouch;
+    private final boolean mConfigSlidingKeyInputEnabled;
 
     private Keyboard mKeyboard;
     private Key[] mKeys;
@@ -63,6 +64,9 @@ public class PointerTracker {
 
     // true if this pointer is repeatable key
     private boolean mIsRepeatableKey;
+
+    // true if sliding key is allowed.
+    private boolean mIsAllowedSlidingKeyInput;
 
     // For multi-tap
     private int mLastSentIndex;
@@ -173,6 +177,7 @@ public class PointerTracker {
         mKeyDetector = keyDetector;
         mKeyState = new KeyState(keyDetector);
         mHasDistinctMultitouch = proxy.hasDistinctMultitouch();
+        mConfigSlidingKeyInputEnabled = res.getBoolean(R.bool.config_sliding_key_input_enabled);
         mDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
         mLongPressKeyTimeout = res.getInteger(R.integer.config_long_press_key_timeout);
         mLongPressShiftKeyTimeout = res.getInteger(R.integer.config_long_press_shift_key_timeout);
@@ -277,6 +282,10 @@ public class PointerTracker {
         if (DEBUG)
             debugLog("onDownEvent:", x, y);
         int keyIndex = mKeyState.onDownKey(x, y, eventTime);
+        // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
+        // form modifier key, or 3) this pointer is on mini-keyboard.
+        mIsAllowedSlidingKeyInput = mConfigSlidingKeyInputEnabled || isModifierInternal(keyIndex)
+                || mKeyDetector instanceof MiniKeyboardKeyDetector;
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
         checkMultiTap(eventTime, keyIndex);
@@ -304,7 +313,7 @@ public class PointerTracker {
             debugLog("onMoveEvent:", x, y);
         if (mKeyAlreadyProcessed)
             return;
-        KeyState keyState = mKeyState;
+        final KeyState keyState = mKeyState;
         final int keyIndex = keyState.onMoveKey(x, y);
         final Key oldKey = getKey(keyState.getKeyIndex());
         if (isValidKeyIndex(keyIndex)) {
@@ -314,16 +323,28 @@ public class PointerTracker {
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
                 if (mListener != null)
                     mListener.onRelease(oldKey.mCodes[0]);
-                resetMultiTap();
-                keyState.onMoveToNewKey(keyIndex, x, y);
-                startLongPressTimer(keyIndex);
+                if (mIsAllowedSlidingKeyInput) {
+                    resetMultiTap();
+                    keyState.onMoveToNewKey(keyIndex, x, y);
+                    startLongPressTimer(keyIndex);
+                } else {
+                    setAlreadyProcessed();
+                    showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
+                    return;
+                }
             }
         } else {
             if (oldKey != null) {
                 if (mListener != null)
                     mListener.onRelease(oldKey.mCodes[0]);
-                keyState.onMoveToNewKey(keyIndex, x ,y);
-                mHandler.cancelLongPressTimers();
+                if (mIsAllowedSlidingKeyInput) {
+                    keyState.onMoveToNewKey(keyIndex, x ,y);
+                    mHandler.cancelLongPressTimers();
+                } else {
+                    setAlreadyProcessed();
+                    showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
+                    return;
+                }
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
                 resetMultiTap();
                 keyState.onMoveToNewKey(keyIndex, x ,y);
