@@ -82,7 +82,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 hidePreview();
                 break;
             case MSG_UPDATE_SUGGESTION:
-                updateSuggestions((SuggestedWords)msg.obj);
+                updateSuggestions();
                 break;
             }
         }
@@ -96,9 +96,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             removeMessages(MSG_HIDE_PREVIEW);
         }
 
-        public void postUpdateSuggestions(SuggestedWords suggestions) {
+        public void postUpdateSuggestions() {
             cancelUpdateSuggestions();
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION, suggestions),
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION),
                     DELAY_UPDATE_SUGGESTION);
         }
 
@@ -162,20 +162,19 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     public void setSuggestions(SuggestedWords suggestions) {
-        // Don't update suggestions when there is only one suggestion found.
-        // Empty (size zero) suggestions will be passed in order to clear candidate view.
-        if (suggestions == null || suggestions.size() == 1)
+        if (suggestions == null)
             return;
+        mSuggestions = suggestions;
         if (mShowingAutoCorrectionInverted) {
-            mHandler.postUpdateSuggestions(suggestions);
+            mHandler.postUpdateSuggestions();
         } else {
-            updateSuggestions(suggestions);
+            updateSuggestions();
         }
     }
 
-    private void updateSuggestions(SuggestedWords suggestions) {
+    private void updateSuggestions() {
+        final SuggestedWords suggestions = mSuggestions;
         clear();
-        mSuggestions = suggestions;
         final int count = suggestions.size();
         final Object[] debugInfo = suggestions.mDebugInfo;
         for (int i = 0; i < count; i++) {
