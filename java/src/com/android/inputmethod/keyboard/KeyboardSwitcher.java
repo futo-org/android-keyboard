@@ -576,7 +576,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
             break;
         case AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN:
-            if (key != Keyboard.CODE_SPACE && key != Keyboard.CODE_ENTER && key > 0) {
+            if (key != Keyboard.CODE_SPACE && key != Keyboard.CODE_ENTER && key >= 0) {
                 mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_SYMBOL;
             }
             break;

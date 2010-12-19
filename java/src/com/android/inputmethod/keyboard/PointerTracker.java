@@ -296,6 +296,7 @@ public class PointerTracker {
                 // onRelease() first to notify that the previous key has been released, then call
                 // onPress() to notify that the new key is being pressed.
                 callListenerOnRelease(oldKey.mCodes[0]);
+                mHandler.cancelLongPressTimers();
                 if (mIsAllowedSlidingKeyInput) {
                     resetMultiTap();
                     callListenerOnPress(getKey(keyIndex).mCodes[0]);
@@ -312,10 +313,10 @@ public class PointerTracker {
                 // The pointer has been slid out from the previous key, we must call onRelease() to
                 // notify that the previous key has been released.
                 callListenerOnRelease(oldKey.mCodes[0]);
+                mHandler.cancelLongPressTimers();
                 if (mIsAllowedSlidingKeyInput) {
                     resetMultiTap();
                     keyState.onMoveToNewKey(keyIndex, x ,y);
-                    mHandler.cancelLongPressTimers();
                 } else {
                     setAlreadyProcessed();
                     showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
@@ -332,10 +333,10 @@ public class PointerTracker {
         if (DEBUG_EVENT)
             printTouchEvent("onUpEvent  :", x, y, eventTime);
         showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
-        if (mKeyAlreadyProcessed)
-            return;
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
+        if (mKeyAlreadyProcessed)
+            return;
         final PointerTrackerKeyState keyState = mKeyState;
         int keyIndex = keyState.onUpKey(x, y);
         if (isMinorMoveBounce(x, y, keyIndex)) {
@@ -438,7 +439,7 @@ public class PointerTracker {
         }
         if (key.mOutputText != null) {
             callListenerOnText(key.mOutputText);
-            callListenerOnRelease(NOT_A_KEY);
+            callListenerOnRelease(key.mCodes[0]);
         } else {
             int code = key.mCodes[0];
             final int[] codes = mKeyDetector.newCodeArray();

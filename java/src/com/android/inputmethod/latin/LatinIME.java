@@ -1128,6 +1128,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         ic.commitText(text, 1);
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
+        mKeyboardSwitcher.onKey(0); // dummy key code.
         mJustReverted = false;
         mJustAddedAutoSpace = false;
         mEnteredText = text;
