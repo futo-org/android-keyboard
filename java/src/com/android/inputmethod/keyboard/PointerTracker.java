@@ -308,15 +308,12 @@ public class PointerTracker {
                 }
             }
         } else {
-            if (!isMinorMoveBounce(x, y, keyIndex)) {
-                resetMultiTap();
-                keyState.onMoveToNewKey(keyIndex, x ,y);
-                mHandler.cancelLongPressTimers();
-            } else if (oldKey != null) {
+            if (oldKey != null && !isMinorMoveBounce(x, y, keyIndex)) {
                 // The pointer has been slid out from the previous key, we must call onRelease() to
                 // notify that the previous key has been released.
                 callListenerOnRelease(oldKey.mCodes[0]);
                 if (mIsAllowedSlidingKeyInput) {
+                    resetMultiTap();
                     keyState.onMoveToNewKey(keyIndex, x ,y);
                     mHandler.cancelLongPressTimers();
                 } else {
