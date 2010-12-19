@@ -36,8 +36,6 @@ public class ProximityKeyDetector extends KeyDetector {
         final int touchY = getTouchY(y);
 
         int primaryIndex = NOT_A_KEY;
-        int closestKeyIndex = NOT_A_KEY;
-        int closestKeyDist = mProximityThresholdSquare + 1;
         final int[] distances = mDistances;
         Arrays.fill(distances, Integer.MAX_VALUE);
         for (final int index : mKeyboard.getNearestKeys(touchX, touchY)) {
@@ -47,11 +45,6 @@ public class ProximityKeyDetector extends KeyDetector {
                 primaryIndex = index;
             final int dist = key.squaredDistanceToEdge(touchX, touchY);
             if (isInside || (mProximityCorrectOn && dist < mProximityThresholdSquare)) {
-                if (dist < closestKeyDist) {
-                    closestKeyDist = dist;
-                    closestKeyIndex = index;
-                }
-
                 if (allKeys == null) continue;
                 final int nCodes = key.mCodes.length;
                 // Find insertion point
@@ -70,6 +63,6 @@ public class ProximityKeyDetector extends KeyDetector {
             }
         }
 
-        return primaryIndex == NOT_A_KEY ? closestKeyIndex : primaryIndex;
+        return primaryIndex;
     }
 }
