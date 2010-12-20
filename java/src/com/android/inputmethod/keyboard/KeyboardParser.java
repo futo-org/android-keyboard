@@ -279,14 +279,14 @@ public class KeyboardParser {
             checkEndTag(TAG_KEY, parser);
         } else {
             Key key = new Key(mResources, row, mCurrentX, mCurrentY, parser, mKeyStyles);
-            if (DEBUG) Log.d(TAG, String.format("<%s keyLabel=%s codes=%s popupCharacters=%s />",
-                    TAG_KEY, key.mLabel, Arrays.toString(key.mCodes),
+            if (DEBUG) Log.d(TAG, String.format("<%s keyLabel=%s code=%d popupCharacters=%s />",
+                    TAG_KEY, key.mLabel, key.mCode,
                     Arrays.toString(key.mPopupCharacters)));
             checkEndTag(TAG_KEY, parser);
             keys.add(key);
-            if (key.mCodes[0] == Keyboard.CODE_SHIFT)
+            if (key.mCode == Keyboard.CODE_SHIFT)
                 mKeyboard.getShiftKeys().add(key);
-            if (key.mCodes[0] == Keyboard.CODE_SPACE)
+            if (key.mCode == Keyboard.CODE_SPACE)
                 mKeyboard.setSpaceKey(key);
             endKey(key);
         }

@@ -834,7 +834,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // For characters, use large font. For labels like "Done", use small font.
         final int labelSize;
         final Typeface labelStyle;
-        if (label.length() > 1 && key.mCodes.length < 2) {
+        if (label.length() > 1) {
             labelSize = mLabelTextSize;
             if ((key.mLabelOption & KEY_LABEL_OPTION_FONT_NORMAL) != 0) {
                 labelStyle = Typeface.DEFAULT;
@@ -943,7 +943,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             // TODO Should take care of temporaryShiftLabel here.
             mPreviewText.setCompoundDrawables(null, null, null, null);
             mPreviewText.setText(adjustCase(tracker.getPreviewText(key)));
-            if (key.mLabel.length() > 1 && key.mCodes.length < 2) {
+            if (key.mLabel.length() > 1) {
                 mPreviewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mKeyLetterSize);
                 mPreviewText.setTypeface(Typeface.DEFAULT_BOLD);
             } else {

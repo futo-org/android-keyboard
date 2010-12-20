@@ -31,7 +31,7 @@
                 latin:isModifier="true" />
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:codes="@integer/key_shift"
+                latin:code="@integer/key_shift"
                 latin:keyIcon="@drawable/sym_keyboard_shift"
                 latin:shiftedIcon="@drawable/sym_keyboard_shift_locked"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
@@ -39,7 +39,7 @@
                 latin:isSticky="true" />
             <key-style
                 latin:styleName="deleteKeyStyle"
-                latin:codes="@integer/key_delete"
+                latin:code="@integer/key_delete"
                 latin:keyIcon="@drawable/sym_keyboard_delete"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
                 latin:parentStyle="functionalKeyStyle"
@@ -54,7 +54,7 @@
                 >
                     <key-style
                         latin:styleName="toSymbolKeyStyle"
-                        latin:codes="@integer/key_switch_alpha_symbol"
+                        latin:code="@integer/key_switch_alpha_symbol"
                         latin:keyIcon="@drawable/sym_keyboard_123_mic"
                         latin:iconPreview="@drawable/sym_keyboard_feedback_123_mic"
                         latin:parentStyle="functionalKeyStyle" />
@@ -62,32 +62,32 @@
                 <default>
                     <key-style
                         latin:styleName="toSymbolKeyStyle"
-                        latin:codes="@integer/key_switch_alpha_symbol"
+                        latin:code="@integer/key_switch_alpha_symbol"
                         latin:keyLabel="@string/label_to_symbol_key"
                         latin:parentStyle="functionalKeyStyle" />
                 </default>
             </switch>
             <key-style
                 latin:styleName="settingsKeyStyle"
-                latin:codes="@integer/key_settings"
+                latin:code="@integer/key_settings"
                 latin:keyIcon="@drawable/sym_keyboard_settings"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="spaceKeyStyle"
-                latin:codes="@integer/key_space"
+                latin:code="@integer/key_space"
                 latin:keyIcon="@drawable/sym_keyboard_space"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="tabKeyStyle"
-                latin:codes="@integer/key_tab"
+                latin:code="@integer/key_tab"
                 latin:keyIcon="@drawable/sym_keyboard_tab"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_tab"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="micKeyStyle"
-                latin:codes="@integer/key_voice"
+                latin:code="@integer/key_voice"
                 latin:keyIcon="@drawable/sym_keyboard_mic"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:keyHintIcon="@drawable/hint_popup"
@@ -97,7 +97,7 @@
                  which is laid out as normal letter key. -->
             <key-style
                 latin:styleName="nonSpecialBackgroundTabKeyStyle"
-                latin:codes="@integer/key_tab"
+                latin:code="@integer/key_tab"
                 latin:keyIcon="@drawable/sym_keyboard_tab"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_tab" />
         </case>
@@ -108,7 +108,7 @@
                 latin:styleName="functionalKeyStyle" />
             <key-style
                 latin:styleName="shiftKeyStyle"
-                latin:codes="@integer/key_shift"
+                latin:code="@integer/key_shift"
                 latin:keyIcon="@drawable/sym_bkeyboard_shift"
                 latin:shiftedIcon="@drawable/sym_bkeyboard_shift_locked"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
@@ -116,7 +116,7 @@
                 latin:isSticky="true" />
             <key-style
                 latin:styleName="deleteKeyStyle"
-                latin:codes="@integer/key_delete"
+                latin:code="@integer/key_delete"
                 latin:keyIcon="@drawable/sym_bkeyboard_delete"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
                 latin:parentStyle="functionalKeyStyle"
@@ -131,7 +131,7 @@
                 >
                     <key-style
                         latin:styleName="toSymbolKeyStyle"
-                        latin:codes="@integer/key_switch_alpha_symbol"
+                        latin:code="@integer/key_switch_alpha_symbol"
                         latin:keyIcon="@drawable/sym_bkeyboard_123_mic"
                         latin:iconPreview="@drawable/sym_keyboard_feedback_123_mic"
                         latin:parentStyle="functionalKeyStyle" />
@@ -139,32 +139,32 @@
                 <default>
                     <key-style
                         latin:styleName="toSymbolKeyStyle"
-                        latin:codes="@integer/key_switch_alpha_symbol"
+                        latin:code="@integer/key_switch_alpha_symbol"
                         latin:keyLabel="@string/label_to_symbol_key"
                         latin:parentStyle="functionalKeyStyle" />
                 </default>
             </switch>
             <key-style
                 latin:styleName="settingsKeyStyle"
-                latin:codes="@integer/key_settings"
+                latin:code="@integer/key_settings"
                 latin:keyIcon="@drawable/sym_bkeyboard_settings"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="spaceKeyStyle"
-                latin:codes="@integer/key_space"
+                latin:code="@integer/key_space"
                 latin:keyIcon="@drawable/sym_bkeyboard_space"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="tabKeyStyle"
-                latin:codes="@integer/key_tab"
+                latin:code="@integer/key_tab"
                 latin:keyIcon="@drawable/sym_bkeyboard_tab"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_tab"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="micKeyStyle"
-                latin:codes="@integer/key_voice"
+                latin:code="@integer/key_voice"
                 latin:keyIcon="@drawable/sym_bkeyboard_mic"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:keyHintIcon="@drawable/hint_popup"
@@ -174,7 +174,7 @@
                  which is laid out as normal letter key. -->
             <key-style
                 latin:styleName="nonSpecialBackgroundTabKeyStyle"
-                latin:codes="@integer/key_tab"
+                latin:code="@integer/key_tab"
                 latin:keyIcon="@drawable/sym_bkeyboard_tab"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_tab" />
         </case>
@@ -186,7 +186,7 @@
         >
             <key-style
                 latin:styleName="returnKeyStyle"
-                latin:codes="@integer/key_return"
+                latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_go_key"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
@@ -195,7 +195,7 @@
         >
             <key-style
                 latin:styleName="returnKeyStyle"
-                latin:codes="@integer/key_return"
+                latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_next_key"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
@@ -204,7 +204,7 @@
         >
             <key-style
                 latin:styleName="returnKeyStyle"
-                latin:codes="@integer/key_return"
+                latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_done_key"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
@@ -213,7 +213,7 @@
         >
             <key-style
                 latin:styleName="returnKeyStyle"
-                latin:codes="@integer/key_return"
+                latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_send_key"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
@@ -226,7 +226,7 @@
                 >
                     <key-style
                         latin:styleName="returnKeyStyle"
-                        latin:codes="@integer/key_return"
+                        latin:code="@integer/key_return"
                         latin:keyIcon="@drawable/sym_keyboard_search"
                         latin:iconPreview="@drawable/sym_keyboard_feedback_search"
                         latin:parentStyle="functionalKeyStyle" />
@@ -236,7 +236,7 @@
                 >
                     <key-style
                         latin:styleName="returnKeyStyle"
-                        latin:codes="@integer/key_return"
+                        latin:code="@integer/key_return"
                         latin:keyIcon="@drawable/sym_bkeyboard_search"
                         latin:iconPreview="@drawable/sym_keyboard_feedback_search"
                         latin:parentStyle="functionalKeyStyle" />
@@ -250,7 +250,7 @@
                 >
                     <key-style
                         latin:styleName="returnKeyStyle"
-                        latin:codes="@integer/key_return"
+                        latin:code="@integer/key_return"
                         latin:keyIcon="@drawable/sym_keyboard_return"
                         latin:iconPreview="@drawable/sym_keyboard_feedback_return"
                         latin:parentStyle="functionalKeyStyle" />
@@ -260,7 +260,7 @@
                 >
                     <key-style
                         latin:styleName="returnKeyStyle"
-                        latin:codes="@integer/key_return"
+                        latin:code="@integer/key_return"
                         latin:keyIcon="@drawable/sym_bkeyboard_return"
                         latin:iconPreview="@drawable/sym_keyboard_feedback_return"
                         latin:parentStyle="functionalKeyStyle" />
@@ -270,12 +270,12 @@
     </switch>
     <key-style
         latin:styleName="toAlphaKeyStyle"
-        latin:codes="@integer/key_switch_alpha_symbol"
+        latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
         latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="altKeyStyle"
-        latin:codes="@integer/key_shift"
+        latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_alt_key"
         latin:parentStyle="functionalKeyStyle"
         latin:isSticky="true" />

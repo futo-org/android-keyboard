@@ -263,9 +263,9 @@ public class TextEntryState {
     }
 
     public static void keyPressedAt(Key key, int x, int y) {
-        if (LOGGING && sKeyLocationFile != null && key.mCodes[0] >= 32) {
+        if (LOGGING && sKeyLocationFile != null && key.mCode >= 32) {
             String out =
-                    "KEY: " + (char) key.mCodes[0]
+                    "KEY: " + (char) key.mCode
                     + " X: " + x
                     + " Y: " + y
                     + " MX: " + (key.mX + key.mWidth / 2)

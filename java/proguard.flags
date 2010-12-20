@@ -12,4 +12,5 @@
   void setDatabaseMax(int);
   void setDatabaseDelete(int);
   void waitUntilUpdateDBDone();
+  void waitForDictionaryLoading();
 }

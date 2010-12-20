@@ -94,8 +94,8 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">
-        <!-- The unicode value or comma-separated values that this key outputs. -->
-        <attr name="codes" format="integer|string" />
+        <!-- The unicode value that this key outputs. -->
+        <attr name="code" format="integer" />
         <!-- The characters to display in the popup keyboard. -->
         <attr name="popupCharacters" format="string" />
         <!-- Maximum column of popup keyboard -->

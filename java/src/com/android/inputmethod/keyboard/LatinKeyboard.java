@@ -294,7 +294,7 @@ public class LatinKeyboard extends Keyboard {
     public boolean isInside(Key key, int pointX, int pointY) {
         int x = pointX;
         int y = pointY;
-        final int code = key.mCodes[0];
+        final int code = key.mCode;
         if (code == CODE_SHIFT || code == CODE_DELETE) {
             y -= key.mHeight / 10;
             if (code == CODE_SHIFT) x += key.mWidth / 6;
@@ -348,11 +348,11 @@ public class LatinKeyboard extends Keyboard {
                         mPrefLetterY = y;
                         for (int i = 0; i < nearby.length; i++) {
                             Key k = nearbyKeys.get(nearby[i]);
-                            if (k != key && inPrefList(k.mCodes[0], pref)) {
+                            if (k != key && inPrefList(k.mCode, pref)) {
                                 final int dist = distanceFrom(k, x, y);
                                 if (dist < (int) (k.mWidth * OVERLAP_PERCENTAGE_LOW_PROB) &&
-                                        (pref[k.mCodes[0]] > pref[mPrefLetter] * 3))  {
-                                    mPrefLetter = k.mCodes[0];
+                                        (pref[k.mCode] > pref[mPrefLetter] * 3))  {
+                                    mPrefLetter = k.mCode;
                                     mPrefDistance = dist;
                                     if (DEBUG_PREFERRED_LETTER) {
                                         Log.d(TAG, "CORRECTED ALTHOUGH PREFERRED !!!!!!");
@@ -376,11 +376,11 @@ public class LatinKeyboard extends Keyboard {
 
                 for (int i = 0; i < nearby.length; i++) {
                     Key k = nearbyKeys.get(nearby[i]);
-                    if (inPrefList(k.mCodes[0], pref)) {
+                    if (inPrefList(k.mCode, pref)) {
                         final int dist = distanceFrom(k, x, y);
                         if (dist < (int) (k.mWidth * OVERLAP_PERCENTAGE_HIGH_PROB)
                                 && dist < mPrefDistance)  {
-                            mPrefLetter = k.mCodes[0];
+                            mPrefLetter = k.mCode;
                             mPrefLetterX = x;
                             mPrefLetterY = y;
                             mPrefDistance = dist;
@@ -430,7 +430,7 @@ public class LatinKeyboard extends Keyboard {
         List<Key> keys = getKeys();
         int count = keys.size();
         for (int i = 0; i < count; i++) {
-            if (keys.get(i).mCodes[0] == code) return i;
+            if (keys.get(i).mCode == code) return i;
         }
         return -1;
     }

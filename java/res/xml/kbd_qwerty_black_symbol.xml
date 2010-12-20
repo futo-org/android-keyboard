@@ -34,7 +34,7 @@
                     latin:hasVoiceKey="false"
                 >
                     <Key
-                        latin:codes="@integer/key_switch_alpha_symbol"
+                        latin:code="@integer/key_switch_alpha_symbol"
                         latin:keyIcon="@drawable/sym_bkeyboard_123_mic"
                         latin:iconPreview="@drawable/sym_keyboard_feedback_123_mic"
                         latin:keyWidth="20%p"
@@ -43,7 +43,7 @@
                 </case>
                 <default>
                     <Key
-                        latin:codes="@integer/key_switch_alpha_symbol"
+                        latin:code="@integer/key_switch_alpha_symbol"
                         latin:keyLabel="@string/label_to_symbol_key"
                         latin:keyWidth="20%p"
                         latin:isModifier="true"
@@ -63,7 +63,7 @@
                     latin:hasVoiceKey="false"
                 >
                     <Key
-                        latin:codes="@integer/key_switch_alpha_symbol"
+                        latin:code="@integer/key_switch_alpha_symbol"
                         latin:keyIcon="@drawable/sym_bkeyboard_123_mic"
                         latin:iconPreview="@drawable/sym_keyboard_feedback_123_mic"
                         latin:keyWidth="15%p"
@@ -72,7 +72,7 @@
                 </case>
                 <default>
                     <Key
-                        latin:codes="@integer/key_switch_alpha_symbol"
+                        latin:code="@integer/key_switch_alpha_symbol"
                         latin:keyLabel="@string/label_to_symbol_key"
                         latin:keyWidth="15%p"
                         latin:isModifier="true"

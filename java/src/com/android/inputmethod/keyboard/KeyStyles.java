@@ -23,11 +23,9 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.util.TypedValue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.StringTokenizer;
 
 public class KeyStyles {
     private static final String TAG = "KeyStyles";
@@ -38,7 +36,6 @@ public class KeyStyles {
     private static final KeyStyle EMPTY_KEY_STYLE = new EmptyKeyStyle();
 
     public interface KeyStyle {
-        public int[] getIntArray(TypedArray a, int index);
         public CharSequence[] getTextArray(TypedArray a, int index);
         public Drawable getDrawable(TypedArray a, int index);
         public CharSequence getText(TypedArray a, int index);
@@ -50,11 +47,6 @@ public class KeyStyles {
     /* package */ static class EmptyKeyStyle implements KeyStyle {
         private EmptyKeyStyle() {
             // Nothing to do.
-        }
-
-        @Override
-        public int[] getIntArray(TypedArray a, int index) {
-            return parseIntArray(a, index);
         }
 
         @Override
@@ -136,48 +128,10 @@ public class KeyStyles {
                 return list.toArray(new CharSequence[list.size()]);
             }
         }
-
-        protected static int[] parseIntArray(TypedArray a, int index) {
-            if (!a.hasValue(index))
-                return null;
-            TypedValue v = new TypedValue();
-            a.getValue(index, v);
-            if (v.type == TypedValue.TYPE_INT_DEC || v.type == TypedValue.TYPE_INT_HEX) {
-                return new int[] { v.data };
-            } else if (v.type == TypedValue.TYPE_STRING) {
-                return parseCsvInt(v.string.toString());
-            } else {
-                return null;
-            }
-        }
-
-        /* package */ static int[] parseCsvInt(String value) {
-            int count = 0;
-            int lastIndex = 0;
-            if (value.length() > 0) {
-                count++;
-                while ((lastIndex = value.indexOf(",", lastIndex + 1)) > 0) {
-                    count++;
-                }
-            }
-            int[] values = new int[count];
-            count = 0;
-            StringTokenizer st = new StringTokenizer(value, ",");
-            while (st.hasMoreTokens()) {
-                values[count++] = Integer.parseInt(st.nextToken());
-            }
-            return values;
-        }
     }
 
     private static class DeclaredKeyStyle extends EmptyKeyStyle {
         private final HashMap<Integer, Object> mAttributes = new HashMap<Integer, Object>();
-
-        @Override
-        public int[] getIntArray(TypedArray a, int index) {
-            return a.hasValue(index)
-                    ? super.getIntArray(a, index) : (int[])mAttributes.get(index);
-        }
 
         @Override
         public CharSequence[] getTextArray(TypedArray a, int index) {
@@ -221,7 +175,7 @@ public class KeyStyles {
 
         private void parseKeyStyleAttributes(TypedArray keyAttr) {
             // TODO: Currently not all Key attributes can be declared as style.
-            readIntArray(keyAttr, R.styleable.Keyboard_Key_codes);
+            readInt(keyAttr, R.styleable.Keyboard_Key_code);
             readText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption);
             readTextArray(keyAttr, R.styleable.Keyboard_Key_popupCharacters);
@@ -260,12 +214,6 @@ public class KeyStyles {
         private void readBoolean(TypedArray a, int index) {
             if (a.hasValue(index))
                 mAttributes.put(index, a.getBoolean(index, false));
-        }
-
-        private void readIntArray(TypedArray a, int index) {
-            final int[] value = parseIntArray(a, index);
-            if (value != null)
-                mAttributes.put(index, value);
         }
 
         private void readTextArray(TypedArray a, int index) {

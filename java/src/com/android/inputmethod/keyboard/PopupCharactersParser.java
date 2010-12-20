@@ -39,7 +39,6 @@ public class PopupCharactersParser {
     private static final String PREFIX_AT = "@";
     private static final String PREFIX_ICON = PREFIX_AT + "drawable/";
     private static final String PREFIX_CODE = PREFIX_AT + "integer/";
-    private static final int[] DUMMY_CODES = { 0 };
 
     private PopupCharactersParser() {
         // Intentional empty constructor for utility class.
@@ -126,13 +125,13 @@ public class PopupCharactersParser {
         final String label = getLabel(popupSpec);
         if (label == null)
             throw new PopupCharactersParserError("Empty label: " + popupSpec);
-        // Code is automatically generated for one letter label. See getCode().
+        // Code is automatically generated for one letter label. See {@link getCode()}.
         if (label.length() == 1)
             return null;
         return label;
     }
 
-    public static int[] getCodes(Resources res, String popupSpec) {
+    public static int getCode(Resources res, String popupSpec) {
         if (hasCode(popupSpec)) {
             final int end = indexOfLabelEnd(popupSpec, 0);
             if (indexOfLabelEnd(popupSpec, end + 1) >= 0)
@@ -140,15 +139,15 @@ public class PopupCharactersParser {
             final int resId = getResourceId(res,
                     popupSpec.substring(end + LABEL_END.length() + PREFIX_AT.length()));
             final int code = res.getInteger(resId);
-            return new int[] { code };
+            return code;
         }
         if (indexOfLabelEnd(popupSpec, 0) > 0)
-            return DUMMY_CODES;
+            return Keyboard.CODE_DUMMY;
         final String label = getLabel(popupSpec);
         // Code is automatically generated for one letter label.
         if (label != null && label.length() == 1)
-            return new int[] { label.charAt(0) };
-        return DUMMY_CODES;
+            return label.charAt(0);
+        return Keyboard.CODE_DUMMY;
     }
 
     public static Drawable getIcon(Resources res, String popupSpec) {

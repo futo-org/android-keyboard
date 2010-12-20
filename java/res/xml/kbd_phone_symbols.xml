@@ -56,7 +56,7 @@
         <!-- Pause is a comma. Check PhoneNumberUtils.java to see if this 
             has changed. -->
         <Key
-            latin:codes="44"
+            latin:code="44"
             latin:keyLabel="Pause" />
         <Key
             latin:keyLabel="," />
@@ -72,7 +72,7 @@
             latin:keyEdgeFlags="left" />
         <!-- Wait is a semicolon. -->
         <Key
-            latin:codes="59"
+            latin:code="59"
             latin:keyLabel="Wait" />
         <Key
             latin:keyStyle="numPoundKeyStyle" />
@@ -85,7 +85,7 @@
         latin:rowEdgeFlags="bottom"
     >
         <Key
-            latin:codes="@integer/key_switch_alpha_symbol"
+            latin:code="@integer/key_switch_alpha_symbol"
             latin:keyLabel="@string/label_to_numeric_key"
             latin:keyEdgeFlags="left" />
         <Key

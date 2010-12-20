@@ -44,11 +44,11 @@
         <Spacer
             latin:horizontalGap="8.470%p" />
         <Key
-            latin:codes="45"
+            latin:code="45"
             latin:keyLabel=" - "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="43"
+            latin:code="43"
             latin:keyLabel=" + "
             latin:keyWidth="8.042%p" />
         <Spacer
@@ -75,11 +75,11 @@
         <Spacer
             latin:horizontalGap="8.470%p" />
         <Key
-            latin:codes="44"
+            latin:code="44"
             latin:keyLabel=" , "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="46"
+            latin:code="46"
             latin:keyLabel=" . "
             latin:keyWidth="8.042%p" />
         <Spacer
@@ -105,11 +105,11 @@
         <Spacer
             latin:horizontalGap="20.427%p" />
         <Key
-            latin:codes="40"
+            latin:code="40"
             latin:keyLabel=" ( "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="41"
+            latin:code="41"
             latin:keyLabel=" ) "
             latin:keyWidth="8.042%p" />
         <Spacer

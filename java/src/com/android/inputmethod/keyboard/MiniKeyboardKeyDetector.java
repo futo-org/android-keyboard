@@ -52,7 +52,7 @@ public class MiniKeyboardKeyDetector extends KeyDetector {
         }
 
         if (allKeys != null && closestKeyIndex != NOT_A_KEY)
-            allKeys[0] = keys[closestKeyIndex].mCodes[0];
+            allKeys[0] = keys[closestKeyIndex].mCode;
         return closestKeyIndex;
     }
 }

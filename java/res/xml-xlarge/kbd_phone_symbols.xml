@@ -42,15 +42,15 @@
         <Spacer
             latin:horizontalGap="4.458%p" />
         <Key
-            latin:codes="45"
+            latin:code="45"
             latin:keyLabel=" - "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="43"
+            latin:code="43"
             latin:keyLabel=" + "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="44"
+            latin:code="44"
             latin:keyLabel="@string/label_pause_key"
             latin:keyWidth="8.042%p" />
         <!-- To match one character label size with "Tab" and "Pause, I placed spaces around the
@@ -77,15 +77,15 @@
         <Spacer
             latin:horizontalGap="4.458%p" />
         <Key
-            latin:codes="44"
+            latin:code="44"
             latin:keyLabel=" , "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="46"
+            latin:code="46"
             latin:keyLabel=" . "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="59"
+            latin:code="59"
             latin:keyLabel="@string/label_wait_key"
             latin:keyWidth="8.042%p" />
         <!-- To match one character label size with "More" and "Wait", I placed spaces around the
@@ -113,15 +113,15 @@
         <Spacer
             latin:horizontalGap="16.406%p" />
         <Key
-            latin:codes="40"
+            latin:code="40"
             latin:keyLabel=" ( "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="41"
+            latin:code="41"
             latin:keyLabel=" ) "
             latin:keyWidth="8.042%p" />
         <Key
-            latin:codes="78"
+            latin:code="78"
             latin:keyLabel=" N "
             latin:keyWidth="8.042%p" />
         <Spacer

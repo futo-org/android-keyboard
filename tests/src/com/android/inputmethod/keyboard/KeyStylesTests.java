@@ -22,23 +22,6 @@ import android.test.AndroidTestCase;
 import android.text.TextUtils;
 
 public class KeyStylesTests extends AndroidTestCase {
-    private static void assertNumberFormatException(String message, String value) {
-        try {
-            EmptyKeyStyle.parseCsvInt(value);
-            fail(message);
-        } catch (NumberFormatException nfe) {
-            // success.
-        }
-    }
-
-    private static void assertIntArray(String message, String value, Integer ... expected) {
-        final int actual[] = EmptyKeyStyle.parseCsvInt(value);
-        assertSame(message + ": result length", expected.length, actual.length);
-        for (int i = 0; i < actual.length; i++) {
-            assertEquals(message + ": result at " + i + ":", (int)expected[i], actual[i]);
-        }
-    }
-
     private static String format(String message, Object expected, Object actual) {
         return message + " expected:<" + expected + "> but was:<" + actual + ">";
     }
@@ -55,19 +38,6 @@ public class KeyStylesTests extends AndroidTestCase {
             final boolean equals = TextUtils.equals(expected[i], actual[i]);
             assertTrue(format(message + ": result at " + i + ":", expected[i], actual[i]), equals);
         }
-    }
-
-    public void testParseCsvInt() {
-        assertIntArray("Empty string", "");
-        assertNumberFormatException("Spaces", "  ");
-        assertNumberFormatException("Non-decimal number", "abc");
-        assertIntArray("Single number", "123", 123);
-        assertIntArray("Negative number", "-123", -123);
-        assertNumberFormatException("Hexadecimal number", "1b2b");
-        assertIntArray("Multiple numbers", "123,456", 123, 456);
-        assertNumberFormatException("Non-decimal numbers", "123,abc");
-        assertNumberFormatException("Escaped comma", "123\\,456");
-        assertNumberFormatException("Escaped escape", "123\\\\,456");
     }
 
     public void testParseCsvTextZero() {

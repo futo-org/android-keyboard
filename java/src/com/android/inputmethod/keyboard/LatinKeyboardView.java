@@ -82,7 +82,7 @@ public class LatinKeyboardView extends KeyboardView {
 
     @Override
     protected boolean onLongPress(Key key) {
-        int primaryCode = key.mCodes[0];
+        int primaryCode = key.mCode;
         if (primaryCode == Keyboard.CODE_SETTINGS) {
             return invokeOnKey(Keyboard.CODE_SETTINGS_LONGPRESS);
         } else if (primaryCode == '0' && getLatinKeyboard().isPhoneKeyboard()) {

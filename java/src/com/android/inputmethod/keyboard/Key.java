@@ -32,10 +32,9 @@ import android.util.Xml;
  */
 public class Key {
     /**
-     * All the key codes (unicode or custom code) that this key could generate, zero'th
-     * being the most important.
+     * The key code (unicode or custom code) that this key generates.
      */
-    public final int[] mCodes;
+    public final int mCode;
     /** The unicode that this key generates in manual temporary upper case mode. */
     public final int mManualTemporaryUpperCaseCode;
 
@@ -133,8 +132,6 @@ public class Key {
             android.R.attr.state_pressed
     };
 
-    private static final int[] DUMMY_CODES = { 0 };
-
     /**
      * Create an empty key with no attributes.
      * This constructor is being used only for key in mini popup keyboard.
@@ -157,7 +154,7 @@ public class Key {
         final String popupSpecification = popupCharacter.toString();
         mLabel = PopupCharactersParser.getLabel(popupSpecification);
         mOutputText = PopupCharactersParser.getOutputText(popupSpecification);
-        mCodes = PopupCharactersParser.getCodes(res, popupSpecification);
+        mCode = PopupCharactersParser.getCode(res, popupSpecification);
         mIcon = PopupCharactersParser.getIcon(res, popupSpecification);
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mGap / 2;
@@ -240,13 +237,14 @@ public class Key {
             mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
             // Choose the first letter of the label as primary code if not
             // specified.
-            final int[] codes = style.getIntArray(keyAttr, R.styleable.Keyboard_Key_codes);
-            if (codes == null && !TextUtils.isEmpty(mLabel)) {
-                mCodes = new int[] { mLabel.charAt(0) };
-            } else if (codes != null) {
-                mCodes = codes;
+            final int code = style.getInt(keyAttr, R.styleable.Keyboard_Key_code,
+                    Keyboard.CODE_UNSPECIFIED);
+            if (code == Keyboard.CODE_UNSPECIFIED && !TextUtils.isEmpty(mLabel)) {
+                mCode = mLabel.charAt(0);
+            } else if (code != Keyboard.CODE_UNSPECIFIED) {
+                mCode = code;
             } else {
-                mCodes = DUMMY_CODES;
+                mCode = Keyboard.CODE_DUMMY;
             }
 
             final Drawable shiftedIcon = style.getDrawable(keyAttr,
