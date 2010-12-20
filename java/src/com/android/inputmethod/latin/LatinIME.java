@@ -1887,8 +1887,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onPress(int primaryCode) {
-        vibrate();
-        playKeyClick(primaryCode);
+        if (mKeyboardSwitcher.isVibrateAndSoundFeedbackRequired()) {
+            vibrate();
+            playKeyClick(primaryCode);
+        }
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {

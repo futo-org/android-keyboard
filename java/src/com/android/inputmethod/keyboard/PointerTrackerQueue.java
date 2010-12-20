@@ -65,6 +65,14 @@ public class PointerTrackerQueue {
         mQueue.remove(tracker);
     }
 
+    public boolean isInSlidingKeyInput() {
+        for (final PointerTracker tracker : mQueue) {
+            if (tracker.isInSlidingKeyInput())
+                return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");

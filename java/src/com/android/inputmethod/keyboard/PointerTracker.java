@@ -69,6 +69,9 @@ public class PointerTracker {
     // true if this pointer is repeatable key
     private boolean mIsRepeatableKey;
 
+    // true if this pointer is in sliding key input
+    private boolean mIsInSlidingKeyInput;
+
     // true if sliding key is allowed.
     private boolean mIsAllowedSlidingKeyInput;
 
@@ -168,6 +171,10 @@ public class PointerTracker {
         mKeyState.onSetKeyboard();
     }
 
+    public boolean isInSlidingKeyInput() {
+        return mIsInSlidingKeyInput;
+    }
+
     private boolean isValidKeyIndex(int keyIndex) {
         return keyIndex >= 0 && keyIndex < mKeys.length;
     }
@@ -258,6 +265,7 @@ public class PointerTracker {
                 || mKeyDetector instanceof MiniKeyboardKeyDetector;
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
+        mIsInSlidingKeyInput = false;
         checkMultiTap(eventTime, keyIndex);
         if (isValidKeyIndex(keyIndex)) {
             callListenerOnPress(mKeys[keyIndex].mCodes[0]);
@@ -295,6 +303,7 @@ public class PointerTracker {
                 // The pointer has been slid in to the new key from the previous key, we must call
                 // onRelease() first to notify that the previous key has been released, then call
                 // onPress() to notify that the new key is being pressed.
+                mIsInSlidingKeyInput = true;
                 callListenerOnRelease(oldKey.mCodes[0]);
                 mHandler.cancelLongPressTimers();
                 if (mIsAllowedSlidingKeyInput) {
@@ -312,6 +321,7 @@ public class PointerTracker {
             if (oldKey != null && !isMinorMoveBounce(x, y, keyIndex)) {
                 // The pointer has been slid out from the previous key, we must call onRelease() to
                 // notify that the previous key has been released.
+                mIsInSlidingKeyInput = true;
                 callListenerOnRelease(oldKey.mCodes[0]);
                 mHandler.cancelLongPressTimers();
                 if (mIsAllowedSlidingKeyInput) {
@@ -332,9 +342,10 @@ public class PointerTracker {
         int y = pointY;
         if (DEBUG_EVENT)
             printTouchEvent("onUpEvent  :", x, y, eventTime);
-        showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
+        showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
+        mIsInSlidingKeyInput = false;
         if (mKeyAlreadyProcessed)
             return;
         final PointerTrackerKeyState keyState = mKeyState;
@@ -359,6 +370,7 @@ public class PointerTracker {
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
+        mIsInSlidingKeyInput = false;
         int keyIndex = mKeyState.getKeyIndex();
         if (isValidKeyIndex(keyIndex))
            mProxy.invalidateKey(mKeys[keyIndex]);

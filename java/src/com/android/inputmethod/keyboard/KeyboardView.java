@@ -1308,6 +1308,14 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         return pointers.get(id);
     }
 
+    public boolean isInSlidingKeyInput() {
+        if (mMiniKeyboard != null) {
+            return mMiniKeyboard.isInSlidingKeyInput();
+        } else {
+            return mPointerQueue.isInSlidingKeyInput();
+        }
+    }
+
     public int getPointerCount() {
         return mOldPointerCount;
     }

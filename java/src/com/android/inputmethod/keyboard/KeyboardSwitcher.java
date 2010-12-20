@@ -525,6 +525,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return mAutoModeSwitchState == AUTO_MODE_SWITCH_STATE_MOMENTARY;
     }
 
+    public boolean isVibrateAndSoundFeedbackRequired() {
+        return mInputView == null || !mInputView.isInSlidingKeyInput();
+    }
+
     private int getPointerCount() {
         return mInputView == null ? 0 : mInputView.getPointerCount();
     }
