@@ -40,10 +40,10 @@ public interface KeyboardActionListener {
     void onRelease(int primaryCode);
 
     /**
-     * Send a key press to the listener.
+     * Send a key code to the listener.
      *
      * @param primaryCode
-     *            this is the key that was pressed
+     *            this is the code of the key that was pressed
      * @param keyCodes
      *            the codes for all the possible alternative keys with
      *            the primary code being the first. If the primary key
@@ -60,7 +60,7 @@ public interface KeyboardActionListener {
      *            y-coordinate pixel of touched event. If onKey is not called by onTouchEvent,
      *            the value should be NOT_A_TOUCH_COORDINATE.
      */
-    void onKey(int primaryCode, int[] keyCodes, int x, int y);
+    void onCodeInput(int primaryCode, int[] keyCodes, int x, int y);
 
     /**
      * Sends a sequence of characters to the listener.
@@ -68,32 +68,15 @@ public interface KeyboardActionListener {
      * @param text
      *            the sequence of characters to be displayed.
      */
-    void onText(CharSequence text);
+    void onTextInput(CharSequence text);
 
     /**
      * Called when user released a finger outside any key.
      */
-    void onCancel();
-
-    /**
-     * Called when the user quickly moves the finger from right to
-     * left.
-     */
-    void swipeLeft();
-
-    /**
-     * Called when the user quickly moves the finger from left to
-     * right.
-     */
-    void swipeRight();
+    void onCancelInput();
 
     /**
      * Called when the user quickly moves the finger from up to down.
      */
-    void swipeDown();
-
-    /**
-     * Called when the user quickly moves the finger from down to up.
-     */
-    void swipeUp();
+    void onSwipeDown();
 }

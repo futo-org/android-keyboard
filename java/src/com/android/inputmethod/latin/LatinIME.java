@@ -1047,7 +1047,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Implementation of KeyboardViewListener
 
     @Override
-    public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
+    public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
         long when = SystemClock.uptimeMillis();
         if (primaryCode != Keyboard.CODE_DELETE || when > mLastKeyTime + QUICK_PRESS) {
             mDeleteCount = 0;
@@ -1117,7 +1117,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onText(CharSequence text) {
+    public void onTextInput(CharSequence text) {
         mVoiceConnector.commitVoiceInput();
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
@@ -1135,7 +1135,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onCancel() {
+    public void onCancelInput() {
         // User released a finger outside any key
     }
 
@@ -1257,7 +1257,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 } else {
                     // Some keys, such as [eszett], have upper case as multi-characters.
                     String upperCase = new String(new int[] {code}, 0, 1).toUpperCase();
-                    onText(upperCase);
+                    onTextInput(upperCase);
                     return;
                 }
             }
@@ -1570,7 +1570,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions.mWords);
             final char primaryCode = suggestion.charAt(0);
-            onKey(primaryCode, new int[]{primaryCode}, KeyboardView.NOT_A_TOUCH_COORDINATE,
+            onCodeInput(primaryCode, new int[]{primaryCode}, KeyboardView.NOT_A_TOUCH_COORDINATE,
                     KeyboardView.NOT_A_TOUCH_COORDINATE);
             if (ic != null) {
                 ic.endBatchEdit();
@@ -1866,23 +1866,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void swipeRight() {
-        // Nothing to do
-    }
-
-    @Override
-    public void swipeLeft() {
-        // Nothing to do
-    }
-
-    @Override
-    public void swipeDown() {
+    public void onSwipeDown() {
         handleClose();
-    }
-
-    @Override
-    public void swipeUp() {
-        // Nothing to do
     }
 
     @Override

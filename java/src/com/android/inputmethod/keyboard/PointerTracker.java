@@ -92,19 +92,13 @@ public class PointerTracker {
         @Override
         public void onRelease(int primaryCode) {}
         @Override
-        public void onKey(int primaryCode, int[] keyCodes, int x, int y) {}
+        public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {}
         @Override
-        public void onText(CharSequence text) {}
+        public void onTextInput(CharSequence text) {}
         @Override
-        public void onCancel() {}
+        public void onCancelInput() {}
         @Override
-        public void swipeLeft() {}
-        @Override
-        public void swipeRight() {}
-        @Override
-        public void swipeDown() {}
-        @Override
-        public void swipeUp() {}
+        public void onSwipeDown() {}
     };
 
     public PointerTracker(int id, UIHandler handler, KeyDetector keyDetector, UIProxy proxy,
@@ -136,17 +130,17 @@ public class PointerTracker {
         mListener.onPress(primaryCode);
     }
 
-    private void callListenerOnKey(int primaryCode, int[] keyCodes, int x, int y) {
+    private void callListenerOnCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
         if (DEBUG_LISTENER)
-            Log.d(TAG, "onKey      : " + keyCodePrintable(primaryCode)
+            Log.d(TAG, "onCodeInput: " + keyCodePrintable(primaryCode)
                     + " codes="+ Arrays.toString(keyCodes) + " x=" + x + " y=" + y);
-        mListener.onKey(primaryCode, keyCodes, x, y);
+        mListener.onCodeInput(primaryCode, keyCodes, x, y);
     }
 
-    private void callListenerOnText(CharSequence text) {
+    private void callListenerOnTextInput(CharSequence text) {
         if (DEBUG_LISTENER)
-            Log.d(TAG, "onText     : text=" + text);
-        mListener.onText(text);
+            Log.d(TAG, "onTextInput: text=" + text);
+        mListener.onTextInput(text);
     }
 
     private void callListenerOnRelease(int primaryCode) {
@@ -155,10 +149,10 @@ public class PointerTracker {
         mListener.onRelease(primaryCode);
     }
 
-    private void callListenerOnCancel() {
+    private void callListenerOnCancelInput() {
         if (DEBUG_LISTENER)
-            Log.d(TAG, "onCancel");
-        mListener.onCancel();
+            Log.d(TAG, "onCancelInput");
+        mListener.onCancelInput();
     }
 
     public void setKeyboard(Keyboard keyboard, Key[] keys, float keyHysteresisDistance) {
@@ -446,11 +440,11 @@ public class PointerTracker {
     private void detectAndSendKey(int index, int x, int y, long eventTime) {
         final Key key = getKey(index);
         if (key == null) {
-            callListenerOnCancel();
+            callListenerOnCancelInput();
             return;
         }
         if (key.mOutputText != null) {
-            callListenerOnText(key.mOutputText);
+            callListenerOnTextInput(key.mOutputText);
             callListenerOnRelease(key.mCodes[0]);
         } else {
             int code = key.mCodes[0];
@@ -459,7 +453,7 @@ public class PointerTracker {
             // Multi-tap
             if (mInMultiTap) {
                 if (mTapCount != -1) {
-                    callListenerOnKey(Keyboard.CODE_DELETE, KEY_DELETE, x, y);
+                    callListenerOnCodeInput(Keyboard.CODE_DELETE, KEY_DELETE, x, y);
                 } else {
                     mTapCount = 0;
                 }
@@ -480,7 +474,7 @@ public class PointerTracker {
                 codes[1] = codes[0];
                 codes[0] = code;
             }
-            callListenerOnKey(code, codes, x, y);
+            callListenerOnCodeInput(code, codes, x, y);
             callListenerOnRelease(code);
         }
         mLastSentIndex = index;

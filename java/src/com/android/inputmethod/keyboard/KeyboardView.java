@@ -409,31 +409,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                     float velocityY) {
                 final float absX = Math.abs(velocityX);
                 final float absY = Math.abs(velocityY);
-                float deltaX = me2.getX() - me1.getX();
                 float deltaY = me2.getY() - me1.getY();
-                int travelX = getWidth() / 2; // Half the keyboard width
                 int travelY = getHeight() / 2; // Half the keyboard height
                 mSwipeTracker.computeCurrentVelocity(1000);
-                final float endingVelocityX = mSwipeTracker.getXVelocity();
                 final float endingVelocityY = mSwipeTracker.getYVelocity();
-                if (velocityX > mSwipeThreshold && absY < absX && deltaX > travelX) {
-                    if (mDisambiguateSwipe && endingVelocityX >= velocityX / 4) {
-                        swipeRight();
-                        return true;
-                    }
-                } else if (velocityX < -mSwipeThreshold && absY < absX && deltaX < -travelX) {
-                    if (mDisambiguateSwipe && endingVelocityX <= velocityX / 4) {
-                        swipeLeft();
-                        return true;
-                    }
-                } else if (velocityY < -mSwipeThreshold && absX < absY && deltaY < -travelY) {
-                    if (mDisambiguateSwipe && endingVelocityY <= velocityY / 4) {
-                        swipeUp();
-                        return true;
-                    }
-                } else if (velocityY > mSwipeThreshold && absX < absY / 2 && deltaY > travelY) {
+                if (velocityY > mSwipeThreshold && absX < absY / 2 && deltaY > travelY) {
                     if (mDisambiguateSwipe && endingVelocityY >= velocityY / 4) {
-                        swipeDown();
+                        onSwipeDown();
                         return true;
                     }
                 }
@@ -1089,14 +1071,14 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private void onLongPressShiftKey(PointerTracker tracker) {
         tracker.setAlreadyProcessed();
         mPointerQueue.remove(tracker);
-        mKeyboardActionListener.onKey(Keyboard.CODE_CAPSLOCK, null, 0, 0);
+        mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
     private void onDoubleTapShiftKey(@SuppressWarnings("unused") PointerTracker tracker) {
         // When shift key is double tapped, the first tap is correctly processed as usual tap. And
         // the second tap is treated as this double tap event, so that we need not mark tracker
         // calling setAlreadyProcessed() nor remove the tracker from mPointerQueueueue.
-        mKeyboardActionListener.onKey(Keyboard.CODE_CAPSLOCK, null, 0, 0);
+        mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
     private View inflateMiniKeyboardContainer(Key popupKey) {
@@ -1111,36 +1093,24 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 (KeyboardView)container.findViewById(R.id.KeyboardView);
         miniKeyboard.setOnKeyboardActionListener(new KeyboardActionListener() {
             @Override
-            public void onKey(int primaryCode, int[] keyCodes, int x, int y) {
-                mKeyboardActionListener.onKey(primaryCode, keyCodes, x, y);
+            public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
+                mKeyboardActionListener.onCodeInput(primaryCode, keyCodes, x, y);
                 dismissPopupKeyboard();
             }
 
             @Override
-            public void onText(CharSequence text) {
-                mKeyboardActionListener.onText(text);
+            public void onTextInput(CharSequence text) {
+                mKeyboardActionListener.onTextInput(text);
                 dismissPopupKeyboard();
             }
 
             @Override
-            public void onCancel() {
+            public void onCancelInput() {
                 dismissPopupKeyboard();
             }
 
             @Override
-            public void swipeLeft() {
-                // Nothing to do.
-            }
-            @Override
-            public void swipeRight() {
-                // Nothing to do.
-            }
-            @Override
-            public void swipeUp() {
-                // Nothing to do.
-            }
-            @Override
-            public void swipeDown() {
+            public void onSwipeDown() {
                 // Nothing to do.
             }
             @Override
@@ -1461,20 +1431,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mPointerQueue.remove(tracker);
     }
 
-    protected void swipeRight() {
-        mKeyboardActionListener.swipeRight();
-    }
-
-    protected void swipeLeft() {
-        mKeyboardActionListener.swipeLeft();
-    }
-
-    protected void swipeUp() {
-        mKeyboardActionListener.swipeUp();
-    }
-
-    protected void swipeDown() {
-        mKeyboardActionListener.swipeDown();
+    protected void onSwipeDown() {
+        mKeyboardActionListener.onSwipeDown();
     }
 
     public void closing() {

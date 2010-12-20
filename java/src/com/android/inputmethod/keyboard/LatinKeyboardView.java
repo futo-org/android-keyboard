@@ -94,7 +94,7 @@ public class LatinKeyboardView extends KeyboardView {
     }
 
     private boolean invokeOnKey(int primaryCode) {
-        getOnKeyboardActionListener().onKey(primaryCode, null,
+        getOnKeyboardActionListener().onCodeInput(primaryCode, null,
                 KeyboardView.NOT_A_TOUCH_COORDINATE,
                 KeyboardView.NOT_A_TOUCH_COORDINATE);
         return true;
@@ -205,7 +205,7 @@ public class LatinKeyboardView extends KeyboardView {
         if (me.getAction() == MotionEvent.ACTION_UP) {
             int languageDirection = keyboard.getLanguageChangeDirection();
             if (languageDirection != 0) {
-                getOnKeyboardActionListener().onKey(
+                getOnKeyboardActionListener().onCodeInput(
                         languageDirection == 1
                         ? Keyboard.CODE_NEXT_LANGUAGE : Keyboard.CODE_PREV_LANGUAGE,
                         null, mLastX, mLastY);
