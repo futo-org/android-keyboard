@@ -132,7 +132,8 @@ public class SubtypeSwitcher {
     // Reload enabledSubtypes from the framework.
     private void updateEnabledSubtypes() {
         boolean foundCurrentSubtypeBecameDisabled = true;
-        mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(null);
+        mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
+                null, false);
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         for (InputMethodSubtype ims: mAllEnabledSubtypesOfCurrentInputMethod) {
