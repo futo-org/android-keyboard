@@ -90,9 +90,9 @@ public class Utils {
 
     public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManager imm) {
         return imm.getEnabledInputMethodList().size() > 1
-        // imm.getEnabledInputMethodSubtypeList(null) will return the current IME's enabled input
-        // method subtype (The current IME should be LatinIME.)
-                || imm.getEnabledInputMethodSubtypeList(null).size() > 1;
+        // imm.getEnabledInputMethodSubtypeList(null, false) will return the current IME's enabled
+        // input method subtype (The current IME should be LatinIME.)
+                || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
     }
 
     /* package */ static class RingCharBuffer {
