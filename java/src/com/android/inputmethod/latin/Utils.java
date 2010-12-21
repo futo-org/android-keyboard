@@ -206,7 +206,7 @@ public class Utils {
         }
         for (int i = 0; i < sl; ++i) {
             for (int j = 0; j < tl; ++j) {
-                if (s.charAt(i) == t.charAt(j)) {
+                if (Character.toLowerCase(s.charAt(i)) == Character.toLowerCase(t.charAt(j))) {
                     dp[i + 1][j + 1] = dp[i][j];
                 } else {
                     dp[i + 1][j + 1] = 1 + Math.min(dp[i][j],
