@@ -414,6 +414,11 @@ public class PointerTracker {
         Key key = getKey(keyIndex);
         if (key.mCode == Keyboard.CODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
+        } else if (key.mManualTemporaryUpperCaseCode != Keyboard.CODE_DUMMY
+                && mKeyboard.isManualTemporaryUpperCase()) {
+            // We need not start long press timer on the key which has manual temporary upper case
+            // code defined and the keyboard is in manual temporary upper case mode.
+            return;
         } else if (mKeyboardSwitcher.isInMomentaryAutoModeSwitchState()) {
             // We use longer timeout for sliding finger input started from the symbols mode key.
             mHandler.startLongPressTimer(mLongPressKeyTimeout * 2, keyIndex, this);
@@ -438,7 +443,8 @@ public class PointerTracker {
 
             // If keyboard is in manual temporary upper case state and key has manual temporary
             // shift code, alternate character code should be sent.
-            if (mKeyboard.isManualTemporaryUpperCase() && key.mManualTemporaryUpperCaseCode != 0) {
+            if (mKeyboard.isManualTemporaryUpperCase()
+                    && key.mManualTemporaryUpperCaseCode != Keyboard.CODE_DUMMY) {
                 code = key.mManualTemporaryUpperCaseCode;
                 codes[0] = code;
             }

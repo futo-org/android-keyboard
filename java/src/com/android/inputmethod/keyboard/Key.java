@@ -144,7 +144,7 @@ public class Key {
         mEdgeFlags = row.mRowEdgeFlags;
         mHintIcon = null;
         mManualTemporaryUpperCaseHintIcon = null;
-        mManualTemporaryUpperCaseCode = 0;
+        mManualTemporaryUpperCaseCode = Keyboard.CODE_DUMMY;
         mLabelOption = 0;
         mModifier = false;
         mSticky = false;
@@ -233,7 +233,7 @@ public class Key {
             mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             mLabelOption = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption, 0);
             mManualTemporaryUpperCaseCode = style.getInt(keyAttr,
-                    R.styleable.Keyboard_Key_manualTemporaryUpperCaseCode, 0);
+                    R.styleable.Keyboard_Key_manualTemporaryUpperCaseCode, Keyboard.CODE_DUMMY);
             mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
             // Choose the first letter of the label as primary code if not
             // specified.
