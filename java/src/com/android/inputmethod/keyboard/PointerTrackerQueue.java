@@ -25,35 +25,32 @@ public class PointerTrackerQueue {
         mQueue.add(tracker);
     }
 
-    public int lastIndexOf(PointerTracker tracker) {
-        LinkedList<PointerTracker> queue = mQueue;
-        for (int index = queue.size() - 1; index >= 0; index--) {
-            PointerTracker t = queue.get(index);
-            if (t == tracker)
-                return index;
-        }
-        return -1;
-    }
-
     public void releaseAllPointersOlderThan(PointerTracker tracker, long eventTime) {
+        if (mQueue.lastIndexOf(tracker) < 0) {
+            return;
+        }
         LinkedList<PointerTracker> queue = mQueue;
         int oldestPos = 0;
         for (PointerTracker t = queue.get(oldestPos); t != tracker; t = queue.get(oldestPos)) {
             if (t.isModifier()) {
                 oldestPos++;
             } else {
-                t.onUpEvent(t.getLastX(), t.getLastY(), eventTime);
+                t.onUpEventForRelease(t.getLastX(), t.getLastY(), eventTime);
                 t.setAlreadyProcessed();
                 queue.remove(oldestPos);
             }
         }
     }
 
+    public void releaseAllPointers(long eventTime) {
+        releaseAllPointersExcept(null, eventTime);
+    }
+
     public void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
         for (PointerTracker t : mQueue) {
             if (t == tracker)
                 continue;
-            t.onUpEvent(t.getLastX(), t.getLastY(), eventTime);
+            t.onUpEventForRelease(t.getLastX(), t.getLastY(), eventTime);
             t.setAlreadyProcessed();
         }
         mQueue.clear();

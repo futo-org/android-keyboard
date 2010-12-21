@@ -27,6 +27,7 @@ import java.util.Arrays;
 
 public class PointerTracker {
     private static final String TAG = PointerTracker.class.getSimpleName();
+    private static final boolean ENABLE_ASSERTION = false;
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_MOVE_EVENT = false;
     private static final boolean DEBUG_LISTENER = false;
@@ -46,7 +47,6 @@ public class PointerTracker {
 
     // Miscellaneous constants
     private static final int NOT_A_KEY = KeyDetector.NOT_A_KEY;
-    private static final int[] KEY_DELETE = { Keyboard.CODE_DELETE };
 
     private final UIProxy mProxy;
     private final UIHandler mHandler;
@@ -181,7 +181,7 @@ public class PointerTracker {
         return isModifierInternal(mKeyState.getKeyIndex());
     }
 
-    public boolean isOnModifierKey(int x, int y) {
+    private boolean isOnModifierKey(int x, int y) {
         return isModifierInternal(mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null));
     }
 
@@ -220,28 +220,51 @@ public class PointerTracker {
         mKeyAlreadyProcessed = true;
     }
 
-    public void onTouchEvent(int action, int x, int y, long eventTime) {
+    private void checkAssertion(PointerTrackerQueue queue) {
+        if (mHasDistinctMultitouch && queue == null)
+            throw new RuntimeException(
+                    "PointerTrackerQueue must be passed on distinct multi touch device");
+        if (!mHasDistinctMultitouch && queue != null)
+            throw new RuntimeException(
+                    "PointerTrackerQueue must be null on non-distinct multi touch device");
+    }
+
+    public void onTouchEvent(int action, int x, int y, long eventTime, PointerTrackerQueue queue) {
         switch (action) {
         case MotionEvent.ACTION_MOVE:
-            onMoveEvent(x, y, eventTime);
+            onMoveEvent(x, y, eventTime, queue);
             break;
         case MotionEvent.ACTION_DOWN:
         case MotionEvent.ACTION_POINTER_DOWN:
-            onDownEvent(x, y, eventTime);
+            onDownEvent(x, y, eventTime, queue);
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_POINTER_UP:
-            onUpEvent(x, y, eventTime);
+            onUpEvent(x, y, eventTime, queue);
             break;
         case MotionEvent.ACTION_CANCEL:
-            onCancelEvent(x, y, eventTime);
+            onCancelEvent(x, y, eventTime, queue);
             break;
         }
     }
 
-    public void onDownEvent(int x, int y, long eventTime) {
+    public void onDownEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
+        if (ENABLE_ASSERTION) checkAssertion(queue);
         if (DEBUG_EVENT)
             printTouchEvent("onDownEvent:", x, y, eventTime);
+
+        if (queue != null) {
+            if (isOnModifierKey(x, y)) {
+                // Before processing a down event of modifier key, all pointers already being
+                // tracked should be released.
+                queue.releaseAllPointers(eventTime);
+            }
+            queue.add(this);
+        }
+        onDownEventInternal(x, y, eventTime);
+    }
+
+    public void onDownEventInternal(int x, int y, long eventTime) {
         int keyIndex = mKeyState.onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
         // from modifier key, or 3) this pointer is on mini-keyboard.
@@ -267,7 +290,8 @@ public class PointerTracker {
         showKeyPreviewAndUpdateKeyGraphics(keyIndex);
     }
 
-    public void onMoveEvent(int x, int y, long eventTime) {
+    public void onMoveEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
+        if (ENABLE_ASSERTION) checkAssertion(queue);
         if (DEBUG_MOVE_EVENT)
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         if (mKeyAlreadyProcessed)
@@ -318,11 +342,31 @@ public class PointerTracker {
         showKeyPreviewAndUpdateKeyGraphics(mKeyState.getKeyIndex());
     }
 
-    public void onUpEvent(int pointX, int pointY, long eventTime) {
-        int x = pointX;
-        int y = pointY;
+    public void onUpEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
+        if (ENABLE_ASSERTION) checkAssertion(queue);
         if (DEBUG_EVENT)
             printTouchEvent("onUpEvent  :", x, y, eventTime);
+
+        if (queue != null) {
+            if (isModifier()) {
+                // Before processing an up event of modifier key, all pointers already being
+                // tracked should be released.
+                queue.releaseAllPointersExcept(this, eventTime);
+            } else {
+                queue.releaseAllPointersOlderThan(this, eventTime);
+            }
+            queue.remove(this);
+        }
+        onUpEventInternal(x, y, eventTime);
+    }
+
+    public void onUpEventForRelease(int x, int y, long eventTime) {
+        onUpEventInternal(x, y, eventTime);
+    }
+
+    private void onUpEventInternal(int pointX, int pointY, long eventTime) {
+        int x = pointX;
+        int y = pointY;
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
@@ -345,9 +389,17 @@ public class PointerTracker {
             mProxy.invalidateKey(mKeys[keyIndex]);
     }
 
-    public void onCancelEvent(int x, int y, long eventTime) {
+    public void onCancelEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
+        if (ENABLE_ASSERTION) checkAssertion(queue);
         if (DEBUG_EVENT)
             printTouchEvent("onCancelEvt:", x, y, eventTime);
+
+        if (queue != null)
+            queue.remove(this);
+        onCancelEventInternal(x, y, eventTime);
+    }
+
+    private void onCancelEventInternal(int x, int y, long eventTime) {
         mHandler.cancelKeyTimers();
         mHandler.cancelPopupPreview();
         showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);

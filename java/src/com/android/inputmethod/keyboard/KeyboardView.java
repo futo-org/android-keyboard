@@ -1359,13 +1359,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             if (pointerCount == 1 && oldPointerCount == 2) {
                 // Multi-touch to single touch transition.
                 // Send a down event for the latest pointer.
-                tracker.onDownEvent(x, y, eventTime);
+                tracker.onDownEvent(x, y, eventTime, null);
             } else if (pointerCount == 2 && oldPointerCount == 1) {
                 // Single-touch to multi-touch transition.
                 // Send an up event for the last pointer.
-                tracker.onUpEvent(tracker.getLastX(), tracker.getLastY(), eventTime);
+                tracker.onUpEvent(tracker.getLastX(), tracker.getLastY(), eventTime, null);
             } else if (pointerCount == 1 && oldPointerCount == 1) {
-                tracker.onTouchEvent(action, x, y, eventTime);
+                tracker.onTouchEvent(action, x, y, eventTime, null);
             } else {
                 Log.w(TAG, "Unknown touch panel behavior: pointer count is " + pointerCount
                         + " (old " + oldPointerCount + ")");
@@ -1373,62 +1373,30 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             return true;
         }
 
+        final PointerTrackerQueue queue = mPointerQueue;
         if (action == MotionEvent.ACTION_MOVE) {
             for (int i = 0; i < pointerCount; i++) {
-                PointerTracker tracker = getPointerTracker(me.getPointerId(i));
-                tracker.onMoveEvent((int)me.getX(i), (int)me.getY(i), eventTime);
+                final PointerTracker tracker = getPointerTracker(me.getPointerId(i));
+                tracker.onMoveEvent((int)me.getX(i), (int)me.getY(i), eventTime, queue);
             }
         } else {
-            PointerTracker tracker = getPointerTracker(id);
+            final PointerTracker tracker = getPointerTracker(id);
             switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-                onDownEvent(tracker, x, y, eventTime);
+                tracker.onDownEvent(x, y, eventTime, queue);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-                onUpEvent(tracker, x, y, eventTime);
+                tracker.onUpEvent(x, y, eventTime, queue);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                onCancelEvent(tracker, x, y, eventTime);
+                tracker.onCancelEvent(x, y, eventTime, queue);
                 break;
             }
         }
 
         return true;
-    }
-
-    private void onDownEvent(PointerTracker tracker, int x, int y, long eventTime) {
-        if (tracker.isOnModifierKey(x, y)) {
-            // Before processing a down event of modifier key, all pointers already being tracked
-            // should be released.
-            mPointerQueue.releaseAllPointersExcept(null, eventTime);
-        }
-        tracker.onDownEvent(x, y, eventTime);
-        mPointerQueue.add(tracker);
-    }
-
-    private void onUpEvent(PointerTracker tracker, int x, int y, long eventTime) {
-        if (tracker.isModifier()) {
-            // Before processing an up event of modifier key, all pointers already being tracked
-            // should be released.
-            mPointerQueue.releaseAllPointersExcept(tracker, eventTime);
-        } else {
-            int index = mPointerQueue.lastIndexOf(tracker);
-            if (index >= 0) {
-                mPointerQueue.releaseAllPointersOlderThan(tracker, eventTime);
-            } else {
-                Log.w(TAG, "onUpEvent: corresponding down event not found for pointer "
-                        + tracker.mPointerId);
-            }
-        }
-        tracker.onUpEvent(x, y, eventTime);
-        mPointerQueue.remove(tracker);
-    }
-
-    private void onCancelEvent(PointerTracker tracker, int x, int y, long eventTime) {
-        tracker.onCancelEvent(x, y, eventTime);
-        mPointerQueue.remove(tracker);
     }
 
     protected void onSwipeDown() {
