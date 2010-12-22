@@ -345,7 +345,7 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
         removeDupes();
-        return new SuggestedWords.Builder().setWords(mSuggestions);
+        return new SuggestedWords.Builder().addWords(mSuggestions);
     }
 
     public int[] getNextLettersFrequencies() {

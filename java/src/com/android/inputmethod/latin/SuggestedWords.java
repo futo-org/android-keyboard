@@ -63,7 +63,7 @@ public class SuggestedWords {
     public static class Builder {
         private List<CharSequence> mWords;
         private boolean mIsCompletions;
-        private boolean mTypedWordVallid;
+        private boolean mTypedWordValid;
         private boolean mHasMinimalSuggestion;
         private Object[] mDebugInfo;
 
@@ -71,8 +71,9 @@ public class SuggestedWords {
             // Nothing to do here.
         }
 
-        public Builder setWords(List<CharSequence> words) {
-            mWords = words;
+        public Builder addWords(List<CharSequence> words) {
+            for (final CharSequence word : words)
+                addWord(word);
             return this;
         }
 
@@ -103,7 +104,7 @@ public class SuggestedWords {
         }
 
         public Builder setTypedWordValid(boolean typedWordValid) {
-            mTypedWordVallid = typedWordValid;
+            mTypedWordValid = typedWordValid;
             return this;
         }
 
@@ -112,13 +113,32 @@ public class SuggestedWords {
             return this;
         }
 
-        public CharSequence getWord(int pos) {
-            return mWords.get(pos);
+        // Should get rid of the first one (what the user typed previously) from suggestions
+        // and replace it with what the user currently typed.
+        public Builder addTypedWordAndPreviousSuggestions(CharSequence typedWord,
+                SuggestedWords previousSuggestions) {
+            if (mWords != null) mWords.clear();
+            addWord(typedWord);
+            final int previousSize = previousSuggestions.size();
+            for (int pos = 1; pos < previousSize; pos++)
+                addWord(previousSuggestions.getWord(pos));
+            mIsCompletions = false;
+            mTypedWordValid = false;
+            mHasMinimalSuggestion = (previousSize > 1);
+            return this;
         }
 
         public SuggestedWords build() {
-            return new SuggestedWords(mWords, mIsCompletions, mTypedWordVallid,
+            return new SuggestedWords(mWords, mIsCompletions, mTypedWordValid,
                     mHasMinimalSuggestion, mDebugInfo);
+        }
+
+        public int size() {
+            return mWords == null ? 0 : mWords.size();
+        }
+
+        public CharSequence getWord(int pos) {
+            return mWords.get(pos);
         }
     }
 }
