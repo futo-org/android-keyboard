@@ -155,6 +155,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mPopupOn;
     private boolean mAutoCap;
     private boolean mQuickFixes;
+    private boolean mConfigSwipeDownDismissKeyboardEnabled;
 
     private int mCorrectionMode;
     private int mCommittedLength;
@@ -310,15 +311,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         LatinImeLogger.init(this, prefs);
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
+
         super.onCreate();
-        //setStatusIcon(R.drawable.ime_qwerty);
-        mResources = getResources();
+
         mImm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
-        final Configuration conf = mResources.getConfiguration();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
+
+        final Resources res = getResources();
+        mResources = res;
         mReCorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
-                getResources().getBoolean(R.bool.default_recorrection_enabled));
+                res.getBoolean(R.bool.default_recorrection_enabled));
+        mConfigSwipeDownDismissKeyboardEnabled = res.getBoolean(
+                R.bool.config_swipe_down_dismiss_keyboard_enabled);
 
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
@@ -331,7 +336,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
         }
 
-        mOrientation = conf.orientation;
+        mOrientation = res.getConfiguration().orientation;
         initSuggestPuncList();
 
         // register to receive ringer mode changes for silent mode
@@ -1875,7 +1880,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onSwipeDown() {
-        handleClose();
+        if (mConfigSwipeDownDismissKeyboardEnabled)
+            handleClose();
     }
 
     @Override
