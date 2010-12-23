@@ -22,12 +22,10 @@
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="english_ime_name" msgid="7252517407088836577">"Tastatură Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Setările tastaturii Android"</string>
-    <!-- no translation found for english_ime_input_options (3909945612939668554) -->
-    <skip />
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Opţiuni de introducere text"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrare la apăsarea tastei"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sunet la apăsarea tastei"</string>
-    <!-- no translation found for popup_on_keypress (123894815723512944) -->
-    <skip />
+    <string name="popup_on_keypress" msgid="123894815723512944">"Fereastră pop-up la apăsarea tastei"</string>
     <string name="prediction_category" msgid="7027100625580696660">"Setările sugestiei de cuvinte"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalizare"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Remedieri rapide"</string>
@@ -42,14 +40,10 @@
     <skip />
     <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
     <skip />
-    <!-- no translation found for prefs_settings_key (4623341240804046498) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_auto_name (2993460277873684680) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_show_name (3047567041784760575) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
-    <skip />
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Afişaţi tasta setări"</string>
+    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automat"</string>
+    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Afişaţi întotdeauna"</string>
+    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Ascundeţi întotdeauna"</string>
     <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Sugestii de cuvinte"</string>
     <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Corecţie automată a cuvântului anterior"</string>
     <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
@@ -58,10 +52,8 @@
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
     <skip />
-    <!-- no translation found for bigram_suggestion (1323347224043514969) -->
-    <skip />
-    <!-- no translation found for bigram_suggestion_summary (4383845146070101531) -->
-    <skip />
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Sugestii pentru cuvinte de două litere"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Utilizaţi cuvântul anterior pentru a îmbunătăţi sugestia"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: salvat"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Accesaţi"</string>
     <string name="label_next_key" msgid="362972844525672568">"Înainte"</string>
@@ -69,12 +61,9 @@
     <string name="label_send_key" msgid="2815056534433717444">"Trimiteţi"</string>
     <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
     <skip />
-    <!-- no translation found for label_more_key (3760239494604948502) -->
-    <skip />
-    <!-- no translation found for label_pause_key (181098308428035340) -->
-    <skip />
-    <!-- no translation found for label_wait_key (6402152600878093134) -->
-    <skip />
+    <string name="label_more_key" msgid="3760239494604948502">"Mai multe"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"Pauză"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Aşt."</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Intrare voce"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Intrarea vocală nu este acceptată în prezent pentru limba dvs., însă funcţionează în limba engleză."</string>
     <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Intrarea vocală este o funcţie experimentală ce utilizează recunoaşterea vocală în reţea oferită de Google."</string>
@@ -108,88 +97,52 @@
     <skip />
     <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
     <skip />
-    <!-- no translation found for selectInputMethod (315076553378705821) -->
-    <skip />
+    <string name="selectInputMethod" msgid="315076553378705821">"Selectaţi metoda de introducere a textului"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Glisaţi degetul pe bara de spaţiu pentru a schimba limba"</string>
-    <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Apăsaţi din nou pentru a salva"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Atingeţi din nou pentru a salva"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>
-    <!-- no translation found for prefs_enable_log (6620424505072963557) -->
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Activaţi feedback de la utilizatori"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Ajutaţi la îmbunătăţirea acestui instrument de editare a metodelor de introducere a textului trimiţând în mod automat la Google statistici de utilizare şi rapoarte de blocare."</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Atingeţi pentru a corecta cuvintele"</string>
+    <!-- outdated translation 1056068922330206170 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Atingeţi cuvintele introduse pentru a le corecta"</string>
+    <string name="keyboard_layout" msgid="437433231038683666">"Temă pentru tastatură"</string>
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tastatură cehă"</string>
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Tastatură daneză"</string>
+    <!-- outdated translation 5111274665584117449 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Tastatură germană"</string>
+    <!-- outdated translation 2339748210942078577 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Tastatură engleză (Marea Britanie)"</string>
+    <!-- outdated translation 2979257184475020604 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Tastatură engleză (S.U.A.)"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Tastatură spaniolă"</string>
+    <!-- no translation found for subtype_mode_es_US_keyboard (3702125193532262008) -->
     <skip />
-    <!-- no translation found for prefs_description_log (5827825607258246003) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection (4588408906649533582) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection_summary (5082041365862396329) -->
-    <skip />
-    <!-- no translation found for keyboard_layout (437433231038683666) -->
-    <skip />
-    <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
-    <skip />
-    <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_keyboard (1990979135959462145) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_GB_keyboard (2468557777064426976) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_keyboard (2979257184475020604) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_US_keyboard (6418688989436457122) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
-    <skip />
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Tastatură franceză"</string>
     <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
     <skip />
     <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
     <skip />
-    <!-- no translation found for subtype_mode_it_keyboard (4934199655425394484) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nb_keyboard (1175783216100212360) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nl_keyboard (5090278083256037936) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_keyboard (1383995915064277943) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sr_keyboard (5019440799612208168) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sv_keyboard (4933838139861753401) -->
-    <skip />
-    <!-- no translation found for subtype_mode_cs_voice (1136386688120958641) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_voice (8378803143958089866) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_AU_voice (1103892562629586486) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_GB_voice (4327384535900034392) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_IN_voice (4834879535045820293) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_NZ_voice (2739391364469645636) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_voice (1582519352222847297) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_voice (1323473601346507487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_voice (4675914209337824269) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ja_voice (6604859132669646367) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ko_voice (4890391190762324561) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pl_voice (2076196021014840487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pt_voice (8036522712795994397) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_voice (8034596947963787529) -->
-    <skip />
-    <!-- no translation found for subtype_mode_tr_voice (3402067436761140005) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_CN_voice (3154514897179707124) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_TW_voice (1524137359275360490) -->
-    <skip />
+    <!-- outdated translation 2281078537437195027 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Tastatură italiană"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Tastatură norvegiană"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Tastatură olandeză"</string>
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Tastatură rusă"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Tastatură sârbă"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Tastatură suedeză"</string>
+    <!-- outdated translation 157536957128878726 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voce cehă"</string>
+    <!-- outdated translation 309350321180102217 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voce germană"</string>
+    <string name="subtype_mode_en_AU_voice" msgid="1103892562629586486">"Voce engleză (Australia)"</string>
+    <!-- outdated translation 3773764031764533262 -->     <string name="subtype_mode_en_GB_voice" msgid="7868802451720612888">"Voce engleză (Marea Britanie)"</string>
+    <string name="subtype_mode_en_IN_voice" msgid="4834879535045820293">"Voce engleză (India)"</string>
+    <string name="subtype_mode_en_NZ_voice" msgid="2739391364469645636">"Voce engleză (Noua Zeelandă)"</string>
+    <!-- outdated translation 1582519352222847297 -->     <string name="subtype_mode_en_US_voice" msgid="2300580846081472319">"Voce engleză (S.U.A.)"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Voce spaniolă"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Voce franceză"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Voce japoneză"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Voce coreeană"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Voce poloneză"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Voce portugheză"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Voce rusă"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Voce turcă"</string>
+    <!-- outdated translation 3154514897179707124 -->     <string name="subtype_mode_zh_CN_voice" msgid="6452442204238513331">"Voce chineză (China)"</string>
+    <!-- outdated translation 1524137359275360490 -->     <string name="subtype_mode_zh_TW_voice" msgid="3640444875378221940">"Voce chineză (Taiwan)"</string>
     <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
     <skip />
 </resources>

@@ -79,7 +79,7 @@
     <string name="voice_server_error" msgid="7807129913977261644">"Σφάλμα διακομιστή"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Δεν ακούγεται ομιλία"</string>
     <string name="voice_no_match" msgid="4285117547030179174">"Δεν βρέθηκε καμία αντιστοίχιση"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Η Αναζήτηση με φωνή δεν εγκαταστάθηκε"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Η Φωνητική αναζήτηση δεν εγκαταστάθηκε"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Υπόδειξη:"</b>" Σύρετε κατά μήκος του πληκτρολογίου για να μιλήσετε"</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Υπόδειξη:"</b>" Την επόμενη φορά, προσπαθήστε να προφέρετε σημεία στίξης, όπως \"τελεία\", \"κόμμα\" ή \"ερωτηματικό\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Ακύρωση"</string>
@@ -113,13 +113,13 @@
     <skip />
     <!-- no translation found for subtype_mode_de_keyboard (1990979135959462145) -->
     <skip />
-    <!-- no translation found for subtype_mode_en_GB_keyboard (2468557777064426976) -->
+    <!-- no translation found for subtype_mode_en_GB_keyboard (7945856548410373708) -->
     <skip />
-    <!-- no translation found for subtype_mode_en_US_keyboard (2979257184475020604) -->
+    <!-- no translation found for subtype_mode_en_US_keyboard (3708655163769735410) -->
     <skip />
     <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
     <skip />
-    <!-- no translation found for subtype_mode_es_US_keyboard (6418688989436457122) -->
+    <!-- no translation found for subtype_mode_es_US_keyboard (3702125193532262008) -->
     <skip />
     <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
     <skip />
@@ -145,13 +145,13 @@
     <skip />
     <!-- no translation found for subtype_mode_en_AU_voice (1103892562629586486) -->
     <skip />
-    <!-- no translation found for subtype_mode_en_GB_voice (4327384535900034392) -->
+    <!-- no translation found for subtype_mode_en_GB_voice (7868802451720612888) -->
     <skip />
     <!-- no translation found for subtype_mode_en_IN_voice (4834879535045820293) -->
     <skip />
     <!-- no translation found for subtype_mode_en_NZ_voice (2739391364469645636) -->
     <skip />
-    <!-- no translation found for subtype_mode_en_US_voice (1582519352222847297) -->
+    <!-- no translation found for subtype_mode_en_US_voice (2300580846081472319) -->
     <skip />
     <!-- no translation found for subtype_mode_es_voice (1323473601346507487) -->
     <skip />
@@ -169,9 +169,9 @@
     <skip />
     <!-- no translation found for subtype_mode_tr_voice (3402067436761140005) -->
     <skip />
-    <!-- no translation found for subtype_mode_zh_CN_voice (3154514897179707124) -->
+    <!-- no translation found for subtype_mode_zh_CN_voice (6452442204238513331) -->
     <skip />
-    <!-- no translation found for subtype_mode_zh_TW_voice (1524137359275360490) -->
+    <!-- no translation found for subtype_mode_zh_TW_voice (3640444875378221940) -->
     <skip />
     <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
     <skip />
