@@ -70,7 +70,7 @@
             <key-style
                 latin:styleName="micKeyStyle"
                 latin:code="@integer/key_voice"
-                latin:keyIcon="@drawable/sym_keyboard_mic"
+                latin:keyIcon="@drawable/sym_keyboard_voice_holo"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
