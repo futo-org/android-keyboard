@@ -16,7 +16,7 @@
 
 <resources>
 
-    <declare-styleable name="LatinKeyboardBaseView">
+    <declare-styleable name="KeyboardView">
         <!-- Default KeyboardView style. -->
         <attr name="keyboardViewStyle" format="reference" />
 
@@ -25,14 +25,17 @@
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
 
-        <!-- Size of the text for character keys. -->
-        <attr name="keyTextSize" format="dimension" />
+        <!-- Size of the text for one letter character keys. -->
+        <attr name="keyLetterSize" format="dimension" />
 
         <!-- Size of the text for custom keys with some text and no icon. -->
         <attr name="labelTextSize" format="dimension" />
 
         <!-- Color to use for the label in a key. -->
         <attr name="keyTextColor" format="color" />
+
+        <!-- Color to use for the label in a key when in disabled state. -->
+        <attr name="keyTextColorDisabled" format="color" />
 
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
@@ -56,17 +59,131 @@
         <attr name="shadowRadius" format="float" />
         <attr name="backgroundDimAmount" format="float" />
 
-        <attr name="keyTextStyle">
-            <flag name="normal" value="0" />
-            <flag name="bold" value="1" />
-            <flag name="italic" value="2" />
+        <attr name="keyLetterStyle">
+            <!-- This should be aligned with Typeface.NORMAL etc. -->
+            <enum name="normal" value="0" />
+            <enum name="bold" value="1" />
+            <enum name="italic" value="2" />
+            <enum name="boldItalic" value="3" />
         </attr>
 
-        <attr name="symbolColorScheme">
-            <flag name="white" value="0" />
-            <flag name="black" value="1" />
+        <attr name="colorScheme">
+            <!-- This should be aligned with KeyboardView.COLOR_SCHEME_* -->
+            <enum name="white" value="0" />
+            <enum name="black" value="1" />
         </attr>
 
     </declare-styleable>
 
+    <declare-styleable name="Keyboard">
+        <!-- Default keyboard height -->
+        <attr name="keyboardHeight" format="dimension" />
+        <!-- Maximum keyboard height, in pixels or percentage of display height -->
+        <attr name="maxKeyboardHeight" format="dimension|fraction" />
+        <!-- Default width of a key, in pixels or percentage of display width. -->
+        <attr name="keyWidth" format="dimension|fraction" />
+        <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
+             keyboard height. -->
+        <attr name="rowHeight" format="dimension|fraction" />
+        <!-- Default horizontal gap between keys. -->
+        <attr name="horizontalGap" format="dimension|fraction" />
+        <!-- Default vertical gap between rows of keys. -->
+        <attr name="verticalGap" format="dimension|fraction" />
+        <!-- Popup keyboard layout template -->
+        <attr name="popupKeyboardTemplate" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_Key">
+        <!-- The unicode value that this key outputs. -->
+        <attr name="code" format="integer" />
+        <!-- The characters to display in the popup keyboard. -->
+        <attr name="popupCharacters" format="string" />
+        <!-- Maximum column of popup keyboard -->
+        <attr name="maxPopupKeyboardColumn" format="integer" />
+        <!-- Key edge flags. -->
+        <attr name="keyEdgeFlags">
+            <!-- Key is anchored to the left of the keyboard. -->
+            <flag name="left" value="1" />
+            <!-- Key is anchored to the right of the keyboard. -->
+            <flag name="right" value="2" />
+        </attr>
+        <!-- Whether this is a modifier key such as Alt or Shift. -->
+        <attr name="isModifier" format="boolean" />
+        <!-- Whether this is a toggle key. -->
+        <attr name="isSticky" format="boolean" />
+        <!-- Whether long-pressing on this key will make it repeat. -->
+        <attr name="isRepeatable" format="boolean" />
+        <!-- The icon to show in the popup preview. -->
+        <attr name="iconPreview" format="reference" />
+        <!-- The string of characters to output when this key is pressed. -->
+        <attr name="keyOutputText" format="string" />
+        <!-- The label to display on the key. -->
+        <attr name="keyLabel" format="string" />
+        <!-- The key label option -->
+        <attr name="keyLabelOption">
+            <!-- This should be aligned with KeyboardView.KEY_LABEL_OPTION_* -->
+            <flag name="alignLeft" value="1" />
+            <flag name="alignRight" value="2" />
+            <flag name="alignBottom" value="8" />
+            <flag name="fontNormal" value="16" />
+        </attr>
+        <!-- The unicode that this key generates in manual temporary upper case mode. -->
+        <attr name="manualTemporaryUpperCaseCode" format="integer" />
+        <!-- The icon to display on the key instead of the label. -->
+        <attr name="keyIcon" format="reference" />
+        <!-- The hint icon to display on the key in conjunction with the label -->
+        <attr name="keyHintIcon" format="reference" />
+        <!-- The hint icon to display on the key when keyboard is in manual temporary upper case
+             mode. -->
+        <attr name="manualTemporaryUpperCaseHintIcon" format="reference" />
+        <!-- The key style to specify a set of key attributes defined by <key_style/> -->
+        <attr name="keyStyle" format="string" />
+        <!-- Shift key icon for shifted state -->
+        <attr name="shiftedIcon" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_Row">
+        <!-- Row edge flags. -->
+        <attr name="rowEdgeFlags">
+            <!-- Row is anchored to the top of the keyboard. -->
+            <flag name="top" value="4" />
+            <!-- Row is anchored to the bottom of the keyboard. -->
+            <flag name="bottom" value="8" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_Include">
+        <attr name="keyboardLayout" format="reference" />
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_Case">
+        <!-- This should be aligned with KeyboardId.MODE_* -->
+        <attr name="mode">
+            <enum name="text" value="0" />
+            <enum name="url" value="1" />
+            <enum name="email" value="2" />
+            <enum name="im" value="3" />
+            <enum name="web" value="4" />
+            <enum name="phone" value="5" />
+        </attr>
+        <attr name="hasSettingsKey" format="string" />
+        <attr name="voiceKeyEnabled" format="string" />
+        <attr name="hasVoiceKey" format="string" />
+        <attr name="imeOptions">
+            <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
+            <flag name="actionUnspecified" value="0" />
+            <flag name="actionNone" value="1" />
+            <flag name="actionGo" value="2" />
+            <flag name="actionSearch" value="3" />
+            <flag name="actionSend" value="4" />
+            <flag name="actionNext" value="5" />
+            <flag name="actionDone" value="6" />
+            <flag name="actionPrevious" value="7" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="Keyboard_KeyStyle">
+        <attr name="styleName" format="string" />
+        <attr name="parentStyle" format="string" />
+    </declare-styleable>
 </resources>

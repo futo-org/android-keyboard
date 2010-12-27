@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.voice;
 
-import com.android.inputmethod.latin.EditingUtil;
+import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.R;
 
 import android.content.ContentResolver;
@@ -28,12 +28,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.speech.RecognitionListener;
-import android.speech.SpeechRecognizer;
 import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Log;
-import android.view.inputmethod.InputConnection;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputConnection;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -86,6 +86,7 @@ public class VoiceInput implements OnClickListener {
     private static final String ALTERNATES_BUNDLE = "alternates_bundle";
 
     //  This is copied from the VoiceSearch app.
+    @SuppressWarnings("unused")
     private static final class AlternatesBundleKeys {
         public static final String ALTERNATES = "alternates";
         public static final String CONFIDENCE = "confidence";
@@ -240,7 +241,7 @@ public class VoiceInput implements OnClickListener {
     }
 
     public void incrementTextModificationInsertPunctuationCount(int count){
-        mAfterVoiceInputInsertPunctuationCount += 1;
+        mAfterVoiceInputInsertPunctuationCount += count;
         if (mAfterVoiceInputSelectionSpan > 0) {
             // If text was highlighted before inserting the char, count this as
             // a delete.
@@ -405,6 +406,7 @@ public class VoiceInput implements OnClickListener {
     /**
      * Handle the cancel button.
      */
+    @Override
     public void onClick(View view) {
         switch(view.getId()) {
             case R.id.button:
@@ -427,8 +429,7 @@ public class VoiceInput implements OnClickListener {
 
     public void logTextModifiedByChooseSuggestion(String suggestion, int index,
                                                   String wordSeparators, InputConnection ic) {
-        EditingUtil.Range range = new EditingUtil.Range();
-        String wordToBeReplaced = EditingUtil.getWordAtCursor(ic, wordSeparators, range);
+        String wordToBeReplaced = EditingUtils.getWordAtCursor(ic, wordSeparators);
         // If we enable phrase-based alternatives, only send up the first word
         // in suggestion and wordToBeReplaced.
         mLogger.textModifiedByChooseSuggestion(suggestion.length(), wordToBeReplaced.length(),
@@ -556,36 +557,45 @@ public class VoiceInput implements OnClickListener {
         int mSpeechStart;
         private boolean mEndpointed = false;
 
+        @Override
         public void onReadyForSpeech(Bundle noiseParams) {
             mRecognitionView.showListening();
         }
 
+        @Override
         public void onBeginningOfSpeech() {
             mEndpointed = false;
             mSpeechStart = mWaveBuffer.size();
         }
 
+        @Override
         public void onRmsChanged(float rmsdB) {
             mRecognitionView.updateVoiceMeter(rmsdB);
         }
 
+        @Override
         public void onBufferReceived(byte[] buf) {
             try {
                 mWaveBuffer.write(buf);
-            } catch (IOException e) {}
+            } catch (IOException e) {
+                // ignore.
+            }
         }
 
+        @Override
         public void onEndOfSpeech() {
             mEndpointed = true;
             mState = WORKING;
             mRecognitionView.showWorking(mWaveBuffer, mSpeechStart, mWaveBuffer.size());
         }
 
+        @Override
         public void onError(int errorType) {
             mState = ERROR;
             VoiceInput.this.onError(errorType, mEndpointed);
         }
 
+        @Override
         public void onResults(Bundle resultsBundle) {
             List<String> results = resultsBundle
                     .getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
@@ -638,10 +648,12 @@ public class VoiceInput implements OnClickListener {
             mRecognitionView.finish();
         }
 
+        @Override
         public void onPartialResults(final Bundle partialResults) {
             // currently - do nothing
         }
 
+        @Override
         public void onEvent(int eventType, Bundle params) {
             // do nothing - reserved for events that might be added in the future
         }

@@ -16,8 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.Key;
+
 import android.content.Context;
-import android.inputmethodservice.Keyboard.Key;
 import android.text.format.DateFormat;
 import android.util.Log;
 
@@ -61,7 +62,7 @@ public class TextEntryState {
         SPACE_AFTER_PICKED,
         UNDO_COMMIT,
         CORRECTING,
-        PICKED_CORRECTION;
+        PICKED_CORRECTION,
     }
 
     private static State sState = State.UNKNOWN;
@@ -96,7 +97,7 @@ public class TextEntryState {
         }
         try {
             sKeyLocationFile.close();
-            // Write to log file            
+            // Write to log file
             // Write timestamp, settings,
             String out = DateFormat.format("MM:dd hh:mm:ss", Calendar.getInstance().getTime())
                     .toString()
@@ -112,7 +113,7 @@ public class TextEntryState {
             sKeyLocationFile = null;
             sUserActionFile = null;
         } catch (IOException ioe) {
-            
+            // ignore
         }
     }
     
@@ -134,16 +135,18 @@ public class TextEntryState {
     public static void backToAcceptedDefault(CharSequence typedWord) {
         if (typedWord == null) return;
         switch (sState) {
-            case SPACE_AFTER_ACCEPTED:
-            case PUNCTUATION_AFTER_ACCEPTED:
-            case IN_WORD:
-                sState = State.ACCEPTED_DEFAULT;
-                break;
+        case SPACE_AFTER_ACCEPTED:
+        case PUNCTUATION_AFTER_ACCEPTED:
+        case IN_WORD:
+            sState = State.ACCEPTED_DEFAULT;
+            break;
+        default:
+            break;
         }
         displayState();
     }
 
-    public static void acceptedTyped(CharSequence typedWord) {
+    public static void acceptedTyped(@SuppressWarnings("unused") CharSequence typedWord) {
         sWordNotInDictionaryCount++;
         sState = State.PICKED_SUGGESTION;
         displayState();
@@ -165,6 +168,13 @@ public class TextEntryState {
 
     public static void selectedForCorrection() {
         sState = State.CORRECTING;
+        displayState();
+    }
+
+    public static void onAbortCorrection() {
+        if (isCorrecting()) {
+            sState = State.START;
+        }
         displayState();
     }
 
@@ -253,13 +263,13 @@ public class TextEntryState {
     }
 
     public static void keyPressedAt(Key key, int x, int y) {
-        if (LOGGING && sKeyLocationFile != null && key.codes[0] >= 32) {
-            String out = 
-                    "KEY: " + (char) key.codes[0] 
-                    + " X: " + x 
+        if (LOGGING && sKeyLocationFile != null && key.mCode >= 32) {
+            String out =
+                    "KEY: " + (char) key.mCode
+                    + " X: " + x
                     + " Y: " + y
-                    + " MX: " + (key.x + key.width / 2)
-                    + " MY: " + (key.y + key.height / 2) 
+                    + " MX: " + (key.mX + key.mWidth / 2)
+                    + " MY: " + (key.mY + key.mHeight / 2)
                     + "\n";
             try {
                 sKeyLocationFile.write(out.getBytes());

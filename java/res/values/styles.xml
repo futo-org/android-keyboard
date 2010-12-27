@@ -15,22 +15,32 @@
 -->
 
 <resources>
-    <style name="LatinKeyboardBaseView">
+    <style name="KeyboardView">
         <item name="android:background">@drawable/keyboard_background</item>
 
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
-        <item name="keyTextSize">@dimen/key_text_size</item>
+        <item name="keyLetterSize">@dimen/key_letter_size</item>
+        <item name="keyLetterStyle">normal</item>
         <item name="keyTextColor">#FFFFFFFF</item>
+        <item name="keyTextColorDisabled">#FFFFFFFF</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
-        <item name="keyPreviewOffset">0dip</item>
-        <item name="keyPreviewHeight">80dip</item>
-        <item name="labelTextSize">14sp</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
+        <item name="keyPreviewHeight">@dimen/key_preview_height</item>
+        <item name="labelTextSize">@dimen/key_label_text_size</item>
         <item name="popupLayout">@layout/keyboard_popup</item>
-        <item name="keyHysteresisDistance">0.05in</item>
-        <item name="verticalCorrection">-10dip</item>
+        <item name="keyHysteresisDistance">@dimen/key_hysteresis_distance</item>
+        <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
-        <item name="symbolColorScheme">white</item>
+        <item name="colorScheme">white</item>
+    </style>
+    <style name="KeyPreviewAnimation">
+        <item name="android:windowEnterAnimation">@anim/key_preview_fadein</item>
+        <item name="android:windowExitAnimation">@anim/key_preview_fadeout</item>
+    </style>
+    <style name="MiniKeyboardAnimation">
+        <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>
+        <item name="android:windowExitAnimation">@anim/mini_keyboard_fadeout</item>
     </style>
 </resources>

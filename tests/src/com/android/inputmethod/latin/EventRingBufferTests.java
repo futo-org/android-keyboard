@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.SwipeTracker.EventRingBuffer;
+import com.android.inputmethod.keyboard.SwipeTracker.EventRingBuffer;
 
 import android.test.AndroidTestCase;
 

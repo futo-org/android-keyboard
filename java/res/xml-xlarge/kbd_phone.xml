@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<Keyboard
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    latin:keyboardHeight="@dimen/keyboardHeight"
+    latin:maxKeyboardHeight="50%p"
+    latin:rowHeight="25%p"
+    latin:keyWidth="11.949%p"
+    latin:horizontalGap="@dimen/key_horizontal_gap"
+    latin:verticalGap="@dimen/key_bottom_gap"
+    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
+    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
+>
+    <include
+        latin:keyboardLayout="@xml/kbd_key_styles" />
+    <include
+        latin:keyboardLayout="@xml/kbd_numkey_styles" />
+    <!-- This row is intentionally not marked as a top row -->
+    <Row>
+        <Key
+            latin:keyStyle="tabKeyStyle"
+            latin:keyLabelOption="alignLeft"
+            latin:keyEdgeFlags="left" />
+        <!-- To match one character label size with "Tab", I placed spaces around the char '-'
+             and '+'. -->
+        <Spacer
+            latin:horizontalGap="8.470%p" />
+        <Key
+            latin:code="45"
+            latin:keyLabel=" - "
+            latin:keyWidth="8.042%p" />
+        <Key
+            latin:code="43"
+            latin:keyLabel=" + "
+            latin:keyWidth="8.042%p" />
+        <Spacer
+            latin:horizontalGap="8.479%p" />
+        <Key
+            latin:keyStyle="num1KeyStyle" />
+        <Key
+            latin:keyStyle="num2KeyStyle" />
+        <Key
+            latin:keyStyle="num3KeyStyle" />
+        <Spacer
+            latin:horizontalGap="9.360%p" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="9.804%p"
+            latin:keyEdgeFlags="right" />
+    </Row>
+    <Row>
+        <Key
+            latin:keyStyle="moreKeyStyle"
+            latin:keyEdgeFlags="left" />
+        <!-- To match one character label size with "More", I placed spaces around the char ','
+             and '.'. -->
+        <Spacer
+            latin:horizontalGap="8.470%p" />
+        <Key
+            latin:code="44"
+            latin:keyLabel=" , "
+            latin:keyWidth="8.042%p" />
+        <Key
+            latin:code="46"
+            latin:keyLabel=" . "
+            latin:keyWidth="8.042%p" />
+        <Spacer
+            latin:horizontalGap="8.479%p" />
+        <Key
+            latin:keyStyle="num4KeyStyle" />
+        <Key
+            latin:keyStyle="num5KeyStyle" />
+        <Key
+            latin:keyStyle="num6KeyStyle" />
+        <Spacer
+            latin:horizontalGap="4.458%p" />
+        <Key
+            latin:keyStyle="returnKeyStyle"
+            latin:keyWidth="14.706%p"
+            latin:keyEdgeFlags="right" />
+    </Row>
+    <Row>
+        <!-- To match one character label size with "More", I placed spaces around the char '('
+             and ')'. -->
+        <!-- There is an empty area bellow the "More" key and left of the "(" key.  To ignore
+             the touch event on the area, "(" is intentionally not marked as a left edge key. -->
+        <Spacer
+            latin:horizontalGap="20.427%p" />
+        <Key
+            latin:code="40"
+            latin:keyLabel=" ( "
+            latin:keyWidth="8.042%p" />
+        <Key
+            latin:code="41"
+            latin:keyLabel=" ) "
+            latin:keyWidth="8.042%p" />
+        <Spacer
+            latin:horizontalGap="8.479%p" />
+        <Key
+            latin:keyStyle="num7KeyStyle" />
+        <Key
+            latin:keyStyle="num8KeyStyle" />
+        <Key
+            latin:keyStyle="num9KeyStyle" />
+        <!-- There is an empty area bellow the "Enter" key and right of the "9" key.  To ignore
+             the touch event on the area, "9" is intentionally not marked as a right edge key. -->
+        </Row>
+    <!-- This row is intentionally not marked as a bottom row -->
+    <Row>
+        <!-- There is an empty area bellow the "More" key and left of the "space" key.  To ignore
+             the touch event on the area, "space" is intentionally not marked as a left edge key. -->
+        <Spacer
+            latin:horizontalGap="20.427%p" />
+        <Key
+            latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
+            latin:keyWidth="16.085%p" />
+        <Spacer
+            latin:horizontalGap="8.479%p" />
+        <Key
+            latin:keyStyle="numStarKeyStyle" />
+        <Key
+            latin:keyStyle="num0KeyStyle" />
+        <Key
+            latin:keyStyle="numPoundKeyStyle" />
+        <Key
+            latin:keyStyle="micKeyStyle"
+            latin:keyWidth="8.042%p" />
+        <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
+             the touch event on the area, "#" is intentionally not marked as a right edge key. -->
+    </Row>
+</Keyboard>

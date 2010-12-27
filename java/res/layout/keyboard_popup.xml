@@ -23,17 +23,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/keyboard_popup_panel_background"
+        android:paddingLeft="16dip"
+        android:paddingRight="16dip"
         >
-    <com.android.inputmethod.latin.LatinKeyboardBaseView
+    <com.android.inputmethod.keyboard.KeyboardView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-            android:id="@+id/LatinKeyboardBaseView"
+            android:id="@+id/KeyboardView"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/keyboard_dark_background"
+            android:background="@color/latinkeyboard_transparent"
 
             latin:keyBackground="@drawable/btn_keyboard_key_gingerbread_popup"
             latin:keyHysteresisDistance="0dip"
-            latin:verticalCorrection="-20dip"
+            latin:verticalCorrection="@dimen/mini_keyboard_vertical_correction"
             />
 </LinearLayout>

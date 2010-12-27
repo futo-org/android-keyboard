@@ -5,4 +5,12 @@
 
 -keep class com.android.inputmethod.latin.Suggest {
   <init>(...);
+  com.android.inputmethod.latin.SuggestedWords getSuggestions(...);
+}
+
+-keep class com.android.inputmethod.latin.UserBigramDictionary {
+  void setDatabaseMax(int);
+  void setDatabaseDelete(int);
+  void waitUntilUpdateDBDone();
+  void waitForDictionaryLoading();
 }

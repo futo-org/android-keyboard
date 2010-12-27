@@ -116,37 +116,30 @@ public class SuggestHelper {
         return word;
     }
 
-    private void showList(String title, List<CharSequence> suggestions) {
-        Log.i(TAG, title);
-        for (int i = 0; i < suggestions.size(); i++) {
-            Log.i(title, suggestions.get(i) + ", ");
-        }
-    }
-
-    private boolean isDefaultSuggestion(List<CharSequence> suggestions, CharSequence word) {
+    private boolean isDefaultSuggestion(SuggestedWords suggestions, CharSequence word) {
         // Check if either the word is what you typed or the first alternative
         return suggestions.size() > 0 &&
                 (/*TextUtils.equals(suggestions.get(0), word) || */
-                  (suggestions.size() > 1 && TextUtils.equals(suggestions.get(1), word)));
+                  (suggestions.size() > 1 && TextUtils.equals(suggestions.getWord(1), word)));
     }
 
     boolean isDefaultSuggestion(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, null);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
         return isDefaultSuggestion(suggestions, expected);
     }
 
     boolean isDefaultCorrection(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, null);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
         return isDefaultSuggestion(suggestions, expected) && mSuggest.hasMinimalCorrection();
     }
 
     boolean isASuggestion(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, null);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
         for (int i = 1; i < suggestions.size(); i++) {
-            if (TextUtils.equals(suggestions.get(i), expected)) return true;
+            if (TextUtils.equals(suggestions.getWord(i), expected)) return true;
         }
         return false;
     }
@@ -154,7 +147,7 @@ public class SuggestHelper {
     private void getBigramSuggestions(CharSequence previous, CharSequence typed) {
         if (!TextUtils.isEmpty(previous) && (typed.length() > 1)) {
             WordComposer firstChar = createWordComposer(Character.toString(typed.charAt(0)));
-            mSuggest.getSuggestions(null, firstChar, false, previous);
+            mSuggest.getSuggestions(null, firstChar, previous);
         }
     }
 
@@ -162,7 +155,7 @@ public class SuggestHelper {
             CharSequence expected) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, previous);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
         return isDefaultSuggestion(suggestions, expected);
     }
 
@@ -170,7 +163,7 @@ public class SuggestHelper {
             CharSequence expected) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, previous);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
         return isDefaultSuggestion(suggestions, expected) && mSuggest.hasMinimalCorrection();
     }
 
@@ -178,9 +171,9 @@ public class SuggestHelper {
             CharSequence expected) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
-        List<CharSequence> suggestions = mSuggest.getSuggestions(null, word, false, previous);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
         for (int i = 1; i < suggestions.size(); i++) {
-            if (TextUtils.equals(suggestions.get(i), expected)) return true;
+            if (TextUtils.equals(suggestions.getWord(i), expected)) return true;
         }
         return false;
     }
@@ -191,14 +184,12 @@ public class SuggestHelper {
 
     boolean isUserBigramSuggestion(CharSequence previous, char typed,
            CharSequence expected) {
-        WordComposer word = createWordComposer(Character.toString(typed));
-
         if (mUserBigram == null) return false;
 
         flushUserBigrams();
         if (!TextUtils.isEmpty(previous) && !TextUtils.isEmpty(Character.toString(typed))) {
             WordComposer firstChar = createWordComposer(Character.toString(typed));
-            mSuggest.getSuggestions(null, firstChar, false, previous);
+            mSuggest.getSuggestions(null, firstChar, previous);
             boolean reloading = mUserBigram.reloadDictionaryIfRequired();
             if (reloading) mUserBigram.waitForDictionaryLoading();
             mUserBigram.getBigrams(firstChar, previous, mSuggest, null);

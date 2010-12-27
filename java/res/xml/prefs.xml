@@ -34,12 +34,13 @@
             android:key="popup_on"
             android:title="@string/popup_on_keypress"
             android:persistent="true"
-            android:defaultValue="@bool/default_popup_preview"
+            android:defaultValue="@bool/config_default_popup_preview"
             />
 
     <CheckBoxPreference
             android:key="recorrection_enabled"
             android:title="@string/prefs_enable_recorrection"
+            android:summary="@string/prefs_enable_recorrection_summary"
             android:persistent="true"
             android:defaultValue="@bool/default_recorrection_enabled"
             />
@@ -47,14 +48,6 @@
     <CheckBoxPreference
             android:key="auto_cap"
             android:title="@string/auto_cap"
-            android:persistent="true"
-            android:defaultValue="true"
-            />
-
-    <CheckBoxPreference
-            android:key="enable_logging"
-            android:title="@string/prefs_enable_log"
-            android:summary="@string/prefs_description_log"
             android:persistent="true"
             android:defaultValue="true"
             />
@@ -77,20 +70,12 @@
             android:defaultValue="@string/voice_mode_main"
             />
 
-    <ListPreference
-            android:key="pref_keyboard_layout_20100902"
-            android:title="@string/keyboard_layout"
-            android:persistent="true"
-            android:entryValues="@array/keyboard_layout_modes_values"
-            android:entries="@array/keyboard_layout_modes"
-            android:defaultValue="4"
-            />
-
     <PreferenceScreen
+            android:key="subtype_settings"
             android:title="@string/language_selection_title"
             android:summary="@string/language_selection_summary">
         <intent
-                android:action="com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION"/>
+                android:action="android.settings.INPUT_METHOD_AND_SUBTYPE_ENABLER"/>
     </PreferenceScreen>
 
     <PreferenceCategory
@@ -105,21 +90,24 @@
             android:defaultValue="true"
             />
 
-        <CheckBoxPreference
-            android:key="show_suggestions"
-            android:title="@string/show_suggestions"
-            android:summary="@string/show_suggestions_summary"
+        <ListPreference
+            android:key="show_suggestions_setting"
+            android:summary="@string/prefs_show_suggestions_summary"
+            android:title="@string/prefs_show_suggestions"
             android:persistent="true"
-            android:defaultValue="true"
+            android:entryValues="@array/prefs_suggestion_visibility_values"
+            android:entries="@array/prefs_suggestion_visibilities"
+            android:defaultValue="@string/prefs_suggestion_visibility_default_value"
             />
 
-        <CheckBoxPreference
-            android:key="auto_complete"
-            android:title="@string/auto_complete"
-            android:summary="@string/auto_complete_summary"
-            android:persistent="true" 
-            android:defaultValue="@bool/enable_autocorrect"
-            android:dependency="show_suggestions"
+        <ListPreference
+            android:key="auto_correction_threshold"
+            android:title="@string/auto_correction"
+            android:summary="@string/auto_correction_summary"
+            android:persistent="true"
+            android:entryValues="@array/auto_correction_threshold_mode_indexes"
+            android:entries="@array/auto_correction_threshold_modes"
+            android:defaultValue="@string/auto_correction_threshold_mode_index_modest"
             />
 
         <CheckBoxPreference
@@ -128,9 +116,15 @@
             android:summary="@string/bigram_suggestion_summary"
             android:persistent="true"
             android:defaultValue="true"
-            android:dependency="auto_complete"
             />
-    </PreferenceCategory>            
+    </PreferenceCategory>
+
+    <CheckBoxPreference
+            android:key="usability_study_mode"
+            android:title="@string/prefs_usability_study_mode"
+            android:persistent="true"
+            android:defaultValue="false"
+            />
 
     <CheckBoxPreference
             android:key="debug_mode"

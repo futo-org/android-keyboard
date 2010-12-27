@@ -18,7 +18,7 @@
 */
 -->
 
-<com.android.inputmethod.latin.LatinKeyboardView
+<com.android.inputmethod.keyboard.LatinKeyboardView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
         android:id="@+id/LatinkeyboardBaseView"
@@ -26,12 +26,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/keyboard_background"
-        android:textStyle="bold"
 
         latin:keyBackground="@drawable/btn_keyboard_key_stone"
         latin:keyTextColor="@color/latinkeyboard_key_color_black"
         latin:shadowColor="@color/latinkeyboard_key_color_white"
-        latin:keyTextStyle="bold"
-        latin:symbolColorScheme="black"
+        latin:keyLetterStyle="bold"
+        latin:colorScheme="black"
         latin:popupLayout="@layout/input_stone_popup"
         />

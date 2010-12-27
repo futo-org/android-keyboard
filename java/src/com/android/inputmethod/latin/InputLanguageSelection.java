@@ -16,11 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
@@ -32,32 +27,43 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+
 public class InputLanguageSelection extends PreferenceActivity {
 
+    private SharedPreferences mPrefs;
     private String mSelectedLanguages;
     private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
     private static final String[] BLACKLIST_LANGUAGES = {
-        "ko", "ja", "zh", "el"
+        "ko", "ja", "zh", "el", "zz"
     };
 
     private static class Loc implements Comparable<Object> {
-        static Collator sCollator = Collator.getInstance();
+        private static Collator sCollator = Collator.getInstance();
 
-        String label;
-        Locale locale;
+        private String mLabel;
+        public final Locale mLocale;
 
         public Loc(String label, Locale locale) {
-            this.label = label;
-            this.locale = locale;
+            this.mLabel = label;
+            this.mLocale = locale;
+        }
+
+        public void setLabel(String label) {
+            this.mLabel = label;
         }
 
         @Override
         public String toString() {
-            return this.label;
+            return this.mLabel;
         }
 
+        @Override
         public int compareTo(Object o) {
-            return sCollator.compare(this.label, ((Loc) o).label);
+            return sCollator.compare(this.mLabel, ((Loc) o).mLabel);
         }
     }
 
@@ -66,15 +72,15 @@ public class InputLanguageSelection extends PreferenceActivity {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.language_prefs);
         // Get the settings preferences
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        mSelectedLanguages = sp.getString(LatinIME.PREF_SELECTED_LANGUAGES, "");
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        mSelectedLanguages = mPrefs.getString(Settings.PREF_SELECTED_LANGUAGES, "");
         String[] languageList = mSelectedLanguages.split(",");
         mAvailableLanguages = getUniqueLocales();
         PreferenceGroup parent = getPreferenceScreen();
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
             CheckBoxPreference pref = new CheckBoxPreference(this);
-            Locale locale = mAvailableLanguages.get(i).locale;
-            pref.setTitle(LanguageSwitcher.toTitleCase(locale.getDisplayName(locale)));
+            Locale locale = mAvailableLanguages.get(i).mLocale;
+            pref.setTitle(SubtypeSwitcher.getFullDisplayName(locale, true));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
             if (hasDictionary(locale)) {
@@ -135,18 +141,17 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < count; i++) {
             CheckBoxPreference pref = (CheckBoxPreference) parent.getPreference(i);
             if (pref.isChecked()) {
-                Locale locale = mAvailableLanguages.get(i).locale;
+                Locale locale = mAvailableLanguages.get(i).mLocale;
                 checkedLanguages += get5Code(locale) + ",";
             }
         }
         if (checkedLanguages.length() < 1) checkedLanguages = null; // Save null
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        Editor editor = sp.edit();
-        editor.putString(LatinIME.PREF_SELECTED_LANGUAGES, checkedLanguages);
+        Editor editor = mPrefs.edit();
+        editor.putString(Settings.PREF_SELECTED_LANGUAGES, checkedLanguages);
         SharedPreferencesCompat.apply(editor);
     }
 
-    ArrayList<Loc> getUniqueLocales() {
+    public ArrayList<Loc> getUniqueLocales() {
         String[] locales = getAssets().getLocales();
         Arrays.sort(locales);
         ArrayList<Loc> uniqueLocales = new ArrayList<Loc>();
@@ -167,23 +172,24 @@ public class InputLanguageSelection extends PreferenceActivity {
 
                 if (finalSize == 0) {
                     preprocess[finalSize++] =
-                            new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(l)), l);
+                            new Loc(SubtypeSwitcher.getFullDisplayName(l, true), l);
                 } else {
                     // check previous entry:
                     //  same lang and a country -> upgrade to full name and
                     //    insert ours with full name
                     //  diff lang -> insert ours with lang-only name
-                    if (preprocess[finalSize-1].locale.getLanguage().equals(
+                    if (preprocess[finalSize-1].mLocale.getLanguage().equals(
                             language)) {
-                        preprocess[finalSize-1].label = LanguageSwitcher.toTitleCase(
-                                preprocess[finalSize-1].locale.getDisplayName());
+                        preprocess[finalSize-1].setLabel(SubtypeSwitcher.getFullDisplayName(
+                                preprocess[finalSize-1].mLocale, false));
                         preprocess[finalSize++] =
-                                new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName()), l);
+                                new Loc(SubtypeSwitcher.getFullDisplayName(l, false), l);
                     } else {
                         String displayName;
                         if (s.equals("zz_ZZ")) {
+                            // ignore this locale
                         } else {
-                            displayName = LanguageSwitcher.toTitleCase(l.getDisplayName(l));
+                            displayName = SubtypeSwitcher.getFullDisplayName(l, true);
                             preprocess[finalSize++] = new Loc(displayName, l);
                         }
                     }

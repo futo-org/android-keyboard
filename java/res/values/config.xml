@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2010, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources>
+    <bool name="config_swipeDisambiguation">true</bool>
+    <bool name="default_recorrection_enabled">true</bool>
+    <bool name="config_long_press_comma_for_settings_enabled">true</bool>
+    <bool name="config_enable_show_settings_key_option">true</bool>
+    <bool name="config_enable_show_subtype_settings">true</bool>
+    <bool name="config_enable_show_voice_key_option">true</bool>
+    <bool name="config_candidate_highlight_font_color_enabled">true</bool>
+    <bool name="config_swipe_down_dismiss_keyboard_enabled">true</bool>
+    <bool name="config_sliding_key_input_enabled">true</bool>
+    <!-- Whether or not Popup on key press is enabled by default -->
+    <bool name="config_default_popup_preview">true</bool>
+    <integer name="config_delay_before_preview">0</integer>
+    <integer name="config_delay_after_preview">10</integer>
+    <integer name="config_preview_fadein_anim_time">0</integer>
+    <integer name="config_preview_fadeout_anim_time">70</integer>
+    <integer name="config_mini_keyboard_fadein_anim_time">0</integer>
+    <integer name="config_mini_keyboard_fadeout_anim_time">100</integer>
+    <integer name="config_delay_before_key_repeat_start">400</integer>
+    <integer name="config_key_repeat_interval">50</integer>
+    <integer name="config_keyboard_grid_width">32</integer>
+    <integer name="config_keyboard_grid_height">16</integer>
+    <integer name="config_long_press_key_timeout">400</integer>
+    <integer name="config_long_press_shift_key_timeout">1200</integer>
+    <integer name="config_touch_noise_threshold_millis">40</integer>
+    <dimen name="config_touch_noise_threshold_distance">2.0mm</dimen>
+    <string name="config_text_size_of_language_on_spacebar">small</string>
+    <integer name="config_max_popup_keyboard_column">9</integer>
+    <!-- Whether or not auto-correction should be enabled by default -->
+    <bool name="enable_autocorrect">true</bool>
+    <string-array name="auto_correction_threshold_values">
+        <!-- Off, When auto correction setting is Off, this value is not used. -->
+        <item></item>
+        <!-- Modest : Suggestion whose normalized score is greater than this value
+             will be subject to auto-correction. -->
+        <item>0.22</item>
+        <!-- Aggressive : Suggestion whose normalized score is greater than this value
+             will be subject to auto-correction. -->
+        <item>0</item>
+    </string-array>
+</resources>

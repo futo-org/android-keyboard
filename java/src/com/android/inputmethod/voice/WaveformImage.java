@@ -33,7 +33,9 @@ import java.nio.ShortBuffer;
 public class WaveformImage {
     private static final int SAMPLING_RATE = 8000;
 
-    private WaveformImage() {}
+    private WaveformImage() {
+        // Intentional empty constructor.
+    }
 
     public static Bitmap drawWaveform(
         ByteArrayOutputStream waveBuffer, int w, int h, int start, int end) {

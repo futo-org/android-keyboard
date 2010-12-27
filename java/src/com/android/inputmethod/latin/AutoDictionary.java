@@ -16,10 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import java.util.HashMap;
-import java.util.Set;
-import java.util.Map.Entry;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -29,6 +25,10 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.os.AsyncTask;
 import android.provider.BaseColumns;
 import android.util.Log;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Stores new words temporarily until they are promoted to the user dictionary
@@ -98,7 +98,7 @@ public class AutoDictionary extends ExpandableDictionary {
     }
 
     @Override
-    public boolean isValidWord(CharSequence word) {
+    public synchronized boolean isValidWord(CharSequence word) {
         final int frequency = getWordFrequency(word);
         return frequency >= VALIDITY_THRESHOLD;
     }
@@ -138,7 +138,8 @@ public class AutoDictionary extends ExpandableDictionary {
     }
 
     @Override
-    public void addWord(String word, int addFrequency) {
+    public void addWord(String newWord, int addFrequency) {
+        String word = newWord;
         final int length = word.length();
         // Don't add very short or very long words.
         if (length < 2 || length > getMaxWordLength()) return;
@@ -224,7 +225,7 @@ public class AutoDictionary extends ExpandableDictionary {
         private final DatabaseHelper mDbHelper;
         private final String mLocale;
 
-        public UpdateDbTask(Context context, DatabaseHelper openHelper,
+        public UpdateDbTask(@SuppressWarnings("unused") Context context, DatabaseHelper openHelper,
                 HashMap<String, Integer> pendingWrites, String locale) {
             mMap = pendingWrites;
             mLocale = locale;

@@ -16,12 +16,7 @@
 
 package com.android.inputmethod.voice;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.ShortBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import com.android.inputmethod.latin.R;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -43,7 +38,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.inputmethod.latin.R;
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.ShortBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The user interface for the "Speak now" and "working" states.
@@ -51,6 +51,7 @@ import com.android.inputmethod.latin.R;
  * plays beeps, shows errors, etc.
  */
 public class RecognitionView {
+    @SuppressWarnings("unused")
     private static final String TAG = "RecognitionView";
 
     private Handler mUiHandler;  // Reference to UI thread
@@ -78,6 +79,7 @@ public class RecognitionView {
 
     /** Updates the microphone icon to show user their volume.*/
     private Runnable mUpdateVolumeRunnable = new Runnable() {
+        @Override
         public void run() {
             if (mState != State.LISTENING) {
                 return;
@@ -141,6 +143,7 @@ public class RecognitionView {
 
     public void restoreState() {
         mUiHandler.post(new Runnable() {
+            @Override
             public void run() {
                 // Restart the spinner
                 if (mState == State.WORKING) {
@@ -153,6 +156,7 @@ public class RecognitionView {
 
     public void showInitializing() {
         mUiHandler.post(new Runnable() {
+            @Override
             public void run() {
                 prepareDialog(false, mContext.getText(R.string.voice_initializing), mInitializing,
                         mContext.getText(R.string.cancel)); 
@@ -162,6 +166,7 @@ public class RecognitionView {
 
     public void showListening() {
         mUiHandler.post(new Runnable() {
+            @Override
             public void run() {
                 mState = State.LISTENING;
                 prepareDialog(false, mContext.getText(R.string.voice_listening), mSpeakNow.get(0),
@@ -177,6 +182,7 @@ public class RecognitionView {
 
     public void showError(final String message) {
         mUiHandler.post(new Runnable() {
+            @Override
             public void run() {
                 mState = State.READY;
                 prepareDialog(false, message, mError, mContext.getText(R.string.ok));
@@ -190,6 +196,7 @@ public class RecognitionView {
         final int speechEndPosition) {
 
         mUiHandler.post(new Runnable() {
+            @Override
             public void run() {
                 mState = State.WORKING;
                 prepareDialog(true, mContext.getText(R.string.voice_working), null, mContext
@@ -309,6 +316,7 @@ public class RecognitionView {
 
     public void finish() {
         mUiHandler.post(new Runnable() {
+            @Override
             public void run() {
                 mState = State.READY;
                 exitWorking();

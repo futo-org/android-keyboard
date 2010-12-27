@@ -21,6 +21,7 @@ import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.os.SystemClock;
+import android.provider.BaseColumns;
 import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,7 +29,7 @@ import android.util.Log;
 public class ContactsDictionary extends ExpandableDictionary {
 
     private static final String[] PROJECTION = {
-        Contacts._ID,
+        BaseColumns._ID,
         Contacts.DISPLAY_NAME,
     };
 

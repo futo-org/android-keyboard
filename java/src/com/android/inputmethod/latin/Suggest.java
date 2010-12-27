@@ -16,23 +16,23 @@
 
 package com.android.inputmethod.latin;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import android.content.Context;
 import android.text.AutoText;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of 
  * characters. This includes corrections and completions.
- * @hide pending API Council Approval
  */
 public class Suggest implements Dictionary.WordCallback {
+
+    public static final String TAG = "Suggest";
 
     public static final int APPROX_MAX_WORD_LENGTH = 32;
 
@@ -81,6 +81,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private boolean mAutoTextEnabled;
 
+    private double mAutoCorrectionThreshold;
     private int[] mPriorities = new int[mPrefMaxSuggestions];
     private int[] mBigramPriorities = new int[PREF_MAX_BIGRAMS];
 
@@ -94,9 +95,11 @@ public class Suggest implements Dictionary.WordCallback {
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
     private boolean mHaveCorrection;
-    private CharSequence mOriginalWord;
     private String mLowerOriginalWord;
-    private boolean mCapitalize;
+
+    // TODO: Remove these member variables by passing more context to addWord() callback method
+    private boolean mIsFirstCharCapitalized;
+    private boolean mIsAllUpperCase;
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
@@ -160,6 +163,10 @@ public class Suggest implements Dictionary.WordCallback {
         mUserBigramDictionary = userBigramDictionary;
     }
 
+    public void setAutoCorrectionThreshold(double threshold) {
+        mAutoCorrectionThreshold = threshold;
+    }
+
     /**
      * Number of suggestions to generate from the input key sequence. This has
      * to be a number between 1 and 100 (inclusive).
@@ -180,58 +187,38 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    private boolean haveSufficientCommonality(String original, CharSequence suggestion) {
-        final int originalLength = original.length();
-        final int suggestionLength = suggestion.length();
-        final int minLength = Math.min(originalLength, suggestionLength);
-        if (minLength <= 2) return true;
-        int matching = 0;
-        int lessMatching = 0; // Count matches if we skip one character
-        int i;
-        for (i = 0; i < minLength; i++) {
-            final char origChar = ExpandableDictionary.toLowerCase(original.charAt(i));
-            if (origChar == ExpandableDictionary.toLowerCase(suggestion.charAt(i))) {
-                matching++;
-                lessMatching++;
-            } else if (i + 1 < suggestionLength
-                    && origChar == ExpandableDictionary.toLowerCase(suggestion.charAt(i + 1))) {
-                lessMatching++;
-            }
-        }
-        matching = Math.max(matching, lessMatching);
-
-        if (minLength <= 4) {
-            return matching >= 2;
-        } else {
-            return matching > minLength / 2;
-        }
-    }
-
     /**
-     * Returns a list of words that match the list of character codes passed in.
-     * This list will be overwritten the next time this function is called.
+     * Returns a object which represents suggested words that match the list of character codes
+     * passed in. This object contents will be overwritten the next time this function is called.
      * @param view a view for retrieving the context for AutoText
      * @param wordComposer contains what is currently being typed
      * @param prevWordForBigram previous word (used only for bigram)
-     * @return list of suggestions.
+     * @return suggested words object.
      */
-    public List<CharSequence> getSuggestions(View view, WordComposer wordComposer, 
-            boolean includeTypedWordIfValid, CharSequence prevWordForBigram) {
+    public SuggestedWords getSuggestions(View view, WordComposer wordComposer,
+            CharSequence prevWordForBigram) {
+        return getSuggestedWordBuilder(view, wordComposer, prevWordForBigram).build();
+    }
+
+    // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
+    public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
+            CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mHaveCorrection = false;
-        mCapitalize = wordComposer.isCapitalized();
+        mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
+        mIsAllUpperCase = wordComposer.isAllUpperCase();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         Arrays.fill(mPriorities, 0);
         Arrays.fill(mNextLettersFrequencies, 0);
 
         // Save a lowercase version of the original word
-        mOriginalWord = wordComposer.getTypedWord();
-        if (mOriginalWord != null) {
-            final String mOriginalWordString = mOriginalWord.toString();
-            mOriginalWord = mOriginalWordString;
-            mLowerOriginalWord = mOriginalWordString.toLowerCase();
+        CharSequence typedWord = wordComposer.getTypedWord();
+        if (typedWord != null) {
+            final String typedWordString = typedWord.toString();
+            typedWord = typedWordString;
+            mLowerOriginalWord = typedWordString.toLowerCase();
             // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-            LatinImeLogger.onAddSuggestedWord(mOriginalWordString, Suggest.DIC_USER_TYPED,
+            LatinImeLogger.onAddSuggestedWord(typedWordString, Suggest.DIC_USER_TYPED,
                     Dictionary.DataType.UNIGRAM);
         } else {
             mLowerOriginalWord = "";
@@ -289,7 +276,7 @@ public class Suggest implements Dictionary.WordCallback {
                     mContactsDictionary.getWords(wordComposer, this, mNextLettersFrequencies);
                 }
 
-                if (mSuggestions.size() > 0 && isValidWord(mOriginalWord)
+                if (mSuggestions.size() > 0 && isValidWord(typedWord)
                         && (mCorrectionMode == CORRECTION_FULL
                         || mCorrectionMode == CORRECTION_FULL_BIGRAM)) {
                     mHaveCorrection = true;
@@ -297,21 +284,23 @@ public class Suggest implements Dictionary.WordCallback {
             }
             mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
             if ((mCorrectionMode == CORRECTION_FULL || mCorrectionMode == CORRECTION_FULL_BIGRAM)
-                    && mSuggestions.size() > 0) {
-                mHaveCorrection = true;
+                    && mSuggestions.size() > 0 && mPriorities.length > 0) {
+                // TODO: when the normalized score of the first suggestion is nearly equals to
+                //       the normalized score of the second suggestion, behave less aggressive.
+                final double normalizedScore = Utils.calcNormalizedScore(
+                        typedWord, mSuggestions.get(0), mPriorities[0]);
+                if (LatinImeLogger.sDBG) {
+                    Log.d(TAG, "Normalized " + typedWord + "," + mSuggestions.get(0) + ","
+                            + mPriorities[0] + normalizedScore
+                            + "(" + mAutoCorrectionThreshold + ")");
+                }
+                if (normalizedScore >= mAutoCorrectionThreshold) {
+                    mHaveCorrection = true;
+                }
             }
         }
-        if (mOriginalWord != null) {
-            mSuggestions.add(0, mOriginalWord.toString());
-        }
-
-        // Check if the first suggestion has a minimum number of characters in common
-        if (wordComposer.size() > 1 && mSuggestions.size() > 1
-                && (mCorrectionMode == CORRECTION_FULL
-                || mCorrectionMode == CORRECTION_FULL_BIGRAM)) {
-            if (!haveSufficientCommonality(mLowerOriginalWord, mSuggestions.get(1))) {
-                mHaveCorrection = false;
-            }
+        if (typedWord != null) {
+            mSuggestions.add(0, typedWord.toString());
         }
         if (mAutoTextEnabled) {
             int i = 0;
@@ -322,8 +311,25 @@ public class Suggest implements Dictionary.WordCallback {
                 String suggestedWord = mSuggestions.get(i).toString().toLowerCase();
                 CharSequence autoText =
                         AutoText.get(suggestedWord, 0, suggestedWord.length(), view);
-                // Is there an AutoText correction?
+                // Is there an AutoText (also known as Quick Fixes) correction?
                 boolean canAdd = autoText != null;
+                // Capitalize as needed
+                final int autoTextLength = autoText != null ? autoText.length() : 0;
+                if (autoTextLength > 0 && (mIsAllUpperCase || mIsFirstCharCapitalized)) {
+                    int poolSize = mStringPool.size();
+                    StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(
+                            poolSize - 1) : new StringBuilder(getApproxMaxWordLength());
+                    sb.setLength(0);
+                    if (mIsAllUpperCase) {
+                        sb.append(autoText.toString().toUpperCase());
+                    } else if (mIsFirstCharCapitalized) {
+                        sb.append(Character.toUpperCase(autoText.charAt(0)));
+                        if (autoTextLength > 1) {
+                            sb.append(autoText.subSequence(1, autoTextLength));
+                        }
+                    }
+                    autoText = sb.toString();
+                }
                 // Is that correction already the current prediction (or original word)?
                 canAdd &= !TextUtils.equals(autoText, mSuggestions.get(i));
                 // Is that correction already the next predicted word?
@@ -339,7 +345,7 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
         removeDupes();
-        return mSuggestions;
+        return new SuggestedWords.Builder().addWords(mSuggestions);
     }
 
     public int[] getNextLettersFrequencies() {
@@ -391,6 +397,7 @@ public class Suggest implements Dictionary.WordCallback {
         return false;
     }
 
+    @Override
     public boolean addWord(final char[] word, final int offset, final int length, int freq,
             final int dicTypeId, final Dictionary.DataType dataType) {
         Dictionary.DataType dataTypeForLog = dataType;
@@ -446,14 +453,15 @@ public class Suggest implements Dictionary.WordCallback {
             return true;
         }
 
-        System.arraycopy(priorities, pos, priorities, pos + 1,
-                prefMaxSuggestions - pos - 1);
+        System.arraycopy(priorities, pos, priorities, pos + 1, prefMaxSuggestions - pos - 1);
         priorities[pos] = freq;
         int poolSize = mStringPool.size();
         StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1) 
                 : new StringBuilder(getApproxMaxWordLength());
         sb.setLength(0);
-        if (mCapitalize) {
+        if (mIsAllUpperCase) {
+            sb.append(new String(word, offset, length).toUpperCase());
+        } else if (mIsFirstCharCapitalized) {
             sb.append(Character.toUpperCase(word[offset]));
             if (length > 1) {
                 sb.append(word, offset + 1, length - 1);

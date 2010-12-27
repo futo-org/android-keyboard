@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_name" msgid="7252517407088836577">"Android keyboard"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Mga setting ng Android keyboard"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Mga pagpipilian sa input"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Mag-vibrate sa keypress"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Tunog sa keypress"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Popup sa keypress"</string>
+    <string name="prediction_category" msgid="7027100625580696660">"Mga setting ng suhestiyon ng salita"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalization"</string>
+    <string name="quick_fixes" msgid="5353213327680897927">"Mga mabilisang pagsasaayos"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"Itinatama ang mga karaniwang na-type na mali"</string>
+    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
+    <skip />
+    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
+    <skip />
+    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
+    <skip />
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Ipakita ang key ng mga setting"</string>
+    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Awtomatiko"</string>
+    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Palaging ipakita"</string>
+    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Palaging itago"</string>
+    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Mga suhestiyon ng salita"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Awtomatikong itama ang nakaraang salita"</string>
+    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
+    <skip />
+    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
+    <skip />
+    <string name="bigram_suggestion" msgid="1323347224043514969">"Mga Suhestiyon na Bigram"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Gamitin ang nakaraang salita upang pahusayin ang suhestiyon"</string>
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Na-save"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Pumunta"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Susunod"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Tapos na"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Ipadala"</string>
+    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
+    <skip />
+    <string name="label_more_key" msgid="3760239494604948502">"Higit pa"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Intay"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Pag-input ng boses"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Hindi kasalukuyang suportado ang pag-input ng boses para sa iyong wika, ngunit gumagana sa Ingles."</string>
+    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Ang pag-input ng boses ay isang tampok na pang-eksperimento na gumagamit ng naka-network na pagkilala sa pananalita ng Google."</string>
+    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Upang i-off ang pag-input ng boses, pumunta sa mga setting ng keyboard."</string>
+    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Upang gumamit ng pag-input ng boses, pindutin ang pindutang microphone o i-slide ang iyong daliri sa screen keyboard."</string>
+    <string name="voice_listening" msgid="467518160751321844">"Magsalita ngayon"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Nagtatrabaho"</string>
+    <string name="voice_initializing" msgid="661962047129906646"></string>
+    <string name="voice_error" msgid="5140896300312186162">"Error. Pakisubukang muli."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"Hindi makakonekta"</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"Error, masyadong maraming pananalita."</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"Problema sa audio"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"Error sa server"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"Walang narinig na pananalita"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Walang nakitang mga tugma"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Hindi naka-install ang paghahanap ng boses"</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Pahiwatig:"</b>" Mag-swipe sa keyboard upang magsalita"</string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Pahiwatig:"</b>" Sa susunod, subukang magsalita ng bantas tulad ng \"tuldok\", \"kuwit\", o \"tandang pananong\"."</string>
+    <string name="cancel" msgid="6830980399865683324">"Kanselahin"</string>
+    <string name="ok" msgid="7898366843681727667">"OK"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Pag-input ng boses"</string>
+    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
+    <skip />
+    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
+    <skip />
+    <string name="selectInputMethod" msgid="315076553378705821">"Pumili ng paraan ng pag-input"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"Mag-input ng mga wika"</string>
+    <string name="language_selection_summary" msgid="187110938289512256">"I-slide ang daliri sa spacebar upang palitan ang wika"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Pinduting muli upang i-save"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Available ang diksyunaryo"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Paganahin ang feedback ng user"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Tumulong na pahusayin ang editor ng paraan ng pag-input na ito sa pamamagitan ng awtomatikong pagpapadala ng mga istatistika ng paggamit at mga ulat ng crash sa Google."</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Pindutin upang itama ang mga salita"</string>
+    <!-- outdated translation 1056068922330206170 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Pindutin ang mga ipinasok na salita upang itama ang mga ito"</string>
+    <string name="keyboard_layout" msgid="437433231038683666">"Tema ng Keyboard"</string>
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Czech na Keyboard"</string>
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Danish na Keyboard"</string>
+    <!-- outdated translation 5111274665584117449 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"German Keyboard"</string>
+    <!-- outdated translation 2339748210942078577 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Ingles (Great Britain) na Keyboard"</string>
+    <!-- outdated translation 2979257184475020604 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Ingles (Estados Unidos) na Keyboard"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spanish na Keyboard"</string>
+    <!-- no translation found for subtype_mode_es_US_keyboard (3702125193532262008) -->
+    <skip />
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"French na Keyboard"</string>
+    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
+    <skip />
+    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
+    <skip />
+    <!-- outdated translation 2281078537437195027 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italian Keyboard"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norwegian na Keyboard"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Dutch na Keyboard"</string>
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Russian na Keyboard"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbian na Keyboard"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Swedish na Keyboard"</string>
+    <!-- outdated translation 157536957128878726 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Czech　na Boses"</string>
+    <!-- outdated translation 309350321180102217 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"German Boses"</string>
+    <string name="subtype_mode_en_AU_voice" msgid="1103892562629586486">"Ingles (Australia) na Boses"</string>
+    <!-- outdated translation 3773764031764533262 -->     <string name="subtype_mode_en_GB_voice" msgid="7868802451720612888">"Ingles (Great Britain) na Boses"</string>
+    <string name="subtype_mode_en_IN_voice" msgid="4834879535045820293">"Ingles (India) na Boses"</string>
+    <string name="subtype_mode_en_NZ_voice" msgid="2739391364469645636">"Ingles (New Zealand) na Boses"</string>
+    <!-- outdated translation 1582519352222847297 -->     <string name="subtype_mode_en_US_voice" msgid="2300580846081472319">"Ingles (Estados Unidos) na Boses"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Spanish na Boses"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"French na Boses"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Japanese na Boses"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Korean na Boses"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Polish na Boses"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Portuguese na Boses"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Russian na Boses"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Turkish na Boses"</string>
+    <!-- outdated translation 3154514897179707124 -->     <string name="subtype_mode_zh_CN_voice" msgid="6452442204238513331">"Chinese (China) na Boses"</string>
+    <!-- outdated translation 1524137359275360490 -->     <string name="subtype_mode_zh_TW_voice" msgid="3640444875378221940">"Chinese (Taiwan) na Boses"</string>
+    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
+    <skip />
+</resources>

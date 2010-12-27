@@ -19,83 +19,76 @@
 -->
 
 <Keyboard
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="26.67%p"
-    android:horizontalGap="0px"
-    android:verticalGap="0px"
-    android:keyHeight="@dimen/key_height"
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+    latin:keyboardHeight="@dimen/keyboardHeight"
+    latin:maxKeyboardHeight="50%p"
+    latin:rowHeight="25%p"
+    latin:keyWidth="26.67%p"
+    latin:horizontalGap="@dimen/key_horizontal_gap"
+    latin:verticalGap="@dimen/key_bottom_gap"
+    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
+    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
+    <include
+        latin:keyboardLayout="@xml/kbd_key_styles" />
+    <include
+        latin:keyboardLayout="@xml/kbd_numkey_styles" />
     <Row
-        android:rowEdgeFlags="top"
+        latin:rowEdgeFlags="top"
     >
         <Key
-            android:codes="49"
-            android:keyIcon="@drawable/sym_keyboard_num1"
-            android:keyEdgeFlags="left" />
+            latin:keyStyle="num1KeyStyle"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:codes="50"
-            android:keyIcon="@drawable/sym_keyboard_num2" />
+            latin:keyStyle="num2KeyStyle" />
         <Key
-            android:codes="51"
-            android:keyIcon="@drawable/sym_keyboard_num3" />
+            latin:keyStyle="num3KeyStyle" />
         <Key
-            android:keyLabel="-"
-            android:keyWidth="20%p"
-            android:keyEdgeFlags="right" />
+            latin:keyLabel="-"
+            latin:keyStyle="functionalKeyStyle"
+            latin:keyWidth="20%p"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
-            android:codes="52"
-            android:keyIcon="@drawable/sym_keyboard_num4"
-            android:keyEdgeFlags="left" />
+            latin:keyStyle="num4KeyStyle"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:codes="53"
-            android:keyIcon="@drawable/sym_keyboard_num5" />
+            latin:keyStyle="num5KeyStyle" />
         <Key
-            android:codes="54"
-            android:keyIcon="@drawable/sym_keyboard_num6" />
+            latin:keyStyle="num6KeyStyle" />
         <Key
-            android:keyLabel="."
-            android:keyWidth="20%p"
-            android:keyEdgeFlags="right" />
+            latin:keyLabel="."
+            latin:keyStyle="functionalKeyStyle"
+            latin:keyWidth="20%p"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
-            android:codes="55"
-            android:keyIcon="@drawable/sym_keyboard_num7"
-            android:keyEdgeFlags="left" />
+            latin:keyStyle="num7KeyStyle"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:codes="56"
-            android:keyIcon="@drawable/sym_keyboard_num8" />
+            latin:keyStyle="num8KeyStyle" />
         <Key
-            android:codes="57"
-            android:keyIcon="@drawable/sym_keyboard_num9" />
+            latin:keyStyle="num9KeyStyle" />
         <Key
-            android:codes="@integer/key_delete"
-            android:keyIcon="@drawable/sym_keyboard_delete"
-            android:iconPreview="@drawable/sym_keyboard_feedback_delete"
-            android:keyWidth="20%p"
-            android:isRepeatable="true"
-            android:keyEdgeFlags="right" />
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="20%p"
+            latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        android:rowEdgeFlags="bottom"
+        latin:rowEdgeFlags="bottom"
     >
         <Key
-            android:codes="@integer/key_symbol"
-            android:keyIcon="@drawable/sym_keyboard_numalt"
-            android:iconPreview="@drawable/sym_keyboard_feedback_numalt" />
+            latin:keyStyle="numAltKeyStyle"
+            latin:keyEdgeFlags="left" />
         <Key
-            android:codes="48"
-            android:keyIcon="@drawable/sym_keyboard_num0" />
+            latin:keyStyle="num0KeyStyle" />
         <Key
-            android:codes="@integer/key_space"
-            android:keyIcon="@drawable/sym_keyboard_space"
-            android:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            latin:keyStyle="numSpaceKeyStyle" />
         <Key
-            android:codes="@integer/key_return"
-            android:keyIcon="@drawable/sym_keyboard_return"
-            android:keyWidth="20%p"
-            android:keyEdgeFlags="right" />
+            latin:keyStyle="returnKeyStyle"
+            latin:keyWidth="20%p"
+            latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

@@ -16,19 +16,23 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Dictionary.DataType;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.inputmethodservice.Keyboard;
+
 import java.util.List;
 
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    public static boolean sDBG = false;
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
     }
 
-    public static void init(Context context) {
+    public static void init(Context context, SharedPreferences prefs) {
     }
 
     public static void commit() {
@@ -37,8 +41,8 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void onDestroy() {
     }
 
-    public static void logOnManualSuggestion(String before, String after, int position
-            , List<CharSequence> suggestions) {
+    public static void logOnManualSuggestion(
+            String before, String after, int position, List<CharSequence> suggestions) {
    }
 
     public static void logOnAutoSuggestion(String before, String after) {
@@ -50,7 +54,7 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void logOnDelete() {
     }
 
-    public static void logOnInputChar(char c, int x, int y) {
+    public static void logOnInputChar() {
     }
 
     public static void logOnException(String metaData, Throwable e) {
@@ -68,4 +72,6 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void onSetKeyboard(Keyboard kb) {
     }
 
+    public static void onPrintAllUsabilityStudtyLogs() {
+    }
 }

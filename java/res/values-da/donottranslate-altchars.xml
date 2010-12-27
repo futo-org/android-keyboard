@@ -18,21 +18,23 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_a">áàâąã</string>
-    <string name="alternates_for_e">3éèêëę€</string>
-    <string name="alternates_for_i">íìîï8</string>
-    <string name="alternates_for_o">óòôõ9</string>
-    <string name="alternates_for_u">úùûū7</string>
-    <string name="alternates_for_s">śšşß</string>
-    <string name="alternates_for_n">ńñň</string>
-    <string name="alternates_for_c">çćč</string>
-    <string name="alternates_for_y">ýÿü6</string>
-    <string name="alternates_for_d">ðď</string>
-    <string name="alternates_for_r">ř4</string>
-    <string name="alternates_for_t">ťþ5</string>
-    <string name="alternates_for_z">źžż</string>
+    <string name="alternates_for_a">á,à,â,ą,ã</string>
+    <string name="alternates_for_e">3,é,è,ê,ë,ę,€</string>
+    <string name="alternates_for_i">í,ì,î,ï,8</string>
+    <string name="alternates_for_o">ó,ò,ô,õ,9</string>
+    <string name="alternates_for_u">ú,ù,û,ū,7</string>
+    <string name="alternates_for_s">ś,š,ş,ß</string>
+    <string name="alternates_for_n">ń,ñ,ň</string>
+    <string name="alternates_for_c">ç,ć,č</string>
+    <string name="alternates_for_y">ý,ÿ,ü,6</string>
+    <string name="alternates_for_d">ð,ď</string>
+    <string name="alternates_for_r">ř,4</string>
+    <string name="alternates_for_t">ť,þ,5</string>
+    <string name="alternates_for_z">ź,ž,ż</string>
     <string name="alternates_for_l">ł</string>
     <string name="alternates_for_v">w</string>
-    <string name="alternates_for_ae">ä</string>
-    <string name="alternates_for_oe">öœ</string>
+    <string name="keylabel_for_scandinavia_row2_10">æ</string>
+    <string name="keylabel_for_scandinavia_row2_11">ø</string>
+    <string name="alternates_for_scandinavia_row2_10">ä</string>
+    <string name="alternates_for_scandinavia_row2_11">ö,œ</string>
 </resources>

@@ -21,18 +21,21 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.UserDictionary.Words;
 
 public class UserDictionary extends ExpandableDictionary {
     
-    private static final String[] PROJECTION = {
-        Words._ID,
+    private static final String[] PROJECTION_QUERY = {
         Words.WORD,
-        Words.FREQUENCY
+        Words.FREQUENCY,
     };
     
-    private static final int INDEX_WORD = 1;
-    private static final int INDEX_FREQUENCY = 2;
+    private static final String[] PROJECTION_ADD = {
+        Words._ID,
+        Words.FREQUENCY,
+        Words.LOCALE,
+    };
     
     private ContentObserver mObserver;
     private String mLocale;
@@ -66,7 +69,7 @@ public class UserDictionary extends ExpandableDictionary {
     @Override
     public void loadDictionaryAsync() {
         Cursor cursor = getContext().getContentResolver()
-                .query(Words.CONTENT_URI, PROJECTION, "(locale IS NULL) or (locale=?)", 
+                .query(Words.CONTENT_URI, PROJECTION_QUERY, "(locale IS NULL) or (locale=?)",
                         new String[] { mLocale }, null);
         addWords(cursor);
     }
@@ -80,7 +83,7 @@ public class UserDictionary extends ExpandableDictionary {
      * @TODO use a higher or float range for frequency
      */
     @Override
-    public synchronized void addWord(String word, int frequency) {
+    public synchronized void addWord(final String word, final int frequency) {
         // Force load the dictionary here synchronously
         if (getRequiresReload()) loadDictionaryAsync();
         // Safeguard against adding long words. Can cause stack overflow.
@@ -89,13 +92,35 @@ public class UserDictionary extends ExpandableDictionary {
         super.addWord(word, frequency);
 
         // Update the user dictionary provider
-        ContentValues values = new ContentValues(5);
+        final ContentValues values = new ContentValues(5);
         values.put(Words.WORD, word);
         values.put(Words.FREQUENCY, frequency);
         values.put(Words.LOCALE, mLocale);
         values.put(Words.APP_ID, 0);
 
-        getContext().getContentResolver().insert(Words.CONTENT_URI, values);
+        final ContentResolver contentResolver = getContext().getContentResolver();
+        new Thread("addWord") {
+            @Override
+            public void run() {
+                Cursor cursor = contentResolver.query(Words.CONTENT_URI, PROJECTION_ADD,
+                        "word=? and ((locale IS NULL) or (locale=?))",
+                        new String[] { word, mLocale }, null);
+                if (cursor != null && cursor.moveToFirst()) {
+                    String locale = cursor.getString(cursor.getColumnIndex(Words.LOCALE));
+                    // If locale is null, we will not override the entry.
+                    if (locale != null && locale.equals(mLocale.toString())) {
+                        long id = cursor.getLong(cursor.getColumnIndex(Words._ID));
+                        Uri uri = Uri.withAppendedPath(Words.CONTENT_URI, Long.toString(id));
+                        // Update the entry with new frequency value.
+                        contentResolver.update(uri, values, null, null);
+                    }
+                } else {
+                    // Insert new entry.
+                    contentResolver.insert(Words.CONTENT_URI, values);
+                }
+            }
+        }.start();
+
         // In case the above does a synchronous callback of the change observer
         setRequiresReload(false);
     }
@@ -116,9 +141,11 @@ public class UserDictionary extends ExpandableDictionary {
 
         final int maxWordLength = getMaxWordLength();
         if (cursor.moveToFirst()) {
+            final int indexWord = cursor.getColumnIndex(Words.WORD);
+            final int indexFrequency = cursor.getColumnIndex(Words.FREQUENCY);
             while (!cursor.isAfterLast()) {
-                String word = cursor.getString(INDEX_WORD);
-                int frequency = cursor.getInt(INDEX_FREQUENCY);
+                String word = cursor.getString(indexWord);
+                int frequency = cursor.getInt(indexFrequency);
                 // Safeguard against adding really long words. Stack may overflow due
                 // to recursion
                 if (word.length() < maxWordLength) {
