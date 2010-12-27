@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodSubtype;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.voice.SettingsUtil;
@@ -33,7 +34,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +44,8 @@ import java.util.Map;
 public class SubtypeSwitcher {
     // This flag indicates if we support language switching by swipe on space bar.
     // We may or may not draw the current language on space bar regardless of this flag.
-    public static final boolean USE_SPACEBAR_LANGUAGE_SWITCHER = false;
+    // @@@
+    public static final boolean USE_SPACEBAR_LANGUAGE_SWITCHER = true;
     private static final boolean DBG = false;
     private static final String TAG = "SubtypeSwitcher";
 
@@ -104,7 +105,7 @@ public class SubtypeSwitcher {
         mSystemLocale = null;
         mInputLocale = null;
         mInputLocaleStr = null;
-        mMode = null;
+        mMode = KEYBOARD_MODE;
         mAllEnabledSubtypesOfCurrentInputMethod = null;
         // TODO: Voice input should be created here
         mVoiceInput = null;
@@ -114,7 +115,7 @@ public class SubtypeSwitcher {
     // Only configuration changed event is allowed to call this because this is heavy.
     private void updateAllParameters() {
         mSystemLocale = mResources.getConfiguration().locale;
-        updateSubtype(mImm.getCurrentInputMethodSubtype());
+        // @@@ updateSubtype(mImm.getCurrentInputMethodSubtype());
         updateParametersOnStartInputView();
     }
 
@@ -132,8 +133,8 @@ public class SubtypeSwitcher {
     // Reload enabledSubtypes from the framework.
     private void updateEnabledSubtypes() {
         boolean foundCurrentSubtypeBecameDisabled = true;
-        mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
-                null, false);
+        // @@@ mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
+        //null, false);
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         for (InputMethodSubtype ims: mAllEnabledSubtypesOfCurrentInputMethod) {
@@ -156,12 +157,13 @@ public class SubtypeSwitcher {
             if (DBG) {
                 Log.w(TAG, "Last subtype was disabled. Update to the current one.");
             }
-            updateSubtype(mImm.getCurrentInputMethodSubtype());
+            // @@@ updateSubtype(mImm.getCurrentInputMethodSubtype());
         }
     }
 
     private void updateShortcutIME() {
         // TODO: Update an icon for shortcut IME
+        /*
         Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
                 mImm.getShortcutInputMethodsAndSubtypes();
         for (InputMethodInfo imi: shortcuts.keySet()) {
@@ -173,7 +175,8 @@ public class SubtypeSwitcher {
             // as appropriate.
             mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
             break;
-        }
+            }
+        */
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
@@ -268,7 +271,7 @@ public class SubtypeSwitcher {
         if (token == null || mShortcutInfo == null) {
             return;
         }
-        mImm.setInputMethodAndSubtype(token, mShortcutInfo.getId(), mShortcutSubtype);
+        // @@@ mImm.setInputMethodAndSubtype(token, mShortcutInfo.getId(), mShortcutSubtype);
     }
 
     public Drawable getShortcutIcon() {
@@ -276,6 +279,7 @@ public class SubtypeSwitcher {
     }
 
     private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtype subtype) {
+        /*
         final PackageManager pm = mService.getPackageManager();
         if (imi != null) {
             final String imiPackageName = imi.getPackageName();
@@ -297,7 +301,8 @@ public class SubtypeSwitcher {
                     Log.w(TAG, "IME can't be found: " + imiPackageName);
                 }
             }
-        }
+            }
+        */
         return null;
     }
 

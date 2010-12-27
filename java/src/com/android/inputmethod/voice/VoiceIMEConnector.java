@@ -541,8 +541,10 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
     private void switchToLastInputMethod() {
+        /* @@@
         IBinder token = mContext.getWindow().getWindow().getAttributes().token;
         mImm.switchToLastInputMethod(token);
+        */
     }
 
     private void reallyStartListening(boolean swipe, final boolean configurationChanging) {

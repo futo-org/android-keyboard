@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodSubtype;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -63,13 +64,12 @@ import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
-import android.view.inputmethod.CorrectionInfo;
+// @@@ import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.InputMethodSubtype;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
@@ -479,7 +479,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (container.getPaddingRight() != 0) {
             HorizontalScrollView scrollView =
                     (HorizontalScrollView) container.findViewById(R.id.candidates_scroll_view);
-            scrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            // @@@ scrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
             container.setGravity(Gravity.CENTER_HORIZONTAL);
         }
         mCandidateView = (CandidateView) container.findViewById(R.id.candidates);
@@ -490,13 +490,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private static boolean isPasswordVariation(int variation) {
         return variation == InputType.TYPE_TEXT_VARIATION_PASSWORD
-                || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD;
+                || variation == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD;
+        // @@@ || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD;
     }
 
     private static boolean isEmailVariation(int variation) {
-        return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                || variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
+        return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS;
+        // @@@ || variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
     }
 
     @Override
@@ -1200,8 +1200,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void handleTab() {
         final int imeOptions = getCurrentInputEditorInfo().imeOptions;
-        final int navigationFlags =
-                EditorInfo.IME_FLAG_NAVIGATE_NEXT | EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS;
+        final int navigationFlags = 0;
+        // @@@ final int navigationFlags =
+        // @@@ EditorInfo.IME_FLAG_NAVIGATE_NEXT | EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS;
         if ((imeOptions & navigationFlags) == 0) {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
             return;
@@ -1211,6 +1212,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (ic == null)
             return;
 
+        /* @@@
         // True if keyboard is in either chording shift or manual temporary upper case mode.
         final boolean isManualTemporaryUpperCase = mKeyboardSwitcher.isManualTemporaryUpperCase();
         if ((imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0
@@ -1220,6 +1222,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 && isManualTemporaryUpperCase) {
             ic.performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
         }
+        */
     }
 
     private void abortCorrection(boolean force) {
@@ -1346,9 +1349,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             TextEntryState.backToAcceptedDefault(typedWord);
             if (!TextUtils.isEmpty(typedWord) && !typedWord.equals(mBestWord)) {
                 if (ic != null) {
+                    /* @@@
                     CorrectionInfo correctionInfo = new CorrectionInfo(
                             mLastSelectionEnd - typedWord.length(), typedWord, mBestWord);
                     ic.commitCorrection(correctionInfo);
+                    */
                 }
                 if (mCandidateView != null)
                     mCandidateView.onAutoCorrectionInverted(mBestWord);
@@ -2037,7 +2042,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Get the settings preferences
         final SharedPreferences prefs = mPrefs;
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        mVibrateOn = vibrator != null && vibrator.hasVibrator()
+        // @@@ mVibrateOn = vibrator != null && vibrator.hasVibrator()
+        mVibrateOn = vibrator != null
                 && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON, false);
         mPopupOn = prefs.getBoolean(Settings.PREF_POPUP_ON,
@@ -2197,7 +2203,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         System.out.println("CPS = " + ((CPS_BUFFER_SIZE * 1000f) / total));
     }
 
-    @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
         SubtypeSwitcher.getInstance().updateSubtype(subtype);
     }

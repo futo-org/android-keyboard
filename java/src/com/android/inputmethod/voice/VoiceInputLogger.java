@@ -257,7 +257,7 @@ public class VoiceInputLogger {
         // 2. type subject in subject field
         // 3. speak message in message field
         // 4. press send
-        UserHappinessSignals.setHasVoiceLoggingInfo(hasLoggingInfo);
+        // @@@ UserHappinessSignals.setHasVoiceLoggingInfo(hasLoggingInfo);
     }
 
     private boolean hasLoggingInfo(){

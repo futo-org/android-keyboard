@@ -116,7 +116,9 @@ public class Settings extends PreferenceActivity
         }
 
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        if (vibrator == null || !vibrator.hasVibrator()) {
+        if (vibrator == null
+        // @@@    || !vibrator.hasVibrator()
+        ) {
             getPreferenceScreen().removePreference(
                     getPreferenceScreen().findPreference(PREF_VIBRATE_ON));
         }

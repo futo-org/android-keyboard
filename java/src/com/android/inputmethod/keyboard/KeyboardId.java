@@ -171,7 +171,7 @@ public class KeyboardId {
         case EditorInfo.IME_ACTION_SEARCH: action = "actionSearch"; break;
         case EditorInfo.IME_ACTION_SEND: action = "actionSend"; break;
         case EditorInfo.IME_ACTION_DONE: action = "actionDone"; break;
-        case EditorInfo.IME_ACTION_PREVIOUS: action = "actionPrevious"; break;
+        // @@@ case EditorInfo.IME_ACTION_PREVIOUS: action = "actionPrevious"; break;
         default: action = "actionUnknown(" + actionNo + ")"; break;
         }
         if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
