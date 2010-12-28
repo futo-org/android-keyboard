@@ -44,6 +44,8 @@
     <integer name="config_long_press_shift_key_timeout">1200</integer>
     <integer name="config_touch_noise_threshold_millis">40</integer>
     <dimen name="config_touch_noise_threshold_distance">2.0mm</dimen>
+    <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
+    <string name="config_default_keyboard_theme_id">4</string>
     <string name="config_text_size_of_language_on_spacebar">small</string>
     <integer name="config_max_popup_keyboard_column">9</integer>
     <!-- Whether or not auto-correction should be enabled by default -->
