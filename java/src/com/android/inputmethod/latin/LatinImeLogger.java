@@ -72,6 +72,6 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
     public static void onSetKeyboard(Keyboard kb) {
     }
 
-    public static void onPrintAllUsabilityStudtyLogs() {
+    public static void onPrintAllUsabilityStudyLogs() {
     }
 }

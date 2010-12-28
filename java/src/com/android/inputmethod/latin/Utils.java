@@ -306,7 +306,7 @@ public class Utils {
                     break;
             }
             UsabilityStudyLogUtils.getInstance().write(inputChar + "\t" + x + "\t" + y);
-            LatinImeLogger.onPrintAllUsabilityStudtyLogs();
+            LatinImeLogger.onPrintAllUsabilityStudyLogs();
         }
 
         public void write(final String log) {
