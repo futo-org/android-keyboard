@@ -12,11 +12,13 @@ LOCAL_SRC_FILES := \
 
 #FLAG_DBG := true
 
+ifneq ($(TARGET_ARCH),x86)
 ifneq ($(FLAG_DBG), true)
     LOCAL_NDK_VERSION := 4
 endif
 
 LOCAL_SDK_VERSION := 8
+endif #TARGET_ARCH = x86
 
 LOCAL_MODULE := libjni_latinime
 
