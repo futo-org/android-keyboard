@@ -1048,8 +1048,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    // Implementation of KeyboardViewListener
-
+    // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
         long when = SystemClock.uptimeMillis();
@@ -1132,7 +1131,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         ic.commitText(text, 1);
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
-        mKeyboardSwitcher.onKey(0); // dummy key code.
+        mKeyboardSwitcher.onKey(Keyboard.CODE_DUMMY);
         mJustReverted = false;
         mJustAddedAutoSpace = false;
         mEnteredText = text;
@@ -1141,6 +1140,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onCancelInput() {
         // User released a finger outside any key
+        mKeyboardSwitcher.onCancelInput();
     }
 
     private void handleBackspace() {
@@ -1836,7 +1836,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void sendSpace() {
         sendKeyChar((char)Keyboard.CODE_SPACE);
         mKeyboardSwitcher.updateShiftState();
-        //onKey(KEY_SPACE[0], KEY_SPACE);
     }
 
     public boolean preferCapitalization() {
