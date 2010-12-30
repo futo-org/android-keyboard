@@ -79,8 +79,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     public static final int COLOR_SCHEME_WHITE = 0;
     public static final int COLOR_SCHEME_BLACK = 1;
 
-    public static final int NOT_A_TOUCH_COORDINATE = -1;
-
     // Timing constants
     private final int mKeyRepeatInterval;
 

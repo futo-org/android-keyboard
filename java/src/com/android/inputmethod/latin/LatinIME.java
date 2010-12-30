@@ -1583,8 +1583,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions.mWords);
             final char primaryCode = suggestion.charAt(0);
-            onCodeInput(primaryCode, new int[]{primaryCode}, KeyboardView.NOT_A_TOUCH_COORDINATE,
-                    KeyboardView.NOT_A_TOUCH_COORDINATE);
+            onCodeInput(primaryCode, new int[] { primaryCode },
+                    KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
+                    KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
             if (ic != null) {
                 ic.endBatchEdit();
             }

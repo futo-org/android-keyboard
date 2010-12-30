@@ -95,8 +95,8 @@ public class LatinKeyboardView extends KeyboardView {
 
     private boolean invokeOnKey(int primaryCode) {
         getOnKeyboardActionListener().onCodeInput(primaryCode, null,
-                KeyboardView.NOT_A_TOUCH_COORDINATE,
-                KeyboardView.NOT_A_TOUCH_COORDINATE);
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
         return true;
     }
 
