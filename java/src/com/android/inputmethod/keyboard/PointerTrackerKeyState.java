@@ -106,8 +106,4 @@ package com.android.inputmethod.keyboard;
         mUpTime = eventTime;
         return onMoveKeyInternal(x, y);
     }
-
-    public void onSetKeyboard() {
-        mKeyIndex = mKeyDetector.getKeyIndexAndNearbyCodes(mKeyX, mKeyY, null);
-    }
 }
