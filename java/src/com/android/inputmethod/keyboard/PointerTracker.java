@@ -509,7 +509,7 @@ public class PointerTracker {
             return;
         } else if (mKeyboardSwitcher.isInMomentaryAutoModeSwitchState()) {
             // We use longer timeout for sliding finger input started from the symbols mode key.
-            mHandler.startLongPressTimer(mLongPressKeyTimeout * 2, keyIndex, this);
+            mHandler.startLongPressTimer(mLongPressKeyTimeout * 3, keyIndex, this);
         } else {
             mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
         }
