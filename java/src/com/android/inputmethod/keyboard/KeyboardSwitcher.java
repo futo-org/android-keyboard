@@ -505,6 +505,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mSymbolKeyState.onOtherKeyPressed();
     }
 
+    public void onCancelInput() {
+        // Snap back to the previous keyboard mode if the user cancels sliding input.
+        if (mAutoModeSwitchState == AUTO_MODE_SWITCH_STATE_MOMENTARY && getPointerCount() == 1)
+            changeKeyboardMode();
+    }
+
     private void toggleShiftInSymbol() {
         if (isAlphabetMode())
             return;
@@ -563,11 +569,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         switch (mAutoModeSwitchState) {
         case AUTO_MODE_SWITCH_STATE_MOMENTARY:
             // Only distinct multi touch devices can be in this state.
-            // On non-distinct multi touch devices, mode change key is handled by {@link onKey},
-            // not by {@link onPress} and {@link onRelease}. So, on such devices,
-            // {@link mAutoModeSwitchState} starts from {@link AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN},
-            // or {@link AUTO_MODE_SWITCH_STATE_ALPHA}, not from
-            // {@link AUTO_MODE_SWITCH_STATE_MOMENTARY}.
+            // On non-distinct multi touch devices, mode change key is handled by
+            // {@link LatinIME#onCodeInput}, not by {@link LatinIME#onPress} and
+            // {@link LatinIME#onRelease}. So, on such devices, {@link #mAutoModeSwitchState} starts
+            // from {@link #AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN}, or
+            // {@link #AUTO_MODE_SWITCH_STATE_ALPHA}, not from
+            // {@link #AUTO_MODE_SWITCH_STATE_MOMENTARY}.
             if (key == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
                 // Detected only the mode change key has been pressed, and then released.
                 if (mIsSymbols) {
@@ -578,6 +585,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             } else if (getPointerCount() == 1) {
                 // Snap back to the previous keyboard mode if the user pressed the mode change key
                 // and slid to other key, then released the finger.
+                // If the user cancels the sliding input, snapping back to the previous keyboard
+                // mode is handled by {@link #onCancelInput}.
                 changeKeyboardMode();
             } else {
                 // Chording input is being started. The keyboard mode will be snapped back to the

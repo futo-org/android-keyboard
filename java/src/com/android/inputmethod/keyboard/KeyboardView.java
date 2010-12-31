@@ -550,7 +550,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * When enabled, calls to {@link KeyboardActionListener#onKey} will include key
+     * When enabled, calls to {@link KeyboardActionListener#onCodeInput} will include key
      * codes for adjacent keys.  When disabled, only the primary key code will be
      * reported.
      * @param enabled whether or not the proximity correction is enabled
@@ -1106,6 +1106,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
             @Override
             public void onCancelInput() {
+                mKeyboardActionListener.onCancelInput();
                 dismissPopupKeyboard();
             }
 

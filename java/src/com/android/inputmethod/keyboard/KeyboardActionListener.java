@@ -20,7 +20,7 @@ public interface KeyboardActionListener {
 
     /**
      * Called when the user presses a key. This is sent before the
-     * {@link #onKey} is called. For keys that repeat, this is only
+     * {@link #onCodeInput} is called. For keys that repeat, this is only
      * called once.
      *
      * @param primaryCode
@@ -31,7 +31,7 @@ public interface KeyboardActionListener {
 
     /**
      * Called when the user releases a key. This is sent after the
-     * {@link #onKey} is called. For keys that repeat, this is only
+     * {@link #onCodeInput} is called. For keys that repeat, this is only
      * called once.
      *
      * @param primaryCode
@@ -54,11 +54,11 @@ public interface KeyboardActionListener {
      *            accidental presses of a key adjacent to the intended
      *            key.
      * @param x
-     *            x-coordinate pixel of touched event. If onKey is not called by onTouchEvent,
-     *            the value should be NOT_A_TOUCH_COORDINATE.
+     *            x-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
+     *            onTouchEvent, the value should be NOT_A_TOUCH_COORDINATE.
      * @param y
-     *            y-coordinate pixel of touched event. If onKey is not called by onTouchEvent,
-     *            the value should be NOT_A_TOUCH_COORDINATE.
+     *            y-coordinate pixel of touched event. If {@link #onCodeInput} is not called by
+     *            onTouchEvent, the value should be NOT_A_TOUCH_COORDINATE.
      */
     void onCodeInput(int primaryCode, int[] keyCodes, int x, int y);
 
