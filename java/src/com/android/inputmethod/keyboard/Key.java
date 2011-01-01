@@ -136,11 +136,11 @@ public class Key {
      * This constructor is being used only for key in mini popup keyboard.
      */
     public Key(Resources res, Keyboard keyboard, CharSequence popupCharacter, int x, int y,
-            int edgeFlags) {
+            int width, int edgeFlags) {
         mKeyboard = keyboard;
         mHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
         mGap = keyboard.getHorizontalGap();
-        mWidth = keyboard.getKeyWidth() - mGap;
+        mWidth = width - mGap;
         mEdgeFlags = edgeFlags;
         mHintIcon = null;
         mManualTemporaryUpperCaseHintIcon = null;
