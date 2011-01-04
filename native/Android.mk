@@ -12,13 +12,20 @@ LOCAL_SRC_FILES := \
 
 #FLAG_DBG := true
 
-ifneq ($(TARGET_ARCH),x86)
-ifneq ($(FLAG_DBG), true)
-    LOCAL_NDK_VERSION := 4
+TARGETING_UNBUNDLED_FROYO := true
+
+ifeq ($(TARGET_ARCH), x86)
+    TARGETING_UNBUNDLED_FROYO := false
 endif
 
-LOCAL_SDK_VERSION := 8
-endif #TARGET_ARCH = x86
+ifeq ($(FLAG_DBG), true)
+    TARGETING_UNBUNDLED_FROYO := false
+endif
+
+ifeq ($(TARGETING_UNBUNDLED_FROYO), true)
+    LOCAL_NDK_VERSION := 4
+    LOCAL_SDK_VERSION := 8
+endif
 
 LOCAL_MODULE := libjni_latinime
 

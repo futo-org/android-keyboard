@@ -71,8 +71,8 @@ public class BinaryDictionary extends Dictionary {
      * @param context application context for reading resources
      * @param resId the resource containing the raw binary dictionary
      */
-    public BinaryDictionary(Context context, int[] resId, int dicTypeId) {
-        if (resId != null && resId.length > 0 && resId[0] != 0) {
+    public BinaryDictionary(Context context, int resId, int dicTypeId) {
+        if (resId != 0) {
             loadDictionary(context, resId);
         }
         mDicTypeId = dicTypeId;
@@ -104,30 +104,21 @@ public class BinaryDictionary extends Dictionary {
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
-    private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize, 
+    private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize,
             char[] outputChars, int[] frequencies,
             int[] nextLettersFrequencies, int nextLettersSize);
     private native int getBigramsNative(int dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] frequencies,
             int maxWordLength, int maxBigrams, int maxAlternatives);
 
-    private final void loadDictionary(Context context, int[] resId) {
-        InputStream[] is = null;
+    private final void loadDictionary(Context context, int resId) {
+        InputStream is = null;
         try {
-            // merging separated dictionary into one if dictionary is separated
-            int total = 0;
-            is = new InputStream[resId.length];
-            for (int i = 0; i < resId.length; i++) {
-                is[i] = context.getResources().openRawResource(resId[i]);
-                total += is[i].available();
-            }
-
+            is = context.getResources().openRawResource(resId);
+            final int total = is.available();
             mNativeDictDirectBuffer =
                 ByteBuffer.allocateDirect(total).order(ByteOrder.nativeOrder());
-            int got = 0;
-            for (int i = 0; i < resId.length; i++) {
-                 got += Channels.newChannel(is[i]).read(mNativeDictDirectBuffer);
-            }
+            final int got = Channels.newChannel(is).read(mNativeDictDirectBuffer);
             if (got != total) {
                 Log.e(TAG, "Read " + got + " bytes, expected " + total);
             } else {
@@ -140,11 +131,7 @@ public class BinaryDictionary extends Dictionary {
             Log.w(TAG, "No available memory for binary dictionary");
         } finally {
             try {
-                if (is != null) {
-                    for (int i = 0; i < is.length; i++) {
-                        is[i].close();
-                    }
-                }
+                if (is != null) is.close();
             } catch (IOException e) {
                 Log.w(TAG, "Failed to close input stream");
             }

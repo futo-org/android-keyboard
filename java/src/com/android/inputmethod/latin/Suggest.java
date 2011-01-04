@@ -103,7 +103,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
-    public Suggest(Context context, int[] dictionaryResId) {
+    public Suggest(Context context, int dictionaryResId) {
         mMainDict = new BinaryDictionary(context, dictionaryResId, DIC_MAIN);
         initPool();
     }

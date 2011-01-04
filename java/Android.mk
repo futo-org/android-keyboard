@@ -13,7 +13,8 @@ LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common
 
-#LOCAL_AAPT_FLAGS := -0 .dict
+# Do not compress dictionary files to mmap dict data runtime
+LOCAL_AAPT_FLAGS := -0 .dict
 
 # Include all the resources regardless of system supported locales
 LOCAL_AAPT_INCLUDE_ALL_RESOURCES := true

@@ -347,49 +347,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     /**
-     * Loads a dictionary or multiple separated dictionary
-     * @return returns array of dictionary resource ids
+     * Returns a main dictionary resource id
+     * @return main dictionary resource id
      */
-    public static int[] getDictionary(Resources res) {
+    public static int getMainDictionaryResourceId(Resources res) {
+        final String MAIN_DIC_NAME = "main";
         String packageName = LatinIME.class.getPackage().getName();
-        XmlResourceParser xrp = res.getXml(R.xml.dictionary);
-        ArrayList<Integer> dictionaries = new ArrayList<Integer>();
-
-        try {
-            int current = xrp.getEventType();
-            while (current != XmlPullParser.END_DOCUMENT) {
-                if (current == XmlPullParser.START_TAG) {
-                    String tag = xrp.getName();
-                    if (tag != null) {
-                        if (tag.equals("part")) {
-                            String dictFileName = xrp.getAttributeValue(null, "name");
-                            dictionaries.add(res.getIdentifier(dictFileName, "raw", packageName));
-                        }
-                    }
-                }
-                xrp.next();
-                current = xrp.getEventType();
-            }
-        } catch (XmlPullParserException e) {
-            Log.e(TAG, "Dictionary XML parsing failure");
-        } catch (IOException e) {
-            Log.e(TAG, "Dictionary XML IOException");
-        }
-
-        int count = dictionaries.size();
-        int[] dict = new int[count];
-        for (int i = 0; i < count; i++) {
-            dict[i] = dictionaries.get(i);
-        }
-
-        return dict;
+        return res.getIdentifier(MAIN_DIC_NAME, "raw", packageName);
     }
 
     private void initSuggest() {
         updateAutoTextEnabled();
         String locale = mSubtypeSwitcher.getInputLocaleStr();
 
-        Resources orig = getResources();
         Locale savedLocale = mSubtypeSwitcher.changeSystemLocale(new Locale(locale));
         if (mSuggest != null) {
             mSuggest.close();
@@ -397,8 +367,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SharedPreferences prefs = mPrefs;
         mQuickFixes = prefs.getBoolean(Settings.PREF_QUICK_FIXES, true);
 
-        int[] dictionaries = getDictionary(orig);
-        mSuggest = new Suggest(this, dictionaries);
+        final Resources res = mResources;
+        int mainDicResId = getMainDictionaryResourceId(res);
+        mSuggest = new Suggest(this, mainDicResId);
         loadAndSetAutoCorrectionThreshold(prefs);
         if (mUserDictionary != null) mUserDictionary.close();
         mUserDictionary = new UserDictionary(this, locale);
@@ -418,8 +389,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSuggest.setContactsDictionary(mContactsDictionary);
         mSuggest.setAutoDictionary(mAutoDictionary);
         updateCorrectionMode();
-        mWordSeparators = mResources.getString(R.string.word_separators);
-        mSentenceSeparators = mResources.getString(R.string.sentence_separators);
+        mWordSeparators = res.getString(R.string.word_separators);
+        mSentenceSeparators = res.getString(R.string.sentence_separators);
 
         mSubtypeSwitcher.changeSystemLocale(savedLocale);
     }
@@ -859,10 +830,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onEvaluateFullscreenMode() {
-        DisplayMetrics dm = getResources().getDisplayMetrics();
+        final Resources res = mResources;
+        DisplayMetrics dm = res.getDisplayMetrics();
         float displayHeight = dm.heightPixels;
         // If the display is more than X inches high, don't go to fullscreen mode
-        float dimen = getResources().getDimension(R.dimen.max_height_for_fullscreen);
+        float dimen = res.getDimension(R.dimen.max_height_for_fullscreen);
         if (displayHeight > dimen) {
             return false;
         } else {
@@ -1874,7 +1846,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else if (Settings.PREF_RECORRECTION_ENABLED.equals(key)) {
             mReCorrectionEnabled = sharedPreferences.getBoolean(
                     Settings.PREF_RECORRECTION_ENABLED,
-                    getResources().getBoolean(R.bool.default_recorrection_enabled));
+                    mResources.getBoolean(R.bool.default_recorrection_enabled));
         }
     }
 
@@ -2006,11 +1978,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void updateSuggestionVisibility(SharedPreferences prefs) {
+        final Resources res = mResources;
         final String suggestionVisiblityStr = prefs.getString(
                 Settings.PREF_SHOW_SUGGESTIONS_SETTING,
-                mResources.getString(R.string.prefs_suggestion_visibility_default_value));
+                res.getString(R.string.prefs_suggestion_visibility_default_value));
         for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
-            if (suggestionVisiblityStr.equals(mResources.getString(visibility))) {
+            if (suggestionVisiblityStr.equals(res.getString(visibility))) {
                 mSuggestionVisibility = visibility;
                 break;
             }
