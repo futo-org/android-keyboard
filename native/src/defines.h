@@ -24,10 +24,56 @@
 #define LOG_TAG "LatinIME: "
 #endif
 #define DEBUG_DICT true
-#define DEBUG_DICT_FULL true
+#define DEBUG_DICT_FULL false
 #define DEBUG_SHOW_FOUND_WORD DEBUG_DICT_FULL
 #define DEBUG_NODE DEBUG_DICT_FULL
 #define DEBUG_TRACE DEBUG_DICT_FULL
+
+// Profiler
+#include <time.h>
+#define PROF_BUF_SIZE 100
+static double profile_buf[PROF_BUF_SIZE];
+static double profile_old[PROF_BUF_SIZE];
+static unsigned int profile_counter[PROF_BUF_SIZE];
+
+#define PROF_RESET prof_reset();
+#define PROF_COUNT(prof_buf_id) ++profile_counter[prof_buf_id];
+#define PROF_OPEN PROF_RESET;PROF_START(PROF_BUF_SIZE - 1);
+#define PROF_START(prof_buf_id) PROF_COUNT(prof_buf_id);profile_old[prof_buf_id] = (clock());
+#define PROF_CLOSE PROF_END(PROF_BUF_SIZE - 1);PROF_OUTALL;
+#define PROF_END(prof_buf_id) profile_buf[prof_buf_id] += ((clock()) - profile_old[prof_buf_id]);
+#define PROF_CLOCKOUT(prof_buf_id) LOGI("%s : clock is %f", __FUNCTION__,\
+        (clock() - profile_old[prof_buf_id]));
+#define PROF_OUTALL LOGI("--- %s ---", __FUNCTION__); prof_out();
+
+static void prof_reset(void){
+    for(int i = 0;i < PROF_BUF_SIZE;++i){
+        profile_buf[i] = 0;
+        profile_old[i] = 0;
+        profile_counter[i] = 0;
+    }
+}
+
+static void prof_out(void){
+    if (profile_counter[PROF_BUF_SIZE - 1] != 1) {
+        LOGI("Error: You must call PROF_OPEN before PROF_CLOSE.");
+    }
+    LOGI("Total time is %6.3f ms.",
+            profile_buf[PROF_BUF_SIZE - 1] * 1000 / (double) CLOCKS_PER_SEC);
+    double all = 0;
+    for(int i = 0; i < PROF_BUF_SIZE - 1; ++i){
+        all += profile_buf[i];
+    }
+    if(all == 0) all = 1;
+    for(int i = 0; i < PROF_BUF_SIZE - 1; ++i){
+        if(profile_buf[i] != 0) {
+            LOGI("(%d): Used %4.2f%%, %8.4f ms. Called %d times.",
+                    i, (profile_buf[i] * 100 /all),
+                    profile_buf[i] * 1000 / (double) CLOCKS_PER_SEC, profile_counter[i]);
+         }
+    }
+}
+
 #else // FLAG_DBG
 #define LOGI
 #define DEBUG_DICT false
@@ -35,6 +81,18 @@
 #define DEBUG_SHOW_FOUND_WORD false
 #define DEBUG_NODE false
 #define DEBUG_TRACE false
+
+#define PROF_BUF_SIZE 0
+#define PROF_RESET
+#define PROF_COUNT(prof_buf_id)
+#define PROF_OPEN
+#define PROF_START(prof_buf_id)
+#define PROF_CLOSE
+#define PROF_END(prof_buf_id)
+#define PROF_CLOCK_OUT(prof_buf_id)
+#define PROF_CLOCKOUT(prof_buf_id)
+#define PROF_OUTALL
+
 #endif // FLAG_DBG
 
 #ifndef U_SHORT_MAX

@@ -42,14 +42,20 @@ UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterM
 UnigramDictionary::~UnigramDictionary() {}
 
 int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWords,
-        int *frequencies, int *nextLetters, int nextLettersSize)
-{
+        int *frequencies, int *nextLetters, int nextLettersSize) {
+    PROF_OPEN;
+    PROF_START(0);
     initSuggestions(codes, codesSize, outWords, frequencies);
     if (DEBUG_DICT) assert(codesSize == mInputLength);
 
     const int MAX_DEPTH = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
-    getSuggestionCandidates(-1, -1, -1, nextLetters, nextLettersSize, MAX_DEPTH);
+    PROF_END(0);
 
+    PROF_START(1);
+    getSuggestionCandidates(-1, -1, -1, nextLetters, nextLettersSize, MAX_DEPTH);
+    PROF_END(1);
+
+    PROF_START(2);
     // Suggestion with missing character
     if (SUGGEST_WORDS_WITH_MISSING_CHARACTER) {
         for (int i = 0; i < codesSize; ++i) {
@@ -57,7 +63,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
             getSuggestionCandidates(i, -1, -1, NULL, 0, MAX_DEPTH);
         }
     }
+    PROF_END(2);
 
+    PROF_START(3);
     // Suggestion with excessive character
     if (SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER
             && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION) {
@@ -66,7 +74,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
             getSuggestionCandidates(-1, i, -1, NULL, 0, MAX_DEPTH);
         }
     }
+    PROF_END(3);
 
+    PROF_START(4);
     // Suggestion with transposed characters
     // Only suggest words that length is mInputLength
     if (SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS) {
@@ -75,7 +85,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
             getSuggestionCandidates(-1, -1, i, NULL, 0, mInputLength - 1);
         }
     }
+    PROF_END(4);
 
+    PROF_START(5);
     // Suggestions with missing space
     if (SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER
             && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION) {
@@ -84,7 +96,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
             getMissingSpaceWords(mInputLength, i);
         }
     }
+    PROF_END(5);
 
+    PROF_START(6);
     // Get the word count
     int suggestedWordsCount = 0;
     while (suggestedWordsCount < MAX_WORDS && mFrequencies[suggestedWordsCount] > 0) {
@@ -101,7 +115,8 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
         }
         LOGI("\n");
     }
-
+    PROF_END(6);
+    PROF_CLOSE;
     return suggestedWordsCount;
 }
 
