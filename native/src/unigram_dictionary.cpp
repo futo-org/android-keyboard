@@ -269,6 +269,14 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
     }
 }
 
+inline static void multiplyRate(const int rate, int *freq) {
+    if (rate > 1000000) {
+        *freq = (*freq / 100) * rate;
+    } else {
+        *freq = *freq * rate / 100;
+    }
+}
+
 bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int missingSpacePos) {
     if (missingSpacePos <= 0 || missingSpacePos >= inputLength
             || inputLength >= MAX_WORD_LENGTH) return false;
@@ -294,7 +302,7 @@ bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int mi
 
     int pairFreq = ((firstFreq + secondFreq) / 2);
     for (int i = 0; i < inputLength; ++i) pairFreq *= TYPED_LETTER_MULTIPLIER;
-    pairFreq = pairFreq * WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE / 100;
+    multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &pairFreq);
     addWord(word, newWordLength, pairFreq);
     return true;
 }
@@ -345,14 +353,13 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
         const bool sameLength) {
     // TODO: Demote by edit distance
     int finalFreq = freq * snr;
-    if (skipPos >= 0) finalFreq = finalFreq * WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE / 100;
-    if (transposedPos >= 0) finalFreq = finalFreq
-            * WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE / 100;
+    if (skipPos >= 0) multiplyRate(WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE, &finalFreq);
+    if (transposedPos >= 0) multiplyRate(
+            WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE, &finalFreq);
     if (excessivePos >= 0) {
-        finalFreq = finalFreq * WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE / 100;
+        multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
         if (!existsAdjacentProximityChars(inputIndex, mInputLength)) {
-            finalFreq = finalFreq
-                    * WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE / 100;
+            multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE, &finalFreq);
         }
     }
     if (sameLength && skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
