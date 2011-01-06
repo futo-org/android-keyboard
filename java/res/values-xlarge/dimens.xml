@@ -30,6 +30,7 @@
     <dimen name="keyboard_bottom_padding">0.0mm</dimen>
     <!-- key_height x 1.0 -->
     <dimen name="key_preview_height">13.0mm</dimen>
+    <dimen name="mini_keyboard_key_horizontal_padding">12dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
     <dimen name="mini_keyboard_slide_allowance">15.6mm</dimen>
