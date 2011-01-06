@@ -82,10 +82,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         R.xml.kbd_symbols_shift, R.xml.kbd_symbols_shift_black};
     private static final int[] KBD_QWERTY = new int[] {R.xml.kbd_qwerty, R.xml.kbd_qwerty_black};
 
-    private static final int SYMBOLS_MODE_STATE_NONE = 0;
-    private static final int SYMBOLS_MODE_STATE_BEGIN = 1;
-    private static final int SYMBOLS_MODE_STATE_SYMBOL = 2;
-
     private LatinKeyboardView mInputView;
     private static final int[] ALPHABET_MODES = {
         KEYBOARDMODE_NORMAL,
@@ -99,13 +95,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         KEYBOARDMODE_IM_WITH_SETTINGS_KEY,
         KEYBOARDMODE_WEB_WITH_SETTINGS_KEY };
 
-    private final LatinIME mInputMethodService;
+    private LatinIME mInputMethodService;
 
     private KeyboardId mSymbolsId;
     private KeyboardId mSymbolsShiftedId;
 
     private KeyboardId mCurrentId;
-    private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboards;
+    private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboards =
+            new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
 
     private int mMode = MODE_NONE; /** One of the MODE_XXX values */
     private int mImeOptions;
@@ -116,7 +113,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private boolean mHasVoice;
     private boolean mVoiceOnPrimary;
     private boolean mPreferSymbols;
-    private int mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
+
+    private static final int AUTO_MODE_SWITCH_STATE_ALPHA = 0;
+    private static final int AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN = 1;
+    private static final int AUTO_MODE_SWITCH_STATE_SYMBOL = 2;
+    // The following states are used only on the distinct multi-touch panel devices.
+    private static final int AUTO_MODE_SWITCH_STATE_MOMENTARY = 3;
+    private static final int AUTO_MODE_SWITCH_STATE_CHORDING = 4;
+    private int mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
 
     // Indicates whether or not we have the settings key
     private boolean mHasSettingsKey;
@@ -133,17 +137,27 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private int mLayoutId;
 
-    public KeyboardSwitcher(LatinIME ims) {
-        mInputMethodService = ims;
+    private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
+
+    public static KeyboardSwitcher getInstance() {
+        return sInstance;
+    }
+
+    private KeyboardSwitcher() {
+        // Intentional empty constructor for singleton.
+    }
+
+    public static void init(LatinIME ims) {
+        sInstance.mInputMethodService = ims;
 
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ims);
-        mLayoutId = Integer.valueOf(prefs.getString(PREF_KEYBOARD_LAYOUT, DEFAULT_LAYOUT_ID));
-        updateSettingsKeyState(prefs);
-        prefs.registerOnSharedPreferenceChangeListener(this);
+        sInstance.mLayoutId = Integer.valueOf(
+                prefs.getString(PREF_KEYBOARD_LAYOUT, DEFAULT_LAYOUT_ID));
+        sInstance.updateSettingsKeyState(prefs);
+        prefs.registerOnSharedPreferenceChangeListener(sInstance);
 
-        mKeyboards = new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
-        mSymbolsId = makeSymbolsId(false);
-        mSymbolsShiftedId = makeSymbolsShiftedId(false);
+        sInstance.mSymbolsId = sInstance.makeSymbolsId(false);
+        sInstance.mSymbolsShiftedId = sInstance.makeSymbolsShiftedId(false);
     }
 
     /**
@@ -243,7 +257,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void setKeyboardMode(int mode, int imeOptions, boolean enableVoice) {
-        mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
+        mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         mPreferSymbols = mode == MODE_SYMBOLS;
         if (mode == MODE_SYMBOLS) {
             mode = MODE_TEXT;
@@ -410,12 +424,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    public void onCancelInput() {
+        // Snap back to the previous keyboard mode if the user cancels sliding input.
+        if (mAutoModeSwitchState == AUTO_MODE_SWITCH_STATE_MOMENTARY && getPointerCount() == 1)
+            mInputMethodService.changeKeyboardMode();
+    }
+
     public void toggleSymbols() {
         setKeyboardMode(mMode, mImeOptions, mHasVoice, !mIsSymbols);
         if (mIsSymbols && !mPreferSymbols) {
-            mSymbolsModeState = SYMBOLS_MODE_STATE_BEGIN;
+            mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN;
         } else {
-            mSymbolsModeState = SYMBOLS_MODE_STATE_NONE;
+            mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         }
     }
 
@@ -423,24 +443,72 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return mInputView != null && mInputView.hasDistinctMultitouch();
     }
 
+    public void setAutoModeSwitchStateMomentary() {
+        mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_MOMENTARY;
+    }
+
+    public boolean isInMomentaryAutoModeSwitchState() {
+        return mAutoModeSwitchState == AUTO_MODE_SWITCH_STATE_MOMENTARY;
+    }
+
+    public boolean isInChordingAutoModeSwitchState() {
+        return mAutoModeSwitchState == AUTO_MODE_SWITCH_STATE_CHORDING;
+    }
+
+    public boolean isVibrateAndSoundFeedbackRequired() {
+        return mInputView != null && !mInputView.isInSlidingKeyInput();
+    }
+
+    private int getPointerCount() {
+        return mInputView == null ? 0 : mInputView.getPointerCount();
+    }
+
     /**
-     * Updates state machine to figure out when to automatically switch back to alpha mode.
-     * Returns true if the keyboard needs to switch back 
+     * Updates state machine to figure out when to automatically snap back to the previous mode.
      */
-    public boolean onKey(int key) {
+    public void onKey(int key) {
         // Switch back to alpha mode if user types one or more non-space/enter characters
         // followed by a space/enter
-        switch (mSymbolsModeState) {
-            case SYMBOLS_MODE_STATE_BEGIN:
-                if (key != LatinIME.KEYCODE_SPACE && key != LatinIME.KEYCODE_ENTER && key > 0) {
-                    mSymbolsModeState = SYMBOLS_MODE_STATE_SYMBOL;
+        switch (mAutoModeSwitchState) {
+        case AUTO_MODE_SWITCH_STATE_MOMENTARY:
+            // Only distinct multi touch devices can be in this state.
+            // On non-distinct multi touch devices, mode change key is handled by {@link onKey},
+            // not by {@link onPress} and {@link onRelease}. So, on such devices,
+            // {@link mAutoModeSwitchState} starts from {@link AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN},
+            // or {@link AUTO_MODE_SWITCH_STATE_ALPHA}, not from
+            // {@link AUTO_MODE_SWITCH_STATE_MOMENTARY}.
+            if (key == LatinKeyboard.KEYCODE_MODE_CHANGE) {
+                // Detected only the mode change key has been pressed, and then released.
+                if (mIsSymbols) {
+                    mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN;
+                } else {
+                    mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
                 }
-                break;
-            case SYMBOLS_MODE_STATE_SYMBOL:
-                if (key == LatinIME.KEYCODE_ENTER || key == LatinIME.KEYCODE_SPACE) return true;
-                break;
+            } else if (getPointerCount() == 1) {
+                // Snap back to the previous keyboard mode if the user pressed the mode change key
+                // and slid to other key, then released the finger.
+                // If the user cancels the sliding input, snapping back to the previous keyboard
+                // mode is handled by {@link #onCancelInput}.
+                mInputMethodService.changeKeyboardMode();
+            } else {
+                // Chording input is being started. The keyboard mode will be snapped back to the
+                // previous mode in {@link onReleaseSymbol} when the mode change key is released.
+                mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_CHORDING;
+            }
+            break;
+        case AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN:
+            if (key != LatinIME.KEYCODE_SPACE && key != LatinIME.KEYCODE_ENTER && key >= 0) {
+                mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_SYMBOL;
+            }
+            break;
+        case AUTO_MODE_SWITCH_STATE_SYMBOL:
+            // Snap back to alpha keyboard mode if user types one or more non-space/enter
+            // characters followed by a space/enter.
+            if (key == LatinIME.KEYCODE_ENTER || key == LatinIME.KEYCODE_SPACE) {
+                mInputMethodService.changeKeyboardMode();
+            }
+            break;
         }
-        return false;
     }
 
     public LatinKeyboardView getInputView() {

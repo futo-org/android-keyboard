@@ -342,6 +342,7 @@ public class LatinIME extends InputMethodService
     @Override
     public void onCreate() {
         LatinImeLogger.init(this);
+        KeyboardSwitcher.init(this);
         super.onCreate();
         //setStatusIcon(R.drawable.ime_qwerty);
         mResources = getResources();
@@ -349,7 +350,7 @@ public class LatinIME extends InputMethodService
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mLanguageSwitcher = new LanguageSwitcher(this);
         mLanguageSwitcher.loadLocales(prefs);
-        mKeyboardSwitcher = new KeyboardSwitcher(this);
+        mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mKeyboardSwitcher.setLanguageSwitcher(mLanguageSwitcher);
         mSystemLocale = conf.locale.toString();
         mLanguageSwitcher.setSystemLocale(conf.locale);
@@ -1247,9 +1248,7 @@ public class LatinIME extends InputMethodService
                 // Cancel the just reverted state
                 mJustRevertedSeparator = null;
         }
-        if (mKeyboardSwitcher.onKey(primaryCode)) {
-            changeKeyboardMode();
-        }
+        mKeyboardSwitcher.onKey(primaryCode);
         // Reset after any single keystroke
         mEnteredText = null;
     }
@@ -1269,6 +1268,7 @@ public class LatinIME extends InputMethodService
         ic.commitText(text, 1);
         ic.endBatchEdit();
         updateShiftKeyState(getCurrentInputEditorInfo());
+        mKeyboardSwitcher.onKey(0); // dummy key code.
         mJustRevertedSeparator = null;
         mJustAddedAutoSpace = false;
         mEnteredText = text;
@@ -1276,6 +1276,7 @@ public class LatinIME extends InputMethodService
 
     public void onCancel() {
         // User released a finger outside any key
+        mKeyboardSwitcher.onCancelInput();
     }
 
     private void handleBackspace() {
@@ -2283,15 +2284,18 @@ public class LatinIME extends InputMethodService
     }
 
     public void onPress(int primaryCode) {
-        vibrate();
-        playKeyClick(primaryCode);
+        if (mKeyboardSwitcher.isVibrateAndSoundFeedbackRequired()) {
+            vibrate();
+            playKeyClick(primaryCode);
+        }
         final boolean distinctMultiTouch = mKeyboardSwitcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_SHIFT) {
             mShiftKeyState.onPress();
             handleShift();
         } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
-            mSymbolKeyState.onPress();
             changeKeyboardMode();
+            mSymbolKeyState.onPress();
+            mKeyboardSwitcher.setAutoModeSwitchStateMomentary();
         } else {
             mShiftKeyState.onOtherKeyPressed();
             mSymbolKeyState.onOtherKeyPressed();
@@ -2308,7 +2312,9 @@ public class LatinIME extends InputMethodService
                 resetShift();
             mShiftKeyState.onRelease();
         } else if (distinctMultiTouch && primaryCode == Keyboard.KEYCODE_MODE_CHANGE) {
-            if (mSymbolKeyState.isMomentary())
+            // Snap back to the previous keyboard mode if the user chords the mode change key and
+            // other key, then released the mode change key.
+            if (mKeyboardSwitcher.isInChordingAutoModeSwitchState())
                 changeKeyboardMode();
             mSymbolKeyState.onRelease();
         }
@@ -2562,7 +2568,7 @@ public class LatinIME extends InputMethodService
         mOptionsDialog.show();
     }
 
-    private void changeKeyboardMode() {
+    public void changeKeyboardMode() {
         mKeyboardSwitcher.toggleSymbols();
         if (mCapsLock && mKeyboardSwitcher.isAlphabetMode()) {
             mKeyboardSwitcher.setShiftLocked(mCapsLock);
