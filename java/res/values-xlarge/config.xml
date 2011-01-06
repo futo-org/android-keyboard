@@ -25,6 +25,7 @@
     <bool name="config_candidate_highlight_font_color_enabled">false</bool>
     <bool name="config_swipe_down_dismiss_keyboard_enabled">false</bool>
     <bool name="config_sliding_key_input_enabled">false</bool>
+    <bool name="config_digit_popup_characters_enabled">false</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">false</bool>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->

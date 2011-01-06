@@ -27,6 +27,8 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Xml;
 
+import java.util.ArrayList;
+
 /**
  * Class for describing the position and characteristics of a single key in the keyboard.
  */
@@ -208,8 +210,13 @@ public class Key {
                 style = keyStyles.getEmptyKeyStyle();
             }
 
-            mPopupCharacters = style.getTextArray(keyAttr,
+            final CharSequence[] popupCharacters = style.getTextArray(keyAttr,
                     R.styleable.Keyboard_Key_popupCharacters);
+            if (res.getBoolean(R.bool.config_digit_popup_characters_enabled)) {
+                mPopupCharacters = popupCharacters;
+            } else {
+                mPopupCharacters = filterOutDigitPopupCharacters(popupCharacters);
+            }
             mMaxPopupColumn = style.getInt(keyboardAttr,
                     R.styleable.Keyboard_Key_maxPopupKeyboardColumn,
                     mKeyboard.getMaxPopupKeyboardColumn());
@@ -254,6 +261,36 @@ public class Key {
         } finally {
             keyAttr.recycle();
         }
+    }
+
+    private static boolean isDigitPopupCharacter(CharSequence label) {
+        return label.length() == 1 && Character.isDigit(label.charAt(0));
+    }
+
+    private static CharSequence[] filterOutDigitPopupCharacters(CharSequence[] popupCharacters) {
+        if (popupCharacters == null || popupCharacters.length < 1)
+            return null;
+        if (popupCharacters.length == 1 && isDigitPopupCharacter(
+                PopupCharactersParser.getLabel(popupCharacters[0].toString())))
+            return null;
+        ArrayList<CharSequence> filtered = null;
+        for (int i = 0; i < popupCharacters.length; i++) {
+            final CharSequence popupSpec = popupCharacters[i];
+            if (isDigitPopupCharacter(PopupCharactersParser.getLabel(popupSpec.toString()))) {
+                if (filtered == null) {
+                    filtered = new ArrayList<CharSequence>();
+                    for (int j = 0; j < i; j++)
+                        filtered.add(popupCharacters[j]);
+                }
+            } else if (filtered != null) {
+                filtered.add(popupSpec);
+            }
+        }
+        if (filtered == null)
+            return popupCharacters;
+        if (filtered.size() == 0)
+            return null;
+        return filtered.toArray(new CharSequence[filtered.size()]);
     }
 
     public Drawable getIcon() {
