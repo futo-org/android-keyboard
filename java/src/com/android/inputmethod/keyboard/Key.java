@@ -133,15 +133,15 @@ public class Key {
     };
 
     /**
-     * Create an empty key with no attributes.
      * This constructor is being used only for key in mini popup keyboard.
      */
-    public Key(Resources res, Row row, CharSequence popupCharacter, int x, int y) {
-        mKeyboard = row.getKeyboard();
-        mHeight = row.mDefaultHeight - row.mVerticalGap;
-        mGap = row.mDefaultHorizontalGap;
-        mWidth = row.mDefaultWidth - mGap;
-        mEdgeFlags = row.mRowEdgeFlags;
+    public Key(Resources res, Keyboard keyboard, CharSequence popupCharacter, int x, int y,
+            int edgeFlags) {
+        mKeyboard = keyboard;
+        mHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
+        mGap = keyboard.getHorizontalGap();
+        mWidth = keyboard.getKeyWidth() - mGap;
+        mEdgeFlags = edgeFlags;
         mHintIcon = null;
         mManualTemporaryUpperCaseHintIcon = null;
         mManualTemporaryUpperCaseCode = Keyboard.CODE_DUMMY;
