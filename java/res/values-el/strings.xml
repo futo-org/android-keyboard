@@ -98,7 +98,7 @@
     <string name="voice_server_error" msgid="7807129913977261644">"Σφάλμα διακομιστή"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Δεν ακούγεται ομιλία"</string>
     <string name="voice_no_match" msgid="4285117547030179174">"Δεν βρέθηκε καμία αντιστοίχιση"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Η Αναζήτηση με φωνή δεν εγκαταστάθηκε"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Η Φωνητική αναζήτηση δεν εγκαταστάθηκε"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Υπόδειξη:"</b>" Σύρετε κατά μήκος του πληκτρολογίου για να μιλήσετε"</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Υπόδειξη:"</b>" Την επόμενη φορά, προσπαθήστε να προφέρετε σημεία στίξης, όπως \"τελεία\", \"κόμμα\" ή \"ερωτηματικό\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Ακύρωση"</string>
