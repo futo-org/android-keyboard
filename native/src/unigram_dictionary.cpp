@@ -113,7 +113,6 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
                 LOGI("%c = %d,", k, nextLetters[k]);
             }
         }
-        LOGI("\n");
     }
     PROF_END(6);
     PROF_CLOSE;

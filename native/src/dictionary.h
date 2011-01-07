@@ -25,8 +25,8 @@ namespace latinime {
 
 class Dictionary {
 public:
-    Dictionary(void *dict, int typedLetterMultipler, int fullWordMultiplier, int maxWordLength,
-            int maxWords, int maxAlternatives);
+    Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
+            int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
     int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
             int *nextLetters, int nextLettersSize) {
         return mUnigramDictionary->getSuggestions(codes, codesSize, outWords, frequencies,
@@ -42,8 +42,10 @@ public:
     }
     bool isValidWord(unsigned short *word, int length);
     int isValidWordRec(int pos, unsigned short *word, int offset, int length);
-    void setAsset(void *asset) { mAsset = asset; }
-    void *getAsset() { return mAsset; }
+    void *getDict() { return (void *)mDict; }
+    int getDictSize() { return mDictSize; }
+    int getMmapFd() { return mMmapFd; }
+    int getDictBufAdjust() { return mDictBufAdjust; }
     ~Dictionary();
 
     // public static utility methods
@@ -62,11 +64,17 @@ public:
 private:
     bool hasBigram();
 
-    const unsigned char *DICT;
+    const unsigned char *mDict;
+
+    // Used only for the mmap version of dictionary loading, but we use these as dummy variables
+    // also for the malloc version.
+    const int mDictSize;
+    const int mMmapFd;
+    const int mDictBufAdjust;
+
     const bool IS_LATEST_DICT_VERSION;
-    void *mAsset;
-    BigramDictionary *mBigramDictionary;
     UnigramDictionary *mUnigramDictionary;
+    BigramDictionary *mBigramDictionary;
 };
 
 // ----------------------------------------------------------------------------

@@ -38,49 +38,15 @@ public class SuggestHelper {
     private final String TAG;
 
     /** Uses main dictionary only **/
-    public SuggestHelper(String tag, Context context, int[] resId) {
+    public SuggestHelper(String tag, Context context, int resId) {
         TAG = tag;
-        InputStream[] is = null;
-        try {
-            // merging separated dictionary into one if dictionary is separated
-            int total = 0;
-            is = new InputStream[resId.length];
-            for (int i = 0; i < resId.length; i++) {
-                is[i] = context.getResources().openRawResource(resId[i]);
-                total += is[i].available();
-            }
-
-            ByteBuffer byteBuffer =
-                ByteBuffer.allocateDirect(total).order(ByteOrder.nativeOrder());
-            int got = 0;
-            for (int i = 0; i < resId.length; i++) {
-                 got += Channels.newChannel(is[i]).read(byteBuffer);
-            }
-            if (got != total) {
-                Log.w(TAG, "Read " + got + " bytes, expected " + total);
-            } else {
-                mSuggest = new Suggest(context, byteBuffer);
-                Log.i(TAG, "Created mSuggest " + total + " bytes");
-            }
-        } catch (IOException e) {
-            Log.w(TAG, "No available memory for binary dictionary");
-        } finally {
-            try {
-                if (is != null) {
-                    for (int i = 0; i < is.length; i++) {
-                        is[i].close();
-                    }
-                }
-            } catch (IOException e) {
-                Log.w(TAG, "Failed to close input stream");
-            }
-        }
+        mSuggest = new Suggest(context, resId);
         mSuggest.setAutoTextEnabled(false);
         mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
     }
 
     /** Uses both main dictionary and user-bigram dictionary **/
-    public SuggestHelper(String tag, Context context, int[] resId, int userBigramMax,
+    public SuggestHelper(String tag, Context context, int resId, int userBigramMax,
             int userBigramDelete) {
         this(tag, context, resId);
         mUserBigram = new UserBigramDictionary(context, null, Locale.US.toString(),

@@ -371,23 +371,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         int mainDicResId = getMainDictionaryResourceId(res);
         mSuggest = new Suggest(this, mainDicResId);
         loadAndSetAutoCorrectionThreshold(prefs);
-        if (mUserDictionary != null) mUserDictionary.close();
+
         mUserDictionary = new UserDictionary(this, locale);
-        if (mContactsDictionary == null) {
-            mContactsDictionary = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
-        }
-        if (mAutoDictionary != null) {
-            mAutoDictionary.close();
-        }
+        mSuggest.setUserDictionary(mUserDictionary);
+
+        mContactsDictionary = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
+        mSuggest.setContactsDictionary(mContactsDictionary);
+
         mAutoDictionary = new AutoDictionary(this, this, locale, Suggest.DIC_AUTO);
-        if (mUserBigramDictionary != null) {
-            mUserBigramDictionary.close();
-        }
+        mSuggest.setAutoDictionary(mAutoDictionary);
+
         mUserBigramDictionary = new UserBigramDictionary(this, this, locale, Suggest.DIC_USER);
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
-        mSuggest.setUserDictionary(mUserDictionary);
-        mSuggest.setContactsDictionary(mContactsDictionary);
-        mSuggest.setAutoDictionary(mAutoDictionary);
+
         updateCorrectionMode();
         mWordSeparators = res.getString(R.string.word_separators);
         mSentenceSeparators = res.getString(R.string.sentence_separators);
@@ -397,11 +393,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
-        if (mUserDictionary != null) {
-            mUserDictionary.close();
-        }
-        if (mContactsDictionary != null) {
-            mContactsDictionary.close();
+        if (mSuggest != null) {
+            mSuggest.close();
+            mSuggest = null;
         }
         unregisterReceiver(mReceiver);
         mVoiceConnector.destroy();

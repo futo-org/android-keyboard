@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,13 +17,9 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.Channels;
 import java.util.Arrays;
 
 /**
@@ -48,15 +44,12 @@ public class BinaryDictionary extends Dictionary {
 
     private int mDicTypeId;
     private int mNativeDict;
-    private int mDictLength;
+    private long mDictLength;
     private final int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_ALTERNATIVES];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
     private final int[] mFrequencies = new int[MAX_WORDS];
     private final int[] mFrequencies_bigrams = new int[MAX_BIGRAMS];
-    // Keep a reference to the native dict direct buffer in Java to avoid
-    // unexpected deallocation of the direct buffer.
-    private ByteBuffer mNativeDictDirectBuffer;
 
     static {
         try {
@@ -78,30 +71,9 @@ public class BinaryDictionary extends Dictionary {
         mDicTypeId = dicTypeId;
     }
 
-    /**
-     * Create a dictionary from a byte buffer. This is used for testing.
-     * @param context application context for reading resources
-     * @param byteBuffer a ByteBuffer containing the binary dictionary
-     */
-    public BinaryDictionary(Context context, ByteBuffer byteBuffer, int dicTypeId) {
-        if (byteBuffer != null) {
-            if (byteBuffer.isDirect()) {
-                mNativeDictDirectBuffer = byteBuffer;
-            } else {
-                mNativeDictDirectBuffer = ByteBuffer.allocateDirect(byteBuffer.capacity());
-                byteBuffer.rewind();
-                mNativeDictDirectBuffer.put(byteBuffer);
-            }
-            mDictLength = byteBuffer.capacity();
-            mNativeDict = openNative(mNativeDictDirectBuffer,
-                    TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER,
-                    MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES);
-        }
-        mDicTypeId = dicTypeId;
-    }
-
-    private native int openNative(ByteBuffer bb, int typedLetterMultiplier,
-            int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
+    private native int openNative(String apkFileName, long dictOffset, long dictSize,
+            int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength,
+            int maxWords, int maxAlternatives);
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize,
@@ -112,37 +84,17 @@ public class BinaryDictionary extends Dictionary {
             int maxWordLength, int maxBigrams, int maxAlternatives);
 
     private final void loadDictionary(Context context, int resId) {
-        InputStream is = null;
-        try {
-            is = context.getResources().openRawResource(resId);
-            final int total = is.available();
-            mNativeDictDirectBuffer =
-                ByteBuffer.allocateDirect(total).order(ByteOrder.nativeOrder());
-            final int got = Channels.newChannel(is).read(mNativeDictDirectBuffer);
-            if (got != total) {
-                Log.e(TAG, "Read " + got + " bytes, expected " + total);
-            } else {
-                mNativeDict = openNative(mNativeDictDirectBuffer,
-                        TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER,
-                        MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES);
-                mDictLength = total;
-            }
-        } catch (IOException e) {
-            Log.w(TAG, "No available memory for binary dictionary");
-        } finally {
-            try {
-                if (is != null) is.close();
-            } catch (IOException e) {
-                Log.w(TAG, "Failed to close input stream");
-            }
-        }
+        final AssetFileDescriptor afd = context.getResources().openRawResourceFd(resId);
+        mNativeDict = openNative(context.getApplicationInfo().sourceDir,
+                afd.getStartOffset(), afd.getLength(),
+                TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER,
+                MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES);
+        mDictLength = afd.getLength();
     }
-
 
     @Override
     public void getBigrams(final WordComposer codes, final CharSequence previousWord,
             final WordCallback callback, int[] nextLettersFrequencies) {
-
         char[] chars = previousWord.toString().toCharArray();
         Arrays.fill(mOutputChars_bigrams, (char) 0);
         Arrays.fill(mFrequencies_bigrams, 0);
@@ -212,7 +164,7 @@ public class BinaryDictionary extends Dictionary {
         return isValidWordNative(mNativeDict, chars, chars.length);
     }
 
-    public int getSize() {
+    public long getSize() {
         return mDictLength; // This value is initialized on the call to openNative()
     }
 
@@ -221,6 +173,7 @@ public class BinaryDictionary extends Dictionary {
         if (mNativeDict != 0) {
             closeNative(mNativeDict);
             mNativeDict = 0;
+            mDictLength = 0;
         }
     }
 

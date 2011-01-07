@@ -31,7 +31,7 @@ public class UserBigramTests extends AndroidTestCase {
 
     @Override
     protected void setUp() {
-        int[] resId = new int[] { R.raw.test };
+        int resId = R.raw.test;
         sh = new SuggestHelper(TAG, getTestContext(), resId, MAX_DATA, DELETE_DATA);
     }
 

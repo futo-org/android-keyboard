@@ -36,9 +36,9 @@ public class SuggestPerformanceTests extends AndroidTestCase {
 
         // For testing with real dictionary, TEMPORARILY COPY main dictionary into test directory.
         // DO NOT SUBMIT real dictionary under test directory.
-        //int[] resId = new int[] { R.raw.main0, R.raw.main1, R.raw.main2 };
+        //int resId = R.raw.main;
 
-        int[] resId = new int[] { R.raw.test };
+        int resId = R.raw.test;
 
         sh = new SuggestHelper(TAG, getTestContext(), resId);
         loadString();
