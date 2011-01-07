@@ -173,7 +173,7 @@ public class LatinKeyboard extends Keyboard {
     @SuppressWarnings("unused")
     private Bitmap drawSpaceBar(int opacity, boolean isAutoCorrection) {
         final int width = mSpaceKey.mWidth;
-        final int height = mSpaceIcon.getIntrinsicHeight();
+        final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : mSpaceKey.mHeight;
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
         final Resources res = mContext.getResources();
@@ -230,7 +230,7 @@ public class LatinKeyboard extends Keyboard {
             int y = height - iconHeight;
             mSpaceAutoCorrectionIndicator.setBounds(x, y, x + iconWidth, y + iconHeight);
             mSpaceAutoCorrectionIndicator.draw(canvas);
-        } else {
+        } else if (mSpaceIcon != null) {
             final int iconWidth = mSpaceIcon.getIntrinsicWidth();
             final int iconHeight = mSpaceIcon.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
