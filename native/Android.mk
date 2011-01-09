@@ -32,7 +32,7 @@ LOCAL_MODULE := libjni_latinime
 LOCAL_MODULE_TAGS := user
 
 ifeq ($(FLAG_DBG), true)
-    $(warning "Making debug build.")
+    $(warning Making debug version of native library)
     LOCAL_CFLAGS += -DFLAG_DBG
     LOCAL_SHARED_LIBRARIES := libcutils libutils
 endif

@@ -50,14 +50,14 @@ static void throwException(JNIEnv *env, const char* ex, const char* fmt, int dat
 }
 
 static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
-        jstring apkFileName, jlong dictOffset, jlong dictSize,
+        jstring sourceDir, jlong dictOffset, jlong dictSize,
         jint typedLetterMultiplier, jint fullWordMultiplier, jint maxWordLength, jint maxWords,
         jint maxAlternatives) {
     PROF_OPEN;
     PROF_START(66);
-    const char *apkFileNameChars = env->GetStringUTFChars(apkFileName, NULL);
-    if (apkFileNameChars == NULL) {
-        LOGE("DICT: Can't get apk file name");
+    const char *sourceDirChars = env->GetStringUTFChars(sourceDir, NULL);
+    if (sourceDirChars == NULL) {
+        LOGE("DICT: Can't get sourceDir string");
         return 0;
     }
     int fd = 0;
@@ -65,9 +65,9 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     int adjust = 0;
 #ifdef USE_MMAP_FOR_DICTIONARY
     /* mmap version */
-    fd = open(apkFileNameChars, O_RDONLY);
+    fd = open(sourceDirChars, O_RDONLY);
     if (fd < 0) {
-        LOGE("DICT: Can't open apk file. errno=%d", errno);
+        LOGE("DICT: Can't open sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
         return 0;
     }
     int pagesize = getpagesize();
@@ -76,16 +76,16 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
     int adjDictSize = dictSize + adjust;
     dictBuf = mmap(NULL, sizeof(char) * adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
     if (dictBuf == MAP_FAILED) {
-        LOGE("DICT: Can't mmap dictionary file. errno=%d", errno);
+        LOGE("DICT: Can't mmap dictionary. errno=%d", errno);
         return 0;
     }
     dictBuf = (void *)((char *)dictBuf + adjust);
 #else // USE_MMAP_FOR_DICTIONARY
     /* malloc version */
     FILE *file = NULL;
-    file = fopen(apkFileNameChars, "rb");
+    file = fopen(sourceDirChars, "rb");
     if (file == NULL) {
-        LOGE("DICT: Can't fopen apk file. errno=%d", errno);
+        LOGE("DICT: Can't fopen sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
         return 0;
     }
     dictBuf = malloc(sizeof(char) * dictSize);
@@ -109,7 +109,7 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         return 0;
     }
 #endif // USE_MMAP_FOR_DICTIONARY
-    env->ReleaseStringUTFChars(apkFileName, apkFileNameChars);
+    env->ReleaseStringUTFChars(sourceDir, sourceDirChars);
 
     if (!dictBuf) {
         LOGE("DICT: dictBuf is null");
