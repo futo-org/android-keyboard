@@ -146,7 +146,7 @@ public class ExpandableDictionary extends Dictionary {
     public Context getContext() {
         return mContext;
     }
-    
+
     public int getMaxWordLength() {
         return MAX_WORD_LENGTH;
     }
@@ -158,6 +158,7 @@ public class ExpandableDictionary extends Dictionary {
     private void addWordRec(NodeArray children, final String word, final int depth,
             final int frequency, Node parentNode) {
         final int wordLength = word.length();
+        if (wordLength <= depth) return;
         final char c = word.charAt(depth);
         // Does children have the current character?
         final int childrenLength = children.mLength;
