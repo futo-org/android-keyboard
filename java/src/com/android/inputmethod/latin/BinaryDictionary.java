@@ -55,7 +55,7 @@ public class BinaryDictionary extends Dictionary {
         try {
             System.loadLibrary("jni_latinime");
         } catch (UnsatisfiedLinkError ule) {
-            Log.e("BinaryDictionary", "Could not load native library jni_latinime");
+            Log.e(TAG, "Could not load native library jni_latinime");
         }
     }
 
@@ -71,7 +71,7 @@ public class BinaryDictionary extends Dictionary {
         mDicTypeId = dicTypeId;
     }
 
-    private native int openNative(String apkFileName, long dictOffset, long dictSize,
+    private native int openNative(String sourceDir, long dictOffset, long dictSize,
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength,
             int maxWords, int maxAlternatives);
     private native void closeNative(int dict);
@@ -84,12 +84,21 @@ public class BinaryDictionary extends Dictionary {
             int maxWordLength, int maxBigrams, int maxAlternatives);
 
     private final void loadDictionary(Context context, int resId) {
-        final AssetFileDescriptor afd = context.getResources().openRawResourceFd(resId);
-        mNativeDict = openNative(context.getApplicationInfo().sourceDir,
-                afd.getStartOffset(), afd.getLength(),
-                TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER,
-                MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES);
-        mDictLength = afd.getLength();
+        try {
+            final AssetFileDescriptor afd = context.getResources().openRawResourceFd(resId);
+            if (afd == null) {
+                Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
+                return;
+            }
+            mNativeDict = openNative(context.getApplicationInfo().sourceDir,
+                    afd.getStartOffset(), afd.getLength(),
+                    TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER,
+                    MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES);
+            mDictLength = afd.getLength();
+        } catch (android.content.res.Resources.NotFoundException e) {
+            Log.e(TAG, "Could not find the resource. resId=" + resId);
+            return;
+        }
     }
 
     @Override
@@ -165,7 +174,7 @@ public class BinaryDictionary extends Dictionary {
     }
 
     public long getSize() {
-        return mDictLength; // This value is initialized on the call to openNative()
+        return mDictLength; // This value is initialized in loadDictionary()
     }
 
     @Override
