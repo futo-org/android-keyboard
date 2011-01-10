@@ -776,11 +776,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onDisplayCompletions(CompletionInfo[] applicationSpecifiedCompletions) {
         if (DEBUG) {
-            Log.i("foo", "Received completions:");
+            Log.i(TAG, "Received completions:");
             final int count = (applicationSpecifiedCompletions != null)
                     ? applicationSpecifiedCompletions.length : 0;
             for (int i = 0; i < count; i++) {
-                Log.i("foo", "  #" + i + ": " + applicationSpecifiedCompletions[i]);
+                Log.i(TAG, "  #" + i + ": " + applicationSpecifiedCompletions[i]);
             }
         }
         if (mApplicationSpecifiedCompletionOn) {
@@ -1447,7 +1447,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void showSuggestions(WordComposer word) {
-        // long startTime = System.currentTimeMillis(); // TIME MEASUREMENT!
         // TODO Maybe need better way of retrieving previous word
         CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
                 mWordSeparators);
@@ -1459,9 +1458,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && !mJustReverted
                 && mSuggest.hasMinimalCorrection();
-        CharSequence typedWord = word.getTypedWord();
+        final CharSequence typedWord = word.getTypedWord();
         // If we're in basic correct
-        boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
+        final boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
                 (preferCapitalization()
                         && mSuggest.isValidWord(typedWord.toString().toLowerCase()));
         if (mCorrectionMode == Suggest.CORRECTION_FULL
@@ -1472,7 +1471,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         correctionAvailable &= !word.isMostlyCaps();
         correctionAvailable &= !TextEntryState.isCorrecting();
 
-        if (builder.size() > 1 || mCandidateView.isShowingAddToDictionaryHint()) {
+        // Basically, we update the suggestion strip only when suggestion count > 1.  However,
+        // there is an exception: We update the suggestion strip whenever typed word's length
+        // is 1, regardless of suggestion count.  Actually, in most cases, suggestion count is 1
+        // when typed word's length is 1, but we do always need to clear the previous state when
+        // the user starts typing a word (i.e. typed word's length == 1).
+        if (typedWord.length() == 1 || builder.size() > 1
+                || mCandidateView.isShowingAddToDictionaryHint()) {
             builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(correctionAvailable);
         } else {
             final SuggestedWords previousSuggestions = mCandidateView.getSuggestions();
