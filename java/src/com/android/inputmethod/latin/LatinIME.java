@@ -21,6 +21,7 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.Utils.RingCharBuffer;
 import com.android.inputmethod.voice.VoiceIMEConnector;
@@ -151,6 +152,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mAutoCap;
     private boolean mQuickFixes;
     private boolean mConfigSwipeDownDismissKeyboardEnabled;
+    private int mConfigDelayBeforeFadeoutLanguageOnSpacebar;
+    private int mConfigDurationOfFadeoutLanguageOnSpacebar;
 
     private int mCorrectionMode;
     private int mCommittedLength;
@@ -241,9 +244,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_UPDATE_OLD_SUGGESTIONS = 1;
         private static final int MSG_UPDATE_SHIFT_STATE = 2;
         private static final int MSG_VOICE_RESULTS = 3;
+        private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 4;
+        private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 5;
 
         @Override
         public void handleMessage(Message msg) {
+            final KeyboardSwitcher switcher = mKeyboardSwitcher;
+            final LatinKeyboardView inputView = switcher.getInputView();
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTIONS:
                 updateSuggestions();
@@ -252,12 +259,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 setOldSuggestions();
                 break;
             case MSG_UPDATE_SHIFT_STATE:
-                mKeyboardSwitcher.updateShiftState();
+                switcher.updateShiftState();
                 break;
             case MSG_VOICE_RESULTS:
                 mVoiceConnector.handleVoiceResults(preferCapitalization()
-                        || (mKeyboardSwitcher.isAlphabetMode()
-                                && mKeyboardSwitcher.isShiftedOrShiftLocked()));
+                        || (switcher.isAlphabetMode() && switcher.isShiftedOrShiftLocked()));
+                break;
+            case MSG_FADEOUT_LANGUAGE_ON_SPACEBAR:
+                if (inputView != null)
+                    inputView.setSpacebarTextFadeFactor(0.5f, (LatinKeyboard)msg.obj);
+                sendMessageDelayed(obtainMessage(MSG_DISMISS_LANGUAGE_ON_SPACEBAR, msg.obj),
+                        mConfigDurationOfFadeoutLanguageOnSpacebar);
+                break;
+            case MSG_DISMISS_LANGUAGE_ON_SPACEBAR:
+                if (inputView != null)
+                    inputView.setSpacebarTextFadeFactor(0.0f, (LatinKeyboard)msg.obj);
                 break;
             }
         }
@@ -297,6 +313,23 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         public void updateVoiceResults() {
             sendMessage(obtainMessage(MSG_VOICE_RESULTS));
         }
+
+        public void startDisplayLanguageOnSpacebar() {
+            removeMessages(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR);
+            removeMessages(MSG_DISMISS_LANGUAGE_ON_SPACEBAR);
+            final LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+            if (inputView != null) {
+                final LatinKeyboard keyboard = inputView.getLatinKeyboard();
+                // The language is never displayed when the delay is zero.
+                if (mConfigDelayBeforeFadeoutLanguageOnSpacebar != 0)
+                    inputView.setSpacebarTextFadeFactor(1.0f, keyboard);
+                // The language is always displayed when the delay is negative.
+                if (mConfigDelayBeforeFadeoutLanguageOnSpacebar > 0) {
+                    sendMessageDelayed(obtainMessage(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR, keyboard),
+                            mConfigDelayBeforeFadeoutLanguageOnSpacebar);
+                }
+            }
+        }
     }
 
     @Override
@@ -319,6 +352,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 res.getBoolean(R.bool.default_recorrection_enabled));
         mConfigSwipeDownDismissKeyboardEnabled = res.getBoolean(
                 R.bool.config_swipe_down_dismiss_keyboard_enabled);
+        mConfigDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
+                R.integer.config_delay_before_fadeout_language_on_spacebar);
+        mConfigDurationOfFadeoutLanguageOnSpacebar = res.getInteger(
+                R.integer.config_duration_of_fadeout_language_on_spacebar);
 
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
@@ -401,23 +438,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onConfigurationChanged(Configuration conf) {
-        mSubtypeSwitcher.onConfigurationChanged(conf);
-        if (mSubtypeSwitcher.isKeyboardMode())
-            onKeyboardLanguageChanged();
-        updateAutoTextEnabled();
-
         // If orientation changed while predicting, commit the change
         if (conf.orientation != mOrientation) {
             InputConnection ic = getCurrentInputConnection();
             commitTyped(ic);
             if (ic != null) ic.finishComposingText(); // For voice input
             mOrientation = conf.orientation;
-            final int mode = mKeyboardSwitcher.getKeyboardMode();
-            final EditorInfo attribute = getCurrentInputEditorInfo();
-            final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
-            mKeyboardSwitcher.loadKeyboard(mode, imeOptions,
-                    mVoiceConnector.isVoiceButtonEnabled(),
-                    mVoiceConnector.isVoiceButtonOnPrimary());
         }
 
         mConfigurationChanging = true;
@@ -1817,7 +1843,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // "reset" and "next" are used only for USE_SPACEBAR_LANGUAGE_SWITCHER.
     private void toggleLanguage(boolean reset, boolean next) {
-        if (SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()) {
             mSubtypeSwitcher.toggleLanguage(reset, next);
         }
         // Reload keyboard because the current language has been changed.
