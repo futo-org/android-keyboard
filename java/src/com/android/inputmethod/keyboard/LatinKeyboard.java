@@ -48,7 +48,7 @@ public class LatinKeyboard extends Keyboard {
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
     private final int mSpaceBarTextShadowColor;
-    private int mSpaceKeyIndex = -1;
+    private final int[] mSpaceKeyIndexArray;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
     private final Context mContext;
@@ -92,7 +92,8 @@ public class LatinKeyboard extends Keyboard {
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
         sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
-        mSpaceKeyIndex = indexOf(CODE_SPACE);
+        // The index of space key is available only after Keyboard constructor has finished.
+        mSpaceKeyIndexArray = new int[] { indexOf(CODE_SPACE) };
     }
 
     /**
@@ -418,7 +419,7 @@ public class LatinKeyboard extends Keyboard {
     @Override
     public int[] getNearestKeys(int x, int y) {
         if (mCurrentlyInSpace) {
-            return new int[] { mSpaceKeyIndex };
+            return mSpaceKeyIndexArray;
         } else {
             // Avoid dead pixels at edges of the keyboard
             return super.getNearestKeys(Math.max(0, Math.min(x, getMinWidth() - 1)),
