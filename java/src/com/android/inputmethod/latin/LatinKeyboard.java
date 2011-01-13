@@ -67,7 +67,7 @@ public class LatinKeyboard extends Keyboard {
     private final int NUMBER_HINT_COUNT = 10;
     private Key[] mNumberHintKeys;
     private Drawable[] mNumberHintIcons = new Drawable[NUMBER_HINT_COUNT];
-    private int mSpaceKeyIndex = -1;
+    private final int[] mSpaceKeyIndexArray;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
     private Locale mLocale;
@@ -144,7 +144,8 @@ public class LatinKeyboard extends Keyboard {
                 R.dimen.spacebar_vertical_correction);
         mIsAlphaKeyboard = xmlLayoutResId == R.xml.kbd_qwerty
                 || xmlLayoutResId == R.xml.kbd_qwerty_black;
-        mSpaceKeyIndex = indexOf(LatinIME.KEYCODE_SPACE);
+        // The index of space key is available only after Keyboard constructor has finished.
+        mSpaceKeyIndexArray = new int[] { indexOf(LatinIME.KEYCODE_SPACE) };
         initializeNumberHintResources(context);
         // TODO remove this initialization after cleanup
         mVerticalGap = super.getVerticalGap();
@@ -795,7 +796,7 @@ public class LatinKeyboard extends Keyboard {
     @Override
     public int[] getNearestKeys(int x, int y) {
         if (mCurrentlyInSpace) {
-            return new int[] { mSpaceKeyIndex };
+            return mSpaceKeyIndexArray;
         } else {
             // Avoid dead pixels at edges of the keyboard
             return super.getNearestKeys(Math.max(0, Math.min(x, getMinWidth() - 1)),

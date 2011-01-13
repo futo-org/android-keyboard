@@ -76,14 +76,19 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     }
 
     @Override
-    public void setKeyboard(Keyboard k) {
-        super.setKeyboard(k);
+    public void setKeyboard(Keyboard newKeyboard) {
+        final Keyboard oldKeyboard = getKeyboard();
+        if (oldKeyboard instanceof LatinKeyboard) {
+            // Reset old keyboard state before switching to new keyboard.
+            ((LatinKeyboard)oldKeyboard).keyReleased();
+        }
+        super.setKeyboard(newKeyboard);
         // One-seventh of the keyboard width seems like a reasonable threshold
-        mJumpThresholdSquare = k.getMinWidth() / 7;
+        mJumpThresholdSquare = newKeyboard.getMinWidth() / 7;
         mJumpThresholdSquare *= mJumpThresholdSquare;
         // Assuming there are 4 rows, this is the coordinate of the last row
-        mLastRowY = (k.getHeight() * 3) / 4;
-        setKeyboardLocal(k);
+        mLastRowY = (newKeyboard.getHeight() * 3) / 4;
+        setKeyboardLocal(newKeyboard);
     }
 
     @Override
