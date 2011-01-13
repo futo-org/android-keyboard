@@ -1132,14 +1132,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void handleBackspace() {
         if (mVoiceConnector.logAndRevertVoiceInput()) return;
-        boolean deleteChar = false;
-        InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
 
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
         ic.beginBatchEdit();
 
         mVoiceConnector.handleBackspace();
 
+        boolean deleteChar = false;
         if (mHasValidSuggestions) {
             final int length = mComposing.length();
             if (length > 0) {
@@ -1157,12 +1157,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             deleteChar = true;
         }
         mHandler.postUpdateShiftKeyState();
+
         TextEntryState.backspace();
         if (TextEntryState.getState() == TextEntryState.State.UNDO_COMMIT) {
             revertLastWord(deleteChar);
             ic.endBatchEdit();
             return;
-        } else if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
+        }
+
+        if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
             ic.deleteSurroundingText(mEnteredText.length(), 0);
         } else if (deleteChar) {
             if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
@@ -1796,16 +1799,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final InputConnection ic = getCurrentInputConnection();
             mHasValidSuggestions = true;
             mJustReverted = true;
+            final CharSequence punctuation = ic.getTextBeforeCursor(1, 0);
             if (deleteChar) ic.deleteSurroundingText(1, 0);
             int toDelete = mCommittedLength;
-            CharSequence toTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
-            if (toTheLeft != null && toTheLeft.length() > 0
-                    && isWordSeparator(toTheLeft.charAt(0))) {
+            final CharSequence toTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
+            if (!TextUtils.isEmpty(toTheLeft) && isWordSeparator(toTheLeft.charAt(0))) {
                 toDelete--;
             }
             ic.deleteSurroundingText(toDelete, 0);
-            ic.setComposingText(mComposing, 1);
-            TextEntryState.backspace();
+            if (deleteChar) {
+                ic.commitText(mComposing, 1);
+                TextEntryState.acceptedTyped(mComposing);
+                if (!TextUtils.isEmpty(punctuation) && isWordSeparator(punctuation.charAt(0))) {
+                    ic.commitText(punctuation, 1);
+                    TextEntryState.typedCharacter(punctuation.charAt(0), true);
+                }
+            } else {
+                ic.setComposingText(mComposing, 1);
+                TextEntryState.backspace();
+            }
             mHandler.postUpdateSuggestions();
         } else {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
