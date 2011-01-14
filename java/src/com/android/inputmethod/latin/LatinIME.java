@@ -26,9 +26,6 @@ import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.Utils.RingCharBuffer;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -38,7 +35,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Debug;
@@ -74,7 +70,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import java.io.FileDescriptor;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
