@@ -157,7 +157,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             boolean voiceButtonOnPrimary) {
         mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         try {
+            if (mInputView == null) return;
+            final Keyboard oldKeyboard = mInputView.getKeyboard();
             loadKeyboardInternal(mode, imeOptions, voiceKeyEnabled, voiceButtonOnPrimary, false);
+            final Keyboard newKeyboard = mInputView.getKeyboard();
+            if (newKeyboard.isAlphaKeyboard() && (oldKeyboard == null
+                    || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale))) {
+                mInputMethodService.mHandler.startDisplayLanguageOnSpacebar();
+            }
         } catch (RuntimeException e) {
             Log.w(TAG, e);
             LatinImeLogger.logOnException(mode + "," + imeOptions, e);
@@ -167,6 +174,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private void loadKeyboardInternal(int mode, int imeOptions, boolean voiceButtonEnabled,
             boolean voiceButtonOnPrimary, boolean isSymbols) {
         if (mInputView == null) return;
+        final Keyboard oldKeyboard = mInputView.getKeyboard();
+        final KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
+        if (oldKeyboard != null && oldKeyboard.mId.equals(id))
+            return;
+
         mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
 
         mMode = mode;
@@ -178,11 +190,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mHasSettingsKey = getSettingsKeyMode(mPrefs, mInputMethodService);
         makeSymbolsKeyboardIds();
 
-        KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
-        LatinKeyboard keyboard = getKeyboard(id);
-
         mCurrentId = id;
-        mInputView.setKeyboard(keyboard);
+        mInputView.setKeyboard(getKeyboard(id));
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -210,6 +219,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         keyboard.onAutoCorrectionStateChanged(mIsAutoCorrectionActive);
         keyboard.setShifted(false);
+        // If the cached keyboard had been switched to another keyboard while the language was
+        // displayed on its spacebar, it might have had arbitrary text fade factor. In such case,
+        // we should reset the text fade factor.
+        keyboard.setSpacebarTextFadeFactor(0.0f, null);
         return keyboard;
     }
 

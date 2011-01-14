@@ -24,6 +24,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
@@ -47,7 +48,9 @@ public class LatinKeyboard extends Keyboard {
     private final Drawable mSpaceAutoCorrectionIndicator;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
-    private final int mSpaceBarTextShadowColor;
+    private final int mSpacebarTextColor;
+    private final int mSpacebarTextShadowColor;
+    private float mSpacebarTextFadeFactor = 0.0f;
     private final int[] mSpaceKeyIndexArray;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
@@ -67,6 +70,7 @@ public class LatinKeyboard extends Keyboard {
     private static final float SPACEBAR_POPUP_MIN_RATIO = 0.4f;
     // Height in space key the language name will be drawn. (proportional to space key height)
     public static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
+    private static final float SPACEBAR_LANGUAGE_BASELINE_WITHOUT_ICON = 0.65f;
     // If the full language name needs to be smaller than this value to be drawn on space key,
     // its short language name will be used instead.
     private static final float MINIMUM_SCALE_OF_LANGUAGE_NAME = 0.8f;
@@ -80,11 +84,12 @@ public class LatinKeyboard extends Keyboard {
         super(context, id.getXmlId(), id);
         final Resources res = context.getResources();
         mContext = context;
+        mSpacebarTextColor = res.getColor(R.color.latinkeyboard_bar_language_text);
         if (id.mColorScheme == KeyboardView.COLOR_SCHEME_BLACK) {
-            mSpaceBarTextShadowColor = res.getColor(
+            mSpacebarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_black);
         } else { // default color scheme is KeyboardView.COLOR_SCHEME_WHITE
-            mSpaceBarTextShadowColor = res.getColor(
+            mSpacebarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_white);
         }
         mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
@@ -96,25 +101,38 @@ public class LatinKeyboard extends Keyboard {
         mSpaceKeyIndexArray = new int[] { indexOf(CODE_SPACE) };
     }
 
+    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
+        mSpacebarTextFadeFactor = fadeFactor;
+        updateSpacebarForLocale(false);
+        if (view != null)
+            view.invalidateKey(mSpaceKey);
+    }
+
+    private static int getSpacebarTextColor(int color, float fadeFactor) {
+        final int newColor = Color.argb((int)(Color.alpha(color) * fadeFactor),
+                Color.red(color), Color.green(color), Color.blue(color));
+        return newColor;
+    }
+
     /**
      * @return a key which should be invalidated.
      */
     public Key onAutoCorrectionStateChanged(boolean isAutoCorrection) {
-        updateSpaceBarForLocale(isAutoCorrection);
+        updateSpacebarForLocale(isAutoCorrection);
         return mSpaceKey;
     }
 
-    private void updateSpaceBarForLocale(boolean isAutoCorrection) {
+    private void updateSpacebarForLocale(boolean isAutoCorrection) {
         final Resources res = mContext.getResources();
         // If application locales are explicitly selected.
         if (SubtypeSwitcher.getInstance().needsToDisplayLanguage()) {
             mSpaceKey.setIcon(new BitmapDrawable(res,
-                    drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCorrection)));
+                    drawSpacebar(OPACITY_FULLY_OPAQUE, isAutoCorrection)));
         } else {
             // sym_keyboard_space_led can be shared with Black and White symbol themes.
             if (isAutoCorrection) {
                 mSpaceKey.setIcon(new BitmapDrawable(res,
-                        drawSpaceBar(OPACITY_FULLY_OPAQUE, isAutoCorrection)));
+                        drawSpacebar(OPACITY_FULLY_OPAQUE, isAutoCorrection)));
             } else {
                 mSpaceKey.setIcon(mSpaceIcon);
             }
@@ -128,8 +146,8 @@ public class LatinKeyboard extends Keyboard {
         return bounds.width();
     }
 
-    // Layout local language name and left and right arrow on space bar.
-    private static String layoutSpaceBar(Paint paint, Locale locale, Drawable lArrow,
+    // Layout local language name and left and right arrow on spacebar.
+    private static String layoutSpacebar(Paint paint, Locale locale, Drawable lArrow,
             Drawable rArrow, int width, int height, float origTextSize,
             boolean allowVariableTextSize) {
         final float arrowWidth = lArrow.getIntrinsicWidth();
@@ -138,7 +156,7 @@ public class LatinKeyboard extends Keyboard {
         final Rect bounds = new Rect();
 
         // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = SubtypeSwitcher.getDisplayLanguage(locale);
+        String language = SubtypeSwitcher.getFullDisplayName(locale, true);
         int textWidth = getTextWidth(paint, language, origTextSize, bounds);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(maxTextWidth / textWidth, 1.0f);
@@ -171,8 +189,7 @@ public class LatinKeyboard extends Keyboard {
         return language;
     }
 
-    @SuppressWarnings("unused")
-    private Bitmap drawSpaceBar(int opacity, boolean isAutoCorrection) {
+    private Bitmap drawSpacebar(int opacity, boolean isAutoCorrection) {
         final int width = mSpaceKey.mWidth;
         final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : mSpaceKey.mHeight;
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -202,21 +219,22 @@ public class LatinKeyboard extends Keyboard {
             }
 
             final boolean allowVariableTextSize = true;
-            final String language = layoutSpaceBar(paint, subtypeSwitcher.getInputLocale(),
+            final String language = layoutSpacebar(paint, subtypeSwitcher.getInputLocale(),
                     mButtonArrowLeftIcon, mButtonArrowRightIcon, width, height,
                     getTextSizeFromTheme(textStyle, defaultTextSize),
                     allowVariableTextSize);
 
             // Draw language text with shadow
-            final float baseline = height * SPACEBAR_LANGUAGE_BASELINE;
+            final float baseline = height * (mSpaceIcon != null ? SPACEBAR_LANGUAGE_BASELINE
+                    : SPACEBAR_LANGUAGE_BASELINE_WITHOUT_ICON);
             final float descent = paint.descent();
-            paint.setColor(mSpaceBarTextShadowColor);
+            paint.setColor(getSpacebarTextColor(mSpacebarTextShadowColor, mSpacebarTextFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent - 1, paint);
-            paint.setColor(res.getColor(R.color.latinkeyboard_bar_language_text));
+            paint.setColor(getSpacebarTextColor(mSpacebarTextColor, mSpacebarTextFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent, paint);
 
             // Put arrows that are already layed out on either side of the text
-            if (SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER
+            if (SubtypeSwitcher.getInstance().useSpacebarLanguageSwitcher()
                     && subtypeSwitcher.getEnabledKeyboardLocaleCount() > 1) {
                 mButtonArrowLeftIcon.draw(canvas);
                 mButtonArrowRightIcon.draw(canvas);
@@ -291,7 +309,6 @@ public class LatinKeyboard extends Keyboard {
      * switching input languages.
      */
     @Override
-    @SuppressWarnings("unused") // SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER is constant
     public boolean isInside(Key key, int pointX, int pointY) {
         int x = pointX;
         int y = pointY;
@@ -302,7 +319,7 @@ public class LatinKeyboard extends Keyboard {
             if (code == CODE_DELETE) x -= key.mWidth / 6;
         } else if (code == CODE_SPACE) {
             y += LatinKeyboard.sSpacebarVerticalCorrection;
-            if (SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCHER
+            if (SubtypeSwitcher.getInstance().useSpacebarLanguageSwitcher()
                     && SubtypeSwitcher.getInstance().getEnabledKeyboardLocaleCount() > 1) {
                 if (mCurrentlyInSpace) {
                     int diff = x - mSpaceDragStartX;
