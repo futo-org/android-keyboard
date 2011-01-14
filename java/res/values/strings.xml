@@ -22,7 +22,7 @@
     <string name="english_ime_name">Android keyboard</string>
     <!-- Title for Latin keyboard settings activity / dialog -->
     <string name="english_ime_settings">Android keyboard settings</string>
-    <!-- Title for Latin keyboard input options dialog -->
+    <!-- Title for Latin keyboard input options dialog [CHAR LIMIT=25] -->
     <string name="english_ime_input_options">Input options</string>
 
     <!-- Option to provide vibrate/haptic feedback on keypress -->
@@ -111,15 +111,15 @@
     <string name="voice_warning_locale_not_supported">Voice input is not currently supported for your language, but does work in English.</string>
 
     <!-- Message of the warning dialog that shows when a user initiates voice input for
-         the first time, or turns it on in settings. -->
+         the first time, or turns it on in settings. [CHAR LIMIT=200] -->
     <string name="voice_warning_may_not_understand">Voice input uses Google\'s speech recognition. <a href="http://m.google.com/privacy">The Mobile Privacy Policy</a> applies.</string>
 
     <!-- An additional part of the warning dialog for voice input that only shows when the user
-         actually initiates voice input, rather than just turning it on in settings. -->
+         actually initiates voice input, rather than just turning it on in settings. [CHAR LIMIT=200] -->
     <string name="voice_warning_how_to_turn_off">To turn off voice input, go to input method settings.</string>
 
     <!-- Message to show when user enables the voice input settings (which says
-        "Press the microphone button"). -->
+        "Press the microphone button"). [CHAR LIMIT=100] -->
     <string name="voice_hint_dialog_message">To use voice input, press the microphone button.</string>
 
     <!-- Short message to tell the user the system is ready for them to speak. -->
