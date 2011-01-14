@@ -38,6 +38,7 @@ public class PointerTracker {
         public void invalidateKey(Key key);
         public void showPreview(int keyIndex, PointerTracker tracker);
         public boolean hasDistinctMultitouch();
+        public boolean isAccessibilityEnabled();
     }
 
     public final int mPointerId;
@@ -67,6 +68,9 @@ public class PointerTracker {
     private int mKeyQuarterWidthSquared;
 
     private final PointerTrackerKeyState mKeyState;
+
+    // true if accessibility is enabled in the parent keyboard
+    private boolean mIsAccessibilityEnabled;
 
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
@@ -112,6 +116,7 @@ public class PointerTracker {
         mKeyDetector = keyDetector;
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mKeyState = new PointerTrackerKeyState(keyDetector);
+        mIsAccessibilityEnabled = proxy.isAccessibilityEnabled();
         mHasDistinctMultitouch = proxy.hasDistinctMultitouch();
         mConfigSlidingKeyInputEnabled = res.getBoolean(R.bool.config_sliding_key_input_enabled);
         mDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
@@ -126,6 +131,10 @@ public class PointerTracker {
 
     public void setOnKeyboardActionListener(KeyboardActionListener listener) {
         mListener = listener;
+    }
+
+    public void setAccessibilityEnabled(boolean accessibilityEnabled) {
+        mIsAccessibilityEnabled = accessibilityEnabled;
     }
 
     // Returns true if keyboard has been changed by this callback.
@@ -312,9 +321,10 @@ public class PointerTracker {
     private void onDownEventInternal(int x, int y, long eventTime) {
         int keyIndex = mKeyState.onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
-        // from modifier key, or 3) this pointer is on mini-keyboard.
+        // from modifier key, 3) this pointer is on mini-keyboard, or 4) accessibility is enabled.
         mIsAllowedSlidingKeyInput = mConfigSlidingKeyInputEnabled || isModifierInternal(keyIndex)
-                || mKeyDetector instanceof MiniKeyboardKeyDetector;
+                || mKeyDetector instanceof MiniKeyboardKeyDetector
+                || mIsAccessibilityEnabled;
         mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
@@ -327,7 +337,9 @@ public class PointerTracker {
                 keyIndex = mKeyState.onDownKey(x, y, eventTime);
         }
         if (isValidKeyIndex(keyIndex)) {
-            if (mKeys[keyIndex].mRepeatable) {
+            // Accessibility disables key repeat because users may need to pause on a key to hear
+            // its spoken description.
+            if (mKeys[keyIndex].mRepeatable && !mIsAccessibilityEnabled) {
                 repeatKey(keyIndex);
                 mHandler.startKeyRepeatTimer(mDelayBeforeKeyRepeatStart, keyIndex, this);
                 mIsRepeatableKey = true;
@@ -517,8 +529,9 @@ public class PointerTracker {
         updateKeyGraphics(keyIndex);
         // The modifier key, such as shift key, should not be shown as preview when multi-touch is
         // supported. On the other hand, if multi-touch is not supported, the modifier key should
-        // be shown as preview.
-        if (mHasDistinctMultitouch && isModifier()) {
+        // be shown as preview. If accessibility is turned on, the modifier key should be shown as
+        // preview.
+        if (mHasDistinctMultitouch && isModifier() && !mIsAccessibilityEnabled) {
             mProxy.showPreview(NOT_A_KEY, this);
         } else {
             mProxy.showPreview(keyIndex, this);
@@ -526,6 +539,11 @@ public class PointerTracker {
     }
 
     private void startLongPressTimer(int keyIndex) {
+        // Accessibility disables long press because users are likely to need to pause on a key
+        // for an unspecified duration in order to hear the key's spoken description.
+        if (mIsAccessibilityEnabled) {
+            return;
+        }
         Key key = getKey(keyIndex);
         if (key.mCode == Keyboard.CODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);

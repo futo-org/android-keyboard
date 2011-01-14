@@ -37,6 +37,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -145,6 +146,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
+
+    // Accessibility
+    private boolean mIsAccessibilityEnabled;
 
     protected KeyDetector mKeyDetector = new ProximityKeyDetector();
 
@@ -523,12 +527,34 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * Return whether the device has distinct multi-touch panel.
+     * Returns whether the device has distinct multi-touch panel.
      * @return true if the device has distinct multi-touch panel.
      */
     @Override
     public boolean hasDistinctMultitouch() {
         return mHasDistinctMultitouch;
+    }
+
+    /**
+     * Enables or disables accessibility.
+     * @param accessibilityEnabled whether or not to enable accessibility
+     */
+    public void setAccessibilityEnabled(boolean accessibilityEnabled) {
+        mIsAccessibilityEnabled = accessibilityEnabled;
+
+        // Propagate this change to all existing pointer trackers.
+        for (PointerTracker tracker : mPointerTrackers) {
+            tracker.setAccessibilityEnabled(accessibilityEnabled);
+        }
+    }
+
+    /**
+     * Returns whether the device has accessibility enabled.
+     * @return true if the device has accessibility enabled.
+     */
+    @Override
+    public boolean isAccessibilityEnabled() {
+        return mIsAccessibilityEnabled;
     }
 
     /**
@@ -1210,15 +1236,18 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // If the device does not have distinct multi-touch support panel, ignore all multi-touch
         // events except a transition from/to single-touch.
-        if (!mHasDistinctMultitouch && pointerCount > 1 && oldPointerCount > 1) {
+        if ((!mHasDistinctMultitouch || mIsAccessibilityEnabled)
+                && pointerCount > 1 && oldPointerCount > 1) {
             return true;
         }
 
         // Track the last few movements to look for spurious swipes.
         mSwipeTracker.addMovement(me);
 
-        // Gesture detector must be enabled only when mini-keyboard is not on the screen.
-        if (mMiniKeyboardView == null
+        // Gesture detector must be enabled only when mini-keyboard is not on the screen and
+        // accessibility is not enabled.
+        // TODO: Reconcile gesture detection and accessibility features.
+        if (mMiniKeyboardView == null && !mIsAccessibilityEnabled
                 && mGestureDetector != null && mGestureDetector.onTouchEvent(me)) {
             dismissKeyPreview();
             mHandler.cancelKeyTimers();
@@ -1263,7 +1292,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // Translate mutli-touch event to single-touch events on the device that has no distinct
         // multi-touch panel.
-        if (!mHasDistinctMultitouch) {
+        if (!mHasDistinctMultitouch || mIsAccessibilityEnabled) {
             // Use only main (id=0) pointer tracker.
             PointerTracker tracker = getPointerTracker(0);
             if (pointerCount == 1 && oldPointerCount == 2) {
