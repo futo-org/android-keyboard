@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceIMEConnector;
@@ -433,6 +432,7 @@ public class SubtypeSwitcher {
     }
 
     private void triggerVoiceIME() {
+        if (!mService.isInputViewShown()) return;
         VoiceIMEConnector.getInstance().startListening(false,
                 KeyboardSwitcher.getInstance().getInputView().getWindowToken(), false);
     }
