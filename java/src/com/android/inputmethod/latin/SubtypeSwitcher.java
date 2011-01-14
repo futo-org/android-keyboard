@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceIMEConnector;
@@ -90,6 +89,8 @@ public class SubtypeSwitcher {
         }
 
         sInstance.updateAllParameters();
+
+        SubtypeLocale.init(service);
     }
 
     private SubtypeSwitcher() {
@@ -445,7 +446,7 @@ public class SubtypeSwitcher {
 
     public static String getFullDisplayName(Locale locale, boolean returnsNameInThisLocale) {
         if (returnsNameInThisLocale) {
-            return toTitleCase(locale.getDisplayName(locale));
+            return toTitleCase(SubtypeLocale.getFullDisplayName(locale));
         } else {
             return toTitleCase(locale.getDisplayName());
         }
