@@ -181,7 +181,8 @@ public class Settings extends PreferenceActivity
     public boolean onPreferenceClick(Preference pref) {
         if (pref == mInputLanguageSelection) {
             final String action;
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+            if (android.os.Build.VERSION.SDK_INT
+                    >= /* android.os.Build.VERSION_CODES.HONEYCOMB */ 10) {
                 action = "android.settings.INPUT_METHOD_AND_SUBTYPE_ENABLER";
             } else {
                 action = "com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION";
