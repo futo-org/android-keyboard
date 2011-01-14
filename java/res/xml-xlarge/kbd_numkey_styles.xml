@@ -81,7 +81,6 @@
             <key-style
                 latin:styleName="numSpaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_keyboard_space_holo"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
         </case>
         <case
@@ -143,7 +142,6 @@
             <key-style
                 latin:styleName="numSpaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_bkeyboard_space"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
         </case>
     </switch>
