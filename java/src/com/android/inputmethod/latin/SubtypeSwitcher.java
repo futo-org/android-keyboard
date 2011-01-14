@@ -83,6 +83,8 @@ public class SubtypeSwitcher {
         sInstance.mPrefs = prefs;
         sInstance.resetParams(service);
         sInstance.updateAllParameters();
+
+        SubtypeLocale.init(service);
     }
 
     private SubtypeSwitcher() {
@@ -430,7 +432,7 @@ public class SubtypeSwitcher {
 
     public static String getFullDisplayName(Locale locale, boolean returnsNameInThisLocale) {
         if (returnsNameInThisLocale) {
-            return toTitleCase(locale.getDisplayName(locale));
+            return toTitleCase(SubtypeLocale.getFullDisplayName(locale));
         } else {
             return toTitleCase(locale.getDisplayName());
         }
