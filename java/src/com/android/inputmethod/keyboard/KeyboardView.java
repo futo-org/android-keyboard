@@ -298,8 +298,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        LayoutInflater inflate =
-                (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         int previewLayout = 0;
         int keyTextSize = 0;
 
@@ -365,7 +363,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         mPreviewPopup = new PopupWindow(context);
         if (previewLayout != 0) {
-            mPreviewText = (TextView) inflate.inflate(previewLayout, null);
+            mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
             mPreviewTextSizeLarge = (int) res.getDimension(R.dimen.key_preview_text_size_large);
             mPreviewPopup.setContentView(mPreviewText);
             mPreviewPopup.setBackgroundDrawable(null);
@@ -1080,9 +1078,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     private View inflateMiniKeyboardContainer(Key popupKey) {
         int popupKeyboardResId = mKeyboard.getPopupKeyboardResId();
-        LayoutInflater inflater = (LayoutInflater)getContext().getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        View container = inflater.inflate(mPopupLayout, null);
+        View container = LayoutInflater.from(getContext()).inflate(mPopupLayout, null);
         if (container == null)
             throw new NullPointerException();
 
@@ -1408,7 +1404,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         dismissPopupKeyboard();
         mBuffer = null;
         mCanvas = null;
+        mKeyboard = null;
         mMiniKeyboardCache.clear();
+        requestLayout();
     }
 
     @Override

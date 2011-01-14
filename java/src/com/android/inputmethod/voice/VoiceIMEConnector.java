@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.voice;
 
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinIME.UIHandler;
@@ -91,7 +92,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     private boolean mVoiceInputHighlighted;
 
     private InputMethodManager mImm;
-    private LatinIME mContext;
+    private LatinIME mService;
     private AlertDialog mVoiceWarningDialog;
     private VoiceInput mVoiceInput;
     private final VoiceResults mVoiceResults = new VoiceResults();
@@ -111,21 +112,19 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         return sInstance;
     }
 
-    private void initInternal(LatinIME context, SharedPreferences prefs, UIHandler h) {
-        mContext = context;
+    private void initInternal(LatinIME service, SharedPreferences prefs, UIHandler h) {
+        mService = service;
         mHandler = h;
-        mImm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mImm = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         if (VOICE_INSTALLED) {
-            mVoiceInput = new VoiceInput(context, this);
-            mHints = new Hints(context, prefs, new Hints.Display() {
+            mVoiceInput = new VoiceInput(service, this);
+            mHints = new Hints(service, prefs, new Hints.Display() {
                 @Override
                 public void showHint(int viewResource) {
-                    LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(
-                            Context.LAYOUT_INFLATER_SERVICE);
-                    View view = inflater.inflate(viewResource, null);
-                    mContext.setCandidatesView(view);
-                    mContext.setCandidatesViewShown(true);
+                    View view = LayoutInflater.from(mService).inflate(viewResource, null);
+                    mService.setCandidatesView(view);
+                    mService.setCandidatesViewShown(true);
                     mIsShowingHint = true;
                 }
               });
@@ -161,7 +160,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             mVoiceInput.flushAllTextModificationCounters();
             // send this intent AFTER logging any prior aggregated edits.
             mVoiceInput.logTextModifiedByChooseSuggestion(suggestion.toString(), index,
-                    wordSeparators, mContext.getCurrentInputConnection());
+                    wordSeparators, mService.getCurrentInputConnection());
         }
     }
 
@@ -170,7 +169,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         if (mVoiceWarningDialog != null && mVoiceWarningDialog.isShowing()) {
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mService);
         builder.setCancelable(true);
         builder.setIcon(R.drawable.ic_mic_dialog);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -199,13 +198,13 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         final CharSequence message;
         if (mLocaleSupportedForVoiceInput) {
             message = TextUtils.concat(
-                    mContext.getText(R.string.voice_warning_may_not_understand), "\n\n",
-                            mContext.getText(R.string.voice_warning_how_to_turn_off));
+                    mService.getText(R.string.voice_warning_may_not_understand), "\n\n",
+                            mService.getText(R.string.voice_warning_how_to_turn_off));
         } else {
             message = TextUtils.concat(
-                    mContext.getText(R.string.voice_warning_locale_not_supported), "\n\n",
-                            mContext.getText(R.string.voice_warning_may_not_understand), "\n\n",
-                                    mContext.getText(R.string.voice_warning_how_to_turn_off));
+                    mService.getText(R.string.voice_warning_locale_not_supported), "\n\n",
+                            mService.getText(R.string.voice_warning_may_not_understand), "\n\n",
+                                    mService.getText(R.string.voice_warning_how_to_turn_off));
         }
         builder.setMessage(message);
 
@@ -296,7 +295,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
     public void showPunctuationHintIfNecessary() {
-        InputConnection ic = mContext.getCurrentInputConnection();
+        InputConnection ic = mService.getCurrentInputConnection();
         if (!mImmediatelyAfterVoiceInput && mAfterVoiceInput && ic != null) {
             if (mHints.showPunctuationHintIfNecessary(ic)) {
                 mVoiceInput.logPunctuationHintDisplayed();
@@ -364,17 +363,17 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
     private void revertVoiceInput() {
-        InputConnection ic = mContext.getCurrentInputConnection();
+        InputConnection ic = mService.getCurrentInputConnection();
         if (ic != null) ic.commitText("", 1);
-        mContext.updateSuggestions();
+        mService.updateSuggestions();
         mVoiceInputHighlighted = false;
     }
 
     public void commitVoiceInput() {
         if (VOICE_INSTALLED && mVoiceInputHighlighted) {
-            InputConnection ic = mContext.getCurrentInputConnection();
+            InputConnection ic = mService.getCurrentInputConnection();
             if (ic != null) ic.finishComposingText();
-            mContext.updateSuggestions();
+            mService.updateSuggestions();
             mVoiceInputHighlighted = false;
         }
     }
@@ -394,7 +393,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         if (mShowingVoiceSuggestions) {
             // Retain the replaced word in the alternatives array.
             String wordToBeReplaced = EditingUtils.getWordAtCursor(
-                    mContext.getCurrentInputConnection(), wordSeparators);
+                    mService.getCurrentInputConnection(), wordSeparators);
             if (!mWordToSuggestions.containsKey(wordToBeReplaced)) {
                 wordToBeReplaced = wordToBeReplaced.toLowerCase();
             }
@@ -438,8 +437,8 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                 builder.addWords(suggestions);
             }
             builder.setTypedWordValid(true).setHasMinimalSuggestion(true);
-            mContext.setSuggestions(builder.build());
-            mContext.setCandidatesViewShown(true);
+            mService.setSuggestions(builder.build());
+            mService.setCandidatesViewShown(true);
             return true;
         }
         return false;
@@ -486,15 +485,15 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         mAfterVoiceInput = true;
         mImmediatelyAfterVoiceInput = true;
 
-        InputConnection ic = mContext.getCurrentInputConnection();
-        if (!mContext.isFullscreenMode()) {
+        InputConnection ic = mService.getCurrentInputConnection();
+        if (!mService.isFullscreenMode()) {
             // Start listening for updates to the text from typing, etc.
             if (ic != null) {
                 ExtractedTextRequest req = new ExtractedTextRequest();
                 ic.getExtractedText(req, InputConnection.GET_EXTRACTED_TEXT_MONITOR);
             }
         }
-        mContext.vibrate();
+        mService.vibrate();
 
         final List<CharSequence> nBest = new ArrayList<CharSequence>();
         for (String c : mVoiceResults.candidates) {
@@ -511,7 +510,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         mHints.registerVoiceResult(bestResult);
 
         if (ic != null) ic.beginBatchEdit(); // To avoid extra updates on committing older text
-        mContext.commitTyped(ic);
+        mService.commitTyped(ic);
         EditingUtils.appendText(ic, bestResult);
         if (ic != null) ic.endBatchEdit();
 
@@ -525,15 +524,15 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mContext.setCandidatesViewShown(false);
+                mService.setCandidatesViewShown(false);
                 mRecognizing = true;
                 View v = mVoiceInput.getView();
                 ViewParent p = v.getParent();
                 if (p != null && p instanceof ViewGroup) {
                     ((ViewGroup)p).removeView(v);
                 }
-                mContext.setInputView(v);
-                mContext.updateInputViewShown();
+                mService.setInputView(v);
+                mService.updateInputViewShown();
                 if (configChanged) {
                     mVoiceInput.onConfigurationChanged();
                 }
@@ -541,7 +540,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
     private void switchToLastInputMethod() {
-        IBinder token = mContext.getWindow().getWindow().getAttributes().token;
+        IBinder token = mService.getWindow().getWindow().getAttributes().token;
         mImm.switchToLastInputMethod(token);
     }
 
@@ -553,7 +552,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             // The user has started a voice input, so remember that in the
             // future (so we don't show the warning dialog after the first run).
             SharedPreferences.Editor editor =
-                    PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+                    PreferenceManager.getDefaultSharedPreferences(mService).edit();
             editor.putBoolean(PREF_HAS_USED_VOICE_INPUT, true);
             SharedPreferencesCompat.apply(editor);
             mHasUsedVoiceInput = true;
@@ -563,14 +562,14 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             // The user has started a voice input from an unsupported locale, so remember that
             // in the future (so we don't show the warning dialog the next time they do this).
             SharedPreferences.Editor editor =
-                    PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+                    PreferenceManager.getDefaultSharedPreferences(mService).edit();
             editor.putBoolean(PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE, true);
             SharedPreferencesCompat.apply(editor);
             mHasUsedVoiceInputUnsupportedLocale = true;
         }
 
         // Clear N-best suggestions
-        mContext.clearSuggestions();
+        mService.clearSuggestions();
 
         FieldContext context = makeFieldContext();
         mVoiceInput.startListening(context, swipe);
@@ -579,7 +578,6 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
     public void startListening(final boolean swipe, IBinder token,
             final boolean configurationChanging) {
-        // TODO: remove swipe which is no longer used.
         if (VOICE_INSTALLED) {
             if (needsToShowWarningDialog()) {
                 // Calls reallyStartListening if user clicks OK, does nothing if user clicks Cancel.
@@ -601,7 +599,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext)
                 && !(attribute != null
                         && IME_OPTION_NO_MICROPHONE.equals(attribute.privateImeOptions))
-                && SpeechRecognizer.isRecognitionAvailable(mContext);
+                && SpeechRecognizer.isRecognitionAvailable(mService);
     }
 
     public void loadSettings(EditorInfo attribute, SharedPreferences sp) {
@@ -614,10 +612,10 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
         if (VOICE_INSTALLED) {
             final String voiceMode = sp.getString(PREF_VOICE_MODE,
-                    mContext.getString(R.string.voice_mode_main));
-            mVoiceButtonEnabled = !voiceMode.equals(mContext.getString(R.string.voice_mode_off))
+                    mService.getString(R.string.voice_mode_main));
+            mVoiceButtonEnabled = !voiceMode.equals(mService.getString(R.string.voice_mode_off))
                     && shouldShowVoiceButton(makeFieldContext(), attribute);
-            mVoiceButtonOnPrimary = voiceMode.equals(mContext.getString(R.string.voice_mode_main));
+            mVoiceButtonOnPrimary = voiceMode.equals(mService.getString(R.string.voice_mode_main));
         }
     }
 
@@ -631,11 +629,10 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         // If IME is in voice mode, but still needs to show the voice warning dialog,
         // keep showing the warning.
         if (mSubtypeSwitcher.isVoiceMode() && token != null) {
-            if (needsToShowWarningDialog()) {
-                showVoiceWarningDialog(false, token, false);
-            } else {
-                startListening(false, token, false);
-            }
+            // Close keyboard view if it is been shown.
+            if (KeyboardSwitcher.getInstance().isInputViewShown())
+                KeyboardSwitcher.getInstance().getInputView().closing();
+            startListening(false, token, false);
         }
         // If we have no token, onAttachedToWindow will take care of showing dialog and start
         // listening.
@@ -668,7 +665,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                 // onCurrentInputMethodSubtypeChanged() will be called first. LatinIME will know
                 // that it's in keyboard mode and SubtypeSwitcher will call onCancelVoice().
                 mRecognizing = false;
-                mContext.switchToKeyboardView();
+                mService.switchToKeyboardView();
             }
         }
     }
@@ -686,8 +683,8 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
     public FieldContext makeFieldContext() {
         SubtypeSwitcher switcher = SubtypeSwitcher.getInstance();
-        return new FieldContext(mContext.getCurrentInputConnection(),
-                mContext.getCurrentInputEditorInfo(), switcher.getInputLocaleStr(),
+        return new FieldContext(mService.getCurrentInputConnection(),
+                mService.getCurrentInputEditorInfo(), switcher.getInputLocaleStr(),
                 switcher.getEnabledLanguages());
     }
 
