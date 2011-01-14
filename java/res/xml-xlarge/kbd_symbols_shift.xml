@@ -139,7 +139,13 @@
         <Key
             latin:keyStyle="spaceKeyStyle"
             latin:keyWidth="37.454%p" />
-        <Key
-            latin:keyStyle="micKeyStyle" />
+        <switch>
+            <case
+                latin:voiceKeyEnabled="true"
+            >
+                <Key
+                    latin:keyStyle="micKeyStyle" />
+            </case>
+        </switch>
     </Row>
 </Keyboard>
