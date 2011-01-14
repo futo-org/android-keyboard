@@ -140,9 +140,15 @@
             latin:keyStyle="num0KeyStyle" />
         <Key
             latin:keyStyle="numPoundKeyStyle" />
-        <Key
-            latin:keyStyle="micKeyStyle"
-            latin:keyWidth="8.042%p" />
+        <switch>
+            <case
+                latin:voiceKeyEnabled="true"
+            >
+                <Key
+                    latin:keyStyle="micKeyStyle"
+                    latin:keyWidth="8.042%p" />
+            </case>
+        </switch>
         <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
              the touch event on the area, "#" is intentionally not marked as a right edge key. -->
     </Row>

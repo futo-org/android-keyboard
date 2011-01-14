@@ -114,7 +114,13 @@
                     latin:popupCharacters="_" />
             </default>
         </switch>
-        <Key
-            latin:keyStyle="micKeyStyle" />
+        <switch>
+            <case
+                latin:voiceKeyEnabled="true"
+            >
+                <Key
+                    latin:keyStyle="micKeyStyle" />
+            </case>
+        </switch>
     </Row>
 </merge>
