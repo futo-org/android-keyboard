@@ -23,13 +23,17 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.backup.BackupManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
+import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
+import android.preference.PreferenceScreen;
 import android.speech.SpeechRecognizer;
 import android.text.AutoText;
 import android.text.TextUtils;
@@ -41,7 +45,7 @@ import java.util.Locale;
 
 public class Settings extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
-        DialogInterface.OnDismissListener {
+        DialogInterface.OnDismissListener, OnPreferenceClickListener {
     private static final String TAG = "Settings";
 
     public static final String PREF_VIBRATE_ON = "vibrate_on";
@@ -64,6 +68,7 @@ public class Settings extends PreferenceActivity
     // Dialog ids
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
 
+    private PreferenceScreen mInputLanguageSelection;
     private CheckBoxPreference mQuickFixes;
     private ListPreference mVoicePreference;
     private ListPreference mSettingsKeyPreference;
@@ -84,10 +89,13 @@ public class Settings extends PreferenceActivity
         final String currentSetting = mAutoCorrectionThreshold.getValue();
         mBigramSuggestion.setEnabled(!currentSetting.equals(autoCorrectionOff));
     }
+
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         addPreferencesFromResource(R.xml.prefs);
+        mInputLanguageSelection = (PreferenceScreen) findPreference(PREF_SUBTYPES);
+        mInputLanguageSelection.setOnPreferenceClickListener(this);
         mQuickFixes = (CheckBoxPreference) findPreference(PREF_QUICK_FIXES);
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_SETTINGS_KEY);
         mSettingsKeyPreference = (ListPreference) findPreference(PREF_SETTINGS_KEY);
@@ -169,6 +177,21 @@ public class Settings extends PreferenceActivity
                 .equals(mVoiceModeOff));
         updateVoiceModeSummary();
         updateSettingsKeySummary();
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference pref) {
+        if (pref == mInputLanguageSelection) {
+            final String action;
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                action = "android.settings.INPUT_METHOD_AND_SUBTYPE_ENABLER";
+            } else {
+                action = "com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION";
+            }
+            startActivity(new Intent(action));
+            return true;
+        }
+        return false;
     }
 
     private void updateSettingsKeySummary() {

@@ -73,10 +73,7 @@
     <PreferenceScreen
             android:key="subtype_settings"
             android:title="@string/language_selection_title"
-            android:summary="@string/language_selection_summary">
-        <intent
-                android:action="android.settings.INPUT_METHOD_AND_SUBTYPE_ENABLER"/>
-    </PreferenceScreen>
+            android:summary="@string/language_selection_summary" />
 
     <PreferenceCategory
             android:title="@string/prediction_category"
