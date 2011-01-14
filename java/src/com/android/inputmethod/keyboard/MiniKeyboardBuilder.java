@@ -71,7 +71,7 @@ public class MiniKeyboardBuilder {
         for (CharSequence popupSpec : popupCharacters) {
             final CharSequence label = PopupCharactersParser.getLabel(popupSpec.toString());
             // If the label is single letter, minKeyWidth is enough to hold the label.
-            if (label.length() > 1) {
+            if (label != null && label.length() > 1) {
                 if (paint == null) {
                     paint = new Paint();
                     paint.setAntiAlias(true);
