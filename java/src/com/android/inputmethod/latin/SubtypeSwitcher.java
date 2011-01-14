@@ -42,6 +42,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class SubtypeSwitcher {
+    // TODO: This should be configurable by resource
     // This flag indicates if we support language switching by swipe on space bar.
     // We may or may not draw the current language on space bar regardless of this flag.
     // @@@
@@ -105,6 +106,7 @@ public class SubtypeSwitcher {
         mSystemLocale = null;
         mInputLocale = null;
         mInputLocaleStr = null;
+        // Mode is initialized to KEYBOARD_MODE, in case that LatinIME can't obtain currentSubtype
         mMode = KEYBOARD_MODE;
         mAllEnabledSubtypesOfCurrentInputMethod = null;
         // TODO: Voice input should be created here

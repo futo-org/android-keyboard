@@ -65,6 +65,9 @@ public class PointerTracker {
 
     private final PointerTrackerKeyState mKeyState;
 
+    // true if keyboard layout has been changed.
+    private boolean mKeyboardLayoutHasBeenChanged;
+
     // true if event is already translated to a key action (long press or mini-keyboard)
     private boolean mKeyAlreadyProcessed;
 
@@ -122,10 +125,14 @@ public class PointerTracker {
         mListener = listener;
     }
 
-    private void callListenerOnPress(int primaryCode) {
+    // Returns true if keyboard has been changed by this callback.
+    private boolean callListenerOnPressAndCheckKeyboardLayoutChange(int primaryCode) {
         if (DEBUG_LISTENER)
             Log.d(TAG, "onPress    : " + keyCodePrintable(primaryCode));
         mListener.onPress(primaryCode);
+        final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
+        mKeyboardLayoutHasBeenChanged = false;
+        return keyboardLayoutHasBeenChanged;
     }
 
     private void callListenerOnCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
@@ -159,8 +166,8 @@ public class PointerTracker {
         mKeyboard = keyboard;
         mKeys = keys;
         mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
-        // Update current key index because keyboard layout has been changed.
-        mKeyState.onSetKeyboard();
+        // Mark that keyboard layout has been changed.
+        mKeyboardLayoutHasBeenChanged = true;
     }
 
     public boolean isInSlidingKeyInput() {
@@ -296,14 +303,16 @@ public class PointerTracker {
         // from modifier key, or 3) this pointer is on mini-keyboard.
         mIsAllowedSlidingKeyInput = mConfigSlidingKeyInputEnabled || isModifierInternal(keyIndex)
                 || mKeyDetector instanceof MiniKeyboardKeyDetector;
+        mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
         mIsInSlidingKeyInput = false;
         if (isValidKeyIndex(keyIndex)) {
-            callListenerOnPress(mKeys[keyIndex].mCode);
-            // This onPress call may have changed keyboard layout and have updated mKeyIndex.
-            // If that's the case, mKeyIndex has been updated in setKeyboard().
-            keyIndex = mKeyState.getKeyIndex();
+            // This onPress call may have changed keyboard layout. Those cases are detected at
+            // {@link #setKeyboard}. In those cases, we should update keyIndex according to the new
+            // keyboard layout.
+            if (callListenerOnPressAndCheckKeyboardLayoutChange(mKeys[keyIndex].mCode))
+                keyIndex = mKeyState.onDownKey(x, y, eventTime);
         }
         if (isValidKeyIndex(keyIndex)) {
             if (mKeys[keyIndex].mRepeatable) {
@@ -327,13 +336,17 @@ public class PointerTracker {
         // TODO: down-to-up filter, if (eventTime-downTime) is less than threshold, just ignore
         // this move event. Otherwise fire {@link onDownEventInternal} and continue.
 
-        final int keyIndex = keyState.onMoveKey(x, y);
+        int keyIndex = keyState.onMoveKey(x, y);
         final Key oldKey = getKey(keyState.getKeyIndex());
         if (isValidKeyIndex(keyIndex)) {
             if (oldKey == null) {
                 // The pointer has been slid in to the new key, but the finger was not on any keys.
                 // In this case, we must call onPress() to notify that the new key is being pressed.
-                callListenerOnPress(getKey(keyIndex).mCode);
+                // This onPress call may have changed keyboard layout. Those cases are detected at
+                // {@link #setKeyboard}. In those cases, we should update keyIndex according to the
+                // new keyboard layout.
+                if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex).mCode))
+                    keyIndex = keyState.onMoveKey(x, y);
                 keyState.onMoveToNewKey(keyIndex, x, y);
                 startLongPressTimer(keyIndex);
             } else if (!isMinorMoveBounce(x, y, keyIndex)) {
@@ -344,7 +357,11 @@ public class PointerTracker {
                 callListenerOnRelease(oldKey.mCode);
                 mHandler.cancelLongPressTimers();
                 if (mIsAllowedSlidingKeyInput) {
-                    callListenerOnPress(getKey(keyIndex).mCode);
+                    // This onPress call may have changed keyboard layout. Those cases are detected
+                    // at {@link #setKeyboard}. In those cases, we should update keyIndex according
+                    // to the new keyboard layout.
+                    if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex).mCode))
+                        keyIndex = keyState.onMoveKey(x, y);
                     keyState.onMoveToNewKey(keyIndex, x, y);
                     startLongPressTimer(keyIndex);
                 } else {
@@ -509,7 +526,7 @@ public class PointerTracker {
             return;
         } else if (mKeyboardSwitcher.isInMomentaryAutoModeSwitchState()) {
             // We use longer timeout for sliding finger input started from the symbols mode key.
-            mHandler.startLongPressTimer(mLongPressKeyTimeout * 2, keyIndex, this);
+            mHandler.startLongPressTimer(mLongPressKeyTimeout * 3, keyIndex, this);
         } else {
             mHandler.startLongPressTimer(mLongPressKeyTimeout, keyIndex, this);
         }

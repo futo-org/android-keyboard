@@ -79,8 +79,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     public static final int COLOR_SCHEME_WHITE = 0;
     public static final int COLOR_SCHEME_BLACK = 1;
 
-    public static final int NOT_A_TOUCH_COORDINATE = -1;
-
     // Timing constants
     private final int mKeyRepeatInterval;
 
@@ -550,7 +548,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * When enabled, calls to {@link KeyboardActionListener#onKey} will include key
+     * When enabled, calls to {@link KeyboardActionListener#onCodeInput} will include key
      * codes for adjacent keys.  When disabled, only the primary key code will be
      * reported.
      * @param enabled whether or not the proximity correction is enabled
@@ -694,7 +692,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             // Draw key label
             if (label != null) {
                 // For characters, use large font. For labels like "Done", use small font.
-                final int labelSize = getLabelSizeAndSetPaint(label, key, paint);
+                final int labelSize = getLabelSizeAndSetPaint(label, key.mLabelOption, paint);
                 final int labelCharHeight = getLabelCharHeight(labelSize, paint);
 
                 // Vertical label text alignment.
@@ -830,13 +828,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mDirtyRect.setEmpty();
     }
 
-    private int getLabelSizeAndSetPaint(CharSequence label, Key key, Paint paint) {
+    public int getLabelSizeAndSetPaint(CharSequence label, int keyLabelOption, Paint paint) {
         // For characters, use large font. For labels like "Done", use small font.
         final int labelSize;
         final Typeface labelStyle;
         if (label.length() > 1) {
             labelSize = mLabelTextSize;
-            if ((key.mLabelOption & KEY_LABEL_OPTION_FONT_NORMAL) != 0) {
+            if ((keyLabelOption & KEY_LABEL_OPTION_FONT_NORMAL) != 0) {
                 labelStyle = Typeface.DEFAULT;
             } else {
                 labelStyle = Typeface.DEFAULT_BOLD;
@@ -1106,6 +1104,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
             @Override
             public void onCancelInput() {
+                mKeyboardActionListener.onCancelInput();
                 dismissPopupKeyboard();
             }
 
@@ -1127,7 +1126,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // Remove gesture detector on mini-keyboard
         miniKeyboard.mGestureDetector = null;
 
-        Keyboard keyboard = new MiniKeyboardBuilder(getContext(), popupKeyboardResId, popupKey)
+        Keyboard keyboard = new MiniKeyboardBuilder(this, popupKeyboardResId, popupKey)
                 .build();
         miniKeyboard.setKeyboard(keyboard);
         miniKeyboard.setPopupParent(this);

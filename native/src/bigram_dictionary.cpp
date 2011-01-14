@@ -31,7 +31,7 @@ BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
     MAX_ALTERNATIVES(maxAlternatives), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     HAS_BIGRAM(hasBigram), mParentDictionary(parentDictionary) {
     if (DEBUG_DICT) LOGI("BigramDictionary - constructor");
-    if (DEBUG_DICT) LOGI("Has Bigram : %d \n", hasBigram);
+    if (DEBUG_DICT) LOGI("Has Bigram : %d", hasBigram);
 }
 
 BigramDictionary::~BigramDictionary() {
@@ -42,7 +42,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
     if (DEBUG_DICT) {
         char s[length + 1];
         for (int i = 0; i <= length; i++) s[i] = word[i];
-        LOGI("Bigram: Found word = %s, freq = %d : \n", s, frequency);
+        LOGI("Bigram: Found word = %s, freq = %d :", s, frequency);
     }
 
     // Find the right insertion point
@@ -54,7 +54,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
         }
         insertAt++;
     }
-    if (DEBUG_DICT) LOGI("Bigram: InsertAt -> %d maxBigrams: %d\n", insertAt, mMaxBigrams);
+    if (DEBUG_DICT) LOGI("Bigram: InsertAt -> %d maxBigrams: %d", insertAt, mMaxBigrams);
     if (insertAt < mMaxBigrams) {
         memmove((char*) mBigramFreq + (insertAt + 1) * sizeof(mBigramFreq[0]),
                (char*) mBigramFreq + insertAt * sizeof(mBigramFreq[0]),
@@ -68,7 +68,7 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
             *dest++ = *word++;
         }
         *dest = 0; // NULL terminate
-        if (DEBUG_DICT) LOGI("Bigram: Added word at %d\n", insertAt);
+        if (DEBUG_DICT) LOGI("Bigram: Added word at %d", insertAt);
         return true;
     }
     return false;
@@ -107,7 +107,7 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
     if (HAS_BIGRAM && IS_LATEST_DICT_VERSION) {
         int pos = mParentDictionary->isValidWordRec(
                 DICTIONARY_HEADER_SIZE, prevWord, 0, prevWordLength);
-        if (DEBUG_DICT) LOGI("Pos -> %d\n", pos);
+        if (DEBUG_DICT) LOGI("Pos -> %d", pos);
         if (pos < 0) {
             return 0;
         }
@@ -151,7 +151,7 @@ void BigramDictionary::searchForTerminalNode(int addressLookingFor, int frequenc
         }
         pos = followDownBranchAddress; // pos start at count
         int count = DICT[pos] & 0xFF;
-        if (DEBUG_DICT) LOGI("count - %d\n",count);
+        if (DEBUG_DICT) LOGI("count - %d",count);
         pos++;
         for (int i = 0; i < count; i++) {
             // pos at data

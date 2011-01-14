@@ -53,7 +53,6 @@
             <key-style
                 latin:styleName="spaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_keyboard_space_holo"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="nonSpecialBackgroundSpaceKeyStyle"

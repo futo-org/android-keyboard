@@ -15,11 +15,23 @@
 ** limitations under the License.
 */
 
+#define LOG_TAG "LatinIME: jni"
+
 #include "dictionary.h"
 #include "jni.h"
 
 #include <assert.h>
+#include <errno.h>
 #include <stdio.h>
+
+#ifdef USE_MMAP_FOR_DICTIONARY
+#include <sys/mman.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#else // USE_MMAP_FOR_DICTIONARY
+#include <stdlib.h>
+#endif // USE_MMAP_FOR_DICTIONARY
 
 // ----------------------------------------------------------------------------
 
@@ -37,24 +49,84 @@ static void throwException(JNIEnv *env, const char* ex, const char* fmt, int dat
     }
 }
 
-static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object, jobject dictDirectBuffer,
+static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
+        jstring sourceDir, jlong dictOffset, jlong dictSize,
         jint typedLetterMultiplier, jint fullWordMultiplier, jint maxWordLength, jint maxWords,
         jint maxAlternatives) {
-    void *dict = env->GetDirectBufferAddress(dictDirectBuffer);
-    if (dict == NULL) {
-        fprintf(stderr, "DICT: Dictionary buffer is null\n");
+    PROF_OPEN;
+    PROF_START(66);
+    const char *sourceDirChars = env->GetStringUTFChars(sourceDir, NULL);
+    if (sourceDirChars == NULL) {
+        LOGE("DICT: Can't get sourceDir string");
         return 0;
     }
-    Dictionary *dictionary = new Dictionary(dict, typedLetterMultiplier, fullWordMultiplier,
-            maxWordLength, maxWords, maxAlternatives);
-    return (jint) dictionary;
+    int fd = 0;
+    void *dictBuf = NULL;
+    int adjust = 0;
+#ifdef USE_MMAP_FOR_DICTIONARY
+    /* mmap version */
+    fd = open(sourceDirChars, O_RDONLY);
+    if (fd < 0) {
+        LOGE("DICT: Can't open sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
+        return 0;
+    }
+    int pagesize = getpagesize();
+    adjust = dictOffset % pagesize;
+    int adjDictOffset = dictOffset - adjust;
+    int adjDictSize = dictSize + adjust;
+    dictBuf = mmap(NULL, sizeof(char) * adjDictSize, PROT_READ, MAP_PRIVATE, fd, adjDictOffset);
+    if (dictBuf == MAP_FAILED) {
+        LOGE("DICT: Can't mmap dictionary. errno=%d", errno);
+        return 0;
+    }
+    dictBuf = (void *)((char *)dictBuf + adjust);
+#else // USE_MMAP_FOR_DICTIONARY
+    /* malloc version */
+    FILE *file = NULL;
+    file = fopen(sourceDirChars, "rb");
+    if (file == NULL) {
+        LOGE("DICT: Can't fopen sourceDir. sourceDirChars=%s errno=%d", sourceDirChars, errno);
+        return 0;
+    }
+    dictBuf = malloc(sizeof(char) * dictSize);
+    if (dictBuf == NULL) {
+        LOGE("DICT: Can't allocate memory region for dictionary. errno=%d", errno);
+        return 0;
+    }
+    int ret = fseek(file, (long)dictOffset, SEEK_SET);
+    if (ret != 0) {
+        LOGE("DICT: Failure in fseek. ret=%d errno=%d", ret, errno);
+        return 0;
+    }
+    ret = fread(dictBuf, sizeof(char) * dictSize, 1, file);
+    if (ret != 1) {
+        LOGE("DICT: Failure in fread. ret=%d errno=%d", ret, errno);
+        return 0;
+    }
+    ret = fclose(file);
+    if (ret != 0) {
+        LOGE("DICT: Failure in fclose. ret=%d errno=%d", ret, errno);
+        return 0;
+    }
+#endif // USE_MMAP_FOR_DICTIONARY
+    env->ReleaseStringUTFChars(sourceDir, sourceDirChars);
+
+    if (!dictBuf) {
+        LOGE("DICT: dictBuf is null");
+        return 0;
+    }
+    Dictionary *dictionary = new Dictionary(dictBuf, dictSize, fd, adjust, typedLetterMultiplier,
+            fullWordMultiplier, maxWordLength, maxWords, maxAlternatives);
+    PROF_END(66);
+    PROF_CLOSE;
+    return (jint)dictionary;
 }
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object, jint dict,
         jintArray inputArray, jint arraySize, jcharArray outputArray, jintArray frequencyArray,
         jintArray nextLettersArray, jint nextLettersSize) {
-    Dictionary *dictionary = (Dictionary*) dict;
-    if (dictionary == NULL) return 0;
+    Dictionary *dictionary = (Dictionary*)dict;
+    if (!dictionary) return 0;
 
     int *frequencies = env->GetIntArrayElements(frequencyArray, NULL);
     int *inputCodes = env->GetIntArrayElements(inputArray, NULL);
@@ -79,8 +151,8 @@ static int latinime_BinaryDictionary_getBigrams(JNIEnv *env, jobject object, jin
         jcharArray prevWordArray, jint prevWordLength, jintArray inputArray, jint inputArraySize,
         jcharArray outputArray, jintArray frequencyArray, jint maxWordLength, jint maxBigrams,
         jint maxAlternatives) {
-    Dictionary *dictionary = (Dictionary*) dict;
-    if (dictionary == NULL) return 0;
+    Dictionary *dictionary = (Dictionary*)dict;
+    if (!dictionary) return 0;
 
     jchar *prevWord = env->GetCharArrayElements(prevWordArray, NULL);
     int *inputCodes = env->GetIntArrayElements(inputArray, NULL);
@@ -99,11 +171,10 @@ static int latinime_BinaryDictionary_getBigrams(JNIEnv *env, jobject object, jin
     return count;
 }
 
-
 static jboolean latinime_BinaryDictionary_isValidWord(JNIEnv *env, jobject object, jint dict,
         jcharArray wordArray, jint wordLength) {
-    Dictionary *dictionary = (Dictionary*) dict;
-    if (dictionary == NULL) return (jboolean) false;
+    Dictionary *dictionary = (Dictionary*)dict;
+    if (!dictionary) return (jboolean) false;
 
     jchar *word = env->GetCharArrayElements(wordArray, NULL);
     jboolean result = dictionary->isValidWord((unsigned short*) word, wordLength);
@@ -113,13 +184,30 @@ static jboolean latinime_BinaryDictionary_isValidWord(JNIEnv *env, jobject objec
 }
 
 static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jint dict) {
-    delete (Dictionary*) dict;
+    Dictionary *dictionary = (Dictionary*)dict;
+    if (!dictionary) return;
+    void *dictBuf = dictionary->getDict();
+    if (!dictBuf) return;
+#ifdef USE_MMAP_FOR_DICTIONARY
+    int ret = munmap((void *)((char *)dictBuf - dictionary->getDictBufAdjust()),
+            dictionary->getDictSize() + dictionary->getDictBufAdjust());
+    if (ret != 0) {
+        LOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
+    }
+    ret = close(dictionary->getMmapFd());
+    if (ret != 0) {
+        LOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
+    }
+#else // USE_MMAP_FOR_DICTIONARY
+    free(dictBuf);
+#endif // USE_MMAP_FOR_DICTIONARY
+    delete dictionary;
 }
 
 // ----------------------------------------------------------------------------
 
 static JNINativeMethod gMethods[] = {
-    {"openNative", "(Ljava/nio/ByteBuffer;IIIII)I", (void*)latinime_BinaryDictionary_open},
+    {"openNative", "(Ljava/lang/String;JJIIIII)I", (void*)latinime_BinaryDictionary_open},
     {"closeNative", "(I)V", (void*)latinime_BinaryDictionary_close},
     {"getSuggestionsNative", "(I[II[C[I[II)I", (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative", "(I[CI)Z", (void*)latinime_BinaryDictionary_isValidWord},
@@ -132,11 +220,11 @@ static int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMe
 
     clazz = env->FindClass(className);
     if (clazz == NULL) {
-        fprintf(stderr, "Native registration unable to find class '%s'\n", className);
+        LOGE("Native registration unable to find class '%s'", className);
         return JNI_FALSE;
     }
     if (env->RegisterNatives(clazz, gMethods, numMethods) < 0) {
-        fprintf(stderr, "RegisterNatives failed for '%s'\n", className);
+        LOGE("RegisterNatives failed for '%s'", className);
         return JNI_FALSE;
     }
 
@@ -157,13 +245,13 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
     jint result = -1;
 
     if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
-        fprintf(stderr, "ERROR: GetEnv failed\n");
+        LOGE("ERROR: GetEnv failed");
         goto bail;
     }
     assert(env != NULL);
 
     if (!registerNatives(env)) {
-        fprintf(stderr, "ERROR: BinaryDictionary native registration failed\n");
+        LOGE("ERROR: BinaryDictionary native registration failed");
         goto bail;
     }
 

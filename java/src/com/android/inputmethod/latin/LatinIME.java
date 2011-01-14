@@ -347,49 +347,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     /**
-     * Loads a dictionary or multiple separated dictionary
-     * @return returns array of dictionary resource ids
+     * Returns a main dictionary resource id
+     * @return main dictionary resource id
      */
-    public static int[] getDictionary(Resources res) {
+    public static int getMainDictionaryResourceId(Resources res) {
+        final String MAIN_DIC_NAME = "main";
         String packageName = LatinIME.class.getPackage().getName();
-        XmlResourceParser xrp = res.getXml(R.xml.dictionary);
-        ArrayList<Integer> dictionaries = new ArrayList<Integer>();
-
-        try {
-            int current = xrp.getEventType();
-            while (current != XmlPullParser.END_DOCUMENT) {
-                if (current == XmlPullParser.START_TAG) {
-                    String tag = xrp.getName();
-                    if (tag != null) {
-                        if (tag.equals("part")) {
-                            String dictFileName = xrp.getAttributeValue(null, "name");
-                            dictionaries.add(res.getIdentifier(dictFileName, "raw", packageName));
-                        }
-                    }
-                }
-                xrp.next();
-                current = xrp.getEventType();
-            }
-        } catch (XmlPullParserException e) {
-            Log.e(TAG, "Dictionary XML parsing failure");
-        } catch (IOException e) {
-            Log.e(TAG, "Dictionary XML IOException");
-        }
-
-        int count = dictionaries.size();
-        int[] dict = new int[count];
-        for (int i = 0; i < count; i++) {
-            dict[i] = dictionaries.get(i);
-        }
-
-        return dict;
+        return res.getIdentifier(MAIN_DIC_NAME, "raw", packageName);
     }
 
     private void initSuggest() {
         updateAutoTextEnabled();
         String locale = mSubtypeSwitcher.getInputLocaleStr();
 
-        Resources orig = getResources();
         Locale savedLocale = mSubtypeSwitcher.changeSystemLocale(new Locale(locale));
         if (mSuggest != null) {
             mSuggest.close();
@@ -397,40 +367,35 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final SharedPreferences prefs = mPrefs;
         mQuickFixes = prefs.getBoolean(Settings.PREF_QUICK_FIXES, true);
 
-        int[] dictionaries = getDictionary(orig);
-        mSuggest = new Suggest(this, dictionaries);
+        final Resources res = mResources;
+        int mainDicResId = getMainDictionaryResourceId(res);
+        mSuggest = new Suggest(this, mainDicResId);
         loadAndSetAutoCorrectionThreshold(prefs);
-        if (mUserDictionary != null) mUserDictionary.close();
+
         mUserDictionary = new UserDictionary(this, locale);
-        if (mContactsDictionary == null) {
-            mContactsDictionary = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
-        }
-        if (mAutoDictionary != null) {
-            mAutoDictionary.close();
-        }
+        mSuggest.setUserDictionary(mUserDictionary);
+
+        mContactsDictionary = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
+        mSuggest.setContactsDictionary(mContactsDictionary);
+
         mAutoDictionary = new AutoDictionary(this, this, locale, Suggest.DIC_AUTO);
-        if (mUserBigramDictionary != null) {
-            mUserBigramDictionary.close();
-        }
+        mSuggest.setAutoDictionary(mAutoDictionary);
+
         mUserBigramDictionary = new UserBigramDictionary(this, this, locale, Suggest.DIC_USER);
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
-        mSuggest.setUserDictionary(mUserDictionary);
-        mSuggest.setContactsDictionary(mContactsDictionary);
-        mSuggest.setAutoDictionary(mAutoDictionary);
+
         updateCorrectionMode();
-        mWordSeparators = mResources.getString(R.string.word_separators);
-        mSentenceSeparators = mResources.getString(R.string.sentence_separators);
+        mWordSeparators = res.getString(R.string.word_separators);
+        mSentenceSeparators = res.getString(R.string.sentence_separators);
 
         mSubtypeSwitcher.changeSystemLocale(savedLocale);
     }
 
     @Override
     public void onDestroy() {
-        if (mUserDictionary != null) {
-            mUserDictionary.close();
-        }
-        if (mContactsDictionary != null) {
-            mContactsDictionary.close();
+        if (mSuggest != null) {
+            mSuggest.close();
+            mSuggest = null;
         }
         unregisterReceiver(mReceiver);
         mVoiceConnector.destroy();
@@ -811,11 +776,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onDisplayCompletions(CompletionInfo[] applicationSpecifiedCompletions) {
         if (DEBUG) {
-            Log.i("foo", "Received completions:");
+            Log.i(TAG, "Received completions:");
             final int count = (applicationSpecifiedCompletions != null)
                     ? applicationSpecifiedCompletions.length : 0;
             for (int i = 0; i < count; i++) {
-                Log.i("foo", "  #" + i + ": " + applicationSpecifiedCompletions[i]);
+                Log.i(TAG, "  #" + i + ": " + applicationSpecifiedCompletions[i]);
             }
         }
         if (mApplicationSpecifiedCompletionOn) {
@@ -859,10 +824,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onEvaluateFullscreenMode() {
-        DisplayMetrics dm = getResources().getDisplayMetrics();
+        final Resources res = mResources;
+        DisplayMetrics dm = res.getDisplayMetrics();
         float displayHeight = dm.heightPixels;
         // If the display is more than X inches high, don't go to fullscreen mode
-        float dimen = getResources().getDimension(R.dimen.max_height_for_fullscreen);
+        float dimen = res.getDimension(R.dimen.max_height_for_fullscreen);
         if (displayHeight > dimen) {
             return false;
         } else {
@@ -1048,8 +1014,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mOptionsDialog != null && mOptionsDialog.isShowing();
     }
 
-    // Implementation of KeyboardViewListener
-
+    // Implementation of {@link KeyboardActionListener}.
     @Override
     public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
         long when = SystemClock.uptimeMillis();
@@ -1132,7 +1097,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         ic.commitText(text, 1);
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
-        mKeyboardSwitcher.onKey(0); // dummy key code.
+        mKeyboardSwitcher.onKey(Keyboard.CODE_DUMMY);
         mJustReverted = false;
         mJustAddedAutoSpace = false;
         mEnteredText = text;
@@ -1141,6 +1106,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onCancelInput() {
         // User released a finger outside any key
+        mKeyboardSwitcher.onCancelInput();
     }
 
     private void handleBackspace() {
@@ -1486,7 +1452,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void showSuggestions(WordComposer word) {
-        // long startTime = System.currentTimeMillis(); // TIME MEASUREMENT!
         // TODO Maybe need better way of retrieving previous word
         CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
                 mWordSeparators);
@@ -1498,9 +1463,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && !mJustReverted
                 && mSuggest.hasMinimalCorrection();
-        CharSequence typedWord = word.getTypedWord();
+        final CharSequence typedWord = word.getTypedWord();
         // If we're in basic correct
-        boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
+        final boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
                 (preferCapitalization()
                         && mSuggest.isValidWord(typedWord.toString().toLowerCase()));
         if (mCorrectionMode == Suggest.CORRECTION_FULL
@@ -1511,7 +1476,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         correctionAvailable &= !word.isMostlyCaps();
         correctionAvailable &= !TextEntryState.isCorrecting();
 
-        if (builder.size() > 1 || mCandidateView.isShowingAddToDictionaryHint()) {
+        // Basically, we update the suggestion strip only when suggestion count > 1.  However,
+        // there is an exception: We update the suggestion strip whenever typed word's length
+        // is 1, regardless of suggestion count.  Actually, in most cases, suggestion count is 1
+        // when typed word's length is 1, but we do always need to clear the previous state when
+        // the user starts typing a word (i.e. typed word's length == 1).
+        if (typedWord.length() == 1 || builder.size() > 1
+                || mCandidateView.isShowingAddToDictionaryHint()) {
             builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(correctionAvailable);
         } else {
             final SuggestedWords previousSuggestions = mCandidateView.getSuggestions();
@@ -1588,8 +1559,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions.mWords);
             final char primaryCode = suggestion.charAt(0);
-            onCodeInput(primaryCode, new int[]{primaryCode}, KeyboardView.NOT_A_TOUCH_COORDINATE,
-                    KeyboardView.NOT_A_TOUCH_COORDINATE);
+            onCodeInput(primaryCode, new int[] { primaryCode },
+                    KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
+                    KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
             if (ic != null) {
                 ic.endBatchEdit();
             }
@@ -1841,7 +1813,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void sendSpace() {
         sendKeyChar((char)Keyboard.CODE_SPACE);
         mKeyboardSwitcher.updateShiftState();
-        //onKey(KEY_SPACE[0], KEY_SPACE);
     }
 
     public boolean preferCapitalization() {
@@ -1879,7 +1850,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else if (Settings.PREF_RECORRECTION_ENABLED.equals(key)) {
             mReCorrectionEnabled = sharedPreferences.getBoolean(
                     Settings.PREF_RECORRECTION_ENABLED,
-                    getResources().getBoolean(R.bool.default_recorrection_enabled));
+                    mResources.getBoolean(R.bool.default_recorrection_enabled));
         }
     }
 
@@ -2011,11 +1982,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void updateSuggestionVisibility(SharedPreferences prefs) {
+        final Resources res = mResources;
         final String suggestionVisiblityStr = prefs.getString(
                 Settings.PREF_SHOW_SUGGESTIONS_SETTING,
-                mResources.getString(R.string.prefs_suggestion_visibility_default_value));
+                res.getString(R.string.prefs_suggestion_visibility_default_value));
         for (int visibility : SUGGESTION_VISIBILITY_VALUE_ARRAY) {
-            if (suggestionVisiblityStr.equals(mResources.getString(visibility))) {
+            if (suggestionVisiblityStr.equals(res.getString(visibility))) {
                 mSuggestionVisibility = visibility;
                 break;
             }

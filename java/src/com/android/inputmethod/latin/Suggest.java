@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -22,12 +22,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
- * This class loads a dictionary and provides a list of suggestions for a given sequence of 
+ * This class loads a dictionary and provides a list of suggestions for a given sequence of
  * characters. This includes corrections and completions.
  */
 public class Suggest implements Dictionary.WordCallback {
@@ -103,13 +102,8 @@ public class Suggest implements Dictionary.WordCallback {
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
-    public Suggest(Context context, int[] dictionaryResId) {
+    public Suggest(Context context, int dictionaryResId) {
         mMainDict = new BinaryDictionary(context, dictionaryResId, DIC_MAIN);
-        initPool();
-    }
-
-    public Suggest(Context context, ByteBuffer byteBuffer) {
-        mMainDict = new BinaryDictionary(context, byteBuffer, DIC_MAIN);
         initPool();
     }
 
@@ -154,7 +148,7 @@ public class Suggest implements Dictionary.WordCallback {
     public void setContactsDictionary(Dictionary userDictionary) {
         mContactsDictionary = userDictionary;
     }
-    
+
     public void setAutoDictionary(Dictionary autoDictionary) {
         mAutoDictionary = autoDictionary;
     }
@@ -232,7 +226,7 @@ public class Suggest implements Dictionary.WordCallback {
 
             if (!TextUtils.isEmpty(prevWordForBigram)) {
                 CharSequence lowerPrevWord = prevWordForBigram.toString().toLowerCase();
-                if (mMainDict.isValidWord(lowerPrevWord)) {
+                if (mMainDict != null && mMainDict.isValidWord(lowerPrevWord)) {
                     prevWordForBigram = lowerPrevWord;
                 }
                 if (mUserBigramDictionary != null) {
@@ -383,7 +377,7 @@ public class Suggest implements Dictionary.WordCallback {
         return mHaveCorrection;
     }
 
-    private boolean compareCaseInsensitive(final String mLowerOriginalWord, 
+    private boolean compareCaseInsensitive(final String mLowerOriginalWord,
             final char[] word, final int offset, final int length) {
         final int originalLength = mLowerOriginalWord.length();
         if (originalLength == length && Character.isUpperCase(word[offset])) {
@@ -456,7 +450,7 @@ public class Suggest implements Dictionary.WordCallback {
         System.arraycopy(priorities, pos, priorities, pos + 1, prefMaxSuggestions - pos - 1);
         priorities[pos] = freq;
         int poolSize = mStringPool.size();
-        StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1) 
+        StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
                 : new StringBuilder(getApproxMaxWordLength());
         sb.setLength(0);
         if (mIsAllUpperCase) {
@@ -510,7 +504,7 @@ public class Suggest implements Dictionary.WordCallback {
                 || (mAutoDictionary != null && mAutoDictionary.isValidWord(word))
                 || (mContactsDictionary != null && mContactsDictionary.isValidWord(word));
     }
-    
+
     private void collectGarbage(ArrayList<CharSequence> suggestions, int prefMaxSuggestions) {
         int poolSize = mStringPool.size();
         int garbageSize = suggestions.size();
@@ -531,6 +525,23 @@ public class Suggest implements Dictionary.WordCallback {
     public void close() {
         if (mMainDict != null) {
             mMainDict.close();
+            mMainDict = null;
+        }
+        if (mUserDictionary != null) {
+            mUserDictionary.close();
+            mUserDictionary = null;
+        }
+        if (mUserBigramDictionary != null) {
+            mUserBigramDictionary.close();
+            mUserBigramDictionary = null;
+        }
+        if (mContactsDictionary != null) {
+            mContactsDictionary.close();
+            mContactsDictionary = null;
+        }
+        if (mAutoDictionary != null) {
+            mAutoDictionary.close();
+            mAutoDictionary = null;
         }
     }
 }

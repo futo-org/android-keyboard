@@ -42,14 +42,20 @@ UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterM
 UnigramDictionary::~UnigramDictionary() {}
 
 int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWords,
-        int *frequencies, int *nextLetters, int nextLettersSize)
-{
+        int *frequencies, int *nextLetters, int nextLettersSize) {
+    PROF_OPEN;
+    PROF_START(0);
     initSuggestions(codes, codesSize, outWords, frequencies);
     if (DEBUG_DICT) assert(codesSize == mInputLength);
 
     const int MAX_DEPTH = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
-    getSuggestionCandidates(-1, -1, -1, nextLetters, nextLettersSize, MAX_DEPTH);
+    PROF_END(0);
 
+    PROF_START(1);
+    getSuggestionCandidates(-1, -1, -1, nextLetters, nextLettersSize, MAX_DEPTH);
+    PROF_END(1);
+
+    PROF_START(2);
     // Suggestion with missing character
     if (SUGGEST_WORDS_WITH_MISSING_CHARACTER) {
         for (int i = 0; i < codesSize; ++i) {
@@ -57,7 +63,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
             getSuggestionCandidates(i, -1, -1, NULL, 0, MAX_DEPTH);
         }
     }
+    PROF_END(2);
 
+    PROF_START(3);
     // Suggestion with excessive character
     if (SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER
             && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION) {
@@ -66,7 +74,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
             getSuggestionCandidates(-1, i, -1, NULL, 0, MAX_DEPTH);
         }
     }
+    PROF_END(3);
 
+    PROF_START(4);
     // Suggestion with transposed characters
     // Only suggest words that length is mInputLength
     if (SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS) {
@@ -75,7 +85,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
             getSuggestionCandidates(-1, -1, i, NULL, 0, mInputLength - 1);
         }
     }
+    PROF_END(4);
 
+    PROF_START(5);
     // Suggestions with missing space
     if (SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER
             && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION) {
@@ -84,7 +96,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
             getMissingSpaceWords(mInputLength, i);
         }
     }
+    PROF_END(5);
 
+    PROF_START(6);
     // Get the word count
     int suggestedWordsCount = 0;
     while (suggestedWordsCount < MAX_WORDS && mFrequencies[suggestedWordsCount] > 0) {
@@ -99,9 +113,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
                 LOGI("%c = %d,", k, nextLetters[k]);
             }
         }
-        LOGI("\n");
     }
-
+    PROF_END(6);
+    PROF_CLOSE;
     return suggestedWordsCount;
 }
 
@@ -254,6 +268,14 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
     }
 }
 
+inline static void multiplyRate(const int rate, int *freq) {
+    if (rate > 1000000) {
+        *freq = (*freq / 100) * rate;
+    } else {
+        *freq = *freq * rate / 100;
+    }
+}
+
 bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int missingSpacePos) {
     if (missingSpacePos <= 0 || missingSpacePos >= inputLength
             || inputLength >= MAX_WORD_LENGTH) return false;
@@ -279,7 +301,7 @@ bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int mi
 
     int pairFreq = ((firstFreq + secondFreq) / 2);
     for (int i = 0; i < inputLength; ++i) pairFreq *= TYPED_LETTER_MULTIPLIER;
-    pairFreq = pairFreq * WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE / 100;
+    multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &pairFreq);
     addWord(word, newWordLength, pairFreq);
     return true;
 }
@@ -330,14 +352,13 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
         const bool sameLength) {
     // TODO: Demote by edit distance
     int finalFreq = freq * snr;
-    if (skipPos >= 0) finalFreq = finalFreq * WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE / 100;
-    if (transposedPos >= 0) finalFreq = finalFreq
-            * WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE / 100;
+    if (skipPos >= 0) multiplyRate(WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE, &finalFreq);
+    if (transposedPos >= 0) multiplyRate(
+            WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE, &finalFreq);
     if (excessivePos >= 0) {
-        finalFreq = finalFreq * WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE / 100;
+        multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
         if (!existsAdjacentProximityChars(inputIndex, mInputLength)) {
-            finalFreq = finalFreq
-                    * WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE / 100;
+            multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE, &finalFreq);
         }
     }
     if (sameLength && skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;

@@ -16,8 +16,12 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.latin.R;
+
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Paint;
+import android.graphics.Rect;
 
 import java.util.List;
 
@@ -25,45 +29,74 @@ public class MiniKeyboardBuilder {
     private final Resources mRes;
     private final Keyboard mKeyboard;
     private final CharSequence[] mPopupCharacters;
+    private final int mMiniKeyboardKeyHorizontalPadding;
+    private final int mKeyWidth;
     private final int mMaxColumns;
     private final int mNumRows;
     private int mColPos;
     private int mRowPos;
-    private Row mRow;
     private int mX;
     private int mY;
 
-    public MiniKeyboardBuilder(Context context, int layoutTemplateResId, Key popupKey) {
+    public MiniKeyboardBuilder(KeyboardView view, int layoutTemplateResId, Key popupKey) {
+        final Context context = view.getContext();
         mRes = context.getResources();
-        mKeyboard = new Keyboard(context, layoutTemplateResId, null);
+        final Keyboard keyboard = new Keyboard(context, layoutTemplateResId, null);
+        mKeyboard = keyboard;
         mPopupCharacters = popupKey.mPopupCharacters;
-        final int numKeys = mPopupCharacters.length;
+        mMiniKeyboardKeyHorizontalPadding = (int)mRes.getDimension(
+                R.dimen.mini_keyboard_key_horizontal_padding);
+        mKeyWidth = getMaxKeyWidth(view, mPopupCharacters, mKeyboard.getKeyWidth());
         final int maxColumns = popupKey.mMaxPopupColumn;
+        mMaxColumns = maxColumns;
+        final int numKeys = mPopupCharacters.length;
         int numRows = numKeys / maxColumns;
         if (numKeys % maxColumns != 0) numRows++;
-        mMaxColumns = maxColumns;
         mNumRows = numRows;
-        // TODO: To determine key width we should pay attention to key label length.
-        mRow = new Row(mKeyboard, getRowFlags());
+        keyboard.setHeight((keyboard.getRowHeight() + keyboard.getVerticalGap()) * numRows
+                - keyboard.getVerticalGap());
         if (numRows > 1) {
             mColPos = numKeys % maxColumns;
             if (mColPos > 0) mColPos = maxColumns - mColPos;
             // Centering top-row keys.
-            mX = mColPos * (mRow.mDefaultWidth + mRow.mDefaultHorizontalGap) / 2;
+            mX = mColPos * (mKeyWidth + keyboard.getHorizontalGap()) / 2;
         }
         mKeyboard.setMinWidth(0);
     }
 
+    private int getMaxKeyWidth(KeyboardView view, CharSequence[] popupCharacters, int minKeyWidth) {
+        Paint paint = null;
+        Rect bounds = null;
+        int maxWidth = 0;
+        for (CharSequence popupSpec : popupCharacters) {
+            final CharSequence label = PopupCharactersParser.getLabel(popupSpec.toString());
+            // If the label is single letter, minKeyWidth is enough to hold the label.
+            if (label.length() > 1) {
+                if (paint == null) {
+                    paint = new Paint();
+                    paint.setAntiAlias(true);
+                }
+                final int labelSize = view.getLabelSizeAndSetPaint(label, 0, paint);
+                paint.setTextSize(labelSize);
+                if (bounds == null) bounds = new Rect();
+                paint.getTextBounds(label.toString(), 0, label.length(), bounds);
+                if (maxWidth < bounds.width())
+                    maxWidth = bounds.width();
+            }
+        }
+        return Math.max(minKeyWidth, maxWidth + mMiniKeyboardKeyHorizontalPadding);
+    }
+
     public Keyboard build() {
-        List<Key> keys = mKeyboard.getKeys();
+        final Keyboard keyboard = mKeyboard;
+        final List<Key> keys = keyboard.getKeys();
         for (CharSequence label : mPopupCharacters) {
             refresh();
-            final Key key = new Key(mRes, mRow, label, mX, mY);
+            final Key key = new Key(mRes, keyboard, label, mX, mY, mKeyWidth, getRowFlags());
             keys.add(key);
             advance();
         }
-        finish();
-        return mKeyboard;
+        return keyboard;
     }
 
     private int getRowFlags() {
@@ -76,29 +109,21 @@ public class MiniKeyboardBuilder {
 
     private void refresh() {
         if (mColPos >= mMaxColumns) {
-            final Row row = mRow;
+            final Keyboard keyboard = mKeyboard;
             // TODO: Allocate key position depending the precedence of popup characters.
             mX = 0;
-            mY += row.mDefaultHeight + row.mVerticalGap;
+            mY += keyboard.getRowHeight() + keyboard.getVerticalGap();
             mColPos = 0;
-            // TODO: To determine key width we should pay attention to key label length from
-            // bottom to up for rows.
-            mRow = new Row(mKeyboard, getRowFlags());
             mRowPos++;
         }
     }
 
     private void advance() {
-        final Row row = mRow;
         final Keyboard keyboard = mKeyboard;
         // TODO: Allocate key position depending the precedence of popup characters.
-        mX += row.mDefaultWidth + row.mDefaultHorizontalGap;
+        mX += mKeyWidth + keyboard.getHorizontalGap();
         if (mX > keyboard.getMinWidth())
             keyboard.setMinWidth(mX);
         mColPos++;
-    }
-
-    private void finish() {
-        mKeyboard.setHeight(mY + mRow.mDefaultHeight);
     }
 }

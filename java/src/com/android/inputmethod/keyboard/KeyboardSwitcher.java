@@ -39,16 +39,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final boolean DEBUG = false;
     public static final boolean DEBUG_STATE = false;
 
-    // Changing DEFAULT_LAYOUT_ID also requires prefs_for_debug.xml to be matched with.
-    public static final String DEFAULT_LAYOUT_ID = "5";
+    private static String sConfigDefaultKeyboardThemeId;
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20100902";
-    private static final int[] THEMES = new int [] {
+    private static final int[] KEYBOARD_THEMES = {
         R.layout.input_basic,
         R.layout.input_basic_highcontrast,
         R.layout.input_stone_normal,
         R.layout.input_stone_bold,
         R.layout.input_gingerbread,
-        R.layout.input_honeycomb, // DEFAULT_LAYOUT_ID
+        R.layout.input_honeycomb,
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;
@@ -111,8 +110,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         sInstance.mPrefs = prefs;
         sInstance.mSubtypeSwitcher = SubtypeSwitcher.getInstance();
 
-        sInstance.mLayoutId = Integer.valueOf(
-                prefs.getString(PREF_KEYBOARD_LAYOUT, DEFAULT_LAYOUT_ID));
+        try {
+            sConfigDefaultKeyboardThemeId = ims.getString(
+                    R.string.config_default_keyboard_theme_id);
+            sInstance.mLayoutId = Integer.valueOf(
+                    prefs.getString(PREF_KEYBOARD_LAYOUT, sConfigDefaultKeyboardThemeId));
+        } catch (NumberFormatException e) {
+            sConfigDefaultKeyboardThemeId = "0";
+            sInstance.mLayoutId = 0;
+        }
         prefs.registerOnSharedPreferenceChangeListener(sInstance);
     }
 
@@ -499,6 +505,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mSymbolKeyState.onOtherKeyPressed();
     }
 
+    public void onCancelInput() {
+        // Snap back to the previous keyboard mode if the user cancels sliding input.
+        if (mAutoModeSwitchState == AUTO_MODE_SWITCH_STATE_MOMENTARY && getPointerCount() == 1)
+            changeKeyboardMode();
+    }
+
     private void toggleShiftInSymbol() {
         if (isAlphabetMode())
             return;
@@ -557,11 +569,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         switch (mAutoModeSwitchState) {
         case AUTO_MODE_SWITCH_STATE_MOMENTARY:
             // Only distinct multi touch devices can be in this state.
-            // On non-distinct multi touch devices, mode change key is handled by {@link onKey},
-            // not by {@link onPress} and {@link onRelease}. So, on such devices,
-            // {@link mAutoModeSwitchState} starts from {@link AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN},
-            // or {@link AUTO_MODE_SWITCH_STATE_ALPHA}, not from
-            // {@link AUTO_MODE_SWITCH_STATE_MOMENTARY}.
+            // On non-distinct multi touch devices, mode change key is handled by
+            // {@link LatinIME#onCodeInput}, not by {@link LatinIME#onPress} and
+            // {@link LatinIME#onRelease}. So, on such devices, {@link #mAutoModeSwitchState} starts
+            // from {@link #AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN}, or
+            // {@link #AUTO_MODE_SWITCH_STATE_ALPHA}, not from
+            // {@link #AUTO_MODE_SWITCH_STATE_MOMENTARY}.
             if (key == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
                 // Detected only the mode change key has been pressed, and then released.
                 if (mIsSymbols) {
@@ -572,6 +585,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             } else if (getPointerCount() == 1) {
                 // Snap back to the previous keyboard mode if the user pressed the mode change key
                 // and slid to other key, then released the finger.
+                // If the user cancels the sliding input, snapping back to the previous keyboard
+                // mode is handled by {@link #onCancelInput}.
                 changeKeyboardMode();
             } else {
                 // Chording input is being started. The keyboard mode will be snapped back to the
@@ -609,8 +624,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (mInputView != null) {
                 mInputView.closing();
             }
-            if (THEMES.length <= layoutId) {
-                layoutId = Integer.valueOf(DEFAULT_LAYOUT_ID);
+            if (KEYBOARD_THEMES.length <= layoutId) {
+                layoutId = Integer.valueOf(sConfigDefaultKeyboardThemeId);
             }
 
             Utils.GCUtils.getInstance().reset();
@@ -618,7 +633,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
                 try {
                     mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater(
-                            ).inflate(THEMES[layoutId], null);
+                            ).inflate(KEYBOARD_THEMES[layoutId], null);
                     tryGC = false;
                 } catch (OutOfMemoryError e) {
                     Log.w(TAG, "load keyboard failed: " + e);
@@ -651,7 +666,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (PREF_KEYBOARD_LAYOUT.equals(key)) {
             final int layoutId = Integer.valueOf(
-                    sharedPreferences.getString(key, DEFAULT_LAYOUT_ID));
+                    sharedPreferences.getString(key, sConfigDefaultKeyboardThemeId));
             createInputViewInternal(layoutId, false);
             postSetInputView();
         } else if (Settings.PREF_SETTINGS_KEY.equals(key)) {

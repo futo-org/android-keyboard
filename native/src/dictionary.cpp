@@ -23,21 +23,23 @@
 
 namespace latinime {
 
-Dictionary::Dictionary(void *dict, int typedLetterMultiplier, int fullWordMultiplier,
+Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
+        int typedLetterMultiplier, int fullWordMultiplier,
         int maxWordLength, int maxWords, int maxAlternatives)
-    : DICT((unsigned char*) dict),
+    : mDict((unsigned char*) dict), mDictSize(dictSize),
+    mMmapFd(mmapFd), mDictBufAdjust(dictBufAdjust),
     // Checks whether it has the latest dictionary or the old dictionary
     IS_LATEST_DICT_VERSION((((unsigned char*) dict)[0] & 0xFF) >= DICTIONARY_VERSION_MIN) {
     if (DEBUG_DICT) {
         if (MAX_WORD_LENGTH_INTERNAL < maxWordLength) {
             LOGI("Max word length (%d) is greater than %d",
                     maxWordLength, MAX_WORD_LENGTH_INTERNAL);
-            LOGI("IN NATIVE SUGGEST Version: %d \n", (DICT[0] & 0xFF));
+            LOGI("IN NATIVE SUGGEST Version: %d", (mDict[0] & 0xFF));
         }
     }
-    mUnigramDictionary = new UnigramDictionary(DICT, typedLetterMultiplier, fullWordMultiplier,
+    mUnigramDictionary = new UnigramDictionary(mDict, typedLetterMultiplier, fullWordMultiplier,
             maxWordLength, maxWords, maxAlternatives, IS_LATEST_DICT_VERSION);
-    mBigramDictionary = new BigramDictionary(DICT, maxWordLength, maxAlternatives,
+    mBigramDictionary = new BigramDictionary(mDict, maxWordLength, maxAlternatives,
             IS_LATEST_DICT_VERSION, hasBigram(), this);
 }
 
@@ -47,7 +49,7 @@ Dictionary::~Dictionary() {
 }
 
 bool Dictionary::hasBigram() {
-    return ((DICT[1] & 0xFF) == 1);
+    return ((mDict[1] & 0xFF) == 1);
 }
 
 // TODO: use uint16_t instead of unsigned short
@@ -64,12 +66,12 @@ int Dictionary::isValidWordRec(int pos, unsigned short *word, int offset, int le
     // returns address of bigram data of that word
     // return -99 if not found
 
-    int count = Dictionary::getCount(DICT, &pos);
+    int count = Dictionary::getCount(mDict, &pos);
     unsigned short currentChar = (unsigned short) word[offset];
     for (int j = 0; j < count; j++) {
-        unsigned short c = Dictionary::getChar(DICT, &pos);
-        int terminal = Dictionary::getTerminal(DICT, &pos);
-        int childPos = Dictionary::getAddress(DICT, &pos);
+        unsigned short c = Dictionary::getChar(mDict, &pos);
+        int terminal = Dictionary::getTerminal(mDict, &pos);
+        int childPos = Dictionary::getAddress(mDict, &pos);
         if (c == currentChar) {
             if (offset == length - 1) {
                 if (terminal) {
@@ -85,7 +87,7 @@ int Dictionary::isValidWordRec(int pos, unsigned short *word, int offset, int le
             }
         }
         if (terminal) {
-            Dictionary::getFreq(DICT, IS_LATEST_DICT_VERSION, &pos);
+            Dictionary::getFreq(mDict, IS_LATEST_DICT_VERSION, &pos);
         }
         // There could be two instances of each alphabet - upper and lower case. So continue
         // looking ...
