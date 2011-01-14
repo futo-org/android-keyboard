@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodSubtype;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceIMEConnector;
