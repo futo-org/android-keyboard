@@ -630,9 +630,15 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     public void onStartInputView(IBinder token) {
         // If IME is in voice mode, but still needs to show the voice warning dialog,
         // keep showing the warning.
-        if (mSubtypeSwitcher.isVoiceMode() && needsToShowWarningDialog() && token != null) {
-            showVoiceWarningDialog(false, token, false);
+        if (mSubtypeSwitcher.isVoiceMode() && token != null) {
+            if (needsToShowWarningDialog()) {
+                showVoiceWarningDialog(false, token, false);
+            } else {
+                startListening(false, token, false);
+            }
         }
+        // If we have no token, onAttachedToWindow will take care of showing dialog and start
+        // listening.
     }
 
     public void onAttachedToWindow() {
