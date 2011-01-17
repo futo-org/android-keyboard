@@ -103,7 +103,7 @@ public class Suggest implements Dictionary.WordCallback {
     private int mCorrectionMode = CORRECTION_BASIC;
 
     public Suggest(Context context, int dictionaryResId) {
-        mMainDict = new BinaryDictionary(context, dictionaryResId, DIC_MAIN);
+        mMainDict = BinaryDictionary.initDictionary(context, dictionaryResId, DIC_MAIN);
         initPool();
     }
 
@@ -127,7 +127,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public boolean hasMainDictionary() {
-        return mMainDict.getSize() > LARGE_DICTIONARY_THRESHOLD;
+        return mMainDict != null && mMainDict.getSize() > LARGE_DICTIONARY_THRESHOLD;
     }
 
     public int getApproxMaxWordLength() {
@@ -276,7 +276,7 @@ public class Suggest implements Dictionary.WordCallback {
                     mHaveCorrection = true;
                 }
             }
-            mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
+            if (mMainDict != null) mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
             if ((mCorrectionMode == CORRECTION_FULL || mCorrectionMode == CORRECTION_FULL_BIGRAM)
                     && mSuggestions.size() > 0 && mPriorities.length > 0) {
                 // TODO: when the normalized score of the first suggestion is nearly equals to
@@ -496,7 +496,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public boolean isValidWord(final CharSequence word) {
-        if (word == null || word.length() == 0) {
+        if (word == null || word.length() == 0 || mMainDict == null) {
             return false;
         }
         return mMainDict.isValidWord(word)

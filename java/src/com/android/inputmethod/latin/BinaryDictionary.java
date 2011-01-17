@@ -42,6 +42,7 @@ public class BinaryDictionary extends Dictionary {
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
+    private static final BinaryDictionary sInstance = new BinaryDictionary();
     private int mDicTypeId;
     private int mNativeDict;
     private long mDictLength;
@@ -59,16 +60,24 @@ public class BinaryDictionary extends Dictionary {
         }
     }
 
+    private BinaryDictionary() {
+    }
+
     /**
-     * Create a dictionary from a raw resource file
+     * Initialize a dictionary from a raw resource file
      * @param context application context for reading resources
      * @param resId the resource containing the raw binary dictionary
+     * @return initialized instance of BinaryDictionary
      */
-    public BinaryDictionary(Context context, int resId, int dicTypeId) {
-        if (resId != 0) {
-            loadDictionary(context, resId);
+    public static BinaryDictionary initDictionary(Context context, int resId, int dicTypeId) {
+        synchronized (sInstance) {
+            sInstance.closeInternal();
+            if (resId != 0) {
+                sInstance.loadDictionary(context, resId);
+                sInstance.mDicTypeId = dicTypeId;
+            }
         }
-        mDicTypeId = dicTypeId;
+        return sInstance;
     }
 
     private native int openNative(String sourceDir, long dictOffset, long dictSize,
@@ -104,6 +113,8 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public void getBigrams(final WordComposer codes, final CharSequence previousWord,
             final WordCallback callback, int[] nextLettersFrequencies) {
+        if (mNativeDict == 0) return;
+
         char[] chars = previousWord.toString().toCharArray();
         Arrays.fill(mOutputChars_bigrams, (char) 0);
         Arrays.fill(mFrequencies_bigrams, 0);
@@ -135,6 +146,8 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public void getWords(final WordComposer codes, final WordCallback callback,
             int[] nextLettersFrequencies) {
+        if (mNativeDict == 0) return;
+
         final int codesSize = codes.size();
         // Won't deal with really long words.
         if (codesSize > MAX_WORD_LENGTH - 1) return;
@@ -179,6 +192,10 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public synchronized void close() {
+        closeInternal();
+    }
+
+    private void closeInternal() {
         if (mNativeDict != 0) {
             closeNative(mNativeDict);
             mNativeDict = 0;
@@ -188,7 +205,10 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     protected void finalize() throws Throwable {
-        close();
-        super.finalize();
+        try {
+            closeInternal();
+        } finally {
+            super.finalize();
+        }
     }
 }
