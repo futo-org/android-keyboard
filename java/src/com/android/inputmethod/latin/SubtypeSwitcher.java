@@ -370,6 +370,23 @@ public class SubtypeSwitcher {
         }
     }
 
+    public void onConfigurationChanged(Configuration conf) {
+        final Locale systemLocale = conf.locale;
+        // If system configuration was changed, update all parameters.
+        if (!TextUtils.equals(systemLocale.toString(), mSystemLocale.toString())) {
+            if (mConfigUseSpacebarLanguageSwitcher) {
+                // If the system locale changes and is different from the saved
+                // locale (mSystemLocale), then reload the input locale list from the
+                // latin ime settings (shared prefs) and reset the input locale
+                // to the first one.
+                mLanguageSwitcher.loadLocales(mPrefs);
+                mLanguageSwitcher.setSystemLocale(systemLocale);
+            } else {
+                updateAllParameters();
+            }
+        }
+    }
+
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (mConfigUseSpacebarLanguageSwitcher) {
             if (Settings.PREF_SELECTED_LANGUAGES.equals(key)) {
