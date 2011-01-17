@@ -615,7 +615,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         checkReCorrectionOnStart();
         inputView.setForeground(true);
 
-        mVoiceConnector.onStartInputView(mKeyboardSwitcher.getInputView().getWindowToken());
+        mVoiceConnector.onStartInputView(inputView.getWindowToken());
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
