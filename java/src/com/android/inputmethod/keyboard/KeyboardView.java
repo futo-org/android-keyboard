@@ -1404,9 +1404,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         dismissPopupKeyboard();
         mBuffer = null;
         mCanvas = null;
-        mKeyboard = null;
         mMiniKeyboardCache.clear();
         requestLayout();
+    }
+
+    public void purgeKeyboardAndClosing() {
+        mKeyboard = null;
+        closing();
     }
 
     @Override

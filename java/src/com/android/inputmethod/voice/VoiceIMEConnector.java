@@ -631,7 +631,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         if (mSubtypeSwitcher.isVoiceMode() && token != null) {
             // Close keyboard view if it is been shown.
             if (KeyboardSwitcher.getInstance().isInputViewShown())
-                KeyboardSwitcher.getInstance().getInputView().closing();
+                KeyboardSwitcher.getInstance().getInputView().purgeKeyboardAndClosing();
             startListening(false, token, false);
         }
         // If we have no token, onAttachedToWindow will take care of showing dialog and start
