@@ -174,12 +174,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private void loadKeyboardInternal(int mode, int imeOptions, boolean voiceButtonEnabled,
             boolean voiceButtonOnPrimary, boolean isSymbols) {
         if (mInputView == null) return;
-        final Keyboard oldKeyboard = mInputView.getKeyboard();
-        final KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
-        if (oldKeyboard != null && oldKeyboard.mId.equals(id))
-            return;
-
-        mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
 
         mMode = mode;
         mImeOptions = imeOptions;
@@ -188,9 +182,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mIsSymbols = isSymbols;
         // Update the settings key state because number of enabled IMEs could have been changed
         mHasSettingsKey = getSettingsKeyMode(mPrefs, mInputMethodService);
-        makeSymbolsKeyboardIds();
+        final KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
 
+        final Keyboard oldKeyboard = mInputView.getKeyboard();
+        if (oldKeyboard != null && oldKeyboard.mId.equals(id))
+            return;
+
+        makeSymbolsKeyboardIds();
         mCurrentId = id;
+        mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
         mInputView.setKeyboard(getKeyboard(id));
     }
 
