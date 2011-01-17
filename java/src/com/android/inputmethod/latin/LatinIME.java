@@ -154,6 +154,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mConfigSwipeDownDismissKeyboardEnabled;
     private int mConfigDelayBeforeFadeoutLanguageOnSpacebar;
     private int mConfigDurationOfFadeoutLanguageOnSpacebar;
+    private float mConfigFinalFadeoutFactorOfLanugageOnSpacebar;
 
     private int mCorrectionMode;
     private int mCommittedLength;
@@ -267,13 +268,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             case MSG_FADEOUT_LANGUAGE_ON_SPACEBAR:
                 if (inputView != null)
-                    inputView.setSpacebarTextFadeFactor(0.5f, (LatinKeyboard)msg.obj);
+                    inputView.setSpacebarTextFadeFactor(
+                            (1.0f + mConfigFinalFadeoutFactorOfLanugageOnSpacebar) / 2,
+                            (LatinKeyboard)msg.obj);
                 sendMessageDelayed(obtainMessage(MSG_DISMISS_LANGUAGE_ON_SPACEBAR, msg.obj),
                         mConfigDurationOfFadeoutLanguageOnSpacebar);
                 break;
             case MSG_DISMISS_LANGUAGE_ON_SPACEBAR:
                 if (inputView != null)
-                    inputView.setSpacebarTextFadeFactor(0.0f, (LatinKeyboard)msg.obj);
+                    inputView.setSpacebarTextFadeFactor(
+                            mConfigFinalFadeoutFactorOfLanugageOnSpacebar, (LatinKeyboard)msg.obj);
                 break;
             }
         }
@@ -356,6 +360,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 R.integer.config_delay_before_fadeout_language_on_spacebar);
         mConfigDurationOfFadeoutLanguageOnSpacebar = res.getInteger(
                 R.integer.config_duration_of_fadeout_language_on_spacebar);
+        mConfigFinalFadeoutFactorOfLanugageOnSpacebar = res.getInteger(
+                R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
 
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;

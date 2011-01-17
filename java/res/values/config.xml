@@ -35,6 +35,7 @@
     <!-- The language is never displayed if == 0, always displayed if < 0 -->
     <integer name="config_delay_before_fadeout_language_on_spacebar">-1</integer>
     <integer name="config_duration_of_fadeout_language_on_spacebar">50</integer>
+    <integer name="config_final_fadeout_percentage_of_language_on_spacebar">15</integer>
     <integer name="config_delay_before_preview">0</integer>
     <integer name="config_delay_after_preview">10</integer>
     <integer name="config_preview_fadein_anim_time">0</integer>
