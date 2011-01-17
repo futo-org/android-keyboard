@@ -103,9 +103,7 @@ public class RecognitionView {
     public RecognitionView(Context context, OnClickListener clickListener) {
         mUiHandler = new Handler();
 
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(
-            Context.LAYOUT_INFLATER_SERVICE);
-        mView = inflater.inflate(R.layout.recognition_status, null);
+        mView = LayoutInflater.from(context).inflate(R.layout.recognition_status, null);
         ContentResolver cr = context.getContentResolver();
         mMinMicrophoneLevel = SettingsUtil.getSettingsFloat(
                 cr, SettingsUtil.LATIN_IME_MIN_MICROPHONE_LEVEL, 15.f);
