@@ -444,6 +444,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onConfigurationChanged(Configuration conf) {
+        mSubtypeSwitcher.onConfigurationChanged(conf);
         // If orientation changed while predicting, commit the change
         if (conf.orientation != mOrientation) {
             InputConnection ic = getCurrentInputConnection();
