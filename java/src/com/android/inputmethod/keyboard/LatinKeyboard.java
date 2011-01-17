@@ -70,7 +70,6 @@ public class LatinKeyboard extends Keyboard {
     private static final float SPACEBAR_POPUP_MIN_RATIO = 0.4f;
     // Height in space key the language name will be drawn. (proportional to space key height)
     public static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
-    private static final float SPACEBAR_LANGUAGE_BASELINE_WITHOUT_ICON = 0.65f;
     // If the full language name needs to be smaller than this value to be drawn on space key,
     // its short language name will be used instead.
     private static final float MINIMUM_SCALE_OF_LANGUAGE_NAME = 0.8f;
@@ -225,9 +224,12 @@ public class LatinKeyboard extends Keyboard {
                     allowVariableTextSize);
 
             // Draw language text with shadow
-            final float baseline = height * (mSpaceIcon != null ? SPACEBAR_LANGUAGE_BASELINE
-                    : SPACEBAR_LANGUAGE_BASELINE_WITHOUT_ICON);
+            // In case there is no space icon, we will place the language text at the center of
+            // spacebar.
             final float descent = paint.descent();
+            final float textHeight = -paint.ascent() + descent;
+            final float baseline = (mSpaceIcon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
+                    : height / 2 + textHeight / 2;
             paint.setColor(getSpacebarTextColor(mSpacebarTextShadowColor, mSpacebarTextFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent - 1, paint);
             paint.setColor(getSpacebarTextColor(mSpacebarTextColor, mSpacebarTextFadeFactor));
