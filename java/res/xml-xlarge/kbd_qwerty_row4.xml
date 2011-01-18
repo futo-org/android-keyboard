@@ -26,7 +26,9 @@
         latin:keyWidth="8.042%p"
     >
         <Spacer
-            latin:horizontalGap="16.404%p" />
+            latin:horizontalGap="8.362%p" />
+        <Key
+            latin:keyStyle="settingsKeyStyle" />
         <switch>
             <case
                 latin:mode="email"
