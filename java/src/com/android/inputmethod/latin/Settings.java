@@ -134,6 +134,12 @@ public class Settings extends PreferenceActivity
         if (!showSubtypeSettings) {
             getPreferenceScreen().removePreference(findPreference(PREF_SUBTYPES));
         }
+
+        final boolean showPopupOption = getResources().getBoolean(
+                R.bool.config_enable_show_popup_on_keypress_option);
+        if (!showPopupOption) {
+            getPreferenceScreen().removePreference(findPreference(PREF_POPUP_ON));
+        }
     }
 
     @Override
