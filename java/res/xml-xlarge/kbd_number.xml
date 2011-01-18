@@ -120,7 +120,10 @@
         <!-- There is an empty area bellow the "More" key and left of the "space" key.  To ignore
              the touch event on the area, "space" is intentionally not marked as a left edge key. -->
         <Spacer
-            latin:horizontalGap="16.406%p" />
+            latin:horizontalGap="8.362%p" />
+        <Key
+            latin:keyStyle="settingsKeyStyle"
+            latin:keyWidth="8.042%p" />
         <Key
             latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
             latin:keyWidth="24.127%p" />
