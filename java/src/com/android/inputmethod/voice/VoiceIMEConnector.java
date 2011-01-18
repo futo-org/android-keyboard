@@ -30,6 +30,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -77,6 +78,9 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     // given text field. For instance this is specified by the search dialog when the
     // dialog is already showing a voice search button.
     private static final String IME_OPTION_NO_MICROPHONE = "nm";
+
+    @SuppressWarnings("unused")
+    private static final String TAG = "VoiceIMEConnector";
 
     private boolean mAfterVoiceInput;
     private boolean mHasUsedVoiceInput;
@@ -164,8 +168,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         }
     }
 
-    private void showVoiceWarningDialog(final boolean swipe, IBinder token,
-            final boolean configurationChanging) {
+    private void showVoiceWarningDialog(final boolean swipe, IBinder token) {
         if (mVoiceWarningDialog != null && mVoiceWarningDialog.isShowing()) {
             return;
         }
@@ -176,7 +179,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
                 mVoiceInput.logKeyboardWarningDialogOk();
-                reallyStartListening(swipe, configurationChanging);
+                reallyStartListening(swipe);
             }
         });
         builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -519,22 +522,38 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         onCancelVoice();
     }
 
-    public void switchToRecognitionStatusView(final boolean configurationChanging) {
-        final boolean configChanged = configurationChanging;
+    public void switchToRecognitionStatusView(final Configuration configuration) {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mService.setCandidatesViewShown(false);
                 mRecognizing = true;
+                mVoiceInput.newView();
                 View v = mVoiceInput.getView();
+
                 ViewParent p = v.getParent();
                 if (p != null && p instanceof ViewGroup) {
-                    ((ViewGroup)p).removeView(v);
+                    ((ViewGroup) p).removeView(v);
+                }
+
+                View keyboardView = KeyboardSwitcher.getInstance().getInputView();
+
+                // The full height of the keyboard is difficult to calculate
+                // as the dimension is expressed in "mm" and not in "pixel"
+                // As we add mm, we don't know how the rounding is going to work
+                // thus we may end up with few pixels extra (or less).
+                if (keyboardView != null) {
+                    int h = keyboardView.getHeight();
+                    if (h > 0) {
+                        View popupLayout = v.findViewById(R.id.popup_layout);
+                        popupLayout.getLayoutParams().height = h;
+                    }
                 }
                 mService.setInputView(v);
                 mService.updateInputViewShown();
-                if (configChanged) {
-                    mVoiceInput.onConfigurationChanged();
+
+                if (configuration != null) {
+                    mVoiceInput.onConfigurationChanged(configuration);
                 }
         }});
     }
@@ -544,7 +563,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         mImm.switchToLastInputMethod(token);
     }
 
-    private void reallyStartListening(boolean swipe, final boolean configurationChanging) {
+    private void reallyStartListening(boolean swipe) {
         if (!VOICE_INSTALLED) {
             return;
         }
@@ -573,21 +592,20 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
         FieldContext context = makeFieldContext();
         mVoiceInput.startListening(context, swipe);
-        switchToRecognitionStatusView(configurationChanging);
+        switchToRecognitionStatusView(null);
     }
 
-    public void startListening(final boolean swipe, IBinder token,
-            final boolean configurationChanging) {
+    public void startListening(final boolean swipe, IBinder token) {
+        // TODO: remove swipe which is no longer used.
         if (VOICE_INSTALLED) {
             if (needsToShowWarningDialog()) {
                 // Calls reallyStartListening if user clicks OK, does nothing if user clicks Cancel.
-                showVoiceWarningDialog(swipe, token, configurationChanging);
+                showVoiceWarningDialog(swipe, token);
             } else {
-                reallyStartListening(swipe, configurationChanging);
+                reallyStartListening(swipe);
             }
         }
     }
-
 
     private boolean fieldCanDoVoice(FieldContext fieldContext) {
         return !mPasswordText
@@ -632,7 +650,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             // Close keyboard view if it is been shown.
             if (KeyboardSwitcher.getInstance().isInputViewShown())
                 KeyboardSwitcher.getInstance().getInputView().purgeKeyboardAndClosing();
-            startListening(false, token, false);
+            startListening(false, token);
         }
         // If we have no token, onAttachedToWindow will take care of showing dialog and start
         // listening.
@@ -644,9 +662,9 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         mSubtypeSwitcher.setVoiceInput(mVoiceInput);
     }
 
-    public void onConfigurationChanged(boolean configurationChanging) {
+    public void onConfigurationChanged(Configuration configuration) {
         if (mRecognizing) {
-            switchToRecognitionStatusView(configurationChanging);
+            switchToRecognitionStatusView(configuration);
         }
     }
 
