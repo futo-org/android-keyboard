@@ -1805,7 +1805,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int length = mComposing.length();
         if (!mHasValidSuggestions && length > 0) {
             final InputConnection ic = getCurrentInputConnection();
-            mHasValidSuggestions = true;
             mJustReverted = true;
             final CharSequence punctuation = ic.getTextBeforeCursor(1, 0);
             if (deleteChar) ic.deleteSurroundingText(1, 0);
@@ -1815,14 +1814,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 toDelete--;
             }
             ic.deleteSurroundingText(toDelete, 0);
-            if (deleteChar) {
+            // Re-insert punctuation only when the deleted character was word separator and the
+            // composing text wasn't equal to the auto-corrected text.
+            if (deleteChar
+                    && !TextUtils.isEmpty(punctuation) && isWordSeparator(punctuation.charAt(0))
+                    && !TextUtils.equals(mComposing, toTheLeft)) {
                 ic.commitText(mComposing, 1);
                 TextEntryState.acceptedTyped(mComposing);
-                if (!TextUtils.isEmpty(punctuation) && isWordSeparator(punctuation.charAt(0))) {
-                    ic.commitText(punctuation, 1);
-                    TextEntryState.typedCharacter(punctuation.charAt(0), true);
-                }
+                ic.commitText(punctuation, 1);
+                TextEntryState.typedCharacter(punctuation.charAt(0), true);
+                // Clear composing text
+                mComposing.setLength(0);
             } else {
+                mHasValidSuggestions = true;
                 ic.setComposingText(mComposing, 1);
                 TextEntryState.backspace();
             }
