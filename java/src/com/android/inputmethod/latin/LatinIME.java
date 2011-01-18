@@ -353,8 +353,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final Resources res = getResources();
         mResources = res;
-        mReCorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
-                res.getBoolean(R.bool.default_recorrection_enabled));
+
+        // If the option should not be shown, do not read the recorrection preference
+        // but always use the default setting defined in the resources.
+        if (res.getBoolean(R.bool.config_enable_show_recorrection_option)) {
+            mReCorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
+                    res.getBoolean(R.bool.default_recorrection_enabled));
+        } else {
+            mReCorrectionEnabled = res.getBoolean(R.bool.default_recorrection_enabled);
+        }
+
         mConfigSwipeDownDismissKeyboardEnabled = res.getBoolean(
                 R.bool.config_swipe_down_dismiss_keyboard_enabled);
         mConfigDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
