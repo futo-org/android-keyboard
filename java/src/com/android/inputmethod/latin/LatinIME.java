@@ -133,14 +133,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private Resources mResources;
     private SharedPreferences mPrefs;
 
+    // These variables are initialized according to the {@link EditorInfo#inputType}.
+    private boolean mAutoSpace;
+    private boolean mInputTypeNoAutoCorrect;
+    private boolean mIsSettingsSuggestionStripOn;
+    private boolean mApplicationSpecifiedCompletionOn;
+
     private final StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
     private CharSequence mBestWord;
     private boolean mHasValidSuggestions;
-    private boolean mIsSettingsSuggestionStripOn;
-    private boolean mApplicationSpecifiedCompletionOn;
     private boolean mHasDictionary;
-    private boolean mAutoSpace;
     private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
     private boolean mReCorrectionEnabled;
@@ -163,9 +166,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private int mLastSelectionStart;
     private int mLastSelectionEnd;
     private SuggestedWords mSuggestPuncList;
-
-    // Input type is such that we should not auto-correct
-    private boolean mInputTypeNoAutoCorrect;
 
     // Indicates whether the suggestion strip is to be on in landscape
     private boolean mJustAccepted;
@@ -507,24 +507,62 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         if (mRefreshKeyboardRequired) {
             mRefreshKeyboardRequired = false;
-            onKeyboardLanguageChanged();
+            onRefreshKeyboard();
         }
 
         TextEntryState.newSession(this);
 
-        // Most such things we decide below in the switch statement, but we need to know
-        // now whether this is a password text field, because we need to know now (before
-        // the switch statement) whether we want to enable the voice button.
-        int variation = attribute.inputType & InputType.TYPE_MASK_VARIATION;
-        mVoiceConnector.resetVoiceStates(isPasswordVariation(variation));
+        // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
+        // know now whether this is a password text field, because we need to know now whether we
+        // want to enable the voice button.
+        mVoiceConnector.resetVoiceStates(isPasswordVariation(
+                attribute.inputType & InputType.TYPE_MASK_VARIATION));
+
+        final int mode = initializeInputAttributesAndGetMode(attribute.inputType);
+
+        inputView.closing();
+        mEnteredText = null;
+        mComposing.setLength(0);
+        mHasValidSuggestions = false;
+        mDeleteCount = 0;
+        mJustAddedAutoSpace = false;
+
+        loadSettings(attribute);
+        if (mSubtypeSwitcher.isKeyboardMode()) {
+            switcher.loadKeyboard(mode, attribute.imeOptions,
+                    mVoiceConnector.isVoiceButtonEnabled(),
+                    mVoiceConnector.isVoiceButtonOnPrimary());
+            switcher.updateShiftState();
+        }
+
+        setCandidatesViewShownInternal(isCandidateStripVisible(),
+                false /* needsInputViewShown */ );
+        // Delay updating suggestions because keyboard input view may not be shown at this point.
+        mHandler.postUpdateSuggestions();
+
+        updateCorrectionMode();
+
+        inputView.setPreviewEnabled(mPopupOn);
+        inputView.setProximityCorrectionEnabled(true);
+        // If we just entered a text field, maybe it has some old text that requires correction
+        checkReCorrectionOnStart();
+        inputView.setForeground(true);
+
+        mVoiceConnector.onStartInputView(inputView.getWindowToken());
+
+        if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
+    }
+
+    private int initializeInputAttributesAndGetMode(int inputType) {
+        final int variation = inputType & InputType.TYPE_MASK_VARIATION;
+        mAutoSpace = false;
         mInputTypeNoAutoCorrect = false;
         mIsSettingsSuggestionStripOn = false;
         mApplicationSpecifiedCompletionOn = false;
         mApplicationSpecifiedCompletions = null;
-        mEnteredText = null;
 
         final int mode;
-        switch (attribute.inputType & InputType.TYPE_MASK_CLASS) {
+        switch (inputType & InputType.TYPE_MASK_CLASS) {
             case InputType.TYPE_CLASS_NUMBER:
             case InputType.TYPE_CLASS_DATETIME:
                 mode = KeyboardId.MODE_NUMBER;
@@ -559,7 +597,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     mode = KeyboardId.MODE_WEB;
                     // If it's a browser edit field and auto correct is not ON explicitly, then
                     // disable auto correction, but keep suggestions on.
-                    if ((attribute.inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
+                    if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
                         mInputTypeNoAutoCorrect = true;
                     }
                 } else {
@@ -567,16 +605,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
 
                 // If NO_SUGGESTIONS is set, don't do prediction.
-                if ((attribute.inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
+                if ((inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
                     mIsSettingsSuggestionStripOn = false;
                     mInputTypeNoAutoCorrect = true;
                 }
                 // If it's not multiline and the autoCorrect flag is not set, then don't correct
-                if ((attribute.inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0 &&
-                        (attribute.inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
+                if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0 &&
+                        (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
                     mInputTypeNoAutoCorrect = true;
                 }
-                if ((attribute.inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
+                if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
                     mIsSettingsSuggestionStripOn = false;
                     mApplicationSpecifiedCompletionOn = isFullscreenMode();
                 }
@@ -585,40 +623,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mode = KeyboardId.MODE_TEXT;
                 break;
         }
-        inputView.closing();
-        mComposing.setLength(0);
-        mHasValidSuggestions = false;
-        mDeleteCount = 0;
-        mJustAddedAutoSpace = false;
-
-        loadSettings(attribute);
-        if (mSubtypeSwitcher.isKeyboardMode()) {
-            switcher.loadKeyboard(mode, attribute.imeOptions,
-                    mVoiceConnector.isVoiceButtonEnabled(),
-                    mVoiceConnector.isVoiceButtonOnPrimary());
-            switcher.updateShiftState();
-        }
-
-        setCandidatesViewShownInternal(isCandidateStripVisible(),
-                false /* needsInputViewShown */ );
-        // Delay updating suggestions because keyboard input view may not be shown at this point.
-        mHandler.postUpdateSuggestions();
-
-        // If the dictionary is not big enough, don't auto correct
-        mHasDictionary = mSuggest.hasMainDictionary();
-
-        updateCorrectionMode();
-
-        inputView.setPreviewEnabled(mPopupOn);
-        inputView.setProximityCorrectionEnabled(true);
-        mIsSettingsSuggestionStripOn &= (mCorrectionMode > 0 || isShowingSuggestionsStrip());
-        // If we just entered a text field, maybe it has some old text that requires correction
-        checkReCorrectionOnStart();
-        inputView.setForeground(true);
-
-        mVoiceConnector.onStartInputView(inputView.getWindowToken());
-
-        if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
+        return mode;
     }
 
     private void checkReCorrectionOnStart() {
@@ -1387,7 +1392,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean isSuggestionsRequested() {
-        return mIsSettingsSuggestionStripOn;
+        return mIsSettingsSuggestionStripOn
+                && (mCorrectionMode > 0 || isShowingSuggestionsStrip());
     }
 
     private boolean isShowingPunctuationList() {
@@ -1859,9 +1865,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mWord.isFirstCharCapitalized();
     }
 
-    // Notify that Language has been changed and toggleLanguage will update KeyboaredID according
-    // to new Language.
-    public void onKeyboardLanguageChanged() {
+    // Notify that language or mode have been changed and toggleLanguage will update KeyboaredID
+    // according to new language or mode.
+    public void onRefreshKeyboard() {
         toggleLanguage(true, true);
     }
 
@@ -1872,8 +1878,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // Reload keyboard because the current language has been changed.
         KeyboardSwitcher switcher = mKeyboardSwitcher;
-        final int mode = switcher.getKeyboardMode();
         final EditorInfo attribute = getCurrentInputEditorInfo();
+        final int mode = initializeInputAttributesAndGetMode((attribute != null)
+                ? attribute.inputType : 0);
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         switcher.loadKeyboard(mode, imeOptions, mVoiceConnector.isVoiceButtonEnabled(),
                 mVoiceConnector.isVoiceButtonOnPrimary());
