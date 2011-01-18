@@ -439,7 +439,7 @@ public class SubtypeSwitcher {
     private void triggerVoiceIME() {
         if (!mService.isInputViewShown()) return;
         VoiceIMEConnector.getInstance().startListening(false,
-                KeyboardSwitcher.getInstance().getInputView().getWindowToken(), false);
+                KeyboardSwitcher.getInstance().getInputView().getWindowToken());
     }
 
     //////////////////////////////////////

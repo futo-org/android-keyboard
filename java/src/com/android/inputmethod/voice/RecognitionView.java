@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.voice;
 
-import com.android.inputmethod.latin.R;
-
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -29,20 +26,21 @@ import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.MarginLayoutParams;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.android.inputmethod.latin.R;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,79 +56,55 @@ public class RecognitionView {
     private View mView;
     private Context mContext;
 
-    private ImageView mImage;
     private TextView mText;
-    private View mButton;
-    private TextView mButtonText;
+    private ImageView mImage;
     private View mProgress;
+    private SoundIndicator mSoundIndicator;
+    private Button mButton;
 
     private Drawable mInitializing;
     private Drawable mError;
-    private List<Drawable> mSpeakNow;
 
-    private float mVolume = 0.0f;
-    private int mLevel = 0;
+    private static final int INIT = 0;
+    private static final int LISTENING = 1;
+    private static final int WORKING = 2;
+    private static final int READY = 3;
+    
+    private int mState = INIT;
 
-    private enum State {LISTENING, WORKING, READY}
-    private State mState = State.READY;
+    private final View mPopupLayout;
 
-    private float mMinMicrophoneLevel;
-    private float mMaxMicrophoneLevel;
-
-    /** Updates the microphone icon to show user their volume.*/
-    private Runnable mUpdateVolumeRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (mState != State.LISTENING) {
-                return;
-            }
-
-            final float min = mMinMicrophoneLevel;
-            final float max = mMaxMicrophoneLevel;
-            final int maxLevel = mSpeakNow.size() - 1;
-
-            int index = (int) ((mVolume - min) / (max - min) * maxLevel);
-            final int level = Math.min(Math.max(0, index), maxLevel);
-
-            if (level != mLevel) {
-                mImage.setImageDrawable(mSpeakNow.get(level));
-                mLevel = level;
-            }
-            mUiHandler.postDelayed(mUpdateVolumeRunnable, 50);
-        }
-      };
+    private final Drawable mListeningBorder;
+    private final Drawable mWorkingBorder;
+    private final Drawable mErrorBorder;
 
     public RecognitionView(Context context, OnClickListener clickListener) {
         mUiHandler = new Handler();
 
-        mView = LayoutInflater.from(context).inflate(R.layout.recognition_status, null);
-        ContentResolver cr = context.getContentResolver();
-        mMinMicrophoneLevel = SettingsUtil.getSettingsFloat(
-                cr, SettingsUtil.LATIN_IME_MIN_MICROPHONE_LEVEL, 15.f);
-        mMaxMicrophoneLevel = SettingsUtil.getSettingsFloat(
-                cr, SettingsUtil.LATIN_IME_MAX_MICROPHONE_LEVEL, 30.f);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+
+        mView = inflater.inflate(R.layout.recognition_status, null);
+
+        mPopupLayout= mView.findViewById(R.id.popup_layout);
 
         // Pre-load volume level images
         Resources r = context.getResources();
 
-        mSpeakNow = new ArrayList<Drawable>();
-        mSpeakNow.add(r.getDrawable(R.drawable.speak_now_level0));
-        mSpeakNow.add(r.getDrawable(R.drawable.speak_now_level1));
-        mSpeakNow.add(r.getDrawable(R.drawable.speak_now_level2));
-        mSpeakNow.add(r.getDrawable(R.drawable.speak_now_level3));
-        mSpeakNow.add(r.getDrawable(R.drawable.speak_now_level4));
-        mSpeakNow.add(r.getDrawable(R.drawable.speak_now_level5));
-        mSpeakNow.add(r.getDrawable(R.drawable.speak_now_level6));
+        mListeningBorder = r.getDrawable(R.drawable.vs_dialog_red);
+        mWorkingBorder = r.getDrawable(R.drawable.vs_dialog_blue);
+        mErrorBorder = r.getDrawable(R.drawable.vs_dialog_yellow);
 
         mInitializing = r.getDrawable(R.drawable.mic_slash);
         mError = r.getDrawable(R.drawable.caution);
 
         mImage = (ImageView) mView.findViewById(R.id.image);
-        mButton = mView.findViewById(R.id.button);
+        mProgress = mView.findViewById(R.id.progress);
+        mSoundIndicator = (SoundIndicator) mView.findViewById(R.id.sound_indicator);
+
+        mButton = (Button) mView.findViewById(R.id.button);
         mButton.setOnClickListener(clickListener);
         mText = (TextView) mView.findViewById(R.id.text);
-        mButtonText = (TextView) mView.findViewById(R.id.button_text);
-        mProgress = mView.findViewById(R.id.progress);
 
         mContext = context;
     }
@@ -144,9 +118,9 @@ public class RecognitionView {
             @Override
             public void run() {
                 // Restart the spinner
-                if (mState == State.WORKING) {
-                    ((ProgressBar)mProgress).setIndeterminate(false);
-                    ((ProgressBar)mProgress).setIndeterminate(true);
+                if (mState == WORKING) {
+                    ((ProgressBar) mProgress).setIndeterminate(false);
+                    ((ProgressBar) mProgress).setIndeterminate(true);
                 }
             }
         });
@@ -156,48 +130,48 @@ public class RecognitionView {
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                prepareDialog(false, mContext.getText(R.string.voice_initializing), mInitializing,
-                        mContext.getText(R.string.cancel)); 
+                mState = INIT;
+                prepareDialog(mContext.getText(R.string.voice_initializing), mInitializing,
+                        mContext.getText(R.string.cancel));
             }
           });
     }
 
     public void showListening() {
+        Log.d(TAG, "#showListening");
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                mState = State.LISTENING;
-                prepareDialog(false, mContext.getText(R.string.voice_listening), mSpeakNow.get(0),
+                mState = LISTENING;
+                prepareDialog(mContext.getText(R.string.voice_listening), null,
                         mContext.getText(R.string.cancel));
             }
           });
-        mUiHandler.postDelayed(mUpdateVolumeRunnable, 50);
     }
 
-    public void updateVoiceMeter(final float rmsdB) {
-        mVolume = rmsdB;
+    public void updateVoiceMeter(float rmsdB) {
+        mSoundIndicator.setRmsdB(rmsdB);
     }
 
     public void showError(final String message) {
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                mState = State.READY;
-                prepareDialog(false, message, mError, mContext.getText(R.string.ok));
+                mState = READY;
+                prepareDialog(message, mError, mContext.getText(R.string.ok));
             }
-          });
+        });
     }
 
     public void showWorking(
         final ByteArrayOutputStream waveBuffer,
         final int speechStartPosition,
         final int speechEndPosition) {
-
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                mState = State.WORKING;
-                prepareDialog(true, mContext.getText(R.string.voice_working), null, mContext
+                mState = WORKING;
+                prepareDialog(mContext.getText(R.string.voice_working), null, mContext
                         .getText(R.string.cancel));
                 final ShortBuffer buf = ByteBuffer.wrap(waveBuffer.toByteArray()).order(
                         ByteOrder.nativeOrder()).asShortBuffer();
@@ -205,21 +179,71 @@ public class RecognitionView {
                 waveBuffer.reset();
                 showWave(buf, speechStartPosition / 2, speechEndPosition / 2);
             }
-          });
+        });
     }
     
-    private void prepareDialog(boolean spinVisible, CharSequence text, Drawable image,
+    private void prepareDialog(CharSequence text, Drawable image,
             CharSequence btnTxt) {
-        if (spinVisible) {
-            mProgress.setVisibility(View.VISIBLE);
-            mImage.setVisibility(View.GONE);
-        } else {
-            mProgress.setVisibility(View.GONE);
-            mImage.setImageDrawable(image);
-            mImage.setVisibility(View.VISIBLE);
+        switch (mState) {
+            case INIT:
+                mText.setVisibility(View.GONE);
+
+                mProgress.setVisibility(View.GONE);
+
+                mImage.setVisibility(View.VISIBLE);
+                mImage.setImageResource(R.drawable.mic_slash);
+
+                mSoundIndicator.setVisibility(View.GONE);
+                mSoundIndicator.stop();
+
+                mPopupLayout.setBackgroundDrawable(mListeningBorder);
+                break;
+            case LISTENING:
+                mText.setVisibility(View.VISIBLE);
+                mText.setText(text);
+
+                mProgress.setVisibility(View.GONE);
+
+                mImage.setVisibility(View.GONE);
+
+                mSoundIndicator.setVisibility(View.VISIBLE);
+                mSoundIndicator.start();
+
+                mPopupLayout.setBackgroundDrawable(mListeningBorder);
+                break;
+            case WORKING:
+
+                mText.setVisibility(View.VISIBLE);
+                mText.setText(text);
+
+                mProgress.setVisibility(View.VISIBLE);
+
+                mImage.setVisibility(View.VISIBLE);
+
+                mSoundIndicator.setVisibility(View.GONE);
+                mSoundIndicator.stop();
+
+                mPopupLayout.setBackgroundDrawable(mWorkingBorder);
+                break;
+            case READY:
+                mText.setVisibility(View.VISIBLE);
+                mText.setText(text);
+
+                mProgress.setVisibility(View.GONE);
+
+                mImage.setVisibility(View.VISIBLE);
+                mImage.setImageResource(R.drawable.caution);
+
+                mSoundIndicator.setVisibility(View.GONE);
+                mSoundIndicator.stop();
+
+                mPopupLayout.setBackgroundDrawable(mErrorBorder);
+                break;
+             default:
+                 Log.w(TAG, "Unknown state " + mState);
         }
-        mText.setText(text);
-        mButtonText.setText(btnTxt);
+        mPopupLayout.requestLayout();
+        mButton.setText(btnTxt);
     }
 
     /**
@@ -246,7 +270,7 @@ public class RecognitionView {
      */
     private void showWave(ShortBuffer waveBuffer, int startPosition, int endPosition) {
         final int w = ((View) mImage.getParent()).getWidth();
-        final int h = mImage.getHeight();
+        final int h = ((View) mImage.getParent()).getHeight();
         if (w <= 0 || h <= 0) {
             // view is not visible this time. Skip drawing.
             return;
@@ -257,7 +281,7 @@ public class RecognitionView {
         paint.setColor(0xFFFFFFFF); // 0xAARRGGBB
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
-        paint.setAlpha(0x90);
+        paint.setAlpha(80);
 
         final PathEffect effect = new CornerPathEffect(3);
         paint.setPathEffect(effect);
@@ -279,7 +303,7 @@ public class RecognitionView {
 
         final int count = (endIndex - startIndex) / numSamplePerWave;
         final float deltaX = 1.0f * w / count;
-        int yMax = h / 2 - 8;
+        int yMax = h / 2;
         Path path = new Path();
         c.translate(0, yMax);
         float x = 0;
@@ -293,37 +317,20 @@ public class RecognitionView {
             path.lineTo(x, y);
         }
         if (deltaX > 4) {
-            paint.setStrokeWidth(3);
+            paint.setStrokeWidth(2);
         } else {
-            paint.setStrokeWidth(Math.max(1, (int) (deltaX -.05)));
+            paint.setStrokeWidth(Math.max(0, (int) (deltaX -.05)));
         }
         c.drawPath(path, paint);
         mImage.setImageBitmap(b);
-        mImage.setVisibility(View.VISIBLE);
-        MarginLayoutParams mProgressParams = (MarginLayoutParams)mProgress.getLayoutParams();
-        mProgressParams.topMargin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX,
-                -h , mContext.getResources().getDisplayMetrics());
-
-        // Tweak the padding manually to fill out the whole view horizontally.
-        // TODO: Do this in the xml layout instead.
-        ((View) mImage.getParent()).setPadding(4, ((View) mImage.getParent()).getPaddingTop(), 3,
-                ((View) mImage.getParent()).getPaddingBottom());
-        mProgress.setLayoutParams(mProgressParams);
     }
-
 
     public void finish() {
         mUiHandler.post(new Runnable() {
             @Override
             public void run() {
-                mState = State.READY;
-                exitWorking();
+                mSoundIndicator.stop();
             }
-          });
-    }
-
-    private void exitWorking() {
-        mProgress.setVisibility(View.GONE);
-        mImage.setVisibility(View.VISIBLE);
+        });
     }
 }
