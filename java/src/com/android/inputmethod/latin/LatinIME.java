@@ -456,7 +456,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         mConfigurationChanging = true;
         super.onConfigurationChanged(conf);
-        mVoiceConnector.onConfigurationChanged(mConfigurationChanging);
+        mVoiceConnector.onConfigurationChanged(conf);
         mConfigurationChanging = false;
     }
 
