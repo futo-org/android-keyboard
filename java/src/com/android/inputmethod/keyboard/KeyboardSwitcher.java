@@ -327,6 +327,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return false;
     }
 
+    private boolean isManualTemporaryUpperCaseFromAuto() {
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null)
+            return latinKeyboard.isManualTemporaryUpperCaseFromAuto();
+        return false;
+    }
+
     private void setManualTemporaryUpperCase(boolean shifted) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null) {
@@ -481,6 +488,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 toggleCapsLock();
             } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()) {
                 // Shift has been pressed without chording while shifted state.
+                toggleShift();
+            } else if (isManualTemporaryUpperCaseFromAuto() && shiftKeyState.isPressing()) {
+                // Shift has been pressed without chording while manual temporary upper case
+                // transited from automatic temporary upper case.
                 toggleShift();
             }
         }
