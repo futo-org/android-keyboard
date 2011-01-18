@@ -186,7 +186,7 @@ public class SubtypeSwitcher {
             // fallback to the default locale and mode.
             Log.w(TAG, "Couldn't get the current subtype.");
             newLocale = "en_US";
-            newMode =KEYBOARD_MODE;
+            newMode = KEYBOARD_MODE;
         } else {
             newLocale = newSubtype.getLocale();
             newMode = newSubtype.getMode();
@@ -216,8 +216,8 @@ public class SubtypeSwitcher {
                     mVoiceInput.cancel();
                 }
             }
-            if (languageChanged) {
-                mService.onKeyboardLanguageChanged();
+            if (modeChanged || languageChanged) {
+                mService.onRefreshKeyboard();
             }
         } else if (isVoiceMode()) {
             // If needsToShowWarningDialog is true, voice input need to show warning before
