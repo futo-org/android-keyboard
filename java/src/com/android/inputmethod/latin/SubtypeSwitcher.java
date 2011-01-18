@@ -155,6 +155,7 @@ public class SubtypeSwitcher {
                 && mIsSystemLanguageSameAsInputLanguage);
         if (foundCurrentSubtypeBecameDisabled) {
             if (DBG) {
+                Log.w(TAG, "Current subtype: " + mInputLocaleStr + ", " + mMode);
                 Log.w(TAG, "Last subtype was disabled. Update to the current one.");
             }
             updateSubtype(mImm.getCurrentInputMethodSubtype());
