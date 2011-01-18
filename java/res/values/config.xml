@@ -25,6 +25,7 @@
     <bool name="config_enable_show_settings_key_option">true</bool>
     <bool name="config_enable_show_subtype_settings">true</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
+    <bool name="config_enable_show_popup_on_keypress_option">true</bool>
     <bool name="config_candidate_highlight_font_color_enabled">true</bool>
     <bool name="config_swipe_down_dismiss_keyboard_enabled">true</bool>
     <bool name="config_sliding_key_input_enabled">true</bool>
