@@ -161,9 +161,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             final Keyboard oldKeyboard = mInputView.getKeyboard();
             loadKeyboardInternal(mode, imeOptions, voiceKeyEnabled, voiceButtonOnPrimary, false);
             final Keyboard newKeyboard = mInputView.getKeyboard();
-            if (newKeyboard.isAlphaKeyboard() && (oldKeyboard == null
-                    || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale))) {
-                mInputMethodService.mHandler.startDisplayLanguageOnSpacebar();
+            if (newKeyboard.isAlphaKeyboard()) {
+                final boolean localeChanged = (oldKeyboard == null)
+                        || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
+                mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
             }
         } catch (RuntimeException e) {
             Log.w(TAG, e);
