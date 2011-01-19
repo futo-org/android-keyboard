@@ -154,6 +154,11 @@
             android:imeSubtypeLocale="fr"
             android:imeSubtypeMode="voice"
     />
+    <subtype android:icon="@drawable/ic_subtype_mic_it"
+            android:label="@string/subtype_mode_it_voice"
+            android:imeSubtypeLocale="it"
+            android:imeSubtypeMode="voice"
+    />
     <subtype android:icon="@drawable/ic_subtype_mic_ko"
             android:label="@string/subtype_mode_ko_voice"
             android:imeSubtypeLocale="ko"
@@ -162,6 +167,11 @@
     <subtype android:icon="@drawable/ic_subtype_mic_ja"
             android:label="@string/subtype_mode_ja_voice"
             android:imeSubtypeLocale="ja"
+            android:imeSubtypeMode="voice"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic_nl"
+            android:label="@string/subtype_mode_nl_voice"
+            android:imeSubtypeLocale="nl"
             android:imeSubtypeMode="voice"
     />
     <subtype android:icon="@drawable/ic_subtype_mic_pl"
