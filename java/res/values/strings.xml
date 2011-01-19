@@ -263,10 +263,14 @@
     <string name="subtype_mode_es_voice">Spanish Voice</string>
     <!-- Description for French voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_voice">French Voice</string>
+    <!-- Description for Italian voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_it_voice">Italian Voice</string>
     <!-- Description for Japanese voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_ja_voice">Japanese Voice</string>
     <!-- Description for Korean voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_ko_voice">Korean Voice</string>
+    <!-- Description for Dutch voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_nl_voice">Dutch Voice</string>
     <!-- Description for Polish voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_pl_voice">Polish Voice</string>
     <!-- Description for Portuguese voice input subtype [CHAR LIMIT=35] -->

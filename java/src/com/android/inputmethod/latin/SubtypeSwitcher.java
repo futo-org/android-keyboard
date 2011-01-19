@@ -41,7 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class SubtypeSwitcher {
-    private static final boolean DBG = false;
+    private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = "SubtypeSwitcher";
 
     private static final char LOCALE_SEPARATER = '_';
