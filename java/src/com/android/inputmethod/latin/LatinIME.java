@@ -412,7 +412,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggest.close();
         }
         final SharedPreferences prefs = mPrefs;
-        mQuickFixes = prefs.getBoolean(Settings.PREF_QUICK_FIXES, true);
+        mQuickFixes = isQuickFixesEnabled(prefs);
 
         final Resources res = mResources;
         int mainDicResId = getMainDictionaryResourceId(res);
@@ -2077,7 +2077,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mPopupOn = prefs.getBoolean(Settings.PREF_POPUP_ON,
                 mResources.getBoolean(R.bool.config_default_popup_preview));
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
-        mQuickFixes = prefs.getBoolean(Settings.PREF_QUICK_FIXES, true);
+        mQuickFixes = isQuickFixesEnabled(prefs);
 
         mAutoCorrectEnabled = isAutoCorrectEnabled(prefs);
         mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(prefs);
@@ -2126,6 +2126,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSuggest.setAutoCorrectionThreshold(autoCorrectionThreshold);
     }
 
+    private boolean isQuickFixesEnabled(SharedPreferences sp) {
+        final boolean showQuickFixesOption = mResources.getBoolean(
+                R.bool.config_enable_quick_fixes_option);
+        if (!showQuickFixesOption) {
+            return isAutoCorrectEnabled(sp);
+        }
+        return sp.getBoolean(Settings.PREF_QUICK_FIXES, mResources.getBoolean(
+                R.bool.config_default_quick_fixes));
+    }
+
     private boolean isAutoCorrectEnabled(SharedPreferences sp) {
         final String currentAutoCorrectionSetting = sp.getString(
                 Settings.PREF_AUTO_CORRECTION_THRESHOLD,
@@ -2136,8 +2146,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean isBigramSuggestionEnabled(SharedPreferences sp) {
-       // TODO: Define default value instead of 'true'.
-       return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTIONS, true);
+        final boolean showBigramSuggestionsOption = mResources.getBoolean(
+                R.bool.config_enable_bigram_suggestions_option);
+        if (!showBigramSuggestionsOption) {
+            return isAutoCorrectEnabled(sp);
+        }
+        return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTIONS, mResources.getBoolean(
+                R.bool.config_default_bigram_suggestions));
     }
 
     private void initSuggestPuncList() {
