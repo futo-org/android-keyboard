@@ -205,10 +205,10 @@ public class LatinKeyboardView extends KeyboardView {
     @Override
     public boolean onTouchEvent(MotionEvent me) {
         LatinKeyboard keyboard = getLatinKeyboard();
+        if (keyboard == null) return true;
 
         // If there was a sudden jump, return without processing the actual motion event.
-        if (handleSuddenJump(me))
-            return true;
+        if (handleSuddenJump(me)) return true;
 
         // Reset any bounding box controls in the keyboard
         if (me.getAction() == MotionEvent.ACTION_DOWN) {
