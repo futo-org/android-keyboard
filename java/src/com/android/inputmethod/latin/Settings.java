@@ -140,6 +140,12 @@ public class Settings extends PreferenceActivity
         if (!showPopupOption) {
             getPreferenceScreen().removePreference(findPreference(PREF_POPUP_ON));
         }
+
+        final boolean showRecorrectionOption = getResources().getBoolean(
+                R.bool.config_enable_show_recorrection_option);
+        if (!showRecorrectionOption) {
+            getPreferenceScreen().removePreference(findPreference(PREF_RECORRECTION_ENABLED));
+        }
     }
 
     @Override
