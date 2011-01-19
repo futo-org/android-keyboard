@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.R;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -129,12 +130,17 @@ public class VoiceInput implements OnClickListener {
     
     private final static int MSG_CLOSE_ERROR_DIALOG = 1;
 
+    private final static int MSG_RESET = 2;
+
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == MSG_CLOSE_ERROR_DIALOG) {
+            if (msg.what == MSG_RESET || msg.what == MSG_CLOSE_ERROR_DIALOG) {
                 mState = DEFAULT;
                 mRecognitionView.finish();
+            }
+
+            if (msg.what == MSG_CLOSE_ERROR_DIALOG) {
                 mUiListener.onCancelVoice();
             }
         }
@@ -277,8 +283,9 @@ public class VoiceInput implements OnClickListener {
      * The configuration of the IME changed and may have caused the views to be layed out
      * again. Restore the state of the recognition view.
      */
-    public void onConfigurationChanged() {
+    public void onConfigurationChanged(Configuration configuration) {
         mRecognitionView.restoreState();
+        mRecognitionView.getView().dispatchConfigurationChanged(configuration);
     }
 
     /**
@@ -509,7 +516,7 @@ public class VoiceInput implements OnClickListener {
         mState = DEFAULT;
 
         // Remove all pending tasks (e.g., timers to cancel voice input)
-        mHandler.removeMessages(MSG_CLOSE_ERROR_DIALOG);
+        mHandler.removeMessages(MSG_RESET);
 
         mSpeechRecognizer.cancel();
         mUiListener.onCancelVoice();

@@ -24,26 +24,38 @@ public class KeyboardShiftState {
 
     private static final int NORMAL = 0;
     private static final int MANUAL_SHIFTED = 1;
-    private static final int SHIFT_LOCKED = 2;
+    private static final int MANUAL_SHIFTED_FROM_AUTO = 2;
     private static final int AUTO_SHIFTED = 3;
-    private static final int SHIFT_LOCK_SHIFTED = 4;
+    private static final int SHIFT_LOCKED = 4;
+    private static final int SHIFT_LOCK_SHIFTED = 5;
 
     private int mState = NORMAL;
 
     public boolean setShifted(boolean newShiftState) {
         final int oldState = mState;
         if (newShiftState) {
-            if (oldState == NORMAL || oldState == AUTO_SHIFTED) {
+            switch (oldState) {
+            case NORMAL:
                 mState = MANUAL_SHIFTED;
-            } else if (oldState == SHIFT_LOCKED) {
+                break;
+            case AUTO_SHIFTED:
+                mState = MANUAL_SHIFTED_FROM_AUTO;
+                break;
+            case SHIFT_LOCKED:
                 mState = SHIFT_LOCK_SHIFTED;
+                break;
             }
         } else {
-            if (oldState == MANUAL_SHIFTED || oldState == AUTO_SHIFTED) {
+            switch (oldState) {
+            case MANUAL_SHIFTED:
+            case MANUAL_SHIFTED_FROM_AUTO:
+            case AUTO_SHIFTED:
                 mState = NORMAL;
-            } else if (oldState == SHIFT_LOCK_SHIFTED) {
+                break;
+            case SHIFT_LOCK_SHIFTED:
                 mState = SHIFT_LOCKED;
-                            }
+                break;
+            }
         }
         if (DEBUG)
             Log.d(TAG, "setShifted(" + newShiftState + "): " + toString(oldState) + " > " + this);
@@ -53,11 +65,21 @@ public class KeyboardShiftState {
     public void setShiftLocked(boolean newShiftLockState) {
         final int oldState = mState;
         if (newShiftLockState) {
-            if (oldState == NORMAL || oldState == MANUAL_SHIFTED || oldState == AUTO_SHIFTED)
+            switch (oldState) {
+            case NORMAL:
+            case MANUAL_SHIFTED:
+            case MANUAL_SHIFTED_FROM_AUTO:
+            case AUTO_SHIFTED:
                 mState = SHIFT_LOCKED;
+                break;
+            }
         } else {
-            if (oldState == SHIFT_LOCKED || oldState == SHIFT_LOCK_SHIFTED)
+            switch (oldState) {
+            case SHIFT_LOCKED:
+            case SHIFT_LOCK_SHIFTED:
                 mState = NORMAL;
+                break;
+            }
         }
         if (DEBUG)
             Log.d(TAG, "setShiftLocked(" + newShiftLockState + "): " + toString(oldState)
@@ -84,7 +106,12 @@ public class KeyboardShiftState {
     }
 
     public boolean isManualTemporaryUpperCase() {
-        return mState == MANUAL_SHIFTED || mState == SHIFT_LOCK_SHIFTED;
+        return mState == MANUAL_SHIFTED || mState == MANUAL_SHIFTED_FROM_AUTO
+                || mState == SHIFT_LOCK_SHIFTED;
+    }
+
+    public boolean isManualTemporaryUpperCaseFromAuto() {
+        return mState == MANUAL_SHIFTED_FROM_AUTO;
     }
 
     @Override
@@ -96,8 +123,9 @@ public class KeyboardShiftState {
         switch (state) {
         case NORMAL: return "NORMAL";
         case MANUAL_SHIFTED: return "MANUAL_SHIFTED";
-        case SHIFT_LOCKED: return "SHIFT_LOCKED";
+        case MANUAL_SHIFTED_FROM_AUTO: return "MANUAL_SHIFTED_FROM_AUTO";
         case AUTO_SHIFTED: return "AUTO_SHIFTED";
+        case SHIFT_LOCKED: return "SHIFT_LOCKED";
         case SHIFT_LOCK_SHIFTED: return "SHIFT_LOCK_SHIFTED";
         default: return "UKNOWN";
         }

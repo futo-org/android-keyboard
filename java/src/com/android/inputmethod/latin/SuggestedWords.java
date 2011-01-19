@@ -124,7 +124,7 @@ public class SuggestedWords {
                 addWord(previousSuggestions.getWord(pos));
             mIsCompletions = false;
             mTypedWordValid = false;
-            mHasMinimalSuggestion = (previousSize > 1);
+            mHasMinimalSuggestion = false;
             return this;
         }
 

@@ -85,6 +85,14 @@ public class LatinKeyboardView extends KeyboardView {
         }
     }
 
+    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboard oldKeyboard) {
+        final LatinKeyboard currentKeyboard = getLatinKeyboard();
+        // We should not set text fade factor to the keyboard which does not display the language on
+        // its spacebar.
+        if (currentKeyboard != null && currentKeyboard == oldKeyboard)
+            currentKeyboard.setSpacebarTextFadeFactor(fadeFactor, this);
+    }
+
     @Override
     protected boolean onLongPress(Key key) {
         int primaryCode = key.mCode;
@@ -197,10 +205,10 @@ public class LatinKeyboardView extends KeyboardView {
     @Override
     public boolean onTouchEvent(MotionEvent me) {
         LatinKeyboard keyboard = getLatinKeyboard();
+        if (keyboard == null) return true;
 
         // If there was a sudden jump, return without processing the actual motion event.
-        if (handleSuddenJump(me))
-            return true;
+        if (handleSuddenJump(me)) return true;
 
         // Reset any bounding box controls in the keyboard
         if (me.getAction() == MotionEvent.ACTION_DOWN) {

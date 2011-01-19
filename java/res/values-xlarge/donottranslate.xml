@@ -19,5 +19,5 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!--  Default value of the visibility of the suggestion strip -->
-    <string name="prefs_suggestion_visibility_default_value" translatable="false">1</string>
+    <string name="prefs_suggestion_visibility_default_value" translatable="false">2</string>
 </resources>

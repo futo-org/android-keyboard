@@ -45,23 +45,22 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 public class CandidateView extends LinearLayout implements OnClickListener, OnLongClickListener {
-    private LatinIME mService;
-    private final ArrayList<View> mWords = new ArrayList<View>();
 
-    private final TextView mPreviewText;
-    private final PopupWindow mPreviewPopup;
-    
+    private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
+    private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
     private static final int MAX_SUGGESTIONS = 16;
 
+    private final ArrayList<View> mWords = new ArrayList<View>();
     private final boolean mConfigCandidateHighlightFontColorEnabled;
+    private final CharacterStyle mInvertedForegroundColorSpan;
+    private final CharacterStyle mInvertedBackgroundColorSpan;
     private final int mColorNormal;
     private final int mColorRecommended;
     private final int mColorOther;
-    private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
-    private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
-    private final CharacterStyle mInvertedForegroundColorSpan;
-    private final CharacterStyle mInvertedBackgroundColorSpan;
+    private final PopupWindow mPreviewPopup;
+    private final TextView mPreviewText;
 
+    private LatinIME mService;
     private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
     private boolean mShowingAutoCorrectionInverted;
     private boolean mShowingAddToDictionary;
@@ -186,9 +185,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             final TextView tv = (TextView)v.findViewById(R.id.candidate_word);
             final TextView dv = (TextView)v.findViewById(R.id.candidate_debug_info);
             tv.setTextColor(mColorNormal);
+            // TODO: Needs safety net?
             if (suggestions.mHasMinimalSuggestion
-                    && ((i == 1 && !suggestions.mTypedWordValid) ||
-                            (i == 0 && suggestions.mTypedWordValid))) {
+                    && ((i == 1 && !suggestions.mTypedWordValid)
+                            || (i == 0 && suggestions.mTypedWordValid))) {
                 final CharacterStyle style;
                 if (mConfigCandidateHighlightFontColorEnabled) {
                     style = BOLD_SPAN;
@@ -329,7 +329,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mService.pickSuggestionManually(index, word);
         }
     }
-    
+
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
