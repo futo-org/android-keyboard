@@ -41,11 +41,6 @@ import java.util.Locale;
 import java.util.Map;
 
 public class SubtypeSwitcher {
-    // TODO: This should be configurable by resource
-    // This flag indicates if we support language switching by swipe on space bar.
-    // We may or may not draw the current language on space bar regardless of this flag.
-    // @@@
-    public static final boolean USE_SPACEBAR_LANGUAGE_SWITCHER = true;
     private static final boolean DBG = false;
     private static final String TAG = "SubtypeSwitcher";
 
@@ -63,6 +58,8 @@ public class SubtypeSwitcher {
     private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
             new ArrayList<InputMethodSubtype>();
     private final ArrayList<String> mEnabledLanguagesOfCurrentInputMethod = new ArrayList<String>();
+
+    private boolean mConfigUseSpacebarLanguageSwitcher;
 
     /*-----------------------------------------------------------*/
     // Variants which should be changed only by reload functions.
@@ -85,11 +82,9 @@ public class SubtypeSwitcher {
     public static void init(LatinIME service, SharedPreferences prefs) {
         sInstance.mPrefs = prefs;
         sInstance.resetParams(service);
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
-            sInstance.initLanguageSwitcher(service);
-        }
-
         sInstance.updateAllParameters();
+
+        SubtypeLocale.init(service);
     }
 
     private SubtypeSwitcher() {
@@ -110,6 +105,10 @@ public class SubtypeSwitcher {
         mAllEnabledSubtypesOfCurrentInputMethod = null;
         // TODO: Voice input should be created here
         mVoiceInput = null;
+        mConfigUseSpacebarLanguageSwitcher = mResources.getBoolean(
+                R.bool.config_use_spacebar_language_switcher);
+        if (mConfigUseSpacebarLanguageSwitcher)
+            initLanguageSwitcher(service);
     }
 
     // Update all parameters stored in SubtypeSwitcher.
@@ -123,8 +122,8 @@ public class SubtypeSwitcher {
     // Update parameters which are changed outside LatinIME. This parameters affect UI so they
     // should be updated every time onStartInputview.
     public void updateParametersOnStartInputView() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
-            updateForSpaceBarLanguageSwitch();
+        if (mConfigUseSpacebarLanguageSwitcher) {
+            updateForSpacebarLanguageSwitch();
         } else {
             updateEnabledSubtypes();
         }
@@ -135,7 +134,7 @@ public class SubtypeSwitcher {
     private void updateEnabledSubtypes() {
         boolean foundCurrentSubtypeBecameDisabled = true;
         // @@@ mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
-        //null, false);
+        //        null, true);
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         for (InputMethodSubtype ims: mAllEnabledSubtypesOfCurrentInputMethod) {
@@ -156,6 +155,7 @@ public class SubtypeSwitcher {
                 && mIsSystemLanguageSameAsInputLanguage);
         if (foundCurrentSubtypeBecameDisabled) {
             if (DBG) {
+                Log.w(TAG, "Current subtype: " + mInputLocaleStr + ", " + mMode);
                 Log.w(TAG, "Last subtype was disabled. Update to the current one.");
             }
             // @@@ updateSubtype(mImm.getCurrentInputMethodSubtype());
@@ -189,7 +189,7 @@ public class SubtypeSwitcher {
             // fallback to the default locale and mode.
             Log.w(TAG, "Couldn't get the current subtype.");
             newLocale = "en_US";
-            newMode =KEYBOARD_MODE;
+            newMode = KEYBOARD_MODE;
         } else {
             newLocale = newSubtype.getLocale();
             newMode = newSubtype.getMode();
@@ -219,8 +219,8 @@ public class SubtypeSwitcher {
                     mVoiceInput.cancel();
                 }
             }
-            if (languageChanged) {
-                mService.onKeyboardLanguageChanged();
+            if (modeChanged || languageChanged) {
+                mService.onRefreshKeyboard();
             }
         } else if (isVoiceMode()) {
             // If needsToShowWarningDialog is true, voice input need to show warning before
@@ -312,11 +312,15 @@ public class SubtypeSwitcher {
     //////////////////////////////////
 
     public int getEnabledKeyboardLocaleCount() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             return mLanguageSwitcher.getLocaleCount();
         } else {
             return mEnabledKeyboardSubtypesOfCurrentInputMethod.size();
         }
+    }
+
+    public boolean useSpacebarLanguageSwitcher() {
+        return mConfigUseSpacebarLanguageSwitcher;
     }
 
     public boolean needsToDisplayLanguage() {
@@ -324,7 +328,7 @@ public class SubtypeSwitcher {
     }
 
     public Locale getInputLocale() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             return mLanguageSwitcher.getInputLocale();
         } else {
             return mInputLocale;
@@ -332,7 +336,7 @@ public class SubtypeSwitcher {
     }
 
     public String getInputLocaleStr() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             String inputLanguage = null;
             inputLanguage = mLanguageSwitcher.getInputLanguage();
             // Should return system locale if there is no Language available.
@@ -346,7 +350,7 @@ public class SubtypeSwitcher {
     }
 
     public String[] getEnabledLanguages() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             return mLanguageSwitcher.getEnabledLanguages();
         } else {
             return mEnabledLanguagesOfCurrentInputMethod.toArray(
@@ -355,7 +359,7 @@ public class SubtypeSwitcher {
     }
 
     public Locale getSystemLocale() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             return mLanguageSwitcher.getSystemLocale();
         } else {
             return mSystemLocale;
@@ -363,7 +367,7 @@ public class SubtypeSwitcher {
     }
 
     public boolean isSystemLanguageSameAsInputLanguage() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             return getSystemLocale().getLanguage().equalsIgnoreCase(
                     getInputLocaleStr().substring(0, 2));
         } else {
@@ -375,7 +379,7 @@ public class SubtypeSwitcher {
         final Locale systemLocale = conf.locale;
         // If system configuration was changed, update all parameters.
         if (!TextUtils.equals(systemLocale.toString(), mSystemLocale.toString())) {
-            if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+            if (mConfigUseSpacebarLanguageSwitcher) {
                 // If the system locale changes and is different from the saved
                 // locale (mSystemLocale), then reload the input locale list from the
                 // latin ime settings (shared prefs) and reset the input locale
@@ -389,7 +393,7 @@ public class SubtypeSwitcher {
     }
 
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             if (Settings.PREF_SELECTED_LANGUAGES.equals(key)) {
                 mLanguageSwitcher.loadLocales(sharedPreferences);
             }
@@ -439,18 +443,18 @@ public class SubtypeSwitcher {
     private void triggerVoiceIME() {
         if (!mService.isInputViewShown()) return;
         VoiceIMEConnector.getInstance().startListening(false,
-                KeyboardSwitcher.getInstance().getInputView().getWindowToken(), false);
+                KeyboardSwitcher.getInstance().getInputView().getWindowToken());
     }
 
     //////////////////////////////////////
-    // SpaceBar Language Switch support //
+    // Spacebar Language Switch support //
     //////////////////////////////////////
 
     private LanguageSwitcher mLanguageSwitcher;
 
     public static String getFullDisplayName(Locale locale, boolean returnsNameInThisLocale) {
         if (returnsNameInThisLocale) {
-            return toTitleCase(locale.getDisplayName(locale));
+            return toTitleCase(SubtypeLocale.getFullDisplayName(locale));
         } else {
             return toTitleCase(locale.getDisplayName());
         }
@@ -471,7 +475,7 @@ public class SubtypeSwitcher {
         return Character.toUpperCase(s.charAt(0)) + s.substring(1);
     }
 
-    private void updateForSpaceBarLanguageSwitch() {
+    private void updateForSpacebarLanguageSwitch() {
         // We need to update mNeedsToDisplayLanguage in onStartInputView because
         // getEnabledKeyboardLocaleCount could have been changed.
         mNeedsToDisplayLanguage = !(getEnabledKeyboardLocaleCount() <= 1
@@ -484,7 +488,7 @@ public class SubtypeSwitcher {
     }
 
     public String getNextInputLanguageName() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             return getDisplayLanguage(mLanguageSwitcher.getNextInputLocale());
         } else {
             return "";
@@ -492,7 +496,7 @@ public class SubtypeSwitcher {
     }
 
     public String getPreviousInputLanguageName() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             return getDisplayLanguage(mLanguageSwitcher.getPrevInputLocale());
         } else {
             return "";
@@ -529,13 +533,13 @@ public class SubtypeSwitcher {
     }
 
     public void loadSettings() {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             mLanguageSwitcher.loadLocales(mPrefs);
         }
     }
 
     public void toggleLanguage(boolean reset, boolean next) {
-        if (USE_SPACEBAR_LANGUAGE_SWITCHER) {
+        if (mConfigUseSpacebarLanguageSwitcher) {
             if (reset) {
                 mLanguageSwitcher.reset();
             } else {

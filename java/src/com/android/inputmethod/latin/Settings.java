@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
@@ -48,6 +48,7 @@ public class Settings extends PreferenceActivity
         DialogInterface.OnDismissListener, OnPreferenceClickListener {
     private static final String TAG = "Settings";
 
+    public static final String PREF_GENERAL_SETTINGS_KEY = "general_settings";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
     public static final String PREF_POPUP_ON = "popup_on";
@@ -64,6 +65,8 @@ public class Settings extends PreferenceActivity
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
+
+    public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
     // Dialog ids
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
@@ -111,30 +114,64 @@ public class Settings extends PreferenceActivity
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
         ensureConsistencyOfAutoCorrectionSettings();
 
+        final PreferenceGroup generalSettings =
+                (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS_KEY);
+        final PreferenceGroup textCorrectionGroup =
+                (PreferenceGroup) findPreference(PREF_PREDICTION_SETTINGS_KEY);
+
         final boolean showSettingsKeyOption = getResources().getBoolean(
                 R.bool.config_enable_show_settings_key_option);
         if (!showSettingsKeyOption) {
-            getPreferenceScreen().removePreference(mSettingsKeyPreference);
+            generalSettings.removePreference(mSettingsKeyPreference);
         }
 
         final boolean showVoiceKeyOption = getResources().getBoolean(
                 R.bool.config_enable_show_voice_key_option);
         if (!showVoiceKeyOption) {
-            getPreferenceScreen().removePreference(mVoicePreference);
+            generalSettings.removePreference(mVoicePreference);
         }
 
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (vibrator == null
         // @@@    || !vibrator.hasVibrator()
         ) {
-            getPreferenceScreen().removePreference(
-                    getPreferenceScreen().findPreference(PREF_VIBRATE_ON));
+            generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 
         final boolean showSubtypeSettings = getResources().getBoolean(
                 R.bool.config_enable_show_subtype_settings);
         if (!showSubtypeSettings) {
-            getPreferenceScreen().removePreference(findPreference(PREF_SUBTYPES));
+            generalSettings.removePreference(findPreference(PREF_SUBTYPES));
+        }
+
+        final boolean showPopupOption = getResources().getBoolean(
+                R.bool.config_enable_show_popup_on_keypress_option);
+        if (!showPopupOption) {
+            generalSettings.removePreference(findPreference(PREF_POPUP_ON));
+        }
+
+        final boolean showRecorrectionOption = getResources().getBoolean(
+                R.bool.config_enable_show_recorrection_option);
+        if (!showRecorrectionOption) {
+            generalSettings.removePreference(findPreference(PREF_RECORRECTION_ENABLED));
+        }
+
+        final boolean showQuickFixesOption = getResources().getBoolean(
+                R.bool.config_enable_quick_fixes_option);
+        if (!showQuickFixesOption) {
+            textCorrectionGroup.removePreference(findPreference(PREF_QUICK_FIXES));
+        }
+
+        final boolean showBigramSuggestionsOption = getResources().getBoolean(
+                R.bool.config_enable_bigram_suggestions_option);
+        if (!showBigramSuggestionsOption) {
+            textCorrectionGroup.removePreference(findPreference(PREF_BIGRAM_SUGGESTIONS));
+        }
+
+        final boolean showUsabilityModeStudyOption = getResources().getBoolean(
+                R.bool.config_enable_usability_study_mode_option);
+        if (!showUsabilityModeStudyOption) {
+            getPreferenceScreen().removePreference(findPreference(PREF_USABILITY_STUDY_MODE));
         }
     }
 
@@ -184,7 +221,7 @@ public class Settings extends PreferenceActivity
         if (pref == mInputLanguageSelection) {
             final String action;
             if (android.os.Build.VERSION.SDK_INT
-                    >= /* android.os.Build.VERSION_CODES.HONEYCOMB */ 10) {
+                    >= /* android.os.Build.VERSION_CODES.HONEYCOMB */ 11) {
                 action = "android.settings.INPUT_METHOD_AND_SUBTYPE_ENABLER";
             } else {
                 action = "com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION";

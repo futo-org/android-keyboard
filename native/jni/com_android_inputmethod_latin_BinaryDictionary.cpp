@@ -89,7 +89,7 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         return 0;
     }
     dictBuf = malloc(sizeof(char) * dictSize);
-    if (dictBuf == NULL) {
+    if (!dictBuf) {
         LOGE("DICT: Can't allocate memory region for dictionary. errno=%d", errno);
         return 0;
     }

@@ -157,7 +157,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             boolean voiceButtonOnPrimary) {
         mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         try {
+            if (mInputView == null) return;
+            final Keyboard oldKeyboard = mInputView.getKeyboard();
             loadKeyboardInternal(mode, imeOptions, voiceKeyEnabled, voiceButtonOnPrimary, false);
+            final Keyboard newKeyboard = mInputView.getKeyboard();
+            if (newKeyboard.isAlphaKeyboard()) {
+                final boolean localeChanged = (oldKeyboard == null)
+                        || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
+                mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
+            }
         } catch (RuntimeException e) {
             Log.w(TAG, e);
             LatinImeLogger.logOnException(mode + "," + imeOptions, e);
@@ -167,7 +175,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private void loadKeyboardInternal(int mode, int imeOptions, boolean voiceButtonEnabled,
             boolean voiceButtonOnPrimary, boolean isSymbols) {
         if (mInputView == null) return;
-        mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
 
         mMode = mode;
         mImeOptions = imeOptions;
@@ -176,13 +183,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mIsSymbols = isSymbols;
         // Update the settings key state because number of enabled IMEs could have been changed
         mHasSettingsKey = getSettingsKeyMode(mPrefs, mInputMethodService);
+        final KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
+
+        final Keyboard oldKeyboard = mInputView.getKeyboard();
+        if (oldKeyboard != null && oldKeyboard.mId.equals(id))
+            return;
+
         makeSymbolsKeyboardIds();
-
-        KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
-        LatinKeyboard keyboard = getKeyboard(id);
-
         mCurrentId = id;
-        mInputView.setKeyboard(keyboard);
+        mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
+        mInputView.setKeyboard(getKeyboard(id));
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -210,6 +220,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         keyboard.onAutoCorrectionStateChanged(mIsAutoCorrectionActive);
         keyboard.setShifted(false);
+        // If the cached keyboard had been switched to another keyboard while the language was
+        // displayed on its spacebar, it might have had arbitrary text fade factor. In such case,
+        // we should reset the text fade factor.
+        keyboard.setSpacebarTextFadeFactor(0.0f, null);
         return keyboard;
     }
 
@@ -310,6 +324,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null)
             return latinKeyboard.isManualTemporaryUpperCase();
+        return false;
+    }
+
+    private boolean isManualTemporaryUpperCaseFromAuto() {
+        LatinKeyboard latinKeyboard = getLatinKeyboard();
+        if (latinKeyboard != null)
+            return latinKeyboard.isManualTemporaryUpperCaseFromAuto();
         return false;
     }
 
@@ -467,6 +488,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 toggleCapsLock();
             } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()) {
                 // Shift has been pressed without chording while shifted state.
+                toggleShift();
+            } else if (isManualTemporaryUpperCaseFromAuto() && shiftKeyState.isPressing()) {
+                // Shift has been pressed without chording while manual temporary upper case
+                // transited from automatic temporary upper case.
                 toggleShift();
             }
         }

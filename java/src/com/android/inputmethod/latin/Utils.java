@@ -36,6 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Utils {
+    private static final String TAG = Utils.class.getSimpleName();
+    private static boolean DBG = LatinImeLogger.sDBG;
 
     /**
      * Cancel an {@link AsyncTask}.
@@ -94,6 +96,29 @@ public class Utils {
         // imm.getEnabledInputMethodSubtypeList(null, false) will return the current IME's enabled
         // input method subtype (The current IME should be LatinIME.)
         // || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
+    }
+
+
+    public static boolean shouldBlockedBySafetyNetForAutoCorrection(SuggestedWords suggestions) {
+        // Safety net for auto correction.
+        // Actually if we hit this safety net, it's actually a bug.
+        if (suggestions.size() <= 1 || suggestions.mTypedWordValid) return false;
+        CharSequence typedWord = suggestions.getWord(0);
+        CharSequence candidateWord = suggestions.getWord(1);
+        final int typedWordLength = typedWord.length();
+        final int maxEditDistanceOfNativeDictionary = typedWordLength < 5 ? 2 : typedWordLength / 2;
+        final int distance = Utils.editDistance(typedWord, candidateWord);
+        if (DBG) {
+            Log.d(TAG, "Autocorrected edit distance = " + distance
+                    + ", " + maxEditDistanceOfNativeDictionary);
+        }
+        if (distance > maxEditDistanceOfNativeDictionary) {
+            Log.w(TAG, "(Error) The edit distance of this correction exceeds limit. "
+                    + "Turning off auto-correction.");
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /* package */ static class RingCharBuffer {

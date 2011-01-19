@@ -57,7 +57,6 @@
             <key-style
                 latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_keyboard_space_holo"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="smileyKeyStyle"
@@ -66,6 +65,12 @@
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupCharacters="@string/alternates_for_smiley"
                 latin:maxPopupKeyboardColumn="5" />
+            <key-style
+                latin:styleName="settingsKeyStyle"
+                latin:code="@integer/key_settings"
+                latin:keyIcon="@drawable/sym_keyboard_settings_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
+                latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="micKeyStyle"
                 latin:code="@integer/key_voice"
@@ -102,12 +107,10 @@
             <key-style
                 latin:styleName="spaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_bkeyboard_space"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_bkeyboard_space"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="smileyKeyStyle"
@@ -116,6 +119,12 @@
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupCharacters="@string/alternates_for_smiley"
                 latin:maxPopupKeyboardColumn="5" />
+            <key-style
+                latin:styleName="settingsKeyStyle"
+                latin:code="@integer/key_settings"
+                latin:keyIcon="@drawable/sym_bkeyboard_settings"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
+                latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="micKeyStyle"
                 latin:code="@integer/key_voice"

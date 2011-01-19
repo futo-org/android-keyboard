@@ -330,6 +330,10 @@ public class Keyboard {
         return isAlphaKeyboard() && mShiftState.isManualTemporaryUpperCase();
     }
 
+    public boolean isManualTemporaryUpperCaseFromAuto() {
+        return isAlphaKeyboard() && mShiftState.isManualTemporaryUpperCaseFromAuto();
+    }
+
     public KeyboardShiftState getKeyboardShiftState() {
         return mShiftState;
     }
