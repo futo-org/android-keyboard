@@ -31,7 +31,7 @@ import java.util.Arrays;
  */
 public class Suggest implements Dictionary.WordCallback {
 
-    public static final String TAG = "Suggest";
+    public static final String TAG = Suggest.class.getSimpleName();
 
     public static final int APPROX_MAX_WORD_LENGTH = 32;
 
@@ -64,6 +64,8 @@ public class Suggest implements Dictionary.WordCallback {
 
     static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
 
+    private static boolean DBG = LatinImeLogger.sDBG;
+
     private BinaryDictionary mMainDict;
 
     private Dictionary mUserDictionary;
@@ -93,7 +95,7 @@ public class Suggest implements Dictionary.WordCallback {
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
-    private boolean mHaveCorrection;
+    private boolean mHaveAutoCorrection;
     private String mLowerOriginalWord;
 
     // TODO: Remove these member variables by passing more context to addWord() callback method
@@ -198,7 +200,7 @@ public class Suggest implements Dictionary.WordCallback {
     public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
             CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mHaveCorrection = false;
+        mHaveAutoCorrection = false;
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
@@ -273,7 +275,10 @@ public class Suggest implements Dictionary.WordCallback {
                 if (mSuggestions.size() > 0 && isValidWord(typedWord)
                         && (mCorrectionMode == CORRECTION_FULL
                         || mCorrectionMode == CORRECTION_FULL_BIGRAM)) {
-                    mHaveCorrection = true;
+                    if (DBG) {
+                        Log.d(TAG, "Auto corrected by CORRECTION_FULL.");
+                    }
+                    mHaveAutoCorrection = true;
                 }
             }
             if (mMainDict != null) mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
@@ -289,7 +294,10 @@ public class Suggest implements Dictionary.WordCallback {
                             + "(" + mAutoCorrectionThreshold + ")");
                 }
                 if (normalizedScore >= mAutoCorrectionThreshold) {
-                    mHaveCorrection = true;
+                    if (DBG) {
+                        Log.d(TAG, "Auto corrected by S-threthhold.");
+                    }
+                    mHaveAutoCorrection = true;
                 }
             }
         }
@@ -331,7 +339,10 @@ public class Suggest implements Dictionary.WordCallback {
                     canAdd &= !TextUtils.equals(autoText, mSuggestions.get(i + 1));
                 }
                 if (canAdd) {
-                    mHaveCorrection = true;
+                    if (DBG) {
+                        Log.d(TAG, "Auto corrected by AUTOTEXT.");
+                    }
+                    mHaveAutoCorrection = true;
                     mSuggestions.add(i + 1, autoText);
                     i++;
                 }
@@ -374,7 +385,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public boolean hasMinimalCorrection() {
-        return mHaveCorrection;
+        return mHaveAutoCorrection;
     }
 
     private boolean compareCaseInsensitive(final String mLowerOriginalWord,
