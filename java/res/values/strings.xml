@@ -34,8 +34,11 @@
     <!-- Option to control whether or not to show a popup with a larger font on each key press. -->
     <string name="popup_on_keypress">Popup on keypress</string>
 
+    <!-- Category title for general settings for Android keyboard -->
+    <string name="general_category">General</string>
+
     <!-- Category title for text prediction -->
-    <string name="prediction_category">Word suggestion settings</string>
+    <string name="prediction_category">Text correction</string>
 
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
@@ -46,7 +49,7 @@
     <string name="quick_fixes_summary">Corrects commonly typed mistakes</string>
 
     <!-- Option to enable showing suggestions -->
-    <string name="prefs_show_suggestions">Show suggestions</string>
+    <string name="prefs_show_suggestions">Show correction suggestions</string>
     <!-- Description for show suggestions -->
     <string name="prefs_show_suggestions_summary">Display suggested words while typing</string>
     <string name="prefs_suggestion_visibility_show_name">Always show</string>
