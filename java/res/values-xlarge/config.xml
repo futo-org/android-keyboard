@@ -23,6 +23,7 @@
     <bool name="config_enable_show_subtype_settings">false</bool>
     <bool name="config_enable_show_voice_key_option">false</bool>
     <bool name="config_enable_show_popup_on_keypress_option">false</bool>
+    <bool name="config_enable_show_recorrection_option">false</bool>
     <bool name="config_candidate_highlight_font_color_enabled">false</bool>
     <bool name="config_swipe_down_dismiss_keyboard_enabled">false</bool>
     <bool name="config_sliding_key_input_enabled">false</bool>
