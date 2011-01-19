@@ -48,6 +48,7 @@ public class Settings extends PreferenceActivity
         DialogInterface.OnDismissListener, OnPreferenceClickListener {
     private static final String TAG = "Settings";
 
+    public static final String PREF_GENERAL_SETTINGS_KEY = "general_settings";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
     public static final String PREF_POPUP_ON = "popup_on";
@@ -111,40 +112,42 @@ public class Settings extends PreferenceActivity
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
         ensureConsistencyOfAutoCorrectionSettings();
 
+        final PreferenceGroup generalSettings =
+	        (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS_KEY);
+
         final boolean showSettingsKeyOption = getResources().getBoolean(
                 R.bool.config_enable_show_settings_key_option);
         if (!showSettingsKeyOption) {
-            getPreferenceScreen().removePreference(mSettingsKeyPreference);
+            generalSettings.removePreference(mSettingsKeyPreference);
         }
 
         final boolean showVoiceKeyOption = getResources().getBoolean(
                 R.bool.config_enable_show_voice_key_option);
         if (!showVoiceKeyOption) {
-            getPreferenceScreen().removePreference(mVoicePreference);
+            generalSettings.removePreference(mVoicePreference);
         }
 
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (vibrator == null || !vibrator.hasVibrator()) {
-            getPreferenceScreen().removePreference(
-                    getPreferenceScreen().findPreference(PREF_VIBRATE_ON));
+            generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 
         final boolean showSubtypeSettings = getResources().getBoolean(
                 R.bool.config_enable_show_subtype_settings);
         if (!showSubtypeSettings) {
-            getPreferenceScreen().removePreference(findPreference(PREF_SUBTYPES));
+            generalSettings.removePreference(findPreference(PREF_SUBTYPES));
         }
 
         final boolean showPopupOption = getResources().getBoolean(
                 R.bool.config_enable_show_popup_on_keypress_option);
         if (!showPopupOption) {
-            getPreferenceScreen().removePreference(findPreference(PREF_POPUP_ON));
+            generalSettings.removePreference(findPreference(PREF_POPUP_ON));
         }
 
         final boolean showRecorrectionOption = getResources().getBoolean(
                 R.bool.config_enable_show_recorrection_option);
         if (!showRecorrectionOption) {
-            getPreferenceScreen().removePreference(findPreference(PREF_RECORRECTION_ENABLED));
+            generalSettings.removePreference(findPreference(PREF_RECORRECTION_ENABLED));
         }
     }
 
