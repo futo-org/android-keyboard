@@ -94,16 +94,6 @@
             />
 
         <ListPreference
-            android:key="show_suggestions_setting"
-            android:summary="@string/prefs_show_suggestions_summary"
-            android:title="@string/prefs_show_suggestions"
-            android:persistent="true"
-            android:entryValues="@array/prefs_suggestion_visibility_values"
-            android:entries="@array/prefs_suggestion_visibilities"
-            android:defaultValue="@string/prefs_suggestion_visibility_default_value"
-            />
-
-        <ListPreference
             android:key="auto_correction_threshold"
             android:title="@string/auto_correction"
             android:summary="@string/auto_correction_summary"
@@ -111,6 +101,16 @@
             android:entryValues="@array/auto_correction_threshold_mode_indexes"
             android:entries="@array/auto_correction_threshold_modes"
             android:defaultValue="@string/auto_correction_threshold_mode_index_modest"
+            />
+
+        <ListPreference
+            android:key="show_suggestions_setting"
+            android:summary="@string/prefs_show_suggestions_summary"
+            android:title="@string/prefs_show_suggestions"
+            android:persistent="true"
+            android:entryValues="@array/prefs_suggestion_visibility_values"
+            android:entries="@array/prefs_suggestion_visibilities"
+            android:defaultValue="@string/prefs_suggestion_visibility_default_value"
             />
 
         <CheckBoxPreference
