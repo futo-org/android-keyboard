@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
@@ -66,6 +66,8 @@ public class Settings extends PreferenceActivity
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
 
+    public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
+
     // Dialog ids
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
 
@@ -113,7 +115,9 @@ public class Settings extends PreferenceActivity
         ensureConsistencyOfAutoCorrectionSettings();
 
         final PreferenceGroup generalSettings =
-	        (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS_KEY);
+                (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS_KEY);
+        final PreferenceGroup textCorrectionGroup =
+                (PreferenceGroup) findPreference(PREF_PREDICTION_SETTINGS_KEY);
 
         final boolean showSettingsKeyOption = getResources().getBoolean(
                 R.bool.config_enable_show_settings_key_option);
@@ -148,6 +152,24 @@ public class Settings extends PreferenceActivity
                 R.bool.config_enable_show_recorrection_option);
         if (!showRecorrectionOption) {
             generalSettings.removePreference(findPreference(PREF_RECORRECTION_ENABLED));
+        }
+
+        final boolean showQuickFixesOption = getResources().getBoolean(
+                R.bool.config_enable_quick_fixes_option);
+        if (!showQuickFixesOption) {
+            textCorrectionGroup.removePreference(findPreference(PREF_QUICK_FIXES));
+        }
+
+        final boolean showBigramSuggestionsOption = getResources().getBoolean(
+                R.bool.config_enable_bigram_suggestions_option);
+        if (!showBigramSuggestionsOption) {
+            textCorrectionGroup.removePreference(findPreference(PREF_BIGRAM_SUGGESTIONS));
+        }
+
+        final boolean showUsabilityModeStudyOption = getResources().getBoolean(
+                R.bool.config_enable_usability_study_mode_option);
+        if (!showUsabilityModeStudyOption) {
+            getPreferenceScreen().removePreference(findPreference(PREF_USABILITY_STUDY_MODE));
         }
     }
 
