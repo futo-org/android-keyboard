@@ -288,9 +288,9 @@ public class SubtypeSwitcher {
             if (subtype != null) {
                 return pm.getDrawable(imiPackageName, subtype.getIconResId(),
                         imi.getServiceInfo().applicationInfo);
-            } else if (imi.getSubtypes().size() > 0 && imi.getSubtypes().get(0) != null) {
+            } else if (imi.getSubtypeCount() > 0 && imi.getSubtypeAt(0) != null) {
                 return pm.getDrawable(imiPackageName,
-                        imi.getSubtypes().get(0).getIconResId(),
+                        imi.getSubtypeAt(0).getIconResId(),
                         imi.getServiceInfo().applicationInfo);
             } else {
                 try {
