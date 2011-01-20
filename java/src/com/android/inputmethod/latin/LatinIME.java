@@ -27,6 +27,7 @@ import com.android.inputmethod.latin.Utils.RingCharBuffer;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,6 +36,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.Region;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Debug;
@@ -861,6 +863,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onComputeInsets(outInsets);
         if (!isFullscreenMode()) {
             outInsets.contentTopInsets = outInsets.visibleTopInsets;
+        }
+        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        if (inputView != null) {
+            // Screen's heightPixels may be too big, but want to make
+            // it large enough to cover status bar in any cases.
+            outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
+            outInsets.touchableRegion.set(
+                    0, 0, inputView.getWidth(), getResources().getDisplayMetrics().heightPixels);
         }
     }
 
