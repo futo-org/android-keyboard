@@ -20,6 +20,7 @@ import android.view.inputmethod.CompletionInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 public class SuggestedWords {
@@ -128,10 +129,18 @@ public class SuggestedWords {
                 SuggestedWords previousSuggestions) {
             mWords.clear();
             mSuggestedWordInfoList.clear();
+            final HashSet<String> alreadySeen = new HashSet<String>();
             addWord(typedWord, null, false);
+            alreadySeen.add(typedWord.toString());
             final int previousSize = previousSuggestions.size();
-            for (int pos = 1; pos < previousSize; pos++)
-                addWord(previousSuggestions.getWord(pos), null, true);
+            for (int pos = 1; pos < previousSize; pos++) {
+                final String prevWord = previousSuggestions.getWord(pos).toString();
+                // Filter out duplicate suggestion.
+                if (!alreadySeen.contains(prevWord)) {
+                    addWord(prevWord, null, true);
+                    alreadySeen.add(prevWord);
+                }
+            }
             mIsCompletions = false;
             mTypedWordValid = false;
             mHasMinimalSuggestion = false;
