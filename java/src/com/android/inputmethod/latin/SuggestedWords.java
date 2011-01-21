@@ -29,10 +29,11 @@ public class SuggestedWords {
     public final boolean mIsApplicationSpecifiedCompletions;
     public final boolean mTypedWordValid;
     public final boolean mHasMinimalSuggestion;
-    public final Object[] mDebugInfo;
+    public final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
     private SuggestedWords(List<CharSequence> words, boolean isApplicationSpecifiedCompletions,
-            boolean typedWordValid, boolean hasMinamlSuggestion, Object[] debugInfo) {
+            boolean typedWordValid, boolean hasMinamlSuggestion,
+            List<SuggestedWordInfo> suggestedWordInfoList) {
         if (words != null) {
             mWords = words;
         } else {
@@ -41,7 +42,7 @@ public class SuggestedWords {
         mIsApplicationSpecifiedCompletions = isApplicationSpecifiedCompletions;
         mTypedWordValid = typedWordValid;
         mHasMinimalSuggestion = hasMinamlSuggestion;
-        mDebugInfo = debugInfo;
+        mSuggestedWordInfoList = suggestedWordInfoList;
     }
 
     public int size() {
@@ -61,38 +62,46 @@ public class SuggestedWords {
     }
 
     public static class Builder {
-        private List<CharSequence> mWords;
+        private List<CharSequence> mWords = new ArrayList<CharSequence>();
         private boolean mIsCompletions;
         private boolean mTypedWordValid;
         private boolean mHasMinimalSuggestion;
-        private Object[] mDebugInfo;
+        private List<SuggestedWordInfo> mSuggestedWordInfoList =
+                new ArrayList<SuggestedWordInfo>();
 
         public Builder() {
             // Nothing to do here.
         }
 
-        public Builder addWords(List<CharSequence> words) {
-            for (final CharSequence word : words)
-                addWord(word);
-            return this;
-        }
-
-        public Builder setDebugInfo(Object[] debuginfo) {
-            mDebugInfo = debuginfo;
-            return this;
-        }
-
-        public Builder addWord(int pos, CharSequence word) {
-            if (mWords == null)
-                mWords = new ArrayList<CharSequence>();
-            mWords.add(pos, word);
+        public Builder addWords(List<CharSequence> words,
+                List<SuggestedWordInfo> suggestedWordInfoList) {
+            final int N = words.size();
+            for (int i = 0; i < N; ++i) {
+                SuggestedWordInfo suggestedWordInfo = null;
+                if (suggestedWordInfoList != null) {
+                    suggestedWordInfo = suggestedWordInfoList.get(i);
+                }
+                if (suggestedWordInfo == null) {
+                    suggestedWordInfo = new SuggestedWordInfo();
+                }
+                addWord(words.get(i), suggestedWordInfo);
+            }
             return this;
         }
 
         public Builder addWord(CharSequence word) {
-            if (mWords == null)
-                mWords = new ArrayList<CharSequence>();
+            return addWord(word, null, false);
+        }
+
+        public Builder addWord(CharSequence word, CharSequence debugString,
+                boolean isPreviousSuggestedWord) {
+            SuggestedWordInfo info = new SuggestedWordInfo(debugString, isPreviousSuggestedWord);
+            return addWord(word, info);
+        }
+
+        private Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
             mWords.add(word);
+            mSuggestedWordInfoList.add(suggestedWordInfo);
             return this;
         }
 
@@ -117,11 +126,12 @@ public class SuggestedWords {
         // and replace it with what the user currently typed.
         public Builder addTypedWordAndPreviousSuggestions(CharSequence typedWord,
                 SuggestedWords previousSuggestions) {
-            if (mWords != null) mWords.clear();
-            addWord(typedWord);
+            mWords.clear();
+            mSuggestedWordInfoList.clear();
+            addWord(typedWord, null, false);
             final int previousSize = previousSuggestions.size();
             for (int pos = 1; pos < previousSize; pos++)
-                addWord(previousSuggestions.getWord(pos));
+                addWord(previousSuggestions.getWord(pos), null, true);
             mIsCompletions = false;
             mTypedWordValid = false;
             mHasMinimalSuggestion = false;
@@ -130,15 +140,42 @@ public class SuggestedWords {
 
         public SuggestedWords build() {
             return new SuggestedWords(mWords, mIsCompletions, mTypedWordValid,
-                    mHasMinimalSuggestion, mDebugInfo);
+                    mHasMinimalSuggestion, mSuggestedWordInfoList);
         }
 
         public int size() {
-            return mWords == null ? 0 : mWords.size();
+            return mWords.size();
         }
 
         public CharSequence getWord(int pos) {
             return mWords.get(pos);
+        }
+    }
+
+    public static class SuggestedWordInfo {
+        private final CharSequence mDebugString;
+        private final boolean mPreviousSuggestedWord;
+
+        public SuggestedWordInfo() {
+            mDebugString = "";
+            mPreviousSuggestedWord = false;
+        }
+
+        public SuggestedWordInfo(CharSequence debugString, boolean previousSuggestedWord) {
+            mDebugString = debugString;
+            mPreviousSuggestedWord = previousSuggestedWord;
+        }
+
+        public String getDebugString() {
+            if (mDebugString == null) {
+                return "";
+            } else {
+                return mDebugString.toString();
+            }
+        }
+
+        public boolean isPreviousSuggestedWord () {
+            return mPreviousSuggestedWord;
         }
     }
 }

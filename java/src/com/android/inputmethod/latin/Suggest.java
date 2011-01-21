@@ -95,7 +95,7 @@ public class Suggest implements Dictionary.WordCallback {
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
-    private boolean mHaveAutoCorrection;
+    private boolean mHasAutoCorrection;
     private String mLowerOriginalWord;
 
     // TODO: Remove these member variables by passing more context to addWord() callback method
@@ -200,7 +200,7 @@ public class Suggest implements Dictionary.WordCallback {
     public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
             CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mHaveAutoCorrection = false;
+        mHasAutoCorrection = false;
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
@@ -278,7 +278,7 @@ public class Suggest implements Dictionary.WordCallback {
                     if (DBG) {
                         Log.d(TAG, "Auto corrected by CORRECTION_FULL.");
                     }
-                    mHaveAutoCorrection = true;
+                    mHasAutoCorrection = true;
                 }
             }
             if (mMainDict != null) mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
@@ -297,7 +297,7 @@ public class Suggest implements Dictionary.WordCallback {
                     if (DBG) {
                         Log.d(TAG, "Auto corrected by S-threthhold.");
                     }
-                    mHaveAutoCorrection = true;
+                    mHasAutoCorrection = true;
                 }
             }
         }
@@ -342,7 +342,7 @@ public class Suggest implements Dictionary.WordCallback {
                     if (DBG) {
                         Log.d(TAG, "Auto corrected by AUTOTEXT.");
                     }
-                    mHaveAutoCorrection = true;
+                    mHasAutoCorrection = true;
                     mSuggestions.add(i + 1, autoText);
                     i++;
                 }
@@ -350,7 +350,7 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
         removeDupes();
-        return new SuggestedWords.Builder().addWords(mSuggestions);
+        return new SuggestedWords.Builder().addWords(mSuggestions, null);
     }
 
     public int[] getNextLettersFrequencies() {
@@ -384,8 +384,8 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    public boolean hasMinimalCorrection() {
-        return mHaveAutoCorrection;
+    public boolean hasAutoCorrection() {
+        return mHasAutoCorrection;
     }
 
     private boolean compareCaseInsensitive(final String mLowerOriginalWord,

@@ -16,8 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
+
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
@@ -43,12 +46,15 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CandidateView extends LinearLayout implements OnClickListener, OnLongClickListener {
 
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
     private static final int MAX_SUGGESTIONS = 16;
+
+    private static boolean DBG = LatinImeLogger.sDBG;
 
     private final ArrayList<View> mWords = new ArrayList<View>();
     private final boolean mConfigCandidateHighlightFontColorEnabled;
@@ -175,11 +181,12 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         final SuggestedWords suggestions = mSuggestions;
         clear();
         final int count = suggestions.size();
-        final Object[] debugInfo = suggestions.mDebugInfo;
         for (int i = 0; i < count; i++) {
             CharSequence word = suggestions.getWord(i);
             if (word == null) continue;
             final int wordLength = word.length();
+            final List<SuggestedWordInfo> suggestedWordInfoList =
+                    suggestions.mSuggestedWordInfoList;
 
             final View v = mWords.get(i);
             final TextView tv = (TextView)v.findViewById(R.id.candidate_word);
@@ -209,10 +216,21 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             }
             tv.setText(word);
             tv.setClickable(true);
-            if (debugInfo != null && i < debugInfo.length && debugInfo[i] != null
-                    && !TextUtils.isEmpty(debugInfo[i].toString())) {
-                dv.setText(debugInfo[i].toString());
-                dv.setVisibility(VISIBLE);
+
+            if (suggestedWordInfoList != null && suggestedWordInfoList.get(i) != null) {
+                final SuggestedWordInfo info = suggestedWordInfoList.get(i);
+                if (info.isPreviousSuggestedWord()) {
+                    int color = tv.getCurrentTextColor();
+                    tv.setTextColor(Color.argb((int)(Color.alpha(color) * 0.5f), Color.red(color),
+                            Color.green(color), Color.blue(color)));
+                }
+                final String debugString = info.getDebugString();
+                if (DBG) {
+                    if (!TextUtils.isEmpty(debugString)) {
+                        dv.setText(debugString);
+                        dv.setVisibility(VISIBLE);
+                    }
+                }
             } else {
                 dv.setVisibility(GONE);
             }
