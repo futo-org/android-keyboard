@@ -27,7 +27,6 @@ import com.android.inputmethod.latin.Utils.RingCharBuffer;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -36,7 +35,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Region;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.os.Debug;
@@ -2243,6 +2241,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 itemInputMethod, itemSettings}, listener);
         builder.setTitle(mResources.getString(R.string.english_ime_input_options));
         mOptionsDialog = builder.create();
+        mOptionsDialog.setCanceledOnTouchOutside(true);
         Window window = mOptionsDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.token = mKeyboardSwitcher.getInputView().getWindowToken();
