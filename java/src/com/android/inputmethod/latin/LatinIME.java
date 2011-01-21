@@ -1519,7 +1519,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.setPreferredLetters(nextLettersFrequencies);
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && !mJustReverted
-                && mSuggest.hasMinimalCorrection();
+                && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = word.getTypedWord();
         // If we're in basic correct
         final boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
