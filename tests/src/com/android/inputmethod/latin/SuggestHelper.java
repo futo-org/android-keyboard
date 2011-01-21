@@ -98,7 +98,7 @@ public class SuggestHelper {
     boolean isDefaultCorrection(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
-        return isDefaultSuggestion(suggestions, expected) && mSuggest.hasMinimalCorrection();
+        return isDefaultSuggestion(suggestions, expected) && mSuggest.hasAutoCorrection();
     }
 
     boolean isASuggestion(CharSequence typed, CharSequence expected) {
@@ -130,7 +130,7 @@ public class SuggestHelper {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
-        return isDefaultSuggestion(suggestions, expected) && mSuggest.hasMinimalCorrection();
+        return isDefaultSuggestion(suggestions, expected) && mSuggest.hasAutoCorrection();
     }
 
     boolean isASuggestion(CharSequence previous, CharSequence typed,
