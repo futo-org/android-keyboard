@@ -67,6 +67,7 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
@@ -83,12 +84,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIME";
     private static final boolean PERF_DEBUG = false;
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = LatinImeLogger.sDBG;
     private static final boolean TRACE = false;
 
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
     private static final int DELAY_UPDATE_SHIFT_STATE = 300;
+    private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
@@ -868,14 +870,34 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!isFullscreenMode()) {
             outInsets.contentTopInsets = outInsets.visibleTopInsets;
         }
-        /*KeyboardView inputView = mKeyboardSwitcher.getInputView();
-        if (inputView != null) {
-            // Screen's heightPixels may be too big, but want to make
-            // it large enough to cover status bar in any cases.
+        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        // Need to set touchable region only if input view is being shown
+        if (inputView != null && mKeyboardSwitcher.isInputViewShown()) {
+            final int x = 0;
+            int y = 0;
+            final int width = inputView.getWidth();
+            int height = inputView.getHeight() + EXTENDED_TOUCHABLE_REGION_HEIGHT;
+            if (mCandidateViewContainer != null) {
+                ViewParent candidateParent = mCandidateViewContainer.getParent();
+                if (candidateParent instanceof FrameLayout) {
+                    FrameLayout fl = (FrameLayout) candidateParent;
+                    if (fl != null) {
+                        // Check frame layout's visibility
+                        if (fl.getVisibility() == View.INVISIBLE) {
+                            y = fl.getHeight();
+                            height += y;
+                        } else if (fl.getVisibility() == View.VISIBLE) {
+                            height += fl.getHeight();
+                        }
+                    }
+                }
+            }
+            if (DEBUG) {
+                Log.d(TAG, "Touchable region " + x + ", " + y + ", " + width + ", " + height);
+            }
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
-            outInsets.touchableRegion.set(
-                    0, 0, inputView.getWidth(), getResources().getDisplayMetrics().heightPixels);
-        }*/
+            outInsets.touchableRegion.set(x, y, width, height);
+        }
     }
 
     @Override
