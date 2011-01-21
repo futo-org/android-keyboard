@@ -437,7 +437,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                     builder.addWord(word);
                 }
             } else {
-                builder.addWords(suggestions);
+                builder.addWords(suggestions, null);
             }
             builder.setTypedWordValid(true).setHasMinimalSuggestion(true);
             mService.setSuggestions(builder.build());
