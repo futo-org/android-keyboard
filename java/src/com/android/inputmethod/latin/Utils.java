@@ -23,6 +23,7 @@ import android.os.HandlerThread;
 import android.os.Process;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import java.io.BufferedReader;
@@ -97,6 +98,13 @@ public class Utils {
                 || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
     }
 
+    public static String getInputMethodId(InputMethodManager imm, String packageName) {
+        for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
+            if (imi.getPackageName().equals(packageName))
+                return imi.getId();
+        }
+        throw new RuntimeException("Can not find input method id for " + packageName);
+    }
 
     public static boolean shouldBlockedBySafetyNetForAutoCorrection(SuggestedWords suggestions) {
         // Safety net for auto correction.
