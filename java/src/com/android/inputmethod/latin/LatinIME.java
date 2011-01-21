@@ -1535,10 +1535,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
-        // is 1, regardless of suggestion count.  Actually, in most cases, suggestion count is 1
-        // when typed word's length is 1, but we do always need to clear the previous state when
-        // the user starts typing a word (i.e. typed word's length == 1).
-        if (typedWord.length() == 1 || builder.size() > 1
+        // is 1 or typed word is found in dictionary, regardless of suggestion count.  Actually,
+        // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
+        // need to clear the previous state when the user starts typing a word (i.e. typed word's
+        // length == 1).
+        if (builder.size() > 1 || typedWord.length() == 1 || typedWordValid
                 || mCandidateView.isShowingAddToDictionaryHint()) {
             builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(correctionAvailable);
         } else {
