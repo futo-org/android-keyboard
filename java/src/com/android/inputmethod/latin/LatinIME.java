@@ -868,14 +868,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!isFullscreenMode()) {
             outInsets.contentTopInsets = outInsets.visibleTopInsets;
         }
-        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        /*KeyboardView inputView = mKeyboardSwitcher.getInputView();
         if (inputView != null) {
             // Screen's heightPixels may be too big, but want to make
             // it large enough to cover status bar in any cases.
             outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
             outInsets.touchableRegion.set(
                     0, 0, inputView.getWidth(), getResources().getDisplayMetrics().heightPixels);
-        }
+        }*/
     }
 
     @Override
