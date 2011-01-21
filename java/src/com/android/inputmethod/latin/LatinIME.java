@@ -123,6 +123,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private AlertDialog mOptionsDialog;
 
     private InputMethodManager mImm;
+    private Resources mResources;
+    private SharedPreferences mPrefs;
+    private String mInputMethodId;
     private KeyboardSwitcher mKeyboardSwitcher;
     private SubtypeSwitcher mSubtypeSwitcher;
     private VoiceIMEConnector mVoiceConnector;
@@ -131,9 +134,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private UserBigramDictionary mUserBigramDictionary;
     private ContactsDictionary mContactsDictionary;
     private AutoDictionary mAutoDictionary;
-
-    private Resources mResources;
-    private SharedPreferences mPrefs;
 
     // These variables are initialized according to the {@link EditorInfo#inputType}.
     private boolean mAutoSpace;
@@ -156,6 +156,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mPopupOn;
     private boolean mAutoCap;
     private boolean mQuickFixes;
+    private boolean mConfigEnableShowSubtypeSettings;
     private boolean mConfigSwipeDownDismissKeyboardEnabled;
     private int mConfigDelayBeforeFadeoutLanguageOnSpacebar;
     private int mConfigDurationOfFadeoutLanguageOnSpacebar;
@@ -350,6 +351,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onCreate();
 
         mImm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
+        mInputMethodId = Utils.getInputMethodId(mImm, getApplicationInfo().packageName);
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
 
@@ -365,6 +367,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mReCorrectionEnabled = res.getBoolean(R.bool.default_recorrection_enabled);
         }
 
+        mConfigEnableShowSubtypeSettings = res.getBoolean(
+                R.bool.config_enable_show_subtype_settings);
         mConfigSwipeDownDismissKeyboardEnabled = res.getBoolean(
                 R.bool.config_swipe_down_dismiss_keyboard_enabled);
         mConfigDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
@@ -462,6 +466,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             commitTyped(ic);
             if (ic != null) ic.finishComposingText(); // For voice input
             mOrientation = conf.orientation;
+            if (isShowingOptionDialog())
+                mOptionsDialog.dismiss();
         }
 
         mConfigurationChanging = true;
@@ -1044,7 +1050,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onSettingsKeyPressed() {
         if (!isShowingOptionDialog()) {
-            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
+            if (!mConfigEnableShowSubtypeSettings) {
+                showSubtypeSelectorAndSettings();
+            } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
                 showOptionsMenu();
             } else {
                 launchSettings();
@@ -2183,7 +2191,48 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mSuggestPuncs.contains(String.valueOf((char)code));
     }
 
+    private void showSubtypeSelectorAndSettings() {
+        showOptionsMenuInternal(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface di, int position) {
+                di.dismiss();
+                switch (position) {
+                case POS_SETTINGS:
+                    launchSettings();
+                    break;
+                case POS_METHOD:
+                    Intent intent = new Intent(
+                            android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                            | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(android.provider.Settings.EXTRA_INPUT_METHOD_ID,
+                            mInputMethodId);
+                    startActivity(intent);
+                    break;
+                }
+            }
+        });
+    }
+
     private void showOptionsMenu() {
+        showOptionsMenuInternal(new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface di, int position) {
+                di.dismiss();
+                switch (position) {
+                case POS_SETTINGS:
+                    launchSettings();
+                    break;
+                case POS_METHOD:
+                    mImm.showInputMethodPicker();
+                    break;
+                }
+            }
+        });
+    }
+
+    private void showOptionsMenuInternal(DialogInterface.OnClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setIcon(R.drawable.ic_dialog_keyboard);
@@ -2191,22 +2240,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         CharSequence itemSettings = getString(R.string.english_ime_settings);
         CharSequence itemInputMethod = getString(R.string.selectInputMethod);
         builder.setItems(new CharSequence[] {
-                itemInputMethod, itemSettings},
-                new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface di, int position) {
-                di.dismiss();
-                switch (position) {
-                    case POS_SETTINGS:
-                        launchSettings();
-                        break;
-                    case POS_METHOD:
-                        mImm.showInputMethodPicker();
-                        break;
-                }
-            }
-        });
+                itemInputMethod, itemSettings}, listener);
         builder.setTitle(mResources.getString(R.string.english_ime_input_options));
         mOptionsDialog = builder.create();
         Window window = mOptionsDialog.getWindow();
