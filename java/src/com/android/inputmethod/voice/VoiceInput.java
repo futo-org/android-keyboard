@@ -17,6 +17,7 @@
 package com.android.inputmethod.voice;
 
 import com.android.inputmethod.latin.EditingUtils;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 
 import android.content.ContentResolver;
@@ -58,6 +59,7 @@ public class VoiceInput implements OnClickListener {
     private static final String EXTRA_CALLING_PACKAGE = "calling_package";
     private static final String EXTRA_ALTERNATES = "android.speech.extra.ALTERNATES";
     private static final int MAX_ALT_LIST_LENGTH = 6;
+    private static boolean DBG = LatinImeLogger.sDBG;
 
     private static final String DEFAULT_RECOMMENDED_PACKAGES =
             "com.android.mms " +
@@ -313,8 +315,11 @@ public class VoiceInput implements OnClickListener {
      * @param swipe whether this voice input was started by swipe, for logging purposes
      */
     public void startListening(FieldContext context, boolean swipe) {
+        if (DBG) {
+            Log.d(TAG, "startListening: " + context);
+        }
         mState = DEFAULT;
-        
+
         Locale locale = Locale.getDefault();
         String localeString = locale.getLanguage() + "-" + locale.getCountry();
 

@@ -41,7 +41,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class SubtypeSwitcher {
-    private static final boolean DBG = LatinImeLogger.sDBG;
+    private static boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = "SubtypeSwitcher";
 
     private static final char LOCALE_SEPARATER = '_';
@@ -163,6 +163,12 @@ public class SubtypeSwitcher {
     }
 
     private void updateShortcutIME() {
+        if (DBG) {
+            Log.d(TAG, "Update shortcut IME from : "
+                    + (mShortcutInfo == null ? "<null>" : mShortcutInfo.getId()) + ", "
+                    + (mShortcutSubtype == null ? "<null>" : (mShortcutSubtype.getLocale()
+                            + ", " + mShortcutSubtype.getMode())));
+        }
         // TODO: Update an icon for shortcut IME
         Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
                 mImm.getShortcutInputMethodsAndSubtypes();
@@ -175,6 +181,12 @@ public class SubtypeSwitcher {
             // as appropriate.
             mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
             break;
+        }
+        if (DBG) {
+            Log.d(TAG, "Update shortcut IME to : "
+                    + (mShortcutInfo == null ? "<null>" : mShortcutInfo.getId()) + ", "
+                    + (mShortcutSubtype == null ? "<null>" : (mShortcutSubtype.getLocale()
+                            + ", " + mShortcutSubtype.getMode())));
         }
     }
 
