@@ -130,19 +130,14 @@ public class VoiceInput implements OnClickListener {
 
     private int mState = DEFAULT;
     
-    private final static int MSG_CLOSE_ERROR_DIALOG = 1;
-
-    private final static int MSG_RESET = 2;
+    private final static int MSG_RESET = 1;
 
     private final Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == MSG_RESET || msg.what == MSG_CLOSE_ERROR_DIALOG) {
+            if (msg.what == MSG_RESET) {
                 mState = DEFAULT;
                 mRecognitionView.finish();
-            }
-
-            if (msg.what == MSG_CLOSE_ERROR_DIALOG) {
                 mUiListener.onCancelVoice();
             }
         }
@@ -318,7 +313,14 @@ public class VoiceInput implements OnClickListener {
         if (DBG) {
             Log.d(TAG, "startListening: " + context);
         }
-        mState = DEFAULT;
+
+        if (mState != DEFAULT) {
+            Log.w(TAG, "startListening in the wrong status " + mState);
+        }
+
+        // If everything works ok, the voice input should be already in the correct state. As this
+        // class can be called by third-party, we call reset just to be on the safe side.
+        reset();
 
         Locale locale = Locale.getDefault();
         String localeString = locale.getLanguage() + "-" + locale.getCountry();
@@ -504,6 +506,21 @@ public class VoiceInput implements OnClickListener {
     }
 
     /**
+     * Reset the current voice recognition.
+     */
+    public void reset() {
+        if (mState != DEFAULT) {
+            mState = DEFAULT;
+
+            // Remove all pending tasks (e.g., timers to cancel voice input)
+            mHandler.removeMessages(MSG_RESET);
+
+            mSpeechRecognizer.cancel();
+            mRecognitionView.finish();
+        }
+    }
+
+    /**
      * Cancel in-progress speech recognition.
      */
     public void cancel() {
@@ -518,14 +535,9 @@ public class VoiceInput implements OnClickListener {
             mLogger.cancelDuringError();
             break;
         }
-        mState = DEFAULT;
 
-        // Remove all pending tasks (e.g., timers to cancel voice input)
-        mHandler.removeMessages(MSG_RESET);
-
-        mSpeechRecognizer.cancel();
+        reset();
         mUiListener.onCancelVoice();
-        mRecognitionView.finish();
     }
 
     private int getErrorStringId(int errorType, boolean endpointed) {
@@ -560,7 +572,7 @@ public class VoiceInput implements OnClickListener {
         mState = ERROR;
         mRecognitionView.showError(error);
         // Wait a couple seconds and then automatically dismiss message.
-        mHandler.sendMessageDelayed(Message.obtain(mHandler, MSG_CLOSE_ERROR_DIALOG), 2000);
+        mHandler.sendMessageDelayed(Message.obtain(mHandler, MSG_RESET), 2000);
     }
 
     private class ImeRecognitionListener implements RecognitionListener {
