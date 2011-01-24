@@ -72,9 +72,9 @@
     <string name="auto_correction_summary">Spacebar and punctuation automatically insert highlighted word</string>
     <!-- Option to disable auto correction. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_off">Off</string>
-    <!-- Option to use modest auto correction. [CHAR LIMIT=20] -->
+    <!-- Option to suggest auto correction candidates modestly. Auto-corrects only to a word which has small edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_modest">Modest</string>
-    <!-- Option to use aggressive auto correction. [CHAR LIMIT=20] -->
+    <!-- Option to suggest auto correction candidates aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
 
     <!-- Option to enable bigram correction -->
