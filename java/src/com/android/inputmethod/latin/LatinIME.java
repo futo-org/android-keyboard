@@ -84,8 +84,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIME";
     private static final boolean PERF_DEBUG = false;
-    private static final boolean DEBUG = LatinImeLogger.sDBG;
     private static final boolean TRACE = false;
+    private static boolean DEBUG = LatinImeLogger.sDBG;
 
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
@@ -514,6 +514,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getInputView();
 
+        if(DEBUG) {
+            Log.d(TAG, "onStartInputView: " + inputView);
+        }
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
             return;
