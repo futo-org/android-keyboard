@@ -78,6 +78,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     // given text field. For instance this is specified by the search dialog when the
     // dialog is already showing a voice search button.
     private static final String IME_OPTION_NO_MICROPHONE = "nm";
+    private static final int RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO = 6;
 
     @SuppressWarnings("unused")
     private static final String TAG = "VoiceIMEConnector";
@@ -543,10 +544,14 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                 // As we add mm, we don't know how the rounding is going to work
                 // thus we may end up with few pixels extra (or less).
                 if (keyboardView != null) {
-                    int h = keyboardView.getHeight();
-                    if (h > 0) {
-                        View popupLayout = v.findViewById(R.id.popup_layout);
-                        popupLayout.getLayoutParams().height = h;
+                    View popupLayout = v.findViewById(R.id.popup_layout);
+                    final int displayHeight =
+                            mService.getResources().getDisplayMetrics().heightPixels;
+                    final int currentHeight = popupLayout.getLayoutParams().height;
+                    final int keyboardHeight = keyboardView.getHeight();
+                    if (keyboardHeight > currentHeight || keyboardHeight
+                            > (displayHeight / RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO)) {
+                        popupLayout.getLayoutParams().height = keyboardHeight;
                     }
                 }
                 mService.setInputView(v);
