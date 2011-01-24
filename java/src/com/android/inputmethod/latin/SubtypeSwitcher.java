@@ -223,6 +223,9 @@ public class SubtypeSwitcher {
             }
             mMode = newMode;
         }
+
+        // If the old mode is voice input, we need to reset or cancel its status.
+        // We cancel its status when we change mode, while we reset otherwise.
         if (isKeyboardMode()) {
             if (modeChanged) {
                 if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
@@ -233,17 +236,23 @@ public class SubtypeSwitcher {
                 updateShortcutIME();
                 mService.onRefreshKeyboard();
             }
-        } else if (isVoiceMode()) {
+        } else if (isVoiceMode() && mVoiceInput != null) {
+            if (VOICE_MODE.equals(oldMode)) {
+                mVoiceInput.reset();
+            }
             // If needsToShowWarningDialog is true, voice input need to show warning before
             // show recognition view.
             if (languageChanged || modeChanged
                     || VoiceIMEConnector.getInstance().needsToShowWarningDialog()) {
-                if (mVoiceInput != null) {
-                    triggerVoiceIME();
-                }
+                triggerVoiceIME();
             }
         } else {
             Log.w(TAG, "Unknown subtype mode: " + mMode);
+            if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
+                // We need to reset the voice input to release the resources and to reset its status
+                // as it is not the current input mode.
+                mVoiceInput.reset();
+            }
         }
     }
 
