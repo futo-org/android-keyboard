@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.voice;
 
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeSwitcher;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -35,13 +38,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.android.inputmethod.latin.R;
-
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
-import java.util.List;
+import java.util.Locale;
 
 /**
  * The user interface for the "Speak now" and "working" states.
@@ -60,6 +61,7 @@ public class RecognitionView {
     private ImageView mImage;
     private View mProgress;
     private SoundIndicator mSoundIndicator;
+    private TextView mLanguage;
     private Button mButton;
 
     private Drawable mInitializing;
@@ -105,6 +107,7 @@ public class RecognitionView {
         mButton = (Button) mView.findViewById(R.id.button);
         mButton.setOnClickListener(clickListener);
         mText = (TextView) mView.findViewById(R.id.text);
+        mLanguage = (TextView) mView.findViewById(R.id.language);
 
         mContext = context;
     }
@@ -184,9 +187,14 @@ public class RecognitionView {
     
     private void prepareDialog(CharSequence text, Drawable image,
             CharSequence btnTxt) {
+
+        /*
+         * The mic of INIT and of LISTENING has to be displayed in the same position. To accomplish
+         * that, some text visibility are not set as GONE but as INVISIBLE.
+         */
         switch (mState) {
             case INIT:
-                mText.setVisibility(View.GONE);
+                mText.setVisibility(View.INVISIBLE);
 
                 mProgress.setVisibility(View.GONE);
 
@@ -195,6 +203,8 @@ public class RecognitionView {
 
                 mSoundIndicator.setVisibility(View.GONE);
                 mSoundIndicator.stop();
+
+                mLanguage.setVisibility(View.INVISIBLE);
 
                 mPopupLayout.setBackgroundDrawable(mListeningBorder);
                 break;
@@ -208,6 +218,11 @@ public class RecognitionView {
 
                 mSoundIndicator.setVisibility(View.VISIBLE);
                 mSoundIndicator.start();
+
+                Locale locale = SubtypeSwitcher.getInstance().getInputLocale();
+
+                mLanguage.setVisibility(View.VISIBLE);
+                mLanguage.setText(SubtypeSwitcher.getFullDisplayName(locale, true));
 
                 mPopupLayout.setBackgroundDrawable(mListeningBorder);
                 break;
@@ -223,6 +238,8 @@ public class RecognitionView {
                 mSoundIndicator.setVisibility(View.GONE);
                 mSoundIndicator.stop();
 
+                mLanguage.setVisibility(View.GONE);
+
                 mPopupLayout.setBackgroundDrawable(mWorkingBorder);
                 break;
             case READY:
@@ -236,6 +253,8 @@ public class RecognitionView {
 
                 mSoundIndicator.setVisibility(View.GONE);
                 mSoundIndicator.stop();
+
+                mLanguage.setVisibility(View.GONE);
 
                 mPopupLayout.setBackgroundDrawable(mErrorBorder);
                 break;
