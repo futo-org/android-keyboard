@@ -46,6 +46,7 @@
     <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
          to user's finger. -->
     <dimen name="keyboard_vertical_correction">-0.05in</dimen>
+    <dimen name="keyboard_bottom_row_vertical_correction">0.0mm</dimen>
 
     <dimen name="candidate_strip_height">42dip</dimen>
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
