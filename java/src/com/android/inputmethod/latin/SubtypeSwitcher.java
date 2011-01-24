@@ -435,7 +435,7 @@ public class SubtypeSwitcher {
             mVoiceInput = vi;
             if (isVoiceMode()) {
                 if (DBG) {
-                    Log.d(TAG, "Set and call voice input.");
+                    Log.d(TAG, "Set and call voice input.: " + getInputLocaleStr());
                 }
                 triggerVoiceIME();
                 return true;
