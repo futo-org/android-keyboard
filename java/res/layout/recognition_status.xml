@@ -70,6 +70,22 @@
                     android:layout_centerInParent="true"
                     android:visibility="gone"/>
         </RelativeLayout>
+        <!--
+        The text is set by the code. We specify a random text (voice_error), so the
+        text view does not have a zero height. This is necessary to keep the slash
+        mic and the recording mic is the same position
+        -->
+        <TextView
+                android:id="@+id/language"
+                android:text="@string/voice_error"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:singleLine="true"
+                android:textSize="14sp"
+                android:layout_marginBottom="3dip"
+                android:layout_gravity="center"
+                android:textColor="#ffffff"
+                android:visibility="invisible"/>
         <Button
                 android:id="@+id/button"
                 android:layout_width="match_parent"
