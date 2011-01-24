@@ -26,11 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Показывать при нажатии"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Настройки подсказок"</string>
+    <!-- no translation found for general_category (1859088467017573195) -->
+    <skip />
+    <!-- outdated translation 7027100625580696660 -->     <string name="prediction_category" msgid="6361242011806282176">"Настройки подсказок"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Быстрое исправление"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Исправлять распространенные опечатки"</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
+    <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
     <skip />
     <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
     <skip />
@@ -44,14 +46,11 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Автоматически"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Всегда показывать"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Всегда скрывать"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Предложение слов"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Автоматически исправлять предыдущее слово"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction" msgid="4979925752001319458">"Автоисправление"</string>
+    <string name="auto_correction_summary" msgid="2591572172085659910">"При нажатии пробела или знака препинания вставлять предложенное слово"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Выкл."</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Активное"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Биграммные подсказки"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Используйте предыдущее слово, чтобы исправить подсказку"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: сохранено"</string>
@@ -61,7 +60,7 @@
     <string name="label_send_key" msgid="2815056534433717444">"Отправить"</string>
     <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
     <skip />
-    <string name="label_more_key" msgid="3760239494604948502">"Еще"</string>
+    <string name="label_more_key" msgid="3760239494604948502">"Ещё"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Приостановить"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Подождите"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Голосовой ввод"</string>
@@ -70,7 +69,7 @@
     <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Функция голосового ввода отключается в настройках клавиатуры."</string>
     <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Чтобы использовать голосовой ввод, нажмите кнопку микрофона или проведите пальцем по экранной клавиатуре."</string>
     <string name="voice_listening" msgid="467518160751321844">"Говорите"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Выполняется обработка"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Обработка запроса"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"Ошибка. Повторите попытку."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Ошибка подключения"</string>
@@ -85,18 +84,12 @@
     <string name="cancel" msgid="6830980399865683324">"Отмена"</string>
     <string name="ok" msgid="7898366843681727667">"ОК"</string>
     <string name="voice_input" msgid="2466640768843347841">"Голосовой ввод"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На осн. клавиатуре"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"На клавиатуре симв."</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Выкл."</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Микр. на осн. клав."</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Микр. на клавиатуре симв."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод откл."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Выбрать способ ввода"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Для изменения языка проведите пальцем по пробелу"</string>
@@ -157,9 +150,13 @@
     <skip />
     <!-- no translation found for subtype_mode_fr_voice (4675914209337824269) -->
     <skip />
+    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
+    <skip />
     <!-- no translation found for subtype_mode_ja_voice (6604859132669646367) -->
     <skip />
     <!-- no translation found for subtype_mode_ko_voice (4890391190762324561) -->
+    <skip />
+    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
     <skip />
     <!-- no translation found for subtype_mode_pl_voice (2076196021014840487) -->
     <skip />

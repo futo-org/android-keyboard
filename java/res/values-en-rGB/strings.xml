@@ -26,11 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrate on key-press"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sound on key-press"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up on key press"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Word suggestion settings"</string>
+    <!-- no translation found for general_category (1859088467017573195) -->
+    <skip />
+    <!-- outdated translation 7027100625580696660 -->     <string name="prediction_category" msgid="6361242011806282176">"Word suggestion settings"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalisation"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Quick fixes"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrects commonly typed mistakes"</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
+    <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
     <skip />
     <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
     <skip />
@@ -44,14 +46,11 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatic"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Always show"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Always hide"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Word suggestions"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Automatically correct the previous word"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction" msgid="4979925752001319458">"Auto-correction"</string>
+    <string name="auto_correction_summary" msgid="2591572172085659910">"Spacebar and punctuation insert highlighted word automatically"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Off"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Modest"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressive"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Bigram Suggestions"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Use previous word to improve suggestion"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Saved"</string>
@@ -85,18 +84,12 @@
     <string name="cancel" msgid="6830980399865683324">"Cancel"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="2466640768843347841">"Voice input"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"On main keyboard"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"On symbols keyboard"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Off"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic on main keyboard"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic on symbols keyboard"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Voice input is disabled"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Select input method"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Input languages"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Slide finger on spacebar to change language"</string>
@@ -135,8 +128,12 @@
     <!-- outdated translation 1582519352222847297 -->     <string name="subtype_mode_en_US_voice" msgid="2300580846081472319">"English (United States) Voice"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Spanish Voice"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"French Voice"</string>
+    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
+    <skip />
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Japanese Voice"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Korean Voice"</string>
+    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
+    <skip />
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Polish Voice"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Portuguese Voice"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Russian Voice"</string>

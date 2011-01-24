@@ -26,11 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"キー操作バイブ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"キー操作音"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"キー押下時ポップアップ"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"入力候補の設定"</string>
+    <!-- no translation found for general_category (1859088467017573195) -->
+    <skip />
+    <!-- outdated translation 7027100625580696660 -->     <string name="prediction_category" msgid="6361242011806282176">"入力候補の設定"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大文字変換"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"クイックフィックス"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"よくある誤字・脱字を修正します"</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
+    <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
     <skip />
     <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
     <skip />
@@ -157,9 +159,13 @@
     <skip />
     <!-- no translation found for subtype_mode_fr_voice (4675914209337824269) -->
     <skip />
+    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
+    <skip />
     <!-- no translation found for subtype_mode_ja_voice (6604859132669646367) -->
     <skip />
     <!-- no translation found for subtype_mode_ko_voice (4890391190762324561) -->
+    <skip />
+    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
     <skip />
     <!-- no translation found for subtype_mode_pl_voice (2076196021014840487) -->
     <skip />
