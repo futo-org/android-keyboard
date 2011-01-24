@@ -230,6 +230,7 @@ public class SubtypeSwitcher {
                 }
             }
             if (modeChanged || languageChanged) {
+                updateShortcutIME();
                 mService.onRefreshKeyboard();
             }
         } else if (isVoiceMode()) {
