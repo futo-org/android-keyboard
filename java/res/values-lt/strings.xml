@@ -26,11 +26,13 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibruoti, kai paspaudžiami klavišai"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Klavišo paspaudimo garsas"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Iššoka paspaudus klavišą"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Žodžių pasiūlymo nustatymai"</string>
+    <!-- no translation found for general_category (1859088467017573195) -->
+    <skip />
+    <!-- outdated translation 7027100625580696660 -->     <string name="prediction_category" msgid="6361242011806282176">"Žodžių pasiūlymo nustatymai"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatinis didžiųjų raidžių rašymas"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Greiti pataisymai"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Taiso dažnai padarytas rašybos klaidas"</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
+    <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
     <skip />
     <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
     <skip />
@@ -44,14 +46,11 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatinis"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Visada rodyti"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Visada slėpti"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Žodžių pasiūlymai"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Automatiškai taisyti ankstesnį žodį"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction" msgid="4979925752001319458">"Automatinis taisymas"</string>
+    <string name="auto_correction_summary" msgid="2591572172085659910">"Tarpo kl. ir skyryb. ženkl. autom. įterp. paryšk. žodž."</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Išjungta"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Vidutinis"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Atkaklus"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Digramų pasiūlymai"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Naudoti ankstesnį žodį pasiūlymui patobulinti"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: išsaugota"</string>
@@ -85,18 +84,12 @@
     <string name="cancel" msgid="6830980399865683324">"Atšaukti"</string>
     <string name="ok" msgid="7898366843681727667">"Gerai"</string>
     <string name="voice_input" msgid="2466640768843347841">"Balso įvestis"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Pagr. klaviatūroje"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Simbolių klaviatūr."</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Išjungta"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrof. pagr. klav."</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrof. simb. klav."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Balso įv. neleidž."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Pasirinkti įvesties metodą"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Įvesties kalbos"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Pirštu slyskite tarpo klavišu, kad pakeistumėte kalbą"</string>
@@ -135,8 +128,12 @@
     <!-- outdated translation 1582519352222847297 -->     <string name="subtype_mode_en_US_voice" msgid="2300580846081472319">"„Voice“ anglų k. (Jungtinės Amerikos Valstijos)"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"„Voice“ ispanų k."</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"„Voice“ prancūzų k."</string>
+    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
+    <skip />
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"„Voice“ japonų k."</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"„Voice“ korėjiečių k."</string>
+    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
+    <skip />
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"„Voice“ lenkų k."</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"„Voice“ portugalų k."</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"„Voice“ rusų k."</string>

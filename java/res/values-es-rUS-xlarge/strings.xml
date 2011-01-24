@@ -4,11 +4,15 @@
     <!-- XL -->
     <string name="sound_on_keypress" msgid="5115009797011251176">"Sonar al pulsar teclas"</string>
     <!-- XL -->
+    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="7967799451177275866">"Configuración de sugerencia de palabra"</string>
+    <!-- XL -->
     <string name="auto_cap" msgid="6033382411344449470">"Uso de mayúsculas automático"</string>
     <!-- XL -->
-    <string name="auto_correction" msgid="7961335093790493671">"Corrección automática"</string>
-    <!-- XL -->
     <string name="auto_correction_summary" msgid="6260001790426244084">"La barra espaciadora o la puntuación insertan automáticamente la palabra resaltada."</string>
+    <!-- XL -->
+    <string name="auto_correction_threshold_mode_off" msgid="4899978031827517261">"Apagado"</string>
+    <!-- XL -->
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="6091003457668724585">"Intenso"</string>
     <!-- XL -->
     <string name="bigram_suggestion" msgid="7146707435859263625">"Sugerencias de bigramas"</string>
     <!-- XL -->
@@ -24,9 +28,13 @@
     <!-- XL -->
     <string name="voice_input" msgid="6634874497844843576">"Entrada de voz"</string>
     <!-- XL -->
+    <string name="voice_input_modes_off" msgid="1577817314089496020">"Apagado"</string>
+    <!-- XL -->
+    <string name="voice_input_modes_summary_off" msgid="3854831353403775554">"La entrada por voz está inhabilitada."</string>
+    <!-- XL -->
     <string name="prefs_enable_recorrection_summary" msgid="3119549956172710725">"Toca las palabras ingresadas que desees corregir, solo cuando las sugerencias estén visibles."</string>
     <!-- XL -->
-    <string name="prefs_show_suggestions" msgid="1375526087676269770">"Mostrar sugerencias"</string>
+    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="6025220568171384248">"Mostrar sugerencias"</string>
     <!-- XL -->
     <string name="prefs_show_suggestions_summary" msgid="2564386479780335351">"Mostrar palabras sugeridas al escribir"</string>
     <!-- XL -->
@@ -36,25 +44,7 @@
     <!-- XL -->
     <string name="prefs_suggestion_visibility_hide_name" msgid="2750493093338023345">"Ocultar siempre"</string>
     <!-- XL -->
-    <string name="auto_correction_threshold_mode_off" msgid="4899978031827517261">"Apagado"</string>
-    <!-- XL -->
-    <string name="auto_correction_threshold_mode_modest" msgid="3316394123368070951">"Moderado"</string>
-    <!-- XL -->
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="6091003457668724585">"Intenso"</string>
-    <!-- XL -->
     <string name="label_to_alpha_key" msgid="3103719164112604010">"ABC"</string>
-    <!-- XL -->
-    <string name="voice_input_modes_main_keyboard" msgid="1403596961453846365">"En el teclado principal"</string>
-    <!-- XL -->
-    <string name="voice_input_modes_symbols_keyboard" msgid="5916050323076830126">"En el teclado de símbolos"</string>
-    <!-- XL -->
-    <string name="voice_input_modes_off" msgid="1577817314089496020">"Apagado"</string>
-    <!-- XL -->
-    <string name="voice_input_modes_summary_main_keyboard" msgid="5118121899312172508">"Micrófono en el teclado principal"</string>
-    <!-- XL -->
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="8181616553734217736">"Micrófono en el teclado de símbolos"</string>
-    <!-- XL -->
-    <string name="voice_input_modes_summary_off" msgid="3854831353403775554">"La entrada por voz está inhabilitada."</string>
     <!-- XL -->
     <string name="subtype_mode_cs_keyboard" msgid="1186679497674833204">"Teclado en checo"</string>
     <!-- XL -->
