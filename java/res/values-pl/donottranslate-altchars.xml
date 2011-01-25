@@ -19,8 +19,8 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="alternates_for_a">ą</string>
-    <string name="alternates_for_e">ę,3</string>
-    <string name="alternates_for_o">ó,9</string>
+    <string name="alternates_for_e">3,ę</string>
+    <string name="alternates_for_o">9,ó</string>
     <string name="alternates_for_s">ś</string>
     <string name="alternates_for_n">ń</string>
     <string name="alternates_for_c">ć</string>

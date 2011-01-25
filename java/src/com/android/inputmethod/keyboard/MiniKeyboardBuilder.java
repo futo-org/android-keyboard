@@ -27,44 +27,141 @@ import java.util.List;
 
 public class MiniKeyboardBuilder {
     private final Resources mRes;
-    private final Keyboard mKeyboard;
+    private final MiniKeyboard mKeyboard;
     private final CharSequence[] mPopupCharacters;
-    private final int mMiniKeyboardKeyHorizontalPadding;
-    private final int mKeyWidth;
-    private final int mMaxColumns;
-    private final int mNumRows;
-    private int mColPos;
-    private int mRowPos;
-    private int mX;
-    private int mY;
+    private final MiniKeyboardLayoutParams mParams;
+
+    /* package */ static class MiniKeyboardLayoutParams {
+        public final int mKeyWidth;
+        public final int mRowHeight;
+        /* package */ final boolean mTopRowNeedsCentering;
+        public final int mNumRows;
+        public final int mNumColumns;
+        public final int mLeftKeys;
+        public final int mRightKeys; // includes default key.
+
+        /**
+         * The object holding mini keyboard layout parameters.
+         *
+         * @param numKeys number of keys in this mini keyboard.
+         * @param maxColumns number of maximum columns of this mini keyboard.
+         * @param keyWidth mini keyboard key width in pixel, including horizontal gap.
+         * @param rowHeight mini keyboard row height in pixel, including vertical gap.
+         * @param coordXInParent coordinate x of the popup key in parent keyboard.
+         * @param parentKeyboardWidth parent keyboard width in pixel.
+         */
+        public MiniKeyboardLayoutParams(int numKeys, int maxColumns, int keyWidth, int rowHeight,
+                int coordXInParent, int parentKeyboardWidth) {
+            if (parentKeyboardWidth / keyWidth < maxColumns)
+                throw new IllegalArgumentException("Keyboard is too small to hold mini keyboard: "
+                        + parentKeyboardWidth + " " + keyWidth + " " + maxColumns);
+            final int numRows = (numKeys + maxColumns - 1) / maxColumns;
+            mKeyWidth = keyWidth;
+            mRowHeight = rowHeight;
+            mNumRows = numRows;
+
+            final int numColumns = Math.min(numKeys, maxColumns);
+            final int topRowKeys = numKeys % numColumns;
+            mNumColumns = numColumns;
+            mTopRowNeedsCentering = topRowKeys != 0 && (numColumns - topRowKeys) % 2 != 0;
+
+            final int numLeftKeys = (numColumns - 1) / 2;
+            final int numRightKeys = numColumns - numLeftKeys; // including default key.
+            final int maxLeftKeys = coordXInParent / keyWidth;
+            final int maxRightKeys = Math.max(1, (parentKeyboardWidth - coordXInParent) / keyWidth);
+            if (numLeftKeys > maxLeftKeys) {
+                mLeftKeys = maxLeftKeys;
+                mRightKeys = numColumns - maxLeftKeys;
+            } else if (numRightKeys > maxRightKeys) {
+                mLeftKeys = numColumns - maxRightKeys;
+                mRightKeys = maxRightKeys;
+            } else {
+                mLeftKeys = numLeftKeys;
+                mRightKeys = numRightKeys;
+            }
+        }
+
+        // Return key position according to column count (0 is default).
+        /* package */ int getColumnPos(int n) {
+            final int col = n % mNumColumns;
+            if (col == 0) {
+                // default position.
+                return 0;
+            }
+            int pos = 0;
+            int right = 1; // include default position key.
+            int left = 0;
+            int i = 0;
+            while (true) {
+                // Assign right key if available.
+                if (right < mRightKeys) {
+                    pos = right;
+                    right++;
+                    i++;
+                }
+                if (i >= col)
+                    break;
+                // Assign left key if available.
+                if (left < mLeftKeys) {
+                    left++;
+                    pos = -left;
+                    i++;
+                }
+                if (i >= col)
+                    break;
+            }
+            return pos;
+        }
+
+        public int getDefaultKeyCoordX() {
+            return mLeftKeys * mKeyWidth;
+        }
+
+        public int getX(int n, int row) {
+            final int x = getColumnPos(n) * mKeyWidth + getDefaultKeyCoordX();
+            if (isLastRow(row) && mTopRowNeedsCentering)
+                return x - mKeyWidth / 2;
+            return x;
+        }
+
+        public int getY(int row) {
+            return (mNumRows - 1 - row) * mRowHeight;
+        }
+
+        public int getRowFlags(int row) {
+            int rowFlags = 0;
+            if (row == 0) rowFlags |= Keyboard.EDGE_TOP;
+            if (isLastRow(row)) rowFlags |= Keyboard.EDGE_BOTTOM;
+            return rowFlags;
+        }
+
+        private boolean isLastRow(int rowCount) {
+            return rowCount == mNumRows - 1;
+        }
+    }
 
     public MiniKeyboardBuilder(KeyboardView view, int layoutTemplateResId, Key popupKey) {
         final Context context = view.getContext();
         mRes = context.getResources();
-        final Keyboard keyboard = new Keyboard(context, layoutTemplateResId, null);
+        final MiniKeyboard keyboard = new MiniKeyboard(context, layoutTemplateResId, null);
         mKeyboard = keyboard;
         mPopupCharacters = popupKey.mPopupCharacters;
-        mMiniKeyboardKeyHorizontalPadding = (int)mRes.getDimension(
-                R.dimen.mini_keyboard_key_horizontal_padding);
-        mKeyWidth = getMaxKeyWidth(view, mPopupCharacters, mKeyboard.getKeyWidth());
-        final int maxColumns = popupKey.mMaxPopupColumn;
-        mMaxColumns = maxColumns;
-        final int numKeys = mPopupCharacters.length;
-        int numRows = numKeys / maxColumns;
-        if (numKeys % maxColumns != 0) numRows++;
-        mNumRows = numRows;
-        keyboard.setHeight((keyboard.getRowHeight() + keyboard.getVerticalGap()) * numRows
-                - keyboard.getVerticalGap());
-        if (numRows > 1) {
-            mColPos = numKeys % maxColumns;
-            if (mColPos > 0) mColPos = maxColumns - mColPos;
-            // Centering top-row keys.
-            mX = mColPos * (mKeyWidth + keyboard.getHorizontalGap()) / 2;
-        }
-        mKeyboard.setMinWidth(0);
+
+        final int keyWidth = getMaxKeyWidth(view, mPopupCharacters, keyboard.getKeyWidth());
+        final MiniKeyboardLayoutParams params = new MiniKeyboardLayoutParams(
+                mPopupCharacters.length, popupKey.mMaxPopupColumn,
+                keyWidth, keyboard.getRowHeight(),
+                popupKey.mX + (popupKey.mWidth + popupKey.mGap) / 2 - keyWidth / 2,
+                view.getMeasuredWidth());
+        mParams = params;
+
+        keyboard.setHeight(params.mNumRows * params.mRowHeight - keyboard.getVerticalGap());
+        keyboard.setMinWidth(params.mNumColumns * params.mKeyWidth);
+        keyboard.setDefaultCoordX(params.getDefaultKeyCoordX() + params.mKeyWidth / 2);
     }
 
-    private int getMaxKeyWidth(KeyboardView view, CharSequence[] popupCharacters, int minKeyWidth) {
+    private static int getMaxKeyWidth(KeyboardView view, CharSequence[] popupCharacters,
+            int minKeyWidth) {
         Paint paint = null;
         Rect bounds = null;
         int maxWidth = 0;
@@ -84,46 +181,22 @@ public class MiniKeyboardBuilder {
                     maxWidth = bounds.width();
             }
         }
-        return Math.max(minKeyWidth, maxWidth + mMiniKeyboardKeyHorizontalPadding);
+        final int horizontalPadding = (int)view.getContext().getResources().getDimension(
+                R.dimen.mini_keyboard_key_horizontal_padding);
+        return Math.max(minKeyWidth, maxWidth + horizontalPadding);
     }
 
-    public Keyboard build() {
-        final Keyboard keyboard = mKeyboard;
+    public MiniKeyboard build() {
+        final MiniKeyboard keyboard = mKeyboard;
         final List<Key> keys = keyboard.getKeys();
-        for (CharSequence label : mPopupCharacters) {
-            refresh();
-            final Key key = new Key(mRes, keyboard, label, mX, mY, mKeyWidth, getRowFlags());
+        final MiniKeyboardLayoutParams params = mParams;
+        for (int n = 0; n < mPopupCharacters.length; n++) {
+            final CharSequence label = mPopupCharacters[n];
+            final int row = n / params.mNumColumns;
+            final Key key = new Key(mRes, keyboard, label, params.getX(n, row), params.getY(row),
+                    params.mKeyWidth, params.getRowFlags(row));
             keys.add(key);
-            advance();
         }
         return keyboard;
-    }
-
-    private int getRowFlags() {
-        final int rowPos = mRowPos;
-        int rowFlags = 0;
-        if (rowPos == 0) rowFlags |= Keyboard.EDGE_TOP;
-        if (rowPos == mNumRows - 1) rowFlags |= Keyboard.EDGE_BOTTOM;
-        return rowFlags;
-    }
-
-    private void refresh() {
-        if (mColPos >= mMaxColumns) {
-            final Keyboard keyboard = mKeyboard;
-            // TODO: Allocate key position depending the precedence of popup characters.
-            mX = 0;
-            mY += keyboard.getRowHeight() + keyboard.getVerticalGap();
-            mColPos = 0;
-            mRowPos++;
-        }
-    }
-
-    private void advance() {
-        final Keyboard keyboard = mKeyboard;
-        // TODO: Allocate key position depending the precedence of popup characters.
-        mX += mKeyWidth + keyboard.getHorizontalGap();
-        if (mX > keyboard.getMinWidth())
-            keyboard.setMinWidth(mX);
-        mColPos++;
     }
 }
