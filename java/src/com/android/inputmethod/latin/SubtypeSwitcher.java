@@ -288,11 +288,18 @@ public class SubtypeSwitcher {
     ////////////////////////////
 
     public void switchToShortcutIME() {
-        IBinder token = mService.getWindow().getWindow().getAttributes().token;
+        final IBinder token = mService.getWindow().getWindow().getAttributes().token;
         if (token == null || mShortcutInfo == null) {
             return;
         }
-        mImm.setInputMethodAndSubtype(token, mShortcutInfo.getId(), mShortcutSubtype);
+        final String imiId = mShortcutInfo.getId();
+        final InputMethodSubtype subtype = mShortcutSubtype;
+        new Thread("SwitchToShortcutIME") {
+            @Override
+            public void run() {
+                mImm.setInputMethodAndSubtype(token, imiId, subtype);
+            }
+        }.start();
     }
 
     public Drawable getShortcutIcon() {
