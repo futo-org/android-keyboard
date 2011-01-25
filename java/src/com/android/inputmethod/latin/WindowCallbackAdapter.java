@@ -35,6 +35,13 @@ public class WindowCallbackAdapter implements Window.Callback {
     }
 
     @Override
+    public boolean dispatchGenericMotionEvent(MotionEvent event) {
+        if (mPreviousCallback != null)
+            return mPreviousCallback.dispatchGenericMotionEvent(event);
+        return false;
+    }
+
+    @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (mPreviousCallback != null)
             return mPreviousCallback.dispatchKeyEvent(event);
