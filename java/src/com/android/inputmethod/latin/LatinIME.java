@@ -97,10 +97,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
 
-    // Contextual menu positions
-    private static final int POS_METHOD = 0;
-    private static final int POS_SETTINGS = 1;
-
     private int mSuggestionVisibility;
     private static final int SUGGESTION_VISIBILILTY_SHOW_VALUE
             = R.string.prefs_suggestion_visibility_show_value;
@@ -2226,15 +2222,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void showSubtypeSelectorAndSettings() {
-        showOptionsMenuInternal(new DialogInterface.OnClickListener() {
+        final CharSequence title = getString(R.string.english_ime_input_options);
+        final CharSequence[] items = new CharSequence[] {
+                // TODO: Should use new string "Select active input modes".
+                getString(R.string.language_selection_title),
+                getString(R.string.english_ime_settings),
+        };
+        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface di, int position) {
                 di.dismiss();
                 switch (position) {
-                case POS_SETTINGS:
+                case 0:
                     launchSettings();
                     break;
-                case POS_METHOD:
+                case 1:
                     Intent intent = new Intent(
                             android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -2246,36 +2248,41 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     break;
                 }
             }
-        });
+        };
+        showOptionsMenuInternal(title, items, listener);
     }
 
     private void showOptionsMenu() {
-        showOptionsMenuInternal(new DialogInterface.OnClickListener() {
+        final CharSequence title = getString(R.string.english_ime_input_options);
+        final CharSequence[] items = new CharSequence[] {
+                getString(R.string.selectInputMethod),
+                getString(R.string.english_ime_settings),
+        };
+        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface di, int position) {
                 di.dismiss();
                 switch (position) {
-                case POS_SETTINGS:
+                case 0:
                     launchSettings();
                     break;
-                case POS_METHOD:
+                case 1:
                     mImm.showInputMethodPicker();
                     break;
                 }
             }
-        });
+        };
+        showOptionsMenuInternal(title, items, listener);
     }
 
-    private void showOptionsMenuInternal(DialogInterface.OnClickListener listener) {
+    private void showOptionsMenuInternal(CharSequence title, CharSequence[] items,
+            DialogInterface.OnClickListener listener) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setIcon(R.drawable.ic_dialog_keyboard);
         builder.setNegativeButton(android.R.string.cancel, null);
-        CharSequence itemSettings = getString(R.string.english_ime_settings);
-        CharSequence itemInputMethod = getString(R.string.selectInputMethod);
-        builder.setItems(new CharSequence[] {
-                itemInputMethod, itemSettings}, listener);
-        builder.setTitle(mResources.getString(R.string.english_ime_input_options));
+        builder.setItems(items, listener);
+        builder.setTitle(title);
         mOptionsDialog = builder.create();
         mOptionsDialog.setCanceledOnTouchOutside(true);
         Window window = mOptionsDialog.getWindow();
