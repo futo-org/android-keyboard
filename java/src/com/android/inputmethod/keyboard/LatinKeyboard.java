@@ -315,11 +315,7 @@ public class LatinKeyboard extends Keyboard {
         int x = pointX;
         int y = pointY;
         final int code = key.mCode;
-        if (code == CODE_SHIFT || code == CODE_DELETE) {
-            y -= key.mHeight / 10;
-            if (code == CODE_SHIFT) x += key.mWidth / 6;
-            if (code == CODE_DELETE) x -= key.mWidth / 6;
-        } else if (code == CODE_SPACE) {
+        if (code == CODE_SPACE) {
             y += LatinKeyboard.sSpacebarVerticalCorrection;
             if (SubtypeSwitcher.getInstance().useSpacebarLanguageSwitcher()
                     && SubtypeSwitcher.getInstance().getEnabledKeyboardLocaleCount() > 1) {

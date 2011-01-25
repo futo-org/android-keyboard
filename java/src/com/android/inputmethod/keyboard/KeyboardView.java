@@ -403,7 +403,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         GestureDetector.SimpleOnGestureListener listener =
                 new GestureDetector.SimpleOnGestureListener() {
-            private boolean mProcessingDoubleTapEvent = false;
+            private boolean mProcessingShiftDoubleTapEvent = false;
 
             @Override
             public boolean onFling(MotionEvent me1, MotionEvent me2, float velocityX,
@@ -424,25 +424,39 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             }
 
             @Override
-            public boolean onDoubleTap(MotionEvent e) {
+            public boolean onDoubleTap(MotionEvent firstDown) {
                 if (ENABLE_CAPSLOCK_BY_DOUBLETAP && mKeyboard instanceof LatinKeyboard
                         && ((LatinKeyboard) mKeyboard).isAlphaKeyboard()) {
-                    final int pointerIndex = e.getActionIndex();
-                    final int id = e.getPointerId(pointerIndex);
+                    final int pointerIndex = firstDown.getActionIndex();
+                    final int id = firstDown.getPointerId(pointerIndex);
                     final PointerTracker tracker = getPointerTracker(id);
-                    if (tracker.isOnShiftKey((int)e.getX(), (int)e.getY())) {
-                        onDoubleTapShiftKey(tracker);
-                        mProcessingDoubleTapEvent = true;
+                    // If the first down event is on shift key.
+                    if (tracker.isOnShiftKey((int)firstDown.getX(), (int)firstDown.getY())) {
+                        mProcessingShiftDoubleTapEvent = true;
                         return true;
                     }
                 }
-                mProcessingDoubleTapEvent = false;
+                mProcessingShiftDoubleTapEvent = false;
                 return false;
             }
 
             @Override
-            public boolean onDoubleTapEvent(MotionEvent e) {
-                return mProcessingDoubleTapEvent;
+            public boolean onDoubleTapEvent(MotionEvent secondTap) {
+                if (mProcessingShiftDoubleTapEvent
+                        && secondTap.getAction() == MotionEvent.ACTION_DOWN) {
+                    final MotionEvent secondDown = secondTap;
+                    final int pointerIndex = secondDown.getActionIndex();
+                    final int id = secondDown.getPointerId(pointerIndex);
+                    final PointerTracker tracker = getPointerTracker(id);
+                    // If the second down event is also on shift key.
+                    if (tracker.isOnShiftKey((int)secondDown.getX(), (int)secondDown.getY())) {
+                        onDoubleTapShiftKey(tracker);
+                        return true;
+                    }
+                    // Otherwise these events should not be handled as double tap.
+                    mProcessingShiftDoubleTapEvent = false;
+                }
+                return mProcessingShiftDoubleTapEvent;
             }
         };
 
