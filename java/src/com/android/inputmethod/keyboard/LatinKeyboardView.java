@@ -94,7 +94,7 @@ public class LatinKeyboardView extends KeyboardView {
     }
 
     @Override
-    protected boolean onLongPress(Key key) {
+    protected boolean onLongPress(Key key, PointerTracker tracker) {
         int primaryCode = key.mCode;
         if (primaryCode == Keyboard.CODE_SETTINGS) {
             return invokeOnKey(Keyboard.CODE_SETTINGS_LONGPRESS);
@@ -102,7 +102,7 @@ public class LatinKeyboardView extends KeyboardView {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
         } else {
-            return super.onLongPress(key);
+            return super.onLongPress(key, tracker);
         }
     }
 
