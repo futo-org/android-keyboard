@@ -17,16 +17,23 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 import com.android.inputmethod.voice.VoiceInput;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -47,6 +54,8 @@ public class SubtypeSwitcher {
     private static final char LOCALE_SEPARATER = '_';
     private static final String KEYBOARD_MODE = "keyboard";
     private static final String VOICE_MODE = "voice";
+    private static final String SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY =
+            "requireNetworkConnectivity";
     private final TextUtils.SimpleStringSplitter mLocaleSplitter =
             new TextUtils.SimpleStringSplitter(LOCALE_SEPARATER);
 
@@ -55,17 +64,17 @@ public class SubtypeSwitcher {
     private /* final */ SharedPreferences mPrefs;
     private /* final */ InputMethodManager mImm;
     private /* final */ Resources mResources;
+    private /* final */ ConnectivityManager mConnectivityManager;
+    private /* final */ boolean mConfigUseSpacebarLanguageSwitcher;
     private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
             new ArrayList<InputMethodSubtype>();
     private final ArrayList<String> mEnabledLanguagesOfCurrentInputMethod = new ArrayList<String>();
-
-    private boolean mConfigUseSpacebarLanguageSwitcher;
 
     /*-----------------------------------------------------------*/
     // Variants which should be changed only by reload functions.
     private boolean mNeedsToDisplayLanguage;
     private boolean mIsSystemLanguageSameAsInputLanguage;
-    private InputMethodInfo mShortcutInfo;
+    private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
     private Locale mSystemLocale;
@@ -74,6 +83,8 @@ public class SubtypeSwitcher {
     private String mMode;
     private VoiceInput mVoiceInput;
     /*-----------------------------------------------------------*/
+
+    private boolean mIsNetworkConnected;
 
     public static SubtypeSwitcher getInstance() {
         return sInstance;
@@ -95,6 +106,8 @@ public class SubtypeSwitcher {
         mService = service;
         mResources = service.getResources();
         mImm = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mConnectivityManager = (ConnectivityManager) service.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mSystemLocale = null;
@@ -109,6 +122,17 @@ public class SubtypeSwitcher {
                 R.bool.config_use_spacebar_language_switcher);
         if (mConfigUseSpacebarLanguageSwitcher)
             initLanguageSwitcher(service);
+
+        final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
+        mIsNetworkConnected = (info != null && info.isConnected());
+        final BroadcastReceiver receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                onNetworkStateChanged(intent);
+            }
+        };
+        service.registerReceiver(receiver,
+                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     // Update all parameters stored in SubtypeSwitcher.
@@ -165,7 +189,8 @@ public class SubtypeSwitcher {
     private void updateShortcutIME() {
         if (DBG) {
             Log.d(TAG, "Update shortcut IME from : "
-                    + (mShortcutInfo == null ? "<null>" : mShortcutInfo.getId()) + ", "
+                    + (mShortcutInputMethodInfo == null
+                            ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
                     + (mShortcutSubtype == null ? "<null>" : (mShortcutSubtype.getLocale()
                             + ", " + mShortcutSubtype.getMode())));
         }
@@ -176,7 +201,7 @@ public class SubtypeSwitcher {
             List<InputMethodSubtype> subtypes = shortcuts.get(imi);
             // TODO: Returns the first found IMI for now. Should handle all shortcuts as
             // appropriate.
-            mShortcutInfo = imi;
+            mShortcutInputMethodInfo = imi;
             // TODO: Pick up the first found subtype for now. Should handle all subtypes
             // as appropriate.
             mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
@@ -184,7 +209,8 @@ public class SubtypeSwitcher {
         }
         if (DBG) {
             Log.d(TAG, "Update shortcut IME to : "
-                    + (mShortcutInfo == null ? "<null>" : mShortcutInfo.getId()) + ", "
+                    + (mShortcutInputMethodInfo == null
+                            ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
                     + (mShortcutSubtype == null ? "<null>" : (mShortcutSubtype.getLocale()
                             + ", " + mShortcutSubtype.getMode())));
         }
@@ -289,10 +315,10 @@ public class SubtypeSwitcher {
 
     public void switchToShortcutIME() {
         final IBinder token = mService.getWindow().getWindow().getAttributes().token;
-        if (token == null || mShortcutInfo == null) {
+        if (token == null || mShortcutInputMethodInfo == null) {
             return;
         }
-        final String imiId = mShortcutInfo.getId();
+        final String imiId = mShortcutInputMethodInfo.getId();
         final InputMethodSubtype subtype = mShortcutSubtype;
         new Thread("SwitchToShortcutIME") {
             @Override
@@ -303,7 +329,7 @@ public class SubtypeSwitcher {
     }
 
     public Drawable getShortcutIcon() {
-        return getSubtypeIcon(mShortcutInfo, mShortcutSubtype);
+        return getSubtypeIcon(mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
     private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtype subtype) {
@@ -330,6 +356,38 @@ public class SubtypeSwitcher {
             }
         }
         return null;
+    }
+
+    private static boolean contains(String[] hay, String needle) {
+        for (String element : hay) {
+            if (element.equals(needle))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isShortcutAvailable() {
+        if (mShortcutInputMethodInfo == null)
+            return false;
+        if (mShortcutSubtype != null && contains(mShortcutSubtype.getExtraValue().split(","),
+                    SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY)) {
+            return mIsNetworkConnected;
+        }
+        return true;
+    }
+
+    private void onNetworkStateChanged(Intent intent) {
+        final boolean noConnection = intent.getBooleanExtra(
+                ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+        mIsNetworkConnected = !noConnection;
+
+        final LatinKeyboardView inputView = KeyboardSwitcher.getInstance().getInputView();
+        if (inputView != null) {
+            final LatinKeyboard keyboard = inputView.getLatinKeyboard();
+            if (keyboard != null) {
+                keyboard.updateShortcutKey(isShortcutAvailable(), inputView);
+            }
+        }
     }
 
     //////////////////////////////////

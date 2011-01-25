@@ -95,6 +95,8 @@ public class Key {
     public boolean mPressed;
     /** If this is a sticky key, is it on? */
     public boolean mOn;
+    /** Key is enabled or not. */
+    public boolean mEnabled = true;
 
     private final static int[] KEY_STATE_NORMAL_ON = {
         android.R.attr.state_checkable,
@@ -385,8 +387,9 @@ public class Key {
      * @see android.graphics.drawable.StateListDrawable#setState(int[])
      */
     public int[] getCurrentDrawableState() {
+        final boolean pressed = mEnabled && mPressed;
         if (isFunctionalKey()) {
-            if (mPressed) {
+            if (pressed) {
                 return KEY_STATE_FUNCTIONAL_PRESSED;
             } else {
                 return KEY_STATE_FUNCTIONAL_NORMAL;
@@ -396,20 +399,20 @@ public class Key {
         int[] states = KEY_STATE_NORMAL;
 
         if (mOn) {
-            if (mPressed) {
+            if (pressed) {
                 states = KEY_STATE_PRESSED_ON;
             } else {
                 states = KEY_STATE_NORMAL_ON;
             }
         } else {
             if (mSticky) {
-                if (mPressed) {
+                if (pressed) {
                     states = KEY_STATE_PRESSED_OFF;
                 } else {
                     states = KEY_STATE_NORMAL_OFF;
                 }
             } else {
-                if (mPressed) {
+                if (pressed) {
                     states = KEY_STATE_PRESSED;
                 }
             }
