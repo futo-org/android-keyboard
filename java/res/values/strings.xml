@@ -69,7 +69,7 @@
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->
     <string name="auto_correction">Auto correction</string>
     <!-- Description for auto correction [CHAR LIMIT=35] -->
-    <string name="auto_correction_summary">Spacebar and punctuation automatically insert highlighted word</string>
+    <string name="auto_correction_summary">Spacebar and punctuation automatically correct mistyped words</string>
     <!-- Option to disable auto correction. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_off">Off</string>
     <!-- Option to suggest auto correction candidates modestly. Auto-corrects only to a word which has small edit distance from typed word. [CHAR LIMIT=20] -->
