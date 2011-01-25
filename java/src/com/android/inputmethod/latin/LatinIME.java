@@ -157,8 +157,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private int mConfigDelayBeforeFadeoutLanguageOnSpacebar;
     private int mConfigDurationOfFadeoutLanguageOnSpacebar;
     private float mConfigFinalFadeoutFactorOfLanguageOnSpacebar;
-    // For example, to deal with status bar on tablet.
-    private int mKeyboardBottomRowVerticalCorrection;
 
     private int mCorrectionMode;
     private int mCommittedLength;
@@ -375,8 +373,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 R.integer.config_duration_of_fadeout_language_on_spacebar);
         mConfigFinalFadeoutFactorOfLanguageOnSpacebar = res.getInteger(
                 R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
-        mKeyboardBottomRowVerticalCorrection = (int)res.getDimension(
-                R.dimen.keyboard_bottom_row_vertical_correction);
 
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
@@ -568,14 +564,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         inputView.setForeground(true);
 
         mVoiceConnector.onStartInputView(inputView.getWindowToken());
-
-        if (mKeyboardBottomRowVerticalCorrection > 0) {
-            final Window window = getWindow().getWindow();
-            if (!(window.getCallback() instanceof ClipTouchEventWindowCallback)) {
-                window.setCallback(new ClipTouchEventWindowCallback(
-                        window, mKeyboardBottomRowVerticalCorrection));
-            }
-        }
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
@@ -891,13 +879,15 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (mCandidateViewContainer != null) {
                 ViewParent candidateParent = mCandidateViewContainer.getParent();
                 if (candidateParent instanceof FrameLayout) {
-                    final FrameLayout fl = (FrameLayout) candidateParent;
-                    // Check frame layout's visibility
-                    if (fl.getVisibility() == View.INVISIBLE) {
-                        y = fl.getHeight();
-                        height += y;
-                    } else if (fl.getVisibility() == View.VISIBLE) {
-                        height += fl.getHeight();
+                    FrameLayout fl = (FrameLayout) candidateParent;
+                    if (fl != null) {
+                        // Check frame layout's visibility
+                        if (fl.getVisibility() == View.INVISIBLE) {
+                            y = fl.getHeight();
+                            height += y;
+                        } else if (fl.getVisibility() == View.VISIBLE) {
+                            height += fl.getHeight();
+                        }
                     }
                 }
             }
