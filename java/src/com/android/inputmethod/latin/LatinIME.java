@@ -2224,9 +2224,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 di.dismiss();
                 switch (position) {
                 case 0:
-                    launchSettings();
-                    break;
-                case 1:
                     Intent intent = new Intent(
                             android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
@@ -2235,6 +2232,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                     intent.putExtra(android.provider.Settings.EXTRA_INPUT_METHOD_ID,
                             mInputMethodId);
                     startActivity(intent);
+                    break;
+                case 1:
+                    launchSettings();
                     break;
                 }
             }
