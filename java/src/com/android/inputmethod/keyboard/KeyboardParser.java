@@ -286,8 +286,6 @@ public class KeyboardParser {
             keys.add(key);
             if (key.mCode == Keyboard.CODE_SHIFT)
                 mKeyboard.getShiftKeys().add(key);
-            if (key.mCode == Keyboard.CODE_SPACE)
-                mKeyboard.setSpaceKey(key);
             endKey(key);
         }
     }

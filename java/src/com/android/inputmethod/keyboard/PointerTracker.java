@@ -561,7 +561,8 @@ public class PointerTracker {
                 codes[1] = codes[0];
                 codes[0] = code;
             }
-            callListenerOnCodeInput(code, codes, x, y);
+            if (key.mEnabled)
+                callListenerOnCodeInput(code, codes, x, y);
             callListenerOnRelease(code);
         }
     }
