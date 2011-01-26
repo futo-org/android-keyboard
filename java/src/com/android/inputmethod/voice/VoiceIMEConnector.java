@@ -564,8 +564,18 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
     private void switchToLastInputMethod() {
-        IBinder token = mService.getWindow().getWindow().getAttributes().token;
-        mImm.switchToLastInputMethod(token);
+        final IBinder token = mService.getWindow().getWindow().getAttributes().token;
+        new Thread ("switchToLastInputMethod") {
+            @Override
+            public void run() {
+                if (!mImm.switchToLastInputMethod(token)) {
+                    // Needs to reset here because LatinIME failed to back to any IME and
+                    // the same voice subtype will be triggered in the next time.
+                    mVoiceInput.reset();
+                    mService.requestHideSelf(0);
+                }
+            }
+        }.start();
     }
 
     private void reallyStartListening(boolean swipe) {
