@@ -267,9 +267,12 @@ public class Utils {
     public static double calcNormalizedScore(CharSequence before, CharSequence after, int score) {
         final int beforeLength = before.length();
         final int afterLength = after.length();
+        if (beforeLength == 0 || afterLength == 0) return 0;
         final int distance = editDistance(before, after);
+        // If afterLength < beforeLength, the algorithm is suggesting a word by excessive character
+        // correction.
         final double maximumScore = MAX_INITIAL_SCORE
-                * Math.pow(TYPED_LETTER_MULTIPLIER, beforeLength)
+                * Math.pow(TYPED_LETTER_MULTIPLIER, Math.min(beforeLength, afterLength))
                 * FULL_WORD_MULTIPLYER;
         // add a weight based on edit distance.
         // distance <= max(afterLength, beforeLength) == afterLength,
