@@ -78,19 +78,13 @@
     <!-- XL -->
     <string name="subtype_mode_sv_keyboard" msgid="3874083866564515371">"Teclado en sueco"</string>
     <!-- XL -->
+    <string name="subtype_mode_af_voice">"Voz en Afrikáans"</string>
+    <!-- XL -->
     <string name="subtype_mode_cs_voice" msgid="8290007904951946296">"Voz en checo"</string>
     <!-- XL -->
     <string name="subtype_mode_de_voice" msgid="672328729666823853">"Voz en alemán"</string>
     <!-- XL -->
-    <string name="subtype_mode_en_AU_voice" msgid="4170989257043892770">"Voz en inglés (Australia)"</string>
-    <!-- XL -->
-    <string name="subtype_mode_en_GB_voice" msgid="3134961988951205695">"Voz en inglés (Reino Unido)"</string>
-    <!-- XL -->
-    <string name="subtype_mode_en_IN_voice" msgid="5699787782487633128">"Voz en inglés (India)"</string>
-    <!-- XL -->
-    <string name="subtype_mode_en_NZ_voice" msgid="4121688717194804130">"Voz en inglés (Nueva Zelanda)"</string>
-    <!-- XL -->
-    <string name="subtype_mode_en_US_voice" msgid="8006563098744135975">"Voz en inglés (EE.UU.)"</string>
+    <string name="subtype_mode_en_voice">"Voz en inglés"</string>
     <!-- XL -->
     <string name="subtype_mode_es_voice" msgid="1243071504878834350">"Voz en español"</string>
     <!-- XL -->
@@ -108,9 +102,11 @@
     <!-- XL -->
     <string name="subtype_mode_tr_voice" msgid="5242644971865917801">"Voz en turco"</string>
     <!-- XL -->
-    <string name="subtype_mode_zh_CN_voice" msgid="4505329319557358473">"Voz en chino (China, simplificado)"</string>
+    <string name="subtype_mode_yue_voice">"Voz en chino, yue"</string>
     <!-- XL -->
-    <string name="subtype_mode_zh_TW_voice" msgid="3976996097508134329">"Voz en chino (Taiwán, tradicional)"</string>
+    <string name="subtype_mode_zh_voice">"Voz en chino, mandarín"</string>
+    <!-- XL -->
+    <string name="subtype_mode_zu_voice">"Voz en isiZulu"</string>
     <!-- XL -->
     <string name="prefs_usability_study_mode" msgid="8423000345880575687">"Modo estudio de usabilidad"</string>
 </resources>

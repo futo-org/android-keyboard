@@ -20,8 +20,8 @@
 <!-- The attributes in this XML file provide configuration information -->
 <!-- for the Input Method Manager. -->
 
-<!-- Keyboard: en_US, cs, da, de, en_GB, es, es_US, fr, fr_CA, fr_CH, it, nb, nl, sr, sv -->
-<!-- Voice: cs, da, de, en_AU, en_GB, en_IN, en_NZ, en_US, es, fr, it, ko, nl, ja, pl, pt, ru, tr, zh_CN, zh_TW -->
+<!-- Keyboard: en_US, en_GB, cs, da, de, es, es_US, fr, fr_CA, fr_CH, it, nb, nl, sr, sv -->
+<!-- Voice: af, cs, da, de, en, es, fr, it, ja, ko, nl, pl, pt, ru, tr, yue, zh, zu -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- TODO: use <lang>_mic icon instead of a common mic icon. -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
@@ -35,10 +35,15 @@
             android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_en_US_voice"
-            android:imeSubtypeLocale="en_US"
+            android:label="@string/subtype_mode_en_voice"
+            android:imeSubtypeLocale="en"
             android:imeSubtypeMode="voice"
             android:imeSubtypeExtraValue="excludeFromLastInputMethod"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_en_GB_keyboard"
+            android:imeSubtypeLocale="en_GB"
+            android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_cs_keyboard"
@@ -68,35 +73,6 @@
             android:imeSubtypeExtraValue="excludeFromLastInputMethod"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:label="@string/subtype_mode_en_GB_keyboard"
-            android:imeSubtypeLocale="en_GB"
-            android:imeSubtypeMode="keyboard"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_en_GB_voice"
-            android:imeSubtypeLocale="en_GB"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_en_AU_voice"
-            android:imeSubtypeLocale="en_AU"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_en_IN_voice"
-            android:imeSubtypeLocale="en_IN"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_en_NZ_voice"
-            android:imeSubtypeLocale="en_NZ"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_es_keyboard"
             android:imeSubtypeLocale="es"
             android:imeSubtypeMode="keyboard"
@@ -106,11 +82,6 @@
             android:imeSubtypeLocale="es"
             android:imeSubtypeMode="voice"
             android:imeSubtypeExtraValue="excludeFromLastInputMethod"
-    />
-    <subtype android:icon="@drawable/ic_subtype_keyboard"
-            android:label="@string/subtype_mode_es_US_keyboard"
-            android:imeSubtypeLocale="es_US"
-            android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_fr_keyboard"
@@ -176,14 +147,20 @@
             android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_ko_voice"
-            android:imeSubtypeLocale="ko"
+            android:label="@string/subtype_mode_af_voice"
+            android:imeSubtypeLocale="af"
             android:imeSubtypeMode="voice"
             android:imeSubtypeExtraValue="excludeFromLastInputMethod"
     />
     <subtype android:icon="@drawable/ic_subtype_mic"
             android:label="@string/subtype_mode_ja_voice"
             android:imeSubtypeLocale="ja"
+            android:imeSubtypeMode="voice"
+            android:imeSubtypeExtraValue="excludeFromLastInputMethod"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_ko_voice"
+            android:imeSubtypeLocale="ko"
             android:imeSubtypeMode="voice"
             android:imeSubtypeExtraValue="excludeFromLastInputMethod"
     />
@@ -212,14 +189,20 @@
             android:imeSubtypeExtraValue="excludeFromLastInputMethod"
     />
     <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_zh_CN_voice"
-            android:imeSubtypeLocale="zh_CN"
+            android:label="@string/subtype_mode_yue_voice"
+            android:imeSubtypeLocale="yue"
             android:imeSubtypeMode="voice"
             android:imeSubtypeExtraValue="excludeFromLastInputMethod"
     />
     <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_zh_TW_voice"
-            android:imeSubtypeLocale="zh_TW"
+            android:label="@string/subtype_mode_zh_voice"
+            android:imeSubtypeLocale="zh"
+            android:imeSubtypeMode="voice"
+            android:imeSubtypeExtraValue="excludeFromLastInputMethod"
+    />
+    <subtype android:icon="@drawable/ic_subtype_mic"
+            android:label="@string/subtype_mode_zu_voice"
+            android:imeSubtypeLocale="zu"
             android:imeSubtypeMode="voice"
             android:imeSubtypeExtraValue="excludeFromLastInputMethod"
     />
