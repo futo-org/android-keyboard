@@ -20,6 +20,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinIME.UIHandler;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -32,6 +33,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
@@ -43,6 +45,7 @@ import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -82,6 +85,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
     @SuppressWarnings("unused")
     private static final String TAG = "VoiceIMEConnector";
+    private static boolean DEBUG = LatinImeLogger.sDBG;
 
     private boolean mAfterVoiceInput;
     private boolean mHasUsedVoiceInput;
@@ -565,17 +569,25 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
 
     private void switchToLastInputMethod() {
         final IBinder token = mService.getWindow().getWindow().getAttributes().token;
-        new Thread ("switchToLastInputMethod") {
+        new AsyncTask<Void, Void, Boolean>() {
             @Override
-            public void run() {
-                if (!mImm.switchToLastInputMethod(token)) {
+            protected Boolean doInBackground(Void... params) {
+                return mImm.switchToLastInputMethod(token);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean result) {
+                if (!result) {
+                    if (DEBUG) {
+                        Log.d(TAG, "Couldn't switch back to last IME.");
+                    }
                     // Needs to reset here because LatinIME failed to back to any IME and
                     // the same voice subtype will be triggered in the next time.
                     mVoiceInput.reset();
                     mService.requestHideSelf(0);
                 }
             }
-        }.start();
+        }.execute();
     }
 
     private void reallyStartListening(boolean swipe) {
@@ -658,14 +670,17 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         }
     }
 
-    public void onStartInputView(IBinder token) {
+    public void onStartInputView(IBinder keyboardViewToken) {
+        // If keyboardViewToken is null, keyboardView is not attached but voiceView is attached.
+        IBinder windowToken = keyboardViewToken != null ? keyboardViewToken
+                : mVoiceInput.getView().getWindowToken();
         // If IME is in voice mode, but still needs to show the voice warning dialog,
         // keep showing the warning.
-        if (mSubtypeSwitcher.isVoiceMode() && token != null) {
+        if (mSubtypeSwitcher.isVoiceMode() && windowToken != null) {
             // Close keyboard view if it is been shown.
             if (KeyboardSwitcher.getInstance().isInputViewShown())
                 KeyboardSwitcher.getInstance().getInputView().purgeKeyboardAndClosing();
-            startListening(false, token);
+            startListening(false, windowToken);
         }
         // If we have no token, onAttachedToWindow will take care of showing dialog and start
         // listening.
