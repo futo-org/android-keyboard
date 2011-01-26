@@ -37,6 +37,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
@@ -388,8 +389,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mOrientation = res.getConfiguration().orientation;
         initSuggestPuncList();
 
-        // register to receive ringer mode changes for silent mode
-        IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        // register to receive ringer mode change and network state change.
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mReceiver, filter);
         mVoiceConnector = VoiceIMEConnector.init(this, prefs, mHandler);
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -1988,11 +1991,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
 
-    // receive ringer mode changes to detect silent mode
+    // receive ringer mode change and network state change.
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateRingerMode();
+            final String action = intent.getAction();
+            if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
+                updateRingerMode();
+            } else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                mSubtypeSwitcher.onNetworkStateChanged(intent);
+            }
         }
     };
 
