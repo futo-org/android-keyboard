@@ -107,11 +107,6 @@ public class Keyboard {
     private final HashSet<Key> mShiftLockEnabled = new HashSet<Key>();
     private final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
-    /** Space key and its icons */
-    protected Key mSpaceKey;
-    protected Drawable mSpaceIcon;
-    protected Drawable mSpacePreviewIcon;
-
     /** Total height of the keyboard, including the padding and keys */
     private int mTotalHeight;
 
@@ -348,12 +343,6 @@ public class Keyboard {
 
     public boolean isNumberKeyboard() {
         return mId != null && mId.isNumberKeyboard();
-    }
-
-    public void setSpaceKey(Key space) {
-        mSpaceKey = space;
-        mSpaceIcon = space.getIcon();
-        mSpacePreviewIcon = space.getPreviewIcon();
     }
 
     private void computeNearestNeighbors() {

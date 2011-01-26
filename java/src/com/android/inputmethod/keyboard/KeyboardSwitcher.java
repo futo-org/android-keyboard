@@ -17,11 +17,11 @@
 package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.Settings;
-import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.Utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -222,8 +222,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         keyboard.setShifted(false);
         // If the cached keyboard had been switched to another keyboard while the language was
         // displayed on its spacebar, it might have had arbitrary text fade factor. In such case,
-        // we should reset the text fade factor.
+        // we should reset the text fade factor. It is also applicable to shortcut key.
         keyboard.setSpacebarTextFadeFactor(0.0f, null);
+        keyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutAvailable(), null);
         return keyboard;
     }
 
