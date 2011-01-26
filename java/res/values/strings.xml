@@ -247,21 +247,14 @@
     <string name="subtype_mode_sr_keyboard">Serbian Keyboard</string>
     <!-- Description for Swedish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_sv_keyboard">Swedish Keyboard</string>
-
+    <!-- Description for Afrikaans voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_af_voice">Afrikaans Voice</string>
     <!-- Description for Czech voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_cs_voice">Czech Voice</string>
     <!-- Description for German voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_de_voice">German Voice</string>
-    <!-- Description for English (Australia) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_AU_voice">English (Australia) Voice</string>
-    <!-- Description for English (United Kingdom) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_GB_voice">English (UK) Voice</string>
-    <!-- Description for English (India) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_IN_voice">English (India) Voice</string>
-    <!-- Description for English (New Zealand) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_NZ_voice">English (New Zealand) Voice</string>
-    <!-- Description for English (United States) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_US_voice">English (US) Voice</string>
+    <!-- Description for English voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_en_voice">English Voice</string>
     <!-- Description for Spanish voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_es_voice">Spanish Voice</string>
     <!-- Description for French voice input subtype [CHAR LIMIT=35] -->
@@ -282,10 +275,12 @@
     <string name="subtype_mode_ru_voice">Russian Voice</string>
     <!-- Description for Turkish voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_tr_voice">Turkish Voice</string>
-    <!-- Description for Chinese (China, Simplified) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_zh_CN_voice">Chinese (China, Simplified) Voice</string>
-    <!-- Description for Chinese (Taiwan, Traditional) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_zh_TW_voice">Chinese (Taiwan, Traditional) Voice</string>
+    <!-- Description for Chinese, Yue voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_yue_voice">Chinese, Yue Voice</string>
+    <!-- Description for Chinese, Mandarin voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_zh_voice">Chinese, Mandarin Voice</string>
+    <!-- Description for isiZulu voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_zu_voice">isiZulu Voice</string>
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability Study Mode</string>
