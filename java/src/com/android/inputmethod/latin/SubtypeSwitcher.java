@@ -23,10 +23,8 @@ import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 import com.android.inputmethod.voice.VoiceInput;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -91,8 +89,7 @@ public class SubtypeSwitcher {
     }
 
     public static void init(LatinIME service, SharedPreferences prefs) {
-        sInstance.mPrefs = prefs;
-        sInstance.resetParams(service);
+        sInstance.initialize(service, prefs);
         sInstance.updateAllParameters();
 
         SubtypeLocale.init(service);
@@ -102,8 +99,9 @@ public class SubtypeSwitcher {
         // Intentional empty constructor for singleton.
     }
 
-    private void resetParams(LatinIME service) {
+    private void initialize(LatinIME service, SharedPreferences prefs) {
         mService = service;
+        mPrefs = prefs;
         mResources = service.getResources();
         mImm = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
@@ -125,14 +123,6 @@ public class SubtypeSwitcher {
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
-        final BroadcastReceiver receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                onNetworkStateChanged(intent);
-            }
-        };
-        service.registerReceiver(receiver,
-                new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
     }
 
     // Update all parameters stored in SubtypeSwitcher.
@@ -376,7 +366,7 @@ public class SubtypeSwitcher {
         return true;
     }
 
-    private void onNetworkStateChanged(Intent intent) {
+    public void onNetworkStateChanged(Intent intent) {
         final boolean noConnection = intent.getBooleanExtra(
                 ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
         mIsNetworkConnected = !noConnection;
