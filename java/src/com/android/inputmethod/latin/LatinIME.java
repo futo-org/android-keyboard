@@ -1452,6 +1452,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean isCandidateStripVisible() {
+        if (mCandidateView == null)
+            return false;
         if (mCandidateView.isShowingAddToDictionaryHint() || TextEntryState.isCorrecting())
             return true;
         if (!isShowingSuggestionsStrip())
