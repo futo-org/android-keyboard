@@ -52,7 +52,7 @@ private:
             const int excessivePos, const int transposedPos, int *nextLetters,
             const int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
-    int calculateFinalFreq(const int inputIndex, const int snr, const int skipPos,
+    int calculateFinalFreq(const int inputIndex, const int depth, const int snr, const int skipPos,
             const int excessivePos, const int transposedPos, const int freq, const bool sameLength);
     void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
             const int inputIndex, const int depth, const int snr, int *nextLetters,
