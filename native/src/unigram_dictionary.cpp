@@ -347,9 +347,9 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
     }
 }
 
-inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int snr,
-        const int skipPos, const int excessivePos, const int transposedPos, const int freq,
-        const bool sameLength) {
+inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int depth,
+        const int snr, const int skipPos, const int excessivePos, const int transposedPos,
+        const int freq, const bool sameLength) {
     // TODO: Demote by edit distance
     int finalFreq = freq * snr;
     if (skipPos >= 0) multiplyRate(WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE, &finalFreq);
@@ -361,6 +361,12 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
             multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE, &finalFreq);
         }
     }
+    int lengthFreq = TYPED_LETTER_MULTIPLIER;
+    for (int i = 0; i < depth; ++i) lengthFreq *= TYPED_LETTER_MULTIPLIER;
+    if (depth > 1 && lengthFreq == snr) {
+        if (DEBUG_DICT) LOGI("Found full matched word.");
+        multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
+    }
     if (sameLength && skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
     return finalFreq;
 }
@@ -369,8 +375,8 @@ inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsGreaterThanInputLe
         unsigned short *word, const int inputIndex, const int depth, const int snr,
         int *nextLetters, const int nextLettersSize, const int skipPos, const int excessivePos,
         const int transposedPos, const int freq) {
-    const int finalFreq = calculateFinalFreq(inputIndex, snr, skipPos, excessivePos, transposedPos,
-            freq, false);
+    const int finalFreq = calculateFinalFreq(inputIndex, depth, snr, skipPos, excessivePos,
+            transposedPos, freq, false);
     if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
     if (depth >= mInputLength && skipPos < 0) {
         registerNextLetter(mWord[mInputLength], nextLetters, nextLettersSize);
@@ -382,7 +388,7 @@ inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsSameAsInputLength(
         const int skipPos, const int excessivePos, const int transposedPos, const int freq,
         const int addedWeight) {
     if (sameAsTyped(word, depth + 1)) return;
-    const int finalFreq = calculateFinalFreq(inputIndex, snr * addedWeight, skipPos,
+    const int finalFreq = calculateFinalFreq(inputIndex, depth, snr * addedWeight, skipPos,
             excessivePos, transposedPos, freq, true);
     // Proximity collection will promote a word of the same length as what user typed.
     if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);

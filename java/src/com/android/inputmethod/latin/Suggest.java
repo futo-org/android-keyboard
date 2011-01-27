@@ -294,7 +294,7 @@ public class Suggest implements Dictionary.WordCallback {
                         typedWord, mSuggestions.get(0), mPriorities[0]);
                 if (LatinImeLogger.sDBG) {
                     Log.d(TAG, "Normalized " + typedWord + "," + mSuggestions.get(0) + ","
-                            + mPriorities[0] + normalizedScore
+                            + mPriorities[0] + ", " + normalizedScore
                             + "(" + mAutoCorrectionThreshold + ")");
                 }
                 if (normalizedScore >= mAutoCorrectionThreshold) {
