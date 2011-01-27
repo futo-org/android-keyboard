@@ -163,6 +163,10 @@ public class Suggest implements Dictionary.WordCallback {
         mAutoCorrectionThreshold = threshold;
     }
 
+    public boolean isAggressiveAutoCorrectionMode() {
+        return (mAutoCorrectionThreshold == 0);
+    }
+
     /**
      * Number of suggestions to generate from the input key sequence. This has
      * to be a number between 1 and 100 (inclusive).

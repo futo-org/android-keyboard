@@ -38,6 +38,7 @@ import java.util.Date;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
+    private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
     private static boolean DBG = LatinImeLogger.sDBG;
 
     /**
@@ -106,11 +107,18 @@ public class Utils {
         throw new RuntimeException("Can not find input method id for " + packageName);
     }
 
-    public static boolean shouldBlockedBySafetyNetForAutoCorrection(SuggestedWords suggestions) {
+    public static boolean shouldBlockedBySafetyNetForAutoCorrection(SuggestedWords suggestions,
+            Suggest suggest) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's actually a bug.
         if (suggestions.size() <= 1 || suggestions.mTypedWordValid) return false;
+        // If user selected aggressive auto correction mode, there is no need to use the safety
+        // net.
+        if (suggest.isAggressiveAutoCorrectionMode()) return false;
         CharSequence typedWord = suggestions.getWord(0);
+        // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
+        // we should not use net because relatively edit distance can be big.
+        if (typedWord.length() < MINIMUM_SAFETY_NET_CHAR_LENGTH) return false;
         CharSequence candidateWord = suggestions.getWord(1);
         final int typedWordLength = typedWord.length();
         final int maxEditDistanceOfNativeDictionary = typedWordLength < 5 ? 2 : typedWordLength / 2;
