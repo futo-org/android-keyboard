@@ -461,8 +461,9 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
     int childPosition;
     bool terminal;
     int freq;
+    bool isSameAsUserTypedLength = false;
 
-    if (excessivePos == depth) ++inputIndex;
+    if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
 
     *nextSiblingPosition = Dictionary::setDictionaryValues(DICT, IS_LATEST_DICT_VERSION, pos, &c,
             &childPosition, &terminal, &freq);
@@ -496,7 +497,8 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         // If inputIndex is greater than mInputLength, that means there is no
         // proximity chars. So, we don't need to check proximity.
         const int addedWeight = matchedProximityCharId == 0 ? TYPED_LETTER_MULTIPLIER : 1;
-        const bool isSameAsUserTypedLength = mInputLength == inputIndex + 1;
+        bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
+                || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
         if (isSameAsUserTypedLength && terminal) {
             onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, inputIndex, depth, snr,
                     skipPos, excessivePos, transposedPos, freq, addedWeight);
@@ -514,7 +516,8 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
     }
 
     // If inputIndex is greater than mInputLength, that means there are no proximity chars.
-    if (mInputLength <= *newInputIndex) {
+    // TODO: Check if this can be isSameAsUserTypedLength only.
+    if (isSameAsUserTypedLength || mInputLength <= *newInputIndex) {
         *newTraverseAllNodes = true;
     }
     // get the count of nodes and increment childAddress.
