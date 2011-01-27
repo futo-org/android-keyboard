@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,17 +18,8 @@
 */
 -->
 
-<!-- Serbian keyboard layout, based on the X11 layout for Serbian -->
-<Keyboard
+<merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyboardHeight="@dimen/keyboardHeight"
-    latin:maxKeyboardHeight="50%p"
-    latin:rowHeight="25%p"
-    latin:keyWidth="9.09%p"
-    latin:horizontalGap="@dimen/key_horizontal_gap"
-    latin:verticalGap="@dimen/key_bottom_gap"
-    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
-    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
@@ -42,37 +33,37 @@
             latin:keyWidth="7.949%p"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="љ"
+            latin:keyLabel="й"
             latin:popupCharacters="1" />
         <Key
-            latin:keyLabel="њ"
+            latin:keyLabel="ц"
             latin:popupCharacters="2" />
         <Key
-            latin:keyLabel="е"
+            latin:keyLabel="у"
             latin:popupCharacters="3" />
         <Key
-            latin:keyLabel="р"
+            latin:keyLabel="к"
             latin:popupCharacters="4" />
         <Key
-            latin:keyLabel="т"
-            latin:popupCharacters="5" />
+            latin:keyLabel="е"
+            latin:popupCharacters="@string/alternates_for_cyrillic_e" />
         <Key
-            latin:keyLabel="з"
+            latin:keyLabel="н"
             latin:popupCharacters="6" />
         <Key
-            latin:keyLabel="у"
+            latin:keyLabel="г"
             latin:popupCharacters="7" />
         <Key
-            latin:keyLabel="и"
+            latin:keyLabel="ш"
             latin:popupCharacters="8" />
         <Key
-            latin:keyLabel="о"
+            latin:keyLabel="щ"
             latin:popupCharacters="9" />
         <Key
-            latin:keyLabel="п"
+            latin:keyLabel="з"
             latin:popupCharacters="0" />
         <Key
-            latin:keyLabel="ш" />
+            latin:keyLabel="х" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="9.331%p"
@@ -87,72 +78,63 @@
             latin:keyWidth="7.949%p"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="а" />
-        <Key
-            latin:keyLabel="с" />
-        <Key
-            latin:keyLabel="д" />
-        <Key
             latin:keyLabel="ф" />
         <Key
-            latin:keyLabel="г" />
+            latin:keyLabel="ы" />
         <Key
-            latin:keyLabel="х" />
+            latin:keyLabel="в" />
         <Key
-            latin:keyLabel="ј" />
+            latin:keyLabel="а" />
         <Key
-            latin:keyLabel="к" />
+            latin:keyLabel="п" />
+        <Key
+            latin:keyLabel="р" />
+        <Key
+            latin:keyLabel="о" />
         <Key
             latin:keyLabel="л" />
         <Key
-            latin:keyLabel="ч" />
+            latin:keyLabel="д" />
         <Key
-            latin:keyLabel="ћ" />
+            latin:keyLabel="ж" />
+        <Key
+            latin:keyLabel="э" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyWidth="9.331%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="8.042%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.400%p"
+            latin:keyWidth="15.192%p"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="ђ" />
+            latin:keyLabel="я" />
         <Key
-            latin:keyLabel="ж" />
+            latin:keyLabel="ч" />
         <Key
-            latin:keyLabel="џ" />
-        <Key
-            latin:keyLabel="ц" />
-        <Key
-            latin:keyLabel="в" />
-        <Key
-            latin:keyLabel="б" />
-        <Key
-            latin:keyLabel="н" />
+            latin:keyLabel="с" />
         <Key
             latin:keyLabel="м" />
         <Key
-            latin:keyLabel=","
-            latin:manualTemporaryUpperCaseCode="33"
-            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
-            latin:popupCharacters="!" />
+            latin:keyLabel="и" />
         <Key
-            latin:keyLabel="."
-            latin:manualTemporaryUpperCaseCode="63"
-            latin:keyHintIcon="@drawable/key_hint_question_holo"
-            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
-            latin:popupCharacters="\?" />
+            latin:keyLabel="т" />
+        <Key
+            latin:keyLabel="ь"
+            latin:popupCharacters="@string/alternates_for_cyrillic_soft_sign" />
+        <Key
+            latin:keyLabel="б" />
+        <Key
+            latin:keyLabel="ю" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.400%p"
+            latin:keyWidth="12.530%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />
-</Keyboard>
+</merge>
