@@ -52,7 +52,7 @@
     <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
     <skip />
     <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Propostas da pleds"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Curreger automaticamain il pled precedent"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Curreger automaticamain il pled precedent"</string>
     <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
@@ -152,19 +152,13 @@
     <skip />
     <!-- no translation found for subtype_mode_sv_keyboard (4933838139861753401) -->
     <skip />
+    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
+    <skip />
     <!-- no translation found for subtype_mode_cs_voice (1136386688120958641) -->
     <skip />
     <!-- no translation found for subtype_mode_de_voice (8378803143958089866) -->
     <skip />
-    <!-- no translation found for subtype_mode_en_AU_voice (1103892562629586486) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_GB_voice (7868802451720612888) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_IN_voice (4834879535045820293) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_NZ_voice (2739391364469645636) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_voice (2300580846081472319) -->
+    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
     <!-- no translation found for subtype_mode_es_voice (1323473601346507487) -->
     <skip />
@@ -186,9 +180,11 @@
     <skip />
     <!-- no translation found for subtype_mode_tr_voice (3402067436761140005) -->
     <skip />
-    <!-- no translation found for subtype_mode_zh_CN_voice (6452442204238513331) -->
+    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
     <skip />
-    <!-- no translation found for subtype_mode_zh_TW_voice (3640444875378221940) -->
+    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
+    <skip />
+    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
     <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
     <skip />
