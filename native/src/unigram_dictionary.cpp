@@ -363,9 +363,14 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
     }
     int lengthFreq = TYPED_LETTER_MULTIPLIER;
     for (int i = 0; i < depth; ++i) lengthFreq *= TYPED_LETTER_MULTIPLIER;
-    if (depth > 1 && lengthFreq == snr) {
-        if (DEBUG_DICT) LOGI("Found full matched word.");
-        multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
+    if (lengthFreq == snr) {
+        if (depth > 1) {
+            if (DEBUG_DICT) LOGI("Found full matched word.");
+            multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
+        }
+        if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0) {
+            finalFreq *= FULL_MATCH_ACCENTS_OR_CAPITALIZATION_DIFFER_MULTIPLIER;
+        }
     }
     if (sameLength && skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
     return finalFreq;
@@ -385,10 +390,9 @@ inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsGreaterThanInputLe
 
 inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsSameAsInputLength(
         unsigned short *word, const int inputIndex, const int depth, const int snr,
-        const int skipPos, const int excessivePos, const int transposedPos, const int freq,
-        const int addedWeight) {
+        const int skipPos, const int excessivePos, const int transposedPos, const int freq) {
     if (sameAsTyped(word, depth + 1)) return;
-    const int finalFreq = calculateFinalFreq(inputIndex, depth, snr * addedWeight, skipPos,
+    const int finalFreq = calculateFinalFreq(inputIndex, depth, snr, skipPos,
             excessivePos, transposedPos, freq, true);
     // Proximity collection will promote a word of the same length as what user typed.
     if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
@@ -424,9 +428,9 @@ inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex
     return false;
 }
 
-inline int UnigramDictionary::getMatchedProximityId(const int *currentChars,
-        const unsigned short c, const int skipPos, const int excessivePos,
-        const int transposedPos) {
+inline UnigramDictionary::ProximityType UnigramDictionary::getMatchedProximityId(
+        const int *currentChars, const unsigned short c, const int skipPos,
+        const int excessivePos, const int transposedPos) {
     const unsigned short lowerC = toLowerCase(c);
     int j = 0;
     while (currentChars[j] > 0 && j < MAX_PROXIMITY_CHARS) {
@@ -434,18 +438,19 @@ inline int UnigramDictionary::getMatchedProximityId(const int *currentChars,
         // If skipPos is defined, not to search proximity collections.
         // First char is what user  typed.
         if (matched) {
-            return j;
+            if (j > 0) return NEAR_PROXIMITY_CHAR;
+            return SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR;
         } else if (skipPos >= 0 || excessivePos >= 0 || transposedPos >= 0) {
             // Not to check proximity characters
-            return -1;
+            return UNRELATED_CHAR;
         }
         ++j;
     }
-    return -1;
+    return UNRELATED_CHAR;
 }
 
 inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
-        const int maxDepth, const bool traverseAllNodes, const int snr, int inputIndex,
+        const int maxDepth, const bool traverseAllNodes, int snr, int inputIndex,
         const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
         int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
         bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
@@ -492,22 +497,24 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
 
         int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos, excessivePos,
                 transposedPos);
-        if (matchedProximityCharId < 0) return false;
+        if (UNRELATED_CHAR == matchedProximityCharId) return false;
         mWord[depth] = c;
         // If inputIndex is greater than mInputLength, that means there is no
         // proximity chars. So, we don't need to check proximity.
-        const int addedWeight = matchedProximityCharId == 0 ? TYPED_LETTER_MULTIPLIER : 1;
+        if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+            snr = snr * TYPED_LETTER_MULTIPLIER;
+        }
         bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
                 || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
         if (isSameAsUserTypedLength && terminal) {
             onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, inputIndex, depth, snr,
-                    skipPos, excessivePos, transposedPos, freq, addedWeight);
+                    skipPos, excessivePos, transposedPos, freq);
         }
         if (!needsToTraverseChildrenNodes) return false;
         // Start traversing all nodes after the index exceeds the user typed length
         *newTraverseAllNodes = isSameAsUserTypedLength;
-        *newSnr = snr * addedWeight;
-        *newDiffs = diffs + ((matchedProximityCharId > 0) ? 1 : 0);
+        *newSnr = snr;
+        *newDiffs = diffs + ((NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
         *newInputIndex = inputIndex + 1;
     }
     // Optimization: Prune out words that are too long compared to how much was typed.
