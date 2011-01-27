@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"사용자 의견 사용"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"사용 통계 및 충돌 보고서를 Google에 자동으로 전송하여 입력 방법 편집기의 개선에 도움을 줍니다."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"터치하여 단어 다시 수정"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"입력한 단어를 터치하면 다시 수정할 수 있습니다."</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"터치하여 단어 수정"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"추천 검색어가 표시된 경우에만 입력한 단어를 터치하여 수정"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"키보드 테마"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"키보드"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"음성"</string>

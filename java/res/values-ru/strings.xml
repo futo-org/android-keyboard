@@ -89,7 +89,7 @@
     <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Функция голосового ввода отключается в настройках клавиатуры."</string>
     <string name="voice_hint_dialog_message" msgid="6892342981545727994">"Чтобы использовать голосовой ввод, нажмите кнопку микрофона или проведите пальцем по экранной клавиатуре."</string>
     <string name="voice_listening" msgid="467518160751321844">"Говорите"</string>
-    <string name="voice_working" msgid="6666937792815731889">"Выполняется обработка"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Обработка запроса"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
     <string name="voice_error" msgid="5140896300312186162">"Ошибка. Повторите попытку."</string>
     <string name="voice_network_error" msgid="6649556447401862563">"Ошибка подключения"</string>
@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Доступен словарь"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Включить отправку сведений"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогите усовершенствовать редактор способа ввода, разрешив отправку статистики и отчетов о сбоях в Google."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Исправление нажатием"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Нажмите на слово, чтобы исправить его"</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Исправление нажатие"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"При отображении подсказки нажмите на введенное слово, чтобы исправить его."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Вид клавиатуры"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"клавиатура"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"голосовой"</string>

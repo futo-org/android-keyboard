@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Λεξικό διαθέσιμο"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Ενεργοποίηση σχολίων χρηστών"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Βοηθήστε μας να βελτιώσουμε αυτό το πρόγραμμα επεξεργασίας μεθόδου εισόδου στέλνοντας αυτόματα στατιστικά στοιχεία και αναφορές σφαλμάτων στην Google."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Αγγίξτε για να διορθώσετε ξανά τις λέξεις"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Μπορείτε να διορθώσετε ξανά τις λέξεις αγγίζοντας τις λέξεις που έχετε πληκτρολογήσει"</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Αγγίξτε για να διορθώσετε τις λέξεις"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Αγγίξτε τις λέξεις που έχετε εισαγάγει για να τις διορθώσετε, μόνο όταν είναι ορατές οι προτάσεις"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Θέμα πληκτρολογίου"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"πληκτρολόγιο"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"φωνητική"</string>

@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbog er tilgængelig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktiver brugerfeedback"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Vær med til at forbedre denne inputmetode ved at sende anvendelsesstatistikker og rapporter om nedbrud til Google."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryk for at rette ord igen"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Du kan rette ordene igen ved at trykke på de ord, du har indtastet"</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryk for at rette ord"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Tryk på indtastede ord for at rette dem, kun når der er synlige forslag"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tastaturtema"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"tastatur"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"stemme"</string>

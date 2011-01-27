@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"啟用使用者意見回饋"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"自動將使用統計資料和當機報告傳送給 Google，協助改善這個輸入法編輯器。"</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"輕觸即可重新修正字詞"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"只要輕觸您所輸入的字詞，即可重新予以修正"</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"輕觸即可更正字詞"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"輕觸即可更正輸入的文字 (僅適用於建議顯示時)"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"鍵盤主題"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"鍵盤"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"語音"</string>

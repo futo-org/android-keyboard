@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"辞書を利用できます"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"ユーザーフィードバックを有効にする"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"IMEの機能向上のため、使用統計状況やクラッシュレポートをGoogleに自動送信します。"</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"タップして語句を再修正"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"入力した語句をタップすると語句を再修正できます"</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"タップして語句を修正"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"候補が表示されているときのみ、入力した語句をタップして修正します"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"キーボードテーマ"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"キーボード"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"音声"</string>

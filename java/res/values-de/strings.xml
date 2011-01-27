@@ -133,7 +133,7 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Nutzer-Feedback aktivieren"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Tragen Sie zur Verbesserung dieses Eingabemethodeneditors bei, indem Sie automatisch Nutzungsstatistiken und Absturzberichte an Google senden."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Wortkorrektur"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Sie können Wörter korrigieren, indem Sie die eingegebenen Wörter berühren."</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Eingegebene Wörter zum Korrigieren berühren (nur wenn Vorschläge angezeigt werden)"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tastaturdesign"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"Tastatur"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"Sprache"</string>
