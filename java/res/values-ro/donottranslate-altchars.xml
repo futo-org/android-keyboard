@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2008, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -17,18 +17,9 @@
 ** limitations under the License.
 */
 -->
-
-<Keyboard
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyboardHeight="@dimen/keyboardHeight"
-    latin:maxKeyboardHeight="50%p"
-    latin:rowHeight="25%p"
-    latin:keyWidth="10%p"
-    latin:horizontalGap="@dimen/key_horizontal_gap"
-    latin:verticalGap="@dimen/key_bottom_gap"
-    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
-    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
->
-    <include
-        latin:keyboardLayout="@xml/kbd_qwertz_rows" />
-</Keyboard>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="alternates_for_a">ă,â,à,á,ä,æ,ã,å,ā</string>
+    <string name="alternates_for_i">8,î,ï,ì,í,į,ī</string>
+    <string name="alternates_for_s">ș,ß,ś,š</string>
+    <string name="alternates_for_t">5,ț</string>
+</resources>
