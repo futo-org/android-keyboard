@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Woordenboek beschikbaar"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Gebruikersfeedback inschakelen."</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Help deze invoermethode te verbeteren door automatisch gebruiksstatistieken en crashmeldingen naar Google te verzenden."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Raak aan om woorden opnieuw te corrigeren"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"U kunt woorden opnieuw corrigeren door woorden aan te raken die u heeft getypt"</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Raak aan om woorden te corrigeren"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Ingevoerde woorden aanraken om ze te verbeteren, alleen mogelijk wanneer er suggesties worden weergegeven"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Toetsenbordthema"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"toetsenbord"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"spraak"</string>

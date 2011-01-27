@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones introducción texto"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar tecla"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al pulsar tecla"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Popup al pulsar"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Popup al pulsar tecla"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Corregir errores de escritura"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Habilitar la introducción de corrección de errores"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Errores de introducción de datos en vista horizontal"</string>
@@ -38,7 +38,7 @@
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Autocompletar"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Aumentar el tamaño del campo de texto"</string>
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"Ocultar sugerencias de palabras en la vista horizontal"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Uso de mayúsculas auto."</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Escribir en mayúscula el principio de la frase"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Puntuación automática"</string>
     <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>
@@ -132,7 +132,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Hay un diccionario disponible."</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Habilitar comentarios de usuarios"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ayuda a mejorar este editor de método de introducción de texto enviando estadísticas de uso e informes de error a Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corregir palabras"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corregir"</string>
     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Tocar palabras introducidas para corregirlas"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema de teclado"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"teclado"</string>

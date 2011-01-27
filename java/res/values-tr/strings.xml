@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Sözlük kullanılabilir"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Kullanıcı geri bildirimini etkinleştir"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Kullanım istatistiklerini ve kilitlenme raporlarını Google\'a otomatik olarak göndererek bu giriş yöntemi düzenleyicisinin iyileştirilmesine yardımcı olun."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Kelimeleri düzeltmek için dokunun"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Yazdığınız kelimelere dokunarak kelimelerde düzeltme yapabilirsiniz"</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Kelimeleri düzeltmek için dokunun"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Girilen kelimelere yalnızca öneriler görünür durumdayken dokunarak düzeltin"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Klavye Teması"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"klavye"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"ses"</string>

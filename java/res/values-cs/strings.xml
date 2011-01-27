@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"K dispozici je slovník"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktivovat zasílání statistik užívání a zpráv o selhání"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Automatickým zasíláním statistik o užívání editoru zadávání dat a zpráv o jeho selhání do Googlu můžete přispět k vylepšení tohoto nástroje."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dotykem aktivujete opravy"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Dotknete-li se slov, která jste napsali, můžete je opravit."</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dotykem aktivovat opravy"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Klepnutím na zadaná slova tyto slova opravíte, musí však být viditelné návrhy."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Motiv klávesnice"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"klávesnice"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"hlas"</string>

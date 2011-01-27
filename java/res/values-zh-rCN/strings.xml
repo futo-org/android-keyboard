@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"提供字典"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"启用用户反馈"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"自动向 Google 发送使用情况统计信息和崩溃报告，帮助改进该输入法编辑器。"</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"触摸即可更正字词"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"您可以触摸已键入的字词，对其进行更正"</string>
+    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"触摸更正字词"</string>
+    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"仅在系统显示建议后，触摸输入的字词进行更正"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"键盘主题"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"键盘"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"语音"</string>
