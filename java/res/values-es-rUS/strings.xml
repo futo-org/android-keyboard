@@ -110,29 +110,22 @@
     <!-- outdated translation 3812694929448916712 -->     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Teclado en ruso"</string>
     <!-- outdated translation 7947963963114184275 -->     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Teclado en serbio"</string>
     <!-- outdated translation 3874083866564515371 -->     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Teclado en sueco"</string>
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
+    <string name="subtype_mode_af_voice">"Voz en Afrikáans"</string>
     <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voz en checo"</string>
     <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voz en alemán"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
+    <string name="subtype_mode_en_voice">"Voz en inglés"</string>
     <!-- outdated translation 1243071504878834350 -->     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Voz en español"</string>
     <!-- outdated translation 2048805677248981105 -->     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Voz en francés"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice">"Voz en italiano"</string>
     <!-- outdated translation 1855513591711108481 -->     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Voz en japonés"</string>
     <!-- outdated translation 3453153041889151316 -->     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Voz en coreano"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice">"Voz en holandés"</string>
     <!-- outdated translation 6730658974157645735 -->     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Voz en polaco"</string>
     <!-- outdated translation 4508062762756741654 -->     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Voz en portugués"</string>
     <!-- outdated translation 554299262138845594 -->     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Voz en ruso"</string>
     <!-- outdated translation 5242644971865917801 -->     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Voz en turco"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
-    <skip />
+    <string name="subtype_mode_yue_voice">"Voz en chino, yue"</string>
+    <string name="subtype_mode_zh_voice">"Voz en chino, mandarín"</string>
+    <string name="subtype_mode_zu_voice">"Voz en isiZulu"</string>
     <!-- outdated translation 8423000345880575687 -->     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Modo estudio de usabilidad"</string>
 </resources>
