@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,9 +18,13 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_a">à,á,â,ä,æ,ã,å,ā,ª</string>
-    <string name="alternates_for_e">3,è,é,ê,ë,ę,ė,ē</string>
-    <string name="alternates_for_i">8,ì,í,î,ï,į,ī</string>
-    <string name="alternates_for_o">9,ò,ó,ô,ö,õ,œ,ø,ō,º</string>
-    <string name="alternates_for_u">7,ù,ú,û,ü,ū</string>
+    <string name="alternates_for_a">æ,à,á,â,ã,ā</string>
+    <string name="alternates_for_o">9,ø,ô,ò,ó,õ,œ,ō</string>
+    <string name="alternates_for_u">7,ü</string>
+    <string name="alternates_for_s">š,ß,ś</string>
+    <string name="alternates_for_z">ž,ź,ż</string>
+    <string name="keylabel_for_scandinavia_row2_10">ö</string>
+    <string name="keylabel_for_scandinavia_row2_11">ä</string>
+    <string name="alternates_for_scandinavia_row2_10">ø</string>
+    <string name="alternates_for_scandinavia_row2_11">æ</string>
 </resources>

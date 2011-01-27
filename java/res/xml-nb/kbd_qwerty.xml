@@ -18,18 +18,11 @@
 */
 -->
 
-<!--
-    Norwegian Keyboard Layout
-
-    Just a copy of the Swedish layout, with ä/æ and ö/ø switched.
--->
-
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:keyboardHeight="@dimen/keyboardHeight"
     latin:maxKeyboardHeight="50%p"
     latin:rowHeight="25%p"
-    latin:keyWidth="9.09%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
