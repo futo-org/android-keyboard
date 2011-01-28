@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opções de entrada"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao tocar a tecla"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Som ao tocar a tecla"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Exibir pop-up ao tocar a tecla"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Exibir pop-up ao digitar"</string>
     <!-- no translation found for general_category (1859088467017573195) -->
     <skip />
     <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Configurações de sugestão de palavra"</string>
@@ -37,15 +37,15 @@
     <!-- outdated translation 8350173747634837929 -->     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostrar sempre"</string>
     <!-- outdated translation 670278993111469619 -->     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Mostrar no modo de retrato"</string>
     <!-- outdated translation 2750493093338023345 -->     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Sempre ocultar"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de configurações"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de config."</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automático"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostrar sempre"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Sempre ocultar"</string>
-    <!-- outdated translation 7961335093790493671 -->     <string name="auto_correction" msgid="4979925752001319458">"Correção automática"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"Autocorreção"</string>
     <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Barra de espaço e pontuação inserem automaticamente a palavra destacada"</string>
-    <!-- outdated translation 4899978031827517261 -->     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desativado"</string>
-    <!-- outdated translation 3316394123368070951 -->     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderado"</string>
-    <!-- outdated translation 6091003457668724585 -->     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agressivo"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desativado"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderado"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agressivo"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Sugestões de bigrama"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Usar palavra anterior para melhorar a sugestão"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Salvo"</string>
@@ -78,12 +78,12 @@
     <string name="cancel" msgid="6830980399865683324">"Cancelar"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="2466640768843347841">"Entrada de voz"</string>
-    <!-- outdated translation 1403596961453846365 -->     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"No teclado principal"</string>
-    <!-- outdated translation 5916050323076830126 -->     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"No teclado de símbolos"</string>
-    <!-- outdated translation 1577817314089496020 -->     <string name="voice_input_modes_off" msgid="3745699748218082014">"Desativado"</string>
-    <!-- outdated translation 5118121899312172508 -->     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Microfone no teclado principal"</string>
-    <!-- outdated translation 8181616553734217736 -->     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Microfone no teclado de símbolos"</string>
-    <!-- outdated translation 3854831353403775554 -->     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entrada de voz desativada"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"No teclado principal"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"No teclado de símb."</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Desativado"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic. no teclado"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic. no teclado"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Texto por voz desat."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Selecionar método de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Deslize o dedo na barra de espaços para alterar o idioma"</string>
@@ -91,7 +91,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Ativar comentário do usuário"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ajude a melhorar este editor de método de entrada enviando automaticamente ao Google estatísticas de uso e relatórios de falhas."</string>
-    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Toque para corrigir as palavras"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corrigir"</string>
     <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Toque nas palavras digitadas para corrigi-las somente quando houver sugestões visíveis"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema do teclado"</string>
     <!-- outdated translation 1186679497674833204 -->     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Teclado em tcheco"</string>

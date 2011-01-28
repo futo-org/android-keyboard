@@ -41,11 +41,11 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"自动"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"始终显示"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"始终隐藏"</string>
-    <!-- outdated translation 7961335093790493671 -->     <string name="auto_correction" msgid="4979925752001319458">"自动更正"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"自动更正"</string>
     <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"空格和标点符号会自动插入突出显示的字词"</string>
-    <!-- outdated translation 4899978031827517261 -->     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"关闭"</string>
-    <!-- outdated translation 3316394123368070951 -->     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"部分"</string>
-    <!-- outdated translation 6091003457668724585 -->     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"全部"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"关闭"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"部分"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"全部"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"双连词建议"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"使用以前的字词改进建议"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已保存"</string>
@@ -78,12 +78,12 @@
     <string name="cancel" msgid="6830980399865683324">"取消"</string>
     <string name="ok" msgid="7898366843681727667">"确定"</string>
     <string name="voice_input" msgid="2466640768843347841">"语音输入"</string>
-    <!-- outdated translation 1403596961453846365 -->     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"主键盘上"</string>
-    <!-- outdated translation 5916050323076830126 -->     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"符号键盘上"</string>
-    <!-- outdated translation 1577817314089496020 -->     <string name="voice_input_modes_off" msgid="3745699748218082014">"关闭"</string>
-    <!-- outdated translation 5118121899312172508 -->     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"主键盘上的麦克风"</string>
-    <!-- outdated translation 8181616553734217736 -->     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"符号键盘上的麦克风"</string>
-    <!-- outdated translation 3854831353403775554 -->     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"已停用语音输入"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"主键盘上"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"符号键盘上"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"关闭"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"主键盘上的麦克风"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"符号键盘上的麦克风"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"语音输入功能已停用"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"选择输入法"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"输入语言"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"在空格键上滑动手指可更改语言"</string>

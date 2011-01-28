@@ -45,7 +45,7 @@
     <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"在反白顯示的字詞處自動插入空白鍵和標點符號鍵盤"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"關閉"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"普通模式"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"加強模式"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"全部"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"雙連詞建議"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"根據前一個字詞自動找出更適合的建議"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>：已儲存"</string>
@@ -78,10 +78,10 @@
     <string name="cancel" msgid="6830980399865683324">"取消"</string>
     <string name="ok" msgid="7898366843681727667">"確定"</string>
     <string name="voice_input" msgid="2466640768843347841">"語音輸入"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"於主鍵盤"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"主鍵盤上"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"於符號鍵盤"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"關閉"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"於主鍵盤顯示麥克風"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"主鍵盤上的麥克風"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"於符號鍵盤顯示麥克風"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"已停用語音輸入"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"選取輸入法"</string>
