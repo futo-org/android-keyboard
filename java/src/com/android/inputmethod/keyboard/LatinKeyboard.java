@@ -123,11 +123,11 @@ public class LatinKeyboard extends Keyboard {
         if (id.mColorScheme == KeyboardView.COLOR_SCHEME_BLACK) {
             mSpacebarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_black);
-            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_keyboard_mic_disabled);
+            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_bkeyboard_voice_off);
         } else { // default color scheme is KeyboardView.COLOR_SCHEME_WHITE
             mSpacebarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_white);
-            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_bkeyboard_mic_disabled);
+            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_keyboard_voice_off_holo);
         }
         mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
