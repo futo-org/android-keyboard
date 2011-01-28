@@ -23,8 +23,8 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Android-toetsenbord"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Instellingen voor Android-toetsenbord"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Invoeropties"</string>
-    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Trillen bij druk op toets"</string>
-    <string name="sound_on_keypress" msgid="6093592297198243644">"Geluid bij druk op een toets"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Trillen bij toetsaanslag"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Geluid bij toetsaanslag"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up bij toetsaanslag"</string>
     <!-- no translation found for general_category (1859088467017573195) -->
     <skip />
@@ -41,7 +41,7 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatisch"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Altijd weergeven"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Altijd verbergen"</string>
-    <string name="auto_correction" msgid="4979925752001319458">"Auto-correctie"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"Autocorrectie"</string>
     <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Met de spatiebalk en interpunctie wordt het gemarkeerde woord automatisch ingevoegd"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Uitgeschakeld"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Normaal"</string>
