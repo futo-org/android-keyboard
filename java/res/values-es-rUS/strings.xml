@@ -110,7 +110,7 @@
     <!-- outdated translation 3812694929448916712 -->     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Teclado en ruso"</string>
     <!-- outdated translation 7947963963114184275 -->     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Teclado en serbio"</string>
     <!-- outdated translation 3874083866564515371 -->     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Teclado en sueco"</string>
-    <string name="subtype_mode_af_voice">"Voz en Afrikáans"</string>
+    <string name="subtype_mode_af_voice">"Voz en afrikáans"</string>
     <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voz en checo"</string>
     <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voz en alemán"</string>
     <string name="subtype_mode_en_voice">"Voz en inglés"</string>
