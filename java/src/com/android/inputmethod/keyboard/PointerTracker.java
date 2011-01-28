@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 
 import android.content.res.Resources;
@@ -31,6 +32,7 @@ public class PointerTracker {
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_MOVE_EVENT = false;
     private static final boolean DEBUG_LISTENER = false;
+    private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
 
     public interface UIProxy {
         public void invalidateKey(Key key);
@@ -62,6 +64,7 @@ public class PointerTracker {
     private Keyboard mKeyboard;
     private Key[] mKeys;
     private int mKeyHysteresisDistanceSquared = -1;
+    private int mKeyQuarterWidthSquared;
 
     private final PointerTrackerKeyState mKeyState;
 
@@ -166,6 +169,8 @@ public class PointerTracker {
         mKeyboard = keyboard;
         mKeys = keys;
         mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
+        final int keyQuarterWidth = keyboard.getKeyWidth() / 4;
+        mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
         // Mark that keyboard layout has been changed.
         mKeyboardLayoutHasBeenChanged = true;
     }
@@ -268,10 +273,6 @@ public class PointerTracker {
         if (DEBUG_EVENT)
             printTouchEvent("onDownEvent:", x, y, eventTime);
 
-        // TODO: up-to-down filter, if (down-up) is less than threshold, removeMessage(UP, this) in
-        // Handler, and just ignore this down event.
-        // TODO: down-to-up filter, just record down time. do not enqueue pointer now.
-
         // Naive up-to-down noise filter.
         final long deltaT = eventTime - mKeyState.getUpTime();
         if (deltaT < mTouchNoiseThresholdMillis) {
@@ -279,8 +280,9 @@ public class PointerTracker {
             final int dy = y - mKeyState.getLastY();
             final int distanceSquared = (dx * dx + dy * dy);
             if (distanceSquared < mTouchNoiseThresholdDistanceSquared) {
-                Log.w(TAG, "onDownEvent: ignore potential noise: time=" + deltaT
-                        + " distance=" + distanceSquared);
+                if (DEBUG_MODE)
+                    Log.w(TAG, "onDownEvent: ignore potential noise: time=" + deltaT
+                            + " distance=" + distanceSquared);
                 setAlreadyProcessed();
                 return;
             }
@@ -333,9 +335,8 @@ public class PointerTracker {
             return;
         final PointerTrackerKeyState keyState = mKeyState;
 
-        // TODO: down-to-up filter, if (eventTime-downTime) is less than threshold, just ignore
-        // this move event. Otherwise fire {@link onDownEventInternal} and continue.
-
+        final int lastX = keyState.getLastX();
+        final int lastY = keyState.getLastY();
         int keyIndex = keyState.onMoveKey(x, y);
         final Key oldKey = getKey(keyState.getKeyIndex());
         if (isValidKeyIndex(keyIndex)) {
@@ -365,8 +366,22 @@ public class PointerTracker {
                     keyState.onMoveToNewKey(keyIndex, x, y);
                     startLongPressTimer(keyIndex);
                 } else {
-                    setAlreadyProcessed();
-                    showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
+                    // HACK: On some devices, quick successive touches may be translated to sudden
+                    // move by touch panel firmware. This hack detects the case and translates the
+                    // move event to successive up and down events.
+                    final int dx = x - lastX;
+                    final int dy = y - lastY;
+                    final int lastMoveSquared = dx * dx + dy * dy;
+                    if (lastMoveSquared >= mKeyQuarterWidthSquared) {
+                        if (DEBUG_MODE)
+                            Log.w(TAG, String.format("onMoveEvent: sudden move is translated to "
+                                    + "up[%d,%d]/down[%d,%d] events", lastX, lastY, x, y));
+                        onUpEventInternal(lastX, lastY, eventTime);
+                        onDownEventInternal(x, y, eventTime);
+                    } else {
+                        setAlreadyProcessed();
+                        showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
+                    }
                     return;
                 }
             }
@@ -389,16 +404,10 @@ public class PointerTracker {
         showKeyPreviewAndUpdateKeyGraphics(mKeyState.getKeyIndex());
     }
 
-    // TODO: up-to-down filter, if delayed UP message is fired, invoke {@link onUpEventInternal}.
-
     public void onUpEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
         if (ENABLE_ASSERTION) checkAssertion(queue);
         if (DEBUG_EVENT)
             printTouchEvent("onUpEvent  :", x, y, eventTime);
-
-        // TODO: up-to-down filter, just sendDelayedMessage(UP, this) to Handler.
-        // TODO: down-to-up filter, if (eventTime-downTime) is less than threshold, just ignore
-        // this up event. Otherwise fire {@link onDownEventInternal} and {@link onUpEventInternal}.
 
         if (queue != null) {
             if (isModifier()) {
