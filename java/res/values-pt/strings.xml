@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opções de entrada"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar ao tocar a tecla"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Som ao tocar a tecla"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Exibir pop-up ao tocar a tecla"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Exibir pop-up ao digitar"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Corrigir erros de digitação"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Ativar a correção de erro de entrada"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Erros de entrada de paisagem"</string>
@@ -48,7 +48,7 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Exibir sugestões de palavras durante a digitação"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Conclusão automática"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"Barra de espaço e pontuação inserem a palavra destacada"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de configurações"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de config."</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automático"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostrar sempre"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Sempre ocultar"</string>
@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Dicionário disponível"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Ativar comentário do usuário"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ajude a melhorar este editor de método de entrada enviando automaticamente ao Google estatísticas de uso e relatórios de falhas."</string>
-    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Toque para corrigir as palavras"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Toque nas palavras digitadas para corrigi-las somente quando houver sugestões visíveis"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corrigir"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Toque as palavras para corrigi-las"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema do teclado"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"teclado"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"voz"</string>

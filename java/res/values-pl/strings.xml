@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opcje wprowadzania"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Wibracja przy naciśnięciu"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Dźwięk przy naciśnięciu"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Wyświetlaj po naciśnięciu klawisza"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Powiększ po naciśnięciu"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Popraw błędy pisowni"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Włącz poprawianie błędów wprowadzania"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Błędy wprowadzania w orientacji poziomej"</string>
@@ -77,7 +77,7 @@
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Wypróbuj!"</b></string>
     <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
     <string name="label_next_key" msgid="362972844525672568">"Dalej"</string>
-    <string name="label_done_key" msgid="2441578748772529288">"Gotowe"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"OK"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Wyślij"</string>
     <string name="label_symbol_key" msgid="6175820506864489453">"?123"</string>
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Słownik dostępny"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Włącz przesyłanie opinii użytkownika"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Pomóż ulepszyć edytor tej metody wprowadzania, automatycznie wysyłając do Google statystyki użycia i raporty o awariach."</string>
-    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dotknij, aby poprawić słowa"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Dotykaj wprowadzonych słów, aby je poprawić, tylko wtedy gdy widoczne są sugestie"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Popraw dotknięte słowo"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Dotknięte słowo zostanie poprawione"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Motyw klawiatury"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"klawiatura"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"głosowe"</string>
