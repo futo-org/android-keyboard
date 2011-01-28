@@ -128,8 +128,11 @@ public class Utils {
                     + ", " + maxEditDistanceOfNativeDictionary);
         }
         if (distance > maxEditDistanceOfNativeDictionary) {
-            Log.w(TAG, "(Error) The edit distance of this correction exceeds limit. "
-                    + "Turning off auto-correction.");
+            if (DBG) {
+                Log.d(TAG, "Safety net: before = " + typedWord + ", after = " + candidateWord);
+                Log.w(TAG, "(Error) The edit distance of this correction exceeds limit. "
+                        + "Turning off auto-correction.");
+            }
             return true;
         } else {
             return false;
