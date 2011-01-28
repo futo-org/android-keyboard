@@ -106,7 +106,7 @@
     <string name="voice_input" msgid="2466640768843347841">"語音輸入"</string>
   <string-array name="voice_input_modes">
     <item msgid="1349082139076086774">"於主鍵盤"</item>
-    <item msgid="8529385602829095903">"於符號鍵盤"</item>
+    <item msgid="8529385602829095903">"符號鍵盤上"</item>
     <item msgid="7283103513488381103">"關閉"</item>
   </string-array>
   <string-array name="voice_input_modes_summary">
