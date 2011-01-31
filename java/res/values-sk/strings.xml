@@ -33,10 +33,10 @@
     <string name="quick_fixes" msgid="5353213327680897927">"Rýchle opravy"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Opravuje najčastejšie chyby pri písaní"</string>
     <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Zobraziť návrhy"</string>
-    <!-- outdated translation 2564386479780335351 -->     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Zobrazovať navrhované slová počas písania"</string>
-    <!-- outdated translation 8350173747634837929 -->     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vždy zobrazovať"</string>
-    <!-- outdated translation 670278993111469619 -->     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Zobraziť v režime na výšku"</string>
-    <!-- outdated translation 2750493093338023345 -->     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Vždy skrývať"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Zobrazovať navrhované slová počas písania"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vždy zobrazovať"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Zobraziť v režime na výšku"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Vždy skrývať"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Zobraziť kláves Nastavenia"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automaticky"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Vždy zobrazovať"</string>
@@ -53,15 +53,15 @@
     <string name="label_next_key" msgid="362972844525672568">"Ďalej"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Hotovo"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Odoslať"</string>
-    <!-- outdated translation 3103719164112604010 -->     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Viac"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pozastaviť"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Čakajte"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Hlasový vstup"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Pre váš jazyk aktuálne nie je hlasový vstup podporovaný, ale funguje v angličtine."</string>
-    <!-- outdated translation 5450473727606344027 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Hlasový vstup používa rozpoznávanie hlasu Google. Na používanie hlasového vstupu sa vzťahujú "<a href="http://m.google.com/privacy">"Pravidlá ochrany osobných údajov pre mobilné služby"</a>"."</string>
-    <!-- outdated translation 8461922898209345270 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Ak chcete vypnúť hlasový vstup, prejdite na nastavenia metódy vstupu."</string>
-    <!-- outdated translation 6099357096490592798 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Ak chcete použiť hlasový vstup, stlačte tlačidlo mikrofón."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Hlasový vstup používa rozpoznávanie hlasu Google. Na používanie hlasového vstupu sa vzťahujú "<a href="http://m.google.com/privacy">"Pravidlá ochrany osobných údajov pre mobilné služby"</a>"."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Ak chcete vypnúť hlasový vstup, prejdite na nastavenia metódy vstupu."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Ak chcete použiť hlasový vstup, stlačte tlačidlo mikrofón."</string>
     <string name="voice_listening" msgid="467518160751321844">"Hovorte"</string>
     <string name="voice_working" msgid="6666937792815731889">"Prebieha spracovanie"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -92,19 +92,19 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Povoliť spätnú väzbu od používateľov"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Automatickým zasielaním štatistík o využívaní editora metódy vstupu a správ o jeho zlyhaní do služby Google môžete prispieť k vylepšeniu tohto nástroja."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dotykom opravíte slová"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Dotykom na zadané slová tieto slová opravíte, musia však byť viditeľné návrhy"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Dotykom zadaných slov tieto slová opravíte, musia však byť viditeľné návrhy"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Motív klávesnice"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"klávesnica – čeština"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"klávesnica – dánčina"</string>
-    <!-- outdated translation 1145552122692431122 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"klávesnica – nemčina"</string>
-    <!-- outdated translation 5050923189634470413 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"klávesnica – angličtina (Spojené kráľovstvo)"</string>
-    <!-- outdated translation 3435344903704397043 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"klávesnica – angličtina (Spojené štáty)"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"klávesnica – nemčina"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"klávesnica – angličtina (br.)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"klávesnica – angličtina (am.)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"klávesnica – španielčina"</string>
-    <!-- outdated translation 5792199241357098918 -->     <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"klávesnica – španielčina (Spojené štáty)"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"klávesnica – španielčina (am.)"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"klávesnica – francúzština"</string>
-    <!-- outdated translation 6458285776720480201 -->     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"klávesnica – francúzština (Kanada)"</string>
-    <!-- outdated translation 5966960427086795964 -->     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"klávesnica – francúzština (Švajčiarsko)"</string>
-    <!-- outdated translation 6927754583816493555 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"klávesnica – taliančina"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"klávesnica – francúzština (Kanada)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"klávesnica – francúzština (Švajč.)"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"klávesnica – taliančina"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"klávesnica – nórčina"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"klávesnica – holandčina"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"klávesnica – ruština"</string>
@@ -112,8 +112,8 @@
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"klávesnica – švédčina"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"hlas – čeština"</string>
-    <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"hlas – nemčina"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"hlas – čeština"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"hlas – nemčina"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"hlas – španielčina"</string>
@@ -134,5 +134,5 @@
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- outdated translation 8423000345880575687 -->     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Režim štúdia vhodnosti použitia"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Režim Štúdia vhodnosti použitia"</string>
 </resources>

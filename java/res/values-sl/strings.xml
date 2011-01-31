@@ -33,10 +33,10 @@
     <string name="quick_fixes" msgid="5353213327680897927">"Hitri popravki"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Popravi pogoste tipkarske napake"</string>
     <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Pokaži predloge"</string>
-    <!-- outdated translation 2564386479780335351 -->     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Prikaži predlagane besede med tipkanjem"</string>
-    <!-- outdated translation 8350173747634837929 -->     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vedno pokaži"</string>
-    <!-- outdated translation 670278993111469619 -->     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Pokaži v pokončnem načinu"</string>
-    <!-- outdated translation 2750493093338023345 -->     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Vedno skrij"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Pokaži predlagane besede med tipkanjem"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vedno pokaži"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Pokaži v pokončnem načinu"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Vedno skrij"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Pokaži tipko za nastavitve"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Samodejno"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Vedno pokaži"</string>
@@ -53,15 +53,15 @@
     <string name="label_next_key" msgid="362972844525672568">"Naprej"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Dokončano"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Pošlji"</string>
-    <!-- outdated translation 3103719164112604010 -->     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Več"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Premor"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Čakaj"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni vnos"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Glasovni vnos trenutno ni podprt v vašem jeziku, deluje pa v angleščini."</string>
-    <!-- outdated translation 5450473727606344027 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Glasovni vhod uporablja Googlovo tehnologijo prepoznavanja govora. To storitev ureja "<a href="http://m.google.com/privacy">"pravilnik o zasebnosti za mobilne naprave"</a>"."</string>
-    <!-- outdated translation 8461922898209345270 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Če želite izklopiti glasovni vnos, pojdite na nastavitve načina vnosa."</string>
-    <!-- outdated translation 6099357096490592798 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Če želite uporabljati glasovni vhod, pritisnite gumb mikrofona."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Glasovni vnos uporablja Googlovo prepoznavanje govora. Zanj velja "<a href="http://m.google.com/privacy">"pravilnik o zasebnosti za mobilne naprave"</a>"."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Glasovni vnos izklopite v nastavitvah načina vnosa."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Če želite uporabljati glasovni vnos, pritisnite gumb z mikrofonom."</string>
     <string name="voice_listening" msgid="467518160751321844">"Začnite govoriti"</string>
     <string name="voice_working" msgid="6666937792815731889">"Obdelava"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -92,19 +92,19 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Omogoči povratne informacije uporabnikov"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"S samodejnim pošiljanjem statističnih podatkov o uporabi in poročil o zrušitvah Googlu nam lahko pomagate izboljšati urejevalnik načina vnosa."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dotaknite se besed in jih popravite"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Dotaknite se vnesenih besed, da jih popravite, samo ko so predlogi vidni"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Dotaknite se vnesenih besed in jih popravite, samo ko so predlogi vidni"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema tipkovnice"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Češka tipkovnica"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Danska tipkovnica"</string>
-    <!-- outdated translation 1145552122692431122 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Nemška tipkovnica"</string>
-    <!-- outdated translation 5050923189634470413 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Angleška (VB)  tipkovnica"</string>
-    <!-- outdated translation 3435344903704397043 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Angleška (ZDA) tipkovnica"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Nemška tipkovnica"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Tipkovnica za britansko angleščino"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Tipkovnica za ameriško angleščino"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Španska tipkovnica"</string>
-    <!-- outdated translation 5792199241357098918 -->     <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Španska (ZDA) tipkovnica"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Tipkovnica za ameriško španščino"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Francoska tipkovnica"</string>
-    <!-- outdated translation 6458285776720480201 -->     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Tipkovnica za kanadsko francoščino"</string>
-    <!-- outdated translation 5966960427086795964 -->     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Francoska (Švica) tipkovnica"</string>
-    <!-- outdated translation 6927754583816493555 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italijanska tipkovnica"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Tipkovnica za kanadsko francoščino"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Tipkovnica za švicarsko francoščino"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italijanska tipkovnica"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norveška tipkovnica"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Nizozemska tipkovnica"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ruska tipkovnica"</string>
@@ -112,8 +112,8 @@
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Švedska tipkovnica"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Govor v češčini"</string>
-    <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Govor v nemščini"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Govor v češčini"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Govor v nemščini"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Govor v španščini"</string>
@@ -134,5 +134,5 @@
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- outdated translation 8423000345880575687 -->     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Način raziskave uporabnosti"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Način za preučevanje uporabnosti"</string>
 </resources>

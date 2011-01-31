@@ -33,10 +33,10 @@
     <string name="quick_fixes" msgid="5353213327680897927">"Шв. виправлення"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Виправляє поширені помилки"</string>
     <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показати пропозиції"</string>
-    <!-- outdated translation 2564386479780335351 -->     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Відображати при вводі пропоновані слова"</string>
-    <!-- outdated translation 8350173747634837929 -->     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Завжди показувати"</string>
-    <!-- outdated translation 670278993111469619 -->     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Показувати в книжковому режимі"</string>
-    <!-- outdated translation 2750493093338023345 -->     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Завжди ховати"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Відображати при вводі пропоновані слова"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Завжди показувати"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Показувати в книжковому режимі"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Завжди ховати"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Показ. клав. налашт."</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Автоматично"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Завжди показ."</string>
@@ -53,15 +53,15 @@
     <string name="label_next_key" msgid="362972844525672568">"Далі"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Готово"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Надісл."</string>
-    <!-- outdated translation 3103719164112604010 -->     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"Алфавіт"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Більше"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Пауза"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Чек."</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Голос. ввід"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Голос. ввід наразі не підтрим. для вашої мови, але можна користуватися англійською."</string>
-    <!-- outdated translation 5450473727606344027 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовий ввід використовує розпізнавання мовлення Google. Застосовується "<a href="http://m.google.com/privacy">"Політика конфіденційності для мобільних пристроїв"</a>"."</string>
-    <!-- outdated translation 8461922898209345270 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Щоб вимкнути голосовий ввід, перейдіть до налаштувань методів введення."</string>
-    <!-- outdated translation 6099357096490592798 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Щоб використовувати голосовий ввід, натисніть кнопку мікрофона."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовий ввід використовує розпізнавання мовлення Google. Застосовується "<a href="http://m.google.com/privacy">"Політика конфіденційності для мобільних пристроїв"</a>"."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Щоб вимкнути голосовий ввід, перейдіть до налаштувань методів введення."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Щоб використовувати голосовий ввід, натисніть кнопку мікрофона."</string>
     <string name="voice_listening" msgid="467518160751321844">"Диктуйте"</string>
     <string name="voice_working" msgid="6666937792815731889">"Працює"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -92,19 +92,19 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Увімк. відгуки корист."</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Допоможіть покращ. редактор методу введ., автомат. надсилаючи в Google статистику використ. та звіти про збої."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Торкн., щоб виправ. слова"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Торкніться введених слів, щоб виправити їх, лише коли відображаються пропозиції"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Торкніться введених слів, щоб виправити їх, лише коли ввімкнено пропозиції"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Тема клавіатури"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Чеська розкладка"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Данська розкладка"</string>
-    <!-- outdated translation 1145552122692431122 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Німецька розкладка"</string>
-    <!-- outdated translation 5050923189634470413 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Англійська розкладка (Великобританія)"</string>
-    <!-- outdated translation 3435344903704397043 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Англійська розкладка (США)"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Німецька розкладка"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Англ. розкладка (Великобританія)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Англійська розкладка (США)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Іспанська розкладка"</string>
-    <!-- outdated translation 5792199241357098918 -->     <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Іспанська розкладка (США)"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Іспанська розкладка (США)"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Франц. розкладка"</string>
-    <!-- outdated translation 6458285776720480201 -->     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Французька розкладка (Канада)"</string>
-    <!-- outdated translation 5966960427086795964 -->     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Voice французькою мовою (Швейцарія)"</string>
-    <!-- outdated translation 6927754583816493555 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Італійська розкладка"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Французька розкладка (Канада)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Французька розкладка (Швейцарія)"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Італійська розкладка"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Норвезька розкладка"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Голланд. розклад."</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Російська розкладка"</string>
@@ -112,8 +112,8 @@
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Шведська розкладка"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voice чеською мовою"</string>
-    <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voice німецькою мовою"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voice чеською мовою"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voice німецькою мовою"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Іспанський голос"</string>
@@ -134,5 +134,5 @@
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- outdated translation 8423000345880575687 -->     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Режим вивчення зручності у використанні"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Режим вивчення зручності у використанні"</string>
 </resources>
