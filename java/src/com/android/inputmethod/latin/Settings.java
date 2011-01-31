@@ -225,7 +225,9 @@ public class Settings extends PreferenceActivity
             final String action;
             if (android.os.Build.VERSION.SDK_INT
                     >= /* android.os.Build.VERSION_CODES.HONEYCOMB */ 11) {
-                action = "android.settings.INPUT_METHOD_AND_SUBTYPE_ENABLER";
+                // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
+                // TODO: Can this be a constant instead of literal String constant?
+                action = "android.settings.INPUT_METHOD_SUBTYPE_SETTINGS";
             } else {
                 action = "com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION";
             }
