@@ -133,7 +133,7 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktifkan umpan balik pengguna"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Bantu tingkatkan metode editor masukan dengan mengirim statistik penggunaan dan laporan kerusakan ke Google secara otomatis."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Sentuh untuk memperbaiki kata"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Sentuk kata yang dimasukkan untuk memperbaikinya"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Sentuh kata yang dimasukkan untuk memperbaikinya"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema Keyboard"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"keyboard"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"suara"</string>
