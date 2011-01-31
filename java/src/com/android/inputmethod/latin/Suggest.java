@@ -64,7 +64,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
 
-    private static boolean DBG = LatinImeLogger.sDBG;
+    private static final boolean DBG = LatinImeLogger.sDBG;
 
     private BinaryDictionary mMainDict;
 
@@ -224,6 +224,7 @@ public class Suggest implements Dictionary.WordCallback {
             mLowerOriginalWord = "";
         }
 
+        double normalizedScore = Integer.MIN_VALUE;
         if (wordComposer.size() == 1 && (mCorrectionMode == CORRECTION_FULL_BIGRAM
                 || mCorrectionMode == CORRECTION_BASIC)) {
             // At first character typed, search only the bigrams
@@ -290,9 +291,9 @@ public class Suggest implements Dictionary.WordCallback {
                     && mSuggestions.size() > 0 && mPriorities.length > 0) {
                 // TODO: when the normalized score of the first suggestion is nearly equals to
                 //       the normalized score of the second suggestion, behave less aggressive.
-                final double normalizedScore = Utils.calcNormalizedScore(
+                normalizedScore = Utils.calcNormalizedScore(
                         typedWord, mSuggestions.get(0), mPriorities[0]);
-                if (LatinImeLogger.sDBG) {
+                if (DBG) {
                     Log.d(TAG, "Normalized " + typedWord + "," + mSuggestions.get(0) + ","
                             + mPriorities[0] + ", " + normalizedScore
                             + "(" + mAutoCorrectionThreshold + ")");
@@ -354,7 +355,30 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
         removeDupes();
-        return new SuggestedWords.Builder().addWords(mSuggestions, null);
+        if (DBG) {
+            ArrayList<SuggestedWords.SuggestedWordInfo> frequencyInfoList =
+                    new ArrayList<SuggestedWords.SuggestedWordInfo>();
+            frequencyInfoList.add(new SuggestedWords.SuggestedWordInfo("+", false));
+            final int priorityLength = mPriorities.length;
+            for (int i = 0; i < priorityLength; ++i) {
+                if (normalizedScore > 0) {
+                    final String priorityThreshold = Integer.toString(mPriorities[i]) + " (" +
+                            normalizedScore + ")";
+                    frequencyInfoList.add(
+                            new SuggestedWords.SuggestedWordInfo(priorityThreshold, false));
+                    normalizedScore = 0.0;
+                } else {
+                    final String priority = Integer.toString(mPriorities[i]);
+                    frequencyInfoList.add(new SuggestedWords.SuggestedWordInfo(priority, false));
+                }
+            }
+            for (int i = priorityLength; i < mSuggestions.size(); ++i) {
+                frequencyInfoList.add(new SuggestedWords.SuggestedWordInfo("--", false));
+            }
+            return new SuggestedWords.Builder().addWords(mSuggestions, frequencyInfoList);
+        } else {
+            return new SuggestedWords.Builder().addWords(mSuggestions, null);
+        }
     }
 
     public int[] getNextLettersFrequencies() {
