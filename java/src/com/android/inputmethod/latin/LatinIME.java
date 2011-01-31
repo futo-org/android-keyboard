@@ -2122,8 +2122,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mVibrateOn = vibrator != null && vibrator.hasVibrator()
                 && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON, false);
-        mPopupOn = prefs.getBoolean(Settings.PREF_POPUP_ON,
-                mResources.getBoolean(R.bool.config_default_popup_preview));
+
+        mPopupOn = isPopupEnabled(prefs);
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
         mQuickFixes = isQuickFixesEnabled(prefs);
 
@@ -2172,6 +2172,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // TODO: This should be refactored :
         //           setAutoCorrectionThreshold should be called outside of this method.
         mSuggest.setAutoCorrectionThreshold(autoCorrectionThreshold);
+    }
+
+    private boolean isPopupEnabled(SharedPreferences sp) {
+        final boolean showPopupOption = getResources().getBoolean(
+                R.bool.config_enable_show_popup_on_keypress_option);
+        if (!showPopupOption) return mResources.getBoolean(R.bool.config_default_popup_preview);
+        return sp.getBoolean(Settings.PREF_POPUP_ON,
+                mResources.getBoolean(R.bool.config_default_popup_preview));
     }
 
     private boolean isQuickFixesEnabled(SharedPreferences sp) {
