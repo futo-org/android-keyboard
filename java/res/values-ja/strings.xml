@@ -33,10 +33,10 @@
     <string name="quick_fixes" msgid="5353213327680897927">"クイックフィックス"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"よくある誤字・脱字を修正します"</string>
     <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"入力候補を表示"</string>
-    <!-- outdated translation 2564386479780335351 -->     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"入力中に入力候補を表示する"</string>
-    <!-- outdated translation 8350173747634837929 -->     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"常に表示"</string>
-    <!-- outdated translation 670278993111469619 -->     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"縦向きで表示"</string>
-    <!-- outdated translation 2750493093338023345 -->     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"常に非表示"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"入力中に入力候補を表示する"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"常に表示"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"縦向きで表示"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"常に非表示"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"設定キーを表示"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"自動"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"常に表示"</string>
@@ -53,15 +53,15 @@
     <string name="label_next_key" msgid="362972844525672568">"次へ"</string>
     <string name="label_done_key" msgid="2441578748772529288">"完了"</string>
     <string name="label_send_key" msgid="2815056534433717444">"送信"</string>
-    <!-- outdated translation 3103719164112604010 -->     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Shift"</string>
     <string name="label_pause_key" msgid="181098308428035340">"停止"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"待機"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"音声入力"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"音声入力は現在英語には対応していますが、日本語には対応していません。"</string>
-    <!-- outdated translation 5450473727606344027 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"音声入力にはGoogleの音声認識機能を使用します。"<a href="http://m.google.com/privacy">"モバイルプライバシーポリシー"</a>"が適用されます。"</string>
-    <!-- outdated translation 8461922898209345270 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"音声入力をOFFにするには、入力方法の設定を開きます。"</string>
-    <!-- outdated translation 6099357096490592798 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"音声入力するには、マイクボタンを押してください。"</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"音声入力ではGoogleの音声認識技術を利用します。"<a href="http://m.google.com/privacy">"モバイルプライバシーポリシー"</a>"が適用されます。"</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"音声入力をOFFにするには、入力方法の設定を開きます。"</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"音声入力するには、マイクボタンを押してください。"</string>
     <string name="voice_listening" msgid="467518160751321844">"お話しください"</string>
     <string name="voice_working" msgid="6666937792815731889">"処理中"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -91,48 +91,48 @@
     <string name="has_dictionary" msgid="6071847973466625007">"辞書を利用できます"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"ユーザーフィードバックを有効にする"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"IMEの機能向上のため、使用統計状況やクラッシュレポートをGoogleに自動送信します。"</string>
-    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"タップして語句を修正"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"候補が表示されているときのみ、入力した語句をタップして修正します"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"タップして語句を修正"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"候補が表示されているときのみ、入力した語句をタップして修正します"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"キーボードテーマ"</string>
-    <!-- outdated translation 1186679497674833204 -->     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"チェコ語のキーボード"</string>
-    <!-- outdated translation 1395637124037817510 -->     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"デンマーク語のキーボード"</string>
-    <!-- outdated translation 1145552122692431122 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"ドイツ語のキーボード"</string>
-    <!-- outdated translation 5050923189634470413 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"英語（英国）のキーボード"</string>
-    <!-- outdated translation 3435344903704397043 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"英語（米国）のキーボード"</string>
-    <!-- outdated translation 1030419781157491328 -->     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"スペイン語のキーボード"</string>
-    <!-- outdated translation 5792199241357098918 -->     <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"スペイン語（米国）のキーボード"</string>
-    <!-- outdated translation 4855416218650524164 -->     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"フランス語のキーボード"</string>
-    <!-- outdated translation 6458285776720480201 -->     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"フランス語（カナダ）のキーボード"</string>
-    <!-- outdated translation 5966960427086795964 -->     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"フランス語（スイス）のキーボード"</string>
-    <!-- outdated translation 6927754583816493555 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"イタリア語のキーボード"</string>
-    <!-- outdated translation 771634025467668613 -->     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"ノルウェー語キーボード"</string>
-    <!-- outdated translation 3397048533451717478 -->     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"オランダ語のキーボード"</string>
-    <!-- outdated translation 3812694929448916712 -->     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"ロシア語のキーボード"</string>
-    <!-- outdated translation 7947963963114184275 -->     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"セルビア語のキーボード"</string>
-    <!-- outdated translation 3874083866564515371 -->     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"スウェーデン語のキーボード"</string>
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"チェコ語のキーボード"</string>
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"デンマーク語のキーボード"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"ドイツ語のキーボード"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"英語（英国）のキーボード"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"英国（米国）のキーボード"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"スペイン語のキーボード"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"スペイン語（米国）のキーボード"</string>
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"フランス語のキーボード"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"フランス語（カナダ）のキーボード"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"フランス語（スイス）のキーボード"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"イタリア語のキーボード"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"ノルウェー語のキーボード"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"オランダ語のキーボード"</string>
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"ロシア語のキーボード"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"セルビア語のキーボード"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"スウェーデン語キーボード"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"チェコ語の音声"</string>
-    <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"ドイツ語の音声"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"チェコ語の音声"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"ドイツ語の音声"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
-    <!-- outdated translation 1243071504878834350 -->     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"スペイン語の音声"</string>
-    <!-- outdated translation 2048805677248981105 -->     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"フランス語音声"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"スペイン語の音声"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"フランス語の音声"</string>
     <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
     <skip />
-    <!-- outdated translation 1855513591711108481 -->     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"日本語の音声"</string>
-    <!-- outdated translation 3453153041889151316 -->     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"韓国語の音声"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"日本語の音声"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"韓国語の音声"</string>
     <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
     <skip />
-    <!-- outdated translation 6730658974157645735 -->     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"ポーランド語の音声"</string>
-    <!-- outdated translation 4508062762756741654 -->     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"ポルトガル語の音声"</string>
-    <!-- outdated translation 554299262138845594 -->     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"ロシア語の音声"</string>
-    <!-- outdated translation 5242644971865917801 -->     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"トルコ語の音声"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"ポーランド語の音声"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"ポルトガル語の音声"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"ロシア語の音声"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"トルコ語の音声"</string>
     <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
     <skip />
     <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- outdated translation 8423000345880575687 -->     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"使いやすさの研究モード"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"使いやすさの研究モード"</string>
 </resources>

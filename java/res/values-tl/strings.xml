@@ -33,10 +33,10 @@
     <string name="quick_fixes" msgid="5353213327680897927">"Mga mabilisang pagsasaayos"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Itinatama ang mga karaniwang na-type na mali"</string>
     <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Ipakita ang mga suhestiyon"</string>
-    <!-- outdated translation 2564386479780335351 -->     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Ipakita ang mga iminumungkahing salita habang nagta-type"</string>
-    <!-- outdated translation 8350173747634837929 -->     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Palaging ipakita"</string>
-    <!-- outdated translation 670278993111469619 -->     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Magpakita sa mode na portrait"</string>
-    <!-- outdated translation 2750493093338023345 -->     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Palaging itago"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Ipakita ang mga iminumungkahing salita habang nagta-type"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Palaging ipakita"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Ipakita sa portrait mode"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Palaging itago"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Ipakita ang key ng mga setting"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Awtomatiko"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Palaging ipakita"</string>
@@ -53,15 +53,15 @@
     <string name="label_next_key" msgid="362972844525672568">"Susunod"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Tapos na"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Ipadala"</string>
-    <!-- outdated translation 3103719164112604010 -->     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Higit pa"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Intay"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Pag-input ng boses"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Hindi kasalukuyang suportado ang pag-input ng boses para sa iyong wika, ngunit gumagana sa Ingles."</string>
-    <!-- outdated translation 5450473727606344027 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Gumagamit ang input ng Voice ng pagkakilanlan ng pananalita ng Google. Nalalapat ang "<a href="http://m.google.com/privacy">"Ang Patakaran ng Privacy ng Mobile"</a>"."</string>
-    <!-- outdated translation 8461922898209345270 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Upang i-off ang pag-input na boses, pumunta sa mga setting ng paraan ng pag-input."</string>
-    <!-- outdated translation 6099357096490592798 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Upang gamitin ang voice input, pindutin ang pindutan na microphone."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Gumagamit ang pag-input ng boses ng speech recognition ng Google. Nalalapat "<a href="http://m.google.com/privacy">"Ang Patakaran sa Privacy ng Mobile"</a>"."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Upang i-off ang pag-input ng boses, pumunta sa mga setting ng pamamaraan ng pag-input."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Upang gamitin ang pag-input ng boses, pindutin ang pindutan na mikropono."</string>
     <string name="voice_listening" msgid="467518160751321844">"Magsalita ngayon"</string>
     <string name="voice_working" msgid="6666937792815731889">"Nagtatrabaho"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -92,19 +92,19 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Paganahin ang feedback ng user"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Tumulong na pahusayin ang editor ng paraan ng pag-input na ito sa pamamagitan ng awtomatikong pagpapadala ng mga istatistika ng paggamit at mga ulat ng crash sa Google."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Pindutin upang itama ang mga salita"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Pindutin ang mga ipinasok na salita upang iwasto ang mga iyon, kapag makikita lang ang mga suhestiyon"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Pindutin ang mga inilagay na salita upang iwasto ang mga ito, kapag nakikita lang ang mga suhestiyon"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema ng Keyboard"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Czech na Keyboard"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Danish na Keyboard"</string>
-    <!-- outdated translation 1145552122692431122 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"German na Keyboard"</string>
-    <!-- outdated translation 5050923189634470413 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Ingles (UK) na Keyboard"</string>
-    <!-- outdated translation 3435344903704397043 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Ingles (US) na Keyboard"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"German na Keyboard"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Ingles (UK) na Keyboard"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Ingles (US) na Keyboard"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spanish na Keyboard"</string>
-    <!-- outdated translation 5792199241357098918 -->     <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Espanyol (US) na Keyboard"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Spanish (US) na Keyboard"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"French na Keyboard"</string>
-    <!-- outdated translation 6458285776720480201 -->     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"French (Canada) na Keyboard"</string>
-    <!-- outdated translation 5966960427086795964 -->     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"French (Switzerland) na Keyboard"</string>
-    <!-- outdated translation 6927754583816493555 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italian na Keyboard"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"French (Canada) na Keyboard"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"French (Switzerland) na Keyboard"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italian na Keyboard"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norwegian na Keyboard"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Dutch na Keyboard"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Russian na Keyboard"</string>
@@ -112,8 +112,8 @@
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Swedish na Keyboard"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Czech na Voice"</string>
-    <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"German na Voice"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Czech na Boses"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"German na Boses"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Spanish na Boses"</string>
@@ -134,5 +134,5 @@
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- outdated translation 8423000345880575687 -->     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Mode sa Pag-aaral ng Pagkamagagamit"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Usability Study Mode"</string>
 </resources>

@@ -33,10 +33,10 @@
     <string name="quick_fixes" msgid="5353213327680897927">"Snabba lösningar"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Åtgärdar automatiskt vanliga misstag"</string>
     <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Visa förslag"</string>
-    <!-- outdated translation 2564386479780335351 -->     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Visar ordförslag när du skriver"</string>
-    <!-- outdated translation 8350173747634837929 -->     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Visa alltid"</string>
-    <!-- outdated translation 670278993111469619 -->     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Visa stående"</string>
-    <!-- outdated translation 2750493093338023345 -->     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Dölj alltid"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Visar ordförslag när du skriver"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Visa alltid"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Visa stående"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Dölj alltid"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Visa inställningsknapp"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatiskt"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Visa alltid"</string>
@@ -53,15 +53,15 @@
     <string name="label_next_key" msgid="362972844525672568">"Nästa"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Färdig"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Skicka"</string>
-    <!-- outdated translation 3103719164112604010 -->     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Mer"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Vänta"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Röstindata"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Röstindata stöds inte på ditt språk än, men tjänsten fungerar på engelska."</string>
-    <!-- outdated translation 5450473727606344027 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Röstinmatning använder sig av Googles tjänst för taligenkänning. "<a href="http://m.google.com/privacy">"Sekretesspolicyn för mobila enheter"</a>" gäller."</string>
-    <!-- outdated translation 8461922898209345270 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Om du vill stänga av röstinmatning öppnar du inställningarna för inmatningsmetod."</string>
-    <!-- outdated translation 6099357096490592798 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Om du vill använda röstinmatning trycker du på mikrofonknappen."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Röstinmatning använder sig av Googles tjänst för taligenkänning. "<a href="http://m.google.com/privacy">"Sekretesspolicyn för mobila enheter"</a>" gäller."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Om du vill stänga av röstinmatning öppnar du inställningarna för inmatningsmetod."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Om du vill använda röstinmatning trycker du på mikrofonknappen."</string>
     <string name="voice_listening" msgid="467518160751321844">"Tala nu"</string>
     <string name="voice_working" msgid="6666937792815731889">"Fungerar"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -91,48 +91,48 @@
     <string name="has_dictionary" msgid="6071847973466625007">"En ordlista är tillgänglig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktivera synpunkter från användare"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Du kan hjälpa till att förbättra inmatningsmetoden genom att automatiskt skicka användningsstatistik och felrapporter till Google."</string>
-    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryck om du vill korrigera ord"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tryck på skrivna ord om du vill korrigera dem, endast när förslag visas"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryck om du vill korrigera ord"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tryck på skrivna ord om du vill korrigera dem, endast när förslag visas"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tangentbordstema"</string>
-    <!-- outdated translation 1186679497674833204 -->     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tjeckiskt tangentbord"</string>
-    <!-- outdated translation 1395637124037817510 -->     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Danskt tangentbord"</string>
-    <!-- outdated translation 1145552122692431122 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Tyskt tangentbord"</string>
-    <!-- outdated translation 5050923189634470413 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Engelskt tangentbord (Storbritannien)"</string>
-    <!-- outdated translation 3435344903704397043 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Engelskt tangentbord (USA)"</string>
-    <!-- outdated translation 1030419781157491328 -->     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spanskt tangentbord"</string>
-    <!-- outdated translation 5792199241357098918 -->     <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Spanskt tangentbord (USA)"</string>
-    <!-- outdated translation 4855416218650524164 -->     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Franskt tangentbord"</string>
-    <!-- outdated translation 6458285776720480201 -->     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Franskt tangentbord (Kanada)"</string>
-    <!-- outdated translation 5966960427086795964 -->     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Franskt tangentbord (Schweiz)"</string>
-    <!-- outdated translation 6927754583816493555 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italienskt tangentbord"</string>
-    <!-- outdated translation 771634025467668613 -->     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norskt tangentbord"</string>
-    <!-- outdated translation 3397048533451717478 -->     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Holländskt tangentbord"</string>
-    <!-- outdated translation 3812694929448916712 -->     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ryskt tangentbord"</string>
-    <!-- outdated translation 7947963963114184275 -->     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbiskt tangentbord"</string>
-    <!-- outdated translation 3874083866564515371 -->     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Svenskt tangentbord"</string>
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tjeckiskt tangentbord"</string>
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Danskt tangentbord"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Tyskt tangentbord"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Engelskt tangentbord (Storbrit.)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Engelskt tangentbord (USA)"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spanskt tangentbord"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Spanskt tangentbord (USA)"</string>
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Franskt tangentbord"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Franskt tangentbord (Kanada)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Franskt tangentbord (Schweiz)"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italienskt tangentbord"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norskt tangentbord"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Holländskt tangentbord"</string>
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ryskt tangentbord"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbiskt tangentbord"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Svenskt tangentbord"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Röst på tjeckiska"</string>
-    <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Röst på tyska"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Röst på tjeckiska"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Röst på tyska"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
-    <!-- outdated translation 1243071504878834350 -->     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Röst på spanska"</string>
-    <!-- outdated translation 2048805677248981105 -->     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Röst på franska"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Röst på spanska"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Röst på franska"</string>
     <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
     <skip />
-    <!-- outdated translation 1855513591711108481 -->     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Röst på japanska"</string>
-    <!-- outdated translation 3453153041889151316 -->     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Röst på koreanska"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Röst på japanska"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Röst på koreanska"</string>
     <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
     <skip />
-    <!-- outdated translation 6730658974157645735 -->     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Röst på polska"</string>
-    <!-- outdated translation 4508062762756741654 -->     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Röst på portugisiska"</string>
-    <!-- outdated translation 554299262138845594 -->     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Röst på ryska"</string>
-    <!-- outdated translation 5242644971865917801 -->     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Röst på turkiska"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Röst på polska"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Röst på portugisiska"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Röst på ryska"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Röst på turkiska"</string>
     <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
     <skip />
     <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- outdated translation 8423000345880575687 -->     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Läge för användbarhetsstudie"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Läge för användbarhetsstudie"</string>
 </resources>

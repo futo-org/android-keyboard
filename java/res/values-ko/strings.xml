@@ -33,10 +33,10 @@
     <string name="quick_fixes" msgid="5353213327680897927">"빠른 수정"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"자주 발생하는 오타를 수정합니다."</string>
     <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"추천 단어 표시"</string>
-    <!-- outdated translation 2564386479780335351 -->     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"글자를 입력하는 동안 추천 단어 표시"</string>
-    <!-- outdated translation 8350173747634837929 -->     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
-    <!-- outdated translation 670278993111469619 -->     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"세로 모드로 표시"</string>
-    <!-- outdated translation 2750493093338023345 -->     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"항상 숨기기"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"글자를 입력하는 동안 추천 단어 표시"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"세로 모드로 표시"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"항상 숨기기"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"설정 키 표시"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"자동"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"항상 표시"</string>
@@ -53,15 +53,15 @@
     <string name="label_next_key" msgid="362972844525672568">"다음"</string>
     <string name="label_done_key" msgid="2441578748772529288">"완료"</string>
     <string name="label_send_key" msgid="2815056534433717444">"전송"</string>
-    <!-- outdated translation 3103719164112604010 -->     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"더보기"</string>
     <string name="label_pause_key" msgid="181098308428035340">"일시 중지"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"대기"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"음성 입력"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"음성 입력은 현재 자국어로 지원되지 않으며 영어로 작동됩니다."</string>
-    <!-- outdated translation 5450473727606344027 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"음성 입력은 Google의 음성 인식을 사용합니다. "<a href="http://m.google.com/privacy">"모바일 개인정보취급방침"</a>"이 적용됩니다."</string>
-    <!-- outdated translation 8461922898209345270 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"음성 입력을 사용하지 않으려면 입력 방법 설정으로 이동하세요."</string>
-    <!-- outdated translation 6099357096490592798 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"음성 입력을 사용하려면 마이크 버튼을 누르세요."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"음성 입력에서는 Google의 음성 인식 기능을 사용합니다. "<a href="http://m.google.com/privacy">"모바일 개인정보취급방침"</a>"이 적용됩니다."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"음성 입력을 사용하지 않으려면 입력 방법 설정으로 이동하세요."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"음성 입력을 사용하려면 마이크 버튼을 누르세요."</string>
     <string name="voice_listening" msgid="467518160751321844">"지금 말하세요."</string>
     <string name="voice_working" msgid="6666937792815731889">"인식 중"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -91,48 +91,48 @@
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"사용자 의견 사용"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"사용 통계 및 충돌 보고서를 Google에 자동으로 전송하여 입력 방법 편집기의 개선에 도움을 줍니다."</string>
-    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"터치하여 단어 수정"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"추천 검색어가 표시된 경우에만 입력한 단어를 터치하여 수정"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"터치하여 단어 수정"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"입력한 단어를 터치하여 수정(추천 단어가 표시되는 경우에만)"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"키보드 테마"</string>
-    <!-- outdated translation 1186679497674833204 -->     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"체코어 키보드"</string>
-    <!-- outdated translation 1395637124037817510 -->     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"덴마크어 키보드"</string>
-    <!-- outdated translation 1145552122692431122 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"독일어 키보드"</string>
-    <!-- outdated translation 5050923189634470413 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"영어(영국) 키보드"</string>
-    <!-- outdated translation 3435344903704397043 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"영어(미국) 키보드"</string>
-    <!-- outdated translation 1030419781157491328 -->     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"스페인어 키보드"</string>
-    <!-- outdated translation 5792199241357098918 -->     <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"스페인어(미국) 키보드"</string>
-    <!-- outdated translation 4855416218650524164 -->     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"프랑스어 키보드"</string>
-    <!-- outdated translation 6458285776720480201 -->     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"프랑스어(캐나다) 키보드"</string>
-    <!-- outdated translation 5966960427086795964 -->     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"프랑스어(스위스) 키보드"</string>
-    <!-- outdated translation 6927754583816493555 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"이탈리아어 키보드"</string>
-    <!-- outdated translation 771634025467668613 -->     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"노르웨이어 키보드"</string>
-    <!-- outdated translation 3397048533451717478 -->     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"네덜란드어 키보드"</string>
-    <!-- outdated translation 3812694929448916712 -->     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"러시아어 키보드"</string>
-    <!-- outdated translation 7947963963114184275 -->     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"세르비아어 키보드"</string>
-    <!-- outdated translation 3874083866564515371 -->     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"스웨덴어 키보드"</string>
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"체코어 키보드"</string>
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"덴마크어 키보드"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"독일어 키보드"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"영어(영국) 키보드"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"영어(미국) 키보드"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"스페인어 키보드"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"스페인어(미국) 키보드"</string>
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"프랑스어 키보드"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"프랑스어(캐나다) 키보드"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"프랑스어(스위스) 키보드"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"이탈리아어 키보드"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"노르웨이어 키보드"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"네덜란드어 키보드"</string>
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"러시아어 키보드"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"세르비아어 키보드"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"스웨덴어 키보드"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <!-- outdated translation 8290007904951946296 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"체코어 음성검색"</string>
-    <!-- outdated translation 672328729666823853 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"독일어 음성검색"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"체코어 키보드"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"독일어 음성"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
-    <!-- outdated translation 1243071504878834350 -->     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"스페인어 음성검색"</string>
-    <!-- outdated translation 2048805677248981105 -->     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"프랑스어 음성검색"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"스페인어 음성"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"프랑스어 음성"</string>
     <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
     <skip />
-    <!-- outdated translation 1855513591711108481 -->     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"일본어 음성검색"</string>
-    <!-- outdated translation 3453153041889151316 -->     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"한국어 음성검색"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"일본어 키보드"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"한국어 음성"</string>
     <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
     <skip />
-    <!-- outdated translation 6730658974157645735 -->     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"폴란드어 음성검색"</string>
-    <!-- outdated translation 4508062762756741654 -->     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"포르투갈어 음성검색"</string>
-    <!-- outdated translation 554299262138845594 -->     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"러시아어 음성검색"</string>
-    <!-- outdated translation 5242644971865917801 -->     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"터키어 음성검색"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"폴란드어 음성"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"포르투갈어 음성"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"러시아어 음성"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"터키어 음성"</string>
     <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
     <skip />
     <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- outdated translation 8423000345880575687 -->     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"사용성 평가 모드"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"가용성 연구 모드"</string>
 </resources>
