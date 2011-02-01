@@ -490,15 +490,6 @@ public class PointerTracker {
         return mKeyState.getDownTime();
     }
 
-    // These package scope methods are only for debugging purpose.
-    /* package */ int getStartX() {
-        return mKeyState.getStartX();
-    }
-
-    /* package */ int getStartY() {
-        return mKeyState.getStartY();
-    }
-
     private boolean isMinorMoveBounce(int x, int y, int newKey) {
         if (mKeys == null || mKeyHysteresisDistanceSquared < 0)
             throw new IllegalStateException("keyboard and/or hysteresis not set");

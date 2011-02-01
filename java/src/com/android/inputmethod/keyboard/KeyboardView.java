@@ -68,8 +68,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#KeyboardView_popupLayout
  */
 public class KeyboardView extends View implements PointerTracker.UIProxy {
-    private static final String TAG = "KeyboardView";
-    private static final boolean DEBUG = false;
+    private static final String TAG = KeyboardView.class.getSimpleName();
     private static final boolean DEBUG_SHOW_ALIGN = false;
     private static final boolean DEBUG_KEYBOARD_GRID = false;
 
@@ -115,7 +114,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private int[] mOffsetInWindow;
     private int mOldPreviewKeyIndex = KeyDetector.NOT_A_KEY;
     private boolean mShowPreview = true;
-    private boolean mShowTouchPoints = true;
     private int mPopupPreviewOffsetX;
     private int mPopupPreviewOffsetY;
     private int mWindowY;
@@ -158,18 +156,20 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     // Drawing
     /** Whether the keyboard bitmap needs to be redrawn before it's blitted. **/
     private boolean mDrawPending;
-    /** The dirty region in the keyboard bitmap */
-    private final Rect mDirtyRect = new Rect();
-    /** The keyboard bitmap for faster updates */
-    private Bitmap mBuffer;
     /** Notes if the keyboard just changed, so that we could possibly reallocate the mBuffer. */
     private boolean mKeyboardChanged;
+    /** The dirty region in the keyboard bitmap */
+    private final Rect mDirtyRect = new Rect();
+    /** The key to invalidate. */
     private Key mInvalidatedKey;
+    /** The dirty region for single key drawing */
+    private final Rect mInvalidatedKeyRect = new Rect();
+    /** The keyboard bitmap for faster updates */
+    private Bitmap mBuffer;
     /** The canvas for the above mutable keyboard bitmap */
     private Canvas mCanvas;
     private final Paint mPaint;
     private final Rect mPadding;
-    private final Rect mClipRegion = new Rect(0, 0, 0, 0);
     // This map caches key label text height in pixel as value and key label text size as map key.
     private final HashMap<Integer, Integer> mTextHeightCache = new HashMap<Integer, Integer>();
     // Distance from horizontal center of the key, proportional to key label text height and width.
@@ -506,7 +506,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             tracker.setKeyboard(keyboard, mKeys, mKeyHysteresisDistance);
         }
         requestLayout();
-        // Hint to reallocate the buffer if the size changed
         mKeyboardChanged = true;
         invalidateAllKeys();
         computeProximityThreshold(keyboard, mKeys);
@@ -626,13 +625,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     @Override
-    public void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        // Release the buffer, if any and it will be reallocated on the next draw
-        mBuffer = null;
-    }
-
-    @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mDrawPending || mBuffer == null || mKeyboardChanged) {
@@ -641,19 +633,18 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         canvas.drawBitmap(mBuffer, 0, 0, null);
     }
 
-    @SuppressWarnings("unused")
     private void onBufferDraw() {
+        final int width = getWidth();
+        final int height = getHeight();
+        if (width == 0 || height == 0)
+            return;
         if (mBuffer == null || mKeyboardChanged) {
-            if (mBuffer == null || mKeyboardChanged &&
-                    (mBuffer.getWidth() != getWidth() || mBuffer.getHeight() != getHeight())) {
-                // Make sure our bitmap is at least 1x1
-                final int width = Math.max(1, getWidth());
-                final int height = Math.max(1, getHeight());
-                mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                mCanvas = new Canvas(mBuffer);
-            }
-            invalidateAllKeys();
             mKeyboardChanged = false;
+            mDirtyRect.union(0, 0, width, height);
+        }
+        if (mBuffer == null || mBuffer.getWidth() != width || mBuffer.getHeight() != height) {
+            mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            mCanvas = new Canvas(mBuffer);
         }
         final Canvas canvas = mCanvas;
         canvas.clipRect(mDirtyRect, Op.REPLACE);
@@ -662,30 +653,19 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         final Paint paint = mPaint;
         final Drawable keyBackground = mKeyBackground;
-        final Rect clipRegion = mClipRegion;
         final Rect padding = mPadding;
         final int kbdPaddingLeft = getPaddingLeft();
         final int kbdPaddingTop = getPaddingTop();
         final Key[] keys = mKeys;
-        final Key invalidKey = mInvalidatedKey;
         final boolean isManualTemporaryUpperCase = mKeyboard.isManualTemporaryUpperCase();
+        final boolean drawSingleKey = (mInvalidatedKey != null
+                && mInvalidatedKeyRect.contains(mDirtyRect));
 
-        boolean drawSingleKey = false;
-        if (invalidKey != null && canvas.getClipBounds(clipRegion)) {
-            // TODO we should use Rect.inset and Rect.contains here.
-            // Is clipRegion completely contained within the invalidated key?
-            if (invalidKey.mX + kbdPaddingLeft - 1 <= clipRegion.left &&
-                    invalidKey.mY + kbdPaddingTop - 1 <= clipRegion.top &&
-                    invalidKey.mX + invalidKey.mWidth + kbdPaddingLeft + 1 >= clipRegion.right &&
-                    invalidKey.mY + invalidKey.mHeight + kbdPaddingTop + 1 >= clipRegion.bottom) {
-                drawSingleKey = true;
-            }
-        }
         canvas.drawColor(0x00000000, PorterDuff.Mode.CLEAR);
         final int keyCount = keys.length;
         for (int i = 0; i < keyCount; i++) {
             final Key key = keys[i];
-            if (drawSingleKey && invalidKey != key) {
+            if (drawSingleKey && key != mInvalidatedKey) {
                 continue;
             }
             int[] drawableState = key.getCurrentDrawableState();
@@ -739,8 +719,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 } else {
                     positionX = (key.mWidth + padding.left - padding.right) / 2;
                     paint.setTextAlign(Align.CENTER);
-                    if (DEBUG_SHOW_ALIGN && label.length() > 1)
-                        drawVerticalLine(canvas, positionX, rowHeight, 0xc0008080, new Paint());
+                    if (DEBUG_SHOW_ALIGN) {
+                        if (label.length() > 1)
+                            drawVerticalLine(canvas, positionX, rowHeight, 0xc0008080, new Paint());
+                    }
                 }
                 if (key.mManualTemporaryUpperCaseHintIcon != null && isManualTemporaryUpperCase) {
                     paint.setColor(mKeyTextColorDisabled);
@@ -811,32 +793,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 canvas.drawLine(0, i * ch, cw * mKeyboard.GRID_WIDTH, i * ch, p);
         }
 
-        mInvalidatedKey = null;
         // Overlay a dark rectangle to dim the keyboard
         if (mMiniKeyboardView != null) {
             paint.setColor((int) (mBackgroundDimAmount * 0xFF) << 24);
-            canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
+            canvas.drawRect(0, 0, width, height, paint);
         }
 
-        if (DEBUG) {
-            if (mShowTouchPoints) {
-                for (PointerTracker tracker : mPointerTrackers) {
-                    int startX = tracker.getStartX();
-                    int startY = tracker.getStartY();
-                    int lastX = tracker.getLastX();
-                    int lastY = tracker.getLastY();
-                    paint.setAlpha(128);
-                    paint.setColor(0xFFFF0000);
-                    canvas.drawCircle(startX, startY, 3, paint);
-                    canvas.drawLine(startX, startY, lastX, lastY, paint);
-                    paint.setColor(0xFF0000FF);
-                    canvas.drawCircle(lastX, lastY, 3, paint);
-                    paint.setColor(0xFF00FF00);
-                    canvas.drawCircle((startX + lastX) / 2, (startY + lastY) / 2, 2, paint);
-                }
-            }
-        }
-
+        mInvalidatedKey = null;
         mDrawPending = false;
         mDirtyRect.setEmpty();
     }
@@ -1050,12 +1013,11 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         if (key == null)
             return;
         mInvalidatedKey = key;
-        // TODO we should clean up this and record key's region to use in onBufferDraw.
-        mDirtyRect.union(key.mX + getPaddingLeft(), key.mY + getPaddingTop(),
-                key.mX + key.mWidth + getPaddingLeft(), key.mY + key.mHeight + getPaddingTop());
+        mInvalidatedKeyRect.set(0, 0, key.mWidth, key.mHeight);
+        mInvalidatedKeyRect.offset(key.mX + getPaddingLeft(), key.mY + getPaddingTop());
+        mDirtyRect.union(mInvalidatedKeyRect);
         onBufferDraw();
-        invalidate(key.mX + getPaddingLeft(), key.mY + getPaddingTop(),
-                key.mX + key.mWidth + getPaddingLeft(), key.mY + key.mHeight + getPaddingTop());
+        invalidate(mInvalidatedKeyRect);
     }
 
     private boolean openPopupIfRequired(int keyIndex, PointerTracker tracker) {
