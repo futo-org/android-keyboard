@@ -54,7 +54,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
     private static final int MAX_SUGGESTIONS = 16;
 
-    private static boolean DBG = LatinImeLogger.sDBG;
+    private static final boolean DBG = LatinImeLogger.sDBG;
 
     private final ArrayList<View> mWords = new ArrayList<View>();
     private final boolean mConfigCandidateHighlightFontColorEnabled;
@@ -226,10 +226,14 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 }
                 final String debugString = info.getDebugString();
                 if (DBG) {
-                    if (!TextUtils.isEmpty(debugString)) {
+                    if (TextUtils.isEmpty(debugString)) {
+                        dv.setVisibility(GONE);
+                    } else {
                         dv.setText(debugString);
                         dv.setVisibility(VISIBLE);
                     }
+                } else {
+                    dv.setVisibility(GONE);
                 }
             } else {
                 dv.setVisibility(GONE);
@@ -249,8 +253,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         final TextView tv = (TextView)mWords.get(1).findViewById(R.id.candidate_word);
         final Spannable word = new SpannableString(autoCorrectedWord);
         final int wordLength = word.length();
-        word.setSpan(mInvertedBackgroundColorSpan, 0, wordLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-        word.setSpan(mInvertedForegroundColorSpan, 0, wordLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        word.setSpan(mInvertedBackgroundColorSpan, 0, wordLength,
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        word.setSpan(mInvertedForegroundColorSpan, 0, wordLength,
+                Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         tv.setText(word);
         mShowingAutoCorrectionInverted = true;
     }
