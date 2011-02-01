@@ -132,8 +132,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Доступен словарь"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Включить отправку сведений"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогите усовершенствовать редактор способа ввода, разрешив отправку статистики и отчетов о сбоях в Google."</string>
-    <!-- outdated translation 6143241861730430695 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Исправление нажатие"</string>
-    <!-- outdated translation 3119549956172710725 -->     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"При отображении подсказки нажмите на введенное слово, чтобы исправить его."</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Исправление нажатием"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Введенные слова исправляются нажатием"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Вид клавиатуры"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"клавиатура"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"голосовой"</string>
