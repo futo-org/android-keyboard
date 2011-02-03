@@ -31,8 +31,8 @@ public class DebugSettings extends PreferenceActivity
     private static final String TAG = "DebugSettings";
     private static final String DEBUG_MODE_KEY = "debug_mode";
 
+    private boolean mServiceNeedsRestart = false;
     private CheckBoxPreference mDebugMode;
-    private boolean serviceNeedsRestart = false;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -41,7 +41,7 @@ public class DebugSettings extends PreferenceActivity
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
-        serviceNeedsRestart = false;
+        mServiceNeedsRestart = false;
         mDebugMode = (CheckBoxPreference) findPreference(DEBUG_MODE_KEY);
         updateDebugMode();
     }
@@ -49,7 +49,7 @@ public class DebugSettings extends PreferenceActivity
     @Override
     protected void onStop() {
         super.onStop();
-        if (serviceNeedsRestart) Process.killProcess(Process.myPid());
+        if (mServiceNeedsRestart) Process.killProcess(Process.myPid());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class DebugSettings extends PreferenceActivity
             if (mDebugMode != null) {
                 mDebugMode.setChecked(prefs.getBoolean(DEBUG_MODE_KEY, false));
                 updateDebugMode();
-                serviceNeedsRestart = true;
+                mServiceNeedsRestart = true;
             }
         }
     }
