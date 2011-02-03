@@ -2272,10 +2272,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 di.dismiss();
                 switch (position) {
                 case 0:
-                    launchSettings();
+                    mImm.showInputMethodPicker();
                     break;
                 case 1:
-                    mImm.showInputMethodPicker();
+                    launchSettings();
                     break;
                 }
             }
