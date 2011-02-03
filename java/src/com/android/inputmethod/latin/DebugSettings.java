@@ -20,6 +20,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.os.Process;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceActivity;
 import android.util.Log;
@@ -31,6 +32,7 @@ public class DebugSettings extends PreferenceActivity
     private static final String DEBUG_MODE_KEY = "debug_mode";
 
     private CheckBoxPreference mDebugMode;
+    private boolean serviceNeedsRestart = false;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -39,8 +41,15 @@ public class DebugSettings extends PreferenceActivity
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
+        serviceNeedsRestart = false;
         mDebugMode = (CheckBoxPreference) findPreference(DEBUG_MODE_KEY);
         updateDebugMode();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (serviceNeedsRestart) Process.killProcess(Process.myPid());
     }
 
     @Override
@@ -49,6 +58,7 @@ public class DebugSettings extends PreferenceActivity
             if (mDebugMode != null) {
                 mDebugMode.setChecked(prefs.getBoolean(DEBUG_MODE_KEY, false));
                 updateDebugMode();
+                serviceNeedsRestart = true;
             }
         }
     }
