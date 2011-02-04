@@ -426,8 +426,15 @@ public class SubtypeSwitcher {
         if (mConfigUseSpacebarLanguageSwitcher) {
             return mLanguageSwitcher.getEnabledLanguages();
         } else {
+            int enabledLanguageCount = mEnabledLanguagesOfCurrentInputMethod.size();
+            // Workaround for explicitly specifying the voice language
+            if (enabledLanguageCount == 1) {
+                mEnabledLanguagesOfCurrentInputMethod.add(
+                        mEnabledLanguagesOfCurrentInputMethod.get(0));
+                ++enabledLanguageCount;
+            }
             return mEnabledLanguagesOfCurrentInputMethod.toArray(
-                    new String[mEnabledLanguagesOfCurrentInputMethod.size()]);
+                    new String[enabledLanguageCount]);
         }
     }
 
