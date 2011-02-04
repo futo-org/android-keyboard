@@ -81,7 +81,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     private static final int RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO = 6;
 
     private static final String TAG = VoiceIMEConnector.class.getSimpleName();
-    private static boolean DEBUG = LatinImeLogger.sDBG;
+    private static final boolean DEBUG = LatinImeLogger.sDBG;
 
     private boolean mAfterVoiceInput;
     private boolean mHasUsedVoiceInput;
@@ -715,7 +715,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         mHandler.updateVoiceResults();
     }
 
-    public FieldContext makeFieldContext() {
+    private FieldContext makeFieldContext() {
         SubtypeSwitcher switcher = SubtypeSwitcher.getInstance();
         return new FieldContext(mService.getCurrentInputConnection(),
                 mService.getCurrentInputEditorInfo(), switcher.getInputLocaleStr(),
