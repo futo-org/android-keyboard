@@ -2121,7 +2121,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrateOn = vibrator != null && vibrator.hasVibrator()
                 && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
-        mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON, false);
+        mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON, true);
 
         mPopupOn = isPopupEnabled(prefs);
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
