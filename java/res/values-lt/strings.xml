@@ -132,7 +132,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Žodynas galimas"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Įgalinti naudotojų atsiliepimus"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Padėkite patobulinti šią įvesties metodo redagavimo programą automatiškai „Google“ siųsdami naudojimo statistiką ir strigčių ataskaitas."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Jei norite ištaisyti žodžius, palieskite"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Jei norite ištais. žodž., paliesk."</string>
     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Jei norite ištaisyti įvestus žodžius, palieskite juos"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Klaviatūros tema"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"klaviatūra"</string>
