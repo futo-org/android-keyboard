@@ -20,7 +20,6 @@
 
 <resources>
     <bool name="config_swipeDisambiguation">true</bool>
-    <bool name="default_recorrection_enabled">true</bool>
     <bool name="config_long_press_comma_for_settings_enabled">true</bool>
     <bool name="config_enable_show_settings_key_option">true</bool>
     <bool name="config_enable_show_subtype_settings">true</bool>
@@ -39,6 +38,8 @@
     <!-- Default values for whether quick fixes and bigram suggestions are activated -->
     <bool name="config_default_quick_fixes">true</bool>
     <bool name="config_default_bigram_suggestions">true</bool>
+    <bool name="config_default_recorrection_enabled">true</bool>
+    <bool name="config_default_sound_enabled">false</bool>
     <bool name="config_use_spacebar_language_switcher">true</bool>
     <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
     <bool name="config_show_mini_keyboard_at_touched_point">false</bool>

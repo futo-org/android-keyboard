@@ -359,9 +359,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // but always use the default setting defined in the resources.
         if (res.getBoolean(R.bool.config_enable_show_recorrection_option)) {
             mReCorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
-                    res.getBoolean(R.bool.default_recorrection_enabled));
+                    res.getBoolean(R.bool.config_default_recorrection_enabled));
         } else {
-            mReCorrectionEnabled = res.getBoolean(R.bool.default_recorrection_enabled);
+            mReCorrectionEnabled = res.getBoolean(R.bool.config_default_recorrection_enabled);
         }
 
         mConfigEnableShowSubtypeSettings = res.getBoolean(
@@ -1950,7 +1950,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else if (Settings.PREF_RECORRECTION_ENABLED.equals(key)) {
             mReCorrectionEnabled = sharedPreferences.getBoolean(
                     Settings.PREF_RECORRECTION_ENABLED,
-                    mResources.getBoolean(R.bool.default_recorrection_enabled));
+                    mResources.getBoolean(R.bool.config_default_recorrection_enabled));
         }
     }
 
@@ -2121,7 +2121,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
         mVibrateOn = vibrator != null && vibrator.hasVibrator()
                 && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
-        mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON, false);
+        mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
+                mResources.getBoolean(R.bool.config_default_sound_enabled));
 
         mPopupOn = isPopupEnabled(prefs);
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);

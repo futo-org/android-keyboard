@@ -38,6 +38,7 @@
         <CheckBoxPreference
                 android:key="sound_on"
                 android:title="@string/sound_on_keypress"
+                android:defaultValue="@bool/config_default_sound_enabled"
                 android:persistent="true"
                 />
 
@@ -53,7 +54,7 @@
                 android:title="@string/prefs_enable_recorrection"
                 android:summary="@string/prefs_enable_recorrection_summary"
                 android:persistent="true"
-                android:defaultValue="@bool/default_recorrection_enabled"
+                android:defaultValue="@bool/config_default_recorrection_enabled"
                 />
 
         <ListPreference
