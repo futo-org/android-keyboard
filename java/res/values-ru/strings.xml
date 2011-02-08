@@ -26,13 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Виброотклик клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Настройки подсказок"</string>
+    <string name="general_category" msgid="1859088467017573195">"Общие"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Коррекция текста"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Быстрое исправление"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Исправлять распространенные опечатки"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Предлагать подсказки"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показать варианты исправлений"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Предлагать варианты слов во время ввода"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Всегда показывать"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Показать вертикально"</string>
@@ -42,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Всегда показывать"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Всегда скрывать"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Автоисправление"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"При нажатии пробела или знака препинания вставлять предложенное слово"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Автоматическое исправление опечаток при вводе знака препинания или пробела"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Выкл."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Активное"</string>
@@ -59,7 +58,7 @@
     <string name="label_wait_key" msgid="6402152600878093134">"Подождите"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Голосовой ввод"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"В настоящее время функция голосового ввода не поддерживает ваш язык, но вы можете пользоваться ей на английском."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовой ввод использует технологию распознавания речи Google. Действует "<a href="http://m.google.com/privacy">"политика конфиденциальности для мобильных устройств"</a>"."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовой ввод использует алгоритмы распознавания речи Google. Действует "<a href="http://m.google.com/privacy">"политика конфиденциальности для мобильных устройств"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Функция голосового ввода отключается в настройках способа ввода."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Чтобы использовать голосовой ввод, нажмите кнопку микрофона."</string>
     <string name="voice_listening" msgid="467518160751321844">"Говорите"</string>
@@ -118,12 +117,10 @@
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Голос: испанский"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Голос: французский"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Голосовой ввод на итальянском"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Голос: японский"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Голос: корейский"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Голосовой ввод на голландском"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Голос: польский"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Голос: португальский"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Голос: русский"</string>

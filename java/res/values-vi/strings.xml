@@ -26,9 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rung khi nhấn phím"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Âm thanh khi nhấn phím"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Cửa sổ bật lên khi nhấn phím"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Cài đặt đề xuất từ"</string>
+    <string name="general_category" msgid="1859088467017573195">"Chung"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Sửa văn bản"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Tự động viết hoa"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Sửa nhanh"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Sửa lỗi nhập thông thường"</string>

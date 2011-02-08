@@ -26,13 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"キー操作バイブ"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"キー操作音"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"キー押下時ポップアップ"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"入力候補の設定"</string>
+    <string name="general_category" msgid="1859088467017573195">"全般"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"テキストの修正"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大文字変換"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"クイックフィックス"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"よくある誤字・脱字を修正します"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"入力候補を表示"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"修正候補を表示する"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"入力中に入力候補を表示する"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"常に表示"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"縦向きで表示"</string>
@@ -42,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"常に表示"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"常に非表示"</string>
     <string name="auto_correction" msgid="4979925752001319458">"自動修正"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"反転表示されている変換候補をSpaceまたは句読点キーで挿入する"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"間違って入力した単語をスペースまたは句読点キーで訂正する"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"OFF"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"中"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"強"</string>
@@ -92,13 +91,13 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"ユーザーフィードバックを有効にする"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"IMEの機能向上のため、使用統計状況やクラッシュレポートをGoogleに自動送信します。"</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"タップして語句を修正"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"候補が表示されているときのみ、入力した語句をタップして修正します"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"候補が表示されているときのみ、入力した語句をタップして修正する"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"キーボードテーマ"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"チェコ語のキーボード"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"デンマーク語のキーボード"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"ドイツ語のキーボード"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"英語（英国）のキーボード"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"英国（米国）のキーボード"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"英語（米国）のキーボード"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"スペイン語のキーボード"</string>
     <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"スペイン語（米国）のキーボード"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"フランス語のキーボード"</string>
@@ -109,7 +108,7 @@
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"オランダ語のキーボード"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"ロシア語のキーボード"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"セルビア語のキーボード"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"スウェーデン語キーボード"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"スウェーデン語のキーボード"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"チェコ語の音声"</string>
@@ -118,12 +117,10 @@
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"スペイン語の音声"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"フランス語の音声"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"イタリア語の音声"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"日本語の音声"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"韓国語の音声"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"オランダ語の音声"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"ポーランド語の音声"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"ポルトガル語の音声"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"ロシア語の音声"</string>

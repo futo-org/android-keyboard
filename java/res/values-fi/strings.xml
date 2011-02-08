@@ -26,13 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Käytä värinää näppäimiä painettaessa"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Toista ääni näppäimiä painettaessa"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ponnahdusikkuna painalluksella"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Sanaehdotusasetukset"</string>
+    <string name="general_category" msgid="1859088467017573195">"Yleinen"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Tekstin korjaus"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automaattiset isot kirjaimet"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Pikakorjaukset"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Korjaa yleiset kirjoitusvirheet"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Näytä ehdotukset"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Näytä korjausehdotukset"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Näytä sanaehdotukset kirjoitettaessa"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Näytä aina"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Näytä pystysuunnassa"</string>
@@ -42,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Näytä aina"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Piilota aina"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Autom. korjaus"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Välilyönti ja välimerkki lisäävät automaattisesti korostetun sanan"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Välilyönnit ja välimerkit korjaavat väärinkirjoitetut sanat automaattisesti"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Älä käytä"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Osittainen"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Täysi"</string>
@@ -118,12 +117,10 @@
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Ääni: espanja"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Ääni: ranska"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"italia (ääni)"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Ääni: japani"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Ääni: korea"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"hollanti (ääni)"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Ääni: puola"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Ääni: portugali"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Ääni: venäjä"</string>

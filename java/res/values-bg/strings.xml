@@ -26,23 +26,22 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Да вибрира при натискане на клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при натискане на клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Изскачащ прозорец при натискане на клавиш"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Настройки за предложения на думи"</string>
+    <string name="general_category" msgid="1859088467017573195">"Общи"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Корекция на текста"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоматично поставяне на главни букви"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Бързи корекции"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Коригира най-честите грешки при въвеждане"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения за корекция"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Показване на предложения, докато пишете"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Винаги да се показва"</string>
-    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Режим за показване с вертикална ориентация"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Показване с вертикална ориентация"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Винаги да се скрива"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Показване на клавиша за настройки"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Автоматично"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Да се показва винаги"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Да се скрива винаги"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Автоко"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Клавишът за интервал и пунктуация поставя автоматично откроена дума"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Клавишът за интервал и пунктуация авт. поправя сгрешени думи"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Изкл."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умерено"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Агресивно"</string>
@@ -59,7 +58,7 @@
     <string name="label_wait_key" msgid="6402152600878093134">"Чака"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Гласово въвеждане"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"За вашия език понастоящем не се поддържа гласово въвеждане, но можете да го използвате на английски."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Гласовото въвеждане използва разпознаването на говор на Google. В сила е "<a href="http://m.google.com/privacy">"Декларацията за поверителност за мобилни устройства"</a>"."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Гласовото въвеждане използва функцията на Google за разпознаване на говор. В сила е "<a href="http://m.google.com/privacy">"Декларацията за поверителност за мобилни устройства"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"За да изключите гласовото въвеждане, отворете настройките за метода за въвеждане."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"За да използвате гласово въвеждане, натиснете бутона на микрофона."</string>
     <string name="voice_listening" msgid="467518160751321844">"Говорете сега"</string>
@@ -92,7 +91,7 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Активиране на отзивите от потребителите"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогнете за подобряването на този редактор за въвеждане чрез автоматично изпращане до Google на статистически данни за употребата и сигнали за сривове."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Докоснете, за да поправите думите"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Докоснете въведените думи, за да ги поправите – само когато предложенията си видими"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Докоснете въведените думи, за да ги поправите – само когато предложенията са видими"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Тема на клавиатурата"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"чешка клавиатура"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"датска клавиатура"</string>
@@ -118,12 +117,10 @@
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"испански, гласово"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"френски, гласово"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"италиански, гласово"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"японски, гласово"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"корейски, гласово"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"нидерландски, гласово"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"полски, гласово"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"португалски, гласово"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"руски, гласово"</string>

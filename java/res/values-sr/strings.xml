@@ -26,13 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вибрирај на притисак тастера"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук на притисак тастера"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Искачући прозор приликом притиска тастера"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Подешавања за предлагање речи"</string>
+    <string name="general_category" msgid="1859088467017573195">"Опште"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Исправљање текста"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Аутоматски унос великих слова"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Брзе исправке"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Исправља честе грешке у куцању"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Прикажи предлоге"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Прикажи предлоге за исправку"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Приказивање предложених речи током уноса текста"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Увек прикажи"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Прикажи у усправном режиму"</string>
@@ -42,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Увек прикажи"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Увек сакриј"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Аутоматско исправљање"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Означена реч се аутоматски умеће када притиснете размак или знак интерпункције"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Размак и интерпункција аутоматски исправљају грешке у куцању"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Искључи"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умерено"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Агресивно"</string>
@@ -118,12 +117,10 @@
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Глас на шпанском"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Глас на француском"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Глас на италијанском"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Глас на јапанском"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Глас на корејском"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Глас на холандском"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Глас на пољском"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Глас на португалском"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Глас на руском"</string>

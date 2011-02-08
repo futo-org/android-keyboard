@@ -26,9 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrate on key-press"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sound on key-press"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up on key press"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Word suggestion settings"</string>
+    <string name="general_category" msgid="1859088467017573195">"General"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Text correction"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalisation"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Quick fixes"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrects commonly typed mistakes"</string>

@@ -26,9 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibruoti, kai paspaudžiami klavišai"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Klavišo paspaudimo garsas"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Iššoka paspaudus klavišą"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Žodžių pasiūlymo nustatymai"</string>
+    <string name="general_category" msgid="1859088467017573195">"Bendra"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Teksto taisymas"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatinis didžiųjų raidžių rašymas"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Greiti pataisymai"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Taiso dažnai padarytas rašybos klaidas"</string>
@@ -91,7 +90,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Žodynas galimas"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Įgalinti naudotojų atsiliepimus"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Padėkite patobulinti šią įvesties metodo redagavimo programą automatiškai „Google“ siųsdami naudojimo statistiką ir strigčių ataskaitas."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Jei norite ištaisyti žodžius, palieskite"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Jei norite ištais. žodž., paliesk."</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Jei norite ištaisyti įvestus žodžius, palieskite juos tik tada, kai matomi pasiūlymai"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Klaviatūros tema"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Čekiška klaviatūra"</string>

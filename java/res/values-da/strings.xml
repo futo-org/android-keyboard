@@ -26,9 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibration ved tastetryk"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Lyd ved tastetryk"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup ved tastetryk"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Indstillinger for ordforslag"</string>
+    <string name="general_category" msgid="1859088467017573195">"Generelt"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Tekstkorrigering"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Skriv aut. med stort"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Hurtige løsninger"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Retter almindelige stavefejl"</string>
@@ -92,7 +91,7 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktiver brugerfeedback"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Vær med til at forbedre denne inputmetode ved at sende anvendelsesstatistikker og rapporter om nedbrud til Google."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryk for at rette ord"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tryk på de indtastede ord for at rette dem, kun ved synlige forslag"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tryk på de indtastede ord for at rette dem. Kun når der er synlige forslag."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tastaturtema"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tjekkisk tastatur"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Dansk tastatur"</string>
