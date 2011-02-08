@@ -80,7 +80,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final int PREF_MAX_BIGRAMS = 60;
 
-    private boolean mAutoTextEnabled;
+    private boolean mQuickFixesEnabled;
 
     private double mAutoCorrectionThreshold;
     private int[] mPriorities = new int[mPrefMaxSuggestions];
@@ -116,8 +116,8 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    public void setAutoTextEnabled(boolean enabled) {
-        mAutoTextEnabled = enabled;
+    public void setQuickFixesEnabled(boolean enabled) {
+        mQuickFixesEnabled = enabled;
     }
 
     public int getCorrectionMode() {
@@ -309,7 +309,7 @@ public class Suggest implements Dictionary.WordCallback {
         if (typedWord != null) {
             mSuggestions.add(0, typedWord.toString());
         }
-        if (mAutoTextEnabled) {
+        if (mQuickFixesEnabled) {
             int i = 0;
             int max = 6;
             // Don't autotext the suggestions from the dictionaries
@@ -416,12 +416,12 @@ public class Suggest implements Dictionary.WordCallback {
         return mHasAutoCorrection;
     }
 
-    private boolean compareCaseInsensitive(final String mLowerOriginalWord,
+    private static boolean compareCaseInsensitive(final String lowerOriginalWord,
             final char[] word, final int offset, final int length) {
-        final int originalLength = mLowerOriginalWord.length();
+        final int originalLength = lowerOriginalWord.length();
         if (originalLength == length && Character.isUpperCase(word[offset])) {
             for (int i = 0; i < originalLength; i++) {
-                if (mLowerOriginalWord.charAt(i) != Character.toLowerCase(word[offset+i])) {
+                if (lowerOriginalWord.charAt(i) != Character.toLowerCase(word[offset+i])) {
                     return false;
                 }
             }

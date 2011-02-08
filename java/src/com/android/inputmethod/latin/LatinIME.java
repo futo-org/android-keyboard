@@ -2082,7 +2082,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void updateAutoTextEnabled() {
         if (mSuggest == null) return;
-        mSuggest.setAutoTextEnabled(mQuickFixes
+        mSuggest.setQuickFixesEnabled(mQuickFixes
                 && SubtypeSwitcher.getInstance().isSystemLanguageSameAsInputLanguage());
     }
 

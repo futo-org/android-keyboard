@@ -41,7 +41,7 @@ public class SuggestHelper {
     public SuggestHelper(String tag, Context context, int resId) {
         TAG = tag;
         mSuggest = new Suggest(context, resId);
-        mSuggest.setAutoTextEnabled(false);
+        mSuggest.setQuickFixesEnabled(false);
         mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
     }
 

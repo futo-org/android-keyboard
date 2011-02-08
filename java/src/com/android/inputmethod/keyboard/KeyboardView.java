@@ -508,7 +508,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         requestLayout();
         mKeyboardChanged = true;
         invalidateAllKeys();
-        computeProximityThreshold(keyboard, mKeys);
+        mKeyDetector.setProximityThreshold(KeyDetector.getMostCommonKeyWidth(keyboard));
         mMiniKeyboardCache.clear();
     }
 
@@ -598,30 +598,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             setMeasuredDimension(
                     width, mKeyboard.getHeight() + getPaddingTop() + getPaddingBottom());
         }
-    }
-
-    /**
-     * Compute the most common key width and use it as proximity key detection threshold.
-     * @param keyboard
-     * @param keys
-     */
-    private void computeProximityThreshold(Keyboard keyboard, Key[] keys) {
-        if (keyboard == null || keys == null || keys.length == 0) return;
-        final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
-        int maxCount = 0;
-        int mostCommonWidth = 0;
-        for (Key key : keys) {
-            final Integer width = key.mWidth + key.mGap;
-            Integer count = histogram.get(width);
-            if (count == null)
-                count = 0;
-            histogram.put(width, ++count);
-            if (count > maxCount) {
-                maxCount = count;
-                mostCommonWidth = width;
-            }
-        }
-        mKeyDetector.setProximityThreshold(mostCommonWidth);
     }
 
     @Override
