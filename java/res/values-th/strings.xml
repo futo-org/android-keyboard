@@ -26,23 +26,22 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"สั่นเมื่อกดปุ่ม"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"ส่งเสียงเมื่อกดปุ่ม"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"ป๊อปอัปเมื่อกดแป้น"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"การตั้งค่าการแนะนำคำ"</string>
+    <string name="general_category" msgid="1859088467017573195">"ทั่วไป"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"การแก้ไขข้อความ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ปรับเป็นตัวพิมพ์ใหญ่อัตโนมัติ"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"แก้ไขด่วน"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"แก้ไขข้อผิดพลาดในการพิมพ์ที่พบบ่อย"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"แสดงคำแนะนำ"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"แสดงคำแนะนำการแก้ไข"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"แสดงคำที่แนะนำขณะพิมพ์"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"แสดงตลอดเวลา"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"แสดงทุกครั้ง"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"แสดงในโหมดแนวตั้ง"</string>
-    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ซ่อนตลอดเวลา"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ซ่อนทุกครั้ง"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"แสดงแป้นการตั้งค่า"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"อัตโนมัติ"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"แสดงตลอดเวลา"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"ซ่อนตลอดเวลา"</string>
     <string name="auto_correction" msgid="4979925752001319458">"การแก้ไขอัตโนมัติ"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"ใช้แป้นเคาะวรรคและเครื่องหมายวรรคตอนเพื่อแทรกคำที่ไฮไลต์โดยอัตโนมัติ"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"เคาะและเว้นวรรคจะแก้คำผิดอัตโนมัติ"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ปิด"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"ปานกลาง"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"เข้มงวด"</string>
@@ -118,12 +117,10 @@
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"เสียงภาษาสเปน"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"เสียงภาษาฝรั่งเศส"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"เสียงภาษาอิตาลี"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"เสียงภาษาญี่ปุ่น"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"เสียงภาษาเกาหลี"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"เสียงภาษาดัตช์"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"เสียงภาษาโปแลนด์"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"เสียงภาษาโปรตุเกส"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"เสียงภาษารัสเซีย"</string>

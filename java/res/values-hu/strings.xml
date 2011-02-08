@@ -26,13 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rezgés billentyű megnyomása esetén"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Hangjelzés billentyű megnyomása esetén"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Legyen nagyobb billentyű lenyomásakor"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Szójavaslati beállítások"</string>
+    <string name="general_category" msgid="1859088467017573195">"Általános"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Szövegjavítás"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatikusan nagy kezdőbetű"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Gyorsjavítások"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Kijavítja a gyakori gépelési hibákat"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Javaslatok megjelenítése"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Javítási ajánlások megjelenítése"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"A javasolt szavak megjelenítése gépelés közben"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mindig látszik"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Megjelenítés álló tájolásban"</string>
@@ -42,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mindig látszik"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Mindig rejtve"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Automatikus javítás"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"A szóköz és az írásjelek használata automatikusan beszúrja a kiemelt szót"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Szóköz és közp. elgépelést javít"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Ki"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mérsékelt"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresszív"</string>
@@ -118,12 +117,10 @@
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Spanyol hang"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Francia hang"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Olasz hang"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Japán hang"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Koreai hang"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Holland hang"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Lengyel hang"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Portugál hang"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Orosz hang"</string>

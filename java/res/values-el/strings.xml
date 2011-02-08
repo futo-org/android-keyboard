@@ -26,9 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Δόνηση κατά το πάτημα πλήκτρων"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Ήχος κατά το πάτημα πλήκτρων"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Εμφάνιση με το πάτημα πλήκτρου"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Ρυθμίσεις υποδείξεων λέξεων"</string>
+    <string name="general_category" msgid="1859088467017573195">"Γενικά"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Διόρθωση κειμένου"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Αυτόματη χρήση κεφαλαίων"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Γρήγορες διορθώσεις"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Διορθώνει συνηθισμένα λάθη πληκτρολόγησης"</string>
@@ -91,8 +90,8 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Λεξικό διαθέσιμο"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Ενεργοποίηση σχολίων χρηστών"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Βοηθήστε μας να βελτιώσουμε αυτό το πρόγραμμα επεξεργασίας μεθόδου εισόδου στέλνοντας αυτόματα στατιστικά στοιχεία και αναφορές σφαλμάτων στην Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Διόρθωση λέξεων με άγγιγμα"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Διόρθωση λέξεων με άγγιγμα, μόνο όταν οι προτάσεις είναι ορατές"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Αγγίξτε για διόρθωση λέξεων"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Αγγίξτε τις λέξες για να τις διορθώσετε, μόνο όταν οι προτάσεις είναι ορατές"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Θέμα πληκτρολογίου"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Τσεχικό πληκτρολόγιο"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Δανικό πληκτρολόγιο"</string>
@@ -112,20 +111,20 @@
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Σουηδικό πληκτρολόγιο"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Φωνητικές εντολές στα τσεχικά"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Φωνητικές εντολές στα Γερμανικά"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Τσεχικά"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Γερμανικά"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Φωνητικές εντολές στα Ισπανικά"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Φωνητικές εντολές στα Γαλλικά"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Ισπανικά"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Γαλλικά"</string>
     <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Φωνητικές εντολές στα Ιταλικά"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Φωνητικές εντολές στα Ιαπωνικά"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Φωνητικές εντολές στα Κορεατικά"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Ιαπωνικά"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Κορεατικά"</string>
     <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Φωνητικές εντολές στα Ολλανδικά"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Φωνητικές εντολές στα Πολωνικά"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Φωνητικές εντολές στα Πορτογαλικά"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Φωνητικές εντολές στα Ρωσικά"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Φωνητικές εντολές στα Τουρκικά"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Πολωνικά"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Πορτογαλικά"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Ρωσικά"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Τουρκικά"</string>
     <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
     <skip />
     <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->

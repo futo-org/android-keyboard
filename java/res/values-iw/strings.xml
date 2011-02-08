@@ -26,9 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"רטט עם לחיצה על מקשים"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"צלילים עם לחיצה על מקשים"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"חלון קופץ עם לחיצה על מקשים"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"הגדרות של הצעות מילים"</string>
+    <string name="general_category" msgid="1859088467017573195">"כללי"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"תיקון טקסט"</string>
     <string name="auto_cap" msgid="1719746674854628252">"הפיכה אוטומטית של אותיות לרישיות"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"תיקונים מהירים"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"מתקן שגיאות הקלדה נפוצות"</string>

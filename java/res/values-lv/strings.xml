@@ -26,9 +26,8 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrēt, nospiežot taustiņu"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Skaņa, nospiežot taustiņu"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Nospiežot taustiņu, parādīt uznirstošo izvēlni"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Vārdu ieteikumu iestatījumi"</string>
+    <string name="general_category" msgid="1859088467017573195">"Vispārīgi"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Teksta korekcija"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automātiska lielo burtu lietošana"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Ātrie labojumi"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Nodrošina izplatītu drukas kļūdu labošanu."</string>

@@ -26,13 +26,12 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Při stisku klávesy vibrovat"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk při stisku klávesy"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Zobrazit znaky při stisku klávesy"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- outdated translation 8633658064951690350 -->     <string name="prediction_category" msgid="6361242011806282176">"Nastavení návrhů slov"</string>
+    <string name="general_category" msgid="1859088467017573195">"Obecné"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Oprava textu"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Velká písmena automaticky"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Rychlé opravy"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Opravuje nejčastější chyby při psaní"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Zobrazit návrhy"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Zobrazit návrhy oprav"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Zobrazovat navržená slova během psaní"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vždy zobrazovat"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Zobrazit v režimu na výšku"</string>
@@ -42,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Vždy zobrazovat"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Vždy skrývat"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Automatické opravy"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Stisknutím mezerníku nebo interpunkčního znaménka automaticky vložíte zvýrazněné slovo."</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Stisknutím mezerníku a interpunkce se automaticky opravují chybně napsaná slova"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Vypnuto"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mírné"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresivní"</string>
@@ -61,7 +60,7 @@
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Pro váš jazyk aktuálně není hlasový vstup podporován, ale funguje v angličtině."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Hlasový vstup používá rozpoznávání hlasu Google a vztahují se na něj "<a href="http://m.google.com/privacy">"Zásady ochrany osobních údajů pro mobilní služby"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Chcete-li vypnout hlasový vstup, přejděte do nastavení metod vstupu."</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Chcete-li použít hlasový vstup, stiskněte tlačítko mikrofonu"</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Chcete-li použít hlasový vstup, stiskněte tlačítko mikrofonu."</string>
     <string name="voice_listening" msgid="467518160751321844">"Mluvte"</string>
     <string name="voice_working" msgid="6666937792815731889">"Probíhá zpracování"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -118,12 +117,10 @@
     <skip />
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Voice – španělština"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Voice – francouzština"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Hlasový vstup – italština"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Voice – japonština"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Voice – korejština"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Hlasový vstup – holandština"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Voice – polština"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Voice – portugalština"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Voice – ruština"</string>
