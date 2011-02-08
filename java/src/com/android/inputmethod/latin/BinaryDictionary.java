@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
 
+import java.io.File;
 import java.util.Arrays;
 
 /**
@@ -72,9 +73,40 @@ public class BinaryDictionary extends Dictionary {
     public static BinaryDictionary initDictionary(Context context, int resId, int dicTypeId) {
         synchronized (sInstance) {
             sInstance.closeInternal();
-            if (resId != 0) {
-                sInstance.loadDictionary(context, resId);
+            try {
+                final AssetFileDescriptor afd = context.getResources().openRawResourceFd(resId);
+                if (afd == null) {
+                    Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
+                    return null;
+                }
+                final String sourceDir = context.getApplicationInfo().sourceDir;
+                final File packagePath = new File(sourceDir);
+                // TODO: Come up with a way to handle a directory.
+                if (!packagePath.isFile()) {
+                    Log.e(TAG, "sourceDir is not a file: " + sourceDir);
+                    return null;
+                }
+                sInstance.loadDictionary(sourceDir, afd.getStartOffset(), afd.getLength());
                 sInstance.mDicTypeId = dicTypeId;
+            } catch (android.content.res.Resources.NotFoundException e) {
+                Log.e(TAG, "Could not find the resource. resId=" + resId);
+                return null;
+            }
+        }
+        return sInstance;
+    }
+
+    // For unit test
+    /* package */ static BinaryDictionary initDictionary(File dictionary, long startOffset,
+            long length, int dicTypeId) {
+        synchronized (sInstance) {
+            sInstance.closeInternal();
+            if (dictionary.isFile()) {
+                sInstance.loadDictionary(dictionary.getAbsolutePath(), startOffset, length);
+                sInstance.mDicTypeId = dicTypeId;
+            } else {
+                Log.e(TAG, "Could not find the file. path=" + dictionary.getAbsolutePath());
+                return null;
             }
         }
         return sInstance;
@@ -92,22 +124,11 @@ public class BinaryDictionary extends Dictionary {
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] frequencies,
             int maxWordLength, int maxBigrams, int maxAlternatives);
 
-    private final void loadDictionary(Context context, int resId) {
-        try {
-            final AssetFileDescriptor afd = context.getResources().openRawResourceFd(resId);
-            if (afd == null) {
-                Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
-                return;
-            }
-            mNativeDict = openNative(context.getApplicationInfo().sourceDir,
-                    afd.getStartOffset(), afd.getLength(),
+    private final void loadDictionary(String path, long startOffset, long length) {
+        mNativeDict = openNative(path, startOffset, length,
                     TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER,
                     MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES);
-            mDictLength = afd.getLength();
-        } catch (android.content.res.Resources.NotFoundException e) {
-            Log.e(TAG, "Could not find the resource. resId=" + resId);
-            return;
-        }
+        mDictLength = length;
     }
 
     @Override

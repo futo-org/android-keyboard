@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -106,6 +107,12 @@ public class Suggest implements Dictionary.WordCallback {
 
     public Suggest(Context context, int dictionaryResId) {
         mMainDict = BinaryDictionary.initDictionary(context, dictionaryResId, DIC_MAIN);
+        initPool();
+    }
+
+    // For unit test
+    /* package */ Suggest(File dictionary, long startOffset, long length) {
+        mMainDict = BinaryDictionary.initDictionary(dictionary, startOffset, length, DIC_MAIN);
         initPool();
     }
 
