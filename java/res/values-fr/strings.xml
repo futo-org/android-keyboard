@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Options de saisie"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrer à chaque touche"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Son à chaque touche"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères à chaque touche"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Agrandir les caractères"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Corriger les fautes de frappe"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Activer la correction des erreurs de saisie"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Erreurs de saisie en mode paysage"</string>
@@ -48,7 +48,7 @@
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Afficher les suggestions de terme lors de la saisie"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Saisie semi-automatique"</string>
     <string name="auto_complete_summary" msgid="6113149638718274624">"Insérer auto. le terme surligné avec barre espace/ponctuation"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Afficher la touche des paramètres"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Afficher touche paramètr."</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatique"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Toujours afficher"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Toujours masquer"</string>

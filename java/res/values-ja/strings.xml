@@ -47,7 +47,7 @@
     <string name="show_suggestions" msgid="507074425254289133">"入力候補を表示"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"入力時に入力候補を表示する"</string>
     <string name="auto_complete" msgid="1103196318775486023">"オートコンプリート"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"反転表示されている変換候補をスペースまたは句読点キーで挿入する"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"誤入力をスペースまたは句読点キーで修正する"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"設定キーを表示"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"自動"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"常に表示"</string>
