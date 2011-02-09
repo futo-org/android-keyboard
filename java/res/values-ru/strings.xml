@@ -91,7 +91,7 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Включить отправку сведений"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогите усовершенствовать редактор способа ввода, разрешив отправку статистики и отчетов о сбоях в Google."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Исправление нажатием"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Введенные слова исправляются нажатием, если видны предложения"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Нажмите на слово, чтобы исправить его (при наличии подсказок)"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Вид клавиатуры"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Клавиатура: чешская"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Клавиатура: датская"</string>
