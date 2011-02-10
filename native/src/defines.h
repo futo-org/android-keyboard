@@ -129,11 +129,16 @@ static void prof_out(void) {
 #define SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER true
 #define SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS true
 
+// The following "rate"s are used as a multiplier before dividing by 100, so they are in percent.
 #define WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE 75
 #define WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE 80
 #define WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE 75
 #define WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE 75
 #define WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE 60
+#define FULL_MATCHED_WORDS_PROMOTION_RATE 120
+
+// This is used as a bare multiplier (not subject to /100)
+#define FULL_MATCH_ACCENTS_OR_CAPITALIZATION_DIFFER_MULTIPLIER 2
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.

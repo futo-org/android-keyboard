@@ -22,6 +22,13 @@
 namespace latinime {
 
 class UnigramDictionary {
+
+    typedef enum {                             // Used as a return value for character comparison
+        SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR,  // Same char, possibly with different case or accent
+        NEAR_PROXIMITY_CHAR,                   // It is a char located nearby on the keyboard
+        UNRELATED_CHAR                         // It is an unrelated char
+    } ProximityType;
+
 public:
     UnigramDictionary(const unsigned char *dict, int typedLetterMultipler, int fullWordMultiplier,
             int maxWordLength, int maxWords, int maxProximityChars, const bool isLatestDictVersion);
@@ -52,7 +59,7 @@ private:
             const int excessivePos, const int transposedPos, int *nextLetters,
             const int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
-    int calculateFinalFreq(const int inputIndex, const int snr, const int skipPos,
+    int calculateFinalFreq(const int inputIndex, const int depth, const int snr, const int skipPos,
             const int excessivePos, const int transposedPos, const int freq, const bool sameLength);
     void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
             const int inputIndex, const int depth, const int snr, int *nextLetters,
@@ -60,11 +67,11 @@ private:
             const int transposedPos, const int freq);
     void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word,
             const int inputIndex, const int depth, const int snr, const int skipPos,
-            const int excessivePos, const int transposedPos, const int freq, const int addedWeight);
+            const int excessivePos, const int transposedPos, const int freq);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
-    int getMatchedProximityId(const int *currentChars, const unsigned short c, const int skipPos,
-            const int excessivePos, const int transposedPos);
+    ProximityType getMatchedProximityId(const int *currentChars, const unsigned short c,
+            const int skipPos, const int excessivePos, const int transposedPos);
     // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int pos, const int depth,
             const int maxDepth, const bool traverseAllNodes, const int snr, int inputIndex,

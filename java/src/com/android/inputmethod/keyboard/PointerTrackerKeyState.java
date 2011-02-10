@@ -23,8 +23,6 @@ package com.android.inputmethod.keyboard;
     private final KeyDetector mKeyDetector;
 
     // The position and time at which first down event occurred.
-    private int mStartX;
-    private int mStartY;
     private long mDownTime;
     private long mUpTime;
 
@@ -54,14 +52,6 @@ package com.android.inputmethod.keyboard;
         return mKeyY;
     }
 
-    public int getStartX() {
-        return mStartX;
-    }
-
-    public int getStartY() {
-        return mStartY;
-    }
-
     public long getDownTime() {
         return mDownTime;
     }
@@ -79,8 +69,6 @@ package com.android.inputmethod.keyboard;
     }
 
     public int onDownKey(int x, int y, long eventTime) {
-        mStartX = x;
-        mStartY = y;
         mDownTime = eventTime;
         return onMoveToNewKey(onMoveKeyInternal(x, y), x, y);
     }

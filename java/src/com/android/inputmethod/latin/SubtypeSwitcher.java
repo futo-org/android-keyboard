@@ -18,16 +18,21 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.InputMethodSubtype;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.voice.SettingsUtil;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 import com.android.inputmethod.voice.VoiceInput;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,12 +46,14 @@ import java.util.Locale;
 import java.util.Map;
 
 public class SubtypeSwitcher {
-    private static final boolean DBG = false;
+    private static boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = "SubtypeSwitcher";
 
     private static final char LOCALE_SEPARATER = '_';
     private static final String KEYBOARD_MODE = "keyboard";
     private static final String VOICE_MODE = "voice";
+    private static final String SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY =
+            "requireNetworkConnectivity";
     private final TextUtils.SimpleStringSplitter mLocaleSplitter =
             new TextUtils.SimpleStringSplitter(LOCALE_SEPARATER);
 
@@ -55,17 +62,17 @@ public class SubtypeSwitcher {
     private /* final */ SharedPreferences mPrefs;
     private /* final */ InputMethodManager mImm;
     private /* final */ Resources mResources;
+    private /* final */ ConnectivityManager mConnectivityManager;
+    private /* final */ boolean mConfigUseSpacebarLanguageSwitcher;
     private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
             new ArrayList<InputMethodSubtype>();
     private final ArrayList<String> mEnabledLanguagesOfCurrentInputMethod = new ArrayList<String>();
-
-    private boolean mConfigUseSpacebarLanguageSwitcher;
 
     /*-----------------------------------------------------------*/
     // Variants which should be changed only by reload functions.
     private boolean mNeedsToDisplayLanguage;
     private boolean mIsSystemLanguageSameAsInputLanguage;
-    private InputMethodInfo mShortcutInfo;
+    private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
     private Locale mSystemLocale;
@@ -75,13 +82,14 @@ public class SubtypeSwitcher {
     private VoiceInput mVoiceInput;
     /*-----------------------------------------------------------*/
 
+    private boolean mIsNetworkConnected;
+
     public static SubtypeSwitcher getInstance() {
         return sInstance;
     }
 
     public static void init(LatinIME service, SharedPreferences prefs) {
-        sInstance.mPrefs = prefs;
-        sInstance.resetParams(service);
+        sInstance.initialize(service, prefs);
         sInstance.updateAllParameters();
 
         SubtypeLocale.init(service);
@@ -91,10 +99,13 @@ public class SubtypeSwitcher {
         // Intentional empty constructor for singleton.
     }
 
-    private void resetParams(LatinIME service) {
+    private void initialize(LatinIME service, SharedPreferences prefs) {
         mService = service;
+        mPrefs = prefs;
         mResources = service.getResources();
         mImm = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mConnectivityManager = (ConnectivityManager) service.getSystemService(
+                Context.CONNECTIVITY_SERVICE);
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mSystemLocale = null;
@@ -109,6 +120,9 @@ public class SubtypeSwitcher {
                 R.bool.config_use_spacebar_language_switcher);
         if (mConfigUseSpacebarLanguageSwitcher)
             initLanguageSwitcher(service);
+
+        final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
+        mIsNetworkConnected = (info != null && info.isConnected());
     }
 
     // Update all parameters stored in SubtypeSwitcher.
@@ -163,6 +177,13 @@ public class SubtypeSwitcher {
     }
 
     private void updateShortcutIME() {
+        if (DBG) {
+            Log.d(TAG, "Update shortcut IME from : "
+                    + (mShortcutInputMethodInfo == null
+                            ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
+                    + (mShortcutSubtype == null ? "<null>" : (mShortcutSubtype.getLocale()
+                            + ", " + mShortcutSubtype.getMode())));
+        }
         // TODO: Update an icon for shortcut IME
         /*
         Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
@@ -171,7 +192,7 @@ public class SubtypeSwitcher {
             List<InputMethodSubtype> subtypes = shortcuts.get(imi);
             // TODO: Returns the first found IMI for now. Should handle all shortcuts as
             // appropriate.
-            mShortcutInfo = imi;
+            mShortcutInputMethodInfo = imi;
             // TODO: Pick up the first found subtype for now. Should handle all subtypes
             // as appropriate.
             mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
@@ -213,6 +234,9 @@ public class SubtypeSwitcher {
             }
             mMode = newMode;
         }
+
+        // If the old mode is voice input, we need to reset or cancel its status.
+        // We cancel its status when we change mode, while we reset otherwise.
         if (isKeyboardMode()) {
             if (modeChanged) {
                 if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
@@ -220,19 +244,26 @@ public class SubtypeSwitcher {
                 }
             }
             if (modeChanged || languageChanged) {
+                updateShortcutIME();
                 mService.onRefreshKeyboard();
             }
-        } else if (isVoiceMode()) {
+        } else if (isVoiceMode() && mVoiceInput != null) {
+            if (VOICE_MODE.equals(oldMode)) {
+                mVoiceInput.reset();
+            }
             // If needsToShowWarningDialog is true, voice input need to show warning before
             // show recognition view.
             if (languageChanged || modeChanged
                     || VoiceIMEConnector.getInstance().needsToShowWarningDialog()) {
-                if (mVoiceInput != null) {
-                    triggerVoiceIME();
-                }
+                triggerVoiceIME();
             }
         } else {
             Log.w(TAG, "Unknown subtype mode: " + mMode);
+            if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
+                // We need to reset the voice input to release the resources and to reset its status
+                // as it is not the current input mode.
+                mVoiceInput.reset();
+            }
         }
     }
 
@@ -268,15 +299,15 @@ public class SubtypeSwitcher {
     ////////////////////////////
 
     public void switchToShortcutIME() {
-        IBinder token = mService.getWindow().getWindow().getAttributes().token;
-        if (token == null || mShortcutInfo == null) {
+        final IBinder token = mService.getWindow().getWindow().getAttributes().token;
+        if (token == null || mShortcutInputMethodInfo == null) {
             return;
         }
         // @@@ mImm.setInputMethodAndSubtype(token, mShortcutInfo.getId(), mShortcutSubtype);
     }
 
     public Drawable getShortcutIcon() {
-        return getSubtypeIcon(mShortcutInfo, mShortcutSubtype);
+        return getSubtypeIcon(mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
     private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtype subtype) {
@@ -291,9 +322,9 @@ public class SubtypeSwitcher {
             if (subtype != null) {
                 return pm.getDrawable(imiPackageName, subtype.getIconResId(),
                         imi.getServiceInfo().applicationInfo);
-            } else if (imi.getSubtypes().size() > 0 && imi.getSubtypes().get(0) != null) {
+            } else if (imi.getSubtypeCount() > 0 && imi.getSubtypeAt(0) != null) {
                 return pm.getDrawable(imiPackageName,
-                        imi.getSubtypes().get(0).getIconResId(),
+                        imi.getSubtypeAt(0).getIconResId(),
                         imi.getServiceInfo().applicationInfo);
             } else {
                 try {
@@ -305,6 +336,38 @@ public class SubtypeSwitcher {
             }
         */
         return null;
+    }
+
+    private static boolean contains(String[] hay, String needle) {
+        for (String element : hay) {
+            if (element.equals(needle))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isShortcutAvailable() {
+        if (mShortcutInputMethodInfo == null)
+            return false;
+        if (mShortcutSubtype != null && contains(mShortcutSubtype.getExtraValue().split(","),
+                    SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY)) {
+            return mIsNetworkConnected;
+        }
+        return true;
+    }
+
+    public void onNetworkStateChanged(Intent intent) {
+        final boolean noConnection = intent.getBooleanExtra(
+                ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
+        mIsNetworkConnected = !noConnection;
+
+        final LatinKeyboardView inputView = KeyboardSwitcher.getInstance().getInputView();
+        if (inputView != null) {
+            final LatinKeyboard keyboard = inputView.getLatinKeyboard();
+            if (keyboard != null) {
+                keyboard.updateShortcutKey(isShortcutAvailable(), inputView);
+            }
+        }
     }
 
     //////////////////////////////////
@@ -353,8 +416,15 @@ public class SubtypeSwitcher {
         if (mConfigUseSpacebarLanguageSwitcher) {
             return mLanguageSwitcher.getEnabledLanguages();
         } else {
+            int enabledLanguageCount = mEnabledLanguagesOfCurrentInputMethod.size();
+            // Workaround for explicitly specifying the voice language
+            if (enabledLanguageCount == 1) {
+                mEnabledLanguagesOfCurrentInputMethod.add(
+                        mEnabledLanguagesOfCurrentInputMethod.get(0));
+                ++enabledLanguageCount;
+            }
             return mEnabledLanguagesOfCurrentInputMethod.toArray(
-                    new String[mEnabledLanguagesOfCurrentInputMethod.size()]);
+                    new String[enabledLanguageCount]);
         }
     }
 
@@ -427,7 +497,7 @@ public class SubtypeSwitcher {
             mVoiceInput = vi;
             if (isVoiceMode()) {
                 if (DBG) {
-                    Log.d(TAG, "Set and call voice input.");
+                    Log.d(TAG, "Set and call voice input.: " + getInputLocaleStr());
                 }
                 triggerVoiceIME();
                 return true;

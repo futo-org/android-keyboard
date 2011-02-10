@@ -45,18 +45,30 @@ public class LatinKeyboard extends Keyboard {
     public static final int OPACITY_FULLY_OPAQUE = 255;
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
+    private final Context mContext;
+
+    /* Space key and its icons, drawables and colors. */
+    private final Key mSpaceKey;
+    private final Drawable mSpaceIcon;
+    private final Drawable mSpacePreviewIcon;
+    private final int[] mSpaceKeyIndexArray;
     private final Drawable mSpaceAutoCorrectionIndicator;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
+    private final int mSpacebarVerticalCorrection;
     private float mSpacebarTextFadeFactor = 0.0f;
-    private final int[] mSpaceKeyIndexArray;
     private int mSpaceDragStartX;
     private int mSpaceDragLastDiff;
-    private final Context mContext;
     private boolean mCurrentlyInSpace;
     private SlidingLocaleDrawable mSlidingLocaleIcon;
+
+    /* Shortcut key and its icons if available */
+    private final Key mShortcutKey;
+    private final Drawable mEnabledShortcutIcon;
+    private final Drawable mDisabledShortcutIcon;
+
     private int[] mPrefLetterFrequencies;
     private int mPrefLetter;
     private int mPrefLetterX;
@@ -74,8 +86,6 @@ public class LatinKeyboard extends Keyboard {
     // its short language name will be used instead.
     private static final float MINIMUM_SCALE_OF_LANGUAGE_NAME = 0.8f;
 
-    private static int sSpacebarVerticalCorrection;
-
     private static final String SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "small";
     private static final String MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "medium";
 
@@ -83,21 +93,47 @@ public class LatinKeyboard extends Keyboard {
         super(context, id.getXmlId(), id);
         final Resources res = context.getResources();
         mContext = context;
+
+        final List<Key> keys = getKeys();
+        int spaceKeyIndex = -1;
+        int shortcutKeyIndex = -1;
+        final int keyCount = keys.size();
+        for (int index = 0; index < keyCount; index++) {
+            // For now, assuming there are up to one space key and one shortcut key respectively.
+            switch (keys.get(index).mCode) {
+            case CODE_SPACE:
+                spaceKeyIndex = index;
+                break;
+            case CODE_VOICE:
+                shortcutKeyIndex = index;
+                break;
+            }
+        }
+
+        // The index of space key is available only after Keyboard constructor has finished.
+        mSpaceKey = (spaceKeyIndex >= 0) ? keys.get(spaceKeyIndex) : null;
+        mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon() : null;
+        mSpacePreviewIcon = (mSpaceKey != null) ? mSpaceKey.getPreviewIcon() : null;
+        mSpaceKeyIndexArray = new int[] { spaceKeyIndex };
+
+        mShortcutKey = (shortcutKeyIndex >= 0) ? keys.get(shortcutKeyIndex) : null;
+        mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
+
         mSpacebarTextColor = res.getColor(R.color.latinkeyboard_bar_language_text);
         if (id.mColorScheme == KeyboardView.COLOR_SCHEME_BLACK) {
             mSpacebarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_black);
+            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_bkeyboard_voice_off);
         } else { // default color scheme is KeyboardView.COLOR_SCHEME_WHITE
             mSpacebarTextShadowColor = res.getColor(
                     R.color.latinkeyboard_bar_language_shadow_white);
+            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_keyboard_voice_off_holo);
         }
         mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
-        sSpacebarVerticalCorrection = res.getDimensionPixelOffset(
+        mSpacebarVerticalCorrection = res.getDimensionPixelOffset(
                 R.dimen.spacebar_vertical_correction);
-        // The index of space key is available only after Keyboard constructor has finished.
-        mSpaceKeyIndexArray = new int[] { indexOf(CODE_SPACE) };
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
@@ -111,6 +147,15 @@ public class LatinKeyboard extends Keyboard {
         final int newColor = Color.argb((int)(Color.alpha(color) * fadeFactor),
                 Color.red(color), Color.green(color), Color.blue(color));
         return newColor;
+    }
+
+    public void updateShortcutKey(boolean available, LatinKeyboardView view) {
+        if (mShortcutKey == null)
+            return;
+        mShortcutKey.mEnabled = available;
+        mShortcutKey.setIcon(available ? mEnabledShortcutIcon : mDisabledShortcutIcon);
+        if (view != null)
+            view.invalidateKey(mShortcutKey);
     }
 
     /**
@@ -315,12 +360,8 @@ public class LatinKeyboard extends Keyboard {
         int x = pointX;
         int y = pointY;
         final int code = key.mCode;
-        if (code == CODE_SHIFT || code == CODE_DELETE) {
-            y -= key.mHeight / 10;
-            if (code == CODE_SHIFT) x += key.mWidth / 6;
-            if (code == CODE_DELETE) x -= key.mWidth / 6;
-        } else if (code == CODE_SPACE) {
-            y += LatinKeyboard.sSpacebarVerticalCorrection;
+        if (code == CODE_SPACE) {
+            y += mSpacebarVerticalCorrection;
             if (SubtypeSwitcher.getInstance().useSpacebarLanguageSwitcher()
                     && SubtypeSwitcher.getInstance().getEnabledKeyboardLocaleCount() > 1) {
                 if (mCurrentlyInSpace) {
@@ -444,15 +485,6 @@ public class LatinKeyboard extends Keyboard {
             return super.getNearestKeys(Math.max(0, Math.min(x, getMinWidth() - 1)),
                     Math.max(0, Math.min(y, getHeight() - 1)));
         }
-    }
-
-    private int indexOf(int code) {
-        List<Key> keys = getKeys();
-        int count = keys.size();
-        for (int i = 0; i < count; i++) {
-            if (keys.get(i).mCode == code) return i;
-        }
-        return -1;
     }
 
     private int getTextSizeFromTheme(int style, int defValue) {

@@ -29,6 +29,7 @@
 
         latin:keyBackground="@drawable/btn_keyboard_key_stone"
         latin:keyTextColor="@color/latinkeyboard_key_color_black"
+        latin:keyTextColorDisabled="#FF808080"
         latin:shadowColor="@color/latinkeyboard_key_color_white"
         latin:keyLetterStyle="bold"
         latin:colorScheme="black"

@@ -60,8 +60,8 @@
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="smileyKeyStyle"
-                latin:keyIcon="@drawable/sym_keyboard_smiley_holo"
-                latin:keyOutputText=";-) "
+                latin:keyLabel=":-)"
+                latin:keyOutputText=":-) "
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupCharacters="@string/alternates_for_smiley"
                 latin:maxPopupKeyboardColumn="5" />
@@ -114,8 +114,8 @@
                 latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
             <key-style
                 latin:styleName="smileyKeyStyle"
-                latin:keyLabel=";-)"
-                latin:keyOutputText=";-) "
+                latin:keyLabel=":-)"
+                latin:keyOutputText=":-) "
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupCharacters="@string/alternates_for_smiley"
                 latin:maxPopupKeyboardColumn="5" />

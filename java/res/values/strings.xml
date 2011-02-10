@@ -69,12 +69,12 @@
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->
     <string name="auto_correction">Auto correction</string>
     <!-- Description for auto correction [CHAR LIMIT=35] -->
-    <string name="auto_correction_summary">Spacebar and punctuation automatically insert highlighted word</string>
+    <string name="auto_correction_summary">Spacebar and punctuation automatically correct mistyped words</string>
     <!-- Option to disable auto correction. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_off">Off</string>
-    <!-- Option to use modest auto correction. [CHAR LIMIT=20] -->
+    <!-- Option to suggest auto correction candidates modestly. Auto-corrects only to a word which has small edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_modest">Modest</string>
-    <!-- Option to use aggressive auto correction. [CHAR LIMIT=20] -->
+    <!-- Option to suggest auto correction candidates aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
 
     <!-- Option to enable bigram correction -->
@@ -247,29 +247,26 @@
     <string name="subtype_mode_sr_keyboard">Serbian Keyboard</string>
     <!-- Description for Swedish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_sv_keyboard">Swedish Keyboard</string>
-
+    <!-- Description for Afrikaans voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_af_voice">Afrikaans Voice</string>
     <!-- Description for Czech voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_cs_voice">Czech Voice</string>
     <!-- Description for German voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_de_voice">German Voice</string>
-    <!-- Description for English (Australia) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_AU_voice">English (Australia) Voice</string>
-    <!-- Description for English (United Kingdom) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_GB_voice">English (UK) Voice</string>
-    <!-- Description for English (India) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_IN_voice">English (India) Voice</string>
-    <!-- Description for English (New Zealand) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_NZ_voice">English (New Zealand) Voice</string>
-    <!-- Description for English (United States) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_en_US_voice">English (US) Voice</string>
+    <!-- Description for English voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_en_voice">English Voice</string>
     <!-- Description for Spanish voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_es_voice">Spanish Voice</string>
     <!-- Description for French voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_voice">French Voice</string>
+    <!-- Description for Italian voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_it_voice">Italian Voice</string>
     <!-- Description for Japanese voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_ja_voice">Japanese Voice</string>
     <!-- Description for Korean voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_ko_voice">Korean Voice</string>
+    <!-- Description for Dutch voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_nl_voice">Dutch Voice</string>
     <!-- Description for Polish voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_pl_voice">Polish Voice</string>
     <!-- Description for Portuguese voice input subtype [CHAR LIMIT=35] -->
@@ -278,10 +275,12 @@
     <string name="subtype_mode_ru_voice">Russian Voice</string>
     <!-- Description for Turkish voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_tr_voice">Turkish Voice</string>
-    <!-- Description for Chinese (China, Simplified) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_zh_CN_voice">Chinese (China, Simplified) Voice</string>
-    <!-- Description for Chinese (Taiwan, Traditional) voice input subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_zh_TW_voice">Chinese (Taiwan, Traditional) Voice</string>
+    <!-- Description for Chinese, Yue voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_yue_voice">Chinese, Yue Voice</string>
+    <!-- Description for Chinese, Mandarin voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_zh_voice">Chinese, Mandarin Voice</string>
+    <!-- Description for isiZulu voice input subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_zu_voice">isiZulu Voice</string>
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability Study Mode</string>

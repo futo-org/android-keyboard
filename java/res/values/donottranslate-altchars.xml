@@ -18,21 +18,22 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_a">à,á,â,ã,ä,å,æ</string>
-    <string name="alternates_for_e">3,è,é,ê,ë</string>
-    <string name="alternates_for_i">ì,í,î,ï,8</string>
-    <string name="alternates_for_o">ò,ó,ô,õ,ö,œ,ø,9</string>
-    <string name="alternates_for_u">ù,ú,û,ü,7</string>
-    <string name="alternates_for_s">§,ß</string>
-    <string name="alternates_for_n">ñ</string>
-    <string name="alternates_for_c">ç</string>
-    <string name="alternates_for_y">ý,ÿ,6</string>
+    <string name="alternates_for_a"></string>
+    <string name="alternates_for_e">3</string>
+    <string name="alternates_for_i">8</string>
+    <string name="alternates_for_o">9</string>
+    <string name="alternates_for_u">7</string>
+    <string name="alternates_for_s"></string>
+    <string name="alternates_for_n"></string>
+    <string name="alternates_for_c"></string>
+    <string name="alternates_for_y">6</string>
     <string name="alternates_for_q">1</string>
     <string name="alternates_for_w">2</string>
     <string name="alternates_for_d"></string>
     <string name="alternates_for_r">4</string>
     <string name="alternates_for_t">5</string>
     <string name="alternates_for_z"></string>
+    <string name="alternates_for_k"></string>
     <string name="alternates_for_l"></string>
     <string name="alternates_for_g"></string>
     <string name="alternates_for_p">0</string>

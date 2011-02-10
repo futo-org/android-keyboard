@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.voice.VoiceIMEConnector;
 
@@ -23,10 +24,13 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 
 // TODO: We should remove this class
 public class LatinKeyboardView extends KeyboardView {
+    private static final String TAG = LatinKeyboardView.class.getSimpleName();
+    private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
 
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
@@ -94,7 +98,7 @@ public class LatinKeyboardView extends KeyboardView {
     }
 
     @Override
-    protected boolean onLongPress(Key key) {
+    protected boolean onLongPress(Key key, PointerTracker tracker) {
         int primaryCode = key.mCode;
         if (primaryCode == Keyboard.CODE_SETTINGS) {
             return invokeOnKey(Keyboard.CODE_SETTINGS_LONGPRESS);
@@ -102,7 +106,7 @@ public class LatinKeyboardView extends KeyboardView {
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
         } else {
-            return super.onLongPress(key);
+            return super.onLongPress(key, tracker);
         }
     }
 
@@ -137,6 +141,9 @@ public class LatinKeyboardView extends KeyboardView {
      * KeyboardView.
      */
     private boolean handleSuddenJump(MotionEvent me) {
+        // If device has distinct multi touch panel, there is no need to check sudden jump.
+        if (hasDistinctMultitouch())
+            return false;
         final int action = me.getAction();
         final int x = (int) me.getX();
         final int y = (int) me.getY();
@@ -208,7 +215,11 @@ public class LatinKeyboardView extends KeyboardView {
         if (keyboard == null) return true;
 
         // If there was a sudden jump, return without processing the actual motion event.
-        if (handleSuddenJump(me)) return true;
+        if (handleSuddenJump(me)) {
+            if (DEBUG_MODE)
+                Log.w(TAG, "onTouchEvent: ignore sudden jump " + me);
+            return true;
+        }
 
         // Reset any bounding box controls in the keyboard
         if (me.getAction() == MotionEvent.ACTION_DOWN) {

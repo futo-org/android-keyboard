@@ -33,19 +33,6 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     private Resources mRes;
     private List<InputMethodSubtype> mKeyboardSubtypes;
 
-    public interface Predicator<T> {
-        public boolean evaluate(T object);
-    }
-
-    private static <T> List<T> filter(List<T> source, Predicator<? super T> predicator) {
-        final ArrayList<T> filtered = new ArrayList<T>();
-        for (final T element : source) {
-            if (predicator.evaluate(element))
-                filtered.add(element);
-        }
-        return filtered;
-    }
-
     @Override
     protected void setUp() throws Exception {
         super.setUp();
@@ -59,13 +46,13 @@ public class SubtypeLocaleTests extends AndroidTestCase {
                 Context.INPUT_METHOD_SERVICE);
         for (final InputMethodInfo imi : imm.getInputMethodList()) {
             if (imi.getPackageName().equals(PACKAGE)) {
-                mKeyboardSubtypes = filter(imi.getSubtypes(),
-                        new Predicator<InputMethodSubtype>() {
-                            @Override
-                            public boolean evaluate(InputMethodSubtype ims) {
-                                return ims.getMode().equals("keyboard");
-                            }
-                });
+                final int subtypeCount = imi.getSubtypeCount();
+                for (int i = 0; i < subtypeCount; ++i) {
+                    InputMethodSubtype subtype = imi.getSubtypeAt(i);
+                    if (subtype.getMode().equals("keyboard")) {
+                        mKeyboardSubtypes.add(subtype);
+                    }
+                }
                 break;
             }
         }

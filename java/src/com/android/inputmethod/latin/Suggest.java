@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -64,7 +65,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
 
-    private static boolean DBG = LatinImeLogger.sDBG;
+    private static final boolean DBG = LatinImeLogger.sDBG;
 
     private BinaryDictionary mMainDict;
 
@@ -80,7 +81,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final int PREF_MAX_BIGRAMS = 60;
 
-    private boolean mAutoTextEnabled;
+    private boolean mQuickFixesEnabled;
 
     private double mAutoCorrectionThreshold;
     private int[] mPriorities = new int[mPrefMaxSuggestions];
@@ -95,7 +96,7 @@ public class Suggest implements Dictionary.WordCallback {
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
-    private boolean mHaveAutoCorrection;
+    private boolean mHasAutoCorrection;
     private String mLowerOriginalWord;
 
     // TODO: Remove these member variables by passing more context to addWord() callback method
@@ -109,6 +110,12 @@ public class Suggest implements Dictionary.WordCallback {
         initPool();
     }
 
+    // For unit test
+    /* package */ Suggest(File dictionary, long startOffset, long length) {
+        mMainDict = BinaryDictionary.initDictionary(dictionary, startOffset, length, DIC_MAIN);
+        initPool();
+    }
+
     private void initPool() {
         for (int i = 0; i < mPrefMaxSuggestions; i++) {
             StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
@@ -116,8 +123,8 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    public void setAutoTextEnabled(boolean enabled) {
-        mAutoTextEnabled = enabled;
+    public void setQuickFixesEnabled(boolean enabled) {
+        mQuickFixesEnabled = enabled;
     }
 
     public int getCorrectionMode() {
@@ -163,6 +170,10 @@ public class Suggest implements Dictionary.WordCallback {
         mAutoCorrectionThreshold = threshold;
     }
 
+    public boolean isAggressiveAutoCorrectionMode() {
+        return (mAutoCorrectionThreshold == 0);
+    }
+
     /**
      * Number of suggestions to generate from the input key sequence. This has
      * to be a number between 1 and 100 (inclusive).
@@ -200,7 +211,7 @@ public class Suggest implements Dictionary.WordCallback {
     public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
             CharSequence prevWordForBigram) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
-        mHaveAutoCorrection = false;
+        mHasAutoCorrection = false;
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
         mIsAllUpperCase = wordComposer.isAllUpperCase();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
@@ -220,6 +231,7 @@ public class Suggest implements Dictionary.WordCallback {
             mLowerOriginalWord = "";
         }
 
+        double normalizedScore = Integer.MIN_VALUE;
         if (wordComposer.size() == 1 && (mCorrectionMode == CORRECTION_FULL_BIGRAM
                 || mCorrectionMode == CORRECTION_BASIC)) {
             // At first character typed, search only the bigrams
@@ -278,7 +290,7 @@ public class Suggest implements Dictionary.WordCallback {
                     if (DBG) {
                         Log.d(TAG, "Auto corrected by CORRECTION_FULL.");
                     }
-                    mHaveAutoCorrection = true;
+                    mHasAutoCorrection = true;
                 }
             }
             if (mMainDict != null) mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
@@ -286,25 +298,25 @@ public class Suggest implements Dictionary.WordCallback {
                     && mSuggestions.size() > 0 && mPriorities.length > 0) {
                 // TODO: when the normalized score of the first suggestion is nearly equals to
                 //       the normalized score of the second suggestion, behave less aggressive.
-                final double normalizedScore = Utils.calcNormalizedScore(
+                normalizedScore = Utils.calcNormalizedScore(
                         typedWord, mSuggestions.get(0), mPriorities[0]);
-                if (LatinImeLogger.sDBG) {
+                if (DBG) {
                     Log.d(TAG, "Normalized " + typedWord + "," + mSuggestions.get(0) + ","
-                            + mPriorities[0] + normalizedScore
+                            + mPriorities[0] + ", " + normalizedScore
                             + "(" + mAutoCorrectionThreshold + ")");
                 }
                 if (normalizedScore >= mAutoCorrectionThreshold) {
                     if (DBG) {
                         Log.d(TAG, "Auto corrected by S-threthhold.");
                     }
-                    mHaveAutoCorrection = true;
+                    mHasAutoCorrection = true;
                 }
             }
         }
         if (typedWord != null) {
             mSuggestions.add(0, typedWord.toString());
         }
-        if (mAutoTextEnabled) {
+        if (mQuickFixesEnabled) {
             int i = 0;
             int max = 6;
             // Don't autotext the suggestions from the dictionaries
@@ -342,7 +354,7 @@ public class Suggest implements Dictionary.WordCallback {
                     if (DBG) {
                         Log.d(TAG, "Auto corrected by AUTOTEXT.");
                     }
-                    mHaveAutoCorrection = true;
+                    mHasAutoCorrection = true;
                     mSuggestions.add(i + 1, autoText);
                     i++;
                 }
@@ -350,7 +362,30 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
         removeDupes();
-        return new SuggestedWords.Builder().addWords(mSuggestions);
+        if (DBG) {
+            ArrayList<SuggestedWords.SuggestedWordInfo> frequencyInfoList =
+                    new ArrayList<SuggestedWords.SuggestedWordInfo>();
+            frequencyInfoList.add(new SuggestedWords.SuggestedWordInfo("+", false));
+            final int priorityLength = mPriorities.length;
+            for (int i = 0; i < priorityLength; ++i) {
+                if (normalizedScore > 0) {
+                    final String priorityThreshold = Integer.toString(mPriorities[i]) + " (" +
+                            normalizedScore + ")";
+                    frequencyInfoList.add(
+                            new SuggestedWords.SuggestedWordInfo(priorityThreshold, false));
+                    normalizedScore = 0.0;
+                } else {
+                    final String priority = Integer.toString(mPriorities[i]);
+                    frequencyInfoList.add(new SuggestedWords.SuggestedWordInfo(priority, false));
+                }
+            }
+            for (int i = priorityLength; i < mSuggestions.size(); ++i) {
+                frequencyInfoList.add(new SuggestedWords.SuggestedWordInfo("--", false));
+            }
+            return new SuggestedWords.Builder().addWords(mSuggestions, frequencyInfoList);
+        } else {
+            return new SuggestedWords.Builder().addWords(mSuggestions, null);
+        }
     }
 
     public int[] getNextLettersFrequencies() {
@@ -384,16 +419,16 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    public boolean hasMinimalCorrection() {
-        return mHaveAutoCorrection;
+    public boolean hasAutoCorrection() {
+        return mHasAutoCorrection;
     }
 
-    private boolean compareCaseInsensitive(final String mLowerOriginalWord,
+    private static boolean compareCaseInsensitive(final String lowerOriginalWord,
             final char[] word, final int offset, final int length) {
-        final int originalLength = mLowerOriginalWord.length();
+        final int originalLength = lowerOriginalWord.length();
         if (originalLength == length && Character.isUpperCase(word[offset])) {
             for (int i = 0; i < originalLength; i++) {
-                if (mLowerOriginalWord.charAt(i) != Character.toLowerCase(word[offset+i])) {
+                if (lowerOriginalWord.charAt(i) != Character.toLowerCase(word[offset+i])) {
                     return false;
                 }
             }

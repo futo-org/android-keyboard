@@ -20,6 +20,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinIME.UIHandler;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -32,19 +33,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.provider.Browser;
 import android.speech.SpeechRecognizer;
-import android.text.Layout;
-import android.text.Selection;
-import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.text.style.URLSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -78,9 +78,10 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     // given text field. For instance this is specified by the search dialog when the
     // dialog is already showing a voice search button.
     private static final String IME_OPTION_NO_MICROPHONE = "nm";
+    private static final int RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO = 6;
 
-    @SuppressWarnings("unused")
-    private static final String TAG = "VoiceIMEConnector";
+    private static final String TAG = VoiceIMEConnector.class.getSimpleName();
+    private static final boolean DEBUG = LatinImeLogger.sDBG;
 
     private boolean mAfterVoiceInput;
     private boolean mHasUsedVoiceInput;
@@ -172,7 +173,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         if (mVoiceWarningDialog != null && mVoiceWarningDialog.isShowing()) {
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(mService);
+        AlertDialog.Builder builder = new UrlLinkAlertDialogBuilder(mService);
         builder.setCancelable(true);
         builder.setIcon(R.drawable.ic_mic_dialog);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -210,90 +211,80 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                                     mService.getText(R.string.voice_warning_how_to_turn_off));
         }
         builder.setMessage(message);
-
         builder.setTitle(R.string.voice_warning_title);
         mVoiceWarningDialog = builder.create();
-        Window window = mVoiceWarningDialog.getWindow();
-        WindowManager.LayoutParams lp = window.getAttributes();
+        final Window window = mVoiceWarningDialog.getWindow();
+        final WindowManager.LayoutParams lp = window.getAttributes();
         lp.token = token;
         lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
         window.setAttributes(lp);
         window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
         mVoiceInput.logKeyboardWarningDialogShown();
         mVoiceWarningDialog.show();
-        // Make URL in the dialog message clickable
-        TextView textView = (TextView) mVoiceWarningDialog.findViewById(android.R.id.message);
-        if (textView != null) {
-            final CustomLinkMovementMethod method = CustomLinkMovementMethod.getInstance();
-            method.setVoiceWarningDialog(mVoiceWarningDialog);
-            textView.setMovementMethod(method);
-        }
     }
 
-    private static class CustomLinkMovementMethod extends LinkMovementMethod {
-        private static CustomLinkMovementMethod sLinkMovementMethodInstance =
-                new CustomLinkMovementMethod();
+    private static class UrlLinkAlertDialogBuilder extends AlertDialog.Builder {
         private AlertDialog mAlertDialog;
 
-        public void setVoiceWarningDialog(AlertDialog alertDialog) {
-            mAlertDialog = alertDialog;
+        public UrlLinkAlertDialogBuilder(Context context) {
+            super(context);
         }
 
-        public static CustomLinkMovementMethod getInstance() {
-            return sLinkMovementMethodInstance;
-        }
-
-        // Almost the same as LinkMovementMethod.onTouchEvent(), but overrides it for
-        // FLAG_ACTIVITY_NEW_TASK and mAlertDialog.cancel().
         @Override
-        public boolean onTouchEvent(TextView widget, Spannable buffer, MotionEvent event) {
-            int action = event.getAction();
+        public AlertDialog.Builder setMessage(CharSequence message) {
+            return super.setMessage(replaceURLSpan(message));
+        }
 
-            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
-                int x = (int) event.getX();
-                int y = (int) event.getY();
-
-                x -= widget.getTotalPaddingLeft();
-                y -= widget.getTotalPaddingTop();
-
-                x += widget.getScrollX();
-                y += widget.getScrollY();
-
-                Layout layout = widget.getLayout();
-                int line = layout.getLineForVertical(y);
-                int off = layout.getOffsetForHorizontal(line, x);
-
-                ClickableSpan[] link = buffer.getSpans(off, off, ClickableSpan.class);
-
-                if (link.length != 0) {
-                    if (action == MotionEvent.ACTION_UP) {
-                        if (link[0] instanceof URLSpan) {
-                            URLSpan urlSpan = (URLSpan) link[0];
-                            Uri uri = Uri.parse(urlSpan.getURL());
-                            Context context = widget.getContext();
-                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
-                            if (mAlertDialog != null) {
-                                // Go back to the previous IME for now.
-                                // TODO: If we can find a way to bring the new activity to front
-                                // while keeping the warning dialog, we don't need to cancel here.
-                                mAlertDialog.cancel();
-                            }
-                            context.startActivity(intent);
-                        } else {
-                            link[0].onClick(widget);
-                        }
-                    } else if (action == MotionEvent.ACTION_DOWN) {
-                        Selection.setSelection(buffer, buffer.getSpanStart(link[0]),
-                                buffer.getSpanEnd(link[0]));
-                    }
-                    return true;
-                } else {
-                    Selection.removeSelection(buffer);
-                }
+        private Spanned replaceURLSpan(CharSequence message) {
+            // Replace all spans with the custom span
+            final SpannableStringBuilder ssb = new SpannableStringBuilder(message);
+            for (URLSpan span : ssb.getSpans(0, ssb.length(), URLSpan.class)) {
+                int spanStart = ssb.getSpanStart(span);
+                int spanEnd = ssb.getSpanEnd(span);
+                int spanFlags = ssb.getSpanFlags(span);
+                ssb.removeSpan(span);
+                ssb.setSpan(new ClickableSpan(span.getURL()), spanStart, spanEnd, spanFlags);
             }
-            return super.onTouchEvent(widget, buffer, event);
+            return ssb;
+        }
+
+        @Override
+        public AlertDialog create() {
+            final AlertDialog dialog = super.create();
+
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface dialogInterface) {
+                    // Make URL in the dialog message click-able.
+                    TextView textView = (TextView) mAlertDialog.findViewById(android.R.id.message);
+                    if (textView != null) {
+                        textView.setMovementMethod(LinkMovementMethod.getInstance());
+                    }
+                }
+            });
+            mAlertDialog = dialog;
+            return dialog;
+        }
+
+        class ClickableSpan extends URLSpan {
+            public ClickableSpan(String url) {
+                super(url);
+            }
+
+            @Override
+            public void onClick(View widget) {
+                Uri uri = Uri.parse(getURL());
+                Context context = widget.getContext();
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                // Add this flag to start an activity from service
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(Browser.EXTRA_APPLICATION_ID, context.getPackageName());
+                // Dismiss the warning dialog and go back to the previous IME.
+                // TODO: If we can find a way to bring the new activity to front while keeping
+                // the warning dialog, we don't need to dismiss it here.
+                mAlertDialog.cancel();
+                context.startActivity(intent);
+            }
         }
     }
 
@@ -437,7 +428,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                     builder.addWord(word);
                 }
             } else {
-                builder.addWords(suggestions);
+                builder.addWords(suggestions, null);
             }
             builder.setTypedWordValid(true).setHasMinimalSuggestion(true);
             mService.setSuggestions(builder.build());
@@ -543,10 +534,14 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
                 // As we add mm, we don't know how the rounding is going to work
                 // thus we may end up with few pixels extra (or less).
                 if (keyboardView != null) {
-                    int h = keyboardView.getHeight();
-                    if (h > 0) {
-                        View popupLayout = v.findViewById(R.id.popup_layout);
-                        popupLayout.getLayoutParams().height = h;
+                    View popupLayout = v.findViewById(R.id.popup_layout);
+                    final int displayHeight =
+                            mService.getResources().getDisplayMetrics().heightPixels;
+                    final int currentHeight = popupLayout.getLayoutParams().height;
+                    final int keyboardHeight = keyboardView.getHeight();
+                    if (keyboardHeight > currentHeight || keyboardHeight
+                            > (displayHeight / RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO)) {
+                        popupLayout.getLayoutParams().height = keyboardHeight;
                     }
                 }
                 mService.setInputView(v);
@@ -645,14 +640,17 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         }
     }
 
-    public void onStartInputView(IBinder token) {
+    public void onStartInputView(IBinder keyboardViewToken) {
+        // If keyboardViewToken is null, keyboardView is not attached but voiceView is attached.
+        IBinder windowToken = keyboardViewToken != null ? keyboardViewToken
+                : mVoiceInput.getView().getWindowToken();
         // If IME is in voice mode, but still needs to show the voice warning dialog,
         // keep showing the warning.
-        if (mSubtypeSwitcher.isVoiceMode() && token != null) {
+        if (mSubtypeSwitcher.isVoiceMode() && windowToken != null) {
             // Close keyboard view if it is been shown.
             if (KeyboardSwitcher.getInstance().isInputViewShown())
                 KeyboardSwitcher.getInstance().getInputView().purgeKeyboardAndClosing();
-            startListening(false, token);
+            startListening(false, windowToken);
         }
         // If we have no token, onAttachedToWindow will take care of showing dialog and start
         // listening.
@@ -701,7 +699,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         mHandler.updateVoiceResults();
     }
 
-    public FieldContext makeFieldContext() {
+    private FieldContext makeFieldContext() {
         SubtypeSwitcher switcher = SubtypeSwitcher.getInstance();
         return new FieldContext(mService.getCurrentInputConnection(),
                 mService.getCurrentInputEditorInfo(), switcher.getInputLocaleStr(),

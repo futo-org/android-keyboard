@@ -93,7 +93,8 @@
         <Key
             latin:keyLabel="j" />
         <Key
-            latin:keyLabel="k" />
+            latin:keyLabel="k"
+            latin:popupCharacters="@string/alternates_for_k" />
         <Key
             latin:keyLabel="l"
             latin:popupCharacters="@string/alternates_for_l" />

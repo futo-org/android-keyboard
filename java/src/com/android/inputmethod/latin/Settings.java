@@ -75,6 +75,7 @@ public class Settings extends PreferenceActivity
     private CheckBoxPreference mQuickFixes;
     private ListPreference mVoicePreference;
     private ListPreference mSettingsKeyPreference;
+    private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThreshold;
     private CheckBoxPreference mBigramSuggestion;
     private boolean mVoiceOn;
@@ -102,6 +103,8 @@ public class Settings extends PreferenceActivity
         mQuickFixes = (CheckBoxPreference) findPreference(PREF_QUICK_FIXES);
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_SETTINGS_KEY);
         mSettingsKeyPreference = (ListPreference) findPreference(PREF_SETTINGS_KEY);
+        mShowCorrectionSuggestionsPreference =
+                (ListPreference) findPreference(PREF_SHOW_SUGGESTIONS_SETTING);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
         prefs.registerOnSharedPreferenceChangeListener(this);
 
@@ -190,6 +193,7 @@ public class Settings extends PreferenceActivity
             updateVoiceModeSummary();
         }
         updateSettingsKeySummary();
+        updateShowCorrectionSuggestionsSummary();
     }
 
     @Override
@@ -214,6 +218,7 @@ public class Settings extends PreferenceActivity
                 .equals(mVoiceModeOff));
         updateVoiceModeSummary();
         updateSettingsKeySummary();
+        updateShowCorrectionSuggestionsSummary();
     }
 
     @Override
@@ -222,7 +227,9 @@ public class Settings extends PreferenceActivity
             final String action;
             if (android.os.Build.VERSION.SDK_INT
                     >= /* android.os.Build.VERSION_CODES.HONEYCOMB */ 11) {
-                action = "android.settings.INPUT_METHOD_AND_SUBTYPE_ENABLER";
+                // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
+                // TODO: Can this be a constant instead of literal String constant?
+                action = "android.settings.INPUT_METHOD_SUBTYPE_SETTINGS";
             } else {
                 action = "com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION";
             }
@@ -230,6 +237,13 @@ public class Settings extends PreferenceActivity
             return true;
         }
         return false;
+    }
+
+    private void updateShowCorrectionSuggestionsSummary() {
+        mShowCorrectionSuggestionsPreference.setSummary(
+                getResources().getStringArray(R.array.prefs_suggestion_visibilities)
+                [mShowCorrectionSuggestionsPreference.findIndexOfValue(
+                        mShowCorrectionSuggestionsPreference.getValue())]);
     }
 
     private void updateSettingsKeySummary() {

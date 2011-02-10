@@ -38,6 +38,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
+import android.net.ConnectivityManager;
 import android.os.Debug;
 import android.os.Handler;
 import android.os.Message;
@@ -67,6 +68,8 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+// @@@ import android.view.inputmethod.InputMethodSubtype;
+import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
@@ -83,21 +86,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "LatinIME";
     private static final boolean PERF_DEBUG = false;
-    private static final boolean DEBUG = false;
     private static final boolean TRACE = false;
+    private static boolean DEBUG = LatinImeLogger.sDBG;
 
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
     private static final int DELAY_UPDATE_SHIFT_STATE = 300;
+    private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
     // How many continuous deletes at which to start deleting at a higher speed.
     private static final int DELETE_ACCELERATE_AT = 20;
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
-
-    // Contextual menu positions
-    private static final int POS_METHOD = 0;
-    private static final int POS_SETTINGS = 1;
 
     private int mSuggestionVisibility;
     private static final int SUGGESTION_VISIBILILTY_SHOW_VALUE
@@ -121,6 +121,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private AlertDialog mOptionsDialog;
 
     private InputMethodManager mImm;
+    private Resources mResources;
+    private SharedPreferences mPrefs;
+    private String mInputMethodId;
     private KeyboardSwitcher mKeyboardSwitcher;
     private SubtypeSwitcher mSubtypeSwitcher;
     private VoiceIMEConnector mVoiceConnector;
@@ -129,9 +132,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private UserBigramDictionary mUserBigramDictionary;
     private ContactsDictionary mContactsDictionary;
     private AutoDictionary mAutoDictionary;
-
-    private Resources mResources;
-    private SharedPreferences mPrefs;
 
     // These variables are initialized according to the {@link EditorInfo#inputType}.
     private boolean mAutoSpace;
@@ -154,6 +154,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mPopupOn;
     private boolean mAutoCap;
     private boolean mQuickFixes;
+    private boolean mConfigEnableShowSubtypeSettings;
     private boolean mConfigSwipeDownDismissKeyboardEnabled;
     private int mConfigDelayBeforeFadeoutLanguageOnSpacebar;
     private int mConfigDurationOfFadeoutLanguageOnSpacebar;
@@ -348,6 +349,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onCreate();
 
         mImm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
+        mInputMethodId = Utils.getInputMethodId(mImm, getApplicationInfo().packageName);
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
 
@@ -358,11 +360,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // but always use the default setting defined in the resources.
         if (res.getBoolean(R.bool.config_enable_show_recorrection_option)) {
             mReCorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
-                    res.getBoolean(R.bool.default_recorrection_enabled));
+                    res.getBoolean(R.bool.config_default_recorrection_enabled));
         } else {
-            mReCorrectionEnabled = res.getBoolean(R.bool.default_recorrection_enabled);
+            mReCorrectionEnabled = res.getBoolean(R.bool.config_default_recorrection_enabled);
         }
 
+        mConfigEnableShowSubtypeSettings = res.getBoolean(
+                R.bool.config_enable_show_subtype_settings);
         mConfigSwipeDownDismissKeyboardEnabled = res.getBoolean(
                 R.bool.config_swipe_down_dismiss_keyboard_enabled);
         mConfigDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
@@ -386,8 +390,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mOrientation = res.getConfiguration().orientation;
         initSuggestPuncList();
 
-        // register to receive ringer mode changes for silent mode
-        IntentFilter filter = new IntentFilter(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        // register to receive ringer mode change and network state change.
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mReceiver, filter);
         mVoiceConnector = VoiceIMEConnector.init(this, prefs, mHandler);
         prefs.registerOnSharedPreferenceChangeListener(this);
@@ -460,6 +466,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             commitTyped(ic);
             if (ic != null) ic.finishComposingText(); // For voice input
             mOrientation = conf.orientation;
+            if (isShowingOptionDialog())
+                mOptionsDialog.dismiss();
         }
 
         mConfigurationChanging = true;
@@ -506,6 +514,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getInputView();
 
+        if(DEBUG) {
+            Log.d(TAG, "onStartInputView: " + inputView);
+        }
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
             return;
@@ -862,6 +873,34 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (!isFullscreenMode()) {
             outInsets.contentTopInsets = outInsets.visibleTopInsets;
         }
+        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        // Need to set touchable region only if input view is being shown
+        if (inputView != null && mKeyboardSwitcher.isInputViewShown()) {
+            final int x = 0;
+            int y = 0;
+            final int width = inputView.getWidth();
+            int height = inputView.getHeight() + EXTENDED_TOUCHABLE_REGION_HEIGHT;
+            if (mCandidateViewContainer != null) {
+                ViewParent candidateParent = mCandidateViewContainer.getParent();
+                if (candidateParent instanceof FrameLayout) {
+                    FrameLayout fl = (FrameLayout) candidateParent;
+                    if (fl != null) {
+                        // Check frame layout's visibility
+                        if (fl.getVisibility() == View.INVISIBLE) {
+                            y = fl.getHeight();
+                            height += y;
+                        } else if (fl.getVisibility() == View.VISIBLE) {
+                            height += fl.getHeight();
+                        }
+                    }
+                }
+            }
+            if (DEBUG) {
+                Log.d(TAG, "Touchable region " + x + ", " + y + ", " + width + ", " + height);
+            }
+            outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
+            outInsets.touchableRegion.set(x, y, width, height);
+        }
     }
 
     @Override
@@ -1034,7 +1073,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void onSettingsKeyPressed() {
         if (!isShowingOptionDialog()) {
-            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
+            if (!mConfigEnableShowSubtypeSettings) {
+                showSubtypeSelectorAndSettings();
+            } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
                 showOptionsMenu();
             } else {
                 launchSettings();
@@ -1420,6 +1461,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private boolean isCandidateStripVisible() {
+        if (mCandidateView == null)
+            return false;
         if (mCandidateView.isShowingAddToDictionaryHint() || TextEntryState.isCorrecting())
             return true;
         if (!isShowingSuggestionsStrip())
@@ -1508,7 +1551,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mKeyboardSwitcher.setPreferredLetters(nextLettersFrequencies);
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && !mJustReverted
-                && mSuggest.hasMinimalCorrection();
+                && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = word.getTypedWord();
         // If we're in basic correct
         final boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
@@ -1524,10 +1567,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
-        // is 1, regardless of suggestion count.  Actually, in most cases, suggestion count is 1
-        // when typed word's length is 1, but we do always need to clear the previous state when
-        // the user starts typing a word (i.e. typed word's length == 1).
-        if (typedWord.length() == 1 || builder.size() > 1
+        // is 1 or typed word is found in dictionary, regardless of suggestion count.  Actually,
+        // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
+        // need to clear the previous state when the user starts typing a word (i.e. typed word's
+        // length == 1).
+        if (builder.size() > 1 || typedWord.length() == 1 || typedWordValid
                 || mCandidateView.isShowingAddToDictionaryHint()) {
             builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(correctionAvailable);
         } else {
@@ -1542,7 +1586,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void showSuggestions(SuggestedWords suggestedWords, CharSequence typedWord) {
         setSuggestions(suggestedWords);
         if (suggestedWords.size() > 0) {
-            if (Utils.shouldBlockedBySafetyNetForAutoCorrection(suggestedWords)) {
+            if (Utils.shouldBlockedBySafetyNetForAutoCorrection(suggestedWords, mSuggest)) {
                 mBestWord = typedWord;
             } else if (suggestedWords.hasAutoCorrectionWord()) {
                 mBestWord = suggestedWords.getWord(1);
@@ -1912,7 +1956,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else if (Settings.PREF_RECORRECTION_ENABLED.equals(key)) {
             mReCorrectionEnabled = sharedPreferences.getBoolean(
                     Settings.PREF_RECORRECTION_ENABLED,
-                    mResources.getBoolean(R.bool.default_recorrection_enabled));
+                    mResources.getBoolean(R.bool.config_default_recorrection_enabled));
         }
     }
 
@@ -1953,11 +1997,16 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
 
-    // receive ringer mode changes to detect silent mode
+    // receive ringer mode change and network state change.
     private BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateRingerMode();
+            final String action = intent.getAction();
+            if (action.equals(AudioManager.RINGER_MODE_CHANGED_ACTION)) {
+                updateRingerMode();
+            } else if (action.equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
+                mSubtypeSwitcher.onNetworkStateChanged(intent);
+            }
         }
     };
 
@@ -2039,7 +2088,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void updateAutoTextEnabled() {
         if (mSuggest == null) return;
-        mSuggest.setAutoTextEnabled(mQuickFixes
+        mSuggest.setQuickFixesEnabled(mQuickFixes
                 && SubtypeSwitcher.getInstance().isSystemLanguageSameAsInputLanguage());
     }
 
@@ -2079,9 +2128,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // @@@ mVibrateOn = vibrator != null && vibrator.hasVibrator()
         mVibrateOn = vibrator != null
                 && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
-        mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON, false);
-        mPopupOn = prefs.getBoolean(Settings.PREF_POPUP_ON,
-                mResources.getBoolean(R.bool.config_default_popup_preview));
+        mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
+                mResources.getBoolean(R.bool.config_default_sound_enabled));
+
+        mPopupOn = isPopupEnabled(prefs);
         mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
         mQuickFixes = isQuickFixesEnabled(prefs);
 
@@ -2132,6 +2182,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSuggest.setAutoCorrectionThreshold(autoCorrectionThreshold);
     }
 
+    private boolean isPopupEnabled(SharedPreferences sp) {
+        final boolean showPopupOption = getResources().getBoolean(
+                R.bool.config_enable_show_popup_on_keypress_option);
+        if (!showPopupOption) return mResources.getBoolean(R.bool.config_default_popup_preview);
+        return sp.getBoolean(Settings.PREF_POPUP_ON,
+                mResources.getBoolean(R.bool.config_default_popup_preview));
+    }
+
     private boolean isQuickFixesEnabled(SharedPreferences sp) {
         final boolean showQuickFixesOption = mResources.getBoolean(
                 R.bool.config_enable_quick_fixes_option);
@@ -2179,32 +2237,70 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return mSuggestPuncs.contains(String.valueOf((char)code));
     }
 
-    private void showOptionsMenu() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setIcon(R.drawable.ic_dialog_keyboard);
-        builder.setNegativeButton(android.R.string.cancel, null);
-        CharSequence itemSettings = getString(R.string.english_ime_settings);
-        CharSequence itemInputMethod = getString(R.string.selectInputMethod);
-        builder.setItems(new CharSequence[] {
-                itemInputMethod, itemSettings},
-                new DialogInterface.OnClickListener() {
-
+    private void showSubtypeSelectorAndSettings() {
+        final CharSequence title = getString(R.string.english_ime_input_options);
+        final CharSequence[] items = new CharSequence[] {
+                // TODO: Should use new string "Select active input modes".
+                getString(R.string.language_selection_title),
+                getString(R.string.english_ime_settings),
+        };
+        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface di, int position) {
                 di.dismiss();
                 switch (position) {
-                    case POS_SETTINGS:
-                        launchSettings();
-                        break;
-                    case POS_METHOD:
-                        mImm.showInputMethodPicker();
-                        break;
+                case 0:
+                    Intent intent = new Intent(
+                            android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
+                            | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra(android.provider.Settings.EXTRA_INPUT_METHOD_ID,
+                            mInputMethodId);
+                    startActivity(intent);
+                    break;
+                case 1:
+                    launchSettings();
+                    break;
                 }
             }
-        });
-        builder.setTitle(mResources.getString(R.string.english_ime_input_options));
+        };
+        showOptionsMenuInternal(title, items, listener);
+    }
+
+    private void showOptionsMenu() {
+        final CharSequence title = getString(R.string.english_ime_input_options);
+        final CharSequence[] items = new CharSequence[] {
+                getString(R.string.selectInputMethod),
+                getString(R.string.english_ime_settings),
+        };
+        final DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface di, int position) {
+                di.dismiss();
+                switch (position) {
+                case 0:
+                    mImm.showInputMethodPicker();
+                    break;
+                case 1:
+                    launchSettings();
+                    break;
+                }
+            }
+        };
+        showOptionsMenuInternal(title, items, listener);
+    }
+
+    private void showOptionsMenuInternal(CharSequence title, CharSequence[] items,
+            DialogInterface.OnClickListener listener) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setIcon(R.drawable.ic_dialog_keyboard);
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.setItems(items, listener);
+        builder.setTitle(title);
         mOptionsDialog = builder.create();
+        mOptionsDialog.setCanceledOnTouchOutside(true);
         Window window = mOptionsDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
         lp.token = mKeyboardSwitcher.getInputView().getWindowToken();
