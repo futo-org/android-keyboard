@@ -472,14 +472,6 @@ public class SubtypeSwitcher {
         }
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (mConfigUseSpacebarLanguageSwitcher) {
-            if (Settings.PREF_SELECTED_LANGUAGES.equals(key)) {
-                mLanguageSwitcher.loadLocales(sharedPreferences);
-            }
-        }
-    }
-
     /**
      * Change system locale for this application
      * @param newLocale
