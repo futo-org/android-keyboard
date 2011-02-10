@@ -61,7 +61,7 @@ public class UserBigramSuggestHelper extends SuggestHelper {
             mSuggest.getSuggestions(null, firstChar, previous);
             boolean reloading = mUserBigram.reloadDictionaryIfRequired();
             if (reloading) mUserBigram.waitForDictionaryLoading();
-            mUserBigram.getBigrams(firstChar, previous, mSuggest, null);
+            mUserBigram.getBigrams(firstChar, previous, mSuggest);
         }
 
         for (int i = 0; i < mSuggest.mBigramSuggestions.size(); i++) {

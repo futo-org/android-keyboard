@@ -35,24 +35,24 @@ public class MiniKeyboardKeyDetector extends KeyDetector {
     }
 
     @Override
-    public int getKeyIndexAndNearbyCodes(int x, int y, int[] allKeys) {
+    public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
         final Key[] keys = getKeys();
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
-        int closestKeyIndex = NOT_A_KEY;
-        int closestKeyDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
+        int nearestIndex = NOT_A_KEY;
+        int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
         final int keyCount = keys.length;
         for (int index = 0; index < keyCount; index++) {
             final int dist = keys[index].squaredDistanceToEdge(touchX, touchY);
-            if (dist < closestKeyDist) {
-                closestKeyIndex = index;
-                closestKeyDist = dist;
+            if (dist < nearestDist) {
+                nearestIndex = index;
+                nearestDist = dist;
             }
         }
 
-        if (allKeys != null && closestKeyIndex != NOT_A_KEY)
-            allKeys[0] = keys[closestKeyIndex].mCode;
-        return closestKeyIndex;
+        if (allCodes != null && nearestIndex != NOT_A_KEY)
+            allCodes[0] = keys[nearestIndex].mCode;
+        return nearestIndex;
     }
 }

@@ -87,12 +87,6 @@ public class Suggest implements Dictionary.WordCallback {
     private int[] mPriorities = new int[mPrefMaxSuggestions];
     private int[] mBigramPriorities = new int[PREF_MAX_BIGRAMS];
 
-    // Handle predictive correction for only the first 1280 characters for performance reasons
-    // If we support scripts that need latin characters beyond that, we should probably use some
-    // kind of a sparse array or language specific list with a mapping lookup table.
-    // 1280 is the size of the BASE_CHARS array in ExpandableDictionary, which is a basic set of
-    // latin characters.
-    private int[] mNextLettersFrequencies = new int[1280];
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
@@ -216,7 +210,6 @@ public class Suggest implements Dictionary.WordCallback {
         mIsAllUpperCase = wordComposer.isAllUpperCase();
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
         Arrays.fill(mPriorities, 0);
-        Arrays.fill(mNextLettersFrequencies, 0);
 
         // Save a lowercase version of the original word
         CharSequence typedWord = wordComposer.getTypedWord();
@@ -244,16 +237,13 @@ public class Suggest implements Dictionary.WordCallback {
                     prevWordForBigram = lowerPrevWord;
                 }
                 if (mUserBigramDictionary != null) {
-                    mUserBigramDictionary.getBigrams(wordComposer, prevWordForBigram, this,
-                            mNextLettersFrequencies);
+                    mUserBigramDictionary.getBigrams(wordComposer, prevWordForBigram, this);
                 }
                 if (mContactsDictionary != null) {
-                    mContactsDictionary.getBigrams(wordComposer, prevWordForBigram, this,
-                            mNextLettersFrequencies);
+                    mContactsDictionary.getBigrams(wordComposer, prevWordForBigram, this);
                 }
                 if (mMainDict != null) {
-                    mMainDict.getBigrams(wordComposer, prevWordForBigram, this,
-                            mNextLettersFrequencies);
+                    mMainDict.getBigrams(wordComposer, prevWordForBigram, this);
                 }
                 char currentChar = wordComposer.getTypedWord().charAt(0);
                 char currentCharUpper = Character.toUpperCase(currentChar);
@@ -278,10 +268,10 @@ public class Suggest implements Dictionary.WordCallback {
             // At second character typed, search the unigrams (scores being affected by bigrams)
             if (mUserDictionary != null || mContactsDictionary != null) {
                 if (mUserDictionary != null) {
-                    mUserDictionary.getWords(wordComposer, this, mNextLettersFrequencies);
+                    mUserDictionary.getWords(wordComposer, this);
                 }
                 if (mContactsDictionary != null) {
-                    mContactsDictionary.getWords(wordComposer, this, mNextLettersFrequencies);
+                    mContactsDictionary.getWords(wordComposer, this);
                 }
 
                 if (mSuggestions.size() > 0 && isValidWord(typedWord)
@@ -293,7 +283,7 @@ public class Suggest implements Dictionary.WordCallback {
                     mHasAutoCorrection = true;
                 }
             }
-            if (mMainDict != null) mMainDict.getWords(wordComposer, this, mNextLettersFrequencies);
+            if (mMainDict != null) mMainDict.getWords(wordComposer, this);
             if ((mCorrectionMode == CORRECTION_FULL || mCorrectionMode == CORRECTION_FULL_BIGRAM)
                     && mSuggestions.size() > 0 && mPriorities.length > 0) {
                 // TODO: when the normalized score of the first suggestion is nearly equals to
@@ -386,10 +376,6 @@ public class Suggest implements Dictionary.WordCallback {
         } else {
             return new SuggestedWords.Builder().addWords(mSuggestions, null);
         }
-    }
-
-    public int[] getNextLettersFrequencies() {
-        return mNextLettersFrequencies;
     }
 
     private void removeDupes() {

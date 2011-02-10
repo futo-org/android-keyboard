@@ -32,8 +32,7 @@ class UnigramDictionary {
 public:
     UnigramDictionary(const unsigned char *dict, int typedLetterMultipler, int fullWordMultiplier,
             int maxWordLength, int maxWords, int maxProximityChars, const bool isLatestDictVersion);
-    int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
-            int *nextLetters, int nextLettersSize);
+    int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies);
     ~UnigramDictionary();
 
 private:
@@ -109,6 +108,7 @@ private:
     int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];
     int mStackDiffs[MAX_WORD_LENGTH_INTERNAL];
     int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];
+    int mNextLettersFrequency[NEXT_LETTERS_SIZE];
 };
 
 // ----------------------------------------------------------------------------

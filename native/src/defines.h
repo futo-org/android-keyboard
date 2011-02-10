@@ -151,6 +151,9 @@ static void prof_out(void) {
 #define MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
 
+// The size of next letters frequency array.  Zero will disable the feature.
+#define NEXT_LETTERS_SIZE 0
+
 #define min(a,b) ((a)<(b)?(a):(b))
 
 #endif // LATINIME_DEFINES_H

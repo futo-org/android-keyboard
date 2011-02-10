@@ -118,8 +118,7 @@ public class BinaryDictionary extends Dictionary {
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize,
-            char[] outputChars, int[] frequencies,
-            int[] nextLettersFrequencies, int nextLettersSize);
+            char[] outputChars, int[] frequencies);
     private native int getBigramsNative(int dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] frequencies,
             int maxWordLength, int maxBigrams, int maxAlternatives);
@@ -133,7 +132,7 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback, int[] nextLettersFrequencies) {
+            final WordCallback callback) {
         if (mNativeDict == 0) return;
 
         char[] chars = previousWord.toString().toCharArray();
@@ -165,15 +164,14 @@ public class BinaryDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback,
-            int[] nextLettersFrequencies) {
+    public void getWords(final WordComposer codes, final WordCallback callback) {
         if (mNativeDict == 0) return;
 
         final int codesSize = codes.size();
         // Won't deal with really long words.
         if (codesSize > MAX_WORD_LENGTH - 1) return;
 
-        Arrays.fill(mInputCodes, -1);
+        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
         for (int i = 0; i < codesSize; i++) {
             int[] alternatives = codes.getCodesAt(i);
             System.arraycopy(alternatives, 0, mInputCodes, i * MAX_ALTERNATIVES,
@@ -183,8 +181,7 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(mFrequencies, 0);
 
         int count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize, mOutputChars,
-                mFrequencies, nextLettersFrequencies,
-                nextLettersFrequencies != null ? nextLettersFrequencies.length : 0);
+                mFrequencies);
 
         for (int j = 0; j < count; ++j) {
             if (mFrequencies[j] < 1) break;
