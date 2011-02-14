@@ -81,8 +81,7 @@ import java.util.Locale;
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
-public class LatinIME extends InputMethodService implements KeyboardActionListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+public class LatinIME extends InputMethodService implements KeyboardActionListener {
     private static final String TAG = "LatinIME";
     private static final boolean PERF_DEBUG = false;
     private static final boolean TRACE = false;
@@ -395,7 +394,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mReceiver, filter);
         mVoiceConnector = VoiceIMEConnector.init(this, prefs, mHandler);
-        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     /**
@@ -1939,19 +1937,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mVoiceConnector.isVoiceButtonOnPrimary());
         initSuggest();
         switcher.updateShiftState();
-    }
-
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
-            String key) {
-        mSubtypeSwitcher.onSharedPreferenceChanged(sharedPreferences, key);
-        if (Settings.PREF_SELECTED_LANGUAGES.equals(key)) {
-            mRefreshKeyboardRequired = true;
-        } else if (Settings.PREF_RECORRECTION_ENABLED.equals(key)) {
-            mReCorrectionEnabled = sharedPreferences.getBoolean(
-                    Settings.PREF_RECORRECTION_ENABLED,
-                    mResources.getBoolean(R.bool.config_default_recorrection_enabled));
-        }
     }
 
     @Override
