@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2010,2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,70 +15,76 @@
  */
 
 package com.android.inputmethod.latin;
-
-import android.test.AndroidTestCase;
-import android.util.Log;
 import com.android.inputmethod.latin.tests.R;
-import java.io.InputStreamReader;
-import java.io.InputStream;
+
+import android.content.res.AssetFileDescriptor;
+import android.text.TextUtils;
+import android.util.Slog;
+
 import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class SuggestPerformanceTests extends AndroidTestCase {
-    private static final String TAG = "SuggestPerformanceTests";
+public class SuggestPerformanceTests extends SuggestTestsBase {
+    private static final String TAG = SuggestPerformanceTests.class.getSimpleName();
 
     private String mTestText;
-    private SuggestHelper sh;
+    private SuggestHelper mHelper;
 
     @Override
-    protected void setUp() {
-        // TODO Figure out a way to directly using the dictionary rather than copying it over
-
-        // For testing with real dictionary, TEMPORARILY COPY main dictionary into test directory.
-        // DO NOT SUBMIT real dictionary under test directory.
-        //int resId = R.raw.main;
-
-        int resId = R.raw.test;
-
-        sh = new SuggestHelper(TAG, getTestContext(), resId);
-        loadString();
+    protected void setUp() throws Exception {
+        super.setUp();
+        final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
+        mHelper = new SuggestHelper(
+                getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
+                US_KEYBOARD_ID);
+        loadString(R.raw.testtext);
     }
 
-    private void loadString() {
+    private void loadString(int testFileId) {
+        final String testFile = getTestContext().getResources().getResourceName(testFileId);
+        BufferedReader reader = null;
         try {
-            InputStream is = getTestContext().getResources().openRawResource(R.raw.testtext);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-            StringBuilder sb = new StringBuilder();
-            String line = reader.readLine();
-            while (line != null) {
-                sb.append(line + " ");
-                line = reader.readLine();
+            reader = new BufferedReader(
+                    new InputStreamReader(openTestRawResource(testFileId)));
+            final StringBuilder sb = new StringBuilder();
+            String line;
+            Slog.i(TAG, "Reading test file " + testFile);
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+                sb.append(" ");
             }
             mTestText = sb.toString();
         } catch (Exception e) {
+            Slog.e(TAG, "Can not read " + testFile);
             e.printStackTrace();
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (Exception e) {
+                    Slog.e(TAG, "Closing " + testFile + " failed");
+                }
+            }
         }
     }
 
     /************************** Helper functions ************************/
-    private int lookForSuggestion(String prevWord, String currentWord) {
+    private int lookForBigramSuggestion(String prevWord, String currentWord) {
         for (int i = 1; i < currentWord.length(); i++) {
-            if (i == 1) {
-                if (sh.isDefaultNextSuggestion(prevWord, currentWord.substring(0, i),
-                        currentWord)) {
-                    return i;
-                }
-            } else {
-                if (sh.isDefaultNextCorrection(prevWord, currentWord.substring(0, i),
-                        currentWord)) {
-                    return i;
-                }
-            }
+            final CharSequence prefix = currentWord.substring(0, i);
+            final CharSequence word = (i == 1)
+                    ? mHelper.getBigramFirstSuggestion(prevWord, prefix)
+                    : mHelper.getBigramAutoCorrection(prevWord, prefix);
+            if (TextUtils.equals(word, currentWord))
+                return i;
         }
         return currentWord.length();
     }
 
     private double runText(boolean withBigrams) {
+        mHelper.setCorrectionMode(
+                withBigrams ? Suggest.CORRECTION_FULL_BIGRAM : Suggest.CORRECTION_FULL);
         StringTokenizer st = new StringTokenizer(mTestText);
         String prevWord = null;
         int typeCount = 0;
@@ -92,9 +98,9 @@ public class SuggestPerformanceTests extends AndroidTestCase {
                 endCheck = true;
             }
             if (withBigrams && prevWord != null) {
-                typeCount += lookForSuggestion(prevWord, currentWord);
+                typeCount += lookForBigramSuggestion(prevWord, currentWord);
             } else {
-                typeCount += lookForSuggestion(null, currentWord);
+                typeCount += lookForBigramSuggestion(null, currentWord);
             }
             characterCount += currentWord.length();
             if (!endCheck) prevWord = currentWord;
@@ -103,14 +109,14 @@ public class SuggestPerformanceTests extends AndroidTestCase {
 
         double result = (double) (characterCount - typeCount) / characterCount * 100;
         if (withBigrams) {
-            Log.i(TAG, "with bigrams -> "  + result + " % saved!");
+            Slog.i(TAG, "with bigrams -> "  + result + " % saved!");
         } else {
-            Log.i(TAG, "without bigrams  -> "  + result + " % saved!");
+            Slog.i(TAG, "without bigrams  -> "  + result + " % saved!");
         }
-        Log.i(TAG, "\ttotal number of words: " + wordCount);
-        Log.i(TAG, "\ttotal number of characters: " + mTestText.length());
-        Log.i(TAG, "\ttotal number of characters without space: " + characterCount);
-        Log.i(TAG, "\ttotal number of characters typed: " + typeCount);
+        Slog.i(TAG, "\ttotal number of words: " + wordCount);
+        Slog.i(TAG, "\ttotal number of characters: " + mTestText.length());
+        Slog.i(TAG, "\ttotal number of characters without space: " + characterCount);
+        Slog.i(TAG, "\ttotal number of characters typed: " + typeCount);
         return result;
     }
 

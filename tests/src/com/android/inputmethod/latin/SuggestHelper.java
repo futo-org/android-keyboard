@@ -16,98 +16,105 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.KeyDetector;
+import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.ProximityKeyDetector;
+
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
-import com.android.inputmethod.latin.Suggest;
-import com.android.inputmethod.latin.UserBigramDictionary;
-import com.android.inputmethod.latin.WordComposer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.channels.Channels;
+import java.io.File;
 import java.util.List;
-import java.util.Locale;
-import java.util.StringTokenizer;
 
 public class SuggestHelper {
-    private Suggest mSuggest;
-    private UserBigramDictionary mUserBigram;
-    private final String TAG;
+    protected final Suggest mSuggest;
+    private final LatinKeyboard mKeyboard;
+    private final KeyDetector mKeyDetector;
 
-    /** Uses main dictionary only **/
-    public SuggestHelper(String tag, Context context, int resId) {
-        TAG = tag;
-        mSuggest = new Suggest(context, resId);
+    public SuggestHelper(Context context, int dictionaryId, KeyboardId keyboardId) {
+        mSuggest = new Suggest(context, dictionaryId);
+        mKeyboard = new LatinKeyboard(context, keyboardId);
+        mKeyDetector = new ProximityKeyDetector();
+        init();
+    }
+
+    protected SuggestHelper(Context context, File dictionaryPath, long startOffset, long length,
+            KeyboardId keyboardId) {
+        mSuggest = new Suggest(dictionaryPath, startOffset, length);
+        mKeyboard = new LatinKeyboard(context, keyboardId);
+        mKeyDetector = new ProximityKeyDetector();
+        init();
+    }
+
+    private void init() {
         mSuggest.setQuickFixesEnabled(false);
-        mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
+        mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL);
+        mKeyDetector.setKeyboard(mKeyboard, 0, 0);
+        mKeyDetector.setProximityCorrectionEnabled(true);
+        mKeyDetector.setProximityThreshold(KeyDetector.getMostCommonKeyWidth(mKeyboard));
     }
 
-    /** Uses both main dictionary and user-bigram dictionary **/
-    public SuggestHelper(String tag, Context context, int resId, int userBigramMax,
-            int userBigramDelete) {
-        this(tag, context, resId);
-        mUserBigram = new UserBigramDictionary(context, null, Locale.US.toString(),
-                Suggest.DIC_USER);
-        mUserBigram.setDatabaseMax(userBigramMax);
-        mUserBigram.setDatabaseDelete(userBigramDelete);
-        mSuggest.setUserBigramDictionary(mUserBigram);
+    public void setCorrectionMode(int correctionMode) {
+        mSuggest.setCorrectionMode(correctionMode);
     }
 
-    void changeUserBigramLocale(Context context, Locale locale) {
-        if (mUserBigram != null) {
-            flushUserBigrams();
-            mUserBigram.close();
-            mUserBigram = new UserBigramDictionary(context, null, locale.toString(),
-                    Suggest.DIC_USER);
-            mSuggest.setUserBigramDictionary(mUserBigram);
+    public boolean hasMainDictionary() {
+        return mSuggest.hasMainDictionary();
+    }
+
+    private int[] getProximityCodes(char c) {
+        final List<Key> keys = mKeyboard.getKeys();
+        for (final Key key : keys) {
+            if (key.mCode == c) {
+                final int x = key.mX + key.mWidth / 2;
+                final int y = key.mY + key.mHeight / 2;
+                final int[] codes = mKeyDetector.newCodeArray();
+                mKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
+                return codes;
+            }
         }
+        return new int[] { c };
     }
 
-    private WordComposer createWordComposer(CharSequence s) {
+    protected WordComposer createWordComposer(CharSequence s) {
         WordComposer word = new WordComposer();
         for (int i = 0; i < s.length(); i++) {
             final char c = s.charAt(i);
-            int[] codes;
-            // If it's not a lowercase letter, don't find adjacent letters
-            if (c < 'a' || c > 'z') {
-                codes = new int[] { c };
-            } else {
-                codes = adjacents[c - 'a'];
-            }
-            word.add(c, codes);
+            word.add(c, getProximityCodes(c));
         }
         return word;
     }
 
-    private boolean isDefaultSuggestion(SuggestedWords suggestions, CharSequence word) {
-        // Check if either the word is what you typed or the first alternative
-        return suggestions.size() > 0 &&
-                (/*TextUtils.equals(suggestions.get(0), word) || */
-                  (suggestions.size() > 1 && TextUtils.equals(suggestions.getWord(1), word)));
+    public boolean isValidWord(CharSequence typed) {
+        return mSuggest.isValidWord(typed);
     }
 
-    boolean isDefaultSuggestion(CharSequence typed, CharSequence expected) {
+    public CharSequence getFirstSuggestion(CharSequence typed) {
         WordComposer word = createWordComposer(typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
-        return isDefaultSuggestion(suggestions, expected);
+        // Note that suggestions.getWord(0) is the word user typed.
+        return suggestions.size() > 1 ? suggestions.getWord(1) : null;
     }
 
-    boolean isDefaultCorrection(CharSequence typed, CharSequence expected) {
+    public CharSequence getAutoCorrection(CharSequence typed) {
         WordComposer word = createWordComposer(typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
-        return isDefaultSuggestion(suggestions, expected) && mSuggest.hasAutoCorrection();
+        // Note that suggestions.getWord(0) is the word user typed.
+        return (suggestions.size() > 1 && mSuggest.hasAutoCorrection())
+                ? suggestions.getWord(1) : null;
     }
 
-    boolean isASuggestion(CharSequence typed, CharSequence expected) {
+    public int getSuggestIndex(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
+        // Note that suggestions.getWord(0) is the word user typed.
         for (int i = 1; i < suggestions.size(); i++) {
-            if (TextUtils.equals(suggestions.getWord(i), expected)) return true;
+            if (TextUtils.equals(suggestions.getWord(i), expected))
+                return i;
         }
-        return false;
+        return -1;
     }
 
     private void getBigramSuggestions(CharSequence previous, CharSequence typed) {
@@ -117,109 +124,30 @@ public class SuggestHelper {
         }
     }
 
-    boolean isDefaultNextSuggestion(CharSequence previous, CharSequence typed,
-            CharSequence expected) {
+    public CharSequence getBigramFirstSuggestion(CharSequence previous, CharSequence typed) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
-        return isDefaultSuggestion(suggestions, expected);
+        return suggestions.size() > 1 ? suggestions.getWord(1) : null;
     }
 
-    boolean isDefaultNextCorrection(CharSequence previous, CharSequence typed,
-            CharSequence expected) {
+    public CharSequence getBigramAutoCorrection(CharSequence previous, CharSequence typed) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
-        return isDefaultSuggestion(suggestions, expected) && mSuggest.hasAutoCorrection();
+        return (suggestions.size() > 1 && mSuggest.hasAutoCorrection())
+                ? suggestions.getWord(1) : null;
     }
 
-    boolean isASuggestion(CharSequence previous, CharSequence typed,
+    public int searchBigramSuggestion(CharSequence previous, CharSequence typed,
             CharSequence expected) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
         for (int i = 1; i < suggestions.size(); i++) {
-            if (TextUtils.equals(suggestions.getWord(i), expected)) return true;
+            if (TextUtils.equals(suggestions.getWord(i), expected))
+                return i;
         }
-        return false;
+        return -1;
     }
-
-    boolean isValid(CharSequence typed) {
-        return mSuggest.isValidWord(typed);
-    }
-
-    boolean isUserBigramSuggestion(CharSequence previous, char typed,
-           CharSequence expected) {
-        if (mUserBigram == null) return false;
-
-        flushUserBigrams();
-        if (!TextUtils.isEmpty(previous) && !TextUtils.isEmpty(Character.toString(typed))) {
-            WordComposer firstChar = createWordComposer(Character.toString(typed));
-            mSuggest.getSuggestions(null, firstChar, previous);
-            boolean reloading = mUserBigram.reloadDictionaryIfRequired();
-            if (reloading) mUserBigram.waitForDictionaryLoading();
-            mUserBigram.getBigrams(firstChar, previous, mSuggest, null);
-        }
-
-        List<CharSequence> suggestions = mSuggest.mBigramSuggestions;
-        for (int i = 0; i < suggestions.size(); i++) {
-            if (TextUtils.equals(suggestions.get(i), expected)) return true;
-        }
-
-        return false;
-    }
-
-    void addToUserBigram(String sentence) {
-        StringTokenizer st = new StringTokenizer(sentence);
-        String previous = null;
-        while (st.hasMoreTokens()) {
-            String current = st.nextToken();
-            if (previous != null) {
-                addToUserBigram(new String[] {previous, current});
-            }
-            previous = current;
-        }
-    }
-
-    void addToUserBigram(String[] pair) {
-        if (mUserBigram != null && pair.length == 2) {
-            mUserBigram.addBigrams(pair[0], pair[1]);
-        }
-    }
-
-    void flushUserBigrams() {
-        if (mUserBigram != null) {
-            mUserBigram.flushPendingWrites();
-            mUserBigram.waitUntilUpdateDBDone();
-        }
-    }
-
-    final int[][] adjacents = {
-                               {'a','s','w','q',-1},
-                               {'b','h','v','n','g','j',-1},
-                               {'c','v','f','x','g',},
-                               {'d','f','r','e','s','x',-1},
-                               {'e','w','r','s','d',-1},
-                               {'f','g','d','c','t','r',-1},
-                               {'g','h','f','y','t','v',-1},
-                               {'h','j','u','g','b','y',-1},
-                               {'i','o','u','k',-1},
-                               {'j','k','i','h','u','n',-1},
-                               {'k','l','o','j','i','m',-1},
-                               {'l','k','o','p',-1},
-                               {'m','k','n','l',-1},
-                               {'n','m','j','k','b',-1},
-                               {'o','p','i','l',-1},
-                               {'p','o',-1},
-                               {'q','w',-1},
-                               {'r','t','e','f',-1},
-                               {'s','d','e','w','a','z',-1},
-                               {'t','y','r',-1},
-                               {'u','y','i','h','j',-1},
-                               {'v','b','g','c','h',-1},
-                               {'w','e','q',-1},
-                               {'x','c','d','z','f',-1},
-                               {'y','u','t','h','g',-1},
-                               {'z','s','x','a','d',-1},
-                              };
 }

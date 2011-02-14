@@ -31,7 +31,7 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     private static final String PACKAGE = LatinIME.class.getPackage().getName();
 
     private Resources mRes;
-    private List<InputMethodSubtype> mKeyboardSubtypes;
+    private List<InputMethodSubtype> mKeyboardSubtypes = new ArrayList<InputMethodSubtype>();
 
     @Override
     protected void setUp() throws Exception {
@@ -60,11 +60,6 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         assertTrue("Can not find keyboard subtype", mKeyboardSubtypes.size() > 0);
     }
 
-    // Copied from {@link java.junit.Assert#format(String, Object, Object)}
-    private static String format(String message, Object expected, Object actual) {
-        return message + " expected:<" + expected + "> but was:<" + actual + ">";
-    }
-
     private String getStringWithLocale(int resId, Locale locale) {
         final Locale savedLocale = Locale.getDefault();
         try {
@@ -76,6 +71,8 @@ public class SubtypeLocaleTests extends AndroidTestCase {
     }
 
     public void testSubtypeLocale() {
+        final StringBuilder messages = new StringBuilder();
+        int failedCount = 0;
         for (final InputMethodSubtype subtype : mKeyboardSubtypes) {
             final String localeCode = subtype.getLocale();
             final Locale locale = new Locale(localeCode);
@@ -85,9 +82,13 @@ public class SubtypeLocaleTests extends AndroidTestCase {
             // The subtype name in its locale.  For example 'English (US) Keyboard' or
             // 'Clavier Francais (Canada)'.  (c=\u008d)
             final String subtypeName = getStringWithLocale(subtype.getNameResId(), locale);
-            assertTrue(
-                    format("subtype display name of " + localeCode + ":", subtypeName, displayName),
-                    subtypeName.contains(displayName));
+            if (subtypeName.contains(displayName)) {
+                failedCount++;
+                messages.append(String.format(
+                        "subtype name is '%s' and should contain locale '%s' name '%s'\n",
+                        subtypeName, localeCode, displayName));
+            }
         }
+        assertEquals(messages.toString(), 0, failedCount);
     }
 }
