@@ -261,6 +261,19 @@ public class Utils {
         return dp[sl][tl];
     }
 
+    // Get the current stack trace
+    public static String getStackTrace() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            throw new RuntimeException();
+        } catch (RuntimeException e) {
+            StackTraceElement[] frames = e.getStackTrace();
+            // Start at 1 because the first frame is here and we don't care about it
+            for (int j = 1; j < frames.length; ++j) sb.append(frames[j].toString() + "\n");
+        }
+        return sb.toString();
+    }
+
     // In dictionary.cpp, getSuggestion() method,
     // suggestion scores are computed using the below formula.
     // original score (called 'frequency')
