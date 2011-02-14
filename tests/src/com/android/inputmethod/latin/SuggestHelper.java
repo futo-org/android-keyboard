@@ -91,6 +91,11 @@ public class SuggestHelper {
         return mSuggest.isValidWord(typed);
     }
 
+    // TODO: This may be slow, but is OK for test so far.
+    public SuggestedWords getSuggestions(CharSequence typed) {
+        return mSuggest.getSuggestions(null, createWordComposer(typed), null);
+    }
+
     public CharSequence getFirstSuggestion(CharSequence typed) {
         WordComposer word = createWordComposer(typed);
         SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
