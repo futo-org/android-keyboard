@@ -185,7 +185,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private CharSequence mEnteredText;
-    private boolean mRefreshKeyboardRequired;
 
     private final ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
 
@@ -520,11 +519,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
 
         mSubtypeSwitcher.updateParametersOnStartInputView();
-
-        if (mRefreshKeyboardRequired) {
-            mRefreshKeyboardRequired = false;
-            onRefreshKeyboard();
-        }
 
         TextEntryState.newSession(this);
 
