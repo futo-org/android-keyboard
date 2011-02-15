@@ -105,13 +105,13 @@
     <string name="ok" msgid="7898366843681727667">"ОК"</string>
     <string name="voice_input" msgid="2466640768843347841">"Голосовой ввод"</string>
   <string-array name="voice_input_modes">
-    <item msgid="1349082139076086774">"На основной клавиатуре"</item>
-    <item msgid="8529385602829095903">"На клавиатуре символов"</item>
-    <item msgid="7283103513488381103">"Выкл."</item>
+    <item msgid="1349082139076086774">"Значок на основной клавиатуре"</item>
+    <item msgid="8529385602829095903">"Значок на клавиатуре символов"</item>
+    <item msgid="7283103513488381103">"Отключить голосовой ввод"</item>
   </string-array>
   <string-array name="voice_input_modes_summary">
-    <item msgid="554248625705084903">"Микрофон на основной клавиатуре"</item>
-    <item msgid="6907837061058876770">"Микрофон на клавиатуре символов"</item>
+    <item msgid="554248625705084903">"Значок на основной клавиатуре"</item>
+    <item msgid="6907837061058876770">"Значок на клавиатуре символов"</item>
     <item msgid="3664304608587798036">"Голосовой ввод отключен"</item>
   </string-array>
     <string name="auto_submit" msgid="9151008027068358518">"Автоматически отправлять по окончании голосового ввода"</string>
@@ -133,7 +133,7 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Включить отправку сведений"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогите усовершенствовать редактор способа ввода, разрешив отправку статистики и отчетов о сбоях в Google."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Исправление нажатием"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Введенные слова исправляются нажатием"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Нажмите на слово, чтобы исправить его"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Вид клавиатуры"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"клавиатура"</string>
     <string name="subtype_mode_voice" msgid="4394113125441627771">"голосовой"</string>
