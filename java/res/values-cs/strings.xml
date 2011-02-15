@@ -132,7 +132,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"K dispozici je slovník"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktivovat zasílání statistik užívání a zpráv o selhání"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Automatickým zasíláním statistik o užívání editoru zadávání dat a zpráv o jeho selhání do Googlu můžete přispět k vylepšení tohoto nástroje."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Aktivovat opravy dotykem"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dotykem aktivovat opravy"</string>
     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Opravy napsaných slov dotykem"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Motiv klávesnice"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"klávesnice"</string>
