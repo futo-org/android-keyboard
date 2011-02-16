@@ -31,7 +31,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"Автоматично поставяне на главни букви"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Бързи корекции"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Коригира най-честите грешки при въвеждане"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения за корекция"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения за поправка"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Показване на предложения, докато пишете"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Винаги да се показва"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Показване с вертикална ориентация"</string>
@@ -109,12 +109,10 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"руска клавиатура"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"сръбска клавиатура"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"шведска клавиатура"</string>
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"африкаанс, гласово"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"чешки, гласово"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"немски, гласово"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"английски, гласово"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"испански, гласово"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"френски, гласово"</string>
     <string name="subtype_mode_it_voice" msgid="5077373057157441323">"италиански, гласово"</string>
@@ -125,11 +123,8 @@
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"португалски, гласово"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"руски, гласово"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"турски, гласово"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"китайски, кантонски, гласово"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"китайски, мандарин, гласово"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"зулуски, гласово"</string>
     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Режим за изследване на използваемостта"</string>
 </resources>

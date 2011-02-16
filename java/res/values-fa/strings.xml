@@ -31,7 +31,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"نوشتن با حروف بزرگ خودکار"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"راه حل های سریع"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"تصحیح خطاهای تایپی رایج"</string>
-    <string name="prefs_show_suggestions" msgid="8026799663445531637">"نمایش پیشنهادات برای تصحیح"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"نمایش پیشنهادات تصحیح"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"نمایش واژه های پیشنهادی در حین تایپ"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"همیشه نمایش داده شود"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"نمایش در حالت عمودی"</string>
@@ -109,12 +109,10 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"صفحه کلید روسی"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"صفحه کلید صربی"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"صفحه کلید سوئدی"</string>
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"صدای آفریکانس"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"صدای چک"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"صدای آلمانی"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"صدای انگلیسی"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"صدای اسپانیایی"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"صدای فرانسوی"</string>
     <string name="subtype_mode_it_voice" msgid="5077373057157441323">"صدای ایتالیایی"</string>
@@ -125,11 +123,8 @@
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"صدای پرتغالی"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"صدای روسی"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"صدای ترکی"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"صدای چینی، یوئه"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"صدای چینی، ماندارین"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"صدای ایزی زولو"</string>
     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"حالت تست قابلیت استفاده"</string>
 </resources>

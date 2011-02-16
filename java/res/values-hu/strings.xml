@@ -41,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mindig látszik"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Mindig rejtve"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Automatikus javítás"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Szóköz és közp. elgépelést javít"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Szóköz és központozás automatikusan javítja az elgépelést"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Ki"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mérsékelt"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresszív"</string>
@@ -109,12 +109,10 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Orosz billentyűzet"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Szerb billentyűzet"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Svéd billentyűzet"</string>
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Afrikaans hang"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Cseh hang"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Német hang"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Angol hang"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Spanyol hang"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Francia hang"</string>
     <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Olasz hang"</string>
@@ -125,11 +123,8 @@
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Portugál hang"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Orosz hang"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Török hang"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Kínai (jüe) hang"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Kínai (mandarin) hang"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"isiZulu hang"</string>
     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Használhatóság - tanulás mód"</string>
 </resources>

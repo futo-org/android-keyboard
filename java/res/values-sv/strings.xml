@@ -31,7 +31,7 @@
     <string name="auto_cap" msgid="1719746674854628252">"Automatiska versaler"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Snabba lösningar"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Åtgärdar automatiskt vanliga misstag"</string>
-    <!-- outdated translation 1375526087676269770 -->     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Visa förslag"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Visa rättningsförslag"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Visar ordförslag när du skriver"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Visa alltid"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Visa stående"</string>
@@ -41,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Visa alltid"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Dölj alltid"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Autokorrigering"</string>
-    <!-- outdated translation 6260001790426244084 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Blanksteg och punkt infogar automatiskt markerat ord"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Blanksteg/skiljetecken rättar felstavning"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Av"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Måttlig"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressiv"</string>
@@ -109,29 +109,22 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ryskt tangentbord"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbiskt tangentbord"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Svenskt tangentbord"</string>
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Röst, afrikaans"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Röst på tjeckiska"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Röst på tyska"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Röst, engelska"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Röst på spanska"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Röst på franska"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Röst på italienska"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Röst på japanska"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Röst på koreanska"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Röst på holländska"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Röst på polska"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Röst på portugisiska"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Röst på ryska"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Röst på turkiska"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Röst, kinesiska, yue"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Röst, kinesiska, mandarin"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Röst, isiZulusk"</string>
     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Läge för användbarhetsstudie"</string>
 </resources>

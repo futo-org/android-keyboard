@@ -71,7 +71,7 @@
     <string name="voice_server_error" msgid="7807129913977261644">"Serverfout"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Geen spraak te horen"</string>
     <string name="voice_no_match" msgid="4285117547030179174">"Geen resultaten gevonden"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Voice Search is niet geïnstalleerd"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Spraakgestuurd zoeken is niet geïnstalleerd"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Hint:"</b>" schuif over het toetsenbord om te spreken"</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hint:"</b>" spreek de volgende keer interpunctie uit, zoals \'period\' (punt), \'comma\' (komma) of \'question mark\' (vraagteken)."</string>
     <string name="cancel" msgid="6830980399865683324">"Annuleren"</string>
@@ -109,12 +109,10 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Russisch toetsenbord"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Servisch toetsenbord"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Zweeds toetsenbord"</string>
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Afrikaanse stem"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Tsjechische stem"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Duitse stem"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Engelse stem"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Spaanse stem"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Franse stem"</string>
     <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Italiaanse stem"</string>
@@ -125,11 +123,8 @@
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Portugese stem"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Russische stem"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Turkse stem"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Chinese stem (Yue)"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Chinese stem (Mandarijn)"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"isiZulu stem"</string>
     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Modus voor gebruiksvriendelijkheidsonderzoek"</string>
 </resources>

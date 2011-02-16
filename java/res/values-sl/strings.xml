@@ -109,12 +109,10 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ruska tipkovnica"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Srbska tipkovnica"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Švedska tipkovnica"</string>
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Govor v afrikanščini"</string>
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Govor v češčini"</string>
     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Govor v nemščini"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Govor v angleščini"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Govor v španščini"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Govor v francoščini"</string>
     <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Govor v italijanščini"</string>
@@ -125,11 +123,8 @@
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Govor v portugalščini"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Govor v ruščini"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Govor v turščini"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Govor v kitajščini, jue"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Govor v kitajščini, mandarinščini"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Govor v zulujščini"</string>
     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Način za preučevanje uporabnosti"</string>
 </resources>
