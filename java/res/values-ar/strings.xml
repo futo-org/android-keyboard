@@ -26,32 +26,25 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"اهتزاز عند الضغط على مفتاح"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"صوت عند الضغط على مفتاح"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"انبثاق عند الضغط على المفاتيح"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"إعدادات اقتراحات الكلمات"</string>
+    <string name="general_category" msgid="1859088467017573195">"عام"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"تصحيح النص"</string>
     <string name="auto_cap" msgid="1719746674854628252">"استخدام الأحرف الكبيرة تلقائيًا"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"إصلاحات سريعة"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"تصحيح الأخطاء المكتوبة الشائعة"</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
-    <skip />
-    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
-    <skip />
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"عرض اقتراحات التصحيح"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"عرض الكلمات المقترحة أثناء الكتابة"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"عرض دومًا"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"عرض في وضع رأسي"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"إخفاء دومًا"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"عرض مفتاح الإعدادات"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"تلقائي"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"إظهار بشكل دائم"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"إخفاء دومًا"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"اقتراحات الكلمات"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"تصحيح الكلمة السابقة تلقائيًا"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction" msgid="4979925752001319458">"التصحيح التلقائي"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"تؤدي المسافة والترقيم إلى تصحيح الكلمات المكتوبة بشكل غير صحيح"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"إيقاف"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"معتدل"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"حاد"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"اقتراحات ثنائية"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"استخدام الكلمة السابقة لتحسين الاقتراح"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : تم الحفظ"</string>
@@ -59,16 +52,15 @@
     <string name="label_next_key" msgid="362972844525672568">"التالي"</string>
     <string name="label_done_key" msgid="2441578748772529288">"تم"</string>
     <string name="label_send_key" msgid="2815056534433717444">"إرسال"</string>
-    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
-    <skip />
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"أ ب ج د"</string>
     <string name="label_more_key" msgid="3760239494604948502">"المزيد"</string>
     <string name="label_pause_key" msgid="181098308428035340">"توقف مؤقت"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"انتظار"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"الإدخال الصوتي"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"الإدخال الصوتي غير معتمد حاليًا للغتك، ولكنه يعمل باللغة الإنجليزية."</string>
-    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"الإدخال الصوتي هو ميزة تجريبية تستخدم التعرف على الكلام المتصل في Google."</string>
-    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"لتشغيل الإدخال الصوتي، انتقل إلى إعدادات لوحة المفاتيح."</string>
-    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"لاستخدام الإدخال الصوتي، اضغط على زر الميكروفون أو مرر إصبعك عبر لوحة المفاتيح على الشاشة."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"يستخدم الإدخال الصوتي خاصية التعرف على الكلام من Google. تنطبق "<a href="http://m.google.com/privacy">"سياسة خصوصية الجوال"</a>"."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"لإيقاف الإدخال الصوتي، انتقل إلى إعدادات طريقة الإدخال."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"لاستخدام الإدخال الصوتي، اضغط على زر الميكروفون."</string>
     <string name="voice_listening" msgid="467518160751321844">"تحدث الآن"</string>
     <string name="voice_working" msgid="6666937792815731889">"العمل"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -85,18 +77,12 @@
     <string name="cancel" msgid="6830980399865683324">"إلغاء"</string>
     <string name="ok" msgid="7898366843681727667">"موافق"</string>
     <string name="voice_input" msgid="2466640768843347841">"الإدخال الصوتي"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"لوحة مفاتيح رئيسية"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"لوحة مفاتيح الرموز"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"إيقاف"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"ميكروفون على لوحة مفاتيح رئيسية"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"ميكروفون على لوحة مفاتيح الرموز"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"الإدخال الصوتي مُعطل"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"تحديد طريقة الإرسال"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"لغات الإدخال"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"مرر إصبعك على مفتاح المسافة لتغيير اللغة"</string>
@@ -105,44 +91,40 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"تمكين ملاحظات المستخدم"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"المساعدة في تحسين محرر طريقة الإرسال هذا من خلال إرسال إحصاءات الاستخدام وتقارير الأعطال تلقائيًا إلى Google."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"المس لتصحيح الكلمات"</string>
-    <!-- outdated translation 1056068922330206170 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"المس الكلمات المدخلة لتصحيحها"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"المس الكلمات التي تم إدخالها لتصحيحها، وذلك فقط عندما تكون الاقتراحات مرئية."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"مظهر لوحة المفاتيح"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"لوحة مفاتيح تشيكية"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"لوحة مفاتيح دانماركية"</string>
-    <!-- outdated translation 5111274665584117449 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"لوحة مفاتيح ألمانية"</string>
-    <!-- outdated translation 2339748210942078577 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"لوحة مفاتيح إنجليزية (بريطانيا العظمى)"</string>
-    <!-- outdated translation 2979257184475020604 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"لوحة مفاتيح إنجليزية (الولايات المتحدة)"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"لوحة مفاتيح ألمانية"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"لوحة مفاتيح إنجليزية (بريطانيا)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"لوحة مفاتيح إنجليزية (الولايات المتحدة)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"لوحة مفاتيح إسبانية"</string>
-    <!-- no translation found for subtype_mode_es_US_keyboard (3702125193532262008) -->
-    <skip />
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"لوحة مفاتيح إسبانية (الولايات المتحدة)"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"لوحة مفاتيح فرنسية"</string>
-    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
-    <skip />
-    <!-- outdated translation 2281078537437195027 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"لوحة مفاتيح إيطالية"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"لوحة مفاتيح فرنسية (كندا)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"لوحة مفاتيح فرنسية (سويسرا)"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"لوحة مفاتيح إيطالية"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"لوحة مفاتيح نرويجية"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"لوحة مفاتيح بولندية"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"لوحة مفاتيح روسية"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"لوحة مفاتيح صربية"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"لوحة مفاتيح سويدية"</string>
-    <!-- outdated translation 157536957128878726 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"صوت تشيكي"</string>
-    <!-- outdated translation 309350321180102217 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"صوت ألماني"</string>
-    <string name="subtype_mode_en_AU_voice" msgid="1103892562629586486">"صوت إنجليزي (أستراليا)"</string>
-    <!-- outdated translation 3773764031764533262 -->     <string name="subtype_mode_en_GB_voice" msgid="7868802451720612888">"صوت إنجليزي (بريطانيا العظمى)"</string>
-    <string name="subtype_mode_en_IN_voice" msgid="4834879535045820293">"صوت إنجليزي (الهند)"</string>
-    <string name="subtype_mode_en_NZ_voice" msgid="2739391364469645636">"صوت إنجليزي (نيوزلندا)"</string>
-    <!-- outdated translation 1582519352222847297 -->     <string name="subtype_mode_en_US_voice" msgid="2300580846081472319">"صوت إنجليزي (الولايات المتحدة)"</string>
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"صوت أفريقاني"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"صوت تشيكي"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"صوت ألماني"</string>
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"صوت إنجليزي"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"صوت إسباني"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"صوت فرنسي"</string>
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"صوت إيطالي"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"صوت ياباني"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"صوت كوري"</string>
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"صوت هولندي"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"صوت بولندي"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"صوت برتغالي"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"صوت روسي"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"صوت تركي"</string>
-    <!-- outdated translation 3154514897179707124 -->     <string name="subtype_mode_zh_CN_voice" msgid="6452442204238513331">"صوت صيني (الصين)"</string>
-    <!-- outdated translation 1524137359275360490 -->     <string name="subtype_mode_zh_TW_voice" msgid="3640444875378221940">"صوت صيني (تايوان)"</string>
-    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"صوت صيني، يوي"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"صوت صيني، الماندارين"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"صوت زولوي"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"وضع دراسة الاستخدام"</string>
 </resources>
