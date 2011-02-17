@@ -37,7 +37,6 @@ public class ExpandableDictionary extends Dictionary {
     private int mDicTypeId;
     private int mMaxDepth;
     private int mInputLength;
-    private int[] mNextLettersFrequencies;
     private StringBuilder sb = new StringBuilder(MAX_WORD_LENGTH);
 
     private static final char QUOTE = '\'';
@@ -191,8 +190,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback,
-            int[] nextLettersFrequencies) {
+    public void getWords(final WordComposer codes, final WordCallback callback) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
@@ -201,7 +199,6 @@ public class ExpandableDictionary extends Dictionary {
         }
 
         mInputLength = codes.size();
-        mNextLettersFrequencies = nextLettersFrequencies;
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         // Cache the codes so that we don't have to lookup an array list
         for (int i = 0; i < mInputLength; i++) {
@@ -281,11 +278,6 @@ public class ExpandableDictionary extends Dictionary {
                     if (!callback.addWord(word, 0, depth + 1, freq * snr, mDicTypeId,
                                 DataType.UNIGRAM)) {
                         return;
-                    }
-                    // Add to frequency of next letters for predictive correction
-                    if (mNextLettersFrequencies != null && depth >= inputIndex && skipPos < 0
-                            && mNextLettersFrequencies.length > word[inputIndex]) {
-                        mNextLettersFrequencies[word[inputIndex]]++;
                     }
                 }
                 if (children != null) {
@@ -427,7 +419,7 @@ public class ExpandableDictionary extends Dictionary {
 
     @Override
     public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback, int[] nextLettersFrequencies) {
+            final WordCallback callback) {
         if (!reloadDictionaryIfRequired()) {
             runReverseLookUp(previousWord, callback);
         }
@@ -516,7 +508,7 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    static char toLowerCase(char c) {
+    private static char toLowerCase(char c) {
         char baseChar = c;
         if (c < BASE_CHARS.length) {
             baseChar = BASE_CHARS[c];
@@ -535,7 +527,7 @@ public class ExpandableDictionary extends Dictionary {
      * if c is not a combined character, or the base character if it
      * is combined.
      */
-    static final char BASE_CHARS[] = {
+    private static final char BASE_CHARS[] = {
         0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 
         0x0008, 0x0009, 0x000a, 0x000b, 0x000c, 0x000d, 0x000e, 0x000f, 
         0x0010, 0x0011, 0x0012, 0x0013, 0x0014, 0x0015, 0x0016, 0x0017, 

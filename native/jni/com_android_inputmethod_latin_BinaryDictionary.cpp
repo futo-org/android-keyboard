@@ -123,26 +123,20 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
 }
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object, jint dict,
-        jintArray inputArray, jint arraySize, jcharArray outputArray, jintArray frequencyArray,
-        jintArray nextLettersArray, jint nextLettersSize) {
+        jintArray inputArray, jint arraySize, jcharArray outputArray, jintArray frequencyArray) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
 
     int *frequencies = env->GetIntArrayElements(frequencyArray, NULL);
     int *inputCodes = env->GetIntArrayElements(inputArray, NULL);
     jchar *outputChars = env->GetCharArrayElements(outputArray, NULL);
-    int *nextLetters = nextLettersArray != NULL ? env->GetIntArrayElements(nextLettersArray, NULL)
-            : NULL;
 
     int count = dictionary->getSuggestions(inputCodes, arraySize, (unsigned short*) outputChars,
-            frequencies, nextLetters, nextLettersSize);
+            frequencies);
 
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
-    if (nextLetters) {
-        env->ReleaseIntArrayElements(nextLettersArray, nextLetters, 0);
-    }
 
     return count;
 }
@@ -209,7 +203,7 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jint di
 static JNINativeMethod gMethods[] = {
     {"openNative", "(Ljava/lang/String;JJIIIII)I", (void*)latinime_BinaryDictionary_open},
     {"closeNative", "(I)V", (void*)latinime_BinaryDictionary_close},
-    {"getSuggestionsNative", "(I[II[C[I[II)I", (void*)latinime_BinaryDictionary_getSuggestions},
+    {"getSuggestionsNative", "(I[II[C[I)I", (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative", "(I[CI)Z", (void*)latinime_BinaryDictionary_isValidWord},
     {"getBigramsNative", "(I[CI[II[C[IIII)I", (void*)latinime_BinaryDictionary_getBigrams}
 };

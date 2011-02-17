@@ -27,10 +27,8 @@ class Dictionary {
 public:
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
-    int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies,
-            int *nextLetters, int nextLettersSize) {
-        return mUnigramDictionary->getSuggestions(codes, codesSize, outWords, frequencies,
-                nextLetters, nextLettersSize);
+    int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies) {
+        return mUnigramDictionary->getSuggestions(codes, codesSize, outWords, frequencies);
     }
 
     // TODO: Call mBigramDictionary instead of mUnigramDictionary

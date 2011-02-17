@@ -32,7 +32,7 @@ namespace latinime {
 UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterMultiplier,
         int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
         const bool isLatestDictVersion)
-    : DICT(dict), MAX_WORD_LENGTH(maxWordLength),MAX_WORDS(maxWords),
+    : DICT(dict), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
     MAX_PROXIMITY_CHARS(maxProximityChars), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
     ROOT_POS(isLatestDictVersion ? DICTIONARY_HEADER_SIZE : 0) {
@@ -42,7 +42,7 @@ UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterM
 UnigramDictionary::~UnigramDictionary() {}
 
 int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWords,
-        int *frequencies, int *nextLetters, int nextLettersSize) {
+        int *frequencies) {
     PROF_OPEN;
     PROF_START(0);
     initSuggestions(codes, codesSize, outWords, frequencies);
@@ -52,7 +52,7 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
     PROF_END(0);
 
     PROF_START(1);
-    getSuggestionCandidates(-1, -1, -1, nextLetters, nextLettersSize, MAX_DEPTH);
+    getSuggestionCandidates(-1, -1, -1, mNextLettersFrequency, NEXT_LETTERS_SIZE, MAX_DEPTH);
     PROF_END(1);
 
     PROF_START(2);
@@ -108,9 +108,9 @@ int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short 
     if (DEBUG_DICT) {
         LOGI("Returning %d words", suggestedWordsCount);
         LOGI("Next letters: ");
-        for (int k = 0; k < nextLettersSize; k++) {
-            if (nextLetters[k] > 0) {
-                LOGI("%c = %d,", k, nextLetters[k]);
+        for (int k = 0; k < NEXT_LETTERS_SIZE; k++) {
+            if (mNextLettersFrequency[k] > 0) {
+                LOGI("%c = %d,", k, mNextLettersFrequency[k]);
             }
         }
     }

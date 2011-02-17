@@ -1500,8 +1500,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void updateSuggestions() {
-        mKeyboardSwitcher.setPreferredLetters(null);
-
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !isSuggestionsRequested())
                 && !mVoiceConnector.isVoiceInputHighlighted()) {
@@ -1520,7 +1518,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void showCorrections(WordAlternatives alternatives) {
-        mKeyboardSwitcher.setPreferredLetters(null);
         SuggestedWords.Builder builder = alternatives.getAlternatives();
         builder.setTypedWordValid(false).setHasMinimalSuggestion(false);
         showSuggestions(builder.build(), alternatives.getOriginalWord());
@@ -1532,9 +1529,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mWordSeparators);
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
                 mKeyboardSwitcher.getInputView(), word, prevWord);
-
-        int[] nextLettersFrequencies = mSuggest.getNextLettersFrequencies();
-        mKeyboardSwitcher.setPreferredLetters(nextLettersFrequencies);
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && !mJustReverted
                 && mSuggest.hasAutoCorrection();
@@ -1704,7 +1698,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         saveWordInHistory(suggestion);
         mHasValidSuggestions = false;
         mCommittedLength = suggestion.length();
-        switcher.setPreferredLetters(null);
     }
 
     /**

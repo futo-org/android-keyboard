@@ -61,14 +61,9 @@ public abstract class Dictionary {
      * words are added through the callback object.
      * @param composer the key sequence to match
      * @param callback the callback object to send matched words to as possible candidates
-     * @param nextLettersFrequencies array of frequencies of next letters that could follow the
-     *        word so far. For instance, "bracke" can be followed by "t", so array['t'] will have
-     *        a non-zero value on returning from this method. 
-     *        Pass in null if you don't want the dictionary to look up next letters.
      * @see WordCallback#addWord(char[], int, int)
      */
-    abstract public void getWords(final WordComposer composer, final WordCallback callback,
-            int[] nextLettersFrequencies);
+    abstract public void getWords(final WordComposer composer, final WordCallback callback);
 
     /**
      * Searches for pairs in the bigram dictionary that matches the previous word and all the
@@ -76,13 +71,9 @@ public abstract class Dictionary {
      * @param composer the key sequence to match
      * @param previousWord the word before
      * @param callback the callback object to send possible word following previous word
-     * @param nextLettersFrequencies array of frequencies of next letters that could follow the
-     *        word so far. For instance, "bracke" can be followed by "t", so array['t'] will have
-     *        a non-zero value on returning from this method.
-     *        Pass in null if you don't want the dictionary to look up next letters.
      */
     public void getBigrams(final WordComposer composer, final CharSequence previousWord,
-            final WordCallback callback, int[] nextLettersFrequencies) {
+            final WordCallback callback) {
         // empty base implementation
     }
 

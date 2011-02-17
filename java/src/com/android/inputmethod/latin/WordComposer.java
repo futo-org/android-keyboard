@@ -16,12 +16,16 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.KeyDetector;
+
 import java.util.ArrayList;
 
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
 public class WordComposer {
+    public static final int NOT_A_CODE = KeyDetector.NOT_A_CODE;
+
     /**
      * The list of unicode values for each keystroke (including surrounding keys)
      */

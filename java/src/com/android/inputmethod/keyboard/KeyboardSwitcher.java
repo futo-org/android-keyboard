@@ -288,12 +288,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return null;
     }
 
-    public void setPreferredLetters(int[] frequencies) {
-        LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null)
-            latinKeyboard.setPreferredLetters(frequencies);
-    }
-
     public void keyReleased() {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null)
