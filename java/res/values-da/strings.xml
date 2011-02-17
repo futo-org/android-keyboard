@@ -26,32 +26,25 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibration ved tastetryk"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Lyd ved tastetryk"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup ved tastetryk"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Indstillinger for ordforslag"</string>
+    <string name="general_category" msgid="1859088467017573195">"Generelt"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Tekstkorrigering"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Skriv aut. med stort"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Hurtige løsninger"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Retter almindelige stavefejl"</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
-    <skip />
-    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
-    <skip />
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Vis rettelsesforslag"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Vis ordforslag under indtastning"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vis altid"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Vis i portrættilstand"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Skjul altid"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Vis indstillingsnøgle"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatisk"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Vis altid"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Skjul altid"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Ordforslag"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Ret automatisk det forrige ord"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction" msgid="4979925752001319458">"Automatisk retning"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Mellemrumstast og tegnsætning retter automatisk forkerte ord"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Fra"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Beskeden"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressiv"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Bigram-forslag"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Brug forrige ord for at forbedre forslag"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: Gemt"</string>
@@ -59,16 +52,15 @@
     <string name="label_next_key" msgid="362972844525672568">"Næste"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Udfør"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Send"</string>
-    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
-    <skip />
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Mere"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Vent"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Stemmeinput"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Stemmeinput understøttes i øjeblikket ikke for dit sprog, men fungerer på engelsk."</string>
-    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Stemme-input er en funktion på forsøgsbasis, som bruger Googles netværksstemmegenkendelse."</string>
-    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Slå stemmeinput fra i indstillingerne for tastaturet."</string>
-    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"For at bruge stemme-input skal du trykke på knappen mikrofon eller lade glide fingeren hen over skærmtastaturet."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Stemmeinput anvender Googles stemmegenkendelse. "<a href="http://m.google.com/privacy">"Fortrolighedspolitikken for mobilenheder"</a>" gælder."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Slå stemmeinput fra i indstillingerne for inputmetode."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Brug stemmeinput ved at trykke på mikrofonknappen."</string>
     <string name="voice_listening" msgid="467518160751321844">"Tal nu"</string>
     <string name="voice_working" msgid="6666937792815731889">"Arbejder"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -85,18 +77,12 @@
     <string name="cancel" msgid="6830980399865683324">"Annuller"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="2466640768843347841">"Stemmeinput"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"På hovedtastatur"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"På symboltastatur"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Fra"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik. på hovedtastatur"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik. på symboltastatur"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Stemmeinput deaktiveret"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Vælg inputmetode"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Inputsprog"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Træk fingeren på mellemrumstasten for at skifte sprog"</string>
@@ -104,75 +90,41 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbog er tilgængelig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktiver brugerfeedback"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Vær med til at forbedre denne inputmetode ved at sende anvendelsesstatistikker og rapporter om nedbrud til Google."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryk for at rette ord igen"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Du kan rette ordene igen ved at trykke på de ord, du har indtastet"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryk for at rette ord"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tryk på de indtastede ord for at rette dem. Kun når der er synlige forslag."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tastaturtema"</string>
-    <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
-    <skip />
-    <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_keyboard (1990979135959462145) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_GB_keyboard (7945856548410373708) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_keyboard (3708655163769735410) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_US_keyboard (3702125193532262008) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
-    <skip />
-    <!-- no translation found for subtype_mode_it_keyboard (4934199655425394484) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nb_keyboard (1175783216100212360) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nl_keyboard (5090278083256037936) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_keyboard (1383995915064277943) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sr_keyboard (5019440799612208168) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sv_keyboard (4933838139861753401) -->
-    <skip />
-    <!-- no translation found for subtype_mode_cs_voice (1136386688120958641) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_voice (8378803143958089866) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_AU_voice (1103892562629586486) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_GB_voice (7868802451720612888) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_IN_voice (4834879535045820293) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_NZ_voice (2739391364469645636) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_voice (2300580846081472319) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_voice (1323473601346507487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_voice (4675914209337824269) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ja_voice (6604859132669646367) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ko_voice (4890391190762324561) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pl_voice (2076196021014840487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pt_voice (8036522712795994397) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_voice (8034596947963787529) -->
-    <skip />
-    <!-- no translation found for subtype_mode_tr_voice (3402067436761140005) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_CN_voice (6452442204238513331) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_TW_voice (3640444875378221940) -->
-    <skip />
-    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
-    <skip />
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tjekkisk tastatur"</string>
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Dansk tastatur"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Tysk tastatur"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Engelsk tastatur (Storbritannien)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Engelsk tastatur (USA)"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spansk tastatur"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Spansk tastatur (USA)"</string>
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Fransk tastatur"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Fransk tastatur (Canada)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Fransk tastatur (Schweiz)"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italiensk tastatur"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norsk tastatur"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Hollandsk tastatur"</string>
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Russisk tastatur"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbisk tastatur"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Svensk tastatur"</string>
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Afrikaans stemme"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Tjekkisk stemme"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Tysk stemme"</string>
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Engelsk stemme"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Spansk stemme"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Fransk stemme"</string>
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Italiensk stemme"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Japansk stemme"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Koreansk stemme"</string>
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Hollandsk stemme"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Polsk stemme"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Portugisisk stemme"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Russisk stemme"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Tyrkisk stemme"</string>
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Kinesisk, Yue stemme"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Kinesisk, mandarin stemme"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"isiZulu stemme"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Tilstand for brugsstudie"</string>
 </resources>

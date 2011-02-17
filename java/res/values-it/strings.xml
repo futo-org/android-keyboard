@@ -25,33 +25,26 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opzioni inserimento"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrazione tasti"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Suono tasti"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Popup alla pressione di un tasto"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Impostazioni suggerimento parole"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Popup sui tasti"</string>
+    <string name="general_category" msgid="1859088467017573195">"Generali"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Correzione testo"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Maiuscole automatiche"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Correzioni veloci"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corregge gli errori di digitazione più comuni"</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
-    <skip />
-    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
-    <skip />
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostra tasto impostazioni"</string>
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostra suggerimenti correzioni"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Visualizza le parole suggerite durante la digitazione"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostra sempre"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Mostra in modalità verticale"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Nascondi sempre"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Mostra tasto impostaz."</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatico"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostra sempre"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Nascondi sempre"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Suggerimenti parola"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Correggi automaticamente la parola precedente"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction" msgid="4979925752001319458">"Correzione automatica"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Barra spaziatrice/punteggiatura correggono parole con errori"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Off"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Media"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Massima"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Suggerimenti sui bigrammi"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Utilizza parola precedente per migliorare il suggerimento"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : parola salvata"</string>
@@ -59,16 +52,15 @@
     <string name="label_next_key" msgid="362972844525672568">"Avanti"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Fine"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Invia"</string>
-    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
-    <skip />
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Altro"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Attesa"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Comandi vocali"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"I comandi vocali non sono attualmente supportati per la tua lingua ma funzionano in inglese."</string>
-    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"I comandi vocali sono una funzione sperimentale che utilizza il riconoscimento vocale in rete di Google."</string>
-    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Per disattivare i comandi vocali, vai alle impostazioni della tastiera."</string>
-    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Per utilizzare i comandi vocali, premi il pulsante del microfono o fai scorrere il dito sulla tastiera sullo schermo."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'input vocale utilizza il riconoscimento vocale di Google. Sono valide le "<a href="http://m.google.com/privacy">"norme sulla privacy di Google Mobile"</a>"."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Per disattivare l\'input vocale, vai alle impostazioni del metodo di input."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Per utilizzare l\'input vocale, premi il pulsante del microfono."</string>
     <string name="voice_listening" msgid="467518160751321844">"Parla ora"</string>
     <string name="voice_working" msgid="6666937792815731889">"Elaborazione in corso"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -85,18 +77,12 @@
     <string name="cancel" msgid="6830980399865683324">"Annulla"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="2466640768843347841">"Comandi vocali"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Su tastiera principale"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Su tastiera simboli"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Non attivo"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mic su tastiera princ."</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic su tastiera simboli"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Comandi vocali disatt."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Seleziona metodo di inserimento"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lingue comandi"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Scorri il dito sulla barra spaziatrice per cambiare la lingua"</string>
@@ -104,75 +90,41 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Dizionario disponibile"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Attiva commenti degli utenti"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Aiuta a migliorare l\'editor del metodo di inserimento inviando automaticamente a Google statistiche sull\'utilizzo e segnalazioni sugli arresti anomali."</string>
-    <!-- outdated translation 5809974560359283818 -->     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocca per correggere di nuovo le parole"</string>
-    <!-- outdated translation 5037231665897435902 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Puoi correggere di nuovo le parole toccando quelle che hai digitato"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocca per correggere"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tocca le parole inserite per correggerle, solo quando sono visibili i suggerimenti"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema della tastiera"</string>
-    <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
-    <skip />
-    <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_keyboard (1990979135959462145) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_GB_keyboard (7945856548410373708) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_keyboard (3708655163769735410) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_US_keyboard (3702125193532262008) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
-    <skip />
-    <!-- no translation found for subtype_mode_it_keyboard (4934199655425394484) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nb_keyboard (1175783216100212360) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nl_keyboard (5090278083256037936) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_keyboard (1383995915064277943) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sr_keyboard (5019440799612208168) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sv_keyboard (4933838139861753401) -->
-    <skip />
-    <!-- no translation found for subtype_mode_cs_voice (1136386688120958641) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_voice (8378803143958089866) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_AU_voice (1103892562629586486) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_GB_voice (7868802451720612888) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_IN_voice (4834879535045820293) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_NZ_voice (2739391364469645636) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_voice (2300580846081472319) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_voice (1323473601346507487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_voice (4675914209337824269) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ja_voice (6604859132669646367) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ko_voice (4890391190762324561) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pl_voice (2076196021014840487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pt_voice (8036522712795994397) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_voice (8034596947963787529) -->
-    <skip />
-    <!-- no translation found for subtype_mode_tr_voice (3402067436761140005) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_CN_voice (6452442204238513331) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_TW_voice (3640444875378221940) -->
-    <skip />
-    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
-    <skip />
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tastiera ceca"</string>
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Tastiera danese"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Tastiera tedesca"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Tastiera inglese (Regno Unito)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Tastiera inglese (Stati Uniti)"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Tastiera spagnola"</string>
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Tastiera spagnola (Stati Uniti)"</string>
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Tastiera francese"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Tastiera francese (Canada)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Tastiera francese (Svizzera)"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Tastiera italiana"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Tastiera norvegese"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Tastiera olandese"</string>
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Tastiera russa"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Tastiera serba"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Tastiera svedese"</string>
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Voce afrikaans"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voce ceca"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voce tedesca"</string>
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Voce inglese"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Voce spagnola"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Voce francese"</string>
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Voce italiana"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Voce giapponese"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Voce coreana"</string>
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Voce olandese"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Voce polacca"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Voce portoghese"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Voce russa"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Voce turca"</string>
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Voce cinese Yue"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Voce cinese mandarino"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Voce isiZulu"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Modalità studio usabilità"</string>
 </resources>
