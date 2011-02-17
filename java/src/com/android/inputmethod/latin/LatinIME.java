@@ -1473,26 +1473,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     public void switchToKeyboardView() {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (DEBUG) {
-                    Log.d(TAG, "Switch to keyboard view.");
-                }
-                View v = mKeyboardSwitcher.getInputView();
-                if (v != null) {
-                    // Confirms that the keyboard view doesn't have parent view.
-                    ViewParent p = v.getParent();
-                    if (p != null && p instanceof ViewGroup) {
-                        ((ViewGroup) p).removeView(v);
-                    }
-                    setInputView(v);
-                }
-                setCandidatesViewShown(isCandidateStripVisible());
-                updateInputViewShown();
-                mHandler.postUpdateSuggestions();
+        if (DEBUG) {
+            Log.d(TAG, "Switch to keyboard view.");
+        }
+        View v = mKeyboardSwitcher.getInputView();
+        if (v != null) {
+            // Confirms that the keyboard view doesn't have parent view.
+            ViewParent p = v.getParent();
+            if (p != null && p instanceof ViewGroup) {
+                ((ViewGroup) p).removeView(v);
             }
-        });
+            setInputView(v);
+        }
+        setCandidatesViewShown(isCandidateStripVisible());
+        updateInputViewShown();
+        mHandler.postUpdateSuggestions();
     }
 
     public void clearSuggestions() {
