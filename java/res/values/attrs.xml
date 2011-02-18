@@ -140,6 +140,8 @@
         <attr name="keyStyle" format="string" />
         <!-- Shift key icon for shifted state -->
         <attr name="shiftedIcon" format="reference" />
+        <!-- The key is enabled and responds on press. -->
+        <attr name="enabled" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Row">
