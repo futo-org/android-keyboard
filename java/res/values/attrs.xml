@@ -182,6 +182,7 @@
             <flag name="actionDone" value="6" />
             <flag name="actionPrevious" value="7" />
         </attr>
+        <attr name="languageCode" format="string" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_KeyStyle">

@@ -433,10 +433,13 @@ public class KeyboardParser {
             // this attribute with id.mImeOptions as integer value is enough for our purpose.
             final boolean imeActionMatched = matchInteger(a,
                     R.styleable.Keyboard_Case_imeAction, id.mImeAction);
+            final boolean languageCodeMatched = matchString(a,
+                    R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
             final boolean selected = modeMatched && settingsKeyMatched && voiceEnabledMatched
-                    && voiceKeyMatched && colorSchemeMatched && imeActionMatched;
+                    && voiceKeyMatched && colorSchemeMatched && imeActionMatched
+                    && languageCodeMatched;
 
-            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s> %s", TAG_CASE,
+            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s> %s", TAG_CASE,
                     textAttr(KeyboardId.modeName(
                             a.getInt(R.styleable.Keyboard_Case_mode, -1)), "mode"),
                     textAttr(KeyboardId.colorSchemeName(
@@ -446,6 +449,7 @@ public class KeyboardParser {
                     booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
                     textAttr(KeyboardId.imeOptionsName(
                             a.getInt(R.styleable.Keyboard_Case_imeAction, -1)), "imeAction"),
+                    textAttr(a.getString(R.styleable.Keyboard_Case_languageCode), "languageCode"),
                     Boolean.toString(selected)));
 
             return selected;
@@ -465,6 +469,12 @@ public class KeyboardParser {
         // If <case> does not have "index" attribute, that means this <case> is wild-card for the
         // attribute.
         return !a.hasValue(index) || a.getBoolean(index, false) == value;
+    }
+
+    private static boolean matchString(TypedArray a, int index, String value) {
+        // If <case> does not have "index" attribute, that means this <case> is wild-card for the
+        // attribute.
+        return !a.hasValue(index) || a.getString(index).equals(value);
     }
 
     private boolean parseDefault(XmlResourceParser parser, Row row, List<Key> keys)
