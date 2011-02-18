@@ -347,6 +347,10 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
     }
 }
 
+static const int TWO_31ST_DIV_255 = ((1 << 31) - 1) / 255;
+static inline int capped255MultForFullMatchAccentsOrCapitalizationDifference(const int num) {
+    return (num < TWO_31ST_DIV_255 ? 255 * num : S_INT_MAX);
+}
 inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int depth,
         const int snr, const int skipPos, const int excessivePos, const int transposedPos,
         const int freq, const bool sameLength) {
@@ -369,7 +373,7 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
             multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
         }
         if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0) {
-            finalFreq *= FULL_MATCH_ACCENTS_OR_CAPITALIZATION_DIFFER_MULTIPLIER;
+            finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
     }
     if (sameLength && skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
@@ -428,24 +432,46 @@ inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex
     return false;
 }
 
+
+// In the following function, c is the current character of the dictionary word
+// currently examined.
+// currentChars is an array containing the keys close to the character the
+// user actually typed at the same position. We want to see if c is in it: if so,
+// then the word contains at that position a character close to what the user
+// typed.
+// What the user typed is actually the first character of the array.
+// Notice : accented characters do not have a proximity list, so they are alone
+// in their list. The non-accented version of the character should be considered
+// "close", but not the other keys close to the non-accented version.
 inline UnigramDictionary::ProximityType UnigramDictionary::getMatchedProximityId(
         const int *currentChars, const unsigned short c, const int skipPos,
         const int excessivePos, const int transposedPos) {
     const unsigned short lowerC = toLowerCase(c);
-    int j = 0;
+
+    // The first char in the array is what user typed. If it matches right away,
+    // that means the user typed that same char for this pos.
+    if (currentChars[0] == lowerC || currentChars[0] == c)
+        return SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR;
+
+    // If one of those is true, we should not check for close characters at all.
+    if (skipPos >= 0 || excessivePos >= 0 || transposedPos >= 0)
+        return UNRELATED_CHAR;
+
+    // If the non-accented, lowercased version of that first character matches c,
+    // then we have a non-accented version of the accented character the user
+    // typed. Treat it as a close char.
+    if (toLowerCase(currentChars[0]) == lowerC)
+        return NEAR_PROXIMITY_CHAR;
+
+    // Not an exact nor an accent-alike match: search the list of close keys
+    int j = 1;
     while (currentChars[j] > 0 && j < MAX_PROXIMITY_CHARS) {
         const bool matched = (currentChars[j] == lowerC || currentChars[j] == c);
-        // If skipPos is defined, not to search proximity collections.
-        // First char is what user  typed.
-        if (matched) {
-            if (j > 0) return NEAR_PROXIMITY_CHAR;
-            return SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR;
-        } else if (skipPos >= 0 || excessivePos >= 0 || transposedPos >= 0) {
-            // Not to check proximity characters
-            return UNRELATED_CHAR;
-        }
+        if (matched) return NEAR_PROXIMITY_CHAR;
         ++j;
     }
+
+    // Was not included, signal this as an unrelated character.
     return UNRELATED_CHAR;
 }
 

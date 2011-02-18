@@ -285,13 +285,22 @@ public class Utils {
     //         (the number of matched characters between typed word and suggested word))
     //     * (individual word's score which defined in the unigram dictionary,
     //         and this score is defined in range [0, 255].)
-    //     * (when before.length() == after.length(),
-    //         mFullWordMultiplier (this is defined 2))
-    // So, maximum original score is pow(2, before.length()) * 255 * 2
-    // So, we can normalize original score by dividing this value.
+    // Then, the following processing is applied.
+    //     - If the dictionary word is matched up to the point of the user entry
+    //       (full match up to min(before.length(), after.length())
+    //       => Then multiply by FULL_MATCHED_WORDS_PROMOTION_RATE (this is defined 1.2)
+    //     - If the word is a true full match except for differences in accents or
+    //       capitalization, then treat it as if the frequency was 255.
+    //     - If before.length() == after.length()
+    //       => multiply by mFullWordMultiplier (this is defined 2))
+    // So, maximum original score is pow(2, min(before.length(), after.length())) * 255 * 2 * 1.2
+    // For historical reasons we ignore the 1.2 modifier (because the measure for a good
+    // autocorrection threshold was done at a time when it didn't exist). This doesn't change
+    // the result.
+    // So, we can normalize original score by dividing pow(2, min(b.l(),a.l())) * 255 * 2.
     private static final int MAX_INITIAL_SCORE = 255;
     private static final int TYPED_LETTER_MULTIPLIER = 2;
-    private static final int FULL_WORD_MULTIPLYER = 2;
+    private static final int FULL_WORD_MULTIPLIER = 2;
     public static double calcNormalizedScore(CharSequence before, CharSequence after, int score) {
         final int beforeLength = before.length();
         final int afterLength = after.length();
@@ -301,7 +310,7 @@ public class Utils {
         // correction.
         final double maximumScore = MAX_INITIAL_SCORE
                 * Math.pow(TYPED_LETTER_MULTIPLIER, Math.min(beforeLength, afterLength))
-                * FULL_WORD_MULTIPLYER;
+                * FULL_WORD_MULTIPLIER;
         // add a weight based on edit distance.
         // distance <= max(afterLength, beforeLength) == afterLength,
         // so, 0 <= distance / afterLength <= 1

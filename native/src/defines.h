@@ -100,6 +100,9 @@ static void prof_out(void) {
 #ifndef U_SHORT_MAX
 #define U_SHORT_MAX 1 << 16
 #endif
+#ifndef S_INT_MAX
+#define S_INT_MAX ((1 << 31) - 1)
+#endif
 
 // Define this to use mmap() for dictionary loading.  Undefine to use malloc() instead of mmap().
 // We measured and compared performance of both, and found mmap() is fairly good in terms of
@@ -136,9 +139,6 @@ static void prof_out(void) {
 #define WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE 75
 #define WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE 60
 #define FULL_MATCHED_WORDS_PROMOTION_RATE 120
-
-// This is used as a bare multiplier (not subject to /100)
-#define FULL_MATCH_ACCENTS_OR_CAPITALIZATION_DIFFER_MULTIPLIER 2
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
