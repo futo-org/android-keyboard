@@ -427,13 +427,14 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_hasVoiceKey, id.mHasVoiceKey);
             final boolean colorSchemeMatched = matchInteger(viewAttr,
                     R.styleable.KeyboardView_colorScheme, id.mColorScheme);
-            // As noted at KeyboardSwitcher.KeyboardId class, we are interested only in
-            // enum value masked by IME_MASK_ACTION and IME_FLAG_NO_ENTER_ACTION. So matching
+            // As noted at {@link KeyboardId} class, we are interested only in enum value masked by
+            // {@link android.view.inputmethod.EditorInfo#IME_MASK_ACTION} and
+            // {@link android.view.inputmethod.EditorInfo#IME_FLAG_NO_ENTER_ACTION}. So matching
             // this attribute with id.mImeOptions as integer value is enough for our purpose.
-            final boolean imeOptionsMatched = matchInteger(a,
-                    R.styleable.Keyboard_Case_imeOptions, id.mImeOptions);
+            final boolean imeActionMatched = matchInteger(a,
+                    R.styleable.Keyboard_Case_imeAction, id.mImeAction);
             final boolean selected = modeMatched && settingsKeyMatched && voiceEnabledMatched
-                    && voiceKeyMatched && colorSchemeMatched && imeOptionsMatched;
+                    && voiceKeyMatched && colorSchemeMatched && imeActionMatched;
 
             if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s> %s", TAG_CASE,
                     textAttr(KeyboardId.modeName(
@@ -444,7 +445,7 @@ public class KeyboardParser {
                     booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
                     textAttr(KeyboardId.imeOptionsName(
-                            a.getInt(R.styleable.Keyboard_Case_imeOptions, -1)), "imeOptions"),
+                            a.getInt(R.styleable.Keyboard_Case_imeAction, -1)), "imeAction"),
                     Boolean.toString(selected)));
 
             return selected;

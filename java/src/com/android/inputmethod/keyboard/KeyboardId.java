@@ -44,7 +44,7 @@ public class KeyboardId {
     public final boolean mHasSettingsKey;
     public final boolean mVoiceKeyEnabled;
     public final boolean mHasVoiceKey;
-    public final int mImeOptions;
+    public final int mImeAction;
     public final boolean mEnableShiftLock;
     public final String mXmlName;
 
@@ -61,8 +61,9 @@ public class KeyboardId {
         this.mHasSettingsKey = hasSettingsKey;
         this.mVoiceKeyEnabled = voiceKeyEnabled;
         this.mHasVoiceKey = hasVoiceKey;
-        // We are interested only in IME_MASK_ACTION enum value and IME_FLAG_NO_ENTER_ACTION.
-        this.mImeOptions = imeOptions
+        // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
+        // {@link EditorInfo#IME_FLAG_NO_ENTER_ACTION}.
+        this.mImeAction = imeOptions
                 & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
         this.mEnableShiftLock = enableShiftLock;
         this.mXmlName = xmlName;
@@ -76,7 +77,7 @@ public class KeyboardId {
                 hasSettingsKey,
                 voiceKeyEnabled,
                 hasVoiceKey,
-                imeOptions,
+                mImeAction,
                 enableShiftLock,
         });
     }
@@ -115,7 +116,7 @@ public class KeyboardId {
             && other.mHasSettingsKey == this.mHasSettingsKey
             && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
             && other.mHasVoiceKey == this.mHasVoiceKey
-            && other.mImeOptions == this.mImeOptions
+            && other.mImeAction == this.mImeAction
             && other.mEnableShiftLock == this.mEnableShiftLock;
     }
 
@@ -131,7 +132,7 @@ public class KeyboardId {
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"),
                 modeName(mMode),
-                imeOptionsName(mImeOptions),
+                imeOptionsName(mImeAction),
                 colorSchemeName(mColorScheme),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),

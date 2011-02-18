@@ -182,7 +182,7 @@
     <!-- Return key style -->
     <switch>
         <case
-            latin:imeOptions="actionGo"
+            latin:imeAction="actionGo"
         >
             <key-style
                 latin:styleName="returnKeyStyle"
@@ -191,7 +191,7 @@
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
-            latin:imeOptions="actionNext"
+            latin:imeAction="actionNext"
         >
             <key-style
                 latin:styleName="returnKeyStyle"
@@ -200,7 +200,7 @@
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
-            latin:imeOptions="actionDone"
+            latin:imeAction="actionDone"
         >
             <key-style
                 latin:styleName="returnKeyStyle"
@@ -209,7 +209,7 @@
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
-            latin:imeOptions="actionSend"
+            latin:imeAction="actionSend"
         >
             <key-style
                 latin:styleName="returnKeyStyle"
@@ -218,7 +218,7 @@
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
-            latin:imeOptions="actionSearch"
+            latin:imeAction="actionSearch"
         >
             <switch>
                 <case

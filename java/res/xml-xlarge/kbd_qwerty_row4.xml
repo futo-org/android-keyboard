@@ -49,7 +49,7 @@
             <default>
                 <switch>
                     <case
-                        latin:imeOptions="actionSearch"
+                        latin:imeAction="actionSearch"
                     >
                         <Key
                             latin:keyLabel=":"

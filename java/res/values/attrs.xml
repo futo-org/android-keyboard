@@ -171,7 +171,7 @@
         <attr name="hasSettingsKey" format="string" />
         <attr name="voiceKeyEnabled" format="string" />
         <attr name="hasVoiceKey" format="string" />
-        <attr name="imeOptions">
+        <attr name="imeAction">
             <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
             <flag name="actionUnspecified" value="0" />
             <flag name="actionNone" value="1" />
