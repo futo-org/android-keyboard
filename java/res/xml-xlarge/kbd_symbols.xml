@@ -129,16 +129,33 @@
             latin:keyLabel=":" />
         <Key
             latin:keyLabel=";" />
-        <Key
-            latin:keyLabel="," />
-        <Key
-            latin:keyLabel="." />
-        <Key
-            latin:keyLabel="!"
-            latin:popupCharacters="¡" />
-        <Key
-            latin:keyLabel="\?"
-            latin:popupCharacters="¿" />
+        <switch>
+            <case
+                latin:languageCode="ru"
+            >
+                <Key
+                    latin:keyLabel="\'" />
+                <Key
+                    latin:keyLabel="&quot;"
+                    latin:popupCharacters="“,”,«,»,˝" />
+                <Key
+                    latin:keyLabel="." />
+                <Key
+                    latin:keyLabel="," />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel="," />
+                <Key
+                    latin:keyLabel="." />
+                <Key
+                    latin:keyLabel="!"
+                    latin:popupCharacters="¡" />
+                <Key
+                    latin:keyLabel="\?"
+                    latin:popupCharacters="¿" />
+            </default>
+        </switch>
         <Key
             latin:keyStyle="moreKeyStyle"
             latin:keyWidth="12.530%p"
@@ -159,11 +176,23 @@
         <Key
             latin:keyStyle="spaceKeyStyle"
             latin:keyWidth="37.454%p" />
-        <Key
-            latin:keyLabel="&quot;"
-            latin:popupCharacters="“,”,«,»,˝" />
-        <Key
-            latin:keyLabel="_" />
+        <switch>
+            <case
+                latin:languageCode="ru"
+            >
+                <Key
+                    latin:keyLabel="_" />
+                <Key
+                    latin:keyLabel="-" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel="&quot;"
+                    latin:popupCharacters="“,”,«,»,˝" />
+                <Key
+                    latin:keyLabel="_" />
+            </default>
+        </switch>
         <switch>
             <case
                 latin:voiceKeyEnabled="true"

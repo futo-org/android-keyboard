@@ -105,11 +105,11 @@
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.042%p"
+        latin:keyWidth="7.520%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="15.192%p"
+            latin:keyWidth="12.400%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="я" />
@@ -131,8 +131,14 @@
         <Key
             latin:keyLabel="ю" />
         <Key
+            latin:keyLabel="."
+            latin:manualTemporaryUpperCaseCode="44"
+            latin:keyHintIcon="@drawable/key_hint_comma_holo"
+            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_comma_large_holo"
+            latin:popupCharacters="," />
+        <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.530%p"
+            latin:keyWidth="12.400%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
