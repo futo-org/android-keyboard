@@ -31,120 +31,189 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
-    <!-- This row is intentionally not marked as a top row -->
-    <Row>
-        <Key
-            latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
-            latin:keyEdgeFlags="left" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyLabel="-"
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:keyLabel="+"
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:keyLabel="."
-            latin:keyWidth="8.042%p" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyLabel="1" />
-        <Key
-            latin:keyLabel="2" />
-        <Key
-            latin:keyLabel="3" />
-        <Spacer
-            latin:horizontalGap="9.360%p" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.804%p"
-            latin:keyEdgeFlags="right" />
-    </Row>
-    <Row>
-        <Spacer
-            latin:horizontalGap="16.406%p" />
-        <Key
-            latin:keyLabel="*"
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:keyLabel="/"
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:keyLabel=","
-            latin:keyWidth="8.042%p" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyLabel="4" />
-        <Key
-            latin:keyLabel="5" />
-        <Key
-            latin:keyLabel="6" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="14.706%p"
-            latin:keyEdgeFlags="right" />
-    </Row>
-    <Row>
-        <!-- There is an empty area bellow the "More" key and left of the "(" key.  To ignore
-             the touch event on the area, "(" is intentionally not marked as a left edge key. -->
-        <Spacer
-            latin:horizontalGap="16.406%p" />
-        <Key
-            latin:keyLabel="("
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:keyLabel=")"
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:keyLabel="="
-            latin:keyWidth="8.042%p" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyLabel="7" />
-        <Key
-            latin:keyLabel="8" />
-        <Key
-            latin:keyLabel="9" />
-        <!-- There is an empty area bellow the "Enter" key and right of the "9" key.  To ignore
-             the touch event on the area, "9" is intentionally not marked as a right edge key. -->
-    </Row>
-    <!-- This row is intentionally not marked as a bottom row -->
-    <Row>
-        <!-- There is an empty area bellow the "More" key and left of the "space" key.  To ignore
-             the touch event on the area, "space" is intentionally not marked as a left edge key. -->
-        <Spacer
-            latin:horizontalGap="8.362%p" />
-        <Key
-            latin:keyStyle="settingsKeyStyle"
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
-            latin:keyWidth="24.127%p" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyLabel="*" />
-        <Key
-            latin:keyLabel="0" />
-        <Key
-            latin:keyLabel="#" />
-        <switch>
-            <case
-                latin:voiceKeyEnabled="true"
-            >
+    <switch>
+        <case
+            latin:passwordInput="true"
+        >
+            <!-- This row is intentionally not marked as a top row -->
+            <Row>
+                <Spacer
+                    latin:horizontalGap="32.076%p" />
                 <Key
-                    latin:keyStyle="micKeyStyle"
+                    latin:keyLabel="1" />
+                <Key
+                    latin:keyLabel="2" />
+                <Key
+                    latin:keyLabel="3" />
+                <Spacer
+                    latin:horizontalGap="22.272%p" />
+                <Key
+                    latin:keyStyle="deleteKeyStyle"
+                    latin:keyWidth="9.804%p"
+                    latin:keyEdgeFlags="right" />
+            </Row>
+            <Row>
+                <Spacer
+                    latin:horizontalGap="32.076%p" />
+                <Key
+                    latin:keyLabel="4" />
+                <Key
+                    latin:keyLabel="5" />
+                <Key
+                    latin:keyLabel="6" />
+                <Spacer
+                    latin:horizontalGap="17.371%p" />
+                <Key
+                    latin:keyStyle="returnKeyStyle"
+                    latin:keyWidth="14.706%p"
+                    latin:keyEdgeFlags="right" />
+            </Row>
+            <Row>
+                <Spacer
+                    latin:horizontalGap="32.076%p" />
+                <Key
+                    latin:keyLabel="7" />
+                <Key
+                    latin:keyLabel="8" />
+                <Key
+                    latin:keyLabel="9" />
+                <!-- There is an empty area below the "Enter" key and right of the "9" key. To
+                     ignore the touch event on the area, "9" is intentionally not marked as a right
+                     edge key. -->
+            </Row>
+            <!-- This row is intentionally not marked as a bottom row -->
+            <Row>
+                <Spacer
+                    latin:horizontalGap="44.026%p" />
+                <Key
+                    latin:keyLabel="0" />
+                <!-- There is an empty area below the "Enter" key and right of the "#" key. To
+                     ignore the touch event on the area, "#" is intentionally not marked as a right
+                     edge key. -->
+            </Row>
+        </case>
+        <!-- latin:passwordInput="false" -->
+        <default>
+            <!-- This row is intentionally not marked as a top row -->
+            <Row>
+                <Key
+                    latin:keyStyle="tabKeyStyle"
+                    latin:keyLabelOption="alignLeft"
+                    latin:keyEdgeFlags="left" />
+                <Spacer
+                    latin:horizontalGap="4.458%p" />
+                <Key
+                    latin:keyLabel="-"
                     latin:keyWidth="8.042%p" />
-            </case>
-        </switch>
-        <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
-             the touch event on the area, "#" is intentionally not marked as a right edge key. -->
-    </Row>
+                <Key
+                    latin:keyLabel="+"
+                    latin:keyWidth="8.042%p" />
+                <Key
+                    latin:keyLabel="."
+                    latin:keyWidth="8.042%p" />
+                <Spacer
+                    latin:horizontalGap="4.458%p" />
+                <Key
+                    latin:keyLabel="1" />
+                <Key
+                    latin:keyLabel="2" />
+                <Key
+                    latin:keyLabel="3" />
+                <Spacer
+                    latin:horizontalGap="9.360%p" />
+                <Key
+                    latin:keyStyle="deleteKeyStyle"
+                    latin:keyWidth="9.804%p"
+                    latin:keyEdgeFlags="right" />
+            </Row>
+            <Row>
+                <Spacer
+                    latin:horizontalGap="16.406%p" />
+                <Key
+                    latin:keyLabel="*"
+                    latin:keyWidth="8.042%p" />
+                <Key
+                    latin:keyLabel="/"
+                    latin:keyWidth="8.042%p" />
+                <Key
+                    latin:keyLabel=","
+                    latin:keyWidth="8.042%p" />
+                <Spacer
+                    latin:horizontalGap="4.458%p" />
+                <Key
+                    latin:keyLabel="4" />
+                <Key
+                    latin:keyLabel="5" />
+                <Key
+                    latin:keyLabel="6" />
+                <Spacer
+                    latin:horizontalGap="4.458%p" />
+                <Key
+                    latin:keyStyle="returnKeyStyle"
+                    latin:keyWidth="14.706%p"
+                    latin:keyEdgeFlags="right" />
+            </Row>
+            <Row>
+                <!-- There is an empty area below the "More" key and left of the "(" key. To
+                     ignore the touch event on the area, "(" is intentionally not marked as a left
+                     edge key. -->
+                <Spacer
+                    latin:horizontalGap="16.406%p" />
+                <Key
+                    latin:keyLabel="("
+                    latin:keyWidth="8.042%p" />
+                <Key
+                    latin:keyLabel=")"
+                    latin:keyWidth="8.042%p" />
+                <Key
+                    latin:keyLabel="="
+                    latin:keyWidth="8.042%p" />
+                <Spacer
+                    latin:horizontalGap="4.458%p" />
+                <Key
+                    latin:keyLabel="7" />
+                <Key
+                    latin:keyLabel="8" />
+                <Key
+                    latin:keyLabel="9" />
+                <!-- There is an empty area below the "Enter" key and right of the "9" key. To
+                     ignore the touch event on the area, "9" is intentionally not marked as a right
+                     edge key. -->
+            </Row>
+            <!-- This row is intentionally not marked as a bottom row -->
+            <Row>
+                <!-- There is an empty area below the "More" key and left of the "space" key. To
+                     ignore the touch event on the area, "space" is intentionally not marked as a
+                     left edge key. -->
+                <Spacer
+                    latin:horizontalGap="8.362%p" />
+                <Key
+                    latin:keyStyle="settingsKeyStyle"
+                    latin:keyWidth="8.042%p" />
+                <Key
+                    latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
+                    latin:keyWidth="24.127%p" />
+                <Spacer
+                    latin:horizontalGap="4.458%p" />
+                <Key
+                    latin:keyLabel="*" />
+                <Key
+                    latin:keyLabel="0" />
+                <Key
+                    latin:keyLabel="#" />
+                <switch>
+                    <case
+                        latin:voiceKeyEnabled="true"
+                    >
+                        <Key
+                            latin:keyStyle="micKeyStyle"
+                            latin:keyWidth="8.042%p" />
+                    </case>
+                </switch>
+                <!-- There is an empty area below the "Enter" key and right of the "#" key. To
+                     ignore the touch event on the area, "#" is intentionally not marked as a right
+                     edge key. -->
+            </Row>
+        </default>
+    </switch>
 </Keyboard>

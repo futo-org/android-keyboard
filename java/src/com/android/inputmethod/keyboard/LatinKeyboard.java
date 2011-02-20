@@ -155,6 +155,8 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void updateSpacebarForLocale(boolean isAutoCorrection) {
+        if (mSpaceKey == null)
+            return;
         final Resources res = mContext.getResources();
         // If application locales are explicitly selected.
         if (SubtypeSwitcher.getInstance().needsToDisplayLanguage()) {

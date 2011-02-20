@@ -23,6 +23,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
 import android.test.AndroidTestCase;
 import android.text.TextUtils;
+import android.view.inputmethod.EditorInfo;
 
 import java.io.File;
 import java.io.InputStream;
@@ -30,9 +31,9 @@ import java.util.Locale;
 
 public class SuggestTestsBase extends AndroidTestCase {
     protected static final KeyboardId US_KEYBOARD_ID = new KeyboardId("en_US qwerty keyboard",
-            com.android.inputmethod.latin.R.xml.kbd_qwerty, Locale.US,
-            Configuration.ORIENTATION_LANDSCAPE, KeyboardId.MODE_TEXT,
-            KeyboardView.COLOR_SCHEME_WHITE, false, false, false, 0, false);
+            com.android.inputmethod.latin.R.xml.kbd_qwerty, KeyboardView.COLOR_SCHEME_WHITE,
+            Locale.US, Configuration.ORIENTATION_LANDSCAPE, KeyboardId.MODE_TEXT,
+            new EditorInfo(), false, false, false, false);
 
     protected File mTestPackageFile;
 

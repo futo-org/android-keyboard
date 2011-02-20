@@ -494,26 +494,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return container;
     }
 
-    // Please refer to TextView.isPasswordInputType
-    private static boolean isPasswordInputType(int inputType) {
-        final int variation =
-                inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
-        return (variation
-                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD))
-                || (variation
-                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
-                || (variation
-                == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD));
-    }
-
-    // Please refer to TextView.isVisiblePasswordInputType
-    private static boolean isVisiblePasswordInputType(int inputType) {
-        final int variation =
-                inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
-        return variation
-                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-    }
-
     private static boolean isEmailVariation(int variation) {
         return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                 || variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
@@ -539,10 +519,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
-        mVoiceConnector.resetVoiceStates(isPasswordInputType(attribute.inputType)
-                || isVisiblePasswordInputType(attribute.inputType));
+        mVoiceConnector.resetVoiceStates(Utils.isPasswordInputType(attribute.inputType)
+                || Utils.isVisiblePasswordInputType(attribute.inputType));
 
-        final int mode = initializeInputAttributesAndGetMode(attribute.inputType);
+        final int mode = initializeInputAttributesAndGetMode(attribute);
 
         inputView.closing();
         mEnteredText = null;
@@ -553,7 +533,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         loadSettings(attribute);
         if (mSubtypeSwitcher.isKeyboardMode()) {
-            switcher.loadKeyboard(mode, attribute.imeOptions,
+            switcher.loadKeyboard(mode, attribute,
                     mVoiceConnector.isVoiceButtonEnabled(),
                     mVoiceConnector.isVoiceButtonOnPrimary());
             switcher.updateShiftState();
@@ -577,7 +557,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
-    private int initializeInputAttributesAndGetMode(int inputType) {
+    // TODO: Separate calculating keyboard mode from initializing attributes, and make it an
+    // utility method in {@link Utils}.
+    private int initializeInputAttributesAndGetMode(EditorInfo attribute) {
+        if (attribute == null) return KeyboardId.MODE_TEXT;
+        final int inputType = attribute.inputType;
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         mAutoSpace = false;
         mInputTypeNoAutoCorrect = false;
@@ -597,16 +581,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             case InputType.TYPE_CLASS_TEXT:
                 mIsSettingsSuggestionStripOn = true;
                 // Make sure that passwords are not displayed in candidate view
-                if (isPasswordInputType(inputType) || isVisiblePasswordInputType(inputType)) {
+                if (Utils.isPasswordInputType(inputType)
+                        || Utils.isVisiblePasswordInputType(inputType)) {
                     mIsSettingsSuggestionStripOn = false;
                 }
-                if (isEmailVariation(variation)
+                if (LatinIME.isEmailVariation(variation)
                         || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
                     mAutoSpace = false;
                 } else {
                     mAutoSpace = true;
                 }
-                if (isEmailVariation(variation)) {
+                if (LatinIME.isEmailVariation(variation)) {
                     mIsSettingsSuggestionStripOn = false;
                     mode = KeyboardId.MODE_EMAIL;
                 } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
@@ -1924,15 +1909,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.toggleLanguage(reset, next);
         }
         // Reload keyboard because the current language has been changed.
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
         final EditorInfo attribute = getCurrentInputEditorInfo();
-        final int mode = initializeInputAttributesAndGetMode((attribute != null)
-                ? attribute.inputType : 0);
-        final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
-        switcher.loadKeyboard(mode, imeOptions, mVoiceConnector.isVoiceButtonEnabled(),
-                mVoiceConnector.isVoiceButtonOnPrimary());
+        final int mode = initializeInputAttributesAndGetMode(attribute);
+        mKeyboardSwitcher.loadKeyboard(mode, attribute,
+                mVoiceConnector.isVoiceButtonEnabled(), mVoiceConnector.isVoiceButtonOnPrimary());
         initSuggest();
-        switcher.updateShiftState();
+        mKeyboardSwitcher.updateShiftState();
     }
 
     @Override

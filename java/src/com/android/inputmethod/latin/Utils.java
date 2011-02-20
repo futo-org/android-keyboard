@@ -16,13 +16,17 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.KeyboardId;
+
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
+import android.text.InputType;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
@@ -55,7 +59,7 @@ public class Utils {
     }
 
     public static class GCUtils {
-        private static final String TAG = "GCUtils";
+        private static final String GC_TAG = GCUtils.class.getSimpleName();
         public static final int GC_TRY_COUNT = 2;
         // GC_TRY_LOOP_MAX is used for the hard limit of GC wait,
         // GC_TRY_LOOP_MAX should be greater than GC_TRY_COUNT.
@@ -84,7 +88,7 @@ public class Utils {
                     Thread.sleep(GC_INTERVAL);
                     return true;
                 } catch (InterruptedException e) {
-                    Log.e(TAG, "Sleep was interrupted.");
+                    Log.e(GC_TAG, "Sleep was interrupted.");
                     LatinImeLogger.logOnException(metaData, t);
                     return false;
                 }
@@ -451,5 +455,25 @@ public class Utils {
             }
             return new PrintWriter(new FileOutputStream(mFile), true /* autoFlush */);
         }
+    }
+
+    // Please refer to TextView.isPasswordInputType
+    public static boolean isPasswordInputType(int inputType) {
+        final int variation =
+                inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
+        return (variation
+                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD))
+                || (variation
+                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
+                || (variation
+                == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD));
+    }
+
+    // Please refer to TextView.isVisiblePasswordInputType
+    public static boolean isVisiblePasswordInputType(int inputType) {
+        final int variation =
+                inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
+        return variation
+                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
     }
 }
