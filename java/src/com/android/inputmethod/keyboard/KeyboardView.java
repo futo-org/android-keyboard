@@ -26,6 +26,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
@@ -705,8 +706,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 } else {
                     paint.setColor(mKeyTextColor);
                 }
-                // Set a drop shadow for the text
-                paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
+                if (key.mEnabled) {
+                    // Set a drop shadow for the text
+                    paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
+                } else {
+                    // Make label invisible
+                    paint.setColor(Color.TRANSPARENT);
+                }
                 canvas.drawText(label, positionX, baseline, paint);
                 // Turn off drop shadow
                 paint.setShadowLayer(0, 0, 0, 0);

@@ -46,21 +46,28 @@
         <Key
             latin:keyLabel="|" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="•"
             latin:popupCharacters="♪,♥,♠,♦,♣" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="√" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="π"
             latin:popupCharacters="Π" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="÷" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="×" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="§"
             latin:popupCharacters="¶" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="Δ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
@@ -76,19 +83,25 @@
             latin:keyWidth="11.167%p"
             latin:keyEdgeFlags="left" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="£" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¢" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="€" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¥" />
         <Key
             latin:keyLabel="^"
             latin:popupCharacters="↑,↓,←,→" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="°" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="±"
             latin:popupCharacters="∞" />
         <Key
@@ -110,20 +123,26 @@
         <Key
             latin:keyLabel="\\" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="©" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="®" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="™" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="℅" />
         <Key
             latin:keyLabel="[" />
         <Key
             latin:keyLabel="]" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¡" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¿" />
         <Key
             latin:keyStyle="moreKeyStyle"

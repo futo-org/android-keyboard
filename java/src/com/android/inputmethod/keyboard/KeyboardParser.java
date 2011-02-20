@@ -103,7 +103,7 @@ import java.util.List;
  */
 
 public class KeyboardParser {
-    private static final String TAG = "KeyboardParser";
+    private static final String TAG = KeyboardParser.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     // Keyboard XML Tags
@@ -279,8 +279,8 @@ public class KeyboardParser {
             checkEndTag(TAG_KEY, parser);
         } else {
             Key key = new Key(mResources, row, mCurrentX, mCurrentY, parser, mKeyStyles);
-            if (DEBUG) Log.d(TAG, String.format("<%s keyLabel=%s code=%d popupCharacters=%s />",
-                    TAG_KEY, key.mLabel, key.mCode,
+            if (DEBUG) Log.d(TAG, String.format("<%s%s keyLabel=%s code=%d popupCharacters=%s />",
+                    TAG_KEY, (key.mEnabled ? "" : " disabled"), key.mLabel, key.mCode,
                     Arrays.toString(key.mPopupCharacters)));
             checkEndTag(TAG_KEY, parser);
             keys.add(key);
