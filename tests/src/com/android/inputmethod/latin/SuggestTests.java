@@ -118,8 +118,8 @@ public class SuggestTests extends SuggestTestsBase {
      * Tests to make sure that zero frequency words are not suggested as completions.
      */
     public void testZeroFrequencySuggestionsNegative() {
-        assertNull(mHelper.getSuggestIndex("yike", "yikes"));
-        assertNull(mHelper.getSuggestIndex("what", "whatcha"));
+        assertTrue(mHelper.getSuggestIndex("yike", "yikes") < 0);
+        assertTrue(mHelper.getSuggestIndex("what", "whatcha") < 0);
     }
 
     /**
@@ -127,7 +127,7 @@ public class SuggestTests extends SuggestTestsBase {
      * Also such word is not considered auto correction, in some cases.
      */
     public void testTooLargeEditDistance() {
-        assertNull(mHelper.getSuggestIndex("sniyr", "about"));
+        assertTrue(mHelper.getSuggestIndex("sniyr", "about") < 0);
         // TODO: The following test fails.
         // notSuggested("the", mHelper.getAutoCorrection("rjw"));
     }
