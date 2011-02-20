@@ -67,8 +67,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboardCache =
             new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
 
-    // TODO: clean mMode up and use mAttribute instead.
-    private int mMode = KeyboardId.MODE_TEXT; /* default value */
     private EditorInfo mAttribute;
     private boolean mIsSymbols;
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
@@ -124,11 +122,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         prefs.registerOnSharedPreferenceChangeListener(sInstance);
     }
 
-    private void makeSymbolsKeyboardIds() {
+    private void makeSymbolsKeyboardIds(final int mode) {
         final Locale locale = mSubtypeSwitcher.getInputLocale();
         final Resources res = mInputMethodService.getResources();
         final int orientation = res.getConfiguration().orientation;
-        final int mode = mMode;
         final int colorScheme = getColorScheme();
         final boolean hasVoiceKey = mVoiceKeyEnabled && !mVoiceButtonOnPrimary;
         // Note: This comment is only applied for phone number keyboard layout.
@@ -151,37 +148,36 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return mVoiceKeyEnabled && (isSymbols != mVoiceButtonOnPrimary);
     }
 
-    public void loadKeyboard(int mode, EditorInfo attribute, boolean voiceKeyEnabled,
+    public void loadKeyboard(EditorInfo attribute, boolean voiceKeyEnabled,
             boolean voiceButtonOnPrimary) {
         mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         try {
-            loadKeyboardInternal(mode, attribute, voiceKeyEnabled, voiceButtonOnPrimary, false);
+            loadKeyboardInternal(attribute, voiceKeyEnabled, voiceButtonOnPrimary, false);
         } catch (RuntimeException e) {
             // Get KeyboardId to record which keyboard has been failed to load.
-            final KeyboardId id = getKeyboardId(mode, attribute, false);
+            final KeyboardId id = getKeyboardId(attribute, false);
             Log.w(TAG, "loading keyboard failed: " + id, e);
             LatinImeLogger.logOnException(id.toString(), e);
         }
     }
 
-    private void loadKeyboardInternal(int mode, EditorInfo attribute, boolean voiceButtonEnabled,
+    private void loadKeyboardInternal(EditorInfo attribute, boolean voiceButtonEnabled,
             boolean voiceButtonOnPrimary, boolean isSymbols) {
         if (mInputView == null) return;
 
-        mMode = mode;
         mAttribute = attribute;
         mVoiceKeyEnabled = voiceButtonEnabled;
         mVoiceButtonOnPrimary = voiceButtonOnPrimary;
         mIsSymbols = isSymbols;
         // Update the settings key state because number of enabled IMEs could have been changed
         mHasSettingsKey = getSettingsKeyMode(mPrefs, mInputMethodService);
-        final KeyboardId id = getKeyboardId(mode, attribute, isSymbols);
+        final KeyboardId id = getKeyboardId(attribute, isSymbols);
 
         final Keyboard oldKeyboard = mInputView.getKeyboard();
         if (oldKeyboard != null && oldKeyboard.mId.equals(id))
             return;
 
-        makeSymbolsKeyboardIds();
+        makeSymbolsKeyboardIds(id.mMode);
         mCurrentId = id;
         mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
         setKeyboard(getKeyboard(id));
@@ -228,7 +224,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return keyboard;
     }
 
-    private KeyboardId getKeyboardId(int mode, EditorInfo attribute, boolean isSymbols) {
+    private KeyboardId getKeyboardId(EditorInfo attribute, boolean isSymbols) {
+        final int mode = Utils.getKeyboardMode(attribute);
         final boolean hasVoiceKey = hasVoiceKey(isSymbols);
         final int charColorId = getColorScheme();
         final int xmlId;
@@ -265,7 +262,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public int getKeyboardMode() {
-        return mMode;
+        return mCurrentId != null ? mCurrentId.mMode : KeyboardId.MODE_TEXT;
     }
 
     public boolean isAlphabetMode() {
@@ -569,8 +566,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private void toggleKeyboardMode() {
-        loadKeyboardInternal(mMode, mAttribute, mVoiceKeyEnabled, mVoiceButtonOnPrimary,
-                !mIsSymbols);
+        loadKeyboardInternal(mAttribute, mVoiceKeyEnabled, mVoiceButtonOnPrimary, !mIsSymbols);
         if (mIsSymbols) {
             mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN;
         } else {

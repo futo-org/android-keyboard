@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
-import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
@@ -494,11 +493,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         return container;
     }
 
-    private static boolean isEmailVariation(int variation) {
-        return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                || variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
-    }
-
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
@@ -522,7 +516,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mVoiceConnector.resetVoiceStates(Utils.isPasswordInputType(attribute.inputType)
                 || Utils.isVisiblePasswordInputType(attribute.inputType));
 
-        final int mode = initializeInputAttributesAndGetMode(attribute);
+        initializeInputAttributes(attribute);
 
         inputView.closing();
         mEnteredText = null;
@@ -533,7 +527,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         loadSettings(attribute);
         if (mSubtypeSwitcher.isKeyboardMode()) {
-            switcher.loadKeyboard(mode, attribute,
+            switcher.loadKeyboard(attribute,
                     mVoiceConnector.isVoiceButtonEnabled(),
                     mVoiceConnector.isVoiceButtonOnPrimary());
             switcher.updateShiftState();
@@ -557,10 +551,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
 
-    // TODO: Separate calculating keyboard mode from initializing attributes, and make it an
-    // utility method in {@link Utils}.
-    private int initializeInputAttributesAndGetMode(EditorInfo attribute) {
-        if (attribute == null) return KeyboardId.MODE_TEXT;
+    private void initializeInputAttributes(EditorInfo attribute) {
+        if (attribute == null)
+            return;
         final int inputType = attribute.inputType;
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
         mAutoSpace = false;
@@ -569,70 +562,48 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mApplicationSpecifiedCompletionOn = false;
         mApplicationSpecifiedCompletions = null;
 
-        final int mode;
-        switch (inputType & InputType.TYPE_MASK_CLASS) {
-            case InputType.TYPE_CLASS_NUMBER:
-            case InputType.TYPE_CLASS_DATETIME:
-                mode = KeyboardId.MODE_NUMBER;
-                break;
-            case InputType.TYPE_CLASS_PHONE:
-                mode = KeyboardId.MODE_PHONE;
-                break;
-            case InputType.TYPE_CLASS_TEXT:
-                mIsSettingsSuggestionStripOn = true;
-                // Make sure that passwords are not displayed in candidate view
-                if (Utils.isPasswordInputType(inputType)
-                        || Utils.isVisiblePasswordInputType(inputType)) {
-                    mIsSettingsSuggestionStripOn = false;
+        if ((inputType & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT) {
+            mIsSettingsSuggestionStripOn = true;
+            // Make sure that passwords are not displayed in candidate view
+            if (Utils.isPasswordInputType(inputType)
+                    || Utils.isVisiblePasswordInputType(inputType)) {
+                mIsSettingsSuggestionStripOn = false;
+            }
+            if (Utils.isEmailVariation(variation)
+                    || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
+                mAutoSpace = false;
+            } else {
+                mAutoSpace = true;
+            }
+            if (Utils.isEmailVariation(variation)) {
+                mIsSettingsSuggestionStripOn = false;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
+                mIsSettingsSuggestionStripOn = false;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
+                mIsSettingsSuggestionStripOn = false;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
+                // If it's a browser edit field and auto correct is not ON explicitly, then
+                // disable auto correction, but keep suggestions on.
+                if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
+                    mInputTypeNoAutoCorrect = true;
                 }
-                if (LatinIME.isEmailVariation(variation)
-                        || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                    mAutoSpace = false;
-                } else {
-                    mAutoSpace = true;
-                }
-                if (LatinIME.isEmailVariation(variation)) {
-                    mIsSettingsSuggestionStripOn = false;
-                    mode = KeyboardId.MODE_EMAIL;
-                } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
-                    mIsSettingsSuggestionStripOn = false;
-                    mode = KeyboardId.MODE_URL;
-                } else if (variation == InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE) {
-                    mode = KeyboardId.MODE_IM;
-                } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
-                    mIsSettingsSuggestionStripOn = false;
-                    mode = KeyboardId.MODE_TEXT;
-                } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
-                    mode = KeyboardId.MODE_WEB;
-                    // If it's a browser edit field and auto correct is not ON explicitly, then
-                    // disable auto correction, but keep suggestions on.
-                    if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0) {
-                        mInputTypeNoAutoCorrect = true;
-                    }
-                } else {
-                    mode = KeyboardId.MODE_TEXT;
-                }
+            }
 
-                // If NO_SUGGESTIONS is set, don't do prediction.
-                if ((inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
-                    mIsSettingsSuggestionStripOn = false;
-                    mInputTypeNoAutoCorrect = true;
-                }
-                // If it's not multiline and the autoCorrect flag is not set, then don't correct
-                if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0 &&
-                        (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
-                    mInputTypeNoAutoCorrect = true;
-                }
-                if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
-                    mIsSettingsSuggestionStripOn = false;
-                    mApplicationSpecifiedCompletionOn = isFullscreenMode();
-                }
-                break;
-            default:
-                mode = KeyboardId.MODE_TEXT;
-                break;
+            // If NO_SUGGESTIONS is set, don't do prediction.
+            if ((inputType & InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS) != 0) {
+                mIsSettingsSuggestionStripOn = false;
+                mInputTypeNoAutoCorrect = true;
+            }
+            // If it's not multiline and the autoCorrect flag is not set, then don't correct
+            if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_CORRECT) == 0
+                    && (inputType & InputType.TYPE_TEXT_FLAG_MULTI_LINE) == 0) {
+                mInputTypeNoAutoCorrect = true;
+            }
+            if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
+                mIsSettingsSuggestionStripOn = false;
+                mApplicationSpecifiedCompletionOn = isFullscreenMode();
+            }
         }
-        return mode;
     }
 
     private void checkReCorrectionOnStart() {
@@ -1909,9 +1880,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSubtypeSwitcher.toggleLanguage(reset, next);
         }
         // Reload keyboard because the current language has been changed.
-        final EditorInfo attribute = getCurrentInputEditorInfo();
-        final int mode = initializeInputAttributesAndGetMode(attribute);
-        mKeyboardSwitcher.loadKeyboard(mode, attribute,
+        mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(),
                 mVoiceConnector.isVoiceButtonEnabled(), mVoiceConnector.isVoiceButtonOnPrimary());
         initSuggest();
         mKeyboardSwitcher.updateShiftState();

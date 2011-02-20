@@ -45,6 +45,10 @@ public class Utils {
     private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
     private static boolean DBG = LatinImeLogger.sDBG;
 
+    private Utils() {
+        // Intentional empty constructor for utility class.
+    }
+
     /**
      * Cancel an {@link AsyncTask}.
      *
@@ -319,7 +323,7 @@ public class Utils {
     }
 
     public static class UsabilityStudyLogUtils {
-        private static final String TAG = "UsabilityStudyLogUtils";
+        private static final String USABILITY_TAG = UsabilityStudyLogUtils.class.getSimpleName();
         private static final String FILENAME = "log.txt";
         private static final UsabilityStudyLogUtils sInstance =
                 new UsabilityStudyLogUtils();
@@ -356,7 +360,7 @@ public class Utils {
                 try {
                     mWriter = getPrintWriter(mDirectory, FILENAME, false);
                 } catch (IOException e) {
-                    Log.e(TAG, "Can't create log file.");
+                    Log.e(USABILITY_TAG, "Can't create log file.");
                 }
             }
         }
@@ -393,7 +397,7 @@ public class Utils {
                     final String printString = String.format("%s\t%d\t%s\n",
                             mDateFormat.format(mDate), currentTime, log);
                     if (LatinImeLogger.sDBG) {
-                        Log.d(TAG, "Write: " + log);
+                        Log.d(USABILITY_TAG, "Write: " + log);
                     }
                     mWriter.print(printString);
                 }
@@ -414,10 +418,10 @@ public class Utils {
                             sb.append(line);
                         }
                     } catch (IOException e) {
-                        Log.e(TAG, "Can't read log file.");
+                        Log.e(USABILITY_TAG, "Can't read log file.");
                     } finally {
                         if (LatinImeLogger.sDBG) {
-                            Log.d(TAG, "output all logs\n" + sb.toString());
+                            Log.d(USABILITY_TAG, "output all logs\n" + sb.toString());
                         }
                         mIms.getCurrentInputConnection().commitText(sb.toString(), 0);
                         try {
@@ -436,7 +440,7 @@ public class Utils {
                 public void run() {
                     if (mFile != null && mFile.exists()) {
                         if (LatinImeLogger.sDBG) {
-                            Log.d(TAG, "Delete log file.");
+                            Log.d(USABILITY_TAG, "Delete log file.");
                         }
                         mFile.delete();
                         mWriter.close();
@@ -464,6 +468,43 @@ public class Utils {
             }
             return new PrintWriter(new FileOutputStream(mFile), true /* autoFlush */);
         }
+    }
+
+    public static int getKeyboardMode(EditorInfo attribute) {
+        if (attribute == null)
+            return KeyboardId.MODE_TEXT;
+
+        final int inputType = attribute.inputType;
+        final int variation = inputType & InputType.TYPE_MASK_VARIATION;
+
+        switch (inputType & InputType.TYPE_MASK_CLASS) {
+        case InputType.TYPE_CLASS_NUMBER:
+        case InputType.TYPE_CLASS_DATETIME:
+            return KeyboardId.MODE_NUMBER;
+        case InputType.TYPE_CLASS_PHONE:
+            return KeyboardId.MODE_PHONE;
+        case InputType.TYPE_CLASS_TEXT:
+            if (Utils.isEmailVariation(variation)) {
+                return KeyboardId.MODE_EMAIL;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
+                return KeyboardId.MODE_URL;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE) {
+                return KeyboardId.MODE_IM;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
+                return KeyboardId.MODE_TEXT;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
+                return KeyboardId.MODE_WEB;
+            } else {
+                return KeyboardId.MODE_TEXT;
+            }
+        default:
+            return KeyboardId.MODE_TEXT;
+        }
+    }
+
+    public static boolean isEmailVariation(int variation) {
+        return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+                || variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
     }
 
     // Please refer to TextView.isPasswordInputType
