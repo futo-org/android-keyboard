@@ -129,32 +129,42 @@ public class PointerTracker {
     }
 
     // Returns true if keyboard has been changed by this callback.
-    private boolean callListenerOnPressAndCheckKeyboardLayoutChange(int primaryCode) {
+    private boolean callListenerOnPressAndCheckKeyboardLayoutChange(Key key) {
         if (DEBUG_LISTENER)
-            Log.d(TAG, "onPress    : " + keyCodePrintable(primaryCode));
-        mListener.onPress(primaryCode);
-        final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
-        mKeyboardLayoutHasBeenChanged = false;
-        return keyboardLayoutHasBeenChanged;
+            Log.d(TAG, "onPress    : " + keyCodePrintable(key.mCode));
+        if (key.mEnabled) {
+            mListener.onPress(key.mCode);
+            final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
+            mKeyboardLayoutHasBeenChanged = false;
+            return keyboardLayoutHasBeenChanged;
+        }
+        return false;
     }
 
-    private void callListenerOnCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
+    // Note that we need primaryCode argument because the keyboard may in shifted state and the
+    // primaryCode is different from {@link Key#mCode}.
+    private void callListenerOnCodeInput(Key key, int primaryCode, int[] keyCodes, int x, int y) {
         if (DEBUG_LISTENER)
             Log.d(TAG, "onCodeInput: " + keyCodePrintable(primaryCode)
                     + " codes="+ Arrays.toString(keyCodes) + " x=" + x + " y=" + y);
-        mListener.onCodeInput(primaryCode, keyCodes, x, y);
+        if (key.mEnabled)
+            mListener.onCodeInput(primaryCode, keyCodes, x, y);
     }
 
-    private void callListenerOnTextInput(CharSequence text) {
+    private void callListenerOnTextInput(Key key) {
         if (DEBUG_LISTENER)
-            Log.d(TAG, "onTextInput: text=" + text);
-        mListener.onTextInput(text);
+            Log.d(TAG, "onTextInput: text=" + key.mOutputText);
+        if (key.mEnabled)
+            mListener.onTextInput(key.mOutputText);
     }
 
-    private void callListenerOnRelease(int primaryCode) {
+    // Note that we need primaryCode argument because the keyboard may in shifted state and the
+    // primaryCode is different from {@link Key#mCode}.
+    private void callListenerOnRelease(Key key, int primaryCode) {
         if (DEBUG_LISTENER)
             Log.d(TAG, "onRelease  : " + keyCodePrintable(primaryCode));
-        mListener.onRelease(primaryCode);
+        if (key.mEnabled)
+            mListener.onRelease(primaryCode);
     }
 
     private void callListenerOnCancelInput() {
@@ -313,7 +323,7 @@ public class PointerTracker {
             // This onPress call may have changed keyboard layout. Those cases are detected at
             // {@link #setKeyboard}. In those cases, we should update keyIndex according to the new
             // keyboard layout.
-            if (callListenerOnPressAndCheckKeyboardLayoutChange(mKeys[keyIndex].mCode))
+            if (callListenerOnPressAndCheckKeyboardLayoutChange(mKeys[keyIndex]))
                 keyIndex = mKeyState.onDownKey(x, y, eventTime);
         }
         if (isValidKeyIndex(keyIndex)) {
@@ -346,7 +356,7 @@ public class PointerTracker {
                 // This onPress call may have changed keyboard layout. Those cases are detected at
                 // {@link #setKeyboard}. In those cases, we should update keyIndex according to the
                 // new keyboard layout.
-                if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex).mCode))
+                if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex)))
                     keyIndex = keyState.onMoveKey(x, y);
                 keyState.onMoveToNewKey(keyIndex, x, y);
                 startLongPressTimer(keyIndex);
@@ -355,13 +365,13 @@ public class PointerTracker {
                 // onRelease() first to notify that the previous key has been released, then call
                 // onPress() to notify that the new key is being pressed.
                 mIsInSlidingKeyInput = true;
-                callListenerOnRelease(oldKey.mCode);
+                callListenerOnRelease(oldKey, oldKey.mCode);
                 mHandler.cancelLongPressTimers();
                 if (mIsAllowedSlidingKeyInput) {
                     // This onPress call may have changed keyboard layout. Those cases are detected
                     // at {@link #setKeyboard}. In those cases, we should update keyIndex according
                     // to the new keyboard layout.
-                    if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex).mCode))
+                    if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex)))
                         keyIndex = keyState.onMoveKey(x, y);
                     keyState.onMoveToNewKey(keyIndex, x, y);
                     startLongPressTimer(keyIndex);
@@ -390,7 +400,7 @@ public class PointerTracker {
                 // The pointer has been slid out from the previous key, we must call onRelease() to
                 // notify that the previous key has been released.
                 mIsInSlidingKeyInput = true;
-                callListenerOnRelease(oldKey.mCode);
+                callListenerOnRelease(oldKey, oldKey.mCode);
                 mHandler.cancelLongPressTimers();
                 if (mIsAllowedSlidingKeyInput) {
                     keyState.onMoveToNewKey(keyIndex, x ,y);
@@ -539,8 +549,8 @@ public class PointerTracker {
             return;
         }
         if (key.mOutputText != null) {
-            callListenerOnTextInput(key.mOutputText);
-            callListenerOnRelease(key.mCode);
+            callListenerOnTextInput(key);
+            callListenerOnRelease(key, key.mCode);
         } else {
             int code = key.mCode;
             final int[] codes = mKeyDetector.newCodeArray();
@@ -561,9 +571,8 @@ public class PointerTracker {
                 codes[1] = codes[0];
                 codes[0] = code;
             }
-            if (key.mEnabled)
-                callListenerOnCodeInput(code, codes, x, y);
-            callListenerOnRelease(code);
+            callListenerOnCodeInput(key, code, codes, x, y);
+            callListenerOnRelease(key, code);
         }
     }
 
