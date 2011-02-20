@@ -188,6 +188,7 @@ public class KeyStyles {
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isModifier);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable);
+            readBoolean(keyAttr, R.styleable.Keyboard_Key_enabled);
         }
 
         private void readDrawable(TypedArray a, int index) {
