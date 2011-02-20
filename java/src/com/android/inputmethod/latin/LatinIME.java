@@ -321,7 +321,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             removeMessages(MSG_DISMISS_LANGUAGE_ON_SPACEBAR);
             final LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
             if (inputView != null) {
-                final LatinKeyboard keyboard = inputView.getLatinKeyboard();
+                final LatinKeyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
                 // The language is never displayed when the delay is zero.
                 if (mConfigDelayBeforeFadeoutLanguageOnSpacebar != 0)
                     inputView.setSpacebarTextFadeFactor(localeChanged ? 1.0f

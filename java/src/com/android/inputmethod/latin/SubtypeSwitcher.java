@@ -371,12 +371,10 @@ public class SubtypeSwitcher {
                 ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
         mIsNetworkConnected = !noConnection;
 
-        final LatinKeyboardView inputView = KeyboardSwitcher.getInstance().getInputView();
-        if (inputView != null) {
-            final LatinKeyboard keyboard = inputView.getLatinKeyboard();
-            if (keyboard != null) {
-                keyboard.updateShortcutKey(isShortcutAvailable(), inputView);
-            }
+        final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
+        final LatinKeyboard keyboard = switcher.getLatinKeyboard();
+        if (keyboard != null) {
+            keyboard.updateShortcutKey(isShortcutAvailable(), switcher.getInputView());
         }
     }
 

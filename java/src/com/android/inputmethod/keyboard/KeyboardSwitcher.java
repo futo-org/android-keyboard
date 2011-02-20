@@ -155,15 +155,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             boolean voiceButtonOnPrimary) {
         mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         try {
-            if (mInputView == null) return;
-            final Keyboard oldKeyboard = mInputView.getKeyboard();
             loadKeyboardInternal(mode, attribute, voiceKeyEnabled, voiceButtonOnPrimary, false);
-            final Keyboard newKeyboard = mInputView.getKeyboard();
-            if (newKeyboard.isAlphaKeyboard()) {
-                final boolean localeChanged = (oldKeyboard == null)
-                        || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
-                mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
-            }
         } catch (RuntimeException e) {
             // Get KeyboardId to record which keyboard has been failed to load.
             final KeyboardId id = getKeyboardId(mode, attribute, false);
@@ -192,7 +184,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         makeSymbolsKeyboardIds();
         mCurrentId = id;
         mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
-        mInputView.setKeyboard(getKeyboard(id));
+        setKeyboard(getKeyboard(id));
+    }
+
+    private void setKeyboard(final Keyboard newKeyboard) {
+        final Keyboard oldKeyboard = mInputView.getKeyboard();
+        mInputView.setKeyboard(newKeyboard);
+        final boolean localeChanged = (oldKeyboard == null)
+                || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
+        mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -278,13 +278,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     public boolean isKeyboardAvailable() {
         if (mInputView != null)
-            return mInputView.getLatinKeyboard() != null;
+            return mInputView.getKeyboard() != null;
         return false;
     }
 
-    private LatinKeyboard getLatinKeyboard() {
-        if (mInputView != null)
-            return mInputView.getLatinKeyboard();
+    public LatinKeyboard getLatinKeyboard() {
+        if (mInputView != null) {
+            final Keyboard keyboard = mInputView.getKeyboard();
+            if (keyboard instanceof LatinKeyboard)
+                return (LatinKeyboard)keyboard;
+        }
         return null;
     }
 
@@ -550,7 +553,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // indicator, we need to call enableShiftLock() and setShiftLocked(false).
             keyboard.setShifted(false);
         }
-        mInputView.setKeyboard(keyboard);
+        setKeyboard(keyboard);
     }
 
     public boolean isInMomentaryAutoModeSwitchState() {

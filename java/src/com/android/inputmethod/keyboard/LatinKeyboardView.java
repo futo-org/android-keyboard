@@ -66,7 +66,8 @@ public class LatinKeyboardView extends KeyboardView {
         }
     }
 
-    public void setLatinKeyboard(LatinKeyboard newKeyboard) {
+    @Override
+    public void setKeyboard(Keyboard newKeyboard) {
         final LatinKeyboard oldKeyboard = getLatinKeyboard();
         if (oldKeyboard != null) {
             // Reset old keyboard state before switching to new keyboard.
@@ -80,7 +81,7 @@ public class LatinKeyboardView extends KeyboardView {
         mLastRowY = (newKeyboard.getHeight() * 3) / 4;
     }
 
-    public LatinKeyboard getLatinKeyboard() {
+    private LatinKeyboard getLatinKeyboard() {
         Keyboard keyboard = getKeyboard();
         if (keyboard instanceof LatinKeyboard) {
             return (LatinKeyboard)keyboard;
