@@ -47,7 +47,7 @@ private:
     int wideStrLen(unsigned short *str);
     bool sameAsTyped(unsigned short *word, int length);
     bool addWord(unsigned short *word, int length, int frequency);
-    unsigned short toLowerCase(unsigned short c);
+    unsigned short toBaseLowerCase(unsigned short c);
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
