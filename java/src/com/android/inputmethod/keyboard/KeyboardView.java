@@ -762,6 +762,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             canvas.translate(-key.mX - kbdPaddingLeft, -key.mY - kbdPaddingTop);
         }
 
+        // TODO: Move this function to ProximityInfo for getting rid of public declarations for
+        // GRID_WIDTH and GRID_HEIGHT
         if (DEBUG_KEYBOARD_GRID) {
             Paint p = new Paint();
             p.setStyle(Paint.Style.STROKE);
@@ -1028,7 +1030,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
-    private void onDoubleTapShiftKey(@SuppressWarnings("unused") PointerTracker tracker) {
+    private void onDoubleTapShiftKey(PointerTracker tracker) {
         // When shift key is double tapped, the first tap is correctly processed as usual tap. And
         // the second tap is treated as this double tap event, so that we need not mark tracker
         // calling setAlreadyProcessed() nor remove the tracker from mPointerQueueueue.

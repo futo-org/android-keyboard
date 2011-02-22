@@ -64,7 +64,7 @@ public class SuggestHelper {
         return mSuggest.hasMainDictionary();
     }
 
-    private int[] getProximityCodes(char c) {
+    private void addKeyInfo(WordComposer word, char c) {
         final List<Key> keys = mKeyboard.getKeys();
         for (final Key key : keys) {
             if (key.mCode == c) {
@@ -72,17 +72,17 @@ public class SuggestHelper {
                 final int y = key.mY + key.mHeight / 2;
                 final int[] codes = mKeyDetector.newCodeArray();
                 mKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
-                return codes;
+                word.add(c, codes, x, y);
             }
         }
-        return new int[] { c };
+        word.add(c, new int[] { c }, WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
     }
 
     protected WordComposer createWordComposer(CharSequence s) {
         WordComposer word = new WordComposer();
         for (int i = 0; i < s.length(); i++) {
             final char c = s.charAt(i);
-            word.add(c, getProximityCodes(c));
+            addKeyInfo(word, c);
         }
         return word;
     }

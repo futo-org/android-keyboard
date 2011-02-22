@@ -18,6 +18,7 @@
 #define LATINIME_UNIGRAM_DICTIONARY_H
 
 #include "defines.h"
+#include "proximity_info.h"
 
 namespace latinime {
 
@@ -32,7 +33,8 @@ class UnigramDictionary {
 public:
     UnigramDictionary(const unsigned char *dict, int typedLetterMultipler, int fullWordMultiplier,
             int maxWordLength, int maxWords, int maxProximityChars, const bool isLatestDictVersion);
-    int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies);
+    int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
+            int *codes, int codesSize, unsigned short *outWords, int *frequencies);
     ~UnigramDictionary();
 
 private:
@@ -84,7 +86,9 @@ private:
             const int startInputIndex, const int depth, unsigned short *word,
             int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
     bool existsAdjacentProximityChars(const int inputIndex, const int inputLength);
-    int* getInputCharsAt(const int index) {return mInputCodes + (index * MAX_PROXIMITY_CHARS);}
+    inline int* getInputCharsAt(const int index) {
+        return mInputCodes + (index * MAX_PROXIMITY_CHARS);
+    }
     const unsigned char *DICT;
     const int MAX_WORD_LENGTH;
     const int MAX_WORDS;

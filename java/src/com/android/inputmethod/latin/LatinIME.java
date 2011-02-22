@@ -187,6 +187,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
 
+    static {
+        try {
+            System.loadLibrary("jni_latinime");
+        } catch (UnsatisfiedLinkError ule) {
+            Log.e(TAG, "Could not load native library jni_latinime");
+        }
+    }
+
     public abstract static class WordAlternatives {
         protected CharSequence mChosenWord;
 
@@ -1119,7 +1127,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (isWordSeparator(primaryCode)) {
                 handleSeparator(primaryCode);
             } else {
-                handleCharacter(primaryCode, keyCodes);
+                handleCharacter(primaryCode, keyCodes, x, y);
             }
             // Cancel the just reverted state
             mJustReverted = false;
@@ -1244,7 +1252,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void handleCharacter(int primaryCode, int[] keyCodes) {
+    private void handleCharacter(int primaryCode, int[] keyCodes, int x, int y) {
         mVoiceConnector.handleCharacter();
 
         if (mLastSelectionStart == mLastSelectionEnd && TextEntryState.isCorrecting()) {
@@ -1285,7 +1293,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mWord.setFirstCharCapitalized(true);
             }
             mComposing.append((char) code);
-            mWord.add(code, keyCodes);
+            mWord.add(code, keyCodes, x, y);
             InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
@@ -1692,7 +1700,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             for (int i = 0; i < touching.mWord.length(); i++) {
                 foundWord.add(touching.mWord.charAt(i), new int[] {
                     touching.mWord.charAt(i)
-                });
+                }, WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
             }
             foundWord.setFirstCharCapitalized(Character.isUpperCase(touching.mWord.charAt(0)));
         }
