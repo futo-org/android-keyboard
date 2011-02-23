@@ -25,6 +25,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.Utils;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -74,10 +75,6 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     // For example, the user has a Chinese UI but activates voice input.
     private static final String PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE =
             "has_used_voice_input_unsupported_locale";
-    // The private IME option used to indicate that no microphone should be shown for a
-    // given text field. For instance this is specified by the search dialog when the
-    // dialog is already showing a voice search button.
-    private static final String IME_OPTION_NO_MICROPHONE = "nm";
     private static final int RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO = 6;
 
     private static final String TAG = VoiceIMEConnector.class.getSimpleName();
@@ -627,9 +624,11 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     }
 
     private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo attribute) {
-        return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext)
-                && !(attribute != null
-                        && IME_OPTION_NO_MICROPHONE.equals(attribute.privateImeOptions))
+        final boolean noMic = Utils.inPrivateImeOptions(null,
+                LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, attribute)
+                || Utils.inPrivateImeOptions(mService.getPackageName(),
+                        LatinIME.IME_OPTION_NO_MICROPHONE, attribute);
+        return ENABLE_VOICE_BUTTON && fieldCanDoVoice(fieldContext) && !noMic
                 && SpeechRecognizer.isRecognitionAvailable(mService);
     }
 

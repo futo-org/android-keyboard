@@ -106,7 +106,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         conf.locale = locale;
         res.updateConfiguration(conf, res.getDisplayMetrics());
 
-        int mainDicResId = LatinIME.getMainDictionaryResourceId(res);
+        int mainDicResId = Utils.getMainDictionaryResourceId(res);
         BinaryDictionary bd = BinaryDictionary.initDictionary(this, mainDicResId, Suggest.DIC_MAIN);
 
         // Is the dictionary larger than a placeholder? Arbitrarily chose a lower limit of

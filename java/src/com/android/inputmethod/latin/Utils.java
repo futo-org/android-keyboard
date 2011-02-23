@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.keyboard.KeyboardId;
 
+import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -525,5 +526,31 @@ public class Utils {
                 inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
         return variation
                 == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+    }
+
+    public static boolean containsInCsv(String key, String csv) {
+        if (csv == null)
+            return false;
+        for (String option : csv.split(",")) {
+            if (option.equals(key))
+                return true;
+        }
+        return false;
+    }
+
+    public static boolean inPrivateImeOptions(String packageName, String key,
+            EditorInfo attribute) {
+        if (attribute == null)
+            return false;
+        return containsInCsv(packageName != null ? packageName + "." + key : key,
+                attribute.privateImeOptions);
+    }
+
+    /**
+     * Returns a main dictionary resource id
+     * @return main dictionary resource id
+     */
+    public static int getMainDictionaryResourceId(Resources res) {
+        return res.getIdentifier("main", "raw", LatinIME.class.getPackage().getName());
     }
 }
