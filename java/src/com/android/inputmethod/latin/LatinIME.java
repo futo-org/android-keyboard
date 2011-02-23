@@ -81,10 +81,26 @@ import java.util.Locale;
  * Input method implementation for Qwerty'ish keyboard.
  */
 public class LatinIME extends InputMethodService implements KeyboardActionListener {
-    private static final String TAG = "LatinIME";
+    private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean PERF_DEBUG = false;
     private static final boolean TRACE = false;
     private static boolean DEBUG = LatinImeLogger.sDBG;
+
+    /**
+     * The private IME option used to indicate that no microphone should be
+     * shown for a given text field. For instance, this is specified by the
+     * search dialog when the dialog is already showing a voice search button.
+     *
+     * @deprecated Use {@link LatinIME#IME_OPTION_NO_MICROPHONE} with package name prefixed.
+     */
+    public static final String IME_OPTION_NO_MICROPHONE_COMPAT = "nm";
+
+    /**
+     * The private IME option used to indicate that no microphone should be
+     * shown for a given text field. For instance, this is specified by the
+     * search dialog when the dialog is already showing a voice search button.
+     */
+    public static final String IME_OPTION_NO_MICROPHONE = "noMicrophone";
 
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
@@ -345,7 +361,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         super.onCreate();
 
         mImm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
-        mInputMethodId = Utils.getInputMethodId(mImm, getApplicationInfo().packageName);
+        mInputMethodId = Utils.getInputMethodId(mImm, getPackageName());
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
 
@@ -394,16 +410,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mVoiceConnector = VoiceIMEConnector.init(this, prefs, mHandler);
     }
 
-    /**
-     * Returns a main dictionary resource id
-     * @return main dictionary resource id
-     */
-    public static int getMainDictionaryResourceId(Resources res) {
-        final String MAIN_DIC_NAME = "main";
-        String packageName = LatinIME.class.getPackage().getName();
-        return res.getIdentifier(MAIN_DIC_NAME, "raw", packageName);
-    }
-
     private void initSuggest() {
         updateAutoTextEnabled();
         String locale = mSubtypeSwitcher.getInputLocaleStr();
@@ -416,7 +422,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mQuickFixes = isQuickFixesEnabled(prefs);
 
         final Resources res = mResources;
-        int mainDicResId = getMainDictionaryResourceId(res);
+        int mainDicResId = Utils.getMainDictionaryResourceId(res);
         mSuggest = new Suggest(this, mainDicResId);
         loadAndSetAutoCorrectionThreshold(prefs);
 
