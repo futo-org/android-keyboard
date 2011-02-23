@@ -437,11 +437,13 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_imeAction, id.mImeAction);
             final boolean languageCodeMatched = matchString(a,
                     R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
+            final boolean countryCodeMatched = matchString(a,
+                    R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
             final boolean selected = modeMatched && passwordInputMatched && settingsKeyMatched
                     && voiceEnabledMatched && voiceKeyMatched && colorSchemeMatched
-                    && imeActionMatched && languageCodeMatched;
+                    && imeActionMatched && languageCodeMatched && countryCodeMatched;
 
-            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
+            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
                     textAttr(KeyboardId.modeName(
                             a.getInt(R.styleable.Keyboard_Case_mode, -1)), "mode"),
                     textAttr(KeyboardId.colorSchemeName(
@@ -453,6 +455,7 @@ public class KeyboardParser {
                     textAttr(KeyboardId.imeOptionsName(
                             a.getInt(R.styleable.Keyboard_Case_imeAction, -1)), "imeAction"),
                     textAttr(a.getString(R.styleable.Keyboard_Case_languageCode), "languageCode"),
+                    textAttr(a.getString(R.styleable.Keyboard_Case_countryCode), "countryCode"),
                     Boolean.toString(selected)));
 
             return selected;

@@ -184,6 +184,7 @@
             <flag name="actionPrevious" value="7" />
         </attr>
         <attr name="languageCode" format="string" />
+        <attr name="countryCode" format="string" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_KeyStyle">
