@@ -1627,9 +1627,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mJustAddedAutoSpace = true;
         }
 
-        final boolean showingAddToDictionaryHint = index == 0 && mCorrectionMode > 0
+        // We should show the hint if the user pressed the first entry AND either:
+        // - There is no dictionary (we know that because we tried to load it => null != mSuggest
+        //   AND mHasDictionary is false)
+        // - There is a dictionary and the word is not in it
+        // Please note that if mSuggest is null, it means that everything is off: suggestion
+        // and correction, so we shouldn't try to show the hint
+        // We used to look at mCorrectionMode here, but showing the hint should have nothing
+        // to do with the autocorrection setting.
+        final boolean showingAddToDictionaryHint = index == 0 &&
+                // Test for no dictionary:
+                ((!mHasDictionary && null != mSuggest) ||
+                // Test for dictionary && word is inside:
+                (mHasDictionary && null != mSuggest
                 && !mSuggest.isValidWord(suggestion)
-                && !mSuggest.isValidWord(suggestion.toString().toLowerCase());
+                && !mSuggest.isValidWord(suggestion.toString().toLowerCase())));
 
         if (!correcting) {
             // Fool the state watcher so that a subsequent backspace will not do a revert, unless
