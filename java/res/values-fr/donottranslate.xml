@@ -19,7 +19,7 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Symbols that are commonly considered word separators in this language -->
-    <string name="word_separators">.\u0009\u0020,;:!?\'\n()[]*&amp;@{}/&lt;&gt;_+=|\u0022</string>
+    <string name="word_separators">.\u0009\u0020,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|\u0022</string>
     <!-- Symbols that are sentence separators, for purposes of making it hug the last sentence. -->
     <string name="sentence_separators">.,</string>
 </resources>
