@@ -83,8 +83,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int AUTO_MODE_SWITCH_STATE_CHORDING = 4;
     private int mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
 
-    // Indicates whether or not we have the settings key
-    private boolean mHasSettingsKey;
+    // Indicates whether or not we have the settings key in option of settings
+    private boolean mSettingsKeyEnabledInSettings;
     private static final int SETTINGS_KEY_MODE_AUTO = R.string.settings_key_mode_auto;
     private static final int SETTINGS_KEY_MODE_ALWAYS_SHOW =
             R.string.settings_key_mode_always_show;
@@ -122,32 +122,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         prefs.registerOnSharedPreferenceChangeListener(sInstance);
     }
 
-    private void makeSymbolsKeyboardIds(final int mode) {
-        final Locale locale = mSubtypeSwitcher.getInputLocale();
-        final Resources res = mInputMethodService.getResources();
-        final int orientation = res.getConfiguration().orientation;
-        final int colorScheme = getColorScheme();
-        final boolean hasVoiceKey = mVoiceKeyEnabled && !mVoiceButtonOnPrimary;
-        // Note: This comment is only applied for phone number keyboard layout.
-        // On non-xlarge device, "@integer/key_switch_alpha_symbol" key code is used to switch
-        // between "phone keyboard" and "phone symbols keyboard".  But on xlarge device,
-        // "@integer/key_shift" key code is used for that purpose in order to properly display
-        // "more" and "locked more" key labels.  To achieve these behavior, we should initialize
-        // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
-        // respectively here for xlarge device's layout switching.
-        int xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols;
-        final String xmlName = res.getResourceEntryName(xmlId);
-        mSymbolsId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
-                mAttribute, mHasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
-        xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift;
-        mSymbolsShiftedId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
-                mAttribute, mHasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
-    }
-
-    private boolean hasVoiceKey(boolean isSymbols) {
-        return mVoiceKeyEnabled && (isSymbols != mVoiceButtonOnPrimary);
-    }
-
     public void loadKeyboard(EditorInfo attribute, boolean voiceKeyEnabled,
             boolean voiceButtonOnPrimary) {
         mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
@@ -170,14 +144,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mVoiceButtonOnPrimary = voiceButtonOnPrimary;
         mIsSymbols = isSymbols;
         // Update the settings key state because number of enabled IMEs could have been changed
-        mHasSettingsKey = getSettingsKeyMode(mPrefs, mInputMethodService);
+        mSettingsKeyEnabledInSettings = getSettingsKeyMode(mPrefs, mInputMethodService);
         final KeyboardId id = getKeyboardId(attribute, isSymbols);
 
         final Keyboard oldKeyboard = mInputView.getKeyboard();
         if (oldKeyboard != null && oldKeyboard.mId.equals(id))
             return;
 
-        makeSymbolsKeyboardIds(id.mMode);
+        makeSymbolsKeyboardIds(id.mMode, attribute);
         mCurrentId = id;
         mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
         setKeyboard(getKeyboard(id));
@@ -224,6 +198,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return keyboard;
     }
 
+    private boolean hasVoiceKey(boolean isSymbols) {
+        return mVoiceKeyEnabled && (isSymbols != mVoiceButtonOnPrimary);
+    }
+
+    private boolean hasSettingsKey(EditorInfo attribute) {
+        return mSettingsKeyEnabledInSettings
+            && !Utils.inPrivateImeOptions(mInputMethodService.getPackageName(),
+                    LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
+    }
+
     private KeyboardId getKeyboardId(EditorInfo attribute, boolean isSymbols) {
         final int mode = Utils.getKeyboardMode(attribute);
         final boolean hasVoiceKey = hasVoiceKey(isSymbols);
@@ -253,12 +237,36 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 enableShiftLock = true;
             }
         }
+        final boolean hasSettingsKey = hasSettingsKey(attribute);
         final Resources res = mInputMethodService.getResources();
         final int orientation = res.getConfiguration().orientation;
         final Locale locale = mSubtypeSwitcher.getInputLocale();
         return new KeyboardId(
                 res.getResourceEntryName(xmlId), xmlId, charColorId, locale, orientation, mode,
-                attribute, mHasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, enableShiftLock);
+                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, enableShiftLock);
+    }
+
+    private void makeSymbolsKeyboardIds(final int mode, EditorInfo attribute) {
+        final Locale locale = mSubtypeSwitcher.getInputLocale();
+        final Resources res = mInputMethodService.getResources();
+        final int orientation = res.getConfiguration().orientation;
+        final int colorScheme = getColorScheme();
+        final boolean hasVoiceKey = mVoiceKeyEnabled && !mVoiceButtonOnPrimary;
+        final boolean hasSettingsKey = hasSettingsKey(attribute);
+        // Note: This comment is only applied for phone number keyboard layout.
+        // On non-xlarge device, "@integer/key_switch_alpha_symbol" key code is used to switch
+        // between "phone keyboard" and "phone symbols keyboard".  But on xlarge device,
+        // "@integer/key_shift" key code is used for that purpose in order to properly display
+        // "more" and "locked more" key labels.  To achieve these behavior, we should initialize
+        // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
+        // respectively here for xlarge device's layout switching.
+        int xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols;
+        final String xmlName = res.getResourceEntryName(xmlId);
+        mSymbolsId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
+                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
+        xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift;
+        mSymbolsShiftedId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
+                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
     }
 
     public int getKeyboardMode() {
@@ -689,7 +697,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             createInputViewInternal(layoutId, false);
             postSetInputView();
         } else if (Settings.PREF_SETTINGS_KEY.equals(key)) {
-            mHasSettingsKey = getSettingsKeyMode(sharedPreferences, mInputMethodService);
+            mSettingsKeyEnabledInSettings = getSettingsKeyMode(sharedPreferences,
+                    mInputMethodService);
             createInputViewInternal(mLayoutId, true);
             postSetInputView();
         }
@@ -725,7 +734,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                                             Context.INPUT_METHOD_SERVICE))))) {
                 return true;
             }
+            return false;
         }
-        return false;
+        // If the show settings key option is disabled, we always try showing the settings key.
+        return true;
     }
 }
