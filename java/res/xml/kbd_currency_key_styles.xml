@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2011, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<merge
+    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
+>
+    <switch>
+        <!-- Countries using Euro currency, 23 countries as for January 2011. -->
+        <!-- 1. Andorra (ca_AD, ca_ES) -->
+        <case
+            latin:languageCode="ca"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 2. Austria (de_AT) -->
+<!--        <case-->
+<!--            latin:countryCode="AT"-->
+<!--        >-->
+<!--            <key-style-->
+<!--                latin:styleName="currencyKeyStyle"-->
+<!--                latin:keyLabel="€"-->
+<!--                latin:popupCharacters="@string/alternates_for_currency_euro" />-->
+<!--        </case>-->
+        <!-- 3. Belgium (nl_BE, fr_BE, de_BE) -->
+<!--        <case-->
+<!--            latin:countryCode="BE"-->
+<!--        >-->
+<!--            <key-style-->
+<!--                latin:styleName="currencyKeyStyle"-->
+<!--                latin:keyLabel="€"-->
+<!--                latin:popupCharacters="@string/alternates_for_currency_euro" />-->
+<!--        </case>-->
+        <!-- 4. Cyprus (el_CY, tr_CY) -->
+        <case
+            latin:countryCode="CY"
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 5. Estonia (et_EE) -->
+<!--        <case-->
+<!--            latin:languageCode="et"-->
+<!--            latin:countryCode=""-->
+<!--        >-->
+<!--            <key-style-->
+<!--                latin:styleName="currencyKeyStyle"-->
+<!--                latin:keyLabel="€"-->
+<!--                latin:popupCharacters="@string/alternates_for_currency_euro" />-->
+<!--        </case>-->
+        <!-- 6. Finland (fi_FI, sv_FI) -->
+        <case
+            latin:languageCode="fi"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 7. France (fr_FR) -->
+        <case
+            latin:languageCode="fr"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 8. Germany (de_DE) -->
+        <case
+            latin:languageCode="de"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 9. Greece (el_GR) -->
+        <case
+            latin:languageCode="el"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 10. Ireland (ga_IE, en_IE) -->
+        <case
+            latin:countryCode="IE"
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 11. Italy (it_IT) -->
+        <case
+            latin:languageCode="it"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 12. Kosovo -->
+<!--        <case-->
+<!--            latin:countryCode="XK"-->
+<!--        >-->
+<!--            <key-style-->
+<!--                latin:styleName="currencyKeyStyle"-->
+<!--                latin:keyLabel="€"-->
+<!--                latin:popupCharacters="@string/alternates_for_currency_euro" />-->
+<!--        </case>-->
+        <!-- 13. Luxembourg (lb_LU, fr_LU, de_LU) -->
+        <case
+            latin:countryCode="LU"
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 14. Malta (mt_MT, en_MT) -->
+        <case
+            latin:countryCode="MT"
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 15. Monaco (fr_MO) -->
+<!--        <case-->
+<!--            latin:countryCode="MO"-->
+<!--        >-->
+<!--            <key-style-->
+<!--                latin:styleName="currencyKeyStyle"-->
+<!--                latin:keyLabel="€"-->
+<!--                latin:popupCharacters="@string/alternates_for_currency_euro" />-->
+<!--        </case>-->
+        <!-- 16. Montenegro (sla_ME) -->
+        <case
+            latin:countryCode="ME"
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 17. Netherlands (nl_NL) -->
+        <case
+            latin:languageCode="nl"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 18. Portugal (pt_PT) -->
+        <case
+            latin:languageCode="pt"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 19. San Marino (it_SM) -->
+<!--        <case-->
+<!--            latin:countryCode="SM"-->
+<!--        >-->
+<!--            <key-style-->
+<!--                latin:styleName="currencyKeyStyle"-->
+<!--                latin:keyLabel="€"-->
+<!--                latin:popupCharacters="@string/alternates_for_currency_euro" />-->
+<!--        </case>-->
+        <!-- 20. Slovakia (sk_SK) -->
+        <case
+            latin:languageCode="sk"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 21. Slovenia (sl_SI) -->
+        <case
+            latin:languageCode="sl"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 22. Spain (es_ES, ca_ES) -->
+        <case
+            latin:languageCode="es"
+            latin:countryCode=""
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="€"
+                latin:popupCharacters="@string/alternates_for_currency_euro" />
+        </case>
+        <!-- 23. Vatican City (it_VA) -->
+<!--        <case-->
+<!--            latin:countryCode="VA"-->
+<!--        >-->
+<!--            <key-style-->
+<!--                latin:styleName="currencyKeyStyle"-->
+<!--                latin:keyLabel="€"-->
+<!--                latin:popupCharacters="@string/alternates_for_currency_euro" />-->
+<!--        </case>-->
+        <!-- United Kingdom -->
+        <case
+            latin:countryCode="GB"
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="£"
+                latin:popupCharacters="@string/alternates_for_currency_pound" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="$"
+                latin:popupCharacters="@string/alternates_for_currency_dollar" />
+        </default>
+    </switch>
+</merge>
