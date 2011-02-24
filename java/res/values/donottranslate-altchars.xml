@@ -44,6 +44,9 @@
     <string name="alternates_for_scandinavia_row2_11"></string>
     <string name="alternates_for_cyrillic_e"></string>
     <string name="alternates_for_cyrillic_soft_sign"></string>
+    <string name="alternates_for_currency_dollar">¢,£,€,¥,₱</string>
+    <string name="alternates_for_currency_euro">¢,£,$,¥,₱</string>
+    <string name="alternates_for_currency_pound">¢,$,€,¥,₱</string>
     <string name="alternates_for_mic">"\@drawable/sym_keyboard_settings|\@integer/key_settings,\@drawable/sym_keyboard_mic|\@integer/key_voice"</string>
     <string name="alternates_for_smiley">":-)|:-) ,:-(|:-( ,;-)|;-) ,:-P|:-P ,=-O|=-O ,:-*|:-* ,:O|:O ,B-)|B-) ,:-$|:-$ ,:-!|:-! ,:-[|:-[ ,O:-)|O:-) ,:-\\\\\\\\|:-\\\\\\\\ ,:\'(|:\'( ,:-D|:-D "</string>
     <string name="alternates_for_settings_slash">"\@drawable/sym_keyboard_settings|\@integer/key_settings,/"</string>
