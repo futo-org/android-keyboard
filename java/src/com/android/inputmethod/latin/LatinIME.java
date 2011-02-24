@@ -419,7 +419,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void initSuggest() {
-        updateAutoTextEnabled();
         String locale = mSubtypeSwitcher.getInputLocaleStr();
 
         Locale savedLocale = mSubtypeSwitcher.changeSystemLocale(new Locale(locale));
@@ -433,6 +432,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         int mainDicResId = Utils.getMainDictionaryResourceId(res);
         mSuggest = new Suggest(this, mainDicResId);
         loadAndSetAutoCorrectionThreshold(prefs);
+        updateAutoTextEnabled();
 
         mUserDictionary = new UserDictionary(this, locale);
         mSuggest.setUserDictionary(mUserDictionary);
