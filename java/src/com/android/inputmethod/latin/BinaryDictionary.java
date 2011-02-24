@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.ProximityInfo;
+
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.util.Log;
@@ -34,10 +37,10 @@ public class BinaryDictionary extends Dictionary {
      * It is necessary to keep it at this value because some languages e.g. German have
      * really long words.
      */
-    protected static final int MAX_WORD_LENGTH = 48;
+    public static final int MAX_WORD_LENGTH = 48;
 
     private static final String TAG = "BinaryDictionary";
-    private static final int MAX_ALTERNATIVES = 16;
+    private static final int MAX_PROXIMITY_CHARS_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
     private static final int MAX_WORDS = 18;
     private static final int MAX_BIGRAMS = 60;
 
@@ -47,19 +50,13 @@ public class BinaryDictionary extends Dictionary {
     private int mDicTypeId;
     private int mNativeDict;
     private long mDictLength;
-    private final int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_ALTERNATIVES];
+    private final int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_PROXIMITY_CHARS_SIZE];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
     private final int[] mFrequencies = new int[MAX_WORDS];
     private final int[] mFrequencies_bigrams = new int[MAX_BIGRAMS];
 
-    static {
-        try {
-            System.loadLibrary("jni_latinime");
-        } catch (UnsatisfiedLinkError ule) {
-            Log.e(TAG, "Could not load native library jni_latinime");
-        }
-    }
+    private final KeyboardSwitcher mKeyboardSwitcher = KeyboardSwitcher.getInstance();
 
     private BinaryDictionary() {
     }
@@ -117,8 +114,9 @@ public class BinaryDictionary extends Dictionary {
             int maxWords, int maxAlternatives);
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
-    private native int getSuggestionsNative(int dict, int[] inputCodes, int codesSize,
-            char[] outputChars, int[] frequencies);
+    private native int getSuggestionsNative(int dict, int proximityInfo, int[] xCoordinates,
+            int[] yCoordinates, int[] inputCodes, int codesSize, char[] outputChars,
+            int[] frequencies);
     private native int getBigramsNative(int dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] frequencies,
             int maxWordLength, int maxBigrams, int maxAlternatives);
@@ -126,7 +124,7 @@ public class BinaryDictionary extends Dictionary {
     private final void loadDictionary(String path, long startOffset, long length) {
         mNativeDict = openNative(path, startOffset, length,
                     TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER,
-                    MAX_WORD_LENGTH, MAX_WORDS, MAX_ALTERNATIVES);
+                    MAX_WORD_LENGTH, MAX_WORDS, MAX_PROXIMITY_CHARS_SIZE);
         mDictLength = length;
     }
 
@@ -143,11 +141,11 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(mInputCodes, -1);
         int[] alternatives = codes.getCodesAt(0);
         System.arraycopy(alternatives, 0, mInputCodes, 0,
-                Math.min(alternatives.length, MAX_ALTERNATIVES));
+                Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
 
         int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
                 mOutputChars_bigrams, mFrequencies_bigrams, MAX_WORD_LENGTH, MAX_BIGRAMS,
-                MAX_ALTERNATIVES);
+                MAX_PROXIMITY_CHARS_SIZE);
 
         for (int j = 0; j < count; ++j) {
             if (mFrequencies_bigrams[j] < 1) break;
@@ -174,14 +172,16 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
         for (int i = 0; i < codesSize; i++) {
             int[] alternatives = codes.getCodesAt(i);
-            System.arraycopy(alternatives, 0, mInputCodes, i * MAX_ALTERNATIVES,
-                    Math.min(alternatives.length, MAX_ALTERNATIVES));
+            System.arraycopy(alternatives, 0, mInputCodes, i * MAX_PROXIMITY_CHARS_SIZE,
+                    Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
         }
         Arrays.fill(mOutputChars, (char) 0);
         Arrays.fill(mFrequencies, 0);
 
-        int count = getSuggestionsNative(mNativeDict, mInputCodes, codesSize, mOutputChars,
-                mFrequencies);
+        int count = getSuggestionsNative(
+                mNativeDict, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo(),
+                codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
+                mOutputChars, mFrequencies);
 
         for (int j = 0; j < count; ++j) {
             if (mFrequencies[j] < 1) break;

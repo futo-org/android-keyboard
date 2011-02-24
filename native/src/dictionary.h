@@ -19,6 +19,7 @@
 
 #include "bigram_dictionary.h"
 #include "defines.h"
+#include "proximity_info.h"
 #include "unigram_dictionary.h"
 
 namespace latinime {
@@ -27,8 +28,10 @@ class Dictionary {
 public:
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
-    int getSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies) {
-        return mUnigramDictionary->getSuggestions(codes, codesSize, outWords, frequencies);
+    int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
+            int *codes, int codesSize, unsigned short *outWords, int *frequencies) {
+        return mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
+                codesSize, outWords, frequencies);
     }
 
     // TODO: Call mBigramDictionary instead of mUnigramDictionary
@@ -38,6 +41,7 @@ public:
         return mBigramDictionary->getBigrams(word, length, codes, codesSize, outWords, frequencies,
                 maxWordLength, maxBigrams, maxAlternatives);
     }
+
     bool isValidWord(unsigned short *word, int length);
     int isValidWordRec(int pos, unsigned short *word, int offset, int length);
     void *getDict() { return (void *)mDict; }

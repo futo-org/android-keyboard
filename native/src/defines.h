@@ -28,6 +28,7 @@
 #define DEBUG_SHOW_FOUND_WORD DEBUG_DICT_FULL
 #define DEBUG_NODE DEBUG_DICT_FULL
 #define DEBUG_TRACE DEBUG_DICT_FULL
+#define DEBUG_PROXIMITY_INFO true
 
 // Profiler
 #include <time.h>
@@ -83,6 +84,7 @@ static void prof_out(void) {
 #define DEBUG_SHOW_FOUND_WORD false
 #define DEBUG_NODE false
 #define DEBUG_TRACE false
+#define DEBUG_PROXIMITY_INFO false
 
 #define PROF_BUF_SIZE 0
 #define PROF_RESET

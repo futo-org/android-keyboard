@@ -41,12 +41,18 @@ UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterM
 
 UnigramDictionary::~UnigramDictionary() {}
 
-int UnigramDictionary::getSuggestions(int *codes, int codesSize, unsigned short *outWords,
-        int *frequencies) {
+int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates,
+        int *ycoordinates, int *codes, int codesSize, unsigned short *outWords, int *frequencies) {
     PROF_OPEN;
     PROF_START(0);
     initSuggestions(codes, codesSize, outWords, frequencies);
     if (DEBUG_DICT) assert(codesSize == mInputLength);
+
+    if (DEBUG_PROXIMITY_INFO) {
+        for (int i = 0; i < codesSize; ++i) {
+            LOGI("Input[%d] x = %d, y = %d", i, xcoordinates[i], ycoordinates[i]);
+        }
+    }
 
     const int MAX_DEPTH = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
     PROF_END(0);
@@ -406,7 +412,7 @@ inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsSameAsInputLength(
 
 inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
         const int inputIndex, const int skipPos, const int depth) {
-    const unsigned short userTypedChar = (mInputCodes + (inputIndex * MAX_PROXIMITY_CHARS))[0];
+    const unsigned short userTypedChar = getInputCharsAt(inputIndex)[0];
     // Skip the ' or other letter and continue deeper
     return (c == QUOTE && userTypedChar != QUOTE) || skipPos == depth;
 }
@@ -517,7 +523,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         *newDiffs = diffs;
         *newInputIndex = inputIndex;
     } else {
-        int *currentChars = mInputCodes + (inputIndex * MAX_PROXIMITY_CHARS);
+        int *currentChars = getInputCharsAt(inputIndex);
 
         if (transposedPos >= 0) {
             if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;
@@ -620,7 +626,7 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
         const int startInputIndex, const int depth, unsigned short *word, int *newChildPosition,
         int *newCount, bool *newTerminal, int *newFreq, int *siblingPos) {
     const int inputIndex = startInputIndex + depth;
-    const int *currentChars = mInputCodes + (inputIndex * MAX_PROXIMITY_CHARS);
+    const int *currentChars = getInputCharsAt(inputIndex);
     unsigned short c;
     *siblingPos = Dictionary::setDictionaryValues(DICT, IS_LATEST_DICT_VERSION, firstChildPos, &c,
             newChildPosition, newTerminal, newFreq);
