@@ -22,6 +22,14 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <switch>
+        <case
+            latin:passwordInput="true"
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="$"
+                latin:popupCharacters="@string/alternates_for_currency_dollar" />
+        </case>
         <!-- Countries using Euro currency, 23 countries as for January 2011. -->
         <!-- 1. Andorra (ca_AD, ca_ES) -->
         <case
