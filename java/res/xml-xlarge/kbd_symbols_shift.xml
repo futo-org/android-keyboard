@@ -155,8 +155,16 @@
     >
         <Spacer
             latin:horizontalGap="24.446%p" />
-        <Key
-            latin:keyStyle="settingsKeyStyle" />
+        <switch>
+            <case latin:hasSettingsKey="true">
+                <Key
+                    latin:keyStyle="settingsKeyStyle" />
+            </case>
+            <default>
+                <Spacer
+                    latin:horizontalGap="8.042%p" />
+            </default>
+        </switch>
         <Key
             latin:keyStyle="spaceKeyStyle"
             latin:keyWidth="37.454%p" />

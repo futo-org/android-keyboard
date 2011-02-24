@@ -27,8 +27,16 @@
     >
         <Spacer
             latin:horizontalGap="8.362%p" />
-        <Key
-            latin:keyStyle="settingsKeyStyle" />
+        <switch>
+            <case latin:hasSettingsKey="true">
+                <Key
+                    latin:keyStyle="settingsKeyStyle" />
+            </case>
+            <default>
+                <Spacer
+                    latin:horizontalGap="8.042%p" />
+            </default>
+        </switch>
         <switch>
             <case
                 latin:languageCode="ru"

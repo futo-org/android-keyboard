@@ -187,9 +187,17 @@
                      left edge key. -->
                 <Spacer
                     latin:horizontalGap="8.362%p" />
-                <Key
-                    latin:keyStyle="settingsKeyStyle"
-                    latin:keyWidth="8.042%p" />
+                <switch>
+                    <case latin:hasSettingsKey="true">
+                        <Key
+                            latin:keyStyle="settingsKeyStyle"
+                            latin:keyWidth="8.042%p" />
+                    </case>
+                    <default>
+                        <Spacer
+                            latin:horizontalGap="8.042%p" />
+                    </default>
+                </switch>
                 <Key
                     latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
                     latin:keyWidth="24.127%p" />

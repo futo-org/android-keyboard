@@ -100,7 +100,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      * shown for a given text field. For instance, this is specified by the
      * search dialog when the dialog is already showing a voice search button.
      */
-    public static final String IME_OPTION_NO_MICROPHONE = "noMicrophone";
+    public static final String IME_OPTION_NO_MICROPHONE = "noMicrophoneKey";
+
+    /**
+     * The private IME option used to indicate that no settings key should be
+     * shown for a given text field.
+     */
+    public static final String IME_OPTION_NO_SETTINGS_KEY = "noSettingsKey";
 
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
