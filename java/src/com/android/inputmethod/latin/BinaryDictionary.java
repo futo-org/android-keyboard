@@ -109,6 +109,9 @@ public class BinaryDictionary extends Dictionary {
         return sInstance;
     }
 
+    static {
+        Utils.loadNativeLibrary();
+    }
     private native int openNative(String sourceDir, long dictOffset, long dictSize,
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength,
             int maxWords, int maxAlternatives);

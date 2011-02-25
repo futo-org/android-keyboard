@@ -553,4 +553,12 @@ public class Utils {
     public static int getMainDictionaryResourceId(Resources res) {
         return res.getIdentifier("main", "raw", LatinIME.class.getPackage().getName());
     }
+
+    public static void loadNativeLibrary() {
+        try {
+            System.loadLibrary("jni_latinime");
+        } catch (UnsatisfiedLinkError ule) {
+            Log.e(TAG, "Could not load native library jni_latinime");
+        }
+    }
 }
