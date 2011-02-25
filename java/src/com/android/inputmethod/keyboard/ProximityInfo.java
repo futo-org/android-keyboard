@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.latin.Utils;
+
 public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
 
@@ -34,6 +36,9 @@ public class ProximityInfo {
     }
 
     private int mNativeProximityInfo;
+    static {
+        Utils.loadNativeLibrary();
+    }
     private native int setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
             int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray);
     private native void releaseProximityInfoNative(int nativeProximityInfo);

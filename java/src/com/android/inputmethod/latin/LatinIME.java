@@ -211,14 +211,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
 
-    static {
-        try {
-            System.loadLibrary("jni_latinime");
-        } catch (UnsatisfiedLinkError ule) {
-            Log.e(TAG, "Could not load native library jni_latinime");
-        }
-    }
-
     public abstract static class WordAlternatives {
         protected CharSequence mChosenWord;
 
