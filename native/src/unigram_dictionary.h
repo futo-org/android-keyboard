@@ -33,12 +33,22 @@ class UnigramDictionary {
 public:
     UnigramDictionary(const unsigned char *dict, int typedLetterMultipler, int fullWordMultiplier,
             int maxWordLength, int maxWords, int maxProximityChars, const bool isLatestDictVersion);
-    int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-            int *codes, int codesSize, unsigned short *outWords, int *frequencies);
+    int getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const int codesSize, const int flags,
+            unsigned short *outWords, int *frequencies);
     ~UnigramDictionary();
 
 private:
-    void initSuggestions(int *codes, int codesSize, unsigned short *outWords, int *frequencies);
+    void getWordSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const int codesSize,
+            unsigned short *outWords, int *frequencies);
+    bool isDigraph(const int* codes, const int i, const int codesSize) const;
+    void getWordWithDigraphSuggestionsRec(const ProximityInfo *proximityInfo,
+        const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
+        const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
+        int* codesDest, unsigned short* outWords, int* frequencies);
+    void initSuggestions(const int *codes, const int codesSize, unsigned short *outWords,
+            int *frequencies);
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
             const int transposedPos, int *nextLetters, const int nextLettersSize,
             const int maxDepth);
@@ -86,7 +96,7 @@ private:
             const int startInputIndex, const int depth, unsigned short *word,
             int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
     bool existsAdjacentProximityChars(const int inputIndex, const int inputLength);
-    inline int* getInputCharsAt(const int index) {
+    inline const int* getInputCharsAt(const int index) {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS);
     }
     const unsigned char *DICT;
@@ -97,10 +107,20 @@ private:
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
     const int ROOT_POS;
+    const unsigned int BYTES_IN_ONE_CHAR;
+
+    // Flags for special processing
+    // Those *must* match the flags in BinaryDictionary.Flags.ALL_FLAGS in BinaryDictionary.java
+    // or something very bad (like, the apocalypse) will happen.
+    // Please update both at the same time.
+    enum {
+        REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1
+    };
+    static const struct digraph_t { int first; int second; } GERMAN_UMLAUT_DIGRAPHS[];
 
     int *mFrequencies;
     unsigned short *mOutputChars;
-    int *mInputCodes;
+    const int *mInputCodes;
     int mInputLength;
     // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];

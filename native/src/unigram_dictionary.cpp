@@ -29,20 +29,136 @@
 
 namespace latinime {
 
+const UnigramDictionary::digraph_t UnigramDictionary::GERMAN_UMLAUT_DIGRAPHS[] =
+        { { 'a', 'e' },
+        { 'o', 'e' },
+        { 'u', 'e' } };
+
 UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterMultiplier,
         int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
         const bool isLatestDictVersion)
     : DICT(dict), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
     MAX_PROXIMITY_CHARS(maxProximityChars), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
-    ROOT_POS(isLatestDictVersion ? DICTIONARY_HEADER_SIZE : 0) {
+    ROOT_POS(isLatestDictVersion ? DICTIONARY_HEADER_SIZE : 0),
+    BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(*mInputCodes)) {
     if (DEBUG_DICT) LOGI("UnigramDictionary - constructor");
 }
 
 UnigramDictionary::~UnigramDictionary() {}
 
-int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates,
-        int *ycoordinates, int *codes, int codesSize, unsigned short *outWords, int *frequencies) {
+static inline unsigned int getCodesBufferSize(const int* codes, const int codesSize,
+        const int MAX_PROXIMITY_CHARS) {
+    return sizeof(*codes) * MAX_PROXIMITY_CHARS * codesSize;
+}
+
+bool UnigramDictionary::isDigraph(const int* codes, const int i, const int codesSize) const {
+
+    // There can't be a digraph if we don't have at least 2 characters to examine
+    if (i + 2 > codesSize) return false;
+
+    // Search for the first char of some digraph
+    int lastDigraphIndex = -1;
+    const int thisChar = codes[i * MAX_PROXIMITY_CHARS];
+    for (lastDigraphIndex = sizeof(GERMAN_UMLAUT_DIGRAPHS) / sizeof(GERMAN_UMLAUT_DIGRAPHS[0]) - 1;
+            lastDigraphIndex >= 0; --lastDigraphIndex) {
+        if (thisChar == GERMAN_UMLAUT_DIGRAPHS[lastDigraphIndex].first) break;
+    }
+    // No match: return early
+    if (lastDigraphIndex < 0) return false;
+
+    // It's an interesting digraph if the second char matches too.
+    return GERMAN_UMLAUT_DIGRAPHS[lastDigraphIndex].second == codes[(i + 1) * MAX_PROXIMITY_CHARS];
+}
+
+// Mostly the same arguments as the non-recursive version, except:
+// codes is the original value. It points to the start of the work buffer, and gets passed as is.
+// codesSize is the size of the user input (thus, it is the size of codesSrc).
+// codesDest is the current point in the work buffer.
+// codesSrc is the current point in the user-input, original, content-unmodified buffer.
+// codesRemain is the remaining size in codesSrc.
+void UnigramDictionary::getWordWithDigraphSuggestionsRec(const ProximityInfo *proximityInfo,
+        const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
+        const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
+        int* codesDest, unsigned short* outWords, int* frequencies) {
+
+    for (int i = 0; i < codesRemain; ++i) {
+        if (isDigraph(codesSrc, i, codesRemain)) {
+            // Found a digraph. We will try both spellings. eg. the word is "pruefen"
+
+            // Copy the word up to the first char of the digraph, then continue processing
+            // on the remaining part of the word, skipping the second char of the digraph.
+            // In our example, copy "pru" and continue running on "fen"
+            memcpy(codesDest, codesSrc, i * BYTES_IN_ONE_CHAR);
+            getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
+                    codesBufferSize, flags, codesSrc + (i + 1) * MAX_PROXIMITY_CHARS,
+                    codesRemain - i - 1, codesDest + i * MAX_PROXIMITY_CHARS,
+                    outWords, frequencies);
+
+            // Copy the second char of the digraph in place, then continue processing on
+            // the remaining part of the word.
+            // In our example, after "pru" in the buffer copy the "e", and continue running on "fen"
+            memcpy(codesDest + i * MAX_PROXIMITY_CHARS, codesSrc + i * MAX_PROXIMITY_CHARS,
+                    BYTES_IN_ONE_CHAR);
+            getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
+                    codesBufferSize, flags, codesSrc + i * MAX_PROXIMITY_CHARS, codesRemain - i,
+                    codesDest + i * MAX_PROXIMITY_CHARS, outWords, frequencies);
+            return;
+        }
+    }
+
+    // If we come here, we hit the end of the word: let's check it against the dictionary.
+    // In our example, we'll come here once for "prufen" and then once for "pruefen".
+    // If the word contains several digraphs, we'll come it for the product of them.
+    // eg. if the word is "ueberpruefen" we'll test, in order, against
+    // "uberprufen", "uberpruefen", "ueberprufen", "ueberpruefen".
+    const unsigned int remainingBytes = BYTES_IN_ONE_CHAR * codesRemain;
+    if (0 != remainingBytes)
+        memcpy(codesDest, codesSrc, remainingBytes);
+
+    getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
+            (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, outWords, frequencies);
+}
+
+int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
+        const int *ycoordinates, const int *codes, const int codesSize, const int flags,
+        unsigned short *outWords, int *frequencies) {
+
+    if (REQUIRES_GERMAN_UMLAUT_PROCESSING & flags)
+    { // Incrementally tune the word and try all possibilities
+        int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
+        getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
+                codesSize, flags, codes, codesSize, codesBuffer, outWords, frequencies);
+    } else { // Normal processing
+        getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
+                outWords, frequencies);
+    }
+
+    PROF_START(6);
+    // Get the word count
+    int suggestedWordsCount = 0;
+    while (suggestedWordsCount < MAX_WORDS && mFrequencies[suggestedWordsCount] > 0) {
+        suggestedWordsCount++;
+    }
+
+    if (DEBUG_DICT) {
+        LOGI("Returning %d words", suggestedWordsCount);
+        LOGI("Next letters: ");
+        for (int k = 0; k < NEXT_LETTERS_SIZE; k++) {
+            if (mNextLettersFrequency[k] > 0) {
+                LOGI("%c = %d,", k, mNextLettersFrequency[k]);
+            }
+        }
+    }
+    PROF_END(6);
+    PROF_CLOSE;
+    return suggestedWordsCount;
+}
+
+void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
+        const int *xcoordinates, const int *ycoordinates, const int *codes, const int codesSize,
+        unsigned short *outWords, int *frequencies) {
+
     PROF_OPEN;
     PROF_START(0);
     initSuggestions(codes, codesSize, outWords, frequencies);
@@ -103,30 +219,10 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, int *xcoordi
         }
     }
     PROF_END(5);
-
-    PROF_START(6);
-    // Get the word count
-    int suggestedWordsCount = 0;
-    while (suggestedWordsCount < MAX_WORDS && mFrequencies[suggestedWordsCount] > 0) {
-        suggestedWordsCount++;
-    }
-
-    if (DEBUG_DICT) {
-        LOGI("Returning %d words", suggestedWordsCount);
-        LOGI("Next letters: ");
-        for (int k = 0; k < NEXT_LETTERS_SIZE; k++) {
-            if (mNextLettersFrequency[k] > 0) {
-                LOGI("%c = %d,", k, mNextLettersFrequency[k]);
-            }
-        }
-    }
-    PROF_END(6);
-    PROF_CLOSE;
-    return suggestedWordsCount;
 }
 
-void UnigramDictionary::initSuggestions(int *codes, int codesSize, unsigned short *outWords,
-        int *frequencies) {
+void UnigramDictionary::initSuggestions(const int *codes, const int codesSize,
+        unsigned short *outWords, int *frequencies) {
     if (DEBUG_DICT) LOGI("initSuggest");
     mFrequencies = frequencies;
     mOutputChars = outWords;
@@ -204,7 +300,7 @@ bool UnigramDictionary::sameAsTyped(unsigned short *word, int length) {
     if (length != mInputLength) {
         return false;
     }
-    int *inputCodes = mInputCodes;
+    const int *inputCodes = mInputCodes;
     while (length--) {
         if ((unsigned int) *inputCodes != (unsigned int) *word) {
             return false;
@@ -423,7 +519,7 @@ inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex
     const int currentChar = *getInputCharsAt(inputIndex);
     const int leftIndex = inputIndex - 1;
     if (leftIndex >= 0) {
-        int *leftChars = getInputCharsAt(leftIndex);
+        const int *leftChars = getInputCharsAt(leftIndex);
         int i = 0;
         while (leftChars[i] > 0 && i < MAX_PROXIMITY_CHARS) {
             if (leftChars[i++] == currentChar) return true;
@@ -431,7 +527,7 @@ inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex
     }
     const int rightIndex = inputIndex + 1;
     if (rightIndex < inputLength) {
-        int *rightChars = getInputCharsAt(rightIndex);
+        const int *rightChars = getInputCharsAt(rightIndex);
         int i = 0;
         while (rightChars[i] > 0 && i < MAX_PROXIMITY_CHARS) {
             if (rightChars[i++] == currentChar) return true;
@@ -523,7 +619,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         *newDiffs = diffs;
         *newInputIndex = inputIndex;
     } else {
-        int *currentChars = getInputCharsAt(inputIndex);
+        const int *currentChars = getInputCharsAt(inputIndex);
 
         if (transposedPos >= 0) {
             if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;

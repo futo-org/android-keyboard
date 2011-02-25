@@ -55,4 +55,15 @@ static inline void LOGI_S16_PLUS(unsigned short* string, const unsigned int leng
     // usleep(10);
 }
 
+static inline void printDebug(const char* tag, int* codes, int codesSize, int MAX_PROXIMITY_CHARS) {
+    unsigned char *buf = (unsigned char*)malloc((1 + codesSize) * sizeof(*buf));
+
+    buf[codesSize] = 0;
+    while (--codesSize >= 0)
+        buf[codesSize] = (unsigned char)codes[codesSize * MAX_PROXIMITY_CHARS];
+    LOGI("%s, WORD = %s", tag, buf);
+
+    free(buf);
+}
+
 #endif // LATINIME_DEBUG_H

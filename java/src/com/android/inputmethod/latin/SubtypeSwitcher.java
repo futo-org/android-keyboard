@@ -74,10 +74,10 @@ public class SubtypeSwitcher {
     private InputMethodInfo mShortcutInputMethodInfo;
     private InputMethodSubtype mShortcutSubtype;
     private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
+    private InputMethodSubtype mCurrentSubtype;
     private Locale mSystemLocale;
     private Locale mInputLocale;
     private String mInputLocaleStr;
-    private String mMode;
     private VoiceInput mVoiceInput;
     /*-----------------------------------------------------------*/
 
@@ -110,8 +110,7 @@ public class SubtypeSwitcher {
         mSystemLocale = null;
         mInputLocale = null;
         mInputLocaleStr = null;
-        // Mode is initialized to KEYBOARD_MODE, in case that LatinIME can't obtain currentSubtype
-        mMode = KEYBOARD_MODE;
+        mCurrentSubtype = null;
         mAllEnabledSubtypesOfCurrentInputMethod = null;
         // TODO: Voice input should be created here
         mVoiceInput = null;
@@ -145,6 +144,7 @@ public class SubtypeSwitcher {
 
     // Reload enabledSubtypes from the framework.
     private void updateEnabledSubtypes() {
+        final String currentMode = getCurrentSubtypeMode();
         boolean foundCurrentSubtypeBecameDisabled = true;
         mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
                 null, true);
@@ -157,7 +157,7 @@ public class SubtypeSwitcher {
             if (mLocaleSplitter.hasNext()) {
                 mEnabledLanguagesOfCurrentInputMethod.add(mLocaleSplitter.next());
             }
-            if (locale.equals(mInputLocaleStr) && mode.equals(mMode)) {
+            if (locale.equals(mInputLocaleStr) && mode.equals(currentMode)) {
                 foundCurrentSubtypeBecameDisabled = false;
             }
             if (KEYBOARD_MODE.equals(ims.getMode())) {
@@ -168,7 +168,7 @@ public class SubtypeSwitcher {
                 && mIsSystemLanguageSameAsInputLanguage);
         if (foundCurrentSubtypeBecameDisabled) {
             if (DBG) {
-                Log.w(TAG, "Current subtype: " + mInputLocaleStr + ", " + mMode);
+                Log.w(TAG, "Current subtype: " + mInputLocaleStr + ", " + currentMode);
                 Log.w(TAG, "Last subtype was disabled. Update to the current one.");
             }
             updateSubtype(mImm.getCurrentInputMethodSubtype());
@@ -209,9 +209,10 @@ public class SubtypeSwitcher {
     public void updateSubtype(InputMethodSubtype newSubtype) {
         final String newLocale;
         final String newMode;
+        final String oldMode = getCurrentSubtypeMode();
         if (newSubtype == null) {
             // Normally, newSubtype shouldn't be null. But just in case newSubtype was null,
-            // fallback to the default locale and mode.
+            // fallback to the default locale.
             Log.w(TAG, "Couldn't get the current subtype.");
             newLocale = "en_US";
             newMode = KEYBOARD_MODE;
@@ -220,8 +221,8 @@ public class SubtypeSwitcher {
             newMode = newSubtype.getMode();
         }
         if (DBG) {
-            Log.w(TAG, "Update subtype to:" + newLocale + "," + newMode
-                    + ", from: " + mInputLocaleStr + ", " + mMode);
+            Log.w(TAG, "Update subtype to:" + newLocale + "," + newSubtype.getMode()
+                    + ", from: " + mInputLocaleStr + ", " + oldMode);
         }
         boolean languageChanged = false;
         if (!newLocale.equals(mInputLocaleStr)) {
@@ -231,13 +232,12 @@ public class SubtypeSwitcher {
             updateInputLocale(newLocale);
         }
         boolean modeChanged = false;
-        String oldMode = mMode;
-        if (!newMode.equals(mMode)) {
-            if (mMode != null) {
+        if (!newMode.equals(oldMode)) {
+            if (oldMode != null) {
                 modeChanged = true;
             }
-            mMode = newMode;
         }
+        mCurrentSubtype = newSubtype;
 
         // If the old mode is voice input, we need to reset or cancel its status.
         // We cancel its status when we change mode, while we reset otherwise.
@@ -262,7 +262,7 @@ public class SubtypeSwitcher {
                 triggerVoiceIME();
             }
         } else {
-            Log.w(TAG, "Unknown subtype mode: " + mMode);
+            Log.w(TAG, "Unknown subtype mode: " + newMode);
             if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
                 // We need to reset the voice input to release the resources and to reset its status
                 // as it is not the current input mode.
@@ -483,7 +483,7 @@ public class SubtypeSwitcher {
     }
 
     public boolean isKeyboardMode() {
-        return KEYBOARD_MODE.equals(mMode);
+        return KEYBOARD_MODE.equals(getCurrentSubtypeMode());
     }
 
 
@@ -506,7 +506,7 @@ public class SubtypeSwitcher {
     }
 
     public boolean isVoiceMode() {
-        return VOICE_MODE.equals(mMode);
+        return null == mCurrentSubtype ? false : VOICE_MODE.equals(getCurrentSubtypeMode());
     }
 
     private void triggerVoiceIME() {
@@ -571,6 +571,30 @@ public class SubtypeSwitcher {
             return "";
         }
     }
+
+    /////////////////////////////
+    // Other utility functions //
+    /////////////////////////////
+
+    public String getCurrentSubtypeExtraValue() {
+        // If null, return what an empty ExtraValue would return : the empty string.
+        return null != mCurrentSubtype ? mCurrentSubtype.getExtraValue() : "";
+    }
+
+    public boolean currentSubtypeContainsExtraValueKey(String key) {
+        // If null, return what an empty ExtraValue would return : false.
+        return null != mCurrentSubtype ? mCurrentSubtype.containsExtraValueKey(key) : false;
+    }
+
+    public String getCurrentSubtypeExtraValueOf(String key) {
+        // If null, return what an empty ExtraValue would return : null.
+        return null != mCurrentSubtype ? mCurrentSubtype.getExtraValueOf(key) : null;
+    }
+
+    public String getCurrentSubtypeMode() {
+        return null != mCurrentSubtype ? mCurrentSubtype.getMode() : KEYBOARD_MODE;
+    }
+
 
     // A list of locales which are supported by default for voice input, unless we get a
     // different list from Gservices.

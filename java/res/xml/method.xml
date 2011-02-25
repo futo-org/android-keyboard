@@ -65,6 +65,7 @@
             android:label="@string/subtype_mode_de_keyboard"
             android:imeSubtypeLocale="de"
             android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="requiresGermanUmlautProcessing"
     />
     <subtype android:icon="@drawable/ic_subtype_mic"
             android:label="@string/subtype_mode_de_voice"

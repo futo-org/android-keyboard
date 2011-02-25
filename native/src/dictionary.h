@@ -29,9 +29,9 @@ public:
     Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxAlternatives);
     int getSuggestions(ProximityInfo *proximityInfo, int *xcoordinates, int *ycoordinates,
-            int *codes, int codesSize, unsigned short *outWords, int *frequencies) {
+            int *codes, int codesSize, int flags, unsigned short *outWords, int *frequencies) {
         return mUnigramDictionary->getSuggestions(proximityInfo, xcoordinates, ycoordinates, codes,
-                codesSize, outWords, frequencies);
+                codesSize, flags, outWords, frequencies);
     }
 
     // TODO: Call mBigramDictionary instead of mUnigramDictionary

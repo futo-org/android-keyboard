@@ -58,6 +58,25 @@ public class BinaryDictionary extends Dictionary {
     private final int[] mFrequencies_bigrams = new int[MAX_BIGRAMS];
 
     private final KeyboardSwitcher mKeyboardSwitcher = KeyboardSwitcher.getInstance();
+    private final SubtypeSwitcher mSubtypeSwitcher = SubtypeSwitcher.getInstance();
+
+    private static class Flags {
+        private static class FlagEntry {
+            public final String mName;
+            public final int mValue;
+            public FlagEntry(String name, int value) {
+                mName = name;
+                mValue = value;
+            }
+        }
+        public static final FlagEntry[] ALL_FLAGS = {
+            // Here should reside all flags that trigger some special processing
+            // These *must* match the definition in UnigramDictionary enum in
+            // unigram_dictionary.h so please update both at the same time.
+            new FlagEntry("requiresGermanUmlautProcessing", 0x1)
+        };
+    }
+    private int mFlags = 0;
 
     private BinaryDictionary() {
     }
@@ -91,6 +110,7 @@ public class BinaryDictionary extends Dictionary {
                 return null;
             }
         }
+        sInstance.initFlags();
         return sInstance;
     }
 
@@ -109,16 +129,26 @@ public class BinaryDictionary extends Dictionary {
         return sInstance;
     }
 
+    private void initFlags() {
+        int flags = 0;
+        for (Flags.FlagEntry entry : Flags.ALL_FLAGS) {
+            if (mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(entry.mName))
+                flags |= entry.mValue;
+        }
+        mFlags = flags;
+    }
+
     static {
         Utils.loadNativeLibrary();
     }
+
     private native int openNative(String sourceDir, long dictOffset, long dictSize,
             int typedLetterMultiplier, int fullWordMultiplier, int maxWordLength,
             int maxWords, int maxAlternatives);
     private native void closeNative(int dict);
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int proximityInfo, int[] xCoordinates,
-            int[] yCoordinates, int[] inputCodes, int codesSize, char[] outputChars,
+            int[] yCoordinates, int[] inputCodes, int codesSize, int flags, char[] outputChars,
             int[] frequencies);
     private native int getBigramsNative(int dict, char[] prevWord, int prevWordLength,
             int[] inputCodes, int inputCodesLength, char[] outputChars, int[] frequencies,
@@ -207,7 +237,7 @@ public class BinaryDictionary extends Dictionary {
         return getSuggestionsNative(
                 mNativeDict, keyboard.getProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
-                outputChars, frequencies);
+                mFlags, outputChars, frequencies);
     }
 
     @Override
