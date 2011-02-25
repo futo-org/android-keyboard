@@ -694,6 +694,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (DEBUG) {
             Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart
                     + ", ose=" + oldSelEnd
+                    + ", lss=" + mLastSelectionStart
+                    + ", lse=" + mLastSelectionEnd
                     + ", nss=" + newSelStart
                     + ", nse=" + newSelEnd
                     + ", cs=" + candidatesStart
@@ -704,9 +706,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // If the current selection in the text view changes, we should
         // clear whatever candidate text we have.
-        if ((((mComposing.length() > 0 && mHasValidSuggestions)
-                || mVoiceConnector.isVoiceInputHighlighted()) && (newSelStart != candidatesEnd
-                        || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart)) {
+        final boolean selectionChanged = (newSelStart != candidatesEnd
+                || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart;
+        final boolean candidatesCleared = candidatesStart == -1 && candidatesEnd == -1;
+        if (((mComposing.length() > 0 && mHasValidSuggestions)
+                || mVoiceConnector.isVoiceInputHighlighted())
+                && (selectionChanged || candidatesCleared)) {
+            if (candidatesCleared) {
+                // If the composing span has been cleared, save the typed word in the history for
+                // recorrection before we reset the candidate strip.  Then, we'll be able to show
+                // suggestions for recorrection right away.
+                saveWordInHistory(mComposing);
+            }
             mComposing.setLength(0);
             mHasValidSuggestions = false;
             mHandler.postUpdateSuggestions();
