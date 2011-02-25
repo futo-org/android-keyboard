@@ -23,6 +23,7 @@ import android.util.Slog;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Locale;
 import java.util.StringTokenizer;
 
 public class SuggestPerformanceTests extends SuggestTestsBase {
@@ -37,7 +38,7 @@ public class SuggestPerformanceTests extends SuggestTestsBase {
         final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
         mHelper = new SuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
-                US_KEYBOARD_ID);
+                createKeyboardId(Locale.US));
         loadString(R.raw.testtext);
     }
 

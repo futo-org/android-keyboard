@@ -34,7 +34,7 @@ public class UserBigramSuggestTests extends SuggestTestsBase {
         final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
         mHelper = new UserBigramSuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
-                MAX_DATA, DELETE_DATA, US_KEYBOARD_ID);
+                MAX_DATA, DELETE_DATA, createKeyboardId(Locale.US));
     }
 
     /************************** Tests ************************/

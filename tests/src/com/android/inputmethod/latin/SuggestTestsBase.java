@@ -30,17 +30,19 @@ import java.io.InputStream;
 import java.util.Locale;
 
 public class SuggestTestsBase extends AndroidTestCase {
-    protected static final KeyboardId US_KEYBOARD_ID = new KeyboardId("en_US qwerty keyboard",
-            com.android.inputmethod.latin.R.xml.kbd_qwerty, KeyboardView.COLOR_SCHEME_WHITE,
-            Locale.US, Configuration.ORIENTATION_LANDSCAPE, KeyboardId.MODE_TEXT,
-            new EditorInfo(), false, false, false, false);
-
     protected File mTestPackageFile;
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
         mTestPackageFile = new File(getTestContext().getApplicationInfo().sourceDir);
+    }
+
+    protected static KeyboardId createKeyboardId(Locale locale) {
+        return new KeyboardId(locale.toString() + " keyboard",
+                com.android.inputmethod.latin.R.xml.kbd_qwerty, KeyboardView.COLOR_SCHEME_WHITE,
+                locale, Configuration.ORIENTATION_LANDSCAPE, KeyboardId.MODE_TEXT,
+                new EditorInfo(), false, false, false, false);
     }
 
     protected InputStream openTestRawResource(int resIdInTest) {

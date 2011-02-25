@@ -20,6 +20,8 @@ import com.android.inputmethod.latin.tests.R;
 
 import android.content.res.AssetFileDescriptor;
 
+import java.util.Locale;
+
 public class SuggestTests extends SuggestTestsBase {
     private SuggestHelper mHelper;
 
@@ -29,7 +31,7 @@ public class SuggestTests extends SuggestTestsBase {
         final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
         mHelper = new SuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
-                US_KEYBOARD_ID);
+                createKeyboardId(Locale.US));
         mHelper.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
     }
 
