@@ -28,4 +28,24 @@
     <integer name="key_delete">-5</integer>
     <integer name="key_settings">-100</integer>
     <integer name="key_voice">-102</integer>
+
+    <!-- Array used for mapping key codes to description strings. -->
+    <array name="key_descriptions">
+        <item>@integer/key_tab</item>
+        <item>@string/description_tab_key</item>
+        <item>@integer/key_return</item>
+        <item>@string/description_return_key</item>
+        <item>@integer/key_space</item>
+        <item>@string/description_space_key</item>
+        <item>@integer/key_shift</item>
+        <item>@string/description_shift_key</item>
+        <item>@integer/key_switch_alpha_symbol</item>
+        <item>@string/description_switch_alpha_symbol_key</item>
+        <item>@integer/key_delete</item>
+        <item>@string/description_delete_key</item>
+        <item>@integer/key_settings</item>
+        <item>@string/description_settings_key</item>
+        <item>@integer/key_voice</item>
+        <item>@string/description_voice_key</item>
+    </array>
 </resources>

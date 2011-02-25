@@ -145,6 +145,10 @@ public class LatinKeyboardView extends KeyboardView {
         // If device has distinct multi touch panel, there is no need to check sudden jump.
         if (hasDistinctMultitouch())
             return false;
+        // If accessibiliy is enabled, stop looking for sudden jumps because it interferes
+        // with touch exploration of the keyboard.
+        if (isAccessibilityEnabled())
+            return false;
         final int action = me.getAction();
         final int x = (int) me.getX();
         final int y = (int) me.getY();

@@ -158,6 +158,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mIsSettingsSuggestionStripOn;
     private boolean mApplicationSpecifiedCompletionOn;
 
+    private AccessibilityUtils mAccessibilityUtils;
+
     private final StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
     private CharSequence mBestWord;
@@ -371,6 +373,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         LatinImeLogger.init(this, prefs);
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
+        AccessibilityUtils.init(this, prefs);
 
         super.onCreate();
 
@@ -378,6 +381,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mInputMethodId = Utils.getInputMethodId(mImm, getPackageName());
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
+        mAccessibilityUtils = AccessibilityUtils.getInstance();
 
         final Resources res = getResources();
         mResources = res;
@@ -560,8 +564,11 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         updateCorrectionMode();
 
+        final boolean accessibilityEnabled = mAccessibilityUtils.isAccessibilityEnabled();
+
         inputView.setPreviewEnabled(mPopupOn);
         inputView.setProximityCorrectionEnabled(true);
+        inputView.setAccessibilityEnabled(accessibilityEnabled);
         // If we just entered a text field, maybe it has some old text that requires correction
         checkReCorrectionOnStart();
         inputView.setForeground(true);
@@ -1087,6 +1094,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         mLastKeyTime = when;
         KeyboardSwitcher switcher = mKeyboardSwitcher;
+        final boolean accessibilityEnabled = switcher.isAccessibilityEnabled();
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         switch (primaryCode) {
         case Keyboard.CODE_DELETE:
@@ -1096,12 +1104,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             break;
         case Keyboard.CODE_SHIFT:
             // Shift key is handled in onPress() when device has distinct multi-touch panel.
-            if (!distinctMultiTouch)
+            if (!distinctMultiTouch || accessibilityEnabled)
                 switcher.toggleShift();
             break;
         case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
-            if (!distinctMultiTouch)
+            if (!distinctMultiTouch || accessibilityEnabled)
                 switcher.changeKeyboardMode();
             break;
         case Keyboard.CODE_CANCEL:
@@ -1939,6 +1947,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else {
             switcher.onOtherKeyPressed();
         }
+        mAccessibilityUtils.onPress(primaryCode, switcher);
     }
 
     @Override
@@ -1952,6 +1961,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             switcher.onReleaseSymbol();
         }
+        mAccessibilityUtils.onRelease(primaryCode, switcher);
     }
 
 

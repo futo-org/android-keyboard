@@ -344,7 +344,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // state when shift key is pressed to go to normal mode.
             // On the other hand, on distinct multi touch panel device, turning off the shift locked
             // state with shift key pressing is handled by onReleaseShift().
-            if (!hasDistinctMultitouch() && !shifted && latinKeyboard.isShiftLocked()) {
+            if ((!hasDistinctMultitouch() || isAccessibilityEnabled())
+                    && !shifted && latinKeyboard.isShiftLocked()) {
                 latinKeyboard.setShiftLocked(false);
             }
             if (latinKeyboard.setShifted(shifted)) {
@@ -442,6 +443,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void onPressShift() {
         if (!isKeyboardAvailable())
             return;
+        // If accessibility is enabled, disable momentary shift lock.
+        if (isAccessibilityEnabled())
+            return;
         ShiftKeyState shiftKeyState = mShiftKeyState;
         if (DEBUG_STATE)
             Log.d(TAG, "onPressShift:"
@@ -477,6 +481,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void onReleaseShift() {
         if (!isKeyboardAvailable())
             return;
+        // If accessibility is enabled, disable momentary shift lock.
+        if (isAccessibilityEnabled())
+            return;
         ShiftKeyState shiftKeyState = mShiftKeyState;
         if (DEBUG_STATE)
             Log.d(TAG, "onReleaseShift:"
@@ -502,6 +509,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onPressSymbol() {
+        // If accessibility is enabled, disable momentary symbol lock.
+        if (isAccessibilityEnabled())
+            return;
         if (DEBUG_STATE)
             Log.d(TAG, "onPressSymbol:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
@@ -512,6 +522,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onReleaseSymbol() {
+        // If accessibility is enabled, disable momentary symbol lock.
+        if (isAccessibilityEnabled())
+            return;
         if (DEBUG_STATE)
             Log.d(TAG, "onReleaseSymbol:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
@@ -524,6 +537,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onOtherKeyPressed() {
+        // If accessibility is enabled, disable momentary mode locking.
+        if (isAccessibilityEnabled())
+            return;
         if (DEBUG_STATE)
             Log.d(TAG, "onOtherKeyPressed:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
@@ -580,6 +596,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         } else {
             mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         }
+    }
+
+    public boolean isAccessibilityEnabled() {
+        return mInputView != null && mInputView.isAccessibilityEnabled();
     }
 
     public boolean hasDistinctMultitouch() {
