@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.ProximityInfo;
 
@@ -93,8 +94,7 @@ public class BinaryDictionary extends Dictionary {
         return sInstance;
     }
 
-    // For unit test
-    /* package */ static BinaryDictionary initDictionary(File dictionary, long startOffset,
+    /* package for test */ static BinaryDictionary initDictionary(File dictionary, long startOffset,
             long length, int dicTypeId) {
         synchronized (sInstance) {
             sInstance.closeInternal();
@@ -166,25 +166,7 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public void getWords(final WordComposer codes, final WordCallback callback) {
-        if (mNativeDict == 0) return;
-
-        final int codesSize = codes.size();
-        // Won't deal with really long words.
-        if (codesSize > MAX_WORD_LENGTH - 1) return;
-
-        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
-        for (int i = 0; i < codesSize; i++) {
-            int[] alternatives = codes.getCodesAt(i);
-            System.arraycopy(alternatives, 0, mInputCodes, i * MAX_PROXIMITY_CHARS_SIZE,
-                    Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
-        }
-        Arrays.fill(mOutputChars, (char) 0);
-        Arrays.fill(mFrequencies, 0);
-
-        int count = getSuggestionsNative(
-                mNativeDict, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo(),
-                codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
-                mOutputChars, mFrequencies);
+        final int count = getSuggestions(codes, mKeyboardSwitcher.getLatinKeyboard());
 
         for (int j = 0; j < count; ++j) {
             if (mFrequencies[j] < 1) break;
@@ -198,6 +180,32 @@ public class BinaryDictionary extends Dictionary {
                         DataType.UNIGRAM);
             }
         }
+    }
+
+    /* package for test */ boolean isValidDictionary() {
+        return mNativeDict != 0;
+    }
+
+    /* package for test */ int getSuggestions(final WordComposer codes, final Keyboard keyboard) {
+        if (!isValidDictionary()) return -1;
+
+        final int codesSize = codes.size();
+        // Won't deal with really long words.
+        if (codesSize > MAX_WORD_LENGTH - 1) return -1;
+
+        Arrays.fill(mInputCodes, WordComposer.NOT_A_CODE);
+        for (int i = 0; i < codesSize; i++) {
+            int[] alternatives = codes.getCodesAt(i);
+            System.arraycopy(alternatives, 0, mInputCodes, i * MAX_PROXIMITY_CHARS_SIZE,
+                    Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
+        }
+        Arrays.fill(mOutputChars, (char) 0);
+        Arrays.fill(mFrequencies, 0);
+
+        return getSuggestionsNative(
+                mNativeDict, keyboard.getProximityInfo(),
+                codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
+                mOutputChars, mFrequencies);
     }
 
     @Override
