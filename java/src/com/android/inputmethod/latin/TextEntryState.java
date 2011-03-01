@@ -61,8 +61,8 @@ public class TextEntryState {
         SPACE_AFTER_ACCEPTED,
         SPACE_AFTER_PICKED,
         UNDO_COMMIT,
-        CORRECTING,
-        PICKED_CORRECTION,
+        RECORRECTING,
+        PICKED_RECORRECTION,
     }
 
     private static State sState = State.UNKNOWN;
@@ -158,21 +158,21 @@ public class TextEntryState {
         if (typedWord.equals(actualWord)) {
             acceptedTyped(typedWord);
         }
-        if (oldState == State.CORRECTING || oldState == State.PICKED_CORRECTION) {
-            sState = State.PICKED_CORRECTION;
+        if (oldState == State.RECORRECTING || oldState == State.PICKED_RECORRECTION) {
+            sState = State.PICKED_RECORRECTION;
         } else {
             sState = State.PICKED_SUGGESTION;
         }
         displayState();
     }
 
-    public static void selectedForCorrection() {
-        sState = State.CORRECTING;
+    public static void selectedForRecorrection() {
+        sState = State.RECORRECTING;
         displayState();
     }
 
-    public static void onAbortCorrection() {
-        if (isCorrecting()) {
+    public static void onAbortRecorrection() {
+        if (isRecorrecting()) {
             sState = State.START;
         }
         displayState();
@@ -199,7 +199,7 @@ public class TextEntryState {
                 }
                 break;
             case PICKED_SUGGESTION:
-            case PICKED_CORRECTION:
+            case PICKED_RECORRECTION:
                 if (isSpace) {
                     sState = State.SPACE_AFTER_PICKED;
                 } else if (isSeparator) {
@@ -227,7 +227,7 @@ public class TextEntryState {
                     sState = State.IN_WORD;
                 }
                 break;
-            case CORRECTING:
+            case RECORRECTING:
                 sState = State.START;
                 break;
         }
@@ -258,8 +258,8 @@ public class TextEntryState {
         return sState;
     }
 
-    public static boolean isCorrecting() {
-        return sState == State.CORRECTING || sState == State.PICKED_CORRECTION;
+    public static boolean isRecorrecting() {
+        return sState == State.RECORRECTING || sState == State.PICKED_RECORRECTION;
     }
 
     public static void keyPressedAt(Key key, int x, int y) {

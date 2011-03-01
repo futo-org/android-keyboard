@@ -167,7 +167,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean mHasDictionary;
     private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
-    private boolean mReCorrectionEnabled;
+    private boolean mRecorrectionEnabled;
     private boolean mBigramSuggestionEnabled;
     private boolean mAutoCorrectOn;
     private boolean mVibrateOn;
@@ -381,10 +381,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // If the option should not be shown, do not read the recorrection preference
         // but always use the default setting defined in the resources.
         if (res.getBoolean(R.bool.config_enable_show_recorrection_option)) {
-            mReCorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
+            mRecorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
                     res.getBoolean(R.bool.config_default_recorrection_enabled));
         } else {
-            mReCorrectionEnabled = res.getBoolean(R.bool.config_default_recorrection_enabled);
+            mRecorrectionEnabled = res.getBoolean(R.bool.config_default_recorrection_enabled);
         }
 
         mConfigEnableShowSubtypeSettings = res.getBoolean(
@@ -562,7 +562,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         inputView.setProximityCorrectionEnabled(true);
         inputView.setAccessibilityEnabled(accessibilityEnabled);
         // If we just entered a text field, maybe it has some old text that requires correction
-        checkReCorrectionOnStart();
+        checkRecorrectionOnStart();
         inputView.setForeground(true);
 
         mVoiceConnector.onStartInputView(inputView.getWindowToken());
@@ -625,8 +625,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void checkReCorrectionOnStart() {
-        if (!mReCorrectionEnabled) return;
+    private void checkRecorrectionOnStart() {
+        if (!mRecorrectionEnabled) return;
 
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
@@ -735,18 +735,18 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mLastSelectionStart = newSelStart;
         mLastSelectionEnd = newSelEnd;
 
-        if (mReCorrectionEnabled && isShowingSuggestionsStrip()) {
+        if (mRecorrectionEnabled && isShowingSuggestionsStrip()) {
             // Don't look for corrections if the keyboard is not visible
             if (mKeyboardSwitcher.isInputViewShown()) {
                 // Check if we should go in or out of correction mode.
                 if (isSuggestionsRequested() && !mJustReverted
                         && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
-                                || TextEntryState.isCorrecting())
+                                || TextEntryState.isRecorrecting())
                                 && (newSelStart < newSelEnd - 1 || !mHasValidSuggestions)) {
                     if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
                         mHandler.postUpdateOldSuggestions();
                     } else {
-                        abortCorrection(false);
+                        abortRecorrection(false);
                         // Show the punctuation suggestions list if the current one is not
                         // and if not showing "Touch again to save".
                         if (mCandidateView != null && !isShowingPunctuationList()
@@ -769,7 +769,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedTextClicked() {
-        if (mReCorrectionEnabled && isSuggestionsRequested()) return;
+        if (mRecorrectionEnabled && isSuggestionsRequested()) return;
 
         super.onExtractedTextClicked();
     }
@@ -785,7 +785,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedCursorMovement(int dx, int dy) {
-        if (mReCorrectionEnabled && isSuggestionsRequested()) return;
+        if (mRecorrectionEnabled && isSuggestionsRequested()) return;
 
         super.onExtractedCursorMovement(dx, dy);
     }
@@ -1154,7 +1154,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mVoiceConnector.commitVoiceInput();
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
-        abortCorrection(false);
+        abortRecorrection(false);
         ic.beginBatchEdit();
         commitTyped(ic);
         maybeRemovePreviousPeriod(text);
@@ -1255,9 +1255,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
     }
 
-    private void abortCorrection(boolean force) {
-        if (force || TextEntryState.isCorrecting()) {
-            TextEntryState.onAbortCorrection();
+    private void abortRecorrection(boolean force) {
+        if (force || TextEntryState.isRecorrecting()) {
+            TextEntryState.onAbortRecorrection();
             setCandidatesViewShown(isCandidateStripVisible());
             getCurrentInputConnection().finishComposingText();
             clearSuggestions();
@@ -1267,8 +1267,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private void handleCharacter(int primaryCode, int[] keyCodes, int x, int y) {
         mVoiceConnector.handleCharacter();
 
-        if (mLastSelectionStart == mLastSelectionEnd && TextEntryState.isCorrecting()) {
-            abortCorrection(false);
+        if (mLastSelectionStart == mLastSelectionEnd && TextEntryState.isRecorrecting()) {
+            abortRecorrection(false);
         }
 
         int code = primaryCode;
@@ -1336,7 +1336,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.beginBatchEdit();
-            abortCorrection(false);
+            abortRecorrection(false);
         }
         if (mHasValidSuggestions) {
             // In certain languages where single quote is a separator, it's better
@@ -1439,7 +1439,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private boolean isCandidateStripVisible() {
         if (mCandidateView == null)
             return false;
-        if (mCandidateView.isShowingAddToDictionaryHint() || TextEntryState.isCorrecting())
+        if (mCandidateView.isShowingAddToDictionaryHint() || TextEntryState.isRecorrecting())
             return true;
         if (!isShowingSuggestionsStrip())
             return false;
@@ -1528,7 +1528,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // Don't auto-correct words with multiple capital letter
         correctionAvailable &= !word.isMostlyCaps();
-        correctionAvailable &= !TextEntryState.isCorrecting();
+        correctionAvailable &= !TextEntryState.isRecorrecting();
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1586,7 +1586,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         SuggestedWords suggestions = mCandidateView.getSuggestions();
         mVoiceConnector.flushAndLogAllTextModificationCounters(index, suggestion, mWordSeparators);
 
-        final boolean correcting = TextEntryState.isCorrecting();
+        final boolean recorrecting = TextEntryState.isRecorrecting();
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.beginBatchEdit();
@@ -1636,7 +1636,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 index, suggestions.mWords);
         TextEntryState.acceptedSuggestion(mComposing.toString(), suggestion);
         // Follow it with a space
-        if (mAutoSpace && !correcting) {
+        if (mAutoSpace && !recorrecting) {
             sendSpace();
             mJustAddedAutoSpace = true;
         }
@@ -1657,7 +1657,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 && !mSuggest.isValidWord(suggestion)
                 && !mSuggest.isValidWord(suggestion.toString().toLowerCase())));
 
-        if (!correcting) {
+        if (!recorrecting) {
             // Fool the state watcher so that a subsequent backspace will not do a revert, unless
             // we just did a correction, in which case we need to stay in
             // TextEntryState.State.PICKED_SUGGESTION state.
@@ -1761,19 +1761,19 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
                 if (!mVoiceConnector.applyVoiceAlternatives(touching)
                         && !applyTypedAlternatives(touching)) {
-                    abortCorrection(true);
+                    abortRecorrection(true);
                 } else {
-                    TextEntryState.selectedForCorrection();
+                    TextEntryState.selectedForRecorrection();
                     EditingUtils.underlineWord(ic, touching);
                 }
 
                 ic.endBatchEdit();
             } else {
-                abortCorrection(true);
+                abortRecorrection(true);
                 setPunctuationSuggestions();  // Show the punctuation suggestions list
             }
         } else {
-            abortCorrection(true);
+            abortRecorrection(true);
         }
     }
 
