@@ -126,8 +126,24 @@
         <Key
             latin:keyLabel="="
             latin:popupCharacters="≠,≈" />
-        <Key
-            latin:keyLabel=":" />
+        <switch>
+            <case
+                latin:languageCode="ru"
+            >
+                <Key
+                    latin:keyLabel=":" />
+            </case>
+            <case
+                latin:mode="url"
+            >
+                <Key
+                    latin:keyLabel="\'" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel=":" />
+            </default>
+        </switch>
         <Key
             latin:keyLabel=";" />
         <switch>
