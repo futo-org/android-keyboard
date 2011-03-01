@@ -39,6 +39,7 @@ import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Debug;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -2263,6 +2264,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void showOptionsMenuInternal(CharSequence title, CharSequence[] items,
             DialogInterface.OnClickListener listener) {
+        final IBinder windowToken = mKeyboardSwitcher.getInputView().getWindowToken();
+        if (windowToken == null) return;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setIcon(R.drawable.ic_dialog_keyboard);
@@ -2273,7 +2276,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mOptionsDialog.setCanceledOnTouchOutside(true);
         Window window = mOptionsDialog.getWindow();
         WindowManager.LayoutParams lp = window.getAttributes();
-        lp.token = mKeyboardSwitcher.getInputView().getWindowToken();
+        lp.token = windowToken;
         lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
         window.setAttributes(lp);
         window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
