@@ -56,6 +56,30 @@
     <string name="label_more_key" msgid="3760239494604948502">"بیشتر"</string>
     <string name="label_pause_key" msgid="181098308428035340">"توقف موقت"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"منتظر بمانید"</string>
+    <!-- no translation found for description_delete_key (5586406298531883960) -->
+    <skip />
+    <!-- no translation found for description_return_key (8750044000806461678) -->
+    <skip />
+    <!-- no translation found for description_settings_key (7484527796782969219) -->
+    <skip />
+    <!-- no translation found for description_shift_key (346906866277787836) -->
+    <skip />
+    <!-- no translation found for description_space_key (8512130111575878517) -->
+    <skip />
+    <!-- no translation found for description_switch_alpha_symbol_key (4537975384274405537) -->
+    <skip />
+    <!-- no translation found for description_tab_key (828186583738307137) -->
+    <skip />
+    <!-- no translation found for description_voice_key (3057731675774652754) -->
+    <skip />
+    <!-- no translation found for description_symbols_on (2994366855822840559) -->
+    <skip />
+    <!-- no translation found for description_symbols_off (3209578267079515136) -->
+    <skip />
+    <!-- no translation found for description_shift_on (6983188949895971587) -->
+    <skip />
+    <!-- no translation found for description_shift_off (8553265474523069034) -->
+    <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"ورودی صوتی"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ورودی صوتی در حال حاضر برای زبان شما پشتیبانی نمی شود اما برای زبان انگلیسی فعال است."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ورودی صوتی از تشخیص صدای Google استفاده می کند. "<a href="http://m.google.com/privacy">"خط مشی رازداری Mobile "</a>" اعمال می شود."</string>
