@@ -39,10 +39,10 @@ public class BinaryDictionary extends Dictionary {
      * really long words.
      */
     public static final int MAX_WORD_LENGTH = 48;
+    public static final int MAX_WORDS = 18;
 
     private static final String TAG = "BinaryDictionary";
     private static final int MAX_PROXIMITY_CHARS_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
-    private static final int MAX_WORDS = 18;
     private static final int MAX_BIGRAMS = 60;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
@@ -166,7 +166,8 @@ public class BinaryDictionary extends Dictionary {
 
     @Override
     public void getWords(final WordComposer codes, final WordCallback callback) {
-        final int count = getSuggestions(codes, mKeyboardSwitcher.getLatinKeyboard());
+        final int count = getSuggestions(codes, mKeyboardSwitcher.getLatinKeyboard(),
+                mOutputChars, mFrequencies);
 
         for (int j = 0; j < count; ++j) {
             if (mFrequencies[j] < 1) break;
@@ -186,7 +187,8 @@ public class BinaryDictionary extends Dictionary {
         return mNativeDict != 0;
     }
 
-    /* package for test */ int getSuggestions(final WordComposer codes, final Keyboard keyboard) {
+    /* package for test */ int getSuggestions(final WordComposer codes, final Keyboard keyboard,
+            char[] outputChars, int[] frequencies) {
         if (!isValidDictionary()) return -1;
 
         final int codesSize = codes.size();
@@ -199,13 +201,13 @@ public class BinaryDictionary extends Dictionary {
             System.arraycopy(alternatives, 0, mInputCodes, i * MAX_PROXIMITY_CHARS_SIZE,
                     Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
         }
-        Arrays.fill(mOutputChars, (char) 0);
-        Arrays.fill(mFrequencies, 0);
+        Arrays.fill(outputChars, (char) 0);
+        Arrays.fill(frequencies, 0);
 
         return getSuggestionsNative(
                 mNativeDict, keyboard.getProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
-                mOutputChars, mFrequencies);
+                outputChars, frequencies);
     }
 
     @Override
