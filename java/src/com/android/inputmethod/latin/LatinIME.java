@@ -1290,6 +1290,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 mComposing.setLength(0);
                 saveWordInHistory(mBestWord);
                 mWord.reset();
+                clearSuggestions();
             }
         }
         KeyboardSwitcher switcher = mKeyboardSwitcher;

@@ -297,7 +297,7 @@ public class Suggest implements Dictionary.WordCallback {
                 }
                 if (normalizedScore >= mAutoCorrectionThreshold) {
                     if (DBG) {
-                        Log.d(TAG, "Auto corrected by S-threthhold.");
+                        Log.d(TAG, "Auto corrected by S-threshold.");
                     }
                     mHasAutoCorrection = true;
                 }
