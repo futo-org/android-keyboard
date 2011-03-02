@@ -181,6 +181,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private int mConfigDelayBeforeFadeoutLanguageOnSpacebar;
     private int mConfigDurationOfFadeoutLanguageOnSpacebar;
     private float mConfigFinalFadeoutFactorOfLanguageOnSpacebar;
+    private long mConfigDoubleSpacesTurnIntoPeriodTimeout;
 
     private int mCorrectionMode;
     private int mCommittedLength;
@@ -269,6 +270,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         private static final int MSG_VOICE_RESULTS = 3;
         private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 4;
         private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 5;
+        private static final int MSG_SPACE_TYPED = 6;
 
         @Override
         public void handleMessage(Message msg) {
@@ -357,6 +359,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         }
+
+        public void startDoubleSpacesTimer() {
+            removeMessages(MSG_SPACE_TYPED);
+            sendMessageDelayed(obtainMessage(MSG_SPACE_TYPED),
+                    mConfigDoubleSpacesTurnIntoPeriodTimeout);
+        }
+
+        public void cancelDoubleSpacesTimer() {
+            removeMessages(MSG_SPACE_TYPED);
+        }
+
+        public boolean isAcceptingDoubleSpaces() {
+            return hasMessages(MSG_SPACE_TYPED);
+        }
     }
 
     @Override
@@ -398,6 +414,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 R.integer.config_duration_of_fadeout_language_on_spacebar);
         mConfigFinalFadeoutFactorOfLanguageOnSpacebar = res.getInteger(
                 R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
+        mConfigDoubleSpacesTurnIntoPeriodTimeout = res.getInteger(
+                R.integer.config_double_spaces_turn_into_period_timeout);
 
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
@@ -1004,7 +1022,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void doubleSpace() {
-        //if (!mAutoPunctuate) return;
         if (mCorrectionMode == Suggest.CORRECTION_NONE) return;
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
@@ -1012,13 +1029,17 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         if (lastThree != null && lastThree.length() == 3
                 && Character.isLetterOrDigit(lastThree.charAt(0))
                 && lastThree.charAt(1) == Keyboard.CODE_SPACE
-                && lastThree.charAt(2) == Keyboard.CODE_SPACE) {
+                && lastThree.charAt(2) == Keyboard.CODE_SPACE
+                && mHandler.isAcceptingDoubleSpaces()) {
+            mHandler.cancelDoubleSpacesTimer();
             ic.beginBatchEdit();
             ic.deleteSurroundingText(2, 0);
             ic.commitText(". ", 1);
             ic.endBatchEdit();
             mKeyboardSwitcher.updateShiftState();
             mJustAddedAutoSpace = true;
+        } else {
+            mHandler.startDoubleSpacesTimer();
         }
     }
 
