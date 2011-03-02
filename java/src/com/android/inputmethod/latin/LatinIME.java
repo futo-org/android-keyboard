@@ -193,7 +193,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     // Indicates whether the suggestion strip is to be on in landscape
     private boolean mJustAccepted;
-    private boolean mJustReverted;
     private int mDeleteCount;
     private long mLastKeyTime;
 
@@ -769,7 +768,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // Don't look for corrections if the keyboard is not visible
             if (mKeyboardSwitcher.isInputViewShown()) {
                 // Check if we should go in or out of correction mode.
-                if (isSuggestionsRequested() && !mJustReverted
+                if (isSuggestionsRequested()
                         && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
                                 || TextEntryState.isRecorrecting())
                                 && (newSelStart < newSelEnd - 1 || !mHasValidSuggestions)) {
@@ -1174,8 +1173,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             } else {
                 handleCharacter(primaryCode, keyCodes, x, y);
             }
-            // Cancel the just reverted state
-            mJustReverted = false;
         }
         switcher.onKey(primaryCode);
         // Reset after any single keystroke
@@ -1195,7 +1192,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onKey(Keyboard.CODE_DUMMY);
-        mJustReverted = false;
         mJustAddedAutoSpace = false;
         mEnteredText = text;
     }
@@ -1260,7 +1256,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
             }
         }
-        mJustReverted = false;
         ic.endBatchEdit();
     }
 
@@ -1377,7 +1372,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
-            if (mAutoCorrectOn && primaryCode != '\'' && !mJustReverted) {
+            if (mAutoCorrectOn && primaryCode != '\'') {
                 pickedDefault = pickDefaultSuggestion();
                 // Picked the suggestion by the space key.  We consider this
                 // as "added an auto space".
@@ -1549,8 +1544,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
                 mKeyboardSwitcher.getInputView(), word, prevWord);
 
-        boolean correctionAvailable = !mInputTypeNoAutoCorrect && !mJustReverted
-                && mSuggest.hasAutoCorrection();
+        boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = word.getTypedWord();
         // If we're in basic correct
         final boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
@@ -1880,7 +1874,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final int length = mComposing.length();
         if (!mHasValidSuggestions && length > 0) {
             final InputConnection ic = getCurrentInputConnection();
-            mJustReverted = true;
             final CharSequence punctuation = ic.getTextBeforeCursor(1, 0);
             if (deleteChar) ic.deleteSurroundingText(1, 0);
             int toDelete = mCommittedLength;
@@ -1908,7 +1901,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mHandler.postUpdateSuggestions();
         } else {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
-            mJustReverted = false;
         }
     }
 
