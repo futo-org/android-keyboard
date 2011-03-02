@@ -1951,7 +1951,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onPress(int primaryCode) {
+    public void onPress(int primaryCode, boolean withSliding) {
         if (mKeyboardSwitcher.isVibrateAndSoundFeedbackRequired()) {
             vibrate();
             playKeyClick(primaryCode);
@@ -1959,7 +1959,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
-            switcher.onPressShift();
+            switcher.onPressShift(withSliding);
         } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             switcher.onPressSymbol();
         } else {
@@ -1969,13 +1969,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     @Override
-    public void onRelease(int primaryCode) {
+    public void onRelease(int primaryCode, boolean withSliding) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         // Reset any drag flags in the keyboard
         switcher.keyReleased();
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
-            switcher.onReleaseShift();
+            switcher.onReleaseShift(withSliding);
         } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             switcher.onReleaseSymbol();
         }

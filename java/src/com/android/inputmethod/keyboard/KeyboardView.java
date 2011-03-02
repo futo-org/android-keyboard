@@ -1094,12 +1094,12 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 // Nothing to do.
             }
             @Override
-            public void onPress(int primaryCode) {
-                mKeyboardActionListener.onPress(primaryCode);
+            public void onPress(int primaryCode, boolean withSliding) {
+                mKeyboardActionListener.onPress(primaryCode, withSliding);
             }
             @Override
-            public void onRelease(int primaryCode) {
-                mKeyboardActionListener.onRelease(primaryCode);
+            public void onRelease(int primaryCode, boolean withSliding) {
+                mKeyboardActionListener.onRelease(primaryCode, withSliding);
             }
         });
         // Override default ProximityKeyDetector.

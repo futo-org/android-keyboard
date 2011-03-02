@@ -440,7 +440,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         updateShiftState();
     }
 
-    public void onPressShift() {
+    public void onPressShift(boolean withSliding) {
         if (!isKeyboardAvailable())
             return;
         // If accessibility is enabled, disable momentary shift lock.
@@ -450,7 +450,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (DEBUG_STATE)
             Log.d(TAG, "onPressShift:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
-                    + " shiftKeyState=" + shiftKeyState);
+                    + " shiftKeyState=" + shiftKeyState + " sliding=" + withSliding);
         if (isAlphabetMode()) {
             if (isShiftLocked()) {
                 // Shift key is pressed while caps lock state, we will treat this state as shifted
@@ -478,7 +478,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    public void onReleaseShift() {
+    public void onReleaseShift(boolean withSliding) {
         if (!isKeyboardAvailable())
             return;
         // If accessibility is enabled, disable momentary shift lock.
@@ -488,18 +488,20 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (DEBUG_STATE)
             Log.d(TAG, "onReleaseShift:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
-                    + " shiftKeyState=" + shiftKeyState);
+                    + " shiftKeyState=" + shiftKeyState + " sliding=" + withSliding);
         if (isAlphabetMode()) {
             if (shiftKeyState.isMomentary()) {
                 // After chording input while normal state.
                 toggleShift();
-            } else if (isShiftLocked() && !shiftKeyState.isIgnoring()) {
+            } else if (isShiftLocked() && !shiftKeyState.isIgnoring() && !withSliding) {
                 // Shift has been pressed without chording while caps lock state.
                 toggleCapsLock();
-            } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()) {
+            } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()
+                    && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
                 toggleShift();
-            } else if (isManualTemporaryUpperCaseFromAuto() && shiftKeyState.isPressing()) {
+            } else if (isManualTemporaryUpperCaseFromAuto() && shiftKeyState.isPressing()
+                    && !withSliding) {
                 // Shift has been pressed without chording while manual temporary upper case
                 // transited from automatic temporary upper case.
                 toggleShift();
