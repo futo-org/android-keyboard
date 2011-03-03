@@ -547,7 +547,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
-        mVoiceConnector.resetVoiceStates(Utils.isPasswordInputType(attribute.inputType)
+        final VoiceIMEConnector voiceIme = mVoiceConnector;
+        voiceIme.resetVoiceStates(Utils.isPasswordInputType(attribute.inputType)
                 || Utils.isVisiblePasswordInputType(attribute.inputType));
 
         initializeInputAttributes(attribute);
@@ -562,8 +563,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         loadSettings(attribute);
         if (mSubtypeSwitcher.isKeyboardMode()) {
             switcher.loadKeyboard(attribute,
-                    mVoiceConnector.isVoiceButtonEnabled(),
-                    mVoiceConnector.isVoiceButtonOnPrimary());
+                    mSubtypeSwitcher.isShortcutImeEnabled() && voiceIme.isVoiceButtonEnabled(),
+                    voiceIme.isVoiceButtonOnPrimary());
             switcher.updateShiftState();
         }
 
@@ -583,7 +584,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         checkRecorrectionOnStart();
         inputView.setForeground(true);
 
-        mVoiceConnector.onStartInputView(inputView.getWindowToken());
+        voiceIme.onStartInputView(inputView.getWindowToken());
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
@@ -1930,7 +1931,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         }
         // Reload keyboard because the current language has been changed.
         mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(),
-                mVoiceConnector.isVoiceButtonEnabled(), mVoiceConnector.isVoiceButtonOnPrimary());
+                mSubtypeSwitcher.isShortcutImeEnabled() && mVoiceConnector.isVoiceButtonEnabled(),
+                mVoiceConnector.isVoiceButtonOnPrimary());
         initSuggest();
         mKeyboardSwitcher.updateShiftState();
     }

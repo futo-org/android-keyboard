@@ -46,7 +46,7 @@ import java.util.Map;
 
 public class SubtypeSwitcher {
     private static boolean DBG = LatinImeLogger.sDBG;
-    private static final String TAG = "SubtypeSwitcher";
+    private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
     private static final char LOCALE_SEPARATER = '_';
     private static final String KEYBOARD_MODE = "keyboard";
@@ -221,7 +221,7 @@ public class SubtypeSwitcher {
             newMode = newSubtype.getMode();
         }
         if (DBG) {
-            Log.w(TAG, "Update subtype to:" + newLocale + "," + newSubtype.getMode()
+            Log.w(TAG, "Update subtype to:" + newLocale + "," + newMode
                     + ", from: " + mInputLocaleStr + ", " + oldMode);
         }
         boolean languageChanged = false;
@@ -355,11 +355,27 @@ public class SubtypeSwitcher {
         return false;
     }
 
-    public boolean isShortcutAvailable() {
+    public boolean isShortcutImeEnabled() {
         if (mShortcutInputMethodInfo == null)
             return false;
-        if (mShortcutSubtype != null && contains(mShortcutSubtype.getExtraValue().split(","),
-                    SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY)) {
+        if (mShortcutSubtype == null)
+            return true;
+        final boolean allowsImplicitlySelectedSubtypes = true;
+        for (final InputMethodSubtype enabledSubtype : mImm.getEnabledInputMethodSubtypeList(
+                mShortcutInputMethodInfo, allowsImplicitlySelectedSubtypes)) {
+            if (enabledSubtype.equals(mShortcutSubtype))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isShortcutImeReady() {
+        if (mShortcutInputMethodInfo == null)
+            return false;
+        if (mShortcutSubtype == null)
+            return true;
+        if (contains(mShortcutSubtype.getExtraValue().split(","),
+                SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY)) {
             return mIsNetworkConnected;
         }
         return true;
@@ -373,7 +389,7 @@ public class SubtypeSwitcher {
         final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
         final LatinKeyboard keyboard = switcher.getLatinKeyboard();
         if (keyboard != null) {
-            keyboard.updateShortcutKey(isShortcutAvailable(), switcher.getInputView());
+            keyboard.updateShortcutKey(isShortcutImeReady(), switcher.getInputView());
         }
     }
 

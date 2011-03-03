@@ -194,7 +194,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // displayed on its spacebar, it might have had arbitrary text fade factor. In such case,
         // we should reset the text fade factor. It is also applicable to shortcut key.
         keyboard.setSpacebarTextFadeFactor(0.0f, null);
-        keyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutAvailable(), null);
+        keyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady(), null);
         return keyboard;
     }
 

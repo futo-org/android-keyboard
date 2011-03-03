@@ -447,7 +447,8 @@ public class KeyboardParser {
                     textAttr(KeyboardId.modeName(
                             a.getInt(R.styleable.Keyboard_Case_mode, -1)), "mode"),
                     textAttr(KeyboardId.colorSchemeName(
-                            a.getInt(R.styleable.KeyboardView_colorScheme, -1)), "colorSchemeName"),
+                            viewAttr.getInt(
+                                    R.styleable.KeyboardView_colorScheme, -1)), "colorSchemeName"),
                     booleanAttr(a, R.styleable.Keyboard_Case_passwordInput, "passwordInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),
                     booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
