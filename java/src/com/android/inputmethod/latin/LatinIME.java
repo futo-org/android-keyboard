@@ -1530,7 +1530,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void showSuggestions(WordComposer word) {
-        // TODO Maybe need better way of retrieving previous word
+        // TODO: May need a better way of retrieving previous word
         CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
                 mWordSeparators);
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
@@ -2052,6 +2052,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void updateCorrectionMode() {
+        // TODO: cleanup messy flags
         mHasDictionary = mSuggest != null ? mSuggest.hasMainDictionary() : false;
         mAutoCorrectOn = (mAutoCorrectEnabled || mQuickFixes)
                 && !mInputTypeNoAutoCorrect && mHasDictionary;
