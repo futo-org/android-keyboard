@@ -107,6 +107,7 @@ public class TextEntryState {
             break;
         case ACCEPTED_DEFAULT:
         case SPACE_AFTER_PICKED:
+        case PUNCTUATION_AFTER_ACCEPTED:
             if (isSpace) {
                 setState(SPACE_AFTER_ACCEPTED);
             } else if (isSeparator) {
@@ -130,7 +131,6 @@ public class TextEntryState {
         case START:
         case UNKNOWN:
         case SPACE_AFTER_ACCEPTED:
-        case PUNCTUATION_AFTER_ACCEPTED:
         case PUNCTUATION_AFTER_WORD:
             if (!isSpace && !isSeparator) {
                 setState(IN_WORD);
