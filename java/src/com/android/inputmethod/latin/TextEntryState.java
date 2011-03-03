@@ -16,117 +16,39 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Key;
-
-import android.content.Context;
-import android.text.format.DateFormat;
 import android.util.Log;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Calendar;
-
 public class TextEntryState {
-    
-    private static final boolean DBG = false;
+    private static final String TAG = TextEntryState.class.getSimpleName();
+    private static final boolean DEBUG = true;
 
-    private static final String TAG = "TextEntryState";
+    private static final int UNKNOWN = 0;
+    private static final int START = 1;
+    private static final int IN_WORD = 2;
+    private static final int ACCEPTED_DEFAULT = 3;
+    private static final int PICKED_SUGGESTION = 4;
+    private static final int PUNCTUATION_AFTER_WORD = 5;
+    private static final int PUNCTUATION_AFTER_ACCEPTED = 6;
+    private static final int SPACE_AFTER_ACCEPTED = 7;
+    private static final int SPACE_AFTER_PICKED = 8;
+    private static final int UNDO_COMMIT = 9;
+    private static final int RECORRECTING = 10;
+    private static final int PICKED_RECORRECTION = 11;
 
-    private static boolean LOGGING = false;
+    private static int sState = UNKNOWN;
+    private static int sPreviousState = UNKNOWN;
 
-    private static int sBackspaceCount = 0;
-    
-    private static int sAutoSuggestCount = 0;
-    
-    private static int sAutoSuggestUndoneCount = 0;
-    
-    private static int sManualSuggestCount = 0;
-    
-    private static int sWordNotInDictionaryCount = 0;
-    
-    private static int sSessionCount = 0;
-    
-    private static int sTypedChars;
-
-    private static int sActualChars;
-
-    public enum State {
-        UNKNOWN,
-        START,
-        IN_WORD,
-        ACCEPTED_DEFAULT,
-        PICKED_SUGGESTION,
-        PUNCTUATION_AFTER_WORD,
-        PUNCTUATION_AFTER_ACCEPTED,
-        SPACE_AFTER_ACCEPTED,
-        SPACE_AFTER_PICKED,
-        UNDO_COMMIT,
-        RECORRECTING,
-        PICKED_RECORRECTION,
+    private static void setState(final int newState) {
+        sPreviousState = sState;
+        sState = newState;
     }
 
-    private static State sState = State.UNKNOWN;
-
-    private static FileOutputStream sKeyLocationFile;
-    private static FileOutputStream sUserActionFile;
-    
-    public static void newSession(Context context) {
-        sSessionCount++;
-        sAutoSuggestCount = 0;
-        sBackspaceCount = 0;
-        sAutoSuggestUndoneCount = 0;
-        sManualSuggestCount = 0;
-        sWordNotInDictionaryCount = 0;
-        sTypedChars = 0;
-        sActualChars = 0;
-        sState = State.START;
-        
-        if (LOGGING) {
-            try {
-                sKeyLocationFile = context.openFileOutput("key.txt", Context.MODE_APPEND);
-                sUserActionFile = context.openFileOutput("action.txt", Context.MODE_APPEND);
-            } catch (IOException ioe) {
-                Log.e("TextEntryState", "Couldn't open file for output: " + ioe);
-            }
-        }
-    }
-    
-    public static void endSession() {
-        if (sKeyLocationFile == null) {
-            return;
-        }
-        try {
-            sKeyLocationFile.close();
-            // Write to log file
-            // Write timestamp, settings,
-            String out = DateFormat.format("MM:dd hh:mm:ss", Calendar.getInstance().getTime())
-                    .toString()
-                    + " BS: " + sBackspaceCount
-                    + " auto: " + sAutoSuggestCount
-                    + " manual: " + sManualSuggestCount
-                    + " typed: " + sWordNotInDictionaryCount
-                    + " undone: " + sAutoSuggestUndoneCount
-                    + " saved: " + ((float) (sActualChars - sTypedChars) / sActualChars)
-                    + "\n";
-            sUserActionFile.write(out.getBytes());
-            sUserActionFile.close();
-            sKeyLocationFile = null;
-            sUserActionFile = null;
-        } catch (IOException ioe) {
-            // ignore
-        }
-    }
-    
     public static void acceptedDefault(CharSequence typedWord, CharSequence actualWord) {
         if (typedWord == null) return;
-        if (!typedWord.equals(actualWord)) {
-            sAutoSuggestCount++;
-        }
-        sTypedChars += typedWord.length();
-        sActualChars += actualWord.length();
-        sState = State.ACCEPTED_DEFAULT;
+        setState(ACCEPTED_DEFAULT);
         LatinImeLogger.logOnAutoSuggestion(typedWord.toString(), actualWord.toString());
-        displayState();
+        if (DEBUG)
+            displayState("acceptedDefault", "typedWord", typedWord, "actualWord", actualWord);
     }
 
     // State.ACCEPTED_DEFAULT will be changed to other sub-states
@@ -138,151 +60,167 @@ public class TextEntryState {
         case SPACE_AFTER_ACCEPTED:
         case PUNCTUATION_AFTER_ACCEPTED:
         case IN_WORD:
-            sState = State.ACCEPTED_DEFAULT;
+            setState(ACCEPTED_DEFAULT);
             break;
         default:
             break;
         }
-        displayState();
+        if (DEBUG) displayState("backToAcceptedDefault", "typedWord", typedWord);
     }
 
-    public static void acceptedTyped(@SuppressWarnings("unused") CharSequence typedWord) {
-        sWordNotInDictionaryCount++;
-        sState = State.PICKED_SUGGESTION;
-        displayState();
+    public static void acceptedTyped(CharSequence typedWord) {
+        setState(PICKED_SUGGESTION);
+        if (DEBUG) displayState("acceptedTyped", "typedWord", typedWord);
     }
 
     public static void acceptedSuggestion(CharSequence typedWord, CharSequence actualWord) {
-        sManualSuggestCount++;
-        State oldState = sState;
-        if (typedWord.equals(actualWord)) {
-            acceptedTyped(typedWord);
-        }
-        if (oldState == State.RECORRECTING || oldState == State.PICKED_RECORRECTION) {
-            sState = State.PICKED_RECORRECTION;
+        if (sState == RECORRECTING || sState == PICKED_RECORRECTION) {
+            setState(PICKED_RECORRECTION);
         } else {
-            sState = State.PICKED_SUGGESTION;
+            setState(PICKED_SUGGESTION);
         }
-        displayState();
+        if (DEBUG)
+            displayState("acceptedSuggestion", "typedWord", typedWord, "actualWord", actualWord);
     }
 
     public static void selectedForRecorrection() {
-        sState = State.RECORRECTING;
-        displayState();
+        setState(RECORRECTING);
+        if (DEBUG) displayState("selectedForRecorrection");
     }
 
     public static void onAbortRecorrection() {
-        if (isRecorrecting()) {
-            sState = State.START;
+        if (sState == RECORRECTING || sState == PICKED_RECORRECTION) {
+            setState(START);
         }
-        displayState();
+        if (DEBUG) displayState("onAbortRecorrection");
     }
 
     public static void typedCharacter(char c, boolean isSeparator) {
-        boolean isSpace = c == ' ';
+        final boolean isSpace = (c == ' ');
         switch (sState) {
-            case IN_WORD:
-                if (isSpace || isSeparator) {
-                    sState = State.START;
-                } else {
-                    // State hasn't changed.
-                }
-                break;
-            case ACCEPTED_DEFAULT:
-            case SPACE_AFTER_PICKED:
-                if (isSpace) {
-                    sState = State.SPACE_AFTER_ACCEPTED;
-                } else if (isSeparator) {
-                    sState = State.PUNCTUATION_AFTER_ACCEPTED;
-                } else {
-                    sState = State.IN_WORD;
-                }
-                break;
-            case PICKED_SUGGESTION:
-            case PICKED_RECORRECTION:
-                if (isSpace) {
-                    sState = State.SPACE_AFTER_PICKED;
-                } else if (isSeparator) {
-                    // Swap 
-                    sState = State.PUNCTUATION_AFTER_ACCEPTED;
-                } else {
-                    sState = State.IN_WORD;
-                }
-                break;
-            case START:
-            case UNKNOWN:
-            case SPACE_AFTER_ACCEPTED:
-            case PUNCTUATION_AFTER_ACCEPTED:
-            case PUNCTUATION_AFTER_WORD:
-                if (!isSpace && !isSeparator) {
-                    sState = State.IN_WORD;
-                } else {
-                    sState = State.START;
-                }
-                break;
-            case UNDO_COMMIT:
-                if (isSpace || isSeparator) {
-                    sState = State.ACCEPTED_DEFAULT;
-                } else {
-                    sState = State.IN_WORD;
-                }
-                break;
-            case RECORRECTING:
-                sState = State.START;
-                break;
+        case IN_WORD:
+            if (isSpace || isSeparator) {
+                setState(START);
+            } else {
+                // State hasn't changed.
+            }
+            break;
+        case ACCEPTED_DEFAULT:
+        case SPACE_AFTER_PICKED:
+            if (isSpace) {
+                setState(SPACE_AFTER_ACCEPTED);
+            } else if (isSeparator) {
+                // Swap
+                setState(PUNCTUATION_AFTER_ACCEPTED);
+            } else {
+                setState(IN_WORD);
+            }
+            break;
+        case PICKED_SUGGESTION:
+        case PICKED_RECORRECTION:
+            if (isSpace) {
+                setState(SPACE_AFTER_PICKED);
+            } else if (isSeparator) {
+                // Swap
+                setState(PUNCTUATION_AFTER_ACCEPTED);
+            } else {
+                setState(IN_WORD);
+            }
+            break;
+        case START:
+        case UNKNOWN:
+        case SPACE_AFTER_ACCEPTED:
+        case PUNCTUATION_AFTER_ACCEPTED:
+        case PUNCTUATION_AFTER_WORD:
+            if (!isSpace && !isSeparator) {
+                setState(IN_WORD);
+            } else {
+                setState(START);
+            }
+            break;
+        case UNDO_COMMIT:
+            if (isSpace || isSeparator) {
+                setState(ACCEPTED_DEFAULT);
+            } else {
+                setState(IN_WORD);
+            }
+            break;
+        case RECORRECTING:
+            setState(START);
+            break;
         }
-        displayState();
+        if (DEBUG) displayState("typedCharacter", "char", c, "isSeparator", isSeparator);
     }
     
     public static void backspace() {
-        if (sState == State.ACCEPTED_DEFAULT) {
-            sState = State.UNDO_COMMIT;
-            sAutoSuggestUndoneCount++;
+        if (sState == ACCEPTED_DEFAULT) {
+            setState(UNDO_COMMIT);
             LatinImeLogger.logOnAutoSuggestionCanceled();
-        } else if (sState == State.UNDO_COMMIT) {
-            sState = State.IN_WORD;
+        } else if (sState == UNDO_COMMIT) {
+            setState(IN_WORD);
         }
-        sBackspaceCount++;
-        displayState();
+        if (DEBUG) displayState("backspace");
     }
 
     public static void reset() {
-        sState = State.START;
-        displayState();
+        setState(START);
+        if (DEBUG) displayState("reset");
     }
 
-    public static State getState() {
-        if (DBG) {
-            Log.d(TAG, "Returning state = " + sState);
-        }
-        return sState;
+    public static boolean isAcceptedDefault() {
+        return sState == ACCEPTED_DEFAULT;
+    }
+
+    public static boolean isSpaceAfterPicked() {
+        return sState == SPACE_AFTER_PICKED;
+    }
+
+    public static boolean isUndoCommit() {
+        return sState == UNDO_COMMIT;
+    }
+
+    public static boolean isPunctuationAfterAccepted() {
+        return sState == PUNCTUATION_AFTER_ACCEPTED;
     }
 
     public static boolean isRecorrecting() {
-        return sState == State.RECORRECTING || sState == State.PICKED_RECORRECTION;
+        return sState == RECORRECTING || sState == PICKED_RECORRECTION;
     }
 
-    public static void keyPressedAt(Key key, int x, int y) {
-        if (LOGGING && sKeyLocationFile != null && key.mCode >= 32) {
-            String out =
-                    "KEY: " + (char) key.mCode
-                    + " X: " + x
-                    + " Y: " + y
-                    + " MX: " + (key.mX + key.mWidth / 2)
-                    + " MY: " + (key.mY + key.mHeight / 2)
-                    + "\n";
-            try {
-                sKeyLocationFile.write(out.getBytes());
-            } catch (IOException ioe) {
-                // TODO: May run out of space
-            }
+    public static String getState() {
+        return stateName(sState);
+    }
+
+    private static String stateName(int state) {
+        switch (state) {
+        case START: return "START";
+        case IN_WORD: return "IN_WORD";
+        case ACCEPTED_DEFAULT: return "ACCEPTED_DEFAULT";
+        case PICKED_SUGGESTION: return "PICKED_SUGGESTION";
+        case PUNCTUATION_AFTER_WORD: return "PUNCTUATION_AFTER_WORD";
+        case PUNCTUATION_AFTER_ACCEPTED: return "PUNCTUATION_AFTER_ACCEPTED";
+        case SPACE_AFTER_ACCEPTED: return "SPACE_AFTER_ACCEPTED";
+        case SPACE_AFTER_PICKED: return "SPACE_AFTER_PICKED";
+        case UNDO_COMMIT: return "UNDO_COMMIT";
+        case RECORRECTING: return "RECORRECTING";
+        case PICKED_RECORRECTION: return "PICKED_RECORRECTION";
+        default: return "UNKNOWN";
         }
     }
 
-    private static void displayState() {
-        if (DBG) {
-            Log.d(TAG, "State = " + sState);
+    private static void displayState(String title, Object ... args) {
+        final StringBuilder sb = new StringBuilder(title);
+        sb.append(':');
+        for (int i = 0; i < args.length; i += 2) {
+            sb.append(' ');
+            sb.append(args[i]);
+            sb.append('=');
+            sb.append(args[i+1].toString());
         }
+        sb.append(" state=");
+        sb.append(stateName(sState));
+        sb.append(" previous=");
+        sb.append(stateName(sPreviousState));
+        Log.d(TAG, sb.toString());
     }
 }
-

@@ -542,7 +542,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         mSubtypeSwitcher.updateParametersOnStartInputView();
 
-        TextEntryState.newSession(this);
+        TextEntryState.reset();
 
         // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
         // know now whether this is a password text field, because we need to know now whether we
@@ -746,15 +746,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             }
             mVoiceConnector.setVoiceInputHighlighted(false);
         } else if (!mHasValidSuggestions && !mJustAccepted) {
-            switch (TextEntryState.getState()) {
-            case ACCEPTED_DEFAULT:
-                TextEntryState.reset();
-                // $FALL-THROUGH$
-            case SPACE_AFTER_PICKED:
+            if (TextEntryState.isAcceptedDefault() || TextEntryState.isSpaceAfterPicked()) {
+                if (TextEntryState.isAcceptedDefault())
+                    TextEntryState.reset();
                 mJustAddedAutoSpace = false; // The user moved the cursor.
-                break;
-            default:
-                break;
             }
         }
         mJustAccepted = false;
@@ -832,7 +827,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mVoiceConnector.hideVoiceWindow(mConfigurationChanging);
         mWordHistory.clear();
         super.hideWindow();
-        TextEntryState.endSession();
     }
 
     @Override
@@ -1231,7 +1225,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mHandler.postUpdateShiftKeyState();
 
         TextEntryState.backspace();
-        if (TextEntryState.getState() == TextEntryState.State.UNDO_COMMIT) {
+        if (TextEntryState.isUndoCommit()) {
             revertLastWord(deleteChar);
             ic.endBatchEdit();
             return;
@@ -1391,14 +1385,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // Handle the case of ". ." -> " .." with auto-space if necessary
         // before changing the TextEntryState.
-        if (TextEntryState.getState() == TextEntryState.State.PUNCTUATION_AFTER_ACCEPTED
-                && primaryCode == Keyboard.CODE_PERIOD) {
+        if (TextEntryState.isPunctuationAfterAccepted() && primaryCode == Keyboard.CODE_PERIOD) {
             reswapPeriodAndSpace();
         }
 
         TextEntryState.typedCharacter((char) primaryCode, true);
-        if (TextEntryState.getState() == TextEntryState.State.PUNCTUATION_AFTER_ACCEPTED
-                && primaryCode != Keyboard.CODE_ENTER) {
+        if (TextEntryState.isPunctuationAfterAccepted() && primaryCode != Keyboard.CODE_ENTER) {
             swapPunctuationAndSpace();
         } else if (isSuggestionsRequested() && primaryCode == Keyboard.CODE_SPACE) {
             doubleSpace();
@@ -1430,7 +1422,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
         if (inputView != null)
             inputView.closing();
-        TextEntryState.endSession();
     }
 
     private void saveWordInHistory(CharSequence result) {
