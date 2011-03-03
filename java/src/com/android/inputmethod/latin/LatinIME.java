@@ -1636,6 +1636,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return;
         }
 
+        TextEntryState.acceptedSuggestion(suggestions.getWord(0), suggestion);
         // If this is a punctuation, apply it through the normal key press
         if (suggestion.length() == 1 && (isWordSeparator(suggestion.charAt(0))
                 || isSuggestedPunctuation(suggestion.charAt(0)))) {
