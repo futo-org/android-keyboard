@@ -457,10 +457,17 @@ static inline int capped255MultForFullMatchAccentsOrCapitalizationDifference(con
 }
 inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int depth,
         const int matchWeight, const int skipPos, const int excessivePos, const int transposedPos,
-        const int freq, const bool sameLength) {
+        const int freq, const bool sameLength) const {
     // TODO: Demote by edit distance
     int finalFreq = freq * matchWeight;
-    if (skipPos >= 0) multiplyRate(WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE, &finalFreq);
+    if (skipPos >= 0) {
+        if (mInputLength >= 3) {
+            multiplyRate(WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE *
+                    (mInputLength - 2) / (mInputLength - 1), &finalFreq);
+        } else {
+            finalFreq = 0;
+        }
+    }
     if (transposedPos >= 0) multiplyRate(
             WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE, &finalFreq);
     if (excessivePos >= 0) {
@@ -514,7 +521,7 @@ inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
 }
 
 inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex,
-        const int inputLength) {
+        const int inputLength) const {
     if (inputIndex < 0 || inputIndex >= inputLength) return false;
     const int currentChar = *getInputCharsAt(inputIndex);
     const int leftIndex = inputIndex - 1;
