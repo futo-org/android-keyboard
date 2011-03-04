@@ -129,10 +129,13 @@ static void prof_out(void) {
 #define DICTIONARY_HEADER_SIZE 2
 #define NOT_VALID_WORD -99
 
+#define KEYCODE_SPACE ' '
+
 #define SUGGEST_WORDS_WITH_MISSING_CHARACTER true
 #define SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER true
 #define SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER true
 #define SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS true
+#define SUGGEST_WORDS_WITH_SPACE_PROXIMITY true
 
 // The following "rate"s are used as a multiplier before dividing by 100, so they are in percent.
 #define WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE 75

@@ -142,7 +142,7 @@ int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const 
                 outWords, frequencies);
     }
 
-    PROF_START(6);
+    PROF_START(20);
     // Get the word count
     int suggestedWordsCount = 0;
     while (suggestedWordsCount < MAX_WORDS && mFrequencies[suggestedWordsCount] > 0) {
@@ -158,7 +158,7 @@ int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const 
             }
         }
     }
-    PROF_END(6);
+    PROF_END(20);
     PROF_CLOSE;
     return suggestedWordsCount;
 }
@@ -171,12 +171,6 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     PROF_START(0);
     initSuggestions(codes, codesSize, outWords, frequencies);
     if (DEBUG_DICT) assert(codesSize == mInputLength);
-
-    if (DEBUG_PROXIMITY_INFO) {
-        for (int i = 0; i < codesSize; ++i) {
-            LOGI("Input[%d] x = %d, y = %d", i, xcoordinates[i], ycoordinates[i]);
-        }
-    }
 
     const int MAX_DEPTH = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
     PROF_END(0);
@@ -227,6 +221,25 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
         }
     }
     PROF_END(5);
+
+    PROF_START(6);
+    if (SUGGEST_WORDS_WITH_SPACE_PROXIMITY) {
+        // The first and last "mistyped spaces" are taken care of by excessive character handling
+        for (int i = 1; i < codesSize - 1; ++i) {
+            if (DEBUG_DICT) LOGI("--- Suggest words with proximity space %d", i);
+            const int x = xcoordinates[i];
+            const int y = ycoordinates[i];
+            if (DEBUG_PROXIMITY_INFO)
+                LOGI("Input[%d] x = %d, y = %d, has space proximity = %d",
+                        i, x, y, proximityInfo->hasSpaceProximity(x, y));
+
+            if (proximityInfo->hasSpaceProximity(x, y)) {
+                getMistypedSpaceWords(mInputLength, i);
+            }
+
+        }
+    }
+    PROF_END(6);
 }
 
 void UnigramDictionary::initSuggestions(const int *codes, const int codesSize,
@@ -387,27 +400,31 @@ inline static void multiplyRate(const int rate, int *freq) {
     }
 }
 
-bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int missingSpacePos) {
-    if (missingSpacePos <= 0 || missingSpacePos >= inputLength
-            || inputLength >= MAX_WORD_LENGTH) return false;
-    const int newWordLength = inputLength + 1;
+bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
+        const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
+        const int secondWordLength) {
+    if (inputLength >= MAX_WORD_LENGTH) return false;
+    if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
+            || firstWordStartPos < 0 || secondWordStartPos >= inputLength)
+        return false;
+    const int newWordLength = firstWordLength + secondWordLength + 1;
     // Allocating variable length array on stack
     unsigned short word[newWordLength];
-    const int firstFreq = getBestWordFreq(0, missingSpacePos, mWord);
+    const int firstFreq = getBestWordFreq(firstWordStartPos, firstWordLength, mWord);
     if (DEBUG_DICT) LOGI("First freq: %d", firstFreq);
     if (firstFreq <= 0) return false;
 
-    for (int i = 0; i < missingSpacePos; ++i) {
+    for (int i = 0; i < firstWordLength; ++i) {
         word[i] = mWord[i];
     }
 
-    const int secondFreq = getBestWordFreq(missingSpacePos, inputLength - missingSpacePos, mWord);
+    const int secondFreq = getBestWordFreq(secondWordStartPos, secondWordLength, mWord);
     if (DEBUG_DICT) LOGI("Second  freq:  %d", secondFreq);
     if (secondFreq <= 0) return false;
 
-    word[missingSpacePos] = SPACE;
-    for (int i = (missingSpacePos + 1); i < newWordLength; ++i) {
-        word[i] = mWord[i - missingSpacePos - 1];
+    word[firstWordLength] = SPACE;
+    for (int i = (firstWordLength + 1); i < newWordLength; ++i) {
+        word[i] = mWord[i - firstWordLength - 1];
     }
 
     int pairFreq = ((firstFreq + secondFreq) / 2);
@@ -415,6 +432,17 @@ bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int mi
     multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &pairFreq);
     addWord(word, newWordLength, pairFreq);
     return true;
+}
+
+bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int missingSpacePos) {
+    return getSplitTwoWordsSuggestion(
+            inputLength, 0, missingSpacePos, missingSpacePos, inputLength - missingSpacePos);
+}
+
+bool UnigramDictionary::getMistypedSpaceWords(const int inputLength, const int spaceProximityPos) {
+    return getSplitTwoWordsSuggestion(
+            inputLength, 0, spaceProximityPos, spaceProximityPos + 1,
+            inputLength - spaceProximityPos - 1);
 }
 
 // Keep this for comparing spec to new getWords

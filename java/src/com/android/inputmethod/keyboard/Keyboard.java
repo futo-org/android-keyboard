@@ -174,7 +174,7 @@ public class Keyboard {
         mDefaultHeight = mDefaultWidth;
         mId = id;
         loadKeyboard(context, xmlLayoutResId);
-        mProximityInfo = new ProximityInfo(mDisplayWidth, mDisplayHeight, GRID_WIDTH, GRID_HEIGHT);
+        mProximityInfo = new ProximityInfo(GRID_WIDTH, GRID_HEIGHT);
     }
 
     public int getProximityInfo() {
@@ -378,7 +378,7 @@ public class Keyboard {
                 mGridNeighbors[(y / mCellHeight) * GRID_WIDTH + (x / mCellWidth)] = cell;
             }
         }
-        mProximityInfo.setProximityInfo(mGridNeighbors);
+        mProximityInfo.setProximityInfo(mGridNeighbors, getMinWidth(), getHeight(), mKeys);
     }
 
     public boolean isInside(Key key, int x, int y) {
