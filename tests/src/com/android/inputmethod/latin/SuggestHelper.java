@@ -73,6 +73,7 @@ public class SuggestHelper {
                 final int[] codes = mKeyDetector.newCodeArray();
                 mKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
                 word.add(c, codes, x, y);
+                return;
             }
         }
         word.add(c, new int[] { c }, WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
