@@ -41,7 +41,8 @@ UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterM
     MAX_PROXIMITY_CHARS(maxProximityChars), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
     ROOT_POS(isLatestDictVersion ? DICTIONARY_HEADER_SIZE : 0),
-    BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(*mInputCodes)) {
+    BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(*mInputCodes)),
+    MAX_UMLAUT_SEARCH_DEPTH(DEFAULT_MAX_UMLAUT_SEARCH_DEPTH) {
     if (DEBUG_DICT) LOGI("UnigramDictionary - constructor");
 }
 
@@ -80,30 +81,37 @@ bool UnigramDictionary::isDigraph(const int* codes, const int i, const int codes
 void UnigramDictionary::getWordWithDigraphSuggestionsRec(const ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
-        int* codesDest, unsigned short* outWords, int* frequencies) {
+        int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies) {
 
-    for (int i = 0; i < codesRemain; ++i) {
-        if (isDigraph(codesSrc, i, codesRemain)) {
-            // Found a digraph. We will try both spellings. eg. the word is "pruefen"
+    if (currentDepth < MAX_UMLAUT_SEARCH_DEPTH) {
+        for (int i = 0; i < codesRemain; ++i) {
+            if (isDigraph(codesSrc, i, codesRemain)) {
+                // Found a digraph. We will try both spellings. eg. the word is "pruefen"
 
-            // Copy the word up to the first char of the digraph, then continue processing
-            // on the remaining part of the word, skipping the second char of the digraph.
-            // In our example, copy "pru" and continue running on "fen"
-            memcpy(codesDest, codesSrc, i * BYTES_IN_ONE_CHAR);
-            getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                    codesBufferSize, flags, codesSrc + (i + 1) * MAX_PROXIMITY_CHARS,
-                    codesRemain - i - 1, codesDest + i * MAX_PROXIMITY_CHARS,
-                    outWords, frequencies);
+                // Copy the word up to the first char of the digraph, then continue processing
+                // on the remaining part of the word, skipping the second char of the digraph.
+                // In our example, copy "pru" and continue running on "fen"
+                // Make i the index of the second char of the digraph for simplicity. Forgetting
+                // to do that results in an infinite recursion so take care!
+                ++i;
+                memcpy(codesDest, codesSrc, i * BYTES_IN_ONE_CHAR);
+                getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
+                        codesBuffer, codesBufferSize, flags,
+                        codesSrc + (i + 1) * MAX_PROXIMITY_CHARS, codesRemain - i - 1,
+                        currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS, outWords,
+                        frequencies);
 
-            // Copy the second char of the digraph in place, then continue processing on
-            // the remaining part of the word.
-            // In our example, after "pru" in the buffer copy the "e", and continue running on "fen"
-            memcpy(codesDest + i * MAX_PROXIMITY_CHARS, codesSrc + i * MAX_PROXIMITY_CHARS,
-                    BYTES_IN_ONE_CHAR);
-            getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                    codesBufferSize, flags, codesSrc + i * MAX_PROXIMITY_CHARS, codesRemain - i,
-                    codesDest + i * MAX_PROXIMITY_CHARS, outWords, frequencies);
-            return;
+                // Copy the second char of the digraph in place, then continue processing on
+                // the remaining part of the word.
+                // In our example, after "pru" in the buffer copy the "e", and continue on "fen"
+                memcpy(codesDest + i * MAX_PROXIMITY_CHARS, codesSrc + i * MAX_PROXIMITY_CHARS,
+                        BYTES_IN_ONE_CHAR);
+                getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates,
+                        codesBuffer, codesBufferSize, flags, codesSrc + i * MAX_PROXIMITY_CHARS,
+                        codesRemain - i, currentDepth + 1, codesDest + i * MAX_PROXIMITY_CHARS,
+                        outWords, frequencies);
+                return;
+            }
         }
     }
 
@@ -128,7 +136,7 @@ int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const 
     { // Incrementally tune the word and try all possibilities
         int codesBuffer[getCodesBufferSize(codes, codesSize, MAX_PROXIMITY_CHARS)];
         getWordWithDigraphSuggestionsRec(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-                codesSize, flags, codes, codesSize, codesBuffer, outWords, frequencies);
+                codesSize, flags, codes, codesSize, 0, codesBuffer, outWords, frequencies);
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
                 outWords, frequencies);

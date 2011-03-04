@@ -148,6 +148,10 @@ static void prof_out(void) {
 
 #define MAX_DEPTH_MULTIPLIER 3
 
+// TODO: Reduce this constant if possible; check the maximum number of umlauts in the same German
+// word in the dictionary
+#define DEFAULT_MAX_UMLAUT_SEARCH_DEPTH 5
+
 // Minimum suggest depth for one word for all cases except for missing space suggestions.
 #define MIN_SUGGEST_DEPTH 1
 #define MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION 3
