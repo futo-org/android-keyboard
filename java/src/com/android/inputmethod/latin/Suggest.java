@@ -25,6 +25,10 @@ import android.view.View;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * This class loads a dictionary and provides a list of suggestions for a given sequence of
@@ -70,14 +74,13 @@ public class Suggest implements Dictionary.WordCallback {
     private AutoCorrection mAutoCorrection;
 
     private BinaryDictionary mMainDict;
-
-    private Dictionary mUserDictionary;
-
-    private Dictionary mAutoDictionary;
-
-    private Dictionary mContactsDictionary;
-
-    private Dictionary mUserBigramDictionary;
+    private static final String DICT_KEY_MAIN = "main";
+    private static final String DICT_KEY_CONTACTS = "contacts";
+    private static final String DICT_KEY_AUTO = "auto";
+    private static final String DICT_KEY_USER = "user";
+    private static final String DICT_KEY_USER_BIGRAM = "user_bigram";
+    private final Map<String, Dictionary> mUnigramDictionaries = new HashMap<String, Dictionary>();
+    private final Map<String, Dictionary> mBigramDictionaries = new HashMap<String, Dictionary>();
 
     private int mPrefMaxSuggestions = 12;
 
@@ -101,16 +104,19 @@ public class Suggest implements Dictionary.WordCallback {
     private int mCorrectionMode = CORRECTION_BASIC;
 
     public Suggest(Context context, int dictionaryResId) {
-        mMainDict = BinaryDictionary.initDictionary(context, dictionaryResId, DIC_MAIN);
-        init();
+        init(BinaryDictionary.initDictionary(context, dictionaryResId, DIC_MAIN));
     }
 
     /* package for test */ Suggest(File dictionary, long startOffset, long length) {
-        mMainDict = BinaryDictionary.initDictionary(dictionary, startOffset, length, DIC_MAIN);
-        init();
+        init(BinaryDictionary.initDictionary(dictionary, startOffset, length, DIC_MAIN));
     }
 
-    private void init() {
+    private void init(BinaryDictionary mainDict) {
+        if (mainDict != null) {
+            mMainDict = mainDict;
+            mUnigramDictionaries.put(DICT_KEY_MAIN, mainDict);
+            mBigramDictionaries.put(DICT_KEY_MAIN, mainDict);
+        }
         mAutoCorrection = new AutoCorrection();
         initPool();
     }
@@ -147,22 +153,28 @@ public class Suggest implements Dictionary.WordCallback {
      * before the main dictionary, if set.
      */
     public void setUserDictionary(Dictionary userDictionary) {
-        mUserDictionary = userDictionary;
+        if (userDictionary != null)
+            mUnigramDictionaries.put(DICT_KEY_USER, userDictionary);
     }
 
     /**
      * Sets an optional contacts dictionary resource to be loaded.
      */
-    public void setContactsDictionary(Dictionary userDictionary) {
-        mContactsDictionary = userDictionary;
+    public void setContactsDictionary(Dictionary contactsDictionary) {
+        if (contactsDictionary != null) {
+            mUnigramDictionaries.put(DICT_KEY_CONTACTS, contactsDictionary);
+            mBigramDictionaries.put(DICT_KEY_CONTACTS, contactsDictionary);
+        }
     }
 
     public void setAutoDictionary(Dictionary autoDictionary) {
-        mAutoDictionary = autoDictionary;
+        if (autoDictionary != null)
+            mUnigramDictionaries.put(DICT_KEY_AUTO, autoDictionary);
     }
 
     public void setUserBigramDictionary(Dictionary userBigramDictionary) {
-        mUserBigramDictionary = userBigramDictionary;
+        if (userBigramDictionary != null)
+            mBigramDictionaries.put(DICT_KEY_USER_BIGRAM, userBigramDictionary);
     }
 
     public void setAutoCorrectionThreshold(double threshold) {
@@ -240,14 +252,8 @@ public class Suggest implements Dictionary.WordCallback {
                 if (mMainDict != null && mMainDict.isValidWord(lowerPrevWord)) {
                     prevWordForBigram = lowerPrevWord;
                 }
-                if (mUserBigramDictionary != null) {
-                    mUserBigramDictionary.getBigrams(wordComposer, prevWordForBigram, this);
-                }
-                if (mContactsDictionary != null) {
-                    mContactsDictionary.getBigrams(wordComposer, prevWordForBigram, this);
-                }
-                if (mMainDict != null) {
-                    mMainDict.getBigrams(wordComposer, prevWordForBigram, this);
+                for (final Dictionary dictionary : mBigramDictionaries.values()) {
+                    dictionary.getBigrams(wordComposer, prevWordForBigram, this);
                 }
                 char currentChar = wordComposer.getTypedWord().charAt(0);
                 char currentCharUpper = Character.toUpperCase(currentChar);
@@ -270,15 +276,13 @@ public class Suggest implements Dictionary.WordCallback {
 
         } else if (wordComposer.size() > 1) {
             // At second character typed, search the unigrams (scores being affected by bigrams)
-            if (mUserDictionary != null || mContactsDictionary != null) {
-                if (mUserDictionary != null) {
-                    mUserDictionary.getWords(wordComposer, this);
-                }
-                if (mContactsDictionary != null) {
-                    mContactsDictionary.getWords(wordComposer, this);
-                }
+            for (final String key : mUnigramDictionaries.keySet()) {
+                // Skip AutoDictionary to lookup
+                if (key.equals(DICT_KEY_AUTO))
+                    continue;
+                final Dictionary dictionary = mUnigramDictionaries.get(key);
+                dictionary.getWords(wordComposer, this);
             }
-            if (mMainDict != null) mMainDict.getWords(wordComposer, this);
         }
         CharSequence autoText = null;
         final String typedWordString = typedWord == null ? null : typedWord.toString();
@@ -324,8 +328,9 @@ public class Suggest implements Dictionary.WordCallback {
             }
         }
 
-        mAutoCorrection.updateAutoCorrectionStatus(this, wordComposer, mSuggestions, mPriorities,
-                typedWord, mAutoCorrectionThreshold, mCorrectionMode, autoText);
+        mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries.values(), wordComposer,
+                mSuggestions, mPriorities, typedWord, mAutoCorrectionThreshold, mCorrectionMode,
+                autoText);
 
         if (autoText != null) {
             mSuggestions.add(0, autoText);
@@ -515,10 +520,11 @@ public class Suggest implements Dictionary.WordCallback {
         if (word == null || word.length() == 0 || mMainDict == null) {
             return false;
         }
-        return mMainDict.isValidWord(word)
-                || (mUserDictionary != null && mUserDictionary.isValidWord(word))
-                || (mAutoDictionary != null && mAutoDictionary.isValidWord(word))
-                || (mContactsDictionary != null && mContactsDictionary.isValidWord(word));
+        for (final Dictionary dictionary : mUnigramDictionaries.values()) {
+            if (dictionary.isValidWord(word))
+                return true;
+        }
+        return false;
     }
 
     private void collectGarbage(ArrayList<CharSequence> suggestions, int prefMaxSuggestions) {
@@ -539,25 +545,12 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public void close() {
-        if (mMainDict != null) {
-            mMainDict.close();
-            mMainDict = null;
+        final Set<Dictionary> dictionaries = new HashSet<Dictionary>();
+        dictionaries.addAll(mUnigramDictionaries.values());
+        dictionaries.addAll(mBigramDictionaries.values());
+        for (final Dictionary dictionary : dictionaries) {
+            dictionary.close();
         }
-        if (mUserDictionary != null) {
-            mUserDictionary.close();
-            mUserDictionary = null;
-        }
-        if (mUserBigramDictionary != null) {
-            mUserBigramDictionary.close();
-            mUserBigramDictionary = null;
-        }
-        if (mContactsDictionary != null) {
-            mContactsDictionary.close();
-            mContactsDictionary = null;
-        }
-        if (mAutoDictionary != null) {
-            mAutoDictionary.close();
-            mAutoDictionary = null;
-        }
+        mMainDict = null;
     }
 }

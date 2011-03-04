@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
@@ -45,12 +46,12 @@ public class AutoCorrection {
         return mNormalizedScore;
     }
 
-    public void updateAutoCorrectionStatus(Suggest suggest,
+    public void updateAutoCorrectionStatus(Collection<Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] priorities,
             CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
             CharSequence quickFixedWord) {
         if (hasAutoCorrectionForTypedWord(
-                suggest, wordComposer, suggestions, typedWord, correctionMode)) {
+                dictionaries, wordComposer, suggestions, typedWord, correctionMode)) {
             mHasAutoCorrection = true;
             mAutoCorrectionWord = typedWord;
         } else if (hasAutoCorrectForBinaryDictionary(wordComposer, suggestions, correctionMode,
@@ -63,9 +64,17 @@ public class AutoCorrection {
         }
     }
 
-    private boolean hasAutoCorrectionForTypedWord(Suggest suggest, WordComposer wordComposer,
-            ArrayList<CharSequence> suggestions, CharSequence typedWord, int correctionMode) {
-        return wordComposer.size() > 1 && suggestions.size() > 0 && suggest.isValidWord(typedWord)
+    private boolean hasAutoCorrectionForTypedWord(Collection<Dictionary> dictionaries,
+            WordComposer wordComposer, ArrayList<CharSequence> suggestions, CharSequence typedWord,
+            int correctionMode) {
+        boolean isValidWord = false;
+        for (final Dictionary dictionary : dictionaries) {
+            if (dictionary.isValidWord(typedWord)) {
+                isValidWord = true;
+                break;
+            }
+        }
+        return wordComposer.size() > 1 && suggestions.size() > 0 && isValidWord
                 && (correctionMode == Suggest.CORRECTION_FULL
                 || correctionMode == Suggest.CORRECTION_FULL_BIGRAM);
     }
