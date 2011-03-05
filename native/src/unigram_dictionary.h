@@ -64,7 +64,11 @@ private:
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
             const int nextLettersSize);
+    bool getSplitTwoWordsSuggestion(const int inputLength,
+            const int firstWordStartPos, const int firstWordLength,
+            const int secondWordStartPos, const int secondWordLength);
     bool getMissingSpaceWords(const int inputLength, const int missingSpacePos);
+    bool getMistypedSpaceWords(const int inputLength, const int spaceProximityPos);
     // Keep getWordsOld for comparing performance between getWords and getWordsOld
     void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
             const int excessivePos, const int transposedPos, int *nextLetters,
