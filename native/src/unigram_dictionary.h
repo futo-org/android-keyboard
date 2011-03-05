@@ -75,7 +75,8 @@ private:
             const int nextLettersSize);
     void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
     int calculateFinalFreq(const int inputIndex, const int depth, const int snr, const int skipPos,
-            const int excessivePos, const int transposedPos, const int freq, const bool sameLength);
+            const int excessivePos, const int transposedPos, const int freq,
+            const bool sameLength) const;
     void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
             const int inputIndex, const int depth, const int snr, int *nextLetters,
             const int nextLettersSize, const int skipPos, const int excessivePos,
@@ -99,8 +100,8 @@ private:
     bool processCurrentNodeForExactMatch(const int firstChildPos,
             const int startInputIndex, const int depth, unsigned short *word,
             int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
-    bool existsAdjacentProximityChars(const int inputIndex, const int inputLength);
-    inline const int* getInputCharsAt(const int index) {
+    bool existsAdjacentProximityChars(const int inputIndex, const int inputLength) const;
+    inline const int* getInputCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS);
     }
     const unsigned char *DICT;

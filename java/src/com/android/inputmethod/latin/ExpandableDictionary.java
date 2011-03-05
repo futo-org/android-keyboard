@@ -230,6 +230,16 @@ public class ExpandableDictionary extends Dictionary {
         return (node == null) ? -1 : node.mFrequency;
     }
 
+    private static int computeSkippedWordFinalFreq(int freq, int snr, int inputLength) {
+        // The computation itself makes sense for >= 2, but the == 2 case returns 0
+        // anyway so we may as well test against 3 instead and return the constant
+        if (inputLength >= 3) {
+            return (freq * snr * (inputLength - 2)) / (inputLength - 1);
+        } else {
+            return 0;
+        }
+    }
+
     /**
      * Recursively traverse the tree for words that match the input. Input consists of
      * a list of arrays. Each item in the list is one input character position. An input
@@ -243,13 +253,14 @@ public class ExpandableDictionary extends Dictionary {
      * @param completion whether the traversal is now in completion mode - meaning that we've
      * exhausted the input and we're looking for all possible suffixes.
      * @param snr current weight of the word being formed
-     * @param inputIndex position in the input characters. This can be off from the depth in 
+     * @param inputIndex position in the input characters. This can be off from the depth in
      * case we skip over some punctuations such as apostrophe in the traversal. That is, if you type
      * "wouldve", it could be matching "would've", so the depth will be one more than the
      * inputIndex
      * @param callback the callback class for adding a word
      */
-    protected void getWordsRec(NodeArray roots, final WordComposer codes, final char[] word, 
+    // TODO: Share this routine with the native code for BinaryDictionary
+    protected void getWordsRec(NodeArray roots, final WordComposer codes, final char[] word,
             final int depth, boolean completion, int snr, int inputIndex, int skipPos,
             WordCallback callback) {
         final int count = roots.mLength;
@@ -275,8 +286,14 @@ public class ExpandableDictionary extends Dictionary {
             if (completion) {
                 word[depth] = c;
                 if (terminal) {
-                    if (!callback.addWord(word, 0, depth + 1, freq * snr, mDicTypeId,
-                                DataType.UNIGRAM)) {
+                    final int finalFreq;
+                    if (skipPos < 0) {
+                        finalFreq = freq * snr;
+                    } else {
+                        finalFreq = computeSkippedWordFinalFreq(freq, snr, mInputLength);
+                    }
+                    if (!callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
+                            DataType.UNIGRAM)) {
                         return;
                     }
                 }
@@ -288,7 +305,7 @@ public class ExpandableDictionary extends Dictionary {
                 // Skip the ' and continue deeper
                 word[depth] = c;
                 if (children != null) {
-                    getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex, 
+                    getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex,
                             skipPos, callback);
                 }
             } else {
@@ -305,10 +322,16 @@ public class ExpandableDictionary extends Dictionary {
 
                         if (codeSize == inputIndex + 1) {
                             if (terminal) {
-                                if (INCLUDE_TYPED_WORD_IF_VALID 
+                                if (INCLUDE_TYPED_WORD_IF_VALID
                                         || !same(word, depth + 1, codes.getTypedWord())) {
-                                    int finalFreq = freq * snr * addedAttenuation;
-                                    if (skipPos < 0) finalFreq *= FULL_WORD_FREQ_MULTIPLIER;
+                                    final int finalFreq;
+                                    if (skipPos < 0) {
+                                        finalFreq = freq * snr * addedAttenuation
+                                                * FULL_WORD_FREQ_MULTIPLIER;
+                                    } else {
+                                        finalFreq = computeSkippedWordFinalFreq(freq,
+                                                snr * addedAttenuation, mInputLength);
+                                    }
                                     callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
                                             DataType.UNIGRAM);
                                 }
@@ -319,7 +342,7 @@ public class ExpandableDictionary extends Dictionary {
                                         skipPos, callback);
                             }
                         } else if (children != null) {
-                            getWordsRec(children, codes, word, depth + 1, 
+                            getWordsRec(children, codes, word, depth + 1,
                                     false, snr * addedAttenuation, inputIndex + 1,
                                     skipPos, callback);
                         }
