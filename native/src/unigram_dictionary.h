@@ -46,7 +46,7 @@ private:
     void getWordWithDigraphSuggestionsRec(const ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
-        int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies);
+        const int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies);
     void initSuggestions(const int *codes, const int codesSize, unsigned short *outWords,
             int *frequencies);
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
@@ -113,7 +113,7 @@ private:
     const int FULL_WORD_MULTIPLIER;
     const int ROOT_POS;
     const unsigned int BYTES_IN_ONE_CHAR;
-    const unsigned int MAX_UMLAUT_SEARCH_DEPTH;
+    const int MAX_UMLAUT_SEARCH_DEPTH;
 
     // Flags for special processing
     // Those *must* match the flags in BinaryDictionary.Flags.ALL_FLAGS in BinaryDictionary.java
