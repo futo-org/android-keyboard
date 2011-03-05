@@ -18,18 +18,17 @@ package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.latin.Utils;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
 
-    private final int mDisplayWidth;
-    private final int mDisplayHeight;
     private final int mGridWidth;
     private final int mGridHeight;
     private final int mGridSize;
 
-    ProximityInfo(int displayWidth, int displayHeight, int gridWidth, int gridHeight) {
-        mDisplayWidth = displayWidth;
-        mDisplayHeight = displayHeight;
+    ProximityInfo(int gridWidth, int gridHeight) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -43,20 +42,19 @@ public class ProximityInfo {
             int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray);
     private native void releaseProximityInfoNative(int nativeProximityInfo);
 
-    public final void setProximityInfo(int[][] gridNeighbors) {
+    public final void setProximityInfo(int[][] gridNeighborKeyIndexes, int keyboardWidth,
+            int keyboardHeight, List<Key> keys) {
         int[] proximityCharsArray = new int[mGridSize * MAX_PROXIMITY_CHARS_SIZE];
+        Arrays.fill(proximityCharsArray, KeyDetector.NOT_A_CODE);
         for (int i = 0; i < mGridSize; ++i) {
-            final int proximityCharsLength = gridNeighbors[i].length;
-            for (int j = 0; j < MAX_PROXIMITY_CHARS_SIZE; ++j) {
-                int charCode = KeyDetector.NOT_A_KEY;
-                if (j < proximityCharsLength) {
-                    charCode = gridNeighbors[i][j];
-                }
-                proximityCharsArray[i * MAX_PROXIMITY_CHARS_SIZE + j] = charCode;
+            final int proximityCharsLength = gridNeighborKeyIndexes[i].length;
+            for (int j = 0; j < proximityCharsLength; ++j) {
+                proximityCharsArray[i * MAX_PROXIMITY_CHARS_SIZE + j] =
+                        keys.get(gridNeighborKeyIndexes[i][j]).mCode;
             }
         }
         mNativeProximityInfo = setProximityInfoNative(MAX_PROXIMITY_CHARS_SIZE,
-                mDisplayWidth, mDisplayHeight, mGridWidth, mGridHeight, proximityCharsArray);
+                keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, proximityCharsArray);
     }
 
     // TODO: Get rid of this function's input (keyboard).

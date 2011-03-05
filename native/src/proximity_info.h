@@ -25,15 +25,20 @@ namespace latinime {
 
 class ProximityInfo {
 public:
-    ProximityInfo(int maxProximityCharsSize, int displayWidth, int displayHeight, int gridWidth,
-            int gridHeight, uint32_t const *proximityCharsArray);
+    ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
+            const int keybaordHeight, const int gridWidth, const int gridHeight,
+            const uint32_t *proximityCharsArray);
     ~ProximityInfo();
+    bool hasSpaceProximity(const int x, const int y) const;
 private:
-    const int MAX_PROXIMITY_CHARS_SIZE;
-    const int DISPLAY_WIDTH;
-    const int DISPLAY_HEIGHT;
+    int getStartIndexFromCoordinates(const int x, const int y) const;
+    const int CELL_WIDTH;
+    const int CELL_HEIGHT;
+    const int KEYBOARD_WIDTH;
+    const int KEYBOARD_HEIGHT;
     const int GRID_WIDTH;
     const int GRID_HEIGHT;
+    const int MAX_PROXIMITY_CHARS_SIZE;
     uint32_t *mProximityCharsArray;
 };
 }; // namespace latinime
