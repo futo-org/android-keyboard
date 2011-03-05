@@ -1427,7 +1427,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private void saveWordInHistory(CharSequence result) {
         if (mWord.size() <= 1) {
-            mWord.reset();
             return;
         }
         // Skip if result is null. It happens in some edge case.
