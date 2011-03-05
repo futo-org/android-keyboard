@@ -225,7 +225,7 @@ public class ExpandableDictionary extends Dictionary {
     /**
      * Returns the word's frequency or -1 if not found
      */
-    public int getWordFrequency(CharSequence word) {
+    protected int getWordFrequency(CharSequence word) {
         Node node = searchNode(mRoots, word, 0, word.length());
         return (node == null) ? -1 : node.mFrequency;
     }
