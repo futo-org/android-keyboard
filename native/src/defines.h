@@ -103,7 +103,7 @@ static void prof_out(void) {
 #define U_SHORT_MAX 1 << 16
 #endif
 #ifndef S_INT_MAX
-#define S_INT_MAX ((1 << 31) - 1)
+#define S_INT_MAX 2147483647 // ((1 << 31) - 1)
 #endif
 
 // Define this to use mmap() for dictionary loading.  Undefine to use malloc() instead of mmap().

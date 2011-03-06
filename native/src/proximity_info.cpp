@@ -42,7 +42,7 @@ ProximityInfo::~ProximityInfo() {
 }
 
 inline int ProximityInfo::getStartIndexFromCoordinates(const int x, const int y) const {
-    return (y / CELL_HEIGHT) * GRID_WIDTH + (x / CELL_WIDTH)
+    return ((y / CELL_HEIGHT) * GRID_WIDTH + (x / CELL_WIDTH))
             * MAX_PROXIMITY_CHARS_SIZE;
 }
 

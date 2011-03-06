@@ -81,7 +81,7 @@ bool UnigramDictionary::isDigraph(const int* codes, const int i, const int codes
 void UnigramDictionary::getWordWithDigraphSuggestionsRec(const ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
-        int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies) {
+        const int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies) {
 
     if (currentDepth < MAX_UMLAUT_SEARCH_DEPTH) {
         for (int i = 0; i < codesRemain; ++i) {
@@ -232,11 +232,9 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
             if (DEBUG_PROXIMITY_INFO)
                 LOGI("Input[%d] x = %d, y = %d, has space proximity = %d",
                         i, x, y, proximityInfo->hasSpaceProximity(x, y));
-
             if (proximityInfo->hasSpaceProximity(x, y)) {
                 getMistypedSpaceWords(mInputLength, i);
             }
-
         }
     }
     PROF_END(6);
@@ -405,7 +403,7 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
         const int secondWordLength) {
     if (inputLength >= MAX_WORD_LENGTH) return false;
     if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
-            || firstWordStartPos < 0 || secondWordStartPos >= inputLength)
+            || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
         return false;
     const int newWordLength = firstWordLength + secondWordLength + 1;
     // Allocating variable length array on stack
@@ -487,7 +485,7 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
     }
 }
 
-static const int TWO_31ST_DIV_255 = ((1 << 31) - 1) / 255;
+static const int TWO_31ST_DIV_255 = S_INT_MAX / 255;
 static inline int capped255MultForFullMatchAccentsOrCapitalizationDifference(const int num) {
     return (num < TWO_31ST_DIV_255 ? 255 * num : S_INT_MAX);
 }
