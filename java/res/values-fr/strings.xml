@@ -41,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Toujours afficher"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Toujours masquer"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Correction auto"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Correction auto mots avec barre espace/signes ponctuation"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Corriger autom. orthographe (pression sur barre espace/signes ponctuation)"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Désactiver"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Simple"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Proactive"</string>
@@ -114,7 +114,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Autoriser les commentaires des utilisateurs"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Contribuer à l\'amélioration de cet éditeur du mode de saisie grâce à l\'envoi automatique de statistiques d\'utilisation et de rapports d\'incident à Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Appuyer pour corriger les suggestions"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Appuyer pour corriger"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Appuyer sur les mots saisis pour les corriger, uniquement lorsque des suggestions sont visibles"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Thème du clavier"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Clavier tchèque"</string>
