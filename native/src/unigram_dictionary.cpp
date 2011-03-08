@@ -521,7 +521,7 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
             finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
     }
-    if (sameLength && skipPos < 0) finalFreq *= FULL_WORD_MULTIPLIER;
+    if (sameLength) finalFreq *= FULL_WORD_MULTIPLIER;
     return finalFreq;
 }
 
