@@ -834,10 +834,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onDisplayCompletions(CompletionInfo[] applicationSpecifiedCompletions) {
         if (DEBUG) {
             Log.i(TAG, "Received completions:");
-            final int count = (applicationSpecifiedCompletions != null)
-                    ? applicationSpecifiedCompletions.length : 0;
-            for (int i = 0; i < count; i++) {
-                Log.i(TAG, "  #" + i + ": " + applicationSpecifiedCompletions[i]);
+            if (applicationSpecifiedCompletions != null) {
+                for (int i = 0; i < applicationSpecifiedCompletions.length; i++) {
+                    Log.i(TAG, "  #" + i + ": " + applicationSpecifiedCompletions[i]);
+                }
             }
         }
         if (mApplicationSpecifiedCompletionOn) {
@@ -968,7 +968,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 }
                 mCommittedLength = mComposing.length();
                 TextEntryState.acceptedTyped(mComposing);
-                addToDictionaries(mComposing, AutoDictionary.FREQUENCY_FOR_TYPED);
+                addToAutoAndUserBigramDictionaries(mComposing, AutoDictionary.FREQUENCY_FOR_TYPED);
             }
             updateSuggestions();
         }
@@ -1537,10 +1537,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = word.getTypedWord();
-        // If we're in basic correct
-        final boolean typedWordValid = mSuggest.isValidWord(typedWord) ||
-                (preferCapitalization()
-                        && mSuggest.isValidWord(typedWord.toString().toLowerCase()));
+        // Here, we want to promote a whitelisted word if exists.
+        final boolean typedWordValid = AutoCorrection.isValidWordForAutoCorrection(
+                mSuggest.getUnigramDictionaries(), typedWord, preferCapitalization());
         if (mCorrectionMode == Suggest.CORRECTION_FULL
                 || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
             correctionAvailable |= typedWordValid;
@@ -1594,7 +1593,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mJustAccepted = true;
             pickSuggestion(mBestWord);
             // Add the word to the auto dictionary if it's not a known word
-            addToDictionaries(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
+            addToAutoAndUserBigramDictionaries(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
             return true;
 
         }
@@ -1647,9 +1646,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         pickSuggestion(suggestion);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
-            addToDictionaries(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
+            addToAutoAndUserBigramDictionaries(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
         } else {
-            addToBigramDictionary(suggestion, 1);
+            addToOnlyBigramDictionary(suggestion, 1);
         }
         LatinImeLogger.logOnManualSuggestion(mComposing.toString(), suggestion.toString(),
                 index, suggestions.mWords);
@@ -1668,13 +1667,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // and correction, so we shouldn't try to show the hint
         // We used to look at mCorrectionMode here, but showing the hint should have nothing
         // to do with the autocorrection setting.
-        final boolean showingAddToDictionaryHint = index == 0 &&
-                // Test for no dictionary:
-                ((!mHasDictionary && null != mSuggest) ||
-                // Test for dictionary && word is inside:
-                (mHasDictionary && null != mSuggest
-                && !mSuggest.isValidWord(suggestion)
-                && !mSuggest.isValidWord(suggestion.toString().toLowerCase())));
+        final boolean showingAddToDictionaryHint = index == 0 && mSuggest != null
+                // If there is no dictionary the hint should be shown.
+                && (!mHasDictionary
+                        // If "suggestion" is not in the dictionary, the hint should be shown.
+                        || !AutoCorrection.isValidWord(
+                                mSuggest.getUnigramDictionaries(), suggestion, true));
 
         if (!recorrecting) {
             // Fool the state watcher so that a subsequent backspace will not do a revert, unless
@@ -1726,6 +1724,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // If we didn't find a match, search for result in typed word history
         WordComposer foundWord = null;
         WordAlternatives alternatives = null;
+        // Search old suggestions to suggest re-corrected suggestions.
         for (WordAlternatives entry : mWordHistory) {
             if (TextUtils.equals(entry.getChosenWord(), touching.mWord)) {
                 if (entry instanceof TypedWordAlternatives) {
@@ -1735,10 +1734,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 break;
             }
         }
-        // If we didn't find a match, at least suggest corrections.
+        // If we didn't find a match, at least suggest corrections as re-corrected suggestions.
         if (foundWord == null
-                && (mSuggest.isValidWord(touching.mWord)
-                        || mSuggest.isValidWord(touching.mWord.toString().toLowerCase()))) {
+                && (AutoCorrection.isValidWord(
+                        mSuggest.getUnigramDictionaries(), touching.mWord, true))) {
             foundWord = new WordComposer();
             for (int i = 0; i < touching.mWord.length(); i++) {
                 foundWord.add(touching.mWord.charAt(i), new int[] {
@@ -1801,21 +1800,22 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         setCandidatesViewShown(isCandidateStripVisible());
     }
 
-    private void addToDictionaries(CharSequence suggestion, int frequencyDelta) {
+    private void addToAutoAndUserBigramDictionaries(CharSequence suggestion, int frequencyDelta) {
         checkAddToDictionary(suggestion, frequencyDelta, false);
     }
 
-    private void addToBigramDictionary(CharSequence suggestion, int frequencyDelta) {
+    private void addToOnlyBigramDictionary(CharSequence suggestion, int frequencyDelta) {
         checkAddToDictionary(suggestion, frequencyDelta, true);
     }
 
     /**
      * Adds to the UserBigramDictionary and/or AutoDictionary
-     * @param addToBigramDictionary true if it should be added to bigram dictionary if possible
+     * @param selectedANotTypedWord true if it should be added to bigram dictionary if possible
      */
     private void checkAddToDictionary(CharSequence suggestion, int frequencyDelta,
-            boolean addToBigramDictionary) {
+            boolean selectedANotTypedWord) {
         if (suggestion == null || suggestion.length() < 1) return;
+
         // Only auto-add to dictionary if auto-correct is ON. Otherwise we'll be
         // adding words in situations where the user or application really didn't
         // want corrections enabled or learned.
@@ -1823,9 +1823,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM)) {
             return;
         }
-        if (!addToBigramDictionary && mAutoDictionary.isValidWord(suggestion)
-                || (!mSuggest.isValidWord(suggestion.toString())
-                        && !mSuggest.isValidWord(suggestion.toString().toLowerCase()))) {
+
+        final boolean selectedATypedWordAndItsInAutoDic =
+                !selectedANotTypedWord && mAutoDictionary.isValidWord(suggestion);
+        final boolean isValidWord = AutoCorrection.isValidWord(
+                mSuggest.getUnigramDictionaries(), suggestion, true);
+        final boolean needsToAddToAutoDictionary = selectedATypedWordAndItsInAutoDic
+                || !isValidWord;
+        if (needsToAddToAutoDictionary) {
             mAutoDictionary.addWord(suggestion.toString(), frequencyDelta);
         }
 

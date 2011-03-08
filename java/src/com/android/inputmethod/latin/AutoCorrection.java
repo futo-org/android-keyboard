@@ -16,10 +16,11 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Map;
 
 public class AutoCorrection {
     private static final boolean DBG = LatinImeLogger.sDBG;
@@ -46,40 +47,73 @@ public class AutoCorrection {
         return mNormalizedScore;
     }
 
-    public void updateAutoCorrectionStatus(Collection<Dictionary> dictionaries,
+    public void updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] priorities,
             CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
-            CharSequence quickFixedWord) {
-        if (hasAutoCorrectionForTypedWord(
+            CharSequence quickFixedWord, CharSequence whitelistedWord) {
+        if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
+            mHasAutoCorrection = true;
+            mAutoCorrectionWord = whitelistedWord;
+        } else if (hasAutoCorrectionForTypedWord(
                 dictionaries, wordComposer, suggestions, typedWord, correctionMode)) {
             mHasAutoCorrection = true;
             mAutoCorrectionWord = typedWord;
-        } else if (hasAutoCorrectForBinaryDictionary(wordComposer, suggestions, correctionMode,
-                priorities, typedWord, autoCorrectionThreshold)) {
-            mHasAutoCorrection = true;
-            mAutoCorrectionWord = suggestions.get(0);
         } else if (hasAutoCorrectionForQuickFix(quickFixedWord)) {
             mHasAutoCorrection = true;
             mAutoCorrectionWord = quickFixedWord;
+        } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions, correctionMode,
+                priorities, typedWord, autoCorrectionThreshold)) {
+            mHasAutoCorrection = true;
+            mAutoCorrectionWord = suggestions.get(0);
         }
     }
 
-    private boolean hasAutoCorrectionForTypedWord(Collection<Dictionary> dictionaries,
-            WordComposer wordComposer, ArrayList<CharSequence> suggestions, CharSequence typedWord,
-            int correctionMode) {
-        boolean isValidWord = false;
-        for (final Dictionary dictionary : dictionaries) {
-            if (dictionary.isValidWord(typedWord)) {
-                isValidWord = true;
-                break;
+    public static boolean isValidWord(
+            Map<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
+        if (TextUtils.isEmpty(word)) {
+            return false;
+        }
+        final CharSequence lowerCasedWord = word.toString().toLowerCase();
+        for (final String key : dictionaries.keySet()) {
+            if (key.equals(Suggest.DICT_KEY_WHITELIST)) continue;
+            final Dictionary dictionary = dictionaries.get(key);
+            if (dictionary.isValidWord(word)
+                    || (ignoreCase && dictionary.isValidWord(lowerCasedWord))) {
+                return true;
             }
         }
+        return false;
+    }
+
+    public static boolean isValidWordForAutoCorrection(
+            Map<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
+        final Dictionary whiteList = dictionaries.get(Suggest.DICT_KEY_WHITELIST);
+        // If "word" is in the whitelist dictionary, it should not be auto corrected.
+        if (whiteList != null && whiteList.isValidWord(word)) {
+            return false;
+        }
+        return isValidWord(dictionaries, word, ignoreCase);
+    }
+
+    private static boolean hasAutoCorrectionForWhitelistedWord(CharSequence whiteListedWord) {
+        return whiteListedWord != null;
+    }
+
+    private boolean hasAutoCorrectionForTypedWord(Map<String, Dictionary> dictionaries,
+            WordComposer wordComposer, ArrayList<CharSequence> suggestions, CharSequence typedWord,
+            int correctionMode) {
+        if (TextUtils.isEmpty(typedWord)) return false;
+        boolean isValidWord = isValidWordForAutoCorrection(dictionaries, typedWord, false);
         return wordComposer.size() > 1 && suggestions.size() > 0 && isValidWord
                 && (correctionMode == Suggest.CORRECTION_FULL
                 || correctionMode == Suggest.CORRECTION_FULL_BIGRAM);
     }
 
-    private boolean hasAutoCorrectForBinaryDictionary(WordComposer wordComposer,
+    private static boolean hasAutoCorrectionForQuickFix(CharSequence quickFixedWord) {
+        return quickFixedWord != null;
+    }
+
+    private boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
             ArrayList<CharSequence> suggestions, int correctionMode, int[] priorities,
             CharSequence typedWord, double autoCorrectionThreshold) {
         if (wordComposer.size() > 1 && (correctionMode == Suggest.CORRECTION_FULL
@@ -106,7 +140,4 @@ public class AutoCorrection {
         return false;
     }
 
-    private boolean hasAutoCorrectionForQuickFix(CharSequence quickFixedWord) {
-        return quickFixedWord != null;
-    }
 }
