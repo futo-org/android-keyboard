@@ -20,7 +20,7 @@ import android.util.Log;
 
 public class TextEntryState {
     private static final String TAG = TextEntryState.class.getSimpleName();
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static final int UNKNOWN = 0;
     private static final int START = 1;
