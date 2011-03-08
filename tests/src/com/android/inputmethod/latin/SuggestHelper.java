@@ -89,7 +89,8 @@ public class SuggestHelper {
     }
 
     public boolean isValidWord(CharSequence typed) {
-        return mSuggest.isValidWord(typed);
+        return AutoCorrection.isValidWordForAutoCorrection(mSuggest.getUnigramDictionaries(),
+                typed, false);
     }
 
     // TODO: This may be slow, but is OK for test so far.
