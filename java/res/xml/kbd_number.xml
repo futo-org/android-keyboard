@@ -31,6 +31,7 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
+    <!-- TODO: Should add number password layout just like the xlarge layout does. -->
     <switch>
         <case
             latin:colorScheme="white"

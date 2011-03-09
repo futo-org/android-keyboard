@@ -31,6 +31,8 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
+    <include
+        latin:keyboardLayout="@xml/kbd_numkey_styles" />
     <switch>
         <case
             latin:passwordInput="true"
@@ -40,11 +42,11 @@
                 <Spacer
                     latin:horizontalGap="32.076%p" />
                 <Key
-                    latin:keyLabel="1" />
+                    latin:keyStyle="num1KeyStyle" />
                 <Key
-                    latin:keyLabel="2" />
+                    latin:keyStyle="num2KeyStyle" />
                 <Key
-                    latin:keyLabel="3" />
+                    latin:keyStyle="num3KeyStyle" />
                 <Spacer
                     latin:horizontalGap="22.272%p" />
                 <Key
@@ -56,11 +58,11 @@
                 <Spacer
                     latin:horizontalGap="32.076%p" />
                 <Key
-                    latin:keyLabel="4" />
+                    latin:keyStyle="num4KeyStyle" />
                 <Key
-                    latin:keyLabel="5" />
+                    latin:keyStyle="num5KeyStyle" />
                 <Key
-                    latin:keyLabel="6" />
+                    latin:keyStyle="num6KeyStyle" />
                 <Spacer
                     latin:horizontalGap="17.371%p" />
                 <Key
@@ -72,11 +74,11 @@
                 <Spacer
                     latin:horizontalGap="32.076%p" />
                 <Key
-                    latin:keyLabel="7" />
+                    latin:keyStyle="num7KeyStyle" />
                 <Key
-                    latin:keyLabel="8" />
+                    latin:keyStyle="num8KeyStyle" />
                 <Key
-                    latin:keyLabel="9" />
+                    latin:keyStyle="num9KeyStyle" />
                 <!-- There is an empty area below the "Enter" key and right of the "9" key. To
                      ignore the touch event on the area, "9" is intentionally not marked as a right
                      edge key. -->
@@ -86,7 +88,7 @@
                 <Spacer
                     latin:horizontalGap="44.026%p" />
                 <Key
-                    latin:keyLabel="0" />
+                    latin:keyStyle="num0KeyStyle" />
                 <!-- There is an empty area below the "Enter" key and right of the "#" key. To
                      ignore the touch event on the area, "#" is intentionally not marked as a right
                      edge key. -->
