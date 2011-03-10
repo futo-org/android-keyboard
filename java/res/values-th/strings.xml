@@ -56,30 +56,18 @@
     <string name="label_more_key" msgid="3760239494604948502">"เพิ่มเติม"</string>
     <string name="label_pause_key" msgid="181098308428035340">"หยุดชั่วคราว"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"รอ"</string>
-    <!-- no translation found for description_delete_key (5586406298531883960) -->
-    <skip />
-    <!-- no translation found for description_return_key (8750044000806461678) -->
-    <skip />
-    <!-- no translation found for description_settings_key (7484527796782969219) -->
-    <skip />
-    <!-- no translation found for description_shift_key (346906866277787836) -->
-    <skip />
-    <!-- no translation found for description_space_key (8512130111575878517) -->
-    <skip />
-    <!-- no translation found for description_switch_alpha_symbol_key (4537975384274405537) -->
-    <skip />
-    <!-- no translation found for description_tab_key (828186583738307137) -->
-    <skip />
-    <!-- no translation found for description_voice_key (3057731675774652754) -->
-    <skip />
-    <!-- no translation found for description_symbols_on (2994366855822840559) -->
-    <skip />
-    <!-- no translation found for description_symbols_off (3209578267079515136) -->
-    <skip />
-    <!-- no translation found for description_shift_on (6983188949895971587) -->
-    <skip />
-    <!-- no translation found for description_shift_off (8553265474523069034) -->
-    <skip />
+    <string name="description_delete_key" msgid="5586406298531883960">"ลบ"</string>
+    <string name="description_return_key" msgid="8750044000806461678">"Return"</string>
+    <string name="description_settings_key" msgid="7484527796782969219">"การตั้งค่า"</string>
+    <string name="description_shift_key" msgid="346906866277787836">"Shift"</string>
+    <string name="description_space_key" msgid="8512130111575878517">"Space"</string>
+    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"สัญลักษณ์"</string>
+    <string name="description_tab_key" msgid="828186583738307137">"Tab"</string>
+    <string name="description_voice_key" msgid="3057731675774652754">"ป้อนข้อมูลด้วยเสียง"</string>
+    <string name="description_symbols_on" msgid="2994366855822840559">"สัญลักษณ์เปิดอยู่"</string>
+    <string name="description_symbols_off" msgid="3209578267079515136">"สัญลักษณ์ปิดอยู่"</string>
+    <string name="description_shift_on" msgid="6983188949895971587">"Shift เปิดอยู่"</string>
+    <string name="description_shift_off" msgid="8553265474523069034">"Shift ปิดอยู่"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"การป้อนข้อมูลด้วยเสียง"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"ขณะนี้การป้อนข้อมูลด้วยเสียงยังไม่ได้รับการสนับสนุนในภาษาของคุณ แต่ใช้ได้ในภาษาอังกฤษ"</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"ป้อนข้อมูลด้วยเสียงใช้การจดจำคำพูดของ Google "<a href="http://m.google.com/privacy">" นโยบายส่วนบุคคลของมือถือ"</a>"มีผลบังคับใช้"</string>
