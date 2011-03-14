@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -106,8 +107,9 @@ public class Suggest implements Dictionary.WordCallback {
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
-    public Suggest(Context context, int dictionaryResId) {
-        init(context, BinaryDictionary.initDictionary(context, dictionaryResId, DIC_MAIN));
+    public Suggest(Context context, int dictionaryResId, Locale locale) {
+        init(context, BinaryDictionary.initDictionaryFromManager(context, DIC_MAIN, locale,
+                dictionaryResId));
     }
 
     /* package for test */ Suggest(File dictionary, long startOffset, long length,
@@ -128,6 +130,19 @@ public class Suggest implements Dictionary.WordCallback {
         }
         mAutoCorrection = new AutoCorrection();
         initPool();
+    }
+
+    public void resetMainDict(Context context, int dictionaryResId, Locale locale) {
+        final BinaryDictionary newMainDict = BinaryDictionary.initDictionaryFromManager(context,
+                DIC_MAIN, locale, dictionaryResId);
+        mMainDict = newMainDict;
+        if (null == newMainDict) {
+            mUnigramDictionaries.remove(DICT_KEY_MAIN);
+            mBigramDictionaries.remove(DICT_KEY_MAIN);
+        } else {
+            mUnigramDictionaries.put(DICT_KEY_MAIN, newMainDict);
+            mBigramDictionaries.put(DICT_KEY_MAIN, newMainDict);
+        }
     }
 
     private void initPool() {
