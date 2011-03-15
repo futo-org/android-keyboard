@@ -54,8 +54,8 @@ public class BinaryDictionary extends Dictionary {
     private final int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_PROXIMITY_CHARS_SIZE];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
-    private final int[] mFrequencies = new int[MAX_WORDS];
-    private final int[] mFrequencies_bigrams = new int[MAX_BIGRAMS];
+    private final int[] mScores = new int[MAX_WORDS];
+    private final int[] mBigramScores = new int[MAX_BIGRAMS];
 
     private final KeyboardSwitcher mKeyboardSwitcher = KeyboardSwitcher.getInstance();
     private final SubtypeSwitcher mSubtypeSwitcher = SubtypeSwitcher.getInstance();
@@ -149,14 +149,14 @@ public class BinaryDictionary extends Dictionary {
     private native boolean isValidWordNative(int nativeData, char[] word, int wordLength);
     private native int getSuggestionsNative(int dict, int proximityInfo, int[] xCoordinates,
             int[] yCoordinates, int[] inputCodes, int codesSize, int flags, char[] outputChars,
-            int[] frequencies);
+            int[] scores);
     private native int getBigramsNative(int dict, char[] prevWord, int prevWordLength,
-            int[] inputCodes, int inputCodesLength, char[] outputChars, int[] frequencies,
+            int[] inputCodes, int inputCodesLength, char[] outputChars, int[] scores,
             int maxWordLength, int maxBigrams, int maxAlternatives);
 
     private final void loadDictionary(String path, long startOffset, long length) {
         mNativeDict = openNative(path, startOffset, length,
-                    TYPED_LETTER_MULTIPLIER, FULL_WORD_FREQ_MULTIPLIER,
+                    TYPED_LETTER_MULTIPLIER, FULL_WORD_SCORE_MULTIPLIER,
                     MAX_WORD_LENGTH, MAX_WORDS, MAX_PROXIMITY_CHARS_SIZE);
         mDictLength = length;
     }
@@ -168,7 +168,7 @@ public class BinaryDictionary extends Dictionary {
 
         char[] chars = previousWord.toString().toCharArray();
         Arrays.fill(mOutputChars_bigrams, (char) 0);
-        Arrays.fill(mFrequencies_bigrams, 0);
+        Arrays.fill(mBigramScores, 0);
 
         int codesSize = codes.size();
         Arrays.fill(mInputCodes, -1);
@@ -177,18 +177,18 @@ public class BinaryDictionary extends Dictionary {
                 Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
 
         int count = getBigramsNative(mNativeDict, chars, chars.length, mInputCodes, codesSize,
-                mOutputChars_bigrams, mFrequencies_bigrams, MAX_WORD_LENGTH, MAX_BIGRAMS,
+                mOutputChars_bigrams, mBigramScores, MAX_WORD_LENGTH, MAX_BIGRAMS,
                 MAX_PROXIMITY_CHARS_SIZE);
 
         for (int j = 0; j < count; ++j) {
-            if (mFrequencies_bigrams[j] < 1) break;
+            if (mBigramScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
             while (len <  MAX_WORD_LENGTH && mOutputChars_bigrams[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars_bigrams, start, len, mFrequencies_bigrams[j],
+                callback.addWord(mOutputChars_bigrams, start, len, mBigramScores[j],
                         mDicTypeId, DataType.BIGRAM);
             }
         }
@@ -197,17 +197,17 @@ public class BinaryDictionary extends Dictionary {
     @Override
     public void getWords(final WordComposer codes, final WordCallback callback) {
         final int count = getSuggestions(codes, mKeyboardSwitcher.getLatinKeyboard(),
-                mOutputChars, mFrequencies);
+                mOutputChars, mScores);
 
         for (int j = 0; j < count; ++j) {
-            if (mFrequencies[j] < 1) break;
+            if (mScores[j] < 1) break;
             final int start = j * MAX_WORD_LENGTH;
             int len = 0;
             while (len < MAX_WORD_LENGTH && mOutputChars[start + len] != 0) {
                 ++len;
             }
             if (len > 0) {
-                callback.addWord(mOutputChars, start, len, mFrequencies[j], mDicTypeId,
+                callback.addWord(mOutputChars, start, len, mScores[j], mDicTypeId,
                         DataType.UNIGRAM);
             }
         }
@@ -218,7 +218,7 @@ public class BinaryDictionary extends Dictionary {
     }
 
     /* package for test */ int getSuggestions(final WordComposer codes, final Keyboard keyboard,
-            char[] outputChars, int[] frequencies) {
+            char[] outputChars, int[] scores) {
         if (!isValidDictionary()) return -1;
 
         final int codesSize = codes.size();
@@ -232,12 +232,12 @@ public class BinaryDictionary extends Dictionary {
                     Math.min(alternatives.length, MAX_PROXIMITY_CHARS_SIZE));
         }
         Arrays.fill(outputChars, (char) 0);
-        Arrays.fill(frequencies, 0);
+        Arrays.fill(scores, 0);
 
         return getSuggestionsNative(
                 mNativeDict, keyboard.getProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
-                mFlags, outputChars, frequencies);
+                mFlags, outputChars, scores);
     }
 
     @Override

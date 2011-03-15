@@ -327,7 +327,7 @@ public class ExpandableDictionary extends Dictionary {
                                     final int finalFreq;
                                     if (skipPos < 0) {
                                         finalFreq = freq * snr * addedAttenuation
-                                                * FULL_WORD_FREQ_MULTIPLIER;
+                                                * FULL_WORD_SCORE_MULTIPLIER;
                                     } else {
                                         finalFreq = computeSkippedWordFinalFreq(freq,
                                                 snr * addedAttenuation, mInputLength);
