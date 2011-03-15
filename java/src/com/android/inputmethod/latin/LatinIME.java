@@ -212,15 +212,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private final ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
 
-    public abstract static class WordAlternatives {
-        protected CharSequence mChosenWord;
+    public class WordAlternatives {
+        private final CharSequence mChosenWord;
+        private final WordComposer mWordComposer;
 
-        public WordAlternatives() {
-            // Nothing
+        public WordAlternatives(CharSequence chosenWord, WordComposer wordComposer) {
+            mChosenWord = chosenWord;
+            mWordComposer = wordComposer;
         }
 
-        public WordAlternatives(CharSequence chosenWord) {
-            mChosenWord = chosenWord;
+        public CharSequence getChosenWord() {
+            return mChosenWord;
+        }
+
+        public CharSequence getOriginalWord() {
+            return mWordComposer.getTypedWord();
+        }
+
+        public SuggestedWords.Builder getAlternatives() {
+            return getTypedSuggestions(mWordComposer);
         }
 
         @Override
@@ -228,35 +238,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             return mChosenWord.hashCode();
         }
 
-        public abstract CharSequence getOriginalWord();
-
-        public CharSequence getChosenWord() {
-            return mChosenWord;
-        }
-
-        public abstract SuggestedWords.Builder getAlternatives();
-    }
-
-    public class TypedWordAlternatives extends WordAlternatives {
-        private WordComposer word;
-
-        public TypedWordAlternatives() {
-            // Nothing
-        }
-
-        public TypedWordAlternatives(CharSequence chosenWord, WordComposer wordComposer) {
-            super(chosenWord);
-            word = wordComposer;
-        }
-
         @Override
-        public CharSequence getOriginalWord() {
-            return word.getTypedWord();
-        }
-
-        @Override
-        public SuggestedWords.Builder getAlternatives() {
-            return getTypedSuggestions(word);
+        public boolean equals(Object o) {
+            return o instanceof CharSequence && TextUtils.equals(mChosenWord, (CharSequence)o);
         }
     }
 
@@ -1436,7 +1420,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         // Make a copy of the CharSequence, since it is/could be a mutable CharSequence
         final String resultCopy = result.toString();
-        TypedWordAlternatives entry = new TypedWordAlternatives(resultCopy,
+        WordAlternatives entry = new WordAlternatives(resultCopy,
                 new WordComposer(mWord));
         mWordHistory.add(entry);
     }
@@ -1727,9 +1711,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Search old suggestions to suggest re-corrected suggestions.
         for (WordAlternatives entry : mWordHistory) {
             if (TextUtils.equals(entry.getChosenWord(), touching.mWord)) {
-                if (entry instanceof TypedWordAlternatives) {
-                    foundWord = ((TypedWordAlternatives) entry).word;
-                }
+                foundWord = entry.mWordComposer;
                 alternatives = entry;
                 break;
             }
@@ -1749,7 +1731,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Found a match, show suggestions
         if (foundWord != null || alternatives != null) {
             if (alternatives == null) {
-                alternatives = new TypedWordAlternatives(touching.mWord, foundWord);
+                alternatives = new WordAlternatives(touching.mWord, foundWord);
             }
             showCorrections(alternatives);
             if (foundWord != null) {

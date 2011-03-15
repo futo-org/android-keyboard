@@ -42,7 +42,7 @@ public class SuggestHelper {
 
     protected SuggestHelper(Context context, File dictionaryPath, long startOffset, long length,
             KeyboardId keyboardId) {
-        mSuggest = new Suggest(dictionaryPath, startOffset, length);
+        mSuggest = new Suggest(dictionaryPath, startOffset, length, null);
         mKeyboard = new LatinKeyboard(context, keyboardId);
         mKeyDetector = new ProximityKeyDetector();
         init();

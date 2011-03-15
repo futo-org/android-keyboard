@@ -58,24 +58,27 @@ public class BinaryDictionary extends Dictionary {
     private final int[] mBigramScores = new int[MAX_BIGRAMS];
 
     private final KeyboardSwitcher mKeyboardSwitcher = KeyboardSwitcher.getInstance();
-    private final SubtypeSwitcher mSubtypeSwitcher = SubtypeSwitcher.getInstance();
 
-    private static class Flags {
-        private static class FlagEntry {
-            public final String mName;
-            public final int mValue;
-            public FlagEntry(String name, int value) {
-                mName = name;
-                mValue = value;
-            }
+    public static class Flag {
+        public final String mName;
+        public final int mValue;
+
+        public Flag(String name, int value) {
+            mName = name;
+            mValue = value;
         }
-        public static final FlagEntry[] ALL_FLAGS = {
-            // Here should reside all flags that trigger some special processing
-            // These *must* match the definition in UnigramDictionary enum in
-            // unigram_dictionary.h so please update both at the same time.
-            new FlagEntry("requiresGermanUmlautProcessing", 0x1)
-        };
     }
+
+    public static final Flag FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING =
+            new Flag("requiresGermanUmlautProcessing", 0x1);
+
+    private static final Flag[] ALL_FLAGS = {
+        // Here should reside all flags that trigger some special processing
+        // These *must* match the definition in UnigramDictionary enum in
+        // unigram_dictionary.h so please update both at the same time.
+        FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING,
+    };
+
     private int mFlags = 0;
 
     private BinaryDictionary() {
@@ -110,12 +113,12 @@ public class BinaryDictionary extends Dictionary {
                 return null;
             }
         }
-        sInstance.initFlags();
+        sInstance.mFlags = initFlags(ALL_FLAGS, SubtypeSwitcher.getInstance());
         return sInstance;
     }
 
     /* package for test */ static BinaryDictionary initDictionary(File dictionary, long startOffset,
-            long length, int dicTypeId) {
+            long length, int dicTypeId, Flag[] flagArray) {
         synchronized (sInstance) {
             sInstance.closeInternal();
             if (dictionary.isFile()) {
@@ -126,16 +129,17 @@ public class BinaryDictionary extends Dictionary {
                 return null;
             }
         }
+        sInstance.mFlags = initFlags(flagArray, null);
         return sInstance;
     }
 
-    private void initFlags() {
+    private static int initFlags(Flag[] flagArray, SubtypeSwitcher switcher) {
         int flags = 0;
-        for (Flags.FlagEntry entry : Flags.ALL_FLAGS) {
-            if (mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(entry.mName))
+        for (Flag entry : flagArray) {
+            if (switcher == null || switcher.currentSubtypeContainsExtraValueKey(entry.mName))
                 flags |= entry.mValue;
         }
-        mFlags = flags;
+        return flags;
     }
 
     static {

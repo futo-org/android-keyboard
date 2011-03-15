@@ -110,8 +110,10 @@ public class Suggest implements Dictionary.WordCallback {
         init(context, BinaryDictionary.initDictionary(context, dictionaryResId, DIC_MAIN));
     }
 
-    /* package for test */ Suggest(File dictionary, long startOffset, long length) {
-        init(null, BinaryDictionary.initDictionary(dictionary, startOffset, length, DIC_MAIN));
+    /* package for test */ Suggest(File dictionary, long startOffset, long length,
+            BinaryDictionary.Flag[] flagArray) {
+        init(null, BinaryDictionary.initDictionary(dictionary, startOffset, length, DIC_MAIN,
+                flagArray));
     }
 
     private void init(Context context, BinaryDictionary mainDict) {
@@ -367,8 +369,8 @@ public class Suggest implements Dictionary.WordCallback {
             scoreInfoList.add(new SuggestedWords.SuggestedWordInfo("+", false));
             for (int i = 0; i < mScores.length; ++i) {
                 if (normalizedScore > 0) {
-                    final String scoreThreshold = Integer.toString(mScores[i]) + " (" +
-                            normalizedScore + ")";
+                    final String scoreThreshold = String.format("%d (%4.2f)", mScores[i],
+                            normalizedScore);
                     scoreInfoList.add(
                             new SuggestedWords.SuggestedWordInfo(scoreThreshold, false));
                     normalizedScore = 0.0;
