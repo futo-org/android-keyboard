@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones de entrada"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonar al pulsar las teclas"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Aviso emergente sobre keypress"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Aviso emergente al pulsar tecla"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
     <string name="prediction_category" msgid="6361242011806282176">"Corrección de texto"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
@@ -41,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostrar siempre"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Ocultar siempre"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Corrección automática"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"La barra espaciadora y la puntuación corrigen automáticamente las palabras mal escritas"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"La barra espaciadora y puntuación insertan automáticamente las palabras corregidas"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivado"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Moderado"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Total"</string>
@@ -56,30 +56,18 @@
     <string name="label_more_key" msgid="3760239494604948502">"Más"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Espera"</string>
-    <!-- no translation found for description_delete_key (5586406298531883960) -->
-    <skip />
-    <!-- no translation found for description_return_key (8750044000806461678) -->
-    <skip />
-    <!-- no translation found for description_settings_key (7484527796782969219) -->
-    <skip />
-    <!-- no translation found for description_shift_key (346906866277787836) -->
-    <skip />
-    <!-- no translation found for description_space_key (8512130111575878517) -->
-    <skip />
-    <!-- no translation found for description_switch_alpha_symbol_key (4537975384274405537) -->
-    <skip />
-    <!-- no translation found for description_tab_key (828186583738307137) -->
-    <skip />
-    <!-- no translation found for description_voice_key (3057731675774652754) -->
-    <skip />
-    <!-- no translation found for description_symbols_on (2994366855822840559) -->
-    <skip />
-    <!-- no translation found for description_symbols_off (3209578267079515136) -->
-    <skip />
-    <!-- no translation found for description_shift_on (6983188949895971587) -->
-    <skip />
-    <!-- no translation found for description_shift_off (8553265474523069034) -->
-    <skip />
+    <string name="description_delete_key" msgid="5586406298531883960">"Eliminar"</string>
+    <string name="description_return_key" msgid="8750044000806461678">"Volver"</string>
+    <string name="description_settings_key" msgid="7484527796782969219">"Configuración"</string>
+    <string name="description_shift_key" msgid="346906866277787836">"Mayús"</string>
+    <string name="description_space_key" msgid="8512130111575878517">"Espacio"</string>
+    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Símbolos"</string>
+    <string name="description_tab_key" msgid="828186583738307137">"Tab"</string>
+    <string name="description_voice_key" msgid="3057731675774652754">"Entrada de voz"</string>
+    <string name="description_symbols_on" msgid="2994366855822840559">"Símbolos activados"</string>
+    <string name="description_symbols_off" msgid="3209578267079515136">"Símbolos desactivados"</string>
+    <string name="description_shift_on" msgid="6983188949895971587">"Mayús activado"</string>
+    <string name="description_shift_off" msgid="8553265474523069034">"Mayús desactivado"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Entrada por voz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"La entrada por voz no está admitida en tu idioma, pero sí funciona en inglés."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"La entrada de voz usa el reconocimiento de voz de Google. "<a href="http://m.google.com/privacy">"Se aplica la política de privacidad para"</a>" celulares."</string>
