@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.voice;
+package com.android.inputmethod.deprecated.voice;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

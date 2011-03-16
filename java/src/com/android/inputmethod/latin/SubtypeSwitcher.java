@@ -16,11 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.deprecated.VoiceConnector;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.LatinKeyboard;
-import com.android.inputmethod.voice.SettingsUtil;
-import com.android.inputmethod.voice.VoiceIMEConnector;
-import com.android.inputmethod.voice.VoiceInput;
 
 import android.content.Context;
 import android.content.Intent;
@@ -78,7 +76,7 @@ public class SubtypeSwitcher {
     private Locale mSystemLocale;
     private Locale mInputLocale;
     private String mInputLocaleStr;
-    private VoiceInput mVoiceInput;
+    private VoiceConnector.VoiceInputConnector mVoiceInputConnector;
     /*-----------------------------------------------------------*/
 
     private boolean mIsNetworkConnected;
@@ -113,7 +111,7 @@ public class SubtypeSwitcher {
         mCurrentSubtype = null;
         mAllEnabledSubtypesOfCurrentInputMethod = null;
         // TODO: Voice input should be created here
-        mVoiceInput = null;
+        mVoiceInputConnector = null;
         mConfigUseSpacebarLanguageSwitcher = mResources.getBoolean(
                 R.bool.config_use_spacebar_language_switcher);
         if (mConfigUseSpacebarLanguageSwitcher)
@@ -243,30 +241,30 @@ public class SubtypeSwitcher {
         // We cancel its status when we change mode, while we reset otherwise.
         if (isKeyboardMode()) {
             if (modeChanged) {
-                if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
-                    mVoiceInput.cancel();
+                if (VOICE_MODE.equals(oldMode) && mVoiceInputConnector != null) {
+                    mVoiceInputConnector.cancel();
                 }
             }
             if (modeChanged || languageChanged) {
                 updateShortcutIME();
                 mService.onRefreshKeyboard();
             }
-        } else if (isVoiceMode() && mVoiceInput != null) {
+        } else if (isVoiceMode() && mVoiceInputConnector != null) {
             if (VOICE_MODE.equals(oldMode)) {
-                mVoiceInput.reset();
+                mVoiceInputConnector.reset();
             }
             // If needsToShowWarningDialog is true, voice input need to show warning before
             // show recognition view.
             if (languageChanged || modeChanged
-                    || VoiceIMEConnector.getInstance().needsToShowWarningDialog()) {
+                    || VoiceConnector.getInstance().needsToShowWarningDialog()) {
                 triggerVoiceIME();
             }
         } else {
             Log.w(TAG, "Unknown subtype mode: " + newMode);
-            if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
+            if (VOICE_MODE.equals(oldMode) && mVoiceInputConnector != null) {
                 // We need to reset the voice input to release the resources and to reset its status
                 // as it is not the current input mode.
-                mVoiceInput.reset();
+                mVoiceInputConnector.reset();
             }
         }
     }
@@ -507,9 +505,9 @@ public class SubtypeSwitcher {
     // Voice Input functions //
     ///////////////////////////
 
-    public boolean setVoiceInput(VoiceInput vi) {
-        if (mVoiceInput == null && vi != null) {
-            mVoiceInput = vi;
+    public boolean setVoiceInputConnector(VoiceConnector.VoiceInputConnector vi) {
+        if (mVoiceInputConnector == null && vi != null) {
+            mVoiceInputConnector = vi;
             if (isVoiceMode()) {
                 if (DBG) {
                     Log.d(TAG, "Set and call voice input.: " + getInputLocaleStr());
@@ -527,7 +525,7 @@ public class SubtypeSwitcher {
 
     private void triggerVoiceIME() {
         if (!mService.isInputViewShown()) return;
-        VoiceIMEConnector.getInstance().startListening(false,
+        VoiceConnector.getInstance().startListening(false,
                 KeyboardSwitcher.getInstance().getInputView().getWindowToken());
     }
 
@@ -612,30 +610,14 @@ public class SubtypeSwitcher {
     }
 
 
-    // A list of locales which are supported by default for voice input, unless we get a
-    // different list from Gservices.
-    private static final String DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES =
-            "en " +
-            "en_US " +
-            "en_GB " +
-            "en_AU " +
-            "en_CA " +
-            "en_IE " +
-            "en_IN " +
-            "en_NZ " +
-            "en_SG " +
-            "en_ZA ";
-
     public boolean isVoiceSupported(String locale) {
         // Get the current list of supported locales and check the current locale against that
         // list. We cache this value so as not to check it every time the user starts a voice
         // input. Because this method is called by onStartInputView, this should mean that as
         // long as the locale doesn't change while the user is keeping the IME open, the
         // value should never be stale.
-        String supportedLocalesString = SettingsUtil.getSettingsString(
-                mService.getContentResolver(),
-                SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
-                DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
+        String supportedLocalesString = VoiceConnector.getSupportedLocalesString(
+                mService.getContentResolver());
         List<String> voiceInputSupportedLocales = Arrays.asList(
                 supportedLocalesString.split("\\s+"));
         return voiceInputSupportedLocales.contains(locale);

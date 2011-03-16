@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.deprecated.VoiceConnector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -23,7 +24,6 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.latin.Utils.RingCharBuffer;
-import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -146,7 +146,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private String mInputMethodId;
     private KeyboardSwitcher mKeyboardSwitcher;
     private SubtypeSwitcher mSubtypeSwitcher;
-    private VoiceIMEConnector mVoiceConnector;
+    private VoiceConnector mVoiceConnector;
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
@@ -419,7 +419,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mReceiver, filter);
-        mVoiceConnector = VoiceIMEConnector.init(this, prefs, mHandler);
+        mVoiceConnector = VoiceConnector.init(this, prefs, mHandler);
     }
 
     private void initSuggest() {
@@ -531,7 +531,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
-        final VoiceIMEConnector voiceIme = mVoiceConnector;
+        final VoiceConnector voiceIme = mVoiceConnector;
         voiceIme.resetVoiceStates(Utils.isPasswordInputType(attribute.inputType)
                 || Utils.isVisiblePasswordInputType(attribute.inputType));
 

@@ -14,8 +14,13 @@
  * the License.
  */
 
-package com.android.inputmethod.voice;
+package com.android.inputmethod.deprecated;
 
+import com.android.inputmethod.deprecated.voice.FieldContext;
+import com.android.inputmethod.deprecated.voice.Hints;
+import com.android.inputmethod.deprecated.voice.SettingsUtil;
+import com.android.inputmethod.deprecated.voice.VoiceInput;
+import com.android.inputmethod.deprecated.voice.VoiceInputLogger;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.LatinIME;
@@ -28,6 +33,7 @@ import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -62,8 +68,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VoiceIMEConnector implements VoiceInput.UiListener {
-    private static final VoiceIMEConnector sInstance = new VoiceIMEConnector();
+public class VoiceConnector implements VoiceInput.UiListener {
+    private static final VoiceConnector sInstance = new VoiceConnector();
 
     public static final boolean VOICE_INSTALLED = true;
     private static final boolean ENABLE_VOICE_BUTTON = true;
@@ -77,7 +83,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
             "has_used_voice_input_unsupported_locale";
     private static final int RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO = 6;
 
-    private static final String TAG = VoiceIMEConnector.class.getSimpleName();
+    private static final String TAG = VoiceConnector.class.getSimpleName();
     private static final boolean DEBUG = LatinImeLogger.sDBG;
 
     private boolean mAfterVoiceInput;
@@ -105,12 +111,12 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     private final Map<String, List<CharSequence>> mWordToSuggestions =
             new HashMap<String, List<CharSequence>>();
 
-    public static VoiceIMEConnector init(LatinIME context, SharedPreferences prefs, UIHandler h) {
+    public static VoiceConnector init(LatinIME context, SharedPreferences prefs, UIHandler h) {
         sInstance.initInternal(context, prefs, h);
         return sInstance;
     }
 
-    public static VoiceIMEConnector getInstance() {
+    public static VoiceConnector getInstance() {
         return sInstance;
     }
 
@@ -133,7 +139,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
         }
     }
 
-    private VoiceIMEConnector() {
+    private VoiceConnector() {
         // Intentional empty constructor for singleton.
     }
 
@@ -674,7 +680,7 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     public void onAttachedToWindow() {
         // After onAttachedToWindow, we can show the voice warning dialog. See startListening()
         // above.
-        mSubtypeSwitcher.setVoiceInput(mVoiceInput);
+        VoiceInputConnector.getInstance().setVoiceInput(mVoiceInput, mSubtypeSwitcher);
     }
 
     public void onConfigurationChanged(Configuration configuration) {
@@ -724,5 +730,92 @@ public class VoiceIMEConnector implements VoiceInput.UiListener {
     private class VoiceResults {
         List<String> candidates;
         Map<String, List<CharSequence>> alternatives;
+    }
+
+    public static class VoiceLoggerConnector {
+        private static final VoiceLoggerConnector sInstance = new VoiceLoggerConnector();
+        private VoiceInputLogger mLogger;
+
+        public static VoiceLoggerConnector getInstance(Context context) {
+            if (sInstance.mLogger == null) {
+                // Not thread safe, but it's ok.
+                sInstance.mLogger = VoiceInputLogger.getLogger(context);
+            }
+            return sInstance;
+        }
+
+        // private for the singleton
+        private VoiceLoggerConnector() {
+        }
+
+        public void settingsWarningDialogCancel() {
+            mLogger.settingsWarningDialogCancel();
+        }
+
+        public void settingsWarningDialogOk() {
+            mLogger.settingsWarningDialogOk();
+        }
+
+        public void settingsWarningDialogShown() {
+            mLogger.settingsWarningDialogShown();
+        }
+
+        public void settingsWarningDialogDismissed() {
+            mLogger.settingsWarningDialogDismissed();
+        }
+
+        public void voiceInputSettingEnabled(boolean enabled) {
+            if (enabled) {
+                mLogger.voiceInputSettingEnabled();
+            } else {
+                mLogger.voiceInputSettingDisabled();
+            }
+        }
+    }
+
+    public static class VoiceInputConnector {
+        private static final VoiceInputConnector sInstance = new VoiceInputConnector();
+        private VoiceInput mVoiceInput;
+        public static VoiceInputConnector getInstance() {
+            return sInstance;
+        }
+        public void setVoiceInput(VoiceInput voiceInput, SubtypeSwitcher switcher) {
+            if (mVoiceInput == null && voiceInput != null) {
+                mVoiceInput = voiceInput;
+                switcher.setVoiceInputConnector(this);
+            }
+        }
+
+        private VoiceInputConnector() {
+        }
+
+        public void cancel() {
+            if (mVoiceInput != null) mVoiceInput.cancel();
+        }
+
+        public void reset() {
+            if (mVoiceInput != null) mVoiceInput.reset();
+        }
+    }
+
+    // A list of locales which are supported by default for voice input, unless we get a
+    // different list from Gservices.
+    private static final String DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES =
+            "en " +
+            "en_US " +
+            "en_GB " +
+            "en_AU " +
+            "en_CA " +
+            "en_IE " +
+            "en_IN " +
+            "en_NZ " +
+            "en_SG " +
+            "en_ZA ";
+
+    public static String getSupportedLocalesString (ContentResolver resolver) {
+        return SettingsUtil.getSettingsString(
+                resolver,
+                SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
+                DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
     }
 }

@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.deprecated.VoiceConnector;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.Utils;
-import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -264,6 +264,6 @@ public class LatinKeyboardView extends KeyboardView {
     @Override
     protected void onAttachedToWindow() {
         // Token is available from here.
-        VoiceIMEConnector.getInstance().onAttachedToWindow();
+        VoiceConnector.getInstance().onAttachedToWindow();
     }
 }
