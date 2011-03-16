@@ -454,7 +454,20 @@ public class Suggest implements Dictionary.WordCallback {
 
         // Check if it's the same word, only caps are different
         if (compareCaseInsensitive(mLowerOriginalWord, word, offset, length)) {
-            pos = 0;
+            // TODO: remove this surrounding if clause and move this logic to
+            // getSuggestedWordBuilder.
+            if (suggestions.size() > 0) {
+                final String currentHighestWordLowerCase =
+                        suggestions.get(0).toString().toLowerCase();
+                // If the current highest word is also equal to typed word, we need to compare
+                // frequency to determine the insertion position. This does not ensure strictly
+                // correct ordering, but ensures the top score is on top which is enough for
+                // removing duplicates correctly.
+                if (compareCaseInsensitive(currentHighestWordLowerCase, word, offset, length)
+                        && freq <= priorities[0]) {
+                    pos = 1;
+                }
+            }
         } else {
             if (dataType == Dictionary.DataType.UNIGRAM) {
                 // Check if the word was already added before (by bigram data)
