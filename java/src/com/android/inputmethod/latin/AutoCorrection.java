@@ -48,7 +48,7 @@ public class AutoCorrection {
     }
 
     public void updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
-            WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] priorities,
+            WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
             CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
             CharSequence quickFixedWord, CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
@@ -62,7 +62,7 @@ public class AutoCorrection {
             mHasAutoCorrection = true;
             mAutoCorrectionWord = quickFixedWord;
         } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions, correctionMode,
-                priorities, typedWord, autoCorrectionThreshold)) {
+                sortedScores, typedWord, autoCorrectionThreshold)) {
             mHasAutoCorrection = true;
             mAutoCorrectionWord = suggestions.get(0);
         }
@@ -114,13 +114,13 @@ public class AutoCorrection {
     }
 
     private boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,
-            ArrayList<CharSequence> suggestions, int correctionMode, int[] priorities,
+            ArrayList<CharSequence> suggestions, int correctionMode, int[] sortedScores,
             CharSequence typedWord, double autoCorrectionThreshold) {
         if (wordComposer.size() > 1 && (correctionMode == Suggest.CORRECTION_FULL
                 || correctionMode == Suggest.CORRECTION_FULL_BIGRAM)
-                && typedWord != null && suggestions.size() > 0 && priorities.length > 0) {
+                && typedWord != null && suggestions.size() > 0 && sortedScores.length > 0) {
             final CharSequence autoCorrectionCandidate = suggestions.get(0);
-            final int autoCorrectionCandidateScore = priorities[0];
+            final int autoCorrectionCandidateScore = sortedScores[0];
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
             mNormalizedScore = Utils.calcNormalizedScore(

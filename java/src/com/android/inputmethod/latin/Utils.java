@@ -285,7 +285,7 @@ public class Utils {
 
     // In dictionary.cpp, getSuggestion() method,
     // suggestion scores are computed using the below formula.
-    // original score (called 'frequency')
+    // original score
     //  := pow(mTypedLetterMultiplier (this is defined 2),
     //         (the number of matched characters between typed word and suggested word))
     //     * (individual word's score which defined in the unigram dictionary,
@@ -295,7 +295,7 @@ public class Utils {
     //       (full match up to min(before.length(), after.length())
     //       => Then multiply by FULL_MATCHED_WORDS_PROMOTION_RATE (this is defined 1.2)
     //     - If the word is a true full match except for differences in accents or
-    //       capitalization, then treat it as if the frequency was 255.
+    //       capitalization, then treat it as if the score was 255.
     //     - If before.length() == after.length()
     //       => multiply by mFullWordMultiplier (this is defined 2))
     // So, maximum original score is pow(2, min(before.length(), after.length())) * 255 * 2 * 1.2
@@ -560,5 +560,67 @@ public class Utils {
         } catch (UnsatisfiedLinkError ule) {
             Log.e(TAG, "Could not load native library jni_latinime");
         }
+    }
+
+    /**
+     * Returns true if a and b are equal ignoring the case of the character.
+     * @param a first character to check
+     * @param b second character to check
+     * @return {@code true} if a and b are equal, {@code false} otherwise.
+     */
+    public static boolean equalsIgnoreCase(char a, char b) {
+        // Some language, such as Turkish, need testing both cases.
+        return a == b
+                || Character.toLowerCase(a) == Character.toLowerCase(b)
+                || Character.toUpperCase(a) == Character.toUpperCase(b);
+    }
+
+    /**
+     * Returns true if a and b are equal ignoring the case of the characters, including if they are
+     * both null.
+     * @param a first CharSequence to check
+     * @param b second CharSequence to check
+     * @return {@code true} if a and b are equal, {@code false} otherwise.
+     */
+    public static boolean equalsIgnoreCase(CharSequence a, CharSequence b) {
+        if (a == b)
+            return true;  // including both a and b are null.
+        if (a == null || b == null)
+            return false;
+        final int length = a.length();
+        if (length != b.length())
+            return false;
+        for (int i = 0; i < length; i++) {
+            if (!equalsIgnoreCase(a.charAt(i), b.charAt(i)))
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if a and b are equal ignoring the case of the characters, including if a is null
+     * and b is zero length.
+     * @param a CharSequence to check
+     * @param b character array to check
+     * @param offset start offset of array b
+     * @param length length of characters in array b
+     * @return {@code true} if a and b are equal, {@code false} otherwise.
+     * @throws IndexOutOfBoundsException
+     *   if {@code offset < 0 || length < 0 || offset + length > data.length}.
+     * @throws NullPointerException if {@code b == null}.
+     */
+    public static boolean equalsIgnoreCase(CharSequence a, char[] b, int offset, int length) {
+        if (offset < 0 || length < 0 || length > b.length - offset)
+            throw new IndexOutOfBoundsException("array.length=" + b.length + " offset=" + offset
+                    + " length=" + length);
+        if (a == null)
+            return length == 0;  // including a is null and b is zero length.
+        if (a.length() != length)
+            return false;
+        for (int i = 0; i < length; i++) {
+            if (!equalsIgnoreCase(a.charAt(i), b[offset + i]))
+                return false;
+        }
+        return true;
     }
 }
