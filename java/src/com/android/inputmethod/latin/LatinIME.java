@@ -898,8 +898,8 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             if (DEBUG) {
                 Log.d(TAG, "Touchable region " + x + ", " + y + ", " + width + ", " + height);
             }
-            outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
-            outInsets.touchableRegion.set(x, y, width, height);
+            //@@@outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
+            //@@@outInsets.touchableRegion.set(x, y, width, height);
         }
     }
 
