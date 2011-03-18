@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.deprecated;
 
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.deprecated.voice.FieldContext;
 import com.android.inputmethod.deprecated.voice.Hints;
 import com.android.inputmethod.deprecated.voice.SettingsUtil;
@@ -60,7 +61,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -99,7 +99,7 @@ public class VoiceConnector implements VoiceInput.UiListener {
     private boolean mVoiceButtonOnPrimary;
     private boolean mVoiceInputHighlighted;
 
-    private InputMethodManager mImm;
+    private InputMethodManagerCompatWrapper mImm;
     private LatinIME mService;
     private AlertDialog mVoiceWarningDialog;
     private VoiceInput mVoiceInput;
@@ -123,7 +123,7 @@ public class VoiceConnector implements VoiceInput.UiListener {
     private void initInternal(LatinIME service, SharedPreferences prefs, UIHandler h) {
         mService = service;
         mHandler = h;
-        mImm = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mImm = InputMethodManagerCompatWrapper.getInstance(service);
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         if (VOICE_INSTALLED) {
             mVoiceInput = new VoiceInput(service, this);

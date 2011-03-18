@@ -17,14 +17,13 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.CompatUtils;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceConnector;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.backup.BackupManager;
-import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -40,7 +39,6 @@ import android.text.AutoText;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -225,8 +223,7 @@ public class Settings extends PreferenceActivity
     public boolean onPreferenceClick(Preference pref) {
         if (pref == mInputLanguageSelection) {
             startActivity(CompatUtils.getInputLanguageSelectionIntent(
-                    Utils.getInputMethodId(
-                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE),
+                    Utils.getInputMethodId(InputMethodManagerCompatWrapper.getInstance(this),
                             getApplicationInfo().packageName), 0));
             return true;
         }

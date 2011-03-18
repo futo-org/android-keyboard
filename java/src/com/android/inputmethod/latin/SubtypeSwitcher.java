@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceConnector;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.LatinKeyboard;
@@ -33,8 +35,6 @@ import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,12 +57,13 @@ public class SubtypeSwitcher {
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
     private /* final */ LatinIME mService;
     private /* final */ SharedPreferences mPrefs;
-    private /* final */ InputMethodManager mImm;
+    private /* final */ InputMethodManagerCompatWrapper mImm;
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
     private /* final */ boolean mConfigUseSpacebarLanguageSwitcher;
-    private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
-            new ArrayList<InputMethodSubtype>();
+    private final ArrayList<InputMethodSubtypeCompatWrapper>
+            mEnabledKeyboardSubtypesOfCurrentInputMethod =
+                    new ArrayList<InputMethodSubtypeCompatWrapper>();
     private final ArrayList<String> mEnabledLanguagesOfCurrentInputMethod = new ArrayList<String>();
 
     /*-----------------------------------------------------------*/
@@ -70,9 +71,9 @@ public class SubtypeSwitcher {
     private boolean mNeedsToDisplayLanguage;
     private boolean mIsSystemLanguageSameAsInputLanguage;
     private InputMethodInfo mShortcutInputMethodInfo;
-    private InputMethodSubtype mShortcutSubtype;
-    private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
-    private InputMethodSubtype mCurrentSubtype;
+    private InputMethodSubtypeCompatWrapper mShortcutSubtype;
+    private List<InputMethodSubtypeCompatWrapper> mAllEnabledSubtypesOfCurrentInputMethod;
+    private InputMethodSubtypeCompatWrapper mCurrentSubtype;
     private Locale mSystemLocale;
     private Locale mInputLocale;
     private String mInputLocaleStr;
@@ -100,7 +101,7 @@ public class SubtypeSwitcher {
         mService = service;
         mPrefs = prefs;
         mResources = service.getResources();
-        mImm = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mImm = InputMethodManagerCompatWrapper.getInstance(service);
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
@@ -148,7 +149,7 @@ public class SubtypeSwitcher {
                 null, true);
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
-        for (InputMethodSubtype ims: mAllEnabledSubtypesOfCurrentInputMethod) {
+        for (InputMethodSubtypeCompatWrapper ims: mAllEnabledSubtypesOfCurrentInputMethod) {
             final String locale = ims.getLocale();
             final String mode = ims.getMode();
             mLocaleSplitter.setString(locale);
@@ -182,10 +183,10 @@ public class SubtypeSwitcher {
                             + ", " + mShortcutSubtype.getMode())));
         }
         // TODO: Update an icon for shortcut IME
-        Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
+        Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>> shortcuts =
                 mImm.getShortcutInputMethodsAndSubtypes();
         for (InputMethodInfo imi: shortcuts.keySet()) {
-            List<InputMethodSubtype> subtypes = shortcuts.get(imi);
+            List<InputMethodSubtypeCompatWrapper> subtypes = shortcuts.get(imi);
             // TODO: Returns the first found IMI for now. Should handle all shortcuts as
             // appropriate.
             mShortcutInputMethodInfo = imi;
@@ -204,7 +205,7 @@ public class SubtypeSwitcher {
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
-    public void updateSubtype(InputMethodSubtype newSubtype) {
+    public void updateSubtype(InputMethodSubtypeCompatWrapper newSubtype) {
         final String newLocale;
         final String newMode;
         final String oldMode = getCurrentSubtypeMode();
@@ -306,7 +307,7 @@ public class SubtypeSwitcher {
             return;
         }
         final String imiId = mShortcutInputMethodInfo.getId();
-        final InputMethodSubtype subtype = mShortcutSubtype;
+        final InputMethodSubtypeCompatWrapper subtype = mShortcutSubtype;
         new Thread("SwitchToShortcutIME") {
             @Override
             public void run() {
@@ -319,7 +320,7 @@ public class SubtypeSwitcher {
         return getSubtypeIcon(mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
-    private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtype subtype) {
+    private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtypeCompatWrapper subtype) {
         final PackageManager pm = mService.getPackageManager();
         if (imi != null) {
             final String imiPackageName = imi.getPackageName();
@@ -359,8 +360,9 @@ public class SubtypeSwitcher {
         if (mShortcutSubtype == null)
             return true;
         final boolean allowsImplicitlySelectedSubtypes = true;
-        for (final InputMethodSubtype enabledSubtype : mImm.getEnabledInputMethodSubtypeList(
-                mShortcutInputMethodInfo, allowsImplicitlySelectedSubtypes)) {
+        for (final InputMethodSubtypeCompatWrapper enabledSubtype :
+                mImm.getEnabledInputMethodSubtypeList(
+                        mShortcutInputMethodInfo, allowsImplicitlySelectedSubtypes)) {
             if (enabledSubtype.equals(mShortcutSubtype))
                 return true;
         }
