@@ -26,14 +26,18 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Locale;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.
  */
 public class BinaryDictionary extends Dictionary {
 
+    public static final String DICTIONARY_PACK_AUTHORITY =
+            "com.android.inputmethod.latin.dictionarypack";
+
     /**
-     * There is difference between what java and native code can handle.
+     * There is a difference between what java and native code can handle.
      * This value should only be used in BinaryDictionary.java
      * It is necessary to keep it at this value because some languages e.g. German have
      * really long words.
@@ -85,10 +89,11 @@ public class BinaryDictionary extends Dictionary {
     }
 
     /**
-     * Initialize a dictionary from a raw resource file
+     * Initializes a dictionary from a raw resource file
      * @param context application context for reading resources
      * @param resId the resource containing the raw binary dictionary
-     * @return initialized instance of BinaryDictionary
+     * @param dicTypeId the type of the dictionary being created, out of the list in Suggest.DIC_*
+     * @return an initialized instance of BinaryDictionary
      */
     public static BinaryDictionary initDictionary(Context context, int resId, int dicTypeId) {
         synchronized (sInstance) {
@@ -144,6 +149,37 @@ public class BinaryDictionary extends Dictionary {
 
     static {
         Utils.loadNativeLibrary();
+    }
+
+    /**
+     * Initializes a dictionary from a dictionary pack.
+     *
+     * This searches for a content provider providing a dictionary pack for the specified
+     * locale. If none is found, it falls back to using the resource passed as fallBackResId
+     * as a dictionary.
+     * @param context application context for reading resources
+     * @param dicTypeId the type of the dictionary being created, out of the list in Suggest.DIC_*
+     * @param locale the locale for which to create the dictionary
+     * @param fallBackResId the id of the resource to use as a fallback if no pack is found
+     * @return an initialized instance of BinaryDictionary
+     */
+    public static BinaryDictionary initDictionaryFromManager(Context context, int dicTypeId,
+            Locale locale, int fallbackResId) {
+        if (null == locale) {
+            Log.e(TAG, "No locale defined for dictionary");
+            return initDictionary(context, fallbackResId, dicTypeId);
+        }
+        synchronized (sInstance) {
+            sInstance.closeInternal();
+
+            final AssetFileAddress dictFile = BinaryDictionaryGetter.getDictionaryFile(locale,
+                    context, fallbackResId);
+            if (null != dictFile) {
+                sInstance.loadDictionary(dictFile.mFilename, dictFile.mOffset, dictFile.mLength);
+                sInstance.mDicTypeId = dicTypeId;
+            }
+        }
+        return sInstance;
     }
 
     private native int openNative(String sourceDir, long dictOffset, long dictSize,

@@ -120,6 +120,12 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
 
+    /**
+     * The name of the scheme used by the Package Manager to warn of a new package installation,
+     * replacement or removal.
+     */
+    private static final String SCHEME_PACKAGE = "package";
+
     private int mSuggestionVisibility;
     private static final int SUGGESTION_VISIBILILTY_SHOW_VALUE
             = R.string.prefs_suggestion_visibility_show_value;
@@ -207,6 +213,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private String mSuggestPuncs;
     // TODO: Move this flag to VoiceIMEConnector
     private boolean mConfigurationChanging;
+
+    // Object for reacting to adding/removing a dictionary pack.
+    private BroadcastReceiver mDictionaryPackInstallReceiver =
+            new DictionaryPackInstallBroadcastReceiver(this);
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private CharSequence mEnteredText;
@@ -415,18 +425,26 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mOrientation = res.getConfiguration().orientation;
         initSuggestPuncList();
 
-        // register to receive ringer mode change and network state change.
+        // Register to receive ringer mode change and network state change.
+        // Also receive installation and removal of a dictionary pack.
         final IntentFilter filter = new IntentFilter();
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mReceiver, filter);
         mVoiceConnector = VoiceConnector.init(this, prefs, mHandler);
+
+        final IntentFilter packageFilter = new IntentFilter();
+        packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        packageFilter.addDataScheme(SCHEME_PACKAGE);
+        registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
     }
 
     private void initSuggest() {
-        String locale = mSubtypeSwitcher.getInputLocaleStr();
+        final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
+        final Locale keyboardLocale = new Locale(localeStr);
 
-        Locale savedLocale = mSubtypeSwitcher.changeSystemLocale(new Locale(locale));
+        final Locale savedLocale = mSubtypeSwitcher.changeSystemLocale(keyboardLocale);
         if (mSuggest != null) {
             mSuggest.close();
         }
@@ -435,20 +453,20 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         final Resources res = mResources;
         int mainDicResId = Utils.getMainDictionaryResourceId(res);
-        mSuggest = new Suggest(this, mainDicResId);
+        mSuggest = new Suggest(this, mainDicResId, keyboardLocale);
         loadAndSetAutoCorrectionThreshold(prefs);
         updateAutoTextEnabled();
 
-        mUserDictionary = new UserDictionary(this, locale);
+        mUserDictionary = new UserDictionary(this, localeStr);
         mSuggest.setUserDictionary(mUserDictionary);
 
         mContactsDictionary = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
         mSuggest.setContactsDictionary(mContactsDictionary);
 
-        mAutoDictionary = new AutoDictionary(this, this, locale, Suggest.DIC_AUTO);
+        mAutoDictionary = new AutoDictionary(this, this, localeStr, Suggest.DIC_AUTO);
         mSuggest.setAutoDictionary(mAutoDictionary);
 
-        mUserBigramDictionary = new UserBigramDictionary(this, this, locale, Suggest.DIC_USER);
+        mUserBigramDictionary = new UserBigramDictionary(this, this, localeStr, Suggest.DIC_USER);
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
 
         updateCorrectionMode();
@@ -458,6 +476,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSubtypeSwitcher.changeSystemLocale(savedLocale);
     }
 
+    /* package private */ void resetSuggestMainDict() {
+        final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
+        final Locale keyboardLocale = new Locale(localeStr);
+        int mainDicResId = Utils.getMainDictionaryResourceId(mResources);
+        mSuggest.resetMainDict(this, mainDicResId, keyboardLocale);
+    }
+
     @Override
     public void onDestroy() {
         if (mSuggest != null) {
@@ -465,6 +490,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             mSuggest = null;
         }
         unregisterReceiver(mReceiver);
+        unregisterReceiver(mDictionaryPackInstallReceiver);
         mVoiceConnector.destroy();
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();

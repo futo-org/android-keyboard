@@ -34,7 +34,9 @@ public class SuggestHelper {
     private final KeyDetector mKeyDetector;
 
     public SuggestHelper(Context context, int dictionaryId, KeyboardId keyboardId) {
-        mSuggest = new Suggest(context, dictionaryId);
+        // Use null as the locale for Suggest so as to force it to use the internal dictionary
+        // (and not try to find a dictionary provider for a specified locale)
+        mSuggest = new Suggest(context, dictionaryId, null);
         mKeyboard = new LatinKeyboard(context, keyboardId);
         mKeyDetector = new ProximityKeyDetector();
         init();

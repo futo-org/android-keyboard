@@ -551,7 +551,9 @@ public class Utils {
      * @return main dictionary resource id
      */
     public static int getMainDictionaryResourceId(Resources res) {
-        return res.getIdentifier("main", "raw", LatinIME.class.getPackage().getName());
+        final String MAIN_DIC_NAME = "main";
+        String packageName = LatinIME.class.getPackage().getName();
+        return res.getIdentifier(MAIN_DIC_NAME, "raw", packageName);
     }
 
     public static void loadNativeLibrary() {

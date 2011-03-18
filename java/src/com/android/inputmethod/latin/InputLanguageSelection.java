@@ -106,8 +106,8 @@ public class InputLanguageSelection extends PreferenceActivity {
         conf.locale = locale;
         res.updateConfiguration(conf, res.getDisplayMetrics());
 
-        int mainDicResId = Utils.getMainDictionaryResourceId(res);
-        BinaryDictionary bd = BinaryDictionary.initDictionary(this, mainDicResId, Suggest.DIC_MAIN);
+        BinaryDictionary bd = BinaryDictionary.initDictionaryFromManager(this, Suggest.DIC_MAIN,
+                locale, Utils.getMainDictionaryResourceId(res));
 
         // Is the dictionary larger than a placeholder? Arbitrarily chose a lower limit of
         // 4000-5000 words, whereas the LARGE_DICTIONARY is about 20000+ words.
