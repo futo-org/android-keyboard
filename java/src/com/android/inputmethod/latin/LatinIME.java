@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.deprecated.VoiceConnector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -2215,13 +2216,10 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
                 di.dismiss();
                 switch (position) {
                 case 0:
-                    Intent intent = new Intent(
-                            android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                    Intent intent = CompatUtils.getInputLanguageSelectionIntent(
+                            mInputMethodId, Intent.FLAG_ACTIVITY_NEW_TASK
                             | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED
                             | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra(android.provider.Settings.EXTRA_INPUT_METHOD_ID,
-                            mInputMethodId);
                     startActivity(intent);
                     break;
                 case 1:

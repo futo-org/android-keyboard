@@ -16,11 +16,13 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.deprecated.VoiceConnector;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.backup.BackupManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -38,6 +40,7 @@ import android.text.AutoText;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -221,16 +224,10 @@ public class Settings extends PreferenceActivity
     @Override
     public boolean onPreferenceClick(Preference pref) {
         if (pref == mInputLanguageSelection) {
-            final String action;
-            if (android.os.Build.VERSION.SDK_INT
-                    >= /* android.os.Build.VERSION_CODES.HONEYCOMB */ 11) {
-                // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
-                // TODO: Can this be a constant instead of literal String constant?
-                action = "android.settings.INPUT_METHOD_SUBTYPE_SETTINGS";
-            } else {
-                action = "com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION";
-            }
-            startActivity(new Intent(action));
+            startActivity(CompatUtils.getInputLanguageSelectionIntent(
+                    Utils.getInputMethodId(
+                            (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE),
+                            getApplicationInfo().packageName), 0));
             return true;
         }
         return false;
