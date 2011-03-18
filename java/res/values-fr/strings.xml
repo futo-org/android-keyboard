@@ -47,8 +47,8 @@
     <string name="show_suggestions" msgid="507074425254289133">"Afficher les suggestions"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Afficher les suggestions de terme lors de la saisie"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Saisie semi-automatique"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Insérer auto. le terme surligné avec barre espace/ponctuation"</string>
-    <string name="prefs_settings_key" msgid="4623341240804046498">"Afficher touche paramètr."</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"Insérer autom. terme surligné (pression sur barre espace/ponctuation)"</string>
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Afficher touche param."</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatique"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Toujours afficher"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Toujours masquer"</string>
@@ -132,7 +132,7 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Autoriser les commentaires des utilisateurs"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Contribuer à l\'amélioration de cet éditeur du mode de saisie grâce à l\'envoi automatique de statistiques d\'utilisation et de rapports d\'incident à Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Appuyer pour corriger les suggestions"</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Appuyer pour corriger"</string>
     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Appuyer sur les mots saisis pour les corriger"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Thème du clavier"</string>
     <string name="subtype_mode_keyboard" msgid="2242090416595003881">"clavier"</string>

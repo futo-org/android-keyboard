@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones de entrada"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonar al pulsar las teclas"</string>
-    <string name="popup_on_keypress" msgid="123894815723512944">"Aviso emergente sobre keypress"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Aviso emergente al pulsar tecla"</string>
     <string name="hit_correction" msgid="4855351009261318389">"Corregir errores de escritura"</string>
     <string name="hit_correction_summary" msgid="8761701873008070796">"Habilitar corrección de error de entrada"</string>
     <string name="hit_correction_land" msgid="2567691684825205448">"Errores de entrada apaisada"</string>
