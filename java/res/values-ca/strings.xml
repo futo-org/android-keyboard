@@ -37,7 +37,7 @@
     <string name="prediction_summary" msgid="459788228830873110">"Activa l\'emplenament automàtic mentre s\'escriu"</string>
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Emplenament automàtic"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Augmenta la mida del camp de text"</string>
-    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Oculta els suggeriments de paraules en visualització horitzontal"</string>
+    <string name="prediction_landscape_summary" msgid="6736551095997839472">"Amaga els suggeriments de paraules en visualització horitzontal"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Majúscules automàtiques"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Posa l\'inici d\'una frase en majúscula"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Puntuació automàtica"</string>

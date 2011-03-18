@@ -98,7 +98,7 @@
     <string name="voice_server_error" msgid="7807129913977261644">"Serverfout"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Geen spraak te horen"</string>
     <string name="voice_no_match" msgid="4285117547030179174">"Geen resultaten gevonden"</string>
-    <string name="voice_not_installed" msgid="5552450909753842415">"Voice Search is niet geïnstalleerd"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Spraakgestuurd zoeken is niet geïnstalleerd"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Hint:"</b>" schuif over het toetsenbord om te spreken"</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Hint:"</b>" spreek de volgende keer interpunctie uit, zoals \'period\' (punt), \'comma\' (komma) of \'question mark\' (vraagteken)."</string>
     <string name="cancel" msgid="6830980399865683324">"Annuleren"</string>
