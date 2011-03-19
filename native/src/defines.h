@@ -77,8 +77,8 @@ static void prof_out(void) {
 }
 
 #else // FLAG_DBG
-#define LOGE
-#define LOGI
+#define LOGE(fmt, ...)
+#define LOGI(fmt, ...)
 #define DEBUG_DICT false
 #define DEBUG_DICT_FULL false
 #define DEBUG_SHOW_FOUND_WORD false
