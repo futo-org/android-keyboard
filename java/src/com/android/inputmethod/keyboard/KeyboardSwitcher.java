@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -29,7 +30,6 @@ import android.content.res.Resources;
 import android.util.Log;
 import android.view.InflateException;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
@@ -752,8 +752,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
                     || (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_AUTO))
                             && Utils.hasMultipleEnabledIMEsOrSubtypes(
-                                    ((InputMethodManager) context.getSystemService(
-                                            Context.INPUT_METHOD_SERVICE))))) {
+                                    (InputMethodManagerCompatWrapper.getInstance(context))))) {
                 return true;
             }
             return false;

@@ -18,8 +18,15 @@ package com.android.inputmethod.compat;
 
 import android.content.Intent;
 import android.text.TextUtils;
+import android.util.Log;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompatUtils {
+    private static final String TAG = CompatUtils.class.getSimpleName();
     private static final String EXTRA_INPUT_METHOD_ID = "input_method_id";
     // TODO: Can these be constants instead of literal String constants?
     private static final String INPUT_METHOD_SUBTYPE_SETTINGS =
@@ -47,5 +54,54 @@ public class CompatUtils {
             intent = new Intent(action);
         }
         return intent;
+    }
+
+    public static Class<?> getClass(String className) {
+        try {
+            return Class.forName(className);
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
+    }
+
+    public static Method getMethod(Class<?> targetClass, String name,
+            Class<?>... parameterTypes) {
+        try {
+            return targetClass.getMethod(name, parameterTypes);
+        } catch (SecurityException e) {
+            // ignore
+            return null;
+        } catch (NoSuchMethodException e) {
+            // ignore
+            return null;
+        }
+    }
+
+    public static Object invoke(
+            Object receiver, Object defaultValue, Method method, Object... args) {
+        if (receiver == null || method == null) return defaultValue;
+        try {
+            return method.invoke(receiver, args);
+        } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Exception in invoke: IllegalArgmentException");
+            return defaultValue;
+        } catch (IllegalAccessException e) {
+            Log.e(TAG, "Exception in invoke: IllegalAccessException");
+            return defaultValue;
+        } catch (InvocationTargetException e) {
+            Log.e(TAG, "Exception in invoke: IllegalTargetException");
+            return defaultValue;
+        }
+    }
+
+    public static List<InputMethodSubtypeCompatWrapper> copyInputMethodSubtypeListToWrappler(
+            Object listObject) {
+        if (!(listObject instanceof List<?>)) return null;
+        final List<InputMethodSubtypeCompatWrapper> subtypes =
+                new ArrayList<InputMethodSubtypeCompatWrapper>();
+        for (Object o: (List<?>)listObject) {
+            subtypes.add(new InputMethodSubtypeCompatWrapper(o));
+        }
+        return subtypes;
     }
 }

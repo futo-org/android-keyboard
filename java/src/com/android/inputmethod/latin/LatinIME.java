@@ -17,6 +17,8 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.CompatUtils;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceConnector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -67,7 +69,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -147,7 +148,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     private AlertDialog mOptionsDialog;
 
-    private InputMethodManager mImm;
+    private InputMethodManagerCompatWrapper mImm;
     private Resources mResources;
     private SharedPreferences mPrefs;
     private String mInputMethodId;
@@ -380,7 +381,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
         super.onCreate();
 
-        mImm = ((InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE));
+        mImm = InputMethodManagerCompatWrapper.getInstance(this);
         mInputMethodId = Utils.getInputMethodId(mImm, getPackageName());
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
@@ -2341,6 +2342,6 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        SubtypeSwitcher.getInstance().updateSubtype(subtype);
+        SubtypeSwitcher.getInstance().updateSubtype(new InputMethodSubtypeCompatWrapper(subtype));
     }
 }

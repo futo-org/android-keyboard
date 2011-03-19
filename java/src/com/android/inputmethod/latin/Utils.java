@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.keyboard.KeyboardId;
 
 import android.content.res.Resources;
@@ -29,7 +30,6 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodInfo;
-import android.view.inputmethod.InputMethodManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -101,14 +101,14 @@ public class Utils {
         }
     }
 
-    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManager imm) {
+    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManagerCompatWrapper imm) {
         return imm.getEnabledInputMethodList().size() > 1
         // imm.getEnabledInputMethodSubtypeList(null, false) will return the current IME's enabled
         // input method subtype (The current IME should be LatinIME.)
                 || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
     }
 
-    public static String getInputMethodId(InputMethodManager imm, String packageName) {
+    public static String getInputMethodId(InputMethodManagerCompatWrapper imm, String packageName) {
         for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
             if (imi.getPackageName().equals(packageName))
                 return imi.getId();
