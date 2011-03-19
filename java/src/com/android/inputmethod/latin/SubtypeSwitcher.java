@@ -31,6 +31,7 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
@@ -308,12 +309,24 @@ public class SubtypeSwitcher {
         }
         final String imiId = mShortcutInputMethodInfo.getId();
         final InputMethodSubtypeCompatWrapper subtype = mShortcutSubtype;
-        new Thread("SwitchToShortcutIME") {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            public void run() {
+            protected Void doInBackground(Void... params) {
                 mImm.setInputMethodAndSubtype(token, imiId, subtype);
+                return null;
             }
-        }.start();
+
+            @Override
+            protected void onPostExecute(Void result) {
+                // Calls in this method need to be done in the same thread as the thread which
+                // called switchToShortcutIME().
+
+                // Notify an event that the current subtype was changed. This event will be
+                // handled if "onCurrentInputMethodSubtypeChanged" can't be implemented
+                // when the API level is 10 or previous.
+                mService.notifyOnCurrentInputMethodSubtypeChanged(subtype);
+            }
+        }.execute();
     }
 
     public Drawable getShortcutIcon() {

@@ -71,7 +71,7 @@ public class InputMethodManagerCompatWrapper {
             InputMethodInfo imi, boolean allowsImplicitlySelectedSubtypes) {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 imi, allowsImplicitlySelectedSubtypes);
-        return CompatUtils.copyInputMethodSubtypeListToWrappler((List<?>)retval);
+        return CompatUtils.copyInputMethodSubtypeListToWrapper((List<?>)retval);
     }
 
     public Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>
@@ -86,7 +86,7 @@ public class InputMethodManagerCompatWrapper {
                 Log.e(TAG, "Class type error.");
                 return null;
             }
-            shortcutMap.put((InputMethodInfo)key, CompatUtils.copyInputMethodSubtypeListToWrappler(
+            shortcutMap.put((InputMethodInfo)key, CompatUtils.copyInputMethodSubtypeListToWrapper(
                     retvalMap.get(key)));
         }
         return shortcutMap;

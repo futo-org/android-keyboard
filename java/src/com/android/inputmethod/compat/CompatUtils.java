@@ -94,7 +94,7 @@ public class CompatUtils {
         }
     }
 
-    public static List<InputMethodSubtypeCompatWrapper> copyInputMethodSubtypeListToWrappler(
+    public static List<InputMethodSubtypeCompatWrapper> copyInputMethodSubtypeListToWrapper(
             Object listObject) {
         if (!(listObject instanceof List<?>)) return null;
         final List<InputMethodSubtypeCompatWrapper> subtypes =
