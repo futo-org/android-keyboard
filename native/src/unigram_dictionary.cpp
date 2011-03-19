@@ -43,7 +43,9 @@ UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterM
     ROOT_POS(isLatestDictVersion ? DICTIONARY_HEADER_SIZE : 0),
     BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(*mInputCodes)),
     MAX_UMLAUT_SEARCH_DEPTH(DEFAULT_MAX_UMLAUT_SEARCH_DEPTH) {
-    if (DEBUG_DICT) LOGI("UnigramDictionary - constructor");
+    if (DEBUG_DICT) {
+        LOGI("UnigramDictionary - constructor");
+    }
 }
 
 UnigramDictionary::~UnigramDictionary() {}
@@ -183,7 +185,9 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     // Suggestion with missing character
     if (SUGGEST_WORDS_WITH_MISSING_CHARACTER) {
         for (int i = 0; i < codesSize; ++i) {
-            if (DEBUG_DICT) LOGI("--- Suggest missing characters %d", i);
+            if (DEBUG_DICT) {
+                LOGI("--- Suggest missing characters %d", i);
+            }
             getSuggestionCandidates(i, -1, -1, NULL, 0, MAX_DEPTH);
         }
     }
@@ -194,7 +198,9 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     if (SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER
             && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION) {
         for (int i = 0; i < codesSize; ++i) {
-            if (DEBUG_DICT) LOGI("--- Suggest excessive characters %d", i);
+            if (DEBUG_DICT) {
+                LOGI("--- Suggest excessive characters %d", i);
+            }
             getSuggestionCandidates(-1, i, -1, NULL, 0, MAX_DEPTH);
         }
     }
@@ -205,7 +211,9 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     // Only suggest words that length is mInputLength
     if (SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS) {
         for (int i = 0; i < codesSize; ++i) {
-            if (DEBUG_DICT) LOGI("--- Suggest transposed characters %d", i);
+            if (DEBUG_DICT) {
+                LOGI("--- Suggest transposed characters %d", i);
+            }
             getSuggestionCandidates(-1, -1, i, NULL, 0, mInputLength - 1);
         }
     }
@@ -216,7 +224,9 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     if (SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER
             && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION) {
         for (int i = 1; i < codesSize; ++i) {
-            if (DEBUG_DICT) LOGI("--- Suggest missing space characters %d", i);
+            if (DEBUG_DICT) {
+                LOGI("--- Suggest missing space characters %d", i);
+            }
             getMissingSpaceWords(mInputLength, i);
         }
     }
@@ -226,12 +236,15 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     if (SUGGEST_WORDS_WITH_SPACE_PROXIMITY) {
         // The first and last "mistyped spaces" are taken care of by excessive character handling
         for (int i = 1; i < codesSize - 1; ++i) {
-            if (DEBUG_DICT) LOGI("--- Suggest words with proximity space %d", i);
+            if (DEBUG_DICT) {
+                LOGI("--- Suggest words with proximity space %d", i);
+            }
             const int x = xcoordinates[i];
             const int y = ycoordinates[i];
-            if (DEBUG_PROXIMITY_INFO)
+            if (DEBUG_PROXIMITY_INFO) {
                 LOGI("Input[%d] x = %d, y = %d, has space proximity = %d",
                         i, x, y, proximityInfo->hasSpaceProximity(x, y));
+            }
             if (proximityInfo->hasSpaceProximity(x, y)) {
                 getMistypedSpaceWords(mInputLength, i);
             }
@@ -242,7 +255,9 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
 
 void UnigramDictionary::initSuggestions(const int *codes, const int codesSize,
         unsigned short *outWords, int *frequencies) {
-    if (DEBUG_DICT) LOGI("initSuggest");
+    if (DEBUG_DICT) {
+        LOGI("initSuggest");
+    }
     mFrequencies = frequencies;
     mOutputChars = outWords;
     mInputCodes = codes;
@@ -266,7 +281,9 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
         LOGI("Found word = %s, freq = %d", s, frequency);
     }
     if (length > MAX_WORD_LENGTH) {
-        if (DEBUG_DICT) LOGI("Exceeded max word length.");
+        if (DEBUG_DICT) {
+            LOGI("Exceeded max word length.");
+        }
         return false;
     }
 
@@ -297,7 +314,9 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
             *dest++ = *word++;
         }
         *dest = 0; // NULL terminate
-        if (DEBUG_DICT) LOGI("Added word at %d", insertAt);
+        if (DEBUG_DICT) {
+            LOGI("Added word at %d", insertAt);
+        }
         return true;
     }
     return false;
@@ -409,7 +428,9 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
     // Allocating variable length array on stack
     unsigned short word[newWordLength];
     const int firstFreq = getBestWordFreq(firstWordStartPos, firstWordLength, mWord);
-    if (DEBUG_DICT) LOGI("First freq: %d", firstFreq);
+    if (DEBUG_DICT) {
+        LOGI("First freq: %d", firstFreq);
+    }
     if (firstFreq <= 0) return false;
 
     for (int i = 0; i < firstWordLength; ++i) {
@@ -417,7 +438,9 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
     }
 
     const int secondFreq = getBestWordFreq(secondWordStartPos, secondWordLength, mWord);
-    if (DEBUG_DICT) LOGI("Second  freq:  %d", secondFreq);
+    if (DEBUG_DICT) {
+        LOGI("Second  freq:  %d", secondFreq);
+    }
     if (secondFreq <= 0) return false;
 
     word[firstWordLength] = SPACE;
@@ -514,7 +537,9 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
     for (int i = 0; i < depth; ++i) lengthFreq *= TYPED_LETTER_MULTIPLIER;
     if (lengthFreq == matchWeight) {
         if (depth > 1) {
-            if (DEBUG_DICT) LOGI("Found full matched word.");
+            if (DEBUG_DICT) {
+                LOGI("Found full matched word.");
+            }
             multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
         }
         if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0) {
@@ -768,7 +793,9 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
     *siblingPos = Dictionary::setDictionaryValues(DICT, IS_LATEST_DICT_VERSION, firstChildPos, &c,
             newChildPosition, newTerminal, newFreq);
     const unsigned int inputC = currentChars[0];
-    if (DEBUG_DICT) assert(inputC <= U_SHORT_MAX);
+    if (DEBUG_DICT) {
+        assert(inputC <= U_SHORT_MAX);
+    }
     const unsigned short baseLowerC = toBaseLowerCase(c);
     const bool matched = (inputC == baseLowerC || inputC == c);
     const bool hasChild = *newChildPosition != 0;
@@ -776,7 +803,9 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
         word[depth] = c;
         if (DEBUG_DICT && DEBUG_NODE) {
             LOGI("Node(%c, %c)<%d>, %d, %d", inputC, c, matched, hasChild, *newFreq);
-            if (*newTerminal) LOGI("Terminal %d", *newFreq);
+            if (*newTerminal) {
+                LOGI("Terminal %d", *newFreq);
+            }
         }
         if (hasChild) {
             *newCount = Dictionary::getCount(DICT, newChildPosition);

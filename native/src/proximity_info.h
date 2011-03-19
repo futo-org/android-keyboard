@@ -32,13 +32,13 @@ public:
     bool hasSpaceProximity(const int x, const int y) const;
 private:
     int getStartIndexFromCoordinates(const int x, const int y) const;
-    const int CELL_WIDTH;
-    const int CELL_HEIGHT;
+    const int MAX_PROXIMITY_CHARS_SIZE;
     const int KEYBOARD_WIDTH;
     const int KEYBOARD_HEIGHT;
     const int GRID_WIDTH;
     const int GRID_HEIGHT;
-    const int MAX_PROXIMITY_CHARS_SIZE;
+    const int CELL_WIDTH;
+    const int CELL_HEIGHT;
     uint32_t *mProximityCharsArray;
 };
 }; // namespace latinime
