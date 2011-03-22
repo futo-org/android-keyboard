@@ -94,7 +94,7 @@
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Kapalı"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Ana klavyede mikrfn"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Simge klavysnd mikrf"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Sesle giriş devr dşı"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Sesle grş devre dışı"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Giriş yöntemini seç"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Giriş dilleri"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Dili değiştirmek için parmağınızı boşluk çubuğu üzerinde kaydırın"</string>
