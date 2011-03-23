@@ -793,8 +793,8 @@ public class VoiceConnector implements VoiceInput.UiListener {
         public void setVoiceInput(VoiceInput voiceInput, SubtypeSwitcher switcher) {
             if (mVoiceInput == null && voiceInput != null) {
                 mVoiceInput = voiceInput;
-                switcher.setVoiceInputConnector(this);
             }
+            switcher.setVoiceInputConnector(this);
         }
 
         private VoiceInputConnector() {
