@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -77,6 +78,18 @@ public class CompatUtils {
         }
     }
 
+    public static Field getField(Class<?> targetClass, String name) {
+        try {
+            return targetClass.getField(name);
+        } catch (SecurityException e) {
+            // ignore
+            return null;
+        } catch (NoSuchFieldException e) {
+            // ignore
+            return null;
+        }
+    }
+
     public static Object invoke(
             Object receiver, Object defaultValue, Method method, Object... args) {
         if (receiver == null || method == null) return defaultValue;
@@ -91,6 +104,28 @@ public class CompatUtils {
         } catch (InvocationTargetException e) {
             Log.e(TAG, "Exception in invoke: IllegalTargetException");
             return defaultValue;
+        }
+    }
+
+    public static Object getFieldValue(Object receiver, Object defaultValue, Field field) {
+        if (receiver == null || field == null) return defaultValue;
+        try {
+            return field.get(receiver);
+        } catch (IllegalArgumentException e) {
+            return defaultValue;
+        } catch (IllegalAccessException e) {
+            return defaultValue;
+        }
+    }
+
+    public static void setFieldValue(Object receiver, Field field, Object value) {
+        if (receiver == null || field == null) return;
+        try {
+            field.set(receiver, value);
+        } catch (IllegalArgumentException e) {
+            // ignore
+        } catch (IllegalAccessException e) {
+            // ignore
         }
     }
 

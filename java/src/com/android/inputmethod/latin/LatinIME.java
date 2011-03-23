@@ -914,8 +914,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (DEBUG) {
                 Log.d(TAG, "Touchable region " + x + ", " + y + ", " + width + ", " + height);
             }
-            outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
-            outInsets.touchableRegion.set(x, y, width, height);
+            setTouchableRegionCompat(outInsets, x, y, width, height);
         }
     }
 
