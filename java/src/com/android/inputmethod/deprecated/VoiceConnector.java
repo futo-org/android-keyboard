@@ -566,14 +566,24 @@ public class VoiceConnector implements VoiceInput.UiListener {
 
             @Override
             protected void onPostExecute(Boolean result) {
+                // Calls in this method need to be done in the same thread as the thread which
+                // called switchToLastInputMethod()
                 if (!result) {
                     if (DEBUG) {
                         Log.d(TAG, "Couldn't switch back to last IME.");
                     }
-                    // Needs to reset here because LatinIME failed to back to any IME and
-                    // the same voice subtype will be triggered in the next time.
+                    // Because the current IME and subtype failed to switch to any other IME and
+                    // subtype by switchToLastInputMethod, the current IME and subtype should keep
+                    // being LatinIME and voice subtype in the next time. And for re-showing voice
+                    // mode, the state of voice input should be reset and the voice view should be
+                    // hidden.
                     mVoiceInput.reset();
                     mService.requestHideSelf(0);
+                } else {
+                    // Notify an event that the current subtype was changed. This event will be
+                    // handled if "onCurrentInputMethodSubtypeChanged" can't be implemented
+                    // when the API level is 10 or previous.
+                    mService.notifyOnCurrentInputMethodSubtypeChanged(null);
                 }
             }
         }.execute();
@@ -630,6 +640,7 @@ public class VoiceConnector implements VoiceInput.UiListener {
     }
 
     private boolean shouldShowVoiceButton(FieldContext fieldContext, EditorInfo attribute) {
+        @SuppressWarnings("deprecation")
         final boolean noMic = Utils.inPrivateImeOptions(null,
                 LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, attribute)
                 || Utils.inPrivateImeOptions(mService.getPackageName(),

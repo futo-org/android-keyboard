@@ -18,7 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
+import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceConnector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -69,7 +69,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodSubtype;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
@@ -83,7 +82,7 @@ import java.util.Locale;
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
-public class LatinIME extends InputMethodService implements KeyboardActionListener {
+public class LatinIME extends InputMethodServiceCompatWrapper implements KeyboardActionListener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean PERF_DEBUG = false;
     private static final boolean TRACE = false;
@@ -96,6 +95,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      *
      * @deprecated Use {@link LatinIME#IME_OPTION_NO_MICROPHONE} with package name prefixed.
      */
+    @SuppressWarnings("dep-ann")
     public static final String IME_OPTION_NO_MICROPHONE_COMPAT = "nm";
 
     /**
@@ -2338,10 +2338,5 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         long total = 0;
         for (int i = 0; i < CPS_BUFFER_SIZE; i++) total += mCpsIntervals[i];
         System.out.println("CPS = " + ((CPS_BUFFER_SIZE * 1000f) / total));
-    }
-
-    @Override
-    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
-        SubtypeSwitcher.getInstance().updateSubtype(new InputMethodSubtypeCompatWrapper(subtype));
     }
 }
