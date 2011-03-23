@@ -23,6 +23,7 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,26 +69,26 @@ public class InputMethodManagerCompatWrapper {
     }
 
     public List<InputMethodSubtypeCompatWrapper> getEnabledInputMethodSubtypeList(
-            InputMethodInfo imi, boolean allowsImplicitlySelectedSubtypes) {
+            InputMethodInfoCompatWrapper imi, boolean allowsImplicitlySelectedSubtypes) {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
-                imi, allowsImplicitlySelectedSubtypes);
+                (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
         return CompatUtils.copyInputMethodSubtypeListToWrapper((List<?>)retval);
     }
 
-    public Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>
+    public Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
         if (!(retval instanceof Map)) return null;
-        Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
-                new HashMap<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>>();
+        Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
+                new HashMap<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>();
         final Map<?, ?> retvalMap = (Map<?, ?>)retval;
-        for (Object key: retvalMap.keySet()) {
+        for (Object key : retvalMap.keySet()) {
             if (!(key instanceof InputMethodInfo)) {
                 Log.e(TAG, "Class type error.");
                 return null;
             }
-            shortcutMap.put((InputMethodInfo)key, CompatUtils.copyInputMethodSubtypeListToWrapper(
-                    retvalMap.get(key)));
+            shortcutMap.put(new InputMethodInfoCompatWrapper((InputMethodInfo)key),
+                    CompatUtils.copyInputMethodSubtypeListToWrapper(retvalMap.get(key)));
         }
         return shortcutMap;
     }
@@ -103,9 +104,13 @@ public class InputMethodManagerCompatWrapper {
         return mImm.switchToLastInputMethod(token);
     }
 
-    public List<InputMethodInfo> getEnabledInputMethodList() {
+    public List<InputMethodInfoCompatWrapper> getEnabledInputMethodList() {
         if (mImm == null) return null;
-        return mImm.getEnabledInputMethodList();
+        List<InputMethodInfoCompatWrapper> imis = new ArrayList<InputMethodInfoCompatWrapper>();
+        for (InputMethodInfo imi : mImm.getEnabledInputMethodList()) {
+            imis.add(new InputMethodInfoCompatWrapper(imi));
+        }
+        return imis;
     }
 
     public void showInputMethodPicker() {

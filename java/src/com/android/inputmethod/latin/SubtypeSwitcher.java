@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceConnector;
@@ -35,7 +36,6 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.inputmethod.InputMethodInfo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +71,7 @@ public class SubtypeSwitcher {
     // Variants which should be changed only by reload functions.
     private boolean mNeedsToDisplayLanguage;
     private boolean mIsSystemLanguageSameAsInputLanguage;
-    private InputMethodInfo mShortcutInputMethodInfo;
+    private InputMethodInfoCompatWrapper mShortcutInputMethodInfo;
     private InputMethodSubtypeCompatWrapper mShortcutSubtype;
     private List<InputMethodSubtypeCompatWrapper> mAllEnabledSubtypesOfCurrentInputMethod;
     private InputMethodSubtypeCompatWrapper mCurrentSubtype;
@@ -184,9 +184,9 @@ public class SubtypeSwitcher {
                             + ", " + mShortcutSubtype.getMode())));
         }
         // TODO: Update an icon for shortcut IME
-        Map<InputMethodInfo, List<InputMethodSubtypeCompatWrapper>> shortcuts =
+        final Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcuts =
                 mImm.getShortcutInputMethodsAndSubtypes();
-        for (InputMethodInfo imi: shortcuts.keySet()) {
+        for (InputMethodInfoCompatWrapper imi : shortcuts.keySet()) {
             List<InputMethodSubtypeCompatWrapper> subtypes = shortcuts.get(imi);
             // TODO: Returns the first found IMI for now. Should handle all shortcuts as
             // appropriate.
@@ -333,7 +333,8 @@ public class SubtypeSwitcher {
         return getSubtypeIcon(mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
-    private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtypeCompatWrapper subtype) {
+    private Drawable getSubtypeIcon(
+            InputMethodInfoCompatWrapper imi, InputMethodSubtypeCompatWrapper subtype) {
         final PackageManager pm = mService.getPackageManager();
         if (imi != null) {
             final String imiPackageName = imi.getPackageName();
