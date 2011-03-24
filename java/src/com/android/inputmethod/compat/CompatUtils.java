@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -85,6 +86,19 @@ public class CompatUtils {
             // ignore
             return null;
         } catch (NoSuchFieldException e) {
+            // ignore
+            return null;
+        }
+    }
+
+    public static Constructor<?> getConstructor(Class<?> targetClass, Class<?>[] types) {
+        if (targetClass == null || types == null) return null;
+        try {
+            return targetClass.getConstructor(types);
+        } catch (SecurityException e) {
+            // ignore
+            return null;
+        } catch (NoSuchMethodException e) {
             // ignore
             return null;
         }

@@ -17,6 +17,8 @@
 package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.CompatUtils;
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
+import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
@@ -64,7 +66,6 @@ import android.view.ViewParent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
-import android.view.inputmethod.CorrectionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
@@ -1267,9 +1268,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void handleTab() {
         final int imeOptions = getCurrentInputEditorInfo().imeOptions;
-        final int navigationFlags =
-                EditorInfo.IME_FLAG_NAVIGATE_NEXT | EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS;
-        if ((imeOptions & navigationFlags) == 0) {
+        if (!EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
+                && !EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions)) {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_TAB);
             return;
         }
@@ -1280,12 +1280,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         // True if keyboard is in either chording shift or manual temporary upper case mode.
         final boolean isManualTemporaryUpperCase = mKeyboardSwitcher.isManualTemporaryUpperCase();
-        if ((imeOptions & EditorInfo.IME_FLAG_NAVIGATE_NEXT) != 0
+        if (EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
                 && !isManualTemporaryUpperCase) {
+            EditorInfoCompatUtils.performEditorActionNext(ic);
             ic.performEditorAction(EditorInfo.IME_ACTION_NEXT);
-        } else if ((imeOptions & EditorInfo.IME_FLAG_NAVIGATE_PREVIOUS) != 0
+        } else if (EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions)
                 && isManualTemporaryUpperCase) {
-            ic.performEditorAction(EditorInfo.IME_ACTION_PREVIOUS);
+            EditorInfoCompatUtils.performEditorActionPrevious(ic);
         }
     }
 
@@ -1411,11 +1412,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             CharSequence typedWord = mWord.getTypedWord();
             TextEntryState.backToAcceptedDefault(typedWord);
             if (!TextUtils.isEmpty(typedWord) && !typedWord.equals(mBestWord)) {
-                if (ic != null) {
-                    CorrectionInfo correctionInfo = new CorrectionInfo(
-                            mLastSelectionEnd - typedWord.length(), typedWord, mBestWord);
-                    ic.commitCorrection(correctionInfo);
-                }
+                InputConnectionCompatUtils.commitCorrection(
+                        ic,  mLastSelectionEnd - typedWord.length(), typedWord, mBestWord);
                 if (mCandidateView != null)
                     mCandidateView.onAutoCorrectionInverted(mBestWord);
             }
