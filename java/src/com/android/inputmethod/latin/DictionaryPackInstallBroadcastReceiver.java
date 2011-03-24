@@ -56,7 +56,6 @@ public class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
             if (null == providers) return; // No providers : it is not a dictionary.
 
             // Search for some dictionary pack in the just-installed package. If found, reread.
-            boolean found = false;
             for (ProviderInfo info : providers) {
                 if (BinaryDictionary.DICTIONARY_PACK_AUTHORITY.equals(info.authority)) {
                     mService.resetSuggestMainDict();
