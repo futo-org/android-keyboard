@@ -45,6 +45,7 @@
             android:imeSubtypeLocale="en_GB"
             android:imeSubtypeMode="keyboard"
     />
+    <!-- The file for Arabic layout is an alpha version. It needs to be run through UX. -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_ar_keyboard"
             android:imeSubtypeLocale="ar"
@@ -116,6 +117,7 @@
             android:imeSubtypeMode="keyboard"
     />
     <!-- Java uses the deprecated "iw" code instead of the standard "he" code for Hebrew. -->
+    <!-- The file for Hebrew layout is an alpha version. It needs to be run through UX. -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_iw_keyboard"
             android:imeSubtypeLocale="iw"

@@ -18,6 +18,9 @@
 */
 -->
 
+<!-- This file for Hebrew layout is an alpha version. It allows to enter   -->
+<!-- some right-to-left text, but it has gone through no study whatsoever, -->
+<!-- and needs to be run through UX.                                       -->
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
