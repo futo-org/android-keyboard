@@ -242,6 +242,8 @@
 
     <!-- Description for Czech keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_cs_keyboard">Czech Keyboard</string>
+    <!-- Description for Arabic keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_ar_keyboard">Arabic Keyboard</string>
     <!-- Description for Danish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_da_keyboard">Danish Keyboard</string>
     <!-- Description for German keyboard subtype [CHAR LIMIT=35] -->
@@ -260,6 +262,9 @@
     <string name="subtype_mode_fr_CA_keyboard">French (Canada) Keyboard</string>
     <!-- Description for French (Switzerland) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_CH_keyboard">French (Switzerland) Keyboard</string>
+    <!-- Description for Hebrew keyboard subtype [CHAR LIMIT=35] -->
+    <!-- Java uses the deprecated "iw" code instead of the standard "he" code -->
+    <string name="subtype_mode_iw_keyboard">Hebrew Keyboard</string>
     <!-- Description for Italian keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_it_keyboard">Italian Keyboard</string>
     <!-- Description for Norwegian keyboard subtype [CHAR LIMIT=35] -->

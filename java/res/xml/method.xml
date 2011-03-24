@@ -46,6 +46,11 @@
             android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_ar_keyboard"
+            android:imeSubtypeLocale="ar"
+            android:imeSubtypeMode="keyboard"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_cs_keyboard"
             android:imeSubtypeLocale="cs"
             android:imeSubtypeMode="keyboard"
@@ -108,6 +113,12 @@
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_it_keyboard"
             android:imeSubtypeLocale="it"
+            android:imeSubtypeMode="keyboard"
+    />
+    <!-- Java uses the deprecated "iw" code instead of the standard "he" code for Hebrew. -->
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_iw_keyboard"
+            android:imeSubtypeLocale="iw"
             android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_mic"
