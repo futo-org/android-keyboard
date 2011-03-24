@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License"); 
 ** you may not use this file except in compliance with the License. 
@@ -30,5 +30,5 @@
     latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_iw_rows" />
+        latin:keyboardLayout="@xml/kbd_ar_rows" />
 </Keyboard>
