@@ -96,7 +96,7 @@ public class CompatUtils {
         try {
             return method.invoke(receiver, args);
         } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Exception in invoke: IllegalArgmentException");
+            Log.e(TAG, "Exception in invoke: IllegalArgumentException");
             return defaultValue;
         } catch (IllegalAccessException e) {
             Log.e(TAG, "Exception in invoke: IllegalAccessException");
@@ -112,8 +112,10 @@ public class CompatUtils {
         try {
             return field.get(receiver);
         } catch (IllegalArgumentException e) {
+            Log.e(TAG, "Exception in getFieldValue: IllegalArgumentException");
             return defaultValue;
         } catch (IllegalAccessException e) {
+            Log.e(TAG, "Exception in getFieldValue: IllegalAccessException");
             return defaultValue;
         }
     }
@@ -123,9 +125,9 @@ public class CompatUtils {
         try {
             field.set(receiver, value);
         } catch (IllegalArgumentException e) {
-            // ignore
+            Log.e(TAG, "Exception in setFieldValue: IllegalArgumentException");
         } catch (IllegalAccessException e) {
-            // ignore
+            Log.e(TAG, "Exception in setFieldValue: IllegalAccessException");
         }
     }
 
