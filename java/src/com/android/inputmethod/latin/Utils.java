@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.keyboard.KeyboardId;
 
@@ -29,7 +30,6 @@ import android.text.InputType;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodInfo;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -109,7 +109,7 @@ public class Utils {
     }
 
     public static String getInputMethodId(InputMethodManagerCompatWrapper imm, String packageName) {
-        for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
+        for (final InputMethodInfoCompatWrapper imi : imm.getEnabledInputMethodList()) {
             if (imi.getPackageName().equals(packageName))
                 return imi.getId();
         }
