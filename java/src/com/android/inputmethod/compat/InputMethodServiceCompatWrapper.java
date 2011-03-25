@@ -62,4 +62,10 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
         SubtypeSwitcher.getInstance().updateSubtype(
                 new InputMethodSubtypeCompatWrapper(subtype));
     }
+
+    protected static void setTouchableRegionCompat(InputMethodService.Insets outInsets,
+            int x, int y, int width, int height) {
+        outInsets.touchableInsets = InputMethodService.Insets.TOUCHABLE_INSETS_REGION;
+        outInsets.touchableRegion.set(x, y, width, height);
+    }
 }
