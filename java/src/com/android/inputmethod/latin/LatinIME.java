@@ -530,7 +530,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (container.getPaddingRight() != 0) {
             HorizontalScrollView scrollView =
                     (HorizontalScrollView) container.findViewById(R.id.candidates_scroll_view);
-            scrollView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            setOverScrollModeNever(scrollView);
             container.setGravity(Gravity.CENTER_HORIZONTAL);
         }
         mCandidateView = (CandidateView) container.findViewById(R.id.candidates);
