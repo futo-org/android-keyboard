@@ -18,7 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.deprecated.VoiceConnector;
+import com.android.inputmethod.deprecated.VoiceProxy;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -82,7 +82,7 @@ public class Settings extends PreferenceActivity
 
     private AlertDialog mDialog;
 
-    private VoiceConnector.VoiceLoggerConnector mVoiceLogger;
+    private VoiceProxy.VoiceLoggerWrapper mVoiceLogger;
 
     private boolean mOkClicked = false;
     private String mVoiceModeOff;
@@ -111,7 +111,7 @@ public class Settings extends PreferenceActivity
         mVoiceModeOff = getString(R.string.voice_mode_off);
         mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
                 .equals(mVoiceModeOff));
-        mVoiceLogger = VoiceConnector.VoiceLoggerConnector.getInstance(this);
+        mVoiceLogger = VoiceProxy.VoiceLoggerWrapper.getInstance(this);
 
         mAutoCorrectionThreshold = (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
@@ -184,7 +184,7 @@ public class Settings extends PreferenceActivity
             ((PreferenceGroup) findPreference(PREF_PREDICTION_SETTINGS_KEY))
                     .removePreference(mQuickFixes);
         }
-        if (!VoiceConnector.VOICE_INSTALLED
+        if (!VoiceProxy.VOICE_INSTALLED
                 || !SpeechRecognizer.isRecognitionAvailable(this)) {
             getPreferenceScreen().removePreference(mVoicePreference);
         } else {

@@ -19,7 +19,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
-import com.android.inputmethod.deprecated.VoiceConnector;
+import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -154,7 +154,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private String mInputMethodId;
     private KeyboardSwitcher mKeyboardSwitcher;
     private SubtypeSwitcher mSubtypeSwitcher;
-    private VoiceConnector mVoiceConnector;
+    private VoiceProxy mVoiceProxy;
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
@@ -212,7 +212,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     /* package */ String mWordSeparators;
     private String mSentenceSeparators;
     private String mSuggestPuncs;
-    // TODO: Move this flag to VoiceIMEConnector
+    // TODO: Move this flag to VoiceProxy
     private boolean mConfigurationChanging;
 
     // Object for reacting to adding/removing a dictionary pack.
@@ -282,7 +282,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 switcher.updateShiftState();
                 break;
             case MSG_VOICE_RESULTS:
-                mVoiceConnector.handleVoiceResults(preferCapitalization()
+                mVoiceProxy.handleVoiceResults(preferCapitalization()
                         || (switcher.isAlphabetMode() && switcher.isShiftedOrShiftLocked()));
                 break;
             case MSG_FADEOUT_LANGUAGE_ON_SPACEBAR:
@@ -432,7 +432,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         filter.addAction(AudioManager.RINGER_MODE_CHANGED_ACTION);
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         registerReceiver(mReceiver, filter);
-        mVoiceConnector = VoiceConnector.init(this, prefs, mHandler);
+        mVoiceProxy = VoiceProxy.init(this, prefs, mHandler);
 
         final IntentFilter packageFilter = new IntentFilter();
         packageFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -492,7 +492,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         unregisterReceiver(mReceiver);
         unregisterReceiver(mDictionaryPackInstallReceiver);
-        mVoiceConnector.destroy();
+        mVoiceProxy.destroy();
         LatinImeLogger.commit();
         LatinImeLogger.onDestroy();
         super.onDestroy();
@@ -513,7 +513,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         mConfigurationChanging = true;
         super.onConfigurationChanged(conf);
-        mVoiceConnector.onConfigurationChanged(conf);
+        mVoiceProxy.onConfigurationChanged(conf);
         mConfigurationChanging = false;
     }
 
@@ -559,7 +559,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
-        final VoiceConnector voiceIme = mVoiceConnector;
+        final VoiceProxy voiceIme = mVoiceProxy;
         voiceIme.resetVoiceStates(Utils.isPasswordInputType(attribute.inputType)
                 || Utils.isVisiblePasswordInputType(attribute.inputType));
 
@@ -691,7 +691,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LatinImeLogger.commit();
         mKeyboardSwitcher.onAutoCorrectionStateChanged(false);
 
-        mVoiceConnector.flushVoiceInputLogs(mConfigurationChanging);
+        mVoiceProxy.flushVoiceInputLogs(mConfigurationChanging);
 
         KeyboardView inputView = mKeyboardSwitcher.getInputView();
         if (inputView != null) inputView.closing();
@@ -712,7 +712,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onUpdateExtractedText(int token, ExtractedText text) {
         super.onUpdateExtractedText(token, text);
-        mVoiceConnector.showPunctuationHintIfNecessary();
+        mVoiceProxy.showPunctuationHintIfNecessary();
     }
 
     @Override
@@ -733,7 +733,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     + ", ce=" + candidatesEnd);
         }
 
-        mVoiceConnector.setCursorAndSelection(newSelEnd, newSelStart);
+        mVoiceProxy.setCursorAndSelection(newSelEnd, newSelStart);
 
         // If the current selection in the text view changes, we should
         // clear whatever candidate text we have.
@@ -741,7 +741,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart;
         final boolean candidatesCleared = candidatesStart == -1 && candidatesEnd == -1;
         if (((mComposing.length() > 0 && mHasValidSuggestions)
-                || mVoiceConnector.isVoiceInputHighlighted())
+                || mVoiceProxy.isVoiceInputHighlighted())
                 && (selectionChanged || candidatesCleared)) {
             if (candidatesCleared) {
                 // If the composing span has been cleared, save the typed word in the history for
@@ -757,7 +757,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (ic != null) {
                 ic.finishComposingText();
             }
-            mVoiceConnector.setVoiceInputHighlighted(false);
+            mVoiceProxy.setVoiceInputHighlighted(false);
         } else if (!mHasValidSuggestions && !mJustAccepted) {
             if (TextEntryState.isAcceptedDefault() || TextEntryState.isSpaceAfterPicked()) {
                 if (TextEntryState.isAcceptedDefault())
@@ -837,7 +837,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mOptionsDialog.dismiss();
             mOptionsDialog = null;
         }
-        mVoiceConnector.hideVoiceWindow(mConfigurationChanging);
+        mVoiceProxy.hideVoiceWindow(mConfigurationChanging);
         mWordHistory.clear();
         super.hideWindow();
     }
@@ -1188,7 +1188,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public void onTextInput(CharSequence text) {
-        mVoiceConnector.commitVoiceInput();
+        mVoiceProxy.commitVoiceInput();
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         abortRecorrection(false);
@@ -1210,13 +1210,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void handleBackspace() {
-        if (mVoiceConnector.logAndRevertVoiceInput()) return;
+        if (mVoiceProxy.logAndRevertVoiceInput()) return;
 
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         ic.beginBatchEdit();
 
-        mVoiceConnector.handleBackspace();
+        mVoiceProxy.handleBackspace();
 
         boolean deleteChar = false;
         if (mHasValidSuggestions) {
@@ -1300,7 +1300,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void handleCharacter(int primaryCode, int[] keyCodes, int x, int y) {
-        mVoiceConnector.handleCharacter();
+        mVoiceProxy.handleCharacter();
 
         if (mLastSelectionStart == mLastSelectionEnd && TextEntryState.isRecorrecting()) {
             abortRecorrection(false);
@@ -1360,7 +1360,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void handleSeparator(int primaryCode) {
-        mVoiceConnector.handleSeparator();
+        mVoiceProxy.handleSeparator();
 
         // Should dismiss the "Touch again to save" message when handling separator
         if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
@@ -1430,7 +1430,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void handleClose() {
         commitTyped(getCurrentInputConnection());
-        mVoiceConnector.handleClose();
+        mVoiceProxy.handleClose();
         requestHideSelf(0);
         LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
         if (inputView != null)
@@ -1503,7 +1503,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public void setSuggestions(SuggestedWords words) {
-        if (mVoiceConnector.getAndResetIsShowingHint()) {
+        if (mVoiceProxy.getAndResetIsShowingHint()) {
              setCandidatesView(mCandidateViewContainer);
         }
 
@@ -1519,7 +1519,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void updateSuggestions() {
         // Check if we have a suggestion engine attached.
         if ((mSuggest == null || !isSuggestionsRequested())
-                && !mVoiceConnector.isVoiceInputHighlighted()) {
+                && !mVoiceProxy.isVoiceInputHighlighted()) {
             return;
         }
 
@@ -1614,7 +1614,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     public void pickSuggestionManually(int index, CharSequence suggestion) {
         SuggestedWords suggestions = mCandidateView.getSuggestions();
-        mVoiceConnector.flushAndLogAllTextModificationCounters(index, suggestion, mWordSeparators);
+        mVoiceProxy.flushAndLogAllTextModificationCounters(index, suggestion, mWordSeparators);
 
         final boolean recorrecting = TextEntryState.isRecorrecting();
         InputConnection ic = getCurrentInputConnection();
@@ -1718,7 +1718,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
-            mVoiceConnector.rememberReplacedWord(suggestion, mWordSeparators);
+            mVoiceProxy.rememberReplacedWord(suggestion, mWordSeparators);
             ic.commitText(suggestion, 1);
         }
         saveWordInHistory(suggestion);
@@ -1773,7 +1773,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void setOldSuggestions() {
-        mVoiceConnector.setShowingVoiceSuggestions(false);
+        mVoiceProxy.setShowingVoiceSuggestions(false);
         if (mCandidateView != null && mCandidateView.isShowingAddToDictionaryHint()) {
             return;
         }
@@ -1787,7 +1787,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (touching != null && touching.mWord.length() > 1) {
                 ic.beginBatchEdit();
 
-                if (!mVoiceConnector.applyVoiceAlternatives(touching)
+                if (!mVoiceProxy.applyVoiceAlternatives(touching)
                         && !applyTypedAlternatives(touching)) {
                     abortRecorrection(true);
                 } else {
@@ -1945,8 +1945,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         // Reload keyboard because the current language has been changed.
         mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(),
-                mSubtypeSwitcher.isShortcutImeEnabled() && mVoiceConnector.isVoiceButtonEnabled(),
-                mVoiceConnector.isVoiceButtonOnPrimary());
+                mSubtypeSwitcher.isShortcutImeEnabled() && mVoiceProxy.isVoiceButtonEnabled(),
+                mVoiceProxy.isVoiceButtonOnPrimary());
         initSuggest();
         mKeyboardSwitcher.updateShiftState();
     }
@@ -2132,7 +2132,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(prefs);
         loadAndSetAutoCorrectionThreshold(prefs);
 
-        mVoiceConnector.loadSettings(attribute, prefs);
+        mVoiceProxy.loadSettings(attribute, prefs);
 
         updateCorrectionMode();
         updateAutoTextEnabled();
