@@ -16,13 +16,12 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.compat.InputMethodSubtype;
+import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
+import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.LatinKeyboard;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
-import com.android.inputmethod.voice.SettingsUtil;
-import com.android.inputmethod.voice.VoiceIMEConnector;
-import com.android.inputmethod.voice.VoiceInput;
 
 import android.content.Context;
 import android.content.Intent;
@@ -33,11 +32,10 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.inputmethod.InputMethodInfo;
-import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +45,7 @@ import java.util.Map;
 
 public class SubtypeSwitcher {
     private static boolean DBG = LatinImeLogger.sDBG;
-    private static final String TAG = "SubtypeSwitcher";
+    private static final String TAG = SubtypeSwitcher.class.getSimpleName();
 
     private static final char LOCALE_SEPARATER = '_';
     private static final String KEYBOARD_MODE = "keyboard";
@@ -60,26 +58,27 @@ public class SubtypeSwitcher {
     private static final SubtypeSwitcher sInstance = new SubtypeSwitcher();
     private /* final */ LatinIME mService;
     private /* final */ SharedPreferences mPrefs;
-    private /* final */ InputMethodManager mImm;
+    private /* final */ InputMethodManagerCompatWrapper mImm;
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
     private /* final */ boolean mConfigUseSpacebarLanguageSwitcher;
-    private final ArrayList<InputMethodSubtype> mEnabledKeyboardSubtypesOfCurrentInputMethod =
-            new ArrayList<InputMethodSubtype>();
+    private final ArrayList<InputMethodSubtypeCompatWrapper>
+            mEnabledKeyboardSubtypesOfCurrentInputMethod =
+                    new ArrayList<InputMethodSubtypeCompatWrapper>();
     private final ArrayList<String> mEnabledLanguagesOfCurrentInputMethod = new ArrayList<String>();
 
     /*-----------------------------------------------------------*/
     // Variants which should be changed only by reload functions.
     private boolean mNeedsToDisplayLanguage;
     private boolean mIsSystemLanguageSameAsInputLanguage;
-    private InputMethodInfo mShortcutInputMethodInfo;
-    private InputMethodSubtype mShortcutSubtype;
-    private List<InputMethodSubtype> mAllEnabledSubtypesOfCurrentInputMethod;
+    private InputMethodInfoCompatWrapper mShortcutInputMethodInfo;
+    private InputMethodSubtypeCompatWrapper mShortcutSubtype;
+    private List<InputMethodSubtypeCompatWrapper> mAllEnabledSubtypesOfCurrentInputMethod;
+    private InputMethodSubtypeCompatWrapper mCurrentSubtype;
     private Locale mSystemLocale;
     private Locale mInputLocale;
     private String mInputLocaleStr;
-    private String mMode;
-    private VoiceInput mVoiceInput;
+    private VoiceProxy.VoiceInputWrapper mVoiceInputWrapper;
     /*-----------------------------------------------------------*/
 
     private boolean mIsNetworkConnected;
@@ -103,7 +102,7 @@ public class SubtypeSwitcher {
         mService = service;
         mPrefs = prefs;
         mResources = service.getResources();
-        mImm = (InputMethodManager) service.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mImm = InputMethodManagerCompatWrapper.getInstance(service);
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
@@ -111,11 +110,10 @@ public class SubtypeSwitcher {
         mSystemLocale = null;
         mInputLocale = null;
         mInputLocaleStr = null;
-        // Mode is initialized to KEYBOARD_MODE, in case that LatinIME can't obtain currentSubtype
-        mMode = KEYBOARD_MODE;
+        mCurrentSubtype = null;
         mAllEnabledSubtypesOfCurrentInputMethod = null;
         // TODO: Voice input should be created here
-        mVoiceInput = null;
+        mVoiceInputWrapper = null;
         mConfigUseSpacebarLanguageSwitcher = mResources.getBoolean(
                 R.bool.config_use_spacebar_language_switcher);
         if (mConfigUseSpacebarLanguageSwitcher)
@@ -129,7 +127,7 @@ public class SubtypeSwitcher {
     // Only configuration changed event is allowed to call this because this is heavy.
     private void updateAllParameters() {
         mSystemLocale = mResources.getConfiguration().locale;
-        // @@@ updateSubtype(mImm.getCurrentInputMethodSubtype());
+        updateSubtype(mImm.getCurrentInputMethodSubtype());
         updateParametersOnStartInputView();
     }
 
@@ -146,19 +144,20 @@ public class SubtypeSwitcher {
 
     // Reload enabledSubtypes from the framework.
     private void updateEnabledSubtypes() {
+        final String currentMode = getCurrentSubtypeMode();
         boolean foundCurrentSubtypeBecameDisabled = true;
-        // @@@ mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
-        //        null, true);
+        mAllEnabledSubtypesOfCurrentInputMethod = mImm.getEnabledInputMethodSubtypeList(
+                null, true);
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
-        for (InputMethodSubtype ims: mAllEnabledSubtypesOfCurrentInputMethod) {
+        for (InputMethodSubtypeCompatWrapper ims: mAllEnabledSubtypesOfCurrentInputMethod) {
             final String locale = ims.getLocale();
             final String mode = ims.getMode();
             mLocaleSplitter.setString(locale);
             if (mLocaleSplitter.hasNext()) {
                 mEnabledLanguagesOfCurrentInputMethod.add(mLocaleSplitter.next());
             }
-            if (locale.equals(mInputLocaleStr) && mode.equals(mMode)) {
+            if (locale.equals(mInputLocaleStr) && mode.equals(currentMode)) {
                 foundCurrentSubtypeBecameDisabled = false;
             }
             if (KEYBOARD_MODE.equals(ims.getMode())) {
@@ -169,10 +168,10 @@ public class SubtypeSwitcher {
                 && mIsSystemLanguageSameAsInputLanguage);
         if (foundCurrentSubtypeBecameDisabled) {
             if (DBG) {
-                Log.w(TAG, "Current subtype: " + mInputLocaleStr + ", " + mMode);
+                Log.w(TAG, "Current subtype: " + mInputLocaleStr + ", " + currentMode);
                 Log.w(TAG, "Last subtype was disabled. Update to the current one.");
             }
-            // @@@ updateSubtype(mImm.getCurrentInputMethodSubtype());
+            updateSubtype(mImm.getCurrentInputMethodSubtype());
         }
     }
 
@@ -185,11 +184,10 @@ public class SubtypeSwitcher {
                             + ", " + mShortcutSubtype.getMode())));
         }
         // TODO: Update an icon for shortcut IME
-        /*
-        Map<InputMethodInfo, List<InputMethodSubtype>> shortcuts =
+        final Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcuts =
                 mImm.getShortcutInputMethodsAndSubtypes();
-        for (InputMethodInfo imi: shortcuts.keySet()) {
-            List<InputMethodSubtype> subtypes = shortcuts.get(imi);
+        for (InputMethodInfoCompatWrapper imi : shortcuts.keySet()) {
+            List<InputMethodSubtypeCompatWrapper> subtypes = shortcuts.get(imi);
             // TODO: Returns the first found IMI for now. Should handle all shortcuts as
             // appropriate.
             mShortcutInputMethodInfo = imi;
@@ -197,17 +195,24 @@ public class SubtypeSwitcher {
             // as appropriate.
             mShortcutSubtype = subtypes.size() > 0 ? subtypes.get(0) : null;
             break;
-            }
-        */
+        }
+        if (DBG) {
+            Log.d(TAG, "Update shortcut IME to : "
+                    + (mShortcutInputMethodInfo == null
+                            ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
+                    + (mShortcutSubtype == null ? "<null>" : (mShortcutSubtype.getLocale()
+                            + ", " + mShortcutSubtype.getMode())));
+        }
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
-    public void updateSubtype(InputMethodSubtype newSubtype) {
+    public void updateSubtype(InputMethodSubtypeCompatWrapper newSubtype) {
         final String newLocale;
         final String newMode;
-        if (newSubtype == null) {
+        final String oldMode = getCurrentSubtypeMode();
+        if (newSubtype == null || newSubtype.getOriginalObject() == null) {
             // Normally, newSubtype shouldn't be null. But just in case newSubtype was null,
-            // fallback to the default locale and mode.
+            // fallback to the default locale.
             Log.w(TAG, "Couldn't get the current subtype.");
             newLocale = "en_US";
             newMode = KEYBOARD_MODE;
@@ -217,7 +222,7 @@ public class SubtypeSwitcher {
         }
         if (DBG) {
             Log.w(TAG, "Update subtype to:" + newLocale + "," + newMode
-                    + ", from: " + mInputLocaleStr + ", " + mMode);
+                    + ", from: " + mInputLocaleStr + ", " + oldMode);
         }
         boolean languageChanged = false;
         if (!newLocale.equals(mInputLocaleStr)) {
@@ -227,42 +232,41 @@ public class SubtypeSwitcher {
             updateInputLocale(newLocale);
         }
         boolean modeChanged = false;
-        String oldMode = mMode;
-        if (!newMode.equals(mMode)) {
-            if (mMode != null) {
+        if (!newMode.equals(oldMode)) {
+            if (oldMode != null) {
                 modeChanged = true;
             }
-            mMode = newMode;
         }
+        mCurrentSubtype = newSubtype;
 
         // If the old mode is voice input, we need to reset or cancel its status.
         // We cancel its status when we change mode, while we reset otherwise.
         if (isKeyboardMode()) {
             if (modeChanged) {
-                if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
-                    mVoiceInput.cancel();
+                if (VOICE_MODE.equals(oldMode) && mVoiceInputWrapper != null) {
+                    mVoiceInputWrapper.cancel();
                 }
             }
             if (modeChanged || languageChanged) {
                 updateShortcutIME();
                 mService.onRefreshKeyboard();
             }
-        } else if (isVoiceMode() && mVoiceInput != null) {
+        } else if (isVoiceMode() && mVoiceInputWrapper != null) {
             if (VOICE_MODE.equals(oldMode)) {
-                mVoiceInput.reset();
+                mVoiceInputWrapper.reset();
             }
             // If needsToShowWarningDialog is true, voice input need to show warning before
             // show recognition view.
             if (languageChanged || modeChanged
-                    || VoiceIMEConnector.getInstance().needsToShowWarningDialog()) {
+                    || VoiceProxy.getInstance().needsToShowWarningDialog()) {
                 triggerVoiceIME();
             }
         } else {
-            Log.w(TAG, "Unknown subtype mode: " + mMode);
-            if (VOICE_MODE.equals(oldMode) && mVoiceInput != null) {
+            Log.w(TAG, "Unknown subtype mode: " + newMode);
+            if (VOICE_MODE.equals(oldMode) && mVoiceInputWrapper != null) {
                 // We need to reset the voice input to release the resources and to reset its status
                 // as it is not the current input mode.
-                mVoiceInput.reset();
+                mVoiceInputWrapper.reset();
             }
         }
     }
@@ -303,15 +307,34 @@ public class SubtypeSwitcher {
         if (token == null || mShortcutInputMethodInfo == null) {
             return;
         }
-        // @@@ mImm.setInputMethodAndSubtype(token, mShortcutInfo.getId(), mShortcutSubtype);
+        final String imiId = mShortcutInputMethodInfo.getId();
+        final InputMethodSubtypeCompatWrapper subtype = mShortcutSubtype;
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... params) {
+                mImm.setInputMethodAndSubtype(token, imiId, subtype);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void result) {
+                // Calls in this method need to be done in the same thread as the thread which
+                // called switchToShortcutIME().
+
+                // Notify an event that the current subtype was changed. This event will be
+                // handled if "onCurrentInputMethodSubtypeChanged" can't be implemented
+                // when the API level is 10 or previous.
+                mService.notifyOnCurrentInputMethodSubtypeChanged(subtype);
+            }
+        }.execute();
     }
 
     public Drawable getShortcutIcon() {
         return getSubtypeIcon(mShortcutInputMethodInfo, mShortcutSubtype);
     }
 
-    private Drawable getSubtypeIcon(InputMethodInfo imi, InputMethodSubtype subtype) {
-        /*
+    private Drawable getSubtypeIcon(
+            InputMethodInfoCompatWrapper imi, InputMethodSubtypeCompatWrapper subtype) {
         final PackageManager pm = mService.getPackageManager();
         if (imi != null) {
             final String imiPackageName = imi.getPackageName();
@@ -333,8 +356,7 @@ public class SubtypeSwitcher {
                     Log.w(TAG, "IME can't be found: " + imiPackageName);
                 }
             }
-            }
-        */
+        }
         return null;
     }
 
@@ -346,11 +368,28 @@ public class SubtypeSwitcher {
         return false;
     }
 
-    public boolean isShortcutAvailable() {
+    public boolean isShortcutImeEnabled() {
         if (mShortcutInputMethodInfo == null)
             return false;
-        if (mShortcutSubtype != null && contains(mShortcutSubtype.getExtraValue().split(","),
-                    SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY)) {
+        if (mShortcutSubtype == null)
+            return true;
+        final boolean allowsImplicitlySelectedSubtypes = true;
+        for (final InputMethodSubtypeCompatWrapper enabledSubtype :
+                mImm.getEnabledInputMethodSubtypeList(
+                        mShortcutInputMethodInfo, allowsImplicitlySelectedSubtypes)) {
+            if (enabledSubtype.equals(mShortcutSubtype))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isShortcutImeReady() {
+        if (mShortcutInputMethodInfo == null)
+            return false;
+        if (mShortcutSubtype == null)
+            return true;
+        if (contains(mShortcutSubtype.getExtraValue().split(","),
+                SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY)) {
             return mIsNetworkConnected;
         }
         return true;
@@ -361,12 +400,10 @@ public class SubtypeSwitcher {
                 ConnectivityManager.EXTRA_NO_CONNECTIVITY, false);
         mIsNetworkConnected = !noConnection;
 
-        final LatinKeyboardView inputView = KeyboardSwitcher.getInstance().getInputView();
-        if (inputView != null) {
-            final LatinKeyboard keyboard = inputView.getLatinKeyboard();
-            if (keyboard != null) {
-                keyboard.updateShortcutKey(isShortcutAvailable(), inputView);
-            }
+        final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
+        final LatinKeyboard keyboard = switcher.getLatinKeyboard();
+        if (keyboard != null) {
+            keyboard.updateShortcutKey(isShortcutImeReady(), switcher.getInputView());
         }
     }
 
@@ -462,14 +499,6 @@ public class SubtypeSwitcher {
         }
     }
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (mConfigUseSpacebarLanguageSwitcher) {
-            if (Settings.PREF_SELECTED_LANGUAGES.equals(key)) {
-                mLanguageSwitcher.loadLocales(sharedPreferences);
-            }
-        }
-    }
-
     /**
      * Change system locale for this application
      * @param newLocale
@@ -484,7 +513,7 @@ public class SubtypeSwitcher {
     }
 
     public boolean isKeyboardMode() {
-        return KEYBOARD_MODE.equals(mMode);
+        return KEYBOARD_MODE.equals(getCurrentSubtypeMode());
     }
 
 
@@ -492,9 +521,9 @@ public class SubtypeSwitcher {
     // Voice Input functions //
     ///////////////////////////
 
-    public boolean setVoiceInput(VoiceInput vi) {
-        if (mVoiceInput == null && vi != null) {
-            mVoiceInput = vi;
+    public boolean setVoiceInputWrapper(VoiceProxy.VoiceInputWrapper vi) {
+        if (mVoiceInputWrapper == null && vi != null) {
+            mVoiceInputWrapper = vi;
             if (isVoiceMode()) {
                 if (DBG) {
                     Log.d(TAG, "Set and call voice input.: " + getInputLocaleStr());
@@ -507,12 +536,12 @@ public class SubtypeSwitcher {
     }
 
     public boolean isVoiceMode() {
-        return VOICE_MODE.equals(mMode);
+        return null == mCurrentSubtype ? false : VOICE_MODE.equals(getCurrentSubtypeMode());
     }
 
     private void triggerVoiceIME() {
         if (!mService.isInputViewShown()) return;
-        VoiceIMEConnector.getInstance().startListening(false,
+        VoiceProxy.getInstance().startListening(false,
                 KeyboardSwitcher.getInstance().getInputView().getWindowToken());
     }
 
@@ -573,19 +602,29 @@ public class SubtypeSwitcher {
         }
     }
 
-    // A list of locales which are supported by default for voice input, unless we get a
-    // different list from Gservices.
-    private static final String DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES =
-            "en " +
-            "en_US " +
-            "en_GB " +
-            "en_AU " +
-            "en_CA " +
-            "en_IE " +
-            "en_IN " +
-            "en_NZ " +
-            "en_SG " +
-            "en_ZA ";
+    /////////////////////////////
+    // Other utility functions //
+    /////////////////////////////
+
+    public String getCurrentSubtypeExtraValue() {
+        // If null, return what an empty ExtraValue would return : the empty string.
+        return null != mCurrentSubtype ? mCurrentSubtype.getExtraValue() : "";
+    }
+
+    public boolean currentSubtypeContainsExtraValueKey(String key) {
+        // If null, return what an empty ExtraValue would return : false.
+        return null != mCurrentSubtype ? mCurrentSubtype.containsExtraValueKey(key) : false;
+    }
+
+    public String getCurrentSubtypeExtraValueOf(String key) {
+        // If null, return what an empty ExtraValue would return : null.
+        return null != mCurrentSubtype ? mCurrentSubtype.getExtraValueOf(key) : null;
+    }
+
+    public String getCurrentSubtypeMode() {
+        return null != mCurrentSubtype ? mCurrentSubtype.getMode() : KEYBOARD_MODE;
+    }
+
 
     public boolean isVoiceSupported(String locale) {
         // Get the current list of supported locales and check the current locale against that
@@ -593,10 +632,8 @@ public class SubtypeSwitcher {
         // input. Because this method is called by onStartInputView, this should mean that as
         // long as the locale doesn't change while the user is keeping the IME open, the
         // value should never be stale.
-        String supportedLocalesString = SettingsUtil.getSettingsString(
-                mService.getContentResolver(),
-                SettingsUtil.LATIN_IME_VOICE_INPUT_SUPPORTED_LOCALES,
-                DEFAULT_VOICE_INPUT_SUPPORTED_LOCALES);
+        String supportedLocalesString = VoiceProxy.getSupportedLocalesString(
+                mService.getContentResolver());
         List<String> voiceInputSupportedLocales = Arrays.asList(
                 supportedLocalesString.split("\\s+"));
         return voiceInputSupportedLocales.contains(locale);

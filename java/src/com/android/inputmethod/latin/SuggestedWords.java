@@ -24,23 +24,20 @@ import java.util.HashSet;
 import java.util.List;
 
 public class SuggestedWords {
-    public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, false, null);
+    public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, null);
 
     public final List<CharSequence> mWords;
-    public final boolean mIsApplicationSpecifiedCompletions;
     public final boolean mTypedWordValid;
     public final boolean mHasMinimalSuggestion;
     public final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
-    private SuggestedWords(List<CharSequence> words, boolean isApplicationSpecifiedCompletions,
-            boolean typedWordValid, boolean hasMinamlSuggestion,
-            List<SuggestedWordInfo> suggestedWordInfoList) {
+    private SuggestedWords(List<CharSequence> words, boolean typedWordValid,
+            boolean hasMinamlSuggestion, List<SuggestedWordInfo> suggestedWordInfoList) {
         if (words != null) {
             mWords = words;
         } else {
             mWords = Collections.emptyList();
         }
-        mIsApplicationSpecifiedCompletions = isApplicationSpecifiedCompletions;
         mTypedWordValid = typedWordValid;
         mHasMinimalSuggestion = hasMinamlSuggestion;
         mSuggestedWordInfoList = suggestedWordInfoList;
@@ -64,7 +61,6 @@ public class SuggestedWords {
 
     public static class Builder {
         private List<CharSequence> mWords = new ArrayList<CharSequence>();
-        private boolean mIsCompletions;
         private boolean mTypedWordValid;
         private boolean mHasMinimalSuggestion;
         private List<SuggestedWordInfo> mSuggestedWordInfoList =
@@ -109,7 +105,6 @@ public class SuggestedWords {
         public Builder setApplicationSpecifiedCompletions(CompletionInfo[] infos) {
             for (CompletionInfo info : infos)
                 addWord(info.getText());
-            mIsCompletions = true;
             return this;
         }
 
@@ -141,15 +136,14 @@ public class SuggestedWords {
                     alreadySeen.add(prevWord);
                 }
             }
-            mIsCompletions = false;
             mTypedWordValid = false;
             mHasMinimalSuggestion = false;
             return this;
         }
 
         public SuggestedWords build() {
-            return new SuggestedWords(mWords, mIsCompletions, mTypedWordValid,
-                    mHasMinimalSuggestion, mSuggestedWordInfoList);
+            return new SuggestedWords(mWords, mTypedWordValid, mHasMinimalSuggestion,
+                    mSuggestedWordInfoList);
         }
 
         public int size() {

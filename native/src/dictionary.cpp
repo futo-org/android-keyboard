@@ -23,6 +23,7 @@
 
 namespace latinime {
 
+// TODO: Change the type of all keyCodes to uint32_t
 Dictionary::Dictionary(void *dict, int dictSize, int mmapFd, int dictBufAdjust,
         int typedLetterMultiplier, int fullWordMultiplier,
         int maxWordLength, int maxWords, int maxAlternatives)
@@ -53,8 +54,7 @@ bool Dictionary::hasBigram() {
 }
 
 // TODO: use uint16_t instead of unsigned short
-bool Dictionary::isValidWord(unsigned short *word, int length)
-{
+bool Dictionary::isValidWord(unsigned short *word, int length) {
     if (IS_LATEST_DICT_VERSION) {
         return (isValidWordRec(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
     } else {

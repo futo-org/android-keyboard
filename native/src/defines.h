@@ -28,6 +28,7 @@
 #define DEBUG_SHOW_FOUND_WORD DEBUG_DICT_FULL
 #define DEBUG_NODE DEBUG_DICT_FULL
 #define DEBUG_TRACE DEBUG_DICT_FULL
+#define DEBUG_PROXIMITY_INFO true
 
 // Profiler
 #include <time.h>
@@ -76,13 +77,14 @@ static void prof_out(void) {
 }
 
 #else // FLAG_DBG
-#define LOGE
-#define LOGI
+#define LOGE(fmt, ...)
+#define LOGI(fmt, ...)
 #define DEBUG_DICT false
 #define DEBUG_DICT_FULL false
 #define DEBUG_SHOW_FOUND_WORD false
 #define DEBUG_NODE false
 #define DEBUG_TRACE false
+#define DEBUG_PROXIMITY_INFO false
 
 #define PROF_BUF_SIZE 0
 #define PROF_RESET
@@ -99,6 +101,9 @@ static void prof_out(void) {
 
 #ifndef U_SHORT_MAX
 #define U_SHORT_MAX 1 << 16
+#endif
+#ifndef S_INT_MAX
+#define S_INT_MAX 2147483647 // ((1 << 31) - 1)
 #endif
 
 // Define this to use mmap() for dictionary loading.  Undefine to use malloc() instead of mmap().
@@ -124,21 +129,21 @@ static void prof_out(void) {
 #define DICTIONARY_HEADER_SIZE 2
 #define NOT_VALID_WORD -99
 
+#define KEYCODE_SPACE ' '
+
 #define SUGGEST_WORDS_WITH_MISSING_CHARACTER true
 #define SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER true
 #define SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER true
 #define SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS true
+#define SUGGEST_WORDS_WITH_SPACE_PROXIMITY true
 
 // The following "rate"s are used as a multiplier before dividing by 100, so they are in percent.
-#define WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE 75
+#define WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE 70
 #define WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE 80
 #define WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE 75
 #define WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE 75
 #define WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE 60
 #define FULL_MATCHED_WORDS_PROMOTION_RATE 120
-
-// This is used as a bare multiplier (not subject to /100)
-#define FULL_MATCH_ACCENTS_OR_CAPITALIZATION_DIFFER_MULTIPLIER 2
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
@@ -146,10 +151,17 @@ static void prof_out(void) {
 
 #define MAX_DEPTH_MULTIPLIER 3
 
+// TODO: Reduce this constant if possible; check the maximum number of umlauts in the same German
+// word in the dictionary
+#define DEFAULT_MAX_UMLAUT_SEARCH_DEPTH 5
+
 // Minimum suggest depth for one word for all cases except for missing space suggestions.
 #define MIN_SUGGEST_DEPTH 1
 #define MIN_USER_TYPED_LENGTH_FOR_MISSING_SPACE_SUGGESTION 3
 #define MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION 3
+
+// The size of next letters frequency array.  Zero will disable the feature.
+#define NEXT_LETTERS_SIZE 0
 
 #define min(a,b) ((a)<(b)?(a):(b))
 

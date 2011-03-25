@@ -3,11 +3,19 @@ include $(CLEAR_VARS)
 
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/src $(JNI_H_INCLUDE)
 
+LOCAL_CFLAGS += -Werror -Wall
+
+# To suppress compiler warnings for unused variables/functions used for debug features etc.
+LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
+
 LOCAL_SRC_FILES := \
+    jni/com_android_inputmethod_keyboard_ProximityInfo.cpp \
     jni/com_android_inputmethod_latin_BinaryDictionary.cpp \
+    jni/onload.cpp \
     src/bigram_dictionary.cpp \
     src/char_utils.cpp \
     src/dictionary.cpp \
+    src/proximity_info.cpp \
     src/unigram_dictionary.cpp
 
 #FLAG_DBG := true

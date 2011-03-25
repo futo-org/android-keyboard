@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.latin.R;
 
 import android.view.inputmethod.EditorInfo;
@@ -41,29 +43,35 @@ public class KeyboardId {
     public final int mMode;
     public final int mXmlId;
     public final int mColorScheme;
+    public final boolean mPasswordInput;
     public final boolean mHasSettingsKey;
     public final boolean mVoiceKeyEnabled;
     public final boolean mHasVoiceKey;
-    public final int mImeOptions;
+    public final int mImeAction;
     public final boolean mEnableShiftLock;
     public final String mXmlName;
 
     private final int mHashCode;
 
-    public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int mode,
-            int colorScheme, boolean hasSettingsKey, boolean voiceKeyEnabled, boolean hasVoiceKey,
-            int imeOptions, boolean enableShiftLock) {
+    public KeyboardId(String xmlName, int xmlId, int colorScheme, Locale locale, int orientation,
+            int mode, EditorInfo attribute, boolean hasSettingsKey, boolean voiceKeyEnabled,
+            boolean hasVoiceKey, boolean enableShiftLock) {
+        final int inputType = (attribute != null) ? attribute.inputType : 0;
+        final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         this.mLocale = locale;
         this.mOrientation = orientation;
         this.mMode = mode;
         this.mXmlId = xmlId;
         this.mColorScheme = colorScheme;
+        this.mPasswordInput = InputTypeCompatUtils.isPasswordInputType(inputType)
+                || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
         this.mHasSettingsKey = hasSettingsKey;
         this.mVoiceKeyEnabled = voiceKeyEnabled;
         this.mHasVoiceKey = hasVoiceKey;
-        // We are interested only in IME_MASK_ACTION enum value and IME_FLAG_NO_ENTER_ACTION.
-        this.mImeOptions = imeOptions
-                & (EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+        // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
+        // {@link EditorInfo#IME_FLAG_NO_ENTER_ACTION}.
+        this.mImeAction = imeOptions & (
+                EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
         this.mEnableShiftLock = enableShiftLock;
         this.mXmlName = xmlName;
 
@@ -73,10 +81,11 @@ public class KeyboardId {
                 mode,
                 xmlId,
                 colorScheme,
+                mPasswordInput,
                 hasSettingsKey,
                 voiceKeyEnabled,
                 hasVoiceKey,
-                imeOptions,
+                mImeAction,
                 enableShiftLock,
         });
     }
@@ -112,10 +121,11 @@ public class KeyboardId {
             && other.mMode == this.mMode
             && other.mXmlId == this.mXmlId
             && other.mColorScheme == this.mColorScheme
+            && other.mPasswordInput == this.mPasswordInput
             && other.mHasSettingsKey == this.mHasSettingsKey
             && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
             && other.mHasVoiceKey == this.mHasVoiceKey
-            && other.mImeOptions == this.mImeOptions
+            && other.mImeAction == this.mImeAction
             && other.mEnableShiftLock == this.mEnableShiftLock;
     }
 
@@ -126,17 +136,19 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s %s imeOptions=%s %s%s%s%s%s]",
+        return String.format("[%s.xml %s %s %s imeAction=%s %s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"),
                 modeName(mMode),
-                imeOptionsName(mImeOptions),
-                colorSchemeName(mColorScheme),
+                EditorInfoCompatUtils.imeOptionsName(mImeAction),
+                (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
                 (mHasVoiceKey ? " hasVoiceKey" : ""),
-                (mEnableShiftLock ? " enableShiftLock" : ""));
+                (mEnableShiftLock ? " enableShiftLock" : ""),
+                colorSchemeName(mColorScheme)
+        );
     }
 
     public static String modeName(int mode) {
@@ -159,26 +171,4 @@ public class KeyboardId {
         }
         return null;
     }
-
-    public static String imeOptionsName(int imeOptions) {
-        if (imeOptions == -1) return null;
-        final int actionNo = imeOptions & EditorInfo.IME_MASK_ACTION;
-        final String action;
-        switch (actionNo) {
-        case EditorInfo.IME_ACTION_UNSPECIFIED: action = "actionUnspecified"; break;
-        case EditorInfo.IME_ACTION_NONE: action = "actionNone"; break;
-        case EditorInfo.IME_ACTION_GO: action = "actionGo"; break;
-        case EditorInfo.IME_ACTION_SEARCH: action = "actionSearch"; break;
-        case EditorInfo.IME_ACTION_SEND: action = "actionSend"; break;
-        case EditorInfo.IME_ACTION_DONE: action = "actionDone"; break;
-        // @@@ case EditorInfo.IME_ACTION_PREVIOUS: action = "actionPrevious"; break;
-        default: action = "actionUnknown(" + actionNo + ")"; break;
-        }
-        if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-            return "flagNoEnterAction|" + action;
-        } else {
-            return action;
-        }
-    }
 }
-

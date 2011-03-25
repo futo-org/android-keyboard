@@ -45,7 +45,7 @@
                 android:layout_height="0dip"
                 android:layout_width="match_parent"
                 android:layout_weight="1.0">
-            <com.android.inputmethod.voice.SoundIndicator
+            <com.android.inputmethod.deprecated.voice.SoundIndicator
                     android:id="@+id/sound_indicator"
                     android:src="@drawable/mic_full"
                     android:background="@drawable/mic_base"

@@ -37,7 +37,6 @@ public class ExpandableDictionary extends Dictionary {
     private int mDicTypeId;
     private int mMaxDepth;
     private int mInputLength;
-    private int[] mNextLettersFrequencies;
     private StringBuilder sb = new StringBuilder(MAX_WORD_LENGTH);
 
     private static final char QUOTE = '\'';
@@ -191,8 +190,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback,
-            int[] nextLettersFrequencies) {
+    public void getWords(final WordComposer codes, final WordCallback callback) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
@@ -201,7 +199,6 @@ public class ExpandableDictionary extends Dictionary {
         }
 
         mInputLength = codes.size();
-        mNextLettersFrequencies = nextLettersFrequencies;
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         // Cache the codes so that we don't have to lookup an array list
         for (int i = 0; i < mInputLength; i++) {
@@ -228,9 +225,19 @@ public class ExpandableDictionary extends Dictionary {
     /**
      * Returns the word's frequency or -1 if not found
      */
-    public int getWordFrequency(CharSequence word) {
+    protected int getWordFrequency(CharSequence word) {
         Node node = searchNode(mRoots, word, 0, word.length());
         return (node == null) ? -1 : node.mFrequency;
+    }
+
+    private static int computeSkippedWordFinalFreq(int freq, int snr, int inputLength) {
+        // The computation itself makes sense for >= 2, but the == 2 case returns 0
+        // anyway so we may as well test against 3 instead and return the constant
+        if (inputLength >= 3) {
+            return (freq * snr * (inputLength - 2)) / (inputLength - 1);
+        } else {
+            return 0;
+        }
     }
 
     /**
@@ -246,13 +253,14 @@ public class ExpandableDictionary extends Dictionary {
      * @param completion whether the traversal is now in completion mode - meaning that we've
      * exhausted the input and we're looking for all possible suffixes.
      * @param snr current weight of the word being formed
-     * @param inputIndex position in the input characters. This can be off from the depth in 
+     * @param inputIndex position in the input characters. This can be off from the depth in
      * case we skip over some punctuations such as apostrophe in the traversal. That is, if you type
      * "wouldve", it could be matching "would've", so the depth will be one more than the
      * inputIndex
      * @param callback the callback class for adding a word
      */
-    protected void getWordsRec(NodeArray roots, final WordComposer codes, final char[] word, 
+    // TODO: Share this routine with the native code for BinaryDictionary
+    protected void getWordsRec(NodeArray roots, final WordComposer codes, final char[] word,
             final int depth, boolean completion, int snr, int inputIndex, int skipPos,
             WordCallback callback) {
         final int count = roots.mLength;
@@ -278,14 +286,15 @@ public class ExpandableDictionary extends Dictionary {
             if (completion) {
                 word[depth] = c;
                 if (terminal) {
-                    if (!callback.addWord(word, 0, depth + 1, freq * snr, mDicTypeId,
-                                DataType.UNIGRAM)) {
-                        return;
+                    final int finalFreq;
+                    if (skipPos < 0) {
+                        finalFreq = freq * snr;
+                    } else {
+                        finalFreq = computeSkippedWordFinalFreq(freq, snr, mInputLength);
                     }
-                    // Add to frequency of next letters for predictive correction
-                    if (mNextLettersFrequencies != null && depth >= inputIndex && skipPos < 0
-                            && mNextLettersFrequencies.length > word[inputIndex]) {
-                        mNextLettersFrequencies[word[inputIndex]]++;
+                    if (!callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
+                            DataType.UNIGRAM)) {
+                        return;
                     }
                 }
                 if (children != null) {
@@ -296,7 +305,7 @@ public class ExpandableDictionary extends Dictionary {
                 // Skip the ' and continue deeper
                 word[depth] = c;
                 if (children != null) {
-                    getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex, 
+                    getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex,
                             skipPos, callback);
                 }
             } else {
@@ -313,10 +322,16 @@ public class ExpandableDictionary extends Dictionary {
 
                         if (codeSize == inputIndex + 1) {
                             if (terminal) {
-                                if (INCLUDE_TYPED_WORD_IF_VALID 
+                                if (INCLUDE_TYPED_WORD_IF_VALID
                                         || !same(word, depth + 1, codes.getTypedWord())) {
-                                    int finalFreq = freq * snr * addedAttenuation;
-                                    if (skipPos < 0) finalFreq *= FULL_WORD_FREQ_MULTIPLIER;
+                                    final int finalFreq;
+                                    if (skipPos < 0) {
+                                        finalFreq = freq * snr * addedAttenuation
+                                                * FULL_WORD_SCORE_MULTIPLIER;
+                                    } else {
+                                        finalFreq = computeSkippedWordFinalFreq(freq,
+                                                snr * addedAttenuation, mInputLength);
+                                    }
                                     callback.addWord(word, 0, depth + 1, finalFreq, mDicTypeId,
                                             DataType.UNIGRAM);
                                 }
@@ -327,7 +342,7 @@ public class ExpandableDictionary extends Dictionary {
                                         skipPos, callback);
                             }
                         } else if (children != null) {
-                            getWordsRec(children, codes, word, depth + 1, 
+                            getWordsRec(children, codes, word, depth + 1,
                                     false, snr * addedAttenuation, inputIndex + 1,
                                     skipPos, callback);
                         }
@@ -427,7 +442,7 @@ public class ExpandableDictionary extends Dictionary {
 
     @Override
     public void getBigrams(final WordComposer codes, final CharSequence previousWord,
-            final WordCallback callback, int[] nextLettersFrequencies) {
+            final WordCallback callback) {
         if (!reloadDictionaryIfRequired()) {
             runReverseLookUp(previousWord, callback);
         }
@@ -516,7 +531,7 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    static char toLowerCase(char c) {
+    private static char toLowerCase(char c) {
         char baseChar = c;
         if (c < BASE_CHARS.length) {
             baseChar = BASE_CHARS[c];
@@ -535,7 +550,7 @@ public class ExpandableDictionary extends Dictionary {
      * if c is not a combined character, or the base character if it
      * is combined.
      */
-    static final char BASE_CHARS[] = {
+    private static final char BASE_CHARS[] = {
         0x0000, 0x0001, 0x0002, 0x0003, 0x0004, 0x0005, 0x0006, 0x0007, 
         0x0008, 0x0009, 0x000a, 0x000b, 0x000c, 0x000d, 0x000e, 0x000f, 
         0x0010, 0x0011, 0x0012, 0x0013, 0x0014, 0x0015, 0x0016, 0x0017, 

@@ -26,32 +26,25 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrēt, nospiežot taustiņu"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Skaņa, nospiežot taustiņu"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Nospiežot taustiņu, parādīt uznirstošo izvēlni"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Vārdu ieteikumu iestatījumi"</string>
+    <string name="general_category" msgid="1859088467017573195">"Vispārīgi"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Teksta korekcija"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automātiska lielo burtu lietošana"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Ātrie labojumi"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Nodrošina izplatītu drukas kļūdu labošanu."</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
-    <skip />
-    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
-    <skip />
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Rādīt labojumu ieteikumus"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Ievades laikā attēlot ieteiktos vārdus"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vienmēr rādīt"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Rādīt portreta režīmā"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Vienmēr slēpt"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Rādīt iestatījumu taustiņu"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automātiski"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Vienmēr rādīt"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Vienmēr slēpt"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Vārdu ieteikumi"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Automātiski labot iepriekšējo vārdu"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction" msgid="4979925752001319458">"Automāt. korekcija"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Atstarpes taustiņš un interpunkcija; automātiska kļūdainu vārdu labošana"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Izslēgta"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mērena"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresīva"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Bigram ieteikumi"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Ieteikuma uzlabošanai izmantot iepriekšējo vārdu"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: saglabāts"</string>
@@ -59,16 +52,27 @@
     <string name="label_next_key" msgid="362972844525672568">"Tālāk"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Gatavs"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Sūtīt"</string>
-    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
-    <skip />
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Vairāk"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pauze"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Gaidīt"</string>
+    <string name="description_delete_key" msgid="5586406298531883960">"Dzēšanas taustiņš"</string>
+    <string name="description_return_key" msgid="8750044000806461678">"Atgriešanās taustiņš"</string>
+    <string name="description_settings_key" msgid="7484527796782969219">"Iestatījumu taustiņš"</string>
+    <string name="description_shift_key" msgid="346906866277787836">"Pārslēgšanas taustiņš"</string>
+    <string name="description_space_key" msgid="8512130111575878517">"Atstarpes taustiņš"</string>
+    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Simbolu taustiņš"</string>
+    <string name="description_tab_key" msgid="828186583738307137">"Tabulēšanas taustiņš"</string>
+    <string name="description_voice_key" msgid="3057731675774652754">"Runas ievades taustiņš"</string>
+    <string name="description_symbols_on" msgid="2994366855822840559">"Simbolu režīms ir ieslēgts."</string>
+    <string name="description_symbols_off" msgid="3209578267079515136">"Simbolu režīms ir izslēgts."</string>
+    <string name="description_shift_on" msgid="6983188949895971587">"Pārslēgšanas režīms ir ieslēgts."</string>
+    <string name="description_shift_off" msgid="8553265474523069034">"Pārslēgšanas režīms ir izslēgts."</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Balss ievade"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Balss ievade jūsu valodā pašlaik netiek atbalstīta, taču tā ir pieejama angļu valodā."</string>
-    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Balss ievade ir izmēģinājuma funkcija, kuras pamatā ir Google tīkla runas atpazīšanas līdzeklis."</string>
-    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Lai izslēgtu balss ievadi, atveriet tastatūras iestatījumus."</string>
-    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Lai izmantotu balss ievadi, nospiediet mikrofona pogu vai slidiniet pirkstus pāri ekrāna tastatūrai."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Balss ievadei tiek izmantota Google runas atpazīšanas funkcija. Uz šīs funkcijas lietošanu attiecas "<a href="http://m.google.com/privacy">"mobilo sakaru ierīču lietošanas konfidencialitātes politika"</a>"."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Lai izslēgtu balss ievadi, atveriet ievades metodes iestatījumus."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Lai izmantotu balss ievadi, nospiediet mikrofona taustiņu."</string>
     <string name="voice_listening" msgid="467518160751321844">"Runājiet!"</string>
     <string name="voice_working" msgid="6666937792815731889">"Notiek apstrāde"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -85,18 +89,12 @@
     <string name="cancel" msgid="6830980399865683324">"Atcelt"</string>
     <string name="ok" msgid="7898366843681727667">"Labi"</string>
     <string name="voice_input" msgid="2466640768843347841">"Balss ievade"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Uz galv. tastatūras"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Uz simbolu tastat."</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Izslēgts"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikr.uz galv.tastat."</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr.uz simb.tastat."</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Balss iev. atspējota"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Atlasīt ievades metodi"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ievades valodas"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Slidiniet pirkstu uz atstarpes taustiņa, lai mainītu valodu"</string>
@@ -105,44 +103,40 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Iespējot lietotāju atsauksmes"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Palīdziet uzlabot šo ievades metodes redaktoru, automātiski nosūtot lietojuma statistiku un pārskatus par avārijām uzņēmumam Google."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Pieskarties, lai izlabotu vārdus"</string>
-    <!-- outdated translation 1056068922330206170 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Pieskarties ievadītajiem vārdiem, lai tos labotu"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Pieskarties ievadītajiem vārdiem, lai tos labotu (tikai tad, ja tiek rādīti ieteikumi)."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tastatūras motīvs"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Čehu tastatūra"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Dāņu tastatūra"</string>
-    <!-- outdated translation 5111274665584117449 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Vācu tastatūra"</string>
-    <!-- outdated translation 2339748210942078577 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Angļu tastatūra (Lielbritānija)"</string>
-    <!-- outdated translation 2979257184475020604 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Angļu tastatūra (ASV)"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Vācu tastatūra"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Angļu (Lielbritānija) tastatūra"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Angļu (ASV) tastatūra"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spāņu tastatūra"</string>
-    <!-- no translation found for subtype_mode_es_US_keyboard (3702125193532262008) -->
-    <skip />
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Spāņu (ASV) tastatūra"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Franču tastatūra"</string>
-    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
-    <skip />
-    <!-- outdated translation 2281078537437195027 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Itāliešu tastatūra"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Franču (Kanāda) tastatūra"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Franču (Šveices) tastatūra"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Itāļu tastatūra"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norvēģu tastatūra"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Holandiešu tastatūra"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Krievu tastatūra"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbu tastatūra"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Zviedru tastatūra"</string>
-    <!-- outdated translation 157536957128878726 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voice čehu valodā"</string>
-    <!-- outdated translation 309350321180102217 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voice vācu valodā"</string>
-    <string name="subtype_mode_en_AU_voice" msgid="1103892562629586486">"Voice angļu valodā (Austrālija)"</string>
-    <!-- outdated translation 3773764031764533262 -->     <string name="subtype_mode_en_GB_voice" msgid="7868802451720612888">"Voice angļu valodā (Lielbritānija)"</string>
-    <string name="subtype_mode_en_IN_voice" msgid="4834879535045820293">"Voice angļu valodā (Indija)"</string>
-    <string name="subtype_mode_en_NZ_voice" msgid="2739391364469645636">"Voice angļu valodā (Jaunzēlande)"</string>
-    <!-- outdated translation 1582519352222847297 -->     <string name="subtype_mode_en_US_voice" msgid="2300580846081472319">"Voice angļu valodā (ASV)"</string>
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Balss afrikandu valodā"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voice čehu valodā"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voice vācu valodā"</string>
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Balss angļu valodā"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Voice spāņu valodā"</string>
     <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Voice franču valodā"</string>
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Itāļu balss"</string>
     <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Voice japāņu valodā"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Voice korejiešu valodā"</string>
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Holandiešu balss"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Voice poļu valodā"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Voice portugāļu valodā"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Voice krievu valodā"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Voice turku valodā"</string>
-    <!-- outdated translation 3154514897179707124 -->     <string name="subtype_mode_zh_CN_voice" msgid="6452442204238513331">"Voice ķīniešu valodā (Ķīna)"</string>
-    <!-- outdated translation 1524137359275360490 -->     <string name="subtype_mode_zh_TW_voice" msgid="3640444875378221940">"Voice ķīniešu valodā (Taivāna)"</string>
-    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Balss ķīniešu val. (Kantonas dial.)"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Balss ķīniešu v. (mandarīnu dial.)"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Balss zulu valodā"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Lietojamības izpētes režīms"</string>
 </resources>

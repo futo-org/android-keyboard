@@ -14,3 +14,11 @@
   void waitUntilUpdateDBDone();
   void waitForDictionaryLoading();
 }
+
+-keep class com.android.inputmethod.latin.AutoCorrection {
+  java.lang.CharSequence getAutoCorrectionWord();
+}
+
+-keep class com.android.inputmethod.latin.Utils {
+  boolean equalsIgnoreCase(...);
+}

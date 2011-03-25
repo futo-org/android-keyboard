@@ -29,7 +29,7 @@ public abstract class Dictionary {
     /**
      * The weight to give to a word if it's length is the same as the number of typed characters.
      */
-    protected static final int FULL_WORD_FREQ_MULTIPLIER = 2;
+    protected static final int FULL_WORD_SCORE_MULTIPLIER = 2;
 
     public static enum DataType {
         UNIGRAM, BIGRAM
@@ -42,17 +42,17 @@ public abstract class Dictionary {
     public interface WordCallback {
         /**
          * Adds a word to a list of suggestions. The word is expected to be ordered based on
-         * the provided frequency.
+         * the provided score.
          * @param word the character array containing the word
          * @param wordOffset starting offset of the word in the character array
          * @param wordLength length of valid characters in the character array
-         * @param frequency the frequency of occurrence. This is normalized between 1 and 255, but
+         * @param score the score of occurrence. This is normalized between 1 and 255, but
          * can exceed those limits
          * @param dicTypeId of the dictionary where word was from
          * @param dataType tells type of this data
          * @return true if the word was added, false if no more words are required
          */
-        boolean addWord(char[] word, int wordOffset, int wordLength, int frequency, int dicTypeId,
+        boolean addWord(char[] word, int wordOffset, int wordLength, int score, int dicTypeId,
                 DataType dataType);
     }
 
@@ -61,14 +61,9 @@ public abstract class Dictionary {
      * words are added through the callback object.
      * @param composer the key sequence to match
      * @param callback the callback object to send matched words to as possible candidates
-     * @param nextLettersFrequencies array of frequencies of next letters that could follow the
-     *        word so far. For instance, "bracke" can be followed by "t", so array['t'] will have
-     *        a non-zero value on returning from this method. 
-     *        Pass in null if you don't want the dictionary to look up next letters.
      * @see WordCallback#addWord(char[], int, int)
      */
-    abstract public void getWords(final WordComposer composer, final WordCallback callback,
-            int[] nextLettersFrequencies);
+    abstract public void getWords(final WordComposer composer, final WordCallback callback);
 
     /**
      * Searches for pairs in the bigram dictionary that matches the previous word and all the
@@ -76,13 +71,9 @@ public abstract class Dictionary {
      * @param composer the key sequence to match
      * @param previousWord the word before
      * @param callback the callback object to send possible word following previous word
-     * @param nextLettersFrequencies array of frequencies of next letters that could follow the
-     *        word so far. For instance, "bracke" can be followed by "t", so array['t'] will have
-     *        a non-zero value on returning from this method.
-     *        Pass in null if you don't want the dictionary to look up next letters.
      */
     public void getBigrams(final WordComposer composer, final CharSequence previousWord,
-            final WordCallback callback, int[] nextLettersFrequencies) {
+            final WordCallback callback) {
         // empty base implementation
     }
 

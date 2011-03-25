@@ -15,10 +15,12 @@
 ** limitations under the License.
 */
 
-#define LOG_TAG "LatinIME: jni"
+#define LOG_TAG "LatinIME: jni: BinaryDictionary"
 
+#include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "dictionary.h"
 #include "jni.h"
+#include "proximity_info.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -35,7 +37,7 @@
 
 // ----------------------------------------------------------------------------
 
-using namespace latinime;
+namespace latinime {
 
 //
 // helper function to throw an exception
@@ -43,7 +45,7 @@ using namespace latinime;
 static void throwException(JNIEnv *env, const char* ex, const char* fmt, int data) {
     if (jclass cls = env->FindClass(ex)) {
         char msg[1000];
-        sprintf(msg, fmt, data);
+        snprintf(msg, sizeof(msg), fmt, data);
         env->ThrowNew(cls, msg);
         env->DeleteLocalRef(cls);
     }
@@ -123,26 +125,29 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
 }
 
 static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object, jint dict,
-        jintArray inputArray, jint arraySize, jcharArray outputArray, jintArray frequencyArray,
-        jintArray nextLettersArray, jint nextLettersSize) {
+        jint proximityInfo, jintArray xCoordinatesArray, jintArray yCoordinatesArray,
+        jintArray inputArray, jint arraySize, jint flags,
+        jcharArray outputArray, jintArray frequencyArray) {
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
+    ProximityInfo *pInfo = (ProximityInfo*)proximityInfo;
+    if (!pInfo) return 0;
+
+    int *xCoordinates = env->GetIntArrayElements(xCoordinatesArray, NULL);
+    int *yCoordinates = env->GetIntArrayElements(yCoordinatesArray, NULL);
 
     int *frequencies = env->GetIntArrayElements(frequencyArray, NULL);
     int *inputCodes = env->GetIntArrayElements(inputArray, NULL);
     jchar *outputChars = env->GetCharArrayElements(outputArray, NULL);
-    int *nextLetters = nextLettersArray != NULL ? env->GetIntArrayElements(nextLettersArray, NULL)
-            : NULL;
 
-    int count = dictionary->getSuggestions(inputCodes, arraySize, (unsigned short*) outputChars,
-            frequencies, nextLetters, nextLettersSize);
+    int count = dictionary->getSuggestions(pInfo, xCoordinates, yCoordinates, inputCodes,
+            arraySize, flags, (unsigned short*) outputChars, frequencies);
 
     env->ReleaseIntArrayElements(frequencyArray, frequencies, 0);
     env->ReleaseIntArrayElements(inputArray, inputCodes, JNI_ABORT);
+    env->ReleaseIntArrayElements(xCoordinatesArray, xCoordinates, 0);
+    env->ReleaseIntArrayElements(yCoordinatesArray, yCoordinates, 0);
     env->ReleaseCharArrayElements(outputArray, outputChars, 0);
-    if (nextLetters) {
-        env->ReleaseIntArrayElements(nextLettersArray, nextLetters, 0);
-    }
 
     return count;
 }
@@ -206,10 +211,10 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jint di
 
 // ----------------------------------------------------------------------------
 
-static JNINativeMethod gMethods[] = {
+static JNINativeMethod sMethods[] = {
     {"openNative", "(Ljava/lang/String;JJIIIII)I", (void*)latinime_BinaryDictionary_open},
     {"closeNative", "(I)V", (void*)latinime_BinaryDictionary_close},
-    {"getSuggestionsNative", "(I[II[C[I[II)I", (void*)latinime_BinaryDictionary_getSuggestions},
+    {"getSuggestionsNative", "(II[I[I[III[C[I)I", (void*)latinime_BinaryDictionary_getSuggestions},
     {"isValidWordNative", "(I[CI)Z", (void*)latinime_BinaryDictionary_isValidWord},
     {"getBigramsNative", "(I[CI[II[C[IIII)I", (void*)latinime_BinaryDictionary_getBigrams}
 };
@@ -231,33 +236,10 @@ static int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMe
     return JNI_TRUE;
 }
 
-static int registerNatives(JNIEnv *env) {
+int register_BinaryDictionary(JNIEnv *env) {
     const char* const kClassPathName = "com/android/inputmethod/latin/BinaryDictionary";
-    return registerNativeMethods(env, kClassPathName, gMethods,
-            sizeof(gMethods) / sizeof(gMethods[0]));
+    return registerNativeMethods(env, kClassPathName, sMethods,
+            sizeof(sMethods) / sizeof(sMethods[0]));
 }
 
-/*
- * Returns the JNI version on success, -1 on failure.
- */
-jint JNI_OnLoad(JavaVM* vm, void* reserved) {
-    JNIEnv* env = NULL;
-    jint result = -1;
-
-    if (vm->GetEnv((void**) &env, JNI_VERSION_1_4) != JNI_OK) {
-        LOGE("ERROR: GetEnv failed");
-        goto bail;
-    }
-    assert(env != NULL);
-
-    if (!registerNatives(env)) {
-        LOGE("ERROR: BinaryDictionary native registration failed");
-        goto bail;
-    }
-
-    /* success -- return valid version number */
-    result = JNI_VERSION_1_4;
-
-bail:
-    return result;
-}
+}; // namespace latinime

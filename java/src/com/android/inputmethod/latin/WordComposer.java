@@ -16,22 +16,32 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.KeyDetector;
+
 import java.util.ArrayList;
 
 /**
  * A place to store the currently composing word with information such as adjacent key codes as well
  */
 public class WordComposer {
+
+    public static final int NOT_A_CODE = KeyDetector.NOT_A_CODE;
+    public static final int NOT_A_COORDINATE = -1;
+
     /**
      * The list of unicode values for each keystroke (including surrounding keys)
      */
     private final ArrayList<int[]> mCodes;
-    
+
+    private int mTypedLength;
+    private final int[] mXCoordinates;
+    private final int[] mYCoordinates;
+
     /**
      * The word chosen from the candidate list, until it is committed.
      */
     private String mPreferredWord;
-    
+
     private final StringBuilder mTypedWord;
 
     private int mCapsCount;
@@ -44,17 +54,24 @@ public class WordComposer {
     private boolean mIsFirstCharCapitalized;
 
     public WordComposer() {
-        mCodes = new ArrayList<int[]>(12);
-        mTypedWord = new StringBuilder(20);
+        final int N = BinaryDictionary.MAX_WORD_LENGTH;
+        mCodes = new ArrayList<int[]>(N);
+        mTypedWord = new StringBuilder(N);
+        mTypedLength = 0;
+        mXCoordinates = new int[N];
+        mYCoordinates = new int[N];
     }
 
-    WordComposer(WordComposer copy) {
-        mCodes = new ArrayList<int[]>(copy.mCodes);
-        mPreferredWord = copy.mPreferredWord;
-        mTypedWord = new StringBuilder(copy.mTypedWord);
-        mCapsCount = copy.mCapsCount;
-        mAutoCapitalized = copy.mAutoCapitalized;
-        mIsFirstCharCapitalized = copy.mIsFirstCharCapitalized;
+    WordComposer(WordComposer source) {
+        mCodes = new ArrayList<int[]>(source.mCodes);
+        mPreferredWord = source.mPreferredWord;
+        mTypedWord = new StringBuilder(source.mTypedWord);
+        mCapsCount = source.mCapsCount;
+        mAutoCapitalized = source.mAutoCapitalized;
+        mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
+        mTypedLength = source.mTypedLength;
+        mXCoordinates = source.mXCoordinates;
+        mYCoordinates = source.mYCoordinates;
     }
 
     /**
@@ -62,6 +79,7 @@ public class WordComposer {
      */
     public void reset() {
         mCodes.clear();
+        mTypedLength = 0;
         mIsFirstCharCapitalized = false;
         mPreferredWord = null;
         mTypedWord.setLength(0);
@@ -85,15 +103,28 @@ public class WordComposer {
         return mCodes.get(index);
     }
 
+    public int[] getXCoordinates() {
+        return mXCoordinates;
+    }
+
+    public int[] getYCoordinates() {
+        return mYCoordinates;
+    }
+
     /**
      * Add a new keystroke, with codes[0] containing the pressed key's unicode and the rest of
      * the array containing unicode for adjacent keys, sorted by reducing probability/proximity.
      * @param codes the array of unicode values
      */
-    public void add(int primaryCode, int[] codes) {
+    public void add(int primaryCode, int[] codes, int x, int y) {
         mTypedWord.append((char) primaryCode);
         correctPrimaryJuxtapos(primaryCode, codes);
         mCodes.add(codes);
+        if (mTypedLength < BinaryDictionary.MAX_WORD_LENGTH) {
+            mXCoordinates[mTypedLength] = x;
+            mYCoordinates[mTypedLength] = y;
+        }
+        ++mTypedLength;
         if (Character.isUpperCase((char) primaryCode)) mCapsCount++;
     }
 
@@ -123,6 +154,9 @@ public class WordComposer {
             char last = mTypedWord.charAt(lastPos);
             mTypedWord.deleteCharAt(lastPos);
             if (Character.isUpperCase(last)) mCapsCount--;
+        }
+        if (mTypedLength > 0) {
+            --mTypedLength;
         }
     }
 

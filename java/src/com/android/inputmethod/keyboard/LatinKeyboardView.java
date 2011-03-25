@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.Utils;
-import com.android.inputmethod.voice.VoiceIMEConnector;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -66,7 +66,8 @@ public class LatinKeyboardView extends KeyboardView {
         }
     }
 
-    public void setLatinKeyboard(LatinKeyboard newKeyboard) {
+    @Override
+    public void setKeyboard(Keyboard newKeyboard) {
         final LatinKeyboard oldKeyboard = getLatinKeyboard();
         if (oldKeyboard != null) {
             // Reset old keyboard state before switching to new keyboard.
@@ -80,7 +81,7 @@ public class LatinKeyboardView extends KeyboardView {
         mLastRowY = (newKeyboard.getHeight() * 3) / 4;
     }
 
-    public LatinKeyboard getLatinKeyboard() {
+    private LatinKeyboard getLatinKeyboard() {
         Keyboard keyboard = getKeyboard();
         if (keyboard instanceof LatinKeyboard) {
             return (LatinKeyboard)keyboard;
@@ -143,6 +144,10 @@ public class LatinKeyboardView extends KeyboardView {
     private boolean handleSuddenJump(MotionEvent me) {
         // If device has distinct multi touch panel, there is no need to check sudden jump.
         if (hasDistinctMultitouch())
+            return false;
+        // If accessibiliy is enabled, stop looking for sudden jumps because it interferes
+        // with touch exploration of the keyboard.
+        if (isAccessibilityEnabled())
             return false;
         final int action = me.getAction();
         final int x = (int) me.getX();
@@ -259,6 +264,6 @@ public class LatinKeyboardView extends KeyboardView {
     @Override
     protected void onAttachedToWindow() {
         // Token is available from here.
-        VoiceIMEConnector.getInstance().onAttachedToWindow();
+        VoiceProxy.getInstance().onAttachedToWindow();
     }
 }

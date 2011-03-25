@@ -347,9 +347,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         if (mShowingAddToDictionary && index == 0) {
             addToDictionary(word);
         } else {
-            if (!mSuggestions.mIsApplicationSpecifiedCompletions) {
-                TextEntryState.acceptedSuggestion(mSuggestions.getWord(0), word);
-            }
             mService.pickSuggestionManually(index, word);
         }
     }

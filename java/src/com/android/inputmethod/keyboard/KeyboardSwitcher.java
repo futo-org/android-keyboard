@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -28,7 +29,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
 import android.view.InflateException;
-import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.EditorInfo;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
@@ -66,8 +67,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboardCache =
             new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
 
-    private int mMode = KeyboardId.MODE_TEXT; /* default value */
-    private int mImeOptions;
+    private EditorInfo mAttribute;
     private boolean mIsSymbols;
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
@@ -83,8 +83,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int AUTO_MODE_SWITCH_STATE_CHORDING = 4;
     private int mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
 
-    // Indicates whether or not we have the settings key
-    private boolean mHasSettingsKey;
+    // Indicates whether or not we have the settings key in option of settings
+    private boolean mSettingsKeyEnabledInSettings;
     private static final int SETTINGS_KEY_MODE_AUTO = R.string.settings_key_mode_auto;
     private static final int SETTINGS_KEY_MODE_ALWAYS_SHOW =
             R.string.settings_key_mode_always_show;
@@ -122,77 +122,47 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         prefs.registerOnSharedPreferenceChangeListener(sInstance);
     }
 
-    private void makeSymbolsKeyboardIds() {
-        final Locale locale = mSubtypeSwitcher.getInputLocale();
-        final Resources res = mInputMethodService.getResources();
-        final int orientation = res.getConfiguration().orientation;
-        final int mode = mMode;
-        final int colorScheme = getColorScheme();
-        final boolean hasSettingsKey = mHasSettingsKey;
-        final boolean voiceKeyEnabled = mVoiceKeyEnabled;
-        final boolean hasVoiceKey = voiceKeyEnabled && !mVoiceButtonOnPrimary;
-        final int imeOptions = mImeOptions;
-        // Note: This comment is only applied for phone number keyboard layout.
-        // On non-xlarge device, "@integer/key_switch_alpha_symbol" key code is used to switch
-        // between "phone keyboard" and "phone symbols keyboard".  But on xlarge device,
-        // "@integer/key_shift" key code is used for that purpose in order to properly display
-        // "more" and "locked more" key labels.  To achieve these behavior, we should initialize
-        // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
-        // respectively here for xlarge device's layout switching.
-        int xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols;
-        mSymbolsId = new KeyboardId(
-                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mode, colorScheme,
-                hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
-        xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift;
-        mSymbolsShiftedId = new KeyboardId(
-                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mode, colorScheme,
-                hasSettingsKey, voiceKeyEnabled, hasVoiceKey, imeOptions, true);
-    }
-
-    private boolean hasVoiceKey(boolean isSymbols) {
-        return mVoiceKeyEnabled && (isSymbols != mVoiceButtonOnPrimary);
-    }
-
-    public void loadKeyboard(int mode, int imeOptions, boolean voiceKeyEnabled,
+    public void loadKeyboard(EditorInfo attribute, boolean voiceKeyEnabled,
             boolean voiceButtonOnPrimary) {
         mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         try {
-            if (mInputView == null) return;
-            final Keyboard oldKeyboard = mInputView.getKeyboard();
-            loadKeyboardInternal(mode, imeOptions, voiceKeyEnabled, voiceButtonOnPrimary, false);
-            final Keyboard newKeyboard = mInputView.getKeyboard();
-            if (newKeyboard.isAlphaKeyboard()) {
-                final boolean localeChanged = (oldKeyboard == null)
-                        || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
-                mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
-            }
+            loadKeyboardInternal(attribute, voiceKeyEnabled, voiceButtonOnPrimary, false);
         } catch (RuntimeException e) {
-            Log.w(TAG, e);
-            LatinImeLogger.logOnException(mode + "," + imeOptions, e);
+            // Get KeyboardId to record which keyboard has been failed to load.
+            final KeyboardId id = getKeyboardId(attribute, false);
+            Log.w(TAG, "loading keyboard failed: " + id, e);
+            LatinImeLogger.logOnException(id.toString(), e);
         }
     }
 
-    private void loadKeyboardInternal(int mode, int imeOptions, boolean voiceButtonEnabled,
+    private void loadKeyboardInternal(EditorInfo attribute, boolean voiceButtonEnabled,
             boolean voiceButtonOnPrimary, boolean isSymbols) {
         if (mInputView == null) return;
 
-        mMode = mode;
-        mImeOptions = imeOptions;
+        mAttribute = attribute;
         mVoiceKeyEnabled = voiceButtonEnabled;
         mVoiceButtonOnPrimary = voiceButtonOnPrimary;
         mIsSymbols = isSymbols;
         // Update the settings key state because number of enabled IMEs could have been changed
-        mHasSettingsKey = getSettingsKeyMode(mPrefs, mInputMethodService);
-        final KeyboardId id = getKeyboardId(mode, imeOptions, isSymbols);
+        mSettingsKeyEnabledInSettings = getSettingsKeyMode(mPrefs, mInputMethodService);
+        final KeyboardId id = getKeyboardId(attribute, isSymbols);
 
         final Keyboard oldKeyboard = mInputView.getKeyboard();
         if (oldKeyboard != null && oldKeyboard.mId.equals(id))
             return;
 
-        makeSymbolsKeyboardIds();
+        makeSymbolsKeyboardIds(id.mMode, attribute);
         mCurrentId = id;
         mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
-        mInputView.setKeyboard(getKeyboard(id));
+        setKeyboard(getKeyboard(id));
+    }
+
+    private void setKeyboard(final Keyboard newKeyboard) {
+        final Keyboard oldKeyboard = mInputView.getKeyboard();
+        mInputView.setKeyboard(newKeyboard);
+        final boolean localeChanged = (oldKeyboard == null)
+                || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
+        mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -224,11 +194,22 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // displayed on its spacebar, it might have had arbitrary text fade factor. In such case,
         // we should reset the text fade factor. It is also applicable to shortcut key.
         keyboard.setSpacebarTextFadeFactor(0.0f, null);
-        keyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutAvailable(), null);
+        keyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady(), null);
         return keyboard;
     }
 
-    private KeyboardId getKeyboardId(int mode, int imeOptions, boolean isSymbols) {
+    private boolean hasVoiceKey(boolean isSymbols) {
+        return mVoiceKeyEnabled && (isSymbols != mVoiceButtonOnPrimary);
+    }
+
+    private boolean hasSettingsKey(EditorInfo attribute) {
+        return mSettingsKeyEnabledInSettings
+            && !Utils.inPrivateImeOptions(mInputMethodService.getPackageName(),
+                    LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
+    }
+
+    private KeyboardId getKeyboardId(EditorInfo attribute, boolean isSymbols) {
+        final int mode = Utils.getKeyboardMode(attribute);
         final boolean hasVoiceKey = hasVoiceKey(isSymbols);
         final int charColorId = getColorScheme();
         final int xmlId;
@@ -256,16 +237,40 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 enableShiftLock = true;
             }
         }
+        final boolean hasSettingsKey = hasSettingsKey(attribute);
         final Resources res = mInputMethodService.getResources();
         final int orientation = res.getConfiguration().orientation;
         final Locale locale = mSubtypeSwitcher.getInputLocale();
         return new KeyboardId(
-                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mode, charColorId,
-                mHasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, imeOptions, enableShiftLock);
+                res.getResourceEntryName(xmlId), xmlId, charColorId, locale, orientation, mode,
+                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, enableShiftLock);
+    }
+
+    private void makeSymbolsKeyboardIds(final int mode, EditorInfo attribute) {
+        final Locale locale = mSubtypeSwitcher.getInputLocale();
+        final Resources res = mInputMethodService.getResources();
+        final int orientation = res.getConfiguration().orientation;
+        final int colorScheme = getColorScheme();
+        final boolean hasVoiceKey = mVoiceKeyEnabled && !mVoiceButtonOnPrimary;
+        final boolean hasSettingsKey = hasSettingsKey(attribute);
+        // Note: This comment is only applied for phone number keyboard layout.
+        // On non-xlarge device, "@integer/key_switch_alpha_symbol" key code is used to switch
+        // between "phone keyboard" and "phone symbols keyboard".  But on xlarge device,
+        // "@integer/key_shift" key code is used for that purpose in order to properly display
+        // "more" and "locked more" key labels.  To achieve these behavior, we should initialize
+        // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
+        // respectively here for xlarge device's layout switching.
+        int xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols;
+        final String xmlName = res.getResourceEntryName(xmlId);
+        mSymbolsId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
+                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
+        xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift;
+        mSymbolsShiftedId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
+                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
     }
 
     public int getKeyboardMode() {
-        return mMode;
+        return mCurrentId != null ? mCurrentId.mMode : KeyboardId.MODE_TEXT;
     }
 
     public boolean isAlphabetMode() {
@@ -278,20 +283,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     public boolean isKeyboardAvailable() {
         if (mInputView != null)
-            return mInputView.getLatinKeyboard() != null;
+            return mInputView.getKeyboard() != null;
         return false;
     }
 
-    private LatinKeyboard getLatinKeyboard() {
-        if (mInputView != null)
-            return mInputView.getLatinKeyboard();
+    public LatinKeyboard getLatinKeyboard() {
+        if (mInputView != null) {
+            final Keyboard keyboard = mInputView.getKeyboard();
+            if (keyboard instanceof LatinKeyboard)
+                return (LatinKeyboard)keyboard;
+        }
         return null;
-    }
-
-    public void setPreferredLetters(int[] frequencies) {
-        LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null)
-            latinKeyboard.setPreferredLetters(frequencies);
     }
 
     public void keyReleased() {
@@ -342,7 +344,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // state when shift key is pressed to go to normal mode.
             // On the other hand, on distinct multi touch panel device, turning off the shift locked
             // state with shift key pressing is handled by onReleaseShift().
-            if (!hasDistinctMultitouch() && !shifted && latinKeyboard.isShiftLocked()) {
+            if ((!hasDistinctMultitouch() || isAccessibilityEnabled())
+                    && !shifted && latinKeyboard.isShiftLocked()) {
                 latinKeyboard.setShiftLocked(false);
             }
             if (latinKeyboard.setShifted(shifted)) {
@@ -437,14 +440,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         updateShiftState();
     }
 
-    public void onPressShift() {
+    public void onPressShift(boolean withSliding) {
         if (!isKeyboardAvailable())
+            return;
+        // If accessibility is enabled, disable momentary shift lock.
+        if (isAccessibilityEnabled())
             return;
         ShiftKeyState shiftKeyState = mShiftKeyState;
         if (DEBUG_STATE)
             Log.d(TAG, "onPressShift:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
-                    + " shiftKeyState=" + shiftKeyState);
+                    + " shiftKeyState=" + shiftKeyState + " sliding=" + withSliding);
         if (isAlphabetMode()) {
             if (isShiftLocked()) {
                 // Shift key is pressed while caps lock state, we will treat this state as shifted
@@ -472,25 +478,30 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    public void onReleaseShift() {
+    public void onReleaseShift(boolean withSliding) {
         if (!isKeyboardAvailable())
+            return;
+        // If accessibility is enabled, disable momentary shift lock.
+        if (isAccessibilityEnabled())
             return;
         ShiftKeyState shiftKeyState = mShiftKeyState;
         if (DEBUG_STATE)
             Log.d(TAG, "onReleaseShift:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
-                    + " shiftKeyState=" + shiftKeyState);
+                    + " shiftKeyState=" + shiftKeyState + " sliding=" + withSliding);
         if (isAlphabetMode()) {
             if (shiftKeyState.isMomentary()) {
                 // After chording input while normal state.
                 toggleShift();
-            } else if (isShiftLocked() && !shiftKeyState.isIgnoring()) {
+            } else if (isShiftLocked() && !shiftKeyState.isIgnoring() && !withSliding) {
                 // Shift has been pressed without chording while caps lock state.
                 toggleCapsLock();
-            } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()) {
+            } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()
+                    && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
                 toggleShift();
-            } else if (isManualTemporaryUpperCaseFromAuto() && shiftKeyState.isPressing()) {
+            } else if (isManualTemporaryUpperCaseFromAuto() && shiftKeyState.isPressing()
+                    && !withSliding) {
                 // Shift has been pressed without chording while manual temporary upper case
                 // transited from automatic temporary upper case.
                 toggleShift();
@@ -500,6 +511,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onPressSymbol() {
+        // If accessibility is enabled, disable momentary symbol lock.
+        if (isAccessibilityEnabled())
+            return;
         if (DEBUG_STATE)
             Log.d(TAG, "onPressSymbol:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
@@ -510,6 +524,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onReleaseSymbol() {
+        // If accessibility is enabled, disable momentary symbol lock.
+        if (isAccessibilityEnabled())
+            return;
         if (DEBUG_STATE)
             Log.d(TAG, "onReleaseSymbol:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
@@ -522,6 +539,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onOtherKeyPressed() {
+        // If accessibility is enabled, disable momentary mode locking.
+        if (isAccessibilityEnabled())
+            return;
         if (DEBUG_STATE)
             Log.d(TAG, "onOtherKeyPressed:"
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
@@ -556,7 +576,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // indicator, we need to call enableShiftLock() and setShiftLocked(false).
             keyboard.setShifted(false);
         }
-        mInputView.setKeyboard(keyboard);
+        setKeyboard(keyboard);
     }
 
     public boolean isInMomentaryAutoModeSwitchState() {
@@ -572,13 +592,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private void toggleKeyboardMode() {
-        loadKeyboardInternal(mMode, mImeOptions, mVoiceKeyEnabled, mVoiceButtonOnPrimary,
-                !mIsSymbols);
+        loadKeyboardInternal(mAttribute, mVoiceKeyEnabled, mVoiceButtonOnPrimary, !mIsSymbols);
         if (mIsSymbols) {
             mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_SYMBOL_BEGIN;
         } else {
             mAutoModeSwitchState = AUTO_MODE_SWITCH_STATE_ALPHA;
         }
+    }
+
+    public boolean isAccessibilityEnabled() {
+        return mInputView != null && mInputView.isAccessibilityEnabled();
     }
 
     public boolean hasDistinctMultitouch() {
@@ -696,7 +719,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             createInputViewInternal(layoutId, false);
             postSetInputView();
         } else if (Settings.PREF_SETTINGS_KEY.equals(key)) {
-            mHasSettingsKey = getSettingsKeyMode(sharedPreferences, mInputMethodService);
+            mSettingsKeyEnabledInSettings = getSettingsKeyMode(sharedPreferences,
+                    mInputMethodService);
             createInputViewInternal(mLayoutId, true);
             postSetInputView();
         }
@@ -728,11 +752,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
                     || (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_AUTO))
                             && Utils.hasMultipleEnabledIMEsOrSubtypes(
-                                    ((InputMethodManager) context.getSystemService(
-                                            Context.INPUT_METHOD_SERVICE))))) {
+                                    (InputMethodManagerCompatWrapper.getInstance(context))))) {
                 return true;
             }
+            return false;
         }
-        return false;
+        // If the show settings key option is disabled, we always try showing the settings key.
+        return true;
     }
 }

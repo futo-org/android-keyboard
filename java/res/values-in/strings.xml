@@ -26,32 +26,25 @@
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Getar jika tombol ditekan"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Berbunyi jika tombol ditekan"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Muncul saat tombol ditekan"</string>
-    <string name="prediction_category" msgid="7027100625580696660">"Setelan saran kata"</string>
+    <string name="general_category" msgid="1859088467017573195">"Umum"</string>
+    <string name="prediction_category" msgid="6361242011806282176">"Koreksi teks"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Kapitalisasi otomatis"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Perbaikan cepat"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Memperbaiki kesalahan ketik umum"</string>
-    <!-- no translation found for prefs_show_suggestions (3377105182950417159) -->
-    <skip />
-    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
-    <skip />
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Tampilkan saran koreksi"</string>
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Tampilkan kata yang disarankan ketika mengetik"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Selalu tampilkan"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Tampilkan pada mode potret"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Selalu sembunyikan"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Lihat tombol setelan"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Otomatis"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Selalu tampilkan"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Selalu sembunyikan"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Saran kata"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="2591572172085659910">"Perbaiki kata sebelumnya secara otomatis"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction" msgid="4979925752001319458">"Koreksi otomatis"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Bilah spasi dan tanda baca secara otomatis dikoreksi pada kata yang salah ketik"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Mati"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Sederhana"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresif"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Saran Bigram"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Gunakan kata sebelumnya untuk meningkatkan sara"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Telah disimpan"</string>
@@ -59,16 +52,27 @@
     <string name="label_next_key" msgid="362972844525672568">"Berikutnya"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Selesai"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Kirimkan"</string>
-    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
-    <skip />
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Lainnya"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Jeda"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Tunggu"</string>
+    <string name="description_delete_key" msgid="5586406298531883960">"Hapus"</string>
+    <string name="description_return_key" msgid="8750044000806461678">"Enter"</string>
+    <string name="description_settings_key" msgid="7484527796782969219">"Setelan"</string>
+    <string name="description_shift_key" msgid="346906866277787836">"Shift"</string>
+    <string name="description_space_key" msgid="8512130111575878517">"Spasi"</string>
+    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Simbol"</string>
+    <string name="description_tab_key" msgid="828186583738307137">"Tab"</string>
+    <string name="description_voice_key" msgid="3057731675774652754">"Masukan Suara"</string>
+    <string name="description_symbols_on" msgid="2994366855822840559">"Simbol hidup"</string>
+    <string name="description_symbols_off" msgid="3209578267079515136">"Simbol mati"</string>
+    <string name="description_shift_on" msgid="6983188949895971587">"Shift hidup"</string>
+    <string name="description_shift_off" msgid="8553265474523069034">"Shift mati"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Masukan suara"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Masukan suara saat ini tidak didukung untuk bahasa Anda, tetapi bekerja dalam Bahasa Inggris."</string>
-    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Masukan suara adalah fitur eksperimental yang menggunakan pengenal suara berjaringan Google."</string>
-    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Untuk mematikan masukan suara, buka setelan keyboard."</string>
-    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Untuk menggunakan masukan suara, tekan tombol mikrofon atau geser jari Anda di sepanjang keyboard pada layar."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Masukan suara menggunakan pengenalan ucapan Google. "<a href="http://m.google.com/privacy">"Kebijakan Privasi Seluler"</a>" berlaku."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Untuk mematikan masukan suara, buka setelan metode masukan."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Untuk menggunakan masukan suara, tekan tombol mikrofon."</string>
     <string name="voice_listening" msgid="467518160751321844">"Ucapkan sekarang"</string>
     <string name="voice_working" msgid="6666937792815731889">"Bekerja"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -85,18 +89,12 @@
     <string name="cancel" msgid="6830980399865683324">"Batal"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
     <string name="voice_input" msgid="2466640768843347841">"Masukan suara"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Pada keyboard utama"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Pada keyboard simbol"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Mati"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mik pada keyboard utama"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik pada keyboard simbol"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Masukan suara dinonaktifkan"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Pilih metode masukan"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Bahasa masukan"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Geser jari pada bilah spasi untuk mengubah bahasa"</string>
@@ -105,44 +103,40 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktifkan umpan balik pengguna"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Bantu tingkatkan metode editor masukan dengan mengirim statistik penggunaan dan laporan kerusakan ke Google secara otomatis."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Sentuh untuk memperbaiki kata"</string>
-    <!-- outdated translation 1056068922330206170 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Sentuk kata yang dimasukkan untuk memperbaikinya"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Sentuh kata yang dimasukkan untuk memperbaikinya, hanya saat saran dapat dilihat"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema Keyboard"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Keyboard Cheska"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Keyboard Denmark"</string>
-    <!-- outdated translation 5111274665584117449 -->     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Keyboard Jerman"</string>
-    <!-- outdated translation 2339748210942078577 -->     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Keyboard Inggris (Inggris Raya)"</string>
-    <!-- outdated translation 2979257184475020604 -->     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Keyboard Inggris (Amerika Serikat)"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Keyboard Jerman"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Keyboard Inggris (Britania Raya)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Keyboard Inggris (AS)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Keyboard Spanyol"</string>
-    <!-- no translation found for subtype_mode_es_US_keyboard (3702125193532262008) -->
-    <skip />
+    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Keyboard Spanyol (AS)"</string>
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Keyboard Prancis"</string>
-    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
-    <skip />
-    <!-- outdated translation 2281078537437195027 -->     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Keyboard Italia"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Keyboard Prancis (Kanada)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Keyboard Prancis (Swiss)"</string>
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Keyboard Italia"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Keyboard Norwegia"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Keyboard Belanda"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Keyboard Rusia"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Keyboard Serbia"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Keyboard Swedia"</string>
-    <!-- outdated translation 157536957128878726 -->     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Suara　Cheska"</string>
-    <!-- outdated translation 309350321180102217 -->     <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Suara Jerman"</string>
-    <string name="subtype_mode_en_AU_voice" msgid="1103892562629586486">"Suara Bahasa Inggris (Australia)"</string>
-    <!-- outdated translation 3773764031764533262 -->     <string name="subtype_mode_en_GB_voice" msgid="7868802451720612888">"Suara Bahasa Inggris (Inggris Raya)"</string>
-    <string name="subtype_mode_en_IN_voice" msgid="4834879535045820293">"Suara Bahasa Inggris (India)"</string>
-    <string name="subtype_mode_en_NZ_voice" msgid="2739391364469645636">"Suara Bahasa Inggris (Selandia Baru)"</string>
-    <!-- outdated translation 1582519352222847297 -->     <string name="subtype_mode_en_US_voice" msgid="2300580846081472319">"Suara Bahasa Inggris (Amerika Serikat)"</string>
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Suara Bahasa Afrika"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Suara Bahasa Cheska"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Suara Bahasa Jerman"</string>
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Suara Bahasa Inggris"</string>
     <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Suara Bahasa Spanyol"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Suara Prancis"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Suara Jepang"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Suara Bahasa Prancis"</string>
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Suara Bahasa Italia"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Suara Bahasa Jepang"</string>
     <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Suara Bahasa Korea"</string>
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Suara Bahasa Belanda"</string>
     <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Suara Bahasa Polandia"</string>
     <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Suara Bahasa Portugis"</string>
     <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Suara Bahasa Rusia"</string>
     <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Suara Bahasa Turki"</string>
-    <!-- outdated translation 3154514897179707124 -->     <string name="subtype_mode_zh_CN_voice" msgid="6452442204238513331">"Suara Bahasa China (China)"</string>
-    <!-- outdated translation 1524137359275360490 -->     <string name="subtype_mode_zh_TW_voice" msgid="3640444875378221940">"Suara Bahasa China (Taiwan)"</string>
-    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
-    <skip />
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Suara Bahasa China, Yue"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Suara Bahasa China, Mandarin"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Suara Zulu"</string>
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Mode Studi Daya Guna"</string>
 </resources>

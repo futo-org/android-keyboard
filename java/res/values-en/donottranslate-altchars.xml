@@ -22,6 +22,7 @@
     <string name="alternates_for_e">3,è,é,ê,ë,ē</string>
     <string name="alternates_for_i">8,î,ï,í,ī,ì</string>
     <string name="alternates_for_o">9,ô,ö,ò,ó,œ,ø,ō,õ</string>
+    <string name="alternates_for_s">ß</string>
     <string name="alternates_for_u">7,û,ü,ù,ú,ū</string>
     <string name="alternates_for_n">ñ</string>
     <string name="alternates_for_c">ç</string>

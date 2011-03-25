@@ -95,7 +95,7 @@ public class Key {
     public boolean mPressed;
     /** If this is a sticky key, is it on? */
     public boolean mOn;
-    /** Key is enabled or not. */
+    /** Key is enabled and responds on press */
     public boolean mEnabled = true;
 
     private final static int[] KEY_STATE_NORMAL_ON = {
@@ -226,6 +226,7 @@ public class Key {
             mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
             mModifier = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isModifier, false);
             mSticky = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky, false);
+            mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
             mEdgeFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
                     | row.mRowEdgeFlags;
 

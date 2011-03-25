@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -103,7 +104,7 @@ import java.util.List;
  */
 
 public class KeyboardParser {
-    private static final String TAG = "KeyboardParser";
+    private static final String TAG = KeyboardParser.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     // Keyboard XML Tags
@@ -279,8 +280,8 @@ public class KeyboardParser {
             checkEndTag(TAG_KEY, parser);
         } else {
             Key key = new Key(mResources, row, mCurrentX, mCurrentY, parser, mKeyStyles);
-            if (DEBUG) Log.d(TAG, String.format("<%s keyLabel=%s code=%d popupCharacters=%s />",
-                    TAG_KEY, key.mLabel, key.mCode,
+            if (DEBUG) Log.d(TAG, String.format("<%s%s keyLabel=%s code=%d popupCharacters=%s />",
+                    TAG_KEY, (key.mEnabled ? "" : " disabled"), key.mLabel, key.mCode,
                     Arrays.toString(key.mPopupCharacters)));
             checkEndTag(TAG_KEY, parser);
             keys.add(key);
@@ -419,6 +420,8 @@ public class KeyboardParser {
         try {
             final boolean modeMatched = matchInteger(a,
                     R.styleable.Keyboard_Case_mode, id.mMode);
+            final boolean passwordInputMatched = matchBoolean(a,
+                    R.styleable.Keyboard_Case_passwordInput, id.mPasswordInput);
             final boolean settingsKeyMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_hasSettingsKey, id.mHasSettingsKey);
             final boolean voiceEnabledMatched = matchBoolean(a,
@@ -427,24 +430,34 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_hasVoiceKey, id.mHasVoiceKey);
             final boolean colorSchemeMatched = matchInteger(viewAttr,
                     R.styleable.KeyboardView_colorScheme, id.mColorScheme);
-            // As noted at KeyboardSwitcher.KeyboardId class, we are interested only in
-            // enum value masked by IME_MASK_ACTION and IME_FLAG_NO_ENTER_ACTION. So matching
+            // As noted at {@link KeyboardId} class, we are interested only in enum value masked by
+            // {@link android.view.inputmethod.EditorInfo#IME_MASK_ACTION} and
+            // {@link android.view.inputmethod.EditorInfo#IME_FLAG_NO_ENTER_ACTION}. So matching
             // this attribute with id.mImeOptions as integer value is enough for our purpose.
-            final boolean imeOptionsMatched = matchInteger(a,
-                    R.styleable.Keyboard_Case_imeOptions, id.mImeOptions);
-            final boolean selected = modeMatched && settingsKeyMatched && voiceEnabledMatched
-                    && voiceKeyMatched && colorSchemeMatched && imeOptionsMatched;
+            final boolean imeActionMatched = matchInteger(a,
+                    R.styleable.Keyboard_Case_imeAction, id.mImeAction);
+            final boolean languageCodeMatched = matchString(a,
+                    R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
+            final boolean countryCodeMatched = matchString(a,
+                    R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
+            final boolean selected = modeMatched && passwordInputMatched && settingsKeyMatched
+                    && voiceEnabledMatched && voiceKeyMatched && colorSchemeMatched
+                    && imeActionMatched && languageCodeMatched && countryCodeMatched;
 
-            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s> %s", TAG_CASE,
+            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
                     textAttr(KeyboardId.modeName(
                             a.getInt(R.styleable.Keyboard_Case_mode, -1)), "mode"),
                     textAttr(KeyboardId.colorSchemeName(
-                            a.getInt(R.styleable.KeyboardView_colorScheme, -1)), "colorSchemeName"),
+                            viewAttr.getInt(
+                                    R.styleable.KeyboardView_colorScheme, -1)), "colorSchemeName"),
+                    booleanAttr(a, R.styleable.Keyboard_Case_passwordInput, "passwordInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),
                     booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
-                    textAttr(KeyboardId.imeOptionsName(
-                            a.getInt(R.styleable.Keyboard_Case_imeOptions, -1)), "imeOptions"),
+                    textAttr(EditorInfoCompatUtils.imeOptionsName(
+                            a.getInt(R.styleable.Keyboard_Case_imeAction, -1)), "imeAction"),
+                    textAttr(a.getString(R.styleable.Keyboard_Case_languageCode), "languageCode"),
+                    textAttr(a.getString(R.styleable.Keyboard_Case_countryCode), "countryCode"),
                     Boolean.toString(selected)));
 
             return selected;
@@ -464,6 +477,12 @@ public class KeyboardParser {
         // If <case> does not have "index" attribute, that means this <case> is wild-card for the
         // attribute.
         return !a.hasValue(index) || a.getBoolean(index, false) == value;
+    }
+
+    private static boolean matchString(TypedArray a, int index, String value) {
+        // If <case> does not have "index" attribute, that means this <case> is wild-card for the
+        // attribute.
+        return !a.hasValue(index) || a.getString(index).equals(value);
     }
 
     private boolean parseDefault(XmlResourceParser parser, Row row, List<Key> keys)

@@ -16,15 +16,21 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.keyboard.KeyboardId;
+
+import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
+import android.text.InputType;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.view.inputmethod.InputMethodInfo;
-import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.EditorInfo;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,6 +47,10 @@ public class Utils {
     private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
     private static boolean DBG = LatinImeLogger.sDBG;
 
+    private Utils() {
+        // Intentional empty constructor for utility class.
+    }
+
     /**
      * Cancel an {@link AsyncTask}.
      *
@@ -55,7 +65,7 @@ public class Utils {
     }
 
     public static class GCUtils {
-        private static final String TAG = "GCUtils";
+        private static final String GC_TAG = GCUtils.class.getSimpleName();
         public static final int GC_TRY_COUNT = 2;
         // GC_TRY_LOOP_MAX is used for the hard limit of GC wait,
         // GC_TRY_LOOP_MAX should be greater than GC_TRY_COUNT.
@@ -84,7 +94,7 @@ public class Utils {
                     Thread.sleep(GC_INTERVAL);
                     return true;
                 } catch (InterruptedException e) {
-                    Log.e(TAG, "Sleep was interrupted.");
+                    Log.e(GC_TAG, "Sleep was interrupted.");
                     LatinImeLogger.logOnException(metaData, t);
                     return false;
                 }
@@ -92,16 +102,15 @@ public class Utils {
         }
     }
 
-    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManager imm) {
-        return imm.getEnabledInputMethodList().size() > 1;
-        // @@@ return imm.getEnabledInputMethodList().size() > 1
+    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManagerCompatWrapper imm) {
+        return imm.getEnabledInputMethodList().size() > 1
         // imm.getEnabledInputMethodSubtypeList(null, false) will return the current IME's enabled
         // input method subtype (The current IME should be LatinIME.)
-        // || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
+                || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
     }
 
-    public static String getInputMethodId(InputMethodManager imm, String packageName) {
-        for (final InputMethodInfo imi : imm.getEnabledInputMethodList()) {
+    public static String getInputMethodId(InputMethodManagerCompatWrapper imm, String packageName) {
+        for (final InputMethodInfoCompatWrapper imi : imm.getEnabledInputMethodList()) {
             if (imi.getPackageName().equals(packageName))
                 return imi.getId();
         }
@@ -262,20 +271,42 @@ public class Utils {
         return dp[sl][tl];
     }
 
+    // Get the current stack trace
+    public static String getStackTrace() {
+        StringBuilder sb = new StringBuilder();
+        try {
+            throw new RuntimeException();
+        } catch (RuntimeException e) {
+            StackTraceElement[] frames = e.getStackTrace();
+            // Start at 1 because the first frame is here and we don't care about it
+            for (int j = 1; j < frames.length; ++j) sb.append(frames[j].toString() + "\n");
+        }
+        return sb.toString();
+    }
+
     // In dictionary.cpp, getSuggestion() method,
     // suggestion scores are computed using the below formula.
-    // original score (called 'frequency')
+    // original score
     //  := pow(mTypedLetterMultiplier (this is defined 2),
     //         (the number of matched characters between typed word and suggested word))
     //     * (individual word's score which defined in the unigram dictionary,
     //         and this score is defined in range [0, 255].)
-    //     * (when before.length() == after.length(),
-    //         mFullWordMultiplier (this is defined 2))
-    // So, maximum original score is pow(2, before.length()) * 255 * 2
-    // So, we can normalize original score by dividing this value.
+    // Then, the following processing is applied.
+    //     - If the dictionary word is matched up to the point of the user entry
+    //       (full match up to min(before.length(), after.length())
+    //       => Then multiply by FULL_MATCHED_WORDS_PROMOTION_RATE (this is defined 1.2)
+    //     - If the word is a true full match except for differences in accents or
+    //       capitalization, then treat it as if the score was 255.
+    //     - If before.length() == after.length()
+    //       => multiply by mFullWordMultiplier (this is defined 2))
+    // So, maximum original score is pow(2, min(before.length(), after.length())) * 255 * 2 * 1.2
+    // For historical reasons we ignore the 1.2 modifier (because the measure for a good
+    // autocorrection threshold was done at a time when it didn't exist). This doesn't change
+    // the result.
+    // So, we can normalize original score by dividing pow(2, min(b.l(),a.l())) * 255 * 2.
     private static final int MAX_INITIAL_SCORE = 255;
     private static final int TYPED_LETTER_MULTIPLIER = 2;
-    private static final int FULL_WORD_MULTIPLYER = 2;
+    private static final int FULL_WORD_MULTIPLIER = 2;
     public static double calcNormalizedScore(CharSequence before, CharSequence after, int score) {
         final int beforeLength = before.length();
         final int afterLength = after.length();
@@ -285,7 +316,7 @@ public class Utils {
         // correction.
         final double maximumScore = MAX_INITIAL_SCORE
                 * Math.pow(TYPED_LETTER_MULTIPLIER, Math.min(beforeLength, afterLength))
-                * FULL_WORD_MULTIPLYER;
+                * FULL_WORD_MULTIPLIER;
         // add a weight based on edit distance.
         // distance <= max(afterLength, beforeLength) == afterLength,
         // so, 0 <= distance / afterLength <= 1
@@ -294,7 +325,7 @@ public class Utils {
     }
 
     public static class UsabilityStudyLogUtils {
-        private static final String TAG = "UsabilityStudyLogUtils";
+        private static final String USABILITY_TAG = UsabilityStudyLogUtils.class.getSimpleName();
         private static final String FILENAME = "log.txt";
         private static final UsabilityStudyLogUtils sInstance =
                 new UsabilityStudyLogUtils();
@@ -331,7 +362,7 @@ public class Utils {
                 try {
                     mWriter = getPrintWriter(mDirectory, FILENAME, false);
                 } catch (IOException e) {
-                    Log.e(TAG, "Can't create log file.");
+                    Log.e(USABILITY_TAG, "Can't create log file.");
                 }
             }
         }
@@ -368,7 +399,7 @@ public class Utils {
                     final String printString = String.format("%s\t%d\t%s\n",
                             mDateFormat.format(mDate), currentTime, log);
                     if (LatinImeLogger.sDBG) {
-                        Log.d(TAG, "Write: " + log);
+                        Log.d(USABILITY_TAG, "Write: " + log);
                     }
                     mWriter.print(printString);
                 }
@@ -389,10 +420,10 @@ public class Utils {
                             sb.append(line);
                         }
                     } catch (IOException e) {
-                        Log.e(TAG, "Can't read log file.");
+                        Log.e(USABILITY_TAG, "Can't read log file.");
                     } finally {
                         if (LatinImeLogger.sDBG) {
-                            Log.d(TAG, "output all logs\n" + sb.toString());
+                            Log.d(USABILITY_TAG, "output all logs\n" + sb.toString());
                         }
                         mIms.getCurrentInputConnection().commitText(sb.toString(), 0);
                         try {
@@ -411,7 +442,7 @@ public class Utils {
                 public void run() {
                     if (mFile != null && mFile.exists()) {
                         if (LatinImeLogger.sDBG) {
-                            Log.d(TAG, "Delete log file.");
+                            Log.d(USABILITY_TAG, "Delete log file.");
                         }
                         mFile.delete();
                         mWriter.close();
@@ -439,5 +470,135 @@ public class Utils {
             }
             return new PrintWriter(new FileOutputStream(mFile), true /* autoFlush */);
         }
+    }
+
+    public static int getKeyboardMode(EditorInfo attribute) {
+        if (attribute == null)
+            return KeyboardId.MODE_TEXT;
+
+        final int inputType = attribute.inputType;
+        final int variation = inputType & InputType.TYPE_MASK_VARIATION;
+
+        switch (inputType & InputType.TYPE_MASK_CLASS) {
+        case InputType.TYPE_CLASS_NUMBER:
+        case InputType.TYPE_CLASS_DATETIME:
+            return KeyboardId.MODE_NUMBER;
+        case InputType.TYPE_CLASS_PHONE:
+            return KeyboardId.MODE_PHONE;
+        case InputType.TYPE_CLASS_TEXT:
+            if (InputTypeCompatUtils.isEmailVariation(variation)) {
+                return KeyboardId.MODE_EMAIL;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
+                return KeyboardId.MODE_URL;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_SHORT_MESSAGE) {
+                return KeyboardId.MODE_IM;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
+                return KeyboardId.MODE_TEXT;
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
+                return KeyboardId.MODE_WEB;
+            } else {
+                return KeyboardId.MODE_TEXT;
+            }
+        default:
+            return KeyboardId.MODE_TEXT;
+        }
+    }
+
+    public static boolean containsInCsv(String key, String csv) {
+        if (csv == null)
+            return false;
+        for (String option : csv.split(",")) {
+            if (option.equals(key))
+                return true;
+        }
+        return false;
+    }
+
+    public static boolean inPrivateImeOptions(String packageName, String key,
+            EditorInfo attribute) {
+        if (attribute == null)
+            return false;
+        return containsInCsv(packageName != null ? packageName + "." + key : key,
+                attribute.privateImeOptions);
+    }
+
+    /**
+     * Returns a main dictionary resource id
+     * @return main dictionary resource id
+     */
+    public static int getMainDictionaryResourceId(Resources res) {
+        final String MAIN_DIC_NAME = "main";
+        String packageName = LatinIME.class.getPackage().getName();
+        return res.getIdentifier(MAIN_DIC_NAME, "raw", packageName);
+    }
+
+    public static void loadNativeLibrary() {
+        try {
+            System.loadLibrary("jni_latinime");
+        } catch (UnsatisfiedLinkError ule) {
+            Log.e(TAG, "Could not load native library jni_latinime");
+        }
+    }
+
+    /**
+     * Returns true if a and b are equal ignoring the case of the character.
+     * @param a first character to check
+     * @param b second character to check
+     * @return {@code true} if a and b are equal, {@code false} otherwise.
+     */
+    public static boolean equalsIgnoreCase(char a, char b) {
+        // Some language, such as Turkish, need testing both cases.
+        return a == b
+                || Character.toLowerCase(a) == Character.toLowerCase(b)
+                || Character.toUpperCase(a) == Character.toUpperCase(b);
+    }
+
+    /**
+     * Returns true if a and b are equal ignoring the case of the characters, including if they are
+     * both null.
+     * @param a first CharSequence to check
+     * @param b second CharSequence to check
+     * @return {@code true} if a and b are equal, {@code false} otherwise.
+     */
+    public static boolean equalsIgnoreCase(CharSequence a, CharSequence b) {
+        if (a == b)
+            return true;  // including both a and b are null.
+        if (a == null || b == null)
+            return false;
+        final int length = a.length();
+        if (length != b.length())
+            return false;
+        for (int i = 0; i < length; i++) {
+            if (!equalsIgnoreCase(a.charAt(i), b.charAt(i)))
+                return false;
+        }
+        return true;
+    }
+
+    /**
+     * Returns true if a and b are equal ignoring the case of the characters, including if a is null
+     * and b is zero length.
+     * @param a CharSequence to check
+     * @param b character array to check
+     * @param offset start offset of array b
+     * @param length length of characters in array b
+     * @return {@code true} if a and b are equal, {@code false} otherwise.
+     * @throws IndexOutOfBoundsException
+     *   if {@code offset < 0 || length < 0 || offset + length > data.length}.
+     * @throws NullPointerException if {@code b == null}.
+     */
+    public static boolean equalsIgnoreCase(CharSequence a, char[] b, int offset, int length) {
+        if (offset < 0 || length < 0 || length > b.length - offset)
+            throw new IndexOutOfBoundsException("array.length=" + b.length + " offset=" + offset
+                    + " length=" + length);
+        if (a == null)
+            return length == 0;  // including a is null and b is zero length.
+        if (a.length() != length)
+            return false;
+        for (int i = 0; i < length; i++) {
+            if (!equalsIgnoreCase(a.charAt(i), b[offset + i]))
+                return false;
+        }
+        return true;
     }
 }

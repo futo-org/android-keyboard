@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2010,2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,18 +16,23 @@
 
 package com.android.inputmethod.latin;
 
-import android.test.AndroidTestCase;
 import com.android.inputmethod.latin.tests.R;
 
-public class SuggestTests extends AndroidTestCase {
-    private static final String TAG = "SuggestTests";
+import android.content.res.AssetFileDescriptor;
 
-    private SuggestHelper sh;
+import java.util.Locale;
+
+public class SuggestTests extends SuggestTestsBase {
+    private SuggestHelper mHelper;
 
     @Override
-    protected void setUp() {
-        int resId = R.raw.test;
-        sh = new SuggestHelper(TAG, getTestContext(), resId);
+    protected void setUp() throws Exception {
+        super.setUp();
+        final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
+        mHelper = new SuggestHelper(
+                getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
+                createKeyboardId(Locale.US));
+        mHelper.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
     }
 
     /************************** Tests ************************/
@@ -36,105 +41,105 @@ public class SuggestTests extends AndroidTestCase {
      * Tests for simple completions of one character.
      */
     public void testCompletion1char() {
-        assertTrue(sh.isDefaultSuggestion("peopl", "people"));
-        assertTrue(sh.isDefaultSuggestion("abou", "about"));
-        assertTrue(sh.isDefaultSuggestion("thei", "their"));
+        suggested("people", mHelper.getFirstSuggestion("peopl"));
+        suggested("about", mHelper.getFirstSuggestion("abou"));
+        suggested("their", mHelper.getFirstSuggestion("thei"));
     }
 
     /**
      * Tests for simple completions of two characters.
      */
     public void testCompletion2char() {
-        assertTrue(sh.isDefaultSuggestion("peop", "people"));
-        assertTrue(sh.isDefaultSuggestion("calli", "calling"));
-        assertTrue(sh.isDefaultSuggestion("busine", "business"));
+        suggested("people", mHelper.getFirstSuggestion("peop"));
+        suggested("calling", mHelper.getFirstSuggestion("calli"));
+        suggested("business", mHelper.getFirstSuggestion("busine"));
     }
 
     /**
      * Tests for proximity errors.
      */
     public void testProximityPositive() {
-        assertTrue(sh.isDefaultSuggestion("peiple", "people"));
-        assertTrue(sh.isDefaultSuggestion("peoole", "people"));
-        assertTrue(sh.isDefaultSuggestion("pwpple", "people"));
+        suggested("typed peiple", "people", mHelper.getFirstSuggestion("peiple"));
+        suggested("typed peoole", "people", mHelper.getFirstSuggestion("peoole"));
+        suggested("typed pwpple", "people", mHelper.getFirstSuggestion("pwpple"));
     }
 
     /**
-     * Tests for proximity errors - negative, when the error key is not near.
+     * Tests for proximity errors - negative, when the error key is not close.
      */
     public void testProximityNegative() {
-        assertFalse(sh.isDefaultSuggestion("arout", "about"));
-        assertFalse(sh.isDefaultSuggestion("ire", "are"));
+        notSuggested("about", mHelper.getFirstSuggestion("arout"));
+        notSuggested("are", mHelper.getFirstSuggestion("ire"));
     }
 
     /**
      * Tests for checking if apostrophes are added automatically.
      */
     public void testApostropheInsertion() {
-        assertTrue(sh.isDefaultSuggestion("im", "I'm"));
-        assertTrue(sh.isDefaultSuggestion("dont", "don't"));
+        suggested("I'm", mHelper.getFirstSuggestion("im"));
+        suggested("don't", mHelper.getFirstSuggestion("dont"));
     }
 
     /**
      * Test to make sure apostrophed word is not suggested for an apostrophed word.
      */
     public void testApostrophe() {
-        assertFalse(sh.isDefaultSuggestion("don't", "don't"));
+        notSuggested("don't", mHelper.getFirstSuggestion("don't"));
     }
 
     /**
      * Tests for suggestion of capitalized version of a word.
      */
     public void testCapitalization() {
-        assertTrue(sh.isDefaultSuggestion("i'm", "I'm"));
-        assertTrue(sh.isDefaultSuggestion("sunday", "Sunday"));
-        assertTrue(sh.isDefaultSuggestion("sundat", "Sunday"));
+        suggested("I'm", mHelper.getFirstSuggestion("i'm"));
+        suggested("Sunday", mHelper.getFirstSuggestion("sunday"));
+        suggested("Sunday", mHelper.getFirstSuggestion("sundat"));
     }
 
     /**
      * Tests to see if more than one completion is provided for certain prefixes.
      */
     public void testMultipleCompletions() {
-        assertTrue(sh.isASuggestion("com", "come"));
-        assertTrue(sh.isASuggestion("com", "company"));
-        assertTrue(sh.isASuggestion("th", "the"));
-        assertTrue(sh.isASuggestion("th", "that"));
-        assertTrue(sh.isASuggestion("th", "this"));
-        assertTrue(sh.isASuggestion("th", "they"));
+        isInSuggestions("com: come", mHelper.getSuggestIndex("com", "come"));
+        isInSuggestions("com: company", mHelper.getSuggestIndex("com", "company"));
+        isInSuggestions("th: the", mHelper.getSuggestIndex("th", "the"));
+        isInSuggestions("th: that", mHelper.getSuggestIndex("th", "that"));
+        isInSuggestions("th: this", mHelper.getSuggestIndex("th", "this"));
+        isInSuggestions("th: they", mHelper.getSuggestIndex("th", "they"));
     }
 
     /**
      * Does the suggestion engine recognize zero frequency words as valid words.
      */
     public void testZeroFrequencyAccepted() {
-        assertTrue(sh.isValid("yikes"));
-        assertFalse(sh.isValid("yike"));
+        assertTrue("valid word yikes", mHelper.isValidWord("yikes"));
+        assertFalse("non valid word yike", mHelper.isValidWord("yike"));
     }
 
     /**
      * Tests to make sure that zero frequency words are not suggested as completions.
      */
     public void testZeroFrequencySuggestionsNegative() {
-        assertFalse(sh.isASuggestion("yike", "yikes"));
-        assertFalse(sh.isASuggestion("what", "whatcha"));
+        assertTrue(mHelper.getSuggestIndex("yike", "yikes") < 0);
+        assertTrue(mHelper.getSuggestIndex("what", "whatcha") < 0);
     }
 
     /**
-     * Tests to ensure that words with large edit distances are not suggested, in some cases
-     * and not considered corrections, in some cases.
+     * Tests to ensure that words with large edit distances are not suggested, in some cases.
+     * Also such word is not considered auto correction, in some cases.
      */
     public void testTooLargeEditDistance() {
-        assertFalse(sh.isASuggestion("sniyr", "about"));
+        assertTrue(mHelper.getSuggestIndex("sniyr", "about") < 0);
         // TODO: The following test fails.
-        // assertFalse(sh.isDefaultCorrection("rjw", "the"));
+        // notSuggested("the", mHelper.getAutoCorrection("rjw"));
     }
 
     /**
-     * Make sure sh.isValid is case-sensitive.
+     * Make sure mHelper.isValidWord is case-sensitive.
      */
     public void testValidityCaseSensitivity() {
-        assertTrue(sh.isValid("Sunday"));
-        assertFalse(sh.isValid("sunday"));
+        assertTrue("valid word Sunday", mHelper.isValidWord("Sunday"));
+        assertFalse("non valid word sunday", mHelper.isValidWord("sunday"));
     }
 
     /**
@@ -142,11 +147,11 @@ public class SuggestTests extends AndroidTestCase {
      */
     public void testAccents() {
         // ni<LATIN SMALL LETTER N WITH TILDE>o
-        assertTrue(sh.isDefaultCorrection("nino", "ni\u00F1o"));
+        suggested("ni\u00F1o", mHelper.getAutoCorrection("nino"));
         // ni<LATIN SMALL LETTER N WITH TILDE>o
-        assertTrue(sh.isDefaultCorrection("nimo", "ni\u00F1o"));
+        suggested("ni\u00F1o", mHelper.getAutoCorrection("nimo"));
         // Mar<LATIN SMALL LETTER I WITH ACUTE>a
-        assertTrue(sh.isDefaultCorrection("maria", "Mar\u00EDa"));
+        suggested("Mar\u00EDa", mHelper.getAutoCorrection("maria"));
     }
 
     /**
@@ -154,21 +159,29 @@ public class SuggestTests extends AndroidTestCase {
      *  and don't show any when there aren't any
      */
     public void testBigramsAtFirstChar() {
-        assertTrue(sh.isDefaultNextSuggestion("about", "p", "part"));
-        assertTrue(sh.isDefaultNextSuggestion("I'm", "a", "about"));
-        assertTrue(sh.isDefaultNextSuggestion("about", "b", "business"));
-        assertTrue(sh.isASuggestion("about", "b", "being"));
-        assertFalse(sh.isDefaultNextSuggestion("about", "p", "business"));
+        suggested("bigram: about p[art]",
+                "part", mHelper.getBigramFirstSuggestion("about", "p"));
+        suggested("bigram: I'm a[bout]",
+                "about", mHelper.getBigramFirstSuggestion("I'm", "a"));
+        suggested("bigram: about b[usiness]",
+                "business", mHelper.getBigramFirstSuggestion("about", "b"));
+        isInSuggestions("bigram: about b[eing]",
+                mHelper.searchBigramSuggestion("about", "b", "being"));
+        notSuggested("bigram: about p",
+                "business", mHelper.getBigramFirstSuggestion("about", "p"));
     }
 
     /**
      * Make sure bigrams score affects the original score
      */
     public void testBigramsScoreEffect() {
-        assertTrue(sh.isDefaultCorrection("pa", "page"));
-        assertTrue(sh.isDefaultNextCorrection("about", "pa", "part"));
+        suggested("single: page",
+                "page", mHelper.getAutoCorrection("pa"));
+        suggested("bigram: about pa[rt]",
+                "part", mHelper.getBigramAutoCorrection("about", "pa"));
         // TODO: The following test fails.
-        // assertTrue(sh.isDefaultCorrection("sa", "said"));
-        assertTrue(sh.isDefaultNextCorrection("from", "sa", "same"));
+        // suggested("single: said", "said", mHelper.getAutoCorrection("sa"));
+        suggested("bigram: from sa[me]",
+                "same", mHelper.getBigramAutoCorrection("from", "sa"));
     }
 }

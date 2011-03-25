@@ -140,6 +140,8 @@
         <attr name="keyStyle" format="string" />
         <!-- Shift key icon for shifted state -->
         <attr name="shiftedIcon" format="reference" />
+        <!-- The key is enabled and responds on press. -->
+        <attr name="enabled" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Row">
@@ -166,10 +168,11 @@
             <enum name="web" value="4" />
             <enum name="phone" value="5" />
         </attr>
+        <attr name="passwordInput" format="boolean" />
         <attr name="hasSettingsKey" format="string" />
         <attr name="voiceKeyEnabled" format="string" />
         <attr name="hasVoiceKey" format="string" />
-        <attr name="imeOptions">
+        <attr name="imeAction">
             <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
             <flag name="actionUnspecified" value="0" />
             <flag name="actionNone" value="1" />
@@ -180,6 +183,8 @@
             <flag name="actionDone" value="6" />
             <flag name="actionPrevious" value="7" />
         </attr>
+        <attr name="languageCode" format="string" />
+        <attr name="countryCode" format="string" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_KeyStyle">

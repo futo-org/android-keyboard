@@ -132,6 +132,7 @@ public class Keyboard {
 
     // Variables for pre-computing nearest keys.
 
+    // TODO: Change GRID_WIDTH and GRID_HEIGHT to private.
     public final int GRID_WIDTH;
     public final int GRID_HEIGHT;
     private final int GRID_SIZE;
@@ -142,6 +143,8 @@ public class Keyboard {
     private static int[] EMPTY_INT_ARRAY = new int[0];
     /** Number of key widths from current touch point to search for nearest keys. */
     private static float SEARCH_DISTANCE = 1.2f;
+
+    private final ProximityInfo mProximityInfo;
 
     /**
      * Creates a keyboard from the given xml key layout file.
@@ -171,6 +174,11 @@ public class Keyboard {
         mDefaultHeight = mDefaultWidth;
         mId = id;
         loadKeyboard(context, xmlLayoutResId);
+        mProximityInfo = new ProximityInfo(GRID_WIDTH, GRID_HEIGHT);
+    }
+
+    public int getProximityInfo() {
+        return mProximityInfo.getNativeProximityInfo(this);
     }
 
     public List<Key> getKeys() {
@@ -345,7 +353,8 @@ public class Keyboard {
         return mId != null && mId.isNumberKeyboard();
     }
 
-    private void computeNearestNeighbors() {
+    // TODO: Move this function to ProximityInfo and make this private.
+    public void computeNearestNeighbors() {
         // Round-up so we don't have any pixels outside the grid
         mCellWidth = (getMinWidth() + GRID_WIDTH - 1) / GRID_WIDTH;
         mCellHeight = (getHeight() + GRID_HEIGHT - 1) / GRID_HEIGHT;
@@ -369,6 +378,7 @@ public class Keyboard {
                 mGridNeighbors[(y / mCellHeight) * GRID_WIDTH + (x / mCellWidth)] = cell;
             }
         }
+        mProximityInfo.setProximityInfo(mGridNeighbors, getMinWidth(), getHeight(), mKeys);
     }
 
     public boolean isInside(Key key, int x, int y) {

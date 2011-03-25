@@ -21,6 +21,7 @@ import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -31,17 +32,12 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.util.List;
 import java.util.Locale;
 
 // TODO: We should remove this class
 public class LatinKeyboard extends Keyboard {
-
-    private static final boolean DEBUG_PREFERRED_LETTER = false;
-    private static final String TAG = "LatinKeyboard";
-
     public static final int OPACITY_FULLY_OPAQUE = 255;
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
@@ -69,15 +65,7 @@ public class LatinKeyboard extends Keyboard {
     private final Drawable mEnabledShortcutIcon;
     private final Drawable mDisabledShortcutIcon;
 
-    private int[] mPrefLetterFrequencies;
-    private int mPrefLetter;
-    private int mPrefLetterX;
-    private int mPrefLetterY;
-    private int mPrefDistance;
-
     private static final float SPACEBAR_DRAG_THRESHOLD = 0.8f;
-    private static final float OVERLAP_PERCENTAGE_LOW_PROB = 0.70f;
-    private static final float OVERLAP_PERCENTAGE_HIGH_PROB = 0.85f;
     // Minimum width of space key preview (proportional to keyboard width)
     private static final float SPACEBAR_POPUP_MIN_RATIO = 0.4f;
     // Height in space key the language name will be drawn. (proportional to space key height)
@@ -167,6 +155,8 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void updateSpacebarForLocale(boolean isAutoCorrection) {
+        if (mSpaceKey == null)
+            return;
         final Resources res = mContext.getResources();
         // If application locales are explicitly selected.
         if (SubtypeSwitcher.getInstance().needsToDisplayLanguage()) {
@@ -265,7 +255,7 @@ public class LatinKeyboard extends Keyboard {
             final boolean allowVariableTextSize = true;
             final String language = layoutSpacebar(paint, subtypeSwitcher.getInputLocale(),
                     mButtonArrowLeftIcon, mButtonArrowRightIcon, width, height,
-                    getTextSizeFromTheme(textStyle, defaultTextSize),
+                    getTextSizeFromTheme(mContext.getTheme(), textStyle, defaultTextSize),
                     allowVariableTextSize);
 
             // Draw language text with shadow
@@ -334,18 +324,9 @@ public class LatinKeyboard extends Keyboard {
         return mSpaceDragLastDiff > 0 ? 1 : -1;
     }
 
-    public void setPreferredLetters(int[] frequencies) {
-        mPrefLetterFrequencies = frequencies;
-        mPrefLetter = 0;
-    }
-
     public void keyReleased() {
         mCurrentlyInSpace = false;
         mSpaceDragLastDiff = 0;
-        mPrefLetter = 0;
-        mPrefLetterX = 0;
-        mPrefLetterY = 0;
-        mPrefDistance = Integer.MAX_VALUE;
         if (mSpaceKey != null) {
             updateLocaleDrag(Integer.MAX_VALUE);
         }
@@ -381,99 +362,12 @@ public class LatinKeyboard extends Keyboard {
                     return isOnSpace;
                 }
             }
-        } else if (mPrefLetterFrequencies != null) {
-            // New coordinate? Reset
-            if (mPrefLetterX != x || mPrefLetterY != y) {
-                mPrefLetter = 0;
-                mPrefDistance = Integer.MAX_VALUE;
-            }
-            // Handle preferred next letter
-            final int[] pref = mPrefLetterFrequencies;
-            if (mPrefLetter > 0) {
-                if (DEBUG_PREFERRED_LETTER) {
-                    if (mPrefLetter == code && !key.isOnKey(x, y)) {
-                        Log.d(TAG, "CORRECTED !!!!!!");
-                    }
-                }
-                return mPrefLetter == code;
-            } else {
-                final boolean isOnKey = key.isOnKey(x, y);
-                int[] nearby = getNearestKeys(x, y);
-                List<Key> nearbyKeys = getKeys();
-                if (isOnKey) {
-                    // If it's a preferred letter
-                    if (inPrefList(code, pref)) {
-                        // Check if its frequency is much lower than a nearby key
-                        mPrefLetter = code;
-                        mPrefLetterX = x;
-                        mPrefLetterY = y;
-                        for (int i = 0; i < nearby.length; i++) {
-                            Key k = nearbyKeys.get(nearby[i]);
-                            if (k != key && inPrefList(k.mCode, pref)) {
-                                final int dist = distanceFrom(k, x, y);
-                                if (dist < (int) (k.mWidth * OVERLAP_PERCENTAGE_LOW_PROB) &&
-                                        (pref[k.mCode] > pref[mPrefLetter] * 3))  {
-                                    mPrefLetter = k.mCode;
-                                    mPrefDistance = dist;
-                                    if (DEBUG_PREFERRED_LETTER) {
-                                        Log.d(TAG, "CORRECTED ALTHOUGH PREFERRED !!!!!!");
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-
-                        return mPrefLetter == code;
-                    }
-                }
-
-                // Get the surrounding keys and intersect with the preferred list
-                // For all in the intersection
-                //   if distance from touch point is within a reasonable distance
-                //       make this the pref letter
-                // If no pref letter
-                //   return inside;
-                // else return thiskey == prefletter;
-
-                for (int i = 0; i < nearby.length; i++) {
-                    Key k = nearbyKeys.get(nearby[i]);
-                    if (inPrefList(k.mCode, pref)) {
-                        final int dist = distanceFrom(k, x, y);
-                        if (dist < (int) (k.mWidth * OVERLAP_PERCENTAGE_HIGH_PROB)
-                                && dist < mPrefDistance)  {
-                            mPrefLetter = k.mCode;
-                            mPrefLetterX = x;
-                            mPrefLetterY = y;
-                            mPrefDistance = dist;
-                        }
-                    }
-                }
-                // Didn't find any
-                if (mPrefLetter == 0) {
-                    return isOnKey;
-                } else {
-                    return mPrefLetter == code;
-                }
-            }
         }
 
         // Lock into the spacebar
         if (mCurrentlyInSpace) return false;
 
         return key.isOnKey(x, y);
-    }
-
-    private boolean inPrefList(int code, int[] pref) {
-        if (code < pref.length && code >= 0) return pref[code] > 0;
-        return false;
-    }
-
-    private int distanceFrom(Key k, int x, int y) {
-        if (y > k.mY && y < k.mY + k.mHeight) {
-            return Math.abs(k.mX + k.mWidth / 2 - x);
-        } else {
-            return Integer.MAX_VALUE;
-        }
     }
 
     @Override
@@ -487,8 +381,8 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    private int getTextSizeFromTheme(int style, int defValue) {
-        TypedArray array = mContext.getTheme().obtainStyledAttributes(
+    private static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
+        TypedArray array = theme.obtainStyledAttributes(
                 style, new int[] { android.R.attr.textSize });
         int textSize = array.getDimensionPixelSize(array.getResourceId(0, 0), defValue);
         return textSize;
