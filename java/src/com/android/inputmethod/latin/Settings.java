@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.compat.VibratorCompatWrapper;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -26,7 +27,6 @@ import android.app.backup.BackupManager;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Vibrator;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -134,8 +134,7 @@ public class Settings extends PreferenceActivity
             generalSettings.removePreference(mVoicePreference);
         }
 
-        Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        if (vibrator == null || !vibrator.hasVibrator()) {
+        if (!VibratorCompatWrapper.getInstance(this).hasVibrator()) {
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 

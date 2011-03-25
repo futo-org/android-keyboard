@@ -20,6 +20,7 @@ import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -45,7 +46,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
-import android.os.Vibrator;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.InputType;
@@ -2117,9 +2117,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void loadSettings(EditorInfo attribute) {
         // Get the settings preferences
         final SharedPreferences prefs = mPrefs;
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        mVibrateOn = vibrator != null && vibrator.hasVibrator()
-                && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
+        final boolean hasVibrator = VibratorCompatWrapper.getInstance(this).hasVibrator();
+        mVibrateOn = hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
         mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                 mResources.getBoolean(R.bool.config_default_sound_enabled));
 
