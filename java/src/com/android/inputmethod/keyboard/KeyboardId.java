@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.latin.R;
 
@@ -140,7 +141,7 @@ public class KeyboardId {
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"),
                 modeName(mMode),
-                imeOptionsName(mImeAction),
+                EditorInfoCompatUtils.imeOptionsName(mImeAction),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
@@ -170,26 +171,4 @@ public class KeyboardId {
         }
         return null;
     }
-
-    public static String imeOptionsName(int imeOptions) {
-        if (imeOptions == -1) return null;
-        final int actionNo = imeOptions & EditorInfo.IME_MASK_ACTION;
-        final String action;
-        switch (actionNo) {
-        case EditorInfo.IME_ACTION_UNSPECIFIED: action = "actionUnspecified"; break;
-        case EditorInfo.IME_ACTION_NONE: action = "actionNone"; break;
-        case EditorInfo.IME_ACTION_GO: action = "actionGo"; break;
-        case EditorInfo.IME_ACTION_SEARCH: action = "actionSearch"; break;
-        case EditorInfo.IME_ACTION_SEND: action = "actionSend"; break;
-        case EditorInfo.IME_ACTION_DONE: action = "actionDone"; break;
-        case EditorInfo.IME_ACTION_PREVIOUS: action = "actionPrevious"; break;
-        default: action = "actionUnknown(" + actionNo + ")"; break;
-        }
-        if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
-            return "flagNoEnterAction|" + action;
-        } else {
-            return action;
-        }
-    }
 }
-

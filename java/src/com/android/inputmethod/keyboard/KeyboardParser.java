@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -453,7 +454,7 @@ public class KeyboardParser {
                     booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),
                     booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
-                    textAttr(KeyboardId.imeOptionsName(
+                    textAttr(EditorInfoCompatUtils.imeOptionsName(
                             a.getInt(R.styleable.Keyboard_Case_imeAction, -1)), "imeAction"),
                     textAttr(a.getString(R.styleable.Keyboard_Case_languageCode), "languageCode"),
                     textAttr(a.getString(R.styleable.Keyboard_Case_countryCode), "countryCode"),

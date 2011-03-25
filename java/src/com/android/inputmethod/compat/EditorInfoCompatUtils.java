@@ -56,4 +56,44 @@ public class EditorInfoCompatUtils {
             return;
         ic.performEditorAction(OBJ_IME_ACTION_PREVIOUS);
     }
+
+    public static String imeOptionsName(int imeOptions) {
+        if (imeOptions == -1)
+            return null;
+        final int actionId = imeOptions & EditorInfo.IME_MASK_ACTION;
+        final String action;
+        switch (actionId) {
+            case EditorInfo.IME_ACTION_UNSPECIFIED:
+                action = "actionUnspecified";
+                break;
+            case EditorInfo.IME_ACTION_NONE:
+                action = "actionNone";
+                break;
+            case EditorInfo.IME_ACTION_GO:
+                action = "actionGo";
+                break;
+            case EditorInfo.IME_ACTION_SEARCH:
+                action = "actionSearch";
+                break;
+            case EditorInfo.IME_ACTION_SEND:
+                action = "actionSend";
+                break;
+            case EditorInfo.IME_ACTION_DONE:
+                action = "actionDone";
+                break;
+            default: {
+                if (OBJ_IME_ACTION_PREVIOUS != null && actionId == OBJ_IME_ACTION_PREVIOUS) {
+                    action = "actionPrevious";
+                } else {
+                    action = "actionUnknown(" + actionId + ")";
+                }
+                break;
+            }
+        }
+        if ((imeOptions & EditorInfo.IME_FLAG_NO_ENTER_ACTION) != 0) {
+            return "flagNoEnterAction|" + action;
+        } else {
+            return action;
+        }
+    }
 }
