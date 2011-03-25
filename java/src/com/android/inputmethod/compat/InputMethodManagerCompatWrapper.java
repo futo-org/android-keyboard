@@ -24,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,8 @@ public class InputMethodManagerCompatWrapper {
             CompatUtils.getMethod(
                     InputMethodManager.class, "setInputMethodAndSubtype", IBinder.class,
                     String.class, InputMethodSubtypeCompatWrapper.CLASS_InputMethodSubtype);
+    private static final Method METHOD_switchToLastInputMethod = CompatUtils.getMethod(
+            InputMethodManager.class, "switchToLastInputMethod", IBinder.class);
 
     private static final InputMethodManagerCompatWrapper sInstance =
             new InputMethodManagerCompatWrapper();
@@ -78,7 +81,8 @@ public class InputMethodManagerCompatWrapper {
     public Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
-        if (!(retval instanceof Map)) return null;
+        // Returns an empty map
+        if (!(retval instanceof Map)) return Collections.emptyMap();
         Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
                 new HashMap<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>();
         final Map<?, ?> retvalMap = (Map<?, ?>)retval;
@@ -100,8 +104,7 @@ public class InputMethodManagerCompatWrapper {
     }
 
     public boolean switchToLastInputMethod(IBinder token) {
-        if (mImm == null) return false;
-        return mImm.switchToLastInputMethod(token);
+        return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToLastInputMethod, token);
     }
 
     public List<InputMethodInfoCompatWrapper> getEnabledInputMethodList() {

@@ -68,6 +68,7 @@ public class CompatUtils {
 
     public static Method getMethod(Class<?> targetClass, String name,
             Class<?>... parameterTypes) {
+        if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             return targetClass.getMethod(name, parameterTypes);
         } catch (SecurityException e) {

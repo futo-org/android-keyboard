@@ -210,7 +210,7 @@ public class SubtypeSwitcher {
         final String newLocale;
         final String newMode;
         final String oldMode = getCurrentSubtypeMode();
-        if (newSubtype == null) {
+        if (newSubtype == null || !newSubtype.hasOriginalObject()) {
             // Normally, newSubtype shouldn't be null. But just in case newSubtype was null,
             // fallback to the default locale.
             Log.w(TAG, "Couldn't get the current subtype.");

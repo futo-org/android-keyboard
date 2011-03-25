@@ -18,6 +18,7 @@ package com.android.inputmethod.compat;
 
 import com.android.inputmethod.latin.LatinImeLogger;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.lang.reflect.Method;
@@ -27,6 +28,8 @@ import java.lang.reflect.Method;
 public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper {
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = InputMethodSubtypeCompatWrapper.class.getSimpleName();
+    private static final String DEFAULT_LOCALE = "en_US";
+    private static final String DEFAULT_MODE = "keyboard";
 
     public static final Class<?> CLASS_InputMethodSubtype =
             CompatUtils.getClass("android.view.inputmethod.InputMethodSubtype");
@@ -46,7 +49,8 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
             CompatUtils.getMethod(CLASS_InputMethodSubtype, "getExtraValueOf", String.class);
 
     public InputMethodSubtypeCompatWrapper(Object subtype) {
-        super(CLASS_InputMethodSubtype.isInstance(subtype) ? subtype : null);
+        super((CLASS_InputMethodSubtype != null && CLASS_InputMethodSubtype.isInstance(subtype))
+                ? subtype : null);
         if (DBG) {
             Log.d(TAG, "CreateInputMethodSubtypeCompatWrapper");
         }
@@ -61,11 +65,15 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
     }
 
     public String getLocale() {
-        return (String)CompatUtils.invoke(mObj, null, METHOD_getLocale);
+        final String s = (String)CompatUtils.invoke(mObj, null, METHOD_getLocale);
+        if (TextUtils.isEmpty(s)) return DEFAULT_LOCALE;
+        return s;
     }
 
     public String getMode() {
-        return (String)CompatUtils.invoke(mObj, null, METHOD_getMode);
+        String s = (String)CompatUtils.invoke(mObj, null, METHOD_getMode);
+        if (TextUtils.isEmpty(s)) return DEFAULT_MODE;
+        return s;
     }
 
     public String getExtraValue() {
@@ -73,7 +81,7 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
     }
 
     public boolean containsExtraValueKey(String key) {
-        return (Boolean)CompatUtils.invoke(mObj, null, METHOD_containsExtraValueKey, key);
+        return (Boolean)CompatUtils.invoke(mObj, false, METHOD_containsExtraValueKey, key);
     }
 
     public String getExtraValueOf(String key) {
