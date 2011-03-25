@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardId;
 
 import android.content.res.Resources;
@@ -485,7 +486,7 @@ public class Utils {
         case InputType.TYPE_CLASS_PHONE:
             return KeyboardId.MODE_PHONE;
         case InputType.TYPE_CLASS_TEXT:
-            if (Utils.isEmailVariation(variation)) {
+            if (InputTypeCompatUtils.isEmailVariation(variation)) {
                 return KeyboardId.MODE_EMAIL;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
                 return KeyboardId.MODE_URL;
@@ -501,31 +502,6 @@ public class Utils {
         default:
             return KeyboardId.MODE_TEXT;
         }
-    }
-
-    public static boolean isEmailVariation(int variation) {
-        return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
-                || variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
-    }
-
-    // Please refer to TextView.isPasswordInputType
-    public static boolean isPasswordInputType(int inputType) {
-        final int variation =
-                inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
-        return (variation
-                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD))
-                || (variation
-                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
-                || (variation
-                == (InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD));
-    }
-
-    // Please refer to TextView.isVisiblePasswordInputType
-    public static boolean isVisiblePasswordInputType(int inputType) {
-        final int variation =
-                inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
-        return variation
-                == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
     }
 
     public static boolean containsInCsv(String key, String csv) {

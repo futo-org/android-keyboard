@@ -16,8 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Utils;
 
 import android.view.inputmethod.EditorInfo;
 
@@ -62,8 +62,8 @@ public class KeyboardId {
         this.mMode = mode;
         this.mXmlId = xmlId;
         this.mColorScheme = colorScheme;
-        this.mPasswordInput = Utils.isPasswordInputType(inputType)
-                || Utils.isVisiblePasswordInputType(inputType);
+        this.mPasswordInput = InputTypeCompatUtils.isPasswordInputType(inputType)
+                || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
         this.mHasSettingsKey = hasSettingsKey;
         this.mVoiceKeyEnabled = voiceKeyEnabled;
         this.mHasVoiceKey = hasVoiceKey;

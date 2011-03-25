@@ -21,8 +21,9 @@ import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
-import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
+import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -561,8 +562,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
         final VoiceProxy voiceIme = mVoiceProxy;
-        voiceIme.resetVoiceStates(Utils.isPasswordInputType(attribute.inputType)
-                || Utils.isVisiblePasswordInputType(attribute.inputType));
+        voiceIme.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(attribute.inputType)
+                || InputTypeCompatUtils.isVisiblePasswordInputType(attribute.inputType));
 
         initializeInputAttributes(attribute);
 
@@ -616,17 +617,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if ((inputType & InputType.TYPE_MASK_CLASS) == InputType.TYPE_CLASS_TEXT) {
             mIsSettingsSuggestionStripOn = true;
             // Make sure that passwords are not displayed in candidate view
-            if (Utils.isPasswordInputType(inputType)
-                    || Utils.isVisiblePasswordInputType(inputType)) {
+            if (InputTypeCompatUtils.isPasswordInputType(inputType)
+                    || InputTypeCompatUtils.isVisiblePasswordInputType(inputType)) {
                 mIsSettingsSuggestionStripOn = false;
             }
-            if (Utils.isEmailVariation(variation)
+            if (InputTypeCompatUtils.isEmailVariation(variation)
                     || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
                 mAutoSpace = false;
             } else {
                 mAutoSpace = true;
             }
-            if (Utils.isEmailVariation(variation)) {
+            if (InputTypeCompatUtils.isEmailVariation(variation)) {
                 mIsSettingsSuggestionStripOn = false;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
                 mIsSettingsSuggestionStripOn = false;
