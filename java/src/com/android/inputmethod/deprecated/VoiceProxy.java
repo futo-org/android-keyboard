@@ -68,8 +68,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class VoiceConnector implements VoiceInput.UiListener {
-    private static final VoiceConnector sInstance = new VoiceConnector();
+public class VoiceProxy implements VoiceInput.UiListener {
+    private static final VoiceProxy sInstance = new VoiceProxy();
 
     public static final boolean VOICE_INSTALLED = true;
     private static final boolean ENABLE_VOICE_BUTTON = true;
@@ -83,7 +83,7 @@ public class VoiceConnector implements VoiceInput.UiListener {
             "has_used_voice_input_unsupported_locale";
     private static final int RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO = 6;
 
-    private static final String TAG = VoiceConnector.class.getSimpleName();
+    private static final String TAG = VoiceProxy.class.getSimpleName();
     private static final boolean DEBUG = LatinImeLogger.sDBG;
 
     private boolean mAfterVoiceInput;
@@ -111,12 +111,12 @@ public class VoiceConnector implements VoiceInput.UiListener {
     private final Map<String, List<CharSequence>> mWordToSuggestions =
             new HashMap<String, List<CharSequence>>();
 
-    public static VoiceConnector init(LatinIME context, SharedPreferences prefs, UIHandler h) {
+    public static VoiceProxy init(LatinIME context, SharedPreferences prefs, UIHandler h) {
         sInstance.initInternal(context, prefs, h);
         return sInstance;
     }
 
-    public static VoiceConnector getInstance() {
+    public static VoiceProxy getInstance() {
         return sInstance;
     }
 
@@ -139,7 +139,7 @@ public class VoiceConnector implements VoiceInput.UiListener {
         }
     }
 
-    private VoiceConnector() {
+    private VoiceProxy() {
         // Intentional empty constructor for singleton.
     }
 
@@ -691,7 +691,7 @@ public class VoiceConnector implements VoiceInput.UiListener {
     public void onAttachedToWindow() {
         // After onAttachedToWindow, we can show the voice warning dialog. See startListening()
         // above.
-        VoiceInputConnector.getInstance().setVoiceInput(mVoiceInput, mSubtypeSwitcher);
+        VoiceInputWrapper.getInstance().setVoiceInput(mVoiceInput, mSubtypeSwitcher);
     }
 
     public void onConfigurationChanged(Configuration configuration) {
@@ -743,11 +743,11 @@ public class VoiceConnector implements VoiceInput.UiListener {
         Map<String, List<CharSequence>> alternatives;
     }
 
-    public static class VoiceLoggerConnector {
-        private static final VoiceLoggerConnector sInstance = new VoiceLoggerConnector();
+    public static class VoiceLoggerWrapper {
+        private static final VoiceLoggerWrapper sInstance = new VoiceLoggerWrapper();
         private VoiceInputLogger mLogger;
 
-        public static VoiceLoggerConnector getInstance(Context context) {
+        public static VoiceLoggerWrapper getInstance(Context context) {
             if (sInstance.mLogger == null) {
                 // Not thread safe, but it's ok.
                 sInstance.mLogger = VoiceInputLogger.getLogger(context);
@@ -756,7 +756,7 @@ public class VoiceConnector implements VoiceInput.UiListener {
         }
 
         // private for the singleton
-        private VoiceLoggerConnector() {
+        private VoiceLoggerWrapper() {
         }
 
         public void settingsWarningDialogCancel() {
@@ -784,20 +784,20 @@ public class VoiceConnector implements VoiceInput.UiListener {
         }
     }
 
-    public static class VoiceInputConnector {
-        private static final VoiceInputConnector sInstance = new VoiceInputConnector();
+    public static class VoiceInputWrapper {
+        private static final VoiceInputWrapper sInstance = new VoiceInputWrapper();
         private VoiceInput mVoiceInput;
-        public static VoiceInputConnector getInstance() {
+        public static VoiceInputWrapper getInstance() {
             return sInstance;
         }
         public void setVoiceInput(VoiceInput voiceInput, SubtypeSwitcher switcher) {
             if (mVoiceInput == null && voiceInput != null) {
                 mVoiceInput = voiceInput;
             }
-            switcher.setVoiceInputConnector(this);
+            switcher.setVoiceInputWrapper(this);
         }
 
-        private VoiceInputConnector() {
+        private VoiceInputWrapper() {
         }
 
         public void cancel() {
