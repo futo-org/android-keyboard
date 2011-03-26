@@ -24,6 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,8 @@ public class InputMethodManagerCompatWrapper {
     public Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
-        if (!(retval instanceof Map)) return null;
+        // Returns an empty map
+        if (!(retval instanceof Map)) return Collections.emptyMap();
         Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
                 new HashMap<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>();
         final Map<?, ?> retvalMap = (Map<?, ?>)retval;

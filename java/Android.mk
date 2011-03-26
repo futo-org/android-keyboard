@@ -9,7 +9,7 @@ LOCAL_PACKAGE_NAME := LatinIME
 
 LOCAL_CERTIFICATE := shared
 
-LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime
+LOCAL_JNI_SHARED_LIBRARIES := libjni_latinime2
 
 LOCAL_STATIC_JAVA_LIBRARIES := android-common
 

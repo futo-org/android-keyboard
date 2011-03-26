@@ -48,7 +48,8 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
             CompatUtils.getMethod(CLASS_InputMethodSubtype, "getExtraValueOf", String.class);
 
     public InputMethodSubtypeCompatWrapper(Object subtype) {
-        super(CLASS_InputMethodSubtype.isInstance(subtype) ? subtype : null);
+        super((CLASS_InputMethodSubtype != null && CLASS_InputMethodSubtype.isInstance(subtype))
+                ? subtype : null);
         if (DBG) {
             Log.d(TAG, "CreateInputMethodSubtypeCompatWrapper");
         }

@@ -534,9 +534,9 @@ public class Utils {
 
     public static void loadNativeLibrary() {
         try {
-            System.loadLibrary("jni_latinime");
+            System.loadLibrary("jni_latinime2");
         } catch (UnsatisfiedLinkError ule) {
-            Log.e(TAG, "Could not load native library jni_latinime");
+            Log.e(TAG, "Could not load native library jni_latinime2");
         }
     }
 
