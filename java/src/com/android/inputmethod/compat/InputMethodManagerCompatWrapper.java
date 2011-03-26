@@ -44,6 +44,8 @@ public class InputMethodManagerCompatWrapper {
             CompatUtils.getMethod(
                     InputMethodManager.class, "setInputMethodAndSubtype", IBinder.class,
                     String.class, InputMethodSubtypeCompatWrapper.CLASS_InputMethodSubtype);
+    private static final Method METHOD_switchToLastInputMethod = CompatUtils.getMethod(
+            InputMethodManager.class, "switchToLastInputMethod", IBinder.class);
 
     private static final InputMethodManagerCompatWrapper sInstance =
             new InputMethodManagerCompatWrapper();
@@ -102,7 +104,7 @@ public class InputMethodManagerCompatWrapper {
     }
 
     public boolean switchToLastInputMethod(IBinder token) {
-        return false;
+        return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToLastInputMethod, token);
     }
 
     public List<InputMethodInfoCompatWrapper> getEnabledInputMethodList() {

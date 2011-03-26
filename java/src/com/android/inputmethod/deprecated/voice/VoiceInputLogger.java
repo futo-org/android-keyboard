@@ -18,6 +18,7 @@ package com.android.inputmethod.deprecated.voice;
 
 import com.android.common.speech.LoggingEvents;
 import com.android.common.userhappiness.UserHappinessSignals;
+import com.android.inputmethod.deprecated.compat.VoiceInputLoggerCompatUtils;
 
 import android.content.Context;
 import android.content.Intent;
@@ -212,13 +213,12 @@ public class VoiceInputLogger {
         setHasLoggingInfo(true);
         Intent i = newLoggingBroadcast(LoggingEvents.VoiceIme.TEXT_MODIFIED);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_LENGTH, suggestionLength);
-        i.putExtra("length", replacedPhraseLength);
+        i.putExtra(VoiceInputLoggerCompatUtils.EXTRA_TEXT_REPLACED_LENGTH, replacedPhraseLength);
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_TEXT_MODIFIED_TYPE,
                 LoggingEvents.VoiceIme.TEXT_MODIFIED_TYPE_CHOOSE_SUGGESTION);
-
         i.putExtra(LoggingEvents.VoiceIme.EXTRA_N_BEST_CHOOSE_INDEX, index);
-        i.putExtra("before", before);
-        i.putExtra("after", after);
+        i.putExtra(VoiceInputLoggerCompatUtils.EXTRA_BEFORE_N_BEST_CHOOSE, before);
+        i.putExtra(VoiceInputLoggerCompatUtils.EXTRA_AFTER_N_BEST_CHOOSE, after);
         mContext.sendBroadcast(i);
     }
 
@@ -257,7 +257,7 @@ public class VoiceInputLogger {
         // 2. type subject in subject field
         // 3. speak message in message field
         // 4. press send
-        //  UserHappinessSignals.setHasVoiceLoggingInfo(hasLoggingInfo);
+        VoiceInputLoggerCompatUtils.setHasVoiceLoggingInfoCompat(hasLoggingInfo);
     }
 
     private boolean hasLoggingInfo(){

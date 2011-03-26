@@ -18,6 +18,7 @@ package com.android.inputmethod.compat;
 
 import com.android.inputmethod.latin.LatinImeLogger;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.lang.reflect.Method;
@@ -65,13 +66,13 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
 
     public String getLocale() {
         final String s = (String)CompatUtils.invoke(mObj, null, METHOD_getLocale);
-        if (s == null) return DEFAULT_LOCALE;
+        if (TextUtils.isEmpty(s)) return DEFAULT_LOCALE;
         return s;
     }
 
     public String getMode() {
         String s = (String)CompatUtils.invoke(mObj, null, METHOD_getMode);
-        if (s == null) return DEFAULT_MODE;
+        if (TextUtils.isEmpty(s)) return DEFAULT_MODE;
         return s;
     }
 

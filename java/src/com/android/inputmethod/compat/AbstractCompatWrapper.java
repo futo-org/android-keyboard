@@ -32,4 +32,8 @@ public abstract class AbstractCompatWrapper {
     public Object getOriginalObject() {
         return mObj;
     }
+
+    public boolean hasOriginalObject() {
+        return mObj != null;
+    }
 }
