@@ -75,6 +75,9 @@ public class InputMethodManagerCompatWrapper {
             InputMethodInfoCompatWrapper imi, boolean allowsImplicitlySelectedSubtypes) {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
+        // Returns an empty list
+        if (retval == null)
+            return Collections.emptyList();
         return CompatUtils.copyInputMethodSubtypeListToWrapper((List<?>)retval);
     }
 
