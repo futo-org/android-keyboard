@@ -28,7 +28,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
     <string name="general_category" msgid="1859088467017573195">"Общие"</string>
     <string name="prediction_category" msgid="6361242011806282176">"Коррекция текста"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Быстрое исправление"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Исправлять распространенные опечатки"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показать варианты исправлений"</string>
@@ -94,7 +94,7 @@
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Выкл."</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Значок на основной клавиатуре"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Значок на клавиатуре символов"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод отключен"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод откл."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Выбрать способ ввода"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Для изменения языка проведите пальцем по пробелу"</string>
