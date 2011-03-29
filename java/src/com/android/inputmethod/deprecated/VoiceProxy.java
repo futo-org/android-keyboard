@@ -82,6 +82,8 @@ public class VoiceProxy implements VoiceInput.UiListener {
     private static final String PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE =
             "has_used_voice_input_unsupported_locale";
     private static final int RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO = 6;
+    // TODO: Adjusted on phones for now
+    private static final int RECOGNITIONVIEW_MINIMUM_HEIGHT_DIP = 244;
 
     private static final String TAG = VoiceProxy.class.getSimpleName();
     private static final boolean DEBUG = LatinImeLogger.sDBG;
@@ -99,6 +101,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
     private boolean mVoiceButtonOnPrimary;
     private boolean mVoiceInputHighlighted;
 
+    private int mMinimumVoiceRecognitionViewHeightPixel;
     private InputMethodManagerCompatWrapper mImm;
     private LatinIME mService;
     private AlertDialog mVoiceWarningDialog;
@@ -107,6 +110,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
     private Hints mHints;
     private UIHandler mHandler;
     private SubtypeSwitcher mSubtypeSwitcher;
+
     // For each word, a list of potential replacements, usually from voice.
     private final Map<String, List<CharSequence>> mWordToSuggestions =
             new HashMap<String, List<CharSequence>>();
@@ -123,6 +127,8 @@ public class VoiceProxy implements VoiceInput.UiListener {
     private void initInternal(LatinIME service, SharedPreferences prefs, UIHandler h) {
         mService = service;
         mHandler = h;
+        mMinimumVoiceRecognitionViewHeightPixel = Utils.dipToPixel(
+                Utils.getDipScale(service), RECOGNITIONVIEW_MINIMUM_HEIGHT_DIP);
         mImm = InputMethodManagerCompatWrapper.getInstance(service);
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         if (VOICE_INSTALLED) {
@@ -542,7 +548,11 @@ public class VoiceProxy implements VoiceInput.UiListener {
                             mService.getResources().getDisplayMetrics().heightPixels;
                     final int currentHeight = popupLayout.getLayoutParams().height;
                     final int keyboardHeight = keyboardView.getHeight();
-                    if (keyboardHeight > currentHeight || keyboardHeight
+                    if (mMinimumVoiceRecognitionViewHeightPixel > keyboardHeight
+                            || mMinimumVoiceRecognitionViewHeightPixel > currentHeight) {
+                        popupLayout.getLayoutParams().height =
+                            mMinimumVoiceRecognitionViewHeightPixel;
+                    } else if (keyboardHeight > currentHeight || keyboardHeight
                             > (displayHeight / RECOGNITIONVIEW_HEIGHT_THRESHOLD_RATIO)) {
                         popupLayout.getLayoutParams().height = keyboardHeight;
                     }

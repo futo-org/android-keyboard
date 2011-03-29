@@ -21,6 +21,7 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardId;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
@@ -110,9 +111,14 @@ public class Utils {
     }
 
     public static String getInputMethodId(InputMethodManagerCompatWrapper imm, String packageName) {
+        return getInputMethodInfo(imm, packageName).getId();
+    }
+
+    public static InputMethodInfoCompatWrapper getInputMethodInfo(
+            InputMethodManagerCompatWrapper imm, String packageName) {
         for (final InputMethodInfoCompatWrapper imi : imm.getEnabledInputMethodList()) {
             if (imi.getPackageName().equals(packageName))
-                return imi.getId();
+                return imi;
         }
         throw new RuntimeException("Can not find input method id for " + packageName);
     }
@@ -600,5 +606,15 @@ public class Utils {
                 return false;
         }
         return true;
+    }
+
+    public static float getDipScale(Context context) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return scale;
+    }
+
+    /** Convert pixel to DIP */
+    public static int dipToPixel(float scale, int dip) {
+        return (int) ((float) dip * scale + 0.5);
     }
 }
