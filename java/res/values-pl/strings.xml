@@ -41,7 +41,7 @@
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Zawsze pokazuj"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Zawsze ukrywaj"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Autokorekta"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"Spacja i znaki przestankowe powodują automatyczne poprawianie błędnie napisanych słów"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Spacja i znaki przestankowe poprawiają błędnie wpisane słowa"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Wyłącz"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Umiarkowana"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresywna"</string>
@@ -59,7 +59,7 @@
     <string name="voice_warning_title" msgid="4419354150908395008">"Wprowadzanie głosowe"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Wprowadzanie głosowe obecnie nie jest obsługiwane w Twoim języku, ale działa w języku angielskim."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Funkcja wprowadzania głosowego wykorzystuje mechanizm rozpoznawania mowy. Obowiązuje "<a href="http://m.google.com/privacy">"Polityka prywatności Google Mobile"</a>"."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Aby wyłączyć wprowadzanie głosowe, przejdź do ustawień metody wprowadzania."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Aby wyłączyć rozpoznawanie mowy, przejdź do ustawień sposobu wprowadzania tekstu."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Aby użyć wprowadzania głosowego, naciśnij przycisk mikrofonu."</string>
     <string name="voice_listening" msgid="467518160751321844">"Mów teraz"</string>
     <string name="voice_working" msgid="6666937792815731889">"W toku"</string>
@@ -83,13 +83,13 @@
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikrofon na klawiaturze głównej"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikrofon na klawiaturze z symbolami"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Wprowadzanie głosowe jest wyłączone"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Wybierz metodę wprowadzania"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"Wybierz sposób wprowadzania tekstu"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Języki wprowadzania"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Przesuń palcem po spacji, aby zmienić język"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Dotknij ponownie, aby zapisać"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Słownik dostępny"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Włącz przesyłanie opinii użytkownika"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Pomóż ulepszyć edytor tej metody wprowadzania, automatycznie wysyłając do Google statystyki użycia i raporty o awariach."</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Pomóż ulepszyć edytor wprowadzania tekstu, automatycznie wysyłając do Google statystyki użycia i raporty o awariach."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Popraw dotknięte słowo"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Dotykaj wprowadzonych słów, aby je poprawiać tylko wówczas, gdy widoczne są sugestie."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Motyw klawiatury"</string>
@@ -109,22 +109,22 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Klawiatura rosyjska"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Klawiatura serbska"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Klawiatura szwedzka"</string>
-    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Lektor afrikaans"</string>
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Lektor czeski"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Lektor niemiecki"</string>
-    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Lektor angielski"</string>
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Lektor hiszpański"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Lektor francuski"</string>
-    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Głos w języku włoskim"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Lektor japoński"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Lektor koreański"</string>
-    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Głos w języku holenderskim"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Lektor polski"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Lektor portugalski"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Lektor rosyjski"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Lektor turecki"</string>
-    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Lektor chiński (kantoński)"</string>
-    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Lektor chiński (mandaryński)"</string>
-    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Lektor isiZulu"</string>
+    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Mowa afrikaans"</string>
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Mowa czeska"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Mowa niemiecka"</string>
+    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Mowa angielska"</string>
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Mowa hiszpańska"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Mowa francuska"</string>
+    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Mowa włoska"</string>
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Mowa japońska"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Mowa koreańska"</string>
+    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Mowa holenderska"</string>
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Mowa polska"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Mowa portugalska"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Mowa rosyjska"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Mowa turecka"</string>
+    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Mowa chińska (kantoński)"</string>
+    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Mowa chińska (mandaryński)"</string>
+    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Mowa isiZulu"</string>
     <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Tryb badania przydatności"</string>
 </resources>

@@ -28,7 +28,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
     <string name="general_category" msgid="1859088467017573195">"Общие"</string>
     <string name="prediction_category" msgid="6361242011806282176">"Коррекция текста"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Быстрое исправление"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Исправлять распространенные опечатки"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показать варианты исправлений"</string>
@@ -42,7 +42,7 @@
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Всегда скрывать"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Автоисправление"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Автоматическое исправление опечаток при вводе знака препинания или пробела"</string>
-    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Выкл."</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Откл."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Активное"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Биграммные подсказки"</string>
@@ -77,11 +77,11 @@
     <string name="cancel" msgid="6830980399865683324">"Отмена"</string>
     <string name="ok" msgid="7898366843681727667">"ОК"</string>
     <string name="voice_input" msgid="2466640768843347841">"Голосовой ввод"</string>
-    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На осн. клавиатуре"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"На клавиатуре симв."</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Значок на основной клавиатуре"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Значок на клавиатуре символов"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Выкл."</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Микр. на осн. клав."</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Микр. на клавиатуре симв."</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Значок на основной клавиатуре"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Значок на клавиатуре символов"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод откл."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Выбрать способ ввода"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
