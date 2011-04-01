@@ -1771,6 +1771,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void setOldSuggestions() {
+        if (!InputConnectionCompatUtils.RECORRECTION_SUPPORTED) return;
         mVoiceProxy.setShowingVoiceSuggestions(false);
         if (mCandidateView != null && mCandidateView.isShowingAddToDictionaryHint()) {
             return;
@@ -1790,7 +1791,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     abortRecorrection(true);
                 } else {
                     TextEntryState.selectedForRecorrection();
-                    EditingUtils.underlineWord(ic, touching);
+                    InputConnectionCompatUtils.underlineWord(ic, touching);
                 }
 
                 ic.endBatchEdit();

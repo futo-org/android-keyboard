@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.compat;
 
+import com.android.inputmethod.latin.EditingUtils.SelectedWord;
+
 import android.util.Log;
 import android.view.inputmethod.InputConnection;
 
@@ -33,6 +35,16 @@ public class InputConnectionCompatUtils {
             .getConstructor(CLASS_CorrectionInfo, INPUT_TYPE_CorrectionInfo);
     private static final Method METHOD_InputConnection_commitCorrection = CompatUtils
             .getMethod(InputConnection.class, "commitCorrection", CLASS_CorrectionInfo);
+    private static final Method METHOD_getSelectedText = CompatUtils
+            .getMethod(InputConnection.class, "getSelectedText", int.class);
+    private static final Method METHOD_setComposingRegion = CompatUtils
+            .getMethod(InputConnection.class, "setComposingRegion", int.class, int.class);
+    public static final boolean RECORRECTION_SUPPORTED;
+
+    static {
+        RECORRECTION_SUPPORTED = METHOD_getSelectedText != null
+                && METHOD_setComposingRegion != null;
+    }
 
     public static void commitCorrection(InputConnection ic, int offset, CharSequence oldText,
             CharSequence newText) {
@@ -54,5 +66,26 @@ public class InputConnectionCompatUtils {
         } catch (InvocationTargetException e) {
             Log.e(TAG, "Error in commitCorrection: InvocationTargetException");
         }
+    }
+
+
+    /**
+     * Returns the selected text between the selStart and selEnd positions.
+     */
+    public static CharSequence getSelectedText(InputConnection ic, int selStart, int selEnd) {
+        // Use reflection, for backward compatibility
+        return (CharSequence) CompatUtils.invoke(
+                ic, null, METHOD_getSelectedText, 0);
+    }
+
+    /**
+     * Tries to set the text into composition mode if there is support for it in the framework.
+     */
+    public static void underlineWord(InputConnection ic, SelectedWord word) {
+        // Use reflection, for backward compatibility
+        // If method not found, there's nothing we can do. It still works but just wont underline
+        // the word.
+        CompatUtils.invoke(
+                ic, null, METHOD_setComposingRegion, word.mStart, word.mEnd);
     }
 }

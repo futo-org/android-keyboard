@@ -22,6 +22,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 // TODO: Override this class with the concrete implementation if we need to take care of the
 // performance.
@@ -48,35 +49,65 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
     private static final Method METHOD_getExtraValueOf =
             CompatUtils.getMethod(CLASS_InputMethodSubtype, "getExtraValueOf", String.class);
 
+    private final int mDummyNameResId;
+    private final int mDummyIconResId;
+    private final String mDummyLocale;
+    private final String mDummyMode;
+    private final String mDummyExtraValues;
+
     public InputMethodSubtypeCompatWrapper(Object subtype) {
         super((CLASS_InputMethodSubtype != null && CLASS_InputMethodSubtype.isInstance(subtype))
                 ? subtype : null);
         if (DBG) {
             Log.d(TAG, "CreateInputMethodSubtypeCompatWrapper");
         }
+        mDummyNameResId = 0;
+        mDummyIconResId = 0;
+        mDummyLocale = DEFAULT_LOCALE;
+        mDummyMode = DEFAULT_MODE;
+        mDummyExtraValues = "";
+    }
+
+    // Constructor for creating a dummy subtype.
+    public InputMethodSubtypeCompatWrapper(int nameResId, int iconResId, String locale,
+            String mode, String extraValues) {
+        super(null);
+        if (DBG) {
+            Log.d(TAG, "CreateInputMethodSubtypeCompatWrapper");
+        }
+        mDummyNameResId = nameResId;
+        mDummyIconResId = iconResId;
+        mDummyLocale = locale != null ? locale : "";
+        mDummyMode = mode != null ? mode : "";
+        mDummyExtraValues = extraValues != null ? extraValues : "";
     }
 
     public int getNameResId() {
+        if (mObj == null) return mDummyNameResId;
         return (Integer)CompatUtils.invoke(mObj, 0, METHOD_getNameResId);
     }
 
     public int getIconResId() {
+        if (mObj == null) return mDummyIconResId;
         return (Integer)CompatUtils.invoke(mObj, 0, METHOD_getIconResId);
     }
 
     public String getLocale() {
+        if (mObj == null) return mDummyLocale;
         final String s = (String)CompatUtils.invoke(mObj, null, METHOD_getLocale);
         if (TextUtils.isEmpty(s)) return DEFAULT_LOCALE;
         return s;
     }
 
     public String getMode() {
+        if (mObj == null) return mDummyMode;
         String s = (String)CompatUtils.invoke(mObj, null, METHOD_getMode);
         if (TextUtils.isEmpty(s)) return DEFAULT_MODE;
         return s;
     }
 
     public String getExtraValue() {
+        if (mObj == null) return mDummyExtraValues;
         return (String)CompatUtils.invoke(mObj, null, METHOD_getExtraValue);
     }
 
@@ -92,10 +123,32 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
     public boolean equals(Object o) {
         if (o instanceof InputMethodSubtypeCompatWrapper) {
             InputMethodSubtypeCompatWrapper subtype = (InputMethodSubtypeCompatWrapper)o;
+            if (mObj == null) {
+                // easy check of dummy subtypes
+                return (mDummyNameResId == subtype.mDummyNameResId
+                        && mDummyIconResId == subtype.mDummyIconResId
+                        && mDummyLocale.equals(subtype.mDummyLocale)
+                        && mDummyMode.equals(subtype.mDummyMode)
+                        && mDummyExtraValues.equals(subtype.mDummyExtraValues));
+            }
             return mObj.equals(subtype.getOriginalObject());
         } else {
             return mObj.equals(o);
         }
     }
 
+    @Override
+    public int hashCode() {
+        if (mObj == null) {
+            return hashCodeInternal(mDummyNameResId, mDummyIconResId, mDummyLocale,
+                    mDummyMode, mDummyExtraValues);
+        }
+        return mObj.hashCode();
+    }
+
+    private static int hashCodeInternal(int nameResId, int iconResId, String locale,
+            String mode, String extraValue) {
+        return Arrays
+                .hashCode(new Object[] { nameResId, iconResId, locale, mode, extraValue });
+    }
 }

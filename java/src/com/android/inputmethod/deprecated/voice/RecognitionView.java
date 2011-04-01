@@ -50,7 +50,6 @@ import java.util.Locale;
  * plays beeps, shows errors, etc.
  */
 public class RecognitionView {
-    @SuppressWarnings("unused")
     private static final String TAG = "RecognitionView";
 
     private Handler mUiHandler;  // Reference to UI thread

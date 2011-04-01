@@ -16,8 +16,13 @@
 
 package com.android.inputmethod.compat;
 
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.Utils;
+
 import android.content.Context;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -27,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 // TODO: Override this class with the concrete implementation if we need to take care of the
@@ -50,7 +56,15 @@ public class InputMethodManagerCompatWrapper {
     private static final InputMethodManagerCompatWrapper sInstance =
             new InputMethodManagerCompatWrapper();
 
+    // For the compatibility, IMM will create dummy subtypes if subtypes are not found.
+    // This is required to be false if the current behavior is broken. For now, it's ok to be true.
+    private static final boolean ALLOW_DUMMY_SUBTYPE = true;
+    private static final boolean HAS_VOICE_FUNCTION = true;
+    private static final String VOICE_MODE = "voice";
+    private static final String KEYBOARD_MODE = "keyboard";
+
     private InputMethodManager mImm;
+    private String mLatinImePackageName;
     private InputMethodManagerCompatWrapper() {
     }
 
@@ -64,28 +78,82 @@ public class InputMethodManagerCompatWrapper {
     private synchronized void init(Context context) {
         mImm = (InputMethodManager) context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
+        if (context instanceof LatinIME) {
+            mLatinImePackageName = context.getPackageName();
+        }
     }
 
     public InputMethodSubtypeCompatWrapper getCurrentInputMethodSubtype() {
-        return new InputMethodSubtypeCompatWrapper(
-                CompatUtils.invoke(mImm, null, METHOD_getCurrentInputMethodSubtype));
+        Object o = CompatUtils.invoke(mImm, null, METHOD_getCurrentInputMethodSubtype);
+        return new InputMethodSubtypeCompatWrapper(o);
     }
 
     public List<InputMethodSubtypeCompatWrapper> getEnabledInputMethodSubtypeList(
             InputMethodInfoCompatWrapper imi, boolean allowsImplicitlySelectedSubtypes) {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
-        // Returns an empty list
-        if (retval == null)
-            return Collections.emptyList();
+        if (retval == null || !(retval instanceof List) || ((List<?>)retval).isEmpty()) {
+            if (!ALLOW_DUMMY_SUBTYPE) {
+                // Returns an empty list
+                return Collections.emptyList();
+            }
+            // Creates dummy subtypes
+            List<InputMethodSubtypeCompatWrapper> subtypeList =
+                    new ArrayList<InputMethodSubtypeCompatWrapper>();
+            InputMethodSubtypeCompatWrapper keyboardSubtype = getLastResortSubtype(KEYBOARD_MODE);
+            InputMethodSubtypeCompatWrapper voiceSubtype = getLastResortSubtype(VOICE_MODE);
+            if (keyboardSubtype != null) {
+                subtypeList.add(keyboardSubtype);
+            }
+            if (voiceSubtype != null) {
+                subtypeList.add(voiceSubtype);
+            }
+            return subtypeList;
+        }
         return CompatUtils.copyInputMethodSubtypeListToWrapper((List<?>)retval);
+    }
+
+    private InputMethodInfoCompatWrapper getLatinImeInputMethodInfo() {
+        if (TextUtils.isEmpty(mLatinImePackageName))
+            return null;
+        return Utils.getInputMethodInfo(this, mLatinImePackageName);
+    }
+
+    @SuppressWarnings("unused")
+    private InputMethodSubtypeCompatWrapper getLastResortSubtype(String mode) {
+        if (VOICE_MODE.equals(mode) && !HAS_VOICE_FUNCTION)
+            return null;
+        Locale inputLocale = SubtypeSwitcher.getInstance().getInputLocale();
+        if (inputLocale == null)
+            return null;
+        return new InputMethodSubtypeCompatWrapper(0, 0, inputLocale.toString(), mode, "");
     }
 
     public Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
-        // Returns an empty map
-        if (!(retval instanceof Map)) return Collections.emptyMap();
+        if (retval == null || !(retval instanceof Map) || ((Map<?, ?>)retval).isEmpty()) {
+            if (!ALLOW_DUMMY_SUBTYPE) {
+                // Returns an empty map
+                return Collections.emptyMap();
+            }
+            // Creates dummy subtypes
+            InputMethodInfoCompatWrapper imi = getLatinImeInputMethodInfo();
+            InputMethodSubtypeCompatWrapper voiceSubtype = getLastResortSubtype(VOICE_MODE);
+            if (imi != null && voiceSubtype != null) {
+                Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>
+                        shortcutMap =
+                                new HashMap<InputMethodInfoCompatWrapper,
+                                        List<InputMethodSubtypeCompatWrapper>>();
+                List<InputMethodSubtypeCompatWrapper> subtypeList =
+                        new ArrayList<InputMethodSubtypeCompatWrapper>();
+                subtypeList.add(voiceSubtype);
+                shortcutMap.put(imi, subtypeList);
+                return shortcutMap;
+            } else {
+                return Collections.emptyMap();
+            }
+        }
         Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcutMap =
                 new HashMap<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>();
         final Map<?, ?> retvalMap = (Map<?, ?>)retval;
@@ -107,6 +175,9 @@ public class InputMethodManagerCompatWrapper {
     }
 
     public boolean switchToLastInputMethod(IBinder token) {
+        if (SubtypeSwitcher.getInstance().isDummyVoiceMode()) {
+            return true;
+        }
         return (Boolean)CompatUtils.invoke(mImm, false, METHOD_switchToLastInputMethod, token);
     }
 
