@@ -25,6 +25,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.backup.BackupManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -65,6 +66,7 @@ public class Settings extends PreferenceActivity
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
+    public static final String PREF_DEBUG_SETTINGS = "debug_settings";
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
@@ -78,6 +80,7 @@ public class Settings extends PreferenceActivity
     private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThreshold;
     private CheckBoxPreference mBigramSuggestion;
+    private Preference mDebugSettingsPreference;
     private boolean mVoiceOn;
 
     private AlertDialog mDialog;
@@ -115,6 +118,13 @@ public class Settings extends PreferenceActivity
 
         mAutoCorrectionThreshold = (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
+        mDebugSettingsPreference = findPreference(PREF_DEBUG_SETTINGS);
+        if (mDebugSettingsPreference != null) {
+            final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
+            debugSettingsIntent.setClassName(getPackageName(), DebugSettings.class.getName());
+            mDebugSettingsPreference.setIntent(debugSettingsIntent);
+        }
+
         ensureConsistencyOfAutoCorrectionSettings();
 
         final PreferenceGroup generalSettings =
