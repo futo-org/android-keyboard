@@ -210,7 +210,7 @@ public class SubtypeSwitcher {
         final String newLocale;
         final String newMode;
         final String oldMode = getCurrentSubtypeMode();
-        if (newSubtype == null || !newSubtype.hasOriginalObject()) {
+        if (newSubtype == null) {
             // Normally, newSubtype shouldn't be null. But just in case newSubtype was null,
             // fallback to the default locale.
             Log.w(TAG, "Couldn't get the current subtype.");
@@ -537,6 +537,11 @@ public class SubtypeSwitcher {
 
     public boolean isVoiceMode() {
         return null == mCurrentSubtype ? false : VOICE_MODE.equals(getCurrentSubtypeMode());
+    }
+
+    public boolean isDummyVoiceMode() {
+        return mCurrentSubtype != null && mCurrentSubtype.getOriginalObject() == null
+                && VOICE_MODE.equals(getCurrentSubtypeMode());
     }
 
     private void triggerVoiceIME() {
