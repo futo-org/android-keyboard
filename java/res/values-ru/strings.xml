@@ -38,7 +38,7 @@
     <string name="auto_complete_dialog_title" msgid="2172048590607201920">"Автоматическое завершение"</string>
     <string name="prediction_landscape" msgid="4874601565593216183">"Увеличить размер текстового поля"</string>
     <string name="prediction_landscape_summary" msgid="6736551095997839472">"Скрывать предложение слов в горизонтальной ориентации"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
     <string name="auto_cap_summary" msgid="3260681697600786825">"Делать заглавной первую букву предложения"</string>
     <string name="auto_punctuate" msgid="7276672334264521751">"Автопунктуация"</string>
     <string name="auto_punctuate_summary" msgid="6589441565817502132"></string>

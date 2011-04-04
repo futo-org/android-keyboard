@@ -47,7 +47,7 @@
     <string name="show_suggestions" msgid="507074425254289133">"Pokaż sugestie"</string>
     <string name="show_suggestions_summary" msgid="1989672863935759654">"Wyświetl sugerowane słowa podczas wpisywania"</string>
     <string name="auto_complete" msgid="1103196318775486023">"Autouzupełnianie"</string>
-    <string name="auto_complete_summary" msgid="6113149638718274624">"Spacja i znaki przestankowe wstawiają wyróżnione słowo"</string>
+    <string name="auto_complete_summary" msgid="6113149638718274624">"Spacja i znaki przestankowe wstawiają podświetlone słowo"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Pokaż klawisz ustawień"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatycznie"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Zawsze pokazuj"</string>
@@ -125,13 +125,13 @@
     <string name="popular_domain_2" msgid="3036812463748402878">".org"</string>
     <string name="popular_domain_3" msgid="8718639560809452028">".gov"</string>
     <string name="popular_domain_4" msgid="35359437471311470">".edu"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Wybierz metodę wprowadzania"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"Wybierz sposób wprowadzania tekstu"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Języki wprowadzania"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Przesuń palcem po spacji, aby zmienić język"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Dotknij ponownie, aby zapisać"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Słownik dostępny"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Włącz przesyłanie opinii użytkownika"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Pomóż ulepszyć edytor tej metody wprowadzania, automatycznie wysyłając do Google statystyki użycia i raporty o awariach."</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Pomóż ulepszyć edytor wprowadzania tekstu, automatycznie wysyłając do Google statystyki użycia i raporty o awariach."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Popraw dotknięte słowo"</string>
     <string name="prefs_enable_recorrection_summary" msgid="1056068922330206170">"Dotknięte słowo zostanie poprawione"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Motyw klawiatury"</string>
