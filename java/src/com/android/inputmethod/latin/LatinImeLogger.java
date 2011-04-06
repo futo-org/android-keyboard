@@ -45,16 +45,19 @@ public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChang
             String before, String after, int position, List<CharSequence> suggestions) {
    }
 
-    public static void logOnAutoSuggestion(String before, String after) {
+    public static void logOnAutoCorrection(String before, String after, int separatorCode) {
     }
 
-    public static void logOnAutoSuggestionCanceled() {
+    public static void logOnAutoCorrectionCancelled() {
     }
 
     public static void logOnDelete() {
     }
 
     public static void logOnInputChar() {
+    }
+
+    public static void logOnInputSeparator() {
     }
 
     public static void logOnException(String metaData, Throwable e) {

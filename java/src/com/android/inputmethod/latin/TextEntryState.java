@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.latin.Utils.RingCharBuffer;
+
 import android.util.Log;
 
 public class TextEntryState {
@@ -43,10 +45,12 @@ public class TextEntryState {
         sState = newState;
     }
 
-    public static void acceptedDefault(CharSequence typedWord, CharSequence actualWord) {
+    public static void acceptedDefault(CharSequence typedWord, CharSequence actualWord,
+            int separatorCode) {
         if (typedWord == null) return;
         setState(ACCEPTED_DEFAULT);
-        LatinImeLogger.logOnAutoSuggestion(typedWord.toString(), actualWord.toString());
+        LatinImeLogger.logOnAutoCorrection(
+                typedWord.toString(), actualWord.toString(), separatorCode);
         if (DEBUG)
             displayState("acceptedDefault", "typedWord", typedWord, "actualWord", actualWord);
     }
@@ -95,7 +99,7 @@ public class TextEntryState {
         if (DEBUG) displayState("onAbortRecorrection");
     }
 
-    public static void typedCharacter(char c, boolean isSeparator) {
+    public static void typedCharacter(char c, boolean isSeparator, int x, int y) {
         final boolean isSpace = (c == ' ');
         switch (sState) {
         case IN_WORD:
@@ -149,13 +153,19 @@ public class TextEntryState {
             setState(START);
             break;
         }
+        RingCharBuffer.getInstance().push(c, x, y);
+        if (isSeparator) {
+            LatinImeLogger.logOnInputSeparator();
+        } else {
+            LatinImeLogger.logOnInputChar();
+        }
         if (DEBUG) displayState("typedCharacter", "char", c, "isSeparator", isSeparator);
     }
     
     public static void backspace() {
         if (sState == ACCEPTED_DEFAULT) {
             setState(UNDO_COMMIT);
-            LatinImeLogger.logOnAutoSuggestionCanceled();
+            LatinImeLogger.logOnAutoCorrectionCancelled();
         } else if (sState == UNDO_COMMIT) {
             setState(IN_WORD);
         }
