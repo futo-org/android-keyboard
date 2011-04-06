@@ -44,12 +44,6 @@ public class UserBigramDictionary extends ExpandableDictionary {
     /** Maximum frequency for all pairs */
     private static final int FREQUENCY_MAX = 127;
 
-    /**
-     * If this pair is typed 6 times, it would be suggested.
-     * Should be smaller than ContactsDictionary.FREQUENCY_FOR_CONTACTS_BIGRAM
-     */
-    protected static final int SUGGEST_THRESHOLD = 6 * FREQUENCY_FOR_TYPED;
-
     /** Maximum number of pairs. Pruning will start when databases goes above this number. */
     private static int sMaxUserBigrams = 10000;
 
