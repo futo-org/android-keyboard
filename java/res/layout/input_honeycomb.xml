@@ -31,6 +31,8 @@
 
         latin:keyBackground="@drawable/btn_keyboard_key_honeycomb"
         latin:keyPreviewLayout="@layout/key_preview_honeycomb"
+        latin:keyPreviewHeight="@dimen/key_preview_height_holo"
+        latin:keyPreviewOffset="@dimen/key_preview_offset_holo"
         latin:popupLayout="@layout/keyboard_popup_honeycomb"
         latin:keyTextColorDisabled="#FF63666D"
         latin:keyLetterStyle="bold"

@@ -63,7 +63,7 @@ public class SlidingLocaleDrawable extends Drawable {
         mHeight = height;
         final TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(getTextSizeFromTheme(android.R.style.TextAppearance_Medium, 18));
-        textPaint.setColor(R.color.latinkeyboard_transparent);
+        textPaint.setColor(android.R.color.transparent);
         textPaint.setTextAlign(Align.CENTER);
         textPaint.setAlpha(LatinKeyboard.OPACITY_FULLY_OPAQUE);
         textPaint.setAntiAlias(true);
