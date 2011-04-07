@@ -83,8 +83,8 @@ public class Key {
      * {@link Keyboard#EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM}.
      */
     public final int mEdgeFlags;
-    /** Whether this is a modifier key, such as Shift or Alt */
-    public final boolean mModifier;
+    /** Whether this is a functional key which has different key top than normal key */
+    public final boolean mFunctional;
     /** Whether this key repeats itself when held down */
     public final boolean mRepeatable;
 
@@ -93,8 +93,8 @@ public class Key {
 
     /** The current pressed state of this key */
     public boolean mPressed;
-    /** If this is a sticky key, is it on? */
-    public boolean mOn;
+    /** If this is a sticky key, is its highlight on? */
+    public boolean mHighlightOn;
     /** Key is enabled and responds on press */
     public boolean mEnabled = true;
 
@@ -150,7 +150,7 @@ public class Key {
         mManualTemporaryUpperCaseHintIcon = null;
         mManualTemporaryUpperCaseCode = Keyboard.CODE_DUMMY;
         mLabelOption = 0;
-        mModifier = false;
+        mFunctional = false;
         mSticky = false;
         mRepeatable = false;
         mPopupCharacters = null;
@@ -224,7 +224,7 @@ public class Key {
                     mKeyboard.getMaxPopupKeyboardColumn());
 
             mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
-            mModifier = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isModifier, false);
+            mFunctional = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional, false);
             mSticky = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky, false);
             mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
             mEdgeFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
@@ -315,22 +315,19 @@ public class Key {
     /**
      * Informs the key that it has been pressed, in case it needs to change its appearance or
      * state.
-     * @see #onReleased(boolean)
+     * @see #onReleased()
      */
     public void onPressed() {
-        mPressed = !mPressed;
+        mPressed = true;
     }
 
     /**
-     * Changes the pressed state of the key. If it is a sticky key, it will also change the
-     * toggled state of the key if the finger was release inside.
-     * @param inside whether the finger was released inside the key
+     * Informs the key that it has been released, in case it needs to change its appearance or
+     * state.
      * @see #onPressed()
      */
-    public void onReleased(boolean inside) {
-        mPressed = !mPressed;
-        if (mSticky && !mKeyboard.isShiftLockEnabled(this))
-            mOn = !mOn;
+    public void onReleased() {
+        mPressed = false;
     }
 
     public boolean isInside(int x, int y) {
@@ -376,12 +373,6 @@ public class Key {
         return dx * dx + dy * dy;
     }
 
-    // sticky is used for shift key.  If a key is not sticky and is modifier,
-    // the key will be treated as functional.
-    private boolean isFunctionalKey() {
-        return !mSticky && mModifier;
-    }
-
     /**
      * Returns the drawable state for the key, based on the current state and type of the key.
      * @return the drawable state of the key.
@@ -389,7 +380,7 @@ public class Key {
      */
     public int[] getCurrentDrawableState() {
         final boolean pressed = mEnabled && mPressed;
-        if (isFunctionalKey()) {
+        if (!mSticky && mFunctional) {
             if (pressed) {
                 return KEY_STATE_FUNCTIONAL_PRESSED;
             } else {
@@ -399,7 +390,7 @@ public class Key {
 
         int[] states = KEY_STATE_NORMAL;
 
-        if (mOn) {
+        if (mHighlightOn) {
             if (pressed) {
                 states = KEY_STATE_PRESSED_ON;
             } else {

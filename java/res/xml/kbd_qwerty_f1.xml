@@ -29,7 +29,7 @@
                 latin:keyLabel="/"
                 latin:keyHintIcon="@drawable/hint_popup"
                 latin:popupCharacters="@string/alternates_for_settings_slash"
-                latin:isModifier="true" />
+                latin:isFunctional="true" />
         </case>
         <case
             latin:mode="email"
@@ -38,7 +38,7 @@
                 latin:keyLabel="\@"
                 latin:keyHintIcon="@drawable/hint_popup"
                 latin:popupCharacters="@string/alternates_for_settings_at"
-                latin:isModifier="true" />
+                latin:isFunctional="true" />
         </case>
         <default>
             <switch>
@@ -57,7 +57,7 @@
                         >
                             <Key
                                 latin:keyLabel=","
-                                latin:isModifier="true" />
+                                latin:isFunctional="true" />
                         </case>
                         <case
                             latin:hasSettingsKey="false"
@@ -66,7 +66,7 @@
                                 latin:keyLabel=","
                                 latin:keyHintIcon="@drawable/hint_popup"
                                 latin:popupCharacters="@string/alternates_for_settings_comma"
-                                latin:isModifier="true" />
+                                latin:isFunctional="true" />
                         </case>
                     </switch>
                 </case>

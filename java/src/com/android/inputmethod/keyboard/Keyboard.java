@@ -293,7 +293,7 @@ public class Keyboard {
     public boolean setShiftLocked(boolean newShiftLockState) {
         final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
         for (final Key key : getShiftKeys()) {
-            key.mOn = newShiftLockState;
+            key.mHighlightOn = newShiftLockState;
             key.setIcon(newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key));
         }
         mShiftState.setShiftLocked(newShiftLockState);

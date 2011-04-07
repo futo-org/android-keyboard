@@ -263,10 +263,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         int xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols;
         final String xmlName = res.getResourceEntryName(xmlId);
         mSymbolsId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
-                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
+                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, false);
         xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift;
         mSymbolsShiftedId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
-                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
+                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, false);
     }
 
     public int getKeyboardMode() {
@@ -565,16 +565,14 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mCurrentId = mSymbolsShiftedId;
             keyboard = getKeyboard(mCurrentId);
             // Symbol shifted keyboard has an ALT key that has a caps lock style indicator. To
-            // enable the indicator, we need to call enableShiftLock() and setShiftLocked(true).
-            // Thus we can keep the ALT key's Key.on value true while LatinKey.onRelease() is
-            // called.
+            // enable the indicator, we need to call setShiftLocked(true).
             keyboard.setShiftLocked(true);
         } else {
             mCurrentId = mSymbolsId;
             keyboard = getKeyboard(mCurrentId);
             // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
-            // indicator, we need to call enableShiftLock() and setShiftLocked(false).
-            keyboard.setShifted(false);
+            // indicator, we need to call setShiftLocked(false).
+            keyboard.setShiftLocked(false);
         }
         setKeyboard(keyboard);
     }
