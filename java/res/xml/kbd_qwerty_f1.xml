@@ -51,11 +51,24 @@
                 <case
                     latin:hasVoiceKey="false"
                 >
-                    <Key
-                        latin:keyLabel=","
-                        latin:keyHintIcon="@drawable/hint_popup"
-                        latin:popupCharacters="@string/alternates_for_settings_comma"
-                        latin:isModifier="true" />
+                    <switch>
+                        <case
+                            latin:hasSettingsKey="true"
+                        >
+                            <Key
+                                latin:keyLabel=","
+                                latin:isModifier="true" />
+                        </case>
+                        <case
+                            latin:hasSettingsKey="false"
+                        >
+                            <Key
+                                latin:keyLabel=","
+                                latin:keyHintIcon="@drawable/hint_popup"
+                                latin:popupCharacters="@string/alternates_for_settings_comma"
+                                latin:isModifier="true" />
+                        </case>
+                    </switch>
                 </case>
             </switch>
         </default>
