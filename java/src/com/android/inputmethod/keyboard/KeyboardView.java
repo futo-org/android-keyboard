@@ -37,7 +37,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -378,6 +377,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         }
         mPreviewPopup.setTouchable(false);
         mPreviewPopup.setAnimationStyle(R.style.KeyPreviewAnimation);
+        mPreviewPopup.setClippingEnabled(false);
         mDelayBeforePreview = res.getInteger(R.integer.config_delay_before_preview);
         mDelayAfterPreview = res.getInteger(R.integer.config_delay_after_preview);
         mKeyLabelHorizontalPadding = (int)res.getDimension(
