@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Klepnutím na zadaná slova tato slova opravíte, musí však být viditelné návrhy."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Motiv klávesnice"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Klávesnice – čeština"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Klávesnice – arabština"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Klávesnice – dánština"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Klávesnice – němčina"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Klávesnice – angličtina (VB)"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Klávesnice – francouzština"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Klávesnice – francouzština (Kanada)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Klávesnice – francouzština (Švýc.)"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Klávesnice – hebrejština"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Klávesnice – italština"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Klávesnice – norština"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Klávesnice – holandština"</string>

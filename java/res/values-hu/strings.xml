@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"A beírt szavakat csak akkor javíthatja ki megérintve, ha látszanak javaslatok"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Billentyűzettéma"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Cseh billentyűzet"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Arab billentyűzet"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Dán billentyűzet"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Német billentyűzet"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Angol (UK) billentyűzet"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Francia billentyűzet"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Francia (kanadai) billentyűzet"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Francia (svájci) billentyűzet"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Héber billentyűzet"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Olasz billentyűzet"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norvég billentyűzet"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Holland billentyűzet"</string>

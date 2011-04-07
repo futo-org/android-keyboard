@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"仅在系统显示建议后，才触摸输入的字词进行更正"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"键盘主题"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"捷克语键盘"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"阿拉伯语键盘"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"丹麦语键盘"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"德语键盘"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"英语（英国）键盘"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"法语键盘"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"法语（加拿大）键盘"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"法语（瑞士）键盘"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"希伯来语键盘"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"意大利语键盘"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"挪威语键盘"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"荷兰语键盘"</string>

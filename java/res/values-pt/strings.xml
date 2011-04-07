@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Toque nas palavras digitadas para corrigi-las apenas quando as sugestões estiverem visíveis"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tema do teclado"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Teclado em tcheco"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Teclado árabe"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Teclado para dinamarquês"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Teclado para alemão"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Teclado para inglês (Reino Unido)"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Teclado para francês"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Teclado para francês (Canadá)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Teclado para francês (Suíça)"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Teclado hebraico"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Teclado para italiano"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Teclado para norueguês"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Teclado para holandês"</string>
