@@ -94,7 +94,7 @@
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Kapalı"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Ana klavyede mikrfn"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Simge klavysnd mikrf"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Sesle giriş devr dşı"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Sesle grş devre dışı"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Giriş yöntemini seç"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Giriş dilleri"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Dili değiştirmek için parmağınızı boşluk çubuğu üzerinde kaydırın"</string>
@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Yalnızca öneriler görünür olduğunda, düzeltmek için girilen kelimelere dokunun"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Klavye Teması"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Çekçe Klavye"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Arapça Klavye"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Danca Klavye"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Almanca Klavye"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"İngilizce (İngiltere) Klavye"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Fransızca Klavye"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Fransızca (Kanada) Klavye"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Fransızca (İsviçre) Klavye"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"İbranice Klavye"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"İtalyanca Klavye"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norveççe Klavye"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Felemenkçe Klavye"</string>

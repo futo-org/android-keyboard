@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Touch words entered to correct them, only when suggestions are visible"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Keyboard Theme"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Czech Keyboard"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Arabic Keyboard"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Danish Keyboard"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"German Keyboard"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"English (UK) Keyboard"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"French Keyboard"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"French (Canada) Keyboard"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"French (Switzerland) Keyboard"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Hebrew Keyboard"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italian Keyboard"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norwegian Keyboard"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Dutch Keyboard"</string>

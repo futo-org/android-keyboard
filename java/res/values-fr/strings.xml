@@ -40,7 +40,7 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatique"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Toujours afficher"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Toujours masquer"</string>
-    <string name="auto_correction" msgid="4979925752001319458">"Correction auto"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"Correction auto."</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Corriger autom. orthographe (pression sur barre espace/signes ponctuation)"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Désactiver"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Simple"</string>
@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Appuyer sur les mots saisis pour les corriger, uniquement lorsque des suggestions sont visibles"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Thème du clavier"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Clavier tchèque"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Clavier arabe"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Clavier danois"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Clavier allemand"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Clavier anglais (Royaume-Uni)"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Clavier français"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Clavier français (Canada)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Clavier français (Suisse)"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Clavier hébreu"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Clavier italien"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Clavier norvégien"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Clavier néerlandais"</string>

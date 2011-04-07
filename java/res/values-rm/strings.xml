@@ -146,6 +146,8 @@
     <string name="keyboard_layout" msgid="437433231038683666">"Design da la tastatura"</string>
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />
+    <!-- no translation found for subtype_mode_ar_keyboard (2655338636329774995) -->
+    <skip />
     <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->
     <skip />
     <!-- no translation found for subtype_mode_de_keyboard (1990979135959462145) -->
@@ -163,6 +165,8 @@
     <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
     <skip />
     <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
+    <skip />
+    <!-- no translation found for subtype_mode_iw_keyboard (1787536828253289950) -->
     <skip />
     <!-- no translation found for subtype_mode_it_keyboard (4934199655425394484) -->
     <skip />
