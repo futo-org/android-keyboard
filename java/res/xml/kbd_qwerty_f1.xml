@@ -23,81 +23,32 @@
 >
     <switch>
         <case
-            latin:hasSettingsKey="true"
+            latin:mode="url"
         >
-            <switch>
-                <case
-                    latin:mode="url"
-                >
-                    <Key
-                        latin:keyLabel="/"
-                        latin:isFunctional="true" />
-                </case>
-                <case
-                    latin:mode="email"
-                >
-                    <Key
-                        latin:keyLabel="\@"
-                        latin:isFunctional="true" />
-                </case>
-                <default>
-                    <switch>
-                        <case
-                            latin:hasVoiceKey="true"
-                        >
-                            <Key
-                                latin:keyStyle="micKeyStyle" />
-                        </case>
-                        <case
-                            latin:hasVoiceKey="false"
-                        >
-                            <Key
-                                latin:keyLabel=","
-                                latin:isFunctional="true" />
-                        </case>
-                    </switch>
-                </default>
-            </switch>
+            <Key
+                latin:keyLabel="/"
+                latin:keyStyle="settingsPopupStyle" />
         </case>
-        <!-- latin:hasSettingsKey="false" -->
+        <case
+            latin:mode="email"
+        >
+            <Key
+                latin:keyLabel="\@"
+                latin:keyStyle="settingsPopupStyle" />
+        </case>
         <default>
             <switch>
                 <case
-                    latin:mode="url"
+                    latin:hasVoiceKey="true"
                 >
                     <Key
-                        latin:keyLabel="/"
-                        latin:keyHintIcon="@drawable/hint_popup"
-                        latin:popupCharacters="@string/alternates_for_settings_slash"
-                        latin:isFunctional="true" />
+                        latin:keyStyle="micKeyStyle" />
                 </case>
-                <case
-                    latin:mode="email"
-                >
-                    <Key
-                        latin:keyLabel="\@"
-                        latin:keyHintIcon="@drawable/hint_popup"
-                        latin:popupCharacters="@string/alternates_for_settings_at"
-                        latin:isFunctional="true" />
-                </case>
+                <!-- latin:hasVoiceKey="false" -->
                 <default>
-                    <switch>
-                        <case
-                            latin:hasVoiceKey="true"
-                        >
-                            <Key
-                                latin:keyStyle="micKeyStyle" />
-                        </case>
-                        <case
-                            latin:hasVoiceKey="false"
-                        >
-                            <Key
-                                latin:keyLabel=","
-                                latin:keyHintIcon="@drawable/hint_popup"
-                                latin:popupCharacters="@string/alternates_for_settings_comma"
-                                latin:isFunctional="true" />
-                        </case>
-                    </switch>
+                    <Key
+                        latin:keyLabel=","
+                        latin:keyStyle="settingsPopupStyle" />
                 </default>
             </switch>
         </default>
