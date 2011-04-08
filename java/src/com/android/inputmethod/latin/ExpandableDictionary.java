@@ -32,12 +32,14 @@ public class ExpandableDictionary extends Dictionary {
      */
     protected static final int MAX_WORD_LENGTH = 32;
 
+    // Bigram frequency is a fixed point number with 1 meaning 1.2 and 255 meaning 1.8.
+    protected static final int BIGRAM_MAX_FREQUENCY = 255;
+
     private Context mContext;
     private char[] mWordBuilder = new char[MAX_WORD_LENGTH];
     private int mDicTypeId;
     private int mMaxDepth;
     private int mInputLength;
-    private StringBuilder sb = new StringBuilder(MAX_WORD_LENGTH);
 
     private static final char QUOTE = '\'';
 
@@ -98,6 +100,7 @@ public class ExpandableDictionary extends Dictionary {
 
         public int addFrequency(int add) {
             mFrequency += add;
+            if (mFrequency > BIGRAM_MAX_FREQUENCY) mFrequency = BIGRAM_MAX_FREQUENCY;
             return mFrequency;
         }
     }
@@ -462,6 +465,9 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
+    // Local to reverseLookUp, but do not allocate each time.
+    private final char[] mLookedUpString = new char[MAX_WORD_LENGTH];
+
     /**
      * reverseLookUp retrieves the full word given a list of terminal nodes and adds those words
      * through callback.
@@ -474,18 +480,15 @@ public class ExpandableDictionary extends Dictionary {
         for (NextWord nextWord : terminalNodes) {
             node = nextWord.mWord;
             freq = nextWord.getFrequency();
-            // TODO Not the best way to limit suggestion threshold
-            if (freq >= UserBigramDictionary.SUGGEST_THRESHOLD) {
-                sb.setLength(0);
-                do {
-                    sb.insert(0, node.mCode);
-                    node = node.mParent;
-                } while(node != null);
+            int index = MAX_WORD_LENGTH;
+            do {
+                --index;
+                mLookedUpString[index] = node.mCode;
+                node = node.mParent;
+            } while (node != null);
 
-                // TODO better way to feed char array?
-                callback.addWord(sb.toString().toCharArray(), 0, sb.length(), freq, mDicTypeId,
-                        DataType.BIGRAM);
-            }
+            callback.addWord(mLookedUpString, index, MAX_WORD_LENGTH - index, freq, mDicTypeId,
+                    DataType.BIGRAM);
         }
     }
 
