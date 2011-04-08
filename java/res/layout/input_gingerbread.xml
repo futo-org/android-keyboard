@@ -25,8 +25,7 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/keyboard_top_padding"
-        android:paddingBottom="@dimen/keyboard_bottom_padding"
+        android:padding="0dip"
         android:background="@drawable/keyboard_dark_background"
 
         latin:keyBackground="@drawable/btn_keyboard_key_gingerbread"

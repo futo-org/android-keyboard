@@ -28,6 +28,7 @@
     <dimen name="popup_key_height">13.0mm</dimen>
     <dimen name="keyboard_top_padding">1.1mm</dimen>
     <dimen name="keyboard_bottom_padding">0.0mm</dimen>
+    <dimen name="keyboard_horizontal_edges_padding">0.0mm</dimen>
 
     <dimen name="key_letter_size">28dip</dimen>
     <dimen name="key_label_text_size">20dip</dimen>

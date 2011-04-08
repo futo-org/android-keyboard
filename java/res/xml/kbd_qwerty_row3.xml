@@ -26,8 +26,10 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="13%p"
             latin:keyEdgeFlags="left" />
+        <Spacer
+            latin:horizontalGap="2%p" />
         <Key
             latin:keyLabel="z"
             latin:popupCharacters="@string/alternates_for_z" />
@@ -46,9 +48,11 @@
             latin:popupCharacters="@string/alternates_for_n" />
         <Key
             latin:keyLabel="m" />
+        <Spacer
+            latin:horizontalGap="2%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="13%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

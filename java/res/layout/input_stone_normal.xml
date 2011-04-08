@@ -25,6 +25,7 @@
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="0dip"
         android:background="@drawable/keyboard_background"
 
         latin:keyBackground="@drawable/btn_keyboard_key_stone"
@@ -32,5 +33,5 @@
         latin:keyTextColorDisabled="#FF808080"
         latin:shadowColor="@color/latinkeyboard_key_color_white"
         latin:colorScheme="black"
-        latin:popupLayout="@layout/input_stone_popup"
+        latin:popupLayout="@layout/keyboard_popup_stone"
         />
