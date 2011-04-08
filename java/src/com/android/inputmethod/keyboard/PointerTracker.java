@@ -546,6 +546,9 @@ public class PointerTracker {
     }
 
     private void showKeyPreviewAndUpdateKeyGraphics(int keyIndex) {
+        final Key key = getKey(keyIndex);
+        if (key != null && !key.mEnabled)
+            return;
         updateKeyGraphics(keyIndex);
         // The modifier key, such as shift key, should not be shown as preview when multi-touch is
         // supported. On the other hand, if multi-touch is not supported, the modifier key should
@@ -565,6 +568,8 @@ public class PointerTracker {
             return;
         }
         Key key = getKey(keyIndex);
+        if (!key.mEnabled)
+            return;
         if (key.mCode == Keyboard.CODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
         } else if (key.mManualTemporaryUpperCaseCode != Keyboard.CODE_DUMMY

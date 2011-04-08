@@ -379,7 +379,7 @@ public class Key {
      * @see android.graphics.drawable.StateListDrawable#setState(int[])
      */
     public int[] getCurrentDrawableState() {
-        final boolean pressed = mEnabled && mPressed;
+        final boolean pressed = mPressed;
         if (!mSticky && mFunctional) {
             if (pressed) {
                 return KEY_STATE_FUNCTIONAL_PRESSED;
