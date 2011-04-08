@@ -165,7 +165,9 @@ public class Keyboard {
         GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
         GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
 
-        mDisplayWidth = width;
+        final int horizontalEdgesPadding = (int)res.getDimension(
+                R.dimen.keyboard_horizontal_edges_padding);
+        mDisplayWidth = width - horizontalEdgesPadding * 2;
         mDisplayHeight = height;
 
         mDefaultHorizontalGap = 0;

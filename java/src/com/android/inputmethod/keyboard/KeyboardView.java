@@ -1056,7 +1056,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
-    private void onDoubleTapShiftKey(PointerTracker tracker) {
+    private void onDoubleTapShiftKey(@SuppressWarnings("unused") PointerTracker tracker) {
         // When shift key is double tapped, the first tap is correctly processed as usual tap. And
         // the second tap is treated as this double tap event, so that we need not mark tracker
         // calling setAlreadyProcessed() nor remove the tracker from mPointerQueueueue.
