@@ -24,7 +24,6 @@
     <color name="latinkeyboard_bar_language_shadow_white">#80000000</color>
     <color name="latinkeyboard_bar_language_shadow_black">#80FFFFFF</color>
     <color name="latinkeyboard_bar_language_text">#FFC0C0C0</color>
-    <color name="latinkeyboard_extension_background">#A0000000</color>
     <color name="latinkeyboard_feedback_language_text">#FFFFFFFF</color>
     <color name="latinkeyboard_key_color_white">#FFFFFFFF</color>
     <color name="latinkeyboard_key_color_black">#FF000000</color>

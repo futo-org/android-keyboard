@@ -24,6 +24,4 @@
     <item
         android:state_pressed="true"
         android:drawable="@drawable/btn_candidate_pressed" />
-    <item
-        android:drawable="@drawable/btn_candidate_normal" />
 </selector>
