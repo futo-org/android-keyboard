@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.compat;
 
+import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
@@ -56,6 +57,14 @@ public class InputMethodManagerCompatWrapper {
     private static final InputMethodManagerCompatWrapper sInstance =
             new InputMethodManagerCompatWrapper();
 
+    public static final boolean SUBTYPE_SUPPORTED;
+
+    static {
+        // This static initializer guarantees that METHOD_getShortcutInputMethodsAndSubtypes is
+        // already instantiated.
+        SUBTYPE_SUPPORTED = METHOD_getShortcutInputMethodsAndSubtypes != null;
+    }
+
     // For the compatibility, IMM will create dummy subtypes if subtypes are not found.
     // This is required to be false if the current behavior is broken. For now, it's ok to be true.
     private static final boolean ALLOW_DUMMY_SUBTYPE = true;
@@ -64,7 +73,9 @@ public class InputMethodManagerCompatWrapper {
     private static final String KEYBOARD_MODE = "keyboard";
 
     private InputMethodManager mImm;
+    private LanguageSwitcherProxy mLanguageSwitcherProxy;
     private String mLatinImePackageName;
+
     private InputMethodManagerCompatWrapper() {
     }
 
@@ -81,15 +92,29 @@ public class InputMethodManagerCompatWrapper {
         if (context instanceof LatinIME) {
             mLatinImePackageName = context.getPackageName();
         }
+        mLanguageSwitcherProxy = LanguageSwitcherProxy.getInstance();
     }
 
     public InputMethodSubtypeCompatWrapper getCurrentInputMethodSubtype() {
+        if (!SUBTYPE_SUPPORTED) {
+            return new InputMethodSubtypeCompatWrapper(
+                    0, 0, mLanguageSwitcherProxy.getInputLocale().toString(), KEYBOARD_MODE, "");
+        }
         Object o = CompatUtils.invoke(mImm, null, METHOD_getCurrentInputMethodSubtype);
         return new InputMethodSubtypeCompatWrapper(o);
     }
 
     public List<InputMethodSubtypeCompatWrapper> getEnabledInputMethodSubtypeList(
             InputMethodInfoCompatWrapper imi, boolean allowsImplicitlySelectedSubtypes) {
+        if (!SUBTYPE_SUPPORTED) {
+            String[] languages = mLanguageSwitcherProxy.getEnabledLanguages();
+            List<InputMethodSubtypeCompatWrapper> subtypeList =
+                    new ArrayList<InputMethodSubtypeCompatWrapper>();
+            for (String lang: languages) {
+                subtypeList.add(new InputMethodSubtypeCompatWrapper(0, 0, lang, KEYBOARD_MODE, ""));
+            }
+            return subtypeList;
+        }
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
         if (retval == null || !(retval instanceof List) || ((List<?>)retval).isEmpty()) {
@@ -170,6 +195,10 @@ public class InputMethodManagerCompatWrapper {
 
     public void setInputMethodAndSubtype(
             IBinder token, String id, InputMethodSubtypeCompatWrapper subtype) {
+        if (!SUBTYPE_SUPPORTED) {
+            mLanguageSwitcherProxy.setLocale(subtype.getLocale());
+            return;
+        }
         CompatUtils.invoke(mImm, null, METHOD_setInputMethodAndSubtype,
                 token, id, subtype.getOriginalObject());
     }
