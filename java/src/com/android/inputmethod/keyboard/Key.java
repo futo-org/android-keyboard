@@ -61,8 +61,11 @@ public class Key {
     public final int mWidth;
     /** Height of the key, not including the gap */
     public final int mHeight;
-    /** The horizontal gap before this key */
+    /** The horizontal gap around this key */
     public final int mGap;
+    /** The visual insets */
+    public final int mVisualInsetsLeft;
+    public final int mVisualInsetsRight;
     /** Whether this key is sticky, i.e., a toggle key */
     public final boolean mSticky;
     /** X coordinate of the key in the keyboard layout */
@@ -144,6 +147,7 @@ public class Key {
         mKeyboard = keyboard;
         mHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
         mGap = keyboard.getHorizontalGap();
+        mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mGap;
         mEdgeFlags = edgeFlags;
         mHintIcon = null;
@@ -230,6 +234,10 @@ public class Key {
             mEdgeFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
                     | row.mRowEdgeFlags;
 
+            mVisualInsetsLeft = KeyboardParser.getDimensionOrFraction(keyAttr,
+                    R.styleable.Keyboard_Key_visualInsetsLeft, mKeyboard.getDisplayHeight(), 0);
+            mVisualInsetsRight = KeyboardParser.getDimensionOrFraction(keyAttr,
+                    R.styleable.Keyboard_Key_visualInsetsRight, mKeyboard.getDisplayHeight(), 0);
             mPreviewIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_iconPreview);
             Keyboard.setDefaultBounds(mPreviewIcon);
             mIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_keyIcon);

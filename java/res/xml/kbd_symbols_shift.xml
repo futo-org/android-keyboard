@@ -89,6 +89,7 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="15%p"
+            latin:visualInsetsRight="2%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="™" />
@@ -110,6 +111,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="15%p"
+            latin:visualInsetsLeft="2%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include latin:keyboardLayout="@xml/kbd_symbols_shift_row4" />

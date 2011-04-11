@@ -142,6 +142,9 @@
         <attr name="shiftedIcon" format="reference" />
         <!-- The key is enabled and responds on press. -->
         <attr name="enabled" format="boolean" />
+        <!-- Visual insets -->
+        <attr name="visualInsetsLeft" format="dimension|fraction" />
+        <attr name="visualInsetsRight" format="dimension|fraction" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Row">
