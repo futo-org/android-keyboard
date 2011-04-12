@@ -51,7 +51,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="15%p"
-            latin:visualInsetsLeft="2%p"
+            latin:visualInsetsLeft="1%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>

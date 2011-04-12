@@ -27,7 +27,7 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="15%p"
-            latin:visualInsetsRight="2%p"
+            latin:visualInsetsRight="1%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="z"
@@ -50,7 +50,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="15%p"
-            latin:visualInsetsLeft="2%p"
+            latin:visualInsetsLeft="1%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>
