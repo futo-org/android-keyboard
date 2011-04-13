@@ -24,6 +24,7 @@
 <!-- Voice: af, cs, da, de, en, es, fr, it, ja, ko, nl, pl, pt, ru, tr, yue, zh, zu -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- TODO: use <lang>_mic icon instead of a common mic icon. -->
+<!-- TODO: remove all comment outed voice subtypes -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
      subtype.-->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
@@ -34,12 +35,12 @@
             android:imeSubtypeLocale="en_US"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_en_voice"
-            android:imeSubtypeLocale="en"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_en_voice" -->
+<!--             android:imeSubtypeLocale="en" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_en_GB_keyboard"
             android:imeSubtypeLocale="en_GB"
@@ -56,12 +57,12 @@
             android:imeSubtypeLocale="cs"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_cs_voice"
-            android:imeSubtypeLocale="cs"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_cs_voice" -->
+<!--             android:imeSubtypeLocale="cs" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_da_keyboard"
             android:imeSubtypeLocale="da"
@@ -73,34 +74,34 @@
             android:imeSubtypeMode="keyboard"
             android:imeSubtypeExtraValue="requiresGermanUmlautProcessing"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_de_voice"
-            android:imeSubtypeLocale="de"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_de_voice" -->
+<!--             android:imeSubtypeLocale="de" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_es_keyboard"
             android:imeSubtypeLocale="es"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_es_voice"
-            android:imeSubtypeLocale="es"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_es_voice" -->
+<!--             android:imeSubtypeLocale="es" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_fr_keyboard"
             android:imeSubtypeLocale="fr"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_fr_voice"
-            android:imeSubtypeLocale="fr"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_fr_voice" -->
+<!--             android:imeSubtypeLocale="fr" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_fr_CA_keyboard"
             android:imeSubtypeLocale="fr_CA"
@@ -123,12 +124,12 @@
             android:imeSubtypeLocale="iw"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_it_voice"
-            android:imeSubtypeLocale="it"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_it_voice" -->
+<!--             android:imeSubtypeLocale="it" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_nb_keyboard"
             android:imeSubtypeLocale="nb"
@@ -139,12 +140,12 @@
             android:imeSubtypeLocale="nl"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_nl_voice"
-            android:imeSubtypeLocale="nl"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_nl_voice" -->
+<!--             android:imeSubtypeLocale="nl" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_ru_keyboard"
             android:imeSubtypeLocale="ru"
@@ -160,64 +161,64 @@
             android:imeSubtypeLocale="sv"
             android:imeSubtypeMode="keyboard"
     />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_af_voice"
-            android:imeSubtypeLocale="af"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_ja_voice"
-            android:imeSubtypeLocale="ja"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_ko_voice"
-            android:imeSubtypeLocale="ko"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_pl_voice"
-            android:imeSubtypeLocale="pl"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_pt_voice"
-            android:imeSubtypeLocale="pt"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_ru_voice"
-            android:imeSubtypeLocale="ru"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_tr_voice"
-            android:imeSubtypeLocale="tr"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_yue_voice"
-            android:imeSubtypeLocale="yue"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_zh_voice"
-            android:imeSubtypeLocale="zh"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
-    <subtype android:icon="@drawable/ic_subtype_mic"
-            android:label="@string/subtype_mode_zu_voice"
-            android:imeSubtypeLocale="zu"
-            android:imeSubtypeMode="voice"
-            android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity"
-    />
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_af_voice" -->
+<!--             android:imeSubtypeLocale="af" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_ja_voice" -->
+<!--             android:imeSubtypeLocale="ja" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_ko_voice" -->
+<!--             android:imeSubtypeLocale="ko" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_pl_voice" -->
+<!--             android:imeSubtypeLocale="pl" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_pt_voice" -->
+<!--             android:imeSubtypeLocale="pt" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_ru_voice" -->
+<!--             android:imeSubtypeLocale="ru" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_tr_voice" -->
+<!--             android:imeSubtypeLocale="tr" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_yue_voice" -->
+<!--             android:imeSubtypeLocale="yue" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_zh_voice" -->
+<!--             android:imeSubtypeLocale="zh" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
+<!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
+<!--             android:label="@string/subtype_mode_zu_voice" -->
+<!--             android:imeSubtypeLocale="zu" -->
+<!--             android:imeSubtypeMode="voice" -->
+<!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
+<!--     /> -->
 </input-method>
