@@ -271,7 +271,7 @@ public class LatinKeyboard extends Keyboard {
             canvas.drawText(language, width / 2, baseline - descent, paint);
 
             // Put arrows that are already layed out on either side of the text
-            if (SubtypeSwitcher.getInstance().useSpacebarLanguageSwitcher()
+            if (subtypeSwitcher.useSpacebarLanguageSwitcher()
                     && subtypeSwitcher.getEnabledKeyboardLocaleCount() > 1) {
                 mButtonArrowLeftIcon.draw(canvas);
                 mButtonArrowRightIcon.draw(canvas);

@@ -58,9 +58,6 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
     public InputMethodSubtypeCompatWrapper(Object subtype) {
         super((CLASS_InputMethodSubtype != null && CLASS_InputMethodSubtype.isInstance(subtype))
                 ? subtype : null);
-        if (DBG) {
-            Log.d(TAG, "CreateInputMethodSubtypeCompatWrapper");
-        }
         mDummyNameResId = 0;
         mDummyIconResId = 0;
         mDummyLocale = DEFAULT_LOCALE;

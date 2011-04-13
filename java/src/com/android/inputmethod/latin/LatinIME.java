@@ -23,6 +23,7 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
+import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -379,6 +380,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
         AccessibilityUtils.init(this, prefs);
+        LanguageSwitcherProxy.init(this, prefs);
 
         super.onCreate();
 
@@ -516,6 +518,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.onConfigurationChanged(conf);
         mVoiceProxy.onConfigurationChanged(conf);
         mConfigurationChanging = false;
+
+        // This will work only when the subtype is not supported.
+        LanguageSwitcherProxy.onConfigurationChanged(conf);
     }
 
     @Override
@@ -1155,10 +1160,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             onSettingsKeyLongPressed();
             break;
         case Keyboard.CODE_NEXT_LANGUAGE:
-            toggleLanguage(false, true);
+            toggleLanguage(true);
             break;
         case Keyboard.CODE_PREV_LANGUAGE:
-            toggleLanguage(false, false);
+            toggleLanguage(false);
             break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
@@ -1930,23 +1935,23 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mWord.isFirstCharCapitalized();
     }
 
-    // Notify that language or mode have been changed and toggleLanguage will update KeyboaredID
+    // Notify that language or mode have been changed and toggleLanguage will update KeyboardID
     // according to new language or mode.
     public void onRefreshKeyboard() {
-        toggleLanguage(true, true);
-    }
-
-    // "reset" and "next" are used only for USE_SPACEBAR_LANGUAGE_SWITCHER.
-    private void toggleLanguage(boolean reset, boolean next) {
-        if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()) {
-            mSubtypeSwitcher.toggleLanguage(reset, next);
-        }
         // Reload keyboard because the current language has been changed.
         mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(),
                 mSubtypeSwitcher.isShortcutImeEnabled() && mVoiceProxy.isVoiceButtonEnabled(),
                 mVoiceProxy.isVoiceButtonOnPrimary());
         initSuggest();
         mKeyboardSwitcher.updateShiftState();
+    }
+
+    // "reset" and "next" are used only for USE_SPACEBAR_LANGUAGE_SWITCHER.
+    private void toggleLanguage(boolean next) {
+        if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()) {
+            mSubtypeSwitcher.toggleLanguage(next);
+        }
+        onRefreshKeyboard();// no need??
     }
 
     @Override
@@ -2134,7 +2139,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         updateCorrectionMode();
         updateAutoTextEnabled();
         updateSuggestionVisibility(prefs);
-        SubtypeSwitcher.getInstance().loadSettings();
+
+        // This will work only when the subtype is not supported.
+        LanguageSwitcherProxy.loadSettings();
     }
 
     /**
