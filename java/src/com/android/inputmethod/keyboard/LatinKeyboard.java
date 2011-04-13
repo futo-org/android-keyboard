@@ -229,7 +229,7 @@ public class LatinKeyboard extends Keyboard {
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
         final Resources res = mContext.getResources();
-        canvas.drawColor(res.getColor(R.color.latinkeyboard_transparent), PorterDuff.Mode.CLEAR);
+        canvas.drawColor(res.getColor(android.R.color.transparent), PorterDuff.Mode.CLEAR);
 
         SubtypeSwitcher subtypeSwitcher = SubtypeSwitcher.getInstance();
         // If application locales are explicitly selected.
@@ -271,7 +271,7 @@ public class LatinKeyboard extends Keyboard {
             canvas.drawText(language, width / 2, baseline - descent, paint);
 
             // Put arrows that are already layed out on either side of the text
-            if (SubtypeSwitcher.getInstance().useSpacebarLanguageSwitcher()
+            if (subtypeSwitcher.useSpacebarLanguageSwitcher()
                     && subtypeSwitcher.getEnabledKeyboardLocaleCount() > 1) {
                 mButtonArrowLeftIcon.draw(canvas);
                 mButtonArrowRightIcon.draw(canvas);

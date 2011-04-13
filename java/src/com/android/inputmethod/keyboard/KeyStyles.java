@@ -185,7 +185,7 @@ public class KeyStyles {
             readDrawable(keyAttr, R.styleable.Keyboard_Key_iconPreview);
             readDrawable(keyAttr, R.styleable.Keyboard_Key_keyHintIcon);
             readDrawable(keyAttr, R.styleable.Keyboard_Key_shiftedIcon);
-            readBoolean(keyAttr, R.styleable.Keyboard_Key_isModifier);
+            readBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_enabled);

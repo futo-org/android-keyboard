@@ -23,7 +23,7 @@
     android:layout_height="80sp"
     android:textSize="40sp"
     android:textColor="@color/latinkeyboard_key_color_white"
-    android:minWidth="24dip"
+    android:minWidth="32dip"
     android:gravity="center"
     android:background="@drawable/keyboard_key_feedback_honeycomb"
     />

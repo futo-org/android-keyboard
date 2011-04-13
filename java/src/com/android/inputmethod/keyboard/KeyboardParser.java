@@ -122,6 +122,7 @@ public class KeyboardParser {
     private final Keyboard mKeyboard;
     private final Resources mResources;
 
+    private int mHorizontalEdgesPadding;
     private int mCurrentX = 0;
     private int mCurrentY = 0;
     private int mMaxRowWidth = 0;
@@ -132,6 +133,7 @@ public class KeyboardParser {
     public KeyboardParser(Keyboard keyboard, Resources res) {
         mKeyboard = keyboard;
         mResources = res;
+        mHorizontalEdgesPadding = (int)res.getDimension(R.dimen.keyboard_horizontal_edges_padding);
     }
 
     public int getMaxRowWidth() {
@@ -151,6 +153,7 @@ public class KeyboardParser {
                 final String tag = parser.getName();
                 if (TAG_KEYBOARD.equals(tag)) {
                     parseKeyboardAttributes(parser);
+                    startKeyboard();
                     parseKeyboardContent(parser, mKeyboard.getKeys());
                     break;
                 } else {
@@ -520,25 +523,32 @@ public class KeyboardParser {
         throw new NonEmptyTag(tag, parser);
     }
 
+    private void startKeyboard() {
+        mCurrentY += (int)mResources.getDimension(R.dimen.keyboard_top_padding);
+    }
+
     private void startRow(Row row) {
         mCurrentX = 0;
+        setSpacer(mHorizontalEdgesPadding);
         mCurrentRow = row;
     }
 
     private void endRow() {
         if (mCurrentRow == null)
             throw new InflateException("orphant end row tag");
+        setSpacer(mHorizontalEdgesPadding);
+        if (mCurrentX > mMaxRowWidth)
+            mMaxRowWidth = mCurrentX;
         mCurrentY += mCurrentRow.mDefaultHeight;
         mCurrentRow = null;
     }
 
     private void endKey(Key key) {
         mCurrentX += key.mGap + key.mWidth;
-        if (mCurrentX > mMaxRowWidth)
-            mMaxRowWidth = mCurrentX;
     }
 
     private void endKeyboard(int defaultVerticalGap) {
+        mCurrentY += (int)mResources.getDimension(R.dimen.keyboard_bottom_padding);
         mTotalHeight = mCurrentY - defaultVerticalGap;
     }
 

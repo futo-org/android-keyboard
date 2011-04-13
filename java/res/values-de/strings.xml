@@ -40,11 +40,11 @@
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatisch"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Immer anzeigen"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Immer ausblenden"</string>
-    <string name="auto_correction" msgid="4979925752001319458">"Auto-Korrektur"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"Autokorrektur"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Korrektur fehlerhafter Wörter durch Leertaste und Satzzeichen"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Aus"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Mäßig"</string>
-    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Aggressiv"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Stark"</string>
     <string name="bigram_suggestion" msgid="1323347224043514969">"Bigramm-Vorschläge"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Zur Verbesserung des Vorschlags vorheriges Wort verwenden"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: gespeichert"</string>
@@ -94,7 +94,7 @@
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Aus"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Mikro auf Haupttastatur"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikro auf Symboltastatur"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Spracheing. deaktiviert"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Spracheingabe deaktiviert"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Eingabemethode auswählen"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Eingabesprachen"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Finger über die Leertaste bewegen, um die Eingabesprache zu wechseln"</string>
@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tippen Sie zum Korrigieren auf eingegebene Wörter (nur, wenn Vorschläge angezeigt werden)."</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Tastaturdesign"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tschechische Tastatur"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Arabische Tastatur"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Dänische Tastatur"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Deutsche Tastatur"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Englische Tastatur (GB)"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Französische Tastatur"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Französische Tastatur (Kanada)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Französische Tastatur (Schweiz)"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Hebräische Tastatur"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italienische Tastatur"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norwegische Tastatur"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Niederländische Tastatur"</string>

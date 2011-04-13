@@ -209,11 +209,11 @@ public class Utils {
                 return mCharBuf[mEnd];
             }
         }
-        public char getLastChar() {
-            if (mLength < 1) {
+        public char getBackwardNthChar(int n) {
+            if (mLength <= n || n < 0) {
                 return PLACEHOLDER_DELIMITER_CHAR;
             } else {
-                return mCharBuf[normalize(mEnd - 1)];
+                return mCharBuf[normalize(mEnd - n - 1)];
             }
         }
         public int getPreviousX(char c, int back) {
@@ -234,9 +234,16 @@ public class Utils {
                 return mYBuf[index];
             }
         }
-        public String getLastString() {
+        public String getLastWord(int ignoreCharCount) {
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < mLength; ++i) {
+            int i = ignoreCharCount;
+            for (; i < mLength; ++i) {
+                char c = mCharBuf[normalize(mEnd - 1 - i)];
+                if (!((LatinIME)mContext).isWordSeparator(c)) {
+                    break;
+                }
+            }
+            for (; i < mLength; ++i) {
                 char c = mCharBuf[normalize(mEnd - 1 - i)];
                 if (!((LatinIME)mContext).isWordSeparator(c)) {
                     sb.append(c);

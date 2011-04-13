@@ -20,24 +20,24 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/candidate_strip_height"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="horizontal"
     android:paddingRight="@dimen/candidate_padding"
 >
     <ImageView
         android:id="@+id/candidate_divider"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/candidate_strip_height"
+        android:layout_height="match_parent"
+        android:src="@drawable/keyboard_suggest_strip_divider"
         android:visibility="gone"
         android:focusable="false"
         android:clickable="false"
-        android:src="@drawable/keyboard_suggest_strip_divider"
         android:gravity="center_vertical|center_horizontal" />
     <Button
         android:id="@+id/candidate_word"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/candidate_strip_height"
+        android:layout_height="match_parent"
         android:minWidth="@dimen/candidate_min_width"
         android:textSize="@dimen/candidate_text_size"
         android:textColor="@color/candidate_normal"
@@ -49,12 +49,11 @@
     <TextView
         android:id="@+id/candidate_debug_info"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone"
         android:textSize="10dip"
         android:textColor="#ff808080"
         android:focusable="false"
         android:clickable="false"
-        android:gravity="bottom"
-        android:paddingLeft="4dip" />
+        android:gravity="bottom" />
 </LinearLayout>

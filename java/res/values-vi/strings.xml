@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Chạm các từ đã nhập để sửa, chỉ khi các đề xuất hiển thị"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Chủ đề bàn phím"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Bàn phím tiếng Séc"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Bàn phím tiếng Ả Rập"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Bàn phím tiếng Đan Mạch"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Bàn phím tiếng Đức"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Bàn phím tiếng Anh (Anh)"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Bàn phím tiếng Pháp"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Bàn phím tiếng Pháp (Canada)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Bàn phím tiếng Pháp (Thụy Sĩ)"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Bàn phím tiếng Do Thái"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Bàn phím tiếng Ý"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Bàn phím tiếng Na Uy"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Bàn phím tiếng Hà Lan"</string>

@@ -28,7 +28,7 @@
         >
             <key-style
                 latin:styleName="functionalKeyStyle"
-                latin:isModifier="true" />
+                latin:isFunctional="true" />
             <key-style
                 latin:styleName="shiftKeyStyle"
                 latin:code="@integer/key_shift"

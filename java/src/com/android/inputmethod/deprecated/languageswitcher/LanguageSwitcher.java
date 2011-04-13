@@ -14,10 +14,16 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.deprecated.languageswitcher;
+
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.Settings;
+import com.android.inputmethod.latin.SharedPreferencesCompat;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.res.Configuration;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
@@ -28,6 +34,8 @@ import java.util.Locale;
  * input language that the user has selected.
  */
 public class LanguageSwitcher {
+
+    private static final String KEYBOARD_MODE = "keyboard";
 
     private final ArrayList<Locale> mLocales = new ArrayList<Locale>();
     private final LatinIME mIme;
@@ -46,12 +54,24 @@ public class LanguageSwitcher {
         return mLocales.size();
     }
 
+    public void onConfigurationChanged(Configuration conf, SharedPreferences prefs) {
+        final Locale newLocale = conf.locale;
+        if (!getSystemLocale().toString().equals(newLocale.toString())) {
+            loadLocales(prefs, newLocale);
+        }
+    }
+
     /**
      * Loads the currently selected input languages from shared preferences.
-     * @param sp
+     * @param sp shared preference for getting the current input language and enabled languages
+     * @param systemLocale the current system locale, stored for changing the current input language
+     * based on the system current system locale.
      * @return whether there was any change
      */
-    public boolean loadLocales(SharedPreferences sp) {
+    public boolean loadLocales(SharedPreferences sp, Locale systemLocale) {
+        if (systemLocale != null) {
+            setSystemLocale(systemLocale);
+        }
         String selectedLanguages = sp.getString(Settings.PREF_SELECTED_LANGUAGES, null);
         String currentLanguage   = sp.getString(Settings.PREF_INPUT_LANGUAGE, null);
         if (selectedLanguages == null || selectedLanguages.length() < 1) {
@@ -151,7 +171,7 @@ public class LanguageSwitcher {
      * Sets the system locale (display UI) used for comparing with the input language.
      * @param locale the locale of the system
      */
-    public void setSystemLocale(Locale locale) {
+    private void setSystemLocale(Locale locale) {
         mSystemLocale = locale;
     }
 
@@ -159,7 +179,7 @@ public class LanguageSwitcher {
      * Returns the system locale.
      * @return the system locale
      */
-    public Locale getSystemLocale() {
+    private Locale getSystemLocale() {
         return mSystemLocale;
     }
 
@@ -185,9 +205,22 @@ public class LanguageSwitcher {
         mCurrentIndex = prevLocaleIndex();
     }
 
+    public void setLocale(String localeStr) {
+        final int N = mLocales.size();
+        for (int i = 0; i < N; ++i) {
+            if (mLocales.get(i).toString().equals(localeStr)) {
+                mCurrentIndex = i;
+            }
+        }
+    }
+
     public void persist(SharedPreferences prefs) {
         Editor editor = prefs.edit();
         editor.putString(Settings.PREF_INPUT_LANGUAGE, getInputLanguage());
         SharedPreferencesCompat.apply(editor);
+        // When the current language is changed, the event for this change should be handled
+        // internally as a subtype switching.
+        mIme.notifyOnCurrentInputMethodSubtypeChanged(new InputMethodSubtypeCompatWrapper(
+                0, 0, getInputLocale().toString(), KEYBOARD_MODE, ""));
     }
 }

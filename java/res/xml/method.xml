@@ -24,6 +24,7 @@
 <!-- Voice: af, cs, da, de, en, es, fr, it, ja, ko, nl, pl, pt, ru, tr, yue, zh, zu -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- TODO: use <lang>_mic icon instead of a common mic icon. -->
+<!-- TODO: remove all comment outed voice subtypes -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
      subtype.-->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"

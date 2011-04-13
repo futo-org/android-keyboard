@@ -165,7 +165,9 @@ public class Keyboard {
         GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
         GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
 
-        mDisplayWidth = width;
+        final int horizontalEdgesPadding = (int)res.getDimension(
+                R.dimen.keyboard_horizontal_edges_padding);
+        mDisplayWidth = width - horizontalEdgesPadding * 2;
         mDisplayHeight = height;
 
         mDefaultHorizontalGap = 0;
@@ -293,7 +295,7 @@ public class Keyboard {
     public boolean setShiftLocked(boolean newShiftLockState) {
         final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
         for (final Key key : getShiftKeys()) {
-            key.mOn = newShiftLockState;
+            key.mHighlightOn = newShiftLockState;
             key.setIcon(newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key));
         }
         mShiftState.setShiftLocked(newShiftLockState);

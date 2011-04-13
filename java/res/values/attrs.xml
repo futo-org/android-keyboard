@@ -107,8 +107,8 @@
             <!-- Key is anchored to the right of the keyboard. -->
             <flag name="right" value="2" />
         </attr>
-        <!-- Whether this is a modifier key such as Alt or Shift. -->
-        <attr name="isModifier" format="boolean" />
+        <!-- Whether this is a functional key which has different key top than normal key. -->
+        <attr name="isFunctional" format="boolean" />
         <!-- Whether this is a toggle key. -->
         <attr name="isSticky" format="boolean" />
         <!-- Whether long-pressing on this key will make it repeat. -->
@@ -142,6 +142,9 @@
         <attr name="shiftedIcon" format="reference" />
         <!-- The key is enabled and responds on press. -->
         <attr name="enabled" format="boolean" />
+        <!-- Visual insets -->
+        <attr name="visualInsetsLeft" format="dimension|fraction" />
+        <attr name="visualInsetsRight" format="dimension|fraction" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Row">

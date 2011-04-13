@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"輕觸輸入的字詞即可加以修正 (出現建議時才適用)"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"鍵盤主題"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"捷克文鍵盤"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"阿拉伯文鍵盤"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"丹麥文鍵盤"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"德文鍵盤"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"英文 (英國) 鍵盤"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"法文鍵盤"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"法文 (加拿大) 鍵盤"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"法文 (瑞士) 鍵盤"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"希伯來文鍵盤"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"義大利文鍵盤"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"挪威文鍵盤"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"荷蘭文鍵盤"</string>

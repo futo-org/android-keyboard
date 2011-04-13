@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"แตะคำที่ป้อนไว้เพื่อแก้ไข เฉพาะเมื่อเห็นข้อเสนอแนะเท่านั้น"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"ชุดรูปแบบแป้นพิมพ์"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"แป้นพิมพ์ภาษาเช็ก"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"แป้นพิมพ์ภาษาอาหรับ"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"แป้นพิมพ์ภาษาเดนมาร์ก"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"แป้นพิมพ์ภาษาเยอรมัน"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"แป้นพิมพ์ภาษาอังกฤษ (สหราชอาณาจักร)"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"แป้นพิมพ์ภาษาฝรั่งเศส"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"แป้นพิมพ์ภาษาฝรั่งเศส (แคนาดา)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"แป้นพิมพ์ภาษาฝรั่งเศส (สวิตเซอร์แลนด์)"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"แป้นพิมพ์ภาษาฮิบรู"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"แป้นพิมพ์ภาษาอิตาลี"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"แป้นพิมพ์ภาษานอร์เวย์"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"แป้นพิมพ์ภาษาดัตช์"</string>

@@ -27,6 +27,7 @@
     <dimen name="popup_key_height">0.270in</dimen>
     <dimen name="keyboard_top_padding">0.0in</dimen>
     <dimen name="keyboard_bottom_padding">0.0in</dimen>
+    <dimen name="keyboard_horizontal_edges_padding">0.0in</dimen>
     <dimen name="candidate_strip_height">38dip</dimen>
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
     <dimen name="spacebar_vertical_correction">2dip</dimen>

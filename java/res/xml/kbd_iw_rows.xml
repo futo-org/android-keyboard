@@ -48,11 +48,10 @@
             latin:keyLabel="ם" />
         <Key
             latin:keyLabel="פ" />
-        <Spacer
-            latin:horizontalGap="1.25%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="13.75%p"
+            latin:keyWidth="15%p"
+            latin:visualInsetsLeft="1%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>

@@ -28,7 +28,7 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Увеличение нажатых"</string>
     <string name="general_category" msgid="1859088467017573195">"Общие"</string>
     <string name="prediction_category" msgid="6361242011806282176">"Коррекция текста"</string>
-    <string name="auto_cap" msgid="1719746674854628252">"Автоподст. заглавных"</string>
+    <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Быстрое исправление"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Исправлять распространенные опечатки"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показать варианты исправлений"</string>
@@ -94,7 +94,7 @@
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Выкл."</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Значок на основной клавиатуре"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Значок на клавиатуре символов"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод отключен"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод откл."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Выбрать способ ввода"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Для изменения языка проведите пальцем по пробелу"</string>
@@ -106,6 +106,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Нажмите на слово, чтобы исправить его (при наличии подсказок)"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Вид клавиатуры"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Клавиатура: чешская"</string>
+    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Арабская клавиатура"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Клавиатура: датская"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Клавиатура: немецкая"</string>
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Клавиатура: английская (Великобритания)"</string>
@@ -115,6 +116,7 @@
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Клавиатура: французская"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Клавиатура: французская"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Клавиатура: французская (Швейцария)"</string>
+    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Клавиатура на иврите"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Клавиатура: итальянская"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Клавиатура: норвежская"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Клавиатура: голландская"</string>

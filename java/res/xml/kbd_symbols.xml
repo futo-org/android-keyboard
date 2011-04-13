@@ -100,6 +100,7 @@
         <Key
             latin:keyStyle="altKeyStyle"
             latin:keyWidth="15%p"
+            latin:visualInsetsRight="1%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="!"
@@ -122,6 +123,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="15%p"
+            latin:visualInsetsLeft="1%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include latin:keyboardLayout="@xml/kbd_symbols_row4" />

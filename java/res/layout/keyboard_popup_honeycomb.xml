@@ -19,20 +19,19 @@
 -->
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/keyboard_popup_panel_background_holo"
-        android:paddingLeft="24dip"
-        android:paddingRight="24dip"
+        android:paddingLeft="@dimen/mini_keyboard_horizontal_padding_holo"
+        android:paddingRight="@dimen/mini_keyboard_horizontal_padding_holo"
         >
     <com.android.inputmethod.keyboard.KeyboardView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
             android:id="@+id/KeyboardView"
             android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/latinkeyboard_transparent"
 
             latin:keyBackground="@drawable/btn_keyboard_key_honeycomb_popup"
             latin:keyHysteresisDistance="0dip"

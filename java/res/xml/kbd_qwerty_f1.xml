@@ -27,18 +27,14 @@
         >
             <Key
                 latin:keyLabel="/"
-                latin:keyHintIcon="@drawable/hint_popup"
-                latin:popupCharacters="@string/alternates_for_settings_slash"
-                latin:isModifier="true" />
+                latin:keyStyle="settingsPopupStyle" />
         </case>
         <case
             latin:mode="email"
         >
             <Key
                 latin:keyLabel="\@"
-                latin:keyHintIcon="@drawable/hint_popup"
-                latin:popupCharacters="@string/alternates_for_settings_at"
-                latin:isModifier="true" />
+                latin:keyStyle="settingsPopupStyle" />
         </case>
         <default>
             <switch>
@@ -48,15 +44,12 @@
                     <Key
                         latin:keyStyle="micKeyStyle" />
                 </case>
-                <case
-                    latin:hasVoiceKey="false"
-                >
+                <!-- latin:hasVoiceKey="false" -->
+                <default>
                     <Key
                         latin:keyLabel=","
-                        latin:keyHintIcon="@drawable/hint_popup"
-                        latin:popupCharacters="@string/alternates_for_settings_comma"
-                        latin:isModifier="true" />
-                </case>
+                        latin:keyStyle="settingsPopupStyle" />
+                </default>
             </switch>
         </default>
     </switch>

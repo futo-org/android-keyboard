@@ -22,7 +22,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/candidate_strip_height"
+    android:layout_height="wrap_content"
     android:background="@drawable/keyboard_suggest_strip_holo"
     android:paddingRight="@dimen/candidate_strip_padding"
     android:paddingLeft="@dimen/candidate_strip_padding"
@@ -30,7 +30,7 @@
     <HorizontalScrollView
         android:id="@+id/candidates_scroll_view"
         android:layout_width="wrap_content"
-        android:layout_height="@dimen/candidate_strip_height"
+        android:layout_height="wrap_content"
         android:fadingEdge="horizontal"
         android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
         android:scrollbars="none"

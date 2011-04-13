@@ -23,6 +23,7 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
+import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
@@ -30,7 +31,6 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
-import com.android.inputmethod.latin.Utils.RingCharBuffer;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -380,6 +380,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
         AccessibilityUtils.init(this, prefs);
+        LanguageSwitcherProxy.init(this, prefs);
 
         super.onCreate();
 
@@ -517,6 +518,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.onConfigurationChanged(conf);
         mVoiceProxy.onConfigurationChanged(conf);
         mConfigurationChanging = false;
+
+        // This will work only when the subtype is not supported.
+        LanguageSwitcherProxy.onConfigurationChanged(conf);
     }
 
     @Override
@@ -1156,10 +1160,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             onSettingsKeyLongPressed();
             break;
         case Keyboard.CODE_NEXT_LANGUAGE:
-            toggleLanguage(false, true);
+            toggleLanguage(true);
             break;
         case Keyboard.CODE_PREV_LANGUAGE:
-            toggleLanguage(false, false);
+            toggleLanguage(false);
             break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
@@ -1174,10 +1178,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (primaryCode != Keyboard.CODE_ENTER) {
                 mJustAddedAutoSpace = false;
             }
-            RingCharBuffer.getInstance().push((char)primaryCode, x, y);
-            LatinImeLogger.logOnInputChar();
             if (isWordSeparator(primaryCode)) {
-                handleSeparator(primaryCode);
+                handleSeparator(primaryCode, x, y);
             } else {
                 handleCharacter(primaryCode, keyCodes, x, y);
             }
@@ -1357,10 +1359,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         switcher.updateShiftState();
         if (LatinIME.PERF_DEBUG) measureCps();
-        TextEntryState.typedCharacter((char) code, isWordSeparator(code));
+        TextEntryState.typedCharacter((char) code, isWordSeparator(code), x, y);
     }
 
-    private void handleSeparator(int primaryCode) {
+    private void handleSeparator(int primaryCode, int x, int y) {
         mVoiceProxy.handleSeparator();
 
         // Should dismiss the "Touch again to save" message when handling separator
@@ -1381,7 +1383,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
             if (mAutoCorrectOn && primaryCode != '\'') {
-                pickedDefault = pickDefaultSuggestion();
+                pickedDefault = pickDefaultSuggestion(primaryCode);
                 // Picked the suggestion by the space key.  We consider this
                 // as "added an auto space".
                 if (primaryCode == Keyboard.CODE_SPACE) {
@@ -1403,7 +1405,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             reswapPeriodAndSpace();
         }
 
-        TextEntryState.typedCharacter((char) primaryCode, true);
+        TextEntryState.typedCharacter((char) primaryCode, true, x, y);
         if (TextEntryState.isPunctuationAfterAccepted() && primaryCode != Keyboard.CODE_ENTER) {
             swapPunctuationAndSpace();
         } else if (isSuggestionsRequested() && primaryCode == Keyboard.CODE_SPACE) {
@@ -1592,14 +1594,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setCandidatesViewShown(isCandidateStripVisible());
     }
 
-    private boolean pickDefaultSuggestion() {
+    private boolean pickDefaultSuggestion(int separatorCode) {
         // Complete any pending candidate query first
         if (mHandler.hasPendingUpdateSuggestions()) {
             mHandler.cancelUpdateSuggestions();
             updateSuggestions();
         }
         if (mBestWord != null && mBestWord.length() > 0) {
-            TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord);
+            TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord, separatorCode);
             mJustAccepted = true;
             pickSuggestion(mBestWord);
             // Add the word to the auto dictionary if it's not a known word
@@ -1688,7 +1690,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // Fool the state watcher so that a subsequent backspace will not do a revert, unless
             // we just did a correction, in which case we need to stay in
             // TextEntryState.State.PICKED_SUGGESTION state.
-            TextEntryState.typedCharacter((char) Keyboard.CODE_SPACE, true);
+            TextEntryState.typedCharacter((char) Keyboard.CODE_SPACE, true,
+                    WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
             setPunctuationSuggestions();
         } else if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
@@ -1895,7 +1898,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.commitText(mComposing, 1);
                 TextEntryState.acceptedTyped(mComposing);
                 ic.commitText(punctuation, 1);
-                TextEntryState.typedCharacter(punctuation.charAt(0), true);
+                TextEntryState.typedCharacter(punctuation.charAt(0), true,
+                        WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
                 // Clear composing text
                 mComposing.setLength(0);
             } else {
@@ -1931,23 +1935,23 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mWord.isFirstCharCapitalized();
     }
 
-    // Notify that language or mode have been changed and toggleLanguage will update KeyboaredID
+    // Notify that language or mode have been changed and toggleLanguage will update KeyboardID
     // according to new language or mode.
     public void onRefreshKeyboard() {
-        toggleLanguage(true, true);
-    }
-
-    // "reset" and "next" are used only for USE_SPACEBAR_LANGUAGE_SWITCHER.
-    private void toggleLanguage(boolean reset, boolean next) {
-        if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()) {
-            mSubtypeSwitcher.toggleLanguage(reset, next);
-        }
         // Reload keyboard because the current language has been changed.
         mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(),
                 mSubtypeSwitcher.isShortcutImeEnabled() && mVoiceProxy.isVoiceButtonEnabled(),
                 mVoiceProxy.isVoiceButtonOnPrimary());
         initSuggest();
         mKeyboardSwitcher.updateShiftState();
+    }
+
+    // "reset" and "next" are used only for USE_SPACEBAR_LANGUAGE_SWITCHER.
+    private void toggleLanguage(boolean next) {
+        if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()) {
+            mSubtypeSwitcher.toggleLanguage(next);
+        }
+        onRefreshKeyboard();// no need??
     }
 
     @Override
@@ -2135,7 +2139,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         updateCorrectionMode();
         updateAutoTextEnabled();
         updateSuggestionVisibility(prefs);
-        SubtypeSwitcher.getInstance().loadSettings();
+
+        // This will work only when the subtype is not supported.
+        LanguageSwitcherProxy.loadSettings();
     }
 
     /**
