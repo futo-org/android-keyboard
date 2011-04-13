@@ -51,8 +51,8 @@
         <Key
             latin:keyLabel="ح" />
         <Key
-            latin:keyLabel="چ"
-            latin:popupCharacters="ج"
+            latin:keyLabel="ج"
+            latin:popupCharacters="چ"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -65,7 +65,7 @@
             latin:keyLabel="س" />
         <Key
             latin:keyLabel="ي"
-            latin:popupCharacters="ئ,ى" />
+            latin:popupCharacters="ى,ئ" />
         <Key
             latin:keyLabel="ب"
             latin:popupCharacters="پ" />
@@ -74,7 +74,7 @@
             latin:popupCharacters="لا" />
         <Key
             latin:keyLabel="ا"
-            latin:popupCharacters="ء,آ,إ,أ" />
+            latin:popupCharacters="أ,إ,آ,ء" />
         <Key
             latin:keyLabel="ت" />
         <Key
