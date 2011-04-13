@@ -549,7 +549,6 @@ public class PointerTracker {
         final Key key = getKey(keyIndex);
         if (key != null && !key.mEnabled)
             return;
-        updateKeyGraphics(keyIndex);
         // The modifier key, such as shift key, should not be shown as preview when multi-touch is
         // supported. On the other hand, if multi-touch is not supported, the modifier key should
         // be shown as preview. If accessibility is turned on, the modifier key should be shown as
@@ -559,6 +558,7 @@ public class PointerTracker {
         } else {
             mProxy.showPreview(keyIndex, this);
         }
+        updateKeyGraphics(keyIndex);
     }
 
     private void startLongPressTimer(int keyIndex) {
