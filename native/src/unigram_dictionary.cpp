@@ -518,9 +518,12 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
     // TODO: Demote by edit distance
     int finalFreq = freq * matchWeight;
     if (skipPos >= 0) {
-        if (mInputLength >= 3) {
-            multiplyRate(WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE *
-                    (mInputLength - 2) / (mInputLength - 1), &finalFreq);
+        if (mInputLength >= 2) {
+            const int demotionRate = WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE
+                    * (10 * mInputLength - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X)
+                    / (10 * mInputLength
+                            - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X + 10);
+            multiplyRate(demotionRate, &finalFreq);
         } else {
             finalFreq = 0;
         }
