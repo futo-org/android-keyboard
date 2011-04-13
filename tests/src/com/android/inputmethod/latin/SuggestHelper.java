@@ -55,7 +55,7 @@ public class SuggestHelper {
         mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL);
         mKeyDetector.setKeyboard(mKeyboard, 0, 0);
         mKeyDetector.setProximityCorrectionEnabled(true);
-        mKeyDetector.setProximityThreshold(KeyDetector.getMostCommonKeyWidth(mKeyboard));
+        mKeyDetector.setProximityThreshold(mKeyboard.getMostCommonKeyWidth());
     }
 
     public void setCorrectionMode(int correctionMode) {

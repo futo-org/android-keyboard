@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 public abstract class KeyDetector {
@@ -110,31 +109,4 @@ public abstract class KeyDetector {
      * @return The nearest key index
      */
     abstract public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes);
-
-    /**
-     * Compute the most common key width in order to use it as proximity key detection threshold.
-     *
-     * @param keyboard The keyboard to compute the most common key width
-     * @return The most common key width in the keyboard
-     */
-    public static int getMostCommonKeyWidth(final Keyboard keyboard) {
-        if (keyboard == null) return 0;
-        final List<Key> keys = keyboard.getKeys();
-        if (keys == null || keys.size() == 0) return 0;
-        final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
-        int maxCount = 0;
-        int mostCommonWidth = 0;
-        for (final Key key : keys) {
-            final Integer width = key.mWidth + key.mGap;
-            Integer count = histogram.get(width);
-            if (count == null)
-                count = 0;
-            histogram.put(width, ++count);
-            if (count > maxCount) {
-                maxCount = count;
-                mostCommonWidth = width;
-            }
-        }
-        return mostCommonWidth + keyboard.getHorizontalGap();
-    }
 }

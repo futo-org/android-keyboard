@@ -501,7 +501,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         requestLayout();
         mKeyboardChanged = true;
         invalidateAllKeys();
-        mKeyDetector.setProximityThreshold(KeyDetector.getMostCommonKeyWidth(keyboard));
+        mKeyDetector.setProximityThreshold(keyboard.getMostCommonKeyWidth());
         mMiniKeyboardCache.clear();
     }
 

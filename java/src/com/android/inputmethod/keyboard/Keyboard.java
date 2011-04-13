@@ -405,6 +405,29 @@ public class Keyboard {
         return EMPTY_INT_ARRAY;
     }
 
+    /**
+     * Compute the most common key width in order to use it as proximity key detection threshold.
+     *
+     * @return The most common key width in the keyboard
+     */
+    public int getMostCommonKeyWidth() {
+        final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
+        int maxCount = 0;
+        int mostCommonWidth = 0;
+        for (final Key key : mKeys) {
+            final Integer width = key.mWidth + key.mGap;
+            Integer count = histogram.get(width);
+            if (count == null)
+                count = 0;
+            histogram.put(width, ++count);
+            if (count > maxCount) {
+                maxCount = count;
+                mostCommonWidth = width;
+            }
+        }
+        return mostCommonWidth;
+    }
+
     private void loadKeyboard(Context context, int xmlLayoutResId) {
         try {
             KeyboardParser parser = new KeyboardParser(this, context.getResources());
