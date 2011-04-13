@@ -21,25 +21,33 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
+    android:gravity="bottom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/keyboard_suggest_strip_holo"
-    android:paddingRight="@dimen/candidate_strip_padding"
-    android:paddingLeft="@dimen/candidate_strip_padding"
+    android:minHeight="@dimen/candidate_strip_minimum_height"
 >
-    <HorizontalScrollView
-        android:id="@+id/candidates_scroll_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fadingEdge="horizontal"
-        android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
-        android:scrollbars="none"
+    <!-- On tablets, the candidate strip is centered with horizontal paddings on both sides because
+         width of the landscape mode is too long for the candidate strip. This LinearLayout is
+         required to hold the paddings. -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/candidate_strip_height"
+        android:background="@drawable/keyboard_suggest_strip_holo"
+        android:paddingRight="@dimen/candidate_strip_padding"
+        android:paddingLeft="@dimen/candidate_strip_padding"
     >
-        <com.android.inputmethod.latin.CandidateView
-            android:id="@+id/candidates"
-            android:orientation="horizontal"
+        <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/candidate_strip_height"
-            android:background="@drawable/keyboard_suggest_strip_holo" />
-    </HorizontalScrollView>
+            android:layout_height="match_parent"
+            android:fadingEdge="horizontal"
+            android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
+            android:scrollbars="none"
+        >
+            <com.android.inputmethod.latin.CandidateView
+                android:id="@+id/candidates"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </HorizontalScrollView>
+    </LinearLayout>
 </LinearLayout>
