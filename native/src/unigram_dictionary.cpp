@@ -523,6 +523,9 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
                     * (10 * mInputLength - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X)
                     / (10 * mInputLength
                             - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X + 10);
+            if (DEBUG_DICT) {
+                LOGI("Demotion rate for missing character is %d.", demotionRate);
+            }
             multiplyRate(demotionRate, &finalFreq);
         } else {
             finalFreq = 0;
@@ -539,6 +542,7 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
     int lengthFreq = TYPED_LETTER_MULTIPLIER;
     for (int i = 0; i < depth; ++i) lengthFreq *= TYPED_LETTER_MULTIPLIER;
     if (lengthFreq == matchWeight) {
+        // Full exact match
         if (depth > 1) {
             if (DEBUG_DICT) {
                 LOGI("Found full matched word.");
@@ -548,6 +552,13 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
         if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0) {
             finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
+    } else if (lengthFreq / 2 == matchWeight && transposedPos < 0 && skipPos < 0
+            && excessivePos < 0 && depth > 1) {
+        // Full match except only one proximity correction
+        if (DEBUG_DICT) {
+            LOGI("Found one proximity correction.");
+        }
+        multiplyRate(WORDS_WITH_JUST_ONE_PROXIMITY_CHARACTER_PROMOTION_RATE, &finalFreq);
     }
     if (sameLength) finalFreq *= FULL_WORD_MULTIPLIER;
     return finalFreq;
