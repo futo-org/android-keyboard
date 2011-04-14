@@ -47,6 +47,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -908,10 +909,18 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         if (mPreviewText.getParent() == null) {
             final FrameLayout screenContent = (FrameLayout) getRootView()
                     .findViewById(android.R.id.content);
-            screenContent.addView(mPreviewText, new FrameLayout.LayoutParams(0, 0));
+            if (android.os.Build.VERSION.SDK_INT >= /* HONEYCOMB */ 11) {
+                screenContent.addView(mPreviewText, new FrameLayout.LayoutParams(0, 0));
+            } else {
+                // Insert LinearLayout to be able to setMargin because pre-Honeycomb FrameLayout
+                // could not handle setMargin properly.
+                final LinearLayout placer = new LinearLayout(getContext());
+                screenContent.addView(placer);
+                placer.addView(mPreviewText, new LinearLayout.LayoutParams(0, 0));
+            }
         }
 
-        Key key = tracker.getKey(keyIndex);
+        final Key key = tracker.getKey(keyIndex);
         // If keyIndex is invalid or IME is already closed, we must not show key preview.
         // Trying to show preview PopupWindow while root window is closed causes
         // WindowManager.BadTokenException.
@@ -943,10 +952,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 + mPreviewText.getPaddingLeft() + mPreviewText.getPaddingRight());
         final int popupHeight = mPreviewHeight;
         final ViewGroup.LayoutParams lp = mPreviewText.getLayoutParams();
-        if (lp != null) {
-            lp.width = popupWidth;
-            lp.height = popupHeight;
-        }
+        lp.width = popupWidth;
+        lp.height = popupHeight;
 
         int popupPreviewX = keyDrawX - (popupWidth - keyDrawWidth) / 2;
         int popupPreviewY = key.mY - popupHeight + mPreviewOffset;
