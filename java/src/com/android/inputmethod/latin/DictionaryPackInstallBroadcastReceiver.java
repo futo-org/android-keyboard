@@ -30,6 +30,11 @@ import android.net.Uri;
 public class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
 
     final LatinIME mService;
+    /**
+     * The action of the intent for publishing that new dictionary data is available.
+     */
+    /* package */ static final String NEW_DICTIONARY_INTENT_ACTION =
+            "com.android.inputmethod.latin.dictionarypack.newdict";
 
     public DictionaryPackInstallBroadcastReceiver(final LatinIME service) {
         mService = service;
@@ -76,6 +81,8 @@ public class DictionaryPackInstallBroadcastReceiver extends BroadcastReceiver {
 
             // TODO: Only reload dictionary on REMOVED when the removed package is the one we
             // read dictionary from?
+            mService.resetSuggestMainDict();
+        } else if (action.equals(NEW_DICTIONARY_INTENT_ACTION)) {
             mService.resetSuggestMainDict();
         }
     }
