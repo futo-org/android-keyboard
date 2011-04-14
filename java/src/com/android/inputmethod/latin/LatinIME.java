@@ -375,10 +375,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
+        LanguageSwitcherProxy.init(this, prefs);
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
         AccessibilityUtils.init(this, prefs);
-        LanguageSwitcherProxy.init(this, prefs);
 
         super.onCreate();
 

@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.compat;
 
+import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import android.inputmethodservice.InputMethodService;
@@ -51,6 +52,9 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
             subtype = mImm.getCurrentInputMethodSubtype();
         }
         if (subtype != null) {
+            if (!InputMethodManagerCompatWrapper.SUBTYPE_SUPPORTED) {
+                LanguageSwitcherProxy.getInstance().setLocale(subtype.getLocale());
+            }
             SubtypeSwitcher.getInstance().updateSubtype(subtype);
         }
     }
