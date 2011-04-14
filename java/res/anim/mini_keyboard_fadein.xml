@@ -25,5 +25,5 @@
     <alpha
         android:fromAlpha="0.5"
         android:toAlpha="1.0"
-        android:duration="@integer/config_preview_fadein_anim_time" />
+        android:duration="@integer/config_mini_keyboard_fadein_anim_time" />
 </set>

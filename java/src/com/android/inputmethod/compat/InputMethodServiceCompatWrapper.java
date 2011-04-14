@@ -16,23 +16,13 @@
 
 package com.android.inputmethod.compat;
 
+import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import android.inputmethodservice.InputMethodService;
-import android.view.View;
 // import android.view.inputmethod.InputMethodSubtype;
-import android.widget.HorizontalScrollView;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 public class InputMethodServiceCompatWrapper extends InputMethodService {
-    private static final Method METHOD_HorizontalScrollView_setOverScrollMode =
-            CompatUtils.getMethod(HorizontalScrollView.class, "setOverScrollMode", int.class);
-    private static final Field FIELD_View_OVER_SCROLL_NEVER =
-            CompatUtils.getField(View.class, "OVER_SCROLL_NEVER");
-    private static final Integer View_OVER_SCROLL_NEVER =
-            (Integer)CompatUtils.getFieldValue(null, null, FIELD_View_OVER_SCROLL_NEVER);
     // CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED needs to be false if the API level is 10
     // or previous. Note that InputMethodSubtype was added in the API level 11.
     // For the API level 11 or later, LatinIME should override onCurrentInputMethodSubtypeChanged().
@@ -62,14 +52,10 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
             subtype = mImm.getCurrentInputMethodSubtype();
         }
         if (subtype != null) {
+            if (!InputMethodManagerCompatWrapper.SUBTYPE_SUPPORTED) {
+                LanguageSwitcherProxy.getInstance().setLocale(subtype.getLocale());
+            }
             SubtypeSwitcher.getInstance().updateSubtype(subtype);
-        }
-    }
-
-    protected static void setOverScrollModeNever(HorizontalScrollView scrollView) {
-        if (View_OVER_SCROLL_NEVER != null) {
-            CompatUtils.invoke(scrollView, null, METHOD_HorizontalScrollView_setOverScrollMode,
-                    View_OVER_SCROLL_NEVER);
         }
     }
 

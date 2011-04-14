@@ -57,7 +57,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
-import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -71,8 +70,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
-import android.widget.FrameLayout;
-import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
 import java.io.FileDescriptor;
@@ -144,6 +141,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     };
 
     private View mCandidateViewContainer;
+    private int mCandidateStripHeight;
     private CandidateView mCandidateView;
     private Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
@@ -377,10 +375,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
+        LanguageSwitcherProxy.init(this, prefs);
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
         AccessibilityUtils.init(this, prefs);
-        LanguageSwitcherProxy.init(this, prefs);
 
         super.onCreate();
 
@@ -533,12 +531,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LayoutInflater inflater = getLayoutInflater();
         LinearLayout container = (LinearLayout)inflater.inflate(R.layout.candidates, null);
         mCandidateViewContainer = container;
-        if (container.getPaddingRight() != 0) {
-            HorizontalScrollView scrollView =
-                    (HorizontalScrollView) container.findViewById(R.id.candidates_scroll_view);
-            setOverScrollModeNever(scrollView);
-            container.setGravity(Gravity.CENTER_HORIZONTAL);
-        }
+        mCandidateStripHeight = (int)mResources.getDimension(R.dimen.candidate_strip_height);
         mCandidateView = (CandidateView) container.findViewById(R.id.candidates);
         mCandidateView.setService(this);
         setCandidatesViewShown(true);
@@ -586,8 +579,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             switcher.updateShiftState();
         }
 
-        setCandidatesViewShownInternal(isCandidateStripVisible(),
-                false /* needsInputViewShown */ );
+        setCandidatesViewShownInternal(isCandidateStripVisible(), false /* needsInputViewShown */ );
         // Delay updating suggestions because keyboard input view may not be shown at this point.
         mHandler.postUpdateSuggestions();
 
@@ -877,10 +869,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void setCandidatesViewShownInternal(boolean shown, boolean needsInputViewShown) {
-        // TODO: Remove this if we support candidates with hard keyboard
+        // TODO: Modify this if we support candidates with hard keyboard
         if (onEvaluateInputViewShown()) {
-            super.setCandidatesViewShown(shown
-                    && (needsInputViewShown ? mKeyboardSwitcher.isInputViewShown() : true));
+            final boolean shouldShowCandidates = shown
+                    && (needsInputViewShown ? mKeyboardSwitcher.isInputViewShown() : true);
+            if (isExtractViewShown()) {
+                // No need to have extra space to show the key preview.
+                mCandidateViewContainer.setMinimumHeight(0);
+                super.setCandidatesViewShown(shown);
+            } else {
+                // We must control the visibility of the suggestion strip in order to avoid clipped
+                // key previews, even when we don't show the suggestion strip.
+                mCandidateViewContainer.setVisibility(
+                        shouldShowCandidates ? View.VISIBLE : View.INVISIBLE);
+                super.setCandidatesViewShown(true);
+            }
         }
     }
 
@@ -892,35 +895,25 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onComputeInsets(InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
-        if (!isFullscreenMode()) {
-            outInsets.contentTopInsets = outInsets.visibleTopInsets;
-        }
-        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        final KeyboardView inputView = mKeyboardSwitcher.getInputView();
         // Need to set touchable region only if input view is being shown
         if (inputView != null && mKeyboardSwitcher.isInputViewShown()) {
-            final int x = 0;
-            int y = 0;
-            final int width = inputView.getWidth();
-            int height = inputView.getHeight() + EXTENDED_TOUCHABLE_REGION_HEIGHT;
-            if (mCandidateViewContainer != null) {
-                ViewParent candidateParent = mCandidateViewContainer.getParent();
-                if (candidateParent instanceof FrameLayout) {
-                    FrameLayout fl = (FrameLayout) candidateParent;
-                    if (fl != null) {
-                        // Check frame layout's visibility
-                        if (fl.getVisibility() == View.INVISIBLE) {
-                            y = fl.getHeight();
-                            height += y;
-                        } else if (fl.getVisibility() == View.VISIBLE) {
-                            height += fl.getHeight();
-                        }
-                    }
-                }
+            final int containerHeight = mCandidateViewContainer.getHeight();
+            int touchY = containerHeight;
+            if (mCandidateViewContainer.getVisibility() == View.VISIBLE) {
+                touchY -= mCandidateStripHeight;
             }
+            outInsets.contentTopInsets = touchY;
+            outInsets.visibleTopInsets = touchY;
+            final int touchWidth = inputView.getWidth();
+            final int touchHeight = inputView.getHeight() + containerHeight
+                    // Extend touchable region below the keyboard.
+                    + EXTENDED_TOUCHABLE_REGION_HEIGHT;
             if (DEBUG) {
-                Log.d(TAG, "Touchable region " + x + ", " + y + ", " + width + ", " + height);
+                Log.d(TAG, "Touchable region: y=" + touchY + " width=" + touchWidth
+                        + " height=" + touchHeight);
             }
-            setTouchableRegionCompat(outInsets, x, y, width, height);
+            setTouchableRegionCompat(outInsets, 0, touchY, touchWidth, touchHeight);
         }
     }
 

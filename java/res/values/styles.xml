@@ -35,10 +35,6 @@
         <item name="backgroundDimAmount">0.5</item>
         <item name="colorScheme">white</item>
     </style>
-    <style name="KeyPreviewAnimation">
-        <item name="android:windowEnterAnimation">@anim/key_preview_fadein</item>
-        <item name="android:windowExitAnimation">@anim/key_preview_fadeout</item>
-    </style>
     <style name="MiniKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>
         <item name="android:windowExitAnimation">@anim/mini_keyboard_fadeout</item>

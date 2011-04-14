@@ -19,6 +19,7 @@ package com.android.inputmethod.deprecated;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.deprecated.languageswitcher.LanguageSwitcher;
 import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.Settings;
 
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -26,7 +27,7 @@ import android.content.res.Configuration;
 import java.util.Locale;
 
 // This class is used only when the IME doesn't use method.xml for language switching.
-public class LanguageSwitcherProxy {
+public class LanguageSwitcherProxy implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final LanguageSwitcherProxy sInstance = new LanguageSwitcherProxy();
     private LanguageSwitcher mLanguageSwitcher;
     private SharedPreferences mPrefs;
@@ -42,6 +43,7 @@ public class LanguageSwitcherProxy {
         sInstance.mLanguageSwitcher = new LanguageSwitcher(service);
         sInstance.mLanguageSwitcher.loadLocales(prefs, conf.locale);
         sInstance.mPrefs = prefs;
+        prefs.registerOnSharedPreferenceChangeListener(sInstance);
     }
 
     public static void onConfigurationChanged(Configuration conf) {
@@ -58,8 +60,8 @@ public class LanguageSwitcherProxy {
         return mLanguageSwitcher.getLocaleCount();
     }
 
-    public String[] getEnabledLanguages() {
-        return mLanguageSwitcher.getEnabledLanguages();
+    public String[] getEnabledLanguages(boolean allowImplicitlySelectedLanguages) {
+        return mLanguageSwitcher.getEnabledLanguages(allowImplicitlySelectedLanguages);
     }
 
     public Locale getInputLocale() {
@@ -69,5 +71,15 @@ public class LanguageSwitcherProxy {
     public void setLocale(String localeStr) {
         mLanguageSwitcher.setLocale(localeStr);
         mLanguageSwitcher.persist(mPrefs);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        // PREF_SELECTED_LANGUAGES: enabled input subtypes
+        // PREF_INPUT_LANGUAGE: current input subtype
+        if (key.equals(Settings.PREF_SELECTED_LANGUAGES)
+                || key.equals(Settings.PREF_INPUT_LANGUAGE)) {
+            mLanguageSwitcher.loadLocales(prefs, null);
+        }
     }
 }

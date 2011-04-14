@@ -133,7 +133,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
-        mPreviewPopup.setAnimationStyle(R.style.KeyPreviewAnimation);
         mConfigCandidateHighlightFontColorEnabled =
                 res.getBoolean(R.bool.config_candidate_highlight_font_color_enabled);
         mColorNormal = res.getColor(R.color.candidate_normal);

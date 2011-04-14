@@ -107,7 +107,8 @@ public class InputMethodManagerCompatWrapper {
     public List<InputMethodSubtypeCompatWrapper> getEnabledInputMethodSubtypeList(
             InputMethodInfoCompatWrapper imi, boolean allowsImplicitlySelectedSubtypes) {
         if (!SUBTYPE_SUPPORTED) {
-            String[] languages = mLanguageSwitcherProxy.getEnabledLanguages();
+            String[] languages = mLanguageSwitcherProxy.getEnabledLanguages(
+                    allowsImplicitlySelectedSubtypes);
             List<InputMethodSubtypeCompatWrapper> subtypeList =
                     new ArrayList<InputMethodSubtypeCompatWrapper>();
             for (String lang: languages) {
@@ -195,10 +196,6 @@ public class InputMethodManagerCompatWrapper {
 
     public void setInputMethodAndSubtype(
             IBinder token, String id, InputMethodSubtypeCompatWrapper subtype) {
-        if (!SUBTYPE_SUPPORTED) {
-            mLanguageSwitcherProxy.setLocale(subtype.getLocale());
-            return;
-        }
         CompatUtils.invoke(mImm, null, METHOD_setInputMethodAndSubtype,
                 token, id, subtype.getOriginalObject());
     }
