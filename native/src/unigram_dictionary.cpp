@@ -552,13 +552,13 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
         if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0) {
             finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
-    } else if (lengthFreq / 2 == matchWeight && transposedPos < 0 && skipPos < 0
-            && excessivePos < 0 && depth > 1) {
-        // Full match except only one proximity correction
+    } else if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0 && depth > 1) {
+        // A word with proximity corrections
         if (DEBUG_DICT) {
             LOGI("Found one proximity correction.");
         }
-        multiplyRate(WORDS_WITH_JUST_ONE_PROXIMITY_CHARACTER_PROMOTION_RATE, &finalFreq);
+        finalFreq *= 2;
+        multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
     }
     if (sameLength) finalFreq *= FULL_WORD_MULTIPLIER;
     return finalFreq;
