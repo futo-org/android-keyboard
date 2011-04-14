@@ -30,7 +30,7 @@
 >
     <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/candidate_strip_height"
+        android:layout_height="wrap_content"
         android:background="@drawable/keyboard_suggest_strip"
         android:fadingEdge="horizontal"
         android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
@@ -39,6 +39,7 @@
         <com.android.inputmethod.latin.CandidateView
             android:id="@+id/candidates"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="@dimen/candidate_strip_height"
+            android:gravity="center_vertical" />
     </HorizontalScrollView>
 </LinearLayout>
