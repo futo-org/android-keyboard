@@ -440,6 +440,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         packageFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         packageFilter.addDataScheme(SCHEME_PACKAGE);
         registerReceiver(mDictionaryPackInstallReceiver, packageFilter);
+
+        final IntentFilter newDictFilter = new IntentFilter();
+        newDictFilter.addAction(
+                DictionaryPackInstallBroadcastReceiver.NEW_DICTIONARY_INTENT_ACTION);
+        registerReceiver(mDictionaryPackInstallReceiver, newDictFilter);
     }
 
     private void initSuggest() {

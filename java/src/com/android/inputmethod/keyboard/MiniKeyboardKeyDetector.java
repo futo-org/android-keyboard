@@ -16,9 +16,9 @@
 
 package com.android.inputmethod.keyboard;
 
-public class MiniKeyboardKeyDetector extends KeyDetector {
-    private static final int MAX_NEARBY_KEYS = 1;
+import java.util.List;
 
+public class MiniKeyboardKeyDetector extends KeyDetector {
     private final int mSlideAllowanceSquare;
     private final int mSlideAllowanceSquareTop;
 
@@ -31,20 +31,21 @@ public class MiniKeyboardKeyDetector extends KeyDetector {
 
     @Override
     protected int getMaxNearbyKeys() {
-        return MAX_NEARBY_KEYS;
+        // No nearby key will be returned.
+        return 1;
     }
 
     @Override
     public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
-        final Key[] keys = getKeys();
+        final List<Key> keys = getKeys();
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 
         int nearestIndex = NOT_A_KEY;
         int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
-        final int keyCount = keys.length;
+        final int keyCount = keys.size();
         for (int index = 0; index < keyCount; index++) {
-            final int dist = keys[index].squaredDistanceToEdge(touchX, touchY);
+            final int dist = keys.get(index).squaredDistanceToEdge(touchX, touchY);
             if (dist < nearestDist) {
                 nearestIndex = index;
                 nearestDist = dist;
@@ -52,7 +53,7 @@ public class MiniKeyboardKeyDetector extends KeyDetector {
         }
 
         if (allCodes != null && nearestIndex != NOT_A_KEY)
-            allCodes[0] = keys[nearestIndex].mCode;
+            allCodes[0] = keys.get(nearestIndex).mCode;
         return nearestIndex;
     }
 }

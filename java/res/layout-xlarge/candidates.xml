@@ -32,14 +32,14 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/candidate_strip_height"
+        android:layout_height="wrap_content"
         android:background="@drawable/keyboard_suggest_strip_holo"
         android:paddingRight="@dimen/candidate_strip_padding"
         android:paddingLeft="@dimen/candidate_strip_padding"
     >
         <HorizontalScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:fadingEdge="horizontal"
             android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
             android:scrollbars="none"
@@ -47,7 +47,8 @@
             <com.android.inputmethod.latin.CandidateView
                 android:id="@+id/candidates"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="@dimen/candidate_strip_height"
+                android:gravity="center_vertical" />
         </HorizontalScrollView>
     </LinearLayout>
 </LinearLayout>

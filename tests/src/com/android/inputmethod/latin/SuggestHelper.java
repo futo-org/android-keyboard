@@ -20,7 +20,6 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.LatinKeyboard;
-import com.android.inputmethod.keyboard.ProximityKeyDetector;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -38,7 +37,7 @@ public class SuggestHelper {
         // (and not try to find a dictionary provider for a specified locale)
         mSuggest = new Suggest(context, dictionaryId, null);
         mKeyboard = new LatinKeyboard(context, keyboardId);
-        mKeyDetector = new ProximityKeyDetector();
+        mKeyDetector = new KeyDetector();
         init();
     }
 
@@ -46,7 +45,7 @@ public class SuggestHelper {
             KeyboardId keyboardId) {
         mSuggest = new Suggest(dictionaryPath, startOffset, length, null);
         mKeyboard = new LatinKeyboard(context, keyboardId);
-        mKeyDetector = new ProximityKeyDetector();
+        mKeyDetector = new KeyDetector();
         init();
     }
 
@@ -55,7 +54,7 @@ public class SuggestHelper {
         mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL);
         mKeyDetector.setKeyboard(mKeyboard, 0, 0);
         mKeyDetector.setProximityCorrectionEnabled(true);
-        mKeyDetector.setProximityThreshold(KeyDetector.getMostCommonKeyWidth(mKeyboard));
+        mKeyDetector.setProximityThreshold(mKeyboard.getMostCommonKeyWidth());
     }
 
     public void setCorrectionMode(int correctionMode) {
