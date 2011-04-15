@@ -76,4 +76,6 @@
              will be subject to auto-correction. -->
         <item>0</item>
     </string-array>
+    <!--  Screen metrics for logging. 0 = "mdpi", 1 = "hdpi", 2 = "xlarge" -->
+    <integer name="log_screen_metrics">0</integer>
 </resources>
