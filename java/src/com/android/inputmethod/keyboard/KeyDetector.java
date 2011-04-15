@@ -135,6 +135,6 @@ public abstract class KeyDetector {
                 mostCommonWidth = width;
             }
         }
-        return mostCommonWidth;
+        return mostCommonWidth + keyboard.getHorizontalGap();
     }
 }
