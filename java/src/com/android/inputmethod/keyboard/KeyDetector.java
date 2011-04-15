@@ -16,35 +16,35 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.util.Log;
+
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class KeyDetector {
-    public static final int NOT_A_KEY = -1;
+public class KeyDetector {
+    private static final String TAG = KeyDetector.class.getSimpleName();
+    private static final boolean DEBUG = false;
+
     public static final int NOT_A_CODE = -1;
+    public static final int NOT_A_KEY = -1;
 
-    protected Keyboard mKeyboard;
+    private Keyboard mKeyboard;
+    private int mCorrectionX;
+    private int mCorrectionY;
+    private boolean mProximityCorrectOn;
+    private int mProximityThresholdSquare;
 
-    private Key[] mKeys;
+    // working area
+    private static final int MAX_NEARBY_KEYS = 12;
+    private final int[] mDistances = new int[MAX_NEARBY_KEYS];
+    private final int[] mIndices = new int[MAX_NEARBY_KEYS];
 
-    protected int mCorrectionX;
-
-    protected int mCorrectionY;
-
-    protected boolean mProximityCorrectOn;
-
-    protected int mProximityThresholdSquare;
-
-    public Key[] setKeyboard(Keyboard keyboard, float correctionX, float correctionY) {
+    public void setKeyboard(Keyboard keyboard, float correctionX, float correctionY) {
         if (keyboard == null)
             throw new NullPointerException();
         mCorrectionX = (int)correctionX;
         mCorrectionY = (int)correctionY;
         mKeyboard = keyboard;
-        List<Key> keys = mKeyboard.getKeys();
-        Key[] array = keys.toArray(new Key[keys.size()]);
-        mKeys = array;
-        return array;
     }
 
     protected int getTouchX(int x) {
@@ -55,11 +55,11 @@ public abstract class KeyDetector {
         return y + mCorrectionY;
     }
 
-    protected Key[] getKeys() {
-        if (mKeys == null)
+    protected List<Key> getKeys() {
+        if (mKeyboard == null)
             throw new IllegalStateException("keyboard isn't set");
         // mKeyboard is guaranteed not to be null at setKeybaord() method if mKeys is not null
-        return mKeys;
+        return mKeyboard.getKeys();
     }
 
     public void setProximityCorrectionEnabled(boolean enabled) {
@@ -72,6 +72,17 @@ public abstract class KeyDetector {
 
     public void setProximityThreshold(int threshold) {
         mProximityThresholdSquare = threshold * threshold;
+    }
+
+    /**
+     * Computes maximum size of the array that can contain all nearby key indices returned by
+     * {@link #getKeyIndexAndNearbyCodes}.
+     *
+     * @return Returns maximum size of the array that can contain all nearby key indices returned
+     *         by {@link #getKeyIndexAndNearbyCodes}.
+     */
+    protected int getMaxNearbyKeys() {
+        return MAX_NEARBY_KEYS;
     }
 
     /**
@@ -88,14 +99,60 @@ public abstract class KeyDetector {
         return codes;
     }
 
+    private void initializeNearbyKeys() {
+        Arrays.fill(mDistances, Integer.MAX_VALUE);
+        Arrays.fill(mIndices, NOT_A_KEY);
+    }
+
     /**
-     * Computes maximum size of the array that can contain all nearby key indices returned by
-     * {@link #getKeyIndexAndNearbyCodes}.
+     * Insert the key into nearby keys buffer and sort nearby keys by ascending order of distance.
      *
-     * @return Returns maximum size of the array that can contain all nearby key indices returned
-     *         by {@link #getKeyIndexAndNearbyCodes}.
+     * @param keyIndex index of the key.
+     * @param distance distance between the key's edge and user touched point.
+     * @return order of the key in the nearby buffer, 0 if it is the nearest key.
      */
-    abstract protected int getMaxNearbyKeys();
+    private int sortNearbyKeys(int keyIndex, int distance) {
+        final int[] distances = mDistances;
+        final int[] indices = mIndices;
+        for (int insertPos = 0; insertPos < distances.length; insertPos++) {
+            if (distance < distances[insertPos]) {
+                final int nextPos = insertPos + 1;
+                if (nextPos < distances.length) {
+                    System.arraycopy(distances, insertPos, distances, nextPos,
+                            distances.length - nextPos);
+                    System.arraycopy(indices, insertPos, indices, nextPos,
+                            indices.length - nextPos);
+                }
+                distances[insertPos] = distance;
+                indices[insertPos] = keyIndex;
+                return insertPos;
+            }
+        }
+        return distances.length;
+    }
+
+    private void getNearbyKeyCodes(final int[] allCodes) {
+        final List<Key> keys = getKeys();
+        final int[] indices = mIndices;
+
+        // allCodes[0] should always have the key code even if it is a non-letter key.
+        if (indices[0] == NOT_A_KEY) {
+            allCodes[0] = NOT_A_CODE;
+            return;
+        }
+
+        int numCodes = 0;
+        for (int j = 0; j < indices.length && numCodes < allCodes.length; j++) {
+            final int index = indices[j];
+            if (index == NOT_A_KEY)
+                break;
+            final int code = keys.get(index).mCode;
+            // filter out a non-letter key from nearby keys
+            if (code < Keyboard.CODE_SPACE)
+                continue;
+            allCodes[numCodes++] = code;
+        }
+    }
 
     /**
      * Finds all possible nearby key indices around a touch event point and returns the nearest key
@@ -108,5 +165,34 @@ public abstract class KeyDetector {
      * @param allCodes All nearby key code except functional key are returned in this array
      * @return The nearest key index
      */
-    abstract public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes);
+    public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
+        final List<Key> keys = getKeys();
+        final int touchX = getTouchX(x);
+        final int touchY = getTouchY(y);
+
+        initializeNearbyKeys();
+        int primaryIndex = NOT_A_KEY;
+        for (final int index : mKeyboard.getNearestKeys(touchX, touchY)) {
+            final Key key = keys.get(index);
+            final boolean isInside = key.isInside(touchX, touchY);
+            final int distance = key.squaredDistanceToEdge(touchX, touchY);
+            if (isInside || (mProximityCorrectOn && distance < mProximityThresholdSquare)) {
+                final int insertedPosition = sortNearbyKeys(index, distance);
+                if (insertedPosition == 0 && isInside)
+                    primaryIndex = index;
+            }
+        }
+
+        if (allCodes != null && allCodes.length > 0) {
+            getNearbyKeyCodes(allCodes);
+            if (DEBUG) {
+                Log.d(TAG, "x=" + x + " y=" + y
+                        + " primary="
+                        + (primaryIndex == NOT_A_KEY ? "none" : keys.get(primaryIndex).mCode)
+                        + " codes=" + Arrays.toString(allCodes));
+            }
+        }
+
+        return primaryIndex;
+    }
 }

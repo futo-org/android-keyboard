@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class PointerTracker {
     private static final String TAG = PointerTracker.class.getSimpleName();
@@ -63,7 +64,7 @@ public class PointerTracker {
     private final int mTouchNoiseThresholdDistanceSquared;
 
     private Keyboard mKeyboard;
-    private Key[] mKeys;
+    private List<Key> mKeys;
     private int mKeyHysteresisDistanceSquared = -1;
     private int mKeyQuarterWidthSquared;
 
@@ -109,8 +110,8 @@ public class PointerTracker {
         public void onSwipeDown() {}
     };
 
-    public PointerTracker(int id, UIHandler handler, KeyDetector keyDetector, UIProxy proxy,
-            Resources res) {
+    public PointerTracker(int id, UIHandler handler, KeyDetector keyDetector,
+            UIProxy proxy, Resources res) {
         if (proxy == null || handler == null || keyDetector == null)
             throw new NullPointerException();
         mPointerId = id;
@@ -197,11 +198,11 @@ public class PointerTracker {
         mListener.onCancelInput();
     }
 
-    public void setKeyboard(Keyboard keyboard, Key[] keys, float keyHysteresisDistance) {
-        if (keyboard == null || keys == null || keyHysteresisDistance < 0)
+    public void setKeyboard(Keyboard keyboard, float keyHysteresisDistance) {
+        if (keyboard == null || keyHysteresisDistance < 0)
             throw new IllegalArgumentException();
         mKeyboard = keyboard;
-        mKeys = keys;
+        mKeys = keyboard.getKeys();
         mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
         final int keyQuarterWidth = keyboard.getKeyWidth() / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
@@ -214,11 +215,11 @@ public class PointerTracker {
     }
 
     private boolean isValidKeyIndex(int keyIndex) {
-        return keyIndex >= 0 && keyIndex < mKeys.length;
+        return keyIndex >= 0 && keyIndex < mKeys.size();
     }
 
     public Key getKey(int keyIndex) {
-        return isValidKeyIndex(keyIndex) ? mKeys[keyIndex] : null;
+        return isValidKeyIndex(keyIndex) ? mKeys.get(keyIndex) : null;
     }
 
     private static boolean isModifierCode(int primaryCode) {
@@ -258,12 +259,14 @@ public class PointerTracker {
         mPreviousKey = keyIndex;
         if (keyIndex != oldKeyIndex) {
             if (isValidKeyIndex(oldKeyIndex)) {
-                mKeys[oldKeyIndex].onReleased();
-                mProxy.invalidateKey(mKeys[oldKeyIndex]);
+                final Key oldKey = mKeys.get(oldKeyIndex);
+                oldKey.onReleased();
+                mProxy.invalidateKey(oldKey);
             }
             if (isValidKeyIndex(keyIndex)) {
-                mKeys[keyIndex].onPressed();
-                mProxy.invalidateKey(mKeys[keyIndex]);
+                final Key newKey = mKeys.get(keyIndex);
+                newKey.onPressed();
+                mProxy.invalidateKey(newKey);
             }
         }
     }
@@ -488,9 +491,6 @@ public class PointerTracker {
         if (!mIsRepeatableKey) {
             detectAndSendKey(keyIndex, x, y);
         }
-
-        if (isValidKeyIndex(keyIndex))
-            mProxy.invalidateKey(mKeys[keyIndex]);
     }
 
     public void onCancelEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
@@ -508,9 +508,6 @@ public class PointerTracker {
         mHandler.cancelPopupPreview();
         showKeyPreviewAndUpdateKeyGraphics(NOT_A_KEY);
         mIsInSlidingKeyInput = false;
-        int keyIndex = mKeyState.getKeyIndex();
-        if (isValidKeyIndex(keyIndex))
-           mProxy.invalidateKey(mKeys[keyIndex]);
     }
 
     public void repeatKey(int keyIndex) {
@@ -539,7 +536,7 @@ public class PointerTracker {
         if (newKey == curKey) {
             return true;
         } else if (isValidKeyIndex(curKey)) {
-            return mKeys[curKey].squaredDistanceToEdge(x, y) < mKeyHysteresisDistanceSquared;
+            return mKeys.get(curKey).squaredDistanceToEdge(x, y) < mKeyHysteresisDistanceSquared;
         } else {
             return false;
         }
