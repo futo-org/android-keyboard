@@ -23,6 +23,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
@@ -63,9 +64,8 @@ public class SlidingLocaleDrawable extends Drawable {
         mHeight = height;
         final TextPaint textPaint = new TextPaint();
         textPaint.setTextSize(getTextSizeFromTheme(android.R.style.TextAppearance_Medium, 18));
-        textPaint.setColor(android.R.color.transparent);
+        textPaint.setColor(Color.TRANSPARENT);
         textPaint.setTextAlign(Align.CENTER);
-        textPaint.setAlpha(LatinKeyboard.OPACITY_FULLY_OPAQUE);
         textPaint.setAntiAlias(true);
         mTextPaint = textPaint;
         mMiddleX = (mWidth - mBackground.getIntrinsicWidth()) / 2;

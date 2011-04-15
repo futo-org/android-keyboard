@@ -128,6 +128,8 @@ public class Keyboard {
     /** Height of keyboard */
     private int mKeyboardHeight;
 
+    private int mMostCommonKeyWidth = 0;
+
     public final KeyboardId mId;
 
     // Variables for pre-computing nearest keys.
@@ -411,21 +413,33 @@ public class Keyboard {
      * @return The most common key width in the keyboard
      */
     public int getMostCommonKeyWidth() {
-        final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
-        int maxCount = 0;
-        int mostCommonWidth = 0;
-        for (final Key key : mKeys) {
-            final Integer width = key.mWidth + key.mGap;
-            Integer count = histogram.get(width);
-            if (count == null)
-                count = 0;
-            histogram.put(width, ++count);
-            if (count > maxCount) {
-                maxCount = count;
-                mostCommonWidth = width;
+        if (mMostCommonKeyWidth == 0) {
+            final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
+            int maxCount = 0;
+            int mostCommonWidth = 0;
+            for (final Key key : mKeys) {
+                final Integer width = key.mWidth + key.mGap;
+                Integer count = histogram.get(width);
+                if (count == null)
+                    count = 0;
+                histogram.put(width, ++count);
+                if (count > maxCount) {
+                    maxCount = count;
+                    mostCommonWidth = width;
+                }
             }
+            mMostCommonKeyWidth = mostCommonWidth;
         }
-        return mostCommonWidth;
+        return mMostCommonKeyWidth;
+    }
+
+    /**
+     * Return true if spacebar needs showing preview even when "popup on keypress" is off.
+     * @param keyIndex index of the pressing key
+     * @return true if spacebar needs showing preview
+     */
+    public boolean needSpacebarPreview(int keyIndex) {
+        return false;
     }
 
     private void loadKeyboard(Context context, int xmlLayoutResId) {
