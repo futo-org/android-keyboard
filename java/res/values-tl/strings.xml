@@ -48,7 +48,7 @@
     <string name="bigram_suggestion" msgid="1323347224043514969">"Mga Suhestiyon na Bigram"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Gamitin ang nakaraang salita upang pahusayin ang suhestiyon"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Na-save"</string>
-    <string name="label_go_key" msgid="1635148082137219148">"Pumunta"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Punta"</string>
     <string name="label_next_key" msgid="362972844525672568">"Susunod"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Tapos na"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Ipadala"</string>
