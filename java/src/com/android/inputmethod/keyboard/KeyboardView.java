@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -224,7 +223,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         public void popupPreview(long delay, int keyIndex, PointerTracker tracker) {
             removeMessages(MSG_POPUP_PREVIEW);
-            if (mPreviewText.getVisibility() == VISIBLE) {
+            if (mPreviewText.getVisibility() == VISIBLE || delay == 0) {
                 // Show right away, if it's already visible and finger is moving around
                 showKey(keyIndex, tracker);
             } else {
@@ -889,15 +888,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     public void showPreview(int keyIndex, PointerTracker tracker) {
         int oldKeyIndex = mOldPreviewKeyIndex;
         mOldPreviewKeyIndex = keyIndex;
-        // We should re-draw popup preview when 1) we need to hide the preview, 2) we will show
-        // the space key preview and 3) pointer moves off the space key to other letter key, we
-        // should hide the preview of the previous key.
-        final boolean hidePreviewOrShowSpaceKeyPreview = (tracker == null)
-                || (SubtypeSwitcher.getInstance().useSpacebarLanguageSwitcher()
-                        && SubtypeSwitcher.getInstance().needsToDisplayLanguage()
-                        && (tracker.isSpaceKey(keyIndex) || tracker.isSpaceKey(oldKeyIndex)));
-        // If key changed and preview is on or the key is space (language switch is enabled)
-        if (oldKeyIndex != keyIndex && (mShowPreview || (hidePreviewOrShowSpaceKeyPreview))) {
+        if ((mShowPreview && oldKeyIndex != keyIndex) || mKeyboard.needSpacebarPreview(keyIndex)) {
             if (keyIndex == KeyDetector.NOT_A_KEY) {
                 mHandler.cancelPopupPreview();
                 mHandler.dismissPreview(mDelayAfterPreview);
