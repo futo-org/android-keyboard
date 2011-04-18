@@ -29,14 +29,13 @@ public class PointerTrackerQueue {
         if (mQueue.lastIndexOf(tracker) < 0) {
             return;
         }
-        LinkedList<PointerTracker> queue = mQueue;
+        final LinkedList<PointerTracker> queue = mQueue;
         int oldestPos = 0;
         for (PointerTracker t = queue.get(oldestPos); t != tracker; t = queue.get(oldestPos)) {
             if (t.isModifier()) {
                 oldestPos++;
             } else {
                 t.onUpEventForRelease(t.getLastX(), t.getLastY(), eventTime);
-                t.setAlreadyProcessed();
                 queue.remove(oldestPos);
             }
         }
@@ -51,7 +50,6 @@ public class PointerTrackerQueue {
             if (t == tracker)
                 continue;
             t.onUpEventForRelease(t.getLastX(), t.getLastY(), eventTime);
-            t.setAlreadyProcessed();
         }
         mQueue.clear();
         if (tracker != null)
