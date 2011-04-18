@@ -448,8 +448,14 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
         word[i] = mWord[i - firstWordLength - 1];
     }
 
-    int pairFreq = ((firstFreq + secondFreq) / 2);
+    // Promote pairFreq with multiplying by 2, because the word length is the same as the typed
+    // length.
+    int pairFreq = firstFreq + secondFreq;
     for (int i = 0; i < inputLength; ++i) pairFreq *= TYPED_LETTER_MULTIPLIER;
+    if (DEBUG_DICT) {
+        LOGI("Missing space:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
+                TYPED_LETTER_MULTIPLIER);
+    }
     multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &pairFreq);
     addWord(word, newWordLength, pairFreq);
     return true;
