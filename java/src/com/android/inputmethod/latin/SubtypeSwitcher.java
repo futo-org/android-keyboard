@@ -382,12 +382,16 @@ public class SubtypeSwitcher {
             return false;
         if (mShortcutSubtype == null)
             return true;
+        // For compatibility, if the shortcut subtype is dummy, we assume the shortcut IME
+        // (built-in voice dummy subtype) is available.
+        if (!mShortcutSubtype.hasOriginalObject()) return true;
         final boolean allowsImplicitlySelectedSubtypes = true;
         for (final InputMethodSubtypeCompatWrapper enabledSubtype :
                 mImm.getEnabledInputMethodSubtypeList(
                         mShortcutInputMethodInfo, allowsImplicitlySelectedSubtypes)) {
-            if (enabledSubtype.equals(mShortcutSubtype))
+            if (enabledSubtype.equals(mShortcutSubtype)) {
                 return true;
+            }
         }
         return false;
     }

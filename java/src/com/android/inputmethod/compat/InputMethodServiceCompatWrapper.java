@@ -28,7 +28,7 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
     // For the API level 11 or later, LatinIME should override onCurrentInputMethodSubtypeChanged().
     // For the API level 10 or previous, we handle the "subtype changed" events by ourselves
     // without having support from framework -- onCurrentInputMethodSubtypeChanged().
-    private static final boolean CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED = true;
+    public static final boolean CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED = true;
 
     private InputMethodManagerCompatWrapper mImm;
 

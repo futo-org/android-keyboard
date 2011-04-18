@@ -67,7 +67,6 @@ public class InputMethodManagerCompatWrapper {
 
     // For the compatibility, IMM will create dummy subtypes if subtypes are not found.
     // This is required to be false if the current behavior is broken. For now, it's ok to be true.
-    private static final boolean ALLOW_DUMMY_SUBTYPE = true;
     private static final boolean HAS_VOICE_FUNCTION = true;
     private static final String VOICE_MODE = "voice";
     private static final String KEYBOARD_MODE = "keyboard";
@@ -119,11 +118,13 @@ public class InputMethodManagerCompatWrapper {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
         if (retval == null || !(retval instanceof List) || ((List<?>)retval).isEmpty()) {
-            if (!ALLOW_DUMMY_SUBTYPE) {
+            if (InputMethodServiceCompatWrapper.
+                    CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
                 // Returns an empty list
                 return Collections.emptyList();
             }
             // Creates dummy subtypes
+            @SuppressWarnings("unused")
             List<InputMethodSubtypeCompatWrapper> subtypeList =
                     new ArrayList<InputMethodSubtypeCompatWrapper>();
             InputMethodSubtypeCompatWrapper keyboardSubtype = getLastResortSubtype(KEYBOARD_MODE);
@@ -159,11 +160,13 @@ public class InputMethodManagerCompatWrapper {
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
         if (retval == null || !(retval instanceof Map) || ((Map<?, ?>)retval).isEmpty()) {
-            if (!ALLOW_DUMMY_SUBTYPE) {
+            if (InputMethodServiceCompatWrapper.
+                    CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
                 // Returns an empty map
                 return Collections.emptyMap();
             }
             // Creates dummy subtypes
+            @SuppressWarnings("unused")
             InputMethodInfoCompatWrapper imi = getLatinImeInputMethodInfo();
             InputMethodSubtypeCompatWrapper voiceSubtype = getLastResortSubtype(VOICE_MODE);
             if (imi != null && voiceSubtype != null) {
@@ -196,8 +199,10 @@ public class InputMethodManagerCompatWrapper {
 
     public void setInputMethodAndSubtype(
             IBinder token, String id, InputMethodSubtypeCompatWrapper subtype) {
-        CompatUtils.invoke(mImm, null, METHOD_setInputMethodAndSubtype,
-                token, id, subtype.getOriginalObject());
+        if (subtype != null && subtype.hasOriginalObject()) {
+            CompatUtils.invoke(mImm, null, METHOD_setInputMethodAndSubtype,
+                    token, id, subtype.getOriginalObject());
+        }
     }
 
     public boolean switchToLastInputMethod(IBinder token) {
