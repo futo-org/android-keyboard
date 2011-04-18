@@ -118,6 +118,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private int mPopupPreviewDisplayedY;
     private final int mDelayBeforePreview;
     private final int mDelayAfterPreview;
+    private ViewGroup mPreviewPlacer;
 
     // Popup mini keyboard
     private PopupWindow mMiniKeyboardPopup;
@@ -898,22 +899,35 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         }
     }
 
-    // TODO: Introduce minimum duration for displaying key previews
-    // TODO: Display up to two key previews when the user presses two keys at the same time
-    private void showKey(final int keyIndex, PointerTracker tracker) {
-        // If the preview popup has no parent view yet, add it to the screen FrameLayout.
-        if (mPreviewText.getParent() == null) {
-            final FrameLayout screenContent = (FrameLayout) getRootView()
-                    .findViewById(android.R.id.content);
-            if (android.os.Build.VERSION.SDK_INT >= /* HONEYCOMB */ 11) {
-                screenContent.addView(mPreviewText, new FrameLayout.LayoutParams(0, 0));
+    private void addKeyPreview(TextView keyPreview) {
+        ViewGroup placer = mPreviewPlacer;
+        if (placer == null) {
+            final FrameLayout screenContent = (FrameLayout) getRootView().findViewById(
+                    android.R.id.content);
+            if (android.os.Build.VERSION.SDK_INT >= /* HONEYCOMB */11) {
+                placer = screenContent;
             } else {
                 // Insert LinearLayout to be able to setMargin because pre-Honeycomb FrameLayout
                 // could not handle setMargin properly.
-                final LinearLayout placer = new LinearLayout(getContext());
+                placer = new LinearLayout(getContext());
                 screenContent.addView(placer);
-                placer.addView(mPreviewText, new LinearLayout.LayoutParams(0, 0));
             }
+            mPreviewPlacer = placer;
+        }
+        if (placer instanceof FrameLayout) {
+            placer.addView(keyPreview, new FrameLayout.LayoutParams(0, 0));
+        } else {
+            placer.addView(keyPreview, new LinearLayout.LayoutParams(0, 0));
+        }
+    }
+
+    // TODO: Introduce minimum duration for displaying key previews
+    // TODO: Display up to two key previews when the user presses two keys at the same time
+    private void showKey(final int keyIndex, PointerTracker tracker) {
+        // If the preview popup has no parent view yet, add it to the ViewGroup which can place
+        // key preview absolutely in SoftInputWindow.
+        if (mPreviewText.getParent() == null) {
+            addKeyPreview(mPreviewText);
         }
 
         final Key key = tracker.getKey(keyIndex);
