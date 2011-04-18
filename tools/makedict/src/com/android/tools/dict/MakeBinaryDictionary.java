@@ -41,17 +41,16 @@ import javax.xml.parsers.SAXParserFactory;
  *  in the data. There is no need to increase the version when only the words in the data changes.
  */
 public class MakeBinaryDictionary {
-
     private static final int VERSION_NUM = 200;
 
-    public static final int ALPHA_SIZE = 256;
-
-    public static final String TAG_WORD = "w";
-    public static final String ATTR_FREQ = "f";
+    private static final String TAG_WORD = "w";
+    private static final String ATTR_FREQ = "f";
 
     private static final int FLAG_ADDRESS_MASK  = 0x400000;
     private static final int FLAG_TERMINAL_MASK = 0x800000;
     private static final int ADDRESS_MASK = 0x3FFFFF;
+
+    private static final int INITIAL_STRING_BUILDER_CAPACITY = 48;
 
     /**
      * Unit for this variable is in bytes
@@ -61,15 +60,15 @@ public class MakeBinaryDictionary {
     private static int sOutputFileSize;
     private static boolean sSplitOutput;
 
-    public static final CharNode EMPTY_NODE = new CharNode();
+    private static final CharNode EMPTY_NODE = new CharNode();
 
-    List<CharNode> roots;
-    Map<String, Integer> mDictionary;
-    int mWordCount;
+    private List<CharNode> mRoots;
+    private Map<String, Integer> mDictionary;
+    private int mWordCount;
 
-    BigramDictionary bigramDict;
+    private BigramDictionary mBigramDict;
 
-    static class CharNode {
+    private static class CharNode {
         char data;
         int freq;
         boolean terminal;
@@ -81,7 +80,7 @@ public class MakeBinaryDictionary {
         }
     }
 
-    public static void usage() {
+    private static void usage() {
         System.err.println("Usage: makedict -s <src_dict.xml> [-b <src_bigram.xml>] "
                 + "-d <dest.dict> [--size filesize]");
         System.exit(-1);
@@ -118,36 +117,37 @@ public class MakeBinaryDictionary {
         }
     }
 
-    public MakeBinaryDictionary(String srcFilename, String bigramSrcFilename, String destFilename){
+    private MakeBinaryDictionary(String srcFilename, String bigramSrcFilename,
+            String destFilename) {
         System.out.println("Generating dictionary version " + VERSION_NUM);
-        bigramDict = new BigramDictionary(bigramSrcFilename, (bigramSrcFilename != null));
+        mBigramDict = new BigramDictionary(bigramSrcFilename, (bigramSrcFilename != null));
         populateDictionary(srcFilename);
         writeToDict(destFilename);
 
         // Enable the code below to verify that the generated tree is traversable
         // and bigram data is stored correctly.
         if (false) {
-            bigramDict.reverseLookupAll(mDictionary, dict);
+            mBigramDict.reverseLookupAll(mDictionary, mDict);
             traverseDict(2, new char[32], 0);
         }
     }
 
     private void populateDictionary(String filename) {
-        roots = new ArrayList<CharNode>();
+        mRoots = new ArrayList<CharNode>();
         mDictionary = new HashMap<String, Integer>();
         try {
             SAXParser parser = SAXParserFactory.newInstance().newSAXParser();
             parser.parse(new File(filename), new DefaultHandler() {
                 boolean inWord;
                 int freq;
-                StringBuilder wordBuilder = new StringBuilder(48);
+                StringBuilder wordBuilder = new StringBuilder(INITIAL_STRING_BUILDER_CAPACITY);
 
                 @Override
                 public void startElement(String uri, String localName,
                         String qName, Attributes attributes) {
-                    if (qName.equals("w")) {
+                    if (qName.equals(TAG_WORD)) {
                         inWord = true;
-                        freq = Integer.parseInt(attributes.getValue(0));
+                        freq = Integer.parseInt(attributes.getValue(ATTR_FREQ));
                         wordBuilder.setLength(0);
                     }
                 }
@@ -162,7 +162,7 @@ public class MakeBinaryDictionary {
                 @Override
                 public void endElement(String uri, String localName,
                         String qName) {
-                    if (qName.equals("w")) {
+                    if (qName.equals(TAG_WORD)) {
                         if (wordBuilder.length() >= 1) {
                             addWordTop(wordBuilder.toString(), freq);
                             mWordCount++;
@@ -178,7 +178,7 @@ public class MakeBinaryDictionary {
         System.out.println("Nodes = " + CharNode.sNodes);
     }
 
-    private int indexOf(List<CharNode> children, char c) {
+    private static int indexOf(List<CharNode> children, char c) {
         if (children == null) {
             return -1;
         }
@@ -190,27 +190,30 @@ public class MakeBinaryDictionary {
         return -1;
     }
 
-    private void addWordTop(String word, int occur) {
-        if (occur > 255) occur = 255;
+    private void addWordTop(String word, int freq) {
+        if (freq < 0) {
+            freq = 0;
+        } else if (freq > 255) {
+            freq = 255;
+        }
         char firstChar = word.charAt(0);
-        int index = indexOf(roots, firstChar);
+        int index = indexOf(mRoots, firstChar);
         if (index == -1) {
             CharNode newNode = new CharNode();
             newNode.data = firstChar;
-            newNode.freq = occur;
-            index = roots.size();
-            roots.add(newNode);
-        } else {
-            roots.get(index).freq += occur;
+            index = mRoots.size();
+            mRoots.add(newNode);
         }
+        final CharNode node = mRoots.get(index);
         if (word.length() > 1) {
-            addWordRec(roots.get(index), word, 1, occur);
+            addWordRec(node, word, 1, freq);
         } else {
-            roots.get(index).terminal = true;
+            node.terminal = true;
+            node.freq = freq;
         }
     }
 
-    private void addWordRec(CharNode parent, String word, int charAt, int occur) {
+    private void addWordRec(CharNode parent, String word, int charAt, int freq) {
         CharNode child = null;
         char data = word.charAt(charAt);
         if (parent.children == null) {
@@ -229,89 +232,89 @@ public class MakeBinaryDictionary {
             parent.children.add(child);
         }
         child.data = data;
-        if (child.freq == 0) child.freq = occur;
         if (word.length() > charAt + 1) {
-            addWordRec(child, word, charAt + 1, occur);
+            addWordRec(child, word, charAt + 1, freq);
         } else {
             child.terminal = true;
-            child.freq = occur;
+            child.freq = freq;
         }
     }
 
-    byte[] dict;
-    int dictSize;
-    static final int CHAR_WIDTH = 8;
-    static final int FLAGS_WIDTH = 1; // Terminal flag (word end)
-    static final int ADDR_WIDTH = 23; // Offset to children
-    static final int FREQ_WIDTH_BYTES = 1;
-    static final int COUNT_WIDTH_BYTES = 1;
+    private byte[] mDict;
+    private int mDictSize;
+    private static final int CHAR_WIDTH = 8;
+    private static final int FLAGS_WIDTH = 1; // Terminal flag (word end)
+    private static final int ADDR_WIDTH = 23; // Offset to children
+    private static final int FREQ_WIDTH_BYTES = 1;
+    private static final int COUNT_WIDTH_BYTES = 1;
 
     private void addCount(int count) {
-        dict[dictSize++] = (byte) (0xFF & count);
+        mDict[mDictSize++] = (byte) (0xFF & count);
     }
 
     private void addNode(CharNode node, String word1) {
-        if (node.terminal) { // store address of each word1
-            mDictionary.put(word1, dictSize);
+        if (node.terminal) { // store address of each word1 for bigram dic generation
+            mDictionary.put(word1, mDictSize);
         }
+
         int charData = 0xFFFF & node.data;
         if (charData > 254) {
-            dict[dictSize++] = (byte) 255;
-            dict[dictSize++] = (byte) ((node.data >> 8) & 0xFF);
-            dict[dictSize++] = (byte) (node.data & 0xFF);
+            mDict[mDictSize++] = (byte) 255;
+            mDict[mDictSize++] = (byte) ((node.data >> 8) & 0xFF);
+            mDict[mDictSize++] = (byte) (node.data & 0xFF);
         } else {
-            dict[dictSize++] = (byte) (0xFF & node.data);
+            mDict[mDictSize++] = (byte) (0xFF & node.data);
         }
         if (node.children != null) {
-            dictSize += 3; // Space for children address
+            mDictSize += 3; // Space for children address
         } else {
-            dictSize += 1; // Space for just the terminal/address flags
+            mDictSize += 1; // Space for just the terminal/address flags
         }
         if ((0xFFFFFF & node.freq) > 255) {
             node.freq = 255;
         }
         if (node.terminal) {
             byte freq = (byte) (0xFF & node.freq);
-            dict[dictSize++] = freq;
+            mDict[mDictSize++] = freq;
             // bigram
-            if (bigramDict.mBi.containsKey(word1)) {
-                int count = bigramDict.mBi.get(word1).count;
-                bigramDict.mBigramToFill.add(word1);
-                bigramDict.mBigramToFillAddress.add(dictSize);
-                dictSize += (4 * count);
+            if (mBigramDict.mBi.containsKey(word1)) {
+                int count = mBigramDict.mBi.get(word1).count;
+                mBigramDict.mBigramToFill.add(word1);
+                mBigramDict.mBigramToFillAddress.add(mDictSize);
+                mDictSize += (4 * count);
             } else {
-                dict[dictSize++] = (byte) (0x00);
+                mDict[mDictSize++] = (byte) (0x00);
             }
         }
     }
 
-    int nullChildrenCount = 0;
-    int notTerminalCount = 0;
+    private int mNullChildrenCount = 0;
+    private int mNotTerminalCount = 0;
 
     private void updateNodeAddress(int nodeAddress, CharNode node,
             int childrenAddress) {
-        if ((dict[nodeAddress] & 0xFF) == 0xFF) { // 3 byte character
+        if ((mDict[nodeAddress] & 0xFF) == 0xFF) { // 3 byte character
             nodeAddress += 2;
         }
         childrenAddress = ADDRESS_MASK & childrenAddress;
         if (childrenAddress == 0) {
-            nullChildrenCount++;
+            mNullChildrenCount++;
         } else {
             childrenAddress |= FLAG_ADDRESS_MASK;
         }
         if (node.terminal) {
             childrenAddress |= FLAG_TERMINAL_MASK;
         } else {
-            notTerminalCount++;
+            mNotTerminalCount++;
         }
-        dict[nodeAddress + 1] = (byte) (childrenAddress >> 16);
+        mDict[nodeAddress + 1] = (byte) (childrenAddress >> 16);
         if ((childrenAddress & FLAG_ADDRESS_MASK) != 0) {
-            dict[nodeAddress + 2] = (byte) ((childrenAddress & 0xFF00) >> 8);
-            dict[nodeAddress + 3] = (byte) ((childrenAddress & 0xFF));
+            mDict[nodeAddress + 2] = (byte) ((childrenAddress & 0xFF00) >> 8);
+            mDict[nodeAddress + 3] = (byte) ((childrenAddress & 0xFF));
         }
     }
 
-    void writeWordsRec(List<CharNode> children, StringBuilder word) {
+    private void writeWordsRec(List<CharNode> children, StringBuilder word) {
         if (children == null || children.size() == 0) {
             return;
         }
@@ -319,60 +322,59 @@ public class MakeBinaryDictionary {
         addCount(childCount);
         int[] childrenAddresses = new int[childCount];
         for (int j = 0; j < childCount; j++) {
-            CharNode node = children.get(j);
-            childrenAddresses[j] = dictSize;
-            word.append(children.get(j).data);
-            addNode(node, word.toString());
-            word.deleteCharAt(word.length()-1);
+            CharNode child = children.get(j);
+            childrenAddresses[j] = mDictSize;
+            word.append(child.data);
+            addNode(child, word.toString());
+            word.setLength(word.length() - 1);
         }
         for (int j = 0; j < childCount; j++) {
-            CharNode node = children.get(j);
+            CharNode child = children.get(j);
             int nodeAddress = childrenAddresses[j];
-            int cacheDictSize = dictSize;
-            word.append(children.get(j).data);
-            writeWordsRec(node.children, word);
-            word.deleteCharAt(word.length()-1);
-            updateNodeAddress(nodeAddress, node, node.children != null
-                    ? cacheDictSize : 0);
+            int cacheDictSize = mDictSize;
+            word.append(child.data);
+            writeWordsRec(child.children, word);
+            word.setLength(word.length() - 1);
+            updateNodeAddress(nodeAddress, child, child.children != null ? cacheDictSize : 0);
         }
     }
 
-    void writeToDict(String dictFilename) {
+    private void writeToDict(String dictFilename) {
         // 4MB max, 22-bit offsets
-        dict = new byte[4 * 1024 * 1024]; // 4MB upper limit. Actual is probably
-                                          // < 1MB in most cases, as there is a limit in the
-                                          // resource size in apks.
-        dictSize = 0;
+        mDict = new byte[4 * 1024 * 1024]; // 4MB upper limit. Actual is probably
+                                           // < 1MB in most cases, as there is a limit in the
+                                           // resource size in apks.
+        mDictSize = 0;
 
-        dict[dictSize++] = (byte) (0xFF & VERSION_NUM); // version info
-        dict[dictSize++] = (byte) (0xFF & (bigramDict.mHasBigram ? 1 : 0));
+        mDict[mDictSize++] = (byte) (0xFF & VERSION_NUM); // version info
+        mDict[mDictSize++] = (byte) (0xFF & (mBigramDict.mHasBigram ? 1 : 0));
 
-        StringBuilder word = new StringBuilder(48);
-        writeWordsRec(roots, word);
-        dict = bigramDict.writeBigrams(dict, mDictionary);
-        System.out.println("Dict Size = " + dictSize);
+        final StringBuilder word = new StringBuilder(INITIAL_STRING_BUILDER_CAPACITY);
+        writeWordsRec(mRoots, word);
+        mDict = mBigramDict.writeBigrams(mDict, mDictionary);
+        System.out.println("Dict Size = " + mDictSize);
         if (!sSplitOutput) {
-            sOutputFileSize = dictSize;
+            sOutputFileSize = mDictSize;
         }
         try {
             int currentLoc = 0;
             int i = 0;
             int extension = dictFilename.indexOf(".dict");
             String filename = dictFilename.substring(0, extension);
-            while (dictSize > 0) {
+            while (mDictSize > 0) {
                 FileOutputStream fos;
                 if (sSplitOutput) {
                     fos = new FileOutputStream(filename + i + ".dict");
                 } else {
                     fos = new FileOutputStream(filename + ".dict");
                 }
-                if (dictSize > sOutputFileSize) {
-                    fos.write(dict, currentLoc, sOutputFileSize);
-                    dictSize -= sOutputFileSize;
+                if (mDictSize > sOutputFileSize) {
+                    fos.write(mDict, currentLoc, sOutputFileSize);
+                    mDictSize -= sOutputFileSize;
                     currentLoc += sOutputFileSize;
                 } else {
-                    fos.write(dict, currentLoc, dictSize);
-                    dictSize = 0;
+                    fos.write(mDict, currentLoc, mDictSize);
+                    mDictSize = 0;
                 }
                 fos.close();
                 i++;
@@ -382,36 +384,36 @@ public class MakeBinaryDictionary {
         }
     }
 
-    void traverseDict(int pos, char[] word, int depth) {
-        int count = dict[pos++] & 0xFF;
+    private void traverseDict(int pos, char[] word, int depth) {
+        int count = mDict[pos++] & 0xFF;
         for (int i = 0; i < count; i++) {
-            char c = (char) (dict[pos++] & 0xFF);
+            char c = (char) (mDict[pos++] & 0xFF);
             if (c == 0xFF) { // two byte character
-                c = (char) (((dict[pos] & 0xFF) << 8) | (dict[pos+1] & 0xFF));
+                c = (char) (((mDict[pos] & 0xFF) << 8) | (mDict[pos+1] & 0xFF));
                 pos += 2;
             }
             word[depth] = c;
-            boolean terminal = getFirstBitOfByte(pos, dict);
+            boolean terminal = getFirstBitOfByte(pos, mDict);
             int address = 0;
-            if ((dict[pos] & (FLAG_ADDRESS_MASK >> 16)) > 0) { // address check
-                address = get22BitAddress(pos, dict);
+            if ((mDict[pos] & (FLAG_ADDRESS_MASK >> 16)) > 0) { // address check
+                address = get22BitAddress(pos, mDict);
                 pos += 3;
             } else {
                 pos += 1;
             }
             if (terminal) {
-                showWord(word, depth + 1, dict[pos] & 0xFF);
+                showWord(word, depth + 1, mDict[pos] & 0xFF);
                 pos++;
 
-                int bigramExist = (dict[pos] & bigramDict.FLAG_BIGRAM_READ);
+                int bigramExist = (mDict[pos] & mBigramDict.FLAG_BIGRAM_READ);
                 if (bigramExist > 0) {
                     int nextBigramExist = 1;
                     while (nextBigramExist > 0) {
-                        int bigramAddress = get22BitAddress(pos, dict);
+                        int bigramAddress = get22BitAddress(pos, mDict);
                         pos += 3;
-                        int frequency = (bigramDict.FLAG_BIGRAM_FREQ & dict[pos]);
-                        bigramDict.searchForTerminalNode(bigramAddress, frequency, dict);
-                        nextBigramExist = (dict[pos++] & bigramDict.FLAG_BIGRAM_CONTINUED);
+                        int frequency = (mBigramDict.FLAG_BIGRAM_FREQ & mDict[pos]);
+                        mBigramDict.searchForTerminalNode(bigramAddress, frequency, mDict);
+                        nextBigramExist = (mDict[pos++] & mBigramDict.FLAG_BIGRAM_CONTINUED);
                     }
                 } else {
                     pos++;
@@ -423,21 +425,21 @@ public class MakeBinaryDictionary {
         }
     }
 
-    void showWord(char[] word, int size, int freq) {
+    private static void showWord(char[] word, int size, int freq) {
         System.out.print(new String(word, 0, size) + " " + freq + "\n");
     }
 
-    static int get22BitAddress(int pos, byte[] dict) {
+    /* package */ static int get22BitAddress(int pos, byte[] dict) {
         return ((dict[pos + 0] & 0x3F) << 16)
                 | ((dict[pos + 1] & 0xFF) << 8)
                 | ((dict[pos + 2] & 0xFF));
     }
 
-    static boolean getFirstBitOfByte(int pos, byte[] dict) {
+    /* package */ static boolean getFirstBitOfByte(int pos, byte[] dict) {
         return (dict[pos] & 0x80) > 0;
     }
 
-    static boolean getSecondBitOfByte(int pos, byte[] dict) {
+    /* package */ static boolean getSecondBitOfByte(int pos, byte[] dict) {
         return (dict[pos] & 0x40) > 0;
     }
 }

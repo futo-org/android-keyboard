@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -96,9 +97,9 @@ public class BinaryDictionaryFileDumper {
         // file.
         final ContentResolver resolver = context.getContentResolver();
         final Uri dictionaryPackUri = getProviderUri(locale);
-        final InputStream stream = resolver.openInputStream(dictionaryPackUri);
-        if (null == stream) return null;
-        return copyFileTo(stream, getCacheFileNameForLocale(locale, context));
+        final AssetFileDescriptor afd = resolver.openAssetFileDescriptor(dictionaryPackUri, "r");
+        if (null == afd) return null;
+        return copyFileTo(afd.createInputStream(), getCacheFileNameForLocale(locale, context));
     }
 
     /**
@@ -128,6 +129,8 @@ public class BinaryDictionaryFileDumper {
     /**
      * Copies the data in an input stream to a target file, creating the file if necessary and
      * overwriting it if it already exists.
+     * @param input the stream to be copied.
+     * @param outputFileName the name of a file to copy the data to. It is created if necessary.
      */
     private static String copyFileTo(final InputStream input, final String outputFileName)
             throws FileNotFoundException, IOException {
