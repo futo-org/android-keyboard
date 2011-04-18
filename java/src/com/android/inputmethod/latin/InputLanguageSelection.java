@@ -162,36 +162,42 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0 ; i < origSize; i++ ) {
             String s = locales[i];
             int len = s.length();
+            String language = "";
+            String country = "";
             if (len == 5) {
-                String language = s.substring(0, 2);
-                String country = s.substring(3, 5);
-                Locale l = new Locale(language, country);
+                language = s.substring(0, 2);
+                country = s.substring(3, 5);
+            } else if (len < 5) {
+                language = s;
+            }
+            Locale l = new Locale(language, country);
 
-                // Exclude languages that are not relevant to LatinIME
-                if (arrayContains(BLACKLIST_LANGUAGES, language)) continue;
+            // Exclude languages that are not relevant to LatinIME
+            if (arrayContains(BLACKLIST_LANGUAGES, language) || TextUtils.isEmpty(language)) {
+                continue;
+            }
 
-                if (finalSize == 0) {
+            if (finalSize == 0) {
+                preprocess[finalSize++] =
+                        new Loc(SubtypeSwitcher.getFullDisplayName(l, true), l);
+            } else {
+                // check previous entry:
+                //  same lang and a country -> upgrade to full name and
+                //    insert ours with full name
+                //  diff lang -> insert ours with lang-only name
+                if (preprocess[finalSize-1].mLocale.getLanguage().equals(
+                        language)) {
+                    preprocess[finalSize-1].setLabel(SubtypeSwitcher.getFullDisplayName(
+                            preprocess[finalSize-1].mLocale, false));
                     preprocess[finalSize++] =
-                            new Loc(SubtypeSwitcher.getFullDisplayName(l, true), l);
+                            new Loc(SubtypeSwitcher.getFullDisplayName(l, false), l);
                 } else {
-                    // check previous entry:
-                    //  same lang and a country -> upgrade to full name and
-                    //    insert ours with full name
-                    //  diff lang -> insert ours with lang-only name
-                    if (preprocess[finalSize-1].mLocale.getLanguage().equals(
-                            language)) {
-                        preprocess[finalSize-1].setLabel(SubtypeSwitcher.getFullDisplayName(
-                                preprocess[finalSize-1].mLocale, false));
-                        preprocess[finalSize++] =
-                                new Loc(SubtypeSwitcher.getFullDisplayName(l, false), l);
+                    String displayName;
+                    if (s.equals("zz_ZZ")) {
+                        // ignore this locale
                     } else {
-                        String displayName;
-                        if (s.equals("zz_ZZ")) {
-                            // ignore this locale
-                        } else {
-                            displayName = SubtypeSwitcher.getFullDisplayName(l, true);
-                            preprocess[finalSize++] = new Loc(displayName, l);
-                        }
+                        displayName = SubtypeSwitcher.getFullDisplayName(l, true);
+                        preprocess[finalSize++] = new Loc(displayName, l);
                     }
                 }
             }
