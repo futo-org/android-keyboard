@@ -35,29 +35,26 @@
                     latin:keyEdgeFlags="left" />
                 <include
                     latin:keyboardLayout="@xml/kbd_qwerty_f1" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="40%p" />
                 <switch>
                     <case
                         latin:mode="web"
                     >
-                        <Key
-                            latin:keyStyle="spaceKeyStyle"
-                            latin:keyWidth="20%p" />
-                        <Key
+                         <Key
                             latin:keyStyle="tabKeyStyle"
-                            latin:keyWidth="20%p" />
+                            latin:keyWidth="10%p" />
                     </case>
                     <default>
                         <Key
-                            latin:keyStyle="spaceKeyStyle"
-                            latin:keyWidth="40%p" />
+                            latin:keyLabel="."
+                            latin:keyHintIcon="@drawable/hint_popup"
+                            latin:popupCharacters="@string/alternates_for_punctuation"
+                            latin:maxPopupKeyboardColumn="7"
+                            latin:keyStyle="functionalKeyStyle" />
                     </default>
                 </switch>
-                <Key
-                    latin:keyLabel="."
-                    latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupCharacters="@string/alternates_for_punctuation"
-                    latin:maxPopupKeyboardColumn="7"
-                    latin:keyStyle="functionalKeyStyle" />
                 <switch>
                     <case
                         latin:mode="im"

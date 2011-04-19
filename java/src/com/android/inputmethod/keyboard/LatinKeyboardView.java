@@ -55,14 +55,14 @@ public class LatinKeyboardView extends KeyboardView {
     }
 
     @Override
-    public void setPreviewEnabled(boolean previewEnabled) {
+    public void setKeyPreviewEnabled(boolean previewEnabled) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null
                 && (latinKeyboard.isPhoneKeyboard() || latinKeyboard.isNumberKeyboard())) {
             // Phone and number keyboard never shows popup preview (except language switch).
-            super.setPreviewEnabled(false);
+            super.setKeyPreviewEnabled(false);
         } else {
-            super.setPreviewEnabled(previewEnabled);
+            super.setKeyPreviewEnabled(previewEnabled);
         }
     }
 
