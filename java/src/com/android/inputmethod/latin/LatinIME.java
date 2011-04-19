@@ -592,7 +592,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final boolean accessibilityEnabled = mAccessibilityUtils.isAccessibilityEnabled();
 
-        inputView.setPreviewEnabled(mPopupOn);
+        inputView.setKeyPreviewEnabled(mPopupOn);
         inputView.setProximityCorrectionEnabled(true);
         inputView.setAccessibilityEnabled(accessibilityEnabled);
         // If we just entered a text field, maybe it has some old text that requires correction

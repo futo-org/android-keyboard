@@ -106,27 +106,24 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     // Main keyboard
     private Keyboard mKeyboard;
 
-    // Key preview popup
+    // Key preview
     private boolean mInForeground;
     private TextView mPreviewText;
     private int mPreviewTextSizeLarge;
     private final int[] mOffsetInWindow = new int[2];
-    private int mOldPreviewKeyIndex = KeyDetector.NOT_A_KEY;
-    private boolean mShowPreview = true;
-    private int mPopupPreviewOffsetX;
-    private int mPopupPreviewOffsetY;
-    private int mPopupPreviewDisplayedY;
+    private boolean mShowKeyPreview = true;
+    private int mKeyPreviewDisplayedY;
     private final int mDelayBeforePreview;
     private final int mDelayAfterPreview;
     private ViewGroup mPreviewPlacer;
 
-    // Popup mini keyboard
-    private PopupWindow mMiniKeyboardPopup;
+    // Mini keyboard
+    private PopupWindow mMiniKeyboardWindow;
     private KeyboardView mMiniKeyboardView;
     private final WeakHashMap<Key, View> mMiniKeyboardCache = new WeakHashMap<Key, View>();
     private int mMiniKeyboardOriginX;
     private int mMiniKeyboardOriginY;
-    private long mMiniKeyboardPopupTime;
+    private long mMiniKeyboardDisplayedTime;
     private int[] mWindowOffset;
     private final float mMiniKeyboardSlideAllowance;
     private int mMiniKeyboardTrackerId;
@@ -186,8 +183,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private final UIHandler mHandler = new UIHandler();
 
     class UIHandler extends Handler {
-        private static final int MSG_POPUP_PREVIEW = 1;
-        private static final int MSG_DISMISS_PREVIEW = 2;
+        private static final int MSG_SHOW_KEY_PREVIEW = 1;
+        private static final int MSG_DISMISS_KEY_PREVIEW = 2;
         private static final int MSG_REPEAT_KEY = 3;
         private static final int MSG_LONGPRESS_KEY = 4;
         private static final int MSG_LONGPRESS_SHIFT_KEY = 5;
@@ -197,10 +194,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case MSG_POPUP_PREVIEW:
+                case MSG_SHOW_KEY_PREVIEW:
                     showKey(msg.arg1, (PointerTracker)msg.obj);
                     break;
-                case MSG_DISMISS_PREVIEW:
+                case MSG_DISMISS_KEY_PREVIEW:
                     mPreviewText.setVisibility(View.INVISIBLE);
                     break;
                 case MSG_REPEAT_KEY: {
@@ -211,7 +208,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 }
                 case MSG_LONGPRESS_KEY: {
                     final PointerTracker tracker = (PointerTracker)msg.obj;
-                    openPopupIfRequired(msg.arg1, tracker);
+                    openMiniKeyboardIfRequired(msg.arg1, tracker);
                     break;
                 }
                 case MSG_LONGPRESS_SHIFT_KEY: {
@@ -222,26 +219,35 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             }
         }
 
-        public void popupPreview(long delay, int keyIndex, PointerTracker tracker) {
-            removeMessages(MSG_POPUP_PREVIEW);
+        public void showKeyPreview(long delay, int keyIndex, PointerTracker tracker) {
+            removeMessages(MSG_SHOW_KEY_PREVIEW);
             if (mPreviewText.getVisibility() == VISIBLE || delay == 0) {
                 // Show right away, if it's already visible and finger is moving around
                 showKey(keyIndex, tracker);
             } else {
-                sendMessageDelayed(obtainMessage(MSG_POPUP_PREVIEW, keyIndex, 0, tracker), delay);
+                sendMessageDelayed(
+                        obtainMessage(MSG_SHOW_KEY_PREVIEW, keyIndex, 0, tracker), delay);
             }
         }
 
-        public void cancelPopupPreview() {
-            removeMessages(MSG_POPUP_PREVIEW);
+        public void cancelShowKeyPreview(PointerTracker tracker) {
+            removeMessages(MSG_SHOW_KEY_PREVIEW, tracker);
         }
 
-        public void dismissPreview(long delay) {
-            sendMessageDelayed(obtainMessage(MSG_DISMISS_PREVIEW), delay);
+        public void cancelAllShowKeyPreviews() {
+            removeMessages(MSG_SHOW_KEY_PREVIEW);
         }
 
-        public void cancelDismissPreview() {
-            removeMessages(MSG_DISMISS_PREVIEW);
+        public void dismissKeyPreview(long delay, PointerTracker tracker) {
+            sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, tracker), delay);
+        }
+
+        public void cancelDismissKeyPreview(PointerTracker tracker) {
+            removeMessages(MSG_DISMISS_KEY_PREVIEW, tracker);
+        }
+
+        public void cancelAllDismissKeyPreviews() {
+            removeMessages(MSG_DISMISS_KEY_PREVIEW);
         }
 
         public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker) {
@@ -283,8 +289,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         public void cancelAllMessages() {
             cancelKeyTimers();
-            cancelPopupPreview();
-            cancelDismissPreview();
+            cancelAllShowKeyPreviews();
+            cancelAllDismissKeyPreviews();
         }
     }
 
@@ -364,18 +370,18 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
             mPreviewTextSizeLarge = (int) res.getDimension(R.dimen.key_preview_text_size_large);
         } else {
-            mShowPreview = false;
+            mShowKeyPreview = false;
         }
         mDelayBeforePreview = res.getInteger(R.integer.config_delay_before_preview);
         mDelayAfterPreview = res.getInteger(R.integer.config_delay_after_preview);
         mKeyLabelHorizontalPadding = (int)res.getDimension(
                 R.dimen.key_label_horizontal_alignment_padding);
 
-        mMiniKeyboardPopup = new PopupWindow(context);
-        mMiniKeyboardPopup.setBackgroundDrawable(null);
-        mMiniKeyboardPopup.setAnimationStyle(R.style.MiniKeyboardAnimation);
+        mMiniKeyboardWindow = new PopupWindow(context);
+        mMiniKeyboardWindow.setBackgroundDrawable(null);
+        mMiniKeyboardWindow.setAnimationStyle(R.style.MiniKeyboardAnimation);
         // Allow popup window to be drawn off the screen.
-        mMiniKeyboardPopup.setClippingEnabled(false);
+        mMiniKeyboardWindow.setClippingEnabled(false);
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
@@ -485,11 +491,11 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
      */
     public void setKeyboard(Keyboard keyboard) {
         if (mKeyboard != null) {
-            dismissKeyPreview();
+            dismissAllKeyPreviews();
         }
         // Remove any pending messages, except dismissing preview
         mHandler.cancelKeyTimers();
-        mHandler.cancelPopupPreview();
+        mHandler.cancelAllShowKeyPreviews();
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(keyboard);
         mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
@@ -545,31 +551,26 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * Enables or disables the key feedback popup. This is a popup that shows a magnified
+     * Enables or disables the key feedback preview. This is a preview that shows a magnified
      * version of the depressed key. By default the preview is enabled.
-     * @param previewEnabled whether or not to enable the key feedback popup
-     * @see #isPreviewEnabled()
+     * @param previewEnabled whether or not to enable the key feedback preview
+     * @see #isKeyPreviewEnabled()
      */
-    public void setPreviewEnabled(boolean previewEnabled) {
-        mShowPreview = previewEnabled;
+    public void setKeyPreviewEnabled(boolean previewEnabled) {
+        mShowKeyPreview = previewEnabled;
     }
 
     /**
-     * Returns the enabled state of the key feedback popup.
-     * @return whether or not the key feedback popup is enabled
-     * @see #setPreviewEnabled(boolean)
+     * Returns the enabled state of the key feedback preview
+     * @return whether or not the key feedback preview is enabled
+     * @see #setKeyPreviewEnabled(boolean)
      */
-    public boolean isPreviewEnabled() {
-        return mShowPreview;
+    public boolean isKeyPreviewEnabled() {
+        return mShowKeyPreview;
     }
 
     public int getColorScheme() {
         return mColorScheme;
-    }
-
-    public void setPopupOffset(int x, int y) {
-        mPopupPreviewOffsetX = x;
-        mPopupPreviewOffsetY = y;
     }
 
     /**
@@ -879,23 +880,25 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     // TODO: clean up this method.
-    private void dismissKeyPreview() {
-        for (PointerTracker tracker : mPointerTrackers)
+    private void dismissAllKeyPreviews() {
+        for (PointerTracker tracker : mPointerTrackers) {
             tracker.setReleasedKeyGraphics();
-        showPreview(KeyDetector.NOT_A_KEY, null);
+            dismissKeyPreview(tracker);
+        }
     }
 
     @Override
-    public void showPreview(int keyIndex, PointerTracker tracker) {
-        int oldKeyIndex = mOldPreviewKeyIndex;
-        mOldPreviewKeyIndex = keyIndex;
-        if ((mShowPreview && oldKeyIndex != keyIndex) || mKeyboard.needSpacebarPreview(keyIndex)) {
-            if (keyIndex == KeyDetector.NOT_A_KEY) {
-                mHandler.cancelPopupPreview();
-                mHandler.dismissPreview(mDelayAfterPreview);
-            } else if (tracker != null) {
-                mHandler.popupPreview(mDelayBeforePreview, keyIndex, tracker);
-            }
+    public void showKeyPreview(int keyIndex, PointerTracker tracker) {
+        if (mShowKeyPreview || mKeyboard.needSpacebarPreview(keyIndex)) {
+            mHandler.showKeyPreview(mDelayBeforePreview, keyIndex, tracker);
+        }
+    }
+
+    @Override
+    public void dismissKeyPreview(PointerTracker tracker) {
+        if (mShowKeyPreview) {
+            mHandler.cancelShowKeyPreview(tracker);
+            mHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
         }
     }
 
@@ -924,7 +927,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     // TODO: Introduce minimum duration for displaying key previews
     // TODO: Display up to two key previews when the user presses two keys at the same time
     private void showKey(final int keyIndex, PointerTracker tracker) {
-        // If the preview popup has no parent view yet, add it to the ViewGroup which can place
+        // If the key preview has no parent view yet, add it to the ViewGroup which can place
         // key preview absolutely in SoftInputWindow.
         if (mPreviewText.getParent() == null) {
             addKeyPreview(mPreviewText);
@@ -932,7 +935,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         final Key key = tracker.getKey(keyIndex);
         // If keyIndex is invalid or IME is already closed, we must not show key preview.
-        // Trying to show preview PopupWindow while root window is closed causes
+        // Trying to show key preview while root window is closed causes
         // WindowManager.BadTokenException.
         if (key == null || !mInForeground)
             return;
@@ -956,37 +959,35 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                    previewIcon != null ? previewIcon : key.getIcon());
             mPreviewText.setText(null);
         }
-        mPreviewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-        int popupWidth = Math.max(mPreviewText.getMeasuredWidth(), keyDrawWidth
-                + mPreviewText.getPaddingLeft() + mPreviewText.getPaddingRight());
-        final int popupHeight = mPreviewHeight;
-        final ViewGroup.LayoutParams lp = mPreviewText.getLayoutParams();
-        lp.width = popupWidth;
-        lp.height = popupHeight;
-
-        int popupPreviewX = keyDrawX - (popupWidth - keyDrawWidth) / 2;
-        int popupPreviewY = key.mY - popupHeight + mPreviewOffset;
-
-        mHandler.cancelDismissPreview();
-        getLocationInWindow(mOffsetInWindow);
-        mOffsetInWindow[0] += mPopupPreviewOffsetX; // Offset may be zero
-        mOffsetInWindow[1] += mPopupPreviewOffsetY; // Offset may be zero
-
         // Set the preview background state
         mPreviewText.getBackground().setState(
                 key.mPopupCharacters != null ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
-        popupPreviewX += mOffsetInWindow[0];
-        popupPreviewY += mOffsetInWindow[1];
+
+        mPreviewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        int previewWidth = Math.max(mPreviewText.getMeasuredWidth(), keyDrawWidth
+                + mPreviewText.getPaddingLeft() + mPreviewText.getPaddingRight());
+        final int previewHeight = mPreviewHeight;
+        final ViewGroup.LayoutParams lp = mPreviewText.getLayoutParams();
+        lp.width = previewWidth;
+        lp.height = previewHeight;
+
+        int previewX = keyDrawX - (previewWidth - keyDrawWidth) / 2;
+        int previewY = key.mY - previewHeight + mPreviewOffset;
+
+        mHandler.cancelAllDismissKeyPreviews();
+        getLocationInWindow(mOffsetInWindow);
+        previewX += mOffsetInWindow[0];
+        previewY += mOffsetInWindow[1];
 
         // Place the key preview.
         // TODO: Adjust position of key previews which touch screen edges
         if (lp instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams)lp;
-            mlp.setMargins(popupPreviewX, popupPreviewY, 0, 0);
+            mlp.setMargins(previewX, previewY, 0, 0);
         }
-        // Record popup preview position to display mini-keyboard later at the same position
-        mPopupPreviewDisplayedY = popupPreviewY;
+        // Record key preview position to display mini-keyboard later at the same position
+        mKeyPreviewDisplayedY = previewY;
         mPreviewText.setVisibility(VISIBLE);
     }
 
@@ -1021,18 +1022,18 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         invalidate(mInvalidatedKeyRect);
     }
 
-    private boolean openPopupIfRequired(int keyIndex, PointerTracker tracker) {
+    private boolean openMiniKeyboardIfRequired(int keyIndex, PointerTracker tracker) {
         // Check if we have a popup layout specified first.
         if (mPopupLayout == 0) {
             return false;
         }
 
-        Key popupKey = tracker.getKey(keyIndex);
-        if (popupKey == null)
+        Key parentKey = tracker.getKey(keyIndex);
+        if (parentKey == null)
             return false;
-        boolean result = onLongPress(popupKey, tracker);
+        boolean result = onLongPress(parentKey, tracker);
         if (result) {
-            dismissKeyPreview();
+            dismissAllKeyPreviews();
             mMiniKeyboardTrackerId = tracker.mPointerId;
             tracker.onLongPressed(mPointerQueue);
         }
@@ -1051,7 +1052,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
-    private View inflateMiniKeyboardContainer(Key popupKey) {
+    private View inflateMiniKeyboardContainer(Key parentKey) {
         final View container = LayoutInflater.from(getContext()).inflate(mPopupLayout, null);
         if (container == null)
             throw new NullPointerException();
@@ -1062,19 +1063,19 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             @Override
             public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
                 mKeyboardActionListener.onCodeInput(primaryCode, keyCodes, x, y);
-                dismissPopupKeyboard();
+                dismissMiniKeyboard();
             }
 
             @Override
             public void onTextInput(CharSequence text) {
                 mKeyboardActionListener.onTextInput(text);
-                dismissPopupKeyboard();
+                dismissMiniKeyboard();
             }
 
             @Override
             public void onCancelInput() {
                 mKeyboardActionListener.onCancelInput();
-                dismissPopupKeyboard();
+                dismissMiniKeyboard();
             }
 
             @Override
@@ -1096,7 +1097,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         miniKeyboardView.mGestureDetector = null;
 
         final Keyboard keyboard = new MiniKeyboardBuilder(this, mKeyboard.getPopupKeyboardResId(),
-                popupKey).build();
+                parentKey).build();
         miniKeyboardView.setKeyboard(keyboard);
 
         container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
@@ -1119,20 +1120,20 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * Called when a key is long pressed. By default this will open any popup keyboard associated
+     * Called when a key is long pressed. By default this will open any mini keyboard associated
      * with this key through the attributes popupLayout and popupCharacters.
-     * @param popupKey the key that was long pressed
+     * @param parentKey the key that was long pressed
      * @return true if the long press is handled, false otherwise. Subclasses should call the
      * method on the base class if the subclass doesn't wish to handle the call.
      */
-    protected boolean onLongPress(Key popupKey, PointerTracker tracker) {
-        if (popupKey.mPopupCharacters == null)
+    protected boolean onLongPress(Key parentKey, PointerTracker tracker) {
+        if (parentKey.mPopupCharacters == null)
             return false;
 
-        View container = mMiniKeyboardCache.get(popupKey);
+        View container = mMiniKeyboardCache.get(parentKey);
         if (container == null) {
-            container = inflateMiniKeyboardContainer(popupKey);
-            mMiniKeyboardCache.put(popupKey, container);
+            container = inflateMiniKeyboardContainer(parentKey);
+            mMiniKeyboardCache.put(parentKey, container);
         }
         mMiniKeyboardView = (KeyboardView)container.findViewById(R.id.KeyboardView);
         final MiniKeyboard miniKeyboard = (MiniKeyboard)mMiniKeyboardView.getKeyboard();
@@ -1142,36 +1143,35 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             getLocationInWindow(mWindowOffset);
         }
         final int pointX = (mConfigShowMiniKeyboardAtTouchedPoint) ? tracker.getLastX()
-                : popupKey.mX + popupKey.mWidth / 2;
-        final int popupX = pointX - miniKeyboard.getDefaultCoordX()
+                : parentKey.mX + parentKey.mWidth / 2;
+        final int miniKeyboardX = pointX - miniKeyboard.getDefaultCoordX()
                 - container.getPaddingLeft()
                 + getPaddingLeft() + mWindowOffset[0];
-        final int popupY = popupKey.mY - mKeyboard.getVerticalGap()
+        final int miniKeyboardY = parentKey.mY - mKeyboard.getVerticalGap()
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + getPaddingTop() + mWindowOffset[1];
-        final int x = popupX;
-        final int y = mShowPreview && isOneRowKeys(miniKeyboard.getKeys())
-                ? mPopupPreviewDisplayedY : popupY;
+        final int x = miniKeyboardX;
+        final int y = mShowKeyPreview && isOneRowKeys(miniKeyboard.getKeys())
+                ? mKeyPreviewDisplayedY : miniKeyboardY;
 
         mMiniKeyboardOriginX = x + container.getPaddingLeft() - mWindowOffset[0];
         mMiniKeyboardOriginY = y + container.getPaddingTop() - mWindowOffset[1];
-        mMiniKeyboardView.setPopupOffset(x, y);
         if (miniKeyboard.setShifted(
                 mKeyboard == null ? false : mKeyboard.isShiftedOrShiftLocked())) {
             mMiniKeyboardView.invalidateAllKeys();
         }
         // Mini keyboard needs no pop-up key preview displayed.
-        mMiniKeyboardView.setPreviewEnabled(false);
-        mMiniKeyboardPopup.setContentView(container);
-        mMiniKeyboardPopup.setWidth(container.getMeasuredWidth());
-        mMiniKeyboardPopup.setHeight(container.getMeasuredHeight());
-        mMiniKeyboardPopup.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
+        mMiniKeyboardView.setKeyPreviewEnabled(false);
+        mMiniKeyboardWindow.setContentView(container);
+        mMiniKeyboardWindow.setWidth(container.getMeasuredWidth());
+        mMiniKeyboardWindow.setHeight(container.getMeasuredHeight());
+        mMiniKeyboardWindow.showAtLocation(this, Gravity.NO_GRAVITY, x, y);
 
         // Inject down event on the key to mini keyboard.
         final long eventTime = SystemClock.uptimeMillis();
-        mMiniKeyboardPopupTime = eventTime;
+        mMiniKeyboardDisplayedTime = eventTime;
         final MotionEvent downEvent = generateMiniKeyboardMotionEvent(MotionEvent.ACTION_DOWN,
-                pointX, popupKey.mY + popupKey.mHeight / 2, eventTime);
+                pointX, parentKey.mY + parentKey.mHeight / 2, eventTime);
         mMiniKeyboardView.onTouchEvent(downEvent);
         downEvent.recycle();
 
@@ -1180,7 +1180,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     private MotionEvent generateMiniKeyboardMotionEvent(int action, int x, int y, long eventTime) {
-        return MotionEvent.obtain(mMiniKeyboardPopupTime, eventTime, action,
+        return MotionEvent.obtain(mMiniKeyboardDisplayedTime, eventTime, action,
                     x - mMiniKeyboardOriginX, y - mMiniKeyboardOriginY, 0);
     }
 
@@ -1191,7 +1191,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = pointers.size(); i <= id; i++) {
             final PointerTracker tracker =
-                new PointerTracker(i, mHandler, mKeyDetector, this, getResources());
+                new PointerTracker(i, this, mHandler, mKeyDetector, this);
             if (mKeyboard != null)
                 tracker.setKeyboard(mKeyboard, mKeyHysteresisDistance);
             if (listener != null)
@@ -1237,7 +1237,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // TODO: Reconcile gesture detection and accessibility features.
         if (mMiniKeyboardView == null && !mIsAccessibilityEnabled
                 && mGestureDetector != null && mGestureDetector.onTouchEvent(me)) {
-            dismissKeyPreview();
+            dismissAllKeyPreviews();
             mHandler.cancelKeyTimers();
             return true;
         }
@@ -1334,7 +1334,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mPreviewText.setVisibility(View.GONE);
         mHandler.cancelAllMessages();
 
-        dismissPopupKeyboard();
+        dismissMiniKeyboard();
         mDirtyRect.union(0, 0, getWidth(), getHeight());
         mMiniKeyboardCache.clear();
         requestLayout();
@@ -1351,9 +1351,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         closing();
     }
 
-    private void dismissPopupKeyboard() {
-        if (mMiniKeyboardPopup.isShowing()) {
-            mMiniKeyboardPopup.dismiss();
+    private void dismissMiniKeyboard() {
+        if (mMiniKeyboardWindow.isShowing()) {
+            mMiniKeyboardWindow.dismiss();
             mMiniKeyboardView = null;
             mMiniKeyboardOriginX = 0;
             mMiniKeyboardOriginY = 0;
@@ -1362,8 +1362,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     public boolean handleBack() {
-        if (mMiniKeyboardPopup.isShowing()) {
-            dismissPopupKeyboard();
+        if (mMiniKeyboardWindow.isShowing()) {
+            dismissMiniKeyboard();
             return true;
         }
         return false;

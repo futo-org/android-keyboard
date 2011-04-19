@@ -153,7 +153,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         makeSymbolsKeyboardIds(id.mMode, attribute);
         mCurrentId = id;
-        mInputView.setPreviewEnabled(mInputMethodService.getPopupOn());
+        mInputView.setKeyPreviewEnabled(mInputMethodService.getPopupOn());
         setKeyboard(getKeyboard(id));
     }
 
