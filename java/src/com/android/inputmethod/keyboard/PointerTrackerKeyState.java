@@ -92,6 +92,7 @@ package com.android.inputmethod.keyboard;
 
     public int onUpKey(int x, int y, long eventTime) {
         mUpTime = eventTime;
+        mKeyIndex = KeyDetector.NOT_A_KEY;
         return onMoveKeyInternal(x, y);
     }
 }

@@ -881,7 +881,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     // TODO: clean up this method.
     private void dismissKeyPreview() {
         for (PointerTracker tracker : mPointerTrackers)
-            tracker.releaseKey();
+            tracker.setReleasedKeyGraphics();
         showPreview(KeyDetector.NOT_A_KEY, null);
     }
 
@@ -1034,16 +1034,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         if (result) {
             dismissKeyPreview();
             mMiniKeyboardTrackerId = tracker.mPointerId;
-            // Mark this tracker "already processed" and remove it from the pointer queue
-            tracker.setAlreadyProcessed();
-            mPointerQueue.remove(tracker);
+            tracker.onLongPressed(mPointerQueue);
         }
         return result;
     }
 
     private void onLongPressShiftKey(PointerTracker tracker) {
-        tracker.setAlreadyProcessed();
-        mPointerQueue.remove(tracker);
+        tracker.onLongPressed(mPointerQueue);
         mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
