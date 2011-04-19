@@ -417,6 +417,54 @@ inline static void multiplyRate(const int rate, int *freq) {
     }
 }
 
+inline static int calcFreqForSplitTwoWords(
+        const int typedLetterMultiplier, const int firstWordLength,
+        const int secondWordLength, const int firstFreq, const int secondFreq) {
+    if (firstWordLength == 0 || secondWordLength == 0) {
+        return 0;
+    }
+    const int firstDemotionRate = 100 - 100 / (firstWordLength + 1);
+    int tempFirstFreq = firstFreq;
+    multiplyRate(firstDemotionRate, &tempFirstFreq);
+
+    const int secondDemotionRate = 100 - 100 / (secondWordLength + 1);
+    int tempSecondFreq = secondFreq;
+    multiplyRate(secondDemotionRate, &tempSecondFreq);
+
+    const int totalLength = firstWordLength + secondWordLength;
+
+    // Promote pairFreq with multiplying by 2, because the word length is the same as the typed
+    // length.
+    int totalFreq = tempFirstFreq + tempSecondFreq;
+
+    // This is a workaround to try offsetting the not-enough-demotion which will be done in
+    // calcNormalizedScore in Utils.java.
+    // In calcNormalizedScore the score will be demoted by (1 - 1 / length)
+    // but we demoted only (1 - 1 / (length + 1)) so we will additionally adjust freq by
+    // (1 - 1 / length) / (1 - 1 / (length + 1)) = (1 - 1 / (length * length))
+    const int normalizedScoreNotEnoughDemotionAdjustment = 100 - 100 / (totalLength * totalLength);
+    multiplyRate(normalizedScoreNotEnoughDemotionAdjustment, &totalFreq);
+
+    // At this moment, totalFreq is calculated by the following formula:
+    // (firstFreq * (1 - 1 / (firstWordLength + 1)) + secondFreq * (1 - 1 / (secondWordLength + 1)))
+    //        * (1 - 1 / totalLength) / (1 - 1 / (totalLength + 1))
+
+    for (int i = 0; i < totalLength; ++i) {
+        totalFreq *= typedLetterMultiplier;
+    }
+
+    // This is another workaround to offset the demotion which will be done in
+    // calcNormalizedScore in Utils.java.
+    // In calcNormalizedScore the score will be demoted by (1 - 1 / length) so we have to promote
+    // the same amount because we already have adjusted the synthetic freq of this "missing or
+    // mistyped space" suggestion candidate above in this method.
+    const int normalizedScoreDemotionRateOffset = (100 + 100 / totalLength);
+    multiplyRate(normalizedScoreDemotionRateOffset, &totalFreq);
+
+    multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &totalFreq);
+    return totalFreq;
+}
+
 bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
         const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
         const int secondWordLength) {
@@ -448,15 +496,12 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
         word[i] = mWord[i - firstWordLength - 1];
     }
 
-    // Promote pairFreq with multiplying by 2, because the word length is the same as the typed
-    // length.
-    int pairFreq = firstFreq + secondFreq;
-    for (int i = 0; i < inputLength; ++i) pairFreq *= TYPED_LETTER_MULTIPLIER;
+    int pairFreq = calcFreqForSplitTwoWords(
+            TYPED_LETTER_MULTIPLIER, firstWordLength, secondWordLength, firstFreq, secondFreq);
     if (DEBUG_DICT) {
         LOGI("Missing space:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
                 TYPED_LETTER_MULTIPLIER);
     }
-    multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &pairFreq);
     addWord(word, newWordLength, pairFreq);
     return true;
 }
