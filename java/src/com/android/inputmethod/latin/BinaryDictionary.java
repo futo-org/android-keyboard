@@ -63,18 +63,12 @@ public class BinaryDictionary extends Dictionary {
 
     private final KeyboardSwitcher mKeyboardSwitcher = KeyboardSwitcher.getInstance();
 
-    public static class Flag {
-        public final String mName;
-        public final int mValue;
-
-        public Flag(String name, int value) {
-            mName = name;
-            mValue = value;
-        }
-    }
-
     public static final Flag FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING =
-            new Flag("requiresGermanUmlautProcessing", 0x1);
+            new Flag(R.bool.config_require_umlaut_processing, 0x1);
+
+    // Can create a new flag from extravalue :
+    // public static final Flag FLAG_MYFLAG =
+    //         new Flag("my_flag", 0x02);
 
     private static final Flag[] ALL_FLAGS = {
         // Here should reside all flags that trigger some special processing
@@ -118,12 +112,12 @@ public class BinaryDictionary extends Dictionary {
                 return null;
             }
         }
-        sInstance.mFlags = initFlags(ALL_FLAGS, SubtypeSwitcher.getInstance());
+        sInstance.mFlags = Flag.initFlags(ALL_FLAGS, context, SubtypeSwitcher.getInstance());
         return sInstance;
     }
 
-    /* package for test */ static BinaryDictionary initDictionary(File dictionary, long startOffset,
-            long length, int dicTypeId, Flag[] flagArray) {
+    /* package for test */ static BinaryDictionary initDictionary(Context context, File dictionary,
+            long startOffset, long length, int dicTypeId, Flag[] flagArray) {
         synchronized (sInstance) {
             sInstance.closeInternal();
             if (dictionary.isFile()) {
@@ -134,17 +128,8 @@ public class BinaryDictionary extends Dictionary {
                 return null;
             }
         }
-        sInstance.mFlags = initFlags(flagArray, null);
+        sInstance.mFlags = Flag.initFlags(flagArray, context, null);
         return sInstance;
-    }
-
-    private static int initFlags(Flag[] flagArray, SubtypeSwitcher switcher) {
-        int flags = 0;
-        for (Flag entry : flagArray) {
-            if (switcher == null || switcher.currentSubtypeContainsExtraValueKey(entry.mName))
-                flags |= entry.mValue;
-        }
-        return flags;
     }
 
     static {
@@ -179,6 +164,7 @@ public class BinaryDictionary extends Dictionary {
                 sInstance.mDicTypeId = dicTypeId;
             }
         }
+        sInstance.mFlags = Flag.initFlags(ALL_FLAGS, context, SubtypeSwitcher.getInstance());
         return sInstance;
     }
 
