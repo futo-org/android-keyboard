@@ -32,14 +32,14 @@ public class SuggestedWords {
     public final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
     private SuggestedWords(List<CharSequence> words, boolean typedWordValid,
-            boolean hasMinamlSuggestion, List<SuggestedWordInfo> suggestedWordInfoList) {
+            boolean hasMinimalSuggestion, List<SuggestedWordInfo> suggestedWordInfoList) {
         if (words != null) {
             mWords = words;
         } else {
             mWords = Collections.emptyList();
         }
         mTypedWordValid = typedWordValid;
-        mHasMinimalSuggestion = hasMinamlSuggestion;
+        mHasMinimalSuggestion = hasMinimalSuggestion;
         mSuggestedWordInfoList = suggestedWordInfoList;
     }
 
@@ -113,8 +113,8 @@ public class SuggestedWords {
             return this;
         }
 
-        public Builder setHasMinimalSuggestion(boolean hasMinamlSuggestion) {
-            mHasMinimalSuggestion = hasMinamlSuggestion;
+        public Builder setHasMinimalSuggestion(boolean hasMinimalSuggestion) {
+            mHasMinimalSuggestion = hasMinimalSuggestion;
             return this;
         }
 
