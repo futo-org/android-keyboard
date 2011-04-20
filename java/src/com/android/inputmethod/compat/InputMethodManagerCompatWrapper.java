@@ -67,7 +67,8 @@ public class InputMethodManagerCompatWrapper {
 
     // For the compatibility, IMM will create dummy subtypes if subtypes are not found.
     // This is required to be false if the current behavior is broken. For now, it's ok to be true.
-    private static final boolean HAS_VOICE_FUNCTION = true;
+    public static final boolean FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES =
+            !InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED;
     private static final String VOICE_MODE = "voice";
     private static final String KEYBOARD_MODE = "keyboard";
 
@@ -118,8 +119,7 @@ public class InputMethodManagerCompatWrapper {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
         if (retval == null || !(retval instanceof List) || ((List<?>)retval).isEmpty()) {
-            if (InputMethodServiceCompatWrapper.
-                    CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
+            if (!FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
                 // Returns an empty list
                 return Collections.emptyList();
             }
@@ -148,7 +148,7 @@ public class InputMethodManagerCompatWrapper {
 
     @SuppressWarnings("unused")
     private InputMethodSubtypeCompatWrapper getLastResortSubtype(String mode) {
-        if (VOICE_MODE.equals(mode) && !HAS_VOICE_FUNCTION)
+        if (VOICE_MODE.equals(mode) && !FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES)
             return null;
         Locale inputLocale = SubtypeSwitcher.getInstance().getInputLocale();
         if (inputLocale == null)
@@ -160,8 +160,7 @@ public class InputMethodManagerCompatWrapper {
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
         if (retval == null || !(retval instanceof Map) || ((Map<?, ?>)retval).isEmpty()) {
-            if (InputMethodServiceCompatWrapper.
-                    CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
+            if (!FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
                 // Returns an empty map
                 return Collections.emptyMap();
             }

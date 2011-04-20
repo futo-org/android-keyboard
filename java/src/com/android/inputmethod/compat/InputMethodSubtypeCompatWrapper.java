@@ -116,6 +116,10 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
         return (String)CompatUtils.invoke(mObj, null, METHOD_getExtraValueOf, key);
     }
 
+    public boolean isDummy() {
+        return !hasOriginalObject();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o instanceof InputMethodSubtypeCompatWrapper) {
