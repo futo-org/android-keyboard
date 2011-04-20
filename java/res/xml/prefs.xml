@@ -115,12 +115,12 @@
         android:entryValues="@array/keyboard_layout_modes_values"
         android:entries="@array/keyboard_layout_modes"
         android:defaultValue="@string/config_default_keyboard_theme_id" />
-    <Preference
+    <!-- <Preference
         android:title="Debug Settings"
         android:key="debug_settings">
         <intent
             android:action="android.intent.action.MAIN"
             android:targetPackage="com.android.inputmethod.latin"
             android:targetClass="com.android.inputmethod.latin.DebugSettings" />
-    </Preference>
+    </Preference>-->
 </PreferenceScreen>
