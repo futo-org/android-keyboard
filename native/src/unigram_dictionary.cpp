@@ -574,7 +574,7 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
                     * (10 * mInputLength - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X)
                     / (10 * mInputLength
                             - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X + 10);
-            if (DEBUG_DICT) {
+            if (DEBUG_DICT_FULL) {
                 LOGI("Demotion rate for missing character is %d.", demotionRate);
             }
             multiplyRate(demotionRate, &finalFreq);
@@ -603,13 +603,16 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
         if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0) {
             finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
-    } else if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0 && depth > 1) {
+    } else if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0 && depth > 0) {
         // A word with proximity corrections
         if (DEBUG_DICT) {
             LOGI("Found one proximity correction.");
         }
         finalFreq *= 2;
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
+    }
+    if (DEBUG_DICT) {
+        LOGI("calc: %d, %d", depth, sameLength);
     }
     if (sameLength) finalFreq *= FULL_WORD_MULTIPLIER;
     return finalFreq;
