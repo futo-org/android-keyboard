@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2009, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:singleLine="true"
                 android:layout_marginTop="10dip"
-                android:textSize="20sp"
+                android:textSize="28sp"
                 android:textColor="#ffffff"
                 android:layout_gravity="center"
                 android:visibility="invisible"/>
@@ -81,8 +81,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:singleLine="true"
-                android:textSize="15sp"
-                android:layout_marginTop="3dip"
+                android:textSize="14sp"
                 android:layout_marginBottom="3dip"
                 android:layout_gravity="center"
                 android:textColor="#ffffff"
@@ -90,13 +89,13 @@
         <Button
                 android:id="@+id/button"
                 android:layout_width="match_parent"
-                android:layout_height="30dip"
+                android:layout_height="54dip"
                 android:singleLine="true"
                 android:focusable="true"
                 android:text="@string/cancel"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/btn_center"
                 android:textColor="#ffffff"
-                android:textSize="15sp" />
+                android:textSize="19sp" />
     </LinearLayout>
 </RelativeLayout>
