@@ -45,6 +45,13 @@
                         latin:keyStyle="micKeyStyle" />
                 </case>
                 <!-- latin:hasVoiceKey="false" -->
+                <case
+                    latin:mode="web"
+                >
+                    <Key
+                        latin:keyLabel="."
+                        latin:keyStyle="settingsPopupStyle" />
+                </case>
                 <default>
                     <Key
                         latin:keyLabel=","

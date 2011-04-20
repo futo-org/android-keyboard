@@ -47,11 +47,17 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
     @SuppressWarnings("unused")
     public void notifyOnCurrentInputMethodSubtypeChanged(InputMethodSubtypeCompatWrapper subtype) {
         // Do nothing when the API level is 11 or later
-        if (CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) return;
+        // and FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES is not true
+        if (CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED && !InputMethodManagerCompatWrapper.
+                FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
+            return;
+        }
         if (subtype == null) {
             subtype = mImm.getCurrentInputMethodSubtype();
         }
         if (subtype != null) {
+            if (!InputMethodManagerCompatWrapper.FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES
+                    && !subtype.isDummy()) return;
             if (!InputMethodManagerCompatWrapper.SUBTYPE_SUPPORTED) {
                 LanguageSwitcherProxy.getInstance().setLocale(subtype.getLocale());
             }

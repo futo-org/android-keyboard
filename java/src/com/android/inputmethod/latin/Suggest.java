@@ -112,10 +112,10 @@ public class Suggest implements Dictionary.WordCallback {
                 dictionaryResId));
     }
 
-    /* package for test */ Suggest(File dictionary, long startOffset, long length,
-            BinaryDictionary.Flag[] flagArray) {
-        init(null, BinaryDictionary.initDictionary(dictionary, startOffset, length, DIC_MAIN,
-                flagArray));
+    /* package for test */ Suggest(Context context, File dictionary, long startOffset, long length,
+            Flag[] flagArray) {
+        init(null, BinaryDictionary.initDictionary(context, dictionary, startOffset, length,
+                DIC_MAIN, flagArray));
     }
 
     private void init(Context context, BinaryDictionary mainDict) {
