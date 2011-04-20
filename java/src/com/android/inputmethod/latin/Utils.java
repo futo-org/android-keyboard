@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 
 import android.content.Context;
@@ -344,8 +345,16 @@ public class Utils {
         final int distance = editDistance(before, after);
         // If afterLength < beforeLength, the algorithm is suggesting a word by excessive character
         // correction.
+        int spaceCount = 0;
+        for (int i = 0; i < afterLength; ++i) {
+            if (after.charAt(i) == Keyboard.CODE_SPACE) {
+                ++spaceCount;
+            }
+        }
+        if (spaceCount == afterLength) return 0;
         final double maximumScore = MAX_INITIAL_SCORE
-                * Math.pow(TYPED_LETTER_MULTIPLIER, Math.min(beforeLength, afterLength))
+                * Math.pow(
+                        TYPED_LETTER_MULTIPLIER, Math.min(beforeLength, afterLength - spaceCount))
                 * FULL_WORD_MULTIPLIER;
         // add a weight based on edit distance.
         // distance <= max(afterLength, beforeLength) == afterLength,
