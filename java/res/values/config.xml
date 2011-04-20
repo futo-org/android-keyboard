@@ -78,4 +78,5 @@
     </string-array>
     <!--  Screen metrics for logging. 0 = "mdpi", 1 = "hdpi", 2 = "xlarge" -->
     <integer name="log_screen_metrics">0</integer>
+    <bool name="config_require_umlaut_processing">false</bool>
 </resources>
