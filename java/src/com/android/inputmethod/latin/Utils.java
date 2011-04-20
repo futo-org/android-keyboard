@@ -258,6 +258,8 @@ public class Utils {
         }
     }
 
+
+    /* Damerau-Levenshtein distance */
     public static int editDistance(CharSequence s, CharSequence t) {
         if (s == null || t == null) {
             throw new IllegalArgumentException("editDistance: Arguments should not be null.");
@@ -273,12 +275,27 @@ public class Utils {
         }
         for (int i = 0; i < sl; ++i) {
             for (int j = 0; j < tl; ++j) {
-                if (Character.toLowerCase(s.charAt(i)) == Character.toLowerCase(t.charAt(j))) {
-                    dp[i + 1][j + 1] = dp[i][j];
-                } else {
-                    dp[i + 1][j + 1] = 1 + Math.min(dp[i][j],
-                            Math.min(dp[i + 1][j], dp[i][j + 1]));
+                final char sc = Character.toLowerCase(s.charAt(i));
+                final char tc = Character.toLowerCase(t.charAt(j));
+                final int cost = sc == tc ? 0 : 1;
+                dp[i + 1][j + 1] = Math.min(
+                        dp[i][j + 1] + 1, Math.min(dp[i + 1][j] + 1, dp[i][j] + cost));
+                // Overwrite for transposition cases
+                if (i > 0 && j > 0
+                        && sc == Character.toLowerCase(t.charAt(j - 1))
+                        && tc == Character.toLowerCase(s.charAt(i - 1))) {
+                    dp[i + 1][j + 1] = Math.min(dp[i + 1][j + 1], dp[i - 1][j - 1] + cost);
                 }
+            }
+        }
+        if (LatinImeLogger.sDBG) {
+            Log.d(TAG, "editDistance:" + s + "," + t);
+            for (int i = 0; i < dp.length; ++i) {
+                StringBuffer sb = new StringBuffer();
+                for (int j = 0; j < dp[i].length; ++j) {
+                    sb.append(dp[i][j]).append(',');
+                }
+                Log.d(TAG, i + ":" + sb.toString());
             }
         }
         return dp[sl][tl];
