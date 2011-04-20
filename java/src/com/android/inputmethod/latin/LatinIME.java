@@ -266,6 +266,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 4;
         private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 5;
         private static final int MSG_SPACE_TYPED = 6;
+        private static final int MSG_SET_BIGRAM_SUGGESTIONS = 7;
 
         @Override
         public void handleMessage(Message msg) {
@@ -280,6 +281,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
+                break;
+            case MSG_SET_BIGRAM_SUGGESTIONS:
+                updateBigramSuggestions();
                 break;
             case MSG_VOICE_RESULTS:
                 mVoiceProxy.handleVoiceResults(preferCapitalization()
@@ -331,6 +335,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public void cancelUpdateShiftState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
+        }
+
+        public void postSetBigramSuggestions() {
+            removeMessages(MSG_SET_BIGRAM_SUGGESTIONS);
+            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_SUGGESTIONS), DELAY_UPDATE_SUGGESTIONS);
+        }
+
+        public void cancelSetBigramSuggestions() {
+            removeMessages(MSG_SET_BIGRAM_SUGGESTIONS);
         }
 
         public void updateVoiceResults() {
@@ -548,7 +561,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getInputView();
 
-        if(DEBUG) {
+        if (DEBUG) {
             Log.d(TAG, "onStartInputView: " + inputView);
         }
         // In landscape mode, this method gets called without the input view being created.
@@ -754,7 +767,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             mComposing.setLength(0);
             mHasValidSuggestions = false;
-            mHandler.postUpdateSuggestions();
+            if (isCursorTouchingWord()) {
+                mHandler.cancelSetBigramSuggestions();
+                mHandler.postUpdateSuggestions();
+            } else {
+                setPunctuationSuggestions();
+            }
             TextEntryState.reset();
             InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
@@ -784,14 +802,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                                 || TextEntryState.isRecorrecting())
                                 && (newSelStart < newSelEnd - 1 || !mHasValidSuggestions)) {
                     if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
+                        mHandler.cancelSetBigramSuggestions();
                         mHandler.postUpdateOldSuggestions();
                     } else {
                         abortRecorrection(false);
-                        // Show the punctuation suggestions list if the current one is not
-                        // and if not showing "Touch again to save".
-                        if (mCandidateView != null && !isShowingPunctuationList()
+                        // If showing the "touch again to save" hint, do not replace it. Else,
+                        // show the bigrams if we are at the end of the text, punctuation otherwise.
+                        if (mCandidateView != null
                                 && !mCandidateView.isShowingAddToDictionaryHint()) {
-                            setPunctuationSuggestions();
+                            InputConnection ic = getCurrentInputConnection();
+                            if (null == ic || !TextUtils.isEmpty(ic.getTextAfterCursor(1, 0))) {
+                                if (!isShowingPunctuationList()) setPunctuationSuggestions();
+                            } else {
+                                mHandler.postSetBigramSuggestions();
+                            }
                         }
                     }
                 }
@@ -1231,7 +1255,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 if (mComposing.length() == 0) {
                     mHasValidSuggestions = false;
                 }
-                mHandler.postUpdateSuggestions();
+                if (1 == length) {
+                    // 1 == length means we are about to erase the last character of the word,
+                    // so we can show bigrams.
+                    mHandler.postSetBigramSuggestions();
+                } else {
+                    // length > 1, so we still have letters to deduce a suggestion from.
+                    mHandler.postUpdateSuggestions();
+                }
             } else {
                 ic.deleteSurroundingText(1, 0);
             }
@@ -1367,6 +1398,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         // Should dismiss the "Touch again to save" message when handling separator
         if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
+            mHandler.cancelSetBigramSuggestions();
             mHandler.postUpdateSuggestions();
         }
 
@@ -1406,6 +1438,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         TextEntryState.typedCharacter((char) primaryCode, true, x, y);
+
         if (TextEntryState.isPunctuationAfterAccepted() && primaryCode != Keyboard.CODE_ENTER) {
             swapPunctuationAndSpace();
         } else if (isSuggestionsRequested() && primaryCode == Keyboard.CODE_SPACE) {
@@ -1416,10 +1449,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             TextEntryState.backToAcceptedDefault(typedWord);
             if (!TextUtils.isEmpty(typedWord) && !typedWord.equals(mBestWord)) {
                 InputConnectionCompatUtils.commitCorrection(
-                        ic,  mLastSelectionEnd - typedWord.length(), typedWord, mBestWord);
+                        ic, mLastSelectionEnd - typedWord.length(), typedWord, mBestWord);
                 if (mCandidateView != null)
                     mCandidateView.onAutoCorrectionInverted(mBestWord);
             }
+        }
+        if (Keyboard.CODE_SPACE == primaryCode) {
+            if (!isCursorTouchingWord()) {
+                mHandler.cancelUpdateSuggestions();
+                mHandler.cancelUpdateOldSuggestions();
+                mHandler.postSetBigramSuggestions();
+            }
+        } else {
+            // Set punctuation right away. onUpdateSelection will fire but tests whether it is
+            // already displayed or not, so it's okay.
             setPunctuationSuggestions();
         }
         mKeyboardSwitcher.updateShiftState();
@@ -1654,6 +1697,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             return;
         }
+        if (!mHasValidSuggestions) {
+            // If we are not composing a word, then it was a suggestion inferred from
+            // context - no user input. We should reset the word composer.
+            mWord.reset();
+        }
         mJustAccepted = true;
         pickSuggestion(suggestion);
         // Add the word to the auto dictionary if it's not a known word
@@ -1692,7 +1740,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // TextEntryState.State.PICKED_SUGGESTION state.
             TextEntryState.typedCharacter((char) Keyboard.CODE_SPACE, true,
                     WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
-            setPunctuationSuggestions();
+            // From there on onUpdateSelection() will fire so suggestions will be updated
         } else if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
@@ -1807,6 +1855,25 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
+    private static final WordComposer sEmptyWordComposer = new WordComposer();
+    private void updateBigramSuggestions() {
+        if (mSuggest == null || !isSuggestionsRequested())
+            return;
+
+        final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
+                mWordSeparators);
+        SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
+                mKeyboardSwitcher.getInputView(), sEmptyWordComposer, prevWord);
+
+        if (builder.size() > 0) {
+            // Explicitly supply an empty typed word (the no-second-arg version of
+            // showSuggestions will retrieve the word near the cursor, we don't want that here)
+            showSuggestions(builder.build(), "");
+        } else {
+            if (!isShowingPunctuationList()) setPunctuationSuggestions();
+        }
+    }
+
     private void setPunctuationSuggestions() {
         setSuggestions(mSuggestPuncList);
         setCandidatesViewShown(isCandidateStripVisible());
@@ -1907,6 +1974,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.setComposingText(mComposing, 1);
                 TextEntryState.backspace();
             }
+            mHandler.cancelSetBigramSuggestions();
             mHandler.postUpdateSuggestions();
         } else {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);

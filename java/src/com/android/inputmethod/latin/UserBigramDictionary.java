@@ -162,6 +162,10 @@ public class UserBigramDictionary extends ExpandableDictionary {
         if (mIme != null && mIme.getCurrentWord().isAutoCapitalized()) {
             word2 = Character.toLowerCase(word2.charAt(0)) + word2.substring(1);
         }
+        // Do not insert a word as a bigram of itself
+        if (word1.equals(word2)) {
+            return 0;
+        }
 
         int freq = super.addBigram(word1, word2, FREQUENCY_FOR_TYPED);
         if (freq > FREQUENCY_MAX) freq = FREQUENCY_MAX;
