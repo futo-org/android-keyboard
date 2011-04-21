@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2008-2009 Google Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -14,7 +14,18 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.deprecated.languageswitcher;
+
+import com.android.inputmethod.keyboard.KeyboardParser;
+import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Settings;
+import com.android.inputmethod.latin.SharedPreferencesCompat;
+import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.Suggest;
+import com.android.inputmethod.latin.Utils;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -27,6 +38,7 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,9 +49,6 @@ public class InputLanguageSelection extends PreferenceActivity {
     private SharedPreferences mPrefs;
     private String mSelectedLanguages;
     private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
-    private static final String[] BLACKLIST_LANGUAGES = {
-        "ko", "ja", "zh", "el", "zz"
-    };
 
     private static class Loc implements Comparable<Object> {
         private static Collator sCollator = Collator.getInstance();
@@ -78,8 +87,11 @@ public class InputLanguageSelection extends PreferenceActivity {
         mAvailableLanguages = getUniqueLocales();
         PreferenceGroup parent = getPreferenceScreen();
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
-            CheckBoxPreference pref = new CheckBoxPreference(this);
             Locale locale = mAvailableLanguages.get(i).mLocale;
+            if (!hasDictionary(locale) && !hasLayout(locale)) {
+                continue;
+            }
+            CheckBoxPreference pref = new CheckBoxPreference(this);
             pref.setTitle(SubtypeSwitcher.getFullDisplayName(locale, true));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
@@ -118,6 +130,32 @@ public class InputLanguageSelection extends PreferenceActivity {
         conf.locale = saveLocale;
         res.updateConfiguration(conf, res.getDisplayMetrics());
         return haveDictionary;
+    }
+
+    private boolean hasLayout(Locale locale) {
+        if (locale == null) return false;
+        final Resources res = getResources();
+        final Configuration conf = res.getConfiguration();
+        final Locale saveLocale = conf.locale;
+        conf.locale = locale;
+        res.updateConfiguration(conf, res.getDisplayMetrics());
+
+        try {
+            final String countryCode = locale.getLanguage();
+            final String layoutCountryCode = KeyboardParser.parseKeyboardLocale(
+                    this, R.xml.kbd_qwerty);
+            if (!TextUtils.isEmpty(countryCode) && !TextUtils.isEmpty(layoutCountryCode)) {
+                return countryCode.subSequence(0, 2).equals(layoutCountryCode.substring(0, 2));
+            }
+            return false;
+        } catch (XmlPullParserException e) {
+            return false;
+        } catch (IOException e) {
+            return false;
+        } finally {
+            conf.locale = saveLocale;
+            res.updateConfiguration(conf, res.getDisplayMetrics());
+        }
     }
 
     private String get5Code(Locale locale) {
@@ -173,7 +211,7 @@ public class InputLanguageSelection extends PreferenceActivity {
             Locale l = new Locale(language, country);
 
             // Exclude languages that are not relevant to LatinIME
-            if (arrayContains(BLACKLIST_LANGUAGES, language) || TextUtils.isEmpty(language)) {
+            if (TextUtils.isEmpty(language)) {
                 continue;
             }
 
@@ -206,12 +244,5 @@ public class InputLanguageSelection extends PreferenceActivity {
             uniqueLocales.add(preprocess[i]);
         }
         return uniqueLocales;
-    }
-
-    private boolean arrayContains(String[] array, String value) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].equalsIgnoreCase(value)) return true;
-        }
-        return false;
     }
 }

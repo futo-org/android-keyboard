@@ -75,7 +75,7 @@ public class Suggest implements Dictionary.WordCallback {
     public static final String DICT_KEY_USER_BIGRAM = "user_bigram";
     public static final String DICT_KEY_WHITELIST ="whitelist";
 
-    static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
+    public static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 

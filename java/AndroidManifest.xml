@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="InputLanguageSelection"
+        <activity android:name="com.android.inputmethod.deprecated.languageswitcher.InputLanguageSelection"
                 android:label="@string/language_selection_title">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

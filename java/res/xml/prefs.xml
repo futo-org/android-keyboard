@@ -64,6 +64,13 @@
             android:key="subtype_settings"
             android:title="@string/language_selection_title"
             android:summary="@string/language_selection_summary" />
+        <PreferenceScreen
+            android:key="language_selection"
+            android:title="@string/language_selection_title"
+            android:summary="@string/language_selection_summary">
+            <intent
+                    android:action="com.android.inputmethod.latin.INPUT_LANGUAGE_SELECTION"/>
+        </PreferenceScreen>
     </PreferenceCategory>
     <PreferenceCategory
         android:title="@string/prediction_category"
