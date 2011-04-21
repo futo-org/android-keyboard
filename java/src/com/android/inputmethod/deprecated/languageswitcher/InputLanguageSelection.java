@@ -37,6 +37,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import java.io.IOException;
 import java.text.Collator;
@@ -88,14 +89,17 @@ public class InputLanguageSelection extends PreferenceActivity {
         PreferenceGroup parent = getPreferenceScreen();
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
             Locale locale = mAvailableLanguages.get(i).mLocale;
-            if (!hasDictionary(locale) && !hasLayout(locale)) {
+            final Pair<Boolean, Boolean> hasDictionaryOrLayout = hasDictionaryOrLayout(locale);
+            final boolean hasDictionary = hasDictionaryOrLayout.first;
+            final boolean hasLayout = hasDictionaryOrLayout.second;
+            if (!hasDictionary && !hasLayout) {
                 continue;
             }
             CheckBoxPreference pref = new CheckBoxPreference(this);
             pref.setTitle(SubtypeSwitcher.getFullDisplayName(locale, true));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
-            if (hasDictionary(locale)) {
+            if (hasDictionary) {
                 pref.setSummary(R.string.has_dictionary);
             }
             parent.addPreference(pref);
@@ -110,52 +114,39 @@ public class InputLanguageSelection extends PreferenceActivity {
         return false;
     }
 
-    private boolean hasDictionary(Locale locale) {
-        final Resources res = getResources();
-        final Configuration conf = res.getConfiguration();
-        final Locale saveLocale = conf.locale;
-        boolean haveDictionary = false;
-        conf.locale = locale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
-
-        BinaryDictionary bd = BinaryDictionary.initDictionaryFromManager(this, Suggest.DIC_MAIN,
-                locale, Utils.getMainDictionaryResourceId(res));
-
-        // Is the dictionary larger than a placeholder? Arbitrarily chose a lower limit of
-        // 4000-5000 words, whereas the LARGE_DICTIONARY is about 20000+ words.
-        if (bd.getSize() > Suggest.LARGE_DICTIONARY_THRESHOLD / 4) {
-            haveDictionary = true;
-        }
-        bd.close();
-        conf.locale = saveLocale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
-        return haveDictionary;
-    }
-
-    private boolean hasLayout(Locale locale) {
-        if (locale == null) return false;
+    private Pair<Boolean, Boolean> hasDictionaryOrLayout(Locale locale) {
+        if (locale == null) return new Pair<Boolean, Boolean>(false, false);
         final Resources res = getResources();
         final Configuration conf = res.getConfiguration();
         final Locale saveLocale = conf.locale;
         conf.locale = locale;
         res.updateConfiguration(conf, res.getDisplayMetrics());
+        boolean hasDictionary = false;
+        boolean hasLayout = false;
 
         try {
+            BinaryDictionary bd = BinaryDictionary.initDictionaryFromManager(this, Suggest.DIC_MAIN,
+                    locale, Utils.getMainDictionaryResourceId(res));
+
+            // Is the dictionary larger than a placeholder? Arbitrarily chose a lower limit of
+            // 4000-5000 words, whereas the LARGE_DICTIONARY is about 20000+ words.
+            if (bd.getSize() > Suggest.LARGE_DICTIONARY_THRESHOLD / 4) {
+                hasDictionary = true;
+            }
+            bd.close();
+
             final String countryCode = locale.getLanguage();
             final String layoutCountryCode = KeyboardParser.parseKeyboardLocale(
                     this, R.xml.kbd_qwerty);
             if (!TextUtils.isEmpty(countryCode) && !TextUtils.isEmpty(layoutCountryCode)) {
-                return countryCode.subSequence(0, 2).equals(layoutCountryCode.substring(0, 2));
+                hasLayout = countryCode.subSequence(0, 2).equals(layoutCountryCode.substring(0, 2));
             }
-            return false;
         } catch (XmlPullParserException e) {
-            return false;
         } catch (IOException e) {
-            return false;
-        } finally {
-            conf.locale = saveLocale;
-            res.updateConfiguration(conf, res.getDisplayMetrics());
         }
+        conf.locale = saveLocale;
+        res.updateConfiguration(conf, res.getDisplayMetrics());
+        return new Pair<Boolean, Boolean>(hasDictionary, hasLayout);
     }
 
     private String get5Code(Locale locale) {
