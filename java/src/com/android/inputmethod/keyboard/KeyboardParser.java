@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.R;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
@@ -161,6 +162,27 @@ public class KeyboardParser {
                 }
             }
         }
+    }
+
+    public static String parseKeyboardLocale(
+            Context context, int resId) throws XmlPullParserException, IOException {
+        final Resources res = context.getResources();
+        final XmlResourceParser parser = res.getXml(resId);
+        if (parser == null) return "";
+        int event;
+        while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
+            if (event == XmlPullParser.START_TAG) {
+                final String tag = parser.getName();
+                if (TAG_KEYBOARD.equals(tag)) {
+                    final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
+                            R.styleable.Keyboard);
+                    return keyboardAttr.getString(R.styleable.Keyboard_keyboardLocale);
+                } else {
+                    throw new IllegalStartTag(parser, TAG_KEYBOARD);
+                }
+            }
+        }
+        return "";
     }
 
     private void parseKeyboardAttributes(XmlResourceParser parser) {

@@ -91,6 +91,8 @@
         <attr name="verticalGap" format="dimension|fraction" />
         <!-- Popup keyboard layout template -->
         <attr name="popupKeyboardTemplate" format="reference" />
+        <!-- Locale of the keyboard layout -->
+        <attr name="keyboardLocale" format="string" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">
