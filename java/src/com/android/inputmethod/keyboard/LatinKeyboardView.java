@@ -236,7 +236,7 @@ public class LatinKeyboardView extends KeyboardView {
             if (languageDirection != 0) {
                 getOnKeyboardActionListener().onCodeInput(
                         languageDirection == 1
-                        ? Keyboard.CODE_NEXT_LANGUAGE : Keyboard.CODE_PREV_LANGUAGE,
+                        ? LatinKeyboard.CODE_NEXT_LANGUAGE : LatinKeyboard.CODE_PREV_LANGUAGE,
                         null, mLastX, mLastY);
                 me.setAction(MotionEvent.ACTION_CANCEL);
                 keyboard.keyReleased();

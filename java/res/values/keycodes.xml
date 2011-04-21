@@ -26,8 +26,8 @@
     <integer name="key_shift">-1</integer>
     <integer name="key_switch_alpha_symbol">-2</integer>
     <integer name="key_delete">-5</integer>
-    <integer name="key_settings">-100</integer>
-    <integer name="key_voice">-102</integer>
+    <integer name="key_settings">-6</integer>
+    <integer name="key_shortcut">-8</integer>
 
     <!-- Array used for mapping key codes to description strings. -->
     <array name="key_descriptions">
@@ -45,7 +45,7 @@
         <item>@string/description_delete_key</item>
         <item>@integer/key_settings</item>
         <item>@string/description_settings_key</item>
-        <item>@integer/key_voice</item>
+        <item>@integer/key_shortcut</item>
         <item>@string/description_voice_key</item>
     </array>
 </resources>
