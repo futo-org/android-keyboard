@@ -43,13 +43,15 @@ import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class InputLanguageSelection extends PreferenceActivity {
 
     private SharedPreferences mPrefs;
     private String mSelectedLanguages;
-    private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
+    private HashMap<CheckBoxPreference, Locale> mLocaleMap =
+            new HashMap<CheckBoxPreference, Locale>();
 
     private static class Loc implements Comparable<Object> {
         private static Collator sCollator = Collator.getInstance();
@@ -85,14 +87,17 @@ public class InputLanguageSelection extends PreferenceActivity {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSelectedLanguages = mPrefs.getString(Settings.PREF_SELECTED_LANGUAGES, "");
         String[] languageList = mSelectedLanguages.split(",");
-        mAvailableLanguages = getUniqueLocales();
+        ArrayList<Loc> availableLanguages = getUniqueLocales();
         PreferenceGroup parent = getPreferenceScreen();
-        for (int i = 0; i < mAvailableLanguages.size(); i++) {
-            Locale locale = mAvailableLanguages.get(i).mLocale;
+        for (int i = 0; i < availableLanguages.size(); i++) {
+            Locale locale = availableLanguages.get(i).mLocale;
             final Pair<Boolean, Boolean> hasDictionaryOrLayout = hasDictionaryOrLayout(locale);
             final boolean hasDictionary = hasDictionaryOrLayout.first;
             final boolean hasLayout = hasDictionaryOrLayout.second;
-            if (!hasDictionary && !hasLayout) {
+            // Add this locale to the supported list if:
+            // 1) this locale has a layout/ 2) this locale has a dictionary and the length
+            // of the locale is equal to or larger than 5.
+            if (!hasLayout && !(hasDictionary && locale.toString().length() >= 5)) {
                 continue;
             }
             CheckBoxPreference pref = new CheckBoxPreference(this);
@@ -102,6 +107,7 @@ public class InputLanguageSelection extends PreferenceActivity {
             if (hasDictionary) {
                 pref.setSummary(R.string.has_dictionary);
             }
+            mLocaleMap.put(pref, locale);
             parent.addPreference(pref);
         }
     }
@@ -135,11 +141,16 @@ public class InputLanguageSelection extends PreferenceActivity {
             }
             bd.close();
 
-            final String countryCode = locale.getLanguage();
-            final String layoutCountryCode = KeyboardParser.parseKeyboardLocale(
-                    this, R.xml.kbd_qwerty);
-            if (!TextUtils.isEmpty(countryCode) && !TextUtils.isEmpty(layoutCountryCode)) {
-                hasLayout = countryCode.subSequence(0, 2).equals(layoutCountryCode.substring(0, 2));
+            final String localeStr = locale.toString();
+            final String[] layoutCountryCodes = KeyboardParser.parseKeyboardLocale(
+                    this, R.xml.kbd_qwerty).split(",", -1);
+            if (!TextUtils.isEmpty(localeStr) && layoutCountryCodes.length > 0) {
+                for (String s : layoutCountryCodes) {
+                    if (s.equals(localeStr)) {
+                        hasLayout = true;
+                        break;
+                    }
+                }
             }
         } catch (XmlPullParserException e) {
         } catch (IOException e) {
@@ -170,8 +181,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < count; i++) {
             CheckBoxPreference pref = (CheckBoxPreference) parent.getPreference(i);
             if (pref.isChecked()) {
-                Locale locale = mAvailableLanguages.get(i).mLocale;
-                checkedLanguages += get5Code(locale) + ",";
+                checkedLanguages += get5Code(mLocaleMap.get(pref)) + ",";
             }
         }
         if (checkedLanguages.length() < 1) checkedLanguages = null; // Save null
