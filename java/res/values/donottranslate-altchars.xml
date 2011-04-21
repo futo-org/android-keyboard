@@ -48,8 +48,8 @@
     <string name="alternates_for_currency_euro">¢,£,$,¥,₱</string>
     <string name="alternates_for_currency_pound">¢,$,€,¥,₱</string>
     <string name="alternates_for_smiley">":-)|:-) ,:-(|:-( ,;-)|;-) ,:-P|:-P ,=-O|=-O ,:-*|:-* ,:O|:O ,B-)|B-) ,:-$|:-$ ,:-!|:-! ,:-[|:-[ ,O:-)|O:-) ,:-\\\\\\\\|:-\\\\\\\\ ,:\'(|:\'( ,:-D|:-D "</string>
-    <string name="alternates_for_punctuation">"\?,!,\\,,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
-    <string name="alternates_for_web_tab_punctuation">".,\?,!,\\,,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
+    <string name="alternates_for_punctuation">"\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
+    <string name="alternates_for_web_tab_punctuation">".,\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
     <string name="keylabel_for_popular_domain">".com"</string>
     <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
     <string name="alternates_for_popular_domain">".net,.org,.gov,.edu"</string>

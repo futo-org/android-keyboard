@@ -901,15 +901,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void onComputeInsets(InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
         final KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        if (inputView == null)
+            return;
+        final int containerHeight = mCandidateViewContainer.getHeight();
+        int touchY = containerHeight;
         // Need to set touchable region only if input view is being shown
-        if (inputView != null && mKeyboardSwitcher.isInputViewShown()) {
-            final int containerHeight = mCandidateViewContainer.getHeight();
-            int touchY = containerHeight;
+        if (mKeyboardSwitcher.isInputViewShown()) {
             if (mCandidateViewContainer.getVisibility() == View.VISIBLE) {
                 touchY -= mCandidateStripHeight;
             }
-            outInsets.contentTopInsets = touchY;
-            outInsets.visibleTopInsets = touchY;
             final int touchWidth = inputView.getWidth();
             final int touchHeight = inputView.getHeight() + containerHeight
                     // Extend touchable region below the keyboard.
@@ -920,6 +920,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             setTouchableRegionCompat(outInsets, 0, touchY, touchWidth, touchHeight);
         }
+        outInsets.contentTopInsets = touchY;
+        outInsets.visibleTopInsets = touchY;
     }
 
     @Override

@@ -338,10 +338,6 @@ public class Key {
         mPressed = false;
     }
 
-    public boolean isInside(int x, int y) {
-        return mKeyboard.isInside(this, x, y);
-    }
-
     /**
      * Detects if a point falls on this key.
      * @param x the x-coordinate of the point

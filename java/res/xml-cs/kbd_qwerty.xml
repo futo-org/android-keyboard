@@ -28,6 +28,7 @@
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
     latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
+    latin:keyboardLocale="cs"
 >
     <include
         latin:keyboardLayout="@xml/kbd_qwertz_rows" />
