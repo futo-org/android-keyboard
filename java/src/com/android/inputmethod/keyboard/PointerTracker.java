@@ -560,15 +560,24 @@ public class PointerTracker {
         }
     }
 
-    private void showKeyPreview(int keyIndex) {
+    // The modifier key, such as shift key, should not show its key preview. If accessibility is
+    // turned on, the modifier key should show its key preview.
+    private boolean isKeyPreviewNotRequired(int keyIndex) {
         final Key key = getKey(keyIndex);
-        if (key != null && !key.mEnabled)
-            return;
-        // The modifier key, such as shift key, should not be shown as preview when multi-touch is
-        // supported. On the other hand, if multi-touch is not supported, the modifier key should
-        // be shown as preview. If accessibility is turned on, the modifier key should be shown as
-        // preview.
-        if (mHasDistinctMultitouch && isModifier() && !mIsAccessibilityEnabled)
+        if (!key.mEnabled)
+            return true;
+        if (mIsAccessibilityEnabled)
+            return false;
+        // Such as spacebar sliding language switch.
+        if (mKeyboard.needSpacebarPreview(keyIndex))
+            return false;
+        final int code = key.mCode;
+        return isModifierCode(code) || code == Keyboard.CODE_DELETE
+                || code == Keyboard.CODE_ENTER || code == Keyboard.CODE_SPACE;
+    }
+
+    private void showKeyPreview(int keyIndex) {
+        if (isKeyPreviewNotRequired(keyIndex))
             return;
         mProxy.showKeyPreview(keyIndex, this);
     }
