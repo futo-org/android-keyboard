@@ -68,7 +68,6 @@ public class Settings extends PreferenceActivity
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
-    public static final String PREF_LANGUAGE_SELECTION = "language_selection";
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
@@ -152,7 +151,8 @@ public class Settings extends PreferenceActivity
 
         final boolean showSubtypeSettings = getResources().getBoolean(
                 R.bool.config_enable_show_subtype_settings);
-        if (!showSubtypeSettings) {
+        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED
+                && !showSubtypeSettings) {
             generalSettings.removePreference(findPreference(PREF_SUBTYPES));
         }
 
@@ -184,10 +184,6 @@ public class Settings extends PreferenceActivity
                 R.bool.config_enable_usability_study_mode_option);
         if (!showUsabilityModeStudyOption) {
             getPreferenceScreen().removePreference(findPreference(PREF_USABILITY_STUDY_MODE));
-        }
-
-        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
-            generalSettings.removePreference(findPreference(PREF_LANGUAGE_SELECTION));
         }
     }
 

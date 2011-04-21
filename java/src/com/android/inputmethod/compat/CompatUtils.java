@@ -40,8 +40,9 @@ public class CompatUtils {
             int flagsForSubtypeSettings) {
         final String action;
         Intent intent;
-        if (android.os.Build.VERSION.SDK_INT
-                >= /* android.os.Build.VERSION_CODES.HONEYCOMB */ 11) {
+        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED
+                /* android.os.Build.VERSION_CODES.HONEYCOMB */
+                && android.os.Build.VERSION.SDK_INT >=  11) {
             // Refer to android.provider.Settings.ACTION_INPUT_METHOD_SUBTYPE_SETTINGS
             action = INPUT_METHOD_SUBTYPE_SETTINGS;
             intent = new Intent(action);
