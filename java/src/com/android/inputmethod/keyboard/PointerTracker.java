@@ -392,7 +392,7 @@ public class PointerTracker {
                 startLongPressTimer(keyIndex);
                 showKeyPreview(keyIndex);
                 setPressedKeyGraphics(keyIndex);
-            } else if (!isMinorMoveBounce(x, y, keyIndex)) {
+            } else if (isMajorEnoughMoveToBeOnNewKey(x, y, keyIndex)) {
                 // The pointer has been slid in to the new key from the previous key, we must call
                 // onRelease() first to notify that the previous key has been released, then call
                 // onPress() to notify that the new key is being pressed.
@@ -430,9 +430,12 @@ public class PointerTracker {
                     }
                     return;
                 }
+            } else if (mKeyboard.needSpacebarPreview(keyIndex)) {
+                // Display spacebar slide language switcher.
+                showKeyPreview(keyIndex);
             }
         } else {
-            if (oldKey != null && !isMinorMoveBounce(x, y, keyIndex)) {
+            if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, keyIndex)) {
                 // The pointer has been slid out from the previous key, we must call onRelease() to
                 // notify that the previous key has been released.
                 setReleasedKeyGraphics(oldKeyIndex);
@@ -483,7 +486,7 @@ public class PointerTracker {
         mIsInSlidingKeyInput = false;
         final PointerTrackerKeyState keyState = mKeyState;
         final int keyX, keyY;
-        if (!isMinorMoveBounce(x, y, keyState.onMoveKey(x, y))) {
+        if (isMajorEnoughMoveToBeOnNewKey(x, y, keyState.onMoveKey(x, y))) {
             keyX = x;
             keyY = y;
         } else {
@@ -544,16 +547,16 @@ public class PointerTracker {
         return mKeyState.getDownTime();
     }
 
-    private boolean isMinorMoveBounce(int x, int y, int newKey) {
+    private boolean isMajorEnoughMoveToBeOnNewKey(int x, int y, int newKey) {
         if (mKeys == null || mKeyHysteresisDistanceSquared < 0)
             throw new IllegalStateException("keyboard and/or hysteresis not set");
         int curKey = mKeyState.getKeyIndex();
         if (newKey == curKey) {
-            return true;
-        } else if (isValidKeyIndex(curKey)) {
-            return mKeys.get(curKey).squaredDistanceToEdge(x, y) < mKeyHysteresisDistanceSquared;
-        } else {
             return false;
+        } else if (isValidKeyIndex(curKey)) {
+            return mKeys.get(curKey).squaredDistanceToEdge(x, y) >= mKeyHysteresisDistanceSquared;
+        } else {
+            return true;
         }
     }
 

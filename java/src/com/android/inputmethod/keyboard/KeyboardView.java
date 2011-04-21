@@ -889,8 +889,11 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     @Override
     public void showKeyPreview(int keyIndex, PointerTracker tracker) {
-        if (mShowKeyPreview || mKeyboard.needSpacebarPreview(keyIndex)) {
+        if (mShowKeyPreview) {
             mHandler.showKeyPreview(mDelayBeforePreview, keyIndex, tracker);
+        } else if (mKeyboard.needSpacebarPreview(keyIndex)) {
+            // Show key preview (in this case, slide language switcher) without any delay.
+            showKey(keyIndex, tracker);
         }
     }
 
@@ -899,6 +902,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         if (mShowKeyPreview) {
             mHandler.cancelShowKeyPreview(tracker);
             mHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
+        } else if (mKeyboard.needSpacebarPreview(KeyDetector.NOT_A_KEY)) {
+            // Dismiss key preview (in this case, slide language switcher) without any delay.
+            mPreviewText.setVisibility(View.INVISIBLE);
         }
     }
 
