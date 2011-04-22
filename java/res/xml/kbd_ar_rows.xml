@@ -87,7 +87,7 @@
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="10%p"
+        latin:keyWidth="9.7%p"
     >
         <Key
             latin:keyLabel="ظ"
@@ -112,7 +112,7 @@
             latin:keyLabel="ث" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:visualInsetsLeft="2%p"
+            latin:keyWidth="12%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />
