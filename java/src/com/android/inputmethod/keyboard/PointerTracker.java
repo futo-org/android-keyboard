@@ -251,6 +251,10 @@ public class PointerTracker {
         return key != null && key.mCode == Keyboard.CODE_SHIFT;
     }
 
+    public int getKeyIndexOn(int x, int y) {
+        return mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
+    }
+
     public boolean isSpaceKey(int keyIndex) {
         Key key = getKey(keyIndex);
         return key != null && key.mCode == Keyboard.CODE_SPACE;
@@ -355,14 +359,7 @@ public class PointerTracker {
             if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex), false))
                 keyIndex = mKeyState.onDownKey(x, y, eventTime);
 
-            // Accessibility disables key repeat because users may need to pause on a key to hear
-            // its spoken description.
-            final Key key = getKey(keyIndex);
-            if (key != null && key.mRepeatable && !mIsAccessibilityEnabled) {
-                repeatKey(keyIndex);
-                mHandler.startKeyRepeatTimer(mDelayBeforeKeyRepeatStart, keyIndex, this);
-                mIsRepeatableKey = true;
-            }
+            startRepeatKey(keyIndex);
             startLongPressTimer(keyIndex);
             showKeyPreview(keyIndex);
             setPressedKeyGraphics(keyIndex);
@@ -414,7 +411,8 @@ public class PointerTracker {
                 setReleasedKeyGraphics(oldKeyIndex);
                 callListenerOnRelease(oldKey, oldKey.mCode, true);
                 startSlidingKeyInput(oldKey);
-                mHandler.cancelLongPressTimers();
+                mHandler.cancelKeyTimers();
+                startRepeatKey(keyIndex);
                 if (mIsAllowedSlidingKeyInput) {
                     // This onPress call may have changed keyboard layout. Those cases are detected
                     // at {@link #setKeyboard}. In those cases, we should update keyIndex according
@@ -576,7 +574,21 @@ public class PointerTracker {
         mIsInSlidingKeyInput = false;
     }
 
-    public void repeatKey(int keyIndex) {
+    private void startRepeatKey(int keyIndex) {
+        // Accessibility disables key repeat because users may need to pause on a key to hear
+        // its spoken description.
+        final Key key = getKey(keyIndex);
+        if (key != null && key.mRepeatable && !mIsAccessibilityEnabled) {
+            dismissKeyPreview();
+            onRepeatKey(keyIndex);
+            mHandler.startKeyRepeatTimer(mDelayBeforeKeyRepeatStart, keyIndex, this);
+            mIsRepeatableKey = true;
+        } else {
+            mIsRepeatableKey = false;
+        }
+    }
+
+    public void onRepeatKey(int keyIndex) {
         Key key = getKey(keyIndex);
         if (key != null) {
             detectAndSendKey(keyIndex, key.mX, key.mY);
