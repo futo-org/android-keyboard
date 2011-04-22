@@ -541,7 +541,6 @@ public class PointerTracker {
                 // This will change keyboard layout.
                 mListener.onCodeInput(code, new int[] {code}, keyX, keyY);
             }
-            ((LatinKeyboard)mKeyboard).updateSpacebarPreviewIcon(0);
             mIsInSlidingLanguageSwitch = false;
             return;
         }

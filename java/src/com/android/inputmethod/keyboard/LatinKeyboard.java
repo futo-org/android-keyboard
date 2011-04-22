@@ -64,7 +64,7 @@ public class LatinKeyboard extends Keyboard {
     private final int mSpacebarTextShadowColor;
     private float mSpacebarTextFadeFactor = 0.0f;
     private final int mSpacebarLanguageSwitchThreshold;
-    private int mSpacebarLanguageSwitchDiff;
+    private int mSpacebarSlidingLanguageSwitchDiff;
     private SlidingLocaleDrawable mSlidingLocaleIcon;
     private final HashMap<Integer, SoftReference<BitmapDrawable>> mSpaceDrawableCache =
             new HashMap<Integer, SoftReference<BitmapDrawable>>();
@@ -323,10 +323,14 @@ public class LatinKeyboard extends Keyboard {
         return buffer;
     }
 
+    public void setSpacebarSlidingLanguageSwitchDiff(int diff) {
+        mSpacebarSlidingLanguageSwitchDiff = diff;
+    }
+
     public void updateSpacebarPreviewIcon(int diff) {
-        if (mSpacebarLanguageSwitchDiff == diff)
+        if (mSpacebarSlidingLanguageSwitchDiff == diff)
             return;
-        mSpacebarLanguageSwitchDiff = diff;
+        mSpacebarSlidingLanguageSwitchDiff = diff;
         if (mSlidingLocaleIcon == null) {
             final int width = Math.max(mSpaceKey.mWidth,
                     (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
@@ -366,15 +370,16 @@ public class LatinKeyboard extends Keyboard {
             return false;
         // The language switcher will be displayed only when the dragging distance is greater
         // than the threshold.
-        return shouldTriggerSpacebarSlidingLanguageSwitch(mSpacebarLanguageSwitchDiff);
+        return shouldTriggerSpacebarSlidingLanguageSwitch(mSpacebarSlidingLanguageSwitchDiff);
     }
 
     public int getLanguageChangeDirection() {
-        if (mSpaceKey == null || mSubtypeSwitcher.getEnabledKeyboardLocaleCount() <= 1 || Math.abs(
-                mSpacebarLanguageSwitchDiff) < getMostCommonKeyWidth() * SPACEBAR_DRAG_WIDTH) {
+        if (mSpaceKey == null || mSubtypeSwitcher.getEnabledKeyboardLocaleCount() <= 1
+                || Math.abs(mSpacebarSlidingLanguageSwitchDiff)
+                    < getMostCommonKeyWidth() * SPACEBAR_DRAG_WIDTH) {
             return 0; // No change
         }
-        return mSpacebarLanguageSwitchDiff > 0 ? 1 : -1;
+        return mSpacebarSlidingLanguageSwitchDiff > 0 ? 1 : -1;
     }
 
     @Override
