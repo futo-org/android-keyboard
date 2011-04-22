@@ -33,6 +33,7 @@ public class DebugSettings extends PreferenceActivity
 
     private boolean mServiceNeedsRestart = false;
     private CheckBoxPreference mDebugMode;
+    private CheckBoxPreference mUseSpacebarLanguageSwitch;
 
     @Override
     protected void onCreate(Bundle icicle) {
@@ -59,6 +60,13 @@ public class DebugSettings extends PreferenceActivity
                 mDebugMode.setChecked(prefs.getBoolean(DEBUG_MODE_KEY, false));
                 updateDebugMode();
                 mServiceNeedsRestart = true;
+            }
+        } else if (key.equals(SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCH_KEY)) {
+            if (mUseSpacebarLanguageSwitch != null) {
+                mUseSpacebarLanguageSwitch.setChecked(
+                        prefs.getBoolean(SubtypeSwitcher.USE_SPACEBAR_LANGUAGE_SWITCH_KEY,
+                                getResources().getBoolean(
+                                        R.bool.config_use_spacebar_language_switcher)));
             }
         }
     }

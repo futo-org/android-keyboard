@@ -61,6 +61,8 @@
     <string name="prefs_suggestion_visibility_show_name">Always show</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name">Show on portrait mode</string>
     <string name="prefs_suggestion_visibility_hide_name">Always hide</string>
+    <!-- Option to enable spacebar language switcher [CHAR LIMIT=20]-->
+    <string name="prefs_use_spacebar_language_switch">Use the spacebar language switcher</string>
 
     <!-- Option to show/hide the settings key -->
     <string name="prefs_settings_key">Show settings key</string>
