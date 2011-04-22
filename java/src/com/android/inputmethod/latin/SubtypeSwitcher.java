@@ -52,6 +52,8 @@ public class SubtypeSwitcher {
     private static final String VOICE_MODE = "voice";
     private static final String SUBTYPE_EXTRAVALUE_REQUIRE_NETWORK_CONNECTIVITY =
             "requireNetworkConnectivity";
+    public static final String USE_SPACEBAR_LANGUAGE_SWITCH_KEY = "use_spacebar_language_switch";
+
     private final TextUtils.SimpleStringSplitter mLocaleSplitter =
             new TextUtils.SimpleStringSplitter(LOCALE_SEPARATER);
 
@@ -61,6 +63,7 @@ public class SubtypeSwitcher {
     private /* final */ Resources mResources;
     private /* final */ ConnectivityManager mConnectivityManager;
     private /* final */ boolean mConfigUseSpacebarLanguageSwitcher;
+    private /* final */ SharedPreferences mPrefs;
     private final ArrayList<InputMethodSubtypeCompatWrapper>
             mEnabledKeyboardSubtypesOfCurrentInputMethod =
                     new ArrayList<InputMethodSubtypeCompatWrapper>();
@@ -112,10 +115,8 @@ public class SubtypeSwitcher {
         mInputLocaleStr = null;
         mCurrentSubtype = null;
         mAllEnabledSubtypesOfCurrentInputMethod = null;
-        // TODO: Voice input should be created here
         mVoiceInputWrapper = null;
-        mConfigUseSpacebarLanguageSwitcher = service.getResources().getBoolean(
-                R.bool.config_use_spacebar_language_switcher);
+        mPrefs = prefs;
 
         final NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
         mIsNetworkConnected = (info != null && info.isConnected());
@@ -133,6 +134,9 @@ public class SubtypeSwitcher {
     // Update parameters which are changed outside LatinIME. This parameters affect UI so they
     // should be updated every time onStartInputview.
     public void updateParametersOnStartInputView() {
+        mConfigUseSpacebarLanguageSwitcher = mPrefs.getBoolean(USE_SPACEBAR_LANGUAGE_SWITCH_KEY,
+                mService.getResources().getBoolean(
+                        R.bool.config_use_spacebar_language_switcher));
         updateEnabledSubtypes();
         updateShortcutIME();
     }
