@@ -131,8 +131,8 @@ public class LatinKeyboard extends Keyboard {
         mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
-        // The threshold is "key width" x 1.5
-        mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 3) / 2;
+        // The threshold is "key width" x 1.25
+        mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 5) / 4;
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {

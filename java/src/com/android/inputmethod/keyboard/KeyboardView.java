@@ -139,6 +139,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
+    private int mOldKeyIndex;
 
     // Accessibility
     private boolean mIsAccessibilityEnabled;
@@ -202,7 +203,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                     break;
                 case MSG_REPEAT_KEY: {
                     final PointerTracker tracker = (PointerTracker)msg.obj;
-                    tracker.repeatKey(msg.arg1);
+                    tracker.onRepeatKey(msg.arg1);
                     startKeyRepeatTimer(mKeyRepeatInterval, msg.arg1, tracker);
                     break;
                 }
@@ -1270,10 +1271,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         }
 
         if (mHandler.isInKeyRepeat()) {
-            // It will keep being in the key repeating mode while the key is being pressed.
-            if (action == MotionEvent.ACTION_MOVE) {
-                return true;
-            }
             final PointerTracker tracker = getPointerTracker(id);
             // Key repeating timer will be canceled if 2 or more keys are in action, and current
             // event (UP or DOWN) is non-modifier key.
@@ -1291,12 +1288,21 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             PointerTracker tracker = getPointerTracker(0);
             if (pointerCount == 1 && oldPointerCount == 2) {
                 // Multi-touch to single touch transition.
-                // Send a down event for the latest pointer.
-                tracker.onDownEvent(x, y, eventTime, null);
+                // Send a down event for the latest pointer if the key is different from the
+                // previous key.
+                final int newKeyIndex = tracker.getKeyIndexOn(x, y);
+                if (mOldKeyIndex != newKeyIndex) {
+                    tracker.onDownEvent(x, y, eventTime, null);
+                    if (action == MotionEvent.ACTION_UP)
+                        tracker.onUpEvent(x, y, eventTime, null);
+                }
             } else if (pointerCount == 2 && oldPointerCount == 1) {
                 // Single-touch to multi-touch transition.
                 // Send an up event for the last pointer.
-                tracker.onUpEvent(tracker.getLastX(), tracker.getLastY(), eventTime, null);
+                final int lastX = tracker.getLastX();
+                final int lastY = tracker.getLastY();
+                mOldKeyIndex = tracker.getKeyIndexOn(lastX, lastY);
+                tracker.onUpEvent(lastX, lastY, eventTime, null);
             } else if (pointerCount == 1 && oldPointerCount == 1) {
                 tracker.onTouchEvent(action, x, y, eventTime, null);
             } else {

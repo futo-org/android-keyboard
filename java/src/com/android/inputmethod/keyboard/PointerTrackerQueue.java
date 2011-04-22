@@ -35,7 +35,7 @@ public class PointerTrackerQueue {
             if (t.isModifier()) {
                 oldestPos++;
             } else {
-                t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime, false);
+                t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime, true);
                 queue.remove(oldestPos);
             }
         }
