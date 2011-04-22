@@ -36,6 +36,13 @@
             />
 
     <CheckBoxPreference
+            android:key="use_spacebar_language_switch"
+            android:title="@string/prefs_use_spacebar_language_switch"
+            android:persistent="true"
+            android:defaultValue="false"
+            />
+
+    <CheckBoxPreference
             android:key="debug_mode"
             android:title="@string/prefs_debug_mode"
             android:persistent="true"

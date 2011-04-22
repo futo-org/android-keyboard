@@ -66,8 +66,8 @@
             android:summary="@string/language_selection_summary" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:title="@string/prediction_category"
-        android:key="prediction_settings">
+        android:title="@string/correction_category"
+        android:key="correction_settings">
         <CheckBoxPreference
             android:key="quick_fixes"
             android:title="@string/quick_fixes"
@@ -90,31 +90,46 @@
             android:entryValues="@array/prefs_suggestion_visibility_values"
             android:entries="@array/prefs_suggestion_visibilities"
             android:defaultValue="@string/prefs_suggestion_visibility_default_value" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/ngram_category"
+        android:key="ngram_settings">
         <CheckBoxPreference
             android:key="bigram_suggestion"
             android:title="@string/bigram_suggestion"
             android:summary="@string/bigram_suggestion_summary"
             android:persistent="true"
             android:defaultValue="true" />
+        <CheckBoxPreference
+            android:key="bigram_prediction"
+            android:dependency="bigram_suggestion"
+            android:title="@string/bigram_prediction"
+            android:summary="@string/bigram_prediction_summary"
+            android:persistent="true"
+            android:defaultValue="false" />
     </PreferenceCategory>
-    <CheckBoxPreference
-        android:key="usability_study_mode"
-        android:title="@string/prefs_usability_study_mode"
-        android:persistent="true"
-        android:defaultValue="false" />
-    <CheckBoxPreference
-        android:key="enable_logging"
-        android:title="@string/prefs_enable_log"
-        android:summary="@string/prefs_description_log"
-        android:persistent="true"
-        android:defaultValue="true" />
-    <ListPreference
-        android:key="pref_keyboard_layout_20100902"
-        android:title="@string/keyboard_layout"
-        android:persistent="true"
-        android:entryValues="@array/keyboard_layout_modes_values"
-        android:entries="@array/keyboard_layout_modes"
-        android:defaultValue="@string/config_default_keyboard_theme_id" />
+    <PreferenceCategory
+        android:title="@string/misc_category"
+        android:key="misc_settings">
+      <CheckBoxPreference
+          android:key="usability_study_mode"
+          android:title="@string/prefs_usability_study_mode"
+          android:persistent="true"
+          android:defaultValue="false" />
+      <CheckBoxPreference
+          android:key="enable_logging"
+          android:title="@string/prefs_enable_log"
+          android:summary="@string/prefs_description_log"
+          android:persistent="true"
+          android:defaultValue="true" />
+      <ListPreference
+          android:key="pref_keyboard_layout_20100902"
+          android:title="@string/keyboard_layout"
+          android:persistent="true"
+          android:entryValues="@array/keyboard_layout_modes_values"
+          android:entries="@array/keyboard_layout_modes"
+          android:defaultValue="@string/config_default_keyboard_theme_id" />
+    </PreferenceCategory>
     <!-- <Preference
         android:title="Debug Settings"
         android:key="debug_settings">

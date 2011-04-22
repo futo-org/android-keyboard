@@ -265,6 +265,16 @@ public class Suggest implements Dictionary.WordCallback {
         return sb;
     }
 
+    protected void addBigramToSuggestions(CharSequence bigram) {
+        final int poolSize = mStringPool.size();
+        final StringBuilder sb = poolSize > 0 ?
+                (StringBuilder) mStringPool.remove(poolSize - 1)
+                        : new StringBuilder(getApproxMaxWordLength());
+        sb.setLength(0);
+        sb.append(bigram);
+        mSuggestions.add(sb);
+    }
+
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
     public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
             CharSequence prevWordForBigram) {
@@ -286,7 +296,7 @@ public class Suggest implements Dictionary.WordCallback {
         }
         mTypedWord = typedWord;
 
-        if (wordComposer.size() == 1 && (mCorrectionMode == CORRECTION_FULL_BIGRAM
+        if (wordComposer.size() <= 1 && (mCorrectionMode == CORRECTION_FULL_BIGRAM
                 || mCorrectionMode == CORRECTION_BASIC)) {
             // At first character typed, search only the bigrams
             Arrays.fill(mBigramScores, 0);
@@ -300,21 +310,26 @@ public class Suggest implements Dictionary.WordCallback {
                 for (final Dictionary dictionary : mBigramDictionaries.values()) {
                     dictionary.getBigrams(wordComposer, prevWordForBigram, this);
                 }
-                char currentChar = wordComposer.getTypedWord().charAt(0);
-                char currentCharUpper = Character.toUpperCase(currentChar);
-                int count = 0;
-                int bigramSuggestionSize = mBigramSuggestions.size();
-                for (int i = 0; i < bigramSuggestionSize; i++) {
-                    if (mBigramSuggestions.get(i).charAt(0) == currentChar
-                            || mBigramSuggestions.get(i).charAt(0) == currentCharUpper) {
-                        int poolSize = mStringPool.size();
-                        StringBuilder sb = poolSize > 0 ?
-                                (StringBuilder) mStringPool.remove(poolSize - 1)
-                                : new StringBuilder(getApproxMaxWordLength());
-                        sb.setLength(0);
-                        sb.append(mBigramSuggestions.get(i));
-                        mSuggestions.add(count++, sb);
-                        if (count > mPrefMaxSuggestions) break;
+                if (TextUtils.isEmpty(typedWord)) {
+                    // Nothing entered: return all bigrams for the previous word
+                    int insertCount = Math.min(mBigramSuggestions.size(), mPrefMaxSuggestions);
+                    for (int i = 0; i < insertCount; ++i) {
+                        addBigramToSuggestions(mBigramSuggestions.get(i));
+                    }
+                } else {
+                    // Word entered: return only bigrams that match the first char of the typed word
+                    final char currentChar = typedWord.charAt(0);
+                    final char currentCharUpper = Character.toUpperCase(currentChar);
+                    int count = 0;
+                    final int bigramSuggestionSize = mBigramSuggestions.size();
+                    for (int i = 0; i < bigramSuggestionSize; i++) {
+                        final CharSequence bigramSuggestion = mBigramSuggestions.get(i);
+                        final char bigramSuggestionFirstChar = bigramSuggestion.charAt(0);
+                        if (bigramSuggestionFirstChar == currentChar
+                                || bigramSuggestionFirstChar == currentCharUpper) {
+                            addBigramToSuggestions(bigramSuggestion);
+                            if (++count > mPrefMaxSuggestions) break;
+                        }
                     }
                 }
             }

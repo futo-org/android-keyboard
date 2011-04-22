@@ -68,11 +68,6 @@ public class LatinKeyboardView extends KeyboardView {
 
     @Override
     public void setKeyboard(Keyboard newKeyboard) {
-        final LatinKeyboard oldKeyboard = getLatinKeyboard();
-        if (oldKeyboard != null) {
-            // Reset old keyboard state before switching to new keyboard.
-            oldKeyboard.keyReleased();
-        }
         super.setKeyboard(newKeyboard);
         // One-seventh of the keyboard width seems like a reasonable threshold
         mJumpThresholdSquare = newKeyboard.getMinWidth() / 7;
@@ -216,32 +211,13 @@ public class LatinKeyboardView extends KeyboardView {
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-        LatinKeyboard keyboard = getLatinKeyboard();
-        if (keyboard == null) return true;
+        if (getLatinKeyboard() == null) return true;
 
         // If there was a sudden jump, return without processing the actual motion event.
         if (handleSuddenJump(me)) {
             if (DEBUG_MODE)
                 Log.w(TAG, "onTouchEvent: ignore sudden jump " + me);
             return true;
-        }
-
-        // Reset any bounding box controls in the keyboard
-        if (me.getAction() == MotionEvent.ACTION_DOWN) {
-            keyboard.keyReleased();
-        }
-
-        if (me.getAction() == MotionEvent.ACTION_UP) {
-            int languageDirection = keyboard.getLanguageChangeDirection();
-            if (languageDirection != 0) {
-                getOnKeyboardActionListener().onCodeInput(
-                        languageDirection == 1
-                        ? Keyboard.CODE_NEXT_LANGUAGE : Keyboard.CODE_PREV_LANGUAGE,
-                        null, mLastX, mLastY);
-                me.setAction(MotionEvent.ACTION_CANCEL);
-                keyboard.keyReleased();
-                return super.onTouchEvent(me);
-            }
         }
 
         return super.onTouchEvent(me);

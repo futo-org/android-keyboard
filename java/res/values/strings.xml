@@ -38,7 +38,13 @@
     <string name="general_category">General</string>
 
     <!-- Category title for text prediction -->
-    <string name="prediction_category">Text correction</string>
+    <string name="correction_category">Text correction</string>
+
+    <!-- Category title for ngrams  -->
+    <string name="ngram_category">Suggestions based on previous words</string>
+
+    <!-- Category title for misc options  -->
+    <string name="misc_category">Other options</string>
 
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
@@ -55,6 +61,8 @@
     <string name="prefs_suggestion_visibility_show_name">Always show</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name">Show on portrait mode</string>
     <string name="prefs_suggestion_visibility_hide_name">Always hide</string>
+    <!-- Option to enable spacebar language switcher [CHAR LIMIT=20]-->
+    <string name="prefs_use_spacebar_language_switch">Use the spacebar language switcher</string>
 
     <!-- Option to show/hide the settings key -->
     <string name="prefs_settings_key">Show settings key</string>
@@ -78,9 +86,13 @@
     <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
 
     <!-- Option to enable bigram correction -->
-    <string name="bigram_suggestion">Bigram Suggestions</string>
+    <string name="bigram_suggestion">Bigram suggestions</string>
     <!-- Description for auto correction -->
     <string name="bigram_suggestion_summary">Use previous word to improve suggestion</string>
+    <!-- Option to enable using user-history bigram when no input -->
+    <string name="bigram_prediction">Bigram prediction</string>
+    <!-- Description for auto correction -->
+    <string name="bigram_prediction_summary">Use previous word also for prediction</string>
 
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>

@@ -197,6 +197,11 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(mBigramScores, 0);
 
         int codesSize = codes.size();
+        if (codesSize <= 0) {
+            // Do not return bigrams from BinaryDictionary when nothing was typed.
+            // Only use user-history bigrams (or whatever other bigram dictionaries decide).
+            return;
+        }
         Arrays.fill(mInputCodes, -1);
         int[] alternatives = codes.getCodesAt(0);
         System.arraycopy(alternatives, 0, mInputCodes, 0,

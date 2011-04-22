@@ -73,7 +73,7 @@
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="micKeyStyle"
-                latin:code="@integer/key_voice"
+                latin:code="@integer/key_shortcut"
                 latin:keyIcon="@drawable/sym_keyboard_voice_holo"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:parentStyle="functionalKeyStyle" />
@@ -127,7 +127,7 @@
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="micKeyStyle"
-                latin:code="@integer/key_voice"
+                latin:code="@integer/key_shortcut"
                 latin:keyIcon="@drawable/sym_bkeyboard_mic"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:parentStyle="functionalKeyStyle" />

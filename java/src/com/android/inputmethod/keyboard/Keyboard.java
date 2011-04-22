@@ -68,19 +68,14 @@ public class Keyboard {
     public static final int CODE_DUMMY = 0;
     public static final int CODE_SHIFT = -1;
     public static final int CODE_SWITCH_ALPHA_SYMBOL = -2;
-    public static final int CODE_CANCEL = -3;
-    public static final int CODE_DONE = -4;
+    public static final int CODE_CAPSLOCK = -3;
+    public static final int CODE_CANCEL = -4;
     public static final int CODE_DELETE = -5;
-    public static final int CODE_ALT = -6;
+    public static final int CODE_SETTINGS = -6;
+    public static final int CODE_SETTINGS_LONGPRESS = -7;
+    public static final int CODE_SHORTCUT = -8;
     // Code value representing the code is not specified.
     public static final int CODE_UNSPECIFIED = -99;
-    public static final int CODE_SETTINGS = -100;
-    public static final int CODE_SETTINGS_LONGPRESS = -101;
-    // TODO: remove this once LatinIME stops referring to this.
-    public static final int CODE_VOICE = -102;
-    public static final int CODE_CAPSLOCK = -103;
-    public static final int CODE_NEXT_LANGUAGE = -104;
-    public static final int CODE_PREV_LANGUAGE = -105;
 
     /** Horizontal gap default for all rows */
     private int mDefaultHorizontalGap;

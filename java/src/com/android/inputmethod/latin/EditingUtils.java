@@ -161,23 +161,62 @@ public class EditingUtils {
 
     private static final Pattern spaceRegex = Pattern.compile("\\s+");
 
+
     public static CharSequence getPreviousWord(InputConnection connection,
             String sentenceSeperators) {
         //TODO: Should fix this. This could be slow!
         CharSequence prev = connection.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
-        if (prev == null) {
-            return null;
-        }
+        return getPreviousWord(prev, sentenceSeperators);
+    }
+
+    // Get the word before the whitespace preceding the non-whitespace preceding the cursor.
+    // Also, it won't return words that end in a separator.
+    // Example :
+    // "abc def|" -> abc
+    // "abc def |" -> abc
+    // "abc def. |" -> abc
+    // "abc def . |" -> def
+    // "abc|" -> null
+    // "abc |" -> null
+    // "abc. def|" -> null
+    public static CharSequence getPreviousWord(CharSequence prev, String sentenceSeperators) {
+        if (prev == null) return null;
         String[] w = spaceRegex.split(prev);
-        if (w.length >= 2 && w[w.length-2].length() > 0) {
-            char lastChar = w[w.length-2].charAt(w[w.length-2].length() -1);
-            if (sentenceSeperators.contains(String.valueOf(lastChar))) {
-                return null;
-            }
-            return w[w.length-2];
-        } else {
-            return null;
-        }
+
+        // If we can't find two words, or we found an empty word, return null.
+        if (w.length < 2 || w[w.length - 2].length() <= 0) return null;
+
+        // If ends in a separator, return null
+        char lastChar = w[w.length - 2].charAt(w[w.length - 2].length() - 1);
+        if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
+
+        return w[w.length - 2];
+    }
+
+    public static CharSequence getThisWord(InputConnection connection, String sentenceSeperators) {
+        final CharSequence prev = connection.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
+        return getThisWord(prev, sentenceSeperators);
+    }
+
+    // Get the word immediately before the cursor, even if there is whitespace between it and
+    // the cursor - but not if there is punctuation.
+    // Example :
+    // "abc def|" -> def
+    // "abc def |" -> def
+    // "abc def. |" -> null
+    // "abc def . |" -> null
+    public static CharSequence getThisWord(CharSequence prev, String sentenceSeperators) {
+        if (prev == null) return null;
+        String[] w = spaceRegex.split(prev);
+
+        // No word : return null
+        if (w.length < 1 || w[w.length - 1].length() <= 0) return null;
+
+        // If ends in a separator, return null
+        char lastChar = w[w.length - 1].charAt(w[w.length - 1].length() - 1);
+        if (sentenceSeperators.contains(String.valueOf(lastChar))) return null;
+
+        return w[w.length - 1];
     }
 
     public static class SelectedWord {
