@@ -542,6 +542,7 @@ public class PointerTracker {
                 mListener.onCodeInput(code, new int[] {code}, keyX, keyY);
             }
             mIsInSlidingLanguageSwitch = false;
+            ((LatinKeyboard)mKeyboard).setSpacebarSlidingLanguageSwitchDiff(0);
             return;
         }
         if (!mIsRepeatableKey) {
