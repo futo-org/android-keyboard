@@ -459,7 +459,8 @@ public class PointerTracker {
                         keyboard.updateSpacebarPreviewIcon(diff);
                         // Display spacebar slide language switcher.
                         showKeyPreview(keyIndex);
-                        queue.releaseAllPointersExcept(this, eventTime, true);
+                        if (queue != null)
+                            queue.releaseAllPointersExcept(this, eventTime, true);
                     }
                 }
             }
@@ -551,7 +552,8 @@ public class PointerTracker {
 
     public void onLongPressed(PointerTrackerQueue queue) {
         mKeyAlreadyProcessed = true;
-        queue.remove(this);
+        if (queue != null)
+            queue.remove(this);
     }
 
     public void onCancelEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
