@@ -359,11 +359,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
             if (inputView != null) {
                 final LatinKeyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
+                // The language is always displayed when the delay is negative.
+                final boolean needsToDisplayLanguage = localeChanged
+                        || mConfigDelayBeforeFadeoutLanguageOnSpacebar < 0;
                 // The language is never displayed when the delay is zero.
                 if (mConfigDelayBeforeFadeoutLanguageOnSpacebar != 0)
-                    inputView.setSpacebarTextFadeFactor(localeChanged ? 1.0f
+                    inputView.setSpacebarTextFadeFactor(needsToDisplayLanguage ? 1.0f
                             : mConfigFinalFadeoutFactorOfLanguageOnSpacebar, keyboard);
-                // The language is always displayed when the delay is negative.
+                // The fadeout animation will start when the delay is positive.
                 if (localeChanged && mConfigDelayBeforeFadeoutLanguageOnSpacebar > 0) {
                     sendMessageDelayed(obtainMessage(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR, keyboard),
                             mConfigDelayBeforeFadeoutLanguageOnSpacebar);
@@ -2058,7 +2061,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void onRelease(int primaryCode, boolean withSliding) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         // Reset any drag flags in the keyboard
-        switcher.keyReleased();
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
             switcher.onReleaseShift(withSliding);

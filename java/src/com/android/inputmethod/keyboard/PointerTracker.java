@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import android.content.res.Resources;
 import android.util.Log;
@@ -90,6 +91,12 @@ public class PointerTracker {
     // ignore modifier key if true
     private boolean mIgnoreModifierKey;
 
+    // TODO: Remove these hacking variables
+    // true if this pointer is in sliding language switch
+    private boolean mIsInSlidingLanguageSwitch;
+    private int mSpaceKeyIndex;
+    private final SubtypeSwitcher mSubtypeSwitcher;
+
     // Empty {@link KeyboardActionListener}
     private static final KeyboardActionListener EMPTY_LISTENER = new KeyboardActionListener() {
         @Override
@@ -129,6 +136,7 @@ public class PointerTracker {
                 R.dimen.config_touch_noise_threshold_distance);
         mTouchNoiseThresholdDistanceSquared = (int)(
                 touchNoiseThresholdDistance * touchNoiseThresholdDistance);
+        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
     }
 
     public void setOnKeyboardActionListener(KeyboardActionListener listener) {
@@ -338,6 +346,7 @@ public class PointerTracker {
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
         mIsInSlidingKeyInput = false;
+        mIsInSlidingLanguageSwitch = false;
         mIgnoreModifierKey = false;
         if (isValidKeyIndex(keyIndex)) {
             // This onPress call may have changed keyboard layout. Those cases are detected at
@@ -374,6 +383,12 @@ public class PointerTracker {
             return;
         final PointerTrackerKeyState keyState = mKeyState;
 
+        // TODO: Remove this hacking code
+        if (mIsInSlidingLanguageSwitch) {
+            ((LatinKeyboard)mKeyboard).updateSpacebarPreviewIcon(x - keyState.getKeyX());
+            showKeyPreview(mSpaceKeyIndex);
+            return;
+        }
         final int lastX = keyState.getLastX();
         final int lastY = keyState.getLastY();
         final int oldKeyIndex = keyState.getKeyIndex();
@@ -428,11 +443,25 @@ public class PointerTracker {
                         dismissKeyPreview();
                         setReleasedKeyGraphics(oldKeyIndex);
                     }
-                    return;
                 }
-            } else if (mKeyboard.needSpacebarPreview(keyIndex)) {
-                // Display spacebar slide language switcher.
-                showKeyPreview(keyIndex);
+            }
+            // TODO: Remove this hack code
+            else if (isSpaceKey(keyIndex) && !mIsInSlidingLanguageSwitch
+                    && mKeyboard instanceof LatinKeyboard) {
+                final LatinKeyboard keyboard = ((LatinKeyboard)mKeyboard);
+                if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()
+                        && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1) {
+                    final int diff = x - keyState.getKeyX();
+                    if (keyboard.shouldTriggerSpacebarSlidingLanguageSwitch(diff)) {
+                        // Detect start sliding language switch.
+                        mIsInSlidingLanguageSwitch = true;
+                        mSpaceKeyIndex = keyIndex;
+                        keyboard.updateSpacebarPreviewIcon(diff);
+                        // Display spacebar slide language switcher.
+                        showKeyPreview(keyIndex);
+                        queue.releaseAllPointersExcept(this, eventTime, true);
+                    }
+                }
             }
         } else {
             if (oldKey != null && isMajorEnoughMoveToBeOnNewKey(x, y, keyIndex)) {
@@ -447,7 +476,6 @@ public class PointerTracker {
                 } else {
                     mKeyAlreadyProcessed = true;
                     dismissKeyPreview();
-                    return;
                 }
             }
         }
@@ -462,7 +490,7 @@ public class PointerTracker {
             if (isModifier()) {
                 // Before processing an up event of modifier key, all pointers already being
                 // tracked should be released.
-                queue.releaseAllPointersExcept(this, eventTime);
+                queue.releaseAllPointersExcept(this, eventTime, true);
             } else {
                 queue.releaseAllPointersOlderThan(this, eventTime);
             }
@@ -474,8 +502,10 @@ public class PointerTracker {
     // Let this pointer tracker know that one of newer-than-this pointer trackers got an up event.
     // This pointer tracker needs to keep the key top graphics "pressed", but needs to get a
     // "virtual" up event.
-    public void onPhantomUpEvent(int x, int y, long eventTime) {
-        onUpEventInternal(x, y, eventTime, false);
+    public void onPhantomUpEvent(int x, int y, long eventTime, boolean updateReleasedKeyGraphics) {
+        if (DEBUG_EVENT)
+            printTouchEvent("onPhntEvent:", x, y, eventTime);
+        onUpEventInternal(x, y, eventTime, updateReleasedKeyGraphics);
         mKeyAlreadyProcessed = true;
     }
 
@@ -500,6 +530,20 @@ public class PointerTracker {
             setReleasedKeyGraphics(keyIndex);
         if (mKeyAlreadyProcessed)
             return;
+        // TODO: Remove this hacking code
+        if (mIsInSlidingLanguageSwitch) {
+            setReleasedKeyGraphics(mSpaceKeyIndex);
+            final int languageDir = ((LatinKeyboard)mKeyboard).getLanguageChangeDirection();
+            if (languageDir != 0) {
+                final int code = (languageDir == 1)
+                        ? LatinKeyboard.CODE_NEXT_LANGUAGE : LatinKeyboard.CODE_PREV_LANGUAGE;
+                // This will change keyboard layout.
+                mListener.onCodeInput(code, new int[] {code}, keyX, keyY);
+            }
+            ((LatinKeyboard)mKeyboard).updateSpacebarPreviewIcon(0);
+            mIsInSlidingLanguageSwitch = false;
+            return;
+        }
         if (!mIsRepeatableKey) {
             detectAndSendKey(keyIndex, keyX, keyY);
         }
@@ -515,8 +559,10 @@ public class PointerTracker {
         if (DEBUG_EVENT)
             printTouchEvent("onCancelEvt:", x, y, eventTime);
 
-        if (queue != null)
+        if (queue != null) {
+            queue.releaseAllPointersExcept(this, eventTime, true);
             queue.remove(this);
+        }
         onCancelEventInternal();
     }
 

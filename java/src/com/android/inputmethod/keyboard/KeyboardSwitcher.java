@@ -146,11 +146,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // Update the settings key state because number of enabled IMEs could have been changed
         mSettingsKeyEnabledInSettings = getSettingsKeyMode(mPrefs, mInputMethodService);
         final KeyboardId id = getKeyboardId(attribute, isSymbols);
-
-        final Keyboard oldKeyboard = mInputView.getKeyboard();
-        if (oldKeyboard != null && oldKeyboard.mId.equals(id))
-            return;
-
         makeSymbolsKeyboardIds(id.mMode, attribute);
         mCurrentId = id;
         mInputView.setKeyPreviewEnabled(mInputMethodService.getPopupOn());
@@ -294,12 +289,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 return (LatinKeyboard)keyboard;
         }
         return null;
-    }
-
-    public void keyReleased() {
-        LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null)
-            latinKeyboard.keyReleased();
     }
 
     public boolean isShiftedOrShiftLocked() {

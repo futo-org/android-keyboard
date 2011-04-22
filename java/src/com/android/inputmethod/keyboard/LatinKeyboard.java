@@ -56,17 +56,15 @@ public class LatinKeyboard extends Keyboard {
     private final Key mSpaceKey;
     private final Drawable mSpaceIcon;
     private final Drawable mSpacePreviewIcon;
-    private final int[] mSpaceKeyIndexArray;
+    private final int mSpaceKeyIndex;
     private final Drawable mSpaceAutoCorrectionIndicator;
     private final Drawable mButtonArrowLeftIcon;
     private final Drawable mButtonArrowRightIcon;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
-    private final int mSpacebarVerticalCorrection;
     private float mSpacebarTextFadeFactor = 0.0f;
-    private int mSpaceDragStartX;
-    private int mSpaceDragLastDiff;
-    private boolean mCurrentlyInSpace;
+    private final int mSpacebarLanguageSwitchThreshold;
+    private int mSpacebarLanguageSwitchDiff;
     private SlidingLocaleDrawable mSlidingLocaleIcon;
     private final HashMap<Integer, SoftReference<BitmapDrawable>> mSpaceDrawableCache =
             new HashMap<Integer, SoftReference<BitmapDrawable>>();
@@ -115,7 +113,7 @@ public class LatinKeyboard extends Keyboard {
         mSpaceKey = (spaceKeyIndex >= 0) ? keys.get(spaceKeyIndex) : null;
         mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon() : null;
         mSpacePreviewIcon = (mSpaceKey != null) ? mSpaceKey.getPreviewIcon() : null;
-        mSpaceKeyIndexArray = new int[] { spaceKeyIndex };
+        mSpaceKeyIndex = spaceKeyIndex;
 
         mShortcutKey = (shortcutKeyIndex >= 0) ? keys.get(shortcutKeyIndex) : null;
         mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
@@ -133,8 +131,8 @@ public class LatinKeyboard extends Keyboard {
         mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
         mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
         mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
-        mSpacebarVerticalCorrection = res.getDimensionPixelOffset(
-                R.dimen.spacebar_vertical_correction);
+        // The threshold is "key width" x 1.5
+        mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 3) / 2;
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
@@ -325,7 +323,10 @@ public class LatinKeyboard extends Keyboard {
         return buffer;
     }
 
-    private void updateLocaleDrag(int diff) {
+    public void updateSpacebarPreviewIcon(int diff) {
+        if (mSpacebarLanguageSwitchDiff == diff)
+            return;
+        mSpacebarLanguageSwitchDiff = diff;
         if (mSlidingLocaleIcon == null) {
             final int width = Math.max(mSpaceKey.mWidth,
                     (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
@@ -333,7 +334,6 @@ public class LatinKeyboard extends Keyboard {
             mSlidingLocaleIcon =
                     new SlidingLocaleDrawable(mContext, mSpacePreviewIcon, width, height);
             mSlidingLocaleIcon.setBounds(0, 0, width, height);
-            mSpaceKey.setPreviewIcon(mSlidingLocaleIcon);
         }
         mSlidingLocaleIcon.setDiff(diff);
         if (Math.abs(diff) == Integer.MAX_VALUE) {
@@ -344,85 +344,44 @@ public class LatinKeyboard extends Keyboard {
         mSpaceKey.getPreviewIcon().invalidateSelf();
     }
 
-    // This method is called when "popup on keypress" is off.
+    public boolean shouldTriggerSpacebarSlidingLanguageSwitch(int diff) {
+        return Math.abs(diff) > mSpacebarLanguageSwitchThreshold;
+    }
+
+    /**
+     * Return true if spacebar needs showing preview even when "popup on keypress" is off.
+     * @param keyIndex index of the pressing key
+     * @return true if spacebar needs showing preview
+     */
     @Override
     public boolean needSpacebarPreview(int keyIndex) {
+        // This method is called when "popup on keypress" is off.
         if (!mSubtypeSwitcher.useSpacebarLanguageSwitcher())
             return false;
         // Dismiss key preview.
         if (keyIndex == KeyDetector.NOT_A_KEY)
             return true;
         // Key is not a spacebar.
-        if (keyIndex != mSpaceKeyIndexArray[0])
+        if (keyIndex != mSpaceKeyIndex)
             return false;
         // The language switcher will be displayed only when the dragging distance is greater
-        // than average key width of this keyboard.
-        return Math.abs(mSpaceDragLastDiff) > getMostCommonKeyWidth();
+        // than the threshold.
+        return shouldTriggerSpacebarSlidingLanguageSwitch(mSpacebarLanguageSwitchDiff);
     }
 
     public int getLanguageChangeDirection() {
-        if (mSpaceKey == null || SubtypeSwitcher.getInstance().getEnabledKeyboardLocaleCount() <= 1
-                || Math.abs(mSpaceDragLastDiff) < getMostCommonKeyWidth() * SPACEBAR_DRAG_WIDTH) {
+        if (mSpaceKey == null || mSubtypeSwitcher.getEnabledKeyboardLocaleCount() <= 1 || Math.abs(
+                mSpacebarLanguageSwitchDiff) < getMostCommonKeyWidth() * SPACEBAR_DRAG_WIDTH) {
             return 0; // No change
         }
-        return mSpaceDragLastDiff > 0 ? 1 : -1;
-    }
-
-    public void keyReleased() {
-        mCurrentlyInSpace = false;
-        mSpaceDragLastDiff = 0;
-        if (mSpaceKey != null) {
-            updateLocaleDrag(Integer.MAX_VALUE);
-        }
-    }
-
-    /**
-     * Does the magic of locking the touch gesture into the spacebar when
-     * switching input languages.
-     */
-    @Override
-    public boolean isInside(Key key, int pointX, int pointY) {
-        int x = pointX;
-        int y = pointY;
-        final int code = key.mCode;
-        if (code == CODE_SPACE) {
-            y += mSpacebarVerticalCorrection;
-            if (SubtypeSwitcher.getInstance().useSpacebarLanguageSwitcher()
-                    && SubtypeSwitcher.getInstance().getEnabledKeyboardLocaleCount() > 1) {
-                if (mCurrentlyInSpace) {
-                    int diff = x - mSpaceDragStartX;
-                    if (Math.abs(diff - mSpaceDragLastDiff) > 0) {
-                        updateLocaleDrag(diff);
-                    }
-                    mSpaceDragLastDiff = diff;
-                    return true;
-                } else {
-                    boolean isOnSpace = key.isOnKey(x, y);
-                    if (isOnSpace) {
-                        mCurrentlyInSpace = true;
-                        mSpaceDragStartX = x;
-                        updateLocaleDrag(0);
-                    }
-                    return isOnSpace;
-                }
-            }
-        }
-
-        // Lock into the spacebar
-        if (mCurrentlyInSpace) return false;
-
-        return key.isOnKey(x, y);
+        return mSpacebarLanguageSwitchDiff > 0 ? 1 : -1;
     }
 
     @Override
     public int[] getNearestKeys(int x, int y) {
-        if (mCurrentlyInSpace) {
-            return mSpaceKeyIndexArray;
-        } else {
-            // Avoid dead pixels at edges of the keyboard
-            return super.getNearestKeys(Math.max(0, Math.min(x, getMinWidth() - 1)),
-                    Math.max(0, Math.min(y, getHeight() - 1)));
-        }
+        // Avoid dead pixels at edges of the keyboard
+        return super.getNearestKeys(Math.max(0, Math.min(x, getMinWidth() - 1)),
+                Math.max(0, Math.min(y, getHeight() - 1)));
     }
 
     private static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
