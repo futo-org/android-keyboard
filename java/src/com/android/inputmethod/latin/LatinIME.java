@@ -269,7 +269,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 4;
         private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 5;
         private static final int MSG_SPACE_TYPED = 6;
-        private static final int MSG_SET_BIGRAM_SUGGESTIONS = 7;
+        private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
 
         @Override
         public void handleMessage(Message msg) {
@@ -285,8 +285,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
                 break;
-            case MSG_SET_BIGRAM_SUGGESTIONS:
-                updateBigramSuggestions();
+            case MSG_SET_BIGRAM_PREDICTIONS:
+                updateBigramPredictions();
                 break;
             case MSG_VOICE_RESULTS:
                 mVoiceProxy.handleVoiceResults(preferCapitalization()
@@ -340,13 +340,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             removeMessages(MSG_UPDATE_SHIFT_STATE);
         }
 
-        public void postSetBigramSuggestions() {
-            removeMessages(MSG_SET_BIGRAM_SUGGESTIONS);
-            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_SUGGESTIONS), DELAY_UPDATE_SUGGESTIONS);
+        public void postUpdateBigramPredictions() {
+            removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
+            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS), DELAY_UPDATE_SUGGESTIONS);
         }
 
-        public void cancelSetBigramSuggestions() {
-            removeMessages(MSG_SET_BIGRAM_SUGGESTIONS);
+        public void cancelUpdateBigramPredictions() {
+            removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
         }
 
         public void updateVoiceResults() {
@@ -771,7 +771,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mComposing.setLength(0);
             mHasValidSuggestions = false;
             if (isCursorTouchingWord()) {
-                mHandler.cancelSetBigramSuggestions();
+                mHandler.cancelUpdateBigramPredictions();
                 mHandler.postUpdateSuggestions();
             } else {
                 setPunctuationSuggestions();
@@ -805,7 +805,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                                 || TextEntryState.isRecorrecting())
                                 && (newSelStart < newSelEnd - 1 || !mHasValidSuggestions)) {
                     if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
-                        mHandler.cancelSetBigramSuggestions();
+                        mHandler.cancelUpdateBigramPredictions();
                         mHandler.postUpdateOldSuggestions();
                     } else {
                         abortRecorrection(false);
@@ -817,7 +817,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                             if (null == ic || !TextUtils.isEmpty(ic.getTextAfterCursor(1, 0))) {
                                 if (!isShowingPunctuationList()) setPunctuationSuggestions();
                             } else {
-                                mHandler.postSetBigramSuggestions();
+                                mHandler.postUpdateBigramPredictions();
                             }
                         }
                     }
@@ -1261,7 +1261,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 if (1 == length) {
                     // 1 == length means we are about to erase the last character of the word,
                     // so we can show bigrams.
-                    mHandler.postSetBigramSuggestions();
+                    mHandler.postUpdateBigramPredictions();
                 } else {
                     // length > 1, so we still have letters to deduce a suggestion from.
                     mHandler.postUpdateSuggestions();
@@ -1401,7 +1401,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         // Should dismiss the "Touch again to save" message when handling separator
         if (mCandidateView != null && mCandidateView.dismissAddToDictionaryHint()) {
-            mHandler.cancelSetBigramSuggestions();
+            mHandler.cancelUpdateBigramPredictions();
             mHandler.postUpdateSuggestions();
         }
 
@@ -1461,7 +1461,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (!isCursorTouchingWord()) {
                 mHandler.cancelUpdateSuggestions();
                 mHandler.cancelUpdateOldSuggestions();
-                mHandler.postSetBigramSuggestions();
+                mHandler.postUpdateBigramPredictions();
             }
         } else {
             // Set punctuation right away. onUpdateSelection will fire but tests whether it is
@@ -1859,9 +1859,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
-    private void updateBigramSuggestions() {
+    private void updateBigramPredictions() {
         if (mSuggest == null || !isSuggestionsRequested())
             return;
+
+        if (!mBigramPredictionEnabled) {
+            setPunctuationSuggestions();
+            return;
+        }
 
         final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                 mWordSeparators);
@@ -1977,7 +1982,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.setComposingText(mComposing, 1);
                 TextEntryState.backspace();
             }
-            mHandler.cancelSetBigramSuggestions();
+            mHandler.cancelUpdateBigramPredictions();
             mHandler.postUpdateSuggestions();
         } else {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
