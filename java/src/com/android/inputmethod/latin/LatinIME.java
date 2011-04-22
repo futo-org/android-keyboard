@@ -1159,16 +1159,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         case Keyboard.CODE_SETTINGS_LONGPRESS:
             onSettingsKeyLongPressed();
             break;
-        case Keyboard.CODE_NEXT_LANGUAGE:
+        case LatinKeyboard.CODE_NEXT_LANGUAGE:
             toggleLanguage(true);
             break;
-        case Keyboard.CODE_PREV_LANGUAGE:
+        case LatinKeyboard.CODE_PREV_LANGUAGE:
             toggleLanguage(false);
             break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
             break;
-        case Keyboard.CODE_VOICE:
+        case Keyboard.CODE_SHORTCUT:
             mSubtypeSwitcher.switchToShortcutIME();
             break;
         case Keyboard.CODE_TAB:

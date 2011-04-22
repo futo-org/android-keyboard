@@ -46,6 +46,9 @@ import java.util.Locale;
 public class LatinKeyboard extends Keyboard {
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
+    public static final int CODE_NEXT_LANGUAGE = -100;
+    public static final int CODE_PREV_LANGUAGE = -101;
+
     private final Context mContext;
     private final SubtypeSwitcher mSubtypeSwitcher = SubtypeSwitcher.getInstance();
 
@@ -102,7 +105,7 @@ public class LatinKeyboard extends Keyboard {
             case CODE_SPACE:
                 spaceKeyIndex = index;
                 break;
-            case CODE_VOICE:
+            case CODE_SHORTCUT:
                 shortcutKeyIndex = index;
                 break;
             }
