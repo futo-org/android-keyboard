@@ -33,12 +33,12 @@
     <string name="quick_fixes_summary" msgid="3405028402510332373">"修正一般打字錯誤"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"顯示修正建議"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"輸入時顯示建議字詞"</string>
-    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"永遠顯示"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"一律顯示"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"以垂直模式顯示"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"永遠隱藏"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"顯示設定金鑰"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"自動"</string>
-    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"永遠顯示"</string>
+    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"一律顯示"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"永遠隱藏"</string>
     <string name="auto_correction" msgid="4979925752001319458">"自動修正"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"自動插入空白鍵和標點符號鍵盤，以修正拼字錯誤"</string>
