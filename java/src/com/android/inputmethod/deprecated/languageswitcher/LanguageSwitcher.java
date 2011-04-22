@@ -83,6 +83,7 @@ public class LanguageSwitcher {
         String currentLanguage   = sp.getString(Settings.PREF_INPUT_LANGUAGE, null);
         if (TextUtils.isEmpty(selectedLanguages)) {
             mSelectedLanguageArray = EMPTY_STIRNG_ARRAY;
+            mSelectedLanguages = null;
             loadDefaults();
             if (mLocales.size() == 0) {
                 return false;
