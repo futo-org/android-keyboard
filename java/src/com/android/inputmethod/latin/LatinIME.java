@@ -177,7 +177,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
     private boolean mRecorrectionEnabled;
+    // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
     private boolean mBigramSuggestionEnabled;
+    // Prediction: use bigrams to predict the next word when there is no input for it yet
+    private boolean mBigramPredictionEnabled;
     private boolean mAutoCorrectOn;
     private boolean mVibrateOn;
     private boolean mSoundOn;
@@ -2200,6 +2203,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         mAutoCorrectEnabled = isAutoCorrectEnabled(prefs);
         mBigramSuggestionEnabled = mAutoCorrectEnabled && isBigramSuggestionEnabled(prefs);
+        mBigramPredictionEnabled = mBigramSuggestionEnabled && isBigramPredictionEnabled(prefs);
         loadAndSetAutoCorrectionThreshold(prefs);
 
         mVoiceProxy.loadSettings(attribute, prefs);
@@ -2282,6 +2286,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTIONS, mResources.getBoolean(
                 R.bool.config_default_bigram_suggestions));
+    }
+
+    private boolean isBigramPredictionEnabled(SharedPreferences sp) {
+        return sp.getBoolean(Settings.PREF_BIGRAM_PREDICTIONS, mResources.getBoolean(
+                R.bool.config_default_bigram_prediction));
     }
 
     private void initSuggestPuncList() {

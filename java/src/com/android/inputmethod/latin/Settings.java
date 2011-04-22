@@ -62,12 +62,17 @@ public class Settings extends PreferenceActivity
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_SUBTYPES = "subtype_settings";
 
-    public static final String PREF_PREDICTION_SETTINGS_KEY = "prediction_settings";
+    public static final String PREF_CORRECTION_SETTINGS_KEY = "correction_settings";
     public static final String PREF_QUICK_FIXES = "quick_fixes";
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
-    public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
+
+    public static final String PREF_NGRAM_SETTINGS_KEY = "ngram_settings";
+    public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
+    public static final String PREF_BIGRAM_PREDICTIONS = "bigram_prediction";
+
+    public static final String PREF_MISC_SETTINGS_KEY = "misc_settings";
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
@@ -80,7 +85,10 @@ public class Settings extends PreferenceActivity
     private ListPreference mSettingsKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThreshold;
+    // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
     private CheckBoxPreference mBigramSuggestion;
+    // Prediction: use bigrams to predict the next word when there is no input for it yet
+    private CheckBoxPreference mBigramPrediction;
     private Preference mDebugSettingsPreference;
     private boolean mVoiceOn;
 
@@ -96,6 +104,7 @@ public class Settings extends PreferenceActivity
                 R.string.auto_correction_threshold_mode_index_off);
         final String currentSetting = mAutoCorrectionThreshold.getValue();
         mBigramSuggestion.setEnabled(!currentSetting.equals(autoCorrectionOff));
+        mBigramPrediction.setEnabled(!currentSetting.equals(autoCorrectionOff));
     }
 
     @Override
@@ -119,6 +128,7 @@ public class Settings extends PreferenceActivity
 
         mAutoCorrectionThreshold = (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
+        mBigramPrediction = (CheckBoxPreference) findPreference(PREF_BIGRAM_PREDICTIONS);
         mDebugSettingsPreference = findPreference(PREF_DEBUG_SETTINGS);
         if (mDebugSettingsPreference != null) {
             final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
@@ -131,7 +141,9 @@ public class Settings extends PreferenceActivity
         final PreferenceGroup generalSettings =
                 (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS_KEY);
         final PreferenceGroup textCorrectionGroup =
-                (PreferenceGroup) findPreference(PREF_PREDICTION_SETTINGS_KEY);
+                (PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS_KEY);
+        final PreferenceGroup bigramGroup =
+                (PreferenceGroup) findPreference(PREF_NGRAM_SETTINGS_KEY);
 
         final boolean showSettingsKeyOption = getResources().getBoolean(
                 R.bool.config_enable_show_settings_key_option);
@@ -178,6 +190,7 @@ public class Settings extends PreferenceActivity
                 R.bool.config_enable_bigram_suggestions_option);
         if (!showBigramSuggestionsOption) {
             textCorrectionGroup.removePreference(findPreference(PREF_BIGRAM_SUGGESTIONS));
+            textCorrectionGroup.removePreference(findPreference(PREF_BIGRAM_PREDICTIONS));
         }
 
         final boolean showUsabilityModeStudyOption = getResources().getBoolean(
@@ -192,7 +205,7 @@ public class Settings extends PreferenceActivity
         super.onResume();
         int autoTextSize = AutoText.getSize(getListView());
         if (autoTextSize < 1) {
-            ((PreferenceGroup) findPreference(PREF_PREDICTION_SETTINGS_KEY))
+            ((PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS_KEY))
                     .removePreference(mQuickFixes);
         }
         if (!VoiceProxy.VOICE_INSTALLED
