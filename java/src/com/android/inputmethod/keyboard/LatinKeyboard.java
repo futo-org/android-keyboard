@@ -294,9 +294,12 @@ public class LatinKeyboard extends Keyboard {
             paint.setColor(getSpacebarTextColor(mSpacebarTextColor, textFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent, paint);
 
-            // Put arrows that are already layed out on either side of the text
+            // Put arrows that are already laid out on either side of the text
+            // Because language switch is disabled on phone and number layouts, hide arrows.
+            // TODO: Sort out how to enable language switch on these layouts.
             if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()
-                    && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1) {
+                    && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1
+                    && !(isPhoneKeyboard() || isNumberKeyboard())) {
                 mButtonArrowLeftIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
                 mButtonArrowRightIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
                 mButtonArrowLeftIcon.draw(canvas);
@@ -349,6 +352,10 @@ public class LatinKeyboard extends Keyboard {
     }
 
     public boolean shouldTriggerSpacebarSlidingLanguageSwitch(int diff) {
+        // On phone and number layouts, sliding language switch is disabled.
+        // TODO: Sort out how to enable language switch on these layouts.
+        if (isPhoneKeyboard() || isNumberKeyboard())
+            return false;
         return Math.abs(diff) > mSpacebarLanguageSwitchThreshold;
     }
 
