@@ -29,6 +29,7 @@ import java.util.Locale;
 // This class is used only when the IME doesn't use method.xml for language switching.
 public class LanguageSwitcherProxy implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final LanguageSwitcherProxy sInstance = new LanguageSwitcherProxy();
+    private LatinIME mService;
     private LanguageSwitcher mLanguageSwitcher;
     private SharedPreferences mPrefs;
 
@@ -43,6 +44,7 @@ public class LanguageSwitcherProxy implements SharedPreferences.OnSharedPreferen
         sInstance.mLanguageSwitcher = new LanguageSwitcher(service);
         sInstance.mLanguageSwitcher.loadLocales(prefs, conf.locale);
         sInstance.mPrefs = prefs;
+        sInstance.mService = service;
         prefs.registerOnSharedPreferenceChangeListener(sInstance);
     }
 
@@ -80,6 +82,9 @@ public class LanguageSwitcherProxy implements SharedPreferences.OnSharedPreferen
         if (key.equals(Settings.PREF_SELECTED_LANGUAGES)
                 || key.equals(Settings.PREF_INPUT_LANGUAGE)) {
             mLanguageSwitcher.loadLocales(prefs, null);
+            if (mService != null) {
+                mService.onRefreshKeyboard();
+            }
         }
     }
 }
