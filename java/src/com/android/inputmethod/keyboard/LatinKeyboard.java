@@ -194,8 +194,7 @@ public class LatinKeyboard extends Keyboard {
 
     // Layout local language name and left and right arrow on spacebar.
     private static String layoutSpacebar(Paint paint, Locale locale, Drawable lArrow,
-            Drawable rArrow, int width, int height, float origTextSize,
-            boolean allowVariableTextSize) {
+            Drawable rArrow, int width, int height, float origTextSize) {
         final float arrowWidth = lArrow.getIntrinsicWidth();
         final float arrowHeight = lArrow.getIntrinsicHeight();
         final float maxTextWidth = width - (arrowWidth + arrowWidth);
@@ -206,17 +205,23 @@ public class LatinKeyboard extends Keyboard {
         int textWidth = getTextWidth(paint, language, origTextSize, bounds);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(maxTextWidth / textWidth, 1.0f);
+        // allow variable text size
+        textWidth = getTextWidth(paint, language, textSize, bounds);
+        // If text size goes too small or text does not fit, use middle or short name
+        final boolean useMiddleName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
+                || (textWidth > maxTextWidth);
 
         final boolean useShortName;
-        if (allowVariableTextSize) {
-            textWidth = getTextWidth(paint, language, textSize, bounds);
-            // If text size goes too small or text does not fit, use short name
-            useShortName = textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME
-                    || textWidth > maxTextWidth;
+        if (useMiddleName) {
+            language = SubtypeSwitcher.getMiddleDisplayLanguage(locale);
+            textWidth = getTextWidth(paint, language, origTextSize, bounds);
+            textSize = origTextSize * Math.min(maxTextWidth / textWidth, 1.0f);
+            useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
+                    || (textWidth > maxTextWidth);
         } else {
-            useShortName = textWidth > maxTextWidth;
-            textSize = origTextSize;
+            useShortName = false;
         }
+
         if (useShortName) {
             language = SubtypeSwitcher.getShortDisplayLanguage(locale);
             textWidth = getTextWidth(paint, language, origTextSize, bounds);
@@ -276,11 +281,9 @@ public class LatinKeyboard extends Keyboard {
                 defaultTextSize = 14;
             }
 
-            final boolean allowVariableTextSize = true;
             final String language = layoutSpacebar(paint, inputLocale,
                     mButtonArrowLeftIcon, mButtonArrowRightIcon, width, height,
-                    getTextSizeFromTheme(mContext.getTheme(), textStyle, defaultTextSize),
-                    allowVariableTextSize);
+                    getTextSizeFromTheme(mContext.getTheme(), textStyle, defaultTextSize));
 
             // Draw language text with shadow
             // In case there is no space icon, we will place the language text at the center of
@@ -294,9 +297,12 @@ public class LatinKeyboard extends Keyboard {
             paint.setColor(getSpacebarTextColor(mSpacebarTextColor, textFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent, paint);
 
-            // Put arrows that are already layed out on either side of the text
+            // Put arrows that are already laid out on either side of the text
+            // Because language switch is disabled on phone and number layouts, hide arrows.
+            // TODO: Sort out how to enable language switch on these layouts.
             if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()
-                    && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1) {
+                    && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1
+                    && !(isPhoneKeyboard() || isNumberKeyboard())) {
                 mButtonArrowLeftIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
                 mButtonArrowRightIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
                 mButtonArrowLeftIcon.draw(canvas);
@@ -349,6 +355,10 @@ public class LatinKeyboard extends Keyboard {
     }
 
     public boolean shouldTriggerSpacebarSlidingLanguageSwitch(int diff) {
+        // On phone and number layouts, sliding language switch is disabled.
+        // TODO: Sort out how to enable language switch on these layouts.
+        if (isPhoneKeyboard() || isNumberKeyboard())
+            return false;
         return Math.abs(diff) > mSpacebarLanguageSwitchThreshold;
     }
 
