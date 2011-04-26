@@ -486,6 +486,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             } else if (isShiftLocked() && !shiftKeyState.isIgnoring() && !withSliding) {
                 // Shift has been pressed without chording while caps lock state.
                 toggleCapsLock();
+                // To be able to turn off caps lock by "double tap" on shift key, we should ignore
+                // the second tap of the "double tap" from now for a while because we just have
+                // already turned off caps lock above.
+                mInputView.startIgnoringDoubleTap();
             } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()
                     && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
