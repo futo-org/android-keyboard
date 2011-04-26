@@ -75,13 +75,11 @@ public class Suggest implements Dictionary.WordCallback {
     public static final String DICT_KEY_USER_BIGRAM = "user_bigram";
     public static final String DICT_KEY_WHITELIST ="whitelist";
 
-    public static final int LARGE_DICTIONARY_THRESHOLD = 200 * 1000;
-
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private AutoCorrection mAutoCorrection;
 
-    private BinaryDictionary mMainDict;
+    private Dictionary mMainDict;
     private WhitelistDictionary mWhiteListDictionary;
     private final Map<String, Dictionary> mUnigramDictionaries = new HashMap<String, Dictionary>();
     private final Map<String, Dictionary> mBigramDictionaries = new HashMap<String, Dictionary>();
@@ -108,17 +106,17 @@ public class Suggest implements Dictionary.WordCallback {
     private int mCorrectionMode = CORRECTION_BASIC;
 
     public Suggest(Context context, int dictionaryResId, Locale locale) {
-        init(context, BinaryDictionary.initDictionaryFromManager(context, DIC_MAIN, locale,
+        init(context, DictionaryFactory.createDictionaryFromManager(context, locale,
                 dictionaryResId));
     }
 
     /* package for test */ Suggest(Context context, File dictionary, long startOffset, long length,
             Flag[] flagArray) {
-        init(null, BinaryDictionary.initDictionary(context, dictionary, startOffset, length,
-                DIC_MAIN, flagArray));
+        init(null, DictionaryFactory.createDictionaryForTest(context, dictionary, startOffset,
+                length, flagArray));
     }
 
-    private void init(Context context, BinaryDictionary mainDict) {
+    private void init(Context context, Dictionary mainDict) {
         if (mainDict != null) {
             mMainDict = mainDict;
             mUnigramDictionaries.put(DICT_KEY_MAIN, mainDict);
@@ -133,8 +131,8 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public void resetMainDict(Context context, int dictionaryResId, Locale locale) {
-        final BinaryDictionary newMainDict = BinaryDictionary.initDictionaryFromManager(context,
-                DIC_MAIN, locale, dictionaryResId);
+        final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
+                context, locale, dictionaryResId);
         mMainDict = newMainDict;
         if (null == newMainDict) {
             mUnigramDictionaries.remove(DICT_KEY_MAIN);
@@ -165,7 +163,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     public boolean hasMainDictionary() {
-        return mMainDict != null && mMainDict.getSize() > LARGE_DICTIONARY_THRESHOLD;
+        return mMainDict != null;
     }
 
     public Map<String, Dictionary> getUnigramDictionaries() {
