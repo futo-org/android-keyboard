@@ -608,7 +608,7 @@ public class SubtypeSwitcher {
     }
 
     public static String getMiddleDisplayLanguage(Locale locale) {
-        return toTitleCase(locale.getDisplayLanguage(new Locale(locale.getLanguage())));
+        return toTitleCase((new Locale(locale.getLanguage()).getDisplayLanguage(locale)));
     }
 
     public static String getShortDisplayLanguage(Locale locale) {
