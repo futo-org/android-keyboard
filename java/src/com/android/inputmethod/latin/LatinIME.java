@@ -112,7 +112,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
-    private static final int DELAY_UPDATE_SHIFT_STATE = 300;
+    private static final int DELAY_UPDATE_SHIFT_STATE = 100;
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
     // How many continuous deletes at which to start deleting at a higher speed.
