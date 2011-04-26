@@ -95,6 +95,14 @@ public class ContactsDictionary extends ExpandableDictionary {
         mLastLoadedContacts = SystemClock.uptimeMillis();
     }
 
+    @Override
+    public void getBigrams(final WordComposer codes, final CharSequence previousWord,
+            final WordCallback callback) {
+        // Do not return bigrams from Contacts when nothing was typed.
+        if (codes.size() <= 0) return;
+        super.getBigrams(codes, previousWord, callback);
+    }
+
     private void addWords(Cursor cursor) {
         clearDictionary();
 
