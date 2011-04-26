@@ -754,15 +754,15 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public static class VoiceLoggerWrapper {
-        private static final VoiceLoggerWrapper sInstance = new VoiceLoggerWrapper();
+        private static final VoiceLoggerWrapper sLoggerWrapperInstance = new VoiceLoggerWrapper();
         private VoiceInputLogger mLogger;
 
         public static VoiceLoggerWrapper getInstance(Context context) {
-            if (sInstance.mLogger == null) {
+            if (sLoggerWrapperInstance.mLogger == null) {
                 // Not thread safe, but it's ok.
-                sInstance.mLogger = VoiceInputLogger.getLogger(context);
+                sLoggerWrapperInstance.mLogger = VoiceInputLogger.getLogger(context);
             }
-            return sInstance;
+            return sLoggerWrapperInstance;
         }
 
         // private for the singleton
@@ -795,10 +795,10 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public static class VoiceInputWrapper {
-        private static final VoiceInputWrapper sInstance = new VoiceInputWrapper();
+        private static final VoiceInputWrapper sInputWrapperInstance = new VoiceInputWrapper();
         private VoiceInput mVoiceInput;
         public static VoiceInputWrapper getInstance() {
-            return sInstance;
+            return sInputWrapperInstance;
         }
         public void setVoiceInput(VoiceInput voiceInput, SubtypeSwitcher switcher) {
             if (mVoiceInput == null && voiceInput != null) {

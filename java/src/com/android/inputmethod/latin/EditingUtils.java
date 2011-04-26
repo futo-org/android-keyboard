@@ -73,7 +73,7 @@ public class EditingUtils {
 
     /**
      * @param connection connection to the current text field.
-     * @param sep characters which may separate words
+     * @param separators characters which may separate words
      * @return the word that surrounds the cursor, including up to one trailing
      *   separator. For example, if the field contains "he|llo world", where |
      *   represents the cursor, then "hello " will be returned.

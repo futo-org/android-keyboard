@@ -648,6 +648,6 @@ public class Utils {
 
     /** Convert pixel to DIP */
     public static int dipToPixel(float scale, int dip) {
-        return (int) ((float) dip * scale + 0.5);
+        return (int) (dip * scale + 0.5);
     }
 }

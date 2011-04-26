@@ -17,7 +17,6 @@
 package com.android.inputmethod.deprecated.voice;
 
 import com.android.common.speech.LoggingEvents;
-import com.android.common.userhappiness.UserHappinessSignals;
 import com.android.inputmethod.deprecated.compat.VoiceInputLoggerCompatUtils;
 
 import android.content.Context;

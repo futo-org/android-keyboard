@@ -56,7 +56,7 @@ public class Suggest implements Dictionary.WordCallback {
 
     /**
      * Maximum possible bigram frequency. Will depend on how many bits are being used in data
-     * structure. Maximum bigram freqeuncy will get the BIGRAM_MULTIPLIER_MAX as the multiplier.
+     * structure. Maximum bigram frequency will get the BIGRAM_MULTIPLIER_MAX as the multiplier.
      */
     public static final int MAXIMUM_BIGRAM_FREQUENCY = 127;
 

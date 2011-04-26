@@ -145,7 +145,7 @@ public class BinaryDictionary extends Dictionary {
      * @param context application context for reading resources
      * @param dicTypeId the type of the dictionary being created, out of the list in Suggest.DIC_*
      * @param locale the locale for which to create the dictionary
-     * @param fallBackResId the id of the resource to use as a fallback if no pack is found
+     * @param fallbackResId the id of the resource to use as a fallback if no pack is found
      * @return an initialized instance of BinaryDictionary
      */
     public static BinaryDictionary initDictionaryFromManager(Context context, int dicTypeId,
