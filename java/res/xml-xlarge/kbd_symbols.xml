@@ -211,9 +211,10 @@
                     latin:keyLabel="-" />
             </case>
             <default>
+                <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
                 <Key
                     latin:keyLabel="&quot;"
-                    latin:popupCharacters="“,”,«,»,˝" />
+                    latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" />
                 <Key
                     latin:keyLabel="_" />
             </default>
