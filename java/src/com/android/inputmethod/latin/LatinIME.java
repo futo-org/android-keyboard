@@ -172,7 +172,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private final StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
     private CharSequence mBestWord;
-    private boolean mHasValidSuggestions;
+    private boolean mHasUncommittedTypedChars;
     private boolean mHasDictionary;
     private boolean mJustAddedAutoSpace;
     private boolean mAutoCorrectEnabled;
@@ -591,7 +591,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         inputView.closing();
         mEnteredText = null;
         mComposing.setLength(0);
-        mHasValidSuggestions = false;
+        mHasUncommittedTypedChars = false;
         mDeleteCount = 0;
         mJustAddedAutoSpace = false;
 
@@ -762,7 +762,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final boolean selectionChanged = (newSelStart != candidatesEnd
                 || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart;
         final boolean candidatesCleared = candidatesStart == -1 && candidatesEnd == -1;
-        if (((mComposing.length() > 0 && mHasValidSuggestions)
+        if (((mComposing.length() > 0 && mHasUncommittedTypedChars)
                 || mVoiceProxy.isVoiceInputHighlighted())
                 && (selectionChanged || candidatesCleared)) {
             if (candidatesCleared) {
@@ -772,7 +772,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 saveWordInHistory(mComposing);
             }
             mComposing.setLength(0);
-            mHasValidSuggestions = false;
+            mHasUncommittedTypedChars = false;
             if (isCursorTouchingWord()) {
                 mHandler.cancelUpdateBigramPredictions();
                 mHandler.postUpdateSuggestions();
@@ -785,7 +785,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.finishComposingText();
             }
             mVoiceProxy.setVoiceInputHighlighted(false);
-        } else if (!mHasValidSuggestions && !mJustAccepted) {
+        } else if (!mHasUncommittedTypedChars && !mJustAccepted) {
             if (TextEntryState.isAcceptedDefault() || TextEntryState.isSpaceAfterPicked()) {
                 if (TextEntryState.isAcceptedDefault())
                     TextEntryState.reset();
@@ -806,7 +806,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 if (isSuggestionsRequested()
                         && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
                                 || TextEntryState.isRecorrecting())
-                                && (newSelStart < newSelEnd - 1 || !mHasValidSuggestions)) {
+                                && (newSelStart < newSelEnd - 1 || !mHasUncommittedTypedChars)) {
                     if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
                         mHandler.cancelUpdateBigramPredictions();
                         mHandler.postUpdateOldSuggestions();
@@ -1007,8 +1007,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public void commitTyped(InputConnection inputConnection) {
-        if (mHasValidSuggestions) {
-            mHasValidSuggestions = false;
+        if (mHasUncommittedTypedChars) {
+            mHasUncommittedTypedChars = false;
             if (mComposing.length() > 0) {
                 if (inputConnection != null) {
                     inputConnection.commitText(mComposing, 1);
@@ -1252,14 +1252,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mVoiceProxy.handleBackspace();
 
         boolean deleteChar = false;
-        if (mHasValidSuggestions) {
+        if (mHasUncommittedTypedChars) {
             final int length = mComposing.length();
             if (length > 0) {
                 mComposing.delete(length - 1, length);
                 mWord.deleteLast();
                 ic.setComposingText(mComposing, 1);
                 if (mComposing.length() == 0) {
-                    mHasValidSuggestions = false;
+                    mHasUncommittedTypedChars = false;
                 }
                 if (1 == length) {
                     // 1 == length means we are about to erase the last character of the word,
@@ -1348,8 +1348,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         int code = primaryCode;
         if (isAlphabet(code) && isSuggestionsRequested() && !isCursorTouchingWord()) {
-            if (!mHasValidSuggestions) {
-                mHasValidSuggestions = true;
+            if (!mHasUncommittedTypedChars) {
+                mHasUncommittedTypedChars = true;
                 mComposing.setLength(0);
                 saveWordInHistory(mBestWord);
                 mWord.reset();
@@ -1375,7 +1375,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
             }
         }
-        if (mHasValidSuggestions) {
+        if (mHasUncommittedTypedChars) {
             if (mComposing.length() == 0 && switcher.isAlphabetMode()
                     && switcher.isShiftedOrShiftLocked()) {
                 mWord.setFirstCharCapitalized(true);
@@ -1415,7 +1415,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             ic.beginBatchEdit();
             abortRecorrection(false);
         }
-        if (mHasValidSuggestions) {
+        if (mHasUncommittedTypedChars) {
             // In certain languages where single quote is a separator, it's better
             // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
@@ -1572,7 +1572,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        if (!mHasValidSuggestions) {
+        if (!mHasUncommittedTypedChars) {
             setPunctuationSuggestions();
             return;
         }
@@ -1703,7 +1703,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             return;
         }
-        if (!mHasValidSuggestions) {
+        if (!mHasUncommittedTypedChars) {
             // If we are not composing a word, then it was a suggestion inferred from
             // context - no user input. We should reset the word composer.
             mWord.reset();
@@ -1777,7 +1777,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             ic.commitText(suggestion, 1);
         }
         saveWordInHistory(suggestion);
-        mHasValidSuggestions = false;
+        mHasUncommittedTypedChars = false;
         mCommittedLength = suggestion.length();
     }
 
@@ -1835,7 +1835,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
-        if (!mHasValidSuggestions) {
+        if (!mHasUncommittedTypedChars) {
             // Extract the selected or touching text
             EditingUtils.SelectedWord touching = EditingUtils.getWordAtCursorOrSelection(ic,
                     mLastSelectionStart, mLastSelectionEnd, mWordSeparators);
@@ -1958,7 +1958,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     public void revertLastWord(boolean deleteChar) {
         final int length = mComposing.length();
-        if (!mHasValidSuggestions && length > 0) {
+        if (!mHasUncommittedTypedChars && length > 0) {
             final InputConnection ic = getCurrentInputConnection();
             final CharSequence punctuation = ic.getTextBeforeCursor(1, 0);
             if (deleteChar) ic.deleteSurroundingText(1, 0);
@@ -1981,7 +1981,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // Clear composing text
                 mComposing.setLength(0);
             } else {
-                mHasValidSuggestions = true;
+                mHasUncommittedTypedChars = true;
                 ic.setComposingText(mComposing, 1);
                 TextEntryState.backspace();
             }
@@ -2400,7 +2400,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         p.println("  mComposing=" + mComposing.toString());
         p.println("  mIsSuggestionsRequested=" + mIsSettingsSuggestionStripOn);
         p.println("  mCorrectionMode=" + mCorrectionMode);
-        p.println("  mHasValidSuggestions=" + mHasValidSuggestions);
+        p.println("  mHasUncommittedTypedChars=" + mHasUncommittedTypedChars);
         p.println("  mAutoCorrectOn=" + mAutoCorrectOn);
         p.println("  mAutoSpace=" + mAutoSpace);
         p.println("  mApplicationSpecifiedCompletionOn=" + mApplicationSpecifiedCompletionOn);
