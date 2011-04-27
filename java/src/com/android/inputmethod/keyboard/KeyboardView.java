@@ -72,7 +72,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final boolean DEBUG_SHOW_ALIGN = false;
     private static final boolean DEBUG_KEYBOARD_GRID = false;
 
-    private static final boolean ENABLE_CAPSLOCK_BY_LONGPRESS = false;
+    private static final boolean ENABLE_CAPSLOCK_BY_LONGPRESS = true;
     private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
 
     public static final int COLOR_SCHEME_WHITE = 0;
