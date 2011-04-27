@@ -48,6 +48,7 @@ public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
     private static final int MINIMUM_SAFETY_NET_CHAR_LENGTH = 4;
     private static boolean DBG = LatinImeLogger.sDBG;
+    private static boolean DBG_EDIT_DISTANCE = false;
 
     private Utils() {
         // Intentional empty constructor for utility class.
@@ -289,7 +290,7 @@ public class Utils {
                 }
             }
         }
-        if (LatinImeLogger.sDBG) {
+        if (DBG_EDIT_DISTANCE) {
             Log.d(TAG, "editDistance:" + s + "," + t);
             for (int i = 0; i < dp.length; ++i) {
                 StringBuffer sb = new StringBuffer();
@@ -338,6 +339,7 @@ public class Utils {
     private static final int MAX_INITIAL_SCORE = 255;
     private static final int TYPED_LETTER_MULTIPLIER = 2;
     private static final int FULL_WORD_MULTIPLIER = 2;
+    private static final int S_INT_MAX = 2147483647;
     public static double calcNormalizedScore(CharSequence before, CharSequence after, int score) {
         final int beforeLength = before.length();
         final int afterLength = after.length();
@@ -352,7 +354,7 @@ public class Utils {
             }
         }
         if (spaceCount == afterLength) return 0;
-        final double maximumScore = MAX_INITIAL_SCORE
+        final double maximumScore = score == S_INT_MAX ? S_INT_MAX : MAX_INITIAL_SCORE
                 * Math.pow(
                         TYPED_LETTER_MULTIPLIER, Math.min(beforeLength, afterLength - spaceCount))
                 * FULL_WORD_MULTIPLIER;

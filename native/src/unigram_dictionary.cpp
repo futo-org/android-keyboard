@@ -300,7 +300,7 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
         if (DEBUG_DICT) {
             char s[length + 1];
             for (int i = 0; i <= length; i++) s[i] = word[i];
-            LOGI("Added word = %s, freq = %d", s, frequency);
+            LOGI("Added word = %s, freq = %d, %d", s, frequency, S_INT_MAX);
         }
         memmove((char*) mFrequencies + (insertAt + 1) * sizeof(mFrequencies[0]),
                (char*) mFrequencies + insertAt * sizeof(mFrequencies[0]),
@@ -409,11 +409,44 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
     }
 }
 
-inline static void multiplyRate(const int rate, int *freq) {
-    if (rate > 1000000) {
-        *freq = (*freq / 100) * rate;
+static const int TWO_31ST_DIV_255 = S_INT_MAX / 255;
+static inline int capped255MultForFullMatchAccentsOrCapitalizationDifference(const int num) {
+    return (num < TWO_31ST_DIV_255 ? 255 * num : S_INT_MAX);
+}
+
+static const int TWO_31ST_DIV_2 = S_INT_MAX / 2;
+inline static void multiplyIntCapped(const int multiplier, int *base) {
+    const int temp = *base;
+    if (temp != S_INT_MAX) {
+        // Branch if multiplier == 2 for the optimization
+        if (multiplier == 2) {
+            *base = TWO_31ST_DIV_2 >= temp ? temp << 1 : S_INT_MAX;
+        } else {
+            const int tempRetval = temp * multiplier;
+            *base = tempRetval >= temp ? tempRetval : S_INT_MAX;
+        }
+    }
+}
+
+inline static int powerIntCapped(const int base, const int n) {
+    if (false && base == 2) {
+        return n < 31 ? 1 << n : S_INT_MAX;
     } else {
-        *freq = *freq * rate / 100;
+        int ret = base;
+        for (int i = 1; i < n; ++i) multiplyIntCapped(base, &ret);
+        return ret;
+    }
+}
+
+inline static void multiplyRate(const int rate, int *freq) {
+    if (*freq != S_INT_MAX) {
+        if (*freq > 1000000) {
+            *freq /= 100;
+            multiplyIntCapped(rate, freq);
+        } else {
+            multiplyIntCapped(rate, freq);
+            *freq /= 100;
+        }
     }
 }
 
@@ -449,9 +482,7 @@ inline static int calcFreqForSplitTwoWords(
     // (firstFreq * (1 - 1 / (firstWordLength + 1)) + secondFreq * (1 - 1 / (secondWordLength + 1)))
     //        * (1 - 1 / totalLength) / (1 - 1 / (totalLength + 1))
 
-    for (int i = 0; i < totalLength; ++i) {
-        totalFreq *= typedLetterMultiplier;
-    }
+    multiplyIntCapped(powerIntCapped(typedLetterMultiplier, totalLength), &totalFreq);
 
     // This is another workaround to offset the demotion which will be done in
     // calcNormalizedScore in Utils.java.
@@ -499,7 +530,7 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
     int pairFreq = calcFreqForSplitTwoWords(
             TYPED_LETTER_MULTIPLIER, firstWordLength, secondWordLength, firstFreq, secondFreq);
     if (DEBUG_DICT) {
-        LOGI("Missing space:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
+        LOGI("Split two words:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
                 TYPED_LETTER_MULTIPLIER);
     }
     addWord(word, newWordLength, pairFreq);
@@ -559,10 +590,6 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
     }
 }
 
-static const int TWO_31ST_DIV_255 = S_INT_MAX / 255;
-static inline int capped255MultForFullMatchAccentsOrCapitalizationDifference(const int num) {
-    return (num < TWO_31ST_DIV_255 ? 255 * num : S_INT_MAX);
-}
 inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int depth,
         const int matchWeight, const int skipPos, const int excessivePos, const int transposedPos,
         const int freq, const bool sameLength) const {
@@ -591,7 +618,7 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
         }
     }
     int lengthFreq = TYPED_LETTER_MULTIPLIER;
-    for (int i = 0; i < depth; ++i) lengthFreq *= TYPED_LETTER_MULTIPLIER;
+    multiplyIntCapped(powerIntCapped(TYPED_LETTER_MULTIPLIER, depth), &lengthFreq);
     if (lengthFreq == matchWeight) {
         // Full exact match
         if (depth > 1) {
@@ -608,13 +635,13 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
         if (DEBUG_DICT) {
             LOGI("Found one proximity correction.");
         }
-        finalFreq *= 2;
+        multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &finalFreq);
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
     }
     if (DEBUG_DICT) {
         LOGI("calc: %d, %d", depth, sameLength);
     }
-    if (sameLength) finalFreq *= FULL_WORD_MULTIPLIER;
+    if (sameLength) multiplyIntCapped(FULL_WORD_MULTIPLIER, &finalFreq);
     return finalFreq;
 }
 
@@ -767,7 +794,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         // If inputIndex is greater than mInputLength, that means there is no
         // proximity chars. So, we don't need to check proximity.
         if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
-            matchWeight = matchWeight * TYPED_LETTER_MULTIPLIER;
+            multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &matchWeight);
         }
         bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
                 || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
