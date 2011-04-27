@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.deprecated.languageswitcher;
 
-import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.Settings;
@@ -38,6 +37,7 @@ import java.util.Locale;
 public class LanguageSwitcher {
     private static final String TAG = LanguageSwitcher.class.getSimpleName();
 
+    @SuppressWarnings("unused")
     private static final String KEYBOARD_MODE = "keyboard";
     private static final String[] EMPTY_STIRNG_ARRAY = new String[0];
 
@@ -154,7 +154,6 @@ public class LanguageSwitcher {
     /**
      * Returns the currently selected input locale, or the display locale if no specific
      * locale was selected for input.
-     * @return
      */
     public Locale getInputLocale() {
         if (getLocaleCount() == 0) return mDefaultInputLocale;
@@ -175,7 +174,6 @@ public class LanguageSwitcher {
     /**
      * Returns the next input locale in the list. Wraps around to the beginning of the
      * list if we're at the end of the list.
-     * @return
      */
     public Locale getNextInputLocale() {
         if (getLocaleCount() == 0) return mDefaultInputLocale;
@@ -201,7 +199,6 @@ public class LanguageSwitcher {
     /**
      * Returns the previous input locale in the list. Wraps around to the end of the
      * list if we're at the beginning of the list.
-     * @return
      */
     public Locale getPrevInputLocale() {
         if (getLocaleCount() == 0) return mDefaultInputLocale;

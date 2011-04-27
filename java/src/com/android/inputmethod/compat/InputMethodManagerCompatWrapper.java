@@ -118,7 +118,7 @@ public class InputMethodManagerCompatWrapper {
         }
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getEnabledInputMethodSubtypeList,
                 (imi != null ? imi.getInputMethodInfo() : null), allowsImplicitlySelectedSubtypes);
-        if (retval == null || !(retval instanceof List) || ((List<?>)retval).isEmpty()) {
+        if (retval == null || !(retval instanceof List<?>) || ((List<?>)retval).isEmpty()) {
             if (!FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
                 // Returns an empty list
                 return Collections.emptyList();
@@ -137,7 +137,7 @@ public class InputMethodManagerCompatWrapper {
             }
             return subtypeList;
         }
-        return CompatUtils.copyInputMethodSubtypeListToWrapper((List<?>)retval);
+        return CompatUtils.copyInputMethodSubtypeListToWrapper(retval);
     }
 
     private InputMethodInfoCompatWrapper getLatinImeInputMethodInfo() {
@@ -159,7 +159,7 @@ public class InputMethodManagerCompatWrapper {
     public Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>>
             getShortcutInputMethodsAndSubtypes() {
         Object retval = CompatUtils.invoke(mImm, null, METHOD_getShortcutInputMethodsAndSubtypes);
-        if (retval == null || !(retval instanceof Map) || ((Map<?, ?>)retval).isEmpty()) {
+        if (retval == null || !(retval instanceof Map<?, ?>) || ((Map<?, ?>)retval).isEmpty()) {
             if (!FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
                 // Returns an empty map
                 return Collections.emptyMap();

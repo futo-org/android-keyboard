@@ -29,7 +29,12 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up cun smatgar ina tasta"</string>
     <!-- no translation found for general_category (1859088467017573195) -->
     <skip />
-    <!-- outdated translation 7027100625580696660 -->     <string name="prediction_category" msgid="6361242011806282176">"Parameters da las propostas per pleds"</string>
+    <!-- no translation found for correction_category (2236750915056607613) -->
+    <skip />
+    <!-- no translation found for ngram_category (5337109164339320257) -->
+    <skip />
+    <!-- no translation found for misc_category (6894192814868233453) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Maiusclas automaticas"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Correcturas sveltas"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Curregia sbagls da tippar currents"</string>
@@ -42,6 +47,8 @@
     <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
     <skip />
     <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
+    <skip />
+    <!-- no translation found for prefs_use_spacebar_language_switch (8828538114550634449) -->
     <skip />
     <!-- no translation found for prefs_settings_key (4623341240804046498) -->
     <skip />
@@ -59,8 +66,12 @@
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
     <skip />
-    <string name="bigram_suggestion" msgid="1323347224043514969">"Propostas da tip bigram"</string>
+    <!-- outdated translation 1323347224043514969 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"Propostas da tip bigram"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Meglierar la proposta cun agid dal pled precedent"</string>
+    <!-- no translation found for bigram_prediction (8914273444762259739) -->
+    <skip />
+    <!-- no translation found for bigram_prediction_summary (1747261921174300098) -->
+    <skip />
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Memorisà"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Dai"</string>
     <string name="label_next_key" msgid="362972844525672568">"Vinavant"</string>

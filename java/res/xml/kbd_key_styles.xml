@@ -312,4 +312,27 @@
         latin:popupCharacters="@string/alternates_for_smiley"
         latin:maxPopupKeyboardColumn="5"
         latin:parentStyle="functionalKeyStyle" />
+    <switch>
+        <case
+            latin:passwordInput="true"
+        >
+            <key-style
+                latin:styleName="nonPasswordSymbolKeyStyle"
+                latin:enabled="false" />
+            <key-style
+                latin:styleName="nonPasswordFunctionalKeyStyle"
+                latin:enabled="false"
+                latin:parentStyle="functionalKeyStyle" />
+        </case>
+        <!-- latin:passwordInput="false" -->
+        <default>
+            <key-style
+                latin:styleName="nonPasswordSymbolKeyStyle"
+                latin:enabled="true" />
+            <key-style
+                latin:styleName="nonPasswordFunctionalKeyStyle"
+                latin:enabled="true"
+                latin:parentStyle="functionalKeyStyle" />
+        </default>
+    </switch>
 </merge>

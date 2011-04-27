@@ -112,7 +112,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private static final int DELAY_UPDATE_SUGGESTIONS = 180;
     private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
-    private static final int DELAY_UPDATE_SHIFT_STATE = 300;
+    private static final int DELAY_UPDATE_SHIFT_STATE = 100;
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
     // How many continuous deletes at which to start deleting at a higher speed.
@@ -470,14 +470,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
         final Locale keyboardLocale = new Locale(localeStr);
 
-        final Locale savedLocale = mSubtypeSwitcher.changeSystemLocale(keyboardLocale);
+        final Resources res = mResources;
+        final Locale savedLocale = Utils.setSystemLocale(res, keyboardLocale);
         if (mSuggest != null) {
             mSuggest.close();
         }
         final SharedPreferences prefs = mPrefs;
         mQuickFixes = isQuickFixesEnabled(prefs);
 
-        final Resources res = mResources;
         int mainDicResId = Utils.getMainDictionaryResourceId(res);
         mSuggest = new Suggest(this, mainDicResId, keyboardLocale);
         loadAndSetAutoCorrectionThreshold(prefs);
@@ -499,7 +499,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mWordSeparators = res.getString(R.string.word_separators);
         mSentenceSeparators = res.getString(R.string.sentence_separators);
 
-        mSubtypeSwitcher.changeSystemLocale(savedLocale);
+        Utils.setSystemLocale(res, savedLocale);
     }
 
     /* package private */ void resetSuggestMainDict() {

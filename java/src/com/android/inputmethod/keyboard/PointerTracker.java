@@ -662,7 +662,7 @@ public class PointerTracker {
             // We need not start long press timer on the key which has manual temporary upper case
             // code defined and the keyboard is in manual temporary upper case mode.
             return;
-        } else if (mKeyboardSwitcher.isInMomentaryAutoModeSwitchState()) {
+        } else if (mKeyboardSwitcher.isInMomentarySwitchState()) {
             // We use longer timeout for sliding finger input started from the symbols mode key.
             mHandler.startLongPressTimer(mLongPressKeyTimeout * 3, keyIndex, this);
         } else {

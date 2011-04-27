@@ -17,19 +17,17 @@
 package com.android.inputmethod.deprecated.languageswitcher;
 
 import com.android.inputmethod.keyboard.KeyboardParser;
-import com.android.inputmethod.latin.BinaryDictionary;
+import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-import com.android.inputmethod.latin.Suggest;
 import com.android.inputmethod.latin.Utils;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -123,24 +121,11 @@ public class InputLanguageSelection extends PreferenceActivity {
     private Pair<Boolean, Boolean> hasDictionaryOrLayout(Locale locale) {
         if (locale == null) return new Pair<Boolean, Boolean>(false, false);
         final Resources res = getResources();
-        final Configuration conf = res.getConfiguration();
-        final Locale saveLocale = conf.locale;
-        conf.locale = locale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
-        boolean hasDictionary = false;
+        final Locale saveLocale = Utils.setSystemLocale(res, locale);
+        final boolean hasDictionary = DictionaryFactory.isDictionaryAvailable(this, locale);
         boolean hasLayout = false;
 
         try {
-            BinaryDictionary bd = BinaryDictionary.initDictionaryFromManager(this, Suggest.DIC_MAIN,
-                    locale, Utils.getMainDictionaryResourceId(res));
-
-            // Is the dictionary larger than a placeholder? Arbitrarily chose a lower limit of
-            // 4000-5000 words, whereas the LARGE_DICTIONARY is about 20000+ words.
-            if (bd.getSize() > Suggest.LARGE_DICTIONARY_THRESHOLD / 4) {
-                hasDictionary = true;
-            }
-            bd.close();
-
             final String localeStr = locale.toString();
             final String[] layoutCountryCodes = KeyboardParser.parseKeyboardLocale(
                     this, R.xml.kbd_qwerty).split(",", -1);
@@ -155,8 +140,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         } catch (XmlPullParserException e) {
         } catch (IOException e) {
         }
-        conf.locale = saveLocale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
+        Utils.setSystemLocale(res, saveLocale);
         return new Pair<Boolean, Boolean>(hasDictionary, hasLayout);
     }
 

@@ -475,19 +475,6 @@ public class SubtypeSwitcher {
         }
     }
 
-    /**
-     * Change system locale for this application
-     * @param newLocale
-     * @return oldLocale
-     */
-    public Locale changeSystemLocale(Locale newLocale) {
-        Configuration conf = mResources.getConfiguration();
-        Locale oldLocale = conf.locale;
-        conf.locale = newLocale;
-        mResources.updateConfiguration(conf, mResources.getDisplayMetrics());
-        return oldLocale;
-    }
-
     public boolean isKeyboardMode() {
         return KEYBOARD_MODE.equals(getCurrentSubtypeMode());
     }
@@ -608,7 +595,7 @@ public class SubtypeSwitcher {
     }
 
     public static String getMiddleDisplayLanguage(Locale locale) {
-        return toTitleCase(locale.getDisplayLanguage(new Locale(locale.getLanguage())));
+        return toTitleCase((new Locale(locale.getLanguage()).getDisplayLanguage(locale)));
     }
 
     public static String getShortDisplayLanguage(Locale locale) {

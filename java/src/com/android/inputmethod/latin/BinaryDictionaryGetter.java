@@ -65,9 +65,6 @@ class BinaryDictionaryGetter {
      * If that fails:
      * - Returns null.
      * @return The address of a valid file, or null.
-     * @throws FileNotFoundException if a dictionary provider returned a file name, but the
-     *                               file cannot be found.
-     * @throws IOException if there was an I/O problem reading or copying a file.
      */
     public static AssetFileAddress getDictionaryFile(Locale locale, Context context,
             int fallbackResId) {

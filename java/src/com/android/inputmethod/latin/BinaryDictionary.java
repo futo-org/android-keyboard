@@ -21,12 +21,8 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.ProximityInfo;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
-import android.util.Log;
 
-import java.io.File;
 import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * Implements a static, compacted, binary dictionary of standard words.
@@ -45,16 +41,15 @@ public class BinaryDictionary extends Dictionary {
     public static final int MAX_WORD_LENGTH = 48;
     public static final int MAX_WORDS = 18;
 
+    @SuppressWarnings("unused")
     private static final String TAG = "BinaryDictionary";
     private static final int MAX_PROXIMITY_CHARS_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
     private static final int MAX_BIGRAMS = 60;
 
     private static final int TYPED_LETTER_MULTIPLIER = 2;
 
-    private static final BinaryDictionary sInstance = new BinaryDictionary();
     private int mDicTypeId;
     private int mNativeDict;
-    private long mDictLength;
     private final int[] mInputCodes = new int[MAX_WORD_LENGTH * MAX_PROXIMITY_CHARS_SIZE];
     private final char[] mOutputChars = new char[MAX_WORD_LENGTH * MAX_WORDS];
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
@@ -79,93 +74,30 @@ public class BinaryDictionary extends Dictionary {
 
     private int mFlags = 0;
 
-    private BinaryDictionary() {
-    }
-
     /**
-     * Initializes a dictionary from a raw resource file
-     * @param context application context for reading resources
-     * @param resId the resource containing the raw binary dictionary
-     * @param dicTypeId the type of the dictionary being created, out of the list in Suggest.DIC_*
-     * @return an initialized instance of BinaryDictionary
+     * Constructor for the binary dictionary. This is supposed to be called from the
+     * dictionary factory.
+     * All implementations should pass null into flagArray, except for testing purposes.
+     * @param context the context to access the environment from.
+     * @param filename the name of the file to read through native code.
+     * @param offset the offset of the dictionary data within the file.
+     * @param length the length of the binary data.
+     * @param flagArray the flags to limit the dictionary to, or null for default.
      */
-    public static BinaryDictionary initDictionary(Context context, int resId, int dicTypeId) {
-        synchronized (sInstance) {
-            sInstance.closeInternal();
-            try {
-                final AssetFileDescriptor afd = context.getResources().openRawResourceFd(resId);
-                if (afd == null) {
-                    Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
-                    return null;
-                }
-                final String sourceDir = context.getApplicationInfo().sourceDir;
-                final File packagePath = new File(sourceDir);
-                // TODO: Come up with a way to handle a directory.
-                if (!packagePath.isFile()) {
-                    Log.e(TAG, "sourceDir is not a file: " + sourceDir);
-                    return null;
-                }
-                sInstance.loadDictionary(sourceDir, afd.getStartOffset(), afd.getLength());
-                sInstance.mDicTypeId = dicTypeId;
-            } catch (android.content.res.Resources.NotFoundException e) {
-                Log.e(TAG, "Could not find the resource. resId=" + resId);
-                return null;
-            }
-        }
-        sInstance.mFlags = Flag.initFlags(ALL_FLAGS, context, SubtypeSwitcher.getInstance());
-        return sInstance;
-    }
-
-    /* package for test */ static BinaryDictionary initDictionary(Context context, File dictionary,
-            long startOffset, long length, int dicTypeId, Flag[] flagArray) {
-        synchronized (sInstance) {
-            sInstance.closeInternal();
-            if (dictionary.isFile()) {
-                sInstance.loadDictionary(dictionary.getAbsolutePath(), startOffset, length);
-                sInstance.mDicTypeId = dicTypeId;
-            } else {
-                Log.e(TAG, "Could not find the file. path=" + dictionary.getAbsolutePath());
-                return null;
-            }
-        }
-        sInstance.mFlags = Flag.initFlags(flagArray, context, null);
-        return sInstance;
+    public BinaryDictionary(final Context context,
+            final String filename, final long offset, final long length, Flag[] flagArray) {
+        // Note: at the moment a binary dictionary is always of the "main" type.
+        // Initializing this here will help transitioning out of the scheme where
+        // the Suggest class knows everything about every single dictionary.
+        mDicTypeId = Suggest.DIC_MAIN;
+        // TODO: Stop relying on the state of SubtypeSwitcher, get it as a parameter
+        mFlags = Flag.initFlags(null == flagArray ? ALL_FLAGS : flagArray, context,
+                SubtypeSwitcher.getInstance());
+        loadDictionary(filename, offset, length);
     }
 
     static {
         Utils.loadNativeLibrary();
-    }
-
-    /**
-     * Initializes a dictionary from a dictionary pack.
-     *
-     * This searches for a content provider providing a dictionary pack for the specified
-     * locale. If none is found, it falls back to using the resource passed as fallBackResId
-     * as a dictionary.
-     * @param context application context for reading resources
-     * @param dicTypeId the type of the dictionary being created, out of the list in Suggest.DIC_*
-     * @param locale the locale for which to create the dictionary
-     * @param fallBackResId the id of the resource to use as a fallback if no pack is found
-     * @return an initialized instance of BinaryDictionary
-     */
-    public static BinaryDictionary initDictionaryFromManager(Context context, int dicTypeId,
-            Locale locale, int fallbackResId) {
-        if (null == locale) {
-            Log.e(TAG, "No locale defined for dictionary");
-            return initDictionary(context, fallbackResId, dicTypeId);
-        }
-        synchronized (sInstance) {
-            sInstance.closeInternal();
-
-            final AssetFileAddress dictFile = BinaryDictionaryGetter.getDictionaryFile(locale,
-                    context, fallbackResId);
-            if (null != dictFile) {
-                sInstance.loadDictionary(dictFile.mFilename, dictFile.mOffset, dictFile.mLength);
-                sInstance.mDicTypeId = dicTypeId;
-            }
-        }
-        sInstance.mFlags = Flag.initFlags(ALL_FLAGS, context, SubtypeSwitcher.getInstance());
-        return sInstance;
     }
 
     private native int openNative(String sourceDir, long dictOffset, long dictSize,
@@ -184,7 +116,6 @@ public class BinaryDictionary extends Dictionary {
         mNativeDict = openNative(path, startOffset, length,
                     TYPED_LETTER_MULTIPLIER, FULL_WORD_SCORE_MULTIPLIER,
                     MAX_WORD_LENGTH, MAX_WORDS, MAX_PROXIMITY_CHARS_SIZE);
-        mDictLength = length;
     }
 
     @Override
@@ -278,10 +209,6 @@ public class BinaryDictionary extends Dictionary {
         return isValidWordNative(mNativeDict, chars, chars.length);
     }
 
-    public long getSize() {
-        return mDictLength; // This value is initialized in loadDictionary()
-    }
-
     @Override
     public synchronized void close() {
         closeInternal();
@@ -291,7 +218,6 @@ public class BinaryDictionary extends Dictionary {
         if (mNativeDict != 0) {
             closeNative(mNativeDict);
             mNativeDict = 0;
-            mDictLength = 0;
         }
     }
 
