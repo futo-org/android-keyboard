@@ -22,6 +22,8 @@ import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -52,13 +54,13 @@ class BinaryDictionaryGetter {
     }
 
     /**
-     * Returns a file address for a given locale, trying relevant methods in order.
+     * Returns a list of file addresses for a given locale, trying relevant methods in order.
      *
-     * Tries to get a binary dictionary from various sources, in order:
-     * - Uses a private method of getting a private dictionary, as implemented by the
+     * Tries to get binary dictionaries from various sources, in order:
+     * - Uses a private method of getting a private dictionaries, as implemented by the
      *   PrivateBinaryDictionaryGetter class.
      * If that fails:
-     * - Uses a content provider to get a public dictionary, as per the protocol described
+     * - Uses a content provider to get a public dictionary set, as per the protocol described
      *   in BinaryDictionaryFileDumper.
      * If that fails:
      * - Gets a file name from the fallback resource passed as an argument.
@@ -66,27 +68,25 @@ class BinaryDictionaryGetter {
      * - Returns null.
      * @return The address of a valid file, or null.
      */
-    public static AssetFileAddress getDictionaryFile(Locale locale, Context context,
+    public static List<AssetFileAddress> getDictionaryFiles(Locale locale, Context context,
             int fallbackResId) {
-        // Try first to query a private file signed the same way.
-        final AssetFileAddress privateFile =
-                PrivateBinaryDictionaryGetter.getDictionaryFile(locale, context);
-        if (null != privateFile) {
-            return privateFile;
+        // Try first to query a private package signed the same way for private files.
+        final List<AssetFileAddress> privateFiles =
+                PrivateBinaryDictionaryGetter.getDictionaryFiles(locale, context);
+        if (null != privateFiles) {
+            return privateFiles;
         } else {
             try {
                 // If that was no-go, try to find a publicly exported dictionary.
-                final String fileName = BinaryDictionaryFileDumper.
-                        getDictionaryFileFromContentProvider(locale, context);
-                return AssetFileAddress.makeFromFileName(fileName);
+                return BinaryDictionaryFileDumper.getDictSetFromContentProvider(locale, context);
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Unable to create dictionary file from provider for locale "
                         + locale.toString() + ": falling back to internal dictionary");
-                return loadFallbackResource(context, fallbackResId);
+                return Arrays.asList(loadFallbackResource(context, fallbackResId));
             } catch (IOException e) {
                 Log.e(TAG, "Unable to read source data for locale "
                         + locale.toString() + ": falling back to internal dictionary");
-                return loadFallbackResource(context, fallbackResId);
+                return Arrays.asList(loadFallbackResource(context, fallbackResId));
             }
         }
     }
