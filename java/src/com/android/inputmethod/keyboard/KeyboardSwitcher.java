@@ -698,11 +698,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (!isSpaceCharacter(code) && code >= 0) {
                 mSwitchState = SWITCH_STATE_SYMBOL;
             }
+            // Snap back to alpha keyboard mode immediately if user types a quote character.
+            if (isQuoteCharacter(code)) {
+                changeKeyboardMode();
+            }
             break;
         case SWITCH_STATE_SYMBOL:
         case SWITCH_STATE_CHORDING_SYMBOL:
             // Snap back to alpha keyboard mode if user types one or more non-space/enter
-            // characters followed by a space/enter or quotation mark.
+            // characters followed by a space/enter or a quote character.
             if (isSpaceCharacter(code) || isQuoteCharacter(code)) {
                 changeKeyboardMode();
             }
