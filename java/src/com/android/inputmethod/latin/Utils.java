@@ -23,6 +23,7 @@ import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
@@ -43,6 +44,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class Utils {
     private static final String TAG = Utils.class.getSimpleName();
@@ -651,5 +653,13 @@ public class Utils {
     /** Convert pixel to DIP */
     public static int dipToPixel(float scale, int dip) {
         return (int) (dip * scale + 0.5);
+    }
+
+    public static Locale setSystemLocale(Resources res, Locale newLocale) {
+        final Configuration conf = res.getConfiguration();
+        final Locale saveLocale = conf.locale;
+        conf.locale = newLocale;
+        res.updateConfiguration(conf, res.getDisplayMetrics());
+        return saveLocale;
     }
 }

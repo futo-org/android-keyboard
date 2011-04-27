@@ -169,7 +169,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final SoftReference<LatinKeyboard> ref = mKeyboardCache.get(id);
         LatinKeyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
-            final Locale savedLocale =  mSubtypeSwitcher.changeSystemLocale(
+            final Resources res = mInputMethodService.getResources();
+            final Locale savedLocale = Utils.setSystemLocale(res,
                     mSubtypeSwitcher.getInputLocale());
 
             keyboard = new LatinKeyboard(mInputMethodService, id);
@@ -183,7 +184,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": "
                         + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
 
-            mSubtypeSwitcher.changeSystemLocale(savedLocale);
+            Utils.setSystemLocale(res, savedLocale);
         } else if (DEBUG) {
             Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id);
         }

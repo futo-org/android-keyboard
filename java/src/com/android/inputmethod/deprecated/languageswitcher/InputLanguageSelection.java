@@ -29,7 +29,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -123,10 +122,7 @@ public class InputLanguageSelection extends PreferenceActivity {
     private Pair<Boolean, Boolean> hasDictionaryOrLayout(Locale locale) {
         if (locale == null) return new Pair<Boolean, Boolean>(false, false);
         final Resources res = getResources();
-        final Configuration conf = res.getConfiguration();
-        final Locale saveLocale = conf.locale;
-        conf.locale = locale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
+        final Locale saveLocale = Utils.setSystemLocale(res, locale);
         boolean hasDictionary = false;
         boolean hasLayout = false;
 
@@ -155,8 +151,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         } catch (XmlPullParserException e) {
         } catch (IOException e) {
         }
-        conf.locale = saveLocale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
+        Utils.setSystemLocale(res, saveLocale);
         return new Pair<Boolean, Boolean>(hasDictionary, hasLayout);
     }
 
