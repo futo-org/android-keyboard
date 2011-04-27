@@ -50,7 +50,7 @@
     <string name="auto_complete_summary" msgid="6113149638718274624">"在反白顯示的字詞處自動插入空白鍵和標點符號鍵盤"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"顯示設定金鑰"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"自動"</string>
-    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"永遠顯示"</string>
+    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"一律顯示"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"永遠隱藏"</string>
     <!-- no translation found for settings_key_modes:0 (8549888726962891527) -->
     <!-- no translation found for settings_key_modes:1 (881280041213210923) -->
