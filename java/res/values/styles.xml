@@ -35,7 +35,7 @@
         <item name="backgroundDimAmount">0.5</item>
         <item name="colorScheme">white</item>
     </style>
-    <style name="MiniKeyboardAnimation">
+    <style name="PopupMiniKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>
         <item name="android:windowExitAnimation">@anim/mini_keyboard_fadeout</item>
     </style>
