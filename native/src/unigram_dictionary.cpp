@@ -429,7 +429,7 @@ inline static void multiplyIntCapped(const int multiplier, int *base) {
 }
 
 inline static int powerIntCapped(const int base, const int n) {
-    if (false && base == 2) {
+    if (base == 2) {
         return n < 31 ? 1 << n : S_INT_MAX;
     } else {
         int ret = base;
