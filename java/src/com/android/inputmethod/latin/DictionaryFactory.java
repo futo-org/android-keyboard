@@ -124,13 +124,10 @@ public class DictionaryFactory {
      */
     public static boolean isDictionaryAvailable(Context context, Locale locale) {
         final Resources res = context.getResources();
-        final Configuration conf = res.getConfiguration();
-        final Locale saveLocale = conf.locale;
-        conf.locale = locale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
+        final Locale saveLocale = Utils.setSystemLocale(res, locale);
 
         final int resourceId = Utils.getMainDictionaryResourceId(res);
-        final AssetFileDescriptor afd = context.getResources().openRawResourceFd(resourceId);
+        final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
         final boolean hasDictionary = isFullDictionary(afd);
         try {
             if (null != afd) afd.close();
@@ -138,8 +135,7 @@ public class DictionaryFactory {
             /* Um, what can we do here exactly? */
         }
 
-        conf.locale = saveLocale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
+        Utils.setSystemLocale(res, saveLocale);
         return hasDictionary;
     }
 
