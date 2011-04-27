@@ -75,7 +75,7 @@
     <string name="tip_to_close_symbols" msgid="5227724217206927185"><b>"Pumunta muli sa mga titik sa pamamagitan ng muling paggalaw sa key na ito"</b></string>
     <string name="tip_to_launch_settings" msgid="8402961128983196128"><b>"Galawin &amp; pinduting nang matagal ang key na ito upang baguhin ang mga setting ng keyboard, tulad ng awtomatikong pagkumpleto"</b></string>
     <string name="tip_to_start_typing" msgid="7213843601369174313"><b>"Subukan ito!"</b></string>
-    <string name="label_go_key" msgid="1635148082137219148">"Pumunta"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Punta"</string>
     <string name="label_next_key" msgid="362972844525672568">"Susunod"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Tapos na"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Ipadala"</string>
