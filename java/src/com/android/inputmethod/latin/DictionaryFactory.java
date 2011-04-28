@@ -18,11 +18,12 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 
 import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -50,11 +51,14 @@ public class DictionaryFactory {
             return new DictionaryCollection(createBinaryDictionary(context, fallbackResId));
         }
 
-        final AssetFileAddress dictFile = BinaryDictionaryGetter.getDictionaryFile(locale,
-                context, fallbackResId);
-        if (null == dictFile) return null;
-        return new DictionaryCollection(new BinaryDictionary(context,
-                dictFile.mFilename, dictFile.mOffset, dictFile.mLength, null));
+        final List<Dictionary> dictList = new LinkedList<Dictionary>();
+        for (final AssetFileAddress f : BinaryDictionaryGetter.getDictionaryFiles(locale,
+                context, fallbackResId)) {
+            dictList.add(new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength, null));
+        }
+
+        if (null == dictList) return null;
+        return new DictionaryCollection(dictList);
     }
 
     /**
@@ -66,7 +70,6 @@ public class DictionaryFactory {
     protected static BinaryDictionary createBinaryDictionary(Context context, int resId) {
         AssetFileDescriptor afd = null;
         try {
-            // TODO: IMPORTANT: Do not create a dictionary from a placeholder.
             afd = context.getResources().openRawResourceFd(resId);
             if (afd == null) {
                 Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);

@@ -28,6 +28,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -79,27 +81,32 @@ public class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Queries a content provider for dictionary data for some locale and returns it as a file name.
+     * Queries a content provider for dictionary data for some locale and returns the file addresses
      *
      * This will query a content provider for dictionary data for a given locale, and return
-     * the name of a file suitable to be mmap'ed. It will copy it to local storage if needed.
-     * It should also check the dictionary version to avoid unnecessary copies but this is
+     * the addresses of a file set the members of which are suitable to be mmap'ed. It will copy
+     * them to local storage if needed.
+     * It should also check the dictionary versions to avoid unnecessary copies but this is
      * still in TODO state.
      * This will make the data from the content provider the cached dictionary for this locale,
      * overwriting any previous cached data.
-     * @returns the name of the file, or null if no data could be obtained.
+     * @returns the addresses of the files, or null if no data could be obtained.
      * @throw FileNotFoundException if the provider returns non-existent data.
      * @throw IOException if the provider-returned data could not be read.
      */
-    public static String getDictionaryFileFromContentProvider(Locale locale, Context context)
-            throws FileNotFoundException, IOException {
+    public static List<AssetFileAddress> getDictSetFromContentProvider(Locale locale,
+            Context context) throws FileNotFoundException, IOException {
         // TODO: check whether the dictionary is the same or not and if it is, return the cached
         // file.
+        // TODO: This should be able to read a number of files from the dictionary pack, copy
+        // them all and return them.
         final ContentResolver resolver = context.getContentResolver();
         final Uri dictionaryPackUri = getProviderUri(locale);
         final AssetFileDescriptor afd = resolver.openAssetFileDescriptor(dictionaryPackUri, "r");
         if (null == afd) return null;
-        return copyFileTo(afd.createInputStream(), getCacheFileNameForLocale(locale, context));
+        final String fileName =
+                copyFileTo(afd.createInputStream(), getCacheFileNameForLocale(locale, context));
+        return Arrays.asList(AssetFileAddress.makeFromFileName(fileName));
     }
 
     /**

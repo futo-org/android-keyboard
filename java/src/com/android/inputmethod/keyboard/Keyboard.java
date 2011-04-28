@@ -380,10 +380,6 @@ public class Keyboard {
         mProximityInfo.setProximityInfo(mGridNeighbors, getMinWidth(), getHeight(), mKeys);
     }
 
-    public boolean isInside(Key key, int x, int y) {
-        return key.isOnKey(x, y);
-    }
-
     /**
      * Returns the indices of the keys that are closest to the given point.
      * @param x the x-coordinate of the point

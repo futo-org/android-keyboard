@@ -91,11 +91,11 @@ public class KeyDetector {
      *
      * @return Allocates and returns an array that can hold all key indices returned by
      *         {@link #getKeyIndexAndNearbyCodes} method. All elements in the returned array are
-     *         initialized by {@link #NOT_A_KEY} value.
+     *         initialized by {@link #NOT_A_CODE} value.
      */
     public int[] newCodeArray() {
         int[] codes = new int[getMaxNearbyKeys()];
-        Arrays.fill(codes, NOT_A_KEY);
+        Arrays.fill(codes, NOT_A_CODE);
         return codes;
     }
 
@@ -106,16 +106,20 @@ public class KeyDetector {
 
     /**
      * Insert the key into nearby keys buffer and sort nearby keys by ascending order of distance.
+     * If the distance of two keys are the same, the key which the point is on should be considered
+     * as a closer one.
      *
      * @param keyIndex index of the key.
      * @param distance distance between the key's edge and user touched point.
+     * @param isOnKey true if the point is on the key.
      * @return order of the key in the nearby buffer, 0 if it is the nearest key.
      */
-    private int sortNearbyKeys(int keyIndex, int distance) {
+    private int sortNearbyKeys(int keyIndex, int distance, boolean isOnKey) {
         final int[] distances = mDistances;
         final int[] indices = mIndices;
         for (int insertPos = 0; insertPos < distances.length; insertPos++) {
-            if (distance < distances[insertPos]) {
+            final int comparingDistance = distances[insertPos];
+            if (distance < comparingDistance || (distance == comparingDistance && isOnKey)) {
                 final int nextPos = insertPos + 1;
                 if (nextPos < distances.length) {
                     System.arraycopy(distances, insertPos, distances, nextPos,
@@ -174,11 +178,11 @@ public class KeyDetector {
         int primaryIndex = NOT_A_KEY;
         for (final int index : mKeyboard.getNearestKeys(touchX, touchY)) {
             final Key key = keys.get(index);
-            final boolean isInside = mKeyboard.isInside(key, touchX, touchY);
+            final boolean isOnKey = key.isOnKey(touchX, touchY);
             final int distance = key.squaredDistanceToEdge(touchX, touchY);
-            if (isInside || (mProximityCorrectOn && distance < mProximityThresholdSquare)) {
-                final int insertedPosition = sortNearbyKeys(index, distance);
-                if (insertedPosition == 0 && isInside)
+            if (isOnKey || (mProximityCorrectOn && distance < mProximityThresholdSquare)) {
+                final int insertedPosition = sortNearbyKeys(index, distance, isOnKey);
+                if (insertedPosition == 0 && isOnKey)
                     primaryIndex = index;
             }
         }

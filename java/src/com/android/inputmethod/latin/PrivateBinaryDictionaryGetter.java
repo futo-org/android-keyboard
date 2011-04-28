@@ -18,11 +18,12 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 
+import java.util.List;
 import java.util.Locale;
 
 class PrivateBinaryDictionaryGetter {
     private PrivateBinaryDictionaryGetter() {}
-    public static AssetFileAddress getDictionaryFile(Locale locale, Context context) {
+    public static List<AssetFileAddress> getDictionaryFiles(Locale locale, Context context) {
         return null;
     }
 }
