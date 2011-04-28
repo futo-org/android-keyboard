@@ -26,6 +26,8 @@ import android.provider.ContactsContract.Contacts;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.Keyboard;
+
 public class ContactsDictionary extends ExpandableDictionary {
 
     private static final String[] PROJECTION = {
@@ -123,8 +125,9 @@ public class ContactsDictionary extends ExpandableDictionary {
                                 for (j = i + 1; j < len; j++) {
                                     char c = name.charAt(j);
 
-                                    if (!(c == '-' || c == '\'' ||
-                                          Character.isLetter(c))) {
+                                    if (!(c == Keyboard.CODE_DASH
+                                            || c == Keyboard.CODE_SINGLE_QUOTE
+                                            || Character.isLetter(c))) {
                                         break;
                                     }
                                 }

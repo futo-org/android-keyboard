@@ -18,7 +18,6 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.Log;
 
