@@ -174,11 +174,12 @@ public class KeyDetector {
         int primaryIndex = NOT_A_KEY;
         for (final int index : mKeyboard.getNearestKeys(touchX, touchY)) {
             final Key key = keys.get(index);
+            // TODO: should be okay to skip calling isInside()
             final boolean isInside = mKeyboard.isInside(key, touchX, touchY);
             final int distance = key.squaredDistanceToEdge(touchX, touchY);
             if (isInside || (mProximityCorrectOn && distance < mProximityThresholdSquare)) {
                 final int insertedPosition = sortNearbyKeys(index, distance);
-                if (insertedPosition == 0 && isInside)
+                if (insertedPosition == 0)
                     primaryIndex = index;
             }
         }
