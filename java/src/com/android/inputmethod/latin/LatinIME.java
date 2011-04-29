@@ -110,9 +110,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      */
     public static final String IME_OPTION_NO_SETTINGS_KEY = "noSettingsKey";
 
-    private static final int DELAY_UPDATE_SUGGESTIONS = 180;
-    private static final int DELAY_UPDATE_OLD_SUGGESTIONS = 300;
-    private static final int DELAY_UPDATE_SHIFT_STATE = 100;
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
     // How many continuous deletes at which to start deleting at a higher speed.
@@ -190,6 +187,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private boolean mConfigEnableShowSubtypeSettings;
     private boolean mConfigSwipeDownDismissKeyboardEnabled;
     private int mConfigDelayBeforeFadeoutLanguageOnSpacebar;
+    private int mConfigDelayUpdateSuggestions;
+    private int mConfigDelayUpdateOldSuggestions;
+    private int mConfigDelayUpdateShiftState;
     private int mConfigDurationOfFadeoutLanguageOnSpacebar;
     private float mConfigFinalFadeoutFactorOfLanguageOnSpacebar;
     private long mConfigDoubleSpacesTurnIntoPeriodTimeout;
@@ -310,7 +310,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public void postUpdateSuggestions() {
             removeMessages(MSG_UPDATE_SUGGESTIONS);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS), DELAY_UPDATE_SUGGESTIONS);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS),
+                    mConfigDelayUpdateSuggestions);
         }
 
         public void cancelUpdateSuggestions() {
@@ -324,7 +325,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public void postUpdateOldSuggestions() {
             removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_OLD_SUGGESTIONS),
-                    DELAY_UPDATE_OLD_SUGGESTIONS);
+                    mConfigDelayUpdateOldSuggestions);
         }
 
         public void cancelUpdateOldSuggestions() {
@@ -333,7 +334,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public void postUpdateShiftKeyState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE), DELAY_UPDATE_SHIFT_STATE);
+            sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE), mConfigDelayUpdateShiftState);
         }
 
         public void cancelUpdateShiftState() {
@@ -342,7 +343,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public void postUpdateBigramPredictions() {
             removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
-            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS), DELAY_UPDATE_SUGGESTIONS);
+            sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS),
+                    mConfigDelayUpdateSuggestions);
         }
 
         public void cancelUpdateBigramPredictions() {
@@ -425,6 +427,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 R.bool.config_swipe_down_dismiss_keyboard_enabled);
         mConfigDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
                 R.integer.config_delay_before_fadeout_language_on_spacebar);
+        mConfigDelayUpdateSuggestions = res.getInteger(R.integer.config_delay_update_suggestions);
+        mConfigDelayUpdateOldSuggestions = res.getInteger(
+                R.integer.config_delay_update_old_suggestions);
+        mConfigDelayUpdateShiftState = res.getInteger(R.integer.config_delay_update_shift_state);
         mConfigDurationOfFadeoutLanguageOnSpacebar = res.getInteger(
                 R.integer.config_duration_of_fadeout_language_on_spacebar);
         mConfigFinalFadeoutFactorOfLanguageOnSpacebar = res.getInteger(

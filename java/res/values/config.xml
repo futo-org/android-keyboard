@@ -50,6 +50,9 @@
     <bool name="config_show_mini_keyboard_at_touched_point">false</bool>
     <!-- The language is never displayed if == 0, always displayed if < 0 -->
     <integer name="config_delay_before_fadeout_language_on_spacebar">1200</integer>
+    <integer name="config_delay_update_suggestions">100</integer>
+    <integer name="config_delay_update_old_suggestions">300</integer>
+    <integer name="config_delay_update_shift_state">100</integer>
     <integer name="config_duration_of_fadeout_language_on_spacebar">50</integer>
     <integer name="config_final_fadeout_percentage_of_language_on_spacebar">50</integer>
     <integer name="config_delay_before_preview">0</integer>
