@@ -158,8 +158,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private ContactsDictionary mContactsDictionary;
     private AutoDictionary mAutoDictionary;
 
+    // TODO: Create an inner class to group options and pseudo-options to improve readability.
     // These variables are initialized according to the {@link EditorInfo#inputType}.
-    private boolean mAutoSpace;
+    private boolean mShouldInsertMagicSpace;
     private boolean mInputTypeNoAutoCorrect;
     private boolean mIsSettingsSuggestionStripOn;
     private boolean mApplicationSpecifiedCompletionOn;
@@ -171,7 +172,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private CharSequence mBestWord;
     private boolean mHasUncommittedTypedChars;
     private boolean mHasDictionary;
-    private boolean mJustAddedAutoSpace;
+    // Magic space: a space that should disappear on space/apostrophe insertion, move after the
+    // punctuation on punctuation insertion, and become a real space on alpha char insertion.
+    private boolean mJustAddedMagicSpace; // This indicates whether the last char is a magic space.
     private boolean mAutoCorrectEnabled;
     private boolean mRecorrectionEnabled;
     // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
@@ -599,7 +602,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mComposing.setLength(0);
         mHasUncommittedTypedChars = false;
         mDeleteCount = 0;
-        mJustAddedAutoSpace = false;
+        mJustAddedMagicSpace = false;
 
         loadSettings(attribute);
         if (mSubtypeSwitcher.isKeyboardMode()) {
@@ -634,7 +637,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         final int inputType = attribute.inputType;
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
-        mAutoSpace = false;
+        mShouldInsertMagicSpace = false;
         mInputTypeNoAutoCorrect = false;
         mIsSettingsSuggestionStripOn = false;
         mApplicationSpecifiedCompletionOn = false;
@@ -649,9 +652,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             if (InputTypeCompatUtils.isEmailVariation(variation)
                     || variation == InputType.TYPE_TEXT_VARIATION_PERSON_NAME) {
-                mAutoSpace = false;
+                mShouldInsertMagicSpace = false;
             } else {
-                mAutoSpace = true;
+                mShouldInsertMagicSpace = true;
             }
             if (InputTypeCompatUtils.isEmailVariation(variation)) {
                 mIsSettingsSuggestionStripOn = false;
@@ -795,7 +798,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (TextEntryState.isAcceptedDefault() || TextEntryState.isSpaceAfterPicked()) {
                 if (TextEntryState.isAcceptedDefault())
                     TextEntryState.reset();
-                mJustAddedAutoSpace = false; // The user moved the cursor.
+                mJustAddedMagicSpace = false; // The user moved the cursor.
             }
         }
         mJustAccepted = false;
@@ -1048,23 +1051,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             ic.commitText(lastTwo.charAt(1) + " ", 1);
             ic.endBatchEdit();
             mKeyboardSwitcher.updateShiftState();
-            mJustAddedAutoSpace = true;
-        }
-    }
-
-    private void reswapPeriodAndSpace() {
-        final InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
-        CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
-        if (lastThree != null && lastThree.length() == 3
-                && lastThree.charAt(0) == Keyboard.CODE_PERIOD
-                && lastThree.charAt(1) == Keyboard.CODE_SPACE
-                && lastThree.charAt(2) == Keyboard.CODE_PERIOD) {
-            ic.beginBatchEdit();
-            ic.deleteSurroundingText(3, 0);
-            ic.commitText(" ..", 1);
-            ic.endBatchEdit();
-            mKeyboardSwitcher.updateShiftState();
         }
     }
 
@@ -1084,7 +1070,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             ic.commitText(". ", 1);
             ic.endBatchEdit();
             mKeyboardSwitcher.updateShiftState();
-            mJustAddedAutoSpace = true;
         } else {
             mHandler.startDoubleSpacesTimer();
         }
@@ -1211,9 +1196,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             handleTab();
             break;
         default:
-            if (primaryCode != Keyboard.CODE_ENTER) {
-                mJustAddedAutoSpace = false;
-            }
             if (isWordSeparator(primaryCode)) {
                 handleSeparator(primaryCode, x, y);
             } else {
@@ -1238,7 +1220,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
         mKeyboardSwitcher.onKey(Keyboard.CODE_DUMMY);
-        mJustAddedAutoSpace = false;
+        mJustAddedMagicSpace = false;
         mEnteredText = text;
     }
 
@@ -1348,6 +1330,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void handleCharacter(int primaryCode, int[] keyCodes, int x, int y) {
         mVoiceProxy.handleCharacter();
 
+        if (mJustAddedMagicSpace && primaryCode == Keyboard.CODE_SINGLE_QUOTE) {
+            removeTrailingSpace();
+        }
+        if (primaryCode != Keyboard.CODE_ENTER) {
+            mJustAddedMagicSpace = false;
+        }
+
         if (mLastSelectionStart == mLastSelectionEnd && TextEntryState.isRecorrecting()) {
             abortRecorrection(false);
         }
@@ -1426,35 +1415,33 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
-            if (mAutoCorrectOn && primaryCode != '\'') {
+            if (mAutoCorrectOn && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
                 pickedDefault = pickDefaultSuggestion(primaryCode);
-                // Picked the suggestion by the space key.  We consider this
-                // as "added an auto space".
-                if (primaryCode == Keyboard.CODE_SPACE) {
-                    mJustAddedAutoSpace = true;
-                }
             } else {
                 commitTyped(ic);
             }
         }
-        if (mJustAddedAutoSpace && primaryCode == Keyboard.CODE_ENTER) {
-            removeTrailingSpace();
-            mJustAddedAutoSpace = false;
-        }
-        sendKeyChar((char)primaryCode);
 
-        // Handle the case of ". ." -> " .." with auto-space if necessary
-        // before changing the TextEntryState.
-        if (TextEntryState.isPunctuationAfterAccepted() && primaryCode == Keyboard.CODE_PERIOD) {
-            reswapPeriodAndSpace();
+        if (mJustAddedMagicSpace && primaryCode == Keyboard.CODE_SPACE) {
+            mJustAddedMagicSpace = false;
+        } else if (mJustAddedMagicSpace && primaryCode == Keyboard.CODE_ENTER) {
+            removeTrailingSpace();
+            mJustAddedMagicSpace = false;
+            sendKeyChar((char)primaryCode);
+        } else {
+            sendKeyChar((char)primaryCode);
         }
 
         TextEntryState.typedCharacter((char) primaryCode, true, x, y);
 
-        if (TextEntryState.isPunctuationAfterAccepted() && primaryCode != Keyboard.CODE_ENTER) {
+        if (TextEntryState.isPunctuationAfterAccepted() && primaryCode != Keyboard.CODE_ENTER
+                && mJustAddedMagicSpace) {
             swapPunctuationAndSpace();
         } else if (isSuggestionsRequested() && primaryCode == Keyboard.CODE_SPACE) {
             doubleSpace();
+            mJustAddedMagicSpace = false;
+        } else {
+            mJustAddedMagicSpace = false;
         }
         if (pickedDefault) {
             CharSequence typedWord = mWord.getTypedWord();
@@ -1726,9 +1713,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 index, suggestions.mWords);
         TextEntryState.acceptedSuggestion(mComposing.toString(), suggestion);
         // Follow it with a space
-        if (mAutoSpace && !recorrecting) {
-            sendSpace();
-            mJustAddedAutoSpace = true;
+        if (mShouldInsertMagicSpace && !recorrecting) {
+            sendMagicSpace();
         }
 
         // We should show the hint if the user pressed the first entry AND either:
@@ -2011,8 +1997,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mSentenceSeparators.contains(String.valueOf((char)code));
     }
 
-    private void sendSpace() {
+    private void sendMagicSpace() {
         sendKeyChar((char)Keyboard.CODE_SPACE);
+        mJustAddedMagicSpace = true;
         mKeyboardSwitcher.updateShiftState();
     }
 
@@ -2408,7 +2395,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         p.println("  mCorrectionMode=" + mCorrectionMode);
         p.println("  mHasUncommittedTypedChars=" + mHasUncommittedTypedChars);
         p.println("  mAutoCorrectOn=" + mAutoCorrectOn);
-        p.println("  mAutoSpace=" + mAutoSpace);
+        p.println("  mShouldInsertMagicSpace=" + mShouldInsertMagicSpace);
         p.println("  mApplicationSpecifiedCompletionOn=" + mApplicationSpecifiedCompletionOn);
         p.println("  TextEntryState.state=" + TextEntryState.getState());
         p.println("  mSoundOn=" + mSoundOn);

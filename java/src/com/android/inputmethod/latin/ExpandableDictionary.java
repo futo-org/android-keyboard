@@ -19,6 +19,8 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.android.inputmethod.keyboard.Keyboard;
+
 import java.util.LinkedList;
 
 /**
@@ -40,8 +42,6 @@ public class ExpandableDictionary extends Dictionary {
     private int mDicTypeId;
     private int mMaxDepth;
     private int mInputLength;
-
-    private static final char QUOTE = '\'';
 
     private boolean mRequiresReload;
 
@@ -304,7 +304,8 @@ public class ExpandableDictionary extends Dictionary {
                     getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex,
                             skipPos, callback);
                 }
-            } else if ((c == QUOTE && currentChars[0] != QUOTE) || depth == skipPos) {
+            } else if ((c == Keyboard.CODE_SINGLE_QUOTE
+                    && currentChars[0] != Keyboard.CODE_SINGLE_QUOTE) || depth == skipPos) {
                 // Skip the ' and continue deeper
                 word[depth] = c;
                 if (children != null) {

@@ -626,7 +626,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private static boolean isQuoteCharacter(int c) {
         // Apostrophe, quotation mark.
-        if (c == '\'' || c == '"')
+        if (c == Keyboard.CODE_SINGLE_QUOTE || c == Keyboard.CODE_DOUBLE_QUOTE)
             return true;
         // \u2018: Left single quotation mark
         // \u2019: Right single quotation mark
