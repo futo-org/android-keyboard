@@ -146,6 +146,11 @@
 <!--             android:imeSubtypeExtraValue="excludeFromLastInputMethod,requireNetworkConnectivity" -->
 <!--     /> -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_pl_keyboard"
+            android:imeSubtypeLocale="pl"
+            android:imeSubtypeMode="keyboard"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_ru_keyboard"
             android:imeSubtypeLocale="ru"
             android:imeSubtypeMode="keyboard"
