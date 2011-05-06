@@ -179,7 +179,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private void updateSuggestions() {
         final SuggestedWords suggestions = mSuggestions;
         clear();
-        final int count = suggestions.size();
+        final int count = Math.min(mWords.size(), suggestions.size());
         for (int i = 0; i < count; i++) {
             CharSequence word = suggestions.getWord(i);
             if (word == null) continue;
