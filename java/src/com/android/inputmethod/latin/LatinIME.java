@@ -68,7 +68,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
-import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.widget.LinearLayout;
 
@@ -152,6 +151,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private KeyboardSwitcher mKeyboardSwitcher;
     private SubtypeSwitcher mSubtypeSwitcher;
     private VoiceProxy mVoiceProxy;
+    private Recorrection mRecorrection;
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
@@ -176,7 +176,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // punctuation on punctuation insertion, and become a real space on alpha char insertion.
     private boolean mJustAddedMagicSpace; // This indicates whether the last char is a magic space.
     private boolean mAutoCorrectEnabled;
-    private boolean mRecorrectionEnabled;
     // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
     private boolean mBigramSuggestionEnabled;
     // Prediction: use bigrams to predict the next word when there is no input for it yet
@@ -403,6 +402,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
         AccessibilityUtils.init(this, prefs);
+        Recorrection.init(this, prefs);
 
         super.onCreate();
 
@@ -411,18 +411,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
+        mRecorrection = Recorrection.getInstance();
 
         final Resources res = getResources();
         mResources = res;
-
-        // If the option should not be shown, do not read the recorrection preference
-        // but always use the default setting defined in the resources.
-        if (res.getBoolean(R.bool.config_enable_show_recorrection_option)) {
-            mRecorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
-                    res.getBoolean(R.bool.config_default_recorrection_enabled));
-        } else {
-            mRecorrectionEnabled = res.getBoolean(R.bool.config_default_recorrection_enabled);
-        }
 
         mConfigEnableShowSubtypeSettings = res.getBoolean(
                 R.bool.config_enable_show_subtype_settings);
@@ -624,7 +616,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         inputView.setProximityCorrectionEnabled(true);
         inputView.setAccessibilityEnabled(accessibilityEnabled);
         // If we just entered a text field, maybe it has some old text that requires correction
-        checkRecorrectionOnStart();
+        mRecorrection.checkRecorrectionOnStart();
         inputView.setForeground(true);
 
         voiceIme.onStartInputView(inputView.getWindowToken());
@@ -683,34 +675,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if ((inputType & InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE) != 0) {
                 mIsSettingsSuggestionStripOn = false;
                 mApplicationSpecifiedCompletionOn = isFullscreenMode();
-            }
-        }
-    }
-
-    private void checkRecorrectionOnStart() {
-        if (!mRecorrectionEnabled) return;
-
-        final InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
-        // There could be a pending composing span.  Clean it up first.
-        ic.finishComposingText();
-
-        if (isShowingSuggestionsStrip() && isSuggestionsRequested()) {
-            // First get the cursor position. This is required by setOldSuggestions(), so that
-            // it can pass the correct range to setComposingRegion(). At this point, we don't
-            // have valid values for mLastSelectionStart/End because onUpdateSelection() has
-            // not been called yet.
-            ExtractedTextRequest etr = new ExtractedTextRequest();
-            etr.token = 0; // anything is fine here
-            ExtractedText et = ic.getExtractedText(etr, 0);
-            if (et == null) return;
-
-            mLastSelectionStart = et.startOffset + et.selectionStart;
-            mLastSelectionEnd = et.startOffset + et.selectionEnd;
-
-            // Then look for possible corrections in a delayed fashion
-            if (!TextUtils.isEmpty(et.text) && isCursorTouchingWord()) {
-                mHandler.postUpdateOldSuggestions();
             }
         }
     }
@@ -808,34 +772,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mLastSelectionStart = newSelStart;
         mLastSelectionEnd = newSelEnd;
 
-        if (mRecorrectionEnabled && isShowingSuggestionsStrip()) {
-            // Don't look for corrections if the keyboard is not visible
-            if (mKeyboardSwitcher.isInputViewShown()) {
-                // Check if we should go in or out of correction mode.
-                if (isSuggestionsRequested()
-                        && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
-                                || TextEntryState.isRecorrecting())
-                                && (newSelStart < newSelEnd - 1 || !mHasUncommittedTypedChars)) {
-                    if (isCursorTouchingWord() || mLastSelectionStart < mLastSelectionEnd) {
-                        mHandler.cancelUpdateBigramPredictions();
-                        mHandler.postUpdateOldSuggestions();
-                    } else {
-                        abortRecorrection(false);
-                        // If showing the "touch again to save" hint, do not replace it. Else,
-                        // show the bigrams if we are at the end of the text, punctuation otherwise.
-                        if (mCandidateView != null
-                                && !mCandidateView.isShowingAddToDictionaryHint()) {
-                            InputConnection ic = getCurrentInputConnection();
-                            if (null == ic || !TextUtils.isEmpty(ic.getTextAfterCursor(1, 0))) {
-                                if (!isShowingPunctuationList()) setPunctuationSuggestions();
-                            } else {
-                                mHandler.postUpdateBigramPredictions();
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        mRecorrection.updateRecorrectionSelection(mKeyboardSwitcher,
+                mCandidateView, candidatesStart, candidatesEnd, newSelStart,
+                newSelEnd, oldSelStart, mLastSelectionStart,
+                mLastSelectionEnd, mHasUncommittedTypedChars);
+    }
+
+    public void setLastSelection(int start, int end) {
+        mLastSelectionStart = start;
+        mLastSelectionEnd = end;
     }
 
     /**
@@ -848,7 +793,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      */
     @Override
     public void onExtractedTextClicked() {
-        if (mRecorrectionEnabled && isSuggestionsRequested()) return;
+        if (mRecorrection.isRecorrectionEnabled() && isSuggestionsRequested()) return;
 
         super.onExtractedTextClicked();
     }
@@ -864,7 +809,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      */
     @Override
     public void onExtractedCursorMovement(int dx, int dy) {
-        if (mRecorrectionEnabled && isSuggestionsRequested()) return;
+        if (mRecorrection.isRecorrectionEnabled() && isSuggestionsRequested()) return;
 
         super.onExtractedCursorMovement(dx, dy);
     }
@@ -1318,7 +1263,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void abortRecorrection(boolean force) {
+    public void abortRecorrection(boolean force) {
         if (force || TextEntryState.isRecorrecting()) {
             TextEntryState.onAbortRecorrection();
             setCandidatesViewShown(isCandidateStripVisible());
@@ -1495,16 +1440,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mWordHistory.add(entry);
     }
 
-    private boolean isSuggestionsRequested() {
+    public boolean isSuggestionsRequested() {
         return mIsSettingsSuggestionStripOn
                 && (mCorrectionMode > 0 || isShowingSuggestionsStrip());
     }
 
-    private boolean isShowingPunctuationList() {
+    public boolean isShowingPunctuationList() {
         return mSuggestPuncList == mCandidateView.getSuggestions();
     }
 
-    private boolean isShowingSuggestionsStrip() {
+    public boolean isShowingSuggestionsStrip() {
         return (mSuggestionVisibility == SUGGESTION_VISIBILILTY_SHOW_VALUE)
                 || (mSuggestionVisibility == SUGGESTION_VISIBILILTY_SHOW_ONLY_PORTRAIT_VALUE
                         && mOrientation == Configuration.ORIENTATION_PORTRAIT);
@@ -1877,7 +1822,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void setPunctuationSuggestions() {
+    public void setPunctuationSuggestions() {
         setSuggestions(mSuggestPuncList);
         setCandidatesViewShown(isCandidateStripVisible());
     }
@@ -1925,7 +1870,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private boolean isCursorTouchingWord() {
+    public boolean isCursorTouchingWord() {
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return false;
         CharSequence toLeft = ic.getTextBeforeCursor(1, 0);
