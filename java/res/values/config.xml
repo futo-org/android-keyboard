@@ -56,7 +56,7 @@
     <integer name="config_duration_of_fadeout_language_on_spacebar">50</integer>
     <integer name="config_final_fadeout_percentage_of_language_on_spacebar">50</integer>
     <integer name="config_delay_before_preview">0</integer>
-    <integer name="config_delay_after_preview">60</integer>
+    <integer name="config_delay_after_preview">70</integer>
     <integer name="config_mini_keyboard_fadein_anim_time">0</integer>
     <integer name="config_mini_keyboard_fadeout_anim_time">100</integer>
     <integer name="config_delay_before_key_repeat_start">400</integer>
