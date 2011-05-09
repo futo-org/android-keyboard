@@ -45,13 +45,15 @@ public class ProximityKeyDetector extends KeyDetector {
      *
      * @param keyIndex index of the key.
      * @param distance distance between the key's edge and user touched point.
+     * @param isOnKey true if the point is on the key.
      * @return order of the key in the nearby buffer, 0 if it is the nearest key.
      */
-    private int sortNearbyKeys(int keyIndex, int distance) {
+    private int sortNearbyKeys(int keyIndex, int distance, boolean isOnKey) {
         final int[] distances = mDistances;
         final int[] indices = mIndices;
         for (int insertPos = 0; insertPos < distances.length; insertPos++) {
-            if (distance < distances[insertPos]) {
+            final int comparingDistance = distances[insertPos];
+            if (distance < comparingDistance || (distance == comparingDistance && isOnKey)) {
                 final int nextPos = insertPos + 1;
                 if (nextPos < distances.length) {
                     System.arraycopy(distances, insertPos, distances, nextPos,
@@ -103,7 +105,7 @@ public class ProximityKeyDetector extends KeyDetector {
             final boolean isInside = key.isInside(touchX, touchY);
             final int distance = key.squaredDistanceToEdge(touchX, touchY);
             if (isInside || (mProximityCorrectOn && distance < mProximityThresholdSquare)) {
-                final int insertedPosition = sortNearbyKeys(index, distance);
+                final int insertedPosition = sortNearbyKeys(index, distance, isInside);
                 if (insertedPosition == 0 && isInside)
                     primaryIndex = index;
             }
