@@ -23,14 +23,15 @@
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    android:paddingRight="@dimen/candidate_padding"
 >
     <ImageView
         android:id="@+id/candidate_divider"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@drawable/keyboard_suggest_strip_divider"
-        android:visibility="gone"
+        android:paddingRight="@dimen/candidate_padding"
+        android:paddingLeft="@dimen/candidate_padding"
+        android:visibility="invisible"
         android:focusable="false"
         android:clickable="false"
         android:gravity="center_vertical|center_horizontal" />
@@ -44,8 +45,7 @@
         android:background="@drawable/btn_candidate_holo"
         android:focusable="true"
         android:clickable="true"
-        android:gravity="center_vertical|center_horizontal"
-        android:paddingLeft="@dimen/candidate_padding" />
+        android:gravity="center_vertical|center_horizontal" />
     <TextView
         android:id="@+id/candidate_debug_info"
         android:layout_width="wrap_content"
