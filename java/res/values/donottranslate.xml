@@ -18,12 +18,19 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Symbols that are commonly considered word separators in this language -->
-    <string name="word_separators">.\u0009\u0020,;:!?\n()[]*&amp;@{}/&lt;&gt;_+=|\u0022</string>
-    <!-- Symbols that are sentence separators, for purposes of making it hug the last sentence. -->
-    <string name="sentence_separators">.,!?)</string>
     <!-- Symbols that are suggested between words -->
     <string name="suggested_punctuations">!?,\u0022\u0027:();-/@_</string>
+    <!-- Symbols that should be swapped with a magic space -->
+    <string name="magic_space_swapping_symbols">.,;:!?)]}\u0022</string>
+    <!-- Symbols that should strip a magic space -->
+    <string name="magic_space_stripping_symbols">\u0009\u0020\n/_\u0027-</string>
+    <!-- Symbols that should convert magic spaces into real space -->
+    <string name="magic_space_promoting_symbols">([*&amp;@{&lt;&gt;+=|</string>
+    <!-- Symbols that do NOT separate words -->
+    <string name="non_word_separator_symbols">\u0027-</string>
+    <!-- Word separator list is the union of all symbols except those that are not separators:
+    magic_space_swapping_symbols | magic_space_stripping_symbols |
+            magic_space_neutral_symbols \ non_word_separator_symbols -->
 
     <!-- Label for ALT modifier key.  Must be short to fit on key! -->
     <string name="label_alt_key">ALT</string>
