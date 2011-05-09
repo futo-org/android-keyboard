@@ -18,6 +18,6 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- Symbols that are commonly considered word separators in this language -->
-    <string name="word_separators">.\u0009\u0020,;:!?\'\n()[]*&amp;@{}/&lt;&gt;_+=|\u0022</string>
+    <!-- Symbols that do NOT separate words -->
+    <string name="non_word_separator_symbols"></string>
 </resources>

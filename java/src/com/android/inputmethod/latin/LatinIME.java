@@ -216,7 +216,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private boolean mSilentMode;
 
     /* package */ String mWordSeparators;
-    private String mSentenceSeparators;
+    private String mMagicSpaceStrippers;
+    private String mMagicSpaceSwappers;
     private String mSuggestPuncs;
     // TODO: Move this flag to VoiceProxy
     private boolean mConfigurationChanging;
@@ -505,8 +506,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
 
         updateCorrectionMode();
-        mWordSeparators = res.getString(R.string.word_separators);
-        mSentenceSeparators = res.getString(R.string.sentence_separators);
+        mMagicSpaceStrippers = res.getString(R.string.magic_space_stripping_symbols);
+        mMagicSpaceSwappers = res.getString(R.string.magic_space_swapping_symbols);
+        String wordSeparators = mMagicSpaceStrippers + mMagicSpaceSwappers
+                + res.getString(R.string.magic_space_promoting_symbols);
+        final String notWordSeparators = res.getString(R.string.non_word_separator_symbols);
+        for (int i = notWordSeparators.length() - 1; i >= 0; --i)
+            wordSeparators = wordSeparators.replace(notWordSeparators.substring(i, i + 1), "");
+        mWordSeparators = wordSeparators;
 
         Utils.setSystemLocale(res, savedLocale);
     }
@@ -1039,13 +1046,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return false;
     }
 
-    private void swapPunctuationAndSpace() {
+    private void swapSwapperAndSpace() {
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         CharSequence lastTwo = ic.getTextBeforeCursor(2, 0);
+        // It is guaranteed lastTwo.charAt(1) is a swapper - else this method is not called.
         if (lastTwo != null && lastTwo.length() == 2
-                && lastTwo.charAt(0) == Keyboard.CODE_SPACE
-                && isSentenceSeparator(lastTwo.charAt(1))) {
+                && lastTwo.charAt(0) == Keyboard.CODE_SPACE) {
             ic.beginBatchEdit();
             ic.deleteSurroundingText(2, 0);
             ic.commitText(lastTwo.charAt(1) + " ", 1);
@@ -1054,7 +1061,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void doubleSpace() {
+    private void maybeDoubleSpace() {
         if (mCorrectionMode == Suggest.CORRECTION_NONE) return;
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
@@ -1330,14 +1337,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void handleCharacter(int primaryCode, int[] keyCodes, int x, int y) {
         mVoiceProxy.handleCharacter();
 
-        if (mJustAddedMagicSpace && primaryCode == Keyboard.CODE_SINGLE_QUOTE) {
+        if (mJustAddedMagicSpace && isMagicSpaceStripper(primaryCode)) {
             removeTrailingSpace();
         }
-        if (primaryCode != Keyboard.CODE_ENTER) {
-            mJustAddedMagicSpace = false;
-        }
 
-        if (mLastSelectionStart == mLastSelectionEnd && TextEntryState.isRecorrecting()) {
+        if (mLastSelectionStart == mLastSelectionEnd) {
             abortRecorrection(false);
         }
 
@@ -1389,6 +1393,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             sendKeyChar((char)code);
         }
+        if (mJustAddedMagicSpace && isMagicSpaceSwapper(primaryCode)) {
+            swapSwapperAndSpace();
+        } else {
+            mJustAddedMagicSpace = false;
+        }
+
         switcher.updateShiftState();
         if (LatinIME.PERF_DEBUG) measureCps();
         TextEntryState.typedCharacter((char) code, isWordSeparator(code), x, y);
@@ -1422,27 +1432,25 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
-        if (mJustAddedMagicSpace && primaryCode == Keyboard.CODE_SPACE) {
-            mJustAddedMagicSpace = false;
-        } else if (mJustAddedMagicSpace && primaryCode == Keyboard.CODE_ENTER) {
-            removeTrailingSpace();
-            mJustAddedMagicSpace = false;
-            sendKeyChar((char)primaryCode);
+        if (mJustAddedMagicSpace) {
+            if (isMagicSpaceSwapper(primaryCode)) {
+                sendKeyChar((char)primaryCode);
+                swapSwapperAndSpace();
+            } else {
+                if (isMagicSpaceStripper(primaryCode)) removeTrailingSpace();
+                sendKeyChar((char)primaryCode);
+                mJustAddedMagicSpace = false;
+            }
         } else {
             sendKeyChar((char)primaryCode);
+        }
+
+        if (isSuggestionsRequested() && primaryCode == Keyboard.CODE_SPACE) {
+            maybeDoubleSpace();
         }
 
         TextEntryState.typedCharacter((char) primaryCode, true, x, y);
 
-        if (TextEntryState.isPunctuationAfterAccepted() && primaryCode != Keyboard.CODE_ENTER
-                && mJustAddedMagicSpace) {
-            swapPunctuationAndSpace();
-        } else if (isSuggestionsRequested() && primaryCode == Keyboard.CODE_SPACE) {
-            doubleSpace();
-            mJustAddedMagicSpace = false;
-        } else {
-            mJustAddedMagicSpace = false;
-        }
         if (pickedDefault) {
             CharSequence typedWord = mWord.getTypedWord();
             TextEntryState.backToAcceptedDefault(typedWord);
@@ -1687,10 +1695,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // So, LatinImeLogger logs "" as a user's input.
             LatinImeLogger.logOnManualSuggestion(
                     "", suggestion.toString(), index, suggestions.mWords);
+            // Find out whether the previous character is a space. If it is, as a special case
+            // for punctuation entered through the suggestion strip, it should be considered
+            // a magic space even if it was a normal space. This is meant to help in case the user
+            // pressed space on purpose of displaying the suggestion strip punctuation.
             final char primaryCode = suggestion.charAt(0);
+            final int toLeft = (ic == null) ? 0 : ic.getTextBeforeCursor(1, 0).charAt(0);
+            if (Keyboard.CODE_SPACE == toLeft) mJustAddedMagicSpace = true;
             onCodeInput(primaryCode, new int[] { primaryCode },
                     KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
                     KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+            mJustAddedMagicSpace = false;
             if (ic != null) {
                 ic.endBatchEdit();
             }
@@ -1917,8 +1932,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         if (mUserBigramDictionary != null) {
+            // We don't want to register as bigrams words separated by a separator.
+            // For example "I will, and you too" : we don't want the pair ("will" "and") to be
+            // a bigram.
             CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
-                    mSentenceSeparators);
+                    mWordSeparators);
             if (!TextUtils.isEmpty(prevWord)) {
                 mUserBigramDictionary.addBigrams(prevWord.toString(), suggestion.toString());
             }
@@ -1993,8 +2011,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return separators.contains(String.valueOf((char)code));
     }
 
-    private boolean isSentenceSeparator(int code) {
-        return mSentenceSeparators.contains(String.valueOf((char)code));
+    private boolean isMagicSpaceStripper(int code) {
+        return mMagicSpaceStrippers.contains(String.valueOf((char)code));
+    }
+
+    private boolean isMagicSpaceSwapper(int code) {
+        return mMagicSpaceSwappers.contains(String.valueOf((char)code));
     }
 
     private void sendMagicSpace() {
