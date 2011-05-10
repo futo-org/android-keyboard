@@ -150,7 +150,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 tv.setOnLongClickListener(this);
             ImageView divider = (ImageView)v.findViewById(R.id.candidate_divider);
             // Do not display divider of first candidate.
-            divider.setVisibility(i == 0 ? GONE : VISIBLE);
+            divider.setVisibility(i == 0 ? INVISIBLE : VISIBLE);
             mWords.add(v);
         }
 
