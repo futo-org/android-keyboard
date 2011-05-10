@@ -31,18 +31,18 @@ public class WordComposer {
     /**
      * The list of unicode values for each keystroke (including surrounding keys)
      */
-    private final ArrayList<int[]> mCodes;
+    private ArrayList<int[]> mCodes;
 
     private int mTypedLength;
-    private final int[] mXCoordinates;
-    private final int[] mYCoordinates;
+    private int[] mXCoordinates;
+    private int[] mYCoordinates;
 
     /**
      * The word chosen from the candidate list, until it is committed.
      */
     private String mPreferredWord;
 
-    private final StringBuilder mTypedWord;
+    private StringBuilder mTypedWord;
 
     private int mCapsCount;
 
@@ -63,6 +63,10 @@ public class WordComposer {
     }
 
     WordComposer(WordComposer source) {
+        init(source);
+    }
+
+    public void init(WordComposer source) {
         mCodes = new ArrayList<int[]>(source.mCodes);
         mPreferredWord = source.mPreferredWord;
         mTypedWord = new StringBuilder(source.mTypedWord);

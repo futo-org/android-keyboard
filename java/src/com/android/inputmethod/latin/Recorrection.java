@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.compat.InputConnectionCompatUtils;
+import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 import android.content.SharedPreferences;
@@ -25,6 +27,8 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 
+import java.util.ArrayList;
+
 /**
  * Manager of re-correction functionalities
  */
@@ -33,6 +37,7 @@ public class Recorrection {
 
     private LatinIME mService;
     private boolean mRecorrectionEnabled = false;
+    private final ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
 
     public static Recorrection getInstance() {
         return sInstance;
@@ -108,7 +113,7 @@ public class Recorrection {
                         mService.mHandler.cancelUpdateBigramPredictions();
                         mService.mHandler.postUpdateOldSuggestions();
                     } else {
-                        mService.abortRecorrection(false);
+                        abortRecorrection(false);
                         // If showing the "touch again to save" hint, do not replace it. Else,
                         // show the bigrams if we are at the end of the text, punctuation otherwise.
                         if (candidateView != null
@@ -125,6 +130,126 @@ public class Recorrection {
                     }
                 }
             }
+        }
+    }
+
+    public void saveWordInHistory(WordComposer word, CharSequence result) {
+        if (word.size() <= 1) {
+            return;
+        }
+        // Skip if result is null. It happens in some edge case.
+        if (TextUtils.isEmpty(result)) {
+            return;
+        }
+
+        // Make a copy of the CharSequence, since it is/could be a mutable CharSequence
+        final String resultCopy = result.toString();
+        WordAlternatives entry = new WordAlternatives(resultCopy, new WordComposer(word));
+        mWordHistory.add(entry);
+    }
+
+    public void clearWordsInHistory() {
+        mWordHistory.clear();
+    }
+
+    /**
+     * Tries to apply any typed alternatives for the word if we have any cached alternatives,
+     * otherwise tries to find new corrections and completions for the word.
+     * @param touching The word that the cursor is touching, with position information
+     * @return true if an alternative was found, false otherwise.
+     */
+    public boolean applyTypedAlternatives(WordComposer word, Suggest suggest,
+            KeyboardSwitcher keyboardSwitcher, EditingUtils.SelectedWord touching) {
+        // If we didn't find a match, search for result in typed word history
+        WordComposer foundWord = null;
+        WordAlternatives alternatives = null;
+        // Search old suggestions to suggest re-corrected suggestions.
+        for (WordAlternatives entry : mWordHistory) {
+            if (TextUtils.equals(entry.getChosenWord(), touching.mWord)) {
+                foundWord = entry.mWordComposer;
+                alternatives = entry;
+                break;
+            }
+        }
+        // If we didn't find a match, at least suggest corrections as re-corrected suggestions.
+        if (foundWord == null
+                && (AutoCorrection.isValidWord(suggest.getUnigramDictionaries(),
+                        touching.mWord, true))) {
+            foundWord = new WordComposer();
+            for (int i = 0; i < touching.mWord.length(); i++) {
+                foundWord.add(touching.mWord.charAt(i),
+                        new int[] { touching.mWord.charAt(i) }, WordComposer.NOT_A_COORDINATE,
+                        WordComposer.NOT_A_COORDINATE);
+            }
+            foundWord.setFirstCharCapitalized(Character.isUpperCase(touching.mWord.charAt(0)));
+        }
+        // Found a match, show suggestions
+        if (foundWord != null || alternatives != null) {
+            if (alternatives == null) {
+                alternatives = new WordAlternatives(touching.mWord, foundWord);
+            }
+            showRecorrections(suggest, keyboardSwitcher, alternatives);
+            if (foundWord != null) {
+                word.init(foundWord);
+            } else {
+                word.reset();
+            }
+            return true;
+        }
+        return false;
+    }
+
+
+    private void showRecorrections(Suggest suggest, KeyboardSwitcher keyboardSwitcher,
+            WordAlternatives alternatives) {
+        SuggestedWords.Builder builder = alternatives.getAlternatives(suggest, keyboardSwitcher);
+        builder.setTypedWordValid(false).setHasMinimalSuggestion(false);
+        mService.showSuggestions(builder.build(), alternatives.getOriginalWord());
+    }
+
+    public void setRecorrectionSuggestions(VoiceProxy voiceProxy, CandidateView candidateView,
+            Suggest suggest, KeyboardSwitcher keyboardSwitcher, WordComposer word,
+            boolean hasUncommittedTypedChars, int lastSelectionStart, int lastSelectionEnd,
+            String wordSeparators) {
+        if (!InputConnectionCompatUtils.RECORRECTION_SUPPORTED) return;
+        voiceProxy.setShowingVoiceSuggestions(false);
+        if (candidateView != null && candidateView.isShowingAddToDictionaryHint()) {
+            return;
+        }
+        InputConnection ic = mService.getCurrentInputConnection();
+        if (ic == null) return;
+        if (!hasUncommittedTypedChars) {
+            // Extract the selected or touching text
+            EditingUtils.SelectedWord touching = EditingUtils.getWordAtCursorOrSelection(ic,
+                    lastSelectionStart, lastSelectionEnd, wordSeparators);
+
+            if (touching != null && touching.mWord.length() > 1) {
+                ic.beginBatchEdit();
+
+                if (applyTypedAlternatives(word, suggest, keyboardSwitcher, touching)
+                        || voiceProxy.applyVoiceAlternatives(touching)) {
+                    TextEntryState.selectedForRecorrection();
+                    InputConnectionCompatUtils.underlineWord(ic, touching);
+                } else {
+                    abortRecorrection(true);
+                }
+
+                ic.endBatchEdit();
+            } else {
+                abortRecorrection(true);
+                mService.setPunctuationSuggestions();  // Show the punctuation suggestions list
+            }
+        } else {
+            abortRecorrection(true);
+        }
+    }
+
+    public void abortRecorrection(boolean force) {
+        if (force || TextEntryState.isRecorrecting()) {
+            TextEntryState.onAbortRecorrection();
+            mService.setCandidatesViewShown(mService.isCandidateStripVisible());
+            mService.getCurrentInputConnection().finishComposingText();
+            mService.clearSuggestions();
         }
     }
 }

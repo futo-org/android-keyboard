@@ -73,7 +73,6 @@ import android.widget.LinearLayout;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -228,39 +227,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private CharSequence mEnteredText;
 
-    private final ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
-
-    public class WordAlternatives {
-        private final CharSequence mChosenWord;
-        private final WordComposer mWordComposer;
-
-        public WordAlternatives(CharSequence chosenWord, WordComposer wordComposer) {
-            mChosenWord = chosenWord;
-            mWordComposer = wordComposer;
-        }
-
-        public CharSequence getChosenWord() {
-            return mChosenWord;
-        }
-
-        public CharSequence getOriginalWord() {
-            return mWordComposer.getTypedWord();
-        }
-
-        public SuggestedWords.Builder getAlternatives() {
-            return getTypedSuggestions(mWordComposer);
-        }
-
-        @Override
-        public int hashCode() {
-            return mChosenWord.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof CharSequence && TextUtils.equals(mChosenWord, (CharSequence)o);
-        }
-    }
 
     public final UIHandler mHandler = new UIHandler();
 
@@ -283,7 +249,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 updateSuggestions();
                 break;
             case MSG_UPDATE_OLD_SUGGESTIONS:
-                setOldSuggestions();
+                mRecorrection.setRecorrectionSuggestions(mVoiceProxy, mCandidateView, mSuggest,
+                        mKeyboardSwitcher, mWord, mHasUncommittedTypedChars, mLastSelectionStart,
+                        mLastSelectionEnd, mWordSeparators);
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
@@ -749,7 +717,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // If the composing span has been cleared, save the typed word in the history for
                 // recorrection before we reset the candidate strip.  Then, we'll be able to show
                 // suggestions for recorrection right away.
-                saveWordInHistory(mComposing);
+                mRecorrection.saveWordInHistory(mWord, mComposing);
             }
             mComposing.setLength(0);
             mHasUncommittedTypedChars = false;
@@ -832,7 +800,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mOptionsDialog = null;
         }
         mVoiceProxy.hideVoiceWindow(mConfigurationChanging);
-        mWordHistory.clear();
+        mRecorrection.clearWordsInHistory();
         super.hideWindow();
     }
 
@@ -1164,7 +1132,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mVoiceProxy.commitVoiceInput();
         InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
-        abortRecorrection(false);
+        mRecorrection.abortRecorrection(false);
         ic.beginBatchEdit();
         commitTyped(ic);
         maybeRemovePreviousPeriod(text);
@@ -1270,15 +1238,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    public void abortRecorrection(boolean force) {
-        if (force || TextEntryState.isRecorrecting()) {
-            TextEntryState.onAbortRecorrection();
-            setCandidatesViewShown(isCandidateStripVisible());
-            getCurrentInputConnection().finishComposingText();
-            clearSuggestions();
-        }
-    }
-
     private void handleCharacter(int primaryCode, int[] keyCodes, int x, int y) {
         mVoiceProxy.handleCharacter();
 
@@ -1287,7 +1246,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         if (mLastSelectionStart == mLastSelectionEnd) {
-            abortRecorrection(false);
+            mRecorrection.abortRecorrection(false);
         }
 
         int code = primaryCode;
@@ -1295,7 +1254,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (!mHasUncommittedTypedChars) {
                 mHasUncommittedTypedChars = true;
                 mComposing.setLength(0);
-                saveWordInHistory(mBestWord);
+                mRecorrection.saveWordInHistory(mWord, mBestWord);
                 mWord.reset();
                 clearSuggestions();
             }
@@ -1363,7 +1322,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.beginBatchEdit();
-            abortRecorrection(false);
+            mRecorrection.abortRecorrection(false);
         }
         if (mHasUncommittedTypedChars) {
             // In certain languages where single quote is a separator, it's better
@@ -1432,22 +1391,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             inputView.closing();
     }
 
-    private void saveWordInHistory(CharSequence result) {
-        if (mWord.size() <= 1) {
-            return;
-        }
-        // Skip if result is null. It happens in some edge case.
-        if (TextUtils.isEmpty(result)) {
-            return;
-        }
-
-        // Make a copy of the CharSequence, since it is/could be a mutable CharSequence
-        final String resultCopy = result.toString();
-        WordAlternatives entry = new WordAlternatives(resultCopy,
-                new WordComposer(mWord));
-        mWordHistory.add(entry);
-    }
-
     public boolean isSuggestionsRequested() {
         return mIsSettingsSuggestionStripOn
                 && (mCorrectionMode > 0 || isShowingSuggestionsStrip());
@@ -1463,7 +1406,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         && mOrientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
-    private boolean isCandidateStripVisible() {
+    public boolean isCandidateStripVisible() {
         if (mCandidateView == null)
             return false;
         if (mCandidateView.isShowingAddToDictionaryHint() || TextEntryState.isRecorrecting())
@@ -1525,16 +1468,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         showSuggestions(mWord);
     }
 
-    private SuggestedWords.Builder getTypedSuggestions(WordComposer word) {
-        return mSuggest.getSuggestedWordBuilder(mKeyboardSwitcher.getInputView(), word, null);
-    }
-
-    private void showCorrections(WordAlternatives alternatives) {
-        SuggestedWords.Builder builder = alternatives.getAlternatives();
-        builder.setTypedWordValid(false).setHasMinimalSuggestion(false);
-        showSuggestions(builder.build(), alternatives.getOriginalWord());
-    }
-
     private void showSuggestions(WordComposer word) {
         // TODO: May need a better way of retrieving previous word
         CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
@@ -1573,7 +1506,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         showSuggestions(builder.build(), typedWord);
     }
 
-    private void showSuggestions(SuggestedWords suggestedWords, CharSequence typedWord) {
+    public void showSuggestions(SuggestedWords suggestedWords, CharSequence typedWord) {
         setSuggestions(suggestedWords);
         if (suggestedWords.size() > 0) {
             if (Utils.shouldBlockedBySafetyNetForAutoCorrection(suggestedWords, mSuggest)) {
@@ -1728,89 +1661,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mVoiceProxy.rememberReplacedWord(suggestion, mWordSeparators);
             ic.commitText(suggestion, 1);
         }
-        saveWordInHistory(suggestion);
+        mRecorrection.saveWordInHistory(mWord, suggestion);
         mHasUncommittedTypedChars = false;
         mCommittedLength = suggestion.length();
-    }
-
-    /**
-     * Tries to apply any typed alternatives for the word if we have any cached alternatives,
-     * otherwise tries to find new corrections and completions for the word.
-     * @param touching The word that the cursor is touching, with position information
-     * @return true if an alternative was found, false otherwise.
-     */
-    private boolean applyTypedAlternatives(EditingUtils.SelectedWord touching) {
-        // If we didn't find a match, search for result in typed word history
-        WordComposer foundWord = null;
-        WordAlternatives alternatives = null;
-        // Search old suggestions to suggest re-corrected suggestions.
-        for (WordAlternatives entry : mWordHistory) {
-            if (TextUtils.equals(entry.getChosenWord(), touching.mWord)) {
-                foundWord = entry.mWordComposer;
-                alternatives = entry;
-                break;
-            }
-        }
-        // If we didn't find a match, at least suggest corrections as re-corrected suggestions.
-        if (foundWord == null
-                && (AutoCorrection.isValidWord(
-                        mSuggest.getUnigramDictionaries(), touching.mWord, true))) {
-            foundWord = new WordComposer();
-            for (int i = 0; i < touching.mWord.length(); i++) {
-                foundWord.add(touching.mWord.charAt(i), new int[] {
-                    touching.mWord.charAt(i)
-                }, WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
-            }
-            foundWord.setFirstCharCapitalized(Character.isUpperCase(touching.mWord.charAt(0)));
-        }
-        // Found a match, show suggestions
-        if (foundWord != null || alternatives != null) {
-            if (alternatives == null) {
-                alternatives = new WordAlternatives(touching.mWord, foundWord);
-            }
-            showCorrections(alternatives);
-            if (foundWord != null) {
-                mWord = new WordComposer(foundWord);
-            } else {
-                mWord.reset();
-            }
-            return true;
-        }
-        return false;
-    }
-
-    private void setOldSuggestions() {
-        if (!InputConnectionCompatUtils.RECORRECTION_SUPPORTED) return;
-        mVoiceProxy.setShowingVoiceSuggestions(false);
-        if (mCandidateView != null && mCandidateView.isShowingAddToDictionaryHint()) {
-            return;
-        }
-        InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
-        if (!mHasUncommittedTypedChars) {
-            // Extract the selected or touching text
-            EditingUtils.SelectedWord touching = EditingUtils.getWordAtCursorOrSelection(ic,
-                    mLastSelectionStart, mLastSelectionEnd, mWordSeparators);
-
-            if (touching != null && touching.mWord.length() > 1) {
-                ic.beginBatchEdit();
-
-                if (!mVoiceProxy.applyVoiceAlternatives(touching)
-                        && !applyTypedAlternatives(touching)) {
-                    abortRecorrection(true);
-                } else {
-                    TextEntryState.selectedForRecorrection();
-                    InputConnectionCompatUtils.underlineWord(ic, touching);
-                }
-
-                ic.endBatchEdit();
-            } else {
-                abortRecorrection(true);
-                setPunctuationSuggestions();  // Show the punctuation suggestions list
-            }
-        } else {
-            abortRecorrection(true);
-        }
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
