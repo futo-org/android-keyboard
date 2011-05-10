@@ -90,11 +90,11 @@
     <string name="ok" msgid="7898366843681727667">"Aceptar"</string>
     <string name="voice_input" msgid="2466640768843347841">"Introducción de voz"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"En teclado principal"</string>
-    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"En teclado símbolos"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"En teclado de símbolos"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Desactivada"</string>
-    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micro en tecl princ"</string>
-    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micro en tecl símb"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entrada de voz inhab"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Micro en teclado principal"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micro en teclado de símbolos"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Entrada de voz inhabilitada"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Seleccionar método de introducción de texto"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Deslizar el dedo por la barra espaciadora para cambiar el idioma"</string>
