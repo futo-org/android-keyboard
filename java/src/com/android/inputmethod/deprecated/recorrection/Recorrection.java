@@ -14,11 +14,21 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.deprecated.recorrection;
 
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.AutoCorrection;
+import com.android.inputmethod.latin.CandidateView;
+import com.android.inputmethod.latin.EditingUtils;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Settings;
+import com.android.inputmethod.latin.Suggest;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.TextEntryState;
+import com.android.inputmethod.latin.WordComposer;
 
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -37,7 +47,8 @@ public class Recorrection {
 
     private LatinIME mService;
     private boolean mRecorrectionEnabled = false;
-    private final ArrayList<WordAlternatives> mWordHistory = new ArrayList<WordAlternatives>();
+    private final ArrayList<RecorrectionSuggestionEntries> mRecorrectionSuggestionsList =
+            new ArrayList<RecorrectionSuggestionEntries>();
 
     public static Recorrection getInstance() {
         return sInstance;
@@ -98,42 +109,42 @@ public class Recorrection {
     }
 
     public void updateRecorrectionSelection(KeyboardSwitcher keyboardSwitcher,
-            CandidateView candidateView, int candidatesStart, int candidatesEnd, int newSelStart,
-            int newSelEnd, int oldSelStart, int lastSelectionStart,
+            CandidateView candidateView, int candidatesStart, int candidatesEnd,
+            int newSelStart, int newSelEnd, int oldSelStart, int lastSelectionStart,
             int lastSelectionEnd, boolean hasUncommittedTypedChars) {
-        if (mRecorrectionEnabled && mService.isShowingSuggestionsStrip()) {
-            // Don't look for corrections if the keyboard is not visible
-            if (keyboardSwitcher.isInputViewShown()) {
-                // Check if we should go in or out of correction mode.
-                if (mService.isSuggestionsRequested()
-                        && (candidatesStart == candidatesEnd || newSelStart != oldSelStart
-                                || TextEntryState.isRecorrecting())
-                                && (newSelStart < newSelEnd - 1 || !hasUncommittedTypedChars)) {
-                    if (mService.isCursorTouchingWord() || lastSelectionStart < lastSelectionEnd) {
-                        mService.mHandler.cancelUpdateBigramPredictions();
-                        mService.mHandler.postUpdateOldSuggestions();
-                    } else {
-                        abortRecorrection(false);
-                        // If showing the "touch again to save" hint, do not replace it. Else,
-                        // show the bigrams if we are at the end of the text, punctuation otherwise.
-                        if (candidateView != null
-                                && !candidateView.isShowingAddToDictionaryHint()) {
-                            InputConnection ic = mService.getCurrentInputConnection();
-                            if (null == ic || !TextUtils.isEmpty(ic.getTextAfterCursor(1, 0))) {
-                                if (!mService.isShowingPunctuationList()) {
-                                    mService.setPunctuationSuggestions();
-                                }
-                            } else {
-                                mService.mHandler.postUpdateBigramPredictions();
-                            }
+        if (!mRecorrectionEnabled) return;
+        if (!mService.isShowingSuggestionsStrip()) return;
+        if (!keyboardSwitcher.isInputViewShown()) return;
+        if (!mService.isSuggestionsRequested()) return;
+        // Don't look for corrections if the keyboard is not visible
+        // Check if we should go in or out of correction mode.
+        if ((candidatesStart == candidatesEnd || newSelStart != oldSelStart || TextEntryState
+                .isRecorrecting())
+                && (newSelStart < newSelEnd - 1 || !hasUncommittedTypedChars)) {
+            if (mService.isCursorTouchingWord() || lastSelectionStart < lastSelectionEnd) {
+                mService.mHandler.cancelUpdateBigramPredictions();
+                mService.mHandler.postUpdateOldSuggestions();
+            } else {
+                abortRecorrection(false);
+                // If showing the "touch again to save" hint, do not replace it. Else,
+                // show the bigrams if we are at the end of the text, punctuation
+                // otherwise.
+                if (candidateView != null && !candidateView.isShowingAddToDictionaryHint()) {
+                    InputConnection ic = mService.getCurrentInputConnection();
+                    if (null == ic || !TextUtils.isEmpty(ic.getTextAfterCursor(1, 0))) {
+                        if (!mService.isShowingPunctuationList()) {
+                            mService.setPunctuationSuggestions();
                         }
+                    } else {
+                        mService.mHandler.postUpdateBigramPredictions();
                     }
                 }
             }
         }
     }
 
-    public void saveWordInHistory(WordComposer word, CharSequence result) {
+    public void saveRecorrectionSuggestion(WordComposer word, CharSequence result) {
+        if (!mRecorrectionEnabled) return;
         if (word.size() <= 1) {
             return;
         }
@@ -144,12 +155,13 @@ public class Recorrection {
 
         // Make a copy of the CharSequence, since it is/could be a mutable CharSequence
         final String resultCopy = result.toString();
-        WordAlternatives entry = new WordAlternatives(resultCopy, new WordComposer(word));
-        mWordHistory.add(entry);
+        RecorrectionSuggestionEntries entry = new RecorrectionSuggestionEntries(
+                resultCopy, new WordComposer(word));
+        mRecorrectionSuggestionsList.add(entry);
     }
 
     public void clearWordsInHistory() {
-        mWordHistory.clear();
+        mRecorrectionSuggestionsList.clear();
     }
 
     /**
@@ -162,9 +174,9 @@ public class Recorrection {
             KeyboardSwitcher keyboardSwitcher, EditingUtils.SelectedWord touching) {
         // If we didn't find a match, search for result in typed word history
         WordComposer foundWord = null;
-        WordAlternatives alternatives = null;
+        RecorrectionSuggestionEntries alternatives = null;
         // Search old suggestions to suggest re-corrected suggestions.
-        for (WordAlternatives entry : mWordHistory) {
+        for (RecorrectionSuggestionEntries entry : mRecorrectionSuggestionsList) {
             if (TextUtils.equals(entry.getChosenWord(), touching.mWord)) {
                 foundWord = entry.mWordComposer;
                 alternatives = entry;
@@ -186,7 +198,7 @@ public class Recorrection {
         // Found a match, show suggestions
         if (foundWord != null || alternatives != null) {
             if (alternatives == null) {
-                alternatives = new WordAlternatives(touching.mWord, foundWord);
+                alternatives = new RecorrectionSuggestionEntries(touching.mWord, foundWord);
             }
             showRecorrections(suggest, keyboardSwitcher, alternatives);
             if (foundWord != null) {
@@ -201,10 +213,10 @@ public class Recorrection {
 
 
     private void showRecorrections(Suggest suggest, KeyboardSwitcher keyboardSwitcher,
-            WordAlternatives alternatives) {
-        SuggestedWords.Builder builder = alternatives.getAlternatives(suggest, keyboardSwitcher);
+            RecorrectionSuggestionEntries entries) {
+        SuggestedWords.Builder builder = entries.getAlternatives(suggest, keyboardSwitcher);
         builder.setTypedWordValid(false).setHasMinimalSuggestion(false);
-        mService.showSuggestions(builder.build(), alternatives.getOriginalWord());
+        mService.showSuggestions(builder.build(), entries.getOriginalWord());
     }
 
     public void setRecorrectionSuggestions(VoiceProxy voiceProxy, CandidateView candidateView,

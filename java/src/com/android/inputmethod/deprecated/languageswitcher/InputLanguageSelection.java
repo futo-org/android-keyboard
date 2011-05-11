@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class InputLanguageSelection extends PreferenceActivity {
 
@@ -51,19 +53,15 @@ public class InputLanguageSelection extends PreferenceActivity {
     private HashMap<CheckBoxPreference, Locale> mLocaleMap =
             new HashMap<CheckBoxPreference, Locale>();
 
-    private static class Loc implements Comparable<Object> {
+    private static class LocaleEntry implements Comparable<Object> {
         private static Collator sCollator = Collator.getInstance();
 
         private String mLabel;
         public final Locale mLocale;
 
-        public Loc(String label, Locale locale) {
+        public LocaleEntry(String label, Locale locale) {
             this.mLabel = label;
             this.mLocale = locale;
-        }
-
-        public void setLabel(String label) {
-            this.mLabel = label;
         }
 
         @Override
@@ -73,7 +71,7 @@ public class InputLanguageSelection extends PreferenceActivity {
 
         @Override
         public int compareTo(Object o) {
-            return sCollator.compare(this.mLabel, ((Loc) o).mLabel);
+            return sCollator.compare(this.mLabel, ((LocaleEntry) o).mLabel);
         }
     }
 
@@ -85,21 +83,58 @@ public class InputLanguageSelection extends PreferenceActivity {
         mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         mSelectedLanguages = mPrefs.getString(Settings.PREF_SELECTED_LANGUAGES, "");
         String[] languageList = mSelectedLanguages.split(",");
-        ArrayList<Loc> availableLanguages = getUniqueLocales();
+        ArrayList<LocaleEntry> availableLanguages = getUniqueLocales();
         PreferenceGroup parent = getPreferenceScreen();
+        final HashMap<Long, LocaleEntry> dictionaryIdLocaleMap = new HashMap<Long, LocaleEntry>();
+        final TreeMap<LocaleEntry, Boolean> localeHasDictionaryMap =
+                new TreeMap<LocaleEntry, Boolean>();
         for (int i = 0; i < availableLanguages.size(); i++) {
-            Locale locale = availableLanguages.get(i).mLocale;
-            final Pair<Boolean, Boolean> hasDictionaryOrLayout = hasDictionaryOrLayout(locale);
-            final boolean hasDictionary = hasDictionaryOrLayout.first;
+            LocaleEntry loc = availableLanguages.get(i);
+            Locale locale = loc.mLocale;
+            final Pair<Long, Boolean> hasDictionaryOrLayout = hasDictionaryOrLayout(locale);
+            final Long dictionaryId = hasDictionaryOrLayout.first;
             final boolean hasLayout = hasDictionaryOrLayout.second;
+            final boolean hasDictionary = dictionaryId != null;
             // Add this locale to the supported list if:
-            // 1) this locale has a layout/ 2) this locale has a dictionary and the length
-            // of the locale is equal to or larger than 5.
-            if (!hasLayout && !(hasDictionary && locale.toString().length() >= 5)) {
+            // 1) this locale has a layout/ 2) this locale has a dictionary
+            // If some locales have no layout but have a same dictionary, the shortest locale
+            // will be added to the supported list.
+            if (!hasLayout && !hasDictionary) {
                 continue;
             }
+            if (hasLayout) {
+                localeHasDictionaryMap.put(loc, hasDictionary);
+            }
+            if (!hasDictionary) {
+                continue;
+            }
+            if (dictionaryIdLocaleMap.containsKey(dictionaryId)) {
+                final String newLocale = locale.toString();
+                final String oldLocale =
+                        dictionaryIdLocaleMap.get(dictionaryId).mLocale.toString();
+                // Check if this locale is more appropriate to be the candidate of the input locale.
+                if (oldLocale.length() <= newLocale.length() && !hasLayout) {
+                    // Don't add this new locale to the map<dictionary id, locale> if:
+                    // 1) the new locale's name is longer than the existing one, and
+                    // 2) the new locale doesn't have its layout
+                    continue;
+                }
+            }
+            dictionaryIdLocaleMap.put(dictionaryId, loc);
+        }
+
+        for (LocaleEntry localeEntry : dictionaryIdLocaleMap.values()) {
+            if (!localeHasDictionaryMap.containsKey(localeEntry)) {
+                localeHasDictionaryMap.put(localeEntry, true);
+            }
+        }
+
+        for (Entry<LocaleEntry, Boolean> entry : localeHasDictionaryMap.entrySet()) {
+            final LocaleEntry localeEntry = entry.getKey();
+            final Locale locale = localeEntry.mLocale;
+            final Boolean hasDictionary = entry.getValue();
             CheckBoxPreference pref = new CheckBoxPreference(this);
-            pref.setTitle(SubtypeSwitcher.getFullDisplayName(locale, true));
+            pref.setTitle(localeEntry.mLabel);
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
             if (hasDictionary) {
@@ -118,11 +153,11 @@ public class InputLanguageSelection extends PreferenceActivity {
         return false;
     }
 
-    private Pair<Boolean, Boolean> hasDictionaryOrLayout(Locale locale) {
-        if (locale == null) return new Pair<Boolean, Boolean>(false, false);
+    private Pair<Long, Boolean> hasDictionaryOrLayout(Locale locale) {
+        if (locale == null) return new Pair<Long, Boolean>(null, false);
         final Resources res = getResources();
         final Locale saveLocale = Utils.setSystemLocale(res, locale);
-        final boolean hasDictionary = DictionaryFactory.isDictionaryAvailable(this, locale);
+        final Long dictionaryId = DictionaryFactory.getDictionaryId(this, locale);
         boolean hasLayout = false;
 
         try {
@@ -141,7 +176,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         } catch (IOException e) {
         }
         Utils.setSystemLocale(res, saveLocale);
-        return new Pair<Boolean, Boolean>(hasDictionary, hasLayout);
+        return new Pair<Long, Boolean>(dictionaryId, hasLayout);
     }
 
     private String get5Code(Locale locale) {
@@ -174,13 +209,13 @@ public class InputLanguageSelection extends PreferenceActivity {
         SharedPreferencesCompat.apply(editor);
     }
 
-    public ArrayList<Loc> getUniqueLocales() {
+    public ArrayList<LocaleEntry> getUniqueLocales() {
         String[] locales = getAssets().getLocales();
         Arrays.sort(locales);
-        ArrayList<Loc> uniqueLocales = new ArrayList<Loc>();
+        ArrayList<LocaleEntry> uniqueLocales = new ArrayList<LocaleEntry>();
 
         final int origSize = locales.length;
-        Loc[] preprocess = new Loc[origSize];
+        LocaleEntry[] preprocess = new LocaleEntry[origSize];
         int finalSize = 0;
         for (int i = 0 ; i < origSize; i++ ) {
             String s = locales[i];
@@ -202,26 +237,13 @@ public class InputLanguageSelection extends PreferenceActivity {
 
             if (finalSize == 0) {
                 preprocess[finalSize++] =
-                        new Loc(SubtypeSwitcher.getFullDisplayName(l, true), l);
+                        new LocaleEntry(SubtypeSwitcher.getFullDisplayName(l, false), l);
             } else {
-                // check previous entry:
-                //  same lang and a country -> upgrade to full name and
-                //    insert ours with full name
-                //  diff lang -> insert ours with lang-only name
-                if (preprocess[finalSize-1].mLocale.getLanguage().equals(
-                        language)) {
-                    preprocess[finalSize-1].setLabel(SubtypeSwitcher.getFullDisplayName(
-                            preprocess[finalSize-1].mLocale, false));
-                    preprocess[finalSize++] =
-                            new Loc(SubtypeSwitcher.getFullDisplayName(l, false), l);
+                if (s.equals("zz_ZZ")) {
+                    // ignore this locale
                 } else {
-                    String displayName;
-                    if (s.equals("zz_ZZ")) {
-                        // ignore this locale
-                    } else {
-                        displayName = SubtypeSwitcher.getFullDisplayName(l, true);
-                        preprocess[finalSize++] = new Loc(displayName, l);
-                    }
+                    final String displayName = SubtypeSwitcher.getFullDisplayName(l, false);
+                    preprocess[finalSize++] = new LocaleEntry(displayName, l);
                 }
             }
         }
