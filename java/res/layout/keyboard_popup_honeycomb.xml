@@ -26,9 +26,9 @@
         android:paddingLeft="@dimen/mini_keyboard_horizontal_padding_holo"
         android:paddingRight="@dimen/mini_keyboard_horizontal_padding_holo"
         >
-    <com.android.inputmethod.keyboard.KeyboardView
+    <com.android.inputmethod.keyboard.PopupMiniKeyboardView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-            android:id="@+id/KeyboardView"
+            android:id="@+id/mini_keyboard_view"
             android:layout_alignParentBottom="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

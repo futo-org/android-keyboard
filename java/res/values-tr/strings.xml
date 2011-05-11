@@ -27,12 +27,9 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Tuşa basıldığında ses çıkar"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Tuşa basıldığında pop-up aç"</string>
     <string name="general_category" msgid="1859088467017573195">"Genel"</string>
-    <!-- no translation found for correction_category (2236750915056607613) -->
-    <skip />
-    <!-- no translation found for ngram_category (5337109164339320257) -->
-    <skip />
-    <!-- no translation found for misc_category (6894192814868233453) -->
-    <skip />
+    <string name="correction_category" msgid="2236750915056607613">"Metin düzeltme"</string>
+    <string name="ngram_category" msgid="5337109164339320257">"Önceki kelimelere dayalı öneriler"</string>
+    <string name="misc_category" msgid="6894192814868233453">"Diğer seçenekler"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Otomatik olarak büyük harf yap"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Hızlı onarımlar"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Yaygın olarak yapılan yazım hatalarını düzeltir"</string>
@@ -41,8 +38,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Her zaman göster"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Dikey modda göster"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Her zaman gizle"</string>
-    <!-- no translation found for prefs_use_spacebar_language_switch (8828538114550634449) -->
-    <skip />
+    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Dil geçişi içn boşluk çubğn kullan"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Ayarları göster tuşu"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Otomatik"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Her zaman göster"</string>
@@ -52,12 +48,10 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Kapalı"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Ölçülü"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Agresif"</string>
-    <!-- outdated translation 7146707435859263625 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram Önerileri"</string>
+    <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram önerileri"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Öneriyi geliştirmek için önceki kelimeyi kullanın"</string>
-    <!-- no translation found for bigram_prediction (8914273444762259739) -->
-    <skip />
-    <!-- no translation found for bigram_prediction_summary (1747261921174300098) -->
-    <skip />
+    <string name="bigram_prediction" msgid="8914273444762259739">"Bigram tahmini"</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Önceki kelimeyi de tahmin için kullan"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Kaydedildi"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Git"</string>
     <string name="label_next_key" msgid="362972844525672568">"İleri"</string>

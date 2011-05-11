@@ -25,9 +25,9 @@
         android:orientation="horizontal"
         android:background="@drawable/keyboard_popup_panel_background"
         >
-    <com.android.inputmethod.keyboard.KeyboardView
+    <com.android.inputmethod.keyboard.PopupMiniKeyboardView
             xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-            android:id="@+id/KeyboardView"
+            android:id="@+id/mini_keyboard_view"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

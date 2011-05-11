@@ -19,13 +19,13 @@
 -->
 
 <resources>
-    <!-- keyboardHeight = key_height*4 + key_bottom_gap*3, key_height=0.290in -->
-    <dimen name="keyboardHeight">1.265in</dimen>
+    <!-- keyboardHeight = key_height*4 + key_bottom_gap*3, key_height=0.295in -->
+    <dimen name="keyboardHeight">1.285in</dimen>
     <!-- key_height + key_bottom_gap = popup_key_height -->
-    <!-- <dimen name="key_height">0.290in</dimen> -->
+    <!-- <dimen name="key_height">0.295in</dimen> -->
     <dimen name="key_bottom_gap">0.035in</dimen>
     <dimen name="key_horizontal_gap">0.000in</dimen>
-    <dimen name="popup_key_height">0.325in</dimen>
+    <dimen name="popup_key_height">0.330in</dimen>
     <dimen name="keyboard_top_padding">0.00in</dimen>
     <dimen name="keyboard_bottom_padding">0.06in</dimen>
     <dimen name="keyboard_horizontal_edges_padding">0.0in</dimen>
@@ -34,9 +34,9 @@
     <dimen name="mini_keyboard_key_horizontal_padding">8dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
-    <dimen name="mini_keyboard_slide_allowance">0.390in</dimen>
+    <dimen name="mini_keyboard_slide_allowance">0.396in</dimen>
     <!-- popup_key_height x -1.0 -->
-    <dimen name="mini_keyboard_vertical_correction">-0.325in</dimen>
+    <dimen name="mini_keyboard_vertical_correction">-0.330in</dimen>
     <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
          to user's finger. -->
     <dimen name="keyboard_vertical_correction">-0.05in</dimen>
@@ -57,7 +57,7 @@
     <dimen name="candidate_strip_minimum_height">100sp</dimen>
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
     <dimen name="candidate_strip_padding">0dip</dimen>
-    <dimen name="candidate_min_width">0.3in</dimen>
+    <dimen name="candidate_min_width">32dip</dimen>
     <dimen name="candidate_padding">6dip</dimen>
     <dimen name="candidate_text_size">18dip</dimen>
     <dimen name="spacebar_vertical_correction">4dip</dimen>

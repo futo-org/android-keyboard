@@ -18,6 +18,8 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 
+import java.util.List;
+
 public class MiniKeyboard extends Keyboard {
     private int mDefaultKeyCoordX;
 
@@ -31,5 +33,20 @@ public class MiniKeyboard extends Keyboard {
 
     public int getDefaultCoordX() {
         return mDefaultKeyCoordX;
+    }
+
+    public boolean isOneRowKeyboard() {
+        final List<Key> keys = getKeys();
+        if (keys.size() == 0) return false;
+        final int edgeFlags = keys.get(0).mEdgeFlags;
+        // HACK: The first key of mini keyboard which was inflated from xml and has multiple rows,
+        // does not have both top and bottom edge flags on at the same time.  On the other hand,
+        // the first key of mini keyboard that was created with popupCharacters must have both top
+        // and bottom edge flags on.
+        // When you want to use one row mini-keyboard from xml file, make sure that the row has
+        // both top and bottom edge flags set.
+        return (edgeFlags & Keyboard.EDGE_TOP) != 0
+                && (edgeFlags & Keyboard.EDGE_BOTTOM) != 0;
+
     }
 }

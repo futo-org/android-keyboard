@@ -23,6 +23,9 @@
     <integer name="key_tab">9</integer>
     <integer name="key_return">10</integer>
     <integer name="key_space">32</integer>
+    <integer name="key_dash">45</integer>
+    <integer name="key_single_quote">39</integer>
+    <integer name="key_double_quote">34</integer>
     <integer name="key_shift">-1</integer>
     <integer name="key_switch_alpha_symbol">-2</integer>
     <integer name="key_delete">-5</integer>

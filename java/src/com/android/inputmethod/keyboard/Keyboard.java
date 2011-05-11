@@ -63,6 +63,9 @@ public class Keyboard {
     public static final int CODE_TAB = '\t';
     public static final int CODE_SPACE = ' ';
     public static final int CODE_PERIOD = '.';
+    public static final int CODE_DASH = '-';
+    public static final int CODE_SINGLE_QUOTE = '\'';
+    public static final int CODE_DOUBLE_QUOTE = '"';
 
     /** Special keys code.  These should be aligned with values/keycodes.xml */
     public static final int CODE_DUMMY = 0;
