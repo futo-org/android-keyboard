@@ -1579,11 +1579,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // pressed space on purpose of displaying the suggestion strip punctuation.
             final char primaryCode = suggestion.charAt(0);
             final int toLeft = (ic == null) ? 0 : ic.getTextBeforeCursor(1, 0).charAt(0);
+            final boolean oldMagicSpace = mJustAddedMagicSpace;
             if (Keyboard.CODE_SPACE == toLeft) mJustAddedMagicSpace = true;
             onCodeInput(primaryCode, new int[] { primaryCode },
                     KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
                     KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
-            mJustAddedMagicSpace = false;
+            mJustAddedMagicSpace = oldMagicSpace;
             if (ic != null) {
                 ic.endBatchEdit();
             }
