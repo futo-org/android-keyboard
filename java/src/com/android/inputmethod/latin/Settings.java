@@ -25,9 +25,11 @@ import com.android.inputmethod.compat.VibratorCompatWrapper;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.backup.BackupManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -43,6 +45,7 @@ import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.widget.TextView;
 
+import java.util.Arrays;
 import java.util.Locale;
 
 public class Settings extends PreferenceActivity
@@ -78,6 +81,190 @@ public class Settings extends PreferenceActivity
 
     // Dialog ids
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
+
+    public static class Values {
+        // From resources:
+        public final boolean mEnableShowSubtypeSettings;
+        public final boolean mSwipeDownDismissKeyboardEnabled;
+        public final int mDelayBeforeFadeoutLanguageOnSpacebar;
+        public final int mDelayUpdateSuggestions;
+        public final int mDelayUpdateOldSuggestions;
+        public final int mDelayUpdateShiftState;
+        public final int mDurationOfFadeoutLanguageOnSpacebar;
+        public final float mFinalFadeoutFactorOfLanguageOnSpacebar;
+        public final long mDoubleSpacesTurnIntoPeriodTimeout;
+        public final String mWordSeparators;
+        public final String mMagicSpaceStrippers;
+        public final String mMagicSpaceSwappers;
+        public final String mSuggestPuncs;
+        public final SuggestedWords mSuggestPuncList;
+
+        // From preferences:
+        public final boolean mSoundOn; // Sound setting private to Latin IME (see mSilentModeOn)
+        public final boolean mVibrateOn;
+        public final boolean mPopupOn; // Warning : this escapes through LatinIME#isPopupOn
+        public final boolean mAutoCap;
+        public final boolean mQuickFixes;
+        public final boolean mAutoCorrectEnabled;
+        public final double mAutoCorrectionThreshold;
+        // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
+        public final boolean mBigramSuggestionEnabled;
+        // Prediction: use bigrams to predict the next word when there is no input for it yet
+        public final boolean mBigramPredictionEnabled;
+
+        public Values(final SharedPreferences prefs, final Context context,
+                final String localeStr) {
+            final Resources res = context.getResources();
+            final Locale savedLocale;
+            if (null != localeStr) {
+                final Locale keyboardLocale = new Locale(localeStr);
+                savedLocale = Utils.setSystemLocale(res, keyboardLocale);
+            } else {
+                savedLocale = null;
+            }
+
+            // Get the resources
+            mEnableShowSubtypeSettings = res.getBoolean(
+                    R.bool.config_enable_show_subtype_settings);
+            mSwipeDownDismissKeyboardEnabled = res.getBoolean(
+                    R.bool.config_swipe_down_dismiss_keyboard_enabled);
+            mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
+                    R.integer.config_delay_before_fadeout_language_on_spacebar);
+            mDelayUpdateSuggestions =
+                    res.getInteger(R.integer.config_delay_update_suggestions);
+            mDelayUpdateOldSuggestions = res.getInteger(
+                    R.integer.config_delay_update_old_suggestions);
+            mDelayUpdateShiftState =
+                    res.getInteger(R.integer.config_delay_update_shift_state);
+            mDurationOfFadeoutLanguageOnSpacebar = res.getInteger(
+                    R.integer.config_duration_of_fadeout_language_on_spacebar);
+            mFinalFadeoutFactorOfLanguageOnSpacebar = res.getInteger(
+                    R.integer.config_final_fadeout_percentage_of_language_on_spacebar) / 100.0f;
+            mDoubleSpacesTurnIntoPeriodTimeout = res.getInteger(
+                    R.integer.config_double_spaces_turn_into_period_timeout);
+            mMagicSpaceStrippers = res.getString(R.string.magic_space_stripping_symbols);
+            mMagicSpaceSwappers = res.getString(R.string.magic_space_swapping_symbols);
+            String wordSeparators = mMagicSpaceStrippers + mMagicSpaceSwappers
+                    + res.getString(R.string.magic_space_promoting_symbols);
+            final String notWordSeparators = res.getString(R.string.non_word_separator_symbols);
+            for (int i = notWordSeparators.length() - 1; i >= 0; --i) {
+                wordSeparators = wordSeparators.replace(notWordSeparators.substring(i, i + 1), "");
+            }
+            mWordSeparators = wordSeparators;
+            mSuggestPuncs = res.getString(R.string.suggested_punctuations);
+            // TODO: it would be nice not to recreate this each time we change the configuration
+            mSuggestPuncList = createSuggestPuncList(mSuggestPuncs);
+
+            // Get the settings preferences
+            final boolean hasVibrator = VibratorCompatWrapper.getInstance(context).hasVibrator();
+            mVibrateOn = hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
+            mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
+                    res.getBoolean(R.bool.config_default_sound_enabled));
+
+            mPopupOn = isPopupEnabled(prefs, res);
+            mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
+            mQuickFixes = isQuickFixesEnabled(prefs, res);
+
+            mAutoCorrectEnabled = isAutoCorrectEnabled(prefs, res);
+            mBigramSuggestionEnabled = mAutoCorrectEnabled
+                    && isBigramSuggestionEnabled(prefs, res, mAutoCorrectEnabled);
+            mBigramPredictionEnabled = mBigramSuggestionEnabled
+                    && isBigramPredictionEnabled(prefs, res);
+
+            mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
+        }
+
+        public boolean isSuggestedPunctuation(int code) {
+            return mSuggestPuncs.contains(String.valueOf((char)code));
+        }
+
+        public boolean isWordSeparator(int code) {
+            return mWordSeparators.contains(String.valueOf((char)code));
+        }
+
+        public boolean isMagicSpaceStripper(int code) {
+            return mMagicSpaceStrippers.contains(String.valueOf((char)code));
+        }
+
+        public boolean isMagicSpaceSwapper(int code) {
+            return mMagicSpaceSwappers.contains(String.valueOf((char)code));
+        }
+
+        // Helper methods
+        private static boolean isQuickFixesEnabled(SharedPreferences sp, Resources resources) {
+            final boolean showQuickFixesOption = resources.getBoolean(
+                    R.bool.config_enable_quick_fixes_option);
+            if (!showQuickFixesOption) {
+                return isAutoCorrectEnabled(sp, resources);
+            }
+            return sp.getBoolean(Settings.PREF_QUICK_FIXES, resources.getBoolean(
+                    R.bool.config_default_quick_fixes));
+        }
+        private static boolean isAutoCorrectEnabled(SharedPreferences sp, Resources resources) {
+            final String currentAutoCorrectionSetting = sp.getString(
+                    Settings.PREF_AUTO_CORRECTION_THRESHOLD,
+                    resources.getString(R.string.auto_correction_threshold_mode_index_modest));
+            final String autoCorrectionOff = resources.getString(
+                    R.string.auto_correction_threshold_mode_index_off);
+            return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
+        }
+        private static boolean isPopupEnabled(SharedPreferences sp, Resources resources) {
+            final boolean showPopupOption = resources.getBoolean(
+                    R.bool.config_enable_show_popup_on_keypress_option);
+            if (!showPopupOption) return resources.getBoolean(R.bool.config_default_popup_preview);
+            return sp.getBoolean(Settings.PREF_POPUP_ON,
+                    resources.getBoolean(R.bool.config_default_popup_preview));
+        }
+        private static boolean isBigramSuggestionEnabled(SharedPreferences sp, Resources resources,
+                boolean autoCorrectEnabled) {
+            final boolean showBigramSuggestionsOption = resources.getBoolean(
+                    R.bool.config_enable_bigram_suggestions_option);
+            if (!showBigramSuggestionsOption) {
+                return autoCorrectEnabled;
+            }
+            return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTIONS, resources.getBoolean(
+                    R.bool.config_default_bigram_suggestions));
+        }
+        private static boolean isBigramPredictionEnabled(SharedPreferences sp,
+                Resources resources) {
+            return sp.getBoolean(Settings.PREF_BIGRAM_PREDICTIONS, resources.getBoolean(
+                    R.bool.config_default_bigram_prediction));
+        }
+        private static double getAutoCorrectionThreshold(SharedPreferences sp,
+                Resources resources) {
+            final String currentAutoCorrectionSetting = sp.getString(
+                    Settings.PREF_AUTO_CORRECTION_THRESHOLD,
+                    resources.getString(R.string.auto_correction_threshold_mode_index_modest));
+            final String[] autoCorrectionThresholdValues = resources.getStringArray(
+                    R.array.auto_correction_threshold_values);
+            // When autoCorrectionThreshold is greater than 1.0, it's like auto correction is off.
+            double autoCorrectionThreshold = Double.MAX_VALUE;
+            try {
+                final int arrayIndex = Integer.valueOf(currentAutoCorrectionSetting);
+                if (arrayIndex >= 0 && arrayIndex < autoCorrectionThresholdValues.length) {
+                    autoCorrectionThreshold = Double.parseDouble(
+                            autoCorrectionThresholdValues[arrayIndex]);
+                }
+            } catch (NumberFormatException e) {
+                // Whenever the threshold settings are correct, never come here.
+                autoCorrectionThreshold = Double.MAX_VALUE;
+                Log.w(TAG, "Cannot load auto correction threshold setting."
+                        + " currentAutoCorrectionSetting: " + currentAutoCorrectionSetting
+                        + ", autoCorrectionThresholdValues: "
+                        + Arrays.toString(autoCorrectionThresholdValues));
+            }
+            return autoCorrectionThreshold;
+        }
+        private static SuggestedWords createSuggestPuncList(final String puncs) {
+            SuggestedWords.Builder builder = new SuggestedWords.Builder();
+            if (puncs != null) {
+                for (int i = 0; i < puncs.length(); i++) {
+                    builder.addWord(puncs.subSequence(i, i + 1));
+                }
+            }
+            return builder.build();
+        }
+    }
 
     private PreferenceScreen mInputLanguageSelection;
     private CheckBoxPreference mQuickFixes;
