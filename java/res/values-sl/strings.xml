@@ -61,18 +61,6 @@
     <string name="label_more_key" msgid="3760239494604948502">"Več"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Premor"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Čakaj"</string>
-    <string name="description_delete_key" msgid="5586406298531883960">"Izbriši"</string>
-    <string name="description_return_key" msgid="8750044000806461678">"Vračalka"</string>
-    <string name="description_settings_key" msgid="7484527796782969219">"Nastavitve"</string>
-    <string name="description_shift_key" msgid="346906866277787836">"Dvigalka"</string>
-    <string name="description_space_key" msgid="8512130111575878517">"Preslednica"</string>
-    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Znaki"</string>
-    <string name="description_tab_key" msgid="828186583738307137">"Tabulatorka"</string>
-    <string name="description_voice_key" msgid="3057731675774652754">"Glasovni vnos"</string>
-    <string name="description_symbols_on" msgid="2994366855822840559">"Znaki vklopljeni"</string>
-    <string name="description_symbols_off" msgid="3209578267079515136">"Znaki izklopljeni"</string>
-    <string name="description_shift_on" msgid="6983188949895971587">"Dvigalka vklopljena"</string>
-    <string name="description_shift_off" msgid="8553265474523069034">"Dvigalka izklopljena"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni vnos"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Glasovni vnos trenutno ni podprt v vašem jeziku, deluje pa v angleščini."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Glasovni vnos uporablja Googlovo prepoznavanje govora. Zanj velja "<a href="http://m.google.com/privacy">"pravilnik o zasebnosti za mobilne naprave"</a>"."</string>

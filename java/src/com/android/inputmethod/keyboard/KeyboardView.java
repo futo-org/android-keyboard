@@ -134,9 +134,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private int mOldPointerCount = 1;
     private int mOldKeyIndex;
 
-    // Accessibility
-    private boolean mIsAccessibilityEnabled;
-
     protected KeyDetector mKeyDetector = new KeyDetector();
 
     // Swipe gesture detector
@@ -530,29 +527,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * Enables or disables accessibility.
-     * @param accessibilityEnabled whether or not to enable accessibility
-     */
-    public void setAccessibilityEnabled(boolean accessibilityEnabled) {
-        mIsAccessibilityEnabled = accessibilityEnabled;
-
-        // Propagate this change to all existing pointer trackers.
-        for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setAccessibilityEnabled(accessibilityEnabled);
-        }
-    }
-
-    /**
-     * Returns whether the device has accessibility enabled.
-     * @return true if the device has accessibility enabled.
-     */
-    @Override
-    public boolean isAccessibilityEnabled() {
-        return mIsAccessibilityEnabled;
-    }
-
-    /**
-     * Enables or disables the key feedback preview. This is a preview that shows a magnified
+     * Enables or disables the key feedback popup. This is a popup that shows a magnified
      * version of the depressed key. By default the preview is enabled.
      * @param previewEnabled whether or not to enable the key feedback preview
      * @see #isKeyPreviewEnabled()
@@ -1182,19 +1157,16 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // If the device does not have distinct multi-touch support panel, ignore all multi-touch
         // events except a transition from/to single-touch.
-        if ((!mHasDistinctMultitouch || mIsAccessibilityEnabled)
-                && pointerCount > 1 && oldPointerCount > 1) {
+        if (!mHasDistinctMultitouch && pointerCount > 1 && oldPointerCount > 1) {
             return true;
         }
 
         // Track the last few movements to look for spurious swipes.
         mSwipeTracker.addMovement(me);
 
-        // Gesture detector must be enabled only when mini-keyboard is not on the screen and
-        // accessibility is not enabled.
-        // TODO: Reconcile gesture detection and accessibility features.
-        if (mPopupMiniKeyboardPanel == null && !mIsAccessibilityEnabled
-                && mGestureDetector != null && mGestureDetector.onTouchEvent(me)) {
+        // Gesture detector must be enabled only when mini-keyboard is not on the screen.
+        if (mPopupMiniKeyboardPanel == null && mGestureDetector != null
+                && mGestureDetector.onTouchEvent(me)) {
             dismissAllKeyPreviews();
             mHandler.cancelKeyTimers();
             return true;
@@ -1225,7 +1197,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // Translate mutli-touch event to single-touch events on the device that has no distinct
         // multi-touch panel.
-        if (!mHasDistinctMultitouch || mIsAccessibilityEnabled) {
+        if (!mHasDistinctMultitouch) {
             // Use only main (id=0) pointer tracker.
             PointerTracker tracker = getPointerTracker(0);
             if (pointerCount == 1 && oldPointerCount == 2) {

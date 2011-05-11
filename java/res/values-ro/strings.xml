@@ -61,18 +61,6 @@
     <string name="label_more_key" msgid="3760239494604948502">"Mai multe"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pauză"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Aşt."</string>
-    <string name="description_delete_key" msgid="5586406298531883960">"Ştergeţi"</string>
-    <string name="description_return_key" msgid="8750044000806461678">"Tasta Enter"</string>
-    <string name="description_settings_key" msgid="7484527796782969219">"Setări"</string>
-    <string name="description_shift_key" msgid="346906866277787836">"Shift"</string>
-    <string name="description_space_key" msgid="8512130111575878517">"Tasta Space"</string>
-    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Simboluri"</string>
-    <string name="description_tab_key" msgid="828186583738307137">"Tasta Tab"</string>
-    <string name="description_voice_key" msgid="3057731675774652754">"Intrare vocală"</string>
-    <string name="description_symbols_on" msgid="2994366855822840559">"Simbolurile sunt activate"</string>
-    <string name="description_symbols_off" msgid="3209578267079515136">"Simbolurile sunt dezactivate"</string>
-    <string name="description_shift_on" msgid="6983188949895971587">"Tasta Shift este activată"</string>
-    <string name="description_shift_off" msgid="8553265474523069034">"Tasta Shift este dezactivată"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Intrare voce"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Intrarea vocală nu este acceptată în prezent pentru limba dvs., însă funcţionează în limba engleză."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Intrarea vocală utilizează funcţia Google de recunoaştere vocală. Se aplică "<a href="http://m.google.com/privacy">"Politica de confidenţialitate Google Mobil"</a>"."</string>

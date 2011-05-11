@@ -61,18 +61,6 @@
     <string name="label_more_key" msgid="3760239494604948502">"更多"</string>
     <string name="label_pause_key" msgid="181098308428035340">"暂停"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"等待"</string>
-    <string name="description_delete_key" msgid="5586406298531883960">"删除"</string>
-    <string name="description_return_key" msgid="8750044000806461678">"回车"</string>
-    <string name="description_settings_key" msgid="7484527796782969219">"设置"</string>
-    <string name="description_shift_key" msgid="346906866277787836">"Shift"</string>
-    <string name="description_space_key" msgid="8512130111575878517">"空格"</string>
-    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"符号"</string>
-    <string name="description_tab_key" msgid="828186583738307137">"Tab"</string>
-    <string name="description_voice_key" msgid="3057731675774652754">"语音输入"</string>
-    <string name="description_symbols_on" msgid="2994366855822840559">"符号模式已打开"</string>
-    <string name="description_symbols_off" msgid="3209578267079515136">"符号模式已关闭"</string>
-    <string name="description_shift_on" msgid="6983188949895971587">"Shift 模式已打开"</string>
-    <string name="description_shift_off" msgid="8553265474523069034">"Shift 模式已关闭"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"语音输入"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"语音输入功能当前还不支持您的语言，您只能输入英语语音。"</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"语音输入采用了 Google 的语音识别技术，因此请遵守"<a href="http://m.google.com/privacy">"“Google 移动”隐私权政策"</a>"。"</string>

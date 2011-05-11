@@ -61,18 +61,6 @@
     <string name="label_more_key" msgid="3760239494604948502">"Ещё"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Приостановить"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Подождите"</string>
-    <string name="description_delete_key" msgid="5586406298531883960">"Клавиша удаления"</string>
-    <string name="description_return_key" msgid="8750044000806461678">"Клавиша \"Ввод\""</string>
-    <string name="description_settings_key" msgid="7484527796782969219">"Клавиша настроек"</string>
-    <string name="description_shift_key" msgid="346906866277787836">"Клавиша верхнего регистра"</string>
-    <string name="description_space_key" msgid="8512130111575878517">"Клавиша \"Пробел\""</string>
-    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Клавиша символов"</string>
-    <string name="description_tab_key" msgid="828186583738307137">"Клавиша табуляции"</string>
-    <string name="description_voice_key" msgid="3057731675774652754">"Клавиша голосового ввода"</string>
-    <string name="description_symbols_on" msgid="2994366855822840559">"Клавиши символов выключены"</string>
-    <string name="description_symbols_off" msgid="3209578267079515136">"Клавиши символов включены"</string>
-    <string name="description_shift_on" msgid="6983188949895971587">"Верхний регистр включен"</string>
-    <string name="description_shift_off" msgid="8553265474523069034">"Верхний регистр выключен"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Голосовой ввод"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"В настоящее время функция голосового ввода не поддерживает ваш язык, но вы можете пользоваться ей на английском."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Голосовой ввод использует алгоритмы распознавания речи Google. Действует "<a href="http://m.google.com/privacy">"политика конфиденциальности для мобильных устройств"</a>"."</string>

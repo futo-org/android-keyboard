@@ -164,8 +164,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private boolean mIsSettingsSuggestionStripOn;
     private boolean mApplicationSpecifiedCompletionOn;
 
-    private AccessibilityUtils mAccessibilityUtils;
-
     private final StringBuilder mComposing = new StringBuilder();
     private WordComposer mWord = new WordComposer();
     private CharSequence mBestWord;
@@ -350,7 +348,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LanguageSwitcherProxy.init(this, prefs);
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
-        AccessibilityUtils.init(this, prefs);
         Recorrection.init(this, prefs);
 
         super.onCreate();
@@ -359,7 +356,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mInputMethodId = Utils.getInputMethodId(mImm, getPackageName());
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
-        mAccessibilityUtils = AccessibilityUtils.getInstance();
         mRecorrection = Recorrection.getInstance();
 
         loadSettings();
@@ -559,11 +555,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         updateCorrectionMode();
 
-        final boolean accessibilityEnabled = mAccessibilityUtils.isAccessibilityEnabled();
-
         inputView.setKeyPreviewEnabled(mSettingsValues.mPopupOn);
         inputView.setProximityCorrectionEnabled(true);
-        inputView.setAccessibilityEnabled(accessibilityEnabled);
         // If we just entered a text field, maybe it has some old text that requires correction
         mRecorrection.checkRecorrectionOnStart();
         inputView.setForeground(true);
@@ -1046,7 +1039,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         mLastKeyTime = when;
         KeyboardSwitcher switcher = mKeyboardSwitcher;
-        final boolean accessibilityEnabled = switcher.isAccessibilityEnabled();
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         switch (primaryCode) {
         case Keyboard.CODE_DELETE:
@@ -1056,12 +1048,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             break;
         case Keyboard.CODE_SHIFT:
             // Shift key is handled in onPress() when device has distinct multi-touch panel.
-            if (!distinctMultiTouch || accessibilityEnabled)
+            if (!distinctMultiTouch)
                 switcher.toggleShift();
             break;
         case Keyboard.CODE_SWITCH_ALPHA_SYMBOL:
             // Symbol key is handled in onPress() when device has distinct multi-touch panel.
-            if (!distinctMultiTouch || accessibilityEnabled)
+            if (!distinctMultiTouch)
                 switcher.changeKeyboardMode();
             break;
         case Keyboard.CODE_CANCEL:
@@ -1838,7 +1830,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             switcher.onOtherKeyPressed();
         }
-        mAccessibilityUtils.onPress(primaryCode, switcher);
     }
 
     @Override
@@ -1851,7 +1842,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else if (distinctMultiTouch && primaryCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             switcher.onReleaseSymbol();
         }
-        mAccessibilityUtils.onRelease(primaryCode, switcher);
     }
 
 

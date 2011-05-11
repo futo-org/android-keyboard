@@ -61,18 +61,6 @@
     <string name="label_more_key" msgid="3760239494604948502">"Mehr"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Warten"</string>
-    <string name="description_delete_key" msgid="5586406298531883960">"Löschen"</string>
-    <string name="description_return_key" msgid="8750044000806461678">"Eingabe"</string>
-    <string name="description_settings_key" msgid="7484527796782969219">"Einstellungen"</string>
-    <string name="description_shift_key" msgid="346906866277787836">"Umschalt"</string>
-    <string name="description_space_key" msgid="8512130111575878517">"Leerzeichen"</string>
-    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Symbole"</string>
-    <string name="description_tab_key" msgid="828186583738307137">"Tab"</string>
-    <string name="description_voice_key" msgid="3057731675774652754">"Spracheingabe"</string>
-    <string name="description_symbols_on" msgid="2994366855822840559">"Symbole an"</string>
-    <string name="description_symbols_off" msgid="3209578267079515136">"Symbole aus"</string>
-    <string name="description_shift_on" msgid="6983188949895971587">"Umschalt an"</string>
-    <string name="description_shift_off" msgid="8553265474523069034">"Umschalt aus"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Spracheingabe"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Spracheingaben werden derzeit nicht für Ihre Sprache unterstützt, funktionieren jedoch in Englisch."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Die Spracheingabe verwendet die Spracherkennung von Google. Es gelten die "<a href="http://m.google.com/privacy">"Google Mobile-Datenschutzbestimmungen"</a>"."</string>

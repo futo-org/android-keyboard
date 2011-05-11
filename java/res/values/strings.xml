@@ -114,31 +114,6 @@
     <!-- Label for "Wait" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5]-->
     <string name="label_wait_key">Wait</string>
 
-    <!-- Spoken text description for delete key. -->
-    <string name="description_delete_key">Delete</string>
-    <!-- Spoken text description for return key. -->
-    <string name="description_return_key">Return</string>
-    <!-- Spoken text description for settings key. -->
-    <string name="description_settings_key">Settings</string>
-    <!-- Spoken text description for shift key. -->
-    <string name="description_shift_key">Shift</string>
-    <!-- Spoken text description for space key. -->
-    <string name="description_space_key">Space</string>
-    <!-- Spoken text description for symbols key. -->
-    <string name="description_switch_alpha_symbol_key">Symbols</string>
-    <!-- Spoken text description for tab key. -->
-    <string name="description_tab_key">Tab</string>
-    <!-- Spoken text description for voice input key. -->
-    <string name="description_voice_key">Voice Input</string>
-    <!-- Spoken text description for symbols mode on. -->
-    <string name="description_symbols_on">Symbols on</string>
-    <!-- Spoken text description for symbols mode off. -->
-    <string name="description_symbols_off">Symbols off</string>
-    <!-- Spoken text description for shift mode on. -->
-    <string name="description_shift_on">Shift on</string>
-    <!-- Spoken text description for shift mode off. -->
-    <string name="description_shift_off">Shift off</string>
-
     <!-- Voice related labels -->
 
     <!-- Title of the warning dialog that shows when a user initiates voice input for
