@@ -130,6 +130,15 @@
           android:entries="@array/keyboard_layout_modes"
           android:defaultValue="@string/config_default_keyboard_theme_id" />
     </PreferenceCategory>
+    <PreferenceScreen
+          android:key="pref_advanced_settings"
+          android:title="@string/advanced_settings"
+          android:summary="@string/advanced_settings_summary">
+          <!-- Values for popup dismiss delay are added programatically -->
+          <ListPreference
+              android:key="pref_key_preview_popup_dismiss_delay"
+              android:title="@string/key_preview_popup_dismiss_delay" />
+    </PreferenceScreen>
     <!-- <Preference
         android:title="Debug Settings"
         android:key="debug_settings">

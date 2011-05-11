@@ -46,6 +46,18 @@
     <!-- Category title for misc options  -->
     <string name="misc_category">Other options</string>
 
+    <!-- Option name for advanced settings screen [CHAR LIMIT=25] -->
+    <string name="advanced_settings">Advanced settings</string>
+    <!-- Option summary for advanced settings screen [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
+    <string name="advanced_settings_summary">Options for expert users</string>
+
+    <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
+    <string name="key_preview_popup_dismiss_delay">Key popup dismiss delay</string>
+    <!-- Description for delay for dismissing a popup on keypress: no delay [CHAR LIMIT=15] -->
+    <string name="key_preview_popup_dismiss_no_delay">No delay</string>
+    <!-- Description for delay for dismissing a popup on screen: default value of the delay [CHAR LIMIT=15] -->
+    <string name="key_preview_popup_dismiss_default_delay">Default</string>
+
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
 

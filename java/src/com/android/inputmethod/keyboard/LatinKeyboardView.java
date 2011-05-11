@@ -55,14 +55,14 @@ public class LatinKeyboardView extends KeyboardView {
     }
 
     @Override
-    public void setKeyPreviewEnabled(boolean previewEnabled) {
+    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null
                 && (latinKeyboard.isPhoneKeyboard() || latinKeyboard.isNumberKeyboard())) {
             // Phone and number keyboard never shows popup preview (except language switch).
-            super.setKeyPreviewEnabled(false);
+            super.setKeyPreviewPopupEnabled(false, delay);
         } else {
-            super.setKeyPreviewEnabled(previewEnabled);
+            super.setKeyPreviewPopupEnabled(previewEnabled, delay);
         }
     }
 
@@ -173,7 +173,8 @@ public class LatinKeyboardView extends KeyboardView {
                 if (!mDroppingEvents) {
                     mDroppingEvents = true;
                     // Send an up event
-                    MotionEvent translated = MotionEvent.obtain(me.getEventTime(), me.getEventTime(),
+                    MotionEvent translated = MotionEvent.obtain(
+                            me.getEventTime(), me.getEventTime(),
                             MotionEvent.ACTION_UP,
                             mLastX, mLastY, me.getMetaState());
                     super.onTouchEvent(translated);

@@ -556,7 +556,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         updateCorrectionMode();
 
-        inputView.setKeyPreviewEnabled(mSettingsValues.mPopupOn);
+        inputView.setKeyPreviewPopupEnabled(mSettingsValues.mKeyPreviewPopupOn,
+                mSettingsValues.mKeyPreviewPopupDismissDelay);
         inputView.setProximityCorrectionEnabled(true);
         // If we just entered a text field, maybe it has some old text that requires correction
         mRecorrection.checkRecorrectionOnStart();
@@ -1917,9 +1918,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return mWord;
     }
 
-    public boolean getPopupOn() {
-        return mSettingsValues.mPopupOn;
-    }
     boolean isSoundOn() {
         return mSettingsValues.mSoundOn && !mSilentModeOn;
     }
@@ -2063,7 +2061,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         p.println("  TextEntryState.state=" + TextEntryState.getState());
         p.println("  mSoundOn=" + mSettingsValues.mSoundOn);
         p.println("  mVibrateOn=" + mSettingsValues.mVibrateOn);
-        p.println("  mPopupOn=" + mSettingsValues.mPopupOn);
+        p.println("  mKeyPreviewPopupOn=" + mSettingsValues.mKeyPreviewPopupOn);
     }
 
     // Characters per second measurement

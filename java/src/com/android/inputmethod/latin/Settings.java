@@ -56,7 +56,7 @@ public class Settings extends PreferenceActivity
     public static final String PREF_GENERAL_SETTINGS_KEY = "general_settings";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
-    public static final String PREF_POPUP_ON = "popup_on";
+    public static final String PREF_KEY_PREVIEW_POPUP_ON = "popup_on";
     public static final String PREF_RECORRECTION_ENABLED = "recorrection_enabled";
     public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_SETTINGS_KEY = "settings_key";
@@ -76,6 +76,9 @@ public class Settings extends PreferenceActivity
     public static final String PREF_BIGRAM_PREDICTIONS = "bigram_prediction";
 
     public static final String PREF_MISC_SETTINGS_KEY = "misc_settings";
+
+    public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
+            "pref_key_preview_popup_dismiss_delay";
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
@@ -102,7 +105,8 @@ public class Settings extends PreferenceActivity
         // From preferences:
         public final boolean mSoundOn; // Sound setting private to Latin IME (see mSilentModeOn)
         public final boolean mVibrateOn;
-        public final boolean mPopupOn; // Warning : this escapes through LatinIME#isPopupOn
+        public final boolean mKeyPreviewPopupOn;
+        public final int mKeyPreviewPopupDismissDelay;
         public final boolean mAutoCap;
         public final boolean mQuickFixes;
         public final boolean mAutoCorrectEnabled;
@@ -161,7 +165,8 @@ public class Settings extends PreferenceActivity
             mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                     res.getBoolean(R.bool.config_default_sound_enabled));
 
-            mPopupOn = isPopupEnabled(prefs, res);
+            mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
+            mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
             mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
             mQuickFixes = isQuickFixesEnabled(prefs, res);
 
@@ -202,6 +207,7 @@ public class Settings extends PreferenceActivity
             return sp.getBoolean(Settings.PREF_QUICK_FIXES, resources.getBoolean(
                     R.bool.config_default_quick_fixes));
         }
+
         private static boolean isAutoCorrectEnabled(SharedPreferences sp, Resources resources) {
             final String currentAutoCorrectionSetting = sp.getString(
                     Settings.PREF_AUTO_CORRECTION_THRESHOLD,
@@ -210,13 +216,24 @@ public class Settings extends PreferenceActivity
                     R.string.auto_correction_threshold_mode_index_off);
             return !currentAutoCorrectionSetting.equals(autoCorrectionOff);
         }
-        private static boolean isPopupEnabled(SharedPreferences sp, Resources resources) {
+
+        // Public to access from KeyboardSwitcher. Should it have access to some
+        // process-global instance instead?
+        public static boolean isKeyPreviewPopupEnabled(SharedPreferences sp, Resources resources) {
             final boolean showPopupOption = resources.getBoolean(
                     R.bool.config_enable_show_popup_on_keypress_option);
             if (!showPopupOption) return resources.getBoolean(R.bool.config_default_popup_preview);
-            return sp.getBoolean(Settings.PREF_POPUP_ON,
+            return sp.getBoolean(Settings.PREF_KEY_PREVIEW_POPUP_ON,
                     resources.getBoolean(R.bool.config_default_popup_preview));
         }
+
+        // Likewise
+        public static int getKeyPreviewPopupDismissDelay(SharedPreferences sp,
+                Resources resources) {
+            return Integer.parseInt(sp.getString(Settings.PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY,
+                    Integer.toString(resources.getInteger(R.integer.config_delay_after_preview))));
+        }
+
         private static boolean isBigramSuggestionEnabled(SharedPreferences sp, Resources resources,
                 boolean autoCorrectEnabled) {
             final boolean showBigramSuggestionsOption = resources.getBoolean(
@@ -227,11 +244,13 @@ public class Settings extends PreferenceActivity
             return sp.getBoolean(Settings.PREF_BIGRAM_SUGGESTIONS, resources.getBoolean(
                     R.bool.config_default_bigram_suggestions));
         }
+
         private static boolean isBigramPredictionEnabled(SharedPreferences sp,
                 Resources resources) {
             return sp.getBoolean(Settings.PREF_BIGRAM_PREDICTIONS, resources.getBoolean(
                     R.bool.config_default_bigram_prediction));
         }
+
         private static double getAutoCorrectionThreshold(SharedPreferences sp,
                 Resources resources) {
             final String currentAutoCorrectionSetting = sp.getString(
@@ -257,6 +276,7 @@ public class Settings extends PreferenceActivity
             }
             return autoCorrectionThreshold;
         }
+
         private static SuggestedWords createSuggestPuncList(final String puncs) {
             SuggestedWords.Builder builder = new SuggestedWords.Builder();
             if (puncs != null) {
@@ -274,6 +294,7 @@ public class Settings extends PreferenceActivity
     private ListPreference mSettingsKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThreshold;
+    private ListPreference mKeyPreviewPopupDismissDelay;
     // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
     private CheckBoxPreference mBigramSuggestion;
     // Prediction: use bigrams to predict the next word when there is no input for it yet
@@ -299,6 +320,8 @@ public class Settings extends PreferenceActivity
     @Override
     protected void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        final Resources res = getResources();
+
         addPreferencesFromResource(R.xml.prefs);
         mInputLanguageSelection = (PreferenceScreen) findPreference(PREF_SUBTYPES);
         mInputLanguageSelection.setOnPreferenceClickListener(this);
@@ -334,13 +357,13 @@ public class Settings extends PreferenceActivity
         final PreferenceGroup bigramGroup =
                 (PreferenceGroup) findPreference(PREF_NGRAM_SETTINGS_KEY);
 
-        final boolean showSettingsKeyOption = getResources().getBoolean(
+        final boolean showSettingsKeyOption = res.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
         if (!showSettingsKeyOption) {
             generalSettings.removePreference(mSettingsKeyPreference);
         }
 
-        final boolean showVoiceKeyOption = getResources().getBoolean(
+        final boolean showVoiceKeyOption = res.getBoolean(
                 R.bool.config_enable_show_voice_key_option);
         if (!showVoiceKeyOption) {
             generalSettings.removePreference(mVoicePreference);
@@ -350,43 +373,60 @@ public class Settings extends PreferenceActivity
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 
-        final boolean showSubtypeSettings = getResources().getBoolean(
+        final boolean showSubtypeSettings = res.getBoolean(
                 R.bool.config_enable_show_subtype_settings);
         if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED
                 && !showSubtypeSettings) {
             generalSettings.removePreference(findPreference(PREF_SUBTYPES));
         }
 
-        final boolean showPopupOption = getResources().getBoolean(
+        final boolean showPopupOption = res.getBoolean(
                 R.bool.config_enable_show_popup_on_keypress_option);
         if (!showPopupOption) {
-            generalSettings.removePreference(findPreference(PREF_POPUP_ON));
+            generalSettings.removePreference(findPreference(PREF_KEY_PREVIEW_POPUP_ON));
         }
 
-        final boolean showRecorrectionOption = getResources().getBoolean(
+        final boolean showRecorrectionOption = res.getBoolean(
                 R.bool.config_enable_show_recorrection_option);
         if (!showRecorrectionOption) {
             generalSettings.removePreference(findPreference(PREF_RECORRECTION_ENABLED));
         }
 
-        final boolean showQuickFixesOption = getResources().getBoolean(
+        final boolean showQuickFixesOption = res.getBoolean(
                 R.bool.config_enable_quick_fixes_option);
         if (!showQuickFixesOption) {
             textCorrectionGroup.removePreference(findPreference(PREF_QUICK_FIXES));
         }
 
-        final boolean showBigramSuggestionsOption = getResources().getBoolean(
+        final boolean showBigramSuggestionsOption = res.getBoolean(
                 R.bool.config_enable_bigram_suggestions_option);
         if (!showBigramSuggestionsOption) {
             textCorrectionGroup.removePreference(findPreference(PREF_BIGRAM_SUGGESTIONS));
             textCorrectionGroup.removePreference(findPreference(PREF_BIGRAM_PREDICTIONS));
         }
 
-        final boolean showUsabilityModeStudyOption = getResources().getBoolean(
+        final boolean showUsabilityModeStudyOption = res.getBoolean(
                 R.bool.config_enable_usability_study_mode_option);
         if (!showUsabilityModeStudyOption) {
             getPreferenceScreen().removePreference(findPreference(PREF_USABILITY_STUDY_MODE));
         }
+
+        mKeyPreviewPopupDismissDelay =
+                (ListPreference)findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
+        final String[] entries = new String[] {
+                res.getString(R.string.key_preview_popup_dismiss_no_delay),
+                res.getString(R.string.key_preview_popup_dismiss_default_delay),
+        };
+        final String popupDismissDelayDefaultValue = Integer.toString(res.getInteger(
+                R.integer.config_delay_after_preview));
+        mKeyPreviewPopupDismissDelay.setEntries(entries);
+        mKeyPreviewPopupDismissDelay.setEntryValues(
+                new String[] { "0", popupDismissDelayDefaultValue });
+        if (null == mKeyPreviewPopupDismissDelay.getValue()) {
+            mKeyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
+        }
+        mKeyPreviewPopupDismissDelay.setEnabled(
+                Settings.Values.isKeyPreviewPopupEnabled(prefs, res));
     }
 
     @Override
@@ -405,6 +445,7 @@ public class Settings extends PreferenceActivity
         }
         updateSettingsKeySummary();
         updateShowCorrectionSuggestionsSummary();
+        updateKeyPreviewPopupDelaySummary();
     }
 
     @Override
@@ -423,6 +464,12 @@ public class Settings extends PreferenceActivity
                     .equals(mVoiceModeOff)) {
                 showVoiceConfirmation();
             }
+        } else if (key.equals(PREF_KEY_PREVIEW_POPUP_ON)) {
+            final ListPreference popupDismissDelay =
+                (ListPreference)findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
+            if (null != popupDismissDelay) {
+                popupDismissDelay.setEnabled(prefs.getBoolean(PREF_KEY_PREVIEW_POPUP_ON, true));
+            }
         }
         ensureConsistencyOfAutoCorrectionSettings();
         mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
@@ -430,6 +477,7 @@ public class Settings extends PreferenceActivity
         updateVoiceModeSummary();
         updateSettingsKeySummary();
         updateShowCorrectionSuggestionsSummary();
+        updateKeyPreviewPopupDelaySummary();
     }
 
     @Override
@@ -451,9 +499,15 @@ public class Settings extends PreferenceActivity
     }
 
     private void updateSettingsKeySummary() {
+        final ListPreference lp = mSettingsKeyPreference;
         mSettingsKeyPreference.setSummary(
                 getResources().getStringArray(R.array.settings_key_modes)
                 [mSettingsKeyPreference.findIndexOfValue(mSettingsKeyPreference.getValue())]);
+    }
+
+    private void updateKeyPreviewPopupDelaySummary() {
+        final ListPreference lp = mKeyPreviewPopupDismissDelay;
+        lp.setSummary(lp.getEntries()[lp.findIndexOfValue(lp.getValue())]);
     }
 
     private void showVoiceConfirmation() {
