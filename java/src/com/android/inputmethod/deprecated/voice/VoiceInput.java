@@ -192,7 +192,7 @@ public class VoiceInput implements OnClickListener {
         }
 
         mBlacklist = new Whitelist();
-        mBlacklist.addApp("com.android.setupwizard");
+        mBlacklist.addApp("com.google.android.setupwizard");
     }
 
     public void setCursorPos(int pos) {
