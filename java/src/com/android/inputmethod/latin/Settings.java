@@ -172,6 +172,8 @@ public class Settings extends PreferenceActivity
                     && isBigramPredictionEnabled(prefs, res);
 
             mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
+
+            Utils.setSystemLocale(res, savedLocale);
         }
 
         public boolean isSuggestedPunctuation(int code) {
