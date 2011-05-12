@@ -196,8 +196,8 @@ public class Key {
         }
 
         // Horizontal gap is divided equally to both sides of the key.
-        this.mX = x + mGap / 2;
-        this.mY = y;
+        mX = x + mGap / 2;
+        mY = y;
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
@@ -350,12 +350,13 @@ public class Key {
         final boolean rightEdge = (flags & Keyboard.EDGE_RIGHT) != 0;
         final boolean topEdge = (flags & Keyboard.EDGE_TOP) != 0;
         final boolean bottomEdge = (flags & Keyboard.EDGE_BOTTOM) != 0;
-        final int left = this.mX;
-        final int right = left + this.mWidth;
-        final int top = this.mY;
-        final int bottom = top + this.mHeight;
-        return (x >= left || leftEdge) && (x < right || rightEdge)
-                && (y >= top || topEdge) && (y < bottom || bottomEdge);
+        final int left = mX - mGap / 2;
+        final int right = left + mWidth + mGap;
+        final int top = mY;
+        final int bottom = top + mHeight + mKeyboard.getVerticalGap();
+        // In order to mitigate rounding errors, we use (left <= x <= right) here.
+        return (x >= left || leftEdge) && (x <= right || rightEdge)
+                && (y >= top || topEdge) && (y <= bottom || bottomEdge);
     }
 
     /**
@@ -365,10 +366,10 @@ public class Key {
      * @return the square of the distance of the point from the nearest edge of the key
      */
     public int squaredDistanceToEdge(int x, int y) {
-        final int left = this.mX;
-        final int right = left + this.mWidth;
-        final int top = this.mY;
-        final int bottom = top + this.mHeight;
+        final int left = mX;
+        final int right = left + mWidth;
+        final int top = mY;
+        final int bottom = top + mHeight;
         final int edgeX = x < left ? left : (x > right ? right : x);
         final int edgeY = y < top ? top : (y > bottom ? bottom : y);
         final int dx = x - edgeX;
