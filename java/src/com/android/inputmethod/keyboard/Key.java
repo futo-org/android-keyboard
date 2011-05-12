@@ -143,9 +143,9 @@ public class Key {
      * This constructor is being used only for key in mini popup keyboard.
      */
     public Key(Resources res, Keyboard keyboard, CharSequence popupCharacter, int x, int y,
-            int width, int edgeFlags) {
+            int width, int height, int edgeFlags) {
         mKeyboard = keyboard;
-        mHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
+        mHeight = height - keyboard.getVerticalGap();
         mGap = keyboard.getHorizontalGap();
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mGap;

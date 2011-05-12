@@ -181,7 +181,8 @@ public class MiniKeyboardBuilder {
         }
     }
 
-    public MiniKeyboardBuilder(KeyboardView view, int layoutTemplateResId, Key parentKey) {
+    public MiniKeyboardBuilder(KeyboardView view, int layoutTemplateResId, Key parentKey,
+            Keyboard parentKeyboard) {
         final Context context = view.getContext();
         mRes = context.getResources();
         final MiniKeyboard keyboard = new MiniKeyboard(context, layoutTemplateResId, null);
@@ -191,12 +192,13 @@ public class MiniKeyboardBuilder {
         final int keyWidth = getMaxKeyWidth(view, mPopupCharacters, keyboard.getKeyWidth());
         final MiniKeyboardLayoutParams params = new MiniKeyboardLayoutParams(
                 mPopupCharacters.length, parentKey.mMaxPopupColumn,
-                keyWidth, keyboard.getRowHeight(),
+                keyWidth, parentKeyboard.getRowHeight(),
                 parentKey.mX + (parentKey.mWidth + parentKey.mGap) / 2 - keyWidth / 2,
                 view.getMeasuredWidth());
         mParams = params;
 
-        keyboard.setHeight(params.mNumRows * params.mRowHeight - keyboard.getVerticalGap());
+        keyboard.setRowHeight(params.mRowHeight);
+        keyboard.setHeight(params.mNumRows * params.mRowHeight);
         keyboard.setMinWidth(params.mNumColumns * params.mKeyWidth);
         keyboard.setDefaultCoordX(params.getDefaultKeyCoordX() + params.mKeyWidth / 2);
     }
@@ -235,7 +237,7 @@ public class MiniKeyboardBuilder {
             final CharSequence label = mPopupCharacters[n];
             final int row = n / params.mNumColumns;
             final Key key = new Key(mRes, keyboard, label, params.getX(n, row), params.getY(row),
-                    params.mKeyWidth, params.getRowFlags(row));
+                    params.mKeyWidth, params.mRowHeight, params.getRowFlags(row));
             keys.add(key);
         }
         return keyboard;

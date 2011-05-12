@@ -21,6 +21,8 @@
 <resources>
     <!-- keyboardHeight = key_height*4 + key_bottom_gap*3, key_height=0.295in -->
     <dimen name="keyboardHeight">1.285in</dimen>
+    <fraction name="maxKeyboardHeight">50%p</fraction>
+    <fraction name="minKeyboardHeight">-61.8%p</fraction>
     <!-- key_height + key_bottom_gap = popup_key_height -->
     <!-- <dimen name="key_height">0.295in</dimen> -->
     <dimen name="key_bottom_gap">0.035in</dimen>
@@ -41,10 +43,11 @@
          to user's finger. -->
     <dimen name="keyboard_vertical_correction">-0.05in</dimen>
 
-    <dimen name="key_letter_size">0.13in</dimen>
-    <dimen name="key_label_text_size">0.083in</dimen>
+    <!-- TODO: use fraction for key letter size and etc. -->
+    <dimen name="key_letter_size">21dip</dimen>
+    <dimen name="key_label_text_size">13dip</dimen>
     <!-- left or right padding of label alignment -->
-    <dimen name="key_label_horizontal_alignment_padding">0.13in</dimen>
+    <dimen name="key_label_horizontal_alignment_padding">21dip</dimen>
     <dimen name="key_preview_height">80sp</dimen>
     <dimen name="key_preview_offset">0.000in</dimen>
     <dimen name="key_preview_text_size_large">36sp</dimen>

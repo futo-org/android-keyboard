@@ -21,6 +21,7 @@
 <resources>
     <!-- keyboardHeight = key_height*4 + key_bottom_gap*3, key_height=0.260in -->
     <dimen name="keyboardHeight">1.100in</dimen>
+    <fraction name="minKeyboardHeight">45%p</fraction>
     <!-- key_height + key_bottom_gap = popup_key_height -->
 <!--    <dimen name="key_height">0.260in</dimen>-->
     <dimen name="key_bottom_gap">0.020in</dimen>
