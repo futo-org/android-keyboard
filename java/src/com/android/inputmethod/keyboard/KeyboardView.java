@@ -86,10 +86,12 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final int HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
     // XML attribute
+    private float mKeyLetterRatio;
     private int mKeyLetterSize;
     private int mKeyTextColor;
     private int mKeyTextColorDisabled;
     private Typeface mKeyLetterStyle = Typeface.DEFAULT;
+    private float mLabelTextRatio;
     private int mLabelTextSize;
     private int mColorScheme = COLOR_SCHEME_WHITE;
     private int mShadowColor;
@@ -108,7 +110,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     // Key preview
     private boolean mInForeground;
     private TextView mPreviewText;
-    private int mPreviewTextSizeLarge;
+    private float mPreviewTextRatio;
+    private int mPreviewTextSize;
     private boolean mShowKeyPreview = true;
     private int mKeyPreviewDisplayedY;
     private final int mDelayBeforePreview;
@@ -327,8 +330,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             case R.styleable.KeyboardView_keyPreviewHeight:
                 mPreviewHeight = a.getDimensionPixelSize(attr, 80);
                 break;
-            case R.styleable.KeyboardView_keyLetterSize:
-                mKeyLetterSize = a.getDimensionPixelSize(attr, 18);
+            case R.styleable.KeyboardView_keyLetterRatio:
+                mKeyLetterRatio = getRatio(a, attr);
                 break;
             case R.styleable.KeyboardView_keyTextColor:
                 mKeyTextColor = a.getColor(attr, 0xFF000000);
@@ -336,8 +339,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             case R.styleable.KeyboardView_keyTextColorDisabled:
                 mKeyTextColorDisabled = a.getColor(attr, 0xFF000000);
                 break;
-            case R.styleable.KeyboardView_labelTextSize:
-                mLabelTextSize = a.getDimensionPixelSize(attr, 14);
+            case R.styleable.KeyboardView_labelTextRatio:
+                mLabelTextRatio = getRatio(a, attr);
                 break;
             case R.styleable.KeyboardView_popupLayout:
                 mPopupLayout = a.getResourceId(attr, 0);
@@ -365,7 +368,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         if (previewLayout != 0) {
             mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
-            mPreviewTextSizeLarge = (int) res.getDimension(R.dimen.key_preview_text_size_large);
+            mPreviewTextRatio = getRatio(res, R.fraction.key_preview_text_ratio);
         } else {
             mShowKeyPreview = false;
         }
@@ -460,6 +463,16 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
     }
 
+    // Read fraction value in TypedArray as float.
+    private static float getRatio(TypedArray a, int index) {
+        return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
+    }
+
+    // Read fraction value in resource as float.
+    private static float getRatio(Resources res, int id) {
+        return res.getFraction(id, 1000, 1000) / 1000.0f;
+    }
+
     public void startIgnoringDoubleTap() {
         if (ENABLE_CAPSLOCK_BY_DOUBLETAP)
             mHandler.startIgnoringDoubleTap();
@@ -506,6 +519,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         invalidateAllKeys();
         mKeyDetector.setProximityThreshold(keyboard.getMostCommonKeyWidth());
         mPopupPanelCache.clear();
+        final int keyHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
+        mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
+        mLabelTextSize = (int)(keyHeight * mLabelTextRatio);
+        mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
     }
 
     /**
@@ -938,7 +955,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mKeyLetterSize);
                 previewText.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
-                previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSizeLarge);
+                previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSize);
                 previewText.setTypeface(mKeyLetterStyle);
             }
         } else {

@@ -19,14 +19,14 @@
         <item name="android:background">@drawable/keyboard_background</item>
 
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
-        <item name="keyLetterSize">@dimen/key_letter_size</item>
+        <item name="keyLetterRatio">@fraction/key_letter_ratio</item>
         <item name="keyLetterStyle">normal</item>
         <item name="keyTextColor">#FFFFFFFF</item>
         <item name="keyTextColorDisabled">#FFFFFFFF</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
-        <item name="labelTextSize">@dimen/key_label_text_size</item>
+        <item name="labelTextRatio">@fraction/key_label_text_ratio</item>
         <item name="popupLayout">@layout/keyboard_popup</item>
         <item name="keyHysteresisDistance">@dimen/key_hysteresis_distance</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
