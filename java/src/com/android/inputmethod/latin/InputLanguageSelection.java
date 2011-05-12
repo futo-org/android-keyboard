@@ -36,9 +36,19 @@ public class InputLanguageSelection extends PreferenceActivity {
 
     private String mSelectedLanguages;
     private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
-    private static final String[] BLACKLIST_LANGUAGES = {
-        "ko", "ja", "zh", "el"
+
+    private static final String[] WHITELIST_LANGUAGES = {
+        "cs", "da", "de", "en_GB", "en_US", "es", "es_US", "fr", "it", "nb", "nl", "pl", "pt", "ru"
     };
+
+    private static boolean isWhitelisted(String lang) {
+        for (String s : WHITELIST_LANGUAGES) {
+            if (s.equalsIgnoreCase(lang)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     private static class Loc implements Comparable<Object> {
         static Collator sCollator = Collator.getInstance();
@@ -157,35 +167,41 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0 ; i < origSize; i++ ) {
             String s = locales[i];
             int len = s.length();
+            final Locale l;
+            final String language;
             if (len == 5) {
-                String language = s.substring(0, 2);
+                language = s.substring(0, 2);
                 String country = s.substring(3, 5);
-                Locale l = new Locale(language, country);
+                l = new Locale(language, country);
+            } else if (len == 2) {
+                language = s;
+                l = new Locale(language);
+            } else {
+                continue;
+            }
+            // Exclude languages that are not relevant to LatinIME
+            if (!isWhitelisted(s)) continue;
 
-                // Exclude languages that are not relevant to LatinIME
-                if (arrayContains(BLACKLIST_LANGUAGES, language)) continue;
-
-                if (finalSize == 0) {
+            if (finalSize == 0) {
+                preprocess[finalSize++] =
+                        new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(l)), l);
+            } else {
+                // check previous entry:
+                //  same lang and a country -> upgrade to full name and
+                //    insert ours with full name
+                //  diff lang -> insert ours with lang-only name
+                if (preprocess[finalSize-1].locale.getLanguage().equals(
+                        language)) {
+                    preprocess[finalSize-1].label = LanguageSwitcher.toTitleCase(
+                            preprocess[finalSize-1].locale.getDisplayName());
                     preprocess[finalSize++] =
-                            new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(l)), l);
+                            new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName()), l);
                 } else {
-                    // check previous entry:
-                    //  same lang and a country -> upgrade to full name and
-                    //    insert ours with full name
-                    //  diff lang -> insert ours with lang-only name
-                    if (preprocess[finalSize-1].locale.getLanguage().equals(
-                            language)) {
-                        preprocess[finalSize-1].label = LanguageSwitcher.toTitleCase(
-                                preprocess[finalSize-1].locale.getDisplayName());
-                        preprocess[finalSize++] =
-                                new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName()), l);
+                    String displayName;
+                    if (s.equals("zz_ZZ")) {
                     } else {
-                        String displayName;
-                        if (s.equals("zz_ZZ")) {
-                        } else {
-                            displayName = LanguageSwitcher.toTitleCase(l.getDisplayName(l));
-                            preprocess[finalSize++] = new Loc(displayName, l);
-                        }
+                        displayName = LanguageSwitcher.toTitleCase(l.getDisplayName(l));
+                        preprocess[finalSize++] = new Loc(displayName, l);
                     }
                 }
             }
@@ -194,12 +210,5 @@ public class InputLanguageSelection extends PreferenceActivity {
             uniqueLocales.add(preprocess[i]);
         }
         return uniqueLocales;
-    }
-
-    private boolean arrayContains(String[] array, String value) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i].equalsIgnoreCase(value)) return true;
-        }
-        return false;
     }
 }
