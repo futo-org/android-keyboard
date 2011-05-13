@@ -1603,11 +1603,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // TextEntryState.State.PICKED_SUGGESTION state.
             TextEntryState.typedCharacter((char) Keyboard.CODE_SPACE, true,
                     WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
-            // On Honeycomb+, onUpdateSelection() will fire, but in Gingerbread- in WebTextView
-            // only it does not, for some reason. Force update suggestions so that it works
-            // in Gingerbread- in WebTextView too.
-            mHandler.postUpdateSuggestions();
-        } else if (!showingAddToDictionaryHint) {
+        }
+        if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
             clearSuggestions();
