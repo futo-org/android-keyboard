@@ -120,10 +120,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private TextView mPreviewText;
     private float mPreviewTextRatio;
     private int mPreviewTextSize;
-    private boolean mShowKeyPreview = true;
-    private int mKeyPreviewDisplayedY;
+    private boolean mShowKeyPreviewPopup = true;
+    private int mKeyPreviewPopupDisplayedY;
     private final int mDelayBeforePreview;
-    private final int mDelayAfterPreview;
+    private int mDelayAfterPreview;
     private ViewGroup mPreviewPlacer;
     private final int[] mCoordinates = new int[2];
 
@@ -340,7 +340,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
             mPreviewTextRatio = getRatio(res, R.fraction.key_preview_text_ratio);
         } else {
-            mShowKeyPreview = false;
+            mShowKeyPreviewPopup = false;
         }
         mDelayBeforePreview = res.getInteger(R.integer.config_delay_before_preview);
         mDelayAfterPreview = res.getInteger(R.integer.config_delay_after_preview);
@@ -516,19 +516,21 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
      * Enables or disables the key feedback popup. This is a popup that shows a magnified
      * version of the depressed key. By default the preview is enabled.
      * @param previewEnabled whether or not to enable the key feedback preview
-     * @see #isKeyPreviewEnabled()
+     * @param delay the delay after which the preview is dismissed
+     * @see #isKeyPreviewPopupEnabled()
      */
-    public void setKeyPreviewEnabled(boolean previewEnabled) {
-        mShowKeyPreview = previewEnabled;
+    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
+        mShowKeyPreviewPopup = previewEnabled;
+        mDelayAfterPreview = delay;
     }
 
     /**
      * Returns the enabled state of the key feedback preview
      * @return whether or not the key feedback preview is enabled
-     * @see #setKeyPreviewEnabled(boolean)
+     * @see #setKeyPreviewPopupEnabled(boolean, int)
      */
-    public boolean isKeyPreviewEnabled() {
-        return mShowKeyPreview;
+    public boolean isKeyPreviewPopupEnabled() {
+        return mShowKeyPreviewPopup;
     }
 
     public int getColorScheme() {
@@ -851,7 +853,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     @Override
     public void showKeyPreview(int keyIndex, PointerTracker tracker) {
-        if (mShowKeyPreview) {
+        if (mShowKeyPreviewPopup) {
             mHandler.showKeyPreview(mDelayBeforePreview, keyIndex, tracker);
         } else if (mKeyboard.needSpacebarPreview(keyIndex)) {
             // Show key preview (in this case, slide language switcher) without any delay.
@@ -861,7 +863,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     @Override
     public void dismissKeyPreview(PointerTracker tracker) {
-        if (mShowKeyPreview) {
+        if (mShowKeyPreviewPopup) {
             mHandler.cancelShowKeyPreview(tracker);
             mHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
         } else if (mKeyboard.needSpacebarPreview(KeyDetector.NOT_A_KEY)) {
@@ -946,7 +948,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         final int previewX = keyDrawX - (previewWidth - keyDrawWidth) / 2 + mCoordinates[0];
         final int previewY = key.mY - previewHeight + mCoordinates[1] + mPreviewOffset;
         // Record key preview position to display mini-keyboard later at the same position
-        mKeyPreviewDisplayedY = previewY;
+        mKeyPreviewPopupDisplayedY = previewY;
 
         // Place the key preview.
         // TODO: Adjust position of key previews which touch screen edges
@@ -1097,7 +1099,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             mPopupWindow.setClippingEnabled(false);
         }
         mPopupMiniKeyboardPanel = popupPanel;
-        popupPanel.showPanel(this, parentKey, tracker, mKeyPreviewDisplayedY, mPopupWindow);
+        popupPanel.showPanel(this, parentKey, tracker, mKeyPreviewPopupDisplayedY, mPopupWindow);
 
         invalidateAllKeys();
         return true;
