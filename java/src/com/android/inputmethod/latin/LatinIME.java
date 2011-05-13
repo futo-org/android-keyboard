@@ -1465,14 +1465,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // in most cases, suggestion count is 1 when typed word's length is 1, but we do always
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
-        if (builder.size() > 1 || typedWord.length() == 1 || typedWordValid
-                || mCandidateView.isShowingAddToDictionaryHint()) {
-            builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(correctionAvailable);
-        } else {
-            final SuggestedWords previousSuggestions = mCandidateView.getSuggestions();
-            if (previousSuggestions == mSettingsValues.mSuggestPuncList)
-                return;
-            builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
+        if (typedWord != null) {
+            if (builder.size() > 1 || typedWord.length() == 1 || typedWordValid
+                    || mCandidateView.isShowingAddToDictionaryHint()) {
+                builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(
+                        correctionAvailable);
+            } else {
+                final SuggestedWords previousSuggestions = mCandidateView.getSuggestions();
+                if (previousSuggestions == mSettingsValues.mSuggestPuncList)
+                    return;
+                builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
+            }
         }
         showSuggestions(builder.build(), typedWord);
     }
