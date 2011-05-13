@@ -42,7 +42,8 @@ import java.util.ArrayList;
 /**
  * Manager of re-correction functionalities
  */
-public class Recorrection {
+public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeListener {
+    public static final boolean USE_LEGACY_RECORRECTION = true;
     private static final Recorrection sInstance = new Recorrection();
 
     private LatinIME mService;
@@ -69,20 +70,17 @@ public class Recorrection {
     }
 
     private void initInternal(LatinIME context, SharedPreferences prefs) {
-        final Resources res = context.getResources();
-        // If the option should not be shown, do not read the re-correction preference
-        // but always use the default setting defined in the resources.
-        if (res.getBoolean(R.bool.config_enable_show_recorrection_option)) {
-            mRecorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
-                    res.getBoolean(R.bool.config_default_recorrection_enabled));
-        } else {
-            mRecorrectionEnabled = res.getBoolean(R.bool.config_default_recorrection_enabled);
+        if (!USE_LEGACY_RECORRECTION) {
+            mRecorrectionEnabled = false;
+            return;
         }
+        updateRecorrectionEnabled(context.getResources(), prefs);
         mService = context;
+        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     public void checkRecorrectionOnStart() {
-        if (!mRecorrectionEnabled) return;
+        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return;
 
         final InputConnection ic = mService.getCurrentInputConnection();
         if (ic == null) return;
@@ -112,7 +110,7 @@ public class Recorrection {
             CandidateView candidateView, int candidatesStart, int candidatesEnd,
             int newSelStart, int newSelEnd, int oldSelStart, int lastSelectionStart,
             int lastSelectionEnd, boolean hasUncommittedTypedChars) {
-        if (!mRecorrectionEnabled) return;
+        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return;
         if (!mService.isShowingSuggestionsStrip()) return;
         if (!keyboardSwitcher.isInputViewShown()) return;
         if (!mService.isSuggestionsRequested()) return;
@@ -144,7 +142,7 @@ public class Recorrection {
     }
 
     public void saveRecorrectionSuggestion(WordComposer word, CharSequence result) {
-        if (!mRecorrectionEnabled) return;
+        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return;
         if (word.size() <= 1) {
             return;
         }
@@ -172,6 +170,7 @@ public class Recorrection {
      */
     public boolean applyTypedAlternatives(WordComposer word, Suggest suggest,
             KeyboardSwitcher keyboardSwitcher, EditingUtils.SelectedWord touching) {
+        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return false;
         // If we didn't find a match, search for result in typed word history
         WordComposer foundWord = null;
         RecorrectionSuggestionEntries alternatives = null;
@@ -224,6 +223,7 @@ public class Recorrection {
             boolean hasUncommittedTypedChars, int lastSelectionStart, int lastSelectionEnd,
             String wordSeparators) {
         if (!InputConnectionCompatUtils.RECORRECTION_SUPPORTED) return;
+        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return;
         voiceProxy.setShowingVoiceSuggestions(false);
         if (candidateView != null && candidateView.isShowingAddToDictionaryHint()) {
             return;
@@ -257,11 +257,31 @@ public class Recorrection {
     }
 
     public void abortRecorrection(boolean force) {
+        if (!USE_LEGACY_RECORRECTION) return;
         if (force || TextEntryState.isRecorrecting()) {
             TextEntryState.onAbortRecorrection();
             mService.setCandidatesViewShown(mService.isCandidateStripVisible());
             mService.getCurrentInputConnection().finishComposingText();
             mService.clearSuggestions();
+        }
+    }
+
+    public void updateRecorrectionEnabled(Resources res, SharedPreferences prefs) {
+        // If the option should not be shown, do not read the re-correction preference
+        // but always use the default setting defined in the resources.
+        if (res.getBoolean(R.bool.config_enable_show_recorrection_option)) {
+            mRecorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
+                    res.getBoolean(R.bool.config_default_recorrection_enabled));
+        } else {
+            mRecorrectionEnabled = res.getBoolean(R.bool.config_default_recorrection_enabled);
+        }
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+        if (!USE_LEGACY_RECORRECTION) return;
+        if (key.equals(Settings.PREF_RECORRECTION_ENABLED)) {
+            updateRecorrectionEnabled(mService.getResources(), prefs);
         }
     }
 }
