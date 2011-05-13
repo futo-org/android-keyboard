@@ -260,6 +260,8 @@
     <string name="subtype_mode_nl_keyboard">Dutch Keyboard</string>
     <!-- Description for Polish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_pl_keyboard">Polish Keyboard</string>
+    <!-- Description for Portuguese keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_pt_keyboard">Portuguese Keyboard</string>
     <!-- Description for Russian keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_ru_keyboard">Russian Keyboard</string>
     <!-- Description for Serbian keyboard subtype [CHAR LIMIT=35] -->

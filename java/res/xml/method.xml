@@ -151,6 +151,11 @@
             android:imeSubtypeMode="keyboard"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_pt_keyboard"
+            android:imeSubtypeLocale="pt"
+            android:imeSubtypeMode="keyboard"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_ru_keyboard"
             android:imeSubtypeLocale="ru"
             android:imeSubtypeMode="keyboard"

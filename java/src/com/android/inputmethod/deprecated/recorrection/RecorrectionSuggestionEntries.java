@@ -14,17 +14,20 @@
  * the License.
  */
 
-package com.android.inputmethod.latin;
+package com.android.inputmethod.deprecated.recorrection;
 
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.Suggest;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.WordComposer;
 
 import android.text.TextUtils;
 
-public class WordAlternatives {
+public class RecorrectionSuggestionEntries {
     public final CharSequence mChosenWord;
     public final WordComposer mWordComposer;
 
-    public WordAlternatives(CharSequence chosenWord, WordComposer wordComposer) {
+    public RecorrectionSuggestionEntries(CharSequence chosenWord, WordComposer wordComposer) {
         mChosenWord = chosenWord;
         mWordComposer = wordComposer;
     }

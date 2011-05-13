@@ -24,6 +24,7 @@ import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.deprecated.recorrection.Recorrection;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -684,7 +685,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // If the composing span has been cleared, save the typed word in the history for
                 // recorrection before we reset the candidate strip.  Then, we'll be able to show
                 // suggestions for recorrection right away.
-                mRecorrection.saveWordInHistory(mWord, mComposing);
+                mRecorrection.saveRecorrectionSuggestion(mWord, mComposing);
             }
             mComposing.setLength(0);
             mHasUncommittedTypedChars = false;
@@ -1221,7 +1222,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (!mHasUncommittedTypedChars) {
                 mHasUncommittedTypedChars = true;
                 mComposing.setLength(0);
-                mRecorrection.saveWordInHistory(mWord, mBestWord);
+                mRecorrection.saveRecorrectionSuggestion(mWord, mBestWord);
                 mWord.reset();
                 clearSuggestions();
             }
@@ -1635,7 +1636,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mVoiceProxy.rememberReplacedWord(suggestion, mSettingsValues.mWordSeparators);
             ic.commitText(suggestion, 1);
         }
-        mRecorrection.saveWordInHistory(mWord, suggestion);
+        mRecorrection.saveRecorrectionSuggestion(mWord, suggestion);
         mHasUncommittedTypedChars = false;
         mCommittedLength = suggestion.length();
     }
