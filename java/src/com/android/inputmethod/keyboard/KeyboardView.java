@@ -58,14 +58,22 @@ import java.util.WeakHashMap;
  * A view that renders a virtual {@link Keyboard}. It handles rendering of keys and detecting key
  * presses and touch movements.
  *
+ * @attr ref R.styleable#KeyboardView_backgroundDimAmount
+ * @attr ref R.styleable#KeyboardView_colorScheme
  * @attr ref R.styleable#KeyboardView_keyBackground
+ * @attr ref R.styleable#KeyboardView_keyHysteresisDistance
+ * @attr ref R.styleable#KeyboardView_keyLetterRatio
+ * @attr ref R.styleable#KeyboardView_keyLetterStyle
  * @attr ref R.styleable#KeyboardView_keyPreviewLayout
  * @attr ref R.styleable#KeyboardView_keyPreviewOffset
- * @attr ref R.styleable#KeyboardView_labelTextSize
- * @attr ref R.styleable#KeyboardView_keyTextSize
+ * @attr ref R.styleable#KeyboardView_keyPreviewHeight
  * @attr ref R.styleable#KeyboardView_keyTextColor
+ * @attr ref R.styleable#KeyboardView_keyTextColorDisabled
+ * @attr ref R.styleable#KeyboardView_labelTextRatio
  * @attr ref R.styleable#KeyboardView_verticalCorrection
  * @attr ref R.styleable#KeyboardView_popupLayout
+ * @attr ref R.styleable#KeyboardView_shadowColor
+ * @attr ref R.styleable#KeyboardView_shadowRadius
  */
 public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final String TAG = KeyboardView.class.getSimpleName();
@@ -86,26 +94,26 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final int HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
     // XML attribute
-    private float mKeyLetterRatio;
-    private int mKeyLetterSize;
-    private int mKeyTextColor;
-    private int mKeyTextColorDisabled;
-    private Typeface mKeyLetterStyle = Typeface.DEFAULT;
-    private float mLabelTextRatio;
-    private int mLabelTextSize;
-    private int mColorScheme = COLOR_SCHEME_WHITE;
-    private int mShadowColor;
-    private float mShadowRadius;
-    private Drawable mKeyBackground;
-    private float mBackgroundDimAmount;
-    private float mKeyHysteresisDistance;
-    private float mVerticalCorrection;
-    private int mPreviewOffset;
-    private int mPreviewHeight;
-    private int mPopupLayout;
+    private final float mKeyLetterRatio;
+    private final int mKeyTextColor;
+    private final int mKeyTextColorDisabled;
+    private final Typeface mKeyLetterStyle;
+    private final float mLabelTextRatio;
+    private final int mColorScheme;
+    private final int mShadowColor;
+    private final float mShadowRadius;
+    private final Drawable mKeyBackground;
+    private final float mBackgroundDimAmount;
+    private final float mKeyHysteresisDistance;
+    private final float mVerticalCorrection;
+    private final int mPreviewOffset;
+    private final int mPreviewHeight;
+    private final int mPopupLayout;
 
     // Main keyboard
     private Keyboard mKeyboard;
+    private int mKeyLetterSize;
+    private int mLabelTextSize;
 
     // Key preview
     private boolean mInForeground;
@@ -303,66 +311,28 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        int previewLayout = 0;
-        int keyTextSize = 0;
 
-        int n = a.getIndexCount();
-
-        for (int i = 0; i < n; i++) {
-            int attr = a.getIndex(i);
-
-            switch (attr) {
-            case R.styleable.KeyboardView_keyBackground:
-                mKeyBackground = a.getDrawable(attr);
-                break;
-            case R.styleable.KeyboardView_keyHysteresisDistance:
-                mKeyHysteresisDistance = a.getDimensionPixelOffset(attr, 0);
-                break;
-            case R.styleable.KeyboardView_verticalCorrection:
-                mVerticalCorrection = a.getDimensionPixelOffset(attr, 0);
-                break;
-            case R.styleable.KeyboardView_keyPreviewLayout:
-                previewLayout = a.getResourceId(attr, 0);
-                break;
-            case R.styleable.KeyboardView_keyPreviewOffset:
-                mPreviewOffset = a.getDimensionPixelOffset(attr, 0);
-                break;
-            case R.styleable.KeyboardView_keyPreviewHeight:
-                mPreviewHeight = a.getDimensionPixelSize(attr, 80);
-                break;
-            case R.styleable.KeyboardView_keyLetterRatio:
-                mKeyLetterRatio = getRatio(a, attr);
-                break;
-            case R.styleable.KeyboardView_keyTextColor:
-                mKeyTextColor = a.getColor(attr, 0xFF000000);
-                break;
-            case R.styleable.KeyboardView_keyTextColorDisabled:
-                mKeyTextColorDisabled = a.getColor(attr, 0xFF000000);
-                break;
-            case R.styleable.KeyboardView_labelTextRatio:
-                mLabelTextRatio = getRatio(a, attr);
-                break;
-            case R.styleable.KeyboardView_popupLayout:
-                mPopupLayout = a.getResourceId(attr, 0);
-                break;
-            case R.styleable.KeyboardView_shadowColor:
-                mShadowColor = a.getColor(attr, 0);
-                break;
-            case R.styleable.KeyboardView_shadowRadius:
-                mShadowRadius = a.getFloat(attr, 0f);
-                break;
-            // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
-            case R.styleable.KeyboardView_backgroundDimAmount:
-                mBackgroundDimAmount = a.getFloat(attr, 0.5f);
-                break;
-            case R.styleable.KeyboardView_keyLetterStyle:
-                mKeyLetterStyle = Typeface.defaultFromStyle(a.getInt(attr, Typeface.NORMAL));
-                break;
-            case R.styleable.KeyboardView_colorScheme:
-                mColorScheme = a.getInt(attr, COLOR_SCHEME_WHITE);
-                break;
-            }
-        }
+        mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
+        mKeyHysteresisDistance = a.getDimensionPixelOffset(
+                R.styleable.KeyboardView_keyHysteresisDistance, 0);
+        mVerticalCorrection = a.getDimensionPixelOffset(
+                R.styleable.KeyboardView_verticalCorrection, 0);
+        final int previewLayout = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
+        mPreviewOffset = a.getDimensionPixelOffset(R.styleable.KeyboardView_keyPreviewOffset, 0);
+        mPreviewHeight = a.getDimensionPixelSize(R.styleable.KeyboardView_keyPreviewHeight, 80);
+        mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
+        mKeyTextColor = a.getColor(R.styleable.KeyboardView_keyTextColor, 0xFF000000);
+        mKeyTextColorDisabled = a.getColor(
+                R.styleable.KeyboardView_keyTextColorDisabled, 0xFF000000);
+        mLabelTextRatio = getRatio(a, R.styleable.KeyboardView_labelTextRatio);
+        mPopupLayout = a.getResourceId(R.styleable.KeyboardView_popupLayout, 0);
+        mShadowColor = a.getColor(R.styleable.KeyboardView_shadowColor, 0);
+        mShadowRadius = a.getFloat(R.styleable.KeyboardView_shadowRadius, 0f);
+        // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
+        mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
+        mKeyLetterStyle = Typeface.defaultFromStyle(
+                a.getInt(R.styleable.KeyboardView_keyLetterStyle, Typeface.NORMAL));
+        mColorScheme = a.getInt(R.styleable.KeyboardView_colorScheme, COLOR_SCHEME_WHITE);
 
         final Resources res = getResources();
 
@@ -379,7 +349,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setTextSize(keyTextSize);
         mPaint.setTextAlign(Align.CENTER);
         mPaint.setAlpha(255);
 
