@@ -1078,7 +1078,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         });
 
         final Keyboard keyboard = new MiniKeyboardBuilder(this, mKeyboard.getPopupKeyboardResId(),
-                parentKey).build();
+                parentKey, mKeyboard).build();
         miniKeyboardView.setKeyboard(keyboard);
 
         container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),

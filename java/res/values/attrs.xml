@@ -80,6 +80,9 @@
         <attr name="keyboardHeight" format="dimension" />
         <!-- Maximum keyboard height, in pixels or percentage of display height -->
         <attr name="maxKeyboardHeight" format="dimension|fraction" />
+        <!-- Minimum keyboard height represented in pixels, percentage of display height if fraction
+             is positive, or percentage of display width if fraction is negative. -->
+        <attr name="minKeyboardHeight" format="dimension|fraction" />
         <!-- Default width of a key, in pixels or percentage of display width. -->
         <attr name="keyWidth" format="dimension|fraction" />
         <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
