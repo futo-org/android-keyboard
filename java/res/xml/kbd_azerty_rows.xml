@@ -128,7 +128,8 @@
             latin:keyLabel="n"
             latin:popupCharacters="@string/alternates_for_n" />
         <Key
-            latin:keyLabel="\'" />
+            latin:keyLabel="\'"
+            latin:popupCharacters="‘,’,‚,‛" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="15%p"
