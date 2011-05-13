@@ -55,14 +55,14 @@ public class LatinKeyboardView extends KeyboardView {
     }
 
     @Override
-    public void setKeyPreviewEnabled(boolean previewEnabled) {
+    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null
                 && (latinKeyboard.isPhoneKeyboard() || latinKeyboard.isNumberKeyboard())) {
             // Phone and number keyboard never shows popup preview (except language switch).
-            super.setKeyPreviewEnabled(false);
+            super.setKeyPreviewPopupEnabled(false, delay);
         } else {
-            super.setKeyPreviewEnabled(previewEnabled);
+            super.setKeyPreviewPopupEnabled(previewEnabled, delay);
         }
     }
 
@@ -140,10 +140,6 @@ public class LatinKeyboardView extends KeyboardView {
         // If device has distinct multi touch panel, there is no need to check sudden jump.
         if (hasDistinctMultitouch())
             return false;
-        // If accessibiliy is enabled, stop looking for sudden jumps because it interferes
-        // with touch exploration of the keyboard.
-        if (isAccessibilityEnabled())
-            return false;
         final int action = me.getAction();
         final int x = (int) me.getX();
         final int y = (int) me.getY();
@@ -177,7 +173,8 @@ public class LatinKeyboardView extends KeyboardView {
                 if (!mDroppingEvents) {
                     mDroppingEvents = true;
                     // Send an up event
-                    MotionEvent translated = MotionEvent.obtain(me.getEventTime(), me.getEventTime(),
+                    MotionEvent translated = MotionEvent.obtain(
+                            me.getEventTime(), me.getEventTime(),
                             MotionEvent.ACTION_UP,
                             mLastX, mLastY, me.getMetaState());
                     super.onTouchEvent(translated);

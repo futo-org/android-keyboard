@@ -67,18 +67,6 @@
     <string name="label_more_key" msgid="3760239494604948502">"Más"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Espera"</string>
-    <string name="description_delete_key" msgid="5586406298531883960">"Eliminar"</string>
-    <string name="description_return_key" msgid="8750044000806461678">"Retroceso"</string>
-    <string name="description_settings_key" msgid="7484527796782969219">"Ajustes"</string>
-    <string name="description_shift_key" msgid="346906866277787836">"Mayús"</string>
-    <string name="description_space_key" msgid="8512130111575878517">"Espacio"</string>
-    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Símbolos"</string>
-    <string name="description_tab_key" msgid="828186583738307137">"Tabulador"</string>
-    <string name="description_voice_key" msgid="3057731675774652754">"Entrada de voz"</string>
-    <string name="description_symbols_on" msgid="2994366855822840559">"Símbolos activados"</string>
-    <string name="description_symbols_off" msgid="3209578267079515136">"Símbolos desactivados"</string>
-    <string name="description_shift_on" msgid="6983188949895971587">"Mayús activadas"</string>
-    <string name="description_shift_off" msgid="8553265474523069034">"Mayús desactivadas"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Introducción de voz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualmente la introducción de voz no está disponible en tu idioma, pero se puede utilizar en inglés."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"La entrada de voz utiliza el reconocimiento de voz de Google. Se aplica la "<a href="http://m.google.com/privacy">"Política de privacidad de Google para móviles"</a>"."</string>

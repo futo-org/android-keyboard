@@ -58,14 +58,22 @@ import java.util.WeakHashMap;
  * A view that renders a virtual {@link Keyboard}. It handles rendering of keys and detecting key
  * presses and touch movements.
  *
+ * @attr ref R.styleable#KeyboardView_backgroundDimAmount
+ * @attr ref R.styleable#KeyboardView_colorScheme
  * @attr ref R.styleable#KeyboardView_keyBackground
+ * @attr ref R.styleable#KeyboardView_keyHysteresisDistance
+ * @attr ref R.styleable#KeyboardView_keyLetterRatio
+ * @attr ref R.styleable#KeyboardView_keyLetterStyle
  * @attr ref R.styleable#KeyboardView_keyPreviewLayout
  * @attr ref R.styleable#KeyboardView_keyPreviewOffset
- * @attr ref R.styleable#KeyboardView_labelTextSize
- * @attr ref R.styleable#KeyboardView_keyTextSize
+ * @attr ref R.styleable#KeyboardView_keyPreviewHeight
  * @attr ref R.styleable#KeyboardView_keyTextColor
+ * @attr ref R.styleable#KeyboardView_keyTextColorDisabled
+ * @attr ref R.styleable#KeyboardView_labelTextRatio
  * @attr ref R.styleable#KeyboardView_verticalCorrection
  * @attr ref R.styleable#KeyboardView_popupLayout
+ * @attr ref R.styleable#KeyboardView_shadowColor
+ * @attr ref R.styleable#KeyboardView_shadowRadius
  */
 public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final String TAG = KeyboardView.class.getSimpleName();
@@ -86,33 +94,36 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final int HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
     // XML attribute
-    private int mKeyLetterSize;
-    private int mKeyTextColor;
-    private int mKeyTextColorDisabled;
-    private Typeface mKeyLetterStyle = Typeface.DEFAULT;
-    private int mLabelTextSize;
-    private int mColorScheme = COLOR_SCHEME_WHITE;
-    private int mShadowColor;
-    private float mShadowRadius;
-    private Drawable mKeyBackground;
-    private float mBackgroundDimAmount;
-    private float mKeyHysteresisDistance;
-    private float mVerticalCorrection;
-    private int mPreviewOffset;
-    private int mPreviewHeight;
-    private int mPopupLayout;
+    private final float mKeyLetterRatio;
+    private final int mKeyTextColor;
+    private final int mKeyTextColorDisabled;
+    private final Typeface mKeyLetterStyle;
+    private final float mLabelTextRatio;
+    private final int mColorScheme;
+    private final int mShadowColor;
+    private final float mShadowRadius;
+    private final Drawable mKeyBackground;
+    private final float mBackgroundDimAmount;
+    private final float mKeyHysteresisDistance;
+    private final float mVerticalCorrection;
+    private final int mPreviewOffset;
+    private final int mPreviewHeight;
+    private final int mPopupLayout;
 
     // Main keyboard
     private Keyboard mKeyboard;
+    private int mKeyLetterSize;
+    private int mLabelTextSize;
 
     // Key preview
     private boolean mInForeground;
     private TextView mPreviewText;
-    private int mPreviewTextSizeLarge;
-    private boolean mShowKeyPreview = true;
-    private int mKeyPreviewDisplayedY;
+    private float mPreviewTextRatio;
+    private int mPreviewTextSize;
+    private boolean mShowKeyPreviewPopup = true;
+    private int mKeyPreviewPopupDisplayedY;
     private final int mDelayBeforePreview;
-    private final int mDelayAfterPreview;
+    private int mDelayAfterPreview;
     private ViewGroup mPreviewPlacer;
     private final int[] mCoordinates = new int[2];
 
@@ -133,9 +144,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
     private int mOldKeyIndex;
-
-    // Accessibility
-    private boolean mIsAccessibilityEnabled;
 
     protected KeyDetector mKeyDetector = new KeyDetector();
 
@@ -303,74 +311,36 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        int previewLayout = 0;
-        int keyTextSize = 0;
 
-        int n = a.getIndexCount();
-
-        for (int i = 0; i < n; i++) {
-            int attr = a.getIndex(i);
-
-            switch (attr) {
-            case R.styleable.KeyboardView_keyBackground:
-                mKeyBackground = a.getDrawable(attr);
-                break;
-            case R.styleable.KeyboardView_keyHysteresisDistance:
-                mKeyHysteresisDistance = a.getDimensionPixelOffset(attr, 0);
-                break;
-            case R.styleable.KeyboardView_verticalCorrection:
-                mVerticalCorrection = a.getDimensionPixelOffset(attr, 0);
-                break;
-            case R.styleable.KeyboardView_keyPreviewLayout:
-                previewLayout = a.getResourceId(attr, 0);
-                break;
-            case R.styleable.KeyboardView_keyPreviewOffset:
-                mPreviewOffset = a.getDimensionPixelOffset(attr, 0);
-                break;
-            case R.styleable.KeyboardView_keyPreviewHeight:
-                mPreviewHeight = a.getDimensionPixelSize(attr, 80);
-                break;
-            case R.styleable.KeyboardView_keyLetterSize:
-                mKeyLetterSize = a.getDimensionPixelSize(attr, 18);
-                break;
-            case R.styleable.KeyboardView_keyTextColor:
-                mKeyTextColor = a.getColor(attr, 0xFF000000);
-                break;
-            case R.styleable.KeyboardView_keyTextColorDisabled:
-                mKeyTextColorDisabled = a.getColor(attr, 0xFF000000);
-                break;
-            case R.styleable.KeyboardView_labelTextSize:
-                mLabelTextSize = a.getDimensionPixelSize(attr, 14);
-                break;
-            case R.styleable.KeyboardView_popupLayout:
-                mPopupLayout = a.getResourceId(attr, 0);
-                break;
-            case R.styleable.KeyboardView_shadowColor:
-                mShadowColor = a.getColor(attr, 0);
-                break;
-            case R.styleable.KeyboardView_shadowRadius:
-                mShadowRadius = a.getFloat(attr, 0f);
-                break;
-            // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
-            case R.styleable.KeyboardView_backgroundDimAmount:
-                mBackgroundDimAmount = a.getFloat(attr, 0.5f);
-                break;
-            case R.styleable.KeyboardView_keyLetterStyle:
-                mKeyLetterStyle = Typeface.defaultFromStyle(a.getInt(attr, Typeface.NORMAL));
-                break;
-            case R.styleable.KeyboardView_colorScheme:
-                mColorScheme = a.getInt(attr, COLOR_SCHEME_WHITE);
-                break;
-            }
-        }
+        mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
+        mKeyHysteresisDistance = a.getDimensionPixelOffset(
+                R.styleable.KeyboardView_keyHysteresisDistance, 0);
+        mVerticalCorrection = a.getDimensionPixelOffset(
+                R.styleable.KeyboardView_verticalCorrection, 0);
+        final int previewLayout = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
+        mPreviewOffset = a.getDimensionPixelOffset(R.styleable.KeyboardView_keyPreviewOffset, 0);
+        mPreviewHeight = a.getDimensionPixelSize(R.styleable.KeyboardView_keyPreviewHeight, 80);
+        mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
+        mKeyTextColor = a.getColor(R.styleable.KeyboardView_keyTextColor, 0xFF000000);
+        mKeyTextColorDisabled = a.getColor(
+                R.styleable.KeyboardView_keyTextColorDisabled, 0xFF000000);
+        mLabelTextRatio = getRatio(a, R.styleable.KeyboardView_labelTextRatio);
+        mPopupLayout = a.getResourceId(R.styleable.KeyboardView_popupLayout, 0);
+        mShadowColor = a.getColor(R.styleable.KeyboardView_shadowColor, 0);
+        mShadowRadius = a.getFloat(R.styleable.KeyboardView_shadowRadius, 0f);
+        // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
+        mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
+        mKeyLetterStyle = Typeface.defaultFromStyle(
+                a.getInt(R.styleable.KeyboardView_keyLetterStyle, Typeface.NORMAL));
+        mColorScheme = a.getInt(R.styleable.KeyboardView_colorScheme, COLOR_SCHEME_WHITE);
 
         final Resources res = getResources();
 
         if (previewLayout != 0) {
             mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
-            mPreviewTextSizeLarge = (int) res.getDimension(R.dimen.key_preview_text_size_large);
+            mPreviewTextRatio = getRatio(res, R.fraction.key_preview_text_ratio);
         } else {
-            mShowKeyPreview = false;
+            mShowKeyPreviewPopup = false;
         }
         mDelayBeforePreview = res.getInteger(R.integer.config_delay_before_preview);
         mDelayAfterPreview = res.getInteger(R.integer.config_delay_after_preview);
@@ -379,7 +349,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-        mPaint.setTextSize(keyTextSize);
         mPaint.setTextAlign(Align.CENTER);
         mPaint.setAlpha(255);
 
@@ -463,6 +432,16 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
     }
 
+    // Read fraction value in TypedArray as float.
+    private static float getRatio(TypedArray a, int index) {
+        return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
+    }
+
+    // Read fraction value in resource as float.
+    private static float getRatio(Resources res, int id) {
+        return res.getFraction(id, 1000, 1000) / 1000.0f;
+    }
+
     public void startIgnoringDoubleTap() {
         if (ENABLE_CAPSLOCK_BY_DOUBLETAP)
             mHandler.startIgnoringDoubleTap();
@@ -509,6 +488,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         invalidateAllKeys();
         mKeyDetector.setProximityThreshold(keyboard.getMostCommonKeyWidth());
         mPopupPanelCache.clear();
+        final int keyHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
+        mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
+        mLabelTextSize = (int)(keyHeight * mLabelTextRatio);
+        mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
     }
 
     /**
@@ -530,44 +513,24 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     /**
-     * Enables or disables accessibility.
-     * @param accessibilityEnabled whether or not to enable accessibility
-     */
-    public void setAccessibilityEnabled(boolean accessibilityEnabled) {
-        mIsAccessibilityEnabled = accessibilityEnabled;
-
-        // Propagate this change to all existing pointer trackers.
-        for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setAccessibilityEnabled(accessibilityEnabled);
-        }
-    }
-
-    /**
-     * Returns whether the device has accessibility enabled.
-     * @return true if the device has accessibility enabled.
-     */
-    @Override
-    public boolean isAccessibilityEnabled() {
-        return mIsAccessibilityEnabled;
-    }
-
-    /**
-     * Enables or disables the key feedback preview. This is a preview that shows a magnified
+     * Enables or disables the key feedback popup. This is a popup that shows a magnified
      * version of the depressed key. By default the preview is enabled.
      * @param previewEnabled whether or not to enable the key feedback preview
-     * @see #isKeyPreviewEnabled()
+     * @param delay the delay after which the preview is dismissed
+     * @see #isKeyPreviewPopupEnabled()
      */
-    public void setKeyPreviewEnabled(boolean previewEnabled) {
-        mShowKeyPreview = previewEnabled;
+    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
+        mShowKeyPreviewPopup = previewEnabled;
+        mDelayAfterPreview = delay;
     }
 
     /**
      * Returns the enabled state of the key feedback preview
      * @return whether or not the key feedback preview is enabled
-     * @see #setKeyPreviewEnabled(boolean)
+     * @see #setKeyPreviewPopupEnabled(boolean, int)
      */
-    public boolean isKeyPreviewEnabled() {
-        return mShowKeyPreview;
+    public boolean isKeyPreviewPopupEnabled() {
+        return mShowKeyPreviewPopup;
     }
 
     public int getColorScheme() {
@@ -890,7 +853,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     @Override
     public void showKeyPreview(int keyIndex, PointerTracker tracker) {
-        if (mShowKeyPreview) {
+        if (mShowKeyPreviewPopup) {
             mHandler.showKeyPreview(mDelayBeforePreview, keyIndex, tracker);
         } else if (mKeyboard.needSpacebarPreview(keyIndex)) {
             // Show key preview (in this case, slide language switcher) without any delay.
@@ -900,7 +863,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     @Override
     public void dismissKeyPreview(PointerTracker tracker) {
-        if (mShowKeyPreview) {
+        if (mShowKeyPreviewPopup) {
             mHandler.cancelShowKeyPreview(tracker);
             mHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
         } else if (mKeyboard.needSpacebarPreview(KeyDetector.NOT_A_KEY)) {
@@ -963,7 +926,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mKeyLetterSize);
                 previewText.setTypeface(Typeface.DEFAULT_BOLD);
             } else {
-                previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSizeLarge);
+                previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSize);
                 previewText.setTypeface(mKeyLetterStyle);
             }
         } else {
@@ -985,7 +948,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         final int previewX = keyDrawX - (previewWidth - keyDrawWidth) / 2 + mCoordinates[0];
         final int previewY = key.mY - previewHeight + mCoordinates[1] + mPreviewOffset;
         // Record key preview position to display mini-keyboard later at the same position
-        mKeyPreviewDisplayedY = previewY;
+        mKeyPreviewPopupDisplayedY = previewY;
 
         // Place the key preview.
         // TODO: Adjust position of key previews which touch screen edges
@@ -1103,7 +1066,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         });
 
         final Keyboard keyboard = new MiniKeyboardBuilder(this, mKeyboard.getPopupKeyboardResId(),
-                parentKey).build();
+                parentKey, mKeyboard).build();
         miniKeyboardView.setKeyboard(keyboard);
 
         container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
@@ -1136,7 +1099,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             mPopupWindow.setClippingEnabled(false);
         }
         mPopupMiniKeyboardPanel = popupPanel;
-        popupPanel.showPanel(this, parentKey, tracker, mKeyPreviewDisplayedY, mPopupWindow);
+        popupPanel.showPanel(this, parentKey, tracker, mKeyPreviewPopupDisplayedY, mPopupWindow);
 
         invalidateAllKeys();
         return true;
@@ -1182,19 +1145,16 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // If the device does not have distinct multi-touch support panel, ignore all multi-touch
         // events except a transition from/to single-touch.
-        if ((!mHasDistinctMultitouch || mIsAccessibilityEnabled)
-                && pointerCount > 1 && oldPointerCount > 1) {
+        if (!mHasDistinctMultitouch && pointerCount > 1 && oldPointerCount > 1) {
             return true;
         }
 
         // Track the last few movements to look for spurious swipes.
         mSwipeTracker.addMovement(me);
 
-        // Gesture detector must be enabled only when mini-keyboard is not on the screen and
-        // accessibility is not enabled.
-        // TODO: Reconcile gesture detection and accessibility features.
-        if (mPopupMiniKeyboardPanel == null && !mIsAccessibilityEnabled
-                && mGestureDetector != null && mGestureDetector.onTouchEvent(me)) {
+        // Gesture detector must be enabled only when mini-keyboard is not on the screen.
+        if (mPopupMiniKeyboardPanel == null && mGestureDetector != null
+                && mGestureDetector.onTouchEvent(me)) {
             dismissAllKeyPreviews();
             mHandler.cancelKeyTimers();
             return true;
@@ -1225,7 +1185,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // Translate mutli-touch event to single-touch events on the device that has no distinct
         // multi-touch panel.
-        if (!mHasDistinctMultitouch || mIsAccessibilityEnabled) {
+        if (!mHasDistinctMultitouch) {
             // Use only main (id=0) pointer tracker.
             PointerTracker tracker = getPointerTracker(0);
             if (pointerCount == 1 && oldPointerCount == 2) {

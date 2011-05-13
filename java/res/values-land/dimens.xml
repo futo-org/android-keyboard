@@ -21,6 +21,7 @@
 <resources>
     <!-- keyboardHeight = key_height*4 + key_bottom_gap*3, key_height=0.260in -->
     <dimen name="keyboardHeight">1.100in</dimen>
+    <fraction name="minKeyboardHeight">45%p</fraction>
     <!-- key_height + key_bottom_gap = popup_key_height -->
 <!--    <dimen name="key_height">0.260in</dimen>-->
     <dimen name="key_bottom_gap">0.020in</dimen>
@@ -28,6 +29,10 @@
     <dimen name="keyboard_top_padding">0.0in</dimen>
     <dimen name="keyboard_bottom_padding">0.0in</dimen>
     <dimen name="keyboard_horizontal_edges_padding">0.0in</dimen>
+    <fraction name="key_letter_ratio">55%</fraction>
+    <fraction name="key_label_text_ratio">35%</fraction>
+    <dimen name="key_preview_offset">0.08in</dimen>
+    <fraction name="key_preview_text_ratio">90%</fraction>
     <dimen name="candidate_strip_height">38dip</dimen>
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
     <dimen name="spacebar_vertical_correction">2dip</dimen>

@@ -41,7 +41,6 @@ public class PointerTracker {
         public void showKeyPreview(int keyIndex, PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
         public boolean hasDistinctMultitouch();
-        public boolean isAccessibilityEnabled();
     }
 
     public final int mPointerId;
@@ -69,9 +68,6 @@ public class PointerTracker {
     private int mKeyQuarterWidthSquared;
 
     private final PointerTrackerKeyState mKeyState;
-
-    // true if accessibility is enabled in the parent keyboard
-    private boolean mIsAccessibilityEnabled;
 
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
@@ -124,7 +120,6 @@ public class PointerTracker {
         mKeyDetector = keyDetector;
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mKeyState = new PointerTrackerKeyState(keyDetector);
-        mIsAccessibilityEnabled = proxy.isAccessibilityEnabled();
         mHasDistinctMultitouch = proxy.hasDistinctMultitouch();
         final Resources res = mKeyboardView.getResources();
         mConfigSlidingKeyInputEnabled = res.getBoolean(R.bool.config_sliding_key_input_enabled);
@@ -141,10 +136,6 @@ public class PointerTracker {
 
     public void setOnKeyboardActionListener(KeyboardActionListener listener) {
         mListener = listener;
-    }
-
-    public void setAccessibilityEnabled(boolean accessibilityEnabled) {
-        mIsAccessibilityEnabled = accessibilityEnabled;
     }
 
     // Returns true if keyboard has been changed by this callback.
@@ -342,10 +333,9 @@ public class PointerTracker {
     private void onDownEventInternal(int x, int y, long eventTime) {
         int keyIndex = mKeyState.onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
-        // from modifier key, 3) this pointer is on mini-keyboard, or 4) accessibility is enabled.
+        // from modifier key, or 3) this pointer is on mini-keyboard.
         mIsAllowedSlidingKeyInput = mConfigSlidingKeyInputEnabled || isModifierInternal(keyIndex)
-                || mKeyDetector instanceof MiniKeyboardKeyDetector
-                || mIsAccessibilityEnabled;
+                || mKeyDetector instanceof MiniKeyboardKeyDetector;
         mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
@@ -575,10 +565,8 @@ public class PointerTracker {
     }
 
     private void startRepeatKey(int keyIndex) {
-        // Accessibility disables key repeat because users may need to pause on a key to hear
-        // its spoken description.
         final Key key = getKey(keyIndex);
-        if (key != null && key.mRepeatable && !mIsAccessibilityEnabled) {
+        if (key != null && key.mRepeatable) {
             dismissKeyPreview();
             onRepeatKey(keyIndex);
             mHandler.startKeyRepeatTimer(mDelayBeforeKeyRepeatStart, keyIndex, this);
@@ -620,14 +608,11 @@ public class PointerTracker {
         }
     }
 
-    // The modifier key, such as shift key, should not show its key preview. If accessibility is
-    // turned on, the modifier key should show its key preview.
+    // The modifier key, such as shift key, should not show its key preview.
     private boolean isKeyPreviewNotRequired(int keyIndex) {
         final Key key = getKey(keyIndex);
         if (!key.mEnabled)
             return true;
-        if (mIsAccessibilityEnabled)
-            return false;
         // Such as spacebar sliding language switch.
         if (mKeyboard.needSpacebarPreview(keyIndex))
             return false;
@@ -647,11 +632,6 @@ public class PointerTracker {
     }
 
     private void startLongPressTimer(int keyIndex) {
-        // Accessibility disables long press because users are likely to need to pause on a key
-        // for an unspecified duration in order to hear the key's spoken description.
-        if (mIsAccessibilityEnabled) {
-            return;
-        }
         Key key = getKey(keyIndex);
         if (!key.mEnabled)
             return;

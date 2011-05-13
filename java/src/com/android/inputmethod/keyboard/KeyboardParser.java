@@ -196,9 +196,20 @@ public class KeyboardParser {
             final int keyboardHeight = (int)keyboardAttr.getDimension(
                     R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
             final int maxKeyboardHeight = getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_maxKeyboardHeight, displayHeight,  displayHeight / 2);
-            // Keyboard height will not exceed maxKeyboardHeight.
-            final int height = Math.min(keyboardHeight, maxKeyboardHeight);
+                    R.styleable.Keyboard_maxKeyboardHeight, displayHeight, displayHeight / 2);
+            int minKeyboardHeight = getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_minKeyboardHeight, displayHeight, displayHeight / 2);
+            if (minKeyboardHeight < 0) {
+                // Specified fraction was negative, so it should be calculated against display
+                // width.
+                final int displayWidth = keyboard.getDisplayWidth();
+                minKeyboardHeight = -getDimensionOrFraction(keyboardAttr,
+                        R.styleable.Keyboard_minKeyboardHeight, displayWidth, displayWidth / 2);
+            }
+            // Keyboard height will not exceed maxKeyboardHeight and will not be less than
+            // minKeyboardHeight.
+            final int height = Math.max(
+                    Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
             final int width = keyboard.getDisplayWidth();
 
             keyboard.setKeyboardHeight(height);

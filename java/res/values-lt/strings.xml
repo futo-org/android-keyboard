@@ -61,18 +61,6 @@
     <string name="label_more_key" msgid="3760239494604948502">"Daugiau"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Prist."</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Lauk."</string>
-    <string name="description_delete_key" msgid="5586406298531883960">"Ištrinti"</string>
-    <string name="description_return_key" msgid="8750044000806461678">"Grįžti"</string>
-    <string name="description_settings_key" msgid="7484527796782969219">"Nustatymai"</string>
-    <string name="description_shift_key" msgid="346906866277787836">"Keitimas"</string>
-    <string name="description_space_key" msgid="8512130111575878517">"Tarpas"</string>
-    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"Simboliai"</string>
-    <string name="description_tab_key" msgid="828186583738307137">"Skirtukas"</string>
-    <string name="description_voice_key" msgid="3057731675774652754">"Balso įvestis"</string>
-    <string name="description_symbols_on" msgid="2994366855822840559">"Simboliai įjungti"</string>
-    <string name="description_symbols_off" msgid="3209578267079515136">"Simboliai išjungti"</string>
-    <string name="description_shift_on" msgid="6983188949895971587">"Keitimas įjungtas"</string>
-    <string name="description_shift_off" msgid="8553265474523069034">"Keitimas išjungtas"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Balso įvestis"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Šiuo metu balso įvestis jūsų kompiuteryje nepalaikoma, bet ji veikia anglų k."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Balso įvesčiai naudojamas „Google“ kalbos atpažinimas. Taikoma "<a href="http://m.google.com/privacy">"privatumo politika mobiliesiems"</a>"."</string>

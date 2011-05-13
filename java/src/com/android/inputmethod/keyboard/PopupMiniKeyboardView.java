@@ -55,13 +55,14 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
                 R.dimen.mini_keyboard_slide_allowance));
         // Remove gesture detector on mini-keyboard
         mGestureDetector = null;
-        setKeyPreviewEnabled(false);
+        setKeyPreviewPopupEnabled(false, 0);
     }
 
     @Override
-    public void setKeyPreviewEnabled(boolean previewEnabled) {
-        // Mini keyboard needs no pop-up key preview displayed.
-        super.setKeyPreviewEnabled(false);
+    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
+        // Mini keyboard needs no pop-up key preview displayed, so we pass always false with a
+        // delay of 0. The delay does not matter actually since the popup is not shown anyway.
+        super.setKeyPreviewPopupEnabled(false, 0);
     }
 
     @Override
@@ -82,8 +83,8 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + parentKeyboardView.getPaddingTop() + mCoordinates[1];
         final int x = miniKeyboardX;
-        final int y = parentKeyboardView.isKeyPreviewEnabled() && miniKeyboard.isOneRowKeyboard()
-                ? keyPreviewY : miniKeyboardY;
+        final int y = parentKeyboardView.isKeyPreviewPopupEnabled() &&
+                miniKeyboard.isOneRowKeyboard() ? keyPreviewY : miniKeyboardY;
 
         if (miniKeyboard.setShifted(parentKeyboard.isShiftedOrShiftLocked())) {
             invalidateAllKeys();

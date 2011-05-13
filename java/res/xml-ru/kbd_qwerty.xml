@@ -21,13 +21,14 @@
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
     latin:keyboardHeight="@dimen/keyboardHeight"
-    latin:maxKeyboardHeight="50%p"
+    latin:maxKeyboardHeight="@fraction/maxKeyboardHeight"
+    latin:minKeyboardHeight="@fraction/minKeyboardHeight"
     latin:rowHeight="25%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
     latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
-    latin:keyboardLocale="ru_RU"
+    latin:keyboardLocale="ru"
 >
     <include
         latin:keyboardLayout="@xml/kbd_ru_rows" />

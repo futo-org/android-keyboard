@@ -46,6 +46,18 @@
     <!-- Category title for misc options  -->
     <string name="misc_category">Other options</string>
 
+    <!-- Option name for advanced settings screen [CHAR LIMIT=25] -->
+    <string name="advanced_settings">Advanced settings</string>
+    <!-- Option summary for advanced settings screen [CHAR LIMIT=65 (two lines) or 30 (fits on one line, preferable)] -->
+    <string name="advanced_settings_summary">Options for expert users</string>
+
+    <!-- Option for the dismiss delay of the key popup [CHAR LIMIT=25] -->
+    <string name="key_preview_popup_dismiss_delay">Key popup dismiss delay</string>
+    <!-- Description for delay for dismissing a popup on keypress: no delay [CHAR LIMIT=15] -->
+    <string name="key_preview_popup_dismiss_no_delay">No delay</string>
+    <!-- Description for delay for dismissing a popup on screen: default value of the delay [CHAR LIMIT=15] -->
+    <string name="key_preview_popup_dismiss_default_delay">Default</string>
+
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
 
@@ -113,31 +125,6 @@
     <string name="label_pause_key">Pause</string>
     <!-- Label for "Wait" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5]-->
     <string name="label_wait_key">Wait</string>
-
-    <!-- Spoken text description for delete key. -->
-    <string name="description_delete_key">Delete</string>
-    <!-- Spoken text description for return key. -->
-    <string name="description_return_key">Return</string>
-    <!-- Spoken text description for settings key. -->
-    <string name="description_settings_key">Settings</string>
-    <!-- Spoken text description for shift key. -->
-    <string name="description_shift_key">Shift</string>
-    <!-- Spoken text description for space key. -->
-    <string name="description_space_key">Space</string>
-    <!-- Spoken text description for symbols key. -->
-    <string name="description_switch_alpha_symbol_key">Symbols</string>
-    <!-- Spoken text description for tab key. -->
-    <string name="description_tab_key">Tab</string>
-    <!-- Spoken text description for voice input key. -->
-    <string name="description_voice_key">Voice Input</string>
-    <!-- Spoken text description for symbols mode on. -->
-    <string name="description_symbols_on">Symbols on</string>
-    <!-- Spoken text description for symbols mode off. -->
-    <string name="description_symbols_off">Symbols off</string>
-    <!-- Spoken text description for shift mode on. -->
-    <string name="description_shift_on">Shift on</string>
-    <!-- Spoken text description for shift mode off. -->
-    <string name="description_shift_off">Shift off</string>
 
     <!-- Voice related labels -->
 
@@ -285,6 +272,8 @@
     <string name="subtype_mode_nl_keyboard">Dutch Keyboard</string>
     <!-- Description for Polish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_pl_keyboard">Polish Keyboard</string>
+    <!-- Description for Portuguese keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_pt_keyboard">Portuguese Keyboard</string>
     <!-- Description for Russian keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_ru_keyboard">Russian Keyboard</string>
     <!-- Description for Serbian keyboard subtype [CHAR LIMIT=35] -->

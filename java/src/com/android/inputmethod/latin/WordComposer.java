@@ -62,7 +62,7 @@ public class WordComposer {
         mYCoordinates = new int[N];
     }
 
-    WordComposer(WordComposer source) {
+    public WordComposer(WordComposer source) {
         init(source);
     }
 

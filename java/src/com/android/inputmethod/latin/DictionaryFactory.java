@@ -142,6 +142,25 @@ public class DictionaryFactory {
         return hasDictionary;
     }
 
+    // TODO: Do not use the size of the dictionary as an unique dictionary ID.
+    public static Long getDictionaryId(Context context, Locale locale) {
+        final Resources res = context.getResources();
+        final Locale saveLocale = Utils.setSystemLocale(res, locale);
+
+        final int resourceId = Utils.getMainDictionaryResourceId(res);
+        final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
+        final Long size = (afd != null && afd.getLength() > PLACEHOLDER_LENGTH)
+                ? afd.getLength()
+                : null;
+        try {
+            if (null != afd) afd.close();
+        } catch (java.io.IOException e) {
+        }
+
+        Utils.setSystemLocale(res, saveLocale);
+        return size;
+    }
+
     // TODO: Find the Right Way to find out whether the resource is a placeholder or not.
     // Suggestion : strip the locale, open the placeholder file and store its offset.
     // Upon opening the file, if it's the same offset, then it's the placeholder.

@@ -37,11 +37,11 @@
     <!-- popup_key_height x -1.0 -->
     <dimen name="mini_keyboard_vertical_correction">-13.0mm</dimen>
 
-    <dimen name="key_letter_size">26dip</dimen>
-    <dimen name="key_label_text_size">16dip</dimen>
+    <fraction name="key_letter_ratio">34.4%</fraction>
+    <fraction name="key_label_text_ratio">21.2%</fraction>
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_alignment_padding">6dip</dimen>
-    <dimen name="key_preview_text_size_large">24dip</dimen>
+    <fraction name="key_preview_text_ratio">26.3%</fraction>
     <dimen name="key_preview_height_holo">23.0mm</dimen>
     <dimen name="key_preview_offset_holo">8.0mm</dimen>
 

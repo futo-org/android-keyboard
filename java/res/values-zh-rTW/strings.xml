@@ -61,18 +61,6 @@
     <string name="label_more_key" msgid="3760239494604948502">"更多"</string>
     <string name="label_pause_key" msgid="181098308428035340">"暫停"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"等候"</string>
-    <string name="description_delete_key" msgid="5586406298531883960">"刪除"</string>
-    <string name="description_return_key" msgid="8750044000806461678">"返回"</string>
-    <string name="description_settings_key" msgid="7484527796782969219">"設定"</string>
-    <string name="description_shift_key" msgid="346906866277787836">"Shift 鍵"</string>
-    <string name="description_space_key" msgid="8512130111575878517">"空白鍵"</string>
-    <string name="description_switch_alpha_symbol_key" msgid="4537975384274405537">"符號"</string>
-    <string name="description_tab_key" msgid="828186583738307137">"Tab 鍵"</string>
-    <string name="description_voice_key" msgid="3057731675774652754">"語音輸入"</string>
-    <string name="description_symbols_on" msgid="2994366855822840559">"開啟符號"</string>
-    <string name="description_symbols_off" msgid="3209578267079515136">"關閉符號"</string>
-    <string name="description_shift_on" msgid="6983188949895971587">"開啟位移"</string>
-    <string name="description_shift_off" msgid="8553265474523069034">"關閉位移"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"語音輸入"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"語音輸入目前不支援您的語言，但是可以辨識英文。"</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"語音輸入使用 Google 的語音辨識功能，並遵循《"<a href="http://m.google.com/privacy">"行動服務隱私權政策"</a>"》。"</string>
