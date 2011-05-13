@@ -1553,7 +1553,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // a magic space even if it was a normal space. This is meant to help in case the user
             // pressed space on purpose of displaying the suggestion strip punctuation.
             final char primaryCode = suggestion.charAt(0);
-            final int toLeft = (ic == null) ? 0 : ic.getTextBeforeCursor(1, 0).charAt(0);
+            final CharSequence beforeText = ic.getTextBeforeCursor(1, 0);
+            final int toLeft = (ic == null || TextUtils.isEmpty(beforeText))
+                    ? 0 : beforeText.charAt(0);
             final boolean oldMagicSpace = mJustAddedMagicSpace;
             if (Keyboard.CODE_SPACE == toLeft) mJustAddedMagicSpace = true;
             onCodeInput(primaryCode, new int[] { primaryCode },
