@@ -137,7 +137,8 @@
                 latin:mode="url"
             >
                 <Key
-                    latin:keyLabel="\'" />
+                    latin:keyLabel="\'"
+                    latin:popupCharacters="‘,’,‚,‛" />
             </case>
             <default>
                 <Key
@@ -151,10 +152,13 @@
                 latin:languageCode="ru"
             >
                 <Key
-                    latin:keyLabel="\'" />
+                    latin:keyLabel="\'"
+                    latin:popupCharacters="‘,’,‚,‛" />
+                <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
+                <!-- latin:popupCharacters="“,”,„,‟,«,»" -->
                 <Key
                     latin:keyLabel="&quot;"
-                    latin:popupCharacters="“,”,«,»,˝" />
+                    latin:popupCharacters="“,”,«,»" />
                 <Key
                     latin:keyLabel="." />
                 <Key
@@ -212,9 +216,10 @@
             </case>
             <default>
                 <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
+                <!-- latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" -->
                 <Key
                     latin:keyLabel="&quot;"
-                    latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" />
+                    latin:popupCharacters="“,”,«,»,‘,’,‚,‛" />
                 <Key
                     latin:keyLabel="_" />
             </default>
