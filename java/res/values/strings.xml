@@ -253,8 +253,6 @@
     <string name="subtype_mode_en_US_keyboard">English (US) Keyboard</string>
     <!-- Description for Spanish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_es_keyboard">Spanish Keyboard</string>
-    <!-- Description for Spanish (United States) keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_es_US_keyboard">Spanish (US) Keyboard</string>
     <!-- Description for French keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_keyboard">French Keyboard</string>
     <!-- Description for French (Canada) keyboard subtype [CHAR LIMIT=35] -->

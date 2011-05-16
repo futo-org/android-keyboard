@@ -62,11 +62,9 @@
     <dimen name="candidate_min_width">32dip</dimen>
     <dimen name="candidate_padding">6dip</dimen>
     <dimen name="candidate_text_size">18dip</dimen>
-    <dimen name="spacebar_vertical_correction">4dip</dimen>
     <!-- If the screen height in landscape is larger than the below value, then the keyboard
          will not go into extract (fullscreen) mode. -->
     <dimen name="max_height_for_fullscreen">2.5in</dimen>
-    <dimen name="bubble_pointer_offset">22dip</dimen>
 
     <dimen name="key_hysteresis_distance">0.05in</dimen>
 </resources>
