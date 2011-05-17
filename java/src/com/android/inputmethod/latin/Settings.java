@@ -121,7 +121,7 @@ public class Settings extends PreferenceActivity
             final Resources res = context.getResources();
             final Locale savedLocale;
             if (null != localeStr) {
-                final Locale keyboardLocale = new Locale(localeStr);
+                final Locale keyboardLocale = Utils.constructLocaleFromString(localeStr);
                 savedLocale = Utils.setSystemLocale(res, keyboardLocale);
             } else {
                 savedLocale = null;
@@ -354,8 +354,6 @@ public class Settings extends PreferenceActivity
                 (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS_KEY);
         final PreferenceGroup textCorrectionGroup =
                 (PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS_KEY);
-        final PreferenceGroup bigramGroup =
-                (PreferenceGroup) findPreference(PREF_NGRAM_SETTINGS_KEY);
 
         final boolean showSettingsKeyOption = res.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
@@ -499,7 +497,6 @@ public class Settings extends PreferenceActivity
     }
 
     private void updateSettingsKeySummary() {
-        final ListPreference lp = mSettingsKeyPreference;
         mSettingsKeyPreference.setSummary(
                 getResources().getStringArray(R.array.settings_key_modes)
                 [mSettingsKeyPreference.findIndexOfValue(mSettingsKeyPreference.getValue())]);

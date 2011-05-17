@@ -38,7 +38,7 @@ import android.view.ViewConfiguration;
  * movement on the spacebar.
  */
 public class SlidingLocaleDrawable extends Drawable {
-
+    private static final int SLIDE_SPEED_MULTIPLIER_RATIO = 150;
     private final Context mContext;
     private final Resources mRes;
     private final int mWidth;
@@ -90,7 +90,7 @@ public class SlidingLocaleDrawable extends Drawable {
             mCurrentLanguage = null;
             return;
         }
-        mDiff = diff;
+        mDiff = Math.max(diff, diff * SLIDE_SPEED_MULTIPLIER_RATIO / 100);
         if (mDiff > mWidth) mDiff = mWidth;
         if (mDiff < -mWidth) mDiff = -mWidth;
         if (Math.abs(mDiff) > mThreshold) mHitThreshold = true;
