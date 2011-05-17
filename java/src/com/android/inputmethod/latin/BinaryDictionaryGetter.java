@@ -78,16 +78,20 @@ class BinaryDictionaryGetter {
         } else {
             try {
                 // If that was no-go, try to find a publicly exported dictionary.
-                return BinaryDictionaryFileDumper.getDictSetFromContentProvider(locale, context);
+                List<AssetFileAddress> listFromContentProvider =
+                        BinaryDictionaryFileDumper.getDictSetFromContentProvider(locale, context);
+                if (null != listFromContentProvider) {
+                    return listFromContentProvider;
+                }
+                // If the list is null, fall through and return the fallback
             } catch (FileNotFoundException e) {
                 Log.e(TAG, "Unable to create dictionary file from provider for locale "
                         + locale.toString() + ": falling back to internal dictionary");
-                return Arrays.asList(loadFallbackResource(context, fallbackResId));
             } catch (IOException e) {
                 Log.e(TAG, "Unable to read source data for locale "
                         + locale.toString() + ": falling back to internal dictionary");
-                return Arrays.asList(loadFallbackResource(context, fallbackResId));
             }
+            return Arrays.asList(loadFallbackResource(context, fallbackResId));
         }
     }
 }
