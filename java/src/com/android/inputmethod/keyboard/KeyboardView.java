@@ -462,6 +462,12 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         return mKeyboardActionListener;
     }
 
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        // TODO: Should notify InputMethodService instead?
+        KeyboardSwitcher.getInstance().onSizeChanged();
+    }
+
     /**
      * Attaches a keyboard to this view. The keyboard can be switched at any time and the
      * view will re-layout itself to accommodate the keyboard.

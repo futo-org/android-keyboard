@@ -88,8 +88,8 @@ public class LatinKeyboard extends Keyboard {
     private static final String SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "small";
     private static final String MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "medium";
 
-    public LatinKeyboard(Context context, KeyboardId id) {
-        super(context, id.getXmlId(), id);
+    public LatinKeyboard(Context context, KeyboardId id, int width) {
+        super(context, id.getXmlId(), id, width);
         final Resources res = context.getResources();
         mContext = context;
 

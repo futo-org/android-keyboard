@@ -151,16 +151,11 @@ public class Keyboard {
      * @param context the application or service context
      * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
      * @param id keyboard identifier
+     * @param width keyboard width
      */
-    public Keyboard(Context context, int xmlLayoutResId, KeyboardId id) {
-        this(context, xmlLayoutResId, id,
-                context.getResources().getDisplayMetrics().widthPixels,
-                context.getResources().getDisplayMetrics().heightPixels);
-    }
 
-    private Keyboard(Context context, int xmlLayoutResId, KeyboardId id, int width,
-            int height) {
-        Resources res = context.getResources();
+    public Keyboard(Context context, int xmlLayoutResId, KeyboardId id, int width) {
+        final Resources res = context.getResources();
         GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
         GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
@@ -168,7 +163,8 @@ public class Keyboard {
         final int horizontalEdgesPadding = (int)res.getDimension(
                 R.dimen.keyboard_horizontal_edges_padding);
         mDisplayWidth = width - horizontalEdgesPadding * 2;
-        mDisplayHeight = height;
+        // TODO: Adjust the height by referring to the height of area available for drawing as well.
+        mDisplayHeight = res.getDisplayMetrics().heightPixels;
 
         mDefaultHorizontalGap = 0;
         setKeyWidth(mDisplayWidth / 10);

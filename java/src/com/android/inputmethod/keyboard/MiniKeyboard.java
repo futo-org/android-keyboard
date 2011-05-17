@@ -23,8 +23,8 @@ import java.util.List;
 public class MiniKeyboard extends Keyboard {
     private int mDefaultKeyCoordX;
 
-    public MiniKeyboard(Context context, int xmlLayoutResId, KeyboardId id) {
-        super(context, xmlLayoutResId, id);
+    public MiniKeyboard(Context context, int xmlLayoutResId, Keyboard parentKeyboard) {
+        super(context, xmlLayoutResId, null, parentKeyboard.getMinWidth());
     }
 
     public void setDefaultCoordX(int pos) {
