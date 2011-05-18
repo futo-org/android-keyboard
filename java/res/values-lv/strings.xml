@@ -28,8 +28,18 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Nospiežot taustiņu, parādīt uznirstošo izvēlni"</string>
     <string name="general_category" msgid="1859088467017573195">"Vispārīgi"</string>
     <string name="correction_category" msgid="2236750915056607613">"Teksta korekcija"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Ieteikumi, pamatojoties uz iepriekšējiem vārdiem"</string>
+    <string name="ngram_category" msgid="5337109164339320257">"Ieteikumi, kuru pamatā ir iepriekšējie vārdi"</string>
     <string name="misc_category" msgid="6894192814868233453">"Citas opcijas"</string>
+    <!-- no translation found for advanced_settings (362895144495591463) -->
+    <skip />
+    <!-- no translation found for advanced_settings_summary (5193513161106637254) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_delay (6213164897443068248) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_no_delay (2096123151571458064) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Automātiska lielo burtu lietošana"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Ātrie labojumi"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Nodrošina izplatītu drukas kļūdu labošanu."</string>
@@ -38,7 +48,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vienmēr rādīt"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Rādīt portreta režīmā"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Vienmēr slēpt"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Izmantot atstarpēšanas taustiņu, lai pārslēgtu valodu"</string>
+    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Izmantot valodu pārslēgšanai atstarpēšanas taustiņu"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Rādīt iestatījumu taustiņu"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automātiski"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Vienmēr rādīt"</string>
@@ -112,6 +122,9 @@
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Itāļu tastatūra"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norvēģu tastatūra"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Holandiešu tastatūra"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Poļu valodas tastatūra"</string>
+    <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
+    <skip />
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Krievu tastatūra"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbu tastatūra"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Zviedru tastatūra"</string>

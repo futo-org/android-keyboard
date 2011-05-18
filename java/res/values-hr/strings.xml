@@ -30,6 +30,16 @@
     <string name="correction_category" msgid="2236750915056607613">"Ispravak teksta"</string>
     <string name="ngram_category" msgid="5337109164339320257">"Prijedlozi na temelju prethodnih riječi"</string>
     <string name="misc_category" msgid="6894192814868233453">"Ostale opcije"</string>
+    <!-- no translation found for advanced_settings (362895144495591463) -->
+    <skip />
+    <!-- no translation found for advanced_settings_summary (5193513161106637254) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_delay (6213164897443068248) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_no_delay (2096123151571458064) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Automatsko pisanje velikih slova"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Brzi popravci"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Ispravlja uobičajene pogreške u pisanju"</string>
@@ -38,7 +48,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Uvijek prikaži"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Prikaži u portretnom načinu"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Uvijek sakrij"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Koristite razmaknicu za prebacivanje jezika"</string>
+    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Upotrijebite razmaknicu za prebacivanje jezika"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Prikaži tipku postavki"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatski"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Uvijek prikaži"</string>
@@ -51,7 +61,7 @@
     <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram prijedlozi"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Upotrijebi prethodnu riječ radi poboljšanja prijedloga"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Bigram predviđanje"</string>
-    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Koristite prethodnu riječ i za predviđanje"</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Upotrijebite prethodnu riječ i za predviđanje"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Spremljeno"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Idi"</string>
     <string name="label_next_key" msgid="362972844525672568">"Dalje"</string>
@@ -112,6 +122,9 @@
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Talijanska tipkovnica"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norveška tipkovnica"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Nizozemska tipkovnica"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Poljska tipkovnica"</string>
+    <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
+    <skip />
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ruska tipkovnica"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Srpska tipkovnica"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Švedska tipkovnica"</string>

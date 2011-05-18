@@ -30,6 +30,11 @@
     <string name="correction_category" msgid="2236750915056607613">"Text correction"</string>
     <string name="ngram_category" msgid="5337109164339320257">"Suggestions based on previous words"</string>
     <string name="misc_category" msgid="6894192814868233453">"Other Options"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Advanced settings"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"Options for expert users"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Key pop-up dismiss delay"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"No delay"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Default"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalisation"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Quick fixes"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corrects commonly typed mistakes"</string>
@@ -112,6 +117,8 @@
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italian Keyboard"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norwegian Keyboard"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Dutch Keyboard"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Polish keyboard"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Portuguese Keyboard"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Russian Keyboard"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbian Keyboard"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Swedish Keyboard"</string>
