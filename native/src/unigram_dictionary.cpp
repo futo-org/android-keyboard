@@ -451,8 +451,8 @@ inline static void multiplyRate(const int rate, int *freq) {
 }
 
 inline static int calcFreqForSplitTwoWords(
-        const int typedLetterMultiplier, const int firstWordLength,
-        const int secondWordLength, const int firstFreq, const int secondFreq) {
+        const int typedLetterMultiplier, const int firstWordLength, const int secondWordLength,
+        const int firstFreq, const int secondFreq, const bool isSpaceProximity) {
     if (firstWordLength == 0 || secondWordLength == 0) {
         return 0;
     }
@@ -492,13 +492,22 @@ inline static int calcFreqForSplitTwoWords(
     const int normalizedScoreDemotionRateOffset = (100 + 100 / totalLength);
     multiplyRate(normalizedScoreDemotionRateOffset, &totalFreq);
 
+    if (isSpaceProximity) {
+        // A word pair with one space proximity correction
+        if (DEBUG_DICT) {
+            LOGI("Found a word pair with space proximity correction.");
+        }
+        multiplyIntCapped(typedLetterMultiplier, &totalFreq);
+        multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &totalFreq);
+    }
+
     multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &totalFreq);
     return totalFreq;
 }
 
 bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
         const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
-        const int secondWordLength) {
+        const int secondWordLength, const bool isSpaceProximity) {
     if (inputLength >= MAX_WORD_LENGTH) return false;
     if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
             || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
@@ -527,8 +536,8 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
         word[i] = mWord[i - firstWordLength - 1];
     }
 
-    int pairFreq = calcFreqForSplitTwoWords(
-            TYPED_LETTER_MULTIPLIER, firstWordLength, secondWordLength, firstFreq, secondFreq);
+    int pairFreq = calcFreqForSplitTwoWords(TYPED_LETTER_MULTIPLIER, firstWordLength,
+            secondWordLength, firstFreq, secondFreq, isSpaceProximity);
     if (DEBUG_DICT) {
         LOGI("Split two words:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
                 TYPED_LETTER_MULTIPLIER);
@@ -539,13 +548,13 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
 
 bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int missingSpacePos) {
     return getSplitTwoWordsSuggestion(
-            inputLength, 0, missingSpacePos, missingSpacePos, inputLength - missingSpacePos);
+            inputLength, 0, missingSpacePos, missingSpacePos, inputLength - missingSpacePos, false);
 }
 
 bool UnigramDictionary::getMistypedSpaceWords(const int inputLength, const int spaceProximityPos) {
     return getSplitTwoWordsSuggestion(
             inputLength, 0, spaceProximityPos, spaceProximityPos + 1,
-            inputLength - spaceProximityPos - 1);
+            inputLength - spaceProximityPos - 1, true);
 }
 
 // Keep this for comparing spec to new getWords
