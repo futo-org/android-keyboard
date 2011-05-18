@@ -78,7 +78,7 @@ public class LatinKeyboard extends Keyboard {
     // of the most common key width of this keyboard).
     private static final int SPACEBAR_DRAG_WIDTH = 3;
     // Minimum width of space key preview (proportional to keyboard width).
-    private static final float SPACEBAR_POPUP_MIN_RATIO = 0.4f;
+    private static final float SPACEBAR_POPUP_MIN_RATIO = 0.5f;
     // Height in space key the language name will be drawn. (proportional to space key height)
     public static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
     // If the full language name needs to be smaller than this value to be drawn on space key,

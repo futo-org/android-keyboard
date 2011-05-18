@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 public class Utils {
@@ -661,5 +662,29 @@ public class Utils {
         conf.locale = newLocale;
         res.updateConfiguration(conf, res.getDisplayMetrics());
         return saveLocale;
+    }
+
+    private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
+
+    public static Locale constructLocaleFromString(String localeStr) {
+        if (localeStr == null)
+            return null;
+        synchronized (sLocaleCache) {
+            if (sLocaleCache.containsKey(localeStr))
+                return sLocaleCache.get(localeStr);
+            Locale retval = null;
+            String[] localeParams = localeStr.split("_", 3);
+            if (localeParams.length == 1) {
+                retval = new Locale(localeParams[0]);
+            } else if (localeParams.length == 2) {
+                retval = new Locale(localeParams[0], localeParams[1]);
+            } else if (localeParams.length == 3) {
+                retval = new Locale(localeParams[0], localeParams[1], localeParams[2]);
+            }
+            if (retval != null) {
+                sLocaleCache.put(localeStr, retval);
+            }
+            return retval;
+        }
     }
 }

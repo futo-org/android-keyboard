@@ -406,7 +406,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void initSuggest() {
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
-        final Locale keyboardLocale = new Locale(localeStr);
+        final Locale keyboardLocale = Utils.constructLocaleFromString(localeStr);
 
         final Resources res = mResources;
         final Locale savedLocale = Utils.setSystemLocale(res, keyboardLocale);
@@ -440,7 +440,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     /* package private */ void resetSuggestMainDict() {
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
-        final Locale keyboardLocale = new Locale(localeStr);
+        final Locale keyboardLocale = Utils.constructLocaleFromString(localeStr);
         int mainDicResId = Utils.getMainDictionaryResourceId(mResources);
         mSuggest.resetMainDict(this, mainDicResId, keyboardLocale);
     }
@@ -1553,7 +1553,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // a magic space even if it was a normal space. This is meant to help in case the user
             // pressed space on purpose of displaying the suggestion strip punctuation.
             final char primaryCode = suggestion.charAt(0);
-            final CharSequence beforeText = ic.getTextBeforeCursor(1, 0);
+            final CharSequence beforeText = ic != null ? ic.getTextBeforeCursor(1, 0) : "";
             final int toLeft = (ic == null || TextUtils.isEmpty(beforeText))
                     ? 0 : beforeText.charAt(0);
             final boolean oldMagicSpace = mJustAddedMagicSpace;
