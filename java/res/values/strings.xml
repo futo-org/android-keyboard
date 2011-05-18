@@ -131,6 +131,81 @@
     <!-- Label for "Wait" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5]-->
     <string name="label_wait_key">Wait</string>
 
+    <!-- Spoken description for the currently entered text -->
+    <string name="spoken_current_text_is">Current text is "%s"</string>
+    <!-- Spoken description when there is no text entered -->
+    <string name="spoken_no_text_entered">No text entered</string>
+
+    <!-- Spoken description for unknown keyboard keys. -->
+    <string name="spoken_description_unknown">Key code %d</string>
+    <!-- Spoken description for the "Shift" keyboard key. -->
+    <string name="spoken_description_shift">Shift</string>
+    <!-- Spoken description for the "Shift" keyboard key's pressed state. -->
+    <string name="spoken_description_shift_shifted">Shift enabled</string>
+    <!-- Spoken description for the "Shift" keyboard key's pressed state. -->
+    <string name="spoken_description_caps_lock">Caps lock enabled</string>
+    <!-- Spoken description for the "Delete" keyboard key. -->
+    <string name="spoken_description_delete">Delete</string>
+    <!-- Spoken description for the "To Symbol" keyboard key. -->
+    <string name="spoken_description_to_symbol">Symbols</string>
+    <!-- Spoken description for the "To Alpha" keyboard key. -->
+    <string name="spoken_description_to_alpha">Letters</string>
+    <!-- Spoken description for the "To Numbers" keyboard key. -->
+    <string name="spoken_description_to_numeric">Numbers</string>
+    <!-- Spoken description for the "Settings" keyboard key. -->
+    <string name="spoken_description_settings">Settings</string>
+    <!-- Spoken description for the "Tab" keyboard key. -->
+    <string name="spoken_description_tab">Tab</string>
+    <!-- Spoken description for the "Space" keyboard key. -->
+    <string name="spoken_description_space">Space</string>
+    <!-- Spoken description for the "Mic" keyboard key. -->
+    <string name="spoken_description_mic">Voice input</string>
+    <!-- Spoken description for the "Smiley" keyboard key. -->
+    <string name="spoken_description_smiley">Smiley face</string>
+    <!-- Spoken description for the "Return" keyboard key. -->
+    <string name="spoken_description_return">Return</string>
+
+    <!-- Spoken description for the "," keyboard key. -->
+    <string name="spoken_description_comma">Comma</string>
+    <!-- Spoken description for the "." keyboard key. -->
+    <string name="spoken_description_period">Period</string>
+    <!-- Spoken description for the "(" keyboard key. -->
+    <string name="spoken_description_left_parenthesis">Left parenthesis</string>
+    <!-- Spoken description for the ")" keyboard key. -->
+    <string name="spoken_description_right_parenthesis">Right parenthesis</string>
+    <!-- Spoken description for the ":" keyboard key. -->
+    <string name="spoken_description_colon">Colon</string>
+    <!-- Spoken description for the ";" keyboard key. -->
+    <string name="spoken_description_semicolon">Semicolon</string>
+    <!-- Spoken description for the "!" keyboard key. -->
+    <string name="spoken_description_exclamation_mark">Exclamation mark</string>
+    <!-- Spoken description for the "?" keyboard key. -->
+    <string name="spoken_description_question_mark">Question mark</string>
+    <!-- Spoken description for the """ keyboard key. -->
+    <string name="spoken_description_double_quote">Double quote</string>
+    <!-- Spoken description for the "'" keyboard key. -->
+    <string name="spoken_description_single_quote">Single quote</string>
+    <!-- Spoken description for the "•" keyboard key. -->
+    <string name="spoken_description_dot">Dot</string>
+    <!-- Spoken description for the "√" keyboard key. -->
+    <string name="spoken_description_square_root">Square root</string>
+    <!-- Spoken description for the "π" keyboard key. -->
+    <string name="spoken_description_pi">Pi</string>
+    <!-- Spoken description for the "Δ" keyboard key. -->
+    <string name="spoken_description_delta">Delta</string>
+    <!-- Spoken description for the "™" keyboard key. -->
+    <string name="spoken_description_trademark">Trademark</string>
+    <!-- Spoken description for the "℅" keyboard key. -->
+    <string name="spoken_description_care_of">Care of</string>
+    <!-- Spoken description for the "*" keyboard key. -->
+    <string name="spoken_description_star">Star</string>
+    <!-- Spoken description for the "#" keyboard key. -->
+    <string name="spoken_description_pound">Pound</string>
+    <!-- Spoken description for the "…" keyboard key. -->
+    <string name="spoken_description_ellipsis">Ellipsis</string>
+    <!-- Spoken description for the "„" keyboard key. -->
+    <string name="spoken_description_low_double_quote">Low double quote</string>
+
     <!-- Voice related labels -->
 
     <!-- Title of the warning dialog that shows when a user initiates voice input for

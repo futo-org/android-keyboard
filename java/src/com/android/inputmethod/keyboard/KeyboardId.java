@@ -120,11 +120,15 @@ public class KeyboardId {
     }
 
     public boolean isSymbolsKeyboard() {
-        return mXmlId == R.xml.kbd_symbols;
+        return mXmlId == R.xml.kbd_symbols || mXmlId == R.xml.kbd_symbols_shift;
     }
 
     public boolean isPhoneKeyboard() {
         return mMode == MODE_PHONE;
+    }
+
+    public boolean isPhoneSymbolsKeyboard() {
+        return mXmlId == R.xml.kbd_phone_symbols;
     }
 
     public boolean isNumberKeyboard() {
