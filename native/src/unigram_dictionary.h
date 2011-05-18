@@ -66,7 +66,7 @@ private:
             const int nextLettersSize);
     bool getSplitTwoWordsSuggestion(const int inputLength,
             const int firstWordStartPos, const int firstWordLength,
-            const int secondWordStartPos, const int secondWordLength);
+            const int secondWordStartPos, const int secondWordLength, const bool isSpaceProximity);
     bool getMissingSpaceWords(const int inputLength, const int missingSpacePos);
     bool getMistypedSpaceWords(const int inputLength, const int spaceProximityPos);
     // Keep getWordsOld for comparing performance between getWords and getWordsOld
