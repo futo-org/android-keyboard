@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
     latin:keyboardHeight="@dimen/keyboardHeight"
     latin:maxKeyboardHeight="50%p"
     latin:rowHeight="25%p"
+    latin:keyWidth="10%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"

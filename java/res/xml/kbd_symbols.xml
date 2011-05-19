@@ -104,12 +104,15 @@
         <Key
             latin:keyLabel="!"
             latin:popupCharacters="¡" />
+        <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
+        <!-- latin:popupCharacters="“,”,„,‟,«,»" -->
         <Key
             latin:keyLabel="&quot;"
-            latin:popupCharacters="“,”,«,»,˝" />
+            latin:popupCharacters="“,”,«,»"
+            latin:maxPopupKeyboardColumn="6" />
         <Key
             latin:keyLabel="\'"
-            latin:popupCharacters="‘,’" />
+            latin:popupCharacters="‘,’,‚,‛" />
         <Key
             latin:keyLabel=":" />
         <Key

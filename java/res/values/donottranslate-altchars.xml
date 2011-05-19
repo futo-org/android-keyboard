@@ -47,12 +47,9 @@
     <string name="alternates_for_currency_dollar">¢,£,€,¥,₱</string>
     <string name="alternates_for_currency_euro">¢,£,$,¥,₱</string>
     <string name="alternates_for_currency_pound">¢,$,€,¥,₱</string>
-    <string name="alternates_for_mic">"\@drawable/sym_keyboard_settings|\@integer/key_settings,\@drawable/sym_keyboard_mic|\@integer/key_voice"</string>
     <string name="alternates_for_smiley">":-)|:-) ,:-(|:-( ,;-)|;-) ,:-P|:-P ,=-O|=-O ,:-*|:-* ,:O|:O ,B-)|B-) ,:-$|:-$ ,:-!|:-! ,:-[|:-[ ,O:-)|O:-) ,:-\\\\\\\\|:-\\\\\\\\ ,:\'(|:\'( ,:-D|:-D "</string>
-    <string name="alternates_for_settings_slash">"\@drawable/sym_keyboard_settings|\@integer/key_settings,/"</string>
-    <string name="alternates_for_settings_at">"\@drawable/sym_keyboard_settings|\@integer/key_settings,\@"</string>
-    <string name="alternates_for_settings_comma">"\@drawable/sym_keyboard_settings|\@integer/key_settings,\\,"</string>
-    <string name="alternates_for_punctuation">":,/,&amp;,(,),-,+,;,\@,\',\",\?,!,\\,"</string>
+    <string name="alternates_for_punctuation">"\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
+    <string name="alternates_for_web_tab_punctuation">".,\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
     <string name="keylabel_for_popular_domain">".com"</string>
     <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
     <string name="alternates_for_popular_domain">".net,.org,.gov,.edu"</string>

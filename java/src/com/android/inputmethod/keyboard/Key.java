@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Google Inc.
+ * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -140,9 +140,9 @@ public class Key {
      * This constructor is being used only for key in mini popup keyboard.
      */
     public Key(Resources res, Keyboard keyboard, CharSequence popupCharacter, int x, int y,
-            int width, int edgeFlags) {
+            int width, int height, int edgeFlags) {
         mKeyboard = keyboard;
-        mHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
+        mHeight = height - keyboard.getVerticalGap();
         mGap = keyboard.getHorizontalGap();
         mWidth = width - mGap;
         mEdgeFlags = edgeFlags;

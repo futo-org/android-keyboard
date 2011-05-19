@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@
     latin:keyboardHeight="@dimen/keyboardHeight"
     latin:maxKeyboardHeight="50%p"
     latin:rowHeight="25%p"
-    latin:keyWidth="11.949%p"
+    latin:keyWidth="26.67%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
@@ -33,146 +33,68 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <include
         latin:keyboardLayout="@xml/kbd_numkey_styles" />
-    <!-- This row is intentionally not marked as a top row -->
-    <Row>
+    <Row
+        latin:rowEdgeFlags="top"
+    >
         <Key
-            latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
+            latin:keyLabel="("
             latin:keyEdgeFlags="left" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
         <Key
-            latin:code="45"
-            latin:keyLabel=" - "
-            latin:keyWidth="8.042%p" />
+            latin:keyLabel="/" />
         <Key
-            latin:code="43"
-            latin:keyLabel=" + "
-            latin:keyWidth="8.042%p" />
+            latin:keyLabel=")" />
         <Key
-            latin:code="44"
-            latin:keyLabel="@string/label_pause_key"
-            latin:keyWidth="8.042%p" />
-        <!-- To match one character label size with "Tab" and "Pause, I placed spaces around the
-             char '-' and '+'. -->
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyStyle="num1KeyStyle" />
-        <Key
-            latin:keyStyle="num2KeyStyle" />
-        <Key
-            latin:keyStyle="num3KeyStyle" />
-        <Spacer
-            latin:horizontalGap="9.360%p" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.804%p"
+            latin:keyLabel="-"
+            latin:keyStyle="functionalKeyStyle"
+            latin:keyWidth="20%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
-            latin:keyStyle="moreKeyStyle"
+            latin:keyLabel="N"
             latin:keyEdgeFlags="left" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
+        <!-- Pause is a comma. Check PhoneNumberUtils.java to see if this
+            has changed. -->
         <Key
             latin:code="44"
-            latin:keyLabel=" , "
-            latin:keyWidth="8.042%p" />
+            latin:keyLabel="Pause" />
         <Key
-            latin:code="46"
-            latin:keyLabel=" . "
-            latin:keyWidth="8.042%p" />
+            latin:keyLabel="," />
+        <Key
+            latin:keyLabel="."
+            latin:keyStyle="functionalKeyStyle"
+            latin:keyWidth="20%p"
+            latin:keyEdgeFlags="right" />
+    </Row>
+    <Row>
+        <Key
+            latin:keyStyle="numStarKeyStyle"
+            latin:keyEdgeFlags="left" />
+        <!-- Wait is a semicolon. -->
         <Key
             latin:code="59"
-            latin:keyLabel="@string/label_wait_key"
-            latin:keyWidth="8.042%p" />
-        <!-- To match one character label size with "More" and "Wait", I placed spaces around the
-             char ',' and '.'. -->
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyStyle="num4KeyStyle" />
-        <Key
-            latin:keyStyle="num5KeyStyle" />
-        <Key
-            latin:keyStyle="num6KeyStyle" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="14.706%p"
-            latin:keyEdgeFlags="right" />
-    </Row>
-    <Row>
-        <!-- To match one character label size with "More" and etc., I placed spaces around the
-             char 'N', '(' and ')'. -->
-        <!-- There is an empty area bellow the "More" key and left of the "(" key.  To ignore
-             the touch event on the area, "(" is intentionally not marked as a left edge key. -->
-        <Spacer
-            latin:horizontalGap="16.406%p" />
-        <Key
-            latin:code="40"
-            latin:keyLabel=" ( "
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:code="41"
-            latin:keyLabel=" ) "
-            latin:keyWidth="8.042%p" />
-        <Key
-            latin:code="78"
-            latin:keyLabel=" N "
-            latin:keyWidth="8.042%p" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyStyle="num7KeyStyle" />
-        <Key
-            latin:keyStyle="num8KeyStyle" />
-        <Key
-            latin:keyStyle="num9KeyStyle" />
-        <!-- There is an empty area bellow the "Enter" key and right of the "9" key.  To ignore
-             the touch event on the area, "9" is intentionally not marked as a right edge key. -->
-    </Row>
-    <!-- This row is intentionally not marked as a bottom row -->
-    <Row>
-        <!-- There is an empty area bellow the "More" key and left of the "space" key.  To ignore
-             the touch event on the area, "space" is intentionally not marked as a left edge key. -->
-        <Spacer
-            latin:horizontalGap="8.362%p" />
-        <switch>
-            <case latin:hasSettingsKey="true">
-                <Key
-                    latin:keyStyle="settingsKeyStyle"
-                    latin:keyWidth="8.042%p" />
-            </case>
-            <default>
-                <Spacer
-                    latin:horizontalGap="8.042%p" />
-            </default>
-        </switch>
-        <Key
-            latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
-            latin:keyWidth="24.127%p" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
-        <Key
-            latin:keyStyle="numStarKeyStyle" />
-        <Key
-            latin:keyStyle="num0KeyStyle" />
+            latin:keyLabel="Wait" />
         <Key
             latin:keyStyle="numPoundKeyStyle" />
-        <switch>
-            <case
-                latin:voiceKeyEnabled="true"
-            >
-                <Key
-                    latin:keyStyle="micKeyStyle"
-                    latin:keyWidth="8.042%p" />
-            </case>
-        </switch>
-        <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
-             the touch event on the area, "#" is intentionally not marked as a right edge key. -->
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="20%p"
+            latin:keyEdgeFlags="right" />
+    </Row>
+    <Row
+        latin:rowEdgeFlags="bottom"
+    >
+        <Key
+            latin:code="@integer/key_switch_alpha_symbol"
+            latin:keyLabel="@string/label_to_numeric_key"
+            latin:keyEdgeFlags="left" />
+        <Key
+            latin:keyLabel="+" />
+        <Key
+            latin:keyStyle="numSpaceKeyStyle" />
+        <Key
+            latin:keyStyle="returnKeyStyle"
+            latin:keyWidth="20%p"
+            latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

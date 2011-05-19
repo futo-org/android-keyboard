@@ -34,13 +34,13 @@
                     latin:keyEdgeFlags="left" />
                 <Key
                     latin:keyLabel="„"
-                    latin:keyStyle="functionalKeyStyle" />
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="40%p" />
                 <Key
                     latin:keyLabel="…"
-                    latin:keyStyle="functionalKeyStyle" />
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
                 <switch>
                     <case
                         latin:mode="im"
@@ -69,13 +69,13 @@
                     latin:keyStyle="settingsKeyStyle" />
                 <Key
                     latin:keyLabel="„"
-                    latin:keyStyle="functionalKeyStyle" />
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="30%p" />
                 <Key
                     latin:keyLabel="…"
-                    latin:keyStyle="functionalKeyStyle" />
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
                 <switch>
                     <case
                         latin:mode="im"
