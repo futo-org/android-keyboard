@@ -267,7 +267,7 @@ public class Key {
     }
 
     private static boolean isDigitPopupCharacter(CharSequence label) {
-        return label.length() == 1 && Character.isDigit(label.charAt(0));
+        return label != null && label.length() == 1 && Character.isDigit(label.charAt(0));
     }
 
     private static CharSequence[] filterOutDigitPopupCharacters(CharSequence[] popupCharacters) {
