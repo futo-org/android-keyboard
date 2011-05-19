@@ -23,62 +23,61 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
-    <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="9.09%p"
+        latin:rowEdgeFlags="top"
     >
         <Key
-            latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyLabel="љ"
+            latin:keyHintIcon="@drawable/keyboard_hint_1"
+            latin:popupCharacters="1"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="љ"
-            latin:popupCharacters="1" />
-        <Key
             latin:keyLabel="њ"
+            latin:keyHintIcon="@drawable/keyboard_hint_2"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="е"
+            latin:keyHintIcon="@drawable/keyboard_hint_3"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="р"
+            latin:keyHintIcon="@drawable/keyboard_hint_4"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="т"
+            latin:keyHintIcon="@drawable/keyboard_hint_5"
             latin:popupCharacters="5" />
         <Key
             latin:keyLabel="з"
+            latin:keyHintIcon="@drawable/keyboard_hint_6"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="у"
+            latin:keyHintIcon="@drawable/keyboard_hint_7"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="и"
+            latin:keyHintIcon="@drawable/keyboard_hint_8"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="о"
+            latin:keyHintIcon="@drawable/keyboard_hint_9"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="п"
+            latin:keyHintIcon="@drawable/keyboard_hint_0"
             latin:popupCharacters="0" />
         <Key
-            latin:keyLabel="ш" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyLabel="ш"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="9.09%p"
     >
         <Key
-            latin:keyStyle="toSymbolKeyStyle"
-            latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyLabel="а"
             latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="а" />
         <Key
             latin:keyLabel="с" />
         <Key
@@ -98,23 +97,17 @@
         <Key
             latin:keyLabel="ч" />
         <Key
-            latin:keyLabel="ћ" />
-        <Key
-            latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyLabel="ћ"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="8.90%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.400%p"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="ђ" />
-        <Key
-            latin:keyLabel="ж" />
+            latin:keyLabel="ѕ" />
         <Key
             latin:keyLabel="џ" />
         <Key
@@ -128,20 +121,12 @@
         <Key
             latin:keyLabel="м" />
         <Key
-            latin:keyLabel=","
-            latin:manualTemporaryUpperCaseCode="33"
-            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
-            latin:popupCharacters="!" />
+            latin:keyLabel="ђ" />
         <Key
-            latin:keyLabel="."
-            latin:manualTemporaryUpperCaseCode="63"
-            latin:keyHintIcon="@drawable/key_hint_question_holo"
-            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
-            latin:popupCharacters="\?" />
+            latin:keyLabel="ж" />
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.400%p"
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="11.00%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
