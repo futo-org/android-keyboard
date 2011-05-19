@@ -30,7 +30,7 @@
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="8.640%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="љ"
@@ -66,7 +66,7 @@
             latin:keyLabel="ш" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyWidth="8.640%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -75,7 +75,7 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="8.640%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="а" />
@@ -101,7 +101,7 @@
             latin:keyLabel="ћ" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyWidth="8.640%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -109,12 +109,10 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.400%p"
+            latin:keyWidth="8.640%p"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="ђ" />
-        <Key
-            latin:keyLabel="ж" />
+            latin:keyLabel="ѕ" />
         <Key
             latin:keyLabel="џ" />
         <Key
@@ -127,6 +125,10 @@
             latin:keyLabel="н" />
         <Key
             latin:keyLabel="м" />
+        <Key
+            latin:keyLabel="ђ" />
+        <Key
+            latin:keyLabel="ж" />
         <Key
             latin:keyLabel=","
             latin:manualTemporaryUpperCaseCode="33"
@@ -141,7 +143,7 @@
             latin:popupCharacters="\?" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.400%p"
+            latin:keyWidth="8.640%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
