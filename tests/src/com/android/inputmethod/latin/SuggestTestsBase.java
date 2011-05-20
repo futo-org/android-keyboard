@@ -38,10 +38,11 @@ public class SuggestTestsBase extends AndroidTestCase {
         mTestPackageFile = new File(getTestContext().getApplicationInfo().sourceDir);
     }
 
-    protected static KeyboardId createKeyboardId(Locale locale) {
+    protected KeyboardId createKeyboardId(Locale locale) {
+        final int displayWidth = getContext().getResources().getDisplayMetrics().widthPixels;
         return new KeyboardId(locale.toString() + " keyboard",
                 com.android.inputmethod.latin.R.xml.kbd_qwerty, KeyboardView.COLOR_SCHEME_WHITE,
-                locale, Configuration.ORIENTATION_LANDSCAPE, KeyboardId.MODE_TEXT,
+                locale, displayWidth, Configuration.ORIENTATION_LANDSCAPE, KeyboardId.MODE_TEXT,
                 new EditorInfo(), false, false, false, false);
     }
 

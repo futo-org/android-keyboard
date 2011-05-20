@@ -624,6 +624,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     @Override
+    public void onWindowHidden() {
+        super.onWindowHidden();
+        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        if (inputView != null) inputView.closing();
+    }
+
+    @Override
     public void onFinishInput() {
         super.onFinishInput();
 
@@ -809,7 +816,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (isExtractViewShown()) {
                 // No need to have extra space to show the key preview.
                 mCandidateViewContainer.setMinimumHeight(0);
-                super.setCandidatesViewShown(shown);
+                super.setCandidatesViewShown(shouldShowCandidates);
             } else {
                 // We must control the visibility of the suggestion strip in order to avoid clipped
                 // key previews, even when we don't show the suggestion strip.

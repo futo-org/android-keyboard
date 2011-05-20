@@ -185,7 +185,8 @@ public class MiniKeyboardBuilder {
             Keyboard parentKeyboard) {
         final Context context = view.getContext();
         mRes = context.getResources();
-        final MiniKeyboard keyboard = new MiniKeyboard(context, layoutTemplateResId, null);
+        final MiniKeyboard keyboard = new MiniKeyboard(
+                context, layoutTemplateResId, parentKeyboard);
         mKeyboard = keyboard;
         mPopupCharacters = parentKey.mPopupCharacters;
 

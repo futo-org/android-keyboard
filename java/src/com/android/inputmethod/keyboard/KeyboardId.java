@@ -40,6 +40,7 @@ public class KeyboardId {
 
     public final Locale mLocale;
     public final int mOrientation;
+    public final int mWidth;
     public final int mMode;
     public final int mXmlId;
     public final int mColorScheme;
@@ -49,17 +50,20 @@ public class KeyboardId {
     public final boolean mHasVoiceKey;
     public final int mImeAction;
     public final boolean mEnableShiftLock;
+
     public final String mXmlName;
+    public final EditorInfo mAttribute;
 
     private final int mHashCode;
 
     public KeyboardId(String xmlName, int xmlId, int colorScheme, Locale locale, int orientation,
-            int mode, EditorInfo attribute, boolean hasSettingsKey, boolean voiceKeyEnabled,
-            boolean hasVoiceKey, boolean enableShiftLock) {
+            int width, int mode, EditorInfo attribute, boolean hasSettingsKey,
+            boolean voiceKeyEnabled, boolean hasVoiceKey, boolean enableShiftLock) {
         final int inputType = (attribute != null) ? attribute.inputType : 0;
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         this.mLocale = locale;
         this.mOrientation = orientation;
+        this.mWidth = width;
         this.mMode = mode;
         this.mXmlId = xmlId;
         this.mColorScheme = colorScheme;
@@ -73,11 +77,14 @@ public class KeyboardId {
         this.mImeAction = imeOptions & (
                 EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
         this.mEnableShiftLock = enableShiftLock;
+
         this.mXmlName = xmlName;
+        this.mAttribute = attribute;
 
         this.mHashCode = Arrays.hashCode(new Object[] {
                 locale,
                 orientation,
+                width,
                 mode,
                 xmlId,
                 colorScheme,
@@ -88,6 +95,18 @@ public class KeyboardId {
                 mImeAction,
                 enableShiftLock,
         });
+    }
+
+    public KeyboardId cloneWithNewLayout(String xmlName, int xmlId) {
+        return new KeyboardId(xmlName, xmlId, mColorScheme, mLocale, mOrientation, mWidth, mMode,
+                mAttribute, mHasSettingsKey, mVoiceKeyEnabled, mHasVoiceKey, mEnableShiftLock);
+    }
+
+    public KeyboardId cloneWithNewGeometry(int width) {
+        if (mWidth == width)
+            return this;
+        return new KeyboardId(mXmlName, mXmlId, mColorScheme, mLocale, mOrientation, width, mMode,
+                mAttribute, mHasSettingsKey, mVoiceKeyEnabled, mHasVoiceKey, mEnableShiftLock);
     }
 
     public int getXmlId() {
@@ -118,6 +137,7 @@ public class KeyboardId {
     boolean equals(KeyboardId other) {
         return other.mLocale.equals(this.mLocale)
             && other.mOrientation == this.mOrientation
+            && other.mWidth == this.mWidth
             && other.mMode == this.mMode
             && other.mXmlId == this.mXmlId
             && other.mColorScheme == this.mColorScheme
@@ -136,10 +156,10 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s %s imeAction=%s %s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
-                (mOrientation == 1 ? "port" : "land"),
+                (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 EditorInfoCompatUtils.imeOptionsName(mImeAction),
                 (mPasswordInput ? " passwordInput" : ""),

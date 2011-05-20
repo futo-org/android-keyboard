@@ -37,7 +37,7 @@ import java.util.Locale;
 
 public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = "KeyboardSwitcher";
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG_CACHE = false;
     public static final boolean DEBUG_STATE = false;
 
     private static String sConfigDefaultKeyboardThemeId;
@@ -99,6 +99,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int DEFAULT_SETTINGS_KEY_MODE = SETTINGS_KEY_MODE_AUTO;
 
     private int mLayoutId;
+    private int mKeyboardWidth;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
 
@@ -151,17 +152,39 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // Update the settings key state because number of enabled IMEs could have been changed
         mSettingsKeyEnabledInSettings = getSettingsKeyMode(mPrefs, mInputMethodService);
         final KeyboardId id = getKeyboardId(attribute, isSymbols);
-        makeSymbolsKeyboardIds(id.mMode, attribute);
-        mCurrentId = id;
-        final Resources res = mInputMethodService.getResources();
-        mInputView.setKeyPreviewPopupEnabled(Settings.Values.isKeyPreviewPopupEnabled(mPrefs, res),
-                Settings.Values.getKeyPreviewPopupDismissDelay(mPrefs, res));
+
+        // Note: This comment is only applied for phone number keyboard layout.
+        // On non-xlarge device, "@integer/key_switch_alpha_symbol" key code is used to switch
+        // between "phone keyboard" and "phone symbols keyboard".  But on xlarge device,
+        // "@integer/key_shift" key code is used for that purpose in order to properly display
+        // "more" and "locked more" key labels.  To achieve these behavior, we should initialize
+        // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
+        // respectively here for xlarge device's layout switching.
+        mSymbolsId = makeSiblingKeyboardId(id, R.xml.kbd_symbols, R.xml.kbd_phone);
+        mSymbolsShiftedId = makeSiblingKeyboardId(
+                id, R.xml.kbd_symbols_shift, R.xml.kbd_phone_symbols);
+
         setKeyboard(getKeyboard(id));
+    }
+
+    public void onSizeChanged() {
+        final int width = mInputMethodService.getWindow().getWindow().getDecorView().getWidth();
+        if (width == 0)
+            return;
+        mKeyboardWidth = width;
+        // Set keyboard with new width.
+        final KeyboardId newId = mCurrentId.cloneWithNewGeometry(width);
+        setKeyboard(getKeyboard(newId));
     }
 
     private void setKeyboard(final Keyboard newKeyboard) {
         final Keyboard oldKeyboard = mInputView.getKeyboard();
         mInputView.setKeyboard(newKeyboard);
+        mCurrentId = newKeyboard.mId;
+        final Resources res = mInputMethodService.getResources();
+        mInputView.setKeyPreviewPopupEnabled(
+                Settings.Values.isKeyPreviewPopupEnabled(mPrefs, res),
+                Settings.Values.getKeyPreviewPopupDismissDelay(mPrefs, res));
         final boolean localeChanged = (oldKeyboard == null)
                 || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
@@ -175,19 +198,19 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             final Locale savedLocale = Utils.setSystemLocale(res,
                     mSubtypeSwitcher.getInputLocale());
 
-            keyboard = new LatinKeyboard(mInputMethodService, id);
+            keyboard = new LatinKeyboard(mInputMethodService, id, id.mWidth);
 
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();
             }
 
             mKeyboardCache.put(id, new SoftReference<LatinKeyboard>(keyboard));
-            if (DEBUG)
+            if (DEBUG_CACHE)
                 Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": "
                         + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
 
             Utils.setSystemLocale(res, savedLocale);
-        } else if (DEBUG) {
+        } else if (DEBUG_CACHE) {
             Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id);
         }
 
@@ -244,33 +267,19 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final boolean hasSettingsKey = hasSettingsKey(attribute);
         final Resources res = mInputMethodService.getResources();
         final int orientation = res.getConfiguration().orientation;
+        if (mKeyboardWidth == 0)
+            mKeyboardWidth = res.getDisplayMetrics().widthPixels;
         final Locale locale = mSubtypeSwitcher.getInputLocale();
         return new KeyboardId(
-                res.getResourceEntryName(xmlId), xmlId, charColorId, locale, orientation, mode,
-                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, enableShiftLock);
+                res.getResourceEntryName(xmlId), xmlId, charColorId, locale, orientation,
+                mKeyboardWidth, mode, attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey,
+                enableShiftLock);
     }
 
-    private void makeSymbolsKeyboardIds(final int mode, EditorInfo attribute) {
-        final Locale locale = mSubtypeSwitcher.getInputLocale();
-        final Resources res = mInputMethodService.getResources();
-        final int orientation = res.getConfiguration().orientation;
-        final int colorScheme = getColorScheme();
-        final boolean hasVoiceKey = mVoiceKeyEnabled && !mVoiceButtonOnPrimary;
-        final boolean hasSettingsKey = hasSettingsKey(attribute);
-        // Note: This comment is only applied for phone number keyboard layout.
-        // On non-xlarge device, "@integer/key_switch_alpha_symbol" key code is used to switch
-        // between "phone keyboard" and "phone symbols keyboard".  But on xlarge device,
-        // "@integer/key_shift" key code is used for that purpose in order to properly display
-        // "more" and "locked more" key labels.  To achieve these behavior, we should initialize
-        // mSymbolsId and mSymbolsShiftedId to "phone keyboard" and "phone symbols keyboard"
-        // respectively here for xlarge device's layout switching.
-        int xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols;
-        final String xmlName = res.getResourceEntryName(xmlId);
-        mSymbolsId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
-                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, false);
-        xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift;
-        mSymbolsShiftedId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
-                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, false);
+    private KeyboardId makeSiblingKeyboardId(KeyboardId base, int alphabet, int phone) {
+        final int xmlId = base.mMode == KeyboardId.MODE_PHONE ? phone : alphabet;
+        final String xmlName = mInputMethodService.getResources().getResourceEntryName(xmlId);
+        return base.cloneWithNewLayout(xmlName, xmlId);
     }
 
     public int getKeyboardMode() {
@@ -561,14 +570,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             return;
         final LatinKeyboard keyboard;
         if (mCurrentId.equals(mSymbolsId) || !mCurrentId.equals(mSymbolsShiftedId)) {
-            mCurrentId = mSymbolsShiftedId;
-            keyboard = getKeyboard(mCurrentId);
+            keyboard = getKeyboard(mSymbolsShiftedId);
             // Symbol shifted keyboard has an ALT key that has a caps lock style indicator. To
             // enable the indicator, we need to call setShiftLocked(true).
             keyboard.setShiftLocked(true);
         } else {
-            mCurrentId = mSymbolsId;
-            keyboard = getKeyboard(mCurrentId);
+            keyboard = getKeyboard(mSymbolsId);
             // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
             // indicator, we need to call setShiftLocked(false).
             keyboard.setShiftLocked(false);
