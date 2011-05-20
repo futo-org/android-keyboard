@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -21,237 +21,116 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- This row is intentionally not marked as a bottom row -->
     <Row
-        latin:keyWidth="8.042%p"
+        latin:keyWidth="10%p"
+        latin:rowEdgeFlags="bottom"
     >
-        <Spacer
-            latin:horizontalGap="8.362%p" />
         <switch>
-            <case latin:hasSettingsKey="true">
+            <case
+                latin:hasSettingsKey="false"
+            >
+                <Key
+                    latin:keyStyle="toSymbolKeyStyle"
+                    latin:keyWidth="20%p"
+                    latin:keyEdgeFlags="left" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_f1" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="40%p" />
+                <switch>
+                    <case
+                        latin:mode="web"
+                    >
+                         <Key
+                            latin:keyHintIcon="@drawable/hint_popup"
+                            latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
+                            latin:maxPopupKeyboardColumn="8"
+                            latin:keyStyle="tabKeyStyle" />
+                    </case>
+                    <default>
+                        <Key
+                            latin:keyLabel="."
+                            latin:keyHintIcon="@drawable/hint_popup"
+                            latin:popupCharacters="@string/alternates_for_punctuation"
+                            latin:maxPopupKeyboardColumn="7"
+                            latin:keyStyle="functionalKeyStyle" />
+                    </default>
+                </switch>
+                <switch>
+                    <case
+                        latin:mode="im"
+                    >
+                        <Key
+                            latin:keyStyle="smileyKeyStyle"
+                            latin:keyWidth="20%p"
+                            latin:keyEdgeFlags="right" />
+                    </case>
+                    <default>
+                        <Key
+                            latin:keyStyle="returnKeyStyle"
+                            latin:keyWidth="20%p"
+                            latin:keyEdgeFlags="right" />
+                    </default>
+                </switch>
+            </case>
+            <case
+                latin:hasSettingsKey="true"
+            >
+                <Key
+                    latin:keyStyle="toSymbolKeyStyle"
+                    latin:keyWidth="15%p"
+                    latin:keyEdgeFlags="left" />
                 <Key
                     latin:keyStyle="settingsKeyStyle" />
-            </case>
-            <default>
-                <Spacer
-                    latin:horizontalGap="8.042%p" />
-            </default>
-        </switch>
-        <switch>
-            <case
-                latin:languageCode="ru"
-            >
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_f1" />
                 <switch>
-                    <!-- TODO: implement logical OR for <case> attribute -->
                     <case
-                        latin:mode="email"
+                        latin:mode="web"
                     >
                         <Key
-                            latin:keyStyle="comKeyStyle" />
-                    </case>
-                    <case
-                        latin:mode="url"
-                    >
+                            latin:keyStyle="spaceKeyStyle"
+                            latin:keyWidth="30%p" />
                         <Key
-                            latin:keyStyle="comKeyStyle" />
-                    </case>
-                    <case
-                        latin:imeAction="actionSearch"
-                    >
-                        <Key
-                            latin:keyLabel=":"
-                            latin:manualTemporaryUpperCaseCode="43"
-                            latin:keyHintIcon="@drawable/key_hint_plus_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
-                            latin:popupCharacters="+" />
+                            latin:keyStyle="tabKeyStyle" />
                     </case>
                     <default>
                         <Key
-                            latin:keyStyle="smileyKeyStyle" />
+                            latin:keyStyle="spaceKeyStyle"
+                            latin:keyWidth="30%p" />
                     </default>
                 </switch>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="\@" />
-                    </case>
-                    <case
-                        latin:mode="url"
-                    >
-                        <Key
-                            latin:keyLabel="-"
-                            latin:manualTemporaryUpperCaseCode="95"
-                            latin:keyHintIcon="@drawable/key_hint_underline_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_underline_large_holo"
-                            latin:popupCharacters="_" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="/"
-                            latin:manualTemporaryUpperCaseCode="64"
-                            latin:keyHintIcon="@drawable/key_hint_at_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_at_large_holo"
-                            latin:popupCharacters="\@" />
-                    </default>
-                </switch>
-            </case>
-            <!-- not languageCode="ru" -->
-            <default>
-                <switch>
-                    <case
-                        latin:mode="url"
-                    >
-                        <Key
-                            latin:keyStyle="comKeyStyle"
-                            latin:keyWidth="16.084%p" />
-                    </case>
-                    <default>
-                        <switch>
-                            <case
-                                latin:mode="email"
-                            >
-                                <Key
-                                    latin:keyStyle="comKeyStyle" />
-                            </case>
-                            <case
-                                latin:imeAction="actionSearch"
-                            >
-                                <Key
-                                    latin:keyLabel=":"
-                                    latin:manualTemporaryUpperCaseCode="43"
-                                    latin:keyHintIcon="@drawable/key_hint_plus_holo"
-                                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
-                                    latin:popupCharacters="+" />
-                            </case>
-                            <default>
-                                <Key
-                                    latin:keyStyle="smileyKeyStyle" />
-                            </default>
-                        </switch>
-                        <switch>
-                            <case
-                                latin:mode="email"
-                            >
-                                <Key
-                                    latin:keyLabel="\@" />
-                            </case>
-                            <default>
-                                <Key
-                                    latin:keyLabel="/"
-                                    latin:manualTemporaryUpperCaseCode="64"
-                                    latin:keyHintIcon="@drawable/key_hint_at_holo"
-                                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_at_large_holo"
-                                    latin:popupCharacters="\@" />
-                            </default>
-                        </switch>
-                    </default>
-                </switch>
-            </default>
-        </switch>
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="37.454%p" />
-        <switch>
-            <case
-                latin:languageCode="ru"
-            >
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="-" />
-                    </case>
-                    <case
-                        latin:mode="url"
-                    >
-                        <Key
-                            latin:keyLabel="/"
-                            latin:manualTemporaryUpperCaseCode="58"
-                            latin:keyHintIcon="@drawable/key_hint_colon_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_colon_large_holo"
-                            latin:popupCharacters=":" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="\?"
-                            latin:manualTemporaryUpperCaseCode="95"
-                            latin:keyHintIcon="@drawable/key_hint_underline_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_underline_large_holo"
-                            latin:popupCharacters="_" />
-                    </default>
-                </switch>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="_" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="!"
-                            latin:manualTemporaryUpperCaseCode="39"
-                            latin:keyHintIcon="@drawable/key_hint_quote_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_quote_large_holo"
-                            latin:popupCharacters="\'" />
-                    </default>
-                </switch>
-            </case>
-            <!-- not languageCode="ru" -->
-            <default>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="-" />
-                    </case>
-                    <case
-                        latin:mode="url"
-                    >
-                        <Key
-                            latin:keyLabel="/"
-                            latin:manualTemporaryUpperCaseCode="58"
-                            latin:keyHintIcon="@drawable/key_hint_colon_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_colon_large_holo"
-                            latin:popupCharacters=":" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="\'"
-                            latin:manualTemporaryUpperCaseCode="34"
-                            latin:keyHintIcon="@drawable/key_hint_quote_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_quote_large_holo"
-                            latin:popupCharacters="&quot;" />
-                    </default>
-                </switch>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="_" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="-"
-                            latin:manualTemporaryUpperCaseCode="95"
-                            latin:keyHintIcon="@drawable/key_hint_underline_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_underline_large_holo"
-                            latin:popupCharacters="_" />
-                    </default>
-                </switch>
-            </default>
-        </switch>
-        <switch>
-            <case
-                latin:voiceKeyEnabled="true"
-            >
                 <Key
-                    latin:keyStyle="micKeyStyle" />
+                    latin:keyLabel="."
+                    latin:keyHintIcon="@drawable/hint_popup"
+                    latin:popupCharacters="@string/alternates_for_punctuation"
+                    latin:maxPopupKeyboardColumn="7"
+                    latin:keyStyle="functionalKeyStyle" />
+                <switch>
+                    <case
+                        latin:mode="im"
+                    >
+                        <Key
+                            latin:keyStyle="smileyKeyStyle"
+                            latin:keyWidth="25%p"
+                            latin:keyEdgeFlags="right" />
+                    </case>
+                    <case
+                        latin:mode="web"
+                    >
+                        <Key
+                            latin:keyStyle="returnKeyStyle"
+                            latin:keyWidth="15%p"
+                            latin:keyEdgeFlags="right" />
+                    </case>
+                    <default>
+                        <Key
+                            latin:keyStyle="returnKeyStyle"
+                            latin:keyWidth="25%p"
+                            latin:keyEdgeFlags="right" />
+                    </default>
+                </switch>
             </case>
         </switch>
     </Row>

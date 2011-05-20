@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2010, The Android Open Source Project
+** Copyright 2011, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -81,7 +81,8 @@
             <key-style
                 latin:styleName="numSpaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+                latin:keyIcon="@drawable/sym_keyboard_space" />
         </case>
         <case
             latin:colorScheme="black"
@@ -142,7 +143,8 @@
             <key-style
                 latin:styleName="numSpaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+                latin:keyIcon="@drawable/sym_keyboard_space" />
         </case>
     </switch>
 </merge>

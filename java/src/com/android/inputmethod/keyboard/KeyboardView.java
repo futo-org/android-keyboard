@@ -37,7 +37,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.provider.Settings;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -1108,7 +1107,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         miniKeyboardView.mGestureDetector = null;
 
         final Keyboard keyboard = new MiniKeyboardBuilder(this, mKeyboard.getPopupKeyboardResId(),
-                popupKey).build();
+                popupKey, mKeyboard).build();
         miniKeyboardView.setKeyboard(keyboard);
         miniKeyboardView.mMiniKeyboardParent = this;
 

@@ -42,16 +42,21 @@
         <Key
             latin:keyLabel="|" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="•"
             latin:popupCharacters="♪,♥,♠,♦,♣" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="√" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="π"
             latin:popupCharacters="Π" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="÷" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="×" />
         <Key
             latin:keyLabel="{" />
@@ -64,13 +69,18 @@
             latin:keyStyle="nonSpecialBackgroundTabKeyStyle"
             latin:keyEdgeFlags="left" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="£" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¢" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="€" />
         <Key
-            latin:keyLabel="°" />
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="°"
+            latin:popupCharacters="′,″" />
         <Key
             latin:keyLabel="^"
             latin:popupCharacters="↑,↓,←,→" />
@@ -91,12 +101,16 @@
             latin:keyWidth="15%p"
             latin:keyEdgeFlags="left" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="™" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="®" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="©" />
         <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¶"
             latin:popupCharacters="§" />
         <Key

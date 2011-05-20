@@ -99,7 +99,8 @@
             latin:popupCharacters="↑,↓,←,→" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="°" />
+            latin:keyLabel="°"
+            latin:popupCharacters="′,″" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="±"

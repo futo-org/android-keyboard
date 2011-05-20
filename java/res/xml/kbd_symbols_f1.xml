@@ -28,14 +28,11 @@
             <Key
                 latin:keyStyle="micKeyStyle" />
         </case>
-        <case
-            latin:hasVoiceKey="false"
-        >
+        <!-- latin:hasVoiceKey="false" -->
+        <default>
             <Key
                 latin:keyLabel=","
-                latin:keyHintIcon="@drawable/hint_popup"
-                latin:popupCharacters="@string/alternates_for_settings_comma"
-                latin:keyStyle="functionalKeyStyle" />
-        </case>
+                latin:keyStyle="settingsPopupStyle" />
+        </default>
     </switch>
 </merge>
