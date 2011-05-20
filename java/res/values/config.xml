@@ -21,7 +21,6 @@
 <resources>
     <bool name="config_swipeDisambiguation">true</bool>
     <bool name="config_enable_show_settings_key_option">true</bool>
-    <bool name="config_enable_show_subtype_settings">true</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
     <bool name="config_enable_show_popup_on_keypress_option">true</bool>
     <bool name="config_enable_show_recorrection_option">true</bool>

@@ -1007,14 +1007,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void onSettingsKeyPressed() {
-        if (!isShowingOptionDialog()) {
-            if (!mSettingsValues.mEnableShowSubtypeSettings) {
-                showSubtypeSelectorAndSettings();
-            } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
-                showOptionsMenu();
-            } else {
-                launchSettings();
-            }
+        if (isShowingOptionDialog())
+            return;
+        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
+            showSubtypeSelectorAndSettings();
+        } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
+            showOptionsMenu();
+        } else {
+            launchSettings();
         }
     }
 
