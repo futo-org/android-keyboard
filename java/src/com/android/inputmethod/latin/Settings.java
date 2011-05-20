@@ -87,7 +87,6 @@ public class Settings extends PreferenceActivity
 
     public static class Values {
         // From resources:
-        public final boolean mEnableShowSubtypeSettings;
         public final boolean mSwipeDownDismissKeyboardEnabled;
         public final int mDelayBeforeFadeoutLanguageOnSpacebar;
         public final int mDelayUpdateSuggestions;
@@ -128,8 +127,6 @@ public class Settings extends PreferenceActivity
             }
 
             // Get the resources
-            mEnableShowSubtypeSettings = res.getBoolean(
-                    R.bool.config_enable_show_subtype_settings);
             mSwipeDownDismissKeyboardEnabled = res.getBoolean(
                     R.bool.config_swipe_down_dismiss_keyboard_enabled);
             mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
@@ -371,10 +368,7 @@ public class Settings extends PreferenceActivity
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 
-        final boolean showSubtypeSettings = res.getBoolean(
-                R.bool.config_enable_show_subtype_settings);
-        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED
-                && !showSubtypeSettings) {
+        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
             generalSettings.removePreference(findPreference(PREF_SUBTYPES));
         }
 
