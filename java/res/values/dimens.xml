@@ -57,7 +57,6 @@
     <!-- If the screen height in landscape is larger than the below value, then the keyboard
          will not go into extract (fullscreen) mode. -->
     <dimen name="max_height_for_fullscreen">2.5in</dimen>
-    <dimen name="bubble_pointer_offset">22dip</dimen>
 
     <dimen name="key_hysteresis_distance">0.05in</dimen>
 </resources>
