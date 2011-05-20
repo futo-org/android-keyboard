@@ -29,44 +29,44 @@
     >
         <Key
             latin:keyLabel="q"
-            latin:keyHintIcon="@drawable/key_hint_num1"
+            latin:keyHintIcon="@drawable/key_hint_num1_holo"
             latin:popupCharacters="@string/alternates_for_q"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="w"
-            latin:keyHintIcon="@drawable/key_hint_num2"
+            latin:keyHintIcon="@drawable/key_hint_num2_holo"
             latin:popupCharacters="@string/alternates_for_w" />
         <Key
             latin:keyLabel="e"
-            latin:keyHintIcon="@drawable/key_hint_num3"
+            latin:keyHintIcon="@drawable/key_hint_num3_holo"
             latin:popupCharacters="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
-            latin:keyHintIcon="@drawable/key_hint_num4"
+            latin:keyHintIcon="@drawable/key_hint_num4_holo"
             latin:popupCharacters="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
-            latin:keyHintIcon="@drawable/key_hint_num5"
+            latin:keyHintIcon="@drawable/key_hint_num5_holo"
             latin:popupCharacters="@string/alternates_for_t" />
         <Key
             latin:keyLabel="z"
-            latin:keyHintIcon="@drawable/key_hint_num6"
+            latin:keyHintIcon="@drawable/key_hint_num6_holo"
             latin:popupCharacters="@string/alternates_for_z" />
         <Key
             latin:keyLabel="u"
-            latin:keyHintIcon="@drawable/key_hint_num7"
+            latin:keyHintIcon="@drawable/key_hint_num7_holo"
             latin:popupCharacters="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
-            latin:keyHintIcon="@drawable/key_hint_num8"
+            latin:keyHintIcon="@drawable/key_hint_num8_holo"
             latin:popupCharacters="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
-            latin:keyHintIcon="@drawable/key_hint_num9"
+            latin:keyHintIcon="@drawable/key_hint_num9_holo"
             latin:popupCharacters="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
-            latin:keyHintIcon="@drawable/key_hint_num0"
+            latin:keyHintIcon="@drawable/key_hint_num0_holo"
             latin:popupCharacters="@string/alternates_for_p"
             latin:keyEdgeFlags="right" />
     </Row>
