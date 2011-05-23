@@ -158,7 +158,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
      * Pair will be added to the userbigram database.
      */
     public int addBigrams(String word1, String word2) {
-        // remove caps
+        // remove caps if second word is autocapitalized
         if (mIme != null && mIme.getCurrentWord().isAutoCapitalized()) {
             word2 = Character.toLowerCase(word2.charAt(0)) + word2.substring(1);
         }

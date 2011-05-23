@@ -229,6 +229,7 @@ public class ExpandableDictionary extends Dictionary {
      * Returns the word's frequency or -1 if not found
      */
     protected int getWordFrequency(CharSequence word) {
+        // Case-sensitive search
         Node node = searchNode(mRoots, word, 0, word.length());
         return (node == null) ? -1 : node.mFrequency;
     }
@@ -366,12 +367,16 @@ public class ExpandableDictionary extends Dictionary {
 
     /**
      * Adds bigrams to the in-memory trie structure that is being used to retrieve any word
-     * @param frequency frequency for this bigrams
-     * @param addFrequency if true, it adds to current frequency
+     * @param frequency frequency for this bigram
+     * @param addFrequency if true, it adds to current frequency, else it overwrites the old value
      * @return returns the final frequency
      */
     private int addOrSetBigram(String word1, String word2, int frequency, boolean addFrequency) {
-        Node firstWord = searchWord(mRoots, word1, 0, null);
+        // We don't want results to be different according to case of the looked up left hand side
+        // word. We do want however to return the correct case for the right hand side.
+        // So we want to squash the case of the left hand side, and preserve that of the right
+        // hand side word.
+        Node firstWord = searchWord(mRoots, word1.toLowerCase(), 0, null);
         Node secondWord = searchWord(mRoots, word2, 0, null);
         LinkedList<NextWord> bigram = firstWord.mNGrams;
         if (bigram == null || bigram.size() == 0) {
@@ -437,8 +442,12 @@ public class ExpandableDictionary extends Dictionary {
         }
     }
 
-    private void runReverseLookUp(final CharSequence previousWord, final WordCallback callback) {
-        Node prevWord = searchNode(mRoots, previousWord, 0, previousWord.length());
+    private void runBigramReverseLookUp(final CharSequence previousWord,
+            final WordCallback callback) {
+        // Search for the lowercase version of the word only, because that's where bigrams
+        // store their sons.
+        Node prevWord = searchNode(mRoots, previousWord.toString().toLowerCase(), 0,
+                previousWord.length());
         if (prevWord != null && prevWord.mNGrams != null) {
             reverseLookUp(prevWord.mNGrams, callback);
         }
@@ -448,7 +457,7 @@ public class ExpandableDictionary extends Dictionary {
     public void getBigrams(final WordComposer codes, final CharSequence previousWord,
             final WordCallback callback) {
         if (!reloadDictionaryIfRequired()) {
-            runReverseLookUp(previousWord, callback);
+            runBigramReverseLookUp(previousWord, callback);
         }
     }
 
@@ -494,14 +503,20 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     /**
-     * Search for the terminal node of the word
+     * Recursively search for the terminal node of the word.
+     *
+     * One iteration takes the full word to search for and the current index of the recursion.
+     *
+     * @param children the node of the trie to search under.
+     * @param word the word to search for. Only read [offset..length] so there may be trailing chars
+     * @param offset the index in {@code word} this recursion should operate on.
+     * @param length the length of the input word.
      * @return Returns the terminal node of the word if the word exists
      */
     private Node searchNode(final NodeArray children, final CharSequence word, final int offset,
             final int length) {
-        // TODO Consider combining with addWordRec
         final int count = children.mLength;
-        char currentChar = word.charAt(offset);
+        final char currentChar = word.charAt(offset);
         for (int j = 0; j < count; j++) {
             final Node node = children.mData[j];
             if (node.mCode == currentChar) {
