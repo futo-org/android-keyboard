@@ -1420,9 +1420,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public void setSuggestions(SuggestedWords words) {
-        if (mVoiceProxy.getAndResetIsShowingHint()) {
-             setCandidatesView(mCandidateViewContainer);
-        }
+//        if (mVoiceProxy.getAndResetIsShowingHint()) {
+//             setCandidatesView(mCandidateViewContainer);
+//        }
 
         if (mCandidateView != null) {
             mCandidateView.setSuggestions(words);

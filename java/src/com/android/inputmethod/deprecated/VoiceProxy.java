@@ -137,8 +137,8 @@ public class VoiceProxy implements VoiceInput.UiListener {
                 @Override
                 public void showHint(int viewResource) {
                     View view = LayoutInflater.from(mService).inflate(viewResource, null);
-                    mService.setCandidatesView(view);
-                    mService.setCandidatesViewShown(true);
+//                    mService.setCandidatesView(view);
+//                    mService.setCandidatesViewShown(true);
                     mIsShowingHint = true;
                 }
               });
@@ -441,7 +441,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
             }
             builder.setTypedWordValid(true).setHasMinimalSuggestion(true);
             mService.setSuggestions(builder.build());
-            mService.setCandidatesViewShown(true);
+//            mService.setCandidatesViewShown(true);
             return true;
         }
         return false;
@@ -526,7 +526,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                mService.setCandidatesViewShown(false);
+//                mService.setCandidatesViewShown(false);
                 mRecognizing = true;
                 mVoiceInput.newView();
                 View v = mVoiceInput.getView();
