@@ -16,6 +16,15 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import android.util.Log;
+import android.view.InflateException;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -23,13 +32,6 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.util.Log;
-import android.view.InflateException;
-import android.view.inputmethod.EditorInfo;
 
 import java.lang.ref.SoftReference;
 import java.util.HashMap;
@@ -54,7 +56,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
 
-    private LatinKeyboardView mInputView;
+    private View mInputView;
+    private LatinKeyboardView mKeyboardView;
     private LatinIME mInputMethodService;
 
     // TODO: Combine these key state objects with auto mode switch state.
@@ -143,7 +146,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private void loadKeyboardInternal(EditorInfo attribute, boolean voiceButtonEnabled,
             boolean voiceButtonOnPrimary, boolean isSymbols) {
-        if (mInputView == null) return;
+        if (mKeyboardView == null) return;
 
         mAttribute = attribute;
         mVoiceKeyEnabled = voiceButtonEnabled;
@@ -178,11 +181,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private void setKeyboard(final Keyboard newKeyboard) {
-        final Keyboard oldKeyboard = mInputView.getKeyboard();
-        mInputView.setKeyboard(newKeyboard);
+        final Keyboard oldKeyboard = mKeyboardView.getKeyboard();
+        mKeyboardView.setKeyboard(newKeyboard);
         mCurrentId = newKeyboard.mId;
         final Resources res = mInputMethodService.getResources();
-        mInputView.setKeyPreviewPopupEnabled(
+        mKeyboardView.setKeyPreviewPopupEnabled(
                 Settings.Values.isKeyPreviewPopupEnabled(mPrefs, res),
                 Settings.Values.getKeyPreviewPopupDismissDelay(mPrefs, res));
         final boolean localeChanged = (oldKeyboard == null)
@@ -291,18 +294,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public boolean isInputViewShown() {
-        return mInputView != null && mInputView.isShown();
+        return mKeyboardView != null && mKeyboardView.isShown();
     }
 
     public boolean isKeyboardAvailable() {
-        if (mInputView != null)
-            return mInputView.getKeyboard() != null;
+        if (mKeyboardView != null)
+            return mKeyboardView.getKeyboard() != null;
         return false;
     }
 
     public LatinKeyboard getLatinKeyboard() {
-        if (mInputView != null) {
-            final Keyboard keyboard = mInputView.getKeyboard();
+        if (mKeyboardView != null) {
+            final Keyboard keyboard = mKeyboardView.getKeyboard();
             if (keyboard instanceof LatinKeyboard)
                 return (LatinKeyboard)keyboard;
         }
@@ -355,7 +358,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 latinKeyboard.setShiftLocked(false);
             }
             if (latinKeyboard.setShifted(shifted)) {
-                mInputView.invalidateAllKeys();
+                mKeyboardView.invalidateAllKeys();
             }
         }
     }
@@ -363,7 +366,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private void setShiftLocked(boolean shiftLocked) {
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null && latinKeyboard.setShiftLocked(shiftLocked)) {
-            mInputView.invalidateAllKeys();
+            mKeyboardView.invalidateAllKeys();
         }
     }
 
@@ -405,7 +408,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         LatinKeyboard latinKeyboard = getLatinKeyboard();
         if (latinKeyboard != null) {
             latinKeyboard.setAutomaticTemporaryUpperCase();
-            mInputView.invalidateAllKeys();
+            mKeyboardView.invalidateAllKeys();
         }
     }
 
@@ -500,7 +503,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 // To be able to turn off caps lock by "double tap" on shift key, we should ignore
                 // the second tap of the "double tap" from now for a while because we just have
                 // already turned off caps lock above.
-                mInputView.startIgnoringDoubleTap();
+                mKeyboardView.startIgnoringDoubleTap();
             } else if (isShiftedOrShiftLocked() && shiftKeyState.isPressingOnShifted()
                     && !withSliding) {
                 // Shift has been pressed without chording while shifted state.
@@ -589,11 +592,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public boolean isVibrateAndSoundFeedbackRequired() {
-        return mInputView == null || !mInputView.isInSlidingKeyInput();
+        return mKeyboardView == null || !mKeyboardView.isInSlidingKeyInput();
     }
 
     private int getPointerCount() {
-        return mInputView == null ? 0 : mInputView.getPointerCount();
+        return mKeyboardView == null ? 0 : mKeyboardView.getPointerCount();
     }
 
     private void toggleKeyboardMode() {
@@ -606,7 +609,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public boolean hasDistinctMultitouch() {
-        return mInputView != null && mInputView.hasDistinctMultitouch();
+        return mKeyboardView != null && mKeyboardView.hasDistinctMultitouch();
     }
 
     private static boolean isSpaceCharacter(int c) {
@@ -703,20 +706,20 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    public LatinKeyboardView getInputView() {
-        return mInputView;
+    public LatinKeyboardView getKeyboardView() {
+        return mKeyboardView;
     }
 
-    public LatinKeyboardView onCreateInputView() {
+    public View onCreateInputView() {
         createInputViewInternal(mLayoutId, true);
         return mInputView;
     }
 
     private void createInputViewInternal(int newLayout, boolean forceReset) {
         int layoutId = newLayout;
-        if (mLayoutId != layoutId || mInputView == null || forceReset) {
-            if (mInputView != null) {
-                mInputView.closing();
+        if (mLayoutId != layoutId || mKeyboardView == null || forceReset) {
+            if (mKeyboardView != null) {
+                mKeyboardView.closing();
             }
             if (KEYBOARD_THEMES.length <= layoutId) {
                 layoutId = Integer.valueOf(sConfigDefaultKeyboardThemeId);
@@ -726,8 +729,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             boolean tryGC = true;
             for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
                 try {
-                    mInputView = (LatinKeyboardView) mInputMethodService.getLayoutInflater(
-                            ).inflate(KEYBOARD_THEMES[layoutId], null);
+                    mInputView = LayoutInflater.from(mInputMethodService).inflate(
+                            KEYBOARD_THEMES[layoutId], null);
                     tryGC = false;
                 } catch (OutOfMemoryError e) {
                     Log.w(TAG, "load keyboard failed: " + e);
@@ -739,7 +742,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                             mLayoutId + "," + layoutId, e);
                 }
             }
-            mInputView.setOnKeyboardActionListener(mInputMethodService);
+            mKeyboardView = (LatinKeyboardView)mInputView.findViewById(R.id.latin_keyboard_view);
+            mKeyboardView.setOnKeyboardActionListener(mInputMethodService);
             mLayoutId = layoutId;
         }
     }
@@ -748,8 +752,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mInputMethodService.mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (mInputView != null) {
-                    mInputMethodService.setInputView(mInputView);
+                if (mKeyboardView != null) {
+                    mInputMethodService.setInputView(mKeyboardView);
                 }
                 mInputMethodService.updateInputViewShown();
             }
@@ -772,13 +776,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private int getColorScheme() {
-        return (mInputView != null)
-                ? mInputView.getColorScheme() : KeyboardView.COLOR_SCHEME_WHITE;
+        return (mKeyboardView != null)
+                ? mKeyboardView.getColorScheme() : KeyboardView.COLOR_SCHEME_WHITE;
     }
 
     public void onAutoCorrectionStateChanged(boolean isAutoCorrection) {
         if (isAutoCorrection != mIsAutoCorrectionActive) {
-            LatinKeyboardView keyboardView = getInputView();
+            LatinKeyboardView keyboardView = getKeyboardView();
             mIsAutoCorrectionActive = isAutoCorrection;
             keyboardView.invalidateKey(((LatinKeyboard) keyboardView.getKeyboard())
                     .onAutoCorrectionStateChanged(isAutoCorrection));

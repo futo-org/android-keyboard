@@ -16,22 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.compat.CompatUtils;
-import com.android.inputmethod.compat.EditorInfoCompatUtils;
-import com.android.inputmethod.compat.InputConnectionCompatUtils;
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
-import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
-import com.android.inputmethod.deprecated.VoiceProxy;
-import com.android.inputmethod.deprecated.recorrection.Recorrection;
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.LatinKeyboard;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -59,7 +43,6 @@ import android.util.PrintWriterPrinter;
 import android.util.Printer;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -69,7 +52,22 @@ import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
-import android.widget.LinearLayout;
+
+import com.android.inputmethod.compat.CompatUtils;
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
+import com.android.inputmethod.compat.InputConnectionCompatUtils;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
+import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.deprecated.recorrection.Recorrection;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -217,7 +215,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         @Override
         public void handleMessage(Message msg) {
             final KeyboardSwitcher switcher = mKeyboardSwitcher;
-            final LatinKeyboardView inputView = switcher.getInputView();
+            final LatinKeyboardView inputView = switcher.getKeyboardView();
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTIONS:
                 updateSuggestions();
@@ -307,7 +305,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public void startDisplayLanguageOnSpacebar(boolean localeChanged) {
             removeMessages(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR);
             removeMessages(MSG_DISMISS_LANGUAGE_ON_SPACEBAR);
-            final LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+            final LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
             if (inputView != null) {
                 final LatinKeyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
                 // The language is always displayed when the delay is negative.
@@ -483,25 +481,23 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public View onCreateInputView() {
-        return mKeyboardSwitcher.onCreateInputView();
+        final View inputView = mKeyboardSwitcher.onCreateInputView();
+        mCandidateViewContainer = inputView.findViewById(R.id.candidates_container);
+        mCandidateView = (CandidateView) inputView.findViewById(R.id.candidates);
+        mCandidateStripHeight = (int)mResources.getDimension(R.dimen.candidate_strip_height);
+        return inputView;
     }
 
     @Override
-    public View onCreateCandidatesView() {
-        LayoutInflater inflater = getLayoutInflater();
-        LinearLayout container = (LinearLayout)inflater.inflate(R.layout.candidates, null);
-        mCandidateViewContainer = container;
-        mCandidateStripHeight = (int)mResources.getDimension(R.dimen.candidate_strip_height);
-        mCandidateView = (CandidateView) container.findViewById(R.id.candidates);
-        mCandidateView.setService(this);
-        setCandidatesViewShown(true);
-        return container;
+    public void setCandidatesView(View view) {
+        // To ensure that CandidatesView will never be set.
+        return;
     }
 
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        LatinKeyboardView inputView = switcher.getInputView();
+        LatinKeyboardView inputView = switcher.getKeyboardView();
 
         if (DEBUG) {
             Log.d(TAG, "onStartInputView: " + inputView);
@@ -550,7 +546,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             switcher.updateShiftState();
         }
 
-        setCandidatesViewShownInternal(isCandidateStripVisible(), false /* needsInputViewShown */ );
+        setSuggestionStripShownInternal(isCandidateStripVisible(), /* needsInputViewShown */ false);
         // Delay updating suggestions because keyboard input view may not be shown at this point.
         mHandler.postUpdateSuggestions();
 
@@ -626,7 +622,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onWindowHidden() {
         super.onWindowHidden();
-        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
     }
 
@@ -639,7 +635,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         mVoiceProxy.flushVoiceInputLogs(mConfigurationChanging);
 
-        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
         if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
         if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
@@ -648,7 +644,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
-        KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.setForeground(false);
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestions();
@@ -804,11 +800,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // When in fullscreen mode, show completions generated by the application
             setSuggestions(builder.build());
             mBestWord = null;
-            setCandidatesViewShown(true);
+            setSuggestionStripShown(true);
         }
     }
 
-    private void setCandidatesViewShownInternal(boolean shown, boolean needsInputViewShown) {
+    private void setSuggestionStripShownInternal(boolean shown, boolean needsInputViewShown) {
         // TODO: Modify this if we support candidates with hard keyboard
         if (onEvaluateInputViewShown()) {
             final boolean shouldShowCandidates = shown
@@ -816,26 +812,25 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (isExtractViewShown()) {
                 // No need to have extra space to show the key preview.
                 mCandidateViewContainer.setMinimumHeight(0);
-                super.setCandidatesViewShown(shouldShowCandidates);
+                mCandidateViewContainer.setVisibility(
+                        shouldShowCandidates ? View.VISIBLE : View.GONE);
             } else {
                 // We must control the visibility of the suggestion strip in order to avoid clipped
                 // key previews, even when we don't show the suggestion strip.
                 mCandidateViewContainer.setVisibility(
                         shouldShowCandidates ? View.VISIBLE : View.INVISIBLE);
-                super.setCandidatesViewShown(true);
             }
         }
     }
 
-    @Override
-    public void setCandidatesViewShown(boolean shown) {
-        setCandidatesViewShownInternal(shown, true /* needsInputViewShown */ );
+    private void setSuggestionStripShown(boolean shown) {
+        setSuggestionStripShownInternal(shown, /* needsInputViewShown */true);
     }
 
     @Override
     public void onComputeInsets(InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
-        final KeyboardView inputView = mKeyboardSwitcher.getInputView();
+        final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView == null)
             return;
         final int containerHeight = mCandidateViewContainer.getHeight();
@@ -877,8 +872,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
         case KeyEvent.KEYCODE_BACK:
-            if (event.getRepeatCount() == 0 && mKeyboardSwitcher.getInputView() != null) {
-                if (mKeyboardSwitcher.getInputView().handleBack()) {
+            if (event.getRepeatCount() == 0 && mKeyboardSwitcher.getKeyboardView() != null) {
+                if (mKeyboardSwitcher.getKeyboardView().handleBack()) {
                     return true;
                 }
             }
@@ -1365,7 +1360,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         commitTyped(getCurrentInputConnection());
         mVoiceProxy.handleClose();
         requestHideSelf(0);
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null)
             inputView.closing();
     }
@@ -1401,7 +1396,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (DEBUG) {
             Log.d(TAG, "Switch to keyboard view.");
         }
-        View v = mKeyboardSwitcher.getInputView();
+        View v = mKeyboardSwitcher.getKeyboardView();
         if (v != null) {
             // Confirms that the keyboard view doesn't have parent view.
             ViewParent p = v.getParent();
@@ -1410,7 +1405,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             setInputView(v);
         }
-        setCandidatesViewShown(isCandidateStripVisible());
+        setSuggestionStripShown(isCandidateStripVisible());
         updateInputViewShown();
         mHandler.postUpdateSuggestions();
     }
@@ -1452,7 +1447,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
                 mSettingsValues.mWordSeparators);
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
-                mKeyboardSwitcher.getInputView(), word, prevWord);
+                mKeyboardSwitcher.getKeyboardView(), word, prevWord);
 
         boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = word.getTypedWord();
@@ -1501,7 +1496,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             mBestWord = null;
         }
-        setCandidatesViewShown(isCandidateStripVisible());
+        setSuggestionStripShown(isCandidateStripVisible());
     }
 
     private boolean pickDefaultSuggestion(int separatorCode) {
@@ -1664,7 +1659,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                 mSettingsValues.mWordSeparators);
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
-                mKeyboardSwitcher.getInputView(), sEmptyWordComposer, prevWord);
+                mKeyboardSwitcher.getKeyboardView(), sEmptyWordComposer, prevWord);
 
         if (builder.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of
@@ -1677,7 +1672,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     public void setPunctuationSuggestions() {
         setSuggestions(mSettingsValues.mSuggestPuncList);
-        setCandidatesViewShown(isCandidateStripVisible());
+        setSuggestionStripShown(isCandidateStripVisible());
     }
 
     private void addToAutoAndUserBigramDictionaries(CharSequence suggestion, int frequencyDelta) {
@@ -1886,7 +1881,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // if mAudioManager is null, we don't have the ringer state yet
         // mAudioManager will be set by updateRingerMode
         if (mAudioManager == null) {
-            if (mKeyboardSwitcher.getInputView() != null) {
+            if (mKeyboardSwitcher.getKeyboardView() != null) {
                 updateRingerMode();
             }
         }
@@ -1913,7 +1908,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) {
             inputView.performHapticFeedback(
                     HapticFeedbackConstants.KEYBOARD_TAP,
@@ -2037,7 +2032,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void showOptionsMenuInternal(CharSequence title, CharSequence[] items,
             DialogInterface.OnClickListener listener) {
-        final IBinder windowToken = mKeyboardSwitcher.getInputView().getWindowToken();
+        final IBinder windowToken = mKeyboardSwitcher.getKeyboardView().getWindowToken();
         if (windowToken == null) return;
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
