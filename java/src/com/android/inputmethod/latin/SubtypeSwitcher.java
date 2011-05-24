@@ -413,7 +413,7 @@ public class SubtypeSwitcher {
         final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
         final LatinKeyboard keyboard = switcher.getLatinKeyboard();
         if (keyboard != null) {
-            keyboard.updateShortcutKey(isShortcutImeReady(), switcher.getInputView());
+            keyboard.updateShortcutKey(isShortcutImeReady(), switcher.getKeyboardView());
         }
     }
 
@@ -503,7 +503,7 @@ public class SubtypeSwitcher {
     private void triggerVoiceIME() {
         if (!mService.isInputViewShown()) return;
         VoiceProxy.getInstance().startListening(false,
-                KeyboardSwitcher.getInstance().getInputView().getWindowToken());
+                KeyboardSwitcher.getInstance().getKeyboardView().getWindowToken());
     }
 
     //////////////////////////////////////

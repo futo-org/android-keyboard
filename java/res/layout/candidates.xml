@@ -20,6 +20,7 @@
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/candidates_container"
     android:orientation="horizontal"
     android:gravity="bottom"
     android:layout_width="match_parent"

@@ -536,7 +536,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
                     ((ViewGroup) p).removeView(v);
                 }
 
-                View keyboardView = KeyboardSwitcher.getInstance().getInputView();
+                View keyboardView = KeyboardSwitcher.getInstance().getKeyboardView();
 
                 // The full height of the keyboard is difficult to calculate
                 // as the dimension is expressed in "mm" and not in "pixel"
@@ -691,7 +691,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
         if (mSubtypeSwitcher.isVoiceMode() && windowToken != null) {
             // Close keyboard view if it is been shown.
             if (KeyboardSwitcher.getInstance().isInputViewShown())
-                KeyboardSwitcher.getInstance().getInputView().purgeKeyboardAndClosing();
+                KeyboardSwitcher.getInstance().getKeyboardView().purgeKeyboardAndClosing();
             startListening(false, windowToken);
         }
         // If we have no token, onAttachedToWindow will take care of showing dialog and start
