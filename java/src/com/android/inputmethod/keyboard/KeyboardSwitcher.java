@@ -56,7 +56,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
 
-    private View mInputView;
     private LatinKeyboardView mKeyboardView;
     private LatinIME mInputMethodService;
 
@@ -101,7 +100,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     // Default is SETTINGS_KEY_MODE_AUTO.
     private static final int DEFAULT_SETTINGS_KEY_MODE = SETTINGS_KEY_MODE_AUTO;
 
-    private int mLayoutId;
+    private int mThemeIndex;
     private int mKeyboardWidth;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
@@ -122,11 +121,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         try {
             sConfigDefaultKeyboardThemeId = ims.getString(
                     R.string.config_default_keyboard_theme_id);
-            sInstance.mLayoutId = Integer.valueOf(
+            sInstance.mThemeIndex = Integer.valueOf(
                     prefs.getString(PREF_KEYBOARD_LAYOUT, sConfigDefaultKeyboardThemeId));
         } catch (NumberFormatException e) {
             sConfigDefaultKeyboardThemeId = "0";
-            sInstance.mLayoutId = 0;
+            sInstance.mThemeIndex = 0;
         }
         prefs.registerOnSharedPreferenceChangeListener(sInstance);
     }
@@ -711,49 +710,51 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public View onCreateInputView() {
-        createInputViewInternal(mLayoutId, true);
-        return mInputView;
+        return createInputView(mThemeIndex, true);
     }
 
-    private void createInputViewInternal(int newLayout, boolean forceReset) {
-        int layoutId = newLayout;
-        if (mLayoutId != layoutId || mKeyboardView == null || forceReset) {
-            if (mKeyboardView != null) {
-                mKeyboardView.closing();
-            }
-            if (KEYBOARD_THEMES.length <= layoutId) {
-                layoutId = Integer.valueOf(sConfigDefaultKeyboardThemeId);
-            }
+    // Instance variable only for {@link #createInputView(int, boolean)}.
+    private View mCurrentInputView;
 
-            Utils.GCUtils.getInstance().reset();
-            boolean tryGC = true;
-            for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
-                try {
-                    mInputView = LayoutInflater.from(mInputMethodService).inflate(
-                            KEYBOARD_THEMES[layoutId], null);
-                    tryGC = false;
-                } catch (OutOfMemoryError e) {
-                    Log.w(TAG, "load keyboard failed: " + e);
-                    tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
-                            mLayoutId + "," + layoutId, e);
-                } catch (InflateException e) {
-                    Log.w(TAG, "load keyboard failed: " + e);
-                    tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
-                            mLayoutId + "," + layoutId, e);
-                }
-            }
-            mKeyboardView = (LatinKeyboardView)mInputView.findViewById(R.id.latin_keyboard_view);
-            mKeyboardView.setOnKeyboardActionListener(mInputMethodService);
-            mLayoutId = layoutId;
+    private View createInputView(final int newThemeIndex, final boolean forceRecreate) {
+        if (mCurrentInputView != null && mThemeIndex == newThemeIndex && !forceRecreate)
+            return mCurrentInputView;
+
+        if (mKeyboardView != null) {
+            mKeyboardView.closing();
         }
+        final int themeIndex = (newThemeIndex < KEYBOARD_THEMES.length) ? newThemeIndex
+                : Integer.valueOf(sConfigDefaultKeyboardThemeId);
+
+        Utils.GCUtils.getInstance().reset();
+        boolean tryGC = true;
+        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+            try {
+                mCurrentInputView = LayoutInflater.from(mInputMethodService).inflate(
+                        KEYBOARD_THEMES[themeIndex], null);
+                tryGC = false;
+            } catch (OutOfMemoryError e) {
+                Log.w(TAG, "load keyboard failed: " + e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(mThemeIndex + "," + themeIndex, e);
+            } catch (InflateException e) {
+                Log.w(TAG, "load keyboard failed: " + e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(mThemeIndex + "," + themeIndex, e);
+            }
+        }
+
+        mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(
+                R.id.latin_keyboard_view);
+        mKeyboardView.setOnKeyboardActionListener(mInputMethodService);
+        mThemeIndex = themeIndex;
+        return mCurrentInputView;
     }
 
-    private void postSetInputView() {
+    private void postSetInputView(final View newInputView) {
         mInputMethodService.mHandler.post(new Runnable() {
             @Override
             public void run() {
-                if (mKeyboardView != null) {
-                    mInputMethodService.setInputView(mKeyboardView);
+                if (newInputView != null) {
+                    mInputMethodService.setInputView(newInputView);
                 }
                 mInputMethodService.updateInputViewShown();
             }
@@ -765,13 +766,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (PREF_KEYBOARD_LAYOUT.equals(key)) {
             final int layoutId = Integer.valueOf(
                     sharedPreferences.getString(key, sConfigDefaultKeyboardThemeId));
-            createInputViewInternal(layoutId, false);
-            postSetInputView();
+            postSetInputView(createInputView(layoutId, false));
         } else if (Settings.PREF_SETTINGS_KEY.equals(key)) {
             mSettingsKeyEnabledInSettings = getSettingsKeyMode(sharedPreferences,
                     mInputMethodService);
-            createInputViewInternal(mLayoutId, true);
-            postSetInputView();
+            postSetInputView(createInputView(mThemeIndex, true));
         }
     }
 
