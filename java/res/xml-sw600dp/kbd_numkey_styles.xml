@@ -81,8 +81,8 @@
             <key-style
                 latin:styleName="numSpaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                latin:keyIcon="@drawable/sym_keyboard_space" />
+                latin:keyIcon="@drawable/sym_keyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
         </case>
         <case
             latin:colorScheme="black"
@@ -143,8 +143,8 @@
             <key-style
                 latin:styleName="numSpaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                latin:keyIcon="@drawable/sym_keyboard_space" />
+                latin:keyIcon="@drawable/sym_bkeyboard_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
         </case>
     </switch>
 </merge>
