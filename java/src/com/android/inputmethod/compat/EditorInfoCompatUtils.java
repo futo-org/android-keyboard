@@ -78,6 +78,9 @@ public class EditorInfoCompatUtils {
             case EditorInfo.IME_ACTION_SEND:
                 action = "actionSend";
                 break;
+            case EditorInfo.IME_ACTION_NEXT:
+                action = "actionNext";
+                break;
             case EditorInfo.IME_ACTION_DONE:
                 action = "actionDone";
                 break;
