@@ -108,7 +108,7 @@ public class CompatUtils {
 
     public static Object invoke(
             Object receiver, Object defaultValue, Method method, Object... args) {
-        if (receiver == null || method == null) return defaultValue;
+        if (method == null) return defaultValue;
         try {
             return method.invoke(receiver, args);
         } catch (IllegalArgumentException e) {
@@ -124,7 +124,7 @@ public class CompatUtils {
     }
 
     public static Object getFieldValue(Object receiver, Object defaultValue, Field field) {
-        if (receiver == null || field == null) return defaultValue;
+        if (field == null) return defaultValue;
         try {
             return field.get(receiver);
         } catch (IllegalArgumentException e) {
@@ -137,7 +137,7 @@ public class CompatUtils {
     }
 
     public static void setFieldValue(Object receiver, Field field, Object value) {
-        if (receiver == null || field == null) return;
+        if (field == null) return;
         try {
             field.set(receiver, value);
         } catch (IllegalArgumentException e) {
