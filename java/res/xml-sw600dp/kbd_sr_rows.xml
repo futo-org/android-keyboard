@@ -29,44 +29,44 @@
     >
         <Key
             latin:keyLabel="љ"
-            latin:keyHintIcon="@drawable/key_hint_num1"
+            latin:keyHintIcon="@drawable/key_hint_num1_holo"
             latin:popupCharacters="1"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="њ"
-            latin:keyHintIcon="@drawable/key_hint_num2"
+            latin:keyHintIcon="@drawable/key_hint_num2_holo"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="е"
-            latin:keyHintIcon="@drawable/key_hint_num3"
+            latin:keyHintIcon="@drawable/key_hint_num3_holo"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="р"
-            latin:keyHintIcon="@drawable/key_hint_num4"
+            latin:keyHintIcon="@drawable/key_hint_num4_holo"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="т"
-            latin:keyHintIcon="@drawable/key_hint_num5"
+            latin:keyHintIcon="@drawable/key_hint_num5_holo"
             latin:popupCharacters="5" />
         <Key
             latin:keyLabel="з"
-            latin:keyHintIcon="@drawable/key_hint_num6"
+            latin:keyHintIcon="@drawable/key_hint_num6_holo"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="у"
-            latin:keyHintIcon="@drawable/key_hint_num7"
+            latin:keyHintIcon="@drawable/key_hint_num7_holo"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="и"
-            latin:keyHintIcon="@drawable/key_hint_num8"
+            latin:keyHintIcon="@drawable/key_hint_num8_holo"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="о"
-            latin:keyHintIcon="@drawable/key_hint_num9"
+            latin:keyHintIcon="@drawable/key_hint_num9_holo"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="п"
-            latin:keyHintIcon="@drawable/key_hint_num0"
+            latin:keyHintIcon="@drawable/key_hint_num0_holo"
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="ш"
