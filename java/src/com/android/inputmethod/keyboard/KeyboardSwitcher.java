@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,12 +46,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static String sConfigDefaultKeyboardThemeId;
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20100902";
     private static final int[] KEYBOARD_THEMES = {
-        R.layout.input_basic,
-        R.layout.input_basic_highcontrast,
-        R.layout.input_stone_normal,
-        R.layout.input_stone_bold,
-        R.layout.input_gingerbread,
-        R.layout.input_honeycomb,
+        R.style.KeyboardTheme,
+        R.style.KeyboardTheme_HighContrast,
+        R.style.KeyboardTheme_Stone,
+        R.style.KeyboardTheme_Stone_Bold,
+        R.style.KeyboardTheme_Gingerbread,
+        R.style.KeyboardTheme_Honeycomb,
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;
@@ -730,8 +731,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         boolean tryGC = true;
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
-                mCurrentInputView = LayoutInflater.from(mInputMethodService).inflate(
-                        KEYBOARD_THEMES[themeIndex], null);
+                final Context themeContext = new ContextThemeWrapper(mInputMethodService,
+                        KEYBOARD_THEMES[themeIndex]);
+                mCurrentInputView = LayoutInflater.from(themeContext).inflate(
+                        R.layout.input_view, null);
                 tryGC = false;
             } catch (OutOfMemoryError e) {
                 Log.w(TAG, "load keyboard failed: " + e);

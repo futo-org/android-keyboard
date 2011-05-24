@@ -42,10 +42,10 @@
         android:minWidth="@dimen/candidate_min_width"
         android:textSize="@dimen/candidate_text_size"
         android:textColor="@color/candidate_normal"
-        android:background="@drawable/btn_candidate"
         android:focusable="true"
         android:clickable="true"
-        android:gravity="center_vertical|center_horizontal" />
+        android:gravity="center_vertical|center_horizontal"
+        style="?attr/suggestionBackgroundStyle" />
     <TextView
         android:id="@+id/candidate_debug_info"
         android:layout_width="wrap_content"

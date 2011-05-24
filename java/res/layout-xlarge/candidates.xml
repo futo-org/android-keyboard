@@ -34,9 +34,9 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/keyboard_suggest_strip_holo"
         android:paddingRight="@dimen/candidate_strip_padding"
         android:paddingLeft="@dimen/candidate_strip_padding"
+        style="?attr/suggestionsStripBackgroundStyle"
     >
         <HorizontalScrollView
             android:layout_width="match_parent"

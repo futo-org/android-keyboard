@@ -32,10 +32,10 @@
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/keyboard_suggest_strip"
         android:fadingEdge="horizontal"
         android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
         android:scrollbars="none"
+        style="?attr/suggestionsStripBackgroundStyle"
     >
         <com.android.inputmethod.latin.CandidateView
             android:id="@+id/candidates"

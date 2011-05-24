@@ -41,7 +41,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     private long mDownTime;
 
     public PopupMiniKeyboardView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.keyboardViewStyle);
+        this(context, attrs, R.attr.popupMiniKeyboardViewStyle);
     }
 
     public PopupMiniKeyboardView(Context context, AttributeSet attrs, int defStyle) {
