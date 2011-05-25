@@ -121,7 +121,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private float mPreviewTextRatio;
     private int mPreviewTextSize;
     private boolean mShowKeyPreviewPopup = true;
-    private int mKeyPreviewPopupDisplayedY;
+    private int mKeyPreviewPopupDisplayedY = -1;
     private final int mDelayBeforePreview;
     private int mDelayAfterPreview;
     private ViewGroup mPreviewPlacer;
