@@ -42,7 +42,7 @@ public class SuggestTestsBase extends AndroidTestCase {
         final int displayWidth = getContext().getResources().getDisplayMetrics().widthPixels;
         return new KeyboardId(locale.toString() + " keyboard",
                 com.android.inputmethod.latin.R.xml.kbd_qwerty, KeyboardView.COLOR_SCHEME_WHITE,
-                locale, displayWidth, Configuration.ORIENTATION_LANDSCAPE, KeyboardId.MODE_TEXT,
+                locale, Configuration.ORIENTATION_LANDSCAPE, displayWidth, KeyboardId.MODE_TEXT,
                 new EditorInfo(), false, false, false, false);
     }
 
