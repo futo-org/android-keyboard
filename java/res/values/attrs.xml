@@ -15,11 +15,20 @@
 -->
 
 <resources>
+    <declare-styleable name="KeyboardTheme">
+        <!-- KeyboardView style -->
+        <attr name="keyboardViewStyle" format="reference" />
+        <attr name="keyPreviewStyle" format="reference" />
+        <!-- PopupMiniKeyboardView style -->
+        <attr name="popupMiniKeyboardViewStyle" format="reference" />
+        <attr name="popupMiniKeyboardPanelStyle" format="reference" />
+        <!-- Suggestions strip style -->
+        <attr name="suggestionsStripBackgroundStyle" format="reference" />
+        <attr name="suggestionBackgroundStyle" format="reference" />
+        <attr name="suggestionPreviewBackgroundStyle" format="reference" />
+    </declare-styleable>
 
     <declare-styleable name="KeyboardView">
-        <!-- Default KeyboardView style. -->
-        <attr name="keyboardViewStyle" format="reference" />
-
         <!-- Image for the key. This image needs to be a StateListDrawable, with the following
              possible states: normal, pressed, checkable, checkable+pressed, checkable+checked,
              checkable+checked+pressed. -->

@@ -19,11 +19,10 @@
 -->
 
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content" 
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:textSize="18sp"
     android:textColor="?android:attr/textColorPrimaryInverse"
     android:minWidth="32dip"
     android:gravity="center"
-    android:background="@drawable/candidate_feedback_background"
-    />
+    style="?attr/suggestionPreviewBackgroundStyle" />

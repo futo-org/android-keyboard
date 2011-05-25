@@ -15,9 +15,9 @@
 -->
 
 <resources>
+    <!-- Theme "Basic" -->
     <style name="KeyboardView">
         <item name="android:background">@drawable/keyboard_background</item>
-
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
         <item name="keyLetterRatio">@fraction/key_letter_ratio</item>
         <item name="keyLetterStyle">normal</item>
@@ -34,6 +34,91 @@
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
         <item name="colorScheme">white</item>
+    </style>
+    <style name="KeyPreviewStyle">
+        <item name="android:background">@drawable/keyboard_key_feedback</item>
+    </style>
+    <style name="PopupMiniKeyboardView" parent="KeyboardView">
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup</item>
+        <item name="keyHysteresisDistance">0dip</item>
+        <item name="verticalCorrection">@dimen/mini_keyboard_vertical_correction</item>
+    </style>
+    <style name="PopupMiniKeyboardPanelStyle">
+        <item name="android:background">@drawable/keyboard_popup_panel_background</item>
+        <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_padding</item>
+    </style>
+    <style name="SuggestionsStripBackgroundStyle">
+        <item name="android:background">@drawable/keyboard_suggest_strip</item>
+    </style>
+    <style name="SuggestionBackgroundStyle">
+        <item name="android:background">@drawable/btn_candidate</item>
+    </style>
+    <style name="SuggestionPreviewBackgroundStyle">
+        <item name="android:background">@drawable/candidate_feedback_background</item>
+    </style>
+    <!-- Theme "Basic high contrast" -->
+    <style name="KeyboardView.HighContrast" parent="KeyboardView">
+        <item name="android:background">@android:color/black</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key3</item>
+    </style>
+    <!-- Theme "Stone" -->
+    <style name="KeyboardView.Stone" parent="KeyboardView">
+        <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
+        <item name="keyTextColor">@color/latinkeyboard_key_color_black</item>
+        <item name="keyTextColorDisabled">#FF808080</item>
+        <item name="shadowColor">@color/latinkeyboard_key_color_white</item>
+        <item name="colorScheme">black</item>
+    </style>
+    <style name="PopupMiniKeyboardView.Stone" parent="PopupMiniKeyboardView">
+        <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
+        <item name="keyTextColor">@color/latinkeyboard_key_color_black</item>
+        <item name="shadowColor">@color/latinkeyboard_key_color_white</item>
+    </style>
+    <!-- Theme "Stone bold" -->
+    <style name="KeyboardView.Stone.Bold" parent="KeyboardView.Stone">
+        <item name="keyLetterStyle">bold</item>
+    </style>
+    <!-- Theme "Gingerbread" -->
+    <style name="KeyboardView.Gingerbread" parent="KeyboardView">
+        <item name="android:background">@drawable/keyboard_dark_background</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_gingerbread</item>
+        <item name="keyLetterStyle">bold</item>
+    </style>
+    <style name="PopupMiniKeyboardView.Gingerbread" parent="PopupMiniKeyboardView">
+        <item name="android:background">@null</item>
+    </style>
+    <!-- Theme "Honeycomb" -->
+    <style name="KeyboardView.Honeycomb" parent="KeyboardView">
+        <item name="android:background">@drawable/keyboard_background_holo</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_honeycomb</item>
+        <item name="keyPreviewHeight">@dimen/key_preview_height_holo</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset_holo</item>
+        <item name="keyTextColorDisabled">#FF63666D</item>
+        <item name="keyLetterStyle">bold</item>
+        <item name="shadowColor">#00000000</item>
+        <item name="shadowRadius">0.0</item>
+    </style>
+    <style name="KeyPreviewStyle.Honeycomb">
+        <item name="android:background">@drawable/keyboard_key_feedback_honeycomb</item>
+    </style>
+    <style name="PopupMiniKeyboardView.Honeycomb" parent="PopupMiniKeyboardView">
+        <item name="android:background">@null</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_honeycomb</item>
+    </style>
+    <style name="PopupMiniKeyboardPanelStyle.Honeycomb">
+        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
+        <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_padding_holo</item>
+        <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_padding_holo</item>
+    </style>
+    <style name="SuggestionsStripBackgroundStyle.Holo">
+        <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
+    </style>
+    <style name="SuggestionBackgroundStyle.Holo">
+        <item name="android:background">@drawable/btn_candidate_holo</item>
+    </style>
+    <style name="SuggestionPreviewBackgroundStyle.Holo">
+        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
     </style>
     <style name="PopupMiniKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>
