@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.R;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.SystemClock;
@@ -26,6 +24,8 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
+
+import com.android.inputmethod.latin.R;
 
 /**
  * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
@@ -84,7 +84,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
                 + parentKeyboardView.getPaddingTop() + mCoordinates[1];
         final int x = miniKeyboardX;
         final int y = parentKeyboardView.isKeyPreviewPopupEnabled() &&
-                miniKeyboard.isOneRowKeyboard() ? keyPreviewY : miniKeyboardY;
+                miniKeyboard.isOneRowKeyboard() && keyPreviewY >= 0 ? keyPreviewY : miniKeyboardY;
 
         if (miniKeyboard.setShifted(parentKeyboard.isShiftedOrShiftLocked())) {
             invalidateAllKeys();

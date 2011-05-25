@@ -633,8 +633,6 @@ public class PointerTracker {
 
     private void startLongPressTimer(int keyIndex) {
         Key key = getKey(keyIndex);
-        if (!key.mEnabled)
-            return;
         if (key.mCode == Keyboard.CODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
         } else if (key.mManualTemporaryUpperCaseCode != Keyboard.CODE_DUMMY
