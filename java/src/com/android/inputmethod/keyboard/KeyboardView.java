@@ -876,6 +876,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             // Dismiss key preview (in this case, slide language switcher) without any delay.
             mPreviewText.setVisibility(View.INVISIBLE);
         }
+        // Clear key preview display position.
+        mKeyPreviewPopupDisplayedY = -1;
     }
 
     private void addKeyPreview(TextView keyPreview) {
