@@ -17,6 +17,7 @@
 package com.android.inputmethod.deprecated.recorrection;
 
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
+import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.AutoCorrection;
@@ -43,7 +44,6 @@ import java.util.ArrayList;
  * Manager of re-correction functionalities
  */
 public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static final boolean USE_LEGACY_RECORRECTION = true;
     private static final Recorrection sInstance = new Recorrection();
 
     private LatinIME mService;
@@ -70,7 +70,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
     }
 
     private void initInternal(LatinIME context, SharedPreferences prefs) {
-        if (!USE_LEGACY_RECORRECTION) {
+        if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED) {
             mRecorrectionEnabled = false;
             return;
         }
@@ -80,7 +80,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
     }
 
     public void checkRecorrectionOnStart() {
-        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return;
+        if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED || !mRecorrectionEnabled) return;
 
         final InputConnection ic = mService.getCurrentInputConnection();
         if (ic == null) return;
@@ -110,7 +110,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
             CandidateView candidateView, int candidatesStart, int candidatesEnd,
             int newSelStart, int newSelEnd, int oldSelStart, int lastSelectionStart,
             int lastSelectionEnd, boolean hasUncommittedTypedChars) {
-        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return;
+        if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED || !mRecorrectionEnabled) return;
         if (!mService.isShowingSuggestionsStrip()) return;
         if (!keyboardSwitcher.isInputViewShown()) return;
         if (!mService.isSuggestionsRequested()) return;
@@ -142,7 +142,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
     }
 
     public void saveRecorrectionSuggestion(WordComposer word, CharSequence result) {
-        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return;
+        if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED || !mRecorrectionEnabled) return;
         if (word.size() <= 1) {
             return;
         }
@@ -170,7 +170,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
      */
     public boolean applyTypedAlternatives(WordComposer word, Suggest suggest,
             KeyboardSwitcher keyboardSwitcher, EditingUtils.SelectedWord touching) {
-        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return false;
+        if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED || !mRecorrectionEnabled) return false;
         // If we didn't find a match, search for result in typed word history
         WordComposer foundWord = null;
         RecorrectionSuggestionEntries alternatives = null;
@@ -223,7 +223,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
             boolean hasUncommittedTypedChars, int lastSelectionStart, int lastSelectionEnd,
             String wordSeparators) {
         if (!InputConnectionCompatUtils.RECORRECTION_SUPPORTED) return;
-        if (!USE_LEGACY_RECORRECTION || !mRecorrectionEnabled) return;
+        if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED || !mRecorrectionEnabled) return;
         voiceProxy.setShowingVoiceSuggestions(false);
         if (candidateView != null && candidateView.isShowingAddToDictionaryHint()) {
             return;
@@ -257,7 +257,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
     }
 
     public void abortRecorrection(boolean force) {
-        if (!USE_LEGACY_RECORRECTION) return;
+        if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED) return;
         if (force || TextEntryState.isRecorrecting()) {
             TextEntryState.onAbortRecorrection();
             mService.setCandidatesViewShown(mService.isCandidateStripVisible());
@@ -279,7 +279,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        if (!USE_LEGACY_RECORRECTION) return;
+        if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED) return;
         if (key.equals(Settings.PREF_RECORRECTION_ENABLED)) {
             updateRecorrectionEnabled(mService.getResources(), prefs);
         }
