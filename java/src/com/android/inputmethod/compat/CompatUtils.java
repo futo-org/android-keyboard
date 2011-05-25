@@ -22,7 +22,6 @@ import android.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -74,23 +73,22 @@ public class CompatUtils {
             return targetClass.getMethod(name, parameterTypes);
         } catch (SecurityException e) {
             // ignore
-            return null;
         } catch (NoSuchMethodException e) {
             // ignore
-            return null;
         }
+        return null;
     }
 
     public static Field getField(Class<?> targetClass, String name) {
+        if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             return targetClass.getField(name);
         } catch (SecurityException e) {
             // ignore
-            return null;
         } catch (NoSuchFieldException e) {
             // ignore
-            return null;
         }
+        return null;
     }
 
     public static Constructor<?> getConstructor(Class<?> targetClass, Class<?>[] types) {
@@ -99,11 +97,20 @@ public class CompatUtils {
             return targetClass.getConstructor(types);
         } catch (SecurityException e) {
             // ignore
-            return null;
         } catch (NoSuchMethodException e) {
             // ignore
-            return null;
         }
+        return null;
+    }
+
+    public static Object newInstance(Constructor<?> constructor, Object[] args) {
+        if (constructor == null) return null;
+        try {
+            return constructor.newInstance(args);
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in newInstance: " + e.getClass().getSimpleName());
+        }
+        return null;
     }
 
     public static Object invoke(
@@ -111,39 +118,28 @@ public class CompatUtils {
         if (method == null) return defaultValue;
         try {
             return method.invoke(receiver, args);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Exception in invoke: IllegalArgumentException");
-            return defaultValue;
-        } catch (IllegalAccessException e) {
-            Log.e(TAG, "Exception in invoke: IllegalAccessException");
-            return defaultValue;
-        } catch (InvocationTargetException e) {
-            Log.e(TAG, "Exception in invoke: IllegalTargetException");
-            return defaultValue;
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in invoke: " + e.getClass().getSimpleName());
         }
+        return defaultValue;
     }
 
     public static Object getFieldValue(Object receiver, Object defaultValue, Field field) {
         if (field == null) return defaultValue;
         try {
             return field.get(receiver);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Exception in getFieldValue: IllegalArgumentException");
-            return defaultValue;
-        } catch (IllegalAccessException e) {
-            Log.e(TAG, "Exception in getFieldValue: IllegalAccessException");
-            return defaultValue;
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in getFieldValue: " + e.getClass().getSimpleName());
         }
+        return defaultValue;
     }
 
     public static void setFieldValue(Object receiver, Field field, Object value) {
         if (field == null) return;
         try {
             field.set(receiver, value);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Exception in setFieldValue: IllegalArgumentException");
-        } catch (IllegalAccessException e) {
-            Log.e(TAG, "Exception in setFieldValue: IllegalAccessException");
+        } catch (Exception e) {
+            Log.e(TAG, "Exception in setFieldValue: " + e.getClass().getSimpleName());
         }
     }
 

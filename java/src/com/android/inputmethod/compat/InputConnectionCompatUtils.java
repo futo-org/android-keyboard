@@ -18,15 +18,12 @@ package com.android.inputmethod.compat;
 
 import com.android.inputmethod.latin.EditingUtils.SelectedWord;
 
-import android.util.Log;
 import android.view.inputmethod.InputConnection;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class InputConnectionCompatUtils {
-    private static final String TAG = InputConnectionCompatUtils.class.getSimpleName();
     private static final Class<?> CLASS_CorrectionInfo = CompatUtils
             .getClass("android.view.inputmethod.CorrectionInfo");
     private static final Class<?>[] INPUT_TYPE_CorrectionInfo = new Class<?>[] { int.class,
@@ -53,18 +50,10 @@ public class InputConnectionCompatUtils {
             return;
         }
         Object[] args = { offset, oldText, newText };
-        try {
-            Object correctionInfo = CONSTRUCTOR_CorrectionInfo.newInstance(args);
+        Object correctionInfo = CompatUtils.newInstance(CONSTRUCTOR_CorrectionInfo, args);
+        if (correctionInfo != null) {
             CompatUtils.invoke(ic, null, METHOD_InputConnection_commitCorrection,
                     correctionInfo);
-        } catch (IllegalArgumentException e) {
-            Log.e(TAG, "Error in commitCorrection: IllegalArgumentException");
-        } catch (InstantiationException e) {
-            Log.e(TAG, "Error in commitCorrection: InstantiationException");
-        } catch (IllegalAccessException e) {
-            Log.e(TAG, "Error in commitCorrection: IllegalAccessException");
-        } catch (InvocationTargetException e) {
-            Log.e(TAG, "Error in commitCorrection: InvocationTargetException");
         }
     }
 

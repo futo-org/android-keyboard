@@ -59,6 +59,7 @@ import com.android.inputmethod.compat.InputConnectionCompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.deprecated.recorrection.Recorrection;
@@ -1509,7 +1510,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mBestWord != null && mBestWord.length() > 0) {
             TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord, separatorCode);
             mJustAccepted = true;
-            pickSuggestion(mBestWord);
+            commitBestWord(mBestWord);
             // Add the word to the auto dictionary if it's not a known word
             addToAutoAndUserBigramDictionaries(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
             return true;
@@ -1576,7 +1577,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mWord.reset();
         }
         mJustAccepted = true;
-        pickSuggestion(suggestion);
+        commitBestWord(suggestion);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
             addToAutoAndUserBigramDictionaries(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
@@ -1633,18 +1634,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      * @param suggestion the suggestion picked by the user to be committed to
      *            the text field
      */
-    private void pickSuggestion(CharSequence suggestion) {
+    private void commitBestWord(CharSequence bestWord) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (!switcher.isKeyboardAvailable())
             return;
         InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
-            mVoiceProxy.rememberReplacedWord(suggestion, mSettingsValues.mWordSeparators);
-            ic.commitText(suggestion, 1);
+            mVoiceProxy.rememberReplacedWord(bestWord, mSettingsValues.mWordSeparators);
+            SuggestedWords suggestedWords = mCandidateView.getSuggestions();
+            ic.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
+                    this, bestWord, suggestedWords), 1);
         }
-        mRecorrection.saveRecorrectionSuggestion(mWord, suggestion);
+        mRecorrection.saveRecorrectionSuggestion(mWord, bestWord);
         mHasUncommittedTypedChars = false;
-        mCommittedLength = suggestion.length();
+        mCommittedLength = bestWord.length();
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
