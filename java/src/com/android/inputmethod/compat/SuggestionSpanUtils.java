@@ -33,6 +33,11 @@ public class SuggestionSpanUtils {
     };
     private static final Constructor<?> CONSTRUCTOR_SuggestionSpan =
             CompatUtils.getConstructor(CLASS_SuggestionSpan, INPUT_TYPE_SuggestionSpan);
+    public static final boolean SUGGESTION_SPAN_IS_SUPPORTED;
+    static {
+        SUGGESTION_SPAN_IS_SUPPORTED = CLASS_SuggestionSpan != null
+                && CONSTRUCTOR_SuggestionSpan != null;
+    }
 
     public static CharSequence getTextWithSuggestionSpan(
             Context context, CharSequence suggestion, SuggestedWords suggestedWords) {
