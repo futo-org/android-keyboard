@@ -50,7 +50,7 @@
         <default>
             <key-style
                 latin:styleName="settingsPopupStyle"
-                latin:keyHintIcon="@drawable/hint_popup"
+                latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupCharacters="\@drawable/sym_keyboard_settings|\@integer/key_settings"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
@@ -119,8 +119,8 @@
             <key-style
                 latin:styleName="micKeyStyle"
                 latin:code="@integer/key_voice"
-                latin:keyIcon="@drawable/sym_keyboard_mic"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
+                latin:keyIcon="@drawable/sym_keyboard_voice_holo"
+                latin:iconPreview="@drawable/sym_keyboard_voice_holo"
                 latin:parentStyle="settingsPopupStyle" />
             <!-- Note: This key style is not for functional tab key. This is used for the tab key
                  which is laid out as normal letter key. -->

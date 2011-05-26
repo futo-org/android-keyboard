@@ -76,8 +76,8 @@
             <key-style
                 latin:styleName="numAltKeyStyle"
                 latin:code="@integer/key_switch_alpha_symbol"
-                latin:keyIcon="@drawable/sym_keyboard_numalt"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_numalt" />
+                latin:keyIcon="@drawable/sym_keyboard_numsymbol_holo"
+                latin:iconPreview="@drawable/sym_keyboard_numsymbol_holo" />
             <key-style
                 latin:styleName="numSpaceKeyStyle"
                 latin:code="@integer/key_space"
