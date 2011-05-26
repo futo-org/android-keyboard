@@ -167,6 +167,8 @@
             <enum name="im" value="3" />
             <enum name="web" value="4" />
             <enum name="phone" value="5" />
+            <enum name="number" value="6" />
+            <enum name="webEmail" value="7" />
         </attr>
         <attr name="passwordInput" format="boolean" />
         <attr name="hasSettingsKey" format="string" />

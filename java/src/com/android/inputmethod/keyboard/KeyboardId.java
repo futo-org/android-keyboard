@@ -36,6 +36,8 @@ public class KeyboardId {
     public static final int MODE_WEB = 4;
     public static final int MODE_PHONE = 5;
     public static final int MODE_NUMBER = 6;
+    // Should come up with implementing web & email mode clearer way.
+    public static final int MODE_WEB_EMAIL = 7;
 
     public final Locale mLocale;
     public final int mOrientation;
@@ -159,6 +161,7 @@ public class KeyboardId {
         case MODE_WEB: return "web";
         case MODE_PHONE: return "phone";
         case MODE_NUMBER: return "number";
+        case MODE_WEB_EMAIL: return "webEmail";
         }
         return null;
     }
@@ -182,6 +185,7 @@ public class KeyboardId {
         case EditorInfo.IME_ACTION_SEARCH: action = "actionSearch"; break;
         case EditorInfo.IME_ACTION_SEND: action = "actionSend"; break;
         case EditorInfo.IME_ACTION_DONE: action = "actionDone"; break;
+        case EditorInfo.IME_ACTION_NEXT: action = "actionNext"; break;
         case EditorInfo.IME_ACTION_PREVIOUS: action = "actionPrevious"; break;
         default: action = "actionUnknown(" + actionNo + ")"; break;
         }
