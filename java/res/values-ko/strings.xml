@@ -30,16 +30,11 @@
     <string name="correction_category" msgid="2236750915056607613">"텍스트 수정"</string>
     <string name="ngram_category" msgid="5337109164339320257">"이전 단어에 기반한 추천"</string>
     <string name="misc_category" msgid="6894192814868233453">"기타 옵션"</string>
-    <!-- no translation found for advanced_settings (362895144495591463) -->
-    <skip />
-    <!-- no translation found for advanced_settings_summary (5193513161106637254) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_delay (6213164897443068248) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_no_delay (2096123151571458064) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
-    <skip />
+    <string name="advanced_settings" msgid="362895144495591463">"고급 설정"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"전문 사용자용 옵션"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"키 팝업 해제 지연"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"지연 없음"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"기본값"</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"빠른 수정"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"자주 발생하는 오타를 수정합니다."</string>
@@ -123,8 +118,7 @@
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"노르웨이어 키보드"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"네덜란드어 키보드"</string>
     <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"폴란드어 키보드"</string>
-    <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
-    <skip />
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"포르투갈어 키보드"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"러시아어 키보드"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"세르비아어 키보드"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"스웨덴어 키보드"</string>

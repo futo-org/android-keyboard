@@ -30,16 +30,11 @@
     <string name="correction_category" msgid="2236750915056607613">"Correcció de text"</string>
     <string name="ngram_category" msgid="5337109164339320257">"Suggeriments basats en paraules anteriors"</string>
     <string name="misc_category" msgid="6894192814868233453">"Altres opcions"</string>
-    <!-- no translation found for advanced_settings (362895144495591463) -->
-    <skip />
-    <!-- no translation found for advanced_settings_summary (5193513161106637254) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_delay (6213164897443068248) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_no_delay (2096123151571458064) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
-    <skip />
+    <string name="advanced_settings" msgid="362895144495591463">"Configuració avançada"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"Opcions per a usuaris experts"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retard d\'om. em. de tecla"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sense retard"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminat"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Majúscules automàtiques"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Correccions ràpides"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corregeix els errors d\'ortografia habituals"</string>
@@ -73,7 +68,7 @@
     <string name="label_wait_key" msgid="6402152600878093134">"Espera"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Entrada de veu"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualment, l\'entrada de veu no és compatible amb el vostre idioma, però funciona en anglès."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'entrada de veu utilitza el reconeixement de veu de Google. S\'hi aplica la "<a href="http://m.google.com/privacy">"Política de privadesa de Google Mobile"</a>"."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'entrada de veu utilitza el reconeixement de veu de Google. S\'hi aplica la "<a href="http://m.google.com/privacy">"Política de privadesa de Google per a mòbils"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Per desactivar l\'entada de veu, vés a la configuració del mètode d\'entrada."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Per utilitzar l\'entrada de veu, prem el botó del micròfon."</string>
     <string name="voice_listening" msgid="467518160751321844">"Parleu ara"</string>
@@ -123,8 +118,7 @@
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Teclat noruec"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Teclat holandès"</string>
     <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Teclat polonès"</string>
-    <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
-    <skip />
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Teclat portuguès"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Teclat rus"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Teclat serbi"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Teclat suec"</string>
