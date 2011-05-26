@@ -193,7 +193,7 @@
                     <default>
                         <Key
                             latin:keyLabel="!"
-                            latin:manualTemporaryUpperCaseCode="39"
+                            latin:manualTemporaryUpperCaseCode="34"
                             latin:keyHintIcon="@drawable/key_hint_quote_holo"
                             latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_quote_large_holo"
                             latin:popupCharacters="\'" />
