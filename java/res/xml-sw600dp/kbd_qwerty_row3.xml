@@ -22,11 +22,11 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row
-        latin:keyWidth="10%p"
+        latin:keyWidth="8.9%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="10.0%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="z"
@@ -46,9 +46,33 @@
             latin:popupCharacters="@string/alternates_for_n" />
         <Key
             latin:keyLabel="m" />
+        <switch>
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="," />
+                <Key
+                    latin:keyLabel="." />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel=","
+                    latin:manualTemporaryUpperCaseCode="33"
+                    latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
+                    latin:popupCharacters="!" />
+                <Key
+                    latin:keyLabel="."
+                    latin:manualTemporaryUpperCaseCode="63"
+                    latin:keyHintIcon="@drawable/key_hint_question_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
+                    latin:popupCharacters="\?" />
+            </default>
+        </switch>
         <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="10.1%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>
