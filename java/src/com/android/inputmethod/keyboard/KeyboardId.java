@@ -33,17 +33,15 @@ public class KeyboardId {
     public static final int MODE_URL = 1;
     public static final int MODE_EMAIL = 2;
     public static final int MODE_IM = 3;
-    public static final int MODE_WEB = 4;
-    public static final int MODE_PHONE = 5;
-    public static final int MODE_NUMBER = 6;
-    // Should come up with implementing web & email mode clearer way.
-    public static final int MODE_WEB_EMAIL = 7;
+    public static final int MODE_PHONE = 4;
+    public static final int MODE_NUMBER = 5;
 
     public final Locale mLocale;
     public final int mOrientation;
     public final int mMode;
     public final int mXmlId;
     public final int mColorScheme;
+    public final boolean mWebInput;
     public final boolean mPasswordInput;
     public final boolean mHasSettingsKey;
     public final boolean mVoiceKeyEnabled;
@@ -64,6 +62,7 @@ public class KeyboardId {
         this.mMode = mode;
         this.mXmlId = xmlId;
         this.mColorScheme = colorScheme;
+        this.mWebInput = Utils.isWebInputType(inputType);
         this.mPasswordInput = Utils.isPasswordInputType(inputType)
                 || Utils.isVisiblePasswordInputType(inputType);
         this.mHasSettingsKey = hasSettingsKey;
@@ -82,6 +81,7 @@ public class KeyboardId {
                 mode,
                 xmlId,
                 colorScheme,
+                mWebInput,
                 mPasswordInput,
                 hasSettingsKey,
                 voiceKeyEnabled,
@@ -122,6 +122,7 @@ public class KeyboardId {
             && other.mMode == this.mMode
             && other.mXmlId == this.mXmlId
             && other.mColorScheme == this.mColorScheme
+            && other.mWebInput == this.mWebInput
             && other.mPasswordInput == this.mPasswordInput
             && other.mHasSettingsKey == this.mHasSettingsKey
             && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
@@ -137,12 +138,13 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s %s imeAction=%s %s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s %s imeAction=%s %s%s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"),
                 modeName(mMode),
                 imeOptionsName(mImeAction),
+                (mWebInput ? " webInput" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
@@ -158,10 +160,8 @@ public class KeyboardId {
         case MODE_URL: return "url";
         case MODE_EMAIL: return "email";
         case MODE_IM: return "im";
-        case MODE_WEB: return "web";
         case MODE_PHONE: return "phone";
         case MODE_NUMBER: return "number";
-        case MODE_WEB_EMAIL: return "webEmail";
         }
         return null;
     }

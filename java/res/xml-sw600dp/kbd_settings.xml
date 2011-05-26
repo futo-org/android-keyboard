@@ -23,7 +23,7 @@
 >
     <switch>
         <case
-            latin:mode="web"
+            latin:webInput="true"
         >
             <switch>
                 <case
