@@ -39,6 +39,7 @@ public class WhitelistDictionary extends Dictionary {
     public static WhitelistDictionary init(Context context) {
         synchronized (sInstance) {
             if (context != null) {
+                // Wordlist is initialized by the proper language in Suggestion.java#init
                 sInstance.initWordlist(
                         context.getResources().getStringArray(R.array.wordlist_whitelist));
             } else {
