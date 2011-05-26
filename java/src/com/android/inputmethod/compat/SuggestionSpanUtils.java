@@ -17,6 +17,7 @@
 package com.android.inputmethod.compat;
 
 import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestionSpanPickedNotificationReceiver;
 
 import android.content.Context;
 import android.text.Spannable;
@@ -24,23 +25,29 @@ import android.text.SpannableString;
 import android.text.Spanned;
 
 import java.lang.reflect.Constructor;
+import java.util.Locale;
 
 public class SuggestionSpanUtils {
-    private static final Class<?> CLASS_SuggestionSpan =
-            CompatUtils.getClass("android.text.style.SuggestionSpan");
+    public static final String ACTION_SUGGESTION_PICKED =
+            "android.text.style.SUGGESTION_PICKED";
+    public static final String SUGGESTION_SPAN_PICKED_AFTER = "after";
+    public static final String SUGGESTION_SPAN_PICKED_BEFORE = "before";
+    public static final String SUGGESTION_SPAN_PICKED_HASHCODE = "hashcode";
+
+    private static final Class<?> CLASS_SuggestionSpan = CompatUtils
+            .getClass("android.text.style.SuggestionSpan");
     private static final Class<?>[] INPUT_TYPE_SuggestionSpan = new Class<?>[] {
-        Context.class, String[].class, int.class
-    };
-    private static final Constructor<?> CONSTRUCTOR_SuggestionSpan =
-            CompatUtils.getConstructor(CLASS_SuggestionSpan, INPUT_TYPE_SuggestionSpan);
+            Context.class, Locale.class, String[].class, int.class, Class.class };
+    private static final Constructor<?> CONSTRUCTOR_SuggestionSpan = CompatUtils
+            .getConstructor(CLASS_SuggestionSpan, INPUT_TYPE_SuggestionSpan);
     public static final boolean SUGGESTION_SPAN_IS_SUPPORTED;
     static {
-        SUGGESTION_SPAN_IS_SUPPORTED = CLASS_SuggestionSpan != null
-                && CONSTRUCTOR_SuggestionSpan != null;
+        SUGGESTION_SPAN_IS_SUPPORTED =
+                CLASS_SuggestionSpan != null && CONSTRUCTOR_SuggestionSpan != null;
     }
 
-    public static CharSequence getTextWithSuggestionSpan(
-            Context context, CharSequence suggestion, SuggestedWords suggestedWords) {
+    public static CharSequence getTextWithSuggestionSpan(Context context,
+            CharSequence suggestion, SuggestedWords suggestedWords) {
         if (CONSTRUCTOR_SuggestionSpan == null || suggestedWords == null
                 || suggestedWords.size() == 0) {
             return suggestion;
@@ -58,7 +65,9 @@ public class SuggestionSpanUtils {
         for (int i = 0; i < N; ++i) {
             suggestionsArray[i] = suggestedWords.getWord(i).toString();
         }
-        final Object[] args = {context, suggestionsArray, 0};
+        final Object[] args =
+                { context, null, suggestionsArray, 0,
+                        (Class<?>) SuggestionSpanPickedNotificationReceiver.class };
         final Object ss = CompatUtils.newInstance(CONSTRUCTOR_SuggestionSpan, args);
         if (ss == null) {
             return suggestion;
