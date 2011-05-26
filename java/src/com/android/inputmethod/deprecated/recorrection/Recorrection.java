@@ -218,10 +218,10 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
         mService.showSuggestions(builder.build(), entries.getOriginalWord());
     }
 
-    public void setRecorrectionSuggestions(VoiceProxy voiceProxy, CandidateView candidateView,
-            Suggest suggest, KeyboardSwitcher keyboardSwitcher, WordComposer word,
-            boolean hasUncommittedTypedChars, int lastSelectionStart, int lastSelectionEnd,
-            String wordSeparators) {
+    public void fetchAndDisplayRecorrectionSuggestions(VoiceProxy voiceProxy,
+            CandidateView candidateView, Suggest suggest, KeyboardSwitcher keyboardSwitcher,
+            WordComposer word, boolean hasUncommittedTypedChars, int lastSelectionStart,
+            int lastSelectionEnd, String wordSeparators) {
         if (!InputConnectionCompatUtils.RECORRECTION_SUPPORTED) return;
         if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED || !mRecorrectionEnabled) return;
         voiceProxy.setShowingVoiceSuggestions(false);
@@ -249,7 +249,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
                 ic.endBatchEdit();
             } else {
                 abortRecorrection(true);
-                mService.setPunctuationSuggestions();  // Show the punctuation suggestions list
+                mService.updateBigramPredictions();
             }
         } else {
             abortRecorrection(true);
