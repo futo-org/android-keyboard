@@ -43,7 +43,7 @@
                         latin:mode="web"
                     >
                          <Key
-                            latin:keyHintIcon="@drawable/hint_popup"
+                            latin:keyHintIcon="@drawable/hint_popup_holo"
                             latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
                             latin:maxPopupKeyboardColumn="8"
                             latin:keyStyle="tabKeyStyle" />
@@ -51,7 +51,7 @@
                     <default>
                         <Key
                             latin:keyLabel="."
-                            latin:keyHintIcon="@drawable/hint_popup"
+                            latin:keyHintIcon="@drawable/hint_popup_holo"
                             latin:popupCharacters="@string/alternates_for_punctuation"
                             latin:maxPopupKeyboardColumn="7"
                             latin:keyStyle="functionalKeyStyle" />
@@ -103,7 +103,7 @@
                 </switch>
                 <Key
                     latin:keyLabel="."
-                    latin:keyHintIcon="@drawable/hint_popup"
+                    latin:keyHintIcon="@drawable/hint_popup_holo"
                     latin:popupCharacters="@string/alternates_for_punctuation"
                     latin:maxPopupKeyboardColumn="7"
                     latin:keyStyle="functionalKeyStyle" />

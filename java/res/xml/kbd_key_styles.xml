@@ -51,7 +51,7 @@
             <key-style
                 latin:styleName="settingsPopupStyle"
                 latin:keyHintIcon="@drawable/hint_popup"
-                latin:popupCharacters="\@drawable/sym_keyboard_settings|\@integer/key_settings"
+                latin:popupCharacters="\@drawable/sym_keyboard_settings_holo|\@integer/key_settings"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>
@@ -101,20 +101,20 @@
             <key-style
                 latin:styleName="settingsKeyStyle"
                 latin:code="@integer/key_settings"
-                latin:keyIcon="@drawable/sym_keyboard_settings"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
+                latin:keyIcon="@drawable/sym_keyboard_settings_holo"
+                latin:iconPreview="@drawable/sym_keyboard_settings_holo"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="spaceKeyStyle"
                 latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_keyboard_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
+                latin:keyIcon="@drawable/sym_keyboard_space_holo"
+                latin:iconPreview="@drawable/sym_keyboard_space_holo"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="tabKeyStyle"
                 latin:code="@integer/key_tab"
-                latin:keyIcon="@drawable/sym_keyboard_tab"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_tab"
+                latin:keyIcon="@drawable/sym_keyboard_tab_holo"
+                latin:iconPreview="@drawable/sym_keyboard_tab_holo"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="micKeyStyle"
@@ -127,8 +127,8 @@
             <key-style
                 latin:styleName="nonSpecialBackgroundTabKeyStyle"
                 latin:code="@integer/key_tab"
-                latin:keyIcon="@drawable/sym_keyboard_tab"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_tab" />
+                latin:keyIcon="@drawable/sym_keyboard_tab_holo"
+                latin:iconPreview="@drawable/sym_keyboard_tab_holo" />
         </case>
         <case
             latin:colorScheme="black"
@@ -175,7 +175,7 @@
                 latin:styleName="settingsKeyStyle"
                 latin:code="@integer/key_settings"
                 latin:keyIcon="@drawable/sym_bkeyboard_settings"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
+                latin:iconPreview="@drawable/sym_keyboard_settings_holo"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="spaceKeyStyle"
@@ -276,8 +276,8 @@
                     <key-style
                         latin:styleName="returnKeyStyle"
                         latin:code="@integer/key_return"
-                        latin:keyIcon="@drawable/sym_keyboard_return"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+                        latin:keyIcon="@drawable/sym_keyboard_return_holo"
+                        latin:iconPreview="@drawable/sym_keyboard_return_holo"
                         latin:parentStyle="functionalKeyStyle" />
                 </case>
                 <case
