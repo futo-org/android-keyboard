@@ -70,7 +70,7 @@
     <string name="description_shift_off" msgid="8553265474523069034">"Majúscules desactivades"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Entrada de veu"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualment, l\'entrada de veu no és compatible amb el vostre idioma, però funciona en anglès."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'entrada de veu utilitza el reconeixement de veu de Google. S\'hi aplica la "<a href="http://m.google.com/privacy">"Política de privadesa de Google Mobile"</a>"."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'entrada de veu utilitza el reconeixement de veu de Google. S\'hi aplica la "<a href="http://m.google.com/privacy">"Política de privadesa de Google per a mòbils"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Per desactivar l\'entada de veu, vés a la configuració del mètode d\'entrada."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Per utilitzar l\'entrada de veu, prem el botó del micròfon."</string>
     <string name="voice_listening" msgid="467518160751321844">"Parleu ara"</string>
