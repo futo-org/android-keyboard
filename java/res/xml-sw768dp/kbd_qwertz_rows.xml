@@ -24,12 +24,12 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="8.272%p"
+        latin:keyWidth="8.282%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="q"
@@ -63,17 +63,18 @@
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyXPos="-9.219%p"
+            latin:keyWidth="-9.219%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row2" />
     <Row
-        latin:keyWidth="8.042%p"
+        latin:keyWidth="8.047%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="15.192%p"
+            latin:keyWidth="13.829%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="y"
@@ -119,7 +120,8 @@
         </switch>
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.530%p"
+            latin:keyXPos="-13.750%p"
+            latin:keyWidth="-13.750%p"
             latin:keyEdgeFlags="right" />
     </Row>
    <include

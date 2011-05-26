@@ -71,7 +71,7 @@
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="х"
-            latin:keyWidth="8.75%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -101,7 +101,7 @@
             latin:keyLabel="ж" />
         <Key
             latin:keyLabel="э"
-            latin:keyWidth="8.75%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -132,7 +132,7 @@
             latin:keyLabel="ю" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="11.75%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include

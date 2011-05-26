@@ -62,6 +62,7 @@
             latin:keyLabel="{" />
         <Key
             latin:keyLabel="}"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -93,6 +94,7 @@
             latin:keyLabel="[" />
         <Key
             latin:keyLabel="]"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -123,7 +125,7 @@
             latin:popupCharacters="≥,»,›" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include latin:keyboardLayout="@xml/kbd_symbols_shift_row4" />

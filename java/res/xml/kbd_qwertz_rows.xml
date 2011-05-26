@@ -68,6 +68,7 @@
             latin:keyLabel="p"
             latin:keyHintIcon="@drawable/key_hint_num0"
             latin:popupCharacters="@string/alternates_for_p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
@@ -99,7 +100,7 @@
             latin:keyLabel="m" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
    <include

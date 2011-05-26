@@ -22,7 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row
-        latin:keyWidth="9.1%p"
+        latin:keyWidth="9.0%p"
         latin:rowEdgeFlags="top"
     >
         <Key
@@ -68,7 +68,8 @@
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.2%p"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="-10.0%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

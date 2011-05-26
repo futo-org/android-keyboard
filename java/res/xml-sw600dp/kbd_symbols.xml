@@ -34,7 +34,7 @@
         latin:keyboardLayout="@xml/kbd_currency_key_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:keyWidth="9.1%p"
+        latin:keyWidth="9.0%p"
     >
         <Key
             latin:keyLabel="1"
@@ -65,16 +65,16 @@
             latin:popupCharacters="ⁿ,∅" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.2%p"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="-10.0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
         latin:keyWidth="9.0%p"
     >
-        <Spacer
-            latin:horizontalGap="4.5%p" />
         <Key
-            latin:keyLabel="#" />
+            latin:keyLabel="#"
+            latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="currencyKeyStyle" />
         <Key
@@ -99,7 +99,8 @@
             latin:popupCharacters="],},&gt;" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="14.6%p"
+            latin:keyXPos="-14.6%p"
+            latin:keyWidth="-14.6%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -107,7 +108,7 @@
     >
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="10.0%p"
+            latin:keyWidth="11.1%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="&lt;"
@@ -171,9 +172,8 @@
             </default>
         </switch>
         <Key
-            latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="10.1%p"
-            latin:keyEdgeFlags="right" />
+            latin:keyLabel="/"
+            latin:keyWidth="0%p" />
     </Row>
     <!-- This row is intentionally not marked as a bottom row -->
     <Row
@@ -185,20 +185,23 @@
             latin:keyWidth="13.0%p"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="/" />
+            latin:keyStyle="tabKeyStyle" />
         <Key
             latin:keyLabel="\@" />
         <Key
             latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="38.5%p" />
+            latin:keyXPos="30.8%p"
+            latin:keyWidth="41.0%p" />
         <switch>
             <case
                 latin:languageCode="ru"
             >
                 <Key
-                    latin:keyLabel="_" />
+                    latin:keyLabel="_"
+                    latin:keyWidth="9.1%p" />
                 <Key
-                    latin:keyLabel="-" />
+                    latin:keyLabel="-"
+                    latin:keyWidth="9.1%p" />
             </case>
             <default>
                 <!-- Note: DroidSans doesn't have double-high-reversed-quotation
@@ -206,12 +209,17 @@
                 <!-- latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" -->
                 <Key
                     latin:keyLabel="&quot;"
-                    latin:popupCharacters="“,”,«,»,‘,’,‚,‛" />
+                    latin:popupCharacters="“,”,«,»,‘,’,‚,‛"
+                    latin:keyWidth="9.1%p" />
                 <Key
-                    latin:keyLabel="_" />
+                    latin:keyLabel="_"
+                    latin:keyWidth="9.1%p" />
             </default>
         </switch>
-        <include
-            latin:keyboardLayout="@xml/kbd_settings" />
+        <Key
+            latin:keyStyle="micOrSettingsKeyStyle"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="-10.0%p"
+            latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

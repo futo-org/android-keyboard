@@ -23,18 +23,17 @@
 >
     <!-- This row is intentionally not marked as a bottom row -->
     <Row
-        latin:keyWidth="8.042%p"
+        latin:keyWidth="8.047%p"
     >
-        <Spacer
-            latin:horizontalGap="8.362%p" />
         <switch>
             <case latin:hasSettingsKey="true">
                 <Key
-                    latin:keyStyle="settingsKeyStyle" />
+                    latin:keyStyle="settingsKeyStyle"
+                    latin:keyWidth="8.047%p" />
             </case>
             <default>
                 <Spacer
-                    latin:horizontalGap="8.042%p" />
+                    latin:keyWidth="8.047%p" />
             </default>
         </switch>
         <switch>
@@ -47,13 +46,15 @@
                         latin:mode="email"
                     >
                         <Key
-                            latin:keyStyle="comKeyStyle" />
+                            latin:keyStyle="comKeyStyle"
+                            latin:keyXPos="15.157%p" />
                     </case>
                     <case
                         latin:mode="url"
                     >
                         <Key
-                            latin:keyStyle="comKeyStyle" />
+                            latin:keyStyle="comKeyStyle"
+                            latin:keyXPos="15.157%p" />
                     </case>
                     <case
                         latin:imeAction="actionSearch"
@@ -63,11 +64,13 @@
                             latin:manualTemporaryUpperCaseCode="43"
                             latin:keyHintIcon="@drawable/key_hint_plus_holo"
                             latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
-                            latin:popupCharacters="+" />
+                            latin:popupCharacters="+"
+                            latin:keyXPos="15.157%p" />
                     </case>
                     <default>
                         <Key
-                            latin:keyStyle="smileyKeyStyle" />
+                            latin:keyStyle="smileyKeyStyle"
+                            latin:keyXPos="15.157%p" />
                     </default>
                 </switch>
                 <switch>
@@ -105,6 +108,7 @@
                     >
                         <Key
                             latin:keyStyle="comKeyStyle"
+                            latin:keyXPos="15.157%p"
                             latin:keyWidth="16.084%p" />
                     </case>
                     <default>
@@ -113,7 +117,8 @@
                                 latin:mode="email"
                             >
                                 <Key
-                                    latin:keyStyle="comKeyStyle" />
+                                    latin:keyStyle="comKeyStyle"
+                                    latin:keyXPos="15.157%p" />
                             </case>
                             <case
                                 latin:imeAction="actionSearch"
@@ -123,11 +128,13 @@
                                     latin:manualTemporaryUpperCaseCode="43"
                                     latin:keyHintIcon="@drawable/key_hint_plus_holo"
                                     latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
-                                    latin:popupCharacters="+" />
+                                    latin:popupCharacters="+"
+                                    latin:keyXPos="15.157%p" />
                             </case>
                             <default>
                                 <Key
-                                    latin:keyStyle="smileyKeyStyle" />
+                                    latin:keyStyle="smileyKeyStyle"
+                                    latin:keyXPos="15.157%p" />
                             </default>
                         </switch>
                         <switch>
@@ -152,7 +159,8 @@
         </switch>
         <Key
             latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="37.454%p" />
+            latin:keyXPos="31.250%p"
+            latin:keyWidth="37.500%p" />
         <switch>
             <case
                 latin:languageCode="ru"
@@ -251,7 +259,9 @@
                 latin:voiceKeyEnabled="true"
             >
                 <Key
-                    latin:keyStyle="micKeyStyle" />
+                    latin:keyStyle="micKeyStyle"
+                    latin:keyXPos="-8.047%p"
+                    latin:keyWidth="0%p" />
             </case>
         </switch>
     </Row>

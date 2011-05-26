@@ -24,13 +24,14 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="9.09%p"
+        latin:keyWidth="8.0%p"
         latin:rowEdgeFlags="top"
     >
         <Key
             latin:keyLabel="љ"
             latin:keyHintIcon="@drawable/key_hint_num1_holo"
             latin:popupCharacters="1"
+            latin:keyXPos="2.15%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="њ"
@@ -69,11 +70,15 @@
             latin:keyHintIcon="@drawable/key_hint_num0_holo"
             latin:popupCharacters="0" />
         <Key
-            latin:keyLabel="ш"
+            latin:keyLabel="ш" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="-10.0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="9.09%p"
+        latin:keyWidth="7.9%p"
     >
         <Key
             latin:keyLabel="а"
@@ -97,14 +102,19 @@
         <Key
             latin:keyLabel="ч" />
         <Key
-            latin:keyLabel="ћ"
+            latin:keyLabel="ћ" />
+        <Key
+            latin:keyStyle="returnKeyStyle"
+            latin:keyXPos="-14.6%p"
+            latin:keyWidth="-14.6%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.90%p"
+        latin:keyWidth="7.5%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="8.8%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ѕ" />
@@ -124,10 +134,32 @@
             latin:keyLabel="ђ" />
         <Key
             latin:keyLabel="ж" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="11.00%p"
-            latin:keyEdgeFlags="right" />
+        <switch>
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="," />
+                <Key
+                    latin:keyLabel="." />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel=","
+                    latin:manualTemporaryUpperCaseCode="33"
+                    latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
+                    latin:popupCharacters="!" />
+                <Key
+                    latin:keyLabel="."
+                    latin:manualTemporaryUpperCaseCode="63"
+                    latin:keyHintIcon="@drawable/key_hint_question_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
+                    latin:popupCharacters="\?" />
+            </default>
+        </switch>
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_right" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

@@ -24,7 +24,7 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="10%p"
+        latin:keyWidth="9.0%p"
         latin:rowEdgeFlags="top"
     >
         <Key
@@ -67,11 +67,15 @@
         <Key
             latin:keyLabel="p"
             latin:keyHintIcon="@drawable/key_hint_num0_holo"
-            latin:popupCharacters="@string/alternates_for_p"
+            latin:popupCharacters="@string/alternates_for_p" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="-10.0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="10%p"
+        latin:keyWidth="9.0%p"
     >
         <Key
             latin:keyLabel="q"
@@ -99,15 +103,19 @@
             latin:keyLabel="l"
             latin:popupCharacters="@string/alternates_for_l" />
         <Key
-            latin:keyLabel="m"
+            latin:keyLabel="m" />
+        <Key
+            latin:keyStyle="returnKeyStyle"
+            latin:keyXPos="-14.6%p"
+            latin:keyWidth="-14.6%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="10%p"
+        latin:keyWidth="8.9%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="11.1%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="w"
@@ -116,7 +124,6 @@
             latin:keyLabel="x" />
         <Key
             latin:keyLabel="c"
-
             latin:popupCharacters="@string/alternates_for_c" />
         <Key
             latin:keyLabel="v"
@@ -128,11 +135,33 @@
             latin:popupCharacters="@string/alternates_for_n" />
         <Key
             latin:keyLabel="\'" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
-            latin:keyEdgeFlags="right" />
-    </Row>
+        <switch>
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="," />
+                <Key
+                    latin:keyLabel="." />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel=","
+                    latin:manualTemporaryUpperCaseCode="33"
+                    latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
+                    latin:popupCharacters="!" />
+                <Key
+                    latin:keyLabel="."
+                    latin:manualTemporaryUpperCaseCode="63"
+                    latin:keyHintIcon="@drawable/key_hint_question_holo"
+                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
+                    latin:popupCharacters="\?" />
+            </default>
+        </switch>
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_right" />
+   </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </merge>

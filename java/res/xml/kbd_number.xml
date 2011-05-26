@@ -47,8 +47,6 @@
                     latin:keyStyle="num2KeyStyle" />
                 <Key
                     latin:keyStyle="num3KeyStyle" />
-                <Spacer
-                    latin:horizontalGap="20%p" />
             </Row>
             <Row>
                 <Key
@@ -58,8 +56,6 @@
                     latin:keyStyle="num5KeyStyle" />
                 <Key
                     latin:keyStyle="num6KeyStyle" />
-                <Spacer
-                    latin:horizontalGap="20%p" />
             </Row>
             <Row>
                 <Key
@@ -71,21 +67,19 @@
                     latin:keyStyle="num9KeyStyle" />
                 <Key
                     latin:keyStyle="deleteKeyStyle"
-                    latin:keyWidth="20%p"
+                    latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
             <Row
                 latin:rowEdgeFlags="bottom"
             >
-                <Spacer
-                    latin:horizontalGap="26.67%p" />
+                <Spacer />
                 <Key
                     latin:keyStyle="num0KeyStyle" />
-                <Spacer
-                    latin:horizontalGap="26.67%p" />
+                <Spacer />
                 <Key
                     latin:keyStyle="returnKeyStyle"
-                    latin:keyWidth="20%p"
+                    latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
         </case>
@@ -103,7 +97,7 @@
                 <Key
                     latin:keyLabel="-"
                     latin:keyStyle="functionalKeyStyle"
-                    latin:keyWidth="20%p"
+                    latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
             <Row>
@@ -117,7 +111,7 @@
                 <Key
                     latin:keyLabel=","
                     latin:keyStyle="functionalKeyStyle"
-                    latin:keyWidth="20%p"
+                    latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
             <Row>
@@ -130,7 +124,7 @@
                     latin:keyLabel="9" />
                 <Key
                     latin:keyStyle="deleteKeyStyle"
-                    latin:keyWidth="20%p"
+                    latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
             <Row
@@ -145,7 +139,7 @@
                     latin:keyLabel="." />
                 <Key
                     latin:keyStyle="returnKeyStyle"
-                    latin:keyWidth="20%p"
+                    latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
         </default>

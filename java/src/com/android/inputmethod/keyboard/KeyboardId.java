@@ -138,19 +138,19 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s %s imeAction=%s %s%s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s %s %s %s%s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"),
                 modeName(mMode),
                 imeOptionsName(mImeAction),
+                colorSchemeName(mColorScheme),
                 (mWebInput ? " webInput" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
                 (mHasVoiceKey ? " hasVoiceKey" : ""),
-                (mEnableShiftLock ? " enableShiftLock" : ""),
-                colorSchemeName(mColorScheme)
+                (mEnableShiftLock ? " enableShiftLock" : "")
         );
     }
 

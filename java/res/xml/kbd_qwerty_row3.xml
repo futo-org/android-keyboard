@@ -48,7 +48,7 @@
             latin:keyLabel="m" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

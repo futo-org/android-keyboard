@@ -70,6 +70,7 @@
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="ш"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -98,6 +99,7 @@
             latin:keyLabel="ч" />
         <Key
             latin:keyLabel="ћ"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -126,7 +128,7 @@
             latin:keyLabel="ж" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="11.00%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
