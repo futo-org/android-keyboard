@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -38,6 +39,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -485,7 +487,9 @@ public class Utils {
         case InputType.TYPE_CLASS_PHONE:
             return KeyboardId.MODE_PHONE;
         case InputType.TYPE_CLASS_TEXT:
-            if (Utils.isEmailVariation(variation)) {
+            if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS) {
+                return KeyboardId.MODE_WEB_EMAIL;
+            } else if (Utils.isEmailVariation(variation)) {
                 return KeyboardId.MODE_EMAIL;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
                 return KeyboardId.MODE_URL;
@@ -493,7 +497,8 @@ public class Utils {
                 return KeyboardId.MODE_IM;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
                 return KeyboardId.MODE_TEXT;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
+            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT
+                    || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD) {
                 return KeyboardId.MODE_WEB;
             } else {
                 return KeyboardId.MODE_TEXT;

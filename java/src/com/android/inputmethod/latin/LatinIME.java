@@ -16,15 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardActionListener;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.LatinKeyboard;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
-import com.android.inputmethod.latin.Utils.RingCharBuffer;
-import com.android.inputmethod.voice.VoiceIMEConnector;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -72,6 +63,15 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.LatinKeyboard;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.latin.Utils.RingCharBuffer;
+import com.android.inputmethod.voice.VoiceIMEConnector;
+
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean PERF_DEBUG = false;
     private static final boolean TRACE = false;
-    private static boolean DEBUG = LatinImeLogger.sDBG;
+    private static boolean DEBUG;
 
     /**
      * The private IME option used to indicate that no microphone should be
@@ -390,6 +390,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mAccessibilityUtils = AccessibilityUtils.getInstance();
+        DEBUG = LatinImeLogger.sDBG;
 
         final Resources res = getResources();
         mResources = res;
@@ -532,8 +533,9 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getInputView();
 
-        if(DEBUG) {
-            Log.d(TAG, "onStartInputView: " + inputView);
+        if (DEBUG) {
+            Log.d(TAG, "onStartInputView: inputType=" + ((attribute == null) ? "none"
+                    : String.format("0x%08x", attribute.inputType)));
         }
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
