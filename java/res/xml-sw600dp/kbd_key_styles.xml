@@ -45,13 +45,27 @@
             <key-style
                 latin:styleName="settingsPopupStyle"
                 latin:parentStyle="functionalKeyStyle" />
-        </case>
+            <key-style
+                latin:styleName="webTabKeyStyle"
+                latin:code="@integer/key_tab"
+                latin:keyIcon="@drawable/sym_keyboard_tab_holo"
+                latin:iconPreview="@drawable/sym_keyboard_tab_holo"
+                latin:keyHintIcon="@drawable/hint_popup_holo"
+                latin:popupCharacters="\@drawable/sym_keyboard_settings|\@integer/key_settings"
+                latin:parentStyle="functionalKeyStyle" />
+          </case>
         <!-- latin:hasSettingsKey="false" -->
         <default>
             <key-style
                 latin:styleName="settingsPopupStyle"
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupCharacters="\@drawable/sym_keyboard_settings|\@integer/key_settings"
+                latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="webTabKeyStyle"
+                latin:code="@integer/key_tab"
+                latin:keyIcon="@drawable/sym_keyboard_tab_holo"
+                latin:iconPreview="@drawable/sym_keyboard_tab_holo"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>
@@ -75,29 +89,27 @@
                 latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
                 latin:parentStyle="functionalKeyStyle"
                 latin:isRepeatable="true" />
-            <switch>
-                <!-- When this qwerty keyboard has no voice key but voice key is enabled, then
-                     symbol keyboard will have mic key. That means we should use "?123mic" key
-                     here. -->
-                <case
-                    latin:voiceKeyEnabled="true"
-                    latin:hasVoiceKey="false"
-                >
-                    <key-style
-                        latin:styleName="toSymbolKeyStyle"
-                        latin:code="@integer/key_switch_alpha_symbol"
-                        latin:keyIcon="@drawable/sym_keyboard_123_mic"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_123_mic"
-                        latin:parentStyle="functionalKeyStyle" />
-                </case>
-                <default>
-                    <key-style
-                        latin:styleName="toSymbolKeyStyle"
-                        latin:code="@integer/key_switch_alpha_symbol"
-                        latin:keyLabel="@string/label_to_symbol_key"
-                        latin:parentStyle="functionalKeyStyle" />
-                </default>
-            </switch>
+            <key-style
+                latin:styleName="returnKeyStyle"
+                latin:code="@integer/key_return"
+                latin:keyIcon="@drawable/sym_keyboard_return_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+                latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="spaceKeyStyle"
+                latin:code="@integer/key_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            <key-style
+                latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
+                latin:code="@integer/key_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            <key-style
+                latin:styleName="smileyKeyStyle"
+                latin:keyLabel=":-)"
+                latin:keyOutputText=":-) "
+                latin:keyHintIcon="@drawable/hint_popup_holo"
+                latin:popupCharacters="@string/alternates_for_smiley"
+                latin:maxPopupKeyboardColumn="5" />
             <key-style
                 latin:styleName="settingsKeyStyle"
                 latin:code="@integer/key_settings"
@@ -105,30 +117,11 @@
                 latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
-                latin:styleName="spaceKeyStyle"
-                latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_keyboard_space_holo"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
-                latin:styleName="tabKeyStyle"
-                latin:code="@integer/key_tab"
-                latin:keyIcon="@drawable/sym_keyboard_tab"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_tab"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
                 latin:styleName="micKeyStyle"
                 latin:code="@integer/key_voice"
                 latin:keyIcon="@drawable/sym_keyboard_voice_holo"
-                latin:iconPreview="@drawable/sym_keyboard_voice_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:parentStyle="settingsPopupStyle" />
-            <!-- Note: This key style is not for functional tab key. This is used for the tab key
-                 which is laid out as normal letter key. -->
-            <key-style
-                latin:styleName="nonSpecialBackgroundTabKeyStyle"
-                latin:code="@integer/key_tab"
-                latin:keyIcon="@drawable/sym_keyboard_tab"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_tab" />
         </case>
         <case
             latin:colorScheme="black"
@@ -148,29 +141,27 @@
                 latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
                 latin:parentStyle="functionalKeyStyle"
                 latin:isRepeatable="true" />
-            <switch>
-                <!-- When this qwerty keyboard has no voice key but voice key is enabled, then
-                     symbol keyboard will have mic key. That means we should use "?123mic" key
-                     here. -->
-                <case
-                    latin:voiceKeyEnabled="true"
-                    latin:hasVoiceKey="false"
-                >
-                    <key-style
-                        latin:styleName="toSymbolKeyStyle"
-                        latin:code="@integer/key_switch_alpha_symbol"
-                        latin:keyIcon="@drawable/sym_bkeyboard_123_mic"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_123_mic"
-                        latin:parentStyle="functionalKeyStyle" />
-                </case>
-                <default>
-                    <key-style
-                        latin:styleName="toSymbolKeyStyle"
-                        latin:code="@integer/key_switch_alpha_symbol"
-                        latin:keyLabel="@string/label_to_symbol_key"
-                        latin:parentStyle="functionalKeyStyle" />
-                </default>
-            </switch>
+            <key-style
+                latin:styleName="returnKeyStyle"
+                latin:code="@integer/key_return"
+                latin:keyIcon="@drawable/sym_bkeyboard_return"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_return"
+                latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="spaceKeyStyle"
+                latin:code="@integer/key_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            <key-style
+                latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
+                latin:code="@integer/key_space"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
+            <key-style
+                latin:styleName="smileyKeyStyle"
+                latin:keyLabel=":-)"
+                latin:keyOutputText=":-) "
+                latin:keyHintIcon="@drawable/hint_popup_holo"
+                latin:popupCharacters="@string/alternates_for_smiley"
+                latin:maxPopupKeyboardColumn="5" />
             <key-style
                 latin:styleName="settingsKeyStyle"
                 latin:code="@integer/key_settings"
@@ -178,140 +169,39 @@
                 latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
-                latin:styleName="spaceKeyStyle"
-                latin:code="@integer/key_space"
-                latin:keyIcon="@drawable/sym_bkeyboard_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
-                latin:styleName="tabKeyStyle"
-                latin:code="@integer/key_tab"
-                latin:keyIcon="@drawable/sym_bkeyboard_tab"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_tab"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
                 latin:styleName="micKeyStyle"
                 latin:code="@integer/key_voice"
                 latin:keyIcon="@drawable/sym_bkeyboard_mic"
                 latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
                 latin:parentStyle="settingsPopupStyle" />
-            <!-- Note: This key style is not for functional tab key. This is used for the tab key
-                 which is laid out as normal letter key. -->
-            <key-style
-                latin:styleName="nonSpecialBackgroundTabKeyStyle"
-                latin:code="@integer/key_tab"
-                latin:keyIcon="@drawable/sym_bkeyboard_tab"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_tab" />
         </case>
     </switch>
-    <!-- Return key style -->
-    <switch>
-        <case
-            latin:imeAction="actionGo"
-        >
-            <key-style
-                latin:styleName="returnKeyStyle"
-                latin:code="@integer/key_return"
-                latin:keyLabel="@string/label_go_key"
-                latin:parentStyle="functionalKeyStyle" />
-        </case>
-        <case
-            latin:imeAction="actionNext"
-        >
-            <key-style
-                latin:styleName="returnKeyStyle"
-                latin:code="@integer/key_return"
-                latin:keyLabel="@string/label_next_key"
-                latin:parentStyle="functionalKeyStyle" />
-        </case>
-        <case
-            latin:imeAction="actionDone"
-        >
-            <key-style
-                latin:styleName="returnKeyStyle"
-                latin:code="@integer/key_return"
-                latin:keyLabel="@string/label_done_key"
-                latin:parentStyle="functionalKeyStyle" />
-        </case>
-        <case
-            latin:imeAction="actionSend"
-        >
-            <key-style
-                latin:styleName="returnKeyStyle"
-                latin:code="@integer/key_return"
-                latin:keyLabel="@string/label_send_key"
-                latin:parentStyle="functionalKeyStyle" />
-        </case>
-        <case
-            latin:imeAction="actionSearch"
-        >
-            <switch>
-                <case
-                    latin:colorScheme="white"
-                >
-                    <key-style
-                        latin:styleName="returnKeyStyle"
-                        latin:code="@integer/key_return"
-                        latin:keyIcon="@drawable/sym_keyboard_search"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_search"
-                        latin:parentStyle="functionalKeyStyle" />
-                </case>
-                <case
-                    latin:colorScheme="black"
-                >
-                    <key-style
-                        latin:styleName="returnKeyStyle"
-                        latin:code="@integer/key_return"
-                        latin:keyIcon="@drawable/sym_bkeyboard_search"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_search"
-                        latin:parentStyle="functionalKeyStyle" />
-                </case>
-            </switch>
-        </case>
-        <default>
-            <switch>
-                <case
-                    latin:colorScheme="white"
-                >
-                    <key-style
-                        latin:styleName="returnKeyStyle"
-                        latin:code="@integer/key_return"
-                        latin:keyIcon="@drawable/sym_keyboard_return"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-                        latin:parentStyle="functionalKeyStyle" />
-                </case>
-                <case
-                    latin:colorScheme="black"
-                >
-                    <key-style
-                        latin:styleName="returnKeyStyle"
-                        latin:code="@integer/key_return"
-                        latin:keyIcon="@drawable/sym_bkeyboard_return"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-                        latin:parentStyle="functionalKeyStyle" />
-                </case>
-            </switch>
-        </default>
-    </switch>
+    <key-style
+        latin:styleName="toSymbolKeyStyle"
+        latin:code="@integer/key_switch_alpha_symbol"
+        latin:keyLabel="@string/label_to_symbol_key"
+        latin:keyLabelOption="fontNormal"
+        latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
+        latin:keyLabelOption="fontNormal"
         latin:parentStyle="functionalKeyStyle" />
     <key-style
-        latin:styleName="altKeyStyle"
+        latin:styleName="moreKeyStyle"
         latin:code="@integer/key_shift"
-        latin:keyLabel="@string/label_alt_key"
+        latin:keyLabel="@string/label_more_key"
+        latin:keyLabelOption="fontNormal"
         latin:parentStyle="functionalKeyStyle"
         latin:isSticky="true" />
     <key-style
-        latin:styleName="smileyKeyStyle"
-        latin:keyLabel=":-)"
-        latin:keyOutputText=":-) "
+        latin:styleName="comKeyStyle"
+        latin:keyLabel="@string/keylabel_for_popular_domain"
+        latin:keyLabelOption="fontNormal"
+        latin:keyOutputText="@string/keylabel_for_popular_domain"
         latin:keyHintIcon="@drawable/hint_popup_holo"
-        latin:popupCharacters="@string/alternates_for_smiley"
-        latin:maxPopupKeyboardColumn="5"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:popupCharacters="@string/alternates_for_popular_domain" />
     <switch>
         <case
             latin:passwordInput="true"
@@ -319,20 +209,12 @@
             <key-style
                 latin:styleName="nonPasswordSymbolKeyStyle"
                 latin:enabled="false" />
-            <key-style
-                latin:styleName="nonPasswordFunctionalKeyStyle"
-                latin:enabled="false"
-                latin:parentStyle="functionalKeyStyle" />
         </case>
         <!-- latin:passwordInput="false" -->
         <default>
             <key-style
                 latin:styleName="nonPasswordSymbolKeyStyle"
                 latin:enabled="true" />
-            <key-style
-                latin:styleName="nonPasswordFunctionalKeyStyle"
-                latin:enabled="true"
-                latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>
 </merge>

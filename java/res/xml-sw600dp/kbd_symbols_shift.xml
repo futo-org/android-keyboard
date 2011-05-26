@@ -23,7 +23,6 @@
     latin:keyboardHeight="@dimen/keyboardHeight"
     latin:maxKeyboardHeight="50%p"
     latin:rowHeight="25%p"
-    latin:keyWidth="10%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
@@ -31,12 +30,12 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
+    <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:rowEdgeFlags="top"
+        latin:keyWidth="9.1%p"
     >
         <Key
-            latin:keyLabel="~"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabel="~" />
         <Key
             latin:keyLabel="`" />
         <Key
@@ -59,15 +58,22 @@
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="×" />
         <Key
-            latin:keyLabel="{" />
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="§"
+            latin:popupCharacters="¶" />
         <Key
-            latin:keyLabel="}"
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="Δ" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="9.2%p"
             latin:keyEdgeFlags="right" />
     </Row>
-    <Row>
-        <Key
-            latin:keyStyle="nonSpecialBackgroundTabKeyStyle"
-            latin:keyEdgeFlags="left" />
+    <Row
+        latin:keyWidth="9.0%p"
+    >
+        <Spacer
+            latin:horizontalGap="4.5%p" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="£" />
@@ -79,52 +85,80 @@
             latin:keyLabel="€" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="°"
-            latin:popupCharacters="′,″" />
+            latin:keyLabel="¥" />
         <Key
             latin:keyLabel="^"
             latin:popupCharacters="↑,↓,←,→" />
         <Key
-            latin:keyLabel="_" />
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="°"
+            latin:popupCharacters="′,″" />
         <Key
-            latin:keyLabel="="
-            latin:popupCharacters="≠,≈,∞" />
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="±"
+            latin:popupCharacters="∞" />
         <Key
-            latin:keyLabel="[" />
+            latin:keyLabel="{" />
         <Key
-            latin:keyLabel="]"
+            latin:keyLabel="}" />
+        <Key
+            latin:keyStyle="returnKeyStyle"
+            latin:keyWidth="14.6%p"
             latin:keyEdgeFlags="right" />
     </Row>
-    <Row>
+    <Row
+        latin:keyWidth="8.9%p"
+    >
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyStyle="moreKeyStyle"
+            latin:keyWidth="10.0%p"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="™" />
-        <Key
-            latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="®" />
+            latin:keyLabel="\\" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="©" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="¶"
-            latin:popupCharacters="§" />
+            latin:keyLabel="®" />
         <Key
-            latin:keyLabel="\\" />
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="™" />
         <Key
-            latin:keyLabel="&lt;"
-            latin:popupCharacters="≤,«,‹" />
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="℅" />
         <Key
-            latin:keyLabel="&gt;"
-            latin:popupCharacters="≥,»,›" />
+            latin:keyLabel="[" />
         <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyLabel="]" />
+        <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="¡" />
+        <Key
+            latin:keyStyle="nonPasswordSymbolKeyStyle"
+            latin:keyLabel="¿" />
+        <Key
+            latin:keyStyle="moreKeyStyle"
+            latin:keyWidth="10.1%p"
             latin:keyEdgeFlags="right" />
     </Row>
-    <include latin:keyboardLayout="@xml/kbd_symbols_shift_row4" />
+    <!-- This row is intentionally not marked as a bottom row -->
+    <Row
+        latin:keyWidth="8.9%p"
+    >
+        <Key
+            latin:keyStyle="toSymbolKeyStyle"
+            latin:keyLabelOption="alignLeft"
+            latin:keyWidth="13.0%p"
+            latin:keyEdgeFlags="left" />
+        <Spacer
+            latin:horizontalGap="17.8%p" />
+        <Key
+            latin:keyStyle="spaceKeyStyle"
+            latin:keyWidth="38.5%p" />
+        <Spacer
+            latin:horizontalGap="17.8%p" />
+        <include
+            latin:keyboardLayout="@xml/kbd_settings" />
+    </Row>
 </Keyboard>
