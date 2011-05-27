@@ -1635,8 +1635,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     /**
      * Commits the chosen word to the text field and saves it for later
      * retrieval.
-     * @param suggestion the suggestion picked by the user to be committed to
-     *            the text field
      */
     private void commitBestWord(CharSequence bestWord) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
@@ -1922,11 +1920,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     HapticFeedbackConstants.KEYBOARD_TAP,
                     HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
         }
-    }
-
-    public void promoteToUserDictionary(String word, int frequency) {
-        if (mUserDictionary.isValidWord(word)) return;
-        mUserDictionary.addWord(word, frequency);
     }
 
     public WordComposer getCurrentWord() {
