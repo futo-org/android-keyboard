@@ -184,9 +184,10 @@
             <enum name="url" value="1" />
             <enum name="email" value="2" />
             <enum name="im" value="3" />
-            <enum name="web" value="4" />
-            <enum name="phone" value="5" />
+            <enum name="phone" value="4" />
+            <enum name="number" value="5" />
         </attr>
+        <attr name="webInput" format="boolean" />
         <attr name="passwordInput" format="boolean" />
         <attr name="hasSettingsKey" format="string" />
         <attr name="voiceKeyEnabled" format="string" />

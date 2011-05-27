@@ -81,7 +81,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean PERF_DEBUG = false;
     private static final boolean TRACE = false;
-    private static boolean DEBUG = LatinImeLogger.sDBG;
+    private static boolean DEBUG;
 
     /**
      * The private IME option used to indicate that no microphone should be
@@ -357,6 +357,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mRecorrection = Recorrection.getInstance();
+        DEBUG = LatinImeLogger.sDBG;
 
         loadSettings();
 
@@ -506,7 +507,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LatinKeyboardView inputView = switcher.getKeyboardView();
 
         if (DEBUG) {
-            Log.d(TAG, "onStartInputView: " + inputView);
+            Log.d(TAG, "onStartInputView: inputType=" + ((attribute == null) ? "none"
+                    : String.format("0x%08x", attribute.inputType)));
         }
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {

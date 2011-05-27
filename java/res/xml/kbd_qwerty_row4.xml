@@ -40,7 +40,7 @@
                     latin:keyWidth="40%p" />
                 <switch>
                     <case
-                        latin:mode="web"
+                        latin:webInput="true"
                     >
                          <Key
                             latin:keyHintIcon="@drawable/hint_popup"
@@ -90,7 +90,7 @@
                     latin:keyWidth="30%p" />
                 <switch>
                     <case
-                        latin:mode="web"
+                        latin:webInput="true"
                     >
                          <Key
                             latin:keyHintIcon="@drawable/hint_popup"

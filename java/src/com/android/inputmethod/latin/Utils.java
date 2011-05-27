@@ -538,8 +538,6 @@ public class Utils {
                 return KeyboardId.MODE_IM;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
                 return KeyboardId.MODE_TEXT;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
-                return KeyboardId.MODE_WEB;
             } else {
                 return KeyboardId.MODE_TEXT;
             }
