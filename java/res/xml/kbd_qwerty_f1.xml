@@ -46,7 +46,7 @@
                 </case>
                 <!-- latin:hasVoiceKey="false" -->
                 <case
-                    latin:mode="web"
+                    latin:webInput="true"
                 >
                     <Key
                         latin:keyLabel="."

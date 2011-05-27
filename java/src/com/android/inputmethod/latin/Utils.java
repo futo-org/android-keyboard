@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.KeyboardId;
-
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
@@ -25,12 +23,13 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.text.InputType;
-import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
+
+import com.android.inputmethod.keyboard.KeyboardId;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,7 +38,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -487,9 +485,7 @@ public class Utils {
         case InputType.TYPE_CLASS_PHONE:
             return KeyboardId.MODE_PHONE;
         case InputType.TYPE_CLASS_TEXT:
-            if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS) {
-                return KeyboardId.MODE_WEB_EMAIL;
-            } else if (Utils.isEmailVariation(variation)) {
+            if (Utils.isEmailVariation(variation)) {
                 return KeyboardId.MODE_EMAIL;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_URI) {
                 return KeyboardId.MODE_URL;
@@ -497,9 +493,6 @@ public class Utils {
                 return KeyboardId.MODE_IM;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
                 return KeyboardId.MODE_TEXT;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT
-                    || variation == InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD) {
-                return KeyboardId.MODE_WEB;
             } else {
                 return KeyboardId.MODE_TEXT;
             }
@@ -511,6 +504,17 @@ public class Utils {
     public static boolean isEmailVariation(int variation) {
         return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                 || variation == InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS;
+    }
+
+    public static boolean isWebInputType(int inputType) {
+        final int variation =
+            inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
+        return (variation
+            == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT))
+            || (variation
+            == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_PASSWORD))
+            || (variation
+            == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS));
     }
 
     // Please refer to TextView.isPasswordInputType
