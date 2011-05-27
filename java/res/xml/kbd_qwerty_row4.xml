@@ -37,7 +37,7 @@
                     latin:keyboardLayout="@xml/kbd_qwerty_f1" />
                 <switch>
                     <case
-                        latin:mode="web"
+                        latin:webInput="true"
                     >
                         <Key
                             latin:keyStyle="spaceKeyStyle"
@@ -88,7 +88,7 @@
                     latin:keyboardLayout="@xml/kbd_qwerty_f1" />
                 <switch>
                     <case
-                        latin:mode="web"
+                        latin:webInput="true"
                     >
                         <Key
                             latin:keyStyle="spaceKeyStyle"
@@ -118,7 +118,7 @@
                             latin:keyEdgeFlags="right" />
                     </case>
                     <case
-                        latin:mode="web"
+                        latin:webInput="true"
                     >
                         <Key
                             latin:keyStyle="returnKeyStyle"
