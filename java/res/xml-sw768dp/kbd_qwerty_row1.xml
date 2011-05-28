@@ -23,12 +23,12 @@
 >
     <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:keyWidth="8.272%p"
+        latin:keyWidth="8.282%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="q"
@@ -62,7 +62,8 @@
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyXPos="-9.219%p"
+            latin:keyWidth="-9.219%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

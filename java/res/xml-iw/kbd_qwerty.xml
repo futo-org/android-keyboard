@@ -35,7 +35,7 @@
         latin:rowEdgeFlags="top"
     >
         <Spacer
-            latin:horizontalGap="5%p" />
+            latin:keyWidth="5%p" />
         <Key
             latin:keyLabel="ק"
             latin:keyEdgeFlags="left" />
@@ -54,7 +54,7 @@
         <Key
             latin:keyLabel="פ" />
         <Spacer
-            latin:horizontalGap="1.25%p" />
+            latin:keyWidth="1.25%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="13.75%p"
@@ -86,7 +86,7 @@
     </Row>
     <Row>
         <Spacer
-            latin:horizontalGap="5%p" />
+            latin:keyWidth="5%p" />
         <Key
             latin:keyLabel="ז"
             latin:keyEdgeFlags="left" />

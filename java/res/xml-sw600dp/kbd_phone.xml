@@ -23,7 +23,7 @@
     latin:keyboardHeight="@dimen/keyboardHeight"
     latin:maxKeyboardHeight="50%p"
     latin:rowHeight="25%p"
-    latin:keyWidth="13.7%p"
+    latin:keyWidth="12.7%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
@@ -35,55 +35,49 @@
         latin:keyboardLayout="@xml/kbd_numkey_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row>
-        <Spacer
-            latin:horizontalGap="14.5%p" />
         <Key
             latin:code="45"
             latin:keyLabel=" - "
+            latin:keyXPos="19.0%p"
             latin:keyWidth="9.1%p" />
         <Key
             latin:code="43"
             latin:keyLabel=" + "
             latin:keyWidth="9.1%p" />
-        <Spacer
-            latin:horizontalGap="9.1%p" />
         <Key
-            latin:keyStyle="num1KeyStyle" />
+            latin:keyStyle="num1KeyStyle"
+            latin:keyXPos="43.3%p" />
         <Key
             latin:keyStyle="num2KeyStyle" />
         <Key
             latin:keyStyle="num3KeyStyle" />
-        <Spacer
-            latin:horizontalGap="8.1%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.2%p"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
-        <Spacer
-            latin:horizontalGap="14.5%p" />
         <Key
             latin:code="44"
             latin:keyLabel=" , "
+            latin:keyXPos="19.0%p"
             latin:keyWidth="9.1%p" />
         <Key
             latin:code="46"
             latin:keyLabel=" . "
             latin:keyWidth="9.1%p" />
-        <Spacer
-            latin:horizontalGap="9.1%p" />
         <Key
-            latin:keyStyle="num4KeyStyle" />
+            latin:keyStyle="num4KeyStyle"
+            latin:keyXPos="43.3%p" />
         <Key
             latin:keyStyle="num5KeyStyle" />
         <Key
             latin:keyStyle="num6KeyStyle" />
-        <Spacer
-            latin:horizontalGap="2.6%p" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="14.6%p"
+            latin:keyXPos="-14.6%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -91,52 +85,46 @@
             latin:keyStyle="moreKeyStyle"
             latin:keyWidth="10.0%p"
             latin:keyEdgeFlags="left" />
-        <Spacer
-            latin:horizontalGap="4.5%p" />
         <!-- There is an empty area below the "More" key and left of the "(" key.  To ignore
              the touch event on the area, "(" is intentionally not marked as a left edge key. -->
         <Key
             latin:code="40"
             latin:keyLabel=" ( "
+            latin:keyXPos="19.0%p"
             latin:keyWidth="9.1%p" />
         <Key
             latin:code="41"
             latin:keyLabel=" ) "
             latin:keyWidth="9.1%p" />
-        <Spacer
-            latin:horizontalGap="9.1%p" />
         <Key
-            latin:keyStyle="num7KeyStyle" />
+            latin:keyStyle="num7KeyStyle"
+            latin:keyXPos="43.3%p" />
         <Key
             latin:keyStyle="num8KeyStyle" />
         <Key
             latin:keyStyle="num9KeyStyle" />
-        <!-- There is an empty area below the "Enter" key and right of the "9" key.  To ignore
-             the touch event on the area, "9" is intentionally not marked as a right edge key. -->
         </Row>
     <!-- This row is intentionally not marked as a bottom row -->
     <Row>
-        <Spacer
-            latin:horizontalGap="14.5%p" />
-        <!-- There is an empty area below the "More" key and left of the "space" key.  To ignore
-             the touch event on the area, "space" is intentionally not marked as a left edge key. -->
+        <Key
+            latin:keyStyle="tabKeyStyle"
+            latin:keyWidth="10.0%p"
+            latin:keyEdgeFlags="left" />
         <Key
             latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
+            latin:keyXPos="19.0%p"
             latin:keyWidth="18.2%p" />
-        <Spacer
-            latin:horizontalGap="9.1%p" />
         <Key
             latin:keyStyle="numStarKeyStyle"
-            latin:keyWidth="13.7%p" />
+            latin:keyXPos="43.3%p" />
         <Key
-            latin:keyStyle="num0KeyStyle"
-            latin:keyWidth="13.7%p" />>
+            latin:keyStyle="num0KeyStyle" />
         <Key
-            latin:keyStyle="numPoundKeyStyle"
-            latin:keyWidth="13.7%p" />
-        <Spacer
-            latin:horizontalGap="4.3%p" />
-        <include
-            latin:keyboardLayout="@xml/kbd_settings" />
+            latin:keyStyle="numPoundKeyStyle" />
+        <Key
+            latin:keyStyle="micOrSettingsKeyStyle"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="0.0%p"
+            latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

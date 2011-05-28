@@ -71,7 +71,7 @@
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyLabel="å"
-            latin:keyWidth="8.75%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -109,7 +109,7 @@
         <Key
             latin:keyLabel="@string/keylabel_for_scandinavia_row2_11"
             latin:popupCharacters="@string/alternates_for_scandinavia_row2_11"
-            latin:keyWidth="8.75%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include

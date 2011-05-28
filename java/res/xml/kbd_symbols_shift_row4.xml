@@ -22,6 +22,7 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row
+        latin:keyWidth="10%p"
         latin:rowEdgeFlags="bottom"
     >
         <switch>
@@ -47,13 +48,13 @@
                     >
                         <Key
                             latin:keyStyle="smileyKeyStyle"
-                            latin:keyWidth="20%p"
+                            latin:keyWidth="0%p"
                             latin:keyEdgeFlags="right" />
                     </case>
                     <default>
                         <Key
                             latin:keyStyle="returnKeyStyle"
-                            latin:keyWidth="20%p"
+                            latin:keyWidth="0%p"
                             latin:keyEdgeFlags="right" />
                     </default>
                 </switch>
@@ -82,13 +83,13 @@
                     >
                         <Key
                             latin:keyStyle="smileyKeyStyle"
-                            latin:keyWidth="25%p"
+                            latin:keyWidth="0%p"
                             latin:keyEdgeFlags="right" />
                     </case>
                     <default>
                         <Key
                             latin:keyStyle="returnKeyStyle"
-                            latin:keyWidth="25%p"
+                            latin:keyWidth="0%p"
                             latin:keyEdgeFlags="right" />
                     </default>
                 </switch>

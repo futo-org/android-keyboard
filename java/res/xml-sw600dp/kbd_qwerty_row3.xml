@@ -26,7 +26,7 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.0%p"
+            latin:keyWidth="11.1%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="z"
@@ -70,9 +70,7 @@
                     latin:popupCharacters="\?" />
             </default>
         </switch>
-        <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.1%p"
-            latin:keyEdgeFlags="right" />
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_right" />
     </Row>
 </merge>

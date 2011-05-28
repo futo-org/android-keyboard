@@ -32,7 +32,7 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:keyWidth="9.1%p"
+        latin:keyWidth="9.0%p"
     >
         <Key
             latin:keyLabel="~" />
@@ -66,17 +66,17 @@
             latin:keyLabel="Δ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.2%p"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="-10.0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
         latin:keyWidth="9.0%p"
     >
-        <Spacer
-            latin:horizontalGap="4.5%p" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="£" />
+            latin:keyLabel="£"
+            latin:keyXPos="4.5%p" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¢" />
@@ -103,7 +103,8 @@
             latin:keyLabel="}" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="14.6%p"
+            latin:keyXPos="-14.6%p"
+            latin:keyWidth="-14.6%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -111,7 +112,7 @@
     >
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="10.0%p"
+            latin:keyWidth="11.1%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="\\" />
@@ -137,10 +138,6 @@
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¿" />
-        <Key
-            latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="10.1%p"
-            latin:keyEdgeFlags="right" />
     </Row>
     <!-- This row is intentionally not marked as a bottom row -->
     <Row
@@ -151,14 +148,16 @@
             latin:keyLabelOption="alignLeft"
             latin:keyWidth="13.0%p"
             latin:keyEdgeFlags="left" />
-        <Spacer
-            latin:horizontalGap="17.8%p" />
+        <Key
+            latin:keyStyle="tabKeyStyle" />
         <Key
             latin:keyStyle="spaceKeyStyle"
-            latin:keyWidth="38.5%p" />
-        <Spacer
-            latin:horizontalGap="17.8%p" />
-        <include
-            latin:keyboardLayout="@xml/kbd_settings" />
+            latin:keyXPos="30.8%p"
+            latin:keyWidth="41.0%p" />
+        <Key
+            latin:keyStyle="micOrSettingsKeyStyle"
+            latin:keyXPos="-10.0%p"
+            latin:keyWidth="0.0%p"
+            latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

@@ -22,12 +22,12 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row
-        latin:keyWidth="8.157%p"
+        latin:keyWidth="8.125%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="11.167%p"
+            latin:keyWidth="11.172%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="a"
@@ -55,7 +55,8 @@
             latin:popupCharacters="@string/alternates_for_l" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="15.750%p"
+            latin:keyXPos="-15.704%p"
+            latin:keyWidth="-15.704%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

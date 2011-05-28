@@ -24,11 +24,10 @@
     <Row
         latin:keyWidth="9.0%p"
     >
-        <Spacer
-            latin:horizontalGap="4.5%p" />
         <Key
             latin:keyLabel="a"
             latin:popupCharacters="@string/alternates_for_a"
+            latin:keyXPos="4.5%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="s"
@@ -53,7 +52,8 @@
             latin:popupCharacters="@string/alternates_for_l" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="14.6%p"
+            latin:keyXPos="-14.6%p"
+            latin:keyWidth="-14.6%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

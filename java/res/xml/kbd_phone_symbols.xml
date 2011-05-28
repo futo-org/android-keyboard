@@ -46,7 +46,7 @@
         <Key
             latin:keyLabel="-"
             latin:keyStyle="functionalKeyStyle"
-            latin:keyWidth="20%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -63,7 +63,7 @@
         <Key
             latin:keyLabel="."
             latin:keyStyle="functionalKeyStyle"
-            latin:keyWidth="20%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -78,7 +78,7 @@
             latin:keyStyle="numPoundKeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="20%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -94,7 +94,7 @@
             latin:keyStyle="numSpaceKeyStyle" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="20%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

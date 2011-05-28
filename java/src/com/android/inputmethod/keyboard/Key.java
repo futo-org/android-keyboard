@@ -16,16 +16,16 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.keyboard.KeyStyles.KeyStyle;
-import com.android.inputmethod.keyboard.KeyboardParser.ParseException;
-import com.android.inputmethod.latin.R;
-
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Xml;
+
+import com.android.inputmethod.keyboard.KeyStyles.KeyStyle;
+import com.android.inputmethod.keyboard.KeyboardParser.ParseException;
+import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 
@@ -137,7 +137,7 @@ public class Key {
     };
 
     /**
-     * This constructor is being used only for key in mini popup keyboard.
+     * This constructor is being used only for key in popup mini keyboard.
      */
     public Key(Resources res, Keyboard keyboard, CharSequence popupCharacter, int x, int y,
             int width, int height, int edgeFlags) {
@@ -174,6 +174,7 @@ public class Key {
      * @param x the x coordinate of the top-left
      * @param y the y coordinate of the top-left
      * @param parser the XML parser containing the attributes for this key
+     * @param keyStyles active key styles set
      */
     public Key(Resources res, Row row, int x, int y, XmlResourceParser parser,
             KeyStyles keyStyles) {
@@ -181,6 +182,7 @@ public class Key {
 
         final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
+        int keyWidth;
         try {
             mHeight = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight,
@@ -188,16 +190,12 @@ public class Key {
             mGap = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_horizontalGap,
                     mKeyboard.getDisplayWidth(), row.mDefaultHorizontalGap);
-            mWidth = KeyboardParser.getDimensionOrFraction(keyboardAttr,
+            keyWidth = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyWidth,
-                    mKeyboard.getDisplayWidth(), row.mDefaultWidth) - mGap;
+                    mKeyboard.getDisplayWidth(), row.mDefaultWidth);
         } finally {
             keyboardAttr.recycle();
         }
-
-        // Horizontal gap is divided equally to both sides of the key.
-        mX = x + mGap / 2;
-        mY = y;
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
@@ -211,6 +209,35 @@ public class Key {
             } else {
                 style = keyStyles.getEmptyKeyStyle();
             }
+
+            final int keyboardWidth = mKeyboard.getDisplayWidth();
+            int keyXPos = KeyboardParser.getDimensionOrFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyXPos, keyboardWidth, x);
+            if (keyXPos < 0) {
+                // If keyXPos is negative, the actual x-coordinate will be k + keyXPos.
+                keyXPos += keyboardWidth;
+                if (keyXPos < x) {
+                    // keyXPos shouldn't be less than x because drawable area for this key starts
+                    // at x. Or, this key will overlaps the adjacent key on its left hand side.
+                    keyXPos = x;
+                }
+            }
+            if (keyWidth == 0) {
+                // If keyWidth is zero, the actual key width will be determined to fill out the
+                // area up to the right edge of the keyboard.
+                keyWidth = keyboardWidth - keyXPos;
+            } else if (keyWidth < 0) {
+                // If keyWidth is negative, the actual key width will be determined to fill out the
+                // area between the nearest key on the left hand side and the right edge of the
+                // keyboard.
+                keyXPos = x;
+                keyWidth = keyboardWidth - keyXPos;
+            }
+
+            // Horizontal gap is divided equally to both sides of the key.
+            mX = keyXPos + mGap / 2;
+            mY = y;
+            mWidth = keyWidth - mGap;
 
             final CharSequence[] popupCharacters = style.getTextArray(keyAttr,
                     R.styleable.Keyboard_Key_popupCharacters);
