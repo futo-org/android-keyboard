@@ -39,8 +39,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = "KeyboardSwitcher";
-    private static final boolean DEBUG_CACHE = false;
+    private static final String TAG = KeyboardSwitcher.class.getSimpleName();
+    private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
     public static final boolean DEBUG_STATE = false;
 
     private static String sConfigDefaultKeyboardThemeId;

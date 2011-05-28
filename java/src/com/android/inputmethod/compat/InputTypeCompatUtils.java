@@ -60,6 +60,11 @@ public class InputTypeCompatUtils {
                         : 0;
     }
 
+    private static boolean isWebEditTextInputType(int inputType) {
+        return inputType == (InputType.TYPE_CLASS_TEXT
+                | InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
+    }
+
     private static boolean isWebPasswordInputType(int inputType) {
         return WEB_TEXT_PASSWORD_INPUT_TYPE != 0
                 && inputType == WEB_TEXT_PASSWORD_INPUT_TYPE;
@@ -92,8 +97,7 @@ public class InputTypeCompatUtils {
     public static boolean isWebInputType(int inputType) {
         final int maskedInputType =
                 inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
-        return maskedInputType == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT
-                || isWebPasswordInputType(maskedInputType)
+        return isWebEditTextInputType(maskedInputType) || isWebPasswordInputType(maskedInputType)
                 || isWebEmailAddressInputType(maskedInputType);
     }
 
