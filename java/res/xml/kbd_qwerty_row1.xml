@@ -66,6 +66,7 @@
             latin:keyLabel="p"
             latin:keyHintIcon="@drawable/key_hint_num0"
             latin:popupCharacters="@string/alternates_for_p"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
 </merge>

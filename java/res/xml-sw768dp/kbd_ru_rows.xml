@@ -25,57 +25,49 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="7.579%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="й"
-            latin:popupCharacters="1" />
+            latin:keyLabel="й" />
         <Key
-            latin:keyLabel="ц"
-            latin:popupCharacters="2" />
+            latin:keyLabel="ц" />
         <Key
-            latin:keyLabel="у"
-            latin:popupCharacters="3" />
+            latin:keyLabel="у" />
         <Key
-            latin:keyLabel="к"
-            latin:popupCharacters="4" />
+            latin:keyLabel="к" />
         <Key
             latin:keyLabel="е"
             latin:popupCharacters="@string/alternates_for_cyrillic_e" />
         <Key
-            latin:keyLabel="н"
-            latin:popupCharacters="6" />
+            latin:keyLabel="н" />
         <Key
-            latin:keyLabel="г"
-            latin:popupCharacters="7" />
+            latin:keyLabel="г" />
         <Key
-            latin:keyLabel="ш"
-            latin:popupCharacters="8" />
+            latin:keyLabel="ш" />
         <Key
-            latin:keyLabel="щ"
-            latin:popupCharacters="9" />
+            latin:keyLabel="щ" />
         <Key
-            latin:keyLabel="з"
-            latin:popupCharacters="0" />
+            latin:keyLabel="з" />
         <Key
             latin:keyLabel="х" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyXPos="-9.219%p"
+            latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="7.500%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="9.219%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ф" />
@@ -101,11 +93,12 @@
             latin:keyLabel="э" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyXPos="-15.704%p"
+            latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="7.500%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
@@ -138,7 +131,8 @@
             latin:popupCharacters="," />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.400%p"
+            latin:keyXPos="-13.750%p"
+            latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <include

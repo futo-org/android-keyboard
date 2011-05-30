@@ -280,7 +280,7 @@ public class KeyboardParser {
                 if (TAG_KEY.equals(tag)) {
                     parseKey(parser, row, keys);
                 } else if (TAG_SPACER.equals(tag)) {
-                    parseSpacer(parser, keys);
+                    parseSpacer(parser, row, keys);
                 } else if (TAG_INCLUDE.equals(tag)) {
                     parseIncludeRowContent(parser, row, keys);
                 } else if (TAG_SWITCH.equals(tag)) {
@@ -327,19 +327,32 @@ public class KeyboardParser {
         }
     }
 
-    private void parseSpacer(XmlResourceParser parser, List<Key> keys)
+    private void parseSpacer(XmlResourceParser parser, Row row, List<Key> keys)
             throws XmlPullParserException, IOException {
         if (keys == null) {
             checkEndTag(TAG_SPACER, parser);
         } else {
             if (DEBUG) Log.d(TAG, String.format("<%s />", TAG_SPACER));
-            final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+            final TypedArray keyboardAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard);
-            final int gap = getDimensionOrFraction(a, R.styleable.Keyboard_horizontalGap,
-                    mKeyboard.getDisplayWidth(), 0);
-            a.recycle();
+            if (keyboardAttr.hasValue(R.styleable.Keyboard_horizontalGap))
+                throw new IllegalAttribute(parser, "horizontalGap");
+            final int defaultWidth = (row != null) ? row.mDefaultWidth : 0;
+            final int keyWidth = getDimensionOrFraction(keyboardAttr, R.styleable.Keyboard_keyWidth,
+                    mKeyboard.getDisplayWidth(), defaultWidth);
+            keyboardAttr.recycle();
+
+            final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                    R.styleable.Keyboard_Key);
+            int keyXPos = KeyboardParser.getDimensionOrFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyXPos, mKeyboard.getDisplayWidth(), mCurrentX);
+            if (keyXPos < 0) {
+                // If keyXPos is negative, the actual x-coordinate will be display_width + keyXPos.
+                keyXPos += mKeyboard.getDisplayWidth();
+            }
+
             checkEndTag(TAG_SPACER, parser);
-            setSpacer(gap);
+            setSpacer(keyXPos, keyWidth);
         }
     }
 
@@ -566,14 +579,14 @@ public class KeyboardParser {
 
     private void startRow(Row row) {
         mCurrentX = 0;
-        setSpacer(mHorizontalEdgesPadding);
+        setSpacer(mCurrentX, mHorizontalEdgesPadding);
         mCurrentRow = row;
     }
 
     private void endRow() {
         if (mCurrentRow == null)
             throw new InflateException("orphant end row tag");
-        setSpacer(mHorizontalEdgesPadding);
+        setSpacer(mCurrentX, mHorizontalEdgesPadding);
         if (mCurrentX > mMaxRowWidth)
             mMaxRowWidth = mCurrentX;
         mCurrentY += mCurrentRow.mDefaultHeight;
@@ -581,7 +594,7 @@ public class KeyboardParser {
     }
 
     private void endKey(Key key) {
-        mCurrentX += key.mGap + key.mWidth;
+        mCurrentX = key.mX + key.mGap + key.mWidth;
     }
 
     private void endKeyboard(int defaultVerticalGap) {
@@ -589,19 +602,23 @@ public class KeyboardParser {
         mTotalHeight = mCurrentY - defaultVerticalGap;
     }
 
-    private void setSpacer(int gap) {
-        mCurrentX += gap;
+    private void setSpacer(int keyXPos, int width) {
+        mCurrentX = keyXPos + width;
     }
 
     public static int getDimensionOrFraction(TypedArray a, int index, int base, int defValue) {
         final TypedValue value = a.peekValue(index);
         if (value == null)
             return defValue;
-        if (value.type == TypedValue.TYPE_DIMENSION) {
-            return a.getDimensionPixelOffset(index, defValue);
-        } else if (value.type == TypedValue.TYPE_FRACTION) {
+        if (value.type == TypedValue.TYPE_FRACTION) {
             // Round it to avoid values like 47.9999 from getting truncated
             return Math.round(a.getFraction(index, base, base, defValue));
+        } else if (value.type == TypedValue.TYPE_DIMENSION) {
+            return a.getDimensionPixelOffset(index, defValue);
+        } else if (value.type >= TypedValue.TYPE_FIRST_INT
+                && value.type <= TypedValue.TYPE_LAST_INT) {
+            // For enum value.
+            return a.getInt(index, defValue);
         }
         return defValue;
     }
@@ -624,6 +641,13 @@ public class KeyboardParser {
     private static class IllegalEndTag extends ParseException {
         public IllegalEndTag(XmlResourceParser parser, String parent) {
             super("Illegal end tag " + parser.getName() + " in " + parent, parser);
+        }
+    }
+
+    @SuppressWarnings("serial")
+    private static class IllegalAttribute extends ParseException {
+        public IllegalAttribute(XmlResourceParser parser, String attribute) {
+            super("Tag " + parser.getName() + " has illegal attribute " + attribute, parser);
         }
     }
 

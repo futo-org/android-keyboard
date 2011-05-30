@@ -94,8 +94,16 @@
         <!-- Minimum keyboard height represented in pixels, percentage of display height if fraction
              is positive, or percentage of display width if fraction is negative. -->
         <attr name="minKeyboardHeight" format="dimension|fraction" />
-        <!-- Default width of a key, in pixels or percentage of display width. -->
-        <attr name="keyWidth" format="dimension|fraction" />
+        <!-- Default width of a key, in pixels or percentage of display width.
+             If the value is zero, the actual key width will be determined to fill out the area up
+             to the right edge of the keyboard.
+             If the value is negative, the actual key width will be determined to fill out the
+             area between the nearest key on the left hand side and the right edge of the keyboard.
+             -->
+        <attr name="keyWidth" format="dimension|fraction|enum">
+            <enum name="fillRight" value="0" />
+            <enum name="fillBoth" value="-1" />
+        </attr>
         <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
              keyboard height. -->
         <attr name="rowHeight" format="dimension|fraction" />
@@ -161,6 +169,9 @@
         <!-- Visual insets -->
         <attr name="visualInsetsLeft" format="dimension|fraction" />
         <attr name="visualInsetsRight" format="dimension|fraction" />
+        <!-- The X-coordinate of upper right corner of this key including horizontal gap.
+             If the value is negative, the origin is the right edge of the keyboard. -->
+        <attr name="keyXPos" format="dimension|fraction" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Row">

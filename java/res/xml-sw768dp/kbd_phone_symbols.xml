@@ -24,7 +24,7 @@
     latin:maxKeyboardHeight="@fraction/maxKeyboardHeight"
     latin:minKeyboardHeight="@fraction/minKeyboardHeight"
     latin:rowHeight="25%p"
-    latin:keyWidth="11.949%p"
+    latin:keyWidth="11.954%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
@@ -39,127 +39,113 @@
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
+            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
         <Key
             latin:code="45"
             latin:keyLabel=" - "
-            latin:keyWidth="8.042%p" />
+            latin:keyXPos="13.829%p"
+            latin:keyWidth="8.047%p" />
         <Key
             latin:code="43"
             latin:keyLabel=" + "
-            latin:keyWidth="8.042%p" />
+            latin:keyWidth="8.047%p" />
         <Key
             latin:code="44"
             latin:keyLabel="@string/label_pause_key"
-            latin:keyWidth="8.042%p" />
+            latin:keyWidth="8.047%p" />
         <!-- To match one character label size with "Tab" and "Pause, I placed spaces around the
              char '-' and '+'. -->
-        <Spacer
-            latin:horizontalGap="4.458%p" />
         <Key
-            latin:keyStyle="num1KeyStyle" />
+            latin:keyStyle="num1KeyStyle"
+            latin:keyXPos="45.000%p" />
         <Key
             latin:keyStyle="num2KeyStyle" />
         <Key
             latin:keyStyle="num3KeyStyle" />
-        <Spacer
-            latin:horizontalGap="9.360%p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.804%p"
+            latin:keyXPos="-9.219%p"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
             latin:keyStyle="moreKeyStyle"
+            latin:keyWidth="11.172%p"
             latin:keyEdgeFlags="left" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
         <Key
             latin:code="44"
             latin:keyLabel=" , "
-            latin:keyWidth="8.042%p" />
+            latin:keyXPos="13.829%p"
+            latin:keyWidth="8.047%p" />
         <Key
             latin:code="46"
             latin:keyLabel=" . "
-            latin:keyWidth="8.042%p" />
+            latin:keyWidth="8.047%p" />
         <Key
             latin:code="59"
             latin:keyLabel="@string/label_wait_key"
-            latin:keyWidth="8.042%p" />
+            latin:keyWidth="8.047%p" />
         <!-- To match one character label size with "More" and "Wait", I placed spaces around the
              char ',' and '.'. -->
-        <Spacer
-            latin:horizontalGap="4.458%p" />
         <Key
-            latin:keyStyle="num4KeyStyle" />
+            latin:keyStyle="num4KeyStyle"
+            latin:keyXPos="45.000%p" />
         <Key
             latin:keyStyle="num5KeyStyle" />
         <Key
             latin:keyStyle="num6KeyStyle" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="14.706%p"
+            latin:keyXPos="-15.704%p"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <!-- To match one character label size with "More" and etc., I placed spaces around the
              char 'N', '(' and ')'. -->
-        <!-- There is an empty area bellow the "More" key and left of the "(" key.  To ignore
+        <!-- There is an empty area below the "More" key and left of the "(" key.  To ignore
              the touch event on the area, "(" is intentionally not marked as a left edge key. -->
-        <Spacer
-            latin:horizontalGap="16.406%p" />
         <Key
             latin:code="40"
             latin:keyLabel=" ( "
-            latin:keyWidth="8.042%p" />
+            latin:keyXPos="13.829%p"
+            latin:keyWidth="8.047%p" />
         <Key
             latin:code="41"
             latin:keyLabel=" ) "
-            latin:keyWidth="8.042%p" />
+            latin:keyWidth="8.047%p" />
         <Key
             latin:code="78"
             latin:keyLabel=" N "
-            latin:keyWidth="8.042%p" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
+            latin:keyWidth="8.047%p" />
         <Key
-            latin:keyStyle="num7KeyStyle" />
+            latin:keyStyle="num7KeyStyle"
+            latin:keyXPos="45.000%p" />
         <Key
             latin:keyStyle="num8KeyStyle" />
         <Key
             latin:keyStyle="num9KeyStyle" />
-        <!-- There is an empty area bellow the "Enter" key and right of the "9" key.  To ignore
+        <!-- There is an empty area below the "Enter" key and right of the "9" key.  To ignore
              the touch event on the area, "9" is intentionally not marked as a right edge key. -->
     </Row>
     <!-- This row is intentionally not marked as a bottom row -->
     <Row>
-        <!-- There is an empty area bellow the "More" key and left of the "space" key.  To ignore
-             the touch event on the area, "space" is intentionally not marked as a left edge key. -->
-        <Spacer
-            latin:horizontalGap="8.362%p" />
         <switch>
             <case latin:hasSettingsKey="true">
                 <Key
                     latin:keyStyle="settingsKeyStyle"
-                    latin:keyWidth="8.042%p" />
+                    latin:keyWidth="8.047%p" />
             </case>
-            <default>
-                <Spacer
-                    latin:horizontalGap="8.042%p" />
-            </default>
         </switch>
         <Key
             latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
-            latin:keyWidth="24.127%p" />
-        <Spacer
-            latin:horizontalGap="4.458%p" />
+            latin:keyXPos="13.829%p"
+            latin:keyWidth="24.140%p" />
         <Key
-            latin:keyStyle="numStarKeyStyle" />
+            latin:keyStyle="numStarKeyStyle"
+            latin:keyXPos="45.000%p" />
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key
@@ -170,10 +156,9 @@
             >
                 <Key
                     latin:keyStyle="micKeyStyle"
-                    latin:keyWidth="8.042%p" />
+                    latin:keyXPos="-8.047%p"
+                    latin:keyWidth="fillRight" />
             </case>
         </switch>
-        <!-- There is an empty area bellow the "Enter" key and right of the "#" key.  To ignore
-             the touch event on the area, "#" is intentionally not marked as a right edge key. -->
     </Row>
 </Keyboard>

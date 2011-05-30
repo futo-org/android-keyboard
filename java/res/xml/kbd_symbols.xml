@@ -65,6 +65,7 @@
         <Key
             latin:keyLabel="0"
             latin:popupCharacters="ⁿ,∅"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -95,6 +96,7 @@
         <Key
             latin:keyLabel=")"
             latin:popupCharacters="],},&gt;"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -126,7 +128,7 @@
             latin:popupCharacters="¿" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="fillRight"
             latin:visualInsetsLeft="1%p"
             latin:keyEdgeFlags="right" />
     </Row>
