@@ -22,3 +22,7 @@
 -keep class com.android.inputmethod.latin.Utils {
   boolean equalsIgnoreCase(...);
 }
+
+-keep class com.android.inputmethod.latin.spellcheck.SpellChecker {
+  *;
+}
