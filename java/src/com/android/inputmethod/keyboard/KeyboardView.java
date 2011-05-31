@@ -52,7 +52,6 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.WeakHashMap;
 
 /**
@@ -1117,19 +1116,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         return container;
     }
 
-    private static boolean isOneRowKeys(List<Key> keys) {
-        if (keys.size() == 0) return false;
-        final int edgeFlags = keys.get(0).mEdgeFlags;
-        // HACK: The first key of mini keyboard which was inflated from xml and has multiple rows,
-        // does not have both top and bottom edge flags on at the same time.  On the other hand,
-        // the first key of mini keyboard that was created with popupCharacters must have both top
-        // and bottom edge flags on.
-        // When you want to use one row mini-keyboard from xml file, make sure that the row has
-        // both top and bottom edge flags set.
-        return (edgeFlags & Keyboard.EDGE_TOP) != 0
-                && (edgeFlags & Keyboard.EDGE_BOTTOM) != 0;
-    }
-
     /**
      * Called when a key is long pressed. By default this will open any popup keyboard associated
      * with this key through the attributes popupLayout and popupCharacters.
@@ -1155,14 +1141,14 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         }
         final int pointX = (mConfigShowMiniKeyboardAtTouchedPoint) ? tracker.getLastX()
                 : popupKey.mX + popupKey.mWidth / 2;
-        final int popupX = pointX - miniKeyboard.getDefaultCoordX()
-                - container.getPaddingLeft()
-                + getPaddingLeft() + mWindowOffset[0];
-        final int popupY = popupKey.mY - mKeyboard.getVerticalGap()
-                - (container.getMeasuredHeight() - container.getPaddingBottom())
-                + getPaddingTop() + mWindowOffset[1];
+        final int keyboardLeft = pointX - miniKeyboard.getDefaultCoordX() + getPaddingLeft();
+        final int popupX = Math.max(0, Math.min(keyboardLeft,
+                mMiniKeyboardParent.getWidth() - miniKeyboard.getMinWidth()))
+                - container.getPaddingLeft() + mWindowOffset[0];
+        final int popupY = popupKey.mY - mKeyboard.getVerticalGap() + getPaddingTop()
+                - (container.getMeasuredHeight() - container.getPaddingBottom()) + mWindowOffset[1];
         final int x = popupX;
-        final int y = mShowPreview && isOneRowKeys(miniKeyboard.getKeys())
+        final int y = mShowPreview && miniKeyboard.isOneRowKeys()
                 ? mPopupPreviewDisplayedY : popupY;
 
         mMiniKeyboardOriginX = x + container.getPaddingLeft() - mWindowOffset[0];
