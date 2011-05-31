@@ -21,8 +21,7 @@
 <resources>
     <bool name="config_enable_show_settings_key_option">true</bool>
     <bool name="config_enable_show_subtype_settings">false</bool>
-    <!-- TODO: Set this false after layout debug -->
-    <bool name="config_enable_show_voice_key_option">true</bool>
+    <bool name="config_enable_show_voice_key_option">false</bool>
     <bool name="config_enable_show_popup_on_keypress_option">false</bool>
     <bool name="config_enable_show_recorrection_option">false</bool>
     <bool name="config_enable_quick_fixes_option">false</bool>
