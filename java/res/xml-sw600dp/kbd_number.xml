@@ -98,16 +98,13 @@
             <!-- This row is intentionally not marked as a top row -->
             <Row>
                 <Key
-                    latin:code="45"
                     latin:keyLabel="-"
                     latin:keyXPos="14.5%p"
                     latin:keyWidth="9.1%p" />
                 <Key
-                    latin:code="43"
                     latin:keyLabel="+"
                     latin:keyWidth="9.1%p" />
                 <Key
-                    latin:code="44"
                     latin:keyLabel="."
                     latin:keyWidth="9.1%p" />
                 <Key
@@ -125,16 +122,13 @@
             </Row>
             <Row>
                 <Key
-                    latin:code="44"
                     latin:keyLabel="*"
                     latin:keyXPos="14.5%p"
                     latin:keyWidth="9.1%p" />
                 <Key
-                    latin:code="46"
                     latin:keyLabel="/"
                     latin:keyWidth="9.1%p" />
                 <Key
-                    latin:code="59"
                     latin:keyLabel=","
                     latin:keyWidth="9.1%p" />
                 <Key
@@ -155,16 +149,13 @@
                      ignore the touch event on the area, "(" is intentionally not marked as a left
                      edge key. -->
                 <Key
-                    latin:code="40"
                     latin:keyLabel="("
                     latin:keyXPos="14.5%p"
                     latin:keyWidth="9.1%p" />
                 <Key
-                    latin:code="41"
                     latin:keyLabel=")"
                     latin:keyWidth="9.1%p" />
                 <Key
-                    latin:code="78"
                     latin:keyLabel="="
                     latin:keyWidth="9.1%p" />
                 <Key
