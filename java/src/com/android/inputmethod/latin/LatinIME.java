@@ -222,9 +222,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 updateSuggestions();
                 break;
             case MSG_UPDATE_OLD_SUGGESTIONS:
-                mRecorrection.setRecorrectionSuggestions(mVoiceProxy, mCandidateView, mSuggest,
-                        mKeyboardSwitcher, mWord, mHasUncommittedTypedChars, mLastSelectionStart,
-                        mLastSelectionEnd, mSettingsValues.mWordSeparators);
+                mRecorrection.fetchAndDisplayRecorrectionSuggestions(mVoiceProxy, mCandidateView,
+                        mSuggest, mKeyboardSwitcher, mWord, mHasUncommittedTypedChars,
+                        mLastSelectionStart, mLastSelectionEnd, mSettingsValues.mWordSeparators);
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
@@ -1623,8 +1623,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (!showingAddToDictionaryHint) {
             // If we're not showing the "Touch again to save", then show corrections again.
             // In case the cursor position doesn't change, make sure we show the suggestions again.
-            clearSuggestions();
-            mHandler.postUpdateOldSuggestions();
+            updateBigramPredictions();
+            // Updating the predictions right away may be slow and feel unresponsive on slower
+            // terminals. On the other hand if we just postUpdateBigramPredictions() it will
+            // take a noticeable delay to update them which may feel uneasy.
         }
         if (showingAddToDictionaryHint) {
             mCandidateView.showAddToDictionaryHint(suggestion);
@@ -1655,7 +1657,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private static final WordComposer sEmptyWordComposer = new WordComposer();
-    private void updateBigramPredictions() {
+    public void updateBigramPredictions() {
         if (mSuggest == null || !isSuggestionsRequested())
             return;
 
