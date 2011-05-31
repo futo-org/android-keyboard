@@ -159,7 +159,7 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s%d %s %s %s %s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,

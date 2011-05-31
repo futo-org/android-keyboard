@@ -49,7 +49,7 @@
             latin:keyLabel="m" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="15%p"
+            latin:keyWidth="fillBoth"
             latin:visualInsetsLeft="1%p"
             latin:keyEdgeFlags="right" />
     </Row>

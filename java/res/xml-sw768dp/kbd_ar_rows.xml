@@ -27,12 +27,12 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="7.49%p"
+        latin:keyWidth="7.579%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ض" />
@@ -61,16 +61,17 @@
             latin:popupCharacters="ج,چ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyXPos="-9.219%p"
+            latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.49%p"
+        latin:keyWidth="7.500%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="9.219%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ش" />
@@ -100,15 +101,19 @@
             latin:keyLabel="ط" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="8.593%p"
+            latin:keyXPos="-15.704%p"
+            latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.042%p"
+        latin:keyWidth="7.500%p"
     >
         <Key
-            latin:keyLabel="ئ"
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="9.219%p"
             latin:keyEdgeFlags="left" />
+        <Key
+            latin:keyLabel="ئ" />
         <Key
             latin:keyLabel="ء" />
         <Key
@@ -132,7 +137,8 @@
             latin:keyLabel="د" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="11.736%p"
+            latin:keyXPos="-13.750%p"
+            latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />

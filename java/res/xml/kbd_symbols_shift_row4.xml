@@ -22,43 +22,10 @@
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <Row
+        latin:keyWidth="10%p"
         latin:rowEdgeFlags="bottom"
     >
         <switch>
-            <case
-                latin:hasSettingsKey="false"
-            >
-                <Key
-                    latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="20%p"
-                    latin:keyEdgeFlags="left" />
-                <Key
-                    latin:keyLabel="„"
-                    latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="40%p" />
-                <Key
-                    latin:keyLabel="…"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
-                <switch>
-                    <case
-                        latin:mode="im"
-                    >
-                        <Key
-                            latin:keyStyle="smileyKeyStyle"
-                            latin:keyWidth="20%p"
-                            latin:keyEdgeFlags="right" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyStyle="returnKeyStyle"
-                            latin:keyWidth="20%p"
-                            latin:keyEdgeFlags="right" />
-                    </default>
-                </switch>
-            </case>
             <case
                 latin:hasSettingsKey="true"
             >
@@ -75,26 +42,50 @@
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="30%p" />
+            </case>
+            <!-- latin:hasSettingsKey="false" -->
+            <default>
+                <Key
+                    latin:keyStyle="toAlphaKeyStyle"
+                    latin:keyWidth="20%p"
+                    latin:keyEdgeFlags="left" />
+                <Key
+                    latin:keyLabel="„"
+                    latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="40%p" />
+            </default>
+        </switch>
+        <switch>
+            <case
+                latin:webInput="true"
+            >
+                <Key
+                    latin:keyStyle="tabKeyStyle" />
+            </case>
+            <default>
                 <Key
                     latin:keyLabel="…"
                     latin:keyStyle="nonPasswordFunctionalKeyStyle" />
-                <switch>
-                    <case
-                        latin:mode="im"
-                    >
-                        <Key
-                            latin:keyStyle="smileyKeyStyle"
-                            latin:keyWidth="25%p"
-                            latin:keyEdgeFlags="right" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyStyle="returnKeyStyle"
-                            latin:keyWidth="25%p"
-                            latin:keyEdgeFlags="right" />
-                    </default>
-                </switch>
+            </default>
+        </switch>
+        <switch>
+            <case
+                latin:mode="im"
+            >
+                <Key
+                    latin:keyStyle="smileyKeyStyle"
+                    latin:keyWidth="fillRight"
+                    latin:keyEdgeFlags="right" />
             </case>
+            <default>
+                <Key
+                    latin:keyStyle="returnKeyStyle"
+                    latin:keyWidth="fillRight"
+                    latin:keyEdgeFlags="right" />
+            </default>
         </switch>
     </Row>
 </merge>

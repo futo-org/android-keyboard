@@ -53,6 +53,7 @@
         <Key
             latin:keyLabel="ج"
             latin:popupCharacters="چ"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -84,6 +85,7 @@
         <Key
             latin:keyLabel="ك"
             latin:popupCharacters="گ"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -112,7 +114,8 @@
             latin:keyLabel="ث" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="12%p"
+            latin:keyWidth="fillRight"
+            latin:visualInsetsLeft="1%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />

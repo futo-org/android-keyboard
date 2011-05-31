@@ -24,12 +24,12 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="7.579%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="q"
@@ -65,16 +65,17 @@
             latin:keyLabel="å" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyXPos="-9.219%p"
+            latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.520%p"
+        latin:keyWidth="7.500%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.949%p"
+            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="a"
@@ -108,7 +109,8 @@
             latin:popupCharacters="@string/alternates_for_scandinavia_row2_11" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="9.331%p"
+            latin:keyXPos="-15.704%p"
+            latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <include
