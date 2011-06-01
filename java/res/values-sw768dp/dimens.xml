@@ -23,8 +23,8 @@
     <dimen name="keyboardHeight">48.0mm</dimen>
     <!-- key_height + key_bottom_gap = popup_key_height -->
     <!-- <dimen name="key_height">14.5mm</dimen> -->
-    <dimen name="key_bottom_gap">0.0mm</dimen>
-    <dimen name="key_horizontal_gap">0.0mm</dimen>
+    <dimen name="key_bottom_gap">1.1mm</dimen>
+    <dimen name="key_horizontal_gap">1.1mm</dimen>
     <dimen name="popup_key_height">10.0mm</dimen>
     <dimen name="keyboard_top_padding">1.1mm</dimen>
     <dimen name="keyboard_bottom_padding">0.0mm</dimen>
