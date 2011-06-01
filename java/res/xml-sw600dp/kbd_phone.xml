@@ -23,7 +23,7 @@
     latin:keyboardHeight="@dimen/keyboardHeight"
     latin:maxKeyboardHeight="50%p"
     latin:rowHeight="25%p"
-    latin:keyWidth="12.7%p"
+    latin:keyWidth="16.75%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
@@ -38,67 +38,67 @@
         <Key
             latin:code="45"
             latin:keyLabel=" - "
-            latin:keyXPos="19.0%p"
-            latin:keyWidth="9.1%p" />
+            latin:keyXPos="15.625%p"
+            latin:keyWidth="9.25%p" />
         <Key
             latin:code="43"
             latin:keyLabel=" + "
-            latin:keyWidth="9.1%p" />
+            latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num1KeyStyle"
-            latin:keyXPos="43.3%p" />
+            latin:keyXPos="38.867%p" />
         <Key
             latin:keyStyle="num2KeyStyle" />
         <Key
             latin:keyStyle="num3KeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-10.0%p"
-            latin:keyWidth="0%p"
+            latin:keyXPos="-11.00%p"
+            latin:keyWidth="-11.00%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
             latin:code="44"
             latin:keyLabel=" , "
-            latin:keyXPos="19.0%p"
-            latin:keyWidth="9.1%p" />
+            latin:keyXPos="15.625%p"
+            latin:keyWidth="9.25%p" />
         <Key
             latin:code="46"
             latin:keyLabel=" . "
-            latin:keyWidth="9.1%p" />
+            latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num4KeyStyle"
-            latin:keyXPos="43.3%p" />
+            latin:keyXPos="38.867%p" />
         <Key
             latin:keyStyle="num5KeyStyle" />
         <Key
             latin:keyStyle="num6KeyStyle" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyXPos="-14.6%p"
-            latin:keyWidth="0%p"
+            latin:keyXPos="-11.00%p"
+            latin:keyWidth="-11.00%p"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="10.0%p"
+            latin:keyWidth="11.00%p"
             latin:keyEdgeFlags="left" />
         <!-- There is an empty area below the "More" key and left of the "(" key.  To ignore
              the touch event on the area, "(" is intentionally not marked as a left edge key. -->
         <Key
             latin:code="40"
             latin:keyLabel=" ( "
-            latin:keyXPos="19.0%p"
-            latin:keyWidth="9.1%p" />
+            latin:keyXPos="15.625%p"
+            latin:keyWidth="9.25%p" />
         <Key
             latin:code="41"
             latin:keyLabel=" ) "
-            latin:keyWidth="9.1%p" />
+            latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num7KeyStyle"
-            latin:keyXPos="43.3%p" />
+            latin:keyXPos="38.867%p" />
         <Key
             latin:keyStyle="num8KeyStyle" />
         <Key
@@ -108,23 +108,23 @@
     <Row>
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyWidth="10.0%p"
+            latin:keyWidth="11.00%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
-            latin:keyXPos="19.0%p"
-            latin:keyWidth="18.2%p" />
+            latin:keyXPos="15.625%p"
+            latin:keyWidth="18.67%p" />
         <Key
             latin:keyStyle="numStarKeyStyle"
-            latin:keyXPos="43.3%p" />
+            latin:keyXPos="38.867%p" />
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key
             latin:keyStyle="numPoundKeyStyle" />
         <Key
             latin:keyStyle="micOrSettingsKeyStyle"
-            latin:keyXPos="-10.0%p"
-            latin:keyWidth="0.0%p"
+            latin:keyXPos="-11.00%p"
+            latin:keyWidth="-11.00%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

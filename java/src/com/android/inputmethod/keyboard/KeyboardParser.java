@@ -549,7 +549,7 @@ public class KeyboardParser {
     }
 
     private void endKey(Key key) {
-        mCurrentX = key.mX + key.mGap + key.mWidth;
+        mCurrentX = key.mX - key.mGap / 2 + key.mWidth + key.mGap;
         if (mCurrentX > mMaxRowWidth)
             mMaxRowWidth = mCurrentX;
     }

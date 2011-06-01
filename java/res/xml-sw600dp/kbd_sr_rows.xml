@@ -94,7 +94,7 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="8.8%p"
+            latin:keyWidth="8.0%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ѕ" />

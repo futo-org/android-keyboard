@@ -71,7 +71,7 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="11.1%p"
+            latin:keyWidth="10.0%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="y"

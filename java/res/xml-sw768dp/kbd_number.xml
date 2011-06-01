@@ -23,7 +23,7 @@
     latin:keyboardHeight="@dimen/keyboardHeight"
     latin:maxKeyboardHeight="50%p"
     latin:rowHeight="25%p"
-    latin:keyWidth="11.954%p"
+    latin:keyWidth="13.250%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
@@ -42,7 +42,7 @@
                 <Key
                     latin:keyStyle="tabKeyStyle"
                     latin:keyLabelOption="alignLeft"
-                    latin:keyWidth="7.969%p"
+                    latin:keyWidth="11.172%p"
                     latin:keyEdgeFlags="left" />
                 <Key
                     latin:keyStyle="num1KeyStyle"
@@ -53,7 +53,7 @@
                     latin:keyStyle="num3KeyStyle" />
                 <Key
                     latin:keyStyle="deleteKeyStyle"
-                    latin:keyXPos="-9.219%p"
+                    latin:keyXPos="-11.172%p"
                     latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
@@ -67,7 +67,7 @@
                     latin:keyStyle="num6KeyStyle" />
                 <Key
                     latin:keyStyle="returnKeyStyle"
-                    latin:keyXPos="-15.704%p"
+                    latin:keyXPos="-11.172%p"
                     latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
@@ -101,7 +101,7 @@
                 <Key
                     latin:keyStyle="tabKeyStyle"
                     latin:keyLabelOption="alignLeft"
-                    latin:keyWidth="7.969%p"
+                    latin:keyWidth="11.172%p"
                     latin:keyEdgeFlags="left" />
                 <Key
                     latin:keyLabel="-"
@@ -115,14 +115,14 @@
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="1"
-                    latin:keyXPos="45.0%p" />
+                    latin:keyXPos="43.125%p" />
                 <Key
                     latin:keyLabel="2" />
                 <Key
                     latin:keyLabel="3" />
                 <Key
                     latin:keyStyle="deleteKeyStyle"
-                    latin:keyXPos="-9.219%p"
+                    latin:keyXPos="-11.172%p"
                     latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
@@ -139,14 +139,14 @@
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="4"
-                    latin:keyXPos="45.0%p" />
+                    latin:keyXPos="43.125%p" />
                 <Key
                     latin:keyLabel="5" />
                 <Key
                     latin:keyLabel="6" />
                 <Key
                     latin:keyStyle="returnKeyStyle"
-                    latin:keyXPos="-15.704%p"
+                    latin:keyXPos="-11.172%p"
                     latin:keyWidth="0%p"
                     latin:keyEdgeFlags="right" />
             </Row>
@@ -166,7 +166,7 @@
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="7"
-                    latin:keyXPos="45.0%p" />
+                    latin:keyXPos="43.125%p" />
                 <Key
                     latin:keyLabel="8" />
                 <Key
@@ -194,7 +194,7 @@
                     latin:keyWidth="24.14%p" />
                 <Key
                     latin:keyLabel="*"
-                    latin:keyXPos="45.0%p" />
+                    latin:keyXPos="43.125%p" />
                 <Key
                     latin:keyLabel="0" />
                 <Key

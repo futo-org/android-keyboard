@@ -167,8 +167,8 @@
     <key-style
         latin:styleName="tabKeyStyle"
         latin:code="@integer/key_tab"
-        latin:keyLabel="@string/label_tab_key"
-        latin:keyLabelOption="fontNormal"
+        latin:keyIcon="@drawable/sym_keyboard_tab_holo"
+        latin:iconPreview="@drawable/sym_keyboard_tab_holo"
         latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="toSymbolKeyStyle"
