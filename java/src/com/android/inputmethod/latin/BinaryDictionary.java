@@ -196,8 +196,9 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
 
+        final int proximityInfo = keyboard == null ? 0 : keyboard.getProximityInfo();
         return getSuggestionsNative(
-                mNativeDict, keyboard.getProximityInfo(),
+                mNativeDict, proximityInfo,
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
                 mFlags, outputChars, scores);
     }

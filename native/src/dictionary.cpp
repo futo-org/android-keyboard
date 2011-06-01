@@ -53,7 +53,7 @@ bool Dictionary::hasBigram() {
     return ((mDict[1] & 0xFF) == 1);
 }
 
-// TODO: use uint16_t instead of unsigned short
+// TODO: use uint32_t instead of unsigned short
 bool Dictionary::isValidWord(unsigned short *word, int length) {
     if (IS_LATEST_DICT_VERSION) {
         return (isValidWordRec(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
