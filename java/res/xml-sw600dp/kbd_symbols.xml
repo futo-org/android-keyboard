@@ -108,7 +108,7 @@
     >
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="11.1%p"
+            latin:keyWidth="10.0%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="&lt;"
@@ -190,18 +190,18 @@
             latin:keyLabel="\@" />
         <Key
             latin:keyStyle="spaceKeyStyle"
-            latin:keyXPos="30.8%p"
-            latin:keyWidth="41.0%p" />
+            latin:keyXPos="30.750%p"
+            latin:keyWidth="39.750%p" />
         <switch>
             <case
                 latin:languageCode="ru"
             >
                 <Key
                     latin:keyLabel="_"
-                    latin:keyWidth="9.1%p" />
+                    latin:keyWidth="9.750%p" />
                 <Key
                     latin:keyLabel="-"
-                    latin:keyWidth="9.1%p" />
+                    latin:keyWidth="9.750%p" />
             </case>
             <default>
                 <!-- Note: DroidSans doesn't have double-high-reversed-quotation
@@ -210,16 +210,16 @@
                 <Key
                     latin:keyLabel="&quot;"
                     latin:popupCharacters="“,”,«,»,‘,’,‚,‛"
-                    latin:keyWidth="9.1%p" />
+                    latin:keyWidth="9.750%p" />
                 <Key
                     latin:keyLabel="_"
-                    latin:keyWidth="9.1%p" />
+                    latin:keyWidth="9.750%p" />
             </default>
         </switch>
         <Key
             latin:keyStyle="micOrSettingsKeyStyle"
             latin:keyXPos="-10.0%p"
-            latin:keyWidth="-10.0%p"
+            latin:keyWidth="0%p"
             latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

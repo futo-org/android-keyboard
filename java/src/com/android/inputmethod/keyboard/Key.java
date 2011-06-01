@@ -216,11 +216,11 @@ public class Key {
             if (keyXPos < 0) {
                 // If keyXPos is negative, the actual x-coordinate will be k + keyXPos.
                 keyXPos += keyboardWidth;
-                if (keyXPos < x) {
-                    // keyXPos shouldn't be less than x because drawable area for this key starts
-                    // at x. Or, this key will overlaps the adjacent key on its left hand side.
-                    keyXPos = x;
-                }
+            }
+            if (keyXPos < x) {
+                // keyXPos shouldn't be less than x because drawable area for this key starts
+                // at x. Or, this key will overlaps the adjacent key on its left hand side.
+                keyXPos = x;
             }
             if (keyWidth == 0) {
                 // If keyWidth is zero, the actual key width will be determined to fill out the

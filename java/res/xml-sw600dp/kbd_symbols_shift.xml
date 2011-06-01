@@ -112,7 +112,7 @@
     >
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="11.1%p"
+            latin:keyWidth="10.0%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="\\" />
@@ -152,8 +152,8 @@
             latin:keyStyle="tabKeyStyle" />
         <Key
             latin:keyStyle="spaceKeyStyle"
-            latin:keyXPos="30.8%p"
-            latin:keyWidth="41.0%p" />
+            latin:keyXPos="30.750%p"
+            latin:keyWidth="39.750%p" />
         <Key
             latin:keyStyle="micOrSettingsKeyStyle"
             latin:keyXPos="-10.0%p"
