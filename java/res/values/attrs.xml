@@ -70,7 +70,7 @@
         <attr name="shadowRadius" format="float" />
         <attr name="backgroundDimAmount" format="float" />
 
-        <attr name="keyLetterStyle">
+        <attr name="keyLetterStyle" format="enum">
             <!-- This should be aligned with Typeface.NORMAL etc. -->
             <enum name="normal" value="0" />
             <enum name="bold" value="1" />
@@ -78,7 +78,7 @@
             <enum name="boldItalic" value="3" />
         </attr>
 
-        <attr name="colorScheme">
+        <attr name="colorScheme" format="enum">
             <!-- This should be aligned with KeyboardView.COLOR_SCHEME_* -->
             <enum name="white" value="0" />
             <enum name="black" value="1" />
@@ -125,7 +125,7 @@
         <!-- Maximum column of popup keyboard -->
         <attr name="maxPopupKeyboardColumn" format="integer" />
         <!-- Key edge flags. -->
-        <attr name="keyEdgeFlags">
+        <attr name="keyEdgeFlags" format="integer">
             <!-- Key is anchored to the left of the keyboard. -->
             <flag name="left" value="1" />
             <!-- Key is anchored to the right of the keyboard. -->
@@ -144,7 +144,7 @@
         <!-- The label to display on the key. -->
         <attr name="keyLabel" format="string" />
         <!-- The key label option -->
-        <attr name="keyLabelOption">
+        <attr name="keyLabelOption" format="integer">
             <!-- This should be aligned with KeyboardView.KEY_LABEL_OPTION_* -->
             <flag name="alignLeft" value="1" />
             <flag name="alignRight" value="2" />
@@ -176,7 +176,7 @@
 
     <declare-styleable name="Keyboard_Row">
         <!-- Row edge flags. -->
-        <attr name="rowEdgeFlags">
+        <attr name="rowEdgeFlags" format="integer">
             <!-- Row is anchored to the top of the keyboard. -->
             <flag name="top" value="4" />
             <!-- Row is anchored to the bottom of the keyboard. -->
@@ -190,7 +190,7 @@
 
     <declare-styleable name="Keyboard_Case">
         <!-- This should be aligned with KeyboardId.MODE_* -->
-        <attr name="mode">
+        <attr name="mode" format="enum|string">
             <enum name="text" value="0" />
             <enum name="url" value="1" />
             <enum name="email" value="2" />
@@ -203,17 +203,18 @@
         <attr name="hasSettingsKey" format="string" />
         <attr name="voiceKeyEnabled" format="string" />
         <attr name="hasVoiceKey" format="string" />
-        <attr name="imeAction">
+        <attr name="imeAction" format="enum">
             <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
-            <flag name="actionUnspecified" value="0" />
-            <flag name="actionNone" value="1" />
-            <flag name="actionGo" value="2" />
-            <flag name="actionSearch" value="3" />
-            <flag name="actionSend" value="4" />
-            <flag name="actionNext" value="5" />
-            <flag name="actionDone" value="6" />
-            <flag name="actionPrevious" value="7" />
+            <enum name="actionUnspecified" value="0" />
+            <enum name="actionNone" value="1" />
+            <enum name="actionGo" value="2" />
+            <enum name="actionSearch" value="3" />
+            <enum name="actionSend" value="4" />
+            <enum name="actionNext" value="5" />
+            <enum name="actionDone" value="6" />
+            <enum name="actionPrevious" value="7" />
         </attr>
+        <attr name="localeCode" format="string" />
         <attr name="languageCode" format="string" />
         <attr name="countryCode" format="string" />
     </declare-styleable>

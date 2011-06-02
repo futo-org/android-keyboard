@@ -467,8 +467,8 @@ public class KeyboardParser {
         final TypedArray viewAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.KeyboardView);
         try {
-            final boolean modeMatched = matchInteger(a,
-                    R.styleable.Keyboard_Case_mode, id.mMode);
+            final boolean modeMatched = matchTypedValue(a,
+                    R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
             final boolean webInputMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_webInput, id.mWebInput);
             final boolean passwordInputMatched = matchBoolean(a,
@@ -487,21 +487,22 @@ public class KeyboardParser {
             // this attribute with id.mImeOptions as integer value is enough for our purpose.
             final boolean imeActionMatched = matchInteger(a,
                     R.styleable.Keyboard_Case_imeAction, id.mImeAction);
+            final boolean localeCodeMatched = matchString(a,
+                    R.styleable.Keyboard_Case_localeCode, id.mLocale.toString());
             final boolean languageCodeMatched = matchString(a,
                     R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
             final boolean countryCodeMatched = matchString(a,
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
             final boolean selected = modeMatched && webInputMatched && passwordInputMatched
                     && settingsKeyMatched && voiceEnabledMatched && voiceKeyMatched
-                    && colorSchemeMatched && imeActionMatched && languageCodeMatched
-                    && countryCodeMatched;
+                    && colorSchemeMatched && imeActionMatched && localeCodeMatched
+                    && languageCodeMatched && countryCodeMatched;
 
-            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
-                    textAttr(KeyboardId.modeName(
-                            a.getInt(R.styleable.Keyboard_Case_mode, -1)), "mode"),
+            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
+                    textAttr(a.getString(R.styleable.Keyboard_Case_mode), "mode"),
                     textAttr(KeyboardId.colorSchemeName(
                             viewAttr.getInt(
-                                    R.styleable.KeyboardView_colorScheme, -1)), "colorSchemeName"),
+                                    R.styleable.KeyboardView_colorScheme, -1)), "colorScheme"),
                     booleanAttr(a, R.styleable.Keyboard_Case_webInput, "webInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_passwordInput, "passwordInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),
@@ -509,6 +510,7 @@ public class KeyboardParser {
                     booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
                     textAttr(EditorInfoCompatUtils.imeOptionsName(
                             a.getInt(R.styleable.Keyboard_Case_imeAction, -1)), "imeAction"),
+                    textAttr(a.getString(R.styleable.Keyboard_Case_localeCode), "localeCode"),
                     textAttr(a.getString(R.styleable.Keyboard_Case_languageCode), "languageCode"),
                     textAttr(a.getString(R.styleable.Keyboard_Case_countryCode), "countryCode"),
                     Boolean.toString(selected)));
@@ -535,7 +537,30 @@ public class KeyboardParser {
     private static boolean matchString(TypedArray a, int index, String value) {
         // If <case> does not have "index" attribute, that means this <case> is wild-card for the
         // attribute.
-        return !a.hasValue(index) || a.getString(index).equals(value);
+        return !a.hasValue(index) || stringArrayContains(a.getString(index).split("\\|"), value);
+    }
+
+    private static boolean matchTypedValue(TypedArray a, int index, int intValue, String strValue) {
+        // If <case> does not have "index" attribute, that means this <case> is wild-card for the
+        // attribute.
+        final TypedValue v = a.peekValue(index);
+        if (v == null)
+            return true;
+
+        if (isIntegerValue(v)) {
+            return intValue == a.getInt(index, 0);
+        } else if (isStringValue(v)) {
+            return stringArrayContains(a.getString(index).split("\\|"), strValue);
+        }
+        return false;
+    }
+
+    private static boolean stringArrayContains(String[] array, String value) {
+        for (final String elem : array) {
+            if (elem.equals(value))
+                return true;
+        }
+        return false;
     }
 
     private boolean parseDefault(XmlResourceParser parser, Row row, List<Key> keys)
@@ -610,17 +635,32 @@ public class KeyboardParser {
         final TypedValue value = a.peekValue(index);
         if (value == null)
             return defValue;
-        if (value.type == TypedValue.TYPE_FRACTION) {
+        if (isFractionValue(value)) {
             // Round it to avoid values like 47.9999 from getting truncated
             return Math.round(a.getFraction(index, base, base, defValue));
-        } else if (value.type == TypedValue.TYPE_DIMENSION) {
+        } else if (isDimensionValue(value)) {
             return a.getDimensionPixelOffset(index, defValue);
-        } else if (value.type >= TypedValue.TYPE_FIRST_INT
-                && value.type <= TypedValue.TYPE_LAST_INT) {
+        } else if (isIntegerValue(value)) {
             // For enum value.
             return a.getInt(index, defValue);
         }
         return defValue;
+    }
+
+    private static boolean isFractionValue(TypedValue v) {
+        return v.type == TypedValue.TYPE_FRACTION;
+    }
+
+    private static boolean isDimensionValue(TypedValue v) {
+        return v.type == TypedValue.TYPE_DIMENSION;
+    }
+
+    private static boolean isIntegerValue(TypedValue v) {
+        return v.type >= TypedValue.TYPE_FIRST_INT && v.type <= TypedValue.TYPE_LAST_INT;
+    }
+
+    private static boolean isStringValue(TypedValue v) {
+        return v.type == TypedValue.TYPE_STRING;
     }
 
     @SuppressWarnings("serial")
