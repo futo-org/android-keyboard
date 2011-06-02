@@ -24,12 +24,12 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="7.579%p"
+        latin:keyWidth="7.375%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.969%p"
+            latin:keyWidth="7.500%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="q"
@@ -65,17 +65,17 @@
             latin:keyLabel="å" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-9.219%p"
+            latin:keyXPos="-11.500%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.500%p"
+        latin:keyWidth="7.375%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.969%p"
+            latin:keyWidth="9.375%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="a"
@@ -109,12 +109,43 @@
             latin:popupCharacters="@string/alternates_for_scandinavia_row2_11" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyXPos="-15.704%p"
+            latin:keyXPos="-9.375%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
-    <include
-        latin:keyboardLayout="@xml/kbd_qwerty_row3" />
+    <Row
+        latin:keyWidth="7.375%p"
+    >
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyWidth="12.750%p"
+            latin:keyEdgeFlags="left" />
+        <Key
+            latin:keyLabel="z"
+            latin:popupCharacters="@string/alternates_for_z" />
+        <Key
+            latin:keyLabel="x" />
+        <Key
+            latin:keyLabel="c"
+            latin:popupCharacters="@string/alternates_for_c" />
+        <Key
+            latin:keyLabel="v"
+            latin:popupCharacters="@string/alternates_for_v" />
+        <Key
+            latin:keyLabel="b" />
+        <Key
+            latin:keyLabel="n"
+            latin:popupCharacters="@string/alternates_for_n" />
+        <Key
+            latin:keyLabel="m" />
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_right2" />
+        <Key
+            latin:keyStyle="shiftKeyStyle"
+            latin:keyXPos="-12.750%p"
+            latin:keyWidth="fillRight"
+            latin:keyEdgeFlags="right" />
+    </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </merge>

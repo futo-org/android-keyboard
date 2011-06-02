@@ -25,12 +25,11 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:keyWidth="7.579%p"
+        latin:keyWidth="7.125%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="й" />
@@ -56,18 +55,19 @@
         <Key
             latin:keyLabel="х" />
         <Key
+            latin:keyLabel="ъ" />
+        <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-9.219%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.500%p"
+        latin:keyWidth="7.125%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="9.219%p"
+            latin:keyWidth="9.375%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ф" />
@@ -93,16 +93,16 @@
             latin:keyLabel="э" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyXPos="-15.704%p"
+            latin:keyXPos="-9.375%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.500%p"
+        latin:keyWidth="7.125%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.400%p"
+            latin:keyWidth="12.750%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="я" />
@@ -117,21 +117,15 @@
         <Key
             latin:keyLabel="т" />
         <Key
-            latin:keyLabel="ь"
-            latin:popupCharacters="@string/alternates_for_cyrillic_soft_sign" />
+            latin:keyLabel="ь" />
         <Key
             latin:keyLabel="б" />
         <Key
             latin:keyLabel="ю" />
-        <Key
-            latin:keyLabel="."
-            latin:manualTemporaryUpperCaseCode="44"
-            latin:keyHintIcon="@drawable/key_hint_comma_holo"
-            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_comma_large_holo"
-            latin:popupCharacters="," />
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_right2" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyXPos="-13.750%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>

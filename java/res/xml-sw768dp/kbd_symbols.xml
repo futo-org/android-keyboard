@@ -72,7 +72,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
-            latin:keyWidth="fillBoth"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
@@ -131,12 +131,6 @@
             latin:popupCharacters="≠,≈" />
         <switch>
             <case
-                latin:languageCode="ru"
-            >
-                <Key
-                    latin:keyLabel=":" />
-            </case>
-            <case
                 latin:mode="url"
             >
                 <Key
@@ -150,36 +144,16 @@
         </switch>
         <Key
             latin:keyLabel=";" />
-        <switch>
-            <case
-                latin:languageCode="ru"
-            >
-                <Key
-                    latin:keyLabel="\'"
-                    latin:popupCharacters="‘,’,‚,‛" />
-                <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
-                <!-- latin:popupCharacters="“,”,„,‟,«,»" -->
-                <Key
-                    latin:keyLabel="&quot;"
-                    latin:popupCharacters="“,”,«,»" />
-                <Key
-                    latin:keyLabel="." />
-                <Key
-                    latin:keyLabel="," />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel="," />
-                <Key
-                    latin:keyLabel="." />
-                <Key
-                    latin:keyLabel="!"
-                    latin:popupCharacters="¡" />
-                <Key
-                    latin:keyLabel="\?"
-                    latin:popupCharacters="¿" />
-            </default>
-        </switch>
+        <Key
+            latin:keyLabel="," />
+        <Key
+            latin:keyLabel="." />
+        <Key
+            latin:keyLabel="!"
+            latin:popupCharacters="¡" />
+        <Key
+            latin:keyLabel="\?"
+            latin:popupCharacters="¿" />
         <Key
             latin:keyStyle="moreKeyStyle"
             latin:keyXPos="-13.750%p"
@@ -191,7 +165,9 @@
         latin:keyWidth="8.047%p"
     >
         <switch>
-            <case latin:hasSettingsKey="true">
+            <case
+                latin:hasSettingsKey="true"
+            >
                 <Key
                     latin:keyStyle="settingsKeyStyle"
                     latin:keyWidth="8.047%p" />
@@ -206,25 +182,13 @@
             latin:keyStyle="spaceKeyStyle"
             latin:keyXPos="31.250%p"
             latin:keyWidth="37.500%p" />
-        <switch>
-            <case
-                latin:languageCode="ru"
-            >
-                <Key
-                    latin:keyLabel="_" />
-                <Key
-                    latin:keyLabel="-" />
-            </case>
-            <default>
-                <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
-                <!-- latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" -->
-                <Key
-                    latin:keyLabel="&quot;"
-                    latin:popupCharacters="“,”,«,»,‘,’,‚,‛" />
-                <Key
-                    latin:keyLabel="_" />
-            </default>
-        </switch>
+        <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
+        <!-- latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" -->
+        <Key
+            latin:keyLabel="&quot;"
+            latin:popupCharacters="“,”,«,»,‘,’,‚,‛" />
+        <Key
+            latin:keyLabel="_" />
         <switch>
             <case
                 latin:voiceKeyEnabled="true"

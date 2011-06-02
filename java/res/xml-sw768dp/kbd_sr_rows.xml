@@ -25,12 +25,11 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <!-- This row is intentionally not marked as a top row -->
     <Row
-        latin:keyWidth="7.579%p"
+        latin:keyWidth="7.125%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.969%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="љ" />
@@ -55,18 +54,19 @@
         <Key
             latin:keyLabel="ш" />
         <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-9.219%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyLabel="ђ" />
+        <Key
+            latin:keyLabel="ж"
+            latin:keyWidth="fillRight"
+            latin:keyEdgeFlags="right"/>
     </Row>
     <Row
-        latin:keyWidth="7.500%p"
+        latin:keyWidth="7.250%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="9.219%p"
+            latin:keyWidth="11.172%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="а" />
@@ -91,17 +91,17 @@
         <Key
             latin:keyLabel="ћ" />
         <Key
-            latin:keyStyle="returnKeyStyle"
-            latin:keyXPos="-15.704%p"
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyXPos="-9.219%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.500%p"
+        latin:keyWidth="7.250%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="9.219%p"
+            latin:keyWidth="13.829%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ѕ" />
@@ -117,26 +117,12 @@
             latin:keyLabel="н" />
         <Key
             latin:keyLabel="м" />
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_right2" />
         <Key
-            latin:keyLabel="ђ" />
-        <Key
-            latin:keyLabel="ж" />
-        <Key
-            latin:keyLabel=","
-            latin:manualTemporaryUpperCaseCode="33"
-            latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
-            latin:popupCharacters="!" />
-        <Key
-            latin:keyLabel="."
-            latin:manualTemporaryUpperCaseCode="63"
-            latin:keyHintIcon="@drawable/key_hint_question_holo"
-            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
-            latin:popupCharacters="\?" />
-        <Key
-            latin:keyStyle="shiftKeyStyle"
+            latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-13.750%p"
-            latin:keyWidth="fillBoth"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <include

@@ -46,30 +46,8 @@
             latin:popupCharacters="@string/alternates_for_n" />
         <Key
             latin:keyLabel="m" />
-        <switch>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyLabel="," />
-                <Key
-                    latin:keyLabel="." />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel=","
-                    latin:manualTemporaryUpperCaseCode="33"
-                    latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
-                    latin:popupCharacters="!" />
-                <Key
-                    latin:keyLabel="."
-                    latin:manualTemporaryUpperCaseCode="63"
-                    latin:keyHintIcon="@drawable/key_hint_question_holo"
-                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
-                    latin:popupCharacters="\?" />
-            </default>
-        </switch>
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_right2" />
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyXPos="-13.750%p"

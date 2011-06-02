@@ -27,6 +27,7 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
+        latin:keyWidth="10%p"
         latin:rowEdgeFlags="top"
     >
         <Key
@@ -53,7 +54,9 @@
             latin:visualInsetsLeft="1%p"
             latin:keyEdgeFlags="right" />
     </Row>
-    <Row>
+    <Row
+        latin:keyWidth="10%p"
+    >
         <Key
             latin:keyLabel="ש"
             latin:keyEdgeFlags="left" />
@@ -78,7 +81,9 @@
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
-    <Row>
+    <Row
+        latin:keyWidth="10%p"
+    >
         <Key
             latin:keyLabel="ז"
             latin:keyXPos="5%p"

@@ -27,12 +27,12 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="7.579%p"
+        latin:keyWidth="7.375%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.969%p"
+            latin:keyWidth="7.500%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ض" />
@@ -61,17 +61,17 @@
             latin:popupCharacters="ج,چ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-9.219%p"
+            latin:keyXPos="-11.500%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.500%p"
+        latin:keyWidth="7.375%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="9.219%p"
+            latin:keyWidth="9.375%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ش" />
@@ -101,16 +101,16 @@
             latin:keyLabel="ط" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyXPos="-15.704%p"
+            latin:keyXPos="-9.375%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.500%p"
+        latin:keyWidth="7.375%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="9.219%p"
+            latin:keyWidth="12.750%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ئ" />
@@ -135,11 +135,6 @@
             latin:keyLabel="ظ" />
         <Key
             latin:keyLabel="د" />
-        <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyXPos="-13.750%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
     </Row>
     <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </merge>

@@ -24,7 +24,6 @@
     latin:maxKeyboardHeight="@fraction/maxKeyboardHeight"
     latin:minKeyboardHeight="@fraction/minKeyboardHeight"
     latin:rowHeight="25%p"
-    latin:keyWidth="10%p"
     latin:horizontalGap="@dimen/key_horizontal_gap"
     latin:verticalGap="@dimen/key_bottom_gap"
     latin:popupKeyboardTemplate="@xml/kbd_popup_template"
