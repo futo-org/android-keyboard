@@ -131,7 +131,6 @@ static int latinime_BinaryDictionary_getSuggestions(JNIEnv *env, jobject object,
     Dictionary *dictionary = (Dictionary*)dict;
     if (!dictionary) return 0;
     ProximityInfo *pInfo = (ProximityInfo*)proximityInfo;
-    if (!pInfo) return 0;
 
     int *xCoordinates = env->GetIntArrayElements(xCoordinatesArray, NULL);
     int *yCoordinates = env->GetIntArrayElements(yCoordinatesArray, NULL);

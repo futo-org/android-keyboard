@@ -233,7 +233,7 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     PROF_END(5);
 
     PROF_START(6);
-    if (SUGGEST_WORDS_WITH_SPACE_PROXIMITY) {
+    if (SUGGEST_WORDS_WITH_SPACE_PROXIMITY && proximityInfo) {
         // The first and last "mistyped spaces" are taken care of by excessive character handling
         for (int i = 1; i < codesSize - 1; ++i) {
             if (DEBUG_DICT) {
