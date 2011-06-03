@@ -76,9 +76,11 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         final int pointX = (mConfigShowMiniKeyboardAtTouchedPoint) ? tracker.getLastX()
                 : parentKey.mX + parentKey.mWidth / 2;
         final int pointY = parentKey.mY;
-        final int miniKeyboardX = pointX - miniKeyboard.getDefaultCoordX()
-                - container.getPaddingLeft()
-                + parentKeyboardView.getPaddingLeft() + mCoordinates[0];
+        final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
+                + parentKeyboardView.getPaddingLeft();
+        final int miniKeyboardX = Math.max(0, Math.min(miniKeyboardLeft,
+                parentKeyboardView.getWidth() - miniKeyboard.getMinWidth()))
+                - container.getPaddingLeft() + mCoordinates[0];
         final int miniKeyboardY = pointY - parentKeyboard.getVerticalGap()
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + parentKeyboardView.getPaddingTop() + mCoordinates[1];
