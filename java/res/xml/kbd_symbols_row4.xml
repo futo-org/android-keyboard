@@ -54,25 +54,12 @@
                     latin:keyWidth="40%p" />
             </default>
         </switch>
-        <switch>
-            <case
-                latin:webInput="true"
-            >
-                <Key
-                    latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
-                    latin:maxPopupKeyboardColumn="8"
-                    latin:keyStyle="tabKeyStyle" />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel="."
-                    latin:keyHintIcon="@drawable/hint_popup"
-                    latin:popupCharacters="@string/alternates_for_punctuation"
-                    latin:maxPopupKeyboardColumn="7"
-                    latin:keyStyle="functionalKeyStyle" />
-            </default>
-        </switch>
+        <Key
+            latin:keyLabel="."
+            latin:keyHintIcon="@drawable/hint_popup"
+            latin:popupCharacters="@string/alternates_for_punctuation"
+            latin:maxPopupKeyboardColumn="7"
+            latin:keyStyle="functionalKeyStyle" />
         <switch>
             <case
                 latin:mode="im"
