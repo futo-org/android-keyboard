@@ -58,19 +58,9 @@
                     latin:keyWidth="40%p" />
             </default>
         </switch>
-        <switch>
-            <case
-                latin:webInput="true"
-            >
-                <Key
-                    latin:keyStyle="tabKeyStyle" />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel="…"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
-            </default>
-        </switch>
+        <Key
+            latin:keyLabel="…"
+            latin:keyStyle="nonPasswordFunctionalKeyStyle" />
         <switch>
             <case
                 latin:mode="im"
