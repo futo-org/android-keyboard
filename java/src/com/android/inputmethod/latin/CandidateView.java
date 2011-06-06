@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -40,10 +38,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +56,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private final ArrayList<View> mWords = new ArrayList<View>();
+    private final ArrayList<View> mDividers = new ArrayList<View>();
     private final boolean mConfigCandidateHighlightFontColorEnabled;
     private final CharacterStyle mInvertedForegroundColorSpan;
     private final CharacterStyle mInvertedBackgroundColorSpan;
@@ -148,10 +148,11 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             tv.setOnClickListener(this);
             if (i == 0)
                 tv.setOnLongClickListener(this);
-            ImageView divider = (ImageView)v.findViewById(R.id.candidate_divider);
-            // Do not display divider of first candidate.
-            divider.setVisibility(i == 0 ? INVISIBLE : VISIBLE);
             mWords.add(v);
+            if (i > 0) {
+                View divider = inflater.inflate(R.layout.candidate_divider, null);
+                mDividers.add(divider);
+            }
         }
 
         scrollTo(0, getScrollY());
@@ -237,6 +238,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             } else {
                 dv.setVisibility(GONE);
             }
+            if (i > 0)
+                addView(mDividers.get(i - 1));
             addView(v);
         }
 
