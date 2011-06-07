@@ -55,14 +55,15 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private final ArrayList<View> mWords = new ArrayList<View>();
+    private final ArrayList<TextView> mWords = new ArrayList<TextView>();
     private final ArrayList<View> mDividers = new ArrayList<View>();
+    private final int mCandidatePadding;
     private final boolean mConfigCandidateHighlightFontColorEnabled;
     private final CharacterStyle mInvertedForegroundColorSpan;
     private final CharacterStyle mInvertedBackgroundColorSpan;
-    private final int mColorNormal;
-    private final int mColorRecommended;
-    private final int mColorOther;
+    private final int mColorTypedWord;
+    private final int mColorAutoCorrect;
+    private final int mColorSuggestedCandidate;
     private final PopupWindow mPreviewPopup;
     private final TextView mPreviewText;
 
@@ -135,20 +136,20 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mPreviewPopup.setBackgroundDrawable(null);
         mConfigCandidateHighlightFontColorEnabled =
                 res.getBoolean(R.bool.config_candidate_highlight_font_color_enabled);
-        mColorNormal = res.getColor(R.color.candidate_normal);
-        mColorRecommended = res.getColor(R.color.candidate_recommended);
-        mColorOther = res.getColor(R.color.candidate_other);
-        mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorNormal ^ 0x00ffffff);
-        mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorNormal);
+        mColorTypedWord = res.getColor(R.color.candidate_typed_word);
+        mColorAutoCorrect = res.getColor(R.color.candidate_auto_correct);
+        mColorSuggestedCandidate = res.getColor(R.color.candidate_suggested);
+        mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
+        mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
 
+        mCandidatePadding = res.getDimensionPixelOffset(R.dimen.candidate_padding);
         for (int i = 0; i < MAX_SUGGESTIONS; i++) {
-            View v = inflater.inflate(R.layout.candidate, null);
-            TextView tv = (TextView)v.findViewById(R.id.candidate_word);
+            final TextView tv = (TextView)inflater.inflate(R.layout.candidate, null);
             tv.setTag(i);
             tv.setOnClickListener(this);
             if (i == 0)
                 tv.setOnLongClickListener(this);
-            mWords.add(v);
+            mWords.add(tv);
             if (i > 0) {
                 View divider = inflater.inflate(R.layout.candidate_divider, null);
                 mDividers.add(divider);
@@ -177,70 +178,79 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         }
     }
 
+    private CharSequence getStyledCandidateWord(CharSequence word, boolean isAutoCorrect) {
+        if (!isAutoCorrect)
+            return word;
+        final CharacterStyle style = mConfigCandidateHighlightFontColorEnabled ? BOLD_SPAN
+                : UNDERLINE_SPAN;
+        final Spannable spannedWord = new SpannableString(word);
+        spannedWord.setSpan(style, 0, word.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        return spannedWord;
+    }
+
+    private int getCandidateTextColor(boolean isAutoCorrect, boolean isSuggestedCandidate,
+            SuggestedWordInfo info) {
+        final int color;
+        if (isAutoCorrect && mConfigCandidateHighlightFontColorEnabled) {
+            color = mColorAutoCorrect;
+        } else if (isSuggestedCandidate) {
+            color = mColorSuggestedCandidate;
+        } else {
+            color = mColorTypedWord;
+        }
+        if (info != null && info.isPreviousSuggestedWord()) {
+            final int newAlpha = (int)(Color.alpha(color) * 0.5f);
+            return Color.argb(newAlpha, Color.red(color), Color.green(color), Color.blue(color));
+        } else {
+            return color;
+        }
+    }
+
     private void updateSuggestions() {
         final SuggestedWords suggestions = mSuggestions;
+        final List<SuggestedWordInfo> suggestedWordInfoList = suggestions.mSuggestedWordInfoList;
+
         clear();
         final int count = Math.min(mWords.size(), suggestions.size());
         for (int i = 0; i < count; i++) {
-            CharSequence word = suggestions.getWord(i);
+            final CharSequence word = suggestions.getWord(i);
             if (word == null) continue;
-            final int wordLength = word.length();
-            final List<SuggestedWordInfo> suggestedWordInfoList =
-                    suggestions.mSuggestedWordInfoList;
 
-            final View v = mWords.get(i);
-            final TextView tv = (TextView)v.findViewById(R.id.candidate_word);
-            final TextView dv = (TextView)v.findViewById(R.id.candidate_debug_info);
-            tv.setTextColor(mColorNormal);
-            // TODO: Needs safety net?
-            if (suggestions.mHasMinimalSuggestion
+            final SuggestedWordInfo info = (suggestedWordInfoList != null)
+                    ? suggestedWordInfoList.get(i) : null;
+            final boolean isAutoCorrect = suggestions.mHasMinimalSuggestion
                     && ((i == 1 && !suggestions.mTypedWordValid)
-                            || (i == 0 && suggestions.mTypedWordValid))) {
-                final CharacterStyle style;
-                if (mConfigCandidateHighlightFontColorEnabled) {
-                    style = BOLD_SPAN;
-                    tv.setTextColor(mColorRecommended);
-                } else {
-                    style = UNDERLINE_SPAN;
-                }
-                final Spannable spannedWord = new SpannableString(word);
-                spannedWord.setSpan(style, 0, wordLength, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-                word = spannedWord;
-            } else if (i != 0 || (wordLength == 1 && count > 1)) {
-                // HACK: even if i == 0, we use mColorOther when this
-                // suggestion's length is 1
-                // and there are multiple suggestions, such as the default
-                // punctuation list.
-                if (mConfigCandidateHighlightFontColorEnabled)
-                    tv.setTextColor(mColorOther);
-            }
-            tv.setText(word);
-            tv.setClickable(true);
+                            || (i == 0 && suggestions.mTypedWordValid));
+            // HACK: even if i == 0, we use mColorOther when this suggestion's length is 1
+            // and there are multiple suggestions, such as the default punctuation list.
+            // TODO: Need to revisit this logic with bigram suggestions
+            final boolean isSuggestedCandidate = (i != 0);
+            final boolean isPunctuationSuggestions = (word.length() == 1 && count > 1);
 
-            if (suggestedWordInfoList != null && suggestedWordInfoList.get(i) != null) {
-                final SuggestedWordInfo info = suggestedWordInfoList.get(i);
-                if (info.isPreviousSuggestedWord()) {
-                    int color = tv.getCurrentTextColor();
-                    tv.setTextColor(Color.argb((int)(Color.alpha(color) * 0.5f), Color.red(color),
-                            Color.green(color), Color.blue(color)));
-                }
-                final String debugString = info.getDebugString();
-                if (DBG) {
-                    if (TextUtils.isEmpty(debugString)) {
-                        dv.setVisibility(GONE);
-                    } else {
-                        dv.setText(debugString);
-                        dv.setVisibility(VISIBLE);
-                    }
-                } else {
-                    dv.setVisibility(GONE);
-                }
+            final TextView tv = mWords.get(i);
+            tv.setTextColor(getCandidateTextColor(isAutoCorrect,
+                    isSuggestedCandidate || isPunctuationSuggestions, info));
+            tv.setText(getStyledCandidateWord(word, isAutoCorrect));
+            if (i == 0) {
+                tv.setPadding(mCandidatePadding, 0, 0, 0);
+            } else if (i == count - 1) {
+                tv.setPadding(0, 0, mCandidatePadding, 0);
             } else {
-                dv.setVisibility(GONE);
+                tv.setPadding(0, 0, 0, 0);
             }
             if (i > 0)
                 addView(mDividers.get(i - 1));
-            addView(v);
+            addView(tv);
+
+            if (DBG && info != null) {
+                final TextView dv = new TextView(getContext(), null);
+                dv.setTextSize(10.0f);
+                dv.setTextColor(0xff808080);
+                dv.setText(info.getDebugString());
+                addView(dv);
+                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)dv.getLayoutParams();
+                lp.gravity = Gravity.BOTTOM;
+            }
         }
 
         scrollTo(0, getScrollY());
@@ -252,7 +262,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         // with color is disabled.
         if (mConfigCandidateHighlightFontColorEnabled)
             return;
-        final TextView tv = (TextView)mWords.get(1).findViewById(R.id.candidate_word);
+        final TextView tv = mWords.get(1);
         final Spannable word = new SpannableString(autoCorrectedWord);
         final int wordLength = word.length();
         word.setSpan(mInvertedBackgroundColorSpan, 0, wordLength,
@@ -278,7 +288,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         setSuggestions(builder.build());
         mShowingAddToDictionary = true;
         // Disable R.string.hint_add_to_dictionary button
-        TextView tv = (TextView)mWords.get(1).findViewById(R.id.candidate_word);
+        TextView tv = mWords.get(1);
         tv.setClickable(false);
     }
 
@@ -307,7 +317,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             return;
 
         final TextView previewText = mPreviewText;
-        previewText.setTextColor(mColorNormal);
+        previewText.setTextColor(mColorTypedWord);
         previewText.setText(word);
         previewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
