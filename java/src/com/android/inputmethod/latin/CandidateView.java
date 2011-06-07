@@ -278,7 +278,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         setSuggestions(builder.build());
         mShowingAddToDictionary = true;
         // Disable R.string.hint_add_to_dictionary button
-        TextView tv = (TextView)getChildAt(1).findViewById(R.id.candidate_word);
+        TextView tv = (TextView)mWords.get(1).findViewById(R.id.candidate_word);
         tv.setClickable(false);
     }
 
@@ -311,7 +311,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         previewText.setText(word);
         previewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-        View v = getChildAt(index);
+        View v = mWords.get(index);
         final int[] offsetInWindow = new int[2];
         v.getLocationInWindow(offsetInWindow);
         final int posX = offsetInWindow[0];
