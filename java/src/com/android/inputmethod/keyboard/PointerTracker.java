@@ -22,6 +22,7 @@ import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import android.content.res.Resources;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
@@ -540,8 +541,11 @@ public class PointerTracker {
 
     public void onLongPressed(PointerTrackerQueue queue) {
         mKeyAlreadyProcessed = true;
-        if (queue != null)
+        if (queue != null) {
+            // TODO: Support chording + long-press input.
+            queue.releaseAllPointersExcept(this, SystemClock.uptimeMillis(), true);
             queue.remove(this);
+        }
     }
 
     public void onCancelEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
