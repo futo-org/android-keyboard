@@ -16,10 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
-
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -45,10 +41,15 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup.LayoutParams;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -193,6 +194,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         private static final int MSG_REPEAT_KEY = 3;
         private static final int MSG_LONGPRESS_KEY = 4;
         private static final int MSG_LONGPRESS_SHIFT_KEY = 5;
+        private static final int MSG_IGNORE_DOUBLE_TAP = 6;
 
         private boolean mInKeyRepeat;
 
@@ -284,6 +286,16 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         public void cancelKeyTimers() {
             cancelKeyRepeatTimer();
             cancelLongPressTimers();
+            removeMessages(MSG_IGNORE_DOUBLE_TAP);
+        }
+
+        public void startIgnoringDoubleTap() {
+            sendMessageDelayed(obtainMessage(MSG_IGNORE_DOUBLE_TAP),
+                    ViewConfiguration.getDoubleTapTimeout());
+        }
+
+        public boolean isIgnoringDoubleTap() {
+            return hasMessages(MSG_IGNORE_DOUBLE_TAP);
         }
 
         public void cancelAllMessages() {
@@ -453,7 +465,12 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                     final PointerTracker tracker = getPointerTracker(id);
                     // If the second down event is also on shift key.
                     if (tracker.isOnShiftKey((int)secondDown.getX(), (int)secondDown.getY())) {
-                        onDoubleTapShiftKey(tracker);
+                        // Detected a double tap on shift key. If we are in the ignoring double tap
+                        // mode, it means we have already turned off caps lock in
+                        // {@link KeyboardSwitcher#onReleaseShift} .
+                        final boolean ignoringDoubleTap = mHandler.isIgnoringDoubleTap();
+                        if (!ignoringDoubleTap)
+                            onDoubleTapShiftKey(tracker);
                         return true;
                     }
                     // Otherwise these events should not be handled as double tap.
@@ -470,6 +487,11 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mHasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
         mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
+    }
+
+    public void startIgnoringDoubleTap() {
+        if (ENABLE_CAPSLOCK_BY_DOUBLETAP)
+            mHandler.startIgnoringDoubleTap();
     }
 
     public void setOnKeyboardActionListener(KeyboardActionListener listener) {
