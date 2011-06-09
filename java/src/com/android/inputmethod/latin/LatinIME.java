@@ -1210,7 +1210,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
                 && !isManualTemporaryUpperCase) {
             EditorInfoCompatUtils.performEditorActionNext(ic);
-            ic.performEditorAction(EditorInfo.IME_ACTION_NEXT);
         } else if (EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions)
                 && isManualTemporaryUpperCase) {
             EditorInfoCompatUtils.performEditorActionPrevious(ic);
