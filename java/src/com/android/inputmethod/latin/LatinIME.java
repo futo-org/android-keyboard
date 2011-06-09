@@ -173,6 +173,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Magic space: a space that should disappear on space/apostrophe insertion, move after the
     // punctuation on punctuation insertion, and become a real space on alpha char insertion.
     private boolean mJustAddedMagicSpace; // This indicates whether the last char is a magic space.
+    // This indicates whether the last keypress resulted in processing of double space replacement
+    // with period-space.
+    private boolean mJustReplacedDoubleSpace;
 
     private int mCorrectionMode;
     private int mCommittedLength;
@@ -181,8 +184,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private int mLastSelectionStart;
     private int mLastSelectionEnd;
 
-    // Indicates whether the suggestion strip is to be on in landscape
-    private boolean mJustAccepted;
+    // Whether we are expecting an onUpdateSelection event to fire. If it does when we don't
+    // "expect" it, it means the user actually moved the cursor.
+    private boolean mExpectingUpdateSelection;
     private int mDeleteCount;
     private long mLastKeyTime;
 
@@ -535,6 +539,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mHasUncommittedTypedChars = false;
         mDeleteCount = 0;
         mJustAddedMagicSpace = false;
+        mJustReplacedDoubleSpace = false;
 
         loadSettings();
         updateCorrectionMode();
@@ -714,14 +719,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.finishComposingText();
             }
             mVoiceProxy.setVoiceInputHighlighted(false);
-        } else if (!mHasUncommittedTypedChars && !mJustAccepted) {
+        } else if (!mHasUncommittedTypedChars && !mExpectingUpdateSelection) {
             if (TextEntryState.isAcceptedDefault() || TextEntryState.isSpaceAfterPicked()) {
                 if (TextEntryState.isAcceptedDefault())
                     TextEntryState.reset();
-                mJustAddedMagicSpace = false; // The user moved the cursor.
             }
         }
-        mJustAccepted = false;
+        if (!mExpectingUpdateSelection) {
+          mJustAddedMagicSpace = false; // The user moved the cursor.
+          mJustReplacedDoubleSpace = false;
+        }
+        mExpectingUpdateSelection = false;
         mHandler.postUpdateShiftKeyState();
 
         // Make a note of the cursor position
@@ -971,6 +979,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             ic.commitText(". ", 1);
             ic.endBatchEdit();
             mKeyboardSwitcher.updateShiftState();
+            mJustReplacedDoubleSpace = true;
         } else {
             mHandler.startDoubleSpacesTimer();
         }
@@ -1054,10 +1063,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mLastKeyTime = when;
         KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
+        final boolean lastStateOfJustReplacedDoubleSpace = mJustReplacedDoubleSpace;
+        mJustReplacedDoubleSpace = false;
         switch (primaryCode) {
         case Keyboard.CODE_DELETE:
-            handleBackspace();
+            handleBackspace(lastStateOfJustReplacedDoubleSpace);
             mDeleteCount++;
+            mExpectingUpdateSelection = true;
             LatinImeLogger.logOnDelete();
             break;
         case Keyboard.CODE_SHIFT:
@@ -1095,6 +1107,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             break;
         case Keyboard.CODE_TAB:
             handleTab();
+            // There are two cases for tab. Either we send a "next" event, that may change the
+            // focus but will never move the cursor. Or, we send a real tab keycode, which some
+            // applications may accept or ignore, and we don't know whether this will move the
+            // cursor or not. So actually, we don't really know.
+            // So to go with the safer option, we'd rather behave as if the user moved the
+            // cursor when they didn't than the opposite. We also expect that most applications
+            // will actually use tab only for focus movement.
+            // To sum it up: do not update mExpectingUpdateSelection here.
             break;
         default:
             if (mSettingsValues.isWordSeparator(primaryCode)) {
@@ -1102,6 +1122,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 handleCharacter(primaryCode, keyCodes, x, y);
             }
+            mExpectingUpdateSelection = true;
+            break;
         }
         switcher.onKey(primaryCode);
         // Reset after any single keystroke
@@ -1131,7 +1153,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mKeyboardSwitcher.onCancelInput();
     }
 
-    private void handleBackspace() {
+    private void handleBackspace(boolean justReplacedDoubleSpace) {
         if (mVoiceProxy.logAndRevertVoiceInput()) return;
 
         final InputConnection ic = getCurrentInputConnection();
@@ -1171,6 +1193,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             revertLastWord(deleteChar);
             ic.endBatchEdit();
             return;
+        }
+        if (justReplacedDoubleSpace) {
+            if (revertDoubleSpace()) {
+              ic.endBatchEdit();
+              return;
+            }
         }
 
         if (mEnteredText != null && sameAsTextBeforeCursor(ic, mEnteredText)) {
@@ -1516,7 +1544,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         if (mBestWord != null && mBestWord.length() > 0) {
             TextEntryState.acceptedDefault(mWord.getTypedWord(), mBestWord, separatorCode);
-            mJustAccepted = true;
+            mExpectingUpdateSelection = true;
             commitBestWord(mBestWord);
             // Add the word to the auto dictionary if it's not a known word
             addToAutoAndUserBigramDictionaries(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
@@ -1584,7 +1612,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // context - no user input. We should reset the word composer.
             mWord.reset();
         }
-        mJustAccepted = true;
+        mExpectingUpdateSelection = true;
         commitBestWord(suggestion);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
@@ -1792,6 +1820,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         } else {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
         }
+    }
+
+    public boolean revertDoubleSpace() {
+        mHandler.cancelDoubleSpacesTimer();
+        final InputConnection ic = getCurrentInputConnection();
+        // Here we test whether we indeed have a period and a space before us. This should not
+        // be needed, but it's there just in case something went wrong.
+        final CharSequence textBeforeCursor = ic.getTextBeforeCursor(2, 0);
+        if (!". ".equals(textBeforeCursor))
+            return false;
+        ic.beginBatchEdit();
+        ic.deleteSurroundingText(2, 0);
+        ic.commitText("  ", 1);
+        ic.endBatchEdit();
+        return true;
     }
 
     public boolean isWordSeparator(int code) {
