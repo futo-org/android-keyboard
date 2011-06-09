@@ -77,7 +77,8 @@ import java.util.Locale;
 /**
  * Input method implementation for Qwerty'ish keyboard.
  */
-public class LatinIME extends InputMethodServiceCompatWrapper implements KeyboardActionListener {
+public class LatinIME extends InputMethodServiceCompatWrapper implements KeyboardActionListener,
+        CandidateView.Listener {
     private static final String TAG = LatinIME.class.getSimpleName();
     private static final boolean PERF_DEBUG = false;
     private static final boolean TRACE = false;
@@ -491,7 +492,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.setInputView(view);
         mCandidateViewContainer = view.findViewById(R.id.candidates_container);
         mCandidateView = (CandidateView) view.findViewById(R.id.candidates);
-        mCandidateView.setService(this);
+        mCandidateView.setListener(this);
         mCandidateStripHeight = (int)mResources.getDimension(R.dimen.candidate_strip_height);
     }
 
@@ -1000,6 +1001,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
+    @Override
     public boolean addWordToDictionary(String word) {
         mUserDictionary.addWord(word, 128);
         // Suggestion strip should be updated after the operation of adding word to the
@@ -1524,6 +1526,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return false;
     }
 
+    @Override
     public void pickSuggestionManually(int index, CharSequence suggestion) {
         SuggestedWords suggestions = mCandidateView.getSuggestions();
         mVoiceProxy.flushAndLogAllTextModificationCounters(index, suggestion,

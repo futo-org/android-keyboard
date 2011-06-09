@@ -49,6 +49,11 @@ import java.util.List;
 
 public class CandidateView extends LinearLayout implements OnClickListener, OnLongClickListener {
 
+    public interface Listener {
+        public boolean addWordToDictionary(String word);
+        public void pickSuggestionManually(int index, CharSequence word);
+    }
+
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
     private static final int MAX_SUGGESTIONS = 16;
@@ -66,7 +71,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final PopupWindow mPreviewPopup;
     private final TextView mPreviewText;
 
-    private LatinIME mService;
+    private Listener mListener;
     private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
     private boolean mShowingAutoCorrectionInverted;
     private boolean mShowingAddToDictionary;
@@ -159,11 +164,11 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     /**
-     * A connection back to the service to communicate with the text field
+     * A connection back to the input method.
      * @param listener
      */
-    public void setService(LatinIME listener) {
-        mService = listener;
+    public void setListener(Listener listener) {
+        mListener = listener;
     }
 
     public void setSuggestions(SuggestedWords suggestions) {
@@ -327,7 +332,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     private void addToDictionary(CharSequence word) {
-        if (mService.addWordToDictionary(word.toString())) {
+        if (mListener.addWordToDictionary(word.toString())) {
             showPreview(0, getContext().getString(R.string.added_word, word));
         }
     }
@@ -349,7 +354,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         if (mShowingAddToDictionary && index == 0) {
             addToDictionary(word);
         } else {
-            mService.pickSuggestionManually(index, word);
+            mListener.pickSuggestionManually(index, word);
         }
     }
 
