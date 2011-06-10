@@ -40,7 +40,7 @@ public class ContactsDictionary extends ExpandableDictionary {
     /**
      * Frequency for contacts information into the dictionary
      */
-    private static final int FREQUENCY_FOR_CONTACTS = 128;
+    private static final int FREQUENCY_FOR_CONTACTS = 40;
     private static final int FREQUENCY_FOR_CONTACTS_BIGRAM = 90;
 
     private static final int INDEX_NAME = 1;
