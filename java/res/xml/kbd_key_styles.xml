@@ -40,7 +40,7 @@
     <!-- Base key style for the key which may have settings key as popup key -->
     <switch>
         <case
-            latin:hasSettingsKey="true"
+            latin:clobberSettingsKey="true"
         >
             <key-style
                 latin:styleName="settingsPopupStyle"
