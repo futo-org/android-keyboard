@@ -85,12 +85,11 @@
                     latin:keyXPos="24.875%p" />
                 <Key
                     latin:keyStyle="num0KeyStyle" />
-                <Spacer />
-                <Key
-                    latin:keyStyle="micOrSettingsKeyStyle"
+                <Spacer
                     latin:keyXPos="-11.00%p"
-                    latin:keyWidth="0%p"
-                    latin:keyEdgeFlags="right" />
+                    latin:keyWidth="0dp" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_f2" />
             </Row>
         </case>
         <!-- latin:passwordInput="false" -->
@@ -182,11 +181,11 @@
                     latin:keyLabel="0" />
                 <Key
                     latin:keyLabel="#" />
-                <Key
-                    latin:keyStyle="micOrSettingsKeyStyle"
+                <Spacer
                     latin:keyXPos="-11.00%p"
-                    latin:keyWidth="-11.00%p"
-                    latin:keyEdgeFlags="right" />
+                    latin:keyWidth="0dp" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_f2" />
             </Row>
         </default>
     </switch>

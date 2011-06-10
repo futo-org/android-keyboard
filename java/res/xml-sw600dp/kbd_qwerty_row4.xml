@@ -161,10 +161,10 @@
                 </switch>
             </default>
         </switch>
-        <Key
-            latin:keyStyle="micOrSettingsKeyStyle"
-            latin:keyXPos="-10.0%p"
-            latin:keyWidth="0%p"
-            latin:keyEdgeFlags="right" />
+        <Spacer
+            latin:keyXPos="-10.00%p"
+            latin:keyWidth="0dp" />
+        <include
+            latin:keyboardLayout="@xml/kbd_qwerty_f2" />
     </Row>
 </merge>

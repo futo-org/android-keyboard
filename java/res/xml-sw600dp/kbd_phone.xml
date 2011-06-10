@@ -121,10 +121,10 @@
             latin:keyStyle="num0KeyStyle" />
         <Key
             latin:keyStyle="numPoundKeyStyle" />
-        <Key
-            latin:keyStyle="micOrSettingsKeyStyle"
+        <Spacer
             latin:keyXPos="-11.00%p"
-            latin:keyWidth="-11.00%p"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="0dp" />
+        <include
+            latin:keyboardLayout="@xml/kbd_qwerty_f2" />
     </Row>
 </Keyboard>

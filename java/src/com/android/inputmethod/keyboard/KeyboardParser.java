@@ -438,6 +438,10 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_passwordInput, id.mPasswordInput);
             final boolean settingsKeyMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_hasSettingsKey, id.mHasSettingsKey);
+            final boolean f2KeyModeMatched = matchInteger(a,
+                    R.styleable.Keyboard_Case_f2KeyMode, id.mF2KeyMode);
+            final boolean clobberSettingsKeyMatched = matchBoolean(a,
+                    R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
             final boolean voiceEnabledMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_voiceKeyEnabled, id.mVoiceKeyEnabled);
             final boolean voiceKeyMatched = matchBoolean(a,
@@ -455,11 +459,11 @@ public class KeyboardParser {
             final boolean countryCodeMatched = matchString(a,
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
             final boolean selected = modeMatched && webInputMatched && passwordInputMatched
-                    && settingsKeyMatched && voiceEnabledMatched && voiceKeyMatched
-                    && colorSchemeMatched && imeActionMatched && languageCodeMatched
-                    && countryCodeMatched;
+                    && settingsKeyMatched && f2KeyModeMatched && clobberSettingsKeyMatched
+                    && voiceEnabledMatched && voiceKeyMatched && colorSchemeMatched
+                    && imeActionMatched && languageCodeMatched && countryCodeMatched;
 
-            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
+            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
                     textAttr(KeyboardId.modeName(
                             a.getInt(R.styleable.Keyboard_Case_mode, -1)), "mode"),
                     textAttr(KeyboardId.colorSchemeName(
@@ -468,6 +472,10 @@ public class KeyboardParser {
                     booleanAttr(a, R.styleable.Keyboard_Case_webInput, "webInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_passwordInput, "passwordInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),
+                    textAttr(KeyboardId.f2KeyModeName(
+                            a.getInt(R.styleable.Keyboard_Case_f2KeyMode, -1)), "f2KeyMode"),
+                    booleanAttr(a, R.styleable.Keyboard_Case_clobberSettingsKey,
+                            "clobberSettingsKey"),
                     booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
                     textAttr(KeyboardId.imeOptionsName(
