@@ -349,8 +349,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     @Override
     public boolean onLongClick(View view) {
-        int index = (Integer) view.getTag();
-        CharSequence word = mSuggestions.getWord(index);
+        final int index = (Integer) view.getTag();
+        if (index >= mSuggestions.size())
+            return true;
+        final CharSequence word = mSuggestions.getWord(index);
         if (word.length() < 2)
             return false;
         addToDictionary(word);
@@ -359,8 +361,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     @Override
     public void onClick(View view) {
-        int index = (Integer) view.getTag();
-        CharSequence word = mSuggestions.getWord(index);
+        final int index = (Integer) view.getTag();
+        if (index >= mSuggestions.size())
+            return;
+        final CharSequence word = mSuggestions.getWord(index);
         if (mShowingAddToDictionary && index == 0) {
             addToDictionary(word);
         } else {
