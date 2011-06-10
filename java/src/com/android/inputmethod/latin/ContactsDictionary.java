@@ -114,7 +114,7 @@ public class ContactsDictionary extends ExpandableDictionary {
                 while (!cursor.isAfterLast()) {
                     String name = cursor.getString(INDEX_NAME);
 
-                    if (name != null) {
+                    if (name != null && -1 == name.indexOf('@')) {
                         int len = name.length();
                         String prevWord = null;
 
@@ -143,8 +143,6 @@ public class ContactsDictionary extends ExpandableDictionary {
                                 if (wordLen < maxWordLength && wordLen > 1) {
                                     super.addWord(word, FREQUENCY_FOR_CONTACTS);
                                     if (!TextUtils.isEmpty(prevWord)) {
-                                        // TODO Do not add email address
-                                        // Not so critical
                                         super.setBigram(prevWord, word,
                                                 FREQUENCY_FOR_CONTACTS_BIGRAM);
                                     }
