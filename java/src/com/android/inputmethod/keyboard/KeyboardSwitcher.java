@@ -36,8 +36,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final String TAG = "KeyboardSwitcher";
-    private static final boolean DEBUG = false;
+    private static final String TAG = KeyboardSwitcher.class.getSimpleName();
+    private static final boolean DEBUG = LatinImeLogger.sDBG;
     public static final boolean DEBUG_STATE = false;
 
     private static String sConfigDefaultKeyboardThemeId;
@@ -238,12 +238,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
         }
         final boolean hasSettingsKey = hasSettingsKey(attribute);
+        final int f2KeyMode = getF2KeyMode(mPrefs, mInputMethodService, attribute);
+        final boolean clobberSettingsKey = Utils.inPrivateImeOptions(
+                mInputMethodService.getPackageName(), LatinIME.IME_OPTION_NO_SETTINGS_KEY,
+                attribute);
         final Resources res = mInputMethodService.getResources();
         final int orientation = res.getConfiguration().orientation;
         final Locale locale = mSubtypeSwitcher.getInputLocale();
         return new KeyboardId(
                 res.getResourceEntryName(xmlId), xmlId, charColorId, locale, orientation, mode,
-                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, enableShiftLock);
+                attribute, hasSettingsKey, f2KeyMode, clobberSettingsKey, mVoiceKeyEnabled,
+                hasVoiceKey, enableShiftLock);
     }
 
     private void makeSymbolsKeyboardIds(final int mode, EditorInfo attribute) {
@@ -253,6 +258,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final int colorScheme = getColorScheme();
         final boolean hasVoiceKey = mVoiceKeyEnabled && !mVoiceButtonOnPrimary;
         final boolean hasSettingsKey = hasSettingsKey(attribute);
+        final int f2KeyMode = getF2KeyMode(mPrefs, mInputMethodService, attribute);
+        final boolean clobberSettingsKey = Utils.inPrivateImeOptions(
+                mInputMethodService.getPackageName(), LatinIME.IME_OPTION_NO_SETTINGS_KEY,
+                attribute);
         // Note: This comment is only applied for phone number keyboard layout.
         // On non-xlarge device, "@integer/key_switch_alpha_symbol" key code is used to switch
         // between "phone keyboard" and "phone symbols keyboard".  But on xlarge device,
@@ -263,10 +272,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         int xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone : R.xml.kbd_symbols;
         final String xmlName = res.getResourceEntryName(xmlId);
         mSymbolsId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
-                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
+                attribute, hasSettingsKey, f2KeyMode, clobberSettingsKey, mVoiceKeyEnabled,
+                hasVoiceKey, true);
         xmlId = mode == KeyboardId.MODE_PHONE ? R.xml.kbd_phone_symbols : R.xml.kbd_symbols_shift;
         mSymbolsShiftedId = new KeyboardId(xmlName, xmlId, colorScheme, locale, orientation, mode,
-                attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, true);
+                attribute, hasSettingsKey, f2KeyMode, clobberSettingsKey, mVoiceKeyEnabled,
+                hasVoiceKey, true);
     }
 
     public int getKeyboardMode() {
@@ -745,16 +756,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private static boolean getSettingsKeyMode(SharedPreferences prefs, Context context) {
-        Resources resources = context.getResources();
-        final boolean showSettingsKeyOption = resources.getBoolean(
+        final Resources res = context.getResources();
+        final boolean showSettingsKeyOption = res.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
         if (showSettingsKeyOption) {
             final String settingsKeyMode = prefs.getString(Settings.PREF_SETTINGS_KEY,
-                    resources.getString(DEFAULT_SETTINGS_KEY_MODE));
+                    res.getString(DEFAULT_SETTINGS_KEY_MODE));
             // We show the settings key when 1) SETTINGS_KEY_MODE_ALWAYS_SHOW or
             // 2) SETTINGS_KEY_MODE_AUTO and there are two or more enabled IMEs on the system
-            if (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
-                    || (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_AUTO))
+            if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
+                    || (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_AUTO))
                             && Utils.hasMultipleEnabledIMEsOrSubtypes(
                                     ((InputMethodManager) context.getSystemService(
                                             Context.INPUT_METHOD_SERVICE))))) {
@@ -764,5 +775,22 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
         // If the show settings key option is disabled, we always try showing the settings key.
         return true;
+    }
+
+    private static int getF2KeyMode(SharedPreferences prefs, Context context,
+            EditorInfo attribute) {
+        final boolean clobberSettingsKey = Utils.inPrivateImeOptions(context.getPackageName(),
+                LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
+        final Resources res = context.getResources();
+        final String settingsKeyMode = prefs.getString(Settings.PREF_SETTINGS_KEY,
+                res.getString(DEFAULT_SETTINGS_KEY_MODE));
+        if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_AUTO))) {
+            return clobberSettingsKey ? KeyboardId.F2KEY_MODE_SHORTCUT_IME
+                    : KeyboardId.F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS;
+        } else if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))) {
+            return clobberSettingsKey ? KeyboardId.F2KEY_MODE_NONE : KeyboardId.F2KEY_MODE_SETTINGS;
+        } else { // SETTINGS_KEY_MODE_ALWAYS_HIDE
+            return KeyboardId.F2KEY_MODE_SHORTCUT_IME;
+        }
     }
 }

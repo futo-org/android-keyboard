@@ -36,6 +36,11 @@ public class KeyboardId {
     public static final int MODE_PHONE = 4;
     public static final int MODE_NUMBER = 5;
 
+    public static final int F2KEY_MODE_NONE = 0;
+    public static final int F2KEY_MODE_SETTINGS = 1;
+    public static final int F2KEY_MODE_SHORTCUT_IME = 2;
+    public static final int F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS = 3;
+
     public final Locale mLocale;
     public final int mOrientation;
     public final int mMode;
@@ -43,7 +48,10 @@ public class KeyboardId {
     public final int mColorScheme;
     public final boolean mWebInput;
     public final boolean mPasswordInput;
+    // TODO: Clean up these booleans and modes.
     public final boolean mHasSettingsKey;
+    public final int mF2KeyMode;
+    public final boolean mClobberSettingsKey;
     public final boolean mVoiceKeyEnabled;
     public final boolean mHasVoiceKey;
     public final int mImeAction;
@@ -53,8 +61,9 @@ public class KeyboardId {
     private final int mHashCode;
 
     public KeyboardId(String xmlName, int xmlId, int colorScheme, Locale locale, int orientation,
-            int mode, EditorInfo attribute, boolean hasSettingsKey, boolean voiceKeyEnabled,
-            boolean hasVoiceKey, boolean enableShiftLock) {
+            int mode, EditorInfo attribute, boolean hasSettingsKey, int f2KeyMode,
+            boolean clobberSettingsKey, boolean voiceKeyEnabled, boolean hasVoiceKey,
+            boolean enableShiftLock) {
         final int inputType = (attribute != null) ? attribute.inputType : 0;
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         this.mLocale = locale;
@@ -66,6 +75,8 @@ public class KeyboardId {
         this.mPasswordInput = Utils.isPasswordInputType(inputType)
                 || Utils.isVisiblePasswordInputType(inputType);
         this.mHasSettingsKey = hasSettingsKey;
+        this.mF2KeyMode = f2KeyMode;
+        this.mClobberSettingsKey = clobberSettingsKey;
         this.mVoiceKeyEnabled = voiceKeyEnabled;
         this.mHasVoiceKey = hasVoiceKey;
         // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
@@ -84,6 +95,8 @@ public class KeyboardId {
                 mWebInput,
                 mPasswordInput,
                 hasSettingsKey,
+                f2KeyMode,
+                clobberSettingsKey,
                 voiceKeyEnabled,
                 hasVoiceKey,
                 mImeAction,
@@ -125,6 +138,8 @@ public class KeyboardId {
             && other.mWebInput == this.mWebInput
             && other.mPasswordInput == this.mPasswordInput
             && other.mHasSettingsKey == this.mHasSettingsKey
+            && other.mF2KeyMode == this.mF2KeyMode
+            && other.mClobberSettingsKey == this.mClobberSettingsKey
             && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
             && other.mHasVoiceKey == this.mHasVoiceKey
             && other.mImeAction == this.mImeAction
@@ -138,13 +153,15 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s %s %s %s%s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s %s %s %s %s%s%s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"),
                 modeName(mMode),
                 imeOptionsName(mImeAction),
                 colorSchemeName(mColorScheme),
+                f2KeyModeName(mF2KeyMode),
+                (mClobberSettingsKey ? " clobberSettingsKey" : ""),
                 (mWebInput ? " webInput" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
@@ -194,6 +211,16 @@ public class KeyboardId {
         } else {
             return action;
         }
+    }
+
+    public static String f2KeyModeName(int f2KeyMode) {
+        switch (f2KeyMode) {
+        case F2KEY_MODE_NONE: return "none";
+        case F2KEY_MODE_SETTINGS: return "settings";
+        case F2KEY_MODE_SHORTCUT_IME: return "shortcutIme";
+        case F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS: return "shortcutImeOrSettings";
+        }
+        return null;
     }
 }
 

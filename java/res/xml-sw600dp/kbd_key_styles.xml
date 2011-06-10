@@ -37,6 +37,23 @@
                 latin:styleName="functionalKeyStyle" />
         </case>
     </switch>
+    <!-- Base key style for the key which may have settings key as popup key -->
+    <switch>
+        <case
+            latin:clobberSettingsKey="true"
+        >
+            <key-style
+                latin:styleName="settingsPopupStyle"
+                latin:parentStyle="functionalKeyStyle" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="settingsPopupStyle"
+                latin:keyHintIcon="@drawable/hint_popup_holo"
+                latin:popupCharacters="\@drawable/sym_keyboard_settings_holo|\@integer/key_settings"
+                latin:parentStyle="functionalKeyStyle" />
+        </default>
+    </switch>
     <!-- Functional key styles -->
     <switch>
         <case
@@ -78,28 +95,18 @@
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupCharacters="@string/alternates_for_smiley"
                 latin:maxPopupKeyboardColumn="5" />
-            <switch>
-                <case
-                    latin:voiceKeyEnabled="true"
-                >
-                    <key-style
-                        latin:styleName="micOrSettingsKeyStyle"
-                        latin:code="@integer/key_voice"
-                        latin:keyIcon="@drawable/sym_keyboard_voice_holo"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
-                        latin:keyHintIcon="@drawable/hint_popup_holo"
-                        latin:popupCharacters="\@drawable/sym_keyboard_settings|\@integer/key_settings"
-                        latin:parentStyle="functionalKeyStyle" />
-                </case>
-                <default>
-                    <key-style
-                        latin:styleName="micOrSettingsKeyStyle"
-                        latin:code="@integer/key_settings"
-                        latin:keyIcon="@drawable/sym_keyboard_settings_holo"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
-                        latin:parentStyle="functionalKeyStyle" />
-                </default>
-            </switch>
+            <key-style
+                latin:styleName="micKeyStyle"
+                latin:code="@integer/key_voice"
+                latin:keyIcon="@drawable/sym_keyboard_voice_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
+                latin:parentStyle="settingsPopupStyle" />
+            <key-style
+                latin:styleName="settingsKeyStyle"
+                latin:code="@integer/key_settings"
+                latin:keyIcon="@drawable/sym_keyboard_settings_holo"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
+                latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
             latin:colorScheme="black"
@@ -140,28 +147,18 @@
                 latin:keyHintIcon="@drawable/hint_popup_holo"
                 latin:popupCharacters="@string/alternates_for_smiley"
                 latin:maxPopupKeyboardColumn="5" />
-            <switch>
-                <case
-                    latin:voiceKeyEnabled="true"
-                >
-                    <key-style
-                        latin:styleName="micOrSettingsKeyStyle"
-                        latin:code="@integer/key_voice"
-                        latin:keyIcon="@drawable/sym_bkeyboard_mic"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
-                        latin:keyHintIcon="@drawable/hint_popup_holo"
-                        latin:popupCharacters="\@drawable/sym_keyboard_settings|\@integer/key_settings"
-                        latin:parentStyle="functionalKeyStyle" />
-                </case>
-                <default>
-                    <key-style
-                        latin:styleName="micOrSettingsKeyStyle"
-                        latin:code="@integer/key_settings"
-                        latin:keyIcon="@drawable/sym_bkeyboard_settings"
-                        latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
-                        latin:parentStyle="functionalKeyStyle" />
-                </default>
-            </switch>
+            <key-style
+                latin:styleName="micKeyStyle"
+                latin:code="@integer/key_voice"
+                latin:keyIcon="@drawable/sym_bkeyboard_mic"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
+                latin:parentStyle="settingsPopupStyle" />
+            <key-style
+                latin:styleName="settingsKeyStyle"
+                latin:code="@integer/key_settings"
+                latin:keyIcon="@drawable/sym_bkeyboard_settings"
+                latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
+                latin:parentStyle="functionalKeyStyle" />
         </case>
     </switch>
     <key-style
