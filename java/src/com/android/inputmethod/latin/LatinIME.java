@@ -155,7 +155,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
-    private ContactsDictionary mContactsDictionary;
     private AutoDictionary mAutoDictionary;
 
     // TODO: Create an inner class to group options and pseudo-options to improve readability.
@@ -407,6 +406,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (null == mSubtypeSwitcher) mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mSettingsValues = new Settings.Values(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
+        resetContactsDictionary();
     }
 
     private void initSuggest() {
@@ -429,8 +429,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mUserDictionary = new UserDictionary(this, localeStr);
         mSuggest.setUserDictionary(mUserDictionary);
 
-        mContactsDictionary = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
-        mSuggest.setContactsDictionary(mContactsDictionary);
+        resetContactsDictionary();
 
         mAutoDictionary = new AutoDictionary(this, this, localeStr, Suggest.DIC_AUTO);
         mSuggest.setAutoDictionary(mAutoDictionary);
@@ -441,6 +440,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         updateCorrectionMode();
 
         Utils.setSystemLocale(res, savedLocale);
+    }
+
+    private void resetContactsDictionary() {
+        if (null == mSuggest) return;
+        ContactsDictionary contactsDictionary = mSettingsValues.mUseContactsDict
+                ? new ContactsDictionary(this, Suggest.DIC_CONTACTS) : null;
+        mSuggest.setContactsDictionary(contactsDictionary);
     }
 
     /* package private */ void resetSuggestMainDict() {

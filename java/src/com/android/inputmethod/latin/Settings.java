@@ -79,6 +79,8 @@ public class Settings extends PreferenceActivity
 
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
+    public static final String PREF_KEY_USE_CONTACTS_DICT =
+            "pref_key_use_contacts_dict";
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
@@ -114,6 +116,7 @@ public class Settings extends PreferenceActivity
         public final boolean mBigramSuggestionEnabled;
         // Prediction: use bigrams to predict the next word when there is no input for it yet
         public final boolean mBigramPredictionEnabled;
+        public final boolean mUseContactsDict;
 
         public Values(final SharedPreferences prefs, final Context context,
                 final String localeStr) {
@@ -174,6 +177,8 @@ public class Settings extends PreferenceActivity
                     && isBigramPredictionEnabled(prefs, res);
 
             mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
+
+            mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
 
             Utils.setSystemLocale(res, savedLocale);
         }
