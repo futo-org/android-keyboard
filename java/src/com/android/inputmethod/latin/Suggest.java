@@ -184,12 +184,17 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     /**
-     * Sets an optional contacts dictionary resource to be loaded.
+     * Sets an optional contacts dictionary resource to be loaded. It is also possible to remove
+     * the contacts dictionary by passing null to this method. In this case no contacts dictionary
+     * won't be used.
      */
     public void setContactsDictionary(Dictionary contactsDictionary) {
         if (contactsDictionary != null) {
             mUnigramDictionaries.put(DICT_KEY_CONTACTS, contactsDictionary);
             mBigramDictionaries.put(DICT_KEY_CONTACTS, contactsDictionary);
+        } else {
+            mUnigramDictionaries.remove(DICT_KEY_CONTACTS);
+            mBigramDictionaries.remove(DICT_KEY_CONTACTS);
         }
     }
 

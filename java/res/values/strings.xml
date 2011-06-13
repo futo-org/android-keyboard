@@ -58,6 +58,11 @@
     <!-- Description for delay for dismissing a popup on screen: default value of the delay [CHAR LIMIT=15] -->
     <string name="key_preview_popup_dismiss_default_delay">Default</string>
 
+    <!-- Option name for enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=25] -->
+    <string name="use_contacts_dict">Suggest Contact names</string>
+    <!-- Description for option enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=65] -->
+    <string name="use_contacts_dict_summary">Use names from Contacts for suggestions and corrections</string>
+
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
 

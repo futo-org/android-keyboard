@@ -138,6 +138,12 @@
           <ListPreference
               android:key="pref_key_preview_popup_dismiss_delay"
               android:title="@string/key_preview_popup_dismiss_delay" />
+          <CheckBoxPreference
+             android:key="pref_key_use_contacts_dict"
+             android:title="@string/use_contacts_dict"
+             android:summary="@string/use_contacts_dict_summary"
+             android:persistent="true"
+             android:defaultValue="true" />
     </PreferenceScreen>
     <!-- <Preference
         android:title="Debug Settings"
