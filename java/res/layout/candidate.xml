@@ -21,11 +21,7 @@
 <Button
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:minWidth="@dimen/candidate_min_width"
     android:textSize="@dimen/candidate_text_size"
-    android:textColor="@color/candidate_typed_word"
-    android:focusable="true"
-    android:clickable="true"
-    android:gravity="center_vertical|center_horizontal"
     style="?attr/suggestionBackgroundStyle" />

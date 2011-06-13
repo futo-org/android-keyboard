@@ -745,8 +745,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
         }
 
-        mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(
-                R.id.latin_keyboard_view);
+        mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setOnKeyboardActionListener(mInputMethodService);
         mThemeIndex = themeIndex;
         return mCurrentInputView;

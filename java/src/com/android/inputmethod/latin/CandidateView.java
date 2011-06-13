@@ -156,7 +156,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 tv.setOnLongClickListener(this);
             mWords.add(tv);
             if (i > 0) {
-                View divider = inflater.inflate(R.layout.candidate_divider, null);
+                final View divider = inflater.inflate(R.layout.candidate_divider, null);
                 mDividers.add(divider);
             }
         }
@@ -198,7 +198,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         final int color;
         if (isAutoCorrect && mConfigCandidateHighlightFontColorEnabled) {
             color = mColorAutoCorrect;
-        } else if (isSuggestedCandidate) {
+        } else if (isSuggestedCandidate && mConfigCandidateHighlightFontColorEnabled) {
             color = mColorSuggestedCandidate;
         } else {
             color = mColorTypedWord;

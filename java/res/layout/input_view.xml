@@ -25,12 +25,42 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 >
-    <include
-        layout="@layout/candidates" />
-    <com.android.inputmethod.keyboard.LatinKeyboardView
-        android:id="@+id/latin_keyboard_view"
-        android:layout_alignParentBottom="true"
+    <!-- On tablets, the candidate strip is centered with horizontal paddings on both sides because
+         width of the landscape mode is too long for the candidate strip. This LinearLayout is
+         required to hold the paddings. -->
+    <LinearLayout
+        android:id="@+id/candidates_container"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="0dip" />
+        style="?attr/suggestionsStripBackgroundStyle"
+    >
+        <View
+            android:layout_width="@dimen/candidate_strip_padding"
+            android:layout_height="@dimen/candidate_strip_height"
+            style="?attr/suggestionsStripBackgroundStyle" />
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fadingEdge="horizontal"
+            android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
+            android:scrollbars="none"
+        >
+            <com.android.inputmethod.latin.CandidateView
+                android:id="@+id/candidates"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/candidate_strip_height"
+                android:gravity="center_vertical" />
+        </HorizontalScrollView>
+        <View
+            android:layout_width="@dimen/candidate_strip_padding"
+            android:layout_height="@dimen/candidate_strip_height"
+            style="?attr/suggestionsStripBackgroundStyle" />
+    </LinearLayout>
+
+    <com.android.inputmethod.keyboard.LatinKeyboardView
+        android:id="@+id/keyboard_view"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>
