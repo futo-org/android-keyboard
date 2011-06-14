@@ -32,30 +32,45 @@
         android:id="@+id/candidates_container"
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        style="?attr/suggestionsStripBackgroundStyle"
+        android:layout_height="@dimen/candidate_strip_minimum_height"
+        android:gravity="bottom"
     >
         <View
             android:layout_width="@dimen/candidate_strip_padding"
             android:layout_height="@dimen/candidate_strip_height"
             style="?attr/suggestionsStripBackgroundStyle" />
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fadingEdge="horizontal"
-            android:fadingEdgeLength="@dimen/candidate_strip_fading_edge_length"
-            android:scrollbars="none"
-        >
-            <com.android.inputmethod.latin.CandidateView
-                android:id="@+id/candidates"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/candidate_strip_height"
-                android:gravity="center_vertical" />
-        </HorizontalScrollView>
+        <com.android.inputmethod.latin.CandidateView
+            android:id="@+id/candidates"
+            android:layout_weight="1.0"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/candidate_strip_height"
+            android:gravity="center_vertical"
+            style="?attr/suggestionsStripBackgroundStyle" />
         <View
             android:layout_width="@dimen/candidate_strip_padding"
             android:layout_height="@dimen/candidate_strip_height"
             style="?attr/suggestionsStripBackgroundStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/candidates_pane_container"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        style="?attr/suggestionsStripBackgroundStyle"
+    >
+        <View
+            android:layout_width="@dimen/candidate_strip_padding"
+            android:layout_height="@dimen/candidate_strip_height" />
+        <FrameLayout
+            android:id="@+id/candidates_pane"
+            android:layout_weight="1.0"
+            android:layout_width="0dp"
+            android:layout_height="match_parent" />
+        <View
+            android:layout_width="@dimen/candidate_strip_padding"
+            android:layout_height="@dimen/candidate_strip_height" />
     </LinearLayout>
 
     <com.android.inputmethod.keyboard.LatinKeyboardView

@@ -502,7 +502,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.setInputView(view);
         mCandidateViewContainer = view.findViewById(R.id.candidates_container);
         mCandidateView = (CandidateView) view.findViewById(R.id.candidates);
-        mCandidateView.setListener(this);
+        mCandidateView.setListener(this, view);
         mCandidateStripHeight = (int)mResources.getDimension(R.dimen.candidate_strip_height);
     }
 

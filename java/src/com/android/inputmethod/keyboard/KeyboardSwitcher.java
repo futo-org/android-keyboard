@@ -57,6 +57,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
 
+    private View mCurrentInputView;
     private LatinKeyboardView mKeyboardView;
     private LatinIME mInputMethodService;
 
@@ -294,7 +295,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public boolean isInputViewShown() {
-        return mKeyboardView != null && mKeyboardView.isShown();
+        return mCurrentInputView != null && mCurrentInputView.isShown();
     }
 
     public boolean isKeyboardAvailable() {
@@ -713,9 +714,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public View onCreateInputView() {
         return createInputView(mThemeIndex, true);
     }
-
-    // Instance variable only for {@link #createInputView(int, boolean)}.
-    private View mCurrentInputView;
 
     private View createInputView(final int newThemeIndex, final boolean forceRecreate) {
         if (mCurrentInputView != null && mThemeIndex == newThemeIndex && !forceRecreate)

@@ -56,13 +56,23 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
-    private static final int MAX_SUGGESTIONS = 16;
+    // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
+    private static final int MAX_SUGGESTIONS = 18;
+    private static final int UNSPECIFIED_MEASURESPEC = MeasureSpec.makeMeasureSpec(
+            0, MeasureSpec.UNSPECIFIED);
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
+    private static final int NUM_CANDIDATES_IN_STRIP = 3;
+    private final View mExpandCandidatesPane;
+    private final View mCloseCandidatesPane;
+    private ViewGroup mCandidatesPane;
+    private ViewGroup mCandidatesPaneContainer;
+    private View mKeyboardView;
     private final ArrayList<TextView> mWords = new ArrayList<TextView>();
     private final ArrayList<View> mDividers = new ArrayList<View>();
     private final int mCandidatePadding;
+    private final int mCandidateStripHeight;
     private final boolean mConfigCandidateHighlightFontColorEnabled;
     private final CharacterStyle mInvertedForegroundColorSpan;
     private final CharacterStyle mInvertedBackgroundColorSpan;
@@ -132,8 +142,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         super(context, attrs);
 
         Resources res = context.getResources();
-        mPreviewPopup = new PopupWindow(context);
         LayoutInflater inflater = LayoutInflater.from(context);
+        inflater.inflate(R.layout.candidates_strip, this);
+
+        mPreviewPopup = new PopupWindow(context);
         mPreviewText = (TextView) inflater.inflate(R.layout.candidate_preview, null);
         mPreviewPopup.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -148,8 +160,26 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
 
         mCandidatePadding = res.getDimensionPixelOffset(R.dimen.candidate_padding);
+        mCandidateStripHeight = res.getDimensionPixelOffset(R.dimen.candidate_strip_height);
         for (int i = 0; i < MAX_SUGGESTIONS; i++) {
-            final TextView tv = (TextView)inflater.inflate(R.layout.candidate, null);
+            final TextView tv;
+            switch (i) {
+            case 0:
+                tv = (TextView)findViewById(R.id.candidate_left);
+                tv.setPadding(mCandidatePadding, 0, 0, 0);
+                break;
+            case 1:
+                tv = (TextView)findViewById(R.id.candidate_center);
+                break;
+            case 2:
+                tv = (TextView)findViewById(R.id.candidate_right);
+                break;
+            default:
+                tv = (TextView)inflater.inflate(R.layout.candidate, null);
+                break;
+            }
+            if (i < NUM_CANDIDATES_IN_STRIP)
+                setLayoutWeight(tv, 1.0f);
             tv.setTag(i);
             tv.setOnClickListener(this);
             if (i == 0)
@@ -157,19 +187,38 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mWords.add(tv);
             if (i > 0) {
                 final View divider = inflater.inflate(R.layout.candidate_divider, null);
+                divider.measure(UNSPECIFIED_MEASURESPEC, UNSPECIFIED_MEASURESPEC);
                 mDividers.add(divider);
             }
         }
 
-        scrollTo(0, getScrollY());
+        mExpandCandidatesPane = findViewById(R.id.expand_candidates_pane);
+        mExpandCandidatesPane.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                expandCandidatesPane();
+            }
+        });
+        mCloseCandidatesPane = findViewById(R.id.close_candidates_pane);
+        mCloseCandidatesPane.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                closeCandidatesPane();
+            }
+        });
     }
 
     /**
      * A connection back to the input method.
      * @param listener
      */
-    public void setListener(Listener listener) {
+    public void setListener(Listener listener, View inputView) {
         mListener = listener;
+        mKeyboardView = inputView.findViewById(R.id.keyboard_view);
+        mCandidatesPane = (ViewGroup)inputView.findViewById(R.id.candidates_pane);
+        mCandidatesPane.setOnClickListener(this);
+        mCandidatesPaneContainer = (ViewGroup)inputView.findViewById(
+                R.id.candidates_pane_container);
     }
 
     public void setSuggestions(SuggestedWords suggestions) {
@@ -180,6 +229,15 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mHandler.postUpdateSuggestions();
         } else {
             updateSuggestions();
+        }
+    }
+
+    private static void setLayoutWeight(View v, float weight) {
+        ViewGroup.LayoutParams lp = v.getLayoutParams();
+        if (lp instanceof LinearLayout.LayoutParams) {
+            LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams)lp;
+            llp.width = 0;
+            llp.weight = weight;
         }
     }
 
@@ -216,7 +274,14 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         final List<SuggestedWordInfo> suggestedWordInfoList = suggestions.mSuggestedWordInfoList;
 
         clear();
+        final int paneWidth = getWidth();
+        final int dividerWidth = mDividers.get(0).getMeasuredWidth();
+        int x = 0;
+        int y = 0;
+        int fromIndex = NUM_CANDIDATES_IN_STRIP;
         final int count = Math.min(mWords.size(), suggestions.size());
+        closeCandidatesPane();
+        mExpandCandidatesPane.setEnabled(count >= NUM_CANDIDATES_IN_STRIP);
         for (int i = 0; i < count; i++) {
             final CharSequence word = suggestions.getWord(i);
             if (word == null) continue;
@@ -233,33 +298,91 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             final boolean isPunctuationSuggestions = (word.length() == 1 && count > 1);
 
             final TextView tv = mWords.get(i);
+            // TODO: Reorder candidates in strip as appropriate. The center candidate should hold
+            // the word when space is typed (valid typed word or auto corrected word).
             tv.setTextColor(getCandidateTextColor(isAutoCorrect,
                     isSuggestedCandidate || isPunctuationSuggestions, info));
             tv.setText(getStyledCandidateWord(word, isAutoCorrect));
-            if (i == 0) {
-                tv.setPadding(mCandidatePadding, 0, 0, 0);
-            } else if (i == count - 1) {
-                tv.setPadding(0, 0, mCandidatePadding, 0);
-            } else {
-                tv.setPadding(0, 0, 0, 0);
+            // TODO: call TextView.setTextScaleX() to fit the candidate in single line.
+            if (i >= NUM_CANDIDATES_IN_STRIP) {
+                tv.measure(UNSPECIFIED_MEASURESPEC, UNSPECIFIED_MEASURESPEC);
+                final int width = tv.getMeasuredWidth();
+                // TODO: Handle overflow case.
+                if (dividerWidth + x + width >= paneWidth) {
+                    centeringCandidates(fromIndex, i - 1, x, paneWidth);
+                    x = 0;
+                    y += mCandidateStripHeight;
+                    fromIndex = i;
+                }
+                if (x != 0) {
+                    final View divider = mDividers.get(i - NUM_CANDIDATES_IN_STRIP);
+                    mCandidatesPane.addView(divider);
+                    placeCandidateAt(divider, x, y);
+                    x += dividerWidth;
+                }
+                mCandidatesPane.addView(tv);
+                placeCandidateAt(tv, x, y);
+                x += width;
             }
-            if (i > 0)
-                addView(mDividers.get(i - 1));
-            addView(tv);
 
             if (DBG && info != null) {
                 final TextView dv = new TextView(getContext(), null);
                 dv.setTextSize(10.0f);
                 dv.setTextColor(0xff808080);
                 dv.setText(info.getDebugString());
-                addView(dv);
+                // TODO: debug view for candidate strip needed.
+                mCandidatesPane.addView(dv);
                 LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)dv.getLayoutParams();
                 lp.gravity = Gravity.BOTTOM;
             }
         }
+        if (x != 0) {
+            // Centering last candidates row.
+            centeringCandidates(fromIndex, count - 1, x, paneWidth);
+        }
+    }
 
-        scrollTo(0, getScrollY());
-        requestLayout();
+    private void placeCandidateAt(View v, int x, int y) {
+        ViewGroup.LayoutParams lp = v.getLayoutParams();
+        if (lp instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams)lp;
+            mlp.width = v.getMeasuredWidth();
+            mlp.height = v.getMeasuredHeight();
+            mlp.setMargins(x, y + (mCandidateStripHeight - mlp.height) / 2, 0, 0);
+        }
+    }
+
+    private void centeringCandidates(int from, int to, int width, int paneWidth) {
+        final ViewGroup pane = mCandidatesPane;
+        final int fromIndex = pane.indexOfChild(mWords.get(from));
+        final int toIndex = pane.indexOfChild(mWords.get(to));
+        final int offset = (paneWidth - width) / 2;
+        for (int index = fromIndex; index <= toIndex; index++) {
+            offsetMargin(pane.getChildAt(index), offset, 0);
+        }
+    }
+
+    private static void offsetMargin(View v, int dx, int dy) {
+        ViewGroup.LayoutParams lp = v.getLayoutParams();
+        if (lp instanceof ViewGroup.MarginLayoutParams) {
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams)lp;
+            mlp.setMargins(mlp.leftMargin + dx, mlp.topMargin + dy, 0, 0);
+        }
+    }
+
+    private void expandCandidatesPane() {
+        mExpandCandidatesPane.setVisibility(View.GONE);
+        mCloseCandidatesPane.setVisibility(View.VISIBLE);
+        mCandidatesPaneContainer.setMinimumHeight(mKeyboardView.getMeasuredHeight());
+        mCandidatesPaneContainer.setVisibility(View.VISIBLE);
+        mKeyboardView.setVisibility(View.GONE);
+    }
+
+    private void closeCandidatesPane() {
+        mExpandCandidatesPane.setVisibility(View.VISIBLE);
+        mCloseCandidatesPane.setVisibility(View.GONE);
+        mCandidatesPaneContainer.setVisibility(View.GONE);
+        mKeyboardView.setVisibility(View.VISIBLE);
     }
 
     public void onAutoCorrectionInverted(CharSequence autoCorrectedWord) {
@@ -310,7 +433,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     public void clear() {
         mShowingAddToDictionary = false;
         mShowingAutoCorrectionInverted = false;
-        removeAllViews();
+        for (int i = 0; i < NUM_CANDIDATES_IN_STRIP; i++)
+            mWords.get(i).setText(null);
+        mCandidatesPane.removeAllViews();
     }
 
     private void hidePreview() {
@@ -349,9 +474,13 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     @Override
     public boolean onLongClick(View view) {
-        final int index = (Integer) view.getTag();
+        final Object tag = view.getTag();
+        if (!(tag instanceof Integer))
+            return true;
+        final int index = (Integer) tag;
         if (index >= mSuggestions.size())
             return true;
+
         final CharSequence word = mSuggestions.getWord(index);
         if (word.length() < 2)
             return false;
@@ -361,15 +490,22 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     @Override
     public void onClick(View view) {
-        final int index = (Integer) view.getTag();
+        final Object tag = view.getTag();
+        if (!(tag instanceof Integer))
+            return;
+        final int index = (Integer) tag;
         if (index >= mSuggestions.size())
             return;
+
         final CharSequence word = mSuggestions.getWord(index);
         if (mShowingAddToDictionary && index == 0) {
             addToDictionary(word);
         } else {
             mListener.pickSuggestionManually(index, word);
         }
+        // Because some punctuation letters are not treated as word separator depending on locale,
+        // {@link #setSuggestions} might not be called and candidates pane left opened.
+        closeCandidatesPane();
     }
 
     @Override

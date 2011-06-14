@@ -84,7 +84,7 @@ public class Suggest implements Dictionary.WordCallback {
     private final Map<String, Dictionary> mUnigramDictionaries = new HashMap<String, Dictionary>();
     private final Map<String, Dictionary> mBigramDictionaries = new HashMap<String, Dictionary>();
 
-    private int mPrefMaxSuggestions = 12;
+    private int mPrefMaxSuggestions = 18;
 
     private static final int PREF_MAX_BIGRAMS = 60;
 
