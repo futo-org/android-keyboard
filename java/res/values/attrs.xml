@@ -28,6 +28,7 @@
         <attr name="suggestionsStripBackgroundStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
         <attr name="suggestionPreviewBackgroundStyle" format="reference" />
+        <attr name="candidateViewStyle" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">
@@ -86,6 +87,20 @@
             <enum name="black" value="1" />
         </attr>
 
+    </declare-styleable>
+
+    <declare-styleable name="CandidateView">
+        <attr name="autoCorrectHighlight" format="integer">
+            <flag name="autoCorrectBold" value="0x01" />
+            <flag name="autoCorrectUnderline" value="0x02" />
+            <flag name="autoCorrectInvert" value="0x04" />
+            <flag name="autoCorrectSpacebarLed" value="0x08" />
+        </attr>
+        <attr name="colorTypedWord" format="color" />
+        <attr name="colorAutoCorrect" format="color" />
+        <attr name="colorSuggested" format="color" />
+        <attr name="iconExpandPane" format="reference" />
+        <attr name="iconClosePane" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard">

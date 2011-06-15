@@ -44,8 +44,7 @@
             android:layout_weight="1.0"
             android:layout_width="0dp"
             android:layout_height="@dimen/candidate_strip_height"
-            android:gravity="center_vertical"
-            style="?attr/suggestionsStripBackgroundStyle" />
+            android:gravity="center_vertical" />
         <View
             android:layout_width="@dimen/candidate_strip_padding"
             android:layout_height="@dimen/candidate_strip_height"

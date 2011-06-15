@@ -42,20 +42,18 @@
         <include
             android:id="@+id/candidate_right"
             layout="@layout/candidate" />
-        <!-- TODO: These images' drawable must be determined depending on theme. -->
+        <!-- Image drawables are set in CandidateView constructor -->
         <ImageButton
             android:id="@+id/expand_candidates_pane"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/btn_expand_candidates_pane"
             android:visibility="gone"
-            style="?attr/suggestionBackgroundStyle" />
+            style="?attr/suggestionsStripBackgroundStyle" />
         <ImageButton
             android:id="@+id/close_candidates_pane"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/btn_close_candidates_pane"
             android:visibility="gone"
-            style="?attr/suggestionBackgroundStyle" />
+            style="?attr/suggestionsStripBackgroundStyle" />
     </LinearLayout>
 </merge>

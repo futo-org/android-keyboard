@@ -18,9 +18,6 @@
 */
 -->
 <resources>
-    <color name="candidate_typed_word">#FFFFFFFF</color>
-    <color name="candidate_auto_correct">#FFFCAE00</color>
-    <color name="candidate_suggested">#FFFCAE00</color>
     <color name="latinkeyboard_bar_language_shadow_white">#80000000</color>
     <color name="latinkeyboard_bar_language_shadow_black">#80FFFFFF</color>
     <color name="latinkeyboard_bar_language_text">#FFC0C0C0</color>

@@ -334,6 +334,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mKeyLetterStyle = Typeface.defaultFromStyle(
                 a.getInt(R.styleable.KeyboardView_keyLetterStyle, Typeface.NORMAL));
         mColorScheme = a.getInt(R.styleable.KeyboardView_colorScheme, COLOR_SCHEME_WHITE);
+        a.recycle();
 
         final Resources res = getResources();
 

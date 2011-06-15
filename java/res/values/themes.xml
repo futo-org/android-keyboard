@@ -24,6 +24,7 @@
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>
+        <item name="candidateViewStyle">@style/CandidateViewStyle</item>
     </style>
     <style name="KeyboardTheme.HighContrast" parent="android:Theme">
         <item name="keyboardStyle">@style/Keyboard</item>
@@ -33,6 +34,7 @@
         <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
+        <item name="candidateViewStyle">@style/CandidateViewStyle</item>
     </style>
     <style name="KeyboardTheme.Stone" parent="android:Theme.Light">
         <item name="keyboardStyle">@style/Keyboard</item>
@@ -42,6 +44,7 @@
         <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
+        <item name="candidateViewStyle">@style/CandidateViewStyle</item>
     </style>
     <style name="KeyboardTheme.Stone.Bold" parent="android:Theme.Light">
         <item name="keyboardStyle">@style/Keyboard</item>
@@ -51,6 +54,7 @@
         <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
+        <item name="candidateViewStyle">@style/CandidateViewStyle</item>
     </style>
     <style name="KeyboardTheme.Gingerbread" parent="android:Theme.Black">
         <item name="keyboardStyle">@style/Keyboard</item>
@@ -60,6 +64,7 @@
         <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
+        <item name="candidateViewStyle">@style/CandidateViewStyle</item>
     </style>
     <style name="KeyboardTheme.Honeycomb" parent="android:Theme.Holo">
         <item name="keyboardStyle">@style/Keyboard.Honeycomb</item>
@@ -69,5 +74,6 @@
         <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle.Honeycomb</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle.Honeycomb</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle.Honeycomb</item>
+        <item name="candidateViewStyle">@style/CandidateViewStyle.Honeycomb</item>
     </style>
 </resources>

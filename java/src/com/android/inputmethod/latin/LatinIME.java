@@ -1464,7 +1464,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         if (mCandidateView != null) {
             mCandidateView.setSuggestions(words);
-            if (mCandidateView.isConfigCandidateHighlightFontColorEnabled()) {
+            if (mCandidateView.needsAutoCorrectionSpacebarLed()) {
                 mKeyboardSwitcher.onAutoCorrectionStateChanged(
                         words.hasWordAboveAutoCorrectionScoreThreshold());
             }

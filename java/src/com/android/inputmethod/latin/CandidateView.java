@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
@@ -38,6 +39,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -64,8 +66,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private static final int NUM_CANDIDATES_IN_STRIP = 3;
-    private final View mExpandCandidatesPane;
-    private final View mCloseCandidatesPane;
+    private final ImageView mExpandCandidatesPane;
+    private final ImageView mCloseCandidatesPane;
     private ViewGroup mCandidatesPane;
     private ViewGroup mCandidatesPaneContainer;
     private View mKeyboardView;
@@ -73,9 +75,13 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final ArrayList<View> mDividers = new ArrayList<View>();
     private final int mCandidatePadding;
     private final int mCandidateStripHeight;
-    private final boolean mConfigCandidateHighlightFontColorEnabled;
     private final CharacterStyle mInvertedForegroundColorSpan;
     private final CharacterStyle mInvertedBackgroundColorSpan;
+    private final int mAutoCorrectHighlight;
+    private static final int AUTO_CORRECT_BOLD = 0x01;
+    private static final int AUTO_CORRECT_UNDERLINE = 0x02;
+    private static final int AUTO_CORRECT_INVERT = 0x04;
+    private static final int AUTO_CORRECT_SPACEBAR_LED = 0x08;
     private final int mColorTypedWord;
     private final int mColorAutoCorrect;
     private final int mColorSuggestedCandidate;
@@ -139,7 +145,11 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
      * @param attrs
      */
     public CandidateView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, R.attr.candidateViewStyle);
+    }
+
+    public CandidateView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
 
         Resources res = context.getResources();
         LayoutInflater inflater = LayoutInflater.from(context);
@@ -151,13 +161,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
-        mConfigCandidateHighlightFontColorEnabled =
-                res.getBoolean(R.bool.config_candidate_highlight_font_color_enabled);
-        mColorTypedWord = res.getColor(R.color.candidate_typed_word);
-        mColorAutoCorrect = res.getColor(R.color.candidate_auto_correct);
-        mColorSuggestedCandidate = res.getColor(R.color.candidate_suggested);
-        mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
-        mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
 
         mCandidatePadding = res.getDimensionPixelOffset(R.dimen.candidate_padding);
         mCandidateStripHeight = res.getDimensionPixelOffset(R.dimen.candidate_strip_height);
@@ -192,20 +195,35 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             }
         }
 
-        mExpandCandidatesPane = findViewById(R.id.expand_candidates_pane);
+        final TypedArray a = context.obtainStyledAttributes(
+                attrs, R.styleable.CandidateView, defStyle, R.style.CandidateViewStyle);
+        mAutoCorrectHighlight = a.getInt(R.styleable.CandidateView_autoCorrectHighlight, 0);
+        mColorTypedWord = a.getColor(R.styleable.CandidateView_colorTypedWord, 0);
+        mColorAutoCorrect = a.getColor(R.styleable.CandidateView_colorAutoCorrect, 0);
+        mColorSuggestedCandidate = a.getColor(R.styleable.CandidateView_colorSuggested, 0);
+        mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
+        mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
+
+        mExpandCandidatesPane = (ImageView)findViewById(R.id.expand_candidates_pane);
+        mExpandCandidatesPane.setImageDrawable(
+                a.getDrawable(R.styleable.CandidateView_iconExpandPane));
         mExpandCandidatesPane.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 expandCandidatesPane();
             }
         });
-        mCloseCandidatesPane = findViewById(R.id.close_candidates_pane);
+        mCloseCandidatesPane = (ImageView)findViewById(R.id.close_candidates_pane);
+        mCloseCandidatesPane.setImageDrawable(
+                a.getDrawable(R.styleable.CandidateView_iconClosePane));
         mCloseCandidatesPane.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 closeCandidatesPane();
             }
         });
+
+        a.recycle();
     }
 
     /**
@@ -244,19 +262,20 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private CharSequence getStyledCandidateWord(CharSequence word, boolean isAutoCorrect) {
         if (!isAutoCorrect)
             return word;
-        final CharacterStyle style = mConfigCandidateHighlightFontColorEnabled ? BOLD_SPAN
-                : UNDERLINE_SPAN;
         final Spannable spannedWord = new SpannableString(word);
-        spannedWord.setSpan(style, 0, word.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        if ((mAutoCorrectHighlight & AUTO_CORRECT_BOLD) != 0)
+            spannedWord.setSpan(BOLD_SPAN, 0, word.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+        if ((mAutoCorrectHighlight & AUTO_CORRECT_UNDERLINE) != 0)
+            spannedWord.setSpan(UNDERLINE_SPAN, 0, word.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return spannedWord;
     }
 
     private int getCandidateTextColor(boolean isAutoCorrect, boolean isSuggestedCandidate,
             SuggestedWordInfo info) {
         final int color;
-        if (isAutoCorrect && mConfigCandidateHighlightFontColorEnabled) {
+        if (isAutoCorrect) {
             color = mColorAutoCorrect;
-        } else if (isSuggestedCandidate && mConfigCandidateHighlightFontColorEnabled) {
+        } else if (isSuggestedCandidate) {
             color = mColorSuggestedCandidate;
         } else {
             color = mColorTypedWord;
@@ -388,9 +407,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     public void onAutoCorrectionInverted(CharSequence autoCorrectedWord) {
-        // Displaying auto corrected word as inverted is enabled only when highlighting candidate
-        // with color is disabled.
-        if (mConfigCandidateHighlightFontColorEnabled)
+        if ((mAutoCorrectHighlight & AUTO_CORRECT_INVERT) == 0)
             return;
         final TextView tv = mWords.get(1);
         final Spannable word = new SpannableString(autoCorrectedWord);
@@ -403,8 +420,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mShowingAutoCorrectionInverted = true;
     }
 
-    public boolean isConfigCandidateHighlightFontColorEnabled() {
-        return mConfigCandidateHighlightFontColorEnabled;
+    public boolean needsAutoCorrectionSpacebarLed() {
+        return (mAutoCorrectHighlight & AUTO_CORRECT_SPACEBAR_LED) != 0;
     }
 
     public boolean isShowingAddToDictionaryHint() {
