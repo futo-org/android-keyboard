@@ -36,9 +36,8 @@
         >
             <Key
                 latin:keyLabel="-"
-                latin:manualTemporaryUpperCaseCode="95"
-                latin:keyHintIcon="@drawable/key_hint_underline_holo"
-                latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_underline_large_holo"
+                latin:keyLabelOption="hasUppercaseLetter"
+                latin:keyHintLetter="_"
                 latin:popupCharacters="_"
                 latin:keyXPos="-8.9%p"
                 latin:keyWidth="fillBoth"
@@ -49,9 +48,8 @@
         >
             <Key
                 latin:keyLabel=":"
-                latin:manualTemporaryUpperCaseCode="43"
-                latin:keyHintIcon="@drawable/key_hint_plus_holo"
-                latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
+                latin:keyLabelOption="hasUppercaseLetter"
+                latin:keyHintLetter="+"
                 latin:popupCharacters="+"
                 latin:keyXPos="-8.9%p"
                 latin:keyWidth="fillBoth"

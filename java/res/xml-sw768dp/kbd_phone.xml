@@ -41,16 +41,12 @@
             latin:keyLabelOption="alignLeft"
             latin:keyWidth="11.172%p"
             latin:keyEdgeFlags="left" />
-        <!-- To match one character label size with "Tab", I placed spaces around the char '-'
-             and '+'. -->
         <Key
-            latin:code="45"
-            latin:keyLabel=" - "
+            latin:keyLabel="-"
             latin:keyXPos="20.400%p"
             latin:keyWidth="8.047%p" />
         <Key
-            latin:code="43"
-            latin:keyLabel=" + "
+            latin:keyLabel="+"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyStyle="num1KeyStyle"
@@ -70,16 +66,12 @@
             latin:keyStyle="moreKeyStyle"
             latin:keyWidth="11.172%p"
             latin:keyEdgeFlags="left" />
-        <!-- To match one character label size with "More", I placed spaces around the char ','
-             and '.'. -->
         <Key
-            latin:code="44"
-            latin:keyLabel=" , "
+            latin:keyLabel=","
             latin:keyXPos="20.400%p"
             latin:keyWidth="8.047%p" />
         <Key
-            latin:code="46"
-            latin:keyLabel=" . "
+            latin:keyLabel="."
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyStyle="num4KeyStyle"
@@ -95,18 +87,14 @@
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
-        <!-- To match one character label size with "More", I placed spaces around the char '('
-             and ')'. -->
         <!-- There is an empty area below the "More" key and left of the "(" key.  To ignore
              the touch event on the area, "(" is intentionally not marked as a left edge key. -->
         <Key
-            latin:code="40"
-            latin:keyLabel=" ( "
+            latin:keyLabel="("
             latin:keyXPos="20.400%p"
             latin:keyWidth="8.047%p" />
         <Key
-            latin:code="41"
-            latin:keyLabel=" ) "
+            latin:keyLabel=")"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyStyle="num7KeyStyle"

@@ -39,19 +39,27 @@
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
 
-        <!-- Size of the text for one letter character keys, in the proportion of key height.
-             -->
+        <!-- Size of the text for one letter keys, in the proportion of key height. -->
         <attr name="keyLetterRatio" format="float" />
-
-        <!-- Size of the text for custom keys with some text and no icon, in the proportion of key
-             height. -->
-        <attr name="labelTextRatio" format="float" />
+        <!-- Size of the text for keys with some text, in the proportion of key height. -->
+        <attr name="keyLabelRatio" format="float" />
+        <!-- Size of the text for hint letter, in the proportion of key height. -->
+        <attr name="keyHintLetterRatio" format="float" />
+        <!-- Size of the text for upper case letter, in the proportion of key height. -->
+        <attr name="keyUppercaseLetterRatio" format="float" />
 
         <!-- Color to use for the label in a key. -->
         <attr name="keyTextColor" format="color" />
+        <!-- Color to use for the label in a key when in inactivated state. -->
+        <attr name="keyTextInactivatedColor" format="color" />
+        <!-- Key hint letter color -->
+        <attr name="keyHintLetterColor" format="color" />
+        <!-- Upper case letter colors -->
+        <attr name="keyUppercaseLetterInactivatedColor" format="color" />
+        <attr name="keyUppercaseLetterActivatedColor" format="color" />
 
-        <!-- Color to use for the label in a key when in disabled state. -->
-        <attr name="keyTextColorDisabled" format="color" />
+        <!-- Popup hint icon "..." -->
+        <attr name="keyPopupHintIcon" format="reference" />
 
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
@@ -75,7 +83,7 @@
         <attr name="shadowRadius" format="float" />
         <attr name="backgroundDimAmount" format="float" />
 
-        <attr name="keyLetterStyle" format="enum">
+        <attr name="keyTextStyle" format="enum">
             <!-- This should be aligned with Typeface.NORMAL etc. -->
             <enum name="normal" value="0" />
             <enum name="bold" value="1" />
@@ -131,8 +139,6 @@
         <attr name="verticalGap" format="dimension|fraction" />
         <!-- Popup keyboard layout template -->
         <attr name="popupKeyboardTemplate" format="reference" />
-        <!-- Popup hint icon -->
-        <attr name="popupHintIcon" format="reference" />
         <!-- Locale of the keyboard layout -->
         <attr name="keyboardLocale" format="string" />
     </declare-styleable>
@@ -163,24 +169,20 @@
         <attr name="keyOutputText" format="string" />
         <!-- The label to display on the key. -->
         <attr name="keyLabel" format="string" />
-        <!-- The key label option -->
+        <!-- The hint letter to display on the key in conjunction with the label. -->
+        <attr name="keyHintLetter" format="string" />
+        <!-- The key label option. -->
         <attr name="keyLabelOption" format="integer">
-            <!-- This should be aligned with KeyboardView.KEY_LABEL_OPTION_* -->
+            <!-- This should be aligned with Key.LABEL_OPTION_* -->
             <flag name="alignLeft" value="0x01" />
             <flag name="alignRight" value="0x02" />
             <flag name="alignBottom" value="0x08" />
             <flag name="fontNormal" value="0x10" />
             <flag name="popupHint" value="0x20" />
+            <flag name="hasUppercaseLetter" value="0x40" />
         </attr>
-        <!-- The unicode that this key generates in manual temporary upper case mode. -->
-        <attr name="manualTemporaryUpperCaseCode" format="integer" />
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="reference" />
-        <!-- The hint icon to display on the key in conjunction with the label -->
-        <attr name="keyHintIcon" format="reference" />
-        <!-- The hint icon to display on the key when keyboard is in manual temporary upper case
-             mode. -->
-        <attr name="manualTemporaryUpperCaseHintIcon" format="reference" />
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
         <!-- Shift key icon for shifted state -->

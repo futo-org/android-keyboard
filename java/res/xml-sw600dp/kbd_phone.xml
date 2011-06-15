@@ -36,13 +36,11 @@
     <!-- This row is intentionally not marked as a top row -->
     <Row>
         <Key
-            latin:code="45"
-            latin:keyLabel=" - "
+            latin:keyLabel="-"
             latin:keyXPos="15.625%p"
             latin:keyWidth="9.25%p" />
         <Key
-            latin:code="43"
-            latin:keyLabel=" + "
+            latin:keyLabel="+"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num1KeyStyle"
@@ -59,13 +57,11 @@
     </Row>
     <Row>
         <Key
-            latin:code="44"
-            latin:keyLabel=" , "
+            latin:keyLabel=","
             latin:keyXPos="15.625%p"
             latin:keyWidth="9.25%p" />
         <Key
-            latin:code="46"
-            latin:keyLabel=" . "
+            latin:keyLabel="."
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num4KeyStyle"
@@ -88,13 +84,11 @@
         <!-- There is an empty area below the "More" key and left of the "(" key.  To ignore
              the touch event on the area, "(" is intentionally not marked as a left edge key. -->
         <Key
-            latin:code="40"
-            latin:keyLabel=" ( "
+            latin:keyLabel="("
             latin:keyXPos="15.625%p"
             latin:keyWidth="9.25%p" />
         <Key
-            latin:code="41"
-            latin:keyLabel=" ) "
+            latin:keyLabel=")"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num7KeyStyle"

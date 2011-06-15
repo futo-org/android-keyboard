@@ -147,8 +147,6 @@ public class Keyboard {
 
     private final ProximityInfo mProximityInfo;
 
-    public final Drawable mPopupHintIcon;
-
     /**
      * Creates a keyboard from the given xml key layout file.
      * @param context the application or service context
@@ -178,7 +176,6 @@ public class Keyboard {
 
         final TypedArray attrs = context.obtainStyledAttributes(
                 null, R.styleable.Keyboard, R.attr.keyboardStyle, R.style.Keyboard);
-        mPopupHintIcon = attrs.getDrawable(R.styleable.Keyboard_popupHintIcon);
         attrs.recycle();
 
         loadKeyboard(context, xmlLayoutResId);

@@ -37,25 +37,24 @@ public class Key {
      * The key code (unicode or custom code) that this key generates.
      */
     public final int mCode;
-    /** The unicode that this key generates in manual temporary upper case mode. */
-    public final int mManualTemporaryUpperCaseCode;
 
     /** Label to display */
     public final CharSequence mLabel;
+    /** Hint letter to display on the key in conjunction with the label */
+    public final CharSequence mHintLetter;
     /** Option of the label */
     public final int mLabelOption;
+    public static final int LABEL_OPTION_ALIGN_LEFT = 0x01;
+    public static final int LABEL_OPTION_ALIGN_RIGHT = 0x02;
+    public static final int LABEL_OPTION_ALIGN_BOTTOM = 0x08;
+    public static final int LABEL_OPTION_FONT_NORMAL = 0x10;
+    private static final int LABEL_OPTION_POPUP_HINT = 0x20;
+    private static final int LABEL_OPTION_HAS_UPPERCASE_LETTER = 0x40;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;
     /** Preview version of the icon, for the preview popup */
     private Drawable mPreviewIcon;
-    /** Hint icon to display on the key in conjunction with the label */
-    public final Drawable mHintIcon;
-    /**
-     * The hint icon to display on the key when keyboard is in manual temporary upper case
-     * mode.
-     */
-    public final Drawable mManualTemporaryUpperCaseHintIcon;
 
     /** Width of the key, not including the gap */
     public final int mWidth;
@@ -154,9 +153,7 @@ public class Key {
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mGap;
         mEdgeFlags = edgeFlags;
-        mHintIcon = null;
-        mManualTemporaryUpperCaseHintIcon = null;
-        mManualTemporaryUpperCaseCode = Keyboard.CODE_DUMMY;
+        mHintLetter = null;
         mLabelOption = 0;
         mFunctional = false;
         mSticky = false;
@@ -273,16 +270,10 @@ public class Key {
             Keyboard.setDefaultBounds(mPreviewIcon);
             mIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_keyIcon);
             Keyboard.setDefaultBounds(mIcon);
-            mHintIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_keyHintIcon);
-            Keyboard.setDefaultBounds(mHintIcon);
-            mManualTemporaryUpperCaseHintIcon = style.getDrawable(keyAttr,
-                    R.styleable.Keyboard_Key_manualTemporaryUpperCaseHintIcon);
-            Keyboard.setDefaultBounds(mManualTemporaryUpperCaseHintIcon);
+            mHintLetter = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLetter);
 
             mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             mLabelOption = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption, 0);
-            mManualTemporaryUpperCaseCode = style.getInt(keyAttr,
-                    R.styleable.Keyboard_Key_manualTemporaryUpperCaseCode, Keyboard.CODE_DUMMY);
             mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
             // Choose the first letter of the label as primary code if not
             // specified.
@@ -303,6 +294,14 @@ public class Key {
         } finally {
             keyAttr.recycle();
         }
+    }
+
+    public boolean hasPopupHint() {
+        return (mLabelOption & LABEL_OPTION_POPUP_HINT) != 0;
+    }
+
+    public boolean hasUppercaseLetter() {
+        return (mLabelOption & LABEL_OPTION_HAS_UPPERCASE_LETTER) != 0;
     }
 
     private static boolean isDigitPopupCharacter(CharSequence label) {

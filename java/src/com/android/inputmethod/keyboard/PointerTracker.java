@@ -639,8 +639,7 @@ public class PointerTracker {
         Key key = getKey(keyIndex);
         if (key.mCode == Keyboard.CODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
-        } else if (key.mManualTemporaryUpperCaseCode != Keyboard.CODE_DUMMY
-                && mKeyboard.isManualTemporaryUpperCase()) {
+        } else if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
             // We need not start long press timer on the key which has manual temporary upper case
             // code defined and the keyboard is in manual temporary upper case mode.
             return;
@@ -667,10 +666,9 @@ public class PointerTracker {
             mKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
 
             // If keyboard is in manual temporary upper case state and key has manual temporary
-            // shift code, alternate character code should be sent.
-            if (mKeyboard.isManualTemporaryUpperCase()
-                    && key.mManualTemporaryUpperCaseCode != Keyboard.CODE_DUMMY) {
-                code = key.mManualTemporaryUpperCaseCode;
+            // uppercase letter as key hint letter, alternate character code should be sent.
+            if (mKeyboard.isManualTemporaryUpperCase() && key.hasUppercaseLetter()) {
+                code = key.mHintLetter.charAt(0);
                 codes[0] = code;
             }
 
