@@ -16,6 +16,9 @@
 
 <resources>
     <!-- Theme "Basic" -->
+    <style name="Keyboard" >
+        <item name="popupHintIcon">@drawable/hint_popup</item>
+    </style>
     <style name="KeyboardView">
         <item name="android:background">@drawable/keyboard_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
@@ -89,6 +92,9 @@
         <item name="android:background">@null</item>
     </style>
     <!-- Theme "Honeycomb" -->
+    <style name="Keyboard.Honeycomb" parent="Keyboard" >
+        <item name="popupHintIcon">@drawable/hint_popup_holo</item>
+    </style>
     <style name="KeyboardView.Honeycomb" parent="KeyboardView">
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_honeycomb</item>
@@ -111,13 +117,13 @@
         <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_padding_holo</item>
         <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_padding_holo</item>
     </style>
-    <style name="SuggestionsStripBackgroundStyle.Holo">
+    <style name="SuggestionsStripBackgroundStyle.Honeycomb">
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
     </style>
-    <style name="SuggestionBackgroundStyle.Holo">
+    <style name="SuggestionBackgroundStyle.Honeycomb">
         <item name="android:background">@drawable/btn_candidate_holo</item>
     </style>
-    <style name="SuggestionPreviewBackgroundStyle.Holo">
+    <style name="SuggestionPreviewBackgroundStyle.Honeycomb">
         <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
     </style>
     <style name="PopupMiniKeyboardAnimation">

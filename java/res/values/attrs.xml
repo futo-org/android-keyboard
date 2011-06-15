@@ -16,6 +16,8 @@
 
 <resources>
     <declare-styleable name="KeyboardTheme">
+        <!-- Keyboard style -->
+        <attr name="keyboardStyle" format="reference" />
         <!-- KeyboardView style -->
         <attr name="keyboardViewStyle" format="reference" />
         <attr name="keyPreviewStyle" format="reference" />
@@ -113,6 +115,8 @@
         <attr name="verticalGap" format="dimension|fraction" />
         <!-- Popup keyboard layout template -->
         <attr name="popupKeyboardTemplate" format="reference" />
+        <!-- Popup hint icon -->
+        <attr name="popupHintIcon" format="reference" />
         <!-- Locale of the keyboard layout -->
         <attr name="keyboardLocale" format="string" />
     </declare-styleable>
@@ -146,10 +150,11 @@
         <!-- The key label option -->
         <attr name="keyLabelOption" format="integer">
             <!-- This should be aligned with KeyboardView.KEY_LABEL_OPTION_* -->
-            <flag name="alignLeft" value="1" />
-            <flag name="alignRight" value="2" />
-            <flag name="alignBottom" value="8" />
-            <flag name="fontNormal" value="16" />
+            <flag name="alignLeft" value="0x01" />
+            <flag name="alignRight" value="0x02" />
+            <flag name="alignBottom" value="0x08" />
+            <flag name="fontNormal" value="0x10" />
+            <flag name="popupHint" value="0x20" />
         </attr>
         <!-- The unicode that this key generates in manual temporary upper case mode. -->
         <attr name="manualTemporaryUpperCaseCode" format="integer" />
@@ -200,9 +205,9 @@
         </attr>
         <attr name="webInput" format="boolean" />
         <attr name="passwordInput" format="boolean" />
-        <attr name="hasSettingsKey" format="string" />
-        <attr name="voiceKeyEnabled" format="string" />
-        <attr name="hasVoiceKey" format="string" />
+        <attr name="hasSettingsKey" format="boolean" />
+        <attr name="voiceKeyEnabled" format="boolean" />
+        <attr name="hasVoiceKey" format="boolean" />
         <attr name="imeAction" format="enum">
             <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
             <enum name="actionUnspecified" value="0" />

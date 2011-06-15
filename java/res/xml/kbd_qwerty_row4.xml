@@ -59,15 +59,15 @@
                 latin:webInput="true"
             >
                 <Key
-                    latin:keyHintIcon="@drawable/hint_popup"
+                    latin:keyStyle="tabKeyStyle"
+                    latin:keyLabelOption="popupHint"
                     latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
-                    latin:maxPopupKeyboardColumn="8"
-                    latin:keyStyle="tabKeyStyle" />
+                    latin:maxPopupKeyboardColumn="8" />
             </case>
             <default>
                 <Key
                     latin:keyLabel="."
-                    latin:keyHintIcon="@drawable/hint_popup"
+                    latin:keyLabelOption="popupHint"
                     latin:popupCharacters="@string/alternates_for_punctuation"
                     latin:maxPopupKeyboardColumn="7"
                     latin:keyStyle="functionalKeyStyle" />

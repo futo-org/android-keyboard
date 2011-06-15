@@ -16,14 +16,15 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
+
 import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParserException;
-
-import android.content.Context;
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -146,6 +147,8 @@ public class Keyboard {
 
     private final ProximityInfo mProximityInfo;
 
+    public final Drawable mPopupHintIcon;
+
     /**
      * Creates a keyboard from the given xml key layout file.
      * @param context the application or service context
@@ -171,8 +174,14 @@ public class Keyboard {
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
         mId = id;
-        loadKeyboard(context, xmlLayoutResId);
         mProximityInfo = new ProximityInfo(GRID_WIDTH, GRID_HEIGHT);
+
+        final TypedArray attrs = context.obtainStyledAttributes(
+                null, R.styleable.Keyboard, R.attr.keyboardStyle, R.style.Keyboard);
+        mPopupHintIcon = attrs.getDrawable(R.styleable.Keyboard_popupHintIcon);
+        attrs.recycle();
+
+        loadKeyboard(context, xmlLayoutResId);
     }
 
     public int getProximityInfo() {
