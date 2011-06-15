@@ -363,6 +363,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     private static void offsetMargin(View v, int dx, int dy) {
+        if (v == null)
+            return;
         ViewGroup.LayoutParams lp = v.getLayoutParams();
         if (lp instanceof ViewGroup.MarginLayoutParams) {
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams)lp;
