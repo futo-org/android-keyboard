@@ -69,7 +69,7 @@
     <string name="description_shift_on" msgid="6983188949895971587">"Umschalt an"</string>
     <string name="description_shift_off" msgid="8553265474523069034">"Umschalt aus"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Spracheingabe"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Spracheingaben werden derzeit nicht für Ihre Sprache unterstützt, funktionieren jedoch in Englisch."</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Spracheingaben werden zurzeit nicht für Ihre Sprache unterstützt, funktionieren jedoch in Englisch."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Die Spracheingabe verwendet die Spracherkennung von Google. Es gelten die "<a href="http://m.google.com/privacy">"Google Mobile-Datenschutzbestimmungen"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Rufen Sie zum Deaktivieren der Spracheingabe die Einstellungen für die Eingabemethode auf."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Drücken Sie zur Verwendung der Spracheingabe die Mikrofonschaltfläche."</string>

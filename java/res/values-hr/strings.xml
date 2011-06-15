@@ -68,7 +68,7 @@
     <string name="description_symbols_off" msgid="3209578267079515136">"Simboli isključeni"</string>
     <string name="description_shift_on" msgid="6983188949895971587">"Shift uključen"</string>
     <string name="description_shift_off" msgid="8553265474523069034">"Shift isključen"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni unos"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni ulaz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Vaš jezik trenutno nije podržan za glasovni unos, ali radi za engleski."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Glasovni unos upotrebljava Googleovo prepoznavanje govora. Primjenjuju se "<a href="http://m.google.com/privacy">"Pravila o privatnosti za uslugu Mobile"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Za isključivanje glasovnog unosa idite na postavke načina unosa."</string>
@@ -88,7 +88,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Savjet:"</b>" Sljedeći put pokušajte izgovoriti znakove interpunkcije poput \"točka, \"zarez\" ili \"upitnik\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Odustani"</string>
     <string name="ok" msgid="7898366843681727667">"U redu"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Glasovni unos"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Glasovni ulaz"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na glavnoj tipkovnici"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na tipkovnici simb."</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Isključeno"</string>
