@@ -50,7 +50,7 @@
         <default>
             <key-style
                 latin:styleName="settingsPopupStyle"
-                latin:keyHintIcon="@drawable/hint_popup"
+                latin:keyLabelOption="popupHint"
                 latin:popupCharacters="\@drawable/sym_keyboard_settings_holo|\@integer/key_settings"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
@@ -308,7 +308,7 @@
         latin:styleName="smileyKeyStyle"
         latin:keyLabel=":-)"
         latin:keyOutputText=":-) "
-        latin:keyHintIcon="@drawable/hint_popup"
+        latin:keyLabelOption="popupHint"
         latin:popupCharacters="@string/alternates_for_smiley"
         latin:maxPopupKeyboardColumn="5"
         latin:parentStyle="functionalKeyStyle" />

@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.R;
-
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -49,6 +46,9 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -176,10 +176,11 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private final float KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR_CENTER = 0.45f;
     private final float KEY_LABEL_VERTICAL_PADDING_FACTOR = 1.60f;
     private final String KEY_LABEL_REFERENCE_CHAR = "H";
-    private final int KEY_LABEL_OPTION_ALIGN_LEFT = 1;
-    private final int KEY_LABEL_OPTION_ALIGN_RIGHT = 2;
-    private final int KEY_LABEL_OPTION_ALIGN_BOTTOM = 8;
-    private final int KEY_LABEL_OPTION_FONT_NORMAL = 16;
+    private final int KEY_LABEL_OPTION_ALIGN_LEFT = 0x01;
+    private final int KEY_LABEL_OPTION_ALIGN_RIGHT = 0x02;
+    private final int KEY_LABEL_OPTION_ALIGN_BOTTOM = 0x08;
+    private final int KEY_LABEL_OPTION_FONT_NORMAL = 0x10;
+    private final int KEY_LABEL_OPTION_POPUP_HINT = 0x20;
     private final int mKeyLabelHorizontalPadding;
 
     private final UIHandler mHandler = new UIHandler();
@@ -762,14 +763,15 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         }
 
         // Draw hint icon.
-        if (key.mHintIcon != null) {
+        if (key.mHintIcon != null || (key.mLabelOption & KEY_LABEL_OPTION_POPUP_HINT) != 0) {
             final int drawableWidth = keyDrawWidth;
             final int drawableHeight = key.mHeight;
             final int drawableX = 0;
             final int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
             Drawable hintIcon = (isManualTemporaryUpperCase
                     && key.mManualTemporaryUpperCaseHintIcon != null)
-                    ? key.mManualTemporaryUpperCaseHintIcon : key.mHintIcon;
+                    ? key.mManualTemporaryUpperCaseHintIcon
+                    : (key.mHintIcon != null ? key.mHintIcon : mKeyboard.mPopupHintIcon);
             drawIcon(canvas, hintIcon, drawableX, drawableY, drawableWidth, drawableHeight);
             if (DEBUG_SHOW_ALIGN)
                 drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,

@@ -202,7 +202,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             final Locale savedLocale = Utils.setSystemLocale(res,
                     mSubtypeSwitcher.getInputLocale());
 
-            keyboard = new LatinKeyboard(mInputMethodService, id, id.mWidth);
+            final Context themeContext = new ContextThemeWrapper(mInputMethodService,
+                    KEYBOARD_THEMES[mThemeIndex]);
+            keyboard = new LatinKeyboard(themeContext, id, id.mWidth);
 
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();

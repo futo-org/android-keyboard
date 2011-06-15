@@ -16,12 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.compat.EditorInfoCompatUtils;
-import com.android.inputmethod.latin.R;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -30,6 +24,12 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.util.Xml;
 import android.view.InflateException;
+
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
+import com.android.inputmethod.latin.R;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Arrays;

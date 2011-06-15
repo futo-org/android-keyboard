@@ -62,7 +62,7 @@
                 latin:styleName="smileyKeyStyle"
                 latin:keyLabel=":-)"
                 latin:keyOutputText=":-) "
-                latin:keyHintIcon="@drawable/hint_popup_holo"
+                latin:keyLabelOption="popupHint"
                 latin:popupCharacters="@string/alternates_for_smiley"
                 latin:maxPopupKeyboardColumn="5" />
             <key-style
@@ -116,7 +116,7 @@
                 latin:styleName="smileyKeyStyle"
                 latin:keyLabel=":-)"
                 latin:keyOutputText=":-) "
-                latin:keyHintIcon="@drawable/hint_popup_holo"
+                latin:keyLabelOption="popupHint"
                 latin:popupCharacters="@string/alternates_for_smiley"
                 latin:maxPopupKeyboardColumn="5" />
             <key-style
@@ -161,9 +161,8 @@
     <key-style
         latin:styleName="comKeyStyle"
         latin:keyLabel="@string/keylabel_for_popular_domain"
-        latin:keyLabelOption="fontNormal"
+        latin:keyLabelOption="fontNormal|popupHint"
         latin:keyOutputText="@string/keylabel_for_popular_domain"
-        latin:keyHintIcon="@drawable/hint_popup_holo"
         latin:popupCharacters="@string/alternates_for_popular_domain" />
     <switch>
         <case
