@@ -83,7 +83,7 @@
     <string name="label_phone_key" msgid="4275497665515080551">"123"</string>
     <string name="label_alpha_key" msgid="8864943487292437456">"ABC"</string>
     <string name="label_alt_key" msgid="2846315350346694811">"ALT"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni unos"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni ulaz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Vaš jezik trenutno nije podržan za glasovni unos, ali radi za engleski."</string>
     <string name="voice_warning_may_not_understand" msgid="4611518823070986445">"Glasovni unos je pokusna značajka koja koristi Googleovo umreženo prepoznavanje govora."</string>
     <string name="voice_warning_how_to_turn_off" msgid="5652369578498701761">"Za isključivanje glasovnog unosa idite na postavke tipkovnice."</string>
@@ -103,7 +103,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Savjet:"</b>" Sljedeći put pokušajte izgovoriti znakove interpunkcije poput \"točka, \"zarez\" ili \"upitnik\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Odustani"</string>
     <string name="ok" msgid="7898366843681727667">"U redu"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Glasovni unos"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Glasovni ulaz"</string>
   <string-array name="voice_input_modes">
     <item msgid="1349082139076086774">"Na glavnoj tipkovnici"</item>
     <item msgid="8529385602829095903">"Na tipkovnici sa simbolima"</item>
