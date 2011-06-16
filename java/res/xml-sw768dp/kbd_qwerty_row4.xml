@@ -58,9 +58,8 @@
                     >
                         <Key
                             latin:keyLabel=":"
-                            latin:manualTemporaryUpperCaseCode="43"
-                            latin:keyHintIcon="@drawable/key_hint_plus_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_plus_large_holo"
+                            latin:keyLabelOption="hasUppercaseLetter"
+                            latin:keyHintLetter="+"
                             latin:popupCharacters="+" />
                     </case>
                     <default>
@@ -78,9 +77,8 @@
                     <default>
                         <Key
                             latin:keyLabel="/"
-                            latin:manualTemporaryUpperCaseCode="64"
-                            latin:keyHintIcon="@drawable/key_hint_at_holo"
-                            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_at_large_holo"
+                            latin:keyLabelOption="hasUppercaseLetter"
+                            latin:keyHintLetter="\@"
                             latin:popupCharacters="\@" />
                     </default>
                 </switch>
@@ -102,17 +100,15 @@
             >
                 <Key
                     latin:keyLabel="/"
-                    latin:manualTemporaryUpperCaseCode="58"
-                    latin:keyHintIcon="@drawable/key_hint_colon_holo"
-                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_colon_large_holo"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLetter=":"
                     latin:popupCharacters=":" />
             </case>
             <default>
                 <Key
                     latin:keyLabel="\'"
-                    latin:manualTemporaryUpperCaseCode="34"
-                    latin:keyHintIcon="@drawable/key_hint_quote_holo"
-                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_quote_large_holo"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLetter="&quot;"
                     latin:popupCharacters="&quot;" />
             </default>
         </switch>
@@ -126,9 +122,8 @@
             <default>
                 <Key
                     latin:keyLabel="-"
-                    latin:manualTemporaryUpperCaseCode="95"
-                    latin:keyHintIcon="@drawable/key_hint_underline_holo"
-                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_underline_large_holo"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLetter="_"
                     latin:popupCharacters="_" />
             </default>
         </switch>

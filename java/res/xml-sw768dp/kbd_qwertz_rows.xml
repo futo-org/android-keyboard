@@ -106,15 +106,13 @@
             <default>
                 <Key
                     latin:keyLabel=","
-                    latin:manualTemporaryUpperCaseCode="33"
-                    latin:keyHintIcon="@drawable/key_hint_exclamation_holo"
-                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_exclamation_large_holo"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLetter="!"
                     latin:popupCharacters="!" />
                 <Key
                     latin:keyLabel="."
-                    latin:manualTemporaryUpperCaseCode="63"
-                    latin:keyHintIcon="@drawable/key_hint_question_holo"
-                    latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_question_large_holo"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLetter="\?"
                     latin:popupCharacters="\?" />
             </default>
         </switch>

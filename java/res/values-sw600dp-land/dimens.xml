@@ -31,8 +31,10 @@
     <!-- key_height x 1.0 -->
     <dimen name="key_preview_height">13.0mm</dimen>
 
-    <dimen name="key_letter_size">25dip</dimen>
-    <dimen name="key_label_text_size">18dip</dimen>
+    <fraction name="key_letter_ratio">30.7%</fraction>
+    <fraction name="key_label_ratio">21.9%</fraction>
+    <fraction name="key_hint_letter_ratio">23%</fraction>
+    <fraction name="key_uppercase_letter_ratio">25%</fraction>
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_alignment_padding">18dip</dimen>
     <dimen name="candidate_strip_padding">40.0mm</dimen>

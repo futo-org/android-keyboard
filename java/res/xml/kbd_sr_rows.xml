@@ -29,44 +29,44 @@
     >
         <Key
             latin:keyLabel="љ"
-            latin:keyHintIcon="@drawable/key_hint_num1"
+            latin:keyHintLetter="1"
             latin:popupCharacters="1"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="њ"
-            latin:keyHintIcon="@drawable/key_hint_num2"
+            latin:keyHintLetter="2"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="е"
-            latin:keyHintIcon="@drawable/key_hint_num3"
+            latin:keyHintLetter="3"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="р"
-            latin:keyHintIcon="@drawable/key_hint_num4"
+            latin:keyHintLetter="4"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="т"
-            latin:keyHintIcon="@drawable/key_hint_num5"
+            latin:keyHintLetter="5"
             latin:popupCharacters="5" />
         <Key
             latin:keyLabel="з"
-            latin:keyHintIcon="@drawable/key_hint_num6"
+            latin:keyHintLetter="6"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="у"
-            latin:keyHintIcon="@drawable/key_hint_num7"
+            latin:keyHintLetter="7"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="и"
-            latin:keyHintIcon="@drawable/key_hint_num8"
+            latin:keyHintLetter="8"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="о"
-            latin:keyHintIcon="@drawable/key_hint_num9"
+            latin:keyHintLetter="9"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="п"
-            latin:keyHintIcon="@drawable/key_hint_num0"
+            latin:keyHintLetter="0"
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="ш"

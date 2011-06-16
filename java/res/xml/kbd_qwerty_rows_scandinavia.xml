@@ -29,45 +29,45 @@
     >
         <Key
             latin:keyLabel="q"
-            latin:keyHintIcon="@drawable/key_hint_num1"
+            latin:keyHintLetter="1"
             latin:popupCharacters="@string/alternates_for_q"
             latin:keyWidth="8.75%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="w"
-            latin:keyHintIcon="@drawable/key_hint_num2"
+            latin:keyHintLetter="2"
             latin:popupCharacters="@string/alternates_for_w" />
         <Key
             latin:keyLabel="e"
-            latin:keyHintIcon="@drawable/key_hint_num3"
+            latin:keyHintLetter="3"
             latin:popupCharacters="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
-            latin:keyHintIcon="@drawable/key_hint_num4"
+            latin:keyHintLetter="4"
             latin:popupCharacters="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
-            latin:keyHintIcon="@drawable/key_hint_num5"
+            latin:keyHintLetter="5"
             latin:popupCharacters="@string/alternates_for_t" />
         <Key
             latin:keyLabel="y"
-            latin:keyHintIcon="@drawable/key_hint_num6"
+            latin:keyHintLetter="6"
             latin:popupCharacters="@string/alternates_for_y" />
         <Key
             latin:keyLabel="u"
-            latin:keyHintIcon="@drawable/key_hint_num7"
+            latin:keyHintLetter="7"
             latin:popupCharacters="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
-            latin:keyHintIcon="@drawable/key_hint_num8"
+            latin:keyHintLetter="8"
             latin:popupCharacters="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
-            latin:keyHintIcon="@drawable/key_hint_num9"
+            latin:keyHintLetter="9"
             latin:popupCharacters="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
-            latin:keyHintIcon="@drawable/key_hint_num0"
+            latin:keyHintLetter="0"
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyLabel="å"

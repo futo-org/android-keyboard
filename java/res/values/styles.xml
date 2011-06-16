@@ -17,7 +17,6 @@
 <resources>
     <!-- Theme "Basic" -->
     <style name="Keyboard">
-        <item name="popupHintIcon">@drawable/hint_popup</item>
     </style>
     <style name="LatinKeyboard">
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
@@ -33,13 +32,19 @@
         <item name="android:background">@drawable/keyboard_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
         <item name="keyLetterRatio">@fraction/key_letter_ratio</item>
-        <item name="keyLetterStyle">normal</item>
+        <item name="keyLabelRatio">@fraction/key_label_ratio</item>
+        <item name="keyHintLetterRatio">@fraction/key_hint_letter_ratio</item>
+        <item name="keyUppercaseLetterRatio">@fraction/key_uppercase_letter_ratio</item>
+        <item name="keyTextStyle">normal</item>
         <item name="keyTextColor">#FFFFFFFF</item>
-        <item name="keyTextColorDisabled">#FFFFFFFF</item>
+        <item name="keyTextInactivatedColor">#FFFFFFFF</item>
+        <item name="keyHintLetterColor">#80000000</item>
+        <item name="keyUppercaseLetterInactivatedColor">#66E0E4E5</item>
+        <item name="keyUppercaseLetterActivatedColor">#CCE0E4E5</item>
+        <item name="keyPopupHintIcon">@drawable/hint_popup</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
-        <item name="labelTextRatio">@fraction/key_label_text_ratio</item>
         <item name="popupLayout">@layout/keyboard_popup</item>
         <item name="keyHysteresisDistance">@dimen/key_hysteresis_distance</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
@@ -91,7 +96,7 @@
     <style name="KeyboardView.Stone" parent="KeyboardView">
         <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
         <item name="keyTextColor">@color/latinkeyboard_key_color_black</item>
-        <item name="keyTextColorDisabled">#FF808080</item>
+        <item name="keyTextInactivatedColor">#FF808080</item>
         <item name="shadowColor">@color/latinkeyboard_key_color_white</item>
         <item name="colorScheme">black</item>
     </style>
@@ -102,20 +107,19 @@
     </style>
     <!-- Theme "Stone bold" -->
     <style name="KeyboardView.Stone.Bold" parent="KeyboardView.Stone">
-        <item name="keyLetterStyle">bold</item>
+        <item name="keyTextStyle">bold</item>
     </style>
     <!-- Theme "Gingerbread" -->
     <style name="KeyboardView.Gingerbread" parent="KeyboardView">
         <item name="android:background">@drawable/keyboard_dark_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_gingerbread</item>
-        <item name="keyLetterStyle">bold</item>
+        <item name="keyTextStyle">bold</item>
     </style>
     <style name="PopupMiniKeyboardView.Gingerbread" parent="PopupMiniKeyboardView">
         <item name="android:background">@null</item>
     </style>
     <!-- Theme "Honeycomb" -->
     <style name="Keyboard.Honeycomb" parent="Keyboard" >
-        <item name="popupHintIcon">@drawable/hint_popup_holo</item>
     </style>
     <style name="LatinKeyboard.Honeycomb" parent="LatinKeyboard">
         <item name="autoCorrectionSpacebarLedIcon">@null</item>
@@ -124,10 +128,14 @@
     <style name="KeyboardView.Honeycomb" parent="KeyboardView">
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_honeycomb</item>
+        <item name="keyTextStyle">bold</item>
+        <item name="keyTextInactivatedColor">#66E0E4E5</item>
+        <item name="keyHintLetterColor">#80000000</item>
+        <item name="keyUppercaseLetterInactivatedColor">#66E0E4E5</item>
+        <item name="keyUppercaseLetterActivatedColor">#FFFFFFFF</item>
+        <item name="keyPopupHintIcon">@drawable/hint_popup_holo</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height_holo</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset_holo</item>
-        <item name="keyTextColorDisabled">#FF63666D</item>
-        <item name="keyLetterStyle">bold</item>
         <item name="shadowColor">#00000000</item>
         <item name="shadowRadius">0.0</item>
     </style>

@@ -118,9 +118,8 @@
             latin:keyLabel="ю" />
         <Key
             latin:keyLabel="."
-            latin:manualTemporaryUpperCaseCode="44"
-            latin:keyHintIcon="@drawable/key_hint_comma_holo"
-            latin:manualTemporaryUpperCaseHintIcon="@drawable/key_hint_comma_large_holo"
+            latin:keyLabelOption="hasUppercaseLetter"
+            latin:keyHintLetter=","
             latin:popupCharacters="," />
         <include
             latin:keyboardLayout="@xml/kbd_row3_right" />
