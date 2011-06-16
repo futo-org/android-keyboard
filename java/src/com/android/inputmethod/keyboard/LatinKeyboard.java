@@ -57,9 +57,9 @@ public class LatinKeyboard extends Keyboard {
     private final Drawable mSpaceIcon;
     private final Drawable mSpacePreviewIcon;
     private final int mSpaceKeyIndex;
-    private final Drawable mSpaceAutoCorrectionIndicator;
-    private final Drawable mButtonArrowLeftIcon;
-    private final Drawable mButtonArrowRightIcon;
+    private final Drawable mAutoCorrectionSpacebarLedIcon;
+    private final Drawable mSpacebarArrowLeftIcon;
+    private final Drawable mSpacebarArrowRightIcon;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
     private float mSpacebarTextFadeFactor = 0.0f;
@@ -90,7 +90,6 @@ public class LatinKeyboard extends Keyboard {
 
     public LatinKeyboard(Context context, KeyboardId id, int width) {
         super(context, id.getXmlId(), id, width);
-        final Resources res = context.getResources();
         mContext = context;
 
         final List<Key> keys = getKeys();
@@ -118,19 +117,20 @@ public class LatinKeyboard extends Keyboard {
         mShortcutKey = (shortcutKeyIndex >= 0) ? keys.get(shortcutKeyIndex) : null;
         mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
 
-        mSpacebarTextColor = res.getColor(R.color.latinkeyboard_bar_language_text);
-        if (id.mColorScheme == KeyboardView.COLOR_SCHEME_BLACK) {
-            mSpacebarTextShadowColor = res.getColor(
-                    R.color.latinkeyboard_bar_language_shadow_black);
-            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_bkeyboard_voice_off);
-        } else { // default color scheme is KeyboardView.COLOR_SCHEME_WHITE
-            mSpacebarTextShadowColor = res.getColor(
-                    R.color.latinkeyboard_bar_language_shadow_white);
-            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_keyboard_voice_off_holo);
-        }
-        mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
-        mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
-        mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
+        final TypedArray a = context.obtainStyledAttributes(
+                null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
+        mAutoCorrectionSpacebarLedIcon = a.getDrawable(
+                R.styleable.LatinKeyboard_autoCorrectionSpacebarLedIcon);
+        mDisabledShortcutIcon = a.getDrawable(R.styleable.LatinKeyboard_disabledShortcutIcon);
+        mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboard_spacebarTextColor, 0);
+        mSpacebarTextShadowColor = a.getColor(
+                R.styleable.LatinKeyboard_spacebarTextShadowColor, 0);
+        mSpacebarArrowLeftIcon = a.getDrawable(
+                R.styleable.LatinKeyboard_spacebarArrowLeftIcon);
+        mSpacebarArrowRightIcon = a.getDrawable(
+                R.styleable.LatinKeyboard_spacebarArrowRightIcon);
+        a.recycle();
+
         // The threshold is "key width" x 1.25
         mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 5) / 4;
     }
@@ -161,6 +161,10 @@ public class LatinKeyboard extends Keyboard {
         mShortcutKey.setIcon(available ? mEnabledShortcutIcon : mDisabledShortcutIcon);
         if (view != null)
             view.invalidateKey(mShortcutKey);
+    }
+
+    public boolean needsAutoCorrectionSpacebarLed() {
+        return mAutoCorrectionSpacebarLedIcon != null;
     }
 
     /**
@@ -282,7 +286,7 @@ public class LatinKeyboard extends Keyboard {
             }
 
             final String language = layoutSpacebar(paint, inputLocale,
-                    mButtonArrowLeftIcon, mButtonArrowRightIcon, width, height,
+                    mSpacebarArrowLeftIcon, mSpacebarArrowRightIcon, width, height,
                     getTextSizeFromTheme(mContext.getTheme(), textStyle, defaultTextSize));
 
             // Draw language text with shadow
@@ -303,21 +307,21 @@ public class LatinKeyboard extends Keyboard {
             if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()
                     && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1
                     && !(isPhoneKeyboard() || isNumberKeyboard())) {
-                mButtonArrowLeftIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
-                mButtonArrowRightIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
-                mButtonArrowLeftIcon.draw(canvas);
-                mButtonArrowRightIcon.draw(canvas);
+                mSpacebarArrowLeftIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
+                mSpacebarArrowRightIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
+                mSpacebarArrowLeftIcon.draw(canvas);
+                mSpacebarArrowRightIcon.draw(canvas);
             }
         }
 
         // Draw the spacebar icon at the bottom
         if (isAutoCorrection) {
             final int iconWidth = width * SPACE_LED_LENGTH_PERCENT / 100;
-            final int iconHeight = mSpaceAutoCorrectionIndicator.getIntrinsicHeight();
+            final int iconHeight = mAutoCorrectionSpacebarLedIcon.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
             int y = height - iconHeight;
-            mSpaceAutoCorrectionIndicator.setBounds(x, y, x + iconWidth, y + iconHeight);
-            mSpaceAutoCorrectionIndicator.draw(canvas);
+            mAutoCorrectionSpacebarLedIcon.setBounds(x, y, x + iconWidth, y + iconHeight);
+            mAutoCorrectionSpacebarLedIcon.draw(canvas);
         } else if (mSpaceIcon != null) {
             final int iconWidth = mSpaceIcon.getIntrinsicWidth();
             final int iconHeight = mSpaceIcon.getIntrinsicHeight();

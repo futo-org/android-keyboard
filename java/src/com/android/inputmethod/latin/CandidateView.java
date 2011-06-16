@@ -81,7 +81,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private static final int AUTO_CORRECT_BOLD = 0x01;
     private static final int AUTO_CORRECT_UNDERLINE = 0x02;
     private static final int AUTO_CORRECT_INVERT = 0x04;
-    private static final int AUTO_CORRECT_SPACEBAR_LED = 0x08;
     private final int mColorTypedWord;
     private final int mColorAutoCorrect;
     private final int mColorSuggestedCandidate;
@@ -418,10 +417,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         tv.setText(word);
         mShowingAutoCorrectionInverted = true;
-    }
-
-    public boolean needsAutoCorrectionSpacebarLed() {
-        return (mAutoCorrectHighlight & AUTO_CORRECT_SPACEBAR_LED) != 0;
     }
 
     public boolean isShowingAddToDictionaryHint() {

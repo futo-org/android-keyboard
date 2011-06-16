@@ -18,6 +18,8 @@
     <declare-styleable name="KeyboardTheme">
         <!-- Keyboard style -->
         <attr name="keyboardStyle" format="reference" />
+        <!-- LatinKeyboard style -->
+        <attr name="latinKeyboardStyle" format="reference" />
         <!-- KeyboardView style -->
         <attr name="keyboardViewStyle" format="reference" />
         <attr name="keyPreviewStyle" format="reference" />
@@ -94,7 +96,6 @@
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />
             <flag name="autoCorrectInvert" value="0x04" />
-            <flag name="autoCorrectSpacebarLed" value="0x08" />
         </attr>
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
@@ -242,5 +243,16 @@
     <declare-styleable name="Keyboard_KeyStyle">
         <attr name="styleName" format="string" />
         <attr name="parentStyle" format="string" />
+    </declare-styleable>
+
+    <declare-styleable name="LatinKeyboard">
+        <attr name="autoCorrectionSpacebarLedIcon" format="reference" />
+        <attr name="disabledShortcutIcon" format="reference" />
+        <attr name="spacebarTextColor" format="color" />
+        <attr name="spacebarTextShadowColor" format="color" />
+        <attr name="spacebarArrowLeftIcon" format="reference" />
+        <attr name="spacebarArrowRightIcon" format="reference" />
+        <attr name="spacebarArrowPreviewLeftIcon" format="reference" />
+        <attr name="spacebarArrowPreviewRightIcon" format="reference" />
     </declare-styleable>
 </resources>

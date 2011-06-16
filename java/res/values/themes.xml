@@ -17,6 +17,7 @@
 <resources>
     <style name="KeyboardTheme" parent="android:Theme">
         <item name="keyboardStyle">@style/Keyboard</item>
+        <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView</item>
         <item name="keyPreviewStyle">@style/KeyPreviewStyle</item>
         <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView</item>
@@ -28,6 +29,7 @@
     </style>
     <style name="KeyboardTheme.HighContrast" parent="android:Theme">
         <item name="keyboardStyle">@style/Keyboard</item>
+        <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView.HighContrast</item>
         <item name="keyPreviewStyle">@style/KeyPreviewStyle</item>
         <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView</item>
@@ -38,6 +40,7 @@
     </style>
     <style name="KeyboardTheme.Stone" parent="android:Theme.Light">
         <item name="keyboardStyle">@style/Keyboard</item>
+        <item name="latinKeyboardStyle">@style/LatinKeyboard.Stone</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Stone</item>
         <item name="keyPreviewStyle">@style/KeyPreviewStyle</item>
         <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView.Stone</item>
@@ -48,6 +51,7 @@
     </style>
     <style name="KeyboardTheme.Stone.Bold" parent="android:Theme.Light">
         <item name="keyboardStyle">@style/Keyboard</item>
+        <item name="latinKeyboardStyle">@style/LatinKeyboard.Stone</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Stone.Bold</item>
         <item name="keyPreviewStyle">@style/KeyPreviewStyle</item>
         <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView.Stone</item>
@@ -58,6 +62,7 @@
     </style>
     <style name="KeyboardTheme.Gingerbread" parent="android:Theme.Black">
         <item name="keyboardStyle">@style/Keyboard</item>
+        <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Gingerbread</item>
         <item name="keyPreviewStyle">@style/KeyPreviewStyle</item>
         <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView.Gingerbread</item>
@@ -68,6 +73,7 @@
     </style>
     <style name="KeyboardTheme.Honeycomb" parent="android:Theme.Holo">
         <item name="keyboardStyle">@style/Keyboard.Honeycomb</item>
+        <item name="latinKeyboardStyle">@style/LatinKeyboard.Honeycomb</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Honeycomb</item>
         <item name="keyPreviewStyle">@style/KeyPreviewStyle.Honeycomb</item>
         <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView.Honeycomb</item>

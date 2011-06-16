@@ -16,8 +16,18 @@
 
 <resources>
     <!-- Theme "Basic" -->
-    <style name="Keyboard" >
+    <style name="Keyboard">
         <item name="popupHintIcon">@drawable/hint_popup</item>
+    </style>
+    <style name="LatinKeyboard">
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="spacebarTextColor">@color/latinkeyboard_bar_language_text</item>
+        <item name="spacebarTextShadowColor">@color/latinkeyboard_bar_language_shadow_white</item>
+        <item name="spacebarArrowLeftIcon">@drawable/sym_keyboard_language_arrows_left</item>
+        <item name="spacebarArrowRightIcon">@drawable/sym_keyboard_language_arrows_right</item>
+        <item name="spacebarArrowPreviewLeftIcon">@drawable/sym_keyboard_feedback_language_arrows_left</item>
+        <item name="spacebarArrowPreviewRightIcon">@drawable/sym_keyboard_feedback_language_arrows_right</item>
     </style>
     <style name="KeyboardView">
         <item name="android:background">@drawable/keyboard_background</item>
@@ -61,8 +71,6 @@
         <item name="android:background">@drawable/candidate_feedback_background</item>
     </style>
     <style name="CandidateViewStyle" parent="SuggestionsStripBackgroundStyle">
-        <!-- TODO: autoCorrectSpacebarLed should be in style for LatinKeyboard. -->
-        <item name="autoCorrectHighlight">autoCorrectBold|autoCorrectSpacebarLed</item>
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
@@ -75,6 +83,11 @@
         <item name="keyBackground">@drawable/btn_keyboard_key3</item>
     </style>
     <!-- Theme "Stone" -->
+    <style name="LatinKeyboard.Stone" patent="LatinKeyboard">
+        <item name="spacebarTextColor">#FF444444</item>
+        <item name="spacebarTextShadowColor">@color/latinkeyboard_bar_language_shadow_black</item>
+        <item name="disabledShortcutIcon">@drawable/sym_bkeyboard_voice_off</item>
+    </style>
     <style name="KeyboardView.Stone" parent="KeyboardView">
         <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
         <item name="keyTextColor">@color/latinkeyboard_key_color_black</item>
@@ -103,6 +116,10 @@
     <!-- Theme "Honeycomb" -->
     <style name="Keyboard.Honeycomb" parent="Keyboard" >
         <item name="popupHintIcon">@drawable/hint_popup_holo</item>
+    </style>
+    <style name="LatinKeyboard.Honeycomb" parent="LatinKeyboard">
+        <item name="autoCorrectionSpacebarLedIcon">@null</item>
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
     <style name="KeyboardView.Honeycomb" parent="KeyboardView">
         <item name="android:background">@drawable/keyboard_background_holo</item>
