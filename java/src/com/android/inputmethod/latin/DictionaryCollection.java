@@ -54,8 +54,8 @@ public class DictionaryCollection extends Dictionary {
 
     @Override
     public boolean isValidWord(CharSequence word) {
-        for (final Dictionary dict : mDictionaries)
-            if (dict.isValidWord(word)) return true;
+        for (int i = mDictionaries.size() - 1; i >= 0; --i)
+            if (mDictionaries.get(i).isValidWord(word)) return true;
         return false;
     }
 
