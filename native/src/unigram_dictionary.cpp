@@ -265,8 +265,7 @@ void UnigramDictionary::initSuggestions(const int *codes, const int codesSize,
     mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
 }
 
-void UnigramDictionary::registerNextLetter(
-        unsigned short c, int *nextLetters, int nextLettersSize) {
+static inline void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize) {
     if (c < nextLettersSize) {
         nextLetters[c]++;
     }
@@ -322,7 +321,7 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     return false;
 }
 
-unsigned short UnigramDictionary::toBaseLowerCase(unsigned short c) {
+static inline unsigned short toBaseLowerCase(unsigned short c) {
     if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
         c = BASE_CHARS[c];
     }
@@ -924,4 +923,47 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
         return false;
     }
 }
+
+// TODO: use uint32_t instead of unsigned short
+bool UnigramDictionary::isValidWord(unsigned short *word, int length) {
+    if (IS_LATEST_DICT_VERSION) {
+        return (isValidWordRec(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
+    } else {
+        return (isValidWordRec(0, word, 0, length) != NOT_VALID_WORD);
+    }
+}
+
+int UnigramDictionary::isValidWordRec(int pos, unsigned short *word, int offset, int length) {
+    // returns address of bigram data of that word
+    // return -99 if not found
+
+    int count = Dictionary::getCount(DICT_ROOT, &pos);
+    unsigned short currentChar = (unsigned short) word[offset];
+    for (int j = 0; j < count; j++) {
+        unsigned short c = Dictionary::getChar(DICT_ROOT, &pos);
+        int terminal = Dictionary::getTerminal(DICT_ROOT, &pos);
+        int childPos = Dictionary::getAddress(DICT_ROOT, &pos);
+        if (c == currentChar) {
+            if (offset == length - 1) {
+                if (terminal) {
+                    return (pos+1);
+                }
+            } else {
+                if (childPos != 0) {
+                    int t = isValidWordRec(childPos, word, offset + 1, length);
+                    if (t > 0) {
+                        return t;
+                    }
+                }
+            }
+        }
+        if (terminal) {
+            Dictionary::getFreq(DICT_ROOT, IS_LATEST_DICT_VERSION, &pos);
+        }
+        // There could be two instances of each alphabet - upper and lower case. So continue
+        // looking ...
+    }
+    return NOT_VALID_WORD;
+}
+
 } // namespace latinime

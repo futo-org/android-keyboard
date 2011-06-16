@@ -43,7 +43,6 @@ public:
     }
 
     bool isValidWord(unsigned short *word, int length);
-    int isValidWordRec(int pos, unsigned short *word, int offset, int length);
     void *getDict() { return (void *)mDict; }
     int getDictSize() { return mDictSize; }
     int getMmapFd() { return mMmapFd; }

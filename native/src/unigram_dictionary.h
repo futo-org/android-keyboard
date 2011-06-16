@@ -39,6 +39,7 @@ public:
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
             const bool isLatestDictVersion);
+    bool isValidWord(unsigned short *word, int length);
     int getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
             unsigned short *outWords, int *frequencies);
@@ -58,6 +59,7 @@ private:
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
             const int transposedPos, int *nextLetters, const int nextLettersSize,
             const int maxDepth);
+    int isValidWordRec(int pos, unsigned short *word, int offset, int length);
     void getVersionNumber();
     bool checkIfDictVersionIsLatest();
     int getAddress(int *pos);
@@ -65,7 +67,6 @@ private:
     int wideStrLen(unsigned short *str);
     bool sameAsTyped(unsigned short *word, int length);
     bool addWord(unsigned short *word, int length, int frequency);
-    unsigned short toBaseLowerCase(unsigned short c);
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
@@ -79,7 +80,6 @@ private:
     void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
             const int excessivePos, const int transposedPos, int *nextLetters,
             const int nextLettersSize);
-    void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
     int calculateFinalFreq(const int inputIndex, const int depth, const int snr, const int skipPos,
             const int excessivePos, const int transposedPos, const int freq,
             const bool sameLength) const;

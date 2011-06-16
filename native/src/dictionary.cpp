@@ -53,45 +53,8 @@ bool Dictionary::hasBigram() {
     return ((mDict[1] & 0xFF) == 1);
 }
 
-// TODO: use uint32_t instead of unsigned short
 bool Dictionary::isValidWord(unsigned short *word, int length) {
-    if (IS_LATEST_DICT_VERSION) {
-        return (isValidWordRec(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
-    } else {
-        return (isValidWordRec(0, word, 0, length) != NOT_VALID_WORD);
-    }
+    return mUnigramDictionary->isValidWord(word, length);
 }
 
-int Dictionary::isValidWordRec(int pos, unsigned short *word, int offset, int length) {
-    // returns address of bigram data of that word
-    // return -99 if not found
-
-    int count = Dictionary::getCount(mDict, &pos);
-    unsigned short currentChar = (unsigned short) word[offset];
-    for (int j = 0; j < count; j++) {
-        unsigned short c = Dictionary::getChar(mDict, &pos);
-        int terminal = Dictionary::getTerminal(mDict, &pos);
-        int childPos = Dictionary::getAddress(mDict, &pos);
-        if (c == currentChar) {
-            if (offset == length - 1) {
-                if (terminal) {
-                    return (pos+1);
-                }
-            } else {
-                if (childPos != 0) {
-                    int t = isValidWordRec(childPos, word, offset + 1, length);
-                    if (t > 0) {
-                        return t;
-                    }
-                }
-            }
-        }
-        if (terminal) {
-            Dictionary::getFreq(mDict, IS_LATEST_DICT_VERSION, &pos);
-        }
-        // There could be two instances of each alphabet - upper and lower case. So continue
-        // looking ...
-    }
-    return NOT_VALID_WORD;
-}
 } // namespace latinime
