@@ -17,8 +17,13 @@
 #ifndef LATINIME_UNIGRAM_DICTIONARY_H
 #define LATINIME_UNIGRAM_DICTIONARY_H
 
+#include <stdint.h>
 #include "defines.h"
 #include "proximity_info.h"
+
+#ifndef NULL
+#define NULL 0
+#endif
 
 namespace latinime {
 
@@ -31,8 +36,9 @@ class UnigramDictionary {
     } ProximityType;
 
 public:
-    UnigramDictionary(const unsigned char *dict, int typedLetterMultipler, int fullWordMultiplier,
-            int maxWordLength, int maxWords, int maxProximityChars, const bool isLatestDictVersion);
+    UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
+            int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
+            const bool isLatestDictVersion);
     int getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
             unsigned short *outWords, int *frequencies);
@@ -104,7 +110,8 @@ private:
     inline const int* getInputCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS);
     }
-    const unsigned char *DICT;
+
+    const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
     const int MAX_WORDS;
     const int MAX_PROXIMITY_CHARS;

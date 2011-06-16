@@ -16,8 +16,6 @@
 */
 
 #include <assert.h>
-#include <fcntl.h>
-#include <stdio.h>
 #include <string.h>
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
@@ -34,10 +32,12 @@ const UnigramDictionary::digraph_t UnigramDictionary::GERMAN_UMLAUT_DIGRAPHS[] =
         { 'o', 'e' },
         { 'u', 'e' } };
 
-UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterMultiplier,
+// TODO: check the header
+UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultiplier,
         int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
         const bool isLatestDictVersion)
-    : DICT(dict), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
+    : DICT_ROOT(streamStart),
+    MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
     MAX_PROXIMITY_CHARS(maxProximityChars), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
     ROOT_POS(isLatestDictVersion ? DICTIONARY_HEADER_SIZE : 0),
@@ -363,7 +363,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
     }
     int rootPosition = ROOT_POS;
     // Get the number of child of root, then increment the position
-    int childCount = Dictionary::getCount(DICT, &rootPosition);
+    int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
     int depth = 0;
 
     mStackChildCount[0] = childCount;
@@ -562,7 +562,7 @@ void UnigramDictionary::getWordsOld(const int initialPos, const int inputLength,
         const int excessivePos, const int transposedPos,int *nextLetters,
         const int nextLettersSize) {
     int initialPosition = initialPos;
-    const int count = Dictionary::getCount(DICT, &initialPosition);
+    const int count = Dictionary::getCount(DICT_ROOT, &initialPosition);
     getWordsRec(count, initialPosition, 0,
             min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH),
             mInputLength <= 0, 1, 0, 0, skipPos, excessivePos, transposedPos, nextLetters,
@@ -770,8 +770,8 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
 
     if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
 
-    *nextSiblingPosition = Dictionary::setDictionaryValues(DICT, IS_LATEST_DICT_VERSION, pos, &c,
-            &childPosition, &terminal, &freq);
+    *nextSiblingPosition = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, pos,
+            &c, &childPosition, &terminal, &freq);
 
     const bool needsToTraverseChildrenNodes = childPosition != 0;
 
@@ -829,7 +829,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         *newTraverseAllNodes = true;
     }
     // get the count of nodes and increment childAddress.
-    *newCount = Dictionary::getCount(DICT, &childPosition);
+    *newCount = Dictionary::getCount(DICT_ROOT, &childPosition);
     *newChildPosition = childPosition;
     if (DEBUG_DICT) assert(needsToTraverseChildrenNodes);
     return needsToTraverseChildrenNodes;
@@ -838,7 +838,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
 inline int UnigramDictionary::getBestWordFreq(const int startInputIndex, const int inputLength,
         unsigned short *word) {
     int pos = ROOT_POS;
-    int count = Dictionary::getCount(DICT, &pos);
+    int count = Dictionary::getCount(DICT_ROOT, &pos);
     int maxFreq = 0;
     int depth = 0;
     unsigned short newWord[MAX_WORD_LENGTH_INTERNAL];
@@ -894,8 +894,8 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
     const int inputIndex = startInputIndex + depth;
     const int *currentChars = getInputCharsAt(inputIndex);
     unsigned short c;
-    *siblingPos = Dictionary::setDictionaryValues(DICT, IS_LATEST_DICT_VERSION, firstChildPos, &c,
-            newChildPosition, newTerminal, newFreq);
+    *siblingPos = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, firstChildPos,
+            &c, newChildPosition, newTerminal, newFreq);
     const unsigned int inputC = currentChars[0];
     if (DEBUG_DICT) {
         assert(inputC <= U_SHORT_MAX);
@@ -912,7 +912,7 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
             }
         }
         if (hasChild) {
-            *newCount = Dictionary::getCount(DICT, newChildPosition);
+            *newCount = Dictionary::getCount(DICT_ROOT, newChildPosition);
             return true;
         } else {
             return false;
