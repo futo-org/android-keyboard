@@ -289,8 +289,8 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     // Find the right insertion point
     int insertAt = 0;
     while (insertAt < MAX_WORDS) {
-        if (frequency > mFrequencies[insertAt] || (mFrequencies[insertAt] == frequency
-                && length < Dictionary::wideStrLen(mOutputChars + insertAt * MAX_WORD_LENGTH))) {
+        // TODO: How should we sort words with the same frequency?
+        if (frequency > mFrequencies[insertAt]) {
             break;
         }
         insertAt++;
@@ -371,6 +371,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
     mStackInputIndex[0] = 0;
     mStackDiffs[0] = 0;
     mStackSiblingPos[0] = rootPosition;
+    mStackOutputIndex[0] = 0;
 
     // Depth first search
     while (depth >= 0) {
@@ -381,14 +382,15 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
             int inputIndex = mStackInputIndex[depth];
             int diffs = mStackDiffs[depth];
             int siblingPos = mStackSiblingPos[depth];
+            int outputIndex = mStackOutputIndex[depth];
             int firstChildPos;
             // depth will never be greater than maxDepth because in that case,
             // needsToTraverseChildrenNodes should be false
-            const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, depth,
+            const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, outputIndex,
                     maxDepth, traverseAllNodes, matchWeight, inputIndex, diffs, skipPos,
                     excessivePos, transposedPos, nextLetters, nextLettersSize, &childCount,
                     &firstChildPos, &traverseAllNodes, &matchWeight, &inputIndex, &diffs,
-                    &siblingPos);
+                    &siblingPos, &outputIndex);
             // Update next sibling pos
             mStackSiblingPos[depth] = siblingPos;
             if (needsToTraverseChildrenNodes) {
@@ -400,6 +402,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
                 mStackInputIndex[depth] = inputIndex;
                 mStackDiffs[depth] = diffs;
                 mStackSiblingPos[depth] = firstChildPos;
+                mStackOutputIndex[depth] = outputIndex;
             }
         } else {
             // Goes to parent sibling node
@@ -582,12 +585,13 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
         int newInputIndex;
         int newDiffs;
         int newSiblingPos;
+        int newOutputIndex;
         const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, depth, maxDepth,
                 traverseAllNodes, matchWeight, inputIndex, diffs,
                 skipPos, excessivePos, transposedPos,
                 nextLetters, nextLettersSize,
                 &newCount, &newChildPosition, &newTraverseAllNodes, &newMatchRate,
-                &newInputIndex, &newDiffs, &newSiblingPos);
+                &newInputIndex, &newDiffs, &newSiblingPos, &newOutputIndex);
         siblingPos = newSiblingPos;
 
         if (needsToTraverseChildrenNodes) {
@@ -753,7 +757,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
         int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
         bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
-        int *nextSiblingPosition) {
+        int *nextSiblingPosition, int *nextOutputIndex) {
     if (DEBUG_DICT) {
         int inputCount = 0;
         if (skipPos >= 0) ++inputCount;
@@ -771,6 +775,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
 
     *nextSiblingPosition = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, pos,
             &c, &childPosition, &terminal, &freq);
+    *nextOutputIndex = depth + 1;
 
     const bool needsToTraverseChildrenNodes = childPosition != 0;
 
@@ -927,13 +932,15 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
 // TODO: use uint32_t instead of unsigned short
 bool UnigramDictionary::isValidWord(unsigned short *word, int length) {
     if (IS_LATEST_DICT_VERSION) {
-        return (isValidWordRec(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
+        return (getFrequency(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
     } else {
-        return (isValidWordRec(0, word, 0, length) != NOT_VALID_WORD);
+        return (getFrequency(0, word, 0, length) != NOT_VALID_WORD);
     }
 }
 
-int UnigramDictionary::isValidWordRec(int pos, unsigned short *word, int offset, int length) {
+
+// Require strict exact match.
+int UnigramDictionary::getFrequency(int pos, unsigned short *word, int offset, int length) const {
     // returns address of bigram data of that word
     // return -99 if not found
 
@@ -950,7 +957,7 @@ int UnigramDictionary::isValidWordRec(int pos, unsigned short *word, int offset,
                 }
             } else {
                 if (childPos != 0) {
-                    int t = isValidWordRec(childPos, word, offset + 1, length);
+                    int t = getFrequency(childPos, word, offset + 1, length);
                     if (t > 0) {
                         return t;
                     }

@@ -59,7 +59,7 @@ private:
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
             const int transposedPos, int *nextLetters, const int nextLettersSize,
             const int maxDepth);
-    int isValidWordRec(int pos, unsigned short *word, int offset, int length);
+    int getFrequency(int pos, unsigned short *word, int offset, int length) const;
     void getVersionNumber();
     bool checkIfDictVersionIsLatest();
     int getAddress(int *pos);
@@ -100,7 +100,7 @@ private:
             const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
             int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
             bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
-            int *nextSiblingPosition);
+            int *nextSiblingPosition, int *nextOutputIndex);
     int getBestWordFreq(const int startInputIndex, const int inputLength, unsigned short *word);
     // Process a node by considering missing space
     bool processCurrentNodeForExactMatch(const int firstChildPos,
@@ -145,6 +145,7 @@ private:
     int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];
     int mStackDiffs[MAX_WORD_LENGTH_INTERNAL];
     int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];
+    int mStackOutputIndex[MAX_WORD_LENGTH_INTERNAL];
     int mNextLettersFrequency[NEXT_LETTERS_SIZE];
 };
 
