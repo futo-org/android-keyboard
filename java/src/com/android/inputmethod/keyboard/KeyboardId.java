@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.view.inputmethod.EditorInfo;
+
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.latin.R;
-
-import android.view.inputmethod.EditorInfo;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -67,9 +67,10 @@ public class KeyboardId {
         this.mMode = mode;
         this.mXmlId = xmlId;
         this.mColorScheme = colorScheme;
-        this.mNavigateAction = InputTypeCompatUtils.isWebInputType(inputType)
-                || EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
-                || EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions);
+        // Note: Turn off checking navigation flag to show TAB key for now.
+        this.mNavigateAction = InputTypeCompatUtils.isWebInputType(inputType);
+//                || EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
+//                || EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions);
         this.mPasswordInput = InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
         this.mHasSettingsKey = hasSettingsKey;
