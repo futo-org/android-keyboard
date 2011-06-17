@@ -579,7 +579,6 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
     for (int i = 0; i < childrenCount; ++i) {
         int newCount;
         int newChildPosition;
-        const int newDepth = depth + 1;
         bool newTraverseAllNodes;
         int newMatchRate;
         int newInputIndex;
@@ -595,7 +594,7 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
         siblingPos = newSiblingPos;
 
         if (needsToTraverseChildrenNodes) {
-            getWordsRec(newCount, newChildPosition, newDepth, maxDepth, newTraverseAllNodes,
+            getWordsRec(newCount, newChildPosition, newOutputIndex, maxDepth, newTraverseAllNodes,
                     newMatchRate, newInputIndex, newDiffs, skipPos, excessivePos, transposedPos,
                     nextLetters, nextLettersSize);
         }
