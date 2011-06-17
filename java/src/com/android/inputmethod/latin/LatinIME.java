@@ -518,8 +518,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LatinKeyboardView inputView = switcher.getKeyboardView();
 
         if (DEBUG) {
-            Log.d(TAG, "onStartInputView: inputType=" + ((attribute == null) ? "none"
-                    : String.format("0x%08x", attribute.inputType)));
+            Log.d(TAG, "onStartInputView: attribute:" + ((attribute == null) ? "none"
+                    : String.format("inputType=0x%08x imeOptions=0x%08x",
+                            attribute.inputType, attribute.imeOptions)));
         }
         // In landscape mode, this method gets called without the input view being created.
         if (inputView == null) {
