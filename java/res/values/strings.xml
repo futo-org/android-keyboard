@@ -258,12 +258,16 @@
     <string name="subtype_mode_en_US_keyboard">English (US) Keyboard</string>
     <!-- Description for Spanish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_es_keyboard">Spanish Keyboard</string>
+    <!-- Description for Finnish keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_fi_keyboard">Finnish Keyboard</string>
     <!-- Description for French keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_keyboard">French Keyboard</string>
     <!-- Description for French (Canada) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_CA_keyboard">French (Canada) Keyboard</string>
     <!-- Description for French (Switzerland) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_CH_keyboard">French (Switzerland) Keyboard</string>
+    <!-- Description for Hungarian keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_hu_keyboard">Hungarian Keyboard</string>
     <!-- Description for Hebrew keyboard subtype [CHAR LIMIT=35] -->
     <!-- Java uses the deprecated "iw" code instead of the standard "he" code -->
     <string name="subtype_mode_iw_keyboard">Hebrew Keyboard</string>
