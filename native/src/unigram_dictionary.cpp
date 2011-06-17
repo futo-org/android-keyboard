@@ -272,6 +272,7 @@ static inline void registerNextLetter(unsigned short c, int *nextLetters, int ne
 }
 
 // TODO: We need to optimize addWord by using STL or something
+// TODO: This needs to take an const unsigned short* and not tinker with its contents
 bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency) {
     word[length] = 0;
     if (DEBUG_DICT && DEBUG_SHOW_FOUND_WORD) {
@@ -321,6 +322,16 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     return false;
 }
 
+inline void UnigramDictionary::addWordAlternatesSpellings(const uint8_t* const root, int pos,
+        int depth, int finalFreq) {
+    // TODO: actually add alternates when the format supports it.
+}
+
+static inline bool hasAlternateSpellings(uint8_t flags) {
+    // TODO: when the format supports it, return the actual value.
+    return false;
+}
+
 static inline unsigned short toBaseLowerCase(unsigned short c) {
     if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
         c = BASE_CHARS[c];
@@ -333,7 +344,7 @@ static inline unsigned short toBaseLowerCase(unsigned short c) {
     return c;
 }
 
-bool UnigramDictionary::sameAsTyped(unsigned short *word, int length) {
+bool UnigramDictionary::sameAsTyped(const unsigned short *word, int length) const {
     if (length != mInputLength) {
         return false;
     }
@@ -657,28 +668,6 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
     return finalFreq;
 }
 
-inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsGreaterThanInputLength(
-        unsigned short *word, const int inputIndex, const int depth, const int matchWeight,
-        int *nextLetters, const int nextLettersSize, const int skipPos, const int excessivePos,
-        const int transposedPos, const int freq) {
-    const int finalFreq = calculateFinalFreq(inputIndex, depth, matchWeight, skipPos, excessivePos,
-            transposedPos, freq, false);
-    if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
-    if (depth >= mInputLength && skipPos < 0) {
-        registerNextLetter(mWord[mInputLength], nextLetters, nextLettersSize);
-    }
-}
-
-inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsSameAsInputLength(
-        unsigned short *word, const int inputIndex, const int depth, const int matchWeight,
-        const int skipPos, const int excessivePos, const int transposedPos, const int freq) {
-    if (sameAsTyped(word, depth + 1)) return;
-    const int finalFreq = calculateFinalFreq(inputIndex, depth, matchWeight, skipPos,
-            excessivePos, transposedPos, freq, true);
-    // Proximity collection will promote a word of the same length as what user typed.
-    if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
-}
-
 inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
         const int inputIndex, const int skipPos, const int depth) {
     const unsigned short userTypedChar = getInputCharsAt(inputIndex)[0];
@@ -708,7 +697,6 @@ inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex
     }
     return false;
 }
-
 
 // In the following function, c is the current character of the dictionary word
 // currently examined.
@@ -752,6 +740,30 @@ inline UnigramDictionary::ProximityType UnigramDictionary::getMatchedProximityId
     return UNRELATED_CHAR;
 }
 
+inline void UnigramDictionary::onTerminal(unsigned short int* word, const int depth,
+        const uint8_t* const root, const uint8_t flags, int pos,
+        const int inputIndex, const int matchWeight, const int skipPos,
+        const int excessivePos, const int transposedPos, const int freq, const bool sameLength,
+        int* nextLetters, const int nextLettersSize) {
+
+    const bool isSameAsTyped = sameLength ? sameAsTyped(word, depth + 1) : false;
+    const bool hasAlternates = hasAlternateSpellings(flags);
+    if (isSameAsTyped && !hasAlternates) return;
+
+    if (depth >= MIN_SUGGEST_DEPTH) {
+        const int finalFreq = calculateFinalFreq(inputIndex, depth, matchWeight, skipPos,
+                excessivePos, transposedPos, freq, sameLength);
+        if (!isSameAsTyped)
+            addWord(word, depth + 1, finalFreq);
+        if (hasAlternates)
+            addWordAlternatesSpellings(DICT_ROOT, pos, flags, finalFreq);
+    }
+
+    if (sameLength && depth >= mInputLength && skipPos < 0) {
+        registerNextLetter(word[mInputLength], nextLetters, nextLettersSize);
+    }
+}
+
 inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
         const int maxDepth, const bool traverseAllNodes, int matchWeight, int inputIndex,
         const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
@@ -771,6 +783,8 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
     int freq;
     bool isSameAsUserTypedLength = false;
 
+    const uint8_t flags = 0; // No flags for now
+
     if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
 
     *nextSiblingPosition = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, pos,
@@ -783,9 +797,8 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
     if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
         mWord[depth] = c;
         if (traverseAllNodes && terminal) {
-            onTerminalWhenUserTypedLengthIsGreaterThanInputLength(mWord, inputIndex, depth,
-                    matchWeight, nextLetters, nextLettersSize, skipPos, excessivePos, transposedPos,
-                    freq);
+            onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
+                       excessivePos, transposedPos, freq, false, nextLetters, nextLettersSize);
         }
         if (!needsToTraverseChildrenNodes) return false;
         *newTraverseAllNodes = traverseAllNodes;
@@ -812,8 +825,8 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
                 || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
         if (isSameAsUserTypedLength && terminal) {
-            onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, inputIndex, depth, matchWeight,
-                    skipPos, excessivePos, transposedPos, freq);
+            onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
+                    excessivePos, transposedPos, freq, true, nextLetters, nextLettersSize);
         }
         if (!needsToTraverseChildrenNodes) return false;
         // Start traversing all nodes after the index exceeds the user typed length
