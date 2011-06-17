@@ -17,6 +17,14 @@
 <resources>
     <!-- Theme "Basic" -->
     <style name="Keyboard">
+        <item name="rowHeight">25%p</item>
+        <item name="keyboardHeight">@dimen/keyboardHeight</item>
+        <item name="maxKeyboardHeight">@fraction/maxKeyboardHeight</item>
+        <item name="minKeyboardHeight">@fraction/minKeyboardHeight</item>
+        <item name="popupKeyboardTemplate">@xml/kbd_popup_template</item>
+        <item name="horizontalGap">@dimen/key_horizontal_gap</item>
+        <item name="verticalGap">@dimen/key_bottom_gap</item>
+        <item name="maxPopupKeyboardColumn">@integer/config_max_popup_keyboard_column</item>
     </style>
     <style name="LatinKeyboard">
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>

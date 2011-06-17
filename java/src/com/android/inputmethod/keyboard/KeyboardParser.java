@@ -121,6 +121,7 @@ public class KeyboardParser {
     public static final String TAG_KEY_STYLE = "key-style";
 
     private final Keyboard mKeyboard;
+    private final Context mContext;
     private final Resources mResources;
 
     private int mHorizontalEdgesPadding;
@@ -131,8 +132,10 @@ public class KeyboardParser {
     private Row mCurrentRow = null;
     private final KeyStyles mKeyStyles = new KeyStyles();
 
-    public KeyboardParser(Keyboard keyboard, Resources res) {
+    public KeyboardParser(Keyboard keyboard, Context context) {
         mKeyboard = keyboard;
+        mContext = context;
+        final Resources res = context.getResources();
         mResources = res;
         mHorizontalEdgesPadding = (int)res.getDimension(R.dimen.keyboard_horizontal_edges_padding);
     }
@@ -187,8 +190,9 @@ public class KeyboardParser {
 
     private void parseKeyboardAttributes(XmlResourceParser parser) {
         final Keyboard keyboard = mKeyboard;
-        final TypedArray keyboardAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.Keyboard);
+        final TypedArray keyboardAttr = mContext.obtainStyledAttributes(
+                Xml.asAttributeSet(parser), R.styleable.Keyboard, R.attr.keyboardStyle,
+                R.style.Keyboard);
         final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
         try {
