@@ -43,7 +43,7 @@ public class KeyboardId {
     public final int mMode;
     public final int mXmlId;
     public final int mColorScheme;
-    public final boolean mWebInput;
+    public final boolean mNavigateAction;
     public final boolean mPasswordInput;
     public final boolean mHasSettingsKey;
     public final boolean mVoiceKeyEnabled;
@@ -67,7 +67,9 @@ public class KeyboardId {
         this.mMode = mode;
         this.mXmlId = xmlId;
         this.mColorScheme = colorScheme;
-        this.mWebInput = InputTypeCompatUtils.isWebInputType(inputType);
+        this.mNavigateAction = InputTypeCompatUtils.isWebInputType(inputType)
+                || EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
+                || EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions);
         this.mPasswordInput = InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
         this.mHasSettingsKey = hasSettingsKey;
@@ -89,7 +91,7 @@ public class KeyboardId {
                 mode,
                 xmlId,
                 colorScheme,
-                mWebInput,
+                mNavigateAction,
                 mPasswordInput,
                 hasSettingsKey,
                 voiceKeyEnabled,
@@ -143,7 +145,7 @@ public class KeyboardId {
             && other.mMode == this.mMode
             && other.mXmlId == this.mXmlId
             && other.mColorScheme == this.mColorScheme
-            && other.mWebInput == this.mWebInput
+            && other.mNavigateAction == this.mNavigateAction
             && other.mPasswordInput == this.mPasswordInput
             && other.mHasSettingsKey == this.mHasSettingsKey
             && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
@@ -166,7 +168,7 @@ public class KeyboardId {
                 modeName(mMode),
                 EditorInfoCompatUtils.imeOptionsName(mImeAction),
                 colorSchemeName(mColorScheme),
-                (mWebInput ? " webInput" : ""),
+                (mNavigateAction ? " navigateAction" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),

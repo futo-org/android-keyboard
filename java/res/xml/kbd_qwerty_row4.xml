@@ -56,7 +56,7 @@
         </switch>
         <switch>
             <case
-                latin:webInput="true"
+                latin:navigateAction="true"
             >
                 <Key
                     latin:keyStyle="tabKeyStyle"

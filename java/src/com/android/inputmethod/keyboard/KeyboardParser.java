@@ -473,8 +473,8 @@ public class KeyboardParser {
         try {
             final boolean modeMatched = matchTypedValue(a,
                     R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
-            final boolean webInputMatched = matchBoolean(a,
-                    R.styleable.Keyboard_Case_webInput, id.mWebInput);
+            final boolean navigateActionMatched = matchBoolean(a,
+                    R.styleable.Keyboard_Case_navigateAction, id.mNavigateAction);
             final boolean passwordInputMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_passwordInput, id.mPasswordInput);
             final boolean settingsKeyMatched = matchBoolean(a,
@@ -497,7 +497,7 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_languageCode, id.mLocale.getLanguage());
             final boolean countryCodeMatched = matchString(a,
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
-            final boolean selected = modeMatched && webInputMatched && passwordInputMatched
+            final boolean selected = modeMatched && navigateActionMatched && passwordInputMatched
                     && settingsKeyMatched && voiceEnabledMatched && voiceKeyMatched
                     && colorSchemeMatched && imeActionMatched && localeCodeMatched
                     && languageCodeMatched && countryCodeMatched;
@@ -507,7 +507,7 @@ public class KeyboardParser {
                     textAttr(KeyboardId.colorSchemeName(
                             viewAttr.getInt(
                                     R.styleable.KeyboardView_colorScheme, -1)), "colorScheme"),
-                    booleanAttr(a, R.styleable.Keyboard_Case_webInput, "webInput"),
+                    booleanAttr(a, R.styleable.Keyboard_Case_navigateAction, "navigateAction"),
                     booleanAttr(a, R.styleable.Keyboard_Case_passwordInput, "passwordInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),
                     booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
