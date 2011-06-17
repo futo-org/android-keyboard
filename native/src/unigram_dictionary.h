@@ -64,9 +64,9 @@ private:
     bool checkIfDictVersionIsLatest();
     int getAddress(int *pos);
     int getFreq(int *pos);
-    int wideStrLen(unsigned short *str);
-    bool sameAsTyped(unsigned short *word, int length);
+    bool sameAsTyped(const unsigned short *word, int length) const;
     bool addWord(unsigned short *word, int length, int frequency);
+    void addWordAlternatesSpellings(const uint8_t* const root, int pos, int depth, int finalFreq);
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
@@ -83,13 +83,11 @@ private:
     int calculateFinalFreq(const int inputIndex, const int depth, const int snr, const int skipPos,
             const int excessivePos, const int transposedPos, const int freq,
             const bool sameLength) const;
-    void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
-            const int inputIndex, const int depth, const int snr, int *nextLetters,
-            const int nextLettersSize, const int skipPos, const int excessivePos,
-            const int transposedPos, const int freq);
-    void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word,
-            const int inputIndex, const int depth, const int snr, const int skipPos,
-            const int excessivePos, const int transposedPos, const int freq);
+    void onTerminal(unsigned short int* word, const int depth,
+            const uint8_t* const root, const uint8_t flags, int pos,
+            const int inputIndex, const int matchWeight, const int skipPos,
+            const int excessivePos, const int transposedPos, const int freq, const bool sameLength,
+            int *nextLetters, const int nextLettersSize);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     ProximityType getMatchedProximityId(const int *currentChars, const unsigned short c,
