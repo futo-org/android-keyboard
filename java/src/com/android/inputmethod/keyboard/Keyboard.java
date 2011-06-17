@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -173,11 +172,6 @@ public class Keyboard {
         mDefaultHeight = mDefaultWidth;
         mId = id;
         mProximityInfo = new ProximityInfo(GRID_WIDTH, GRID_HEIGHT);
-
-        final TypedArray attrs = context.obtainStyledAttributes(
-                null, R.styleable.Keyboard, R.attr.keyboardStyle, R.style.Keyboard);
-        attrs.recycle();
-
         loadKeyboard(context, xmlLayoutResId);
     }
 
@@ -440,7 +434,7 @@ public class Keyboard {
 
     private void loadKeyboard(Context context, int xmlLayoutResId) {
         try {
-            KeyboardParser parser = new KeyboardParser(this, context.getResources());
+            KeyboardParser parser = new KeyboardParser(this, context);
             parser.parseKeyboard(xmlLayoutResId);
             // mMinWidth is the width of this keyboard which is maximum width of row.
             mMinWidth = parser.getMaxRowWidth();
