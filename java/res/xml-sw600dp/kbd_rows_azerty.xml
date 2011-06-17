@@ -150,7 +150,7 @@
         </switch>
         <include
             latin:keyboardLayout="@xml/kbd_row3_right" />
-   </Row>
+    </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </merge>
