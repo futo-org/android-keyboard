@@ -349,9 +349,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 dv.setTextColor(0xff808080);
                 dv.setText(info.getDebugString());
                 // TODO: debug view for candidate strip needed.
-                mCandidatesPane.addView(dv);
-                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)dv.getLayoutParams();
-                lp.gravity = Gravity.BOTTOM;
+//                mCandidatesPane.addView(dv);
+//                LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams)dv.getLayoutParams();
+//                lp.gravity = Gravity.BOTTOM;
             }
         }
         if (x != 0) {
