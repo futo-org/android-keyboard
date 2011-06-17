@@ -932,15 +932,16 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
 // TODO: use uint32_t instead of unsigned short
 bool UnigramDictionary::isValidWord(unsigned short *word, int length) {
     if (IS_LATEST_DICT_VERSION) {
-        return (getFrequency(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
+        return (getBigramPosition(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
     } else {
-        return (getFrequency(0, word, 0, length) != NOT_VALID_WORD);
+        return (getBigramPosition(0, word, 0, length) != NOT_VALID_WORD);
     }
 }
 
 
 // Require strict exact match.
-int UnigramDictionary::getFrequency(int pos, unsigned short *word, int offset, int length) const {
+int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offset,
+        int length) const {
     // returns address of bigram data of that word
     // return -99 if not found
 
@@ -957,7 +958,7 @@ int UnigramDictionary::getFrequency(int pos, unsigned short *word, int offset, i
                 }
             } else {
                 if (childPos != 0) {
-                    int t = getFrequency(childPos, word, offset + 1, length);
+                    int t = getBigramPosition(childPos, word, offset + 1, length);
                     if (t > 0) {
                         return t;
                     }

@@ -40,6 +40,7 @@ public:
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
             const bool isLatestDictVersion);
     bool isValidWord(unsigned short *word, int length);
+    int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
             unsigned short *outWords, int *frequencies);
@@ -59,7 +60,6 @@ private:
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
             const int transposedPos, int *nextLetters, const int nextLettersSize,
             const int maxDepth);
-    int getFrequency(int pos, unsigned short *word, int offset, int length) const;
     void getVersionNumber();
     bool checkIfDictVersionIsLatest();
     int getAddress(int *pos);
