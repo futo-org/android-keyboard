@@ -23,5 +23,5 @@
     latin:keyboardLocale="ar"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_ar_rows" />
+        latin:keyboardLayout="@xml/kbd_rows_arabic" />
 </Keyboard>

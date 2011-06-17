@@ -23,5 +23,5 @@
     latin:keyboardLocale="es,es_US"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_qwerty_rows" />
+        latin:keyboardLayout="@xml/kbd_rows_qwerty" />
 </Keyboard>

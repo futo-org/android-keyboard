@@ -24,7 +24,7 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="9.0%p"
+        latin:keyWidth="8.5%p"
         latin:rowEdgeFlags="top"
     >
         <Key
@@ -65,11 +65,12 @@
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="9.0%p"
+        latin:keyWidth="8.5%p"
     >
         <Key
             latin:keyLabel="q"
             latin:popupCharacters="@string/alternates_for_q"
+            latin:keyXPos="5.0%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="s"
@@ -101,7 +102,7 @@
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.9%p"
+        latin:keyWidth="8.5%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
