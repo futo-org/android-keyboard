@@ -25,4 +25,6 @@
     <string name="alternates_for_u">7,ú,ü,ù,û,ū</string>
     <string name="alternates_for_n">ñ,ń</string>
     <string name="alternates_for_c">ç,ć,č</string>
+    <string name="alternates_for_punctuation">"\\,,\?,!,¿,¡,:,-,\',\",),(,/,;,+,&amp;,\@"</string>
+    <string name="alternates_for_web_tab_punctuation">".,\\,,\?,!,¿,¡,:,-,\',\",),(,/,;,+,&amp;,\@"</string>
 </resources>
