@@ -111,7 +111,7 @@ int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, i
     mMaxBigrams = maxBigrams;
 
     if (HAS_BIGRAM && IS_LATEST_DICT_VERSION) {
-        int pos = mParentDictionary->isValidWord(prevWord, prevWordLength);
+        int pos = mParentDictionary->getBigramPosition(prevWord, prevWordLength);
         if (DEBUG_DICT) {
             LOGI("Pos -> %d", pos);
         }

@@ -62,6 +62,9 @@ public:
             const int pos, unsigned short *c, int *childrenPosition,
             bool *terminal, int *freq);
 
+    // TODO: delete this
+    int getBigramPosition(unsigned short *word, int length);
+
 private:
     bool hasBigram();
 
