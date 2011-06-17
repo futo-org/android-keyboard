@@ -23,5 +23,5 @@
     latin:keyboardLocale="iw"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_iw_rows" />
+        latin:keyboardLayout="@xml/kbd_rows_hebrew" />
 </Keyboard>

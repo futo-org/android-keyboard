@@ -23,5 +23,5 @@
     latin:keyboardLocale="ru"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_ru_rows" />
+        latin:keyboardLayout="@xml/kbd_rows_russian" />
 </Keyboard>

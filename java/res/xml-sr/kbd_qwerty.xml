@@ -23,5 +23,5 @@
     latin:keyboardLocale="sr"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_sr_rows" />
+        latin:keyboardLayout="@xml/kbd_rows_serbian" />
 </Keyboard>

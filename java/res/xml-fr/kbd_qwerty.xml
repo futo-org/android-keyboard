@@ -23,5 +23,5 @@
     latin:keyboardLocale="fr"
 >
     <include
-        latin:keyboardLayout="@xml/kbd_azerty_rows" />
+        latin:keyboardLayout="@xml/kbd_rows_azerty" />
 </Keyboard>
