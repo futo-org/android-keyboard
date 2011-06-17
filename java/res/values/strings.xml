@@ -266,6 +266,8 @@
     <string name="subtype_mode_fr_CA_keyboard">French (Canada) Keyboard</string>
     <!-- Description for French (Switzerland) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_CH_keyboard">French (Switzerland) Keyboard</string>
+    <!-- Description for Croatian keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_hr_keyboard">Croatian Keyboard</string>
     <!-- Description for Hungarian keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_hu_keyboard">Hungarian Keyboard</string>
     <!-- Description for Hebrew keyboard subtype [CHAR LIMIT=35] -->
