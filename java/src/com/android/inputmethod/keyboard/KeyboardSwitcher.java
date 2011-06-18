@@ -782,11 +782,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onAutoCorrectionStateChanged(boolean isAutoCorrection) {
-        if (isAutoCorrection != mIsAutoCorrectionActive) {
-            LatinKeyboardView keyboardView = getKeyboardView();
+        if (mIsAutoCorrectionActive != isAutoCorrection) {
             mIsAutoCorrectionActive = isAutoCorrection;
-            keyboardView.invalidateKey(((LatinKeyboard) keyboardView.getKeyboard())
-                    .onAutoCorrectionStateChanged(isAutoCorrection));
+            final LatinKeyboard keyboard = getLatinKeyboard();
+            if (keyboard != null && keyboard.needsAutoCorrectionSpacebarLed()) {
+                final Key invalidatedKey = keyboard.onAutoCorrectionStateChanged(isAutoCorrection);
+                final LatinKeyboardView keyboardView = getKeyboardView();
+                if (keyboardView != null)
+                    keyboardView.invalidateKey(invalidatedKey);
+            }
         }
     }
 
