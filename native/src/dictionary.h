@@ -81,7 +81,6 @@ private:
     BigramDictionary *mBigramDictionary;
 };
 
-// ----------------------------------------------------------------------------
 // public static utility methods
 // static inline methods should be defined in the header file
 inline unsigned short Dictionary::getChar(const unsigned char *dict, int *pos) {
@@ -134,7 +133,6 @@ inline int Dictionary::getFreq(const unsigned char *dict,
     return freq;
 }
 
-
 inline int Dictionary::wideStrLen(unsigned short *str) {
     if (!str) return 0;
     unsigned short *end = str;
@@ -158,5 +156,6 @@ inline int Dictionary::setDictionaryValues(const unsigned char *dict,
     return position;
 }
 
-}; // namespace latinime
+} // namespace latinime
+
 #endif // LATINIME_DICTIONARY_H

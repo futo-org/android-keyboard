@@ -20,6 +20,7 @@
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "dictionary.h"
 #include "jni.h"
+#include "jni_common.h"
 #include "proximity_info.h"
 
 #include <assert.h>
@@ -35,21 +36,7 @@
 #include <stdlib.h>
 #endif // USE_MMAP_FOR_DICTIONARY
 
-// ----------------------------------------------------------------------------
-
 namespace latinime {
-
-//
-// helper function to throw an exception
-//
-static void throwException(JNIEnv *env, const char* ex, const char* fmt, int data) {
-    if (jclass cls = env->FindClass(ex)) {
-        char msg[1000];
-        snprintf(msg, sizeof(msg), fmt, data);
-        env->ThrowNew(cls, msg);
-        env->DeleteLocalRef(cls);
-    }
-}
 
 static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jstring sourceDir, jlong dictOffset, jlong dictSize,
@@ -208,8 +195,6 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jint di
     delete dictionary;
 }
 
-// ----------------------------------------------------------------------------
-
 static JNINativeMethod sMethods[] = {
     {"openNative", "(Ljava/lang/String;JJIIIII)I", (void*)latinime_BinaryDictionary_open},
     {"closeNative", "(I)V", (void*)latinime_BinaryDictionary_close},
@@ -218,27 +203,10 @@ static JNINativeMethod sMethods[] = {
     {"getBigramsNative", "(I[CI[II[C[IIII)I", (void*)latinime_BinaryDictionary_getBigrams}
 };
 
-static int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* gMethods,
-        int numMethods) {
-    jclass clazz;
-
-    clazz = env->FindClass(className);
-    if (clazz == NULL) {
-        LOGE("Native registration unable to find class '%s'", className);
-        return JNI_FALSE;
-    }
-    if (env->RegisterNatives(clazz, gMethods, numMethods) < 0) {
-        LOGE("RegisterNatives failed for '%s'", className);
-        return JNI_FALSE;
-    }
-
-    return JNI_TRUE;
-}
-
 int register_BinaryDictionary(JNIEnv *env) {
     const char* const kClassPathName = "com/android/inputmethod/latin/BinaryDictionary";
     return registerNativeMethods(env, kClassPathName, sMethods,
             sizeof(sMethods) / sizeof(sMethods[0]));
 }
 
-}; // namespace latinime
+} // namespace latinime

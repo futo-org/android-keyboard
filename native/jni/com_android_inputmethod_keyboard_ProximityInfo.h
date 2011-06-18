@@ -21,7 +21,9 @@
 #include "jni.h"
 
 namespace latinime {
+
 int register_ProximityInfo(JNIEnv *env);
+
 }
 
 #endif // _COM_ANDROID_INPUTMETHOD_KEYBOARD_PROXIMITYINFO_H

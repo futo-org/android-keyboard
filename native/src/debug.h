@@ -28,6 +28,7 @@ static inline unsigned char* convertToUnibyteString(unsigned short* input, unsig
     output[i] = 0;
     return output;
 }
+
 static inline unsigned char* convertToUnibyteStringAndReplaceLastChar(unsigned short* input,
         unsigned char* output, const unsigned int length, unsigned char c) {
     int i = 0;
@@ -37,6 +38,7 @@ static inline unsigned char* convertToUnibyteStringAndReplaceLastChar(unsigned s
     output[i] = 0;
     return output;
 }
+
 static inline void LOGI_S16(unsigned short* string, const unsigned int length) {
     unsigned char tmp_buffer[length];
     convertToUnibyteString(string, tmp_buffer, length);
@@ -46,6 +48,7 @@ static inline void LOGI_S16(unsigned short* string, const unsigned int length) {
     // TODO : refactor this in a blocking log or something.
     // usleep(10);
 }
+
 static inline void LOGI_S16_PLUS(unsigned short* string, const unsigned int length,
         unsigned char c) {
     unsigned char tmp_buffer[length+1];
