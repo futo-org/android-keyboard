@@ -15,15 +15,16 @@
 ** limitations under the License.
 */
 
-#ifndef _COM_ANDROID_INPUTMETHOD_LATIN_BINARYDICTIONARY_H
-#define _COM_ANDROID_INPUTMETHOD_LATIN_BINARYDICTIONARY_H
+#ifndef LATINIME_JNI_COMMON_H
+#define LATINIME_JNI_COMMON_H
 
 #include "jni.h"
 
 namespace latinime {
 
-int register_BinaryDictionary(JNIEnv *env);
+int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* methods,
+        int numMethods);
 
-}
+} // namespace latinime
 
-#endif // _COM_ANDROID_INPUTMETHOD_LATIN_BINARYDICTIONARY_H
+#endif // LATINIME_JNI_COMMON_H

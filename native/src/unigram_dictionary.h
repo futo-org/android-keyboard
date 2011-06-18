@@ -147,8 +147,6 @@ private:
     int mNextLettersFrequency[NEXT_LETTERS_SIZE];
 };
 
-// ----------------------------------------------------------------------------
-
-}; // namespace latinime
+} // namespace latinime
 
 #endif // LATINIME_UNIGRAM_DICTIONARY_H

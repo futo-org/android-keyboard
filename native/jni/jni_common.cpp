@@ -26,10 +26,7 @@
 #include <errno.h>
 #include <stdio.h>
 
-// ----------------------------------------------------------------------------
-
 using namespace latinime;
-
 
 /*
  * Returns the JNI version on success, -1 on failure.
@@ -60,3 +57,23 @@ jint JNI_OnLoad(JavaVM* vm, void* reserved) {
 bail:
     return result;
 }
+
+namespace latinime {
+
+int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* methods,
+        int numMethods) {
+    jclass clazz = env->FindClass(className);
+    if (clazz == NULL) {
+        LOGE("Native registration unable to find class '%s'", className);
+        return JNI_FALSE;
+    }
+    if (env->RegisterNatives(clazz, methods, numMethods) < 0) {
+        LOGE("RegisterNatives failed for '%s'", className);
+        env->DeleteLocalRef(clazz);
+        return JNI_FALSE;
+    }
+    env->DeleteLocalRef(clazz);
+    return JNI_TRUE;
+}
+
+} // namespace latinime

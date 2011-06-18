@@ -22,6 +22,7 @@
 #include "proximity_info.h"
 
 namespace latinime {
+
 ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
         const int keyboardHeight, const int gridWidth, const int gridHeight,
         const uint32_t *proximityCharsArray)
@@ -61,4 +62,5 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     }
     return false;
 }
-}  // namespace latinime
+
+} // namespace latinime

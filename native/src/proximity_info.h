@@ -41,5 +41,7 @@ private:
     const int CELL_HEIGHT;
     uint32_t *mProximityCharsArray;
 };
-}; // namespace latinime
+
+} // namespace latinime
+
 #endif // LATINIME_PROXIMITY_INFO_H
