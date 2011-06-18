@@ -84,6 +84,7 @@
         <item name="android:background">@drawable/candidate_feedback_background</item>
     </style>
     <style name="CandidateViewStyle" parent="SuggestionsStripBackgroundStyle">
+        <item name="autoCorrectHighlight">autoCorrectBold</item>
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
