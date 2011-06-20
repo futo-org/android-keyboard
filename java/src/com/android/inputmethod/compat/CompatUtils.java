@@ -91,7 +91,7 @@ public class CompatUtils {
         return null;
     }
 
-    public static Constructor<?> getConstructor(Class<?> targetClass, Class<?>[] types) {
+    public static Constructor<?> getConstructor(Class<?> targetClass, Class<?> ... types) {
         if (targetClass == null || types == null) return null;
         try {
             return targetClass.getConstructor(types);
@@ -103,7 +103,7 @@ public class CompatUtils {
         return null;
     }
 
-    public static Object newInstance(Constructor<?> constructor, Object[] args) {
+    public static Object newInstance(Constructor<?> constructor, Object ... args) {
         if (constructor == null) return null;
         try {
             return constructor.newInstance(args);
