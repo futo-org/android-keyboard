@@ -186,7 +186,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     public void onSizeChanged() {
         final int width = mInputMethodService.getWindow().getWindow().getDecorView().getWidth();
-        if (width == 0)
+        if (width == 0 || mCurrentId == null)
             return;
         mKeyboardWidth = width;
         // Set keyboard with new width.
