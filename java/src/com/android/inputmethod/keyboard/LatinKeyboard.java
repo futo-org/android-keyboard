@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
@@ -36,6 +33,9 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeSwitcher;
+
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,7 +49,8 @@ public class LatinKeyboard extends Keyboard {
     public static final int CODE_NEXT_LANGUAGE = -100;
     public static final int CODE_PREV_LANGUAGE = -101;
 
-    private final Context mContext;
+    private final Resources mRes;
+    private final Theme mTheme;
     private final SubtypeSwitcher mSubtypeSwitcher = SubtypeSwitcher.getInstance();
 
     /* Space key and its icons, drawables and colors. */
@@ -65,7 +66,7 @@ public class LatinKeyboard extends Keyboard {
     private float mSpacebarTextFadeFactor = 0.0f;
     private final int mSpacebarLanguageSwitchThreshold;
     private int mSpacebarSlidingLanguageSwitchDiff;
-    private SlidingLocaleDrawable mSlidingLocaleIcon;
+    private final SlidingLocaleDrawable mSlidingLocaleIcon;
     private final HashMap<Integer, SoftReference<BitmapDrawable>> mSpaceDrawableCache =
             new HashMap<Integer, SoftReference<BitmapDrawable>>();
 
@@ -90,7 +91,8 @@ public class LatinKeyboard extends Keyboard {
 
     public LatinKeyboard(Context context, KeyboardId id, int width) {
         super(context, id.getXmlId(), id, width);
-        mContext = context;
+        mRes = context.getResources();
+        mTheme = context.getTheme();
 
         final List<Key> keys = getKeys();
         int spaceKeyIndex = -1;
@@ -133,6 +135,13 @@ public class LatinKeyboard extends Keyboard {
 
         // The threshold is "key width" x 1.25
         mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 5) / 4;
+
+        final int spaceKeyWidth = Math.max(mSpaceKey.mWidth,
+                (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
+        final int spaceKeyheight = mSpacePreviewIcon.getIntrinsicHeight();
+        mSlidingLocaleIcon = new SlidingLocaleDrawable(
+                context, mSpacePreviewIcon, spaceKeyWidth, spaceKeyheight);
+        mSlidingLocaleIcon.setBounds(0, 0, spaceKeyWidth, spaceKeyheight);
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
@@ -250,7 +259,7 @@ public class LatinKeyboard extends Keyboard {
         final SoftReference<BitmapDrawable> ref = mSpaceDrawableCache.get(hashCode);
         BitmapDrawable drawable = (ref == null) ? null : ref.get();
         if (drawable == null) {
-            drawable = new BitmapDrawable(mContext.getResources(), drawSpacebar(
+            drawable = new BitmapDrawable(mRes, drawSpacebar(
                     locale, isAutoCorrection, mSpacebarTextFadeFactor));
             mSpaceDrawableCache.put(hashCode, new SoftReference<BitmapDrawable>(drawable));
         }
@@ -263,7 +272,7 @@ public class LatinKeyboard extends Keyboard {
         final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : mSpaceKey.mHeight;
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
-        final Resources res = mContext.getResources();
+        final Resources res = mRes;
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
         // If application locales are explicitly selected.
@@ -287,7 +296,7 @@ public class LatinKeyboard extends Keyboard {
 
             final String language = layoutSpacebar(paint, inputLocale,
                     mSpacebarArrowLeftIcon, mSpacebarArrowRightIcon, width, height,
-                    getTextSizeFromTheme(mContext.getTheme(), textStyle, defaultTextSize));
+                    getTextSizeFromTheme(mTheme, textStyle, defaultTextSize));
 
             // Draw language text with shadow
             // In case there is no space icon, we will place the language text at the center of
@@ -341,14 +350,6 @@ public class LatinKeyboard extends Keyboard {
         if (mSpacebarSlidingLanguageSwitchDiff == diff)
             return;
         mSpacebarSlidingLanguageSwitchDiff = diff;
-        if (mSlidingLocaleIcon == null) {
-            final int width = Math.max(mSpaceKey.mWidth,
-                    (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
-            final int height = mSpacePreviewIcon.getIntrinsicHeight();
-            mSlidingLocaleIcon =
-                    new SlidingLocaleDrawable(mContext, mSpacePreviewIcon, width, height);
-            mSlidingLocaleIcon.setBounds(0, 0, width, height);
-        }
         mSlidingLocaleIcon.setDiff(diff);
         if (Math.abs(diff) == Integer.MAX_VALUE) {
             mSpaceKey.setPreviewIcon(mSpacePreviewIcon);
@@ -403,7 +404,7 @@ public class LatinKeyboard extends Keyboard {
                 Math.max(0, Math.min(y, getHeight() - 1)));
     }
 
-    private static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
+    public static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
         TypedArray array = theme.obtainStyledAttributes(
                 style, new int[] { android.R.attr.textSize });
         int textSize = array.getDimensionPixelSize(array.getResourceId(0, 0), defValue);

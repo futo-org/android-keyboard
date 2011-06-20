@@ -626,8 +626,14 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             mDirtyRect.union(0, 0, width, height);
         }
         if (mBuffer == null || mBuffer.getWidth() != width || mBuffer.getHeight() != height) {
+            if (mBuffer != null)
+                mBuffer.recycle();
             mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            mCanvas = new Canvas(mBuffer);
+            if (mCanvas != null) {
+                mCanvas.setBitmap(mBuffer);
+            } else {
+                mCanvas = new Canvas(mBuffer);
+            }
         }
         final Canvas canvas = mCanvas;
         canvas.clipRect(mDirtyRect, Op.REPLACE);

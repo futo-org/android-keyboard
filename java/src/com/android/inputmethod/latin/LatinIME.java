@@ -1871,7 +1871,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         // The following is necessary because on API levels < 10, we don't get notified when
         // subtype changes.
-        onRefreshKeyboard();
+        if (!CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED)
+            onRefreshKeyboard();
      }
 
     @Override

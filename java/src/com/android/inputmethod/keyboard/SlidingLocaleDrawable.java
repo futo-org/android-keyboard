@@ -60,8 +60,8 @@ public class SlidingLocaleDrawable extends Drawable {
         mWidth = width;
         mHeight = height;
         final TextPaint textPaint = new TextPaint();
-        textPaint.setTextSize(getTextSizeFromTheme(
-                context, android.R.style.TextAppearance_Medium, 18));
+        textPaint.setTextSize(LatinKeyboard.getTextSizeFromTheme(
+                context.getTheme(), android.R.style.TextAppearance_Medium, 18));
         textPaint.setColor(Color.TRANSPARENT);
         textPaint.setTextAlign(Align.CENTER);
         textPaint.setAntiAlias(true);
@@ -76,13 +76,6 @@ public class SlidingLocaleDrawable extends Drawable {
         a.recycle();
 
         mThreshold = ViewConfiguration.get(context).getScaledTouchSlop();
-    }
-
-    private static int getTextSizeFromTheme(Context context, int style, int defValue) {
-        TypedArray array = context.getTheme().obtainStyledAttributes(
-                style, new int[] { android.R.attr.textSize });
-        int textSize = array.getDimensionPixelSize(array.getResourceId(0, 0), defValue);
-        return textSize;
     }
 
     void setDiff(int diff) {

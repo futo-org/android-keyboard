@@ -43,7 +43,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final boolean DEBUG_CACHE = LatinImeLogger.sDBG;
     public static final boolean DEBUG_STATE = false;
 
-    private static String sConfigDefaultKeyboardThemeId;
     public static final String PREF_KEYBOARD_LAYOUT = "pref_keyboard_layout_20100902";
     private static final int[] KEYBOARD_THEMES = {
         R.style.KeyboardTheme,
@@ -102,7 +101,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     // Default is SETTINGS_KEY_MODE_AUTO.
     private static final int DEFAULT_SETTINGS_KEY_MODE = SETTINGS_KEY_MODE_AUTO;
 
-    private int mThemeIndex;
+    private int mThemeIndex = -1;
+    private Context mThemeContext;
     private int mKeyboardWidth;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
@@ -119,17 +119,30 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         sInstance.mInputMethodService = ims;
         sInstance.mPrefs = prefs;
         sInstance.mSubtypeSwitcher = SubtypeSwitcher.getInstance();
-
-        try {
-            sConfigDefaultKeyboardThemeId = ims.getString(
-                    R.string.config_default_keyboard_theme_id);
-            sInstance.mThemeIndex = Integer.valueOf(
-                    prefs.getString(PREF_KEYBOARD_LAYOUT, sConfigDefaultKeyboardThemeId));
-        } catch (NumberFormatException e) {
-            sConfigDefaultKeyboardThemeId = "0";
-            sInstance.mThemeIndex = 0;
-        }
+        sInstance.setContextThemeWrapper(ims, getKeyboardThemeIndex(ims, prefs));
         prefs.registerOnSharedPreferenceChangeListener(sInstance);
+    }
+
+    private static int getKeyboardThemeIndex(Context context, SharedPreferences prefs) {
+        final String defaultThemeId = context.getString(R.string.config_default_keyboard_theme_id);
+        final String themeId = prefs.getString(PREF_KEYBOARD_LAYOUT, defaultThemeId);
+        try {
+            final int themeIndex = Integer.valueOf(themeId);
+            if (themeIndex >= 0 && themeIndex < KEYBOARD_THEMES.length)
+                return themeIndex;
+        } catch (NumberFormatException e) {
+            // Format error, keyboard theme is default to 0.
+        }
+        Log.w(TAG, "Illegal keyboard theme in preference: " + themeId + ", default to 0");
+        return 0;
+    }
+
+    private void setContextThemeWrapper(Context context, int themeIndex) {
+        if (mThemeIndex != themeIndex) {
+            mThemeIndex = themeIndex;
+            mThemeContext = new ContextThemeWrapper(context, KEYBOARD_THEMES[themeIndex]);
+            mKeyboardCache.clear();
+        }
     }
 
     public void loadKeyboard(EditorInfo attribute, boolean voiceKeyEnabled,
@@ -202,9 +215,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             final Locale savedLocale = Utils.setSystemLocale(res,
                     mSubtypeSwitcher.getInputLocale());
 
-            final Context themeContext = new ContextThemeWrapper(mInputMethodService,
-                    KEYBOARD_THEMES[mThemeIndex]);
-            keyboard = new LatinKeyboard(themeContext, id, id.mWidth);
+            keyboard = new LatinKeyboard(mThemeContext, id, id.mWidth);
 
             if (id.mEnableShiftLock) {
                 keyboard.enableShiftLock();
@@ -724,30 +735,29 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (mKeyboardView != null) {
             mKeyboardView.closing();
         }
-        final int themeIndex = (newThemeIndex < KEYBOARD_THEMES.length) ? newThemeIndex
-                : Integer.valueOf(sConfigDefaultKeyboardThemeId);
 
+        final int oldThemeIndex = mThemeIndex;
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
-                final Context themeContext = new ContextThemeWrapper(mInputMethodService,
-                        KEYBOARD_THEMES[themeIndex]);
-                mCurrentInputView = LayoutInflater.from(themeContext).inflate(
+                setContextThemeWrapper(mInputMethodService, newThemeIndex);
+                mCurrentInputView = LayoutInflater.from(mThemeContext).inflate(
                         R.layout.input_view, null);
                 tryGC = false;
             } catch (OutOfMemoryError e) {
                 Log.w(TAG, "load keyboard failed: " + e);
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(mThemeIndex + "," + themeIndex, e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
+                        oldThemeIndex + "," + newThemeIndex, e);
             } catch (InflateException e) {
                 Log.w(TAG, "load keyboard failed: " + e);
-                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(mThemeIndex + "," + themeIndex, e);
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait(
+                        oldThemeIndex + "," + newThemeIndex, e);
             }
         }
 
         mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setOnKeyboardActionListener(mInputMethodService);
-        mThemeIndex = themeIndex;
         return mCurrentInputView;
     }
 
@@ -766,8 +776,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (PREF_KEYBOARD_LAYOUT.equals(key)) {
-            final int layoutId = Integer.valueOf(
-                    sharedPreferences.getString(key, sConfigDefaultKeyboardThemeId));
+            final int layoutId = getKeyboardThemeIndex(mInputMethodService, sharedPreferences);
             postSetInputView(createInputView(layoutId, false));
         } else if (Settings.PREF_SETTINGS_KEY.equals(key)) {
             mSettingsKeyEnabledInSettings = getSettingsKeyMode(sharedPreferences,
