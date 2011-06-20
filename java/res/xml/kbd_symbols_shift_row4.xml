@@ -31,23 +31,29 @@
             >
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="15%p"
+                    latin:keyWidth="13.75%p"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:keyStyle="settingsKeyStyle" />
+                    latin:keyStyle="settingsKeyStyle"
+                    latin:keyWidth="9.2%p" />
                 <Key
                     latin:keyLabel="„"
                     latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
+                    latin:keyWidth="9.2%p"
                     latin:keyStyle="nonPasswordFunctionalKeyStyle" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="30%p" />
+                    latin:keyWidth="35.83%p" />
+                <Key
+                    latin:keyLabel="…"
+                    latin:keyWidth="9.2%p"
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
             </case>
             <!-- latin:hasSettingsKey="false" -->
             <default>
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="20%p"
+                    latin:keyWidth="15%p"
                     latin:keyEdgeFlags="left" />
                 <Key
                     latin:keyLabel="„"
@@ -55,12 +61,12 @@
                     latin:keyStyle="nonPasswordFunctionalKeyStyle" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="40%p" />
+                    latin:keyWidth="50%p" />
+                <Key
+                    latin:keyLabel="…"
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
             </default>
         </switch>
-        <Key
-            latin:keyLabel="…"
-            latin:keyStyle="nonPasswordFunctionalKeyStyle" />
         <switch>
             <case
                 latin:mode="im"

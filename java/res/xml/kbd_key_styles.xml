@@ -101,8 +101,8 @@
             <key-style
                 latin:styleName="settingsKeyStyle"
                 latin:code="@integer/key_settings"
-                latin:keyIcon="@drawable/sym_keyboard_settings_holo"
-                latin:iconPreview="@drawable/sym_keyboard_settings_holo"
+                latin:keyIcon="@drawable/sym_keyboard_settings"
+                latin:iconPreview="@drawable/sym_keyboard_settings"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="spaceKeyStyle"
