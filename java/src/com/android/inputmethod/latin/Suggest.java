@@ -117,30 +117,31 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     private void init(Context context, Dictionary mainDict) {
-        if (mainDict != null) {
-            mMainDict = mainDict;
-            mUnigramDictionaries.put(DICT_KEY_MAIN, mainDict);
-            mBigramDictionaries.put(DICT_KEY_MAIN, mainDict);
-        }
+        mMainDict = mainDict;
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
         mWhiteListDictionary = WhitelistDictionary.init(context);
-        if (mWhiteListDictionary != null) {
-            mUnigramDictionaries.put(DICT_KEY_WHITELIST, mWhiteListDictionary);
-        }
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
         mAutoCorrection = new AutoCorrection();
         initPool();
+    }
+
+    private void addOrReplaceDictionary(Map<String, Dictionary> dictionaries, String key,
+            Dictionary dict) {
+        final Dictionary oldDict = (dict == null)
+                ? dictionaries.remove(key)
+                : dictionaries.put(key, dict);
+        if (oldDict != null && dict != oldDict) {
+            oldDict.close();
+        }
     }
 
     public void resetMainDict(Context context, int dictionaryResId, Locale locale) {
         final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
                 context, locale, dictionaryResId);
         mMainDict = newMainDict;
-        if (null == newMainDict) {
-            mUnigramDictionaries.remove(DICT_KEY_MAIN);
-            mBigramDictionaries.remove(DICT_KEY_MAIN);
-        } else {
-            mUnigramDictionaries.put(DICT_KEY_MAIN, newMainDict);
-            mBigramDictionaries.put(DICT_KEY_MAIN, newMainDict);
-        }
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
     }
 
     private void initPool() {
@@ -179,8 +180,7 @@ public class Suggest implements Dictionary.WordCallback {
      * before the main dictionary, if set.
      */
     public void setUserDictionary(Dictionary userDictionary) {
-        if (userDictionary != null)
-            mUnigramDictionaries.put(DICT_KEY_USER, userDictionary);
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER, userDictionary);
     }
 
     /**
@@ -189,23 +189,16 @@ public class Suggest implements Dictionary.WordCallback {
      * won't be used.
      */
     public void setContactsDictionary(Dictionary contactsDictionary) {
-        if (contactsDictionary != null) {
-            mUnigramDictionaries.put(DICT_KEY_CONTACTS, contactsDictionary);
-            mBigramDictionaries.put(DICT_KEY_CONTACTS, contactsDictionary);
-        } else {
-            mUnigramDictionaries.remove(DICT_KEY_CONTACTS);
-            mBigramDictionaries.remove(DICT_KEY_CONTACTS);
-        }
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
     }
 
     public void setAutoDictionary(Dictionary autoDictionary) {
-        if (autoDictionary != null)
-            mUnigramDictionaries.put(DICT_KEY_AUTO, autoDictionary);
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_AUTO, autoDictionary);
     }
 
     public void setUserBigramDictionary(Dictionary userBigramDictionary) {
-        if (userBigramDictionary != null)
-            mBigramDictionaries.put(DICT_KEY_USER_BIGRAM, userBigramDictionary);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_BIGRAM, userBigramDictionary);
     }
 
     public void setAutoCorrectionThreshold(double threshold) {
