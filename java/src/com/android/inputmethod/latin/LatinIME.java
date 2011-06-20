@@ -855,7 +855,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void onComputeInsets(InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
         final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView == null)
+        if (inputView == null || mCandidateViewContainer == null)
             return;
         final int containerHeight = mCandidateViewContainer.getHeight();
         int touchY = containerHeight;
