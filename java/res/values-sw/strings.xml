@@ -44,33 +44,30 @@
     <skip />
     <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
     <skip />
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Uwekaji wa herufi kubwa kiotomatiki"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Utatuzi wa haraka"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Husahihisha makosa ya kawaida yaliyoandikwa"</string>
     <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
     <skip />
-    <!-- no translation found for prefs_show_suggestions_summary (1583132279498502825) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_name (3219916594067551303) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_show_only_portrait_name (3551821800439659812) -->
-    <skip />
-    <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
-    <skip />
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Onyesha maneno yaliyopendekezwa wakati unachapa"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Onyesha kila wakati"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Onyesha kwenye hali wima"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ficha kila wakati"</string>
     <!-- no translation found for prefs_use_spacebar_language_switch (8828538114550634449) -->
     <skip />
     <string name="prefs_settings_key" msgid="4623341240804046498">"Onyesha kitufe cha mipangilio"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Kiotomatiki"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Onyesha kila wakati"</string>
     <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">" Ficha kila mara"</string>
-    <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Mapendekezo ya neno"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"Usahihishaji Kioto"</string>
     <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Sahihisha neno lililotangulia kiotomatiki"</string>
-    <!-- no translation found for auto_correction_threshold_mode_off (8470882665417944026) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_modest (8788366690620799097) -->
-    <skip />
-    <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
-    <skip />
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Zima"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Ya wastani"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Ya hima"</string>
     <!-- outdated translation 1323347224043514969 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"Mapendekezo ya Bigramu"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Tumia neno la hapo awali ili kuboresha pendekezo"</string>
     <!-- no translation found for bigram_prediction (8914273444762259739) -->
@@ -82,18 +79,15 @@
     <string name="label_next_key" msgid="362972844525672568">"Ifuatayo"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Kwisha"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Tuma"</string>
-    <!-- no translation found for label_to_alpha_key (4793983863798817523) -->
-    <skip />
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Zaidi"</string>
-    <!-- no translation found for label_pause_key (181098308428035340) -->
-    <skip />
-    <!-- no translation found for label_wait_key (6402152600878093134) -->
-    <skip />
+    <string name="label_pause_key" msgid="181098308428035340">"Pumzisha"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Subiri"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Uingizaji wa sauti"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Uingizaji wa sauti hauhimiliwi kwa lugha yako kwa sasa, lakini inafanya kazi kwa Kiingereza."</string>
-    <!-- outdated translation 4611518823070986445 -->     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Uingizaji wa sauti ni kipengele cha jaribio kinachotumia utambulisho wa mtandao wa matamshi kutoka Google."</string>
-    <!-- outdated translation 5652369578498701761 -->     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Kuzima uingizaji wa sauti, nenda kwa mipangilio ya kibodi."</string>
-    <!-- outdated translation 6892342981545727994 -->     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Ili kutumia uingizaji wa sauti, bonyeza kitufe cha kipaza sauti au telezesha kidole chako kwa kibodi ya skirini.."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Uingizaji wa sauti hutumia utambuaji wa usemi wa Google. "<a href="http://m.google.com/privacy">"Sera ya Faragha ya Simu za mkononi "</a>" hutumika."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Ili kuzima uingizaji sauti, nenda kwa mipangilio ya mbinu ya uingizaji."</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Ili kutumia uingizaji wa sauti, bonyeza kitufe cha maikrofoni."</string>
     <string name="voice_listening" msgid="467518160751321844">"Ongea sasa"</string>
     <string name="voice_working" msgid="6666937792815731889">"Inafanya kazi"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -110,18 +104,12 @@
     <string name="cancel" msgid="6830980399865683324">"Ghairi"</string>
     <string name="ok" msgid="7898366843681727667">"Sawa"</string>
     <string name="voice_input" msgid="2466640768843347841">"Uingizaji wa sauti"</string>
-    <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_off (3745699748218082014) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_main_keyboard (6586544292900314339) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_symbols_keyboard (5233725927281932391) -->
-    <skip />
-    <!-- no translation found for voice_input_modes_summary_off (63875609591897607) -->
-    <skip />
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Kwenye kibodi kuu"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Kwenye kibodi ya ishara"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"Zima"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"Maikrofoni kwenye kibodi kuu"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Maikrofoni kwenye kibodi ya ishara"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Uingizaji sauti umelemazwa"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Chagua mtindo wa uingizaji"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lugha za uingizaji"</string>
     <string name="language_selection_summary" msgid="187110938289512256">"Telezesha kidole kwenye kitufe cha nafasi ili kubadilisha lugha"</string>
@@ -130,80 +118,60 @@
     <string name="prefs_enable_log" msgid="6620424505072963557">"Wezesha maoni ya watumiaji"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Saidia kuimarisha mbinu ya uingizaji wa kihariri, kwa kutuma takwimu za matumizi na ripoti za kuvurugika kwa Google kiotomatiki."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Gusa ili kurekebisha maneno"</string>
-    <!-- outdated translation 1056068922330206170 -->     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Gusa maneno yaliyoingizwa ili kuyarekebisha"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Gusa maneno yaliyoingizwa ili kuyasahihisha, wakati mapendekezo yanaonekana tu"</string>
     <string name="keyboard_layout" msgid="437433231038683666">"Maandhari ya Kibodi"</string>
-    <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
-    <skip />
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Kibodi ya Kicheki"</string>
     <!-- no translation found for subtype_mode_ar_keyboard (2655338636329774995) -->
     <skip />
-    <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Kibodi ya Kidenmaki"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Kibodi ya Kijerumani"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Kibodi ya Kiingereza (Uingereza)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Kibodi ya Kiingereza (Marekani)"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Kibodi ya Kihispania"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
     <skip />
-    <!-- no translation found for subtype_mode_de_keyboard (1990979135959462145) -->
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Kibodi ya Kifaransa"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Kibodi ya Kifaransa (Kanada)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Kibodi ya Kifaransa (Uswizi)"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
     <skip />
-    <!-- no translation found for subtype_mode_en_GB_keyboard (7945856548410373708) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_keyboard (3708655163769735410) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
     <skip />
     <!-- no translation found for subtype_mode_iw_keyboard (1787536828253289950) -->
     <skip />
-    <!-- no translation found for subtype_mode_it_keyboard (4934199655425394484) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nb_keyboard (1175783216100212360) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nl_keyboard (5090278083256037936) -->
-    <skip />
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Kibodi ya Kiitaliano"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Kibodi ya Kinorwe"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Kibodi ya Kiholanzi"</string>
     <!-- no translation found for subtype_mode_pl_keyboard (2225816414814396047) -->
     <skip />
     <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
     <skip />
-    <!-- no translation found for subtype_mode_ru_keyboard (1383995915064277943) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sr_keyboard (5019440799612208168) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sv_keyboard (4933838139861753401) -->
-    <skip />
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Kibodi ya Kirusi"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Kibodi ya Kiserbia"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Kibodi ya Kiswidi"</string>
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
-    <!-- no translation found for subtype_mode_cs_voice (1136386688120958641) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_voice (8378803143958089866) -->
-    <skip />
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Sauti ya Kicheki"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Sauti ya Kijerumani"</string>
     <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
     <skip />
-    <!-- no translation found for subtype_mode_es_voice (1323473601346507487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_voice (4675914209337824269) -->
-    <skip />
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Sauti ya Kihispania"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Sauti ya Kifaransa"</string>
     <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
     <skip />
-    <!-- no translation found for subtype_mode_ja_voice (6604859132669646367) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ko_voice (4890391190762324561) -->
-    <skip />
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Sauti ya Kijapani"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Sauti ya Kikorea"</string>
     <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
     <skip />
-    <!-- no translation found for subtype_mode_pl_voice (2076196021014840487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pt_voice (8036522712795994397) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_voice (8034596947963787529) -->
-    <skip />
-    <!-- no translation found for subtype_mode_tr_voice (3402067436761140005) -->
-    <skip />
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Sauti ya Kipolandi"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Sauti ya Kireno"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Sauti ya Kirusi"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Sauti ya Kituruki"</string>
     <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
     <skip />
     <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
-    <skip />
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Hali ya Uchunguzi wa Utumizi"</string>
 </resources>

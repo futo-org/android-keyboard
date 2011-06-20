@@ -35,6 +35,10 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Bez odgode klj. skočnih"</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Bez odgode"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Zadano"</string>
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Automatsko pisanje velikih slova"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Brzi popravci"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Ispravlja uobičajene pogreške u pisanju"</string>
@@ -66,7 +70,7 @@
     <string name="label_more_key" msgid="3760239494604948502">"Više"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pauza"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Pričekaj"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni unos"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni ulaz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Vaš jezik trenutno nije podržan za glasovni unos, ali radi za engleski."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Glasovni unos upotrebljava Googleovo prepoznavanje govora. Primjenjuju se "<a href="http://m.google.com/privacy">"Pravila o privatnosti za uslugu Mobile"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Za isključivanje glasovnog unosa idite na postavke načina unosa."</string>
@@ -86,7 +90,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Savjet:"</b>" Sljedeći put pokušajte izgovoriti znakove interpunkcije poput \"točka, \"zarez\" ili \"upitnik\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Odustani"</string>
     <string name="ok" msgid="7898366843681727667">"U redu"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Glasovni unos"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Glasovni ulaz"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na glavnoj tipkovnici"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na tipkovnici simb."</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Isključeno"</string>
@@ -110,9 +114,15 @@
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Engleska (UK) tipkovnica"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Engleska (SAD) tipkovnica"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Španjolska tipkovnica"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Francuska tipkovnica"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Francuska (Kanada) tipkovnica"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Francuska (Švicarska) tipkovnica"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Hebrejska tipkovnica"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Talijanska tipkovnica"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norveška tipkovnica"</string>

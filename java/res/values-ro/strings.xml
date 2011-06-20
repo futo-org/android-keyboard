@@ -35,6 +35,10 @@
     <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Înt. înch. pop-up esenţ."</string>
     <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Fără întârziere"</string>
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Prestabilit"</string>
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalizare"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Remedieri rapide"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corectează greşelile introduse frecvent"</string>
@@ -110,9 +114,15 @@
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Tastatură engleză (Marea Britanie)"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Tastatură engleză (S.U.A.)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Tastatură spaniolă"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Tastatură franceză"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Tastatură franceză (Canada)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Tastatură franceză (Elveţia)"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Tastatură ebraică"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Tastatură italiană"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Tastatură norvegiană"</string>

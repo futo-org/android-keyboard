@@ -45,6 +45,10 @@
     <skip />
     <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
     <skip />
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Maiusclas automaticas"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Correcturas sveltas"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Curregia sbagls da tippar currents"</string>
@@ -155,11 +159,17 @@
     <skip />
     <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
     <skip />
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
     <skip />
     <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
     <skip />
     <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
     <skip />
     <!-- no translation found for subtype_mode_iw_keyboard (1787536828253289950) -->
     <skip />
