@@ -615,7 +615,7 @@ public class PointerTracker {
     // The modifier key, such as shift key, should not show its key preview.
     private boolean isKeyPreviewNotRequired(int keyIndex) {
         final Key key = getKey(keyIndex);
-        if (!key.mEnabled)
+        if (key == null || !key.mEnabled)
             return true;
         // Such as spacebar sliding language switch.
         if (mKeyboard.needSpacebarPreview(keyIndex))
