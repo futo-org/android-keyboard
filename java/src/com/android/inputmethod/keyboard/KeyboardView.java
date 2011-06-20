@@ -42,11 +42,10 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.android.inputmethod.compat.FrameLayoutCompatUtils;
 import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
@@ -946,27 +945,12 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     private void addKeyPreview(TextView keyPreview) {
-        ViewGroup placer = mPreviewPlacer;
-        if (placer == null) {
-            final FrameLayout screenContent = (FrameLayout) getRootView().findViewById(
-                    android.R.id.content);
-            if (android.os.Build.VERSION.SDK_INT >= /* HONEYCOMB */11) {
-                placer = screenContent;
-            } else {
-                // Insert LinearLayout to be able to setMargin because pre-Honeycomb FrameLayout
-                // could not handle setMargin properly.
-                placer = new LinearLayout(getContext());
-                screenContent.addView(placer);
-            }
-            mPreviewPlacer = placer;
+        if (mPreviewPlacer == null) {
+            mPreviewPlacer = FrameLayoutCompatUtils.getPlacer(
+                    (ViewGroup)getRootView().findViewById(android.R.id.content));
         }
-        if (placer instanceof FrameLayout) {
-            // Honeycomb or later.
-            placer.addView(keyPreview, new FrameLayout.LayoutParams(0, 0));
-        } else {
-            // Gingerbread or ealier.
-            placer.addView(keyPreview, new LinearLayout.LayoutParams(0, 0));
-        }
+        final ViewGroup placer = mPreviewPlacer;
+        placer.addView(keyPreview, FrameLayoutCompatUtils.newLayoutParam(placer, 0, 0));
     }
 
     // TODO: Introduce minimum duration for displaying key previews

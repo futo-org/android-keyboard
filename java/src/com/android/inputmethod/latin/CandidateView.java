@@ -44,6 +44,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.android.inputmethod.compat.FrameLayoutCompatUtils;
 import com.android.inputmethod.compat.LinearLayoutCompatUtils;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
@@ -244,7 +245,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     public void setListener(Listener listener, View inputView) {
         mListener = listener;
         mKeyboardView = inputView.findViewById(R.id.keyboard_view);
-        mCandidatesPane = (ViewGroup)inputView.findViewById(R.id.candidates_pane);
+        mCandidatesPane = FrameLayoutCompatUtils.getPlacer(
+                (ViewGroup)inputView.findViewById(R.id.candidates_pane));
         mCandidatesPane.setOnClickListener(this);
         mCandidatesPaneContainer = (ViewGroup)inputView.findViewById(
                 R.id.candidates_pane_container);
@@ -346,12 +348,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 }
                 if (x != 0) {
                     final View divider = mDividers.get(i - NUM_CANDIDATES_IN_STRIP);
-                    mCandidatesPane.addView(divider);
-                    placeCandidateAt(divider, x, y);
+                    addCandidateAt(divider, x, y);
                     x += dividerWidth;
                 }
-                mCandidatesPane.addView(tv);
-                placeCandidateAt(tv, x, y);
+                addCandidateAt(tv, x, y);
                 x += width;
             }
 
@@ -372,14 +372,13 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         }
     }
 
-    private void placeCandidateAt(View v, int x, int y) {
-        ViewGroup.LayoutParams lp = v.getLayoutParams();
-        if (lp instanceof ViewGroup.MarginLayoutParams) {
-            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams)lp;
-            mlp.width = v.getMeasuredWidth();
-            mlp.height = v.getMeasuredHeight();
-            mlp.setMargins(x, y + (mCandidateStripHeight - mlp.height) / 2, 0, 0);
-        }
+    private void addCandidateAt(View v, int x, int y) {
+        final int width = v.getMeasuredWidth();
+        final int height = v.getMeasuredHeight();
+        final MarginLayoutParams marginLayoutParams = FrameLayoutCompatUtils.newLayoutParam(
+                mCandidatesPane, width, height);
+        marginLayoutParams.setMargins(x, y + (mCandidateStripHeight - height) / 2, 0, 0);
+        mCandidatesPane.addView(v, marginLayoutParams);
     }
 
     private void centeringCandidates(int from, int to, int width, int paneWidth) {
