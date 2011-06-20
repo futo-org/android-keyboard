@@ -31,35 +31,43 @@
             >
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="15%p"
+                    latin:keyWidth="13.75%p"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:keyStyle="settingsKeyStyle" />
+                    latin:keyStyle="settingsKeyStyle"
+                    latin:keyWidth="9.2%p" />
                 <include
                     latin:keyboardLayout="@xml/kbd_qwerty_f1" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="30%p" />
+                    latin:keyWidth="35.83%p" />
+                <Key
+                    latin:keyLabel="."
+                    latin:keyLabelOption="popupHint"
+                    latin:popupCharacters="@string/alternates_for_punctuation"
+                    latin:keyWidth="9.2%p"
+                    latin:maxPopupKeyboardColumn="7"
+                    latin:keyStyle="functionalKeyStyle" />
             </case>
             <!-- latin:hasSettingsKey="false" -->
             <default>
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="20%p"
+                    latin:keyWidth="15%p"
                     latin:keyEdgeFlags="left" />
                 <include
                     latin:keyboardLayout="@xml/kbd_symbols_f1" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="40%p" />
+                    latin:keyWidth="50%p" />
+                <Key
+                    latin:keyLabel="."
+                    latin:keyLabelOption="popupHint"
+                    latin:popupCharacters="@string/alternates_for_punctuation"
+                    latin:maxPopupKeyboardColumn="7"
+                    latin:keyStyle="functionalKeyStyle" />
             </default>
         </switch>
-        <Key
-            latin:keyLabel="."
-            latin:keyLabelOption="popupHint"
-            latin:popupCharacters="@string/alternates_for_punctuation"
-            latin:maxPopupKeyboardColumn="7"
-            latin:keyStyle="functionalKeyStyle" />
         <switch>
             <case
                 latin:mode="im"
