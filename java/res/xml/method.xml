@@ -20,7 +20,7 @@
 <!-- The attributes in this XML file provide configuration information -->
 <!-- for the Input Method Manager. -->
 
-<!-- Keyboard: en_US, en_GB, ar, cs, da, de, es, es_US, fi, fr, fr_CA, fr_CH, hr, hu, it, iw, nb, nl, pl, pt, ru, sr, sv -->
+<!-- Keyboard: en_US, en_GB, ar, cs, da, de, es, es_US, fi, fr, fr_CA, fr_CH, hr, hu, it, iw, nb, nl, pl, pt, ru, sr, sv, tr -->
 <!-- Voice: af, cs, da, de, en, es, fr, it, ja, ko, nl, pl, pt, ru, tr, yue, zh, zu -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- TODO: use <lang>_mic icon instead of a common mic icon. -->
@@ -183,6 +183,11 @@
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_mode_sv_keyboard"
             android:imeSubtypeLocale="sv"
+            android:imeSubtypeMode="keyboard"
+    />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_tr_keyboard"
+            android:imeSubtypeLocale="tr"
             android:imeSubtypeMode="keyboard"
     />
 <!--     <subtype android:icon="@drawable/ic_subtype_mic" -->

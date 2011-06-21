@@ -120,7 +120,7 @@ public class LatinKeyboardView extends KeyboardView {
                 && keyboard.isShiftedOrShiftLocked()
                 && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
-            return label.toString().toUpperCase();
+            return label.toString().toUpperCase(keyboard.mId.mLocale);
         }
         return label;
     }

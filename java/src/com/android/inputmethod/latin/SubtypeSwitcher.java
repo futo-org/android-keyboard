@@ -577,30 +577,30 @@ public class SubtypeSwitcher {
 
     public static String getFullDisplayName(Locale locale, boolean returnsNameInThisLocale) {
         if (returnsNameInThisLocale) {
-            return toTitleCase(SubtypeLocale.getFullDisplayName(locale));
+            return toTitleCase(SubtypeLocale.getFullDisplayName(locale), locale);
         } else {
-            return toTitleCase(locale.getDisplayName());
+            return toTitleCase(locale.getDisplayName(), locale);
         }
     }
 
     public static String getDisplayLanguage(Locale locale) {
-        return toTitleCase(SubtypeLocale.getFullDisplayName(locale));
+        return toTitleCase(SubtypeLocale.getFullDisplayName(locale), locale);
     }
 
     public static String getMiddleDisplayLanguage(Locale locale) {
         return toTitleCase((Utils.constructLocaleFromString(
-                locale.getLanguage()).getDisplayLanguage(locale)));
+                locale.getLanguage()).getDisplayLanguage(locale)), locale);
     }
 
     public static String getShortDisplayLanguage(Locale locale) {
-        return toTitleCase(locale.getLanguage());
+        return toTitleCase(locale.getLanguage(), locale);
     }
 
-    private static String toTitleCase(String s) {
+    private static String toTitleCase(String s, Locale locale) {
         if (s.length() == 0) {
             return s;
         }
-        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+        return s.toUpperCase(locale).charAt(0) + s.substring(1);
     }
 
     public String getInputLanguageName() {

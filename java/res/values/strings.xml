@@ -289,6 +289,8 @@
     <string name="subtype_mode_sr_keyboard">Serbian Keyboard</string>
     <!-- Description for Swedish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_sv_keyboard">Swedish Keyboard</string>
+    <!-- Description for Turkish keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_tr_keyboard">Turkish Keyboard</string>
     <!-- Description for Afrikaans voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_af_voice">Afrikaans Voice</string>
     <!-- Description for Czech voice input subtype [CHAR LIMIT=35] -->
