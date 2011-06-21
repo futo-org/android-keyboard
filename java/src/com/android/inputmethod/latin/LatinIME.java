@@ -1274,7 +1274,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 clearSuggestions();
             }
         }
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        final KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (switcher.isShiftedOrShiftLocked()) {
             if (keyCodes == null || keyCodes[0] < Character.MIN_CODE_POINT
                     || keyCodes[0] > Character.MAX_CODE_POINT) {
@@ -1282,13 +1282,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             code = keyCodes[0];
             if (switcher.isAlphabetMode() && Character.isLowerCase(code)) {
-                int upperCaseCode = Character.toUpperCase(code);
-                if (upperCaseCode != code) {
-                    code = upperCaseCode;
+                // In some locales, such as Turkish, Character.toUpperCase() may return a wrong
+                // character because it doesn't take care of locale.
+                final String upperCaseString = new String(new int[] {code}, 0, 1)
+                        .toUpperCase(mSubtypeSwitcher.getInputLocale());
+                if (upperCaseString.codePointCount(0, upperCaseString.length()) == 1) {
+                    code = upperCaseString.codePointAt(0);
                 } else {
                     // Some keys, such as [eszett], have upper case as multi-characters.
-                    String upperCase = new String(new int[] {code}, 0, 1).toUpperCase();
-                    onTextInput(upperCase);
+                    onTextInput(upperCaseString);
                     return;
                 }
             }

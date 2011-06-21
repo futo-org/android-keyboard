@@ -250,6 +250,7 @@ public class Suggest implements Dictionary.WordCallback {
                 poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
                         : new StringBuilder(getApproxMaxWordLength());
         sb.setLength(0);
+        // TODO: Must pay attention to locale when changing case.
         if (all) {
             sb.append(word.toString().toUpperCase());
         } else if (first) {
@@ -315,6 +316,7 @@ public class Suggest implements Dictionary.WordCallback {
                 } else {
                     // Word entered: return only bigrams that match the first char of the typed word
                     final char currentChar = typedWord.charAt(0);
+                    // TODO: Must pay attention to locale when changing case.
                     final char currentCharUpper = Character.toUpperCase(currentChar);
                     int count = 0;
                     final int bigramSuggestionSize = mBigramSuggestions.size();
@@ -518,6 +520,7 @@ public class Suggest implements Dictionary.WordCallback {
         StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
                 : new StringBuilder(getApproxMaxWordLength());
         sb.setLength(0);
+        // TODO: Must pay attention to locale when changing case.
         if (mIsAllUpperCase) {
             sb.append(new String(word, offset, length).toUpperCase());
         } else if (mIsFirstCharCapitalized) {
