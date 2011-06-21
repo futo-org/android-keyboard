@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.spellcheck;
 import android.content.Context;
 import android.content.res.Resources;
 
+import com.android.inputmethod.compat.ArraysCompatUtils;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Dictionary.DataType;
 import com.android.inputmethod.latin.Dictionary.WordCallback;
@@ -26,7 +27,6 @@ import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WordComposer;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -64,13 +64,14 @@ public class SpellChecker {
         private int[] mScores = new int[DEFAULT_SUGGESTION_LENGTH];
         private int mLength = 0;
 
+        @Override
         synchronized public boolean addWord(char[] word, int wordOffset, int wordLength, int score,
                 int dicTypeId, DataType dataType) {
             if (mLength >= mScores.length) {
                 final int newLength = mScores.length * 2;
                 mScores = new int[newLength];
             }
-            final int positionIndex = Arrays.binarySearch(mScores, 0, mLength, score);
+            final int positionIndex = ArraysCompatUtils.binarySearch(mScores, 0, mLength, score);
             // binarySearch returns the index if the element exists, and -<insertion index> - 1
             // if it doesn't. See documentation for binarySearch.
             final int insertionIndex = positionIndex >= 0 ? positionIndex : -positionIndex - 1;
