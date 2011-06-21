@@ -50,6 +50,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.WeakHashMap;
 
 /**
@@ -705,10 +706,18 @@ public class LatinKeyboardBaseView extends View implements PointerTracker.UIProx
         return mKeyDetector.isProximityCorrectionEnabled();
     }
 
+    protected Locale getKeyboardLocale() {
+        if (mKeyboard instanceof LatinKeyboard) {
+            return ((LatinKeyboard)mKeyboard).getInputLocale();
+        } else {
+            return getContext().getResources().getConfiguration().locale;
+        }
+    }
+
     protected CharSequence adjustCase(CharSequence label) {
         if (mKeyboard.isShifted() && label != null && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
-            label = label.toString().toUpperCase();
+            return label.toString().toUpperCase(getKeyboardLocale());
         }
         return label;
     }

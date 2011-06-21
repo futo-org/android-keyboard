@@ -119,7 +119,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
                 && ((LatinKeyboard) keyboard).isAlphaKeyboard()
                 && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
-            label = label.toString().toUpperCase();
+            return label.toString().toUpperCase(getKeyboardLocale());
         }
         return label;
     }
