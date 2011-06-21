@@ -16,13 +16,13 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.latin.R;
-
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.util.Xml;
+
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.latin.R;
 
 /**
  * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate.

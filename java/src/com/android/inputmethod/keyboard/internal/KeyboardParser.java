@@ -232,6 +232,8 @@ public class KeyboardParser {
 
             keyboard.setMaxPopupKeyboardColumn(keyAttr.getInt(
                     R.styleable.Keyboard_Key_maxPopupKeyboardColumn, 5));
+
+            mKeyboard.mIconsSet.loadIcons(keyboardAttr);
         } finally {
             keyAttr.recycle();
             keyboardAttr.recycle();

@@ -16,17 +16,17 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
-import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
-import com.android.inputmethod.latin.R;
-
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Xml;
+
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
+import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
+import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 
@@ -165,7 +165,7 @@ public class Key {
         mLabel = PopupCharactersParser.getLabel(popupSpecification);
         mOutputText = PopupCharactersParser.getOutputText(popupSpecification);
         mCode = PopupCharactersParser.getCode(res, popupSpecification);
-        mIcon = PopupCharactersParser.getIcon(res, popupSpecification);
+        mIcon = keyboard.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpecification));
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mGap / 2;
         mY = y;
@@ -263,13 +263,18 @@ public class Key {
             mEdgeFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
                     | row.mRowEdgeFlags;
 
+            final KeyboardIconsSet iconsSet = mKeyboard.mIconsSet;
             mVisualInsetsLeft = KeyboardParser.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_visualInsetsLeft, mKeyboard.getDisplayHeight(), 0);
             mVisualInsetsRight = KeyboardParser.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_visualInsetsRight, mKeyboard.getDisplayHeight(), 0);
-            mPreviewIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_iconPreview);
+            mPreviewIcon = iconsSet.getIcon(style.getInt(
+                    keyAttr, R.styleable.Keyboard_Key_keyIconPreview,
+                    KeyboardIconsSet.ICON_UNDEFINED));
             Keyboard.setDefaultBounds(mPreviewIcon);
-            mIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_keyIcon);
+            mIcon = iconsSet.getIcon(style.getInt(
+                    keyAttr, R.styleable.Keyboard_Key_keyIcon,
+                    KeyboardIconsSet.ICON_UNDEFINED));
             Keyboard.setDefaultBounds(mIcon);
             mHintLetter = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLetter);
 
@@ -288,8 +293,9 @@ public class Key {
                 mCode = Keyboard.CODE_DUMMY;
             }
 
-            final Drawable shiftedIcon = style.getDrawable(keyAttr,
-                    R.styleable.Keyboard_Key_shiftedIcon);
+            final Drawable shiftedIcon = iconsSet.getIcon(style.getInt(
+                    keyAttr, R.styleable.Keyboard_Key_keyIconShifted,
+                    KeyboardIconsSet.ICON_UNDEFINED));
             if (shiftedIcon != null)
                 mKeyboard.getShiftedIcons().put(this, shiftedIcon);
         } finally {

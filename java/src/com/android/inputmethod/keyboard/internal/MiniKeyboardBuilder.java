@@ -16,15 +16,15 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardView;
-import com.android.inputmethod.keyboard.MiniKeyboard;
-import com.android.inputmethod.latin.R;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Rect;
+
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.MiniKeyboard;
+import com.android.inputmethod.latin.R;
 
 import java.util.List;
 

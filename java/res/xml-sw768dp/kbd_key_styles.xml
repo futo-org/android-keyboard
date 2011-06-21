@@ -29,110 +29,59 @@
             <key-style
                 latin:styleName="functionalKeyStyle"
                 latin:isFunctional="true" />
-            <key-style
-                latin:styleName="shiftKeyStyle"
-                latin:code="@integer/key_shift"
-                latin:keyIcon="@drawable/sym_keyboard_shift_holo"
-                latin:shiftedIcon="@drawable/sym_keyboard_shift_locked_holo"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-                latin:parentStyle="functionalKeyStyle"
-                latin:isSticky="true" />
-            <key-style
-                latin:styleName="deleteKeyStyle"
-                latin:code="@integer/key_delete"
-                latin:keyIcon="@drawable/sym_keyboard_delete_holo"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
-                latin:parentStyle="functionalKeyStyle"
-                latin:isRepeatable="true" />
-            <key-style
-                latin:styleName="returnKeyStyle"
-                latin:code="@integer/key_return"
-                latin:keyIcon="@drawable/sym_keyboard_return_holo"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
-                latin:styleName="spaceKeyStyle"
-                latin:code="@integer/key_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
-            <key-style
-                latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
-                latin:code="@integer/key_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
-            <key-style
-                latin:styleName="smileyKeyStyle"
-                latin:keyLabel=":-)"
-                latin:keyOutputText=":-) "
-                latin:keyLabelOption="popupHint"
-                latin:popupCharacters="@string/alternates_for_smiley"
-                latin:maxPopupKeyboardColumn="5" />
-            <key-style
-                latin:styleName="settingsKeyStyle"
-                latin:code="@integer/key_settings"
-                latin:keyIcon="@drawable/sym_keyboard_settings_holo"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
-                latin:styleName="micKeyStyle"
-                latin:code="@integer/key_shortcut"
-                latin:keyIcon="@drawable/sym_keyboard_voice_holo"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
-                latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
             latin:colorScheme="black"
         >
             <key-style
                 latin:styleName="functionalKeyStyle" />
-            <key-style
-                latin:styleName="shiftKeyStyle"
-                latin:code="@integer/key_shift"
-                latin:keyIcon="@drawable/sym_bkeyboard_shift"
-                latin:shiftedIcon="@drawable/sym_bkeyboard_shift_locked"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_shift"
-                latin:parentStyle="functionalKeyStyle"
-                latin:isSticky="true" />
-            <key-style
-                latin:styleName="deleteKeyStyle"
-                latin:code="@integer/key_delete"
-                latin:keyIcon="@drawable/sym_bkeyboard_delete"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_delete"
-                latin:parentStyle="functionalKeyStyle"
-                latin:isRepeatable="true" />
-            <key-style
-                latin:styleName="returnKeyStyle"
-                latin:code="@integer/key_return"
-                latin:keyIcon="@drawable/sym_bkeyboard_return"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_return"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
-                latin:styleName="spaceKeyStyle"
-                latin:code="@integer/key_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
-            <key-style
-                latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
-                latin:code="@integer/key_space"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_space" />
-            <key-style
-                latin:styleName="smileyKeyStyle"
-                latin:keyLabel=":-)"
-                latin:keyOutputText=":-) "
-                latin:keyLabelOption="popupHint"
-                latin:popupCharacters="@string/alternates_for_smiley"
-                latin:maxPopupKeyboardColumn="5" />
-            <key-style
-                latin:styleName="settingsKeyStyle"
-                latin:code="@integer/key_settings"
-                latin:keyIcon="@drawable/sym_bkeyboard_settings"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_settings"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
-                latin:styleName="micKeyStyle"
-                latin:code="@integer/key_shortcut"
-                latin:keyIcon="@drawable/sym_bkeyboard_mic"
-                latin:iconPreview="@drawable/sym_keyboard_feedback_mic"
-                latin:parentStyle="functionalKeyStyle" />
         </case>
     </switch>
+    <key-style
+        latin:styleName="shiftKeyStyle"
+        latin:code="@integer/key_shift"
+        latin:keyIcon="iconShiftKey"
+        latin:keyIconShifted="iconShiftedShiftKey"
+        latin:parentStyle="functionalKeyStyle"
+        latin:isSticky="true" />
+    <key-style
+        latin:styleName="deleteKeyStyle"
+        latin:code="@integer/key_delete"
+        latin:keyIcon="iconDeleteKey"
+        latin:parentStyle="functionalKeyStyle"
+        latin:isRepeatable="true" />
+    <key-style
+        latin:styleName="returnKeyStyle"
+        latin:code="@integer/key_return"
+        latin:keyIcon="iconReturnKey"
+        latin:parentStyle="functionalKeyStyle" />
+    <key-style
+        latin:styleName="spaceKeyStyle"
+        latin:code="@integer/key_space"
+        latin:keyIconPreview="iconPreviewSpaceKey" />
+    <key-style
+        latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
+        latin:code="@integer/key_space"
+        latin:keyIconPreview="iconPreviewSpaceKey" />
+    <key-style
+        latin:styleName="smileyKeyStyle"
+        latin:keyLabel=":-)"
+        latin:keyOutputText=":-) "
+        latin:keyLabelOption="popupHint"
+        latin:popupCharacters="@string/alternates_for_smiley"
+        latin:maxPopupKeyboardColumn="5" />
+    <key-style
+        latin:styleName="settingsKeyStyle"
+        latin:code="@integer/key_settings"
+        latin:keyIcon="iconSettingsKey"
+        latin:keyIconPreview="iconPreviewSettingsKey"
+        latin:parentStyle="functionalKeyStyle" />
+    <key-style
+        latin:styleName="shortcutKeyStyle"
+        latin:code="@integer/key_shortcut"
+        latin:keyIcon="iconShortcutKey"
+        latin:keyIconPreview="iconPreviewShortcutKey"
+        latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="tabKeyStyle"
         latin:code="@integer/key_tab"

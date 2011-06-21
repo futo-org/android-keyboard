@@ -16,13 +16,12 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
-import com.android.inputmethod.latin.R;
-
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
+
+import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
+import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +36,6 @@ public class KeyStyles {
 
     public interface KeyStyle {
         public CharSequence[] getTextArray(TypedArray a, int index);
-        public Drawable getDrawable(TypedArray a, int index);
         public CharSequence getText(TypedArray a, int index);
         public int getInt(TypedArray a, int index, int defaultValue);
         public int getFlag(TypedArray a, int index, int defaultValue);
@@ -52,11 +50,6 @@ public class KeyStyles {
         @Override
         public CharSequence[] getTextArray(TypedArray a, int index) {
             return parseTextArray(a, index);
-        }
-
-        @Override
-        public Drawable getDrawable(TypedArray a, int index) {
-            return a.getDrawable(index);
         }
 
         @Override
@@ -140,12 +133,6 @@ public class KeyStyles {
         }
 
         @Override
-        public Drawable getDrawable(TypedArray a, int index) {
-            return a.hasValue(index)
-                    ? super.getDrawable(a, index) : (Drawable)mAttributes.get(index);
-        }
-
-        @Override
         public CharSequence getText(TypedArray a, int index) {
             return a.hasValue(index)
                     ? super.getText(a, index) : (CharSequence)mAttributes.get(index);
@@ -177,23 +164,18 @@ public class KeyStyles {
             // TODO: Currently not all Key attributes can be declared as style.
             readInt(keyAttr, R.styleable.Keyboard_Key_code);
             readText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
-            readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption);
-            readTextArray(keyAttr, R.styleable.Keyboard_Key_popupCharacters);
-            readInt(keyAttr, R.styleable.Keyboard_Key_maxPopupKeyboardColumn);
             readText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
-            readDrawable(keyAttr, R.styleable.Keyboard_Key_keyIcon);
-            readDrawable(keyAttr, R.styleable.Keyboard_Key_iconPreview);
             readText(keyAttr, R.styleable.Keyboard_Key_keyHintLetter);
-            readDrawable(keyAttr, R.styleable.Keyboard_Key_shiftedIcon);
+            readTextArray(keyAttr, R.styleable.Keyboard_Key_popupCharacters);
+            readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption);
+            readInt(keyAttr, R.styleable.Keyboard_Key_keyIcon);
+            readInt(keyAttr, R.styleable.Keyboard_Key_keyIconPreview);
+            readInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted);
+            readInt(keyAttr, R.styleable.Keyboard_Key_maxPopupKeyboardColumn);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_enabled);
-        }
-
-        private void readDrawable(TypedArray a, int index) {
-            if (a.hasValue(index))
-                mAttributes.put(index, a.getDrawable(index));
         }
 
         private void readText(TypedArray a, int index) {

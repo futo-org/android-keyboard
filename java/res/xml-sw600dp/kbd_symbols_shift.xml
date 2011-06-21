@@ -148,7 +148,7 @@
             latin:keyXPos="30.750%p"
             latin:keyWidth="39.750%p" />
         <Key
-            latin:keyStyle="micOrSettingsKeyStyle"
+            latin:keyStyle="shortcutOrSettingsKeyStyle"
             latin:keyXPos="-10.0%p"
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />

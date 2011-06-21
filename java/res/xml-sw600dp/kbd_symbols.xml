@@ -210,7 +210,7 @@
             </default>
         </switch>
         <Key
-            latin:keyStyle="micOrSettingsKeyStyle"
+            latin:keyStyle="shortcutOrSettingsKeyStyle"
             latin:keyXPos="-10.0%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />

@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.Key;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParser;
 import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
 import com.android.inputmethod.latin.R;
@@ -54,7 +55,7 @@ import java.util.Map;
  * </pre>
  */
 public class Keyboard {
-    private static final String TAG = "Keyboard";
+    private static final String TAG = Keyboard.class.getSimpleName();
 
     public static final int EDGE_LEFT = 0x01;
     public static final int EDGE_RIGHT = 0x02;
@@ -132,6 +133,8 @@ public class Keyboard {
     private int mMostCommonKeyWidth = 0;
 
     public final KeyboardId mId;
+
+    public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
 
     // Variables for pre-computing nearest keys.
 

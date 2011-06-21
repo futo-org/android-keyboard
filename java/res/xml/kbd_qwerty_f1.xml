@@ -48,7 +48,7 @@
                             latin:hasVoiceKey="true"
                         >
                             <Key
-                                latin:keyStyle="micKeyStyle"
+                                latin:keyStyle="shortcutKeyStyle"
                                 latin:keyWidth="9.2%p" />
                         </case>
                         <!-- latin:hasVoiceKey="false" -->
@@ -93,7 +93,7 @@
                             latin:hasVoiceKey="true"
                         >
                             <Key
-                                latin:keyStyle="micKeyStyle" />
+                                latin:keyStyle="shortcutKeyStyle" />
                         </case>
                         <!-- latin:hasVoiceKey="false" -->
                         <case

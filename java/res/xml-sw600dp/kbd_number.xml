@@ -80,7 +80,7 @@
                     latin:keyStyle="num0KeyStyle" />
                 <Spacer />
                 <Key
-                    latin:keyStyle="micOrSettingsKeyStyle"
+                    latin:keyStyle="shortcutOrSettingsKeyStyle"
                     latin:keyXPos="-11.00%p"
                     latin:keyWidth="fillRight"
                     latin:keyEdgeFlags="right" />
@@ -176,7 +176,7 @@
                 <Key
                     latin:keyLabel="#" />
                 <Key
-                    latin:keyStyle="micOrSettingsKeyStyle"
+                    latin:keyStyle="shortcutOrSettingsKeyStyle"
                     latin:keyXPos="-11.00%p"
                     latin:keyWidth="fillBoth"
                     latin:keyEdgeFlags="right" />

@@ -16,6 +16,11 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.res.Resources;
+import android.os.SystemClock;
+import android.util.Log;
+import android.view.MotionEvent;
+
 import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
 import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.PointerTrackerKeyState;
@@ -23,11 +28,6 @@ import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-
-import android.content.res.Resources;
-import android.os.SystemClock;
-import android.util.Log;
-import android.view.MotionEvent;
 
 import java.util.Arrays;
 import java.util.List;

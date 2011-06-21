@@ -16,12 +16,12 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.content.res.Resources;
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
-
-import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 
 /**
  * String parser of popupCharacters attribute of Key.
@@ -29,16 +29,19 @@ import android.text.TextUtils;
  * Each popup key text is one of the following:
  * - A single letter (Letter)
  * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
- * - Icon followed by keyOutputText or code (@drawable/icon|@integer/key_code)
+ * - Icon followed by keyOutputText or code (@icon/icon_number|@integer/key_code)
  * Special character, comma ',' backslash '\', and bar '|' can be escaped by '\'
  * character.
  * Note that the character '@' and '\' are also parsed by XML parser and CSV parser as well.
+ * See {@link KeyboardIconsSet} about icon_number.
  */
 public class PopupCharactersParser {
+    private static final String TAG = PopupCharactersParser.class.getSimpleName();
+
     private static final char ESCAPE = '\\';
     private static final String LABEL_END = "|";
     private static final String PREFIX_AT = "@";
-    private static final String PREFIX_ICON = PREFIX_AT + "drawable/";
+    private static final String PREFIX_ICON = PREFIX_AT + "icon/";
     private static final String PREFIX_CODE = PREFIX_AT + "integer/";
 
     private PopupCharactersParser() {
@@ -151,13 +154,18 @@ public class PopupCharactersParser {
         return Keyboard.CODE_DUMMY;
     }
 
-    public static Drawable getIcon(Resources res, String popupSpec) {
+    public static int getIconId(String popupSpec) {
         if (hasIcon(popupSpec)) {
             int end = popupSpec.indexOf(LABEL_END, PREFIX_ICON.length() + 1);
-            int resId = getResourceId(res, popupSpec.substring(PREFIX_AT.length(), end));
-            return res.getDrawable(resId);
+            final String iconId = popupSpec.substring(PREFIX_ICON.length(), end);
+            try {
+                return Integer.valueOf(iconId);
+            } catch (NumberFormatException e) {
+                Log.w(TAG, "illegal icon id specified: " + iconId);
+                return KeyboardIconsSet.ICON_UNDEFINED;
+            }
         }
-        return null;
+        return KeyboardIconsSet.ICON_UNDEFINED;
     }
 
     private static int getResourceId(Resources res, String name) {

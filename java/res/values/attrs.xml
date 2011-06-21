@@ -141,6 +141,35 @@
         <attr name="popupKeyboardTemplate" format="reference" />
         <!-- Locale of the keyboard layout -->
         <attr name="keyboardLocale" format="string" />
+        <!-- Icon set for key top and key preview. -->
+        <attr name="iconShiftKey" format="reference" />
+        <attr name="iconToSymbolKey" format="reference" />
+        <attr name="iconToSymbolKeyWithShortcut" format="reference" />
+        <attr name="iconDeleteKey" format="reference" />
+        <attr name="iconSettingsKey" format="reference" />
+        <attr name="iconShortcutKey" format="reference" />
+        <attr name="iconSpaceKey" format="reference" />
+        <attr name="iconReturnKey" format="reference" />
+        <attr name="iconSearchKey" format="reference" />
+        <attr name="iconTabKey" format="reference" />
+        <attr name="iconNum1Key" format="reference" />
+        <attr name="iconNum2Key" format="reference" />
+        <attr name="iconNum3Key" format="reference" />
+        <attr name="iconNum4Key" format="reference" />
+        <attr name="iconNum5Key" format="reference" />
+        <attr name="iconNum6Key" format="reference" />
+        <attr name="iconNum7Key" format="reference" />
+        <attr name="iconNum8Key" format="reference" />
+        <attr name="iconNum9Key" format="reference" />
+        <attr name="iconNum0Key" format="reference" />
+        <attr name="iconNumStarKey" format="reference" />
+        <attr name="iconNumPoundKey" format="reference" />
+        <attr name="iconNumAltKey" format="reference" />
+        <attr name="iconShiftedShiftKey" format="reference" />
+        <attr name="iconPreviewSpaceKey" format="reference" />
+        <attr name="iconPreviewTabKey" format="reference" />
+        <attr name="iconPreviewSettingsKey" format="reference" />
+        <attr name="iconPreviewShortcutKey" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Key">
@@ -163,8 +192,6 @@
         <attr name="isSticky" format="boolean" />
         <!-- Whether long-pressing on this key will make it repeat. -->
         <attr name="isRepeatable" format="boolean" />
-        <!-- The icon to show in the popup preview. -->
-        <attr name="iconPreview" format="reference" />
         <!-- The string of characters to output when this key is pressed. -->
         <attr name="keyOutputText" format="string" />
         <!-- The label to display on the key. -->
@@ -182,11 +209,47 @@
             <flag name="hasUppercaseLetter" value="0x40" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
-        <attr name="keyIcon" format="reference" />
+        <attr name="keyIcon" format="enum">
+            <!-- This should be aligned with KeyboardIcons.ICON_* -->
+            <enum name="iconShiftKey" value="1" />
+            <enum name="iconToSymbolKey" value="2" />
+            <enum name="iconToSymbolKeyWithShortcut" value="3" />
+            <enum name="iconDeleteKey" value="4" />
+            <enum name="iconSettingsKey" value="5" />
+            <enum name="iconShortcutKey" value="6" />
+            <enum name="iconSpaceKey" value="7" />
+            <enum name="iconReturnKey" value="8" />
+            <enum name="iconSearchKey" value="9" />
+            <enum name="iconTabKey" value="10" />
+            <enum name="iconNum1Key" value="11" />
+            <enum name="iconNum2Key" value="12" />
+            <enum name="iconNum3Key" value="13" />
+            <enum name="iconNum4Key" value="14" />
+            <enum name="iconNum5Key" value="15" />
+            <enum name="iconNum6Key" value="16" />
+            <enum name="iconNum7Key" value="17" />
+            <enum name="iconNum8Key" value="18" />
+            <enum name="iconNum9Key" value="19" />
+            <enum name="iconNum0Key" value="20" />
+            <enum name="iconNumStarKey" value="21" />
+            <enum name="iconNumPoundKey" value="22" />
+            <enum name="iconNumAltKey" value="23" />
+        </attr>
+        <!-- Shift key icon for shifted state -->
+        <attr name="keyIconShifted" format="enum">
+            <!-- This should be aligned with KeyboardIcons.ICON_SHIFTED_* -->
+            <enum name="iconShiftedShiftKey" value="24" />
+        </attr>
+        <!-- The icon to show in the popup preview. -->
+        <attr name="keyIconPreview" format="enum">
+            <!-- This should be aligned with KeyboardIcons.ICON_PREVIEW_* -->
+            <enum name="iconPreviewSpaceKey" value="25" />
+            <enum name="iconPreviewTabKey" value="26" />
+            <enum name="iconPreviewSettingsKey" value="27" />
+            <enum name="iconPreviewShortcutKey" value="28" />
+        </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
-        <!-- Shift key icon for shifted state -->
-        <attr name="shiftedIcon" format="reference" />
         <!-- The key is enabled and responds on press. -->
         <attr name="enabled" format="boolean" />
         <!-- Visual insets -->

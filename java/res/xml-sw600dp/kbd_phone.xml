@@ -109,7 +109,7 @@
         <Key
             latin:keyStyle="numPoundKeyStyle" />
         <Key
-            latin:keyStyle="micOrSettingsKeyStyle"
+            latin:keyStyle="shortcutOrSettingsKeyStyle"
             latin:keyXPos="-11.00%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
