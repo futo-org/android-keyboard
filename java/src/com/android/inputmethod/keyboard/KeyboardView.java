@@ -828,16 +828,18 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // For characters, use large font. For labels like "Done", use small font.
         final int labelSize;
         final Typeface labelStyle;
+        if ((keyLabelOption & Key.LABEL_OPTION_FONT_NORMAL) != 0) {
+            labelStyle = Typeface.DEFAULT;
+        } else if ((keyLabelOption & Key.LABEL_OPTION_FONT_FIXED_WIDTH) != 0) {
+            labelStyle = Typeface.MONOSPACE;
+        } else {
+            labelStyle = mKeyTextStyle;
+        }
         if (label.length() > 1) {
-            labelSize = mKeyLabelSize;
-            if ((keyLabelOption & Key.LABEL_OPTION_FONT_NORMAL) != 0) {
-                labelStyle = Typeface.DEFAULT;
-            } else {
-                labelStyle = Typeface.DEFAULT_BOLD;
-            }
+            labelSize = (keyLabelOption & Key.LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO) != 0
+                    ? mKeyLetterSize : mKeyLabelSize;
         } else {
             labelSize = mKeyLetterSize;
-            labelStyle = mKeyTextStyle;
         }
         paint.setTextSize(labelSize);
         paint.setTypeface(labelStyle);
@@ -971,7 +973,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         if (key.mLabel != null) {
             // TODO Should take care of temporaryShiftLabel here.
             previewText.setCompoundDrawables(null, null, null, null);
-            previewText.setText(adjustCase(tracker.getPreviewText(key)));
             if (key.mLabel.length() > 1) {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mKeyLetterSize);
                 previewText.setTypeface(Typeface.DEFAULT_BOLD);
@@ -979,6 +980,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mPreviewTextSize);
                 previewText.setTypeface(mKeyTextStyle);
             }
+            previewText.setText(adjustCase(tracker.getPreviewText(key)));
         } else {
             final Drawable previewIcon = key.getPreviewIcon();
             previewText.setCompoundDrawables(null, null, null,
@@ -1120,7 +1122,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         miniKeyboardView.setKeyboard(keyboard);
 
         container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
-                MeasureSpec.makeMeasureSpec(getHeight(), MeasureSpec.AT_MOST));
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 
         return miniKeyboardView;
     }

@@ -50,18 +50,15 @@ public class KeyboardIconsSet {
     private static final int ICON_NUM8_KEY = 18;
     private static final int ICON_NUM9_KEY = 19;
     private static final int ICON_NUM0_KEY = 20;
-    private static final int ICON_NUM_STAR_KEY = 21;
-    private static final int ICON_NUM_POUND_KEY = 22;
-    private static final int ICON_NUM_ALT_KEY = 23;
     // This should be aligned with Keyboard.keyIconShifted enum.
-    private static final int ICON_SHIFTED_SHIFT_KEY = 24;
+    private static final int ICON_SHIFTED_SHIFT_KEY = 21;
     // This should be aligned with Keyboard.keyIconPreview enum.
-    private static final int ICON_PREVIEW_SPACE_KEY = 25;
-    private static final int ICON_PREVIEW_TAB_KEY = 26;
-    private static final int ICON_PREVIEW_SETTINGS_KEY = 27;
-    private static final int ICON_PREVIEW_SHORTCUT_KEY = 28;
+    private static final int ICON_PREVIEW_SPACE_KEY = 22;
+    private static final int ICON_PREVIEW_TAB_KEY = 23;
+    private static final int ICON_PREVIEW_SETTINGS_KEY = 24;
+    private static final int ICON_PREVIEW_SHORTCUT_KEY = 25;
 
-    private static final int ICON_LAST = 28;
+    private static final int ICON_LAST = 25;
 
     private final Drawable mIcons[] = new Drawable[ICON_LAST + 1];
 
@@ -107,12 +104,6 @@ public class KeyboardIconsSet {
             return ICON_NUM9_KEY;
         case R.styleable.Keyboard_iconNum0Key:
             return ICON_NUM0_KEY;
-        case R.styleable.Keyboard_iconNumStarKey:
-            return ICON_NUM_STAR_KEY;
-        case R.styleable.Keyboard_iconNumPoundKey:
-            return ICON_NUM_POUND_KEY;
-        case R.styleable.Keyboard_iconNumAltKey:
-            return ICON_NUM_ALT_KEY;
         case R.styleable.Keyboard_iconShiftedShiftKey:
             return ICON_SHIFTED_SHIFT_KEY;
         case R.styleable.Keyboard_iconPreviewSpaceKey:

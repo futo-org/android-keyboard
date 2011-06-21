@@ -126,6 +126,8 @@ public class KeyboardParser {
     private final Context mContext;
     private final Resources mResources;
 
+    private int mKeyboardTopPadding;
+    private int mKeyboardBottomPadding;
     private int mHorizontalEdgesPadding;
     private int mCurrentX = 0;
     private int mCurrentY = 0;
@@ -234,6 +236,10 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Key_maxPopupKeyboardColumn, 5));
 
             mKeyboard.mIconsSet.loadIcons(keyboardAttr);
+            mKeyboardTopPadding = keyboardAttr.getDimensionPixelSize(
+                    R.styleable.Keyboard_keyboardTopPadding, 0);
+            mKeyboardBottomPadding = keyboardAttr.getDimensionPixelSize(
+                    R.styleable.Keyboard_keyboardBottomPadding, 0);
         } finally {
             keyAttr.recycle();
             keyboardAttr.recycle();
@@ -602,7 +608,7 @@ public class KeyboardParser {
     }
 
     private void startKeyboard() {
-        mCurrentY += (int)mResources.getDimension(R.dimen.keyboard_top_padding);
+        mCurrentY += mKeyboardTopPadding;
     }
 
     private void startRow(Row row) {
@@ -626,7 +632,7 @@ public class KeyboardParser {
     }
 
     private void endKeyboard(int defaultVerticalGap) {
-        mCurrentY += (int)mResources.getDimension(R.dimen.keyboard_bottom_padding);
+        mCurrentY += mKeyboardBottomPadding;
         mTotalHeight = mCurrentY - defaultVerticalGap;
     }
 

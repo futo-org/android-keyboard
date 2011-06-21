@@ -35,10 +35,12 @@
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="-"
+            latin:keyStyle="numLabelStyle"
             latin:keyXPos="20.400%p"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyLabel="+"
+            latin:keyStyle="numLabelStyle"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyStyle="num1KeyStyle"
@@ -60,10 +62,12 @@
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel=","
+            latin:keyStyle="numLabelStyle"
             latin:keyXPos="20.400%p"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyLabel="."
+            latin:keyStyle="numLabelStyle"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyStyle="num4KeyStyle"
@@ -83,10 +87,12 @@
              the touch event on the area, "(" is intentionally not marked as a left edge key. -->
         <Key
             latin:keyLabel="("
+            latin:keyStyle="numLabelStyle"
             latin:keyXPos="20.400%p"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyLabel=")"
+            latin:keyStyle="numLabelStyle"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyStyle="num7KeyStyle"
@@ -117,7 +123,8 @@
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key
-            latin:keyStyle="numPoundKeyStyle" />
+            latin:keyLabel="#"
+            latin:keyStyle="numLabelStyle" />
         <switch>
             <case
                 latin:voiceKeyEnabled="true"

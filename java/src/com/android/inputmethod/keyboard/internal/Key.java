@@ -49,8 +49,10 @@ public class Key {
     public static final int LABEL_OPTION_ALIGN_RIGHT = 0x02;
     public static final int LABEL_OPTION_ALIGN_BOTTOM = 0x08;
     public static final int LABEL_OPTION_FONT_NORMAL = 0x10;
-    private static final int LABEL_OPTION_POPUP_HINT = 0x20;
-    private static final int LABEL_OPTION_HAS_UPPERCASE_LETTER = 0x40;
+    public static final int LABEL_OPTION_FONT_FIXED_WIDTH = 0x20;
+    public static final int LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO = 0x40;
+    private static final int LABEL_OPTION_POPUP_HINT = 0x80;
+    private static final int LABEL_OPTION_HAS_UPPERCASE_LETTER = 0x100;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;

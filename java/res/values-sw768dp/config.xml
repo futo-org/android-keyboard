@@ -32,6 +32,7 @@
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">false</bool>
     <bool name="config_default_sound_enabled">true</bool>
+    <bool name="config_auto_correction_spacebar_led_enabled">true</bool>
     <bool name="config_use_spacebar_language_switcher">false</bool>
     <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
     <bool name="config_show_mini_keyboard_at_touched_point">true</bool>

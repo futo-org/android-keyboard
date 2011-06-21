@@ -31,20 +31,24 @@
     >
         <Key
             latin:keyLabel="("
+            latin:keyStyle="numLabelStyle"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="/" />
+            latin:keyLabel="/"
+            latin:keyStyle="numLabelStyle" />
         <Key
-            latin:keyLabel=")" />
+            latin:keyLabel=")"
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyLabel="-"
-            latin:keyStyle="functionalKeyStyle"
+            latin:keyStyle="numLabelFunctionalStyle"
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
             latin:keyLabel="N"
+            latin:keyStyle="numLabelStyle"
             latin:keyEdgeFlags="left" />
         <!-- Pause is a comma. Check PhoneNumberUtils.java to see if this 
             has changed. -->
@@ -52,10 +56,11 @@
             latin:code="44"
             latin:keyLabel="Pause" />
         <Key
-            latin:keyLabel="," />
+            latin:keyLabel=","
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyLabel="."
-            latin:keyStyle="functionalKeyStyle"
+            latin:keyStyle="numLabelFunctionalStyle"
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
@@ -68,7 +73,8 @@
             latin:code="59"
             latin:keyLabel="Wait" />
         <Key
-            latin:keyStyle="numPoundKeyStyle" />
+            latin:keyLabel="#"
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
@@ -78,11 +84,11 @@
         latin:rowEdgeFlags="bottom"
     >
         <Key
-            latin:code="@integer/key_switch_alpha_symbol"
-            latin:keyLabel="@string/label_to_numeric_key"
+            latin:keyStyle="numSwitchToNumericKeyStyle"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="+" />
+            latin:keyLabel="+"
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyStyle="numSpaceKeyStyle" />
         <Key

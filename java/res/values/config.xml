@@ -42,6 +42,7 @@
     <bool name="config_default_bigram_prediction">false</bool>
     <bool name="config_default_recorrection_enabled">true</bool>
     <bool name="config_default_sound_enabled">false</bool>
+    <bool name="config_auto_correction_spacebar_led_enabled">true</bool>
     <bool name="config_use_spacebar_language_switcher">true</bool>
     <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
     <bool name="config_show_mini_keyboard_at_touched_point">false</bool>
@@ -66,7 +67,7 @@
     <integer name="config_double_spaces_turn_into_period_timeout">1100</integer>
     <dimen name="config_touch_noise_threshold_distance">2.0mm</dimen>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
-    <string name="config_default_keyboard_theme_id" translatable="false">4</string>
+    <string name="config_default_keyboard_theme_id" translatable="false">5</string>
     <string name="config_text_size_of_language_on_spacebar" translatable="false">small</string>
     <integer name="config_max_popup_keyboard_column">5</integer>
     <string-array name="auto_correction_threshold_values" translatable="false">

@@ -16,7 +16,7 @@
 
 <resources>
     <style name="KeyboardTheme.Stone.Bold" parent="KeyboardIcons.Black">
-        <item name="keyboardStyle">@style/Keyboard</item>
+        <item name="keyboardStyle">@style/Keyboard.Stone</item>
         <item name="latinKeyboardStyle">@style/LatinKeyboard.Stone</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Stone.Bold</item>
         <item name="keyPreviewStyle">@style/KeyPreviewStyle</item>

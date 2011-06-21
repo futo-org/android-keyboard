@@ -60,6 +60,7 @@ public class LatinKeyboard extends Keyboard {
     private final Drawable mSpaceIcon;
     private final Drawable mSpacePreviewIcon;
     private final int mSpaceKeyIndex;
+    private final boolean mAutoCorrectionSpacebarLedEnabled;
     private final Drawable mAutoCorrectionSpacebarLedIcon;
     private final Drawable mSpacebarArrowLeftIcon;
     private final Drawable mSpacebarArrowRightIcon;
@@ -123,6 +124,8 @@ public class LatinKeyboard extends Keyboard {
 
         final TypedArray a = context.obtainStyledAttributes(
                 null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
+        mAutoCorrectionSpacebarLedEnabled = a.getBoolean(
+                R.styleable.LatinKeyboard_autoCorrectionSpacebarLedEnabled, false);
         mAutoCorrectionSpacebarLedIcon = a.getDrawable(
                 R.styleable.LatinKeyboard_autoCorrectionSpacebarLedIcon);
         mDisabledShortcutIcon = a.getDrawable(R.styleable.LatinKeyboard_disabledShortcutIcon);
@@ -179,7 +182,7 @@ public class LatinKeyboard extends Keyboard {
     }
 
     public boolean needsAutoCorrectionSpacebarLed() {
-        return mAutoCorrectionSpacebarLedIcon != null;
+        return mAutoCorrectionSpacebarLedEnabled;
     }
 
     /**
@@ -212,7 +215,7 @@ public class LatinKeyboard extends Keyboard {
     }
 
     // Layout local language name and left and right arrow on spacebar.
-    private static String layoutSpacebar(Paint paint, Locale locale, Drawable lArrow,
+    private static String layoutSpacebar(Paint paint, Locale locale, Drawable icon, Drawable lArrow,
             Drawable rArrow, int width, int height, float origTextSize) {
         final float arrowWidth = lArrow.getIntrinsicWidth();
         final float arrowHeight = lArrow.getIntrinsicHeight();
@@ -249,7 +252,9 @@ public class LatinKeyboard extends Keyboard {
         paint.setTextSize(textSize);
 
         // Place left and right arrow just before and after language text.
-        final float baseline = height * SPACEBAR_LANGUAGE_BASELINE;
+        final float textHeight = -paint.ascent() + paint.descent();
+        final float baseline = (icon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
+                : height / 2 + textHeight / 2;
         final int top = (int)(baseline - arrowHeight);
         final float remains = (width - textWidth) / 2;
         lArrow.setBounds((int)(remains - arrowWidth), top, (int)remains, (int)baseline);
@@ -300,7 +305,7 @@ public class LatinKeyboard extends Keyboard {
                 defaultTextSize = 14;
             }
 
-            final String language = layoutSpacebar(paint, inputLocale,
+            final String language = layoutSpacebar(paint, inputLocale, mSpaceIcon,
                     mSpacebarArrowLeftIcon, mSpacebarArrowRightIcon, width, height,
                     getTextSizeFromTheme(mTheme, textStyle, defaultTextSize));
 

@@ -16,6 +16,7 @@
 
 <resources>
     <style name="KeyboardIcons" parent="android:Theme">
+        <!-- Keyboard icons -->
         <item name="iconShiftKey">@drawable/sym_keyboard_shift</item>
         <item name="iconToSymbolKeyWithShortcut">@drawable/sym_keyboard_123_mic</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete</item>
@@ -35,13 +36,17 @@
         <item name="iconNum8Key">@drawable/sym_keyboard_num8</item>
         <item name="iconNum9Key">@drawable/sym_keyboard_num9</item>
         <item name="iconNum0Key">@drawable/sym_keyboard_num0</item>
-        <item name="iconNumStarKey">@drawable/sym_keyboard_numstar</item>
-        <item name="iconNumPoundKey">@drawable/sym_keyboard_numpound</item>
-        <item name="iconNumAltKey">@drawable/sym_keyboard_numalt</item>
         <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked</item>
         <item name="iconPreviewSpaceKey">@drawable/sym_keyboard_feedback_space</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
         <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_feedback_settings</item>
         <item name="iconPreviewShortcutKey">@drawable/sym_keyboard_feedback_mic</item>
+        <!-- LatinKeyboard icons -->
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="spacebarArrowLeftIcon">@drawable/sym_keyboard_language_arrows_left</item>
+        <item name="spacebarArrowRightIcon">@drawable/sym_keyboard_language_arrows_right</item>
+        <item name="spacebarArrowPreviewLeftIcon">@drawable/sym_keyboard_feedback_language_arrows_left</item>
+        <item name="spacebarArrowPreviewRightIcon">@drawable/sym_keyboard_feedback_language_arrows_right</item>
     </style>
 </resources>

@@ -78,15 +78,12 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         final int pointY = parentKey.mY;
         final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
                 + parentKeyboardView.getPaddingLeft();
-        final int miniKeyboardX = Math.max(0, Math.min(miniKeyboardLeft,
+        final int x = Math.max(0, Math.min(miniKeyboardLeft,
                 parentKeyboardView.getWidth() - miniKeyboard.getMinWidth()))
                 - container.getPaddingLeft() + mCoordinates[0];
-        final int miniKeyboardY = pointY - parentKeyboard.getVerticalGap()
+        final int y = pointY - parentKeyboard.getVerticalGap()
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + parentKeyboardView.getPaddingTop() + mCoordinates[1];
-        final int x = miniKeyboardX;
-        final int y = parentKeyboardView.isKeyPreviewPopupEnabled() &&
-                miniKeyboard.isOneRowKeyboard() && keyPreviewY >= 0 ? keyPreviewY : miniKeyboardY;
 
         if (miniKeyboard.setShifted(parentKeyboard.isShiftedOrShiftLocked())) {
             invalidateAllKeys();

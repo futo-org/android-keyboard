@@ -54,7 +54,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         R.style.KeyboardTheme_Stone,
         R.style.KeyboardTheme_Stone_Bold,
         R.style.KeyboardTheme_Gingerbread,
-        R.style.KeyboardTheme_Honeycomb,
+        R.style.KeyboardTheme_IceCreamSandwich,
     };
 
     private SubtypeSwitcher mSubtypeSwitcher;

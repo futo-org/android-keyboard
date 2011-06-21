@@ -27,9 +27,13 @@
     <!-- <dimen name="key_height">14.5mm</dimen> -->
     <dimen name="key_bottom_gap">1.1mm</dimen>
     <dimen name="key_horizontal_gap">1.1mm</dimen>
-    <dimen name="popup_key_height">10.0mm</dimen>
     <dimen name="keyboard_top_padding">1.1mm</dimen>
     <dimen name="keyboard_bottom_padding">0.0mm</dimen>
+    <dimen name="key_bottom_gap_ics">1.1mm</dimen>
+    <dimen name="key_horizontal_gap_ics">1.1mm</dimen>
+    <dimen name="keyboard_top_padding_ics">1.1mm</dimen>
+    <dimen name="keyboard_bottom_padding_ics">0.0mm</dimen>
+    <dimen name="popup_key_height">10.0mm</dimen>
     <dimen name="keyboard_horizontal_edges_padding">0.0mm</dimen>
     <dimen name="mini_keyboard_horizontal_padding_holo">40dip</dimen>
     <dimen name="mini_keyboard_key_horizontal_padding">12dip</dimen>

@@ -87,7 +87,6 @@
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyIcon="iconSpaceKey"
         latin:keyIconPreview="iconPreviewSpaceKey"
         latin:parentStyle="functionalKeyStyle" />
     <key-style

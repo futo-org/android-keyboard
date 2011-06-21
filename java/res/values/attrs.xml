@@ -63,10 +63,8 @@
 
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
-
         <!-- Vertical offset of the key press feedback from the key. -->
         <attr name="keyPreviewOffset" format="dimension" />
-
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
 
@@ -113,6 +111,9 @@
         <!-- Minimum keyboard height represented in pixels, percentage of display height if fraction
              is positive, or percentage of display width if fraction is negative. -->
         <attr name="minKeyboardHeight" format="dimension|fraction" />
+        <!-- Keyboard top and bottom paddings. -->
+        <attr name="keyboardTopPadding" format="dimension" />
+        <attr name="keyboardBottomPadding" format="dimension" />
         <!-- Default width of a key, in pixels or percentage of display width.
              If the value is zero, the actual key width will be determined to fill out the area up
              to the right edge of the keyboard.
@@ -155,9 +156,6 @@
         <attr name="iconNum8Key" format="reference" />
         <attr name="iconNum9Key" format="reference" />
         <attr name="iconNum0Key" format="reference" />
-        <attr name="iconNumStarKey" format="reference" />
-        <attr name="iconNumPoundKey" format="reference" />
-        <attr name="iconNumAltKey" format="reference" />
         <attr name="iconShiftedShiftKey" format="reference" />
         <attr name="iconPreviewSpaceKey" format="reference" />
         <attr name="iconPreviewTabKey" format="reference" />
@@ -198,8 +196,10 @@
             <flag name="alignRight" value="0x02" />
             <flag name="alignBottom" value="0x08" />
             <flag name="fontNormal" value="0x10" />
-            <flag name="popupHint" value="0x20" />
-            <flag name="hasUppercaseLetter" value="0x40" />
+            <flag name="fontFixedWidth" value="0x20" />
+            <flag name="followKeyLetterRatio" value="0x40" />
+            <flag name="popupHint" value="0x80" />
+            <flag name="hasUppercaseLetter" value="0x100" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">
@@ -224,22 +224,19 @@
             <enum name="iconNum8Key" value="18" />
             <enum name="iconNum9Key" value="19" />
             <enum name="iconNum0Key" value="20" />
-            <enum name="iconNumStarKey" value="21" />
-            <enum name="iconNumPoundKey" value="22" />
-            <enum name="iconNumAltKey" value="23" />
         </attr>
         <!-- Shift key icon for shifted state -->
         <attr name="keyIconShifted" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_SHIFTED_* -->
-            <enum name="iconShiftedShiftKey" value="24" />
+            <enum name="iconShiftedShiftKey" value="21" />
         </attr>
         <!-- The icon to show in the popup preview. -->
         <attr name="keyIconPreview" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_PREVIEW_* -->
-            <enum name="iconPreviewSpaceKey" value="25" />
-            <enum name="iconPreviewTabKey" value="26" />
-            <enum name="iconPreviewSettingsKey" value="27" />
-            <enum name="iconPreviewShortcutKey" value="28" />
+            <enum name="iconPreviewSpaceKey" value="22" />
+            <enum name="iconPreviewTabKey" value="23" />
+            <enum name="iconPreviewSettingsKey" value="24" />
+            <enum name="iconPreviewShortcutKey" value="25" />
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
@@ -304,6 +301,7 @@
     </declare-styleable>
 
     <declare-styleable name="LatinKeyboard">
+        <attr name="autoCorrectionSpacebarLedEnabled" format="boolean" />
         <attr name="autoCorrectionSpacebarLedIcon" format="reference" />
         <attr name="disabledShortcutIcon" format="reference" />
         <attr name="spacebarTextColor" format="color" />

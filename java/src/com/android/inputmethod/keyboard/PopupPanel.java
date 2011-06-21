@@ -30,6 +30,7 @@ public interface PopupPanel {
      * @param keyPreviewY the Y-coordinate of key preview
      * @param window PopupWindow to be used to show this popup panel
      */
+    // TODO: Remove keyPreviewY from argument.
     public void showPanel(KeyboardView parentKeyboardView, Key parentKey,
             PointerTracker tracker, int keyPreviewY, PopupWindow window);
 

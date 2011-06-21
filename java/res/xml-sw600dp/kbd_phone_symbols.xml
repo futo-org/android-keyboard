@@ -30,10 +30,12 @@
     <Row>
         <Key
             latin:keyLabel="-"
+            latin:keyStyle="numLabelStyle"
             latin:keyXPos="11.00%p"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyLabel="+"
+            latin:keyStyle="numLabelStyle"
             latin:keyWidth="9.25%p" />
         <Key
             latin:code="44"
@@ -55,10 +57,12 @@
     <Row>
         <Key
             latin:keyLabel=","
+            latin:keyStyle="numLabelStyle"
             latin:keyXPos="11.00%p"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyLabel="."
+            latin:keyStyle="numLabelStyle"
             latin:keyWidth="9.25%p" />
         <Key
             latin:code="59"
@@ -86,12 +90,15 @@
              the touch event on the area, "(" is intentionally not marked as a left edge key. -->
         <Key
             latin:keyLabel="("
+            latin:keyStyle="numLabelStyle"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyLabel=")"
+            latin:keyStyle="numLabelStyle"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyLabel="N"
+            latin:keyStyle="numLabelStyle"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num7KeyStyle"
@@ -116,7 +123,8 @@
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key
-            latin:keyStyle="numPoundKeyStyle" />
+            latin:keyLabel="#"
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyStyle="shortcutOrSettingsKeyStyle"
             latin:keyXPos="-11.00%p"

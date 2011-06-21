@@ -98,13 +98,16 @@
                     latin:keyEdgeFlags="left" />
                 <Key
                     latin:keyLabel="-"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyXPos="13.829%p"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="+"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="."
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="1"
@@ -122,13 +125,16 @@
             <Row>
                 <Key
                     latin:keyLabel="*"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyXPos="13.829%p"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="/"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel=","
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="4"
@@ -149,13 +155,16 @@
                      edge key. -->
                 <Key
                     latin:keyLabel="("
+                    latin:keyStyle="numLabelStyle"
                     latin:keyXPos="13.829%p"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel=")"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="="
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="7"
@@ -183,11 +192,13 @@
                     latin:keyWidth="24.140%p" />
                 <Key
                     latin:keyLabel="*"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyXPos="43.125%p" />
                 <Key
                     latin:keyLabel="0" />
                 <Key
-                    latin:keyLabel="#" />
+                    latin:keyLabel="#"
+                    latin:keyStyle="numLabelStyle" />
                 <switch>
                     <case
                         latin:voiceKeyEnabled="true"

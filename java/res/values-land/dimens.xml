@@ -26,8 +26,12 @@
 <!--    <dimen name="key_height">0.260in</dimen>-->
     <dimen name="key_bottom_gap">0.020in</dimen>
     <dimen name="popup_key_height">0.280in</dimen>
-    <dimen name="keyboard_top_padding">0.0in</dimen>
-    <dimen name="keyboard_bottom_padding">0.0in</dimen>
+    <dimen name="keyboard_top_padding">0.00in</dimen>
+    <dimen name="keyboard_bottom_padding">0.00in</dimen>
+    <dimen name="key_bottom_gap_ics">0.04in</dimen>
+    <dimen name="key_horizontal_gap_ics">0.01in</dimen>
+    <dimen name="keyboard_top_padding_ics">0.03in</dimen>
+    <dimen name="keyboard_bottom_padding_ics">0.00in</dimen>
     <dimen name="keyboard_horizontal_edges_padding">0.0in</dimen>
     <fraction name="key_letter_ratio">55%</fraction>
     <fraction name="key_label_ratio">35%</fraction>

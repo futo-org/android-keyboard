@@ -92,13 +92,16 @@
             <Row>
                 <Key
                     latin:keyLabel="-"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyXPos="11.00%p"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="+"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="."
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="1"
@@ -116,13 +119,16 @@
             <Row>
                 <Key
                     latin:keyLabel="*"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyXPos="11.00%p"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="/"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel=","
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="4"
@@ -143,13 +149,16 @@
                      edge key. -->
                 <Key
                     latin:keyLabel="("
+                    latin:keyStyle="numLabelStyle"
                     latin:keyXPos="11.00%p"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel=")"
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="="
+                    latin:keyStyle="numLabelStyle"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="7"
@@ -169,12 +178,13 @@
                     latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
                     latin:keyWidth="27.75%p" />
                 <Key
-                    latin:keyLabel="*"
+                    latin:keyStyle="numStarKeyStyle"
                     latin:keyXPos="38.75%p" />
                 <Key
                     latin:keyLabel="0" />
                 <Key
-                    latin:keyLabel="#" />
+                    latin:keyLabel="#"
+                    latin:keyStyle="numLabelStyle" />
                 <Key
                     latin:keyStyle="shortcutOrSettingsKeyStyle"
                     latin:keyXPos="-11.00%p"

@@ -62,17 +62,31 @@
         latin:code="57"
         latin:keyIcon="iconNum9Key" />
     <key-style
+        latin:styleName="numLabelStyle"
+        latin:keyLabelOption="fontFixedWidth|followKeyLetterRatio" />
+    <key-style
+        latin:styleName="numLabelFunctionalStyle"
+        latin:keyLabelOption="fontFixedWidth|followKeyLetterRatio"
+        latin:parentStyle="functionalKeyStyle" />
+    <key-style
         latin:styleName="numStarKeyStyle"
         latin:code="42"
-        latin:keyIcon="iconNumStarKey" />
+        latin:keyLabel="\uff0a"
+        latin:parentStyle="numLabelStyle" />
     <key-style
         latin:styleName="numPoundKeyStyle"
-        latin:code="35"
-        latin:keyIcon="iconNumPoundKey" />
+        latin:keyLabel="#"
+        latin:parentStyle="numLabelStyle" />
     <key-style
-        latin:styleName="numAltKeyStyle"
+        latin:styleName="numSwitchToAltKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
-        latin:keyIcon="iconNumAltKey" />
+        latin:keyLabel="@string/label_to_phone_symbols_key"
+        latin:parentStyle="numLabelStyle" />
+    <key-style
+        latin:styleName="numSwitchToNumericKeyStyle"
+        latin:code="@integer/key_switch_alpha_symbol"
+        latin:keyLabel="@string/label_to_phone_numeric_key"
+        latin:parentStyle="numLabelStyle" />
     <key-style
         latin:styleName="numSpaceKeyStyle"
         latin:code="@integer/key_space"
