@@ -16,11 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import java.text.Collator;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Locale;
-
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
@@ -32,13 +27,19 @@ import android.preference.PreferenceGroup;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
+import java.text.Collator;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Locale;
+
 public class InputLanguageSelection extends PreferenceActivity {
 
     private String mSelectedLanguages;
     private ArrayList<Loc> mAvailableLanguages = new ArrayList<Loc>();
 
     private static final String[] WHITELIST_LANGUAGES = {
-        "cs", "da", "de", "en_GB", "en_US", "es", "es_US", "fr", "it", "nb", "nl", "pl", "pt", "ru"
+        "cs", "da", "de", "en_GB", "en_US", "es", "es_US", "fr", "it", "nb", "nl", "pl", "pt",
+        "ru", "tr",
     };
 
     private static boolean isWhitelisted(String lang) {
@@ -84,7 +85,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         for (int i = 0; i < mAvailableLanguages.size(); i++) {
             CheckBoxPreference pref = new CheckBoxPreference(this);
             Locale locale = mAvailableLanguages.get(i).locale;
-            pref.setTitle(LanguageSwitcher.toTitleCase(locale.getDisplayName(locale)));
+            pref.setTitle(LanguageSwitcher.toTitleCase(locale.getDisplayName(locale), locale));
             boolean checked = isLocaleIn(locale, languageList);
             pref.setChecked(checked);
             if (hasDictionary(locale)) {
@@ -184,7 +185,7 @@ public class InputLanguageSelection extends PreferenceActivity {
 
             if (finalSize == 0) {
                 preprocess[finalSize++] =
-                        new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(l)), l);
+                        new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(l), l), l);
             } else {
                 // check previous entry:
                 //  same lang and a country -> upgrade to full name and
@@ -193,14 +194,15 @@ public class InputLanguageSelection extends PreferenceActivity {
                 if (preprocess[finalSize-1].locale.getLanguage().equals(
                         language)) {
                     preprocess[finalSize-1].label = LanguageSwitcher.toTitleCase(
-                            preprocess[finalSize-1].locale.getDisplayName());
+                            preprocess[finalSize-1].locale.getDisplayName(),
+                            preprocess[finalSize-1].locale);
                     preprocess[finalSize++] =
-                            new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName()), l);
+                            new Loc(LanguageSwitcher.toTitleCase(l.getDisplayName(), l), l);
                 } else {
                     String displayName;
                     if (s.equals("zz_ZZ")) {
                     } else {
-                        displayName = LanguageSwitcher.toTitleCase(l.getDisplayName(l));
+                        displayName = LanguageSwitcher.toTitleCase(l.getDisplayName(l), l);
                         preprocess[finalSize++] = new Loc(displayName, l);
                     }
                 }

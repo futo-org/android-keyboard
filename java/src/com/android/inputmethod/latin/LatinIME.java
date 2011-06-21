@@ -16,13 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.LatinIMEUtil.RingCharBuffer;
-import com.android.inputmethod.voice.FieldContext;
-import com.android.inputmethod.voice.SettingsUtil;
-import com.android.inputmethod.voice.VoiceInput;
-
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -64,6 +57,13 @@ import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+
+import com.android.inputmethod.latin.LatinIMEUtil.RingCharBuffer;
+import com.android.inputmethod.voice.FieldContext;
+import com.android.inputmethod.voice.SettingsUtil;
+import com.android.inputmethod.voice.VoiceInput;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -1413,13 +1413,15 @@ public class LatinIME extends InputMethodService
             }
             primaryCode = keyCodes[0];
             if (mKeyboardSwitcher.isAlphabetMode() && Character.isLowerCase(primaryCode)) {
-                int upperCaseCode = Character.toUpperCase(primaryCode);
-                if (upperCaseCode != primaryCode) {
-                    primaryCode = upperCaseCode;
+                // In some locales, such as Turkish, Character.toUpperCase() may return a wrong
+                // character because it doesn't take care of locale.
+                final String upperCaseString = new String(new int[] {primaryCode}, 0, 1)
+                        .toUpperCase(mLanguageSwitcher.getInputLocale());
+                if (upperCaseString.codePointCount(0, upperCaseString.length()) == 1) {
+                    primaryCode = upperCaseString.codePointAt(0);
                 } else {
                     // Some keys, such as [eszett], have upper case as multi-characters.
-                    String upperCase = new String(new int[] {primaryCode}, 0, 1).toUpperCase();
-                    onText(upperCase);
+                    onText(upperCaseString);
                     return;
                 }
             }
@@ -1983,13 +1985,14 @@ public class LatinIME extends InputMethodService
      *            word.
      */
     private void pickSuggestion(CharSequence suggestion, boolean correcting) {
-        LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        final LatinKeyboardView inputView = mKeyboardSwitcher.getInputView();
+        final Locale inputLocale = mLanguageSwitcher.getInputLocale();
         if (mCapsLock) {
-            suggestion = suggestion.toString().toUpperCase();
+            suggestion = suggestion.toString().toUpperCase(inputLocale);
         } else if (preferCapitalization()
                 || (mKeyboardSwitcher.isAlphabetMode()
                         && inputView.isShifted())) {
-            suggestion = suggestion.toString().toUpperCase().charAt(0)
+            suggestion = suggestion.toString().toUpperCase(inputLocale).charAt(0)
                     + suggestion.subSequence(1, suggestion.length()).toString();
         }
         InputConnection ic = getCurrentInputConnection();
@@ -2026,9 +2029,10 @@ public class LatinIME extends InputMethodService
             // If the first letter of touching is capitalized, make all the suggestions
             // start with a capital letter.
             if (Character.isUpperCase(touching.word.charAt(0))) {
+                final Locale inputLocale = mLanguageSwitcher.getInputLocale();
                 for (int i = 0; i < suggestions.size(); i++) {
                     String origSugg = (String) suggestions.get(i);
-                    String capsSugg = origSugg.toUpperCase().charAt(0)
+                    String capsSugg = origSugg.toUpperCase(inputLocale).charAt(0)
                             + origSugg.subSequence(1, origSugg.length()).toString();
                     suggestions.set(i, capsSugg);
                 }
