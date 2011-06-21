@@ -136,12 +136,16 @@ public class LatinKeyboard extends Keyboard {
         // The threshold is "key width" x 1.25
         mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 5) / 4;
 
-        final int spaceKeyWidth = Math.max(mSpaceKey.mWidth,
-                (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
-        final int spaceKeyheight = mSpacePreviewIcon.getIntrinsicHeight();
-        mSlidingLocaleIcon = new SlidingLocaleDrawable(
-                context, mSpacePreviewIcon, spaceKeyWidth, spaceKeyheight);
-        mSlidingLocaleIcon.setBounds(0, 0, spaceKeyWidth, spaceKeyheight);
+        if (mSpaceKey != null) {
+            final int slidingIconWidth = Math.max(mSpaceKey.mWidth,
+                    (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
+            final int spaceKeyheight = mSpacePreviewIcon.getIntrinsicHeight();
+            mSlidingLocaleIcon = new SlidingLocaleDrawable(
+                    context, mSpacePreviewIcon, slidingIconWidth, spaceKeyheight);
+            mSlidingLocaleIcon.setBounds(0, 0, slidingIconWidth, spaceKeyheight);
+        } else {
+            mSlidingLocaleIcon = null;
+        }
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
@@ -350,6 +354,8 @@ public class LatinKeyboard extends Keyboard {
         if (mSpacebarSlidingLanguageSwitchDiff == diff)
             return;
         mSpacebarSlidingLanguageSwitchDiff = diff;
+        if (mSlidingLocaleIcon == null)
+            return;
         mSlidingLocaleIcon.setDiff(diff);
         if (Math.abs(diff) == Integer.MAX_VALUE) {
             mSpaceKey.setPreviewIcon(mSpacePreviewIcon);
