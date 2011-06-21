@@ -44,6 +44,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.android.inputmethod.compat.LinearLayoutCompatUtils;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
@@ -148,7 +149,18 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     public CandidateView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+        // Note: Up to version 10 (Gingerbread) of the API, LinearLayout doesn't have 3-argument
+        // constructor.
+        // TODO: Call 3-argument constructor, super(context, attrs, defStyle), when we abandon
+        // backward compatibility with the version 10 or earlier of the API.
+        super(context, attrs);
+        if (defStyle != R.attr.candidateViewStyle) {
+            throw new IllegalArgumentException(
+                    "can't accept defStyle other than R.attr.candidayeViewStyle: defStyle="
+                    + defStyle);
+        }
+        setBackgroundDrawable(LinearLayoutCompatUtils.getBackgroundDrawable(
+                context, attrs, defStyle, R.style.CandidateViewStyle));
 
         Resources res = context.getResources();
         LayoutInflater inflater = LayoutInflater.from(context);
