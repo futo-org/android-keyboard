@@ -16,13 +16,17 @@
 
 package com.android.inputmethod.keyboard.internal;
 
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
 
 public class KeyboardIconsSet {
+    private static final String TAG = KeyboardIconsSet.class.getSimpleName();
+
     public static final int ICON_UNDEFINED = 0;
 
     // This should be aligned with Keyboard.keyIcon enum.
@@ -130,9 +134,13 @@ public class KeyboardIconsSet {
             final int attrIndex = keyboardAttrs.getIndex(i);
             final int iconId = getIconId(attrIndex);
             if (iconId != ICON_UNDEFINED) {
-                final Drawable icon = keyboardAttrs.getDrawable(attrIndex);
-                Keyboard.setDefaultBounds(icon);
-                mIcons[iconId] = icon;
+                try {
+                    final Drawable icon = keyboardAttrs.getDrawable(attrIndex);
+                    Keyboard.setDefaultBounds(icon);
+                    mIcons[iconId] = icon;
+                } catch (Resources.NotFoundException e) {
+                    Log.w(TAG, "Drawable resource for icon #" + iconId + " not found");
+                }
             }
         }
     }

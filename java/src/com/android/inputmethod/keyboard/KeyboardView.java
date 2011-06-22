@@ -63,7 +63,6 @@ import java.util.WeakHashMap;
  * presses and touch movements.
  *
  * @attr ref R.styleable#KeyboardView_backgroundDimAmount
- * @attr ref R.styleable#KeyboardView_colorScheme
  * @attr ref R.styleable#KeyboardView_keyBackground
  * @attr ref R.styleable#KeyboardView_keyHysteresisDistance
  * @attr ref R.styleable#KeyboardView_keyLetterRatio
@@ -92,9 +91,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final boolean ENABLE_CAPSLOCK_BY_LONGPRESS = true;
     private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
 
-    public static final int COLOR_SCHEME_WHITE = 0;
-    public static final int COLOR_SCHEME_BLACK = 1;
-
     // Timing constants
     private final int mKeyRepeatInterval;
 
@@ -110,7 +106,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private final float mKeyLabelRatio;
     private final float mKeyHintLetterRatio;
     private final float mKeyUppercaseLetterRatio;
-    private final int mColorScheme;
     private final int mShadowColor;
     private final float mShadowRadius;
     private final Drawable mKeyBackground;
@@ -357,7 +352,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mShadowRadius = a.getFloat(R.styleable.KeyboardView_shadowRadius, 0f);
         // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
         mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
-        mColorScheme = a.getInt(R.styleable.KeyboardView_colorScheme, COLOR_SCHEME_WHITE);
         a.recycle();
 
         final Resources res = getResources();
@@ -564,10 +558,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
      */
     public boolean isKeyPreviewPopupEnabled() {
         return mShowKeyPreviewPopup;
-    }
-
-    public int getColorScheme() {
-        return mColorScheme;
     }
 
     /**

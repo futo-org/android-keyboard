@@ -90,13 +90,6 @@
             <enum name="italic" value="2" />
             <enum name="boldItalic" value="3" />
         </attr>
-
-        <attr name="colorScheme" format="enum">
-            <!-- This should be aligned with KeyboardView.COLOR_SCHEME_* -->
-            <enum name="white" value="0" />
-            <enum name="black" value="1" />
-        </attr>
-
     </declare-styleable>
 
     <declare-styleable name="CandidateView">
