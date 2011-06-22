@@ -42,7 +42,6 @@ public class KeyboardId {
     public final int mWidth;
     public final int mMode;
     public final int mXmlId;
-    public final int mColorScheme;
     public final boolean mNavigateAction;
     public final boolean mPasswordInput;
     public final boolean mHasSettingsKey;
@@ -56,9 +55,9 @@ public class KeyboardId {
 
     private final int mHashCode;
 
-    public KeyboardId(String xmlName, int xmlId, int colorScheme, Locale locale, int orientation,
-            int width, int mode, EditorInfo attribute, boolean hasSettingsKey,
-            boolean voiceKeyEnabled, boolean hasVoiceKey, boolean enableShiftLock) {
+    public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int width,
+            int mode, EditorInfo attribute, boolean hasSettingsKey, boolean voiceKeyEnabled,
+            boolean hasVoiceKey, boolean enableShiftLock) {
         final int inputType = (attribute != null) ? attribute.inputType : 0;
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         this.mLocale = locale;
@@ -66,7 +65,6 @@ public class KeyboardId {
         this.mWidth = width;
         this.mMode = mode;
         this.mXmlId = xmlId;
-        this.mColorScheme = colorScheme;
         // Note: Turn off checking navigation flag to show TAB key for now.
         this.mNavigateAction = InputTypeCompatUtils.isWebInputType(inputType);
 //                || EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
@@ -91,7 +89,6 @@ public class KeyboardId {
                 width,
                 mode,
                 xmlId,
-                colorScheme,
                 mNavigateAction,
                 mPasswordInput,
                 hasSettingsKey,
@@ -103,15 +100,15 @@ public class KeyboardId {
     }
 
     public KeyboardId cloneWithNewLayout(String xmlName, int xmlId) {
-        return new KeyboardId(xmlName, xmlId, mColorScheme, mLocale, mOrientation, mWidth, mMode,
-                mAttribute, mHasSettingsKey, mVoiceKeyEnabled, mHasVoiceKey, mEnableShiftLock);
+        return new KeyboardId(xmlName, xmlId, mLocale, mOrientation, mWidth, mMode, mAttribute,
+                mHasSettingsKey, mVoiceKeyEnabled, mHasVoiceKey, mEnableShiftLock);
     }
 
     public KeyboardId cloneWithNewGeometry(int width) {
         if (mWidth == width)
             return this;
-        return new KeyboardId(mXmlName, mXmlId, mColorScheme, mLocale, mOrientation, width, mMode,
-                mAttribute, mHasSettingsKey, mVoiceKeyEnabled, mHasVoiceKey, mEnableShiftLock);
+        return new KeyboardId(mXmlName, mXmlId, mLocale, mOrientation, width, mMode, mAttribute,
+                mHasSettingsKey, mVoiceKeyEnabled, mHasVoiceKey, mEnableShiftLock);
     }
 
     public int getXmlId() {
@@ -145,7 +142,6 @@ public class KeyboardId {
             && other.mWidth == this.mWidth
             && other.mMode == this.mMode
             && other.mXmlId == this.mXmlId
-            && other.mColorScheme == this.mColorScheme
             && other.mNavigateAction == this.mNavigateAction
             && other.mPasswordInput == this.mPasswordInput
             && other.mHasSettingsKey == this.mHasSettingsKey
@@ -162,13 +158,12 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 EditorInfoCompatUtils.imeOptionsName(mImeAction),
-                colorSchemeName(mColorScheme),
                 (mNavigateAction ? " navigateAction" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
@@ -186,14 +181,6 @@ public class KeyboardId {
         case MODE_IM: return "im";
         case MODE_PHONE: return "phone";
         case MODE_NUMBER: return "number";
-        }
-        return null;
-    }
-
-    public static String colorSchemeName(int colorScheme) {
-        switch (colorScheme) {
-        case KeyboardView.COLOR_SCHEME_WHITE: return "white";
-        case KeyboardView.COLOR_SCHEME_BLACK: return "black";
         }
         return null;
     }

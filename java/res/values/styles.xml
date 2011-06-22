@@ -59,7 +59,6 @@
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
-        <item name="colorScheme">white</item>
     </style>
     <style name="KeyPreviewStyle">
         <item name="android:background">@drawable/keyboard_key_feedback</item>
@@ -107,7 +106,6 @@
         <item name="keyTextColor">@color/latinkeyboard_key_color_black</item>
         <item name="keyTextInactivatedColor">#FF808080</item>
         <item name="shadowColor">@color/latinkeyboard_key_color_white</item>
-        <item name="colorScheme">black</item>
     </style>
     <style name="PopupMiniKeyboardView.Stone" parent="PopupMiniKeyboardView">
         <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>

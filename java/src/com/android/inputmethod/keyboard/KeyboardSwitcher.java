@@ -258,7 +258,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private KeyboardId getKeyboardId(EditorInfo attribute, boolean isSymbols) {
         final int mode = Utils.getKeyboardMode(attribute);
         final boolean hasVoiceKey = hasVoiceKey(isSymbols);
-        final int charColorId = getColorScheme();
         final int xmlId;
         final boolean enableShiftLock;
 
@@ -291,9 +290,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mKeyboardWidth = res.getDisplayMetrics().widthPixels;
         final Locale locale = mSubtypeSwitcher.getInputLocale();
         return new KeyboardId(
-                res.getResourceEntryName(xmlId), xmlId, charColorId, locale, orientation,
-                mKeyboardWidth, mode, attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey,
-                enableShiftLock);
+                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mKeyboardWidth,
+                mode, attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, enableShiftLock);
     }
 
     private KeyboardId makeSiblingKeyboardId(KeyboardId base, int alphabet, int phone) {
@@ -786,11 +784,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     mInputMethodService);
             postSetInputView(createInputView(mThemeIndex, true));
         }
-    }
-
-    private int getColorScheme() {
-        return (mKeyboardView != null)
-                ? mKeyboardView.getColorScheme() : KeyboardView.COLOR_SCHEME_WHITE;
     }
 
     public void onAutoCorrectionStateChanged(boolean isAutoCorrection) {

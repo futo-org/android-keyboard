@@ -90,14 +90,14 @@ import java.util.List;
  * You can declare Key style and specify styles within Key tags.
  * <pre>
  *     &gt;switch&lt;
- *       &gt;case colorScheme="white"&lt;
- *         &gt;key-style styleName="shift-key" parentStyle="modifier-key"
- *           keyIcon="@drawable/sym_keyboard_shift"
+ *       &gt;case mode="email"&lt;
+ *         &gt;key-style styleName="f1-key" parentStyle="modifier-key"
+ *           keyLabel=".com"
  *         /&lt;
  *       &gt;/case&lt;
- *       &gt;case colorScheme="black"&lt;
- *         &gt;key-style styleName="shift-key" parentStyle="modifier-key"
- *           keyIcon="@drawable/sym_bkeyboard_shift"
+ *       &gt;case mode="url"&lt;
+ *         &gt;key-style styleName="f1-key" parentStyle="modifier-key"
+ *           keyLabel="http://"
  *         /&lt;
  *       &gt;/case&lt;
  *     &gt;/switch&lt;
@@ -487,8 +487,6 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_voiceKeyEnabled, id.mVoiceKeyEnabled);
             final boolean voiceKeyMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_hasVoiceKey, id.mHasVoiceKey);
-            final boolean colorSchemeMatched = matchInteger(viewAttr,
-                    R.styleable.KeyboardView_colorScheme, id.mColorScheme);
             // As noted at {@link KeyboardId} class, we are interested only in enum value masked by
             // {@link android.view.inputmethod.EditorInfo#IME_MASK_ACTION} and
             // {@link android.view.inputmethod.EditorInfo#IME_FLAG_NO_ENTER_ACTION}. So matching
@@ -503,14 +501,11 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
             final boolean selected = modeMatched && navigateActionMatched && passwordInputMatched
                     && settingsKeyMatched && voiceEnabledMatched && voiceKeyMatched
-                    && colorSchemeMatched && imeActionMatched && localeCodeMatched
-                    && languageCodeMatched && countryCodeMatched;
+                    && imeActionMatched && localeCodeMatched && languageCodeMatched
+                    && countryCodeMatched;
 
-            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
+            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
                     textAttr(a.getString(R.styleable.Keyboard_Case_mode), "mode"),
-                    textAttr(KeyboardId.colorSchemeName(
-                            viewAttr.getInt(
-                                    R.styleable.KeyboardView_colorScheme, -1)), "colorScheme"),
                     booleanAttr(a, R.styleable.Keyboard_Case_navigateAction, "navigateAction"),
                     booleanAttr(a, R.styleable.Keyboard_Case_passwordInput, "passwordInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),

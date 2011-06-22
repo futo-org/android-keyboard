@@ -16,6 +16,13 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Functional keys. -->
+
+    <item android:state_single="true" android:state_pressed="true"
+          android:drawable="@drawable/btn_keyboard_key_fulltrans_pressed" />
+    <item android:state_single="true"
+          android:drawable="@drawable/btn_keyboard_key_normal_stone" />
+
     <!-- Toggle keys. Use checkable/checked state. -->
 
     <item android:state_checkable="true" android:state_checked="true"
