@@ -129,7 +129,7 @@ public class VoiceInput implements OnClickListener {
     private int mAfterVoiceInputSelectionSpan = 0;
 
     private int mState = DEFAULT;
-    
+
     private final static int MSG_RESET = 1;
 
     private final Handler mHandler = new Handler() {
@@ -192,7 +192,7 @@ public class VoiceInput implements OnClickListener {
         }
 
         mBlacklist = new Whitelist();
-        mBlacklist.addApp("com.android.setupwizard");
+        mBlacklist.addApp("com.google.android.setupwizard");
     }
 
     public void setCursorPos(int pos) {
