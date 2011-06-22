@@ -150,9 +150,11 @@
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
         <item>en_GB</item>
+        <item>de_ZZ</item>
     </string-array>
     <string-array name="subtype_locale_exception_values">
         <item>English (US)</item>
         <item>English (UK)</item>
+        <item>Deutsch (QWERTY)</item>
     </string-array>
 </resources>

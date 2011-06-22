@@ -252,6 +252,8 @@
     <string name="subtype_mode_da_keyboard">Danish Keyboard</string>
     <!-- Description for German keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_de_keyboard">German Keyboard</string>
+    <!-- Description for German QWERTY keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_de_qwerty_keyboard">German QWERTY Keyboard</string>
     <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_en_GB_keyboard">English (UK) Keyboard</string>
     <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=35] -->
