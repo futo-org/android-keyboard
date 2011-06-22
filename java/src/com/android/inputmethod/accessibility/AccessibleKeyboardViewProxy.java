@@ -27,10 +27,10 @@ import android.view.accessibility.AccessibilityEvent;
 
 import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
-import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
+import com.android.inputmethod.keyboard.internal.Key;
 
 public class AccessibleKeyboardViewProxy {
     private static final String TAG = AccessibleKeyboardViewProxy.class.getSimpleName();
