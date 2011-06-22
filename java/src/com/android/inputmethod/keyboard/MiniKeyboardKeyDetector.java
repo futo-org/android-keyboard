@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.keyboard;
 
+import com.android.inputmethod.keyboard.internal.Key;
+
 import java.util.List;
 
 public class MiniKeyboardKeyDetector extends KeyDetector {

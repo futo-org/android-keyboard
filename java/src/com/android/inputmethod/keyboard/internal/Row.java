@@ -14,8 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
 
 import android.content.res.Resources;

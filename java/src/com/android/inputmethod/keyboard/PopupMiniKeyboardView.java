@@ -25,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
 
+import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.latin.R;
 
 /**

@@ -14,12 +14,15 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
+
+import com.android.inputmethod.keyboard.KeyDetector;
+import com.android.inputmethod.keyboard.PointerTracker;
 
 /**
  * This class keeps track of a key index and a position where {@link PointerTracker} is.
  */
-/* package */ class PointerTrackerKeyState {
+public class PointerTrackerKeyState {
     private final KeyDetector mKeyDetector;
 
     // The position and time at which first down event occurred.

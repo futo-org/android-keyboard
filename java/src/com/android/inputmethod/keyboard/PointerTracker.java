@@ -17,6 +17,9 @@
 package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
+import com.android.inputmethod.keyboard.internal.Key;
+import com.android.inputmethod.keyboard.internal.PointerTrackerKeyState;
+import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;

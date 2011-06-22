@@ -14,9 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.KeyStyles.EmptyKeyStyle;
+import com.android.inputmethod.keyboard.internal.KeyStyles.EmptyKeyStyle;
 
 import android.test.AndroidTestCase;
 import android.text.TextUtils;

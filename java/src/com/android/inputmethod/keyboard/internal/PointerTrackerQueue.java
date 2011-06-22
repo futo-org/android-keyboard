@@ -14,7 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
+
+import com.android.inputmethod.keyboard.PointerTracker;
 
 import java.util.LinkedList;
 

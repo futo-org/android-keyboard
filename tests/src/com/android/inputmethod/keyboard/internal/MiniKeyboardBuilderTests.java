@@ -14,9 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.MiniKeyboardBuilder.MiniKeyboardLayoutParams;
+import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder.MiniKeyboardLayoutParams;
 
 import android.test.AndroidTestCase;
 

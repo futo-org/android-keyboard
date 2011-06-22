@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.Utils;
 

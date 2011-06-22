@@ -18,6 +18,8 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 
+import com.android.inputmethod.keyboard.internal.Key;
+
 import java.util.List;
 
 public class MiniKeyboard extends Keyboard {

@@ -14,9 +14,11 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
 import android.util.Log;
+
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 public class KeyboardShiftState {
     private static final String TAG = "KeyboardShiftState";

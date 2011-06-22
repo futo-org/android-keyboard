@@ -33,6 +33,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.android.inputmethod.keyboard.internal.Key;
+import com.android.inputmethod.keyboard.internal.SlidingLocaleDrawable;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 

@@ -47,6 +47,10 @@ import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.android.inputmethod.keyboard.internal.Key;
+import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
+import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
+import com.android.inputmethod.keyboard.internal.SwipeTracker;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 

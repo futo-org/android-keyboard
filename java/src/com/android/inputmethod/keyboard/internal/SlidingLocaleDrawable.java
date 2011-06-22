@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -28,6 +28,8 @@ import android.graphics.drawable.Drawable;
 import android.text.TextPaint;
 import android.view.ViewConfiguration;
 
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
@@ -78,7 +80,7 @@ public class SlidingLocaleDrawable extends Drawable {
         mThreshold = ViewConfiguration.get(context).getScaledTouchSlop();
     }
 
-    void setDiff(int diff) {
+    public void setDiff(int diff) {
         if (diff == Integer.MAX_VALUE) {
             mHitThreshold = false;
             mCurrentLanguage = null;

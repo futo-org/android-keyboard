@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -26,6 +26,8 @@ import android.util.Xml;
 import android.view.InflateException;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParser;

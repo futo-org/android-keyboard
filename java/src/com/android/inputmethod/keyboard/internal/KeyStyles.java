@@ -14,9 +14,9 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.keyboard.internal;
 
-import com.android.inputmethod.keyboard.KeyboardParser.ParseException;
+import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
 import com.android.inputmethod.latin.R;
 
 import android.content.res.TypedArray;

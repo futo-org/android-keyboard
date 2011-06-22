@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.deprecated.languageswitcher;
 
-import com.android.inputmethod.keyboard.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.KeyboardParser;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;

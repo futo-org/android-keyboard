@@ -21,6 +21,9 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.internal.Key;
+import com.android.inputmethod.keyboard.internal.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
 import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -448,7 +451,7 @@ public class Keyboard {
         }
     }
 
-    protected static void setDefaultBounds(Drawable drawable)  {
+    public static void setDefaultBounds(Drawable drawable)  {
         if (drawable != null)
             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
                     drawable.getIntrinsicHeight());

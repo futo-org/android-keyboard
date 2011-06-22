@@ -18,6 +18,8 @@ package com.android.inputmethod.keyboard;
 
 import android.util.Log;
 
+import com.android.inputmethod.keyboard.internal.Key;
+
 import java.util.Arrays;
 import java.util.List;
 
