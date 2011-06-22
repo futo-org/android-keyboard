@@ -42,9 +42,12 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
+import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
 import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
@@ -1324,5 +1327,38 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     public boolean handleBack() {
         return dismissMiniKeyboard();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            return AccessibleKeyboardViewProxy.getInstance().dispatchTouchEvent(event)
+                    || super.dispatchTouchEvent(event);
+        }
+
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
+    public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            final PointerTracker tracker = getPointerTracker(0);
+            return AccessibleKeyboardViewProxy.getInstance().dispatchPopulateAccessibilityEvent(
+                    event, tracker) || super.dispatchPopulateAccessibilityEvent(event);
+        }
+
+        return super.dispatchPopulateAccessibilityEvent(event);
+    }
+
+    public boolean onHoverEvent(MotionEvent event) {
+        // Since reflection doesn't support calling superclass methods, this
+        // method checks for the existence of onHoverEvent() in the View class
+        // before returning a value.
+        if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
+            final PointerTracker tracker = getPointerTracker(0);
+            return AccessibleKeyboardViewProxy.getInstance().onHoverEvent(event, tracker);
+        }
+
+        return false;
     }
 }

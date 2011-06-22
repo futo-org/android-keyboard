@@ -53,6 +53,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.InputConnection;
 
+import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputConnectionCompatUtils;
@@ -353,6 +354,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
         Recorrection.init(this, prefs);
+        AccessibilityUtils.init(this, prefs);
 
         super.onCreate();
 

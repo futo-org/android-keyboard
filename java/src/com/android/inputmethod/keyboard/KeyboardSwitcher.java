@@ -26,6 +26,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.ModifierKeyState;
@@ -759,6 +760,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setOnKeyboardActionListener(mInputMethodService);
+
+        // This always needs to be set since the accessibility state can
+        // potentially change without the input view being re-created.
+        AccessibleKeyboardViewProxy.setView(mKeyboardView);
+
         return mCurrentInputView;
     }
 
