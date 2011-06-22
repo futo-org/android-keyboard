@@ -73,6 +73,11 @@
             android:imeSubtypeLocale="de"
             android:imeSubtypeMode="keyboard"
     />
+    <subtype android:icon="@drawable/ic_subtype_keyboard"
+            android:label="@string/subtype_mode_de_qwerty_keyboard"
+            android:imeSubtypeLocale="de_ZZ"
+            android:imeSubtypeMode="keyboard"
+    />
 <!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
 <!--             android:label="@string/subtype_mode_de_voice" -->
 <!--             android:imeSubtypeLocale="de" -->
