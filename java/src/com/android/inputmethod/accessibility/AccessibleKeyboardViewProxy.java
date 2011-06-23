@@ -42,6 +42,7 @@ public class AccessibleKeyboardViewProxy {
     private int mScaledEdgeSlop;
     private KeyboardView mView;
     private AccessibleKeyboardActionListener mListener;
+    private FlickGestureDetector mGestureDetector;
 
     private int mLastHoverKeyIndex = KeyDetector.NOT_A_KEY;
     private int mLastX = -1;
@@ -71,6 +72,7 @@ public class AccessibleKeyboardViewProxy {
         paint.setAntiAlias(true);
         paint.setColor(Color.YELLOW);
 
+        mGestureDetector = new KeyboardFlickGestureDetector(context);
         mScaledEdgeSlop = ViewConfiguration.get(context).getScaledEdgeSlop();
     }
 
@@ -110,7 +112,10 @@ public class AccessibleKeyboardViewProxy {
      * @return {@code true} if the event is handled
      */
     public boolean onHoverEvent(MotionEvent event, PointerTracker tracker) {
-        return onTouchExplorationEvent(event, tracker);
+        if (mGestureDetector.onHoverEvent(event, this, tracker))
+            return true;
+
+        return onHoverEventInternal(event, tracker);
     }
 
     public boolean dispatchTouchEvent(MotionEvent event) {
@@ -128,7 +133,7 @@ public class AccessibleKeyboardViewProxy {
      * @param event The touch exploration hover event.
      * @return {@code true} if the event was handled
      */
-    private boolean onTouchExplorationEvent(MotionEvent event, PointerTracker tracker) {
+    /*package*/ boolean onHoverEventInternal(MotionEvent event, PointerTracker tracker) {
         final int x = (int) event.getX();
         final int y = (int) event.getY();
 
@@ -197,5 +202,19 @@ public class AccessibleKeyboardViewProxy {
     private void fireKeyPressEvent(PointerTracker tracker, int x, int y, long eventTime) {
         tracker.onDownEvent(x, y, eventTime, null);
         tracker.onUpEvent(x, y, eventTime + DELAY_KEY_PRESS, null);
+    }
+
+    private class KeyboardFlickGestureDetector extends FlickGestureDetector {
+        public KeyboardFlickGestureDetector(Context context) {
+            super(context);
+        }
+
+        @Override
+        public boolean onFlick(MotionEvent e1, MotionEvent e2, int direction) {
+            if (mListener != null) {
+                mListener.onFlickGesture(direction);
+            }
+            return true;
+        }
     }
 }
