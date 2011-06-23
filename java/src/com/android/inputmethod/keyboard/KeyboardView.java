@@ -49,7 +49,6 @@ import android.widget.TextView;
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
-import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.keyboard.internal.SwipeTracker;
@@ -744,7 +743,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             } else {
                 paint.setColor(mKeyTextColor);
             }
-            if (key.mEnabled) {
+            if (key.isEnabled()) {
                 // Set a drop shadow for the text
                 paint.setShadowLayer(mShadowRadius, 0, 0, mShadowColor);
             } else {

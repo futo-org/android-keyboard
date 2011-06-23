@@ -22,7 +22,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
-import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.PointerTrackerKeyState;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -150,7 +149,7 @@ public class PointerTracker {
                     + " ignoreModifier=" + ignoreModifierKey);
         if (ignoreModifierKey)
             return false;
-        if (key.mEnabled) {
+        if (key.isEnabled()) {
             mListener.onPress(key.mCode, withSliding);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
             mKeyboardLayoutHasBeenChanged = false;
@@ -169,14 +168,14 @@ public class PointerTracker {
                     + " ignoreModifier=" + ignoreModifierKey);
         if (ignoreModifierKey)
             return;
-        if (key.mEnabled)
+        if (key.isEnabled())
             mListener.onCodeInput(primaryCode, keyCodes, x, y);
     }
 
     private void callListenerOnTextInput(Key key) {
         if (DEBUG_LISTENER)
             Log.d(TAG, "onTextInput: text=" + key.mOutputText);
-        if (key.mEnabled)
+        if (key.isEnabled())
             mListener.onTextInput(key.mOutputText);
     }
 
@@ -189,7 +188,7 @@ public class PointerTracker {
                     + withSliding + " ignoreModifier=" + ignoreModifierKey);
         if (ignoreModifierKey)
             return;
-        if (key.mEnabled)
+        if (key.isEnabled())
             mListener.onRelease(primaryCode, withSliding);
     }
 
@@ -269,7 +268,7 @@ public class PointerTracker {
 
     private void setPressedKeyGraphics(int keyIndex) {
         final Key key = getKey(keyIndex);
-        if (key != null && key.mEnabled) {
+        if (key != null && key.isEnabled()) {
             key.onPressed();
             mProxy.invalidateKey(key);
         }
@@ -618,7 +617,7 @@ public class PointerTracker {
     // The modifier key, such as shift key, should not show its key preview.
     private boolean isKeyPreviewNotRequired(int keyIndex) {
         final Key key = getKey(keyIndex);
-        if (key == null || !key.mEnabled)
+        if (key == null || !key.isEnabled())
             return true;
         // Such as spacebar sliding language switch.
         if (mKeyboard.needSpacebarPreview(keyIndex))

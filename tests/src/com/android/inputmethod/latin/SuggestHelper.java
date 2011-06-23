@@ -16,10 +16,10 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.LatinKeyboard;
-import com.android.inputmethod.keyboard.internal.Key;
 
 import android.content.Context;
 import android.text.TextUtils;

@@ -26,6 +26,7 @@ import android.util.Xml;
 import android.view.InflateException;
 
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.latin.R;
@@ -331,7 +332,7 @@ public class KeyboardParser {
         } else {
             Key key = new Key(mResources, row, mCurrentX, mCurrentY, parser, mKeyStyles);
             if (DEBUG) Log.d(TAG, String.format("<%s%s keyLabel=%s code=%d popupCharacters=%s />",
-                    TAG_KEY, (key.mEnabled ? "" : " disabled"), key.mLabel, key.mCode,
+                    TAG_KEY, (key.isEnabled() ? "" : " disabled"), key.mLabel, key.mCode,
                     Arrays.toString(key.mPopupCharacters)));
             checkEndTag(TAG_KEY, parser);
             keys.add(key);

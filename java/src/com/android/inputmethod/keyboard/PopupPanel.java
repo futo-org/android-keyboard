@@ -19,8 +19,6 @@ package com.android.inputmethod.keyboard;
 import android.view.MotionEvent;
 import android.widget.PopupWindow;
 
-import com.android.inputmethod.keyboard.internal.Key;
-
 public interface PopupPanel {
     /**
      * Show popup panel.
