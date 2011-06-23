@@ -140,7 +140,7 @@ public class LatinKeyboard extends Keyboard {
         // The threshold is "key width" x 1.25
         mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 5) / 4;
 
-        if (mSpaceKey != null) {
+        if (mSpaceKey != null && mSpacePreviewIcon != null) {
             final int slidingIconWidth = Math.max(mSpaceKey.mWidth,
                     (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
             final int spaceKeyheight = mSpacePreviewIcon.getIntrinsicHeight();
