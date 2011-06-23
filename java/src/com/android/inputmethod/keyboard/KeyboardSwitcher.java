@@ -28,7 +28,6 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.ModifierKeyState;
 import com.android.inputmethod.keyboard.internal.ShiftKeyState;
 import com.android.inputmethod.latin.LatinIME;

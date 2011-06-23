@@ -14,7 +14,7 @@
  * the License.
  */
 
-package com.android.inputmethod.keyboard.internal;
+package com.android.inputmethod.keyboard;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -23,7 +23,11 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Xml;
 
-import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.internal.KeyStyles;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
+import com.android.inputmethod.keyboard.internal.Row;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
 import com.android.inputmethod.latin.R;
@@ -97,11 +101,11 @@ public class Key {
     private final Keyboard mKeyboard;
 
     /** The current pressed state of this key */
-    public boolean mPressed;
+    private boolean mPressed;
     /** If this is a sticky key, is its highlight on? */
-    public boolean mHighlightOn;
+    private boolean mHighlightOn;
     /** Key is enabled and responds on press */
-    public boolean mEnabled = true;
+    private boolean mEnabled = true;
 
     // keyWidth constants
     private static final int KEYWIDTH_FILL_RIGHT = 0;
@@ -375,6 +379,18 @@ public class Key {
      */
     public void onReleased() {
         mPressed = false;
+    }
+
+    public void setHighlightOn(boolean highlightOn) {
+        mHighlightOn = highlightOn;
+    }
+
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        mEnabled = enabled;
     }
 
     /**

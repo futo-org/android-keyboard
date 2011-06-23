@@ -33,7 +33,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.SlidingLocaleDrawable;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -175,7 +174,7 @@ public class LatinKeyboard extends Keyboard {
     public void updateShortcutKey(boolean available, LatinKeyboardView view) {
         if (mShortcutKey == null)
             return;
-        mShortcutKey.mEnabled = available;
+        mShortcutKey.setEnabled(available);
         mShortcutKey.setIcon(available ? mEnabledShortcutIcon : mDisabledShortcutIcon);
         if (view != null)
             view.invalidateKey(mShortcutKey);

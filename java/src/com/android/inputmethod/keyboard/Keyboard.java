@@ -21,7 +21,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParser;
 import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
@@ -297,7 +296,7 @@ public class Keyboard {
     public boolean setShiftLocked(boolean newShiftLockState) {
         final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
         for (final Key key : getShiftKeys()) {
-            key.mHighlightOn = newShiftLockState;
+            key.setHighlightOn(newShiftLockState);
             key.setIcon(newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key));
         }
         mShiftState.setShiftLocked(newShiftLockState);

@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.keyboard.internal.Key;
 import com.android.inputmethod.latin.Utils;
 
 import java.util.Arrays;
