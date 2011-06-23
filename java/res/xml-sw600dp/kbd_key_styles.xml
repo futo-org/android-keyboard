@@ -25,6 +25,23 @@
     <key-style
         latin:styleName="functionalKeyStyle"
         latin:isFunctional="true" />
+    <!-- Base key style for the key which may have settings key as popup key -->
+    <switch>
+        <case
+            latin:clobberSettingsKey="true"
+        >
+            <key-style
+                latin:styleName="settingsPopupStyle"
+                latin:parentStyle="functionalKeyStyle" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="settingsPopupStyle"
+                latin:keyLabelOption="popupHint"
+                latin:popupCharacters="\@icon/5|\@integer/key_settings"
+                latin:parentStyle="functionalKeyStyle" />
+        </default>
+    </switch>
     <!-- Functional key styles -->
     <key-style
         latin:styleName="shiftKeyStyle"
@@ -59,28 +76,18 @@
         latin:keyLabelOption="popupHint"
         latin:popupCharacters="@string/alternates_for_smiley"
         latin:maxPopupKeyboardColumn="5" />
-    <switch>
-        <case
-            latin:voiceKeyEnabled="true"
-        >
-            <key-style
-                latin:styleName="shortcutOrSettingsKeyStyle"
-                latin:code="@integer/key_shortcut"
-                latin:keyIcon="iconShortcutKey"
-                latin:keyIconPreview="iconPreviewShortcutKey"
-                latin:keyLabelOption="popupHint"
-                latin:popupCharacters="\@icon/5|\@integer/key_settings"
-                latin:parentStyle="functionalKeyStyle" />
-        </case>
-        <default>
-            <key-style
-                latin:styleName="shortcutOrSettingsKeyStyle"
-                latin:code="@integer/key_settings"
-                latin:keyIcon="iconSettingsKey"
-                latin:keyIconPreview="iconPreviewSettingsKey"
-                latin:parentStyle="functionalKeyStyle" />
-        </default>
-    </switch>
+    <key-style
+        latin:styleName="shortcutKeyStyle"
+        latin:code="@integer/key_shortcut"
+        latin:keyIcon="iconShortcutKey"
+        latin:keyIconPreview="iconPreviewShortcutKey"
+        latin:parentStyle="settingsPopupStyle" />
+    <key-style
+        latin:styleName="settingsKeyStyle"
+        latin:code="@integer/key_settings"
+        latin:keyIcon="iconSettingsKey"
+        latin:keyIconPreview="iconPreviewSettingsKey"
+        latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="tabKeyStyle"
         latin:code="@integer/key_tab"
