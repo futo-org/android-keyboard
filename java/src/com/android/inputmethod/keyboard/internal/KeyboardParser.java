@@ -487,8 +487,12 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_navigateAction, id.mNavigateAction);
             final boolean passwordInputMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_passwordInput, id.mPasswordInput);
-            final boolean settingsKeyMatched = matchBoolean(a,
+            final boolean hasSettingsKeyMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_hasSettingsKey, id.mHasSettingsKey);
+            final boolean f2KeyModeMatched = matchInteger(a,
+                    R.styleable.Keyboard_Case_f2KeyMode, id.mF2KeyMode);
+            final boolean clobberSettingsKeyMatched = matchBoolean(a,
+                    R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
             final boolean voiceEnabledMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_voiceKeyEnabled, id.mVoiceKeyEnabled);
             final boolean voiceKeyMatched = matchBoolean(a,
@@ -506,15 +510,19 @@ public class KeyboardParser {
             final boolean countryCodeMatched = matchString(a,
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
             final boolean selected = modeMatched && navigateActionMatched && passwordInputMatched
-                    && settingsKeyMatched && voiceEnabledMatched && voiceKeyMatched
-                    && imeActionMatched && localeCodeMatched && languageCodeMatched
-                    && countryCodeMatched;
+                    && hasSettingsKeyMatched && f2KeyModeMatched && clobberSettingsKeyMatched
+                    && voiceEnabledMatched && voiceKeyMatched && imeActionMatched &&
+                    localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
-            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
+            if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
                     textAttr(a.getString(R.styleable.Keyboard_Case_mode), "mode"),
                     booleanAttr(a, R.styleable.Keyboard_Case_navigateAction, "navigateAction"),
                     booleanAttr(a, R.styleable.Keyboard_Case_passwordInput, "passwordInput"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasSettingsKey, "hasSettingsKey"),
+                    textAttr(KeyboardId.f2KeyModeName(
+                            a.getInt(R.styleable.Keyboard_Case_f2KeyMode, -1)), "f2KeyMode"),
+                    booleanAttr(a, R.styleable.Keyboard_Case_clobberSettingsKey,
+                            "clobberSettingsKey"),
                     booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
                     booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
                     textAttr(EditorInfoCompatUtils.imeOptionsName(

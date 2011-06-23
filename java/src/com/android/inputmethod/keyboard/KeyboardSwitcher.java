@@ -285,6 +285,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
         }
         final boolean hasSettingsKey = hasSettingsKey(attribute);
+        final int f2KeyMode = getF2KeyMode(mPrefs, mInputMethodService, attribute);
+        final boolean clobberSettingsKey = Utils.inPrivateImeOptions(
+                mInputMethodService.getPackageName(), LatinIME.IME_OPTION_NO_SETTINGS_KEY,
+                attribute);
         final Resources res = mInputMethodService.getResources();
         final int orientation = res.getConfiguration().orientation;
         if (mKeyboardWidth == 0)
@@ -292,7 +296,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final Locale locale = mSubtypeSwitcher.getInputLocale();
         return new KeyboardId(
                 res.getResourceEntryName(xmlId), xmlId, locale, orientation, mKeyboardWidth,
-                mode, attribute, hasSettingsKey, mVoiceKeyEnabled, hasVoiceKey, enableShiftLock);
+                mode, attribute, hasSettingsKey, f2KeyMode, clobberSettingsKey, mVoiceKeyEnabled,
+                hasVoiceKey, enableShiftLock);
     }
 
     private KeyboardId makeSiblingKeyboardId(KeyboardId base, int alphabet, int phone) {
@@ -806,16 +811,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private static boolean getSettingsKeyMode(SharedPreferences prefs, Context context) {
-        Resources resources = context.getResources();
-        final boolean showSettingsKeyOption = resources.getBoolean(
+        final Resources res = context.getResources();
+        final boolean showSettingsKeyOption = res.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
         if (showSettingsKeyOption) {
             final String settingsKeyMode = prefs.getString(Settings.PREF_SETTINGS_KEY,
-                    resources.getString(DEFAULT_SETTINGS_KEY_MODE));
+                    res.getString(DEFAULT_SETTINGS_KEY_MODE));
             // We show the settings key when 1) SETTINGS_KEY_MODE_ALWAYS_SHOW or
             // 2) SETTINGS_KEY_MODE_AUTO and there are two or more enabled IMEs on the system
-            if (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
-                    || (settingsKeyMode.equals(resources.getString(SETTINGS_KEY_MODE_AUTO))
+            if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
+                    || (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_AUTO))
                             && Utils.hasMultipleEnabledIMEsOrSubtypes(
                                     (InputMethodManagerCompatWrapper.getInstance(context))))) {
                 return true;
@@ -824,5 +829,22 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
         // If the show settings key option is disabled, we always try showing the settings key.
         return true;
+    }
+
+    private static int getF2KeyMode(SharedPreferences prefs, Context context,
+            EditorInfo attribute) {
+        final boolean clobberSettingsKey = Utils.inPrivateImeOptions(
+                context.getPackageName(), LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
+        final Resources res = context.getResources();
+        final String settingsKeyMode = prefs.getString(Settings.PREF_SETTINGS_KEY,
+                res.getString(DEFAULT_SETTINGS_KEY_MODE));
+        if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_AUTO))) {
+            return clobberSettingsKey ? KeyboardId.F2KEY_MODE_SHORTCUT_IME
+                    : KeyboardId.F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS;
+        } else if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))) {
+            return clobberSettingsKey ? KeyboardId.F2KEY_MODE_NONE : KeyboardId.F2KEY_MODE_SETTINGS;
+        } else { // SETTINGS_KEY_MODE_ALWAYS_HIDE
+            return KeyboardId.F2KEY_MODE_SHORTCUT_IME;
+        }
     }
 }

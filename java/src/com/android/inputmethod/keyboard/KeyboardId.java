@@ -37,6 +37,11 @@ public class KeyboardId {
     public static final int MODE_PHONE = 4;
     public static final int MODE_NUMBER = 5;
 
+    public static final int F2KEY_MODE_NONE = 0;
+    public static final int F2KEY_MODE_SETTINGS = 1;
+    public static final int F2KEY_MODE_SHORTCUT_IME = 2;
+    public static final int F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS = 3;
+
     public final Locale mLocale;
     public final int mOrientation;
     public final int mWidth;
@@ -44,7 +49,10 @@ public class KeyboardId {
     public final int mXmlId;
     public final boolean mNavigateAction;
     public final boolean mPasswordInput;
+    // TODO: Clean up these booleans and modes.
     public final boolean mHasSettingsKey;
+    public final int mF2KeyMode;
+    public final boolean mClobberSettingsKey;
     public final boolean mVoiceKeyEnabled;
     public final boolean mHasVoiceKey;
     public final int mImeAction;
@@ -56,8 +64,9 @@ public class KeyboardId {
     private final int mHashCode;
 
     public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int width,
-            int mode, EditorInfo attribute, boolean hasSettingsKey, boolean voiceKeyEnabled,
-            boolean hasVoiceKey, boolean enableShiftLock) {
+            int mode, EditorInfo attribute, boolean hasSettingsKey, int f2KeyMode,
+            boolean clobberSettingsKey, boolean voiceKeyEnabled, boolean hasVoiceKey,
+            boolean enableShiftLock) {
         final int inputType = (attribute != null) ? attribute.inputType : 0;
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         this.mLocale = locale;
@@ -72,6 +81,8 @@ public class KeyboardId {
         this.mPasswordInput = InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
         this.mHasSettingsKey = hasSettingsKey;
+        this.mF2KeyMode = f2KeyMode;
+        this.mClobberSettingsKey = clobberSettingsKey;
         this.mVoiceKeyEnabled = voiceKeyEnabled;
         this.mHasVoiceKey = hasVoiceKey;
         // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
@@ -92,6 +103,8 @@ public class KeyboardId {
                 mNavigateAction,
                 mPasswordInput,
                 hasSettingsKey,
+                f2KeyMode,
+                clobberSettingsKey,
                 voiceKeyEnabled,
                 hasVoiceKey,
                 mImeAction,
@@ -101,14 +114,16 @@ public class KeyboardId {
 
     public KeyboardId cloneWithNewLayout(String xmlName, int xmlId) {
         return new KeyboardId(xmlName, xmlId, mLocale, mOrientation, mWidth, mMode, mAttribute,
-                mHasSettingsKey, mVoiceKeyEnabled, mHasVoiceKey, mEnableShiftLock);
+                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey,
+                mEnableShiftLock);
     }
 
     public KeyboardId cloneWithNewGeometry(int width) {
         if (mWidth == width)
             return this;
         return new KeyboardId(mXmlName, mXmlId, mLocale, mOrientation, width, mMode, mAttribute,
-                mHasSettingsKey, mVoiceKeyEnabled, mHasVoiceKey, mEnableShiftLock);
+                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey,
+                mEnableShiftLock);
     }
 
     public int getXmlId() {
@@ -149,6 +164,8 @@ public class KeyboardId {
             && other.mNavigateAction == this.mNavigateAction
             && other.mPasswordInput == this.mPasswordInput
             && other.mHasSettingsKey == this.mHasSettingsKey
+            && other.mF2KeyMode == this.mF2KeyMode
+            && other.mClobberSettingsKey == this.mClobberSettingsKey
             && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
             && other.mHasVoiceKey == this.mHasVoiceKey
             && other.mImeAction == this.mImeAction
@@ -162,12 +179,14 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 EditorInfoCompatUtils.imeOptionsName(mImeAction),
+                f2KeyModeName(mF2KeyMode),
+                (mClobberSettingsKey ? " clobberSettingsKey" : ""),
                 (mNavigateAction ? " navigateAction" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
@@ -185,7 +204,17 @@ public class KeyboardId {
         case MODE_IM: return "im";
         case MODE_PHONE: return "phone";
         case MODE_NUMBER: return "number";
+        default: return null;
         }
-        return null;
+    }
+
+    public static String f2KeyModeName(int f2KeyMode) {
+        switch (f2KeyMode) {
+        case F2KEY_MODE_NONE: return "none";
+        case F2KEY_MODE_SETTINGS: return "settings";
+        case F2KEY_MODE_SHORTCUT_IME: return "shortcutIme";
+        case F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS: return "shortcutImeOrSettings";
+        default: return null;
+        }
     }
 }
