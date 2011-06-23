@@ -55,9 +55,9 @@
     <fraction name="key_uppercase_letter_ratio">35%</fraction>
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_alignment_padding">21dip</dimen>
+    <fraction name="key_preview_text_ratio">82%</fraction>
     <dimen name="key_preview_height">80sp</dimen>
     <dimen name="key_preview_offset">0.1in</dimen>
-    <fraction name="key_preview_text_ratio">82%</fraction>
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
     <dimen name="candidate_strip_height">42dip</dimen>

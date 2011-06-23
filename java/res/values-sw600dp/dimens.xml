@@ -34,8 +34,6 @@
     <dimen name="key_horizontal_gap_ics">1.0mm</dimen>
     <dimen name="keyboard_top_padding_ics">1.1mm</dimen>
     <dimen name="keyboard_bottom_padding_ics">0.0mm</dimen>
-    <!-- key_height x 1.0 -->
-    <dimen name="key_preview_height">13.0mm</dimen>
     <dimen name="mini_keyboard_key_horizontal_padding">12dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
@@ -47,7 +45,10 @@
     <fraction name="key_label_ratio">22%</fraction>
     <fraction name="key_hint_letter_ratio">23%</fraction>
     <fraction name="key_uppercase_letter_ratio">25%</fraction>
-    <fraction name="key_preview_text_ratio">82%</fraction>
+    <fraction name="key_preview_text_ratio">50%</fraction>
+    <dimen name="key_preview_height">15.0mm</dimen>
+    <dimen name="key_preview_offset">0.1in</dimen>
+    <dimen name="key_preview_offset_ics">0.05in</dimen>
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_alignment_padding">6dip</dimen>
 
