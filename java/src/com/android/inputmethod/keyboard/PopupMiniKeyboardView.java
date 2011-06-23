@@ -67,7 +67,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
     @Override
     public void showPanel(KeyboardView parentKeyboardView, Key parentKey,
-            PointerTracker tracker, int keyPreviewY, PopupWindow window) {
+            PointerTracker tracker, PopupWindow window) {
         final View container = (View)getParent();
         final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
         final Keyboard parentKeyboard = parentKeyboardView.getKeyboard();

@@ -27,12 +27,10 @@ public interface PopupPanel {
      * @param parentKeyboardView the parent KeyboardView that has the parent key.
      * @param parentKey the parent key that is the source of this popup panel
      * @param tracker the pointer tracker that pressesd the parent key
-     * @param keyPreviewY the Y-coordinate of key preview
      * @param window PopupWindow to be used to show this popup panel
      */
-    // TODO: Remove keyPreviewY from argument.
     public void showPanel(KeyboardView parentKeyboardView, Key parentKey,
-            PointerTracker tracker, int keyPreviewY, PopupWindow window);
+            PointerTracker tracker, PopupWindow window);
 
     /**
      * Check if the pointer is in siding key input mode.

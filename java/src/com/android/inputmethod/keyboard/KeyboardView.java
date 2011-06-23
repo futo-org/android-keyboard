@@ -135,7 +135,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private float mPreviewTextRatio;
     private int mPreviewTextSize;
     private boolean mShowKeyPreviewPopup = true;
-    private int mKeyPreviewPopupDisplayedY = -1;
     private final int mDelayBeforePreview;
     private int mDelayAfterPreview;
     private ViewGroup mPreviewPlacer;
@@ -935,8 +934,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             // Dismiss key preview (in this case, slide language switcher) without any delay.
             mPreviewText.setVisibility(View.INVISIBLE);
         }
-        // Clear key preview display position.
-        mKeyPreviewPopupDisplayedY = -1;
     }
 
     private void addKeyPreview(TextView keyPreview) {
@@ -999,8 +996,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         getLocationInWindow(mCoordinates);
         final int previewX = keyDrawX - (previewWidth - keyDrawWidth) / 2 + mCoordinates[0];
         final int previewY = key.mY - previewHeight + mCoordinates[1] + mPreviewOffset;
-        // Record key preview position to display mini-keyboard later at the same position
-        mKeyPreviewPopupDisplayedY = previewY;
 
         // Place the key preview.
         // TODO: Adjust position of key previews which touch screen edges
@@ -1151,7 +1146,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             mPopupWindow.setClippingEnabled(false);
         }
         mPopupMiniKeyboardPanel = popupPanel;
-        popupPanel.showPanel(this, parentKey, tracker, mKeyPreviewPopupDisplayedY, mPopupWindow);
+        popupPanel.showPanel(this, parentKey, tracker, mPopupWindow);
 
         invalidateAllKeys();
         return true;
