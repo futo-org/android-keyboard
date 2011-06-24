@@ -25,6 +25,7 @@ import com.android.inputmethod.compat.VibratorCompatWrapper;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.backup.BackupManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -65,6 +66,7 @@ public class Settings extends PreferenceActivity
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
     public static final String PREF_SUBTYPES = "subtype_settings";
 
+    public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
     public static final String PREF_CORRECTION_SETTINGS_KEY = "correction_settings";
     public static final String PREF_QUICK_FIXES = "quick_fixes";
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
@@ -424,6 +426,15 @@ public class Settings extends PreferenceActivity
         }
         mKeyPreviewPopupDismissDelay.setEnabled(
                 Settings.Values.isKeyPreviewPopupEnabled(prefs, res));
+
+        final PreferenceScreen dictionaryLink =
+                (PreferenceScreen) findPreference(PREF_CONFIGURE_DICTIONARIES_KEY);
+        final Intent intent = dictionaryLink.getIntent();
+
+        final int number = getPackageManager().queryIntentActivities(intent, 0).size();
+        if (0 >= number) {
+            textCorrectionGroup.removePreference(dictionaryLink);
+        }
     }
 
     @Override

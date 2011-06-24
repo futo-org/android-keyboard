@@ -68,6 +68,14 @@
     <PreferenceCategory
         android:title="@string/correction_category"
         android:key="correction_settings">
+        <PreferenceScreen
+            android:key="configure_dictionaries_key"
+            android:title="@string/configure_dictionaries_title">
+           <intent
+              android:action="android.intent.action.MAIN"
+              android:targetPackage="com.google.android.inputmethod.latin.dictionarypack"
+              android:targetClass="com.google.android.inputmethod.latin.dictionarypack.DictionarySettings" />
+        </PreferenceScreen>
         <CheckBoxPreference
             android:key="quick_fixes"
             android:title="@string/quick_fixes"
