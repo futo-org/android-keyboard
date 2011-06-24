@@ -86,15 +86,18 @@
     <string name="auto_correction_threshold_mode_index_off">0</string>
     <string name="auto_correction_threshold_mode_index_modest">1</string>
     <string name="auto_correction_threshold_mode_index_aggeressive">2</string>
+    <string name="auto_correction_threshold_mode_index_very_aggeressive">3</string>
     <string-array name="auto_correction_threshold_mode_indexes">
       <item>@string/auto_correction_threshold_mode_index_off</item>
       <item>@string/auto_correction_threshold_mode_index_modest</item>
       <item>@string/auto_correction_threshold_mode_index_aggeressive</item>
+      <item>@string/auto_correction_threshold_mode_index_very_aggeressive</item>
     </string-array>
     <string-array name="auto_correction_threshold_modes">
       <item>@string/auto_correction_threshold_mode_off</item>
       <item>@string/auto_correction_threshold_mode_modest</item>
       <item>@string/auto_correction_threshold_mode_aggeressive</item>
+      <item>@string/auto_correction_threshold_mode_very_aggeressive</item>
     </string-array>
 
     <string name="voice_mode_main">0</string>

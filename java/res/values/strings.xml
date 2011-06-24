@@ -104,6 +104,8 @@
     <string name="auto_correction_threshold_mode_modest">Modest</string>
     <!-- Option to suggest auto correction candidates aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
+    <!-- Option to suggest auto correction candidates very aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
+    <string name="auto_correction_threshold_mode_very_aggeressive">Very Aggressive</string>
 
     <!-- Option to enable bigram correction -->
     <string name="bigram_suggestion">Bigram suggestions</string>
