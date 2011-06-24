@@ -130,6 +130,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     // Key preview
     private boolean mInForeground;
     private TextView mPreviewText;
+    private Drawable mPreviewBackground;
     private float mPreviewTextRatio;
     private int mPreviewTextSize;
     private boolean mShowKeyPreviewPopup = true;
@@ -357,6 +358,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         if (previewLayout != 0) {
             mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
+            mPreviewBackground = mPreviewText.getBackground();
             mPreviewTextRatio = getRatio(res, R.fraction.key_preview_text_ratio);
         } else {
             mShowKeyPreviewPopup = false;
@@ -981,6 +983,11 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             previewText.setCompoundDrawables(null, null, null,
                    previewIcon != null ? previewIcon : key.getIcon());
             previewText.setText(null);
+        }
+        if (key.mCode == Keyboard.CODE_SPACE) {
+            previewText.setBackgroundColor(Color.TRANSPARENT);
+        } else {
+            previewText.setBackgroundDrawable(mPreviewBackground);
         }
         // Set the preview background state
         previewText.getBackground().setState(
