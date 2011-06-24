@@ -30,7 +30,6 @@ import android.graphics.Rect;
 import android.graphics.Region.Op;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -53,6 +52,7 @@ import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.keyboard.internal.SwipeTracker;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -193,9 +193,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final String KEY_LABEL_REFERENCE_CHAR = "M";
     private final int mKeyLabelHorizontalPadding;
 
-    private final UIHandler mHandler = new UIHandler();
+    private final UIHandler mHandler = new UIHandler(this);
 
-    class UIHandler extends Handler {
+    public static class UIHandler extends StaticInnerHandlerWrapper<KeyboardView> {
         private static final int MSG_SHOW_KEY_PREVIEW = 1;
         private static final int MSG_DISMISS_KEY_PREVIEW = 2;
         private static final int MSG_REPEAT_KEY = 3;
@@ -205,34 +205,40 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         private boolean mInKeyRepeat;
 
+        public UIHandler(KeyboardView outerInstance) {
+            super(outerInstance);
+        }
+
         @Override
         public void handleMessage(Message msg) {
+            final KeyboardView keyboardView = getOuterInstance();
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_SHOW_KEY_PREVIEW:
-                showKey(msg.arg1, tracker);
+                keyboardView.showKey(msg.arg1, tracker);
                 break;
             case MSG_DISMISS_KEY_PREVIEW:
-                mPreviewText.setVisibility(View.INVISIBLE);
+                keyboardView.mPreviewText.setVisibility(View.INVISIBLE);
                 break;
             case MSG_REPEAT_KEY:
                 tracker.onRepeatKey(msg.arg1);
-                startKeyRepeatTimer(mKeyRepeatInterval, msg.arg1, tracker);
+                startKeyRepeatTimer(keyboardView.mKeyRepeatInterval, msg.arg1, tracker);
                 break;
             case MSG_LONGPRESS_KEY:
-                openMiniKeyboardIfRequired(msg.arg1, tracker);
+                keyboardView.openMiniKeyboardIfRequired(msg.arg1, tracker);
                 break;
             case MSG_LONGPRESS_SHIFT_KEY:
-                onLongPressShiftKey(tracker);
+                keyboardView.onLongPressShiftKey(tracker);
                 break;
             }
         }
 
         public void showKeyPreview(long delay, int keyIndex, PointerTracker tracker) {
+            final KeyboardView keyboardView = getOuterInstance();
             removeMessages(MSG_SHOW_KEY_PREVIEW);
-            if (mPreviewText.getVisibility() == VISIBLE || delay == 0) {
+            if (keyboardView.mPreviewText.getVisibility() == VISIBLE || delay == 0) {
                 // Show right away, if it's already visible and finger is moving around
-                showKey(keyIndex, tracker);
+                keyboardView.showKey(keyIndex, tracker);
             } else {
                 sendMessageDelayed(
                         obtainMessage(MSG_SHOW_KEY_PREVIEW, keyIndex, 0, tracker), delay);

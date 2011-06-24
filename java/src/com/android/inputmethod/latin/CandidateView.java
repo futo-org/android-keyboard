@@ -21,7 +21,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -95,23 +94,28 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private boolean mShowingAutoCorrectionInverted;
     private boolean mShowingAddToDictionary;
 
-    private final UiHandler mHandler = new UiHandler();
+    private final UiHandler mHandler = new UiHandler(this);
 
-    private class UiHandler extends Handler {
+    private static class UiHandler extends StaticInnerHandlerWrapper<CandidateView> {
         private static final int MSG_HIDE_PREVIEW = 0;
         private static final int MSG_UPDATE_SUGGESTION = 1;
 
         private static final long DELAY_HIDE_PREVIEW = 1000;
         private static final long DELAY_UPDATE_SUGGESTION = 300;
 
+        public UiHandler(CandidateView outerInstance) {
+            super(outerInstance);
+        }
+
         @Override
         public void dispatchMessage(Message msg) {
+            final CandidateView candidateView = getOuterInstance();
             switch (msg.what) {
             case MSG_HIDE_PREVIEW:
-                hidePreview();
+                candidateView.hidePreview();
                 break;
             case MSG_UPDATE_SUGGESTION:
-                updateSuggestions();
+                candidateView.updateSuggestions();
                 break;
             }
         }
