@@ -66,6 +66,9 @@
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
 
+    <!-- Option to configure dictionaries -->
+    <string name="configure_dictionaries_title">Configure dictionaries</string>
+
     <!-- Option to enable quick fixes -->
     <string name="quick_fixes">Quick fixes</string>
     <!-- Description for quick fixes -->
