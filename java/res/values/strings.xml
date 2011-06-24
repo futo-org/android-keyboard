@@ -66,6 +66,9 @@
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
 
+    <!-- Option to configure dictionaries -->
+    <string name="configure_dictionaries_title">Configure dictionaries</string>
+
     <!-- Option to enable quick fixes -->
     <string name="quick_fixes">Quick fixes</string>
     <!-- Description for quick fixes -->
@@ -101,6 +104,8 @@
     <string name="auto_correction_threshold_mode_modest">Modest</string>
     <!-- Option to suggest auto correction candidates aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
+    <!-- Option to suggest auto correction candidates very aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
+    <string name="auto_correction_threshold_mode_very_aggeressive">Very Aggressive</string>
 
     <!-- Option to enable bigram correction -->
     <string name="bigram_suggestion">Bigram suggestions</string>

@@ -60,7 +60,7 @@
         <item name="iconNum0Key">@drawable/sym_keyboard_num0</item>
 <!--         <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked_holo</item> -->
         <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked</item>
-        <item name="iconPreviewSpaceKey">@drawable/sym_keyboard_space_holo</item>
+        <item name="iconPreviewSpaceKey">@drawable/transparent</item>
 <!--         <item name="iconPreviewTabKey">@drawable/sym_keyboard_tab_holo</item> -->
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
 <!--         <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_settings_holo</item> -->
@@ -72,7 +72,7 @@
         <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
         <item name="spacebarArrowLeftIcon">@drawable/sym_keyboard_language_arrows_left</item>
         <item name="spacebarArrowRightIcon">@drawable/sym_keyboard_language_arrows_right</item>
-        <item name="spacebarArrowPreviewLeftIcon">@drawable/sym_keyboard_feedback_language_arrows_left</item>
-        <item name="spacebarArrowPreviewRightIcon">@drawable/sym_keyboard_feedback_language_arrows_right</item>
+<!--         <item name="spacebarArrowPreviewLeftIcon">@drawable/sym_keyboard_feedback_language_arrows_left</item> -->
+<!--         <item name="spacebarArrowPreviewRightIcon">@drawable/sym_keyboard_feedback_language_arrows_right</item> -->
     </style>
 </resources>

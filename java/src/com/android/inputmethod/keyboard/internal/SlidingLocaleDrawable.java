@@ -58,7 +58,7 @@ public class SlidingLocaleDrawable extends Drawable {
 
     public SlidingLocaleDrawable(Context context, Drawable background, int width, int height) {
         mBackground = background;
-        Keyboard.setDefaultBounds(mBackground);
+        Keyboard.setDefaultBounds(background);
         mWidth = width;
         mHeight = height;
         final TextPaint textPaint = new TextPaint();
@@ -68,7 +68,7 @@ public class SlidingLocaleDrawable extends Drawable {
         textPaint.setTextAlign(Align.CENTER);
         textPaint.setAntiAlias(true);
         mTextPaint = textPaint;
-        mMiddleX = (mWidth - mBackground.getIntrinsicWidth()) / 2;
+        mMiddleX = (background != null) ? (mWidth - mBackground.getIntrinsicWidth()) / 2 : 0;
 
         final TypedArray a = context.obtainStyledAttributes(
                 null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
@@ -119,11 +119,13 @@ public class SlidingLocaleDrawable extends Drawable {
             canvas.drawText(mNextLanguage, diff - width / 2, baseline, paint);
             canvas.drawText(mPrevLanguage, diff + width + width / 2, baseline, paint);
 
-            Keyboard.setDefaultBounds(lArrow);
-            rArrow.setBounds(width - rArrow.getIntrinsicWidth(), 0, width,
-                    rArrow.getIntrinsicHeight());
-            lArrow.draw(canvas);
-            rArrow.draw(canvas);
+            if (lArrow != null && rArrow != null) {
+                Keyboard.setDefaultBounds(lArrow);
+                rArrow.setBounds(width - rArrow.getIntrinsicWidth(), 0, width,
+                        rArrow.getIntrinsicHeight());
+                lArrow.draw(canvas);
+                rArrow.draw(canvas);
+            }
         }
         if (mBackground != null) {
             canvas.translate(mMiddleX, 0);
