@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <style name="KeyboardIcons.IceCreamSandwich" parent="android:Theme.Holo">
+    <style name="KeyboardIcons.IceCreamSandwich" parent="android:Theme">
         <!-- Keyboard icons -->
 <!--         <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo</item> -->
         <item name="iconShiftKey">@drawable/sym_keyboard_shift</item>
