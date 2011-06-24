@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.compat;
 
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.FrameLayout;
@@ -47,6 +48,16 @@ public class FrameLayoutCompatUtils {
         } else {
             throw new IllegalArgumentException("placer is neither FrameLayout nor RelativeLayout: "
                     + placer.getClass().getName());
+        }
+    }
+
+    public static void placeViewAt(View view, int x, int y, int w, int h) {
+        final ViewGroup.LayoutParams lp = view.getLayoutParams();
+        if (lp instanceof MarginLayoutParams) {
+            final MarginLayoutParams marginLayoutParams = (MarginLayoutParams)lp;
+            marginLayoutParams.width = w;
+            marginLayoutParams.height = h;
+            marginLayoutParams.setMargins(x, y, 0, 0);
         }
     }
 }

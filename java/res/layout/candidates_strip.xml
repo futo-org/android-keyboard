@@ -22,14 +22,34 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <include
-        android:id="@+id/candidate_left"
-        layout="@layout/candidate" />
+    <RelativeLayout
+        android:layout_weight="1.0"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+    >
+        <include
+            android:id="@+id/word_left"
+            layout="@layout/candidate_word" />
+        <include
+            android:id="@+id/info_left"
+            layout="@layout/candidate_info" />
+    </RelativeLayout>
     <include
         layout="@layout/candidate_divider" />
-    <include
-        android:id="@+id/candidate_center"
-        layout="@layout/candidate" />
+    <RelativeLayout
+        android:layout_weight="1.0"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+    >
+        <include
+            android:id="@+id/word_center"
+            layout="@layout/candidate_word" />
+        <include
+            android:id="@+id/info_center"
+            layout="@layout/candidate_info" />
+    </RelativeLayout>
     <include
         layout="@layout/candidate_divider" />
     <LinearLayout
@@ -39,9 +59,19 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
     >
-        <include
-            android:id="@+id/candidate_right"
-            layout="@layout/candidate" />
+        <RelativeLayout
+            android:layout_weight="1.0"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+        >
+            <include
+                android:id="@+id/word_right"
+                layout="@layout/candidate_word" />
+            <include
+                android:id="@+id/info_right"
+                layout="@layout/candidate_info" />
+        </RelativeLayout>
         <!-- Image drawables are set in CandidateView constructor -->
         <ImageButton
             android:id="@+id/expand_candidates_pane"

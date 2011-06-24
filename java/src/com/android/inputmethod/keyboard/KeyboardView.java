@@ -41,7 +41,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -998,10 +997,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         // Place the key preview.
         // TODO: Adjust position of key previews which touch screen edges
-        final MarginLayoutParams lp = (MarginLayoutParams)previewText.getLayoutParams();
-        lp.width = previewWidth;
-        lp.height = previewHeight;
-        lp.setMargins(previewX, previewY, 0, 0);
+        FrameLayoutCompatUtils.placeViewAt(
+                previewText, previewX, previewY, previewWidth, previewHeight);
         previewText.setVisibility(VISIBLE);
     }
 
