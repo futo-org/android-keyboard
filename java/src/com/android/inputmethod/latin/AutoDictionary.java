@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Google Inc.
+ * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -41,13 +41,8 @@ public class AutoDictionary extends ExpandableDictionary {
     static final int FREQUENCY_FOR_PICKED = 3;
     // Weight added to a user typing a new word that doesn't get corrected (or is reverted)
     static final int FREQUENCY_FOR_TYPED = 1;
-    // A word that is frequently typed and gets promoted to the user dictionary, uses this
-    // frequency.
-    static final int FREQUENCY_FOR_AUTO_ADD = 250;
     // If the user touches a typed word 2 times or more, it will become valid.
     private static final int VALIDITY_THRESHOLD = 2 * FREQUENCY_FOR_PICKED;
-    // If the user touches a typed word 4 times or more, it will be added to the user dict.
-    private static final int PROMOTION_THRESHOLD = 4 * FREQUENCY_FOR_PICKED;
 
     private LatinIME mIme;
     // Locale for which this auto dictionary is storing words
@@ -150,11 +145,6 @@ public class AutoDictionary extends ExpandableDictionary {
         int freq = getWordFrequency(word);
         freq = freq < 0 ? addFrequency : freq + addFrequency;
         super.addWord(word, freq);
-
-        if (freq >= PROMOTION_THRESHOLD) {
-            mIme.promoteToUserDictionary(word, FREQUENCY_FOR_AUTO_ADD);
-            freq = 0;
-        }
 
         synchronized (mPendingWritesLock) {
             // Write a null frequency if it is to be deleted from the db

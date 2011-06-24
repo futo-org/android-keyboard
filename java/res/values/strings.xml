@@ -58,6 +58,11 @@
     <!-- Description for delay for dismissing a popup on screen: default value of the delay [CHAR LIMIT=15] -->
     <string name="key_preview_popup_dismiss_default_delay">Default</string>
 
+    <!-- Option name for enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=25] -->
+    <string name="use_contacts_dict">Suggest Contact names</string>
+    <!-- Description for option enabling or disabling the use of names of people in Contacts for suggestion and correction [CHAR LIMIT=65] -->
+    <string name="use_contacts_dict_summary">Use names from Contacts for suggestions and corrections</string>
+
     <!-- Option to enable auto capitalization of sentences -->
     <string name="auto_cap">Auto-capitalization</string>
 
@@ -125,6 +130,81 @@
     <string name="label_pause_key">Pause</string>
     <!-- Label for "Wait" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5]-->
     <string name="label_wait_key">Wait</string>
+
+    <!-- Spoken description for the currently entered text -->
+    <string name="spoken_current_text_is">Current text is "%s"</string>
+    <!-- Spoken description when there is no text entered -->
+    <string name="spoken_no_text_entered">No text entered</string>
+
+    <!-- Spoken description for unknown keyboard keys. -->
+    <string name="spoken_description_unknown">Key code %d</string>
+    <!-- Spoken description for the "Shift" keyboard key. -->
+    <string name="spoken_description_shift">Shift</string>
+    <!-- Spoken description for the "Shift" keyboard key's pressed state. -->
+    <string name="spoken_description_shift_shifted">Shift enabled</string>
+    <!-- Spoken description for the "Shift" keyboard key's pressed state. -->
+    <string name="spoken_description_caps_lock">Caps lock enabled</string>
+    <!-- Spoken description for the "Delete" keyboard key. -->
+    <string name="spoken_description_delete">Delete</string>
+    <!-- Spoken description for the "To Symbol" keyboard key. -->
+    <string name="spoken_description_to_symbol">Symbols</string>
+    <!-- Spoken description for the "To Alpha" keyboard key. -->
+    <string name="spoken_description_to_alpha">Letters</string>
+    <!-- Spoken description for the "To Numbers" keyboard key. -->
+    <string name="spoken_description_to_numeric">Numbers</string>
+    <!-- Spoken description for the "Settings" keyboard key. -->
+    <string name="spoken_description_settings">Settings</string>
+    <!-- Spoken description for the "Tab" keyboard key. -->
+    <string name="spoken_description_tab">Tab</string>
+    <!-- Spoken description for the "Space" keyboard key. -->
+    <string name="spoken_description_space">Space</string>
+    <!-- Spoken description for the "Mic" keyboard key. -->
+    <string name="spoken_description_mic">Voice input</string>
+    <!-- Spoken description for the "Smiley" keyboard key. -->
+    <string name="spoken_description_smiley">Smiley face</string>
+    <!-- Spoken description for the "Return" keyboard key. -->
+    <string name="spoken_description_return">Return</string>
+
+    <!-- Spoken description for the "," keyboard key. -->
+    <string name="spoken_description_comma">Comma</string>
+    <!-- Spoken description for the "." keyboard key. -->
+    <string name="spoken_description_period">Period</string>
+    <!-- Spoken description for the "(" keyboard key. -->
+    <string name="spoken_description_left_parenthesis">Left parenthesis</string>
+    <!-- Spoken description for the ")" keyboard key. -->
+    <string name="spoken_description_right_parenthesis">Right parenthesis</string>
+    <!-- Spoken description for the ":" keyboard key. -->
+    <string name="spoken_description_colon">Colon</string>
+    <!-- Spoken description for the ";" keyboard key. -->
+    <string name="spoken_description_semicolon">Semicolon</string>
+    <!-- Spoken description for the "!" keyboard key. -->
+    <string name="spoken_description_exclamation_mark">Exclamation mark</string>
+    <!-- Spoken description for the "?" keyboard key. -->
+    <string name="spoken_description_question_mark">Question mark</string>
+    <!-- Spoken description for the """ keyboard key. -->
+    <string name="spoken_description_double_quote">Double quote</string>
+    <!-- Spoken description for the "'" keyboard key. -->
+    <string name="spoken_description_single_quote">Single quote</string>
+    <!-- Spoken description for the "•" keyboard key. -->
+    <string name="spoken_description_dot">Dot</string>
+    <!-- Spoken description for the "√" keyboard key. -->
+    <string name="spoken_description_square_root">Square root</string>
+    <!-- Spoken description for the "π" keyboard key. -->
+    <string name="spoken_description_pi">Pi</string>
+    <!-- Spoken description for the "Δ" keyboard key. -->
+    <string name="spoken_description_delta">Delta</string>
+    <!-- Spoken description for the "™" keyboard key. -->
+    <string name="spoken_description_trademark">Trademark</string>
+    <!-- Spoken description for the "℅" keyboard key. -->
+    <string name="spoken_description_care_of">Care of</string>
+    <!-- Spoken description for the "*" keyboard key. -->
+    <string name="spoken_description_star">Star</string>
+    <!-- Spoken description for the "#" keyboard key. -->
+    <string name="spoken_description_pound">Pound</string>
+    <!-- Spoken description for the "…" keyboard key. -->
+    <string name="spoken_description_ellipsis">Ellipsis</string>
+    <!-- Spoken description for the "„" keyboard key. -->
+    <string name="spoken_description_low_double_quote">Low double quote</string>
 
     <!-- Voice related labels -->
 
@@ -247,20 +327,26 @@
     <string name="subtype_mode_da_keyboard">Danish Keyboard</string>
     <!-- Description for German keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_de_keyboard">German Keyboard</string>
+    <!-- Description for German QWERTY keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_de_qwerty_keyboard">German QWERTY Keyboard</string>
     <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_en_GB_keyboard">English (UK) Keyboard</string>
     <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_en_US_keyboard">English (US) Keyboard</string>
     <!-- Description for Spanish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_es_keyboard">Spanish Keyboard</string>
-    <!-- Description for Spanish (United States) keyboard subtype [CHAR LIMIT=35] -->
-    <string name="subtype_mode_es_US_keyboard">Spanish (US) Keyboard</string>
+    <!-- Description for Finnish keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_fi_keyboard">Finnish Keyboard</string>
     <!-- Description for French keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_keyboard">French Keyboard</string>
     <!-- Description for French (Canada) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_CA_keyboard">French (Canada) Keyboard</string>
     <!-- Description for French (Switzerland) keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_fr_CH_keyboard">French (Switzerland) Keyboard</string>
+    <!-- Description for Croatian keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_hr_keyboard">Croatian Keyboard</string>
+    <!-- Description for Hungarian keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_hu_keyboard">Hungarian Keyboard</string>
     <!-- Description for Hebrew keyboard subtype [CHAR LIMIT=35] -->
     <!-- Java uses the deprecated "iw" code instead of the standard "he" code -->
     <string name="subtype_mode_iw_keyboard">Hebrew Keyboard</string>
@@ -280,6 +366,8 @@
     <string name="subtype_mode_sr_keyboard">Serbian Keyboard</string>
     <!-- Description for Swedish keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_sv_keyboard">Swedish Keyboard</string>
+    <!-- Description for Turkish keyboard subtype [CHAR LIMIT=35] -->
+    <string name="subtype_mode_tr_keyboard">Turkish Keyboard</string>
     <!-- Description for Afrikaans voice input subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_af_voice">Afrikaans Voice</string>
     <!-- Description for Czech voice input subtype [CHAR LIMIT=35] -->

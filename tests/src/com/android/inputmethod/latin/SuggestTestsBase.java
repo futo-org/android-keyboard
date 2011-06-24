@@ -16,14 +16,13 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.KeyboardId;
-import com.android.inputmethod.keyboard.KeyboardView;
-
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
 import android.test.AndroidTestCase;
 import android.text.TextUtils;
 import android.view.inputmethod.EditorInfo;
+
+import com.android.inputmethod.keyboard.KeyboardId;
 
 import java.io.File;
 import java.io.InputStream;
@@ -38,11 +37,12 @@ public class SuggestTestsBase extends AndroidTestCase {
         mTestPackageFile = new File(getTestContext().getApplicationInfo().sourceDir);
     }
 
-    protected static KeyboardId createKeyboardId(Locale locale) {
+    protected KeyboardId createKeyboardId(Locale locale) {
+        final int displayWidth = getContext().getResources().getDisplayMetrics().widthPixels;
         return new KeyboardId(locale.toString() + " keyboard",
-                com.android.inputmethod.latin.R.xml.kbd_qwerty, KeyboardView.COLOR_SCHEME_WHITE,
-                locale, Configuration.ORIENTATION_LANDSCAPE, KeyboardId.MODE_TEXT,
-                new EditorInfo(), false, false, false, false);
+                com.android.inputmethod.latin.R.xml.kbd_qwerty, locale,
+                Configuration.ORIENTATION_LANDSCAPE, displayWidth, KeyboardId.MODE_TEXT,
+                new EditorInfo(), false, KeyboardId.F2KEY_MODE_NONE, false, false, false, false);
     }
 
     protected InputStream openTestRawResource(int resIdInTest) {

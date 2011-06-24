@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2011 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <style name="KeyboardIcons.Black" parent="android:Theme.Light">
+        <!-- Keyboard icons -->
+        <item name="iconShiftKey">@drawable/sym_bkeyboard_shift</item>
+        <item name="iconToSymbolKeyWithShortcut">@drawable/sym_bkeyboard_123_mic</item>
+        <item name="iconDeleteKey">@drawable/sym_bkeyboard_delete</item>
+        <item name="iconSettingsKey">@drawable/sym_bkeyboard_settings</item>
+        <item name="iconShortcutKey">@drawable/sym_bkeyboard_mic</item>
+        <item name="iconSpaceKey">@drawable/sym_bkeyboard_space</item>
+        <item name="iconReturnKey">@drawable/sym_bkeyboard_return</item>
+        <item name="iconSearchKey">@drawable/sym_bkeyboard_search</item>
+        <item name="iconTabKey">@drawable/sym_bkeyboard_tab</item>
+        <item name="iconNum1Key">@drawable/sym_bkeyboard_num1</item>
+        <item name="iconNum2Key">@drawable/sym_bkeyboard_num2</item>
+        <item name="iconNum3Key">@drawable/sym_bkeyboard_num3</item>
+        <item name="iconNum4Key">@drawable/sym_bkeyboard_num4</item>
+        <item name="iconNum5Key">@drawable/sym_bkeyboard_num5</item>
+        <item name="iconNum6Key">@drawable/sym_bkeyboard_num6</item>
+        <item name="iconNum7Key">@drawable/sym_bkeyboard_num7</item>
+        <item name="iconNum8Key">@drawable/sym_bkeyboard_num8</item>
+        <item name="iconNum9Key">@drawable/sym_bkeyboard_num9</item>
+        <item name="iconNum0Key">@drawable/sym_bkeyboard_num0</item>
+        <item name="iconShiftedShiftKey">@drawable/sym_bkeyboard_shift_locked</item>
+        <item name="iconPreviewSpaceKey">@drawable/sym_keyboard_feedback_space</item>
+        <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
+        <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_feedback_settings</item>
+        <item name="iconPreviewShortcutKey">@drawable/sym_keyboard_feedback_mic</item>
+        <!-- LatinKeyboard icons -->
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="spacebarArrowLeftIcon">@drawable/sym_keyboard_language_arrows_left</item>
+        <item name="spacebarArrowRightIcon">@drawable/sym_keyboard_language_arrows_right</item>
+        <item name="spacebarArrowPreviewLeftIcon">@drawable/sym_keyboard_feedback_language_arrows_left</item>
+        <item name="spacebarArrowPreviewRightIcon">@drawable/sym_keyboard_feedback_language_arrows_right</item>
+    </style>
+</resources>

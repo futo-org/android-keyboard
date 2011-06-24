@@ -50,6 +50,7 @@ private:
     int *mInputCodes;
     int mInputLength;
 };
-// ----------------------------------------------------------------------------
-}; // namespace latinime
+
+} // namespace latinime
+
 #endif // LATINIME_BIGRAM_DICTIONARY_H

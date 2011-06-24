@@ -20,15 +20,7 @@
 
 <Keyboard
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
-    latin:keyboardHeight="@dimen/keyboardHeight"
-    latin:maxKeyboardHeight="@fraction/maxKeyboardHeight"
-    latin:minKeyboardHeight="@fraction/minKeyboardHeight"
-    latin:rowHeight="25%p"
     latin:keyWidth="26.67%p"
-    latin:horizontalGap="@dimen/key_horizontal_gap"
-    latin:verticalGap="@dimen/key_bottom_gap"
-    latin:popupKeyboardTemplate="@xml/kbd_popup_template"
-    latin:maxPopupKeyboardColumn="@integer/config_max_popup_keyboard_column"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
@@ -39,20 +31,24 @@
     >
         <Key
             latin:keyLabel="("
+            latin:keyStyle="numLabelStyle"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="/" />
+            latin:keyLabel="/"
+            latin:keyStyle="numLabelStyle" />
         <Key
-            latin:keyLabel=")" />
+            latin:keyLabel=")"
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyLabel="-"
-            latin:keyStyle="functionalKeyStyle"
-            latin:keyWidth="20%p"
+            latin:keyStyle="numLabelFunctionalStyle"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
             latin:keyLabel="N"
+            latin:keyStyle="numLabelStyle"
             latin:keyEdgeFlags="left" />
         <!-- Pause is a comma. Check PhoneNumberUtils.java to see if this 
             has changed. -->
@@ -60,11 +56,12 @@
             latin:code="44"
             latin:keyLabel="Pause" />
         <Key
-            latin:keyLabel="," />
+            latin:keyLabel=","
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyLabel="."
-            latin:keyStyle="functionalKeyStyle"
-            latin:keyWidth="20%p"
+            latin:keyStyle="numLabelFunctionalStyle"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
@@ -76,26 +73,27 @@
             latin:code="59"
             latin:keyLabel="Wait" />
         <Key
-            latin:keyStyle="numPoundKeyStyle" />
+            latin:keyLabel="#"
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="20%p"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
         latin:rowEdgeFlags="bottom"
     >
         <Key
-            latin:code="@integer/key_switch_alpha_symbol"
-            latin:keyLabel="@string/label_to_numeric_key"
+            latin:keyStyle="numSwitchToNumericKeyStyle"
             latin:keyEdgeFlags="left" />
         <Key
-            latin:keyLabel="+" />
+            latin:keyLabel="+"
+            latin:keyStyle="numLabelStyle" />
         <Key
             latin:keyStyle="numSpaceKeyStyle" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="20%p"
+            latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
 </Keyboard>

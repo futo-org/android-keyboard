@@ -27,11 +27,17 @@
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al pulsar tecla"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup al pulsar tecla"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
-    <!-- no translation found for correction_category (2236750915056607613) -->
+    <string name="correction_category" msgid="2236750915056607613">"Corrección ortográfica"</string>
+    <string name="ngram_category" msgid="5337109164339320257">"Sugerencias basadas en palabras anteriores"</string>
+    <string name="misc_category" msgid="6894192814868233453">"Otras opciones"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Ajustes avanzados"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"Opciones para usuarios expertos"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retraso de rechazo"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sin retraso"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminado"</string>
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
     <skip />
-    <!-- no translation found for ngram_category (5337109164339320257) -->
-    <skip />
-    <!-- no translation found for misc_category (6894192814868233453) -->
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
     <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Correcciones rápidas"</string>
@@ -41,8 +47,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostrar siempre"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Mostrar en modo vertical"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ocultar siempre"</string>
-    <!-- no translation found for prefs_use_spacebar_language_switch (8828538114550634449) -->
-    <skip />
+    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Utilizar espacio para cambiar idioma"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de ajustes"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automáticamente"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostrar siempre"</string>
@@ -52,12 +57,10 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivada"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Parcial"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Total"</string>
-    <!-- outdated translation 7146707435859263625 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"Sugerencias de bigramas"</string>
+    <string name="bigram_suggestion" msgid="2636414079905220518">"Sugerencias de bigramas"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Usar palabra anterior para mejorar sugerencias"</string>
-    <!-- no translation found for bigram_prediction (8914273444762259739) -->
-    <skip />
-    <!-- no translation found for bigram_prediction_summary (1747261921174300098) -->
-    <skip />
+    <string name="bigram_prediction" msgid="8914273444762259739">"Predicción de bigramas"</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Utilizar también la palabra anterior para realizar la predicción"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: guardada"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Ir"</string>
     <string name="label_next_key" msgid="362972844525672568">"Sig."</string>
@@ -111,14 +114,21 @@
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Teclado inglés (Reino Unido)"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Teclado de inglés (EE.UU.)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Teclado español"</string>
-    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Teclado en español (EE.UU.)"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Teclado francés"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Teclado francés (Canadá)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Teclado francés (Suiza)"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Teclado hebreo"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Teclado italiano"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Teclado noruego"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Teclado holandés"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Teclado polaco"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Teclado portugués"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Teclado ruso"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Teclado serbio"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Teclado sueco"</string>

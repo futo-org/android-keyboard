@@ -27,103 +27,89 @@
     >
         <switch>
             <case
-                latin:hasSettingsKey="false"
-            >
-                <Key
-                    latin:keyStyle="toSymbolKeyStyle"
-                    latin:keyWidth="20%p"
-                    latin:keyEdgeFlags="left" />
-                <include
-                    latin:keyboardLayout="@xml/kbd_qwerty_f1" />
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="40%p" />
-                <switch>
-                    <case
-                        latin:mode="web"
-                    >
-                         <Key
-                            latin:keyHintIcon="@drawable/hint_popup"
-                            latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
-                            latin:maxPopupKeyboardColumn="8"
-                            latin:keyStyle="tabKeyStyle" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="."
-                            latin:keyHintIcon="@drawable/hint_popup"
-                            latin:popupCharacters="@string/alternates_for_punctuation"
-                            latin:maxPopupKeyboardColumn="7"
-                            latin:keyStyle="functionalKeyStyle" />
-                    </default>
-                </switch>
-                <switch>
-                    <case
-                        latin:mode="im"
-                    >
-                        <Key
-                            latin:keyStyle="smileyKeyStyle"
-                            latin:keyWidth="20%p"
-                            latin:keyEdgeFlags="right" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyStyle="returnKeyStyle"
-                            latin:keyWidth="20%p"
-                            latin:keyEdgeFlags="right" />
-                    </default>
-                </switch>
-            </case>
-            <case
                 latin:hasSettingsKey="true"
             >
                 <Key
                     latin:keyStyle="toSymbolKeyStyle"
-                    latin:keyWidth="15%p"
+                    latin:keyWidth="13.75%p"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:keyStyle="settingsKeyStyle" />
+                    latin:keyStyle="settingsKeyStyle"
+                    latin:keyWidth="9.2%p" />
                 <include
                     latin:keyboardLayout="@xml/kbd_qwerty_f1" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="30%p" />
+                    latin:keyWidth="35.83%p" />
                 <switch>
                     <case
-                        latin:mode="web"
+                        latin:navigateAction="true"
                     >
-                         <Key
-                            latin:keyHintIcon="@drawable/hint_popup"
+                        <Key
+                            latin:keyStyle="tabKeyStyle"
+                            latin:keyLabelOption="popupHint"
                             latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
-                            latin:maxPopupKeyboardColumn="8"
-                            latin:keyStyle="tabKeyStyle" />
+                            latin:keyWidth="9.2%p"
+                            latin:maxPopupKeyboardColumn="8" />
                     </case>
                     <default>
                         <Key
                             latin:keyLabel="."
-                            latin:keyHintIcon="@drawable/hint_popup"
+                            latin:keyLabelOption="popupHint"
+                            latin:popupCharacters="@string/alternates_for_punctuation"
+                            latin:keyWidth="9.2%p"
+                            latin:maxPopupKeyboardColumn="7"
+                            latin:keyStyle="functionalKeyStyle" />
+                    </default>
+                </switch>
+            </case>
+            <!-- latin:hasSettingsKey="false" -->
+            <default>
+                <Key
+                    latin:keyStyle="toSymbolKeyStyle"
+                    latin:keyWidth="15%p"
+                    latin:keyEdgeFlags="left" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_f1" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="50%p" />
+                <switch>
+                    <case
+                        latin:navigateAction="true"
+                    >
+                        <Key
+                            latin:keyStyle="tabKeyStyle"
+                            latin:keyLabelOption="popupHint"
+                            latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
+                            latin:maxPopupKeyboardColumn="8" />
+                    </case>
+                    <default>
+                        <Key
+                            latin:keyLabel="."
+                            latin:keyLabelOption="popupHint"
                             latin:popupCharacters="@string/alternates_for_punctuation"
                             latin:maxPopupKeyboardColumn="7"
                             latin:keyStyle="functionalKeyStyle" />
                     </default>
                 </switch>
-                <switch>
-                    <case
-                        latin:mode="im"
-                    >
-                        <Key
-                            latin:keyStyle="smileyKeyStyle"
-                            latin:keyWidth="25%p"
-                            latin:keyEdgeFlags="right" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyStyle="returnKeyStyle"
-                            latin:keyWidth="25%p"
-                            latin:keyEdgeFlags="right" />
-                    </default>
-                </switch>
+            </default>
+        </switch>
+        <switch>
+            <case
+                latin:mode="im"
+            >
+                <Key
+                    latin:keyStyle="smileyKeyStyle"
+                    latin:keyWidth="fillRight"
+                    latin:keyEdgeFlags="right" />
             </case>
+            <default>
+                <Key
+                    latin:keyStyle="returnKeyStyle"
+                    latin:keyWidth="fillRight"
+                    latin:keyEdgeFlags="right" />
+            </default>
         </switch>
     </Row>
 </merge>

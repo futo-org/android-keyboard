@@ -30,6 +30,15 @@
     <string name="correction_category" msgid="2236750915056607613">"Correcció de text"</string>
     <string name="ngram_category" msgid="5337109164339320257">"Suggeriments basats en paraules anteriors"</string>
     <string name="misc_category" msgid="6894192814868233453">"Altres opcions"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Configuració avançada"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"Opcions per a usuaris experts"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Retard d\'om. em. de tecla"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Sense retard"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminat"</string>
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Majúscules automàtiques"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Correccions ràpides"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Corregeix els errors d\'ortografia habituals"</string>
@@ -38,7 +47,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostra sempre"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Mostra en mode vertical"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Amaga sempre"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Utilitza el canvi d\'idioma amb la barra espaiadora"</string>
+    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Canvi d\'idioma amb la barra espaiadora"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Mostra la tecla de configuració"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automàtic"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostra sempre"</string>
@@ -51,7 +60,7 @@
     <string name="bigram_suggestion" msgid="2636414079905220518">"Suggeriments Bigram"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Utilitza la paraula anterior per millorar el suggeriment"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Predicció Bigram"</string>
-    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Utilitza la paraula anterior per a la predicció també"</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Utilitza també la paraula anterior per a la predicció"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g>: desada"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Vés"</string>
     <string name="label_next_key" msgid="362972844525672568">"Següent"</string>
@@ -63,7 +72,7 @@
     <string name="label_wait_key" msgid="6402152600878093134">"Espera"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Entrada de veu"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Actualment, l\'entrada de veu no és compatible amb el vostre idioma, però funciona en anglès."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'entrada de veu utilitza el reconeixement de veu de Google. S\'hi aplica la "<a href="http://m.google.com/privacy">"Política de privadesa de Google Mobile"</a>"."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"L\'entrada de veu utilitza el reconeixement de veu de Google. S\'hi aplica la "<a href="http://m.google.com/privacy">"Política de privadesa de Google per a mòbils"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Per desactivar l\'entada de veu, vés a la configuració del mètode d\'entrada."</string>
     <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Per utilitzar l\'entrada de veu, prem el botó del micròfon."</string>
     <string name="voice_listening" msgid="467518160751321844">"Parleu ara"</string>
@@ -105,14 +114,21 @@
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Teclat anglès (Regne Unit)"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Teclat anglès (Estats Units)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Teclat espanyol"</string>
-    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Teclat espanyol (Estats Units)"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Teclat francès"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Teclat francès (Canadà)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Teclat francès (Suïssa)"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Teclat hebreu"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Teclat italià"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Teclat noruec"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Teclat holandès"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Teclat polonès"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Teclat portuguès"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Teclat rus"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Teclat serbi"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Teclat suec"</string>

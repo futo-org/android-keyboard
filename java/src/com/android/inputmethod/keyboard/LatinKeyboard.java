@@ -16,9 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.Theme;
@@ -36,6 +33,10 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import com.android.inputmethod.keyboard.internal.SlidingLocaleDrawable;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.SubtypeSwitcher;
+
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,7 +50,8 @@ public class LatinKeyboard extends Keyboard {
     public static final int CODE_NEXT_LANGUAGE = -100;
     public static final int CODE_PREV_LANGUAGE = -101;
 
-    private final Context mContext;
+    private final Resources mRes;
+    private final Theme mTheme;
     private final SubtypeSwitcher mSubtypeSwitcher = SubtypeSwitcher.getInstance();
 
     /* Space key and its icons, drawables and colors. */
@@ -57,15 +59,16 @@ public class LatinKeyboard extends Keyboard {
     private final Drawable mSpaceIcon;
     private final Drawable mSpacePreviewIcon;
     private final int mSpaceKeyIndex;
-    private final Drawable mSpaceAutoCorrectionIndicator;
-    private final Drawable mButtonArrowLeftIcon;
-    private final Drawable mButtonArrowRightIcon;
+    private final boolean mAutoCorrectionSpacebarLedEnabled;
+    private final Drawable mAutoCorrectionSpacebarLedIcon;
+    private final Drawable mSpacebarArrowLeftIcon;
+    private final Drawable mSpacebarArrowRightIcon;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
     private float mSpacebarTextFadeFactor = 0.0f;
     private final int mSpacebarLanguageSwitchThreshold;
     private int mSpacebarSlidingLanguageSwitchDiff;
-    private SlidingLocaleDrawable mSlidingLocaleIcon;
+    private final SlidingLocaleDrawable mSlidingLocaleIcon;
     private final HashMap<Integer, SoftReference<BitmapDrawable>> mSpaceDrawableCache =
             new HashMap<Integer, SoftReference<BitmapDrawable>>();
 
@@ -78,7 +81,7 @@ public class LatinKeyboard extends Keyboard {
     // of the most common key width of this keyboard).
     private static final int SPACEBAR_DRAG_WIDTH = 3;
     // Minimum width of space key preview (proportional to keyboard width).
-    private static final float SPACEBAR_POPUP_MIN_RATIO = 0.4f;
+    private static final float SPACEBAR_POPUP_MIN_RATIO = 0.5f;
     // Height in space key the language name will be drawn. (proportional to space key height)
     public static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
     // If the full language name needs to be smaller than this value to be drawn on space key,
@@ -88,10 +91,10 @@ public class LatinKeyboard extends Keyboard {
     private static final String SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "small";
     private static final String MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "medium";
 
-    public LatinKeyboard(Context context, KeyboardId id) {
-        super(context, id.getXmlId(), id);
-        final Resources res = context.getResources();
-        mContext = context;
+    public LatinKeyboard(Context context, KeyboardId id, int width) {
+        super(context, id.getXmlId(), id, width);
+        mRes = context.getResources();
+        mTheme = context.getTheme();
 
         final List<Key> keys = getKeys();
         int spaceKeyIndex = -1;
@@ -118,21 +121,35 @@ public class LatinKeyboard extends Keyboard {
         mShortcutKey = (shortcutKeyIndex >= 0) ? keys.get(shortcutKeyIndex) : null;
         mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
 
-        mSpacebarTextColor = res.getColor(R.color.latinkeyboard_bar_language_text);
-        if (id.mColorScheme == KeyboardView.COLOR_SCHEME_BLACK) {
-            mSpacebarTextShadowColor = res.getColor(
-                    R.color.latinkeyboard_bar_language_shadow_black);
-            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_bkeyboard_voice_off);
-        } else { // default color scheme is KeyboardView.COLOR_SCHEME_WHITE
-            mSpacebarTextShadowColor = res.getColor(
-                    R.color.latinkeyboard_bar_language_shadow_white);
-            mDisabledShortcutIcon = res.getDrawable(R.drawable.sym_keyboard_voice_off_holo);
-        }
-        mSpaceAutoCorrectionIndicator = res.getDrawable(R.drawable.sym_keyboard_space_led);
-        mButtonArrowLeftIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_left);
-        mButtonArrowRightIcon = res.getDrawable(R.drawable.sym_keyboard_language_arrows_right);
+        final TypedArray a = context.obtainStyledAttributes(
+                null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
+        mAutoCorrectionSpacebarLedEnabled = a.getBoolean(
+                R.styleable.LatinKeyboard_autoCorrectionSpacebarLedEnabled, false);
+        mAutoCorrectionSpacebarLedIcon = a.getDrawable(
+                R.styleable.LatinKeyboard_autoCorrectionSpacebarLedIcon);
+        mDisabledShortcutIcon = a.getDrawable(R.styleable.LatinKeyboard_disabledShortcutIcon);
+        mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboard_spacebarTextColor, 0);
+        mSpacebarTextShadowColor = a.getColor(
+                R.styleable.LatinKeyboard_spacebarTextShadowColor, 0);
+        mSpacebarArrowLeftIcon = a.getDrawable(
+                R.styleable.LatinKeyboard_spacebarArrowLeftIcon);
+        mSpacebarArrowRightIcon = a.getDrawable(
+                R.styleable.LatinKeyboard_spacebarArrowRightIcon);
+        a.recycle();
+
         // The threshold is "key width" x 1.25
         mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 5) / 4;
+
+        if (mSpaceKey != null && mSpacePreviewIcon != null) {
+            final int slidingIconWidth = Math.max(mSpaceKey.mWidth,
+                    (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
+            final int spaceKeyheight = mSpacePreviewIcon.getIntrinsicHeight();
+            mSlidingLocaleIcon = new SlidingLocaleDrawable(
+                    context, mSpacePreviewIcon, slidingIconWidth, spaceKeyheight);
+            mSlidingLocaleIcon.setBounds(0, 0, slidingIconWidth, spaceKeyheight);
+        } else {
+            mSlidingLocaleIcon = null;
+        }
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
@@ -157,10 +174,14 @@ public class LatinKeyboard extends Keyboard {
     public void updateShortcutKey(boolean available, LatinKeyboardView view) {
         if (mShortcutKey == null)
             return;
-        mShortcutKey.mEnabled = available;
+        mShortcutKey.setEnabled(available);
         mShortcutKey.setIcon(available ? mEnabledShortcutIcon : mDisabledShortcutIcon);
         if (view != null)
             view.invalidateKey(mShortcutKey);
+    }
+
+    public boolean needsAutoCorrectionSpacebarLed() {
+        return mAutoCorrectionSpacebarLedEnabled;
     }
 
     /**
@@ -193,7 +214,7 @@ public class LatinKeyboard extends Keyboard {
     }
 
     // Layout local language name and left and right arrow on spacebar.
-    private static String layoutSpacebar(Paint paint, Locale locale, Drawable lArrow,
+    private static String layoutSpacebar(Paint paint, Locale locale, Drawable icon, Drawable lArrow,
             Drawable rArrow, int width, int height, float origTextSize) {
         final float arrowWidth = lArrow.getIntrinsicWidth();
         final float arrowHeight = lArrow.getIntrinsicHeight();
@@ -230,7 +251,9 @@ public class LatinKeyboard extends Keyboard {
         paint.setTextSize(textSize);
 
         // Place left and right arrow just before and after language text.
-        final float baseline = height * SPACEBAR_LANGUAGE_BASELINE;
+        final float textHeight = -paint.ascent() + paint.descent();
+        final float baseline = (icon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
+                : height / 2 + textHeight / 2;
         final int top = (int)(baseline - arrowHeight);
         final float remains = (width - textWidth) / 2;
         lArrow.setBounds((int)(remains - arrowWidth), top, (int)remains, (int)baseline);
@@ -246,7 +269,7 @@ public class LatinKeyboard extends Keyboard {
         final SoftReference<BitmapDrawable> ref = mSpaceDrawableCache.get(hashCode);
         BitmapDrawable drawable = (ref == null) ? null : ref.get();
         if (drawable == null) {
-            drawable = new BitmapDrawable(mContext.getResources(), drawSpacebar(
+            drawable = new BitmapDrawable(mRes, drawSpacebar(
                     locale, isAutoCorrection, mSpacebarTextFadeFactor));
             mSpaceDrawableCache.put(hashCode, new SoftReference<BitmapDrawable>(drawable));
         }
@@ -259,7 +282,7 @@ public class LatinKeyboard extends Keyboard {
         final int height = mSpaceIcon != null ? mSpaceIcon.getIntrinsicHeight() : mSpaceKey.mHeight;
         final Bitmap buffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         final Canvas canvas = new Canvas(buffer);
-        final Resources res = mContext.getResources();
+        final Resources res = mRes;
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
 
         // If application locales are explicitly selected.
@@ -281,9 +304,9 @@ public class LatinKeyboard extends Keyboard {
                 defaultTextSize = 14;
             }
 
-            final String language = layoutSpacebar(paint, inputLocale,
-                    mButtonArrowLeftIcon, mButtonArrowRightIcon, width, height,
-                    getTextSizeFromTheme(mContext.getTheme(), textStyle, defaultTextSize));
+            final String language = layoutSpacebar(paint, inputLocale, mSpaceIcon,
+                    mSpacebarArrowLeftIcon, mSpacebarArrowRightIcon, width, height,
+                    getTextSizeFromTheme(mTheme, textStyle, defaultTextSize));
 
             // Draw language text with shadow
             // In case there is no space icon, we will place the language text at the center of
@@ -303,21 +326,21 @@ public class LatinKeyboard extends Keyboard {
             if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()
                     && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1
                     && !(isPhoneKeyboard() || isNumberKeyboard())) {
-                mButtonArrowLeftIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
-                mButtonArrowRightIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
-                mButtonArrowLeftIcon.draw(canvas);
-                mButtonArrowRightIcon.draw(canvas);
+                mSpacebarArrowLeftIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
+                mSpacebarArrowRightIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
+                mSpacebarArrowLeftIcon.draw(canvas);
+                mSpacebarArrowRightIcon.draw(canvas);
             }
         }
 
         // Draw the spacebar icon at the bottom
         if (isAutoCorrection) {
             final int iconWidth = width * SPACE_LED_LENGTH_PERCENT / 100;
-            final int iconHeight = mSpaceAutoCorrectionIndicator.getIntrinsicHeight();
+            final int iconHeight = mAutoCorrectionSpacebarLedIcon.getIntrinsicHeight();
             int x = (width - iconWidth) / 2;
             int y = height - iconHeight;
-            mSpaceAutoCorrectionIndicator.setBounds(x, y, x + iconWidth, y + iconHeight);
-            mSpaceAutoCorrectionIndicator.draw(canvas);
+            mAutoCorrectionSpacebarLedIcon.setBounds(x, y, x + iconWidth, y + iconHeight);
+            mAutoCorrectionSpacebarLedIcon.draw(canvas);
         } else if (mSpaceIcon != null) {
             final int iconWidth = mSpaceIcon.getIntrinsicWidth();
             final int iconHeight = mSpaceIcon.getIntrinsicHeight();
@@ -337,14 +360,8 @@ public class LatinKeyboard extends Keyboard {
         if (mSpacebarSlidingLanguageSwitchDiff == diff)
             return;
         mSpacebarSlidingLanguageSwitchDiff = diff;
-        if (mSlidingLocaleIcon == null) {
-            final int width = Math.max(mSpaceKey.mWidth,
-                    (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
-            final int height = mSpacePreviewIcon.getIntrinsicHeight();
-            mSlidingLocaleIcon =
-                    new SlidingLocaleDrawable(mContext, mSpacePreviewIcon, width, height);
-            mSlidingLocaleIcon.setBounds(0, 0, width, height);
-        }
+        if (mSlidingLocaleIcon == null)
+            return;
         mSlidingLocaleIcon.setDiff(diff);
         if (Math.abs(diff) == Integer.MAX_VALUE) {
             mSpaceKey.setPreviewIcon(mSpacePreviewIcon);
@@ -399,7 +416,7 @@ public class LatinKeyboard extends Keyboard {
                 Math.max(0, Math.min(y, getHeight() - 1)));
     }
 
-    private static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
+    public static int getTextSizeFromTheme(Theme theme, int style, int defValue) {
         TypedArray array = theme.obtainStyledAttributes(
                 style, new int[] { android.R.attr.textSize });
         int textSize = array.getDimensionPixelSize(array.getResourceId(0, 0), defValue);

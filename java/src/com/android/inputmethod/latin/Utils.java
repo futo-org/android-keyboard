@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -43,7 +44,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 public class Utils {
@@ -108,7 +112,34 @@ public class Utils {
     }
 
     public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManagerCompatWrapper imm) {
-        return imm.getEnabledInputMethodList().size() > 1
+        final List<InputMethodInfoCompatWrapper> enabledImis = imm.getEnabledInputMethodList();
+
+        // Filters out IMEs that have auxiliary subtypes only (including either implicitly or
+        // explicitly enabled ones).
+        final ArrayList<InputMethodInfoCompatWrapper> filteredImis =
+                new ArrayList<InputMethodInfoCompatWrapper>();
+
+        outerloop:
+        for (InputMethodInfoCompatWrapper imi : enabledImis) {
+            // We can return true immediately after we find two or more filtered IMEs.
+            if (filteredImis.size() > 1) return true;
+            final List<InputMethodSubtypeCompatWrapper> subtypes =
+                    imm.getEnabledInputMethodSubtypeList(imi, true);
+            // IMEs that have no subtypes should be included.
+            if (subtypes.isEmpty()) {
+                filteredImis.add(imi);
+                continue;
+            }
+            // IMEs that have one or more non-auxiliary subtypes should be included.
+            for (InputMethodSubtypeCompatWrapper subtype : subtypes) {
+                if (!subtype.isAuxiliary()) {
+                    filteredImis.add(imi);
+                    continue outerloop;
+                }
+            }
+        }
+
+        return filteredImis.size() > 1
         // imm.getEnabledInputMethodSubtypeList(null, false) will return the current IME's enabled
         // input method subtype (The current IME should be LatinIME.)
                 || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;
@@ -537,8 +568,6 @@ public class Utils {
                 return KeyboardId.MODE_IM;
             } else if (variation == InputType.TYPE_TEXT_VARIATION_FILTER) {
                 return KeyboardId.MODE_TEXT;
-            } else if (variation == InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT) {
-                return KeyboardId.MODE_WEB;
             } else {
                 return KeyboardId.MODE_TEXT;
             }
@@ -661,5 +690,29 @@ public class Utils {
         conf.locale = newLocale;
         res.updateConfiguration(conf, res.getDisplayMetrics());
         return saveLocale;
+    }
+
+    private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
+
+    public static Locale constructLocaleFromString(String localeStr) {
+        if (localeStr == null)
+            return null;
+        synchronized (sLocaleCache) {
+            if (sLocaleCache.containsKey(localeStr))
+                return sLocaleCache.get(localeStr);
+            Locale retval = null;
+            String[] localeParams = localeStr.split("_", 3);
+            if (localeParams.length == 1) {
+                retval = new Locale(localeParams[0]);
+            } else if (localeParams.length == 2) {
+                retval = new Locale(localeParams[0], localeParams[1]);
+            } else if (localeParams.length == 3) {
+                retval = new Locale(localeParams[0], localeParams[1], localeParams[2]);
+            }
+            if (retval != null) {
+                sLocaleCache.put(localeStr, retval);
+            }
+            return retval;
+        }
     }
 }

@@ -27,7 +27,7 @@ public class EditorInfoCompatUtils {
     private static final Field FIELD_IME_FLAG_NAVIGATE_PREVIOUS = CompatUtils.getField(
             EditorInfo.class, "IME_FLAG_NAVIGATE_PREVIOUS");
     private static final Field FIELD_IME_ACTION_PREVIOUS = CompatUtils.getField(
-            EditorInfo.class, "IME_FLAG_ACTION_PREVIOUS");
+            EditorInfo.class, "IME_ACTION_PREVIOUS");
     private static final Integer OBJ_IME_FLAG_NAVIGATE_NEXT = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_FLAG_NAVIGATE_NEXT);
     private static final Integer OBJ_IME_FLAG_NAVIGATE_PREVIOUS = (Integer) CompatUtils
@@ -77,6 +77,9 @@ public class EditorInfoCompatUtils {
                 break;
             case EditorInfo.IME_ACTION_SEND:
                 action = "actionSend";
+                break;
+            case EditorInfo.IME_ACTION_NEXT:
+                action = "actionNext";
                 break;
             case EditorInfo.IME_ACTION_DONE:
                 action = "actionDone";

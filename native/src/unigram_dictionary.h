@@ -17,8 +17,13 @@
 #ifndef LATINIME_UNIGRAM_DICTIONARY_H
 #define LATINIME_UNIGRAM_DICTIONARY_H
 
+#include <stdint.h>
 #include "defines.h"
 #include "proximity_info.h"
+
+#ifndef NULL
+#define NULL 0
+#endif
 
 namespace latinime {
 
@@ -31,8 +36,11 @@ class UnigramDictionary {
     } ProximityType;
 
 public:
-    UnigramDictionary(const unsigned char *dict, int typedLetterMultipler, int fullWordMultiplier,
-            int maxWordLength, int maxWords, int maxProximityChars, const bool isLatestDictVersion);
+    UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
+            int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
+            const bool isLatestDictVersion);
+    bool isValidWord(unsigned short *word, int length);
+    int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
             unsigned short *outWords, int *frequencies);
@@ -56,34 +64,30 @@ private:
     bool checkIfDictVersionIsLatest();
     int getAddress(int *pos);
     int getFreq(int *pos);
-    int wideStrLen(unsigned short *str);
-    bool sameAsTyped(unsigned short *word, int length);
+    bool sameAsTyped(const unsigned short *word, int length) const;
     bool addWord(unsigned short *word, int length, int frequency);
-    unsigned short toBaseLowerCase(unsigned short c);
+    void addWordAlternatesSpellings(const uint8_t* const root, int pos, int depth, int finalFreq);
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
             const int nextLettersSize);
     bool getSplitTwoWordsSuggestion(const int inputLength,
             const int firstWordStartPos, const int firstWordLength,
-            const int secondWordStartPos, const int secondWordLength);
+            const int secondWordStartPos, const int secondWordLength, const bool isSpaceProximity);
     bool getMissingSpaceWords(const int inputLength, const int missingSpacePos);
     bool getMistypedSpaceWords(const int inputLength, const int spaceProximityPos);
     // Keep getWordsOld for comparing performance between getWords and getWordsOld
     void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
             const int excessivePos, const int transposedPos, int *nextLetters,
             const int nextLettersSize);
-    void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize);
     int calculateFinalFreq(const int inputIndex, const int depth, const int snr, const int skipPos,
             const int excessivePos, const int transposedPos, const int freq,
             const bool sameLength) const;
-    void onTerminalWhenUserTypedLengthIsGreaterThanInputLength(unsigned short *word,
-            const int inputIndex, const int depth, const int snr, int *nextLetters,
-            const int nextLettersSize, const int skipPos, const int excessivePos,
-            const int transposedPos, const int freq);
-    void onTerminalWhenUserTypedLengthIsSameAsInputLength(unsigned short *word,
-            const int inputIndex, const int depth, const int snr, const int skipPos,
-            const int excessivePos, const int transposedPos, const int freq);
+    void onTerminal(unsigned short int* word, const int depth,
+            const uint8_t* const root, const uint8_t flags, int pos,
+            const int inputIndex, const int matchWeight, const int skipPos,
+            const int excessivePos, const int transposedPos, const int freq, const bool sameLength,
+            int *nextLetters, const int nextLettersSize);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     ProximityType getMatchedProximityId(const int *currentChars, const unsigned short c,
@@ -94,7 +98,7 @@ private:
             const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
             int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
             bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
-            int *nextSiblingPosition);
+            int *nextSiblingPosition, int *nextOutputIndex);
     int getBestWordFreq(const int startInputIndex, const int inputLength, unsigned short *word);
     // Process a node by considering missing space
     bool processCurrentNodeForExactMatch(const int firstChildPos,
@@ -104,7 +108,8 @@ private:
     inline const int* getInputCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS);
     }
-    const unsigned char *DICT;
+
+    const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
     const int MAX_WORDS;
     const int MAX_PROXIMITY_CHARS;
@@ -138,11 +143,10 @@ private:
     int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];
     int mStackDiffs[MAX_WORD_LENGTH_INTERNAL];
     int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];
+    int mStackOutputIndex[MAX_WORD_LENGTH_INTERNAL];
     int mNextLettersFrequency[NEXT_LETTERS_SIZE];
 };
 
-// ----------------------------------------------------------------------------
-
-}; // namespace latinime
+} // namespace latinime
 
 #endif // LATINIME_UNIGRAM_DICTIONARY_H

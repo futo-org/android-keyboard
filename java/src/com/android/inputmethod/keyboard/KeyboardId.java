@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Google Inc.
+ * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,11 +16,11 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.view.inputmethod.EditorInfo;
+
 import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.latin.R;
-
-import android.view.inputmethod.EditorInfo;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -34,38 +34,55 @@ public class KeyboardId {
     public static final int MODE_URL = 1;
     public static final int MODE_EMAIL = 2;
     public static final int MODE_IM = 3;
-    public static final int MODE_WEB = 4;
-    public static final int MODE_PHONE = 5;
-    public static final int MODE_NUMBER = 6;
+    public static final int MODE_PHONE = 4;
+    public static final int MODE_NUMBER = 5;
+
+    public static final int F2KEY_MODE_NONE = 0;
+    public static final int F2KEY_MODE_SETTINGS = 1;
+    public static final int F2KEY_MODE_SHORTCUT_IME = 2;
+    public static final int F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS = 3;
 
     public final Locale mLocale;
     public final int mOrientation;
+    public final int mWidth;
     public final int mMode;
     public final int mXmlId;
-    public final int mColorScheme;
+    public final boolean mNavigateAction;
     public final boolean mPasswordInput;
+    // TODO: Clean up these booleans and modes.
     public final boolean mHasSettingsKey;
+    public final int mF2KeyMode;
+    public final boolean mClobberSettingsKey;
     public final boolean mVoiceKeyEnabled;
     public final boolean mHasVoiceKey;
     public final int mImeAction;
     public final boolean mEnableShiftLock;
+
     public final String mXmlName;
+    public final EditorInfo mAttribute;
 
     private final int mHashCode;
 
-    public KeyboardId(String xmlName, int xmlId, int colorScheme, Locale locale, int orientation,
-            int mode, EditorInfo attribute, boolean hasSettingsKey, boolean voiceKeyEnabled,
-            boolean hasVoiceKey, boolean enableShiftLock) {
+    public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int width,
+            int mode, EditorInfo attribute, boolean hasSettingsKey, int f2KeyMode,
+            boolean clobberSettingsKey, boolean voiceKeyEnabled, boolean hasVoiceKey,
+            boolean enableShiftLock) {
         final int inputType = (attribute != null) ? attribute.inputType : 0;
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         this.mLocale = locale;
         this.mOrientation = orientation;
+        this.mWidth = width;
         this.mMode = mode;
         this.mXmlId = xmlId;
-        this.mColorScheme = colorScheme;
+        // Note: Turn off checking navigation flag to show TAB key for now.
+        this.mNavigateAction = InputTypeCompatUtils.isWebInputType(inputType);
+//                || EditorInfoCompatUtils.hasFlagNavigateNext(imeOptions)
+//                || EditorInfoCompatUtils.hasFlagNavigatePrevious(imeOptions);
         this.mPasswordInput = InputTypeCompatUtils.isPasswordInputType(inputType)
                 || InputTypeCompatUtils.isVisiblePasswordInputType(inputType);
         this.mHasSettingsKey = hasSettingsKey;
+        this.mF2KeyMode = f2KeyMode;
+        this.mClobberSettingsKey = clobberSettingsKey;
         this.mVoiceKeyEnabled = voiceKeyEnabled;
         this.mHasVoiceKey = hasVoiceKey;
         // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
@@ -73,21 +90,40 @@ public class KeyboardId {
         this.mImeAction = imeOptions & (
                 EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
         this.mEnableShiftLock = enableShiftLock;
+
         this.mXmlName = xmlName;
+        this.mAttribute = attribute;
 
         this.mHashCode = Arrays.hashCode(new Object[] {
                 locale,
                 orientation,
+                width,
                 mode,
                 xmlId,
-                colorScheme,
+                mNavigateAction,
                 mPasswordInput,
                 hasSettingsKey,
+                f2KeyMode,
+                clobberSettingsKey,
                 voiceKeyEnabled,
                 hasVoiceKey,
                 mImeAction,
                 enableShiftLock,
         });
+    }
+
+    public KeyboardId cloneWithNewLayout(String xmlName, int xmlId) {
+        return new KeyboardId(xmlName, xmlId, mLocale, mOrientation, mWidth, mMode, mAttribute,
+                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey,
+                mEnableShiftLock);
+    }
+
+    public KeyboardId cloneWithNewGeometry(int width) {
+        if (mWidth == width)
+            return this;
+        return new KeyboardId(mXmlName, mXmlId, mLocale, mOrientation, width, mMode, mAttribute,
+                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey,
+                mEnableShiftLock);
     }
 
     public int getXmlId() {
@@ -99,11 +135,15 @@ public class KeyboardId {
     }
 
     public boolean isSymbolsKeyboard() {
-        return mXmlId == R.xml.kbd_symbols;
+        return mXmlId == R.xml.kbd_symbols || mXmlId == R.xml.kbd_symbols_shift;
     }
 
     public boolean isPhoneKeyboard() {
         return mMode == MODE_PHONE;
+    }
+
+    public boolean isPhoneSymbolsKeyboard() {
+        return mXmlId == R.xml.kbd_phone_symbols;
     }
 
     public boolean isNumberKeyboard() {
@@ -118,11 +158,14 @@ public class KeyboardId {
     boolean equals(KeyboardId other) {
         return other.mLocale.equals(this.mLocale)
             && other.mOrientation == this.mOrientation
+            && other.mWidth == this.mWidth
             && other.mMode == this.mMode
             && other.mXmlId == this.mXmlId
-            && other.mColorScheme == this.mColorScheme
+            && other.mNavigateAction == this.mNavigateAction
             && other.mPasswordInput == this.mPasswordInput
             && other.mHasSettingsKey == this.mHasSettingsKey
+            && other.mF2KeyMode == this.mF2KeyMode
+            && other.mClobberSettingsKey == this.mClobberSettingsKey
             && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
             && other.mHasVoiceKey == this.mHasVoiceKey
             && other.mImeAction == this.mImeAction
@@ -136,18 +179,20 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s %s imeAction=%s %s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
-                (mOrientation == 1 ? "port" : "land"),
+                (mOrientation == 1 ? "port" : "land"), mWidth,
                 modeName(mMode),
                 EditorInfoCompatUtils.imeOptionsName(mImeAction),
+                f2KeyModeName(mF2KeyMode),
+                (mClobberSettingsKey ? " clobberSettingsKey" : ""),
+                (mNavigateAction ? " navigateAction" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
                 (mHasVoiceKey ? " hasVoiceKey" : ""),
-                (mEnableShiftLock ? " enableShiftLock" : ""),
-                colorSchemeName(mColorScheme)
+                (mEnableShiftLock ? " enableShiftLock" : "")
         );
     }
 
@@ -157,18 +202,19 @@ public class KeyboardId {
         case MODE_URL: return "url";
         case MODE_EMAIL: return "email";
         case MODE_IM: return "im";
-        case MODE_WEB: return "web";
         case MODE_PHONE: return "phone";
         case MODE_NUMBER: return "number";
+        default: return null;
         }
-        return null;
     }
 
-    public static String colorSchemeName(int colorScheme) {
-        switch (colorScheme) {
-        case KeyboardView.COLOR_SCHEME_WHITE: return "white";
-        case KeyboardView.COLOR_SCHEME_BLACK: return "black";
+    public static String f2KeyModeName(int f2KeyMode) {
+        switch (f2KeyMode) {
+        case F2KEY_MODE_NONE: return "none";
+        case F2KEY_MODE_SETTINGS: return "settings";
+        case F2KEY_MODE_SHORTCUT_IME: return "shortcutIme";
+        case F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS: return "shortcutImeOrSettings";
+        default: return null;
         }
-        return null;
     }
 }

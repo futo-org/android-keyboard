@@ -92,10 +92,9 @@ public class SubtypeSwitcher {
     }
 
     public static void init(LatinIME service, SharedPreferences prefs) {
+        SubtypeLocale.init(service);
         sInstance.initialize(service, prefs);
         sInstance.updateAllParameters();
-
-        SubtypeLocale.init(service);
     }
 
     private SubtypeSwitcher() {
@@ -281,14 +280,8 @@ public class SubtypeSwitcher {
         // "en_US" --> language: en  & country: US
         // "en" --> language: en
         // "" --> the system locale
-        mLocaleSplitter.setString(inputLocaleStr);
-        if (mLocaleSplitter.hasNext()) {
-            String language = mLocaleSplitter.next();
-            if (mLocaleSplitter.hasNext()) {
-                mInputLocale = new Locale(language, mLocaleSplitter.next());
-            } else {
-                mInputLocale = new Locale(language);
-            }
+        if (!TextUtils.isEmpty(inputLocaleStr)) {
+            mInputLocale = Utils.constructLocaleFromString(inputLocaleStr);
             mInputLocaleStr = inputLocaleStr;
         } else {
             mInputLocale = mSystemLocale;
@@ -420,7 +413,7 @@ public class SubtypeSwitcher {
         final KeyboardSwitcher switcher = KeyboardSwitcher.getInstance();
         final LatinKeyboard keyboard = switcher.getLatinKeyboard();
         if (keyboard != null) {
-            keyboard.updateShortcutKey(isShortcutImeReady(), switcher.getInputView());
+            keyboard.updateShortcutKey(isShortcutImeReady(), switcher.getKeyboardView());
         }
     }
 
@@ -510,7 +503,7 @@ public class SubtypeSwitcher {
     private void triggerVoiceIME() {
         if (!mService.isInputViewShown()) return;
         VoiceProxy.getInstance().startListening(false,
-                KeyboardSwitcher.getInstance().getInputView().getWindowToken());
+                KeyboardSwitcher.getInstance().getKeyboardView().getWindowToken());
     }
 
     //////////////////////////////////////
@@ -549,12 +542,12 @@ public class SubtypeSwitcher {
                     || mEnabledKeyboardSubtypesOfCurrentInputMethod.size() == 0) return;
             mCurrentKeyboardSubtypeIndex = getCurrentIndex();
             mNextKeyboardSubtype = getNextKeyboardSubtypeInternal(mCurrentKeyboardSubtypeIndex);
-            Locale locale = new Locale(mNextKeyboardSubtype.getLocale());
-            mNextLanguage = getDisplayLanguage(locale);
+            Locale locale = Utils.constructLocaleFromString(mNextKeyboardSubtype.getLocale());
+            mNextLanguage = getFullDisplayName(locale, true);
             mPreviousKeyboardSubtype = getPreviousKeyboardSubtypeInternal(
                     mCurrentKeyboardSubtypeIndex);
-            locale = new Locale(mPreviousKeyboardSubtype.getLocale());
-            mPreviousLanguage = getDisplayLanguage(locale);
+            locale = Utils.constructLocaleFromString(mPreviousKeyboardSubtype.getLocale());
+            mPreviousLanguage = getFullDisplayName(locale, true);
         }
 
         private int normalize(int index) {
@@ -584,29 +577,30 @@ public class SubtypeSwitcher {
 
     public static String getFullDisplayName(Locale locale, boolean returnsNameInThisLocale) {
         if (returnsNameInThisLocale) {
-            return toTitleCase(SubtypeLocale.getFullDisplayName(locale));
+            return toTitleCase(SubtypeLocale.getFullDisplayName(locale), locale);
         } else {
-            return toTitleCase(locale.getDisplayName());
+            return toTitleCase(locale.getDisplayName(), locale);
         }
     }
 
     public static String getDisplayLanguage(Locale locale) {
-        return toTitleCase(locale.getDisplayLanguage(locale));
+        return toTitleCase(SubtypeLocale.getFullDisplayName(locale), locale);
     }
 
     public static String getMiddleDisplayLanguage(Locale locale) {
-        return toTitleCase((new Locale(locale.getLanguage()).getDisplayLanguage(locale)));
+        return toTitleCase((Utils.constructLocaleFromString(
+                locale.getLanguage()).getDisplayLanguage(locale)), locale);
     }
 
     public static String getShortDisplayLanguage(Locale locale) {
-        return toTitleCase(locale.getLanguage());
+        return toTitleCase(locale.getLanguage(), locale);
     }
 
-    private static String toTitleCase(String s) {
+    private static String toTitleCase(String s, Locale locale) {
         if (s.length() == 0) {
             return s;
         }
-        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
+        return s.toUpperCase(locale).charAt(0) + s.substring(1);
     }
 
     public String getInputLanguageName() {

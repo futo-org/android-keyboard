@@ -43,7 +43,6 @@ public:
     }
 
     bool isValidWord(unsigned short *word, int length);
-    int isValidWordRec(int pos, unsigned short *word, int offset, int length);
     void *getDict() { return (void *)mDict; }
     int getDictSize() { return mDictSize; }
     int getMmapFd() { return mMmapFd; }
@@ -63,6 +62,9 @@ public:
             const int pos, unsigned short *c, int *childrenPosition,
             bool *terminal, int *freq);
 
+    // TODO: delete this
+    int getBigramPosition(unsigned short *word, int length);
+
 private:
     bool hasBigram();
 
@@ -79,7 +81,6 @@ private:
     BigramDictionary *mBigramDictionary;
 };
 
-// ----------------------------------------------------------------------------
 // public static utility methods
 // static inline methods should be defined in the header file
 inline unsigned short Dictionary::getChar(const unsigned char *dict, int *pos) {
@@ -132,7 +133,6 @@ inline int Dictionary::getFreq(const unsigned char *dict,
     return freq;
 }
 
-
 inline int Dictionary::wideStrLen(unsigned short *str) {
     if (!str) return 0;
     unsigned short *end = str;
@@ -156,5 +156,6 @@ inline int Dictionary::setDictionaryValues(const unsigned char *dict,
     return position;
 }
 
-}; // namespace latinime
+} // namespace latinime
+
 #endif // LATINIME_DICTIONARY_H

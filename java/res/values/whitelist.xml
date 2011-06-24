@@ -25,14 +25,5 @@
         3. (String)after
      -->
     <string-array name="wordlist_whitelist">
-
-        <item>255</item>
-        <item>ill</item>
-        <item>I\'ll</item>
-
-        <item>255</item>
-        <item>thisd</item>
-        <item>this\'d</item>
-
     </string-array>
 </resources>

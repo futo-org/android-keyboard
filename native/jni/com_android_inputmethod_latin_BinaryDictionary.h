@@ -21,7 +21,9 @@
 #include "jni.h"
 
 namespace latinime {
+
 int register_BinaryDictionary(JNIEnv *env);
+
 }
 
 #endif // _COM_ANDROID_INPUTMETHOD_LATIN_BINARYDICTIONARY_H

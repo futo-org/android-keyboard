@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Google Inc.
+ * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,16 +16,21 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.keyboard.KeyStyles.KeyStyle;
-import com.android.inputmethod.keyboard.KeyboardParser.ParseException;
-import com.android.inputmethod.latin.R;
-
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Xml;
+
+import com.android.inputmethod.keyboard.internal.KeyStyles;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
+import com.android.inputmethod.keyboard.internal.Row;
+import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
+import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
+import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
 
@@ -37,25 +42,26 @@ public class Key {
      * The key code (unicode or custom code) that this key generates.
      */
     public final int mCode;
-    /** The unicode that this key generates in manual temporary upper case mode. */
-    public final int mManualTemporaryUpperCaseCode;
 
     /** Label to display */
     public final CharSequence mLabel;
+    /** Hint letter to display on the key in conjunction with the label */
+    public final CharSequence mHintLetter;
     /** Option of the label */
     public final int mLabelOption;
+    public static final int LABEL_OPTION_ALIGN_LEFT = 0x01;
+    public static final int LABEL_OPTION_ALIGN_RIGHT = 0x02;
+    public static final int LABEL_OPTION_ALIGN_BOTTOM = 0x08;
+    public static final int LABEL_OPTION_FONT_NORMAL = 0x10;
+    public static final int LABEL_OPTION_FONT_FIXED_WIDTH = 0x20;
+    public static final int LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO = 0x40;
+    private static final int LABEL_OPTION_POPUP_HINT = 0x80;
+    private static final int LABEL_OPTION_HAS_UPPERCASE_LETTER = 0x100;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;
     /** Preview version of the icon, for the preview popup */
     private Drawable mPreviewIcon;
-    /** Hint icon to display on the key in conjunction with the label */
-    public final Drawable mHintIcon;
-    /**
-     * The hint icon to display on the key when keyboard is in manual temporary upper case
-     * mode.
-     */
-    public final Drawable mManualTemporaryUpperCaseHintIcon;
 
     /** Width of the key, not including the gap */
     public final int mWidth;
@@ -95,11 +101,15 @@ public class Key {
     private final Keyboard mKeyboard;
 
     /** The current pressed state of this key */
-    public boolean mPressed;
+    private boolean mPressed;
     /** If this is a sticky key, is its highlight on? */
-    public boolean mHighlightOn;
+    private boolean mHighlightOn;
     /** Key is enabled and responds on press */
-    public boolean mEnabled = true;
+    private boolean mEnabled = true;
+
+    // keyWidth constants
+    private static final int KEYWIDTH_FILL_RIGHT = 0;
+    private static final int KEYWIDTH_FILL_BOTH = -1;
 
     private final static int[] KEY_STATE_NORMAL_ON = {
         android.R.attr.state_checkable,
@@ -140,7 +150,7 @@ public class Key {
     };
 
     /**
-     * This constructor is being used only for key in mini popup keyboard.
+     * This constructor is being used only for key in popup mini keyboard.
      */
     public Key(Resources res, Keyboard keyboard, CharSequence popupCharacter, int x, int y,
             int width, int height, int edgeFlags) {
@@ -150,9 +160,7 @@ public class Key {
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mGap;
         mEdgeFlags = edgeFlags;
-        mHintIcon = null;
-        mManualTemporaryUpperCaseHintIcon = null;
-        mManualTemporaryUpperCaseCode = Keyboard.CODE_DUMMY;
+        mHintLetter = null;
         mLabelOption = 0;
         mFunctional = false;
         mSticky = false;
@@ -163,7 +171,7 @@ public class Key {
         mLabel = PopupCharactersParser.getLabel(popupSpecification);
         mOutputText = PopupCharactersParser.getOutputText(popupSpecification);
         mCode = PopupCharactersParser.getCode(res, popupSpecification);
-        mIcon = PopupCharactersParser.getIcon(res, popupSpecification);
+        mIcon = keyboard.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpecification));
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mGap / 2;
         mY = y;
@@ -178,6 +186,7 @@ public class Key {
      * @param x the x coordinate of the top-left
      * @param y the y coordinate of the top-left
      * @param parser the XML parser containing the attributes for this key
+     * @param keyStyles active key styles set
      */
     public Key(Resources res, Row row, int x, int y, XmlResourceParser parser,
             KeyStyles keyStyles) {
@@ -185,6 +194,7 @@ public class Key {
 
         final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
+        int keyWidth;
         try {
             mHeight = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight,
@@ -192,16 +202,12 @@ public class Key {
             mGap = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_horizontalGap,
                     mKeyboard.getDisplayWidth(), row.mDefaultHorizontalGap);
-            mWidth = KeyboardParser.getDimensionOrFraction(keyboardAttr,
+            keyWidth = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyWidth,
-                    mKeyboard.getDisplayWidth(), row.mDefaultWidth) - mGap;
+                    mKeyboard.getDisplayWidth(), row.mDefaultWidth);
         } finally {
             keyboardAttr.recycle();
         }
-
-        // Horizontal gap is divided equally to both sides of the key.
-        mX = x + mGap / 2;
-        mY = y;
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
@@ -215,6 +221,35 @@ public class Key {
             } else {
                 style = keyStyles.getEmptyKeyStyle();
             }
+
+            final int keyboardWidth = mKeyboard.getDisplayWidth();
+            int keyXPos = KeyboardParser.getDimensionOrFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyXPos, keyboardWidth, x);
+            if (keyXPos < 0) {
+                // If keyXPos is negative, the actual x-coordinate will be k + keyXPos.
+                keyXPos += keyboardWidth;
+                if (keyXPos < x) {
+                    // keyXPos shouldn't be less than x because drawable area for this key starts
+                    // at x. Or, this key will overlaps the adjacent key on its left hand side.
+                    keyXPos = x;
+                }
+            }
+            if (keyWidth == KEYWIDTH_FILL_RIGHT) {
+                // If keyWidth is zero, the actual key width will be determined to fill out the
+                // area up to the right edge of the keyboard.
+                keyWidth = keyboardWidth - keyXPos;
+            } else if (keyWidth <= KEYWIDTH_FILL_BOTH) {
+                // If keyWidth is negative, the actual key width will be determined to fill out the
+                // area between the nearest key on the left hand side and the right edge of the
+                // keyboard.
+                keyXPos = x;
+                keyWidth = keyboardWidth - keyXPos;
+            }
+
+            // Horizontal gap is divided equally to both sides of the key.
+            mX = keyXPos + mGap / 2;
+            mY = y;
+            mWidth = keyWidth - mGap;
 
             final CharSequence[] popupCharacters = style.getTextArray(keyAttr,
                     R.styleable.Keyboard_Key_popupCharacters);
@@ -234,24 +269,23 @@ public class Key {
             mEdgeFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
                     | row.mRowEdgeFlags;
 
+            final KeyboardIconsSet iconsSet = mKeyboard.mIconsSet;
             mVisualInsetsLeft = KeyboardParser.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_visualInsetsLeft, mKeyboard.getDisplayHeight(), 0);
             mVisualInsetsRight = KeyboardParser.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_visualInsetsRight, mKeyboard.getDisplayHeight(), 0);
-            mPreviewIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_iconPreview);
+            mPreviewIcon = iconsSet.getIcon(style.getInt(
+                    keyAttr, R.styleable.Keyboard_Key_keyIconPreview,
+                    KeyboardIconsSet.ICON_UNDEFINED));
             Keyboard.setDefaultBounds(mPreviewIcon);
-            mIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_keyIcon);
+            mIcon = iconsSet.getIcon(style.getInt(
+                    keyAttr, R.styleable.Keyboard_Key_keyIcon,
+                    KeyboardIconsSet.ICON_UNDEFINED));
             Keyboard.setDefaultBounds(mIcon);
-            mHintIcon = style.getDrawable(keyAttr, R.styleable.Keyboard_Key_keyHintIcon);
-            Keyboard.setDefaultBounds(mHintIcon);
-            mManualTemporaryUpperCaseHintIcon = style.getDrawable(keyAttr,
-                    R.styleable.Keyboard_Key_manualTemporaryUpperCaseHintIcon);
-            Keyboard.setDefaultBounds(mManualTemporaryUpperCaseHintIcon);
+            mHintLetter = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLetter);
 
             mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             mLabelOption = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption, 0);
-            mManualTemporaryUpperCaseCode = style.getInt(keyAttr,
-                    R.styleable.Keyboard_Key_manualTemporaryUpperCaseCode, Keyboard.CODE_DUMMY);
             mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
             // Choose the first letter of the label as primary code if not
             // specified.
@@ -265,8 +299,9 @@ public class Key {
                 mCode = Keyboard.CODE_DUMMY;
             }
 
-            final Drawable shiftedIcon = style.getDrawable(keyAttr,
-                    R.styleable.Keyboard_Key_shiftedIcon);
+            final Drawable shiftedIcon = iconsSet.getIcon(style.getInt(
+                    keyAttr, R.styleable.Keyboard_Key_keyIconShifted,
+                    KeyboardIconsSet.ICON_UNDEFINED));
             if (shiftedIcon != null)
                 mKeyboard.getShiftedIcons().put(this, shiftedIcon);
         } finally {
@@ -274,8 +309,16 @@ public class Key {
         }
     }
 
+    public boolean hasPopupHint() {
+        return (mLabelOption & LABEL_OPTION_POPUP_HINT) != 0;
+    }
+
+    public boolean hasUppercaseLetter() {
+        return (mLabelOption & LABEL_OPTION_HAS_UPPERCASE_LETTER) != 0;
+    }
+
     private static boolean isDigitPopupCharacter(CharSequence label) {
-        return label.length() == 1 && Character.isDigit(label.charAt(0));
+        return label != null && label.length() == 1 && Character.isDigit(label.charAt(0));
     }
 
     private static CharSequence[] filterOutDigitPopupCharacters(CharSequence[] popupCharacters) {
@@ -336,6 +379,18 @@ public class Key {
      */
     public void onReleased() {
         mPressed = false;
+    }
+
+    public void setHighlightOn(boolean highlightOn) {
+        mHighlightOn = highlightOn;
+    }
+
+    public boolean isEnabled() {
+        return mEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        mEnabled = enabled;
     }
 
     /**

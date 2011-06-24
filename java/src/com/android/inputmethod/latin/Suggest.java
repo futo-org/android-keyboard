@@ -84,7 +84,7 @@ public class Suggest implements Dictionary.WordCallback {
     private final Map<String, Dictionary> mUnigramDictionaries = new HashMap<String, Dictionary>();
     private final Map<String, Dictionary> mBigramDictionaries = new HashMap<String, Dictionary>();
 
-    private int mPrefMaxSuggestions = 12;
+    private int mPrefMaxSuggestions = 18;
 
     private static final int PREF_MAX_BIGRAMS = 60;
 
@@ -117,30 +117,31 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     private void init(Context context, Dictionary mainDict) {
-        if (mainDict != null) {
-            mMainDict = mainDict;
-            mUnigramDictionaries.put(DICT_KEY_MAIN, mainDict);
-            mBigramDictionaries.put(DICT_KEY_MAIN, mainDict);
-        }
+        mMainDict = mainDict;
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
         mWhiteListDictionary = WhitelistDictionary.init(context);
-        if (mWhiteListDictionary != null) {
-            mUnigramDictionaries.put(DICT_KEY_WHITELIST, mWhiteListDictionary);
-        }
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
         mAutoCorrection = new AutoCorrection();
         initPool();
+    }
+
+    private void addOrReplaceDictionary(Map<String, Dictionary> dictionaries, String key,
+            Dictionary dict) {
+        final Dictionary oldDict = (dict == null)
+                ? dictionaries.remove(key)
+                : dictionaries.put(key, dict);
+        if (oldDict != null && dict != oldDict) {
+            oldDict.close();
+        }
     }
 
     public void resetMainDict(Context context, int dictionaryResId, Locale locale) {
         final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
                 context, locale, dictionaryResId);
         mMainDict = newMainDict;
-        if (null == newMainDict) {
-            mUnigramDictionaries.remove(DICT_KEY_MAIN);
-            mBigramDictionaries.remove(DICT_KEY_MAIN);
-        } else {
-            mUnigramDictionaries.put(DICT_KEY_MAIN, newMainDict);
-            mBigramDictionaries.put(DICT_KEY_MAIN, newMainDict);
-        }
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
     }
 
     private void initPool() {
@@ -179,28 +180,25 @@ public class Suggest implements Dictionary.WordCallback {
      * before the main dictionary, if set.
      */
     public void setUserDictionary(Dictionary userDictionary) {
-        if (userDictionary != null)
-            mUnigramDictionaries.put(DICT_KEY_USER, userDictionary);
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_USER, userDictionary);
     }
 
     /**
-     * Sets an optional contacts dictionary resource to be loaded.
+     * Sets an optional contacts dictionary resource to be loaded. It is also possible to remove
+     * the contacts dictionary by passing null to this method. In this case no contacts dictionary
+     * won't be used.
      */
     public void setContactsDictionary(Dictionary contactsDictionary) {
-        if (contactsDictionary != null) {
-            mUnigramDictionaries.put(DICT_KEY_CONTACTS, contactsDictionary);
-            mBigramDictionaries.put(DICT_KEY_CONTACTS, contactsDictionary);
-        }
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
     }
 
     public void setAutoDictionary(Dictionary autoDictionary) {
-        if (autoDictionary != null)
-            mUnigramDictionaries.put(DICT_KEY_AUTO, autoDictionary);
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_AUTO, autoDictionary);
     }
 
     public void setUserBigramDictionary(Dictionary userBigramDictionary) {
-        if (userBigramDictionary != null)
-            mBigramDictionaries.put(DICT_KEY_USER_BIGRAM, userBigramDictionary);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_USER_BIGRAM, userBigramDictionary);
     }
 
     public void setAutoCorrectionThreshold(double threshold) {
@@ -252,6 +250,7 @@ public class Suggest implements Dictionary.WordCallback {
                 poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
                         : new StringBuilder(getApproxMaxWordLength());
         sb.setLength(0);
+        // TODO: Must pay attention to locale when changing case.
         if (all) {
             sb.append(word.toString().toUpperCase());
         } else if (first) {
@@ -317,6 +316,7 @@ public class Suggest implements Dictionary.WordCallback {
                 } else {
                     // Word entered: return only bigrams that match the first char of the typed word
                     final char currentChar = typedWord.charAt(0);
+                    // TODO: Must pay attention to locale when changing case.
                     final char currentCharUpper = Character.toUpperCase(currentChar);
                     int count = 0;
                     final int bigramSuggestionSize = mBigramSuggestions.size();
@@ -520,6 +520,7 @@ public class Suggest implements Dictionary.WordCallback {
         StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
                 : new StringBuilder(getApproxMaxWordLength());
         sb.setLength(0);
+        // TODO: Must pay attention to locale when changing case.
         if (mIsAllUpperCase) {
             sb.append(new String(word, offset, length).toUpperCase());
         } else if (mIsFirstCharCapitalized) {

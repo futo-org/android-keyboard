@@ -30,6 +30,15 @@
     <string name="correction_category" msgid="2236750915056607613">"تصحيح النص"</string>
     <string name="ngram_category" msgid="5337109164339320257">"الاقتراحات بناءً على الكلمات السابقة"</string>
     <string name="misc_category" msgid="6894192814868233453">"خيارات أخرى"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"الإعدادات المتقدمة"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"خيارات للمستخدمين الخبراء"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"تأخير إزالة النافذة المنبثقة الأساسية"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"بلا تأخير"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"افتراضي"</string>
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"استخدام الأحرف الكبيرة تلقائيًا"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"إصلاحات سريعة"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"تصحيح الأخطاء المكتوبة الشائعة"</string>
@@ -105,14 +114,21 @@
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"لوحة مفاتيح إنجليزية (بريطانيا)"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"لوحة مفاتيح إنجليزية (الولايات المتحدة)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"لوحة مفاتيح إسبانية"</string>
-    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"لوحة مفاتيح إسبانية (الولايات المتحدة)"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"لوحة مفاتيح فرنسية"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"لوحة مفاتيح فرنسية (كندا)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"لوحة مفاتيح فرنسية (سويسرا)"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"لوحة المفاتيح العبرية"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"لوحة مفاتيح إيطالية"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"لوحة مفاتيح نرويجية"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"لوحة مفاتيح بولندية"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"لوحة المفاتيح البولندية"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"لوحة المفاتيح البرتغالية"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"لوحة مفاتيح روسية"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"لوحة مفاتيح صربية"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"لوحة مفاتيح سويدية"</string>

@@ -37,6 +37,7 @@ public class InputTypeCompatUtils {
             (Integer) CompatUtils.getFieldValue(null, null,
                     FIELD_InputType_TYPE_NUMBER_VARIATION_PASSWORD);
     private static final int WEB_TEXT_PASSWORD_INPUT_TYPE;
+    private static final int WEB_TEXT_EMAIL_ADDRESS_INPUT_TYPE;
     private static final int NUMBER_PASSWORD_INPUT_TYPE;
     private static final int TEXT_PASSWORD_INPUT_TYPE =
             InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD;
@@ -45,18 +46,33 @@ public class InputTypeCompatUtils {
 
     static {
         WEB_TEXT_PASSWORD_INPUT_TYPE =
-                OBJ_InputType_TYPE_TEXT_VARIATION_WEB_PASSWORD != null
-                        ? InputType.TYPE_CLASS_TEXT | OBJ_InputType_TYPE_TEXT_VARIATION_WEB_PASSWORD
-                        : 0;
+            OBJ_InputType_TYPE_TEXT_VARIATION_WEB_PASSWORD != null
+                    ? InputType.TYPE_CLASS_TEXT | OBJ_InputType_TYPE_TEXT_VARIATION_WEB_PASSWORD
+                    : 0;
+        WEB_TEXT_EMAIL_ADDRESS_INPUT_TYPE =
+            OBJ_InputType_TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS != null
+                    ? InputType.TYPE_CLASS_TEXT
+                            | OBJ_InputType_TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS
+                    : 0;
         NUMBER_PASSWORD_INPUT_TYPE =
                 OBJ_InputType_TYPE_NUMBER_VARIATION_PASSWORD != null
                         ? InputType.TYPE_CLASS_NUMBER | OBJ_InputType_TYPE_NUMBER_VARIATION_PASSWORD
                         : 0;
     }
 
+    private static boolean isWebEditTextInputType(int inputType) {
+        return inputType == (InputType.TYPE_CLASS_TEXT
+                | InputType.TYPE_TEXT_VARIATION_WEB_EDIT_TEXT);
+    }
+
     private static boolean isWebPasswordInputType(int inputType) {
         return WEB_TEXT_PASSWORD_INPUT_TYPE != 0
                 && inputType == WEB_TEXT_PASSWORD_INPUT_TYPE;
+    }
+
+    private static boolean isWebEmailAddressInputType(int inputType) {
+        return WEB_TEXT_EMAIL_ADDRESS_INPUT_TYPE != 0
+                && inputType == WEB_TEXT_EMAIL_ADDRESS_INPUT_TYPE;
     }
 
     private static boolean isNumberPasswordInputType(int inputType) {
@@ -76,6 +92,13 @@ public class InputTypeCompatUtils {
     public static boolean isEmailVariation(int variation) {
         return variation == InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                 || isWebEmailAddressVariation(variation);
+    }
+
+    public static boolean isWebInputType(int inputType) {
+        final int maskedInputType =
+                inputType & (InputType.TYPE_MASK_CLASS | InputType.TYPE_MASK_VARIATION);
+        return isWebEditTextInputType(maskedInputType) || isWebPasswordInputType(maskedInputType)
+                || isWebEmailAddressInputType(maskedInputType);
     }
 
     // Please refer to TextView.isPasswordInputType

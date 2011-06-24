@@ -15,25 +15,169 @@
 -->
 
 <resources>
+    <!-- Theme "Basic" -->
+    <style name="Keyboard">
+        <item name="rowHeight">25%p</item>
+        <item name="keyboardHeight">@dimen/keyboardHeight</item>
+        <item name="maxKeyboardHeight">@fraction/maxKeyboardHeight</item>
+        <item name="minKeyboardHeight">@fraction/minKeyboardHeight</item>
+        <item name="popupKeyboardTemplate">@xml/kbd_popup_template</item>
+        <item name="keyboardTopPadding">@dimen/keyboard_top_padding</item>
+        <item name="keyboardBottomPadding">@dimen/keyboard_bottom_padding</item>
+        <item name="horizontalGap">@dimen/key_horizontal_gap</item>
+        <item name="verticalGap">@dimen/key_bottom_gap</item>
+        <item name="maxPopupKeyboardColumn">@integer/config_max_popup_keyboard_column</item>
+    </style>
+    <style name="LatinKeyboard">
+        <item name="autoCorrectionSpacebarLedEnabled">@bool/config_auto_correction_spacebar_led_enabled</item>
+        <item name="spacebarTextColor">#FFC0C0C0</item>
+        <item name="spacebarTextShadowColor">#80000000</item>
+    </style>
     <style name="KeyboardView">
         <item name="android:background">@drawable/keyboard_background</item>
-
         <item name="keyBackground">@drawable/btn_keyboard_key</item>
         <item name="keyLetterRatio">@fraction/key_letter_ratio</item>
-        <item name="keyLetterStyle">normal</item>
+        <item name="keyLabelRatio">@fraction/key_label_ratio</item>
+        <item name="keyHintLetterRatio">@fraction/key_hint_letter_ratio</item>
+        <item name="keyUppercaseLetterRatio">@fraction/key_uppercase_letter_ratio</item>
+        <item name="keyTextStyle">normal</item>
         <item name="keyTextColor">#FFFFFFFF</item>
-        <item name="keyTextColorDisabled">#FFFFFFFF</item>
+        <item name="keyTextInactivatedColor">#FFFFFFFF</item>
+        <item name="keyHintLetterColor">#80000000</item>
+        <item name="keyUppercaseLetterInactivatedColor">#66E0E4E5</item>
+        <item name="keyUppercaseLetterActivatedColor">#CCE0E4E5</item>
+        <item name="keyPopupHintIcon">@drawable/hint_popup</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
-        <item name="labelTextRatio">@fraction/key_label_text_ratio</item>
         <item name="popupLayout">@layout/keyboard_popup</item>
         <item name="keyHysteresisDistance">@dimen/key_hysteresis_distance</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
-        <item name="colorScheme">white</item>
+    </style>
+    <style name="KeyPreviewStyle">
+        <item name="android:background">@drawable/keyboard_key_feedback</item>
+        <item name="android:textColor">#FFFFFFFF</item>
+    </style>
+    <style name="PopupMiniKeyboardView" parent="KeyboardView">
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup</item>
+        <item name="keyHysteresisDistance">0dip</item>
+        <item name="verticalCorrection">@dimen/mini_keyboard_vertical_correction</item>
+    </style>
+    <style name="PopupMiniKeyboardPanelStyle">
+        <item name="android:background">@drawable/keyboard_popup_panel_background</item>
+        <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_padding</item>
+    </style>
+    <style name="SuggestionsStripBackgroundStyle">
+        <item name="android:background">@drawable/keyboard_suggest_strip</item>
+    </style>
+    <style name="SuggestionBackgroundStyle">
+        <item name="android:background">@drawable/btn_candidate</item>
+    </style>
+    <style name="SuggestionPreviewBackgroundStyle">
+        <item name="android:background">@drawable/candidate_feedback_background</item>
+    </style>
+    <style name="CandidateViewStyle" parent="SuggestionsStripBackgroundStyle">
+        <item name="autoCorrectHighlight">autoCorrectBold</item>
+        <item name="colorTypedWord">#FFFFFFFF</item>
+        <item name="colorAutoCorrect">#FFFCAE00</item>
+        <item name="colorSuggested">#FFFCAE00</item>
+        <item name="iconExpandPane">@drawable/btn_expand_candidates_pane</item>
+        <item name="iconClosePane">@drawable/btn_close_candidates_pane</item>"
+    </style>
+    <!-- Theme "Basic high contrast" -->
+    <style name="KeyboardView.HighContrast" parent="KeyboardView">
+        <item name="android:background">@android:color/black</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key3</item>
+    </style>
+    <!-- Theme "Stone" -->
+    <style name="Keyboard.Stone" parent="Keyboard">
+        <item name="horizontalGap">@dimen/key_horizontal_gap_stone</item>
+        <item name="verticalGap">@dimen/key_bottom_gap_stone</item>
+    </style>
+    <style name="LatinKeyboard.Stone" parent="LatinKeyboard">
+        <item name="spacebarTextColor">#FF444444</item>
+        <item name="spacebarTextShadowColor">#80FFFFFF</item>
+    </style>
+    <style name="KeyboardView.Stone" parent="KeyboardView">
+        <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
+        <item name="keyTextColor">#FF000000</item>
+        <item name="keyTextInactivatedColor">#FF808080</item>
+        <item name="shadowColor">#FFFFFFFF</item>
+    </style>
+    <style name="PopupMiniKeyboardView.Stone" parent="PopupMiniKeyboardView">
+        <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
+        <item name="keyTextColor">#FF000000</item>
+        <item name="shadowColor">#FFFFFFFF</item>
+    </style>
+    <!-- Theme "Stone bold" -->
+    <style name="KeyboardView.Stone.Bold" parent="KeyboardView.Stone">
+        <item name="keyTextStyle">bold</item>
+    </style>
+    <!-- Theme "Gingerbread" -->
+    <style name="KeyboardView.Gingerbread" parent="KeyboardView">
+        <item name="android:background">@drawable/keyboard_dark_background</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_gingerbread</item>
+        <item name="keyTextStyle">bold</item>
+    </style>
+    <style name="PopupMiniKeyboardView.Gingerbread" parent="PopupMiniKeyboardView">
+        <item name="android:background">@null</item>
+    </style>
+    <!-- Theme "IceCreamSandwich" -->
+    <style name="Keyboard.IceCreamSandwich" parent="Keyboard" >
+        <item name="keyboardTopPadding">@dimen/keyboard_top_padding_ics</item>
+        <item name="keyboardBottomPadding">@dimen/keyboard_bottom_padding_ics</item>
+        <item name="horizontalGap">@dimen/key_horizontal_gap_ics</item>
+        <item name="verticalGap">@dimen/key_bottom_gap_ics</item>
+    </style>
+    <style name="LatinKeyboard.IceCreamSandwich" parent="LatinKeyboard">
+        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
+    </style>
+    <style name="KeyboardView.IceCreamSandwich" parent="KeyboardView">
+        <item name="android:background">@drawable/keyboard_background_holo</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
+        <item name="keyTextStyle">bold</item>
+        <item name="keyTextInactivatedColor">#66E0E4E5</item>
+        <item name="keyHintLetterColor">#80000000</item>
+        <item name="keyUppercaseLetterInactivatedColor">#66E0E4E5</item>
+        <item name="keyUppercaseLetterActivatedColor">#FFFFFFFF</item>
+        <item name="keyPopupHintIcon">@drawable/hint_popup</item>
+        <item name="keyPreviewHeight">@dimen/key_preview_height</item>
+        <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
+        <item name="shadowColor">#00000000</item>
+        <item name="shadowRadius">0.0</item>
+    </style>
+    <style name="KeyPreviewStyle.IceCreamSandwich">
+        <item name="android:background">@drawable/keyboard_key_feedback_ics</item>
+    </style>
+    <style name="PopupMiniKeyboardView.IceCreamSandwich" parent="PopupMiniKeyboardView">
+        <item name="android:background">@null</item>
+        <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
+    </style>
+    <style name="PopupMiniKeyboardPanelStyle.IceCreamSandwich">
+        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
+        <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_padding_holo</item>
+        <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_padding_holo</item>
+    </style>
+    <style name="SuggestionsStripBackgroundStyle.IceCreamSandwich">
+        <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
+    </style>
+    <style name="SuggestionBackgroundStyle.IceCreamSandwich">
+        <item name="android:background">@drawable/btn_candidate_ics</item>
+    </style>
+    <style name="SuggestionPreviewBackgroundStyle.IceCreamSandwich">
+        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
+    </style>
+    <style name="CandidateViewStyle.IceCreamSandwich" parent="SuggestionsStripBackgroundStyle.IceCreamSandwich">
+        <item name="autoCorrectHighlight">autoCorrectUnderline|autoCorrectInvert</item>
+        <item name="colorTypedWord">#FFFFFFFF</item>
+        <item name="colorAutoCorrect">#FFFFFFFF</item>
+        <item name="colorSuggested">#FFFFFFFF</item>
+        <item name="iconExpandPane">@drawable/btn_expand_candidates_pane</item>
+        <item name="iconClosePane">@drawable/btn_close_candidates_pane</item>"
     </style>
     <style name="PopupMiniKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>

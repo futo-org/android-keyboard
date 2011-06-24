@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.R;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.SystemClock;
@@ -26,6 +24,8 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
+
+import com.android.inputmethod.latin.R;
 
 /**
  * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
@@ -37,11 +37,10 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
     private int mOriginX;
     private int mOriginY;
-    private int mTrackerId;
     private long mDownTime;
 
     public PopupMiniKeyboardView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.keyboardViewStyle);
+        this(context, attrs, R.attr.popupMiniKeyboardViewStyle);
     }
 
     public PopupMiniKeyboardView(Context context, AttributeSet attrs, int defStyle) {
@@ -67,7 +66,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
     @Override
     public void showPanel(KeyboardView parentKeyboardView, Key parentKey,
-            PointerTracker tracker, int keyPreviewY, PopupWindow window) {
+            PointerTracker tracker, PopupWindow window) {
         final View container = (View)getParent();
         final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
         final Keyboard parentKeyboard = parentKeyboardView.getKeyboard();
@@ -76,15 +75,14 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         final int pointX = (mConfigShowMiniKeyboardAtTouchedPoint) ? tracker.getLastX()
                 : parentKey.mX + parentKey.mWidth / 2;
         final int pointY = parentKey.mY;
-        final int miniKeyboardX = pointX - miniKeyboard.getDefaultCoordX()
-                - container.getPaddingLeft()
-                + parentKeyboardView.getPaddingLeft() + mCoordinates[0];
-        final int miniKeyboardY = pointY - parentKeyboard.getVerticalGap()
+        final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
+                + parentKeyboardView.getPaddingLeft();
+        final int x = Math.max(0, Math.min(miniKeyboardLeft,
+                parentKeyboardView.getWidth() - miniKeyboard.getMinWidth()))
+                - container.getPaddingLeft() + mCoordinates[0];
+        final int y = pointY - parentKeyboard.getVerticalGap()
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + parentKeyboardView.getPaddingTop() + mCoordinates[1];
-        final int x = miniKeyboardX;
-        final int y = parentKeyboardView.isKeyPreviewPopupEnabled() &&
-                miniKeyboard.isOneRowKeyboard() ? keyPreviewY : miniKeyboardY;
 
         if (miniKeyboard.setShifted(parentKeyboard.isShiftedOrShiftLocked())) {
             invalidateAllKeys();
@@ -96,30 +94,19 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
         mOriginX = x + container.getPaddingLeft() - mCoordinates[0];
         mOriginY = y + container.getPaddingTop() - mCoordinates[1];
-        mTrackerId = tracker.mPointerId;
         mDownTime = SystemClock.uptimeMillis();
 
         // Inject down event on the key to mini keyboard.
-        final MotionEvent downEvent = translateMotionEvent(MotionEvent.ACTION_DOWN, pointX,
-                pointY + parentKey.mHeight / 2, mDownTime);
+        final MotionEvent downEvent = MotionEvent.obtain(mDownTime, mDownTime,
+                MotionEvent.ACTION_DOWN, pointX - mOriginX,
+                pointY + parentKey.mHeight / 2 - mOriginY, 0);
         onTouchEvent(downEvent);
         downEvent.recycle();
     }
 
-    private MotionEvent translateMotionEvent(int action, float x, float y, long eventTime) {
-        return MotionEvent.obtain(mDownTime, eventTime, action, x - mOriginX, y - mOriginY, 0);
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-        final int index = me.getActionIndex();
-        final int id = me.getPointerId(index);
-        if (id == mTrackerId) {
-            final MotionEvent translated = translateMotionEvent(me.getAction(), me.getX(index),
-                    me.getY(index), me.getEventTime());
-            super.onTouchEvent(translated);
-            translated.recycle();
-        }
-        return true;
+        me.offsetLocation(-mOriginX, -mOriginY);
+        return super.onTouchEvent(me);
     }
 }

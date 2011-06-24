@@ -23,16 +23,41 @@
 >
     <switch>
         <case
-            latin:hasVoiceKey="true"
+            latin:hasSettingsKey="true"
         >
-            <Key
-                latin:keyStyle="micKeyStyle" />
+            <switch>
+                <case
+                    latin:hasVoiceKey="true"
+                >
+                    <Key
+                        latin:keyStyle="shortcutKeyStyle"
+                        latin:keyWidth="9.2%p" />
+                </case>
+                <!-- latin:hasVoiceKey="false" -->
+                <default>
+                    <Key
+                        latin:keyLabel=","
+                        latin:keyWidth="9.2%p"
+                        latin:keyStyle="settingsPopupStyle" />
+                </default>
+            </switch>
         </case>
-        <!-- latin:hasVoiceKey="false" -->
+        <!-- hasSettingsKey="false" -->
         <default>
-            <Key
-                latin:keyLabel=","
-                latin:keyStyle="settingsPopupStyle" />
+            <switch>
+                <case
+                    latin:hasVoiceKey="true"
+                >
+                    <Key
+                        latin:keyStyle="shortcutKeyStyle" />
+                </case>
+                <!-- latin:hasVoiceKey="false" -->
+                <default>
+                    <Key
+                        latin:keyLabel=","
+                        latin:keyStyle="settingsPopupStyle" />
+                </default>
+            </switch>
         </default>
     </switch>
 </merge>

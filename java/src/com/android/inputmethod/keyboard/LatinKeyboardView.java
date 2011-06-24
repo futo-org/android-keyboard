@@ -16,16 +16,16 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.deprecated.VoiceProxy;
-import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.Utils;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.Utils;
 
 // TODO: We should remove this class
 public class LatinKeyboardView extends KeyboardView {
@@ -47,7 +47,7 @@ public class LatinKeyboardView extends KeyboardView {
     private int mLastY;
 
     public LatinKeyboardView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
@@ -120,7 +120,7 @@ public class LatinKeyboardView extends KeyboardView {
                 && keyboard.isShiftedOrShiftLocked()
                 && !TextUtils.isEmpty(label) && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
-            return label.toString().toUpperCase();
+            return label.toString().toUpperCase(keyboard.mId.mLocale);
         }
         return label;
     }

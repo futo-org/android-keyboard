@@ -16,8 +16,6 @@
 */
 
 #include <assert.h>
-#include <fcntl.h>
-#include <stdio.h>
 #include <string.h>
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
@@ -34,10 +32,12 @@ const UnigramDictionary::digraph_t UnigramDictionary::GERMAN_UMLAUT_DIGRAPHS[] =
         { 'o', 'e' },
         { 'u', 'e' } };
 
-UnigramDictionary::UnigramDictionary(const unsigned char *dict, int typedLetterMultiplier,
+// TODO: check the header
+UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultiplier,
         int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
         const bool isLatestDictVersion)
-    : DICT(dict), MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
+    : DICT_ROOT(streamStart),
+    MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
     MAX_PROXIMITY_CHARS(maxProximityChars), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
     ROOT_POS(isLatestDictVersion ? DICTIONARY_HEADER_SIZE : 0),
@@ -233,7 +233,7 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     PROF_END(5);
 
     PROF_START(6);
-    if (SUGGEST_WORDS_WITH_SPACE_PROXIMITY) {
+    if (SUGGEST_WORDS_WITH_SPACE_PROXIMITY && proximityInfo) {
         // The first and last "mistyped spaces" are taken care of by excessive character handling
         for (int i = 1; i < codesSize - 1; ++i) {
             if (DEBUG_DICT) {
@@ -265,14 +265,14 @@ void UnigramDictionary::initSuggestions(const int *codes, const int codesSize,
     mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
 }
 
-void UnigramDictionary::registerNextLetter(
-        unsigned short c, int *nextLetters, int nextLettersSize) {
+static inline void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize) {
     if (c < nextLettersSize) {
         nextLetters[c]++;
     }
 }
 
 // TODO: We need to optimize addWord by using STL or something
+// TODO: This needs to take an const unsigned short* and not tinker with its contents
 bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency) {
     word[length] = 0;
     if (DEBUG_DICT && DEBUG_SHOW_FOUND_WORD) {
@@ -290,8 +290,8 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     // Find the right insertion point
     int insertAt = 0;
     while (insertAt < MAX_WORDS) {
-        if (frequency > mFrequencies[insertAt] || (mFrequencies[insertAt] == frequency
-                && length < Dictionary::wideStrLen(mOutputChars + insertAt * MAX_WORD_LENGTH))) {
+        // TODO: How should we sort words with the same frequency?
+        if (frequency > mFrequencies[insertAt]) {
             break;
         }
         insertAt++;
@@ -322,7 +322,17 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     return false;
 }
 
-unsigned short UnigramDictionary::toBaseLowerCase(unsigned short c) {
+inline void UnigramDictionary::addWordAlternatesSpellings(const uint8_t* const root, int pos,
+        int depth, int finalFreq) {
+    // TODO: actually add alternates when the format supports it.
+}
+
+static inline bool hasAlternateSpellings(uint8_t flags) {
+    // TODO: when the format supports it, return the actual value.
+    return false;
+}
+
+static inline unsigned short toBaseLowerCase(unsigned short c) {
     if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
         c = BASE_CHARS[c];
     }
@@ -334,7 +344,7 @@ unsigned short UnigramDictionary::toBaseLowerCase(unsigned short c) {
     return c;
 }
 
-bool UnigramDictionary::sameAsTyped(unsigned short *word, int length) {
+bool UnigramDictionary::sameAsTyped(const unsigned short *word, int length) const {
     if (length != mInputLength) {
         return false;
     }
@@ -363,7 +373,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
     }
     int rootPosition = ROOT_POS;
     // Get the number of child of root, then increment the position
-    int childCount = Dictionary::getCount(DICT, &rootPosition);
+    int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
     int depth = 0;
 
     mStackChildCount[0] = childCount;
@@ -372,6 +382,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
     mStackInputIndex[0] = 0;
     mStackDiffs[0] = 0;
     mStackSiblingPos[0] = rootPosition;
+    mStackOutputIndex[0] = 0;
 
     // Depth first search
     while (depth >= 0) {
@@ -382,14 +393,15 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
             int inputIndex = mStackInputIndex[depth];
             int diffs = mStackDiffs[depth];
             int siblingPos = mStackSiblingPos[depth];
+            int outputIndex = mStackOutputIndex[depth];
             int firstChildPos;
             // depth will never be greater than maxDepth because in that case,
             // needsToTraverseChildrenNodes should be false
-            const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, depth,
+            const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, outputIndex,
                     maxDepth, traverseAllNodes, matchWeight, inputIndex, diffs, skipPos,
                     excessivePos, transposedPos, nextLetters, nextLettersSize, &childCount,
                     &firstChildPos, &traverseAllNodes, &matchWeight, &inputIndex, &diffs,
-                    &siblingPos);
+                    &siblingPos, &outputIndex);
             // Update next sibling pos
             mStackSiblingPos[depth] = siblingPos;
             if (needsToTraverseChildrenNodes) {
@@ -401,6 +413,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
                 mStackInputIndex[depth] = inputIndex;
                 mStackDiffs[depth] = diffs;
                 mStackSiblingPos[depth] = firstChildPos;
+                mStackOutputIndex[depth] = outputIndex;
             }
         } else {
             // Goes to parent sibling node
@@ -451,8 +464,8 @@ inline static void multiplyRate(const int rate, int *freq) {
 }
 
 inline static int calcFreqForSplitTwoWords(
-        const int typedLetterMultiplier, const int firstWordLength,
-        const int secondWordLength, const int firstFreq, const int secondFreq) {
+        const int typedLetterMultiplier, const int firstWordLength, const int secondWordLength,
+        const int firstFreq, const int secondFreq, const bool isSpaceProximity) {
     if (firstWordLength == 0 || secondWordLength == 0) {
         return 0;
     }
@@ -492,102 +505,28 @@ inline static int calcFreqForSplitTwoWords(
     const int normalizedScoreDemotionRateOffset = (100 + 100 / totalLength);
     multiplyRate(normalizedScoreDemotionRateOffset, &totalFreq);
 
+    if (isSpaceProximity) {
+        // A word pair with one space proximity correction
+        if (DEBUG_DICT) {
+            LOGI("Found a word pair with space proximity correction.");
+        }
+        multiplyIntCapped(typedLetterMultiplier, &totalFreq);
+        multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &totalFreq);
+    }
+
     multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &totalFreq);
     return totalFreq;
 }
 
-bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
-        const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
-        const int secondWordLength) {
-    if (inputLength >= MAX_WORD_LENGTH) return false;
-    if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
-            || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
-        return false;
-    const int newWordLength = firstWordLength + secondWordLength + 1;
-    // Allocating variable length array on stack
-    unsigned short word[newWordLength];
-    const int firstFreq = getBestWordFreq(firstWordStartPos, firstWordLength, mWord);
-    if (DEBUG_DICT) {
-        LOGI("First freq: %d", firstFreq);
-    }
-    if (firstFreq <= 0) return false;
-
-    for (int i = 0; i < firstWordLength; ++i) {
-        word[i] = mWord[i];
-    }
-
-    const int secondFreq = getBestWordFreq(secondWordStartPos, secondWordLength, mWord);
-    if (DEBUG_DICT) {
-        LOGI("Second  freq:  %d", secondFreq);
-    }
-    if (secondFreq <= 0) return false;
-
-    word[firstWordLength] = SPACE;
-    for (int i = (firstWordLength + 1); i < newWordLength; ++i) {
-        word[i] = mWord[i - firstWordLength - 1];
-    }
-
-    int pairFreq = calcFreqForSplitTwoWords(
-            TYPED_LETTER_MULTIPLIER, firstWordLength, secondWordLength, firstFreq, secondFreq);
-    if (DEBUG_DICT) {
-        LOGI("Split two words:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
-                TYPED_LETTER_MULTIPLIER);
-    }
-    addWord(word, newWordLength, pairFreq);
-    return true;
-}
-
 bool UnigramDictionary::getMissingSpaceWords(const int inputLength, const int missingSpacePos) {
     return getSplitTwoWordsSuggestion(
-            inputLength, 0, missingSpacePos, missingSpacePos, inputLength - missingSpacePos);
+            inputLength, 0, missingSpacePos, missingSpacePos, inputLength - missingSpacePos, false);
 }
 
 bool UnigramDictionary::getMistypedSpaceWords(const int inputLength, const int spaceProximityPos) {
     return getSplitTwoWordsSuggestion(
             inputLength, 0, spaceProximityPos, spaceProximityPos + 1,
-            inputLength - spaceProximityPos - 1);
-}
-
-// Keep this for comparing spec to new getWords
-void UnigramDictionary::getWordsOld(const int initialPos, const int inputLength, const int skipPos,
-        const int excessivePos, const int transposedPos,int *nextLetters,
-        const int nextLettersSize) {
-    int initialPosition = initialPos;
-    const int count = Dictionary::getCount(DICT, &initialPosition);
-    getWordsRec(count, initialPosition, 0,
-            min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH),
-            mInputLength <= 0, 1, 0, 0, skipPos, excessivePos, transposedPos, nextLetters,
-            nextLettersSize);
-}
-
-void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, const int depth,
-        const int maxDepth, const bool traverseAllNodes, const int matchWeight,
-        const int inputIndex, const int diffs, const int skipPos, const int excessivePos,
-        const int transposedPos, int *nextLetters, const int nextLettersSize) {
-    int siblingPos = pos;
-    for (int i = 0; i < childrenCount; ++i) {
-        int newCount;
-        int newChildPosition;
-        const int newDepth = depth + 1;
-        bool newTraverseAllNodes;
-        int newMatchRate;
-        int newInputIndex;
-        int newDiffs;
-        int newSiblingPos;
-        const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, depth, maxDepth,
-                traverseAllNodes, matchWeight, inputIndex, diffs,
-                skipPos, excessivePos, transposedPos,
-                nextLetters, nextLettersSize,
-                &newCount, &newChildPosition, &newTraverseAllNodes, &newMatchRate,
-                &newInputIndex, &newDiffs, &newSiblingPos);
-        siblingPos = newSiblingPos;
-
-        if (needsToTraverseChildrenNodes) {
-            getWordsRec(newCount, newChildPosition, newDepth, maxDepth, newTraverseAllNodes,
-                    newMatchRate, newInputIndex, newDiffs, skipPos, excessivePos, transposedPos,
-                    nextLetters, nextLettersSize);
-        }
-    }
+            inputLength - spaceProximityPos - 1, true);
 }
 
 inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int depth,
@@ -645,28 +584,6 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
     return finalFreq;
 }
 
-inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsGreaterThanInputLength(
-        unsigned short *word, const int inputIndex, const int depth, const int matchWeight,
-        int *nextLetters, const int nextLettersSize, const int skipPos, const int excessivePos,
-        const int transposedPos, const int freq) {
-    const int finalFreq = calculateFinalFreq(inputIndex, depth, matchWeight, skipPos, excessivePos,
-            transposedPos, freq, false);
-    if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
-    if (depth >= mInputLength && skipPos < 0) {
-        registerNextLetter(mWord[mInputLength], nextLetters, nextLettersSize);
-    }
-}
-
-inline void UnigramDictionary::onTerminalWhenUserTypedLengthIsSameAsInputLength(
-        unsigned short *word, const int inputIndex, const int depth, const int matchWeight,
-        const int skipPos, const int excessivePos, const int transposedPos, const int freq) {
-    if (sameAsTyped(word, depth + 1)) return;
-    const int finalFreq = calculateFinalFreq(inputIndex, depth, matchWeight, skipPos,
-            excessivePos, transposedPos, freq, true);
-    // Proximity collection will promote a word of the same length as what user typed.
-    if (depth >= MIN_SUGGEST_DEPTH) addWord(word, depth + 1, finalFreq);
-}
-
 inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
         const int inputIndex, const int skipPos, const int depth) {
     const unsigned short userTypedChar = getInputCharsAt(inputIndex)[0];
@@ -696,7 +613,6 @@ inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex
     }
     return false;
 }
-
 
 // In the following function, c is the current character of the dictionary word
 // currently examined.
@@ -740,96 +656,79 @@ inline UnigramDictionary::ProximityType UnigramDictionary::getMatchedProximityId
     return UNRELATED_CHAR;
 }
 
-inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
-        const int maxDepth, const bool traverseAllNodes, int matchWeight, int inputIndex,
-        const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
-        int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
-        bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
-        int *nextSiblingPosition) {
-    if (DEBUG_DICT) {
-        int inputCount = 0;
-        if (skipPos >= 0) ++inputCount;
-        if (excessivePos >= 0) ++inputCount;
-        if (transposedPos >= 0) ++inputCount;
-        assert(inputCount <= 1);
-    }
-    unsigned short c;
-    int childPosition;
-    bool terminal;
-    int freq;
-    bool isSameAsUserTypedLength = false;
+inline void UnigramDictionary::onTerminal(unsigned short int* word, const int depth,
+        const uint8_t* const root, const uint8_t flags, int pos,
+        const int inputIndex, const int matchWeight, const int skipPos,
+        const int excessivePos, const int transposedPos, const int freq, const bool sameLength,
+        int* nextLetters, const int nextLettersSize) {
 
-    if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
+    const bool isSameAsTyped = sameLength ? sameAsTyped(word, depth + 1) : false;
+    const bool hasAlternates = hasAlternateSpellings(flags);
+    if (isSameAsTyped && !hasAlternates) return;
 
-    *nextSiblingPosition = Dictionary::setDictionaryValues(DICT, IS_LATEST_DICT_VERSION, pos, &c,
-            &childPosition, &terminal, &freq);
-
-    const bool needsToTraverseChildrenNodes = childPosition != 0;
-
-    // If we are only doing traverseAllNodes, no need to look at the typed characters.
-    if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
-        mWord[depth] = c;
-        if (traverseAllNodes && terminal) {
-            onTerminalWhenUserTypedLengthIsGreaterThanInputLength(mWord, inputIndex, depth,
-                    matchWeight, nextLetters, nextLettersSize, skipPos, excessivePos, transposedPos,
-                    freq);
-        }
-        if (!needsToTraverseChildrenNodes) return false;
-        *newTraverseAllNodes = traverseAllNodes;
-        *newMatchRate = matchWeight;
-        *newDiffs = diffs;
-        *newInputIndex = inputIndex;
-    } else {
-        const int *currentChars = getInputCharsAt(inputIndex);
-
-        if (transposedPos >= 0) {
-            if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;
-            if (inputIndex == (transposedPos + 1)) currentChars -= MAX_PROXIMITY_CHARS;
-        }
-
-        int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos, excessivePos,
-                transposedPos);
-        if (UNRELATED_CHAR == matchedProximityCharId) return false;
-        mWord[depth] = c;
-        // If inputIndex is greater than mInputLength, that means there is no
-        // proximity chars. So, we don't need to check proximity.
-        if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
-            multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &matchWeight);
-        }
-        bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
-                || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
-        if (isSameAsUserTypedLength && terminal) {
-            onTerminalWhenUserTypedLengthIsSameAsInputLength(mWord, inputIndex, depth, matchWeight,
-                    skipPos, excessivePos, transposedPos, freq);
-        }
-        if (!needsToTraverseChildrenNodes) return false;
-        // Start traversing all nodes after the index exceeds the user typed length
-        *newTraverseAllNodes = isSameAsUserTypedLength;
-        *newMatchRate = matchWeight;
-        *newDiffs = diffs + ((NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
-        *newInputIndex = inputIndex + 1;
-    }
-    // Optimization: Prune out words that are too long compared to how much was typed.
-    if (depth >= maxDepth || *newDiffs > mMaxEditDistance) {
-        return false;
+    if (depth >= MIN_SUGGEST_DEPTH) {
+        const int finalFreq = calculateFinalFreq(inputIndex, depth, matchWeight, skipPos,
+                excessivePos, transposedPos, freq, sameLength);
+        if (!isSameAsTyped)
+            addWord(word, depth + 1, finalFreq);
+        if (hasAlternates)
+            addWordAlternatesSpellings(DICT_ROOT, pos, flags, finalFreq);
     }
 
-    // If inputIndex is greater than mInputLength, that means there are no proximity chars.
-    // TODO: Check if this can be isSameAsUserTypedLength only.
-    if (isSameAsUserTypedLength || mInputLength <= *newInputIndex) {
-        *newTraverseAllNodes = true;
+    if (sameLength && depth >= mInputLength && skipPos < 0) {
+        registerNextLetter(word[mInputLength], nextLetters, nextLettersSize);
     }
-    // get the count of nodes and increment childAddress.
-    *newCount = Dictionary::getCount(DICT, &childPosition);
-    *newChildPosition = childPosition;
-    if (DEBUG_DICT) assert(needsToTraverseChildrenNodes);
-    return needsToTraverseChildrenNodes;
+}
+
+#ifndef NEW_DICTIONARY_FORMAT
+// TODO: Don't forget to bring inline functions back to over where they are used.
+
+// The following functions will be entirely replaced with new implementations.
+void UnigramDictionary::getWordsOld(const int initialPos, const int inputLength, const int skipPos,
+        const int excessivePos, const int transposedPos,int *nextLetters,
+        const int nextLettersSize) {
+    int initialPosition = initialPos;
+    const int count = Dictionary::getCount(DICT_ROOT, &initialPosition);
+    getWordsRec(count, initialPosition, 0,
+            min(inputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH),
+            mInputLength <= 0, 1, 0, 0, skipPos, excessivePos, transposedPos, nextLetters,
+            nextLettersSize);
+}
+
+void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, const int depth,
+        const int maxDepth, const bool traverseAllNodes, const int matchWeight,
+        const int inputIndex, const int diffs, const int skipPos, const int excessivePos,
+        const int transposedPos, int *nextLetters, const int nextLettersSize) {
+    int siblingPos = pos;
+    for (int i = 0; i < childrenCount; ++i) {
+        int newCount;
+        int newChildPosition;
+        bool newTraverseAllNodes;
+        int newMatchRate;
+        int newInputIndex;
+        int newDiffs;
+        int newSiblingPos;
+        int newOutputIndex;
+        const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos, depth, maxDepth,
+                traverseAllNodes, matchWeight, inputIndex, diffs,
+                skipPos, excessivePos, transposedPos,
+                nextLetters, nextLettersSize,
+                &newCount, &newChildPosition, &newTraverseAllNodes, &newMatchRate,
+                &newInputIndex, &newDiffs, &newSiblingPos, &newOutputIndex);
+        siblingPos = newSiblingPos;
+
+        if (needsToTraverseChildrenNodes) {
+            getWordsRec(newCount, newChildPosition, newOutputIndex, maxDepth, newTraverseAllNodes,
+                    newMatchRate, newInputIndex, newDiffs, skipPos, excessivePos, transposedPos,
+                    nextLetters, nextLettersSize);
+        }
+    }
 }
 
 inline int UnigramDictionary::getBestWordFreq(const int startInputIndex, const int inputLength,
         unsigned short *word) {
     int pos = ROOT_POS;
-    int count = Dictionary::getCount(DICT, &pos);
+    int count = Dictionary::getCount(DICT_ROOT, &pos);
     int maxFreq = 0;
     int depth = 0;
     unsigned short newWord[MAX_WORD_LENGTH_INTERNAL];
@@ -885,8 +784,8 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
     const int inputIndex = startInputIndex + depth;
     const int *currentChars = getInputCharsAt(inputIndex);
     unsigned short c;
-    *siblingPos = Dictionary::setDictionaryValues(DICT, IS_LATEST_DICT_VERSION, firstChildPos, &c,
-            newChildPosition, newTerminal, newFreq);
+    *siblingPos = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, firstChildPos,
+            &c, newChildPosition, newTerminal, newFreq);
     const unsigned int inputC = currentChars[0];
     if (DEBUG_DICT) {
         assert(inputC <= U_SHORT_MAX);
@@ -903,7 +802,7 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
             }
         }
         if (hasChild) {
-            *newCount = Dictionary::getCount(DICT, newChildPosition);
+            *newCount = Dictionary::getCount(DICT_ROOT, newChildPosition);
             return true;
         } else {
             return false;
@@ -915,4 +814,314 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
         return false;
     }
 }
+
+// TODO: use uint32_t instead of unsigned short
+bool UnigramDictionary::isValidWord(unsigned short *word, int length) {
+    if (IS_LATEST_DICT_VERSION) {
+        return (getBigramPosition(DICTIONARY_HEADER_SIZE, word, 0, length) != NOT_VALID_WORD);
+    } else {
+        return (getBigramPosition(0, word, 0, length) != NOT_VALID_WORD);
+    }
+}
+
+
+// Require strict exact match.
+int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offset,
+        int length) const {
+    // returns address of bigram data of that word
+    // return -99 if not found
+
+    int count = Dictionary::getCount(DICT_ROOT, &pos);
+    unsigned short currentChar = (unsigned short) word[offset];
+    for (int j = 0; j < count; j++) {
+        unsigned short c = Dictionary::getChar(DICT_ROOT, &pos);
+        int terminal = Dictionary::getTerminal(DICT_ROOT, &pos);
+        int childPos = Dictionary::getAddress(DICT_ROOT, &pos);
+        if (c == currentChar) {
+            if (offset == length - 1) {
+                if (terminal) {
+                    return (pos+1);
+                }
+            } else {
+                if (childPos != 0) {
+                    int t = getBigramPosition(childPos, word, offset + 1, length);
+                    if (t > 0) {
+                        return t;
+                    }
+                }
+            }
+        }
+        if (terminal) {
+            Dictionary::getFreq(DICT_ROOT, IS_LATEST_DICT_VERSION, &pos);
+        }
+        // There could be two instances of each alphabet - upper and lower case. So continue
+        // looking ...
+    }
+    return NOT_VALID_WORD;
+}
+
+
+// The following functions will be modified.
+bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
+        const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
+        const int secondWordLength, const bool isSpaceProximity) {
+    if (inputLength >= MAX_WORD_LENGTH) return false;
+    if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
+            || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
+        return false;
+    const int newWordLength = firstWordLength + secondWordLength + 1;
+    // Allocating variable length array on stack
+    unsigned short word[newWordLength];
+    const int firstFreq = getBestWordFreq(firstWordStartPos, firstWordLength, mWord);
+    if (DEBUG_DICT) {
+        LOGI("First freq: %d", firstFreq);
+    }
+    if (firstFreq <= 0) return false;
+
+    for (int i = 0; i < firstWordLength; ++i) {
+        word[i] = mWord[i];
+    }
+
+    const int secondFreq = getBestWordFreq(secondWordStartPos, secondWordLength, mWord);
+    if (DEBUG_DICT) {
+        LOGI("Second  freq:  %d", secondFreq);
+    }
+    if (secondFreq <= 0) return false;
+
+    word[firstWordLength] = SPACE;
+    for (int i = (firstWordLength + 1); i < newWordLength; ++i) {
+        word[i] = mWord[i - firstWordLength - 1];
+    }
+
+    int pairFreq = calcFreqForSplitTwoWords(TYPED_LETTER_MULTIPLIER, firstWordLength,
+            secondWordLength, firstFreq, secondFreq, isSpaceProximity);
+    if (DEBUG_DICT) {
+        LOGI("Split two words:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
+                TYPED_LETTER_MULTIPLIER);
+    }
+    addWord(word, newWordLength, pairFreq);
+    return true;
+}
+
+inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
+        const int maxDepth, const bool traverseAllNodes, int matchWeight, int inputIndex,
+        const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
+        int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
+        bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
+        int *nextSiblingPosition, int *nextOutputIndex) {
+    if (DEBUG_DICT) {
+        int inputCount = 0;
+        if (skipPos >= 0) ++inputCount;
+        if (excessivePos >= 0) ++inputCount;
+        if (transposedPos >= 0) ++inputCount;
+        assert(inputCount <= 1);
+    }
+    unsigned short c;
+    int childPosition;
+    bool terminal;
+    int freq;
+    bool isSameAsUserTypedLength = false;
+
+    const uint8_t flags = 0; // No flags for now
+
+    if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
+
+    *nextSiblingPosition = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, pos,
+            &c, &childPosition, &terminal, &freq);
+    *nextOutputIndex = depth + 1;
+
+    const bool needsToTraverseChildrenNodes = childPosition != 0;
+
+    // If we are only doing traverseAllNodes, no need to look at the typed characters.
+    if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
+        mWord[depth] = c;
+        if (traverseAllNodes && terminal) {
+            onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
+                       excessivePos, transposedPos, freq, false, nextLetters, nextLettersSize);
+        }
+        if (!needsToTraverseChildrenNodes) return false;
+        *newTraverseAllNodes = traverseAllNodes;
+        *newMatchRate = matchWeight;
+        *newDiffs = diffs;
+        *newInputIndex = inputIndex;
+    } else {
+        const int *currentChars = getInputCharsAt(inputIndex);
+
+        if (transposedPos >= 0) {
+            if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;
+            if (inputIndex == (transposedPos + 1)) currentChars -= MAX_PROXIMITY_CHARS;
+        }
+
+        int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos, excessivePos,
+                transposedPos);
+        if (UNRELATED_CHAR == matchedProximityCharId) return false;
+        mWord[depth] = c;
+        // If inputIndex is greater than mInputLength, that means there is no
+        // proximity chars. So, we don't need to check proximity.
+        if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+            multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &matchWeight);
+        }
+        bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
+                || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
+        if (isSameAsUserTypedLength && terminal) {
+            onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
+                    excessivePos, transposedPos, freq, true, nextLetters, nextLettersSize);
+        }
+        if (!needsToTraverseChildrenNodes) return false;
+        // Start traversing all nodes after the index exceeds the user typed length
+        *newTraverseAllNodes = isSameAsUserTypedLength;
+        *newMatchRate = matchWeight;
+        *newDiffs = diffs + ((NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
+        *newInputIndex = inputIndex + 1;
+    }
+    // Optimization: Prune out words that are too long compared to how much was typed.
+    if (depth >= maxDepth || *newDiffs > mMaxEditDistance) {
+        return false;
+    }
+
+    // If inputIndex is greater than mInputLength, that means there are no proximity chars.
+    // TODO: Check if this can be isSameAsUserTypedLength only.
+    if (isSameAsUserTypedLength || mInputLength <= *newInputIndex) {
+        *newTraverseAllNodes = true;
+    }
+    // get the count of nodes and increment childAddress.
+    *newCount = Dictionary::getCount(DICT_ROOT, &childPosition);
+    *newChildPosition = childPosition;
+    if (DEBUG_DICT) assert(needsToTraverseChildrenNodes);
+    return needsToTraverseChildrenNodes;
+}
+
+#else // NEW_DICTIONARY_FORMAT
+
+bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
+        const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
+        const int secondWordLength, const bool isSpaceProximity) {
+    if (inputLength >= MAX_WORD_LENGTH) return false;
+    if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
+            || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
+        return false;
+    const int newWordLength = firstWordLength + secondWordLength + 1;
+    // Allocating variable length array on stack
+    unsigned short word[newWordLength];
+    const int firstFreq = getBestWordFreq(firstWordStartPos, firstWordLength, mWord);
+    if (DEBUG_DICT) {
+        LOGI("First freq: %d", firstFreq);
+    }
+    if (firstFreq <= 0) return false;
+
+    for (int i = 0; i < firstWordLength; ++i) {
+        word[i] = mWord[i];
+    }
+
+    const int secondFreq = getBestWordFreq(secondWordStartPos, secondWordLength, mWord);
+    if (DEBUG_DICT) {
+        LOGI("Second  freq:  %d", secondFreq);
+    }
+    if (secondFreq <= 0) return false;
+
+    word[firstWordLength] = SPACE;
+    for (int i = (firstWordLength + 1); i < newWordLength; ++i) {
+        word[i] = mWord[i - firstWordLength - 1];
+    }
+
+    int pairFreq = calcFreqForSplitTwoWords(TYPED_LETTER_MULTIPLIER, firstWordLength,
+            secondWordLength, firstFreq, secondFreq, isSpaceProximity);
+    if (DEBUG_DICT) {
+        LOGI("Split two words:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
+                TYPED_LETTER_MULTIPLIER);
+    }
+    addWord(word, newWordLength, pairFreq);
+    return true;
+}
+
+inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
+        const int maxDepth, const bool traverseAllNodes, int matchWeight, int inputIndex,
+        const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
+        int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
+        bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
+        int *nextSiblingPosition, int *nextOutputIndex) {
+    if (DEBUG_DICT) {
+        int inputCount = 0;
+        if (skipPos >= 0) ++inputCount;
+        if (excessivePos >= 0) ++inputCount;
+        if (transposedPos >= 0) ++inputCount;
+        assert(inputCount <= 1);
+    }
+    unsigned short c;
+    int childPosition;
+    bool terminal;
+    int freq;
+    bool isSameAsUserTypedLength = false;
+
+    const uint8_t flags = 0; // No flags for now
+
+    if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
+
+    *nextSiblingPosition = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, pos,
+            &c, &childPosition, &terminal, &freq);
+    *nextOutputIndex = depth + 1;
+
+    const bool needsToTraverseChildrenNodes = childPosition != 0;
+
+    // If we are only doing traverseAllNodes, no need to look at the typed characters.
+    if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
+        mWord[depth] = c;
+        if (traverseAllNodes && terminal) {
+            onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
+                       excessivePos, transposedPos, freq, false, nextLetters, nextLettersSize);
+        }
+        if (!needsToTraverseChildrenNodes) return false;
+        *newTraverseAllNodes = traverseAllNodes;
+        *newMatchRate = matchWeight;
+        *newDiffs = diffs;
+        *newInputIndex = inputIndex;
+    } else {
+        const int *currentChars = getInputCharsAt(inputIndex);
+
+        if (transposedPos >= 0) {
+            if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;
+            if (inputIndex == (transposedPos + 1)) currentChars -= MAX_PROXIMITY_CHARS;
+        }
+
+        int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos, excessivePos,
+                transposedPos);
+        if (UNRELATED_CHAR == matchedProximityCharId) return false;
+        mWord[depth] = c;
+        // If inputIndex is greater than mInputLength, that means there is no
+        // proximity chars. So, we don't need to check proximity.
+        if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+            multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &matchWeight);
+        }
+        bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
+                || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
+        if (isSameAsUserTypedLength && terminal) {
+            onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
+                    excessivePos, transposedPos, freq, true, nextLetters, nextLettersSize);
+        }
+        if (!needsToTraverseChildrenNodes) return false;
+        // Start traversing all nodes after the index exceeds the user typed length
+        *newTraverseAllNodes = isSameAsUserTypedLength;
+        *newMatchRate = matchWeight;
+        *newDiffs = diffs + ((NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
+        *newInputIndex = inputIndex + 1;
+    }
+    // Optimization: Prune out words that are too long compared to how much was typed.
+    if (depth >= maxDepth || *newDiffs > mMaxEditDistance) {
+        return false;
+    }
+
+    // If inputIndex is greater than mInputLength, that means there are no proximity chars.
+    // TODO: Check if this can be isSameAsUserTypedLength only.
+    if (isSameAsUserTypedLength || mInputLength <= *newInputIndex) {
+        *newTraverseAllNodes = true;
+    }
+    // get the count of nodes and increment childAddress.
+    *newCount = Dictionary::getCount(DICT_ROOT, &childPosition);
+    *newChildPosition = childPosition;
+    if (DEBUG_DICT) assert(needsToTraverseChildrenNodes);
+    return needsToTraverseChildrenNodes;
+}
+
+#endif // NEW_DICTIONARY_FORMAT
+
 } // namespace latinime

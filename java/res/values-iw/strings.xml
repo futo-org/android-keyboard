@@ -30,6 +30,15 @@
     <string name="correction_category" msgid="2236750915056607613">"תיקון טקסט"</string>
     <string name="ngram_category" msgid="5337109164339320257">"הצעות המבוססות על מילים קודמות"</string>
     <string name="misc_category" msgid="6894192814868233453">"אפשרויות אחרות"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"הגדרות מתקדמות"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"אפשרויות עבור משתמשים מתקדמים"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"עיכוב דחייה של מוקפץ ראשי"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"ללא עיכוב"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"ברירת מחדל"</string>
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"הפיכה אוטומטית של אותיות לרישיות"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"תיקונים מהירים"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"מתקן שגיאות הקלדה נפוצות"</string>
@@ -105,14 +114,21 @@
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"מקלדת אנגלית (בריטניה)"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"מקלדת אנגלית (ארה\"ב)"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"מקלדת ספרדית"</string>
-    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"מקלדת ספרדית (ארה\"ב)"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"מקלדת צרפתית"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"מקלדת צרפתית (קנדה)"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"מקלדת צרפתית (שוויץ)"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"מקלדת בשפה העברית"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"מקלדת איטלקית"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"מקלדת נורווגית"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"מקלדת הולנדית"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"מקלדת פולנית"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"מקלדת פורטוגזית"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"מקלדת רוסית"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"מקלדת סרבית"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"מקלדת שוודית"</string>

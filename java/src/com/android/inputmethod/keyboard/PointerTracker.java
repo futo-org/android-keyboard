@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Google Inc.
+ * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,14 +16,17 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.content.res.Resources;
+import android.os.SystemClock;
+import android.util.Log;
+import android.view.MotionEvent;
+
 import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
+import com.android.inputmethod.keyboard.internal.PointerTrackerKeyState;
+import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
-
-import android.content.res.Resources;
-import android.util.Log;
-import android.view.MotionEvent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -146,7 +149,7 @@ public class PointerTracker {
                     + " ignoreModifier=" + ignoreModifierKey);
         if (ignoreModifierKey)
             return false;
-        if (key.mEnabled) {
+        if (key.isEnabled()) {
             mListener.onPress(key.mCode, withSliding);
             final boolean keyboardLayoutHasBeenChanged = mKeyboardLayoutHasBeenChanged;
             mKeyboardLayoutHasBeenChanged = false;
@@ -165,14 +168,14 @@ public class PointerTracker {
                     + " ignoreModifier=" + ignoreModifierKey);
         if (ignoreModifierKey)
             return;
-        if (key.mEnabled)
+        if (key.isEnabled())
             mListener.onCodeInput(primaryCode, keyCodes, x, y);
     }
 
     private void callListenerOnTextInput(Key key) {
         if (DEBUG_LISTENER)
             Log.d(TAG, "onTextInput: text=" + key.mOutputText);
-        if (key.mEnabled)
+        if (key.isEnabled())
             mListener.onTextInput(key.mOutputText);
     }
 
@@ -185,7 +188,7 @@ public class PointerTracker {
                     + withSliding + " ignoreModifier=" + ignoreModifierKey);
         if (ignoreModifierKey)
             return;
-        if (key.mEnabled)
+        if (key.isEnabled())
             mListener.onRelease(primaryCode, withSliding);
     }
 
@@ -265,7 +268,7 @@ public class PointerTracker {
 
     private void setPressedKeyGraphics(int keyIndex) {
         final Key key = getKey(keyIndex);
-        if (key != null && key.mEnabled) {
+        if (key != null && key.isEnabled()) {
             key.onPressed();
             mProxy.invalidateKey(key);
         }
@@ -540,8 +543,11 @@ public class PointerTracker {
 
     public void onLongPressed(PointerTrackerQueue queue) {
         mKeyAlreadyProcessed = true;
-        if (queue != null)
+        if (queue != null) {
+            // TODO: Support chording + long-press input.
+            queue.releaseAllPointersExcept(this, SystemClock.uptimeMillis(), true);
             queue.remove(this);
+        }
     }
 
     public void onCancelEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
@@ -611,7 +617,7 @@ public class PointerTracker {
     // The modifier key, such as shift key, should not show its key preview.
     private boolean isKeyPreviewNotRequired(int keyIndex) {
         final Key key = getKey(keyIndex);
-        if (!key.mEnabled)
+        if (key == null || !key.isEnabled())
             return true;
         // Such as spacebar sliding language switch.
         if (mKeyboard.needSpacebarPreview(keyIndex))
@@ -633,12 +639,9 @@ public class PointerTracker {
 
     private void startLongPressTimer(int keyIndex) {
         Key key = getKey(keyIndex);
-        if (!key.mEnabled)
-            return;
         if (key.mCode == Keyboard.CODE_SHIFT) {
             mHandler.startLongPressShiftTimer(mLongPressShiftKeyTimeout, keyIndex, this);
-        } else if (key.mManualTemporaryUpperCaseCode != Keyboard.CODE_DUMMY
-                && mKeyboard.isManualTemporaryUpperCase()) {
+        } else if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
             // We need not start long press timer on the key which has manual temporary upper case
             // code defined and the keyboard is in manual temporary upper case mode.
             return;
@@ -665,10 +668,9 @@ public class PointerTracker {
             mKeyDetector.getKeyIndexAndNearbyCodes(x, y, codes);
 
             // If keyboard is in manual temporary upper case state and key has manual temporary
-            // shift code, alternate character code should be sent.
-            if (mKeyboard.isManualTemporaryUpperCase()
-                    && key.mManualTemporaryUpperCaseCode != Keyboard.CODE_DUMMY) {
-                code = key.mManualTemporaryUpperCaseCode;
+            // uppercase letter as key hint letter, alternate character code should be sent.
+            if (mKeyboard.isManualTemporaryUpperCase() && key.hasUppercaseLetter()) {
+                code = key.mHintLetter.charAt(0);
                 codes[0] = code;
             }
 

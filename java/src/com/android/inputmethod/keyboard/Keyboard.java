@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 Google Inc.
+ * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,14 +16,17 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.latin.R;
-
-import org.xmlpull.v1.XmlPullParserException;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
+import com.android.inputmethod.latin.R;
+
+import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -51,7 +54,7 @@ import java.util.Map;
  * </pre>
  */
 public class Keyboard {
-    private static final String TAG = "Keyboard";
+    private static final String TAG = Keyboard.class.getSimpleName();
 
     public static final int EDGE_LEFT = 0x01;
     public static final int EDGE_RIGHT = 0x02;
@@ -130,6 +133,8 @@ public class Keyboard {
 
     public final KeyboardId mId;
 
+    public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
+
     // Variables for pre-computing nearest keys.
 
     // TODO: Change GRID_WIDTH and GRID_HEIGHT to private.
@@ -151,16 +156,11 @@ public class Keyboard {
      * @param context the application or service context
      * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
      * @param id keyboard identifier
+     * @param width keyboard width
      */
-    public Keyboard(Context context, int xmlLayoutResId, KeyboardId id) {
-        this(context, xmlLayoutResId, id,
-                context.getResources().getDisplayMetrics().widthPixels,
-                context.getResources().getDisplayMetrics().heightPixels);
-    }
 
-    private Keyboard(Context context, int xmlLayoutResId, KeyboardId id, int width,
-            int height) {
-        Resources res = context.getResources();
+    public Keyboard(Context context, int xmlLayoutResId, KeyboardId id, int width) {
+        final Resources res = context.getResources();
         GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
         GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
@@ -168,15 +168,16 @@ public class Keyboard {
         final int horizontalEdgesPadding = (int)res.getDimension(
                 R.dimen.keyboard_horizontal_edges_padding);
         mDisplayWidth = width - horizontalEdgesPadding * 2;
-        mDisplayHeight = height;
+        // TODO: Adjust the height by referring to the height of area available for drawing as well.
+        mDisplayHeight = res.getDisplayMetrics().heightPixels;
 
         mDefaultHorizontalGap = 0;
         setKeyWidth(mDisplayWidth / 10);
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
         mId = id;
-        loadKeyboard(context, xmlLayoutResId);
         mProximityInfo = new ProximityInfo(GRID_WIDTH, GRID_HEIGHT);
+        loadKeyboard(context, xmlLayoutResId);
     }
 
     public int getProximityInfo() {
@@ -295,7 +296,7 @@ public class Keyboard {
     public boolean setShiftLocked(boolean newShiftLockState) {
         final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
         for (final Key key : getShiftKeys()) {
-            key.mHighlightOn = newShiftLockState;
+            key.setHighlightOn(newShiftLockState);
             key.setIcon(newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key));
         }
         mShiftState.setShiftLocked(newShiftLockState);
@@ -438,7 +439,7 @@ public class Keyboard {
 
     private void loadKeyboard(Context context, int xmlLayoutResId) {
         try {
-            KeyboardParser parser = new KeyboardParser(this, context.getResources());
+            KeyboardParser parser = new KeyboardParser(this, context);
             parser.parseKeyboard(xmlLayoutResId);
             // mMinWidth is the width of this keyboard which is maximum width of row.
             mMinWidth = parser.getMaxRowWidth();
@@ -452,7 +453,7 @@ public class Keyboard {
         }
     }
 
-    protected static void setDefaultBounds(Drawable drawable)  {
+    public static void setDefaultBounds(Drawable drawable)  {
         if (drawable != null)
             drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
                     drawable.getIntrinsicHeight());

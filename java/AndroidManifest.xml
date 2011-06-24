@@ -41,5 +41,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <receiver android:name="SuggestionSpanPickedNotificationReceiver" android:enabled="true">
+            <intent-filter>
+                <action android:name="android.text.style.SUGGESTION_PICKED" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>

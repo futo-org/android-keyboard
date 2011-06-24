@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*
+**
+** Copyright 2008, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+ -->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="english_ime_name" msgid="7252517407088836577">"Ikhibhodi ye-Android"</string>
+    <string name="english_ime_settings" msgid="6661589557206947774">"Izilungiselelo zekhibhodi ye-Android"</string>
+    <string name="english_ime_input_options" msgid="3909945612939668554">"Okukhethwa kukho kokungenayo"</string>
+    <string name="vibrate_on_keypress" msgid="5258079494276955460">"Dlidlizelisa ngokucindezela inkinobho"</string>
+    <string name="sound_on_keypress" msgid="6093592297198243644">"Umsindo wokucindezela ukhiye"</string>
+    <string name="popup_on_keypress" msgid="123894815723512944">"Ugaxekile ngokucindezela ukhiye"</string>
+    <!-- no translation found for general_category (1859088467017573195) -->
+    <skip />
+    <!-- no translation found for correction_category (2236750915056607613) -->
+    <skip />
+    <!-- no translation found for ngram_category (5337109164339320257) -->
+    <skip />
+    <!-- no translation found for misc_category (6894192814868233453) -->
+    <skip />
+    <!-- no translation found for advanced_settings (362895144495591463) -->
+    <skip />
+    <!-- no translation found for advanced_settings_summary (5193513161106637254) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_delay (6213164897443068248) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_no_delay (2096123151571458064) -->
+    <skip />
+    <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
+    <string name="auto_cap" msgid="1719746674854628252">"Ukwenza ofeleba okuzenzakalelayo"</string>
+    <string name="quick_fixes" msgid="5353213327680897927">"Ukulungisa okusheshayo"</string>
+    <string name="quick_fixes_summary" msgid="3405028402510332373">"Ilungisa amaphutha athayiphwa ngokuvamile"</string>
+    <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
+    <skip />
+    <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Bonisa amagama aphakamisiwe ngenkathi uthayipha"</string>
+    <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Bonisa njalo"</string>
+    <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Bonisa kwimodi emile"</string>
+    <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Fihla njalo"</string>
+    <!-- no translation found for prefs_use_spacebar_language_switch (8828538114550634449) -->
+    <skip />
+    <string name="prefs_settings_key" msgid="4623341240804046498">"Bonisa ukhiye wezilungiselelo"</string>
+    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Okuzenzakalelayo"</string>
+    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Bonisa njalo"</string>
+    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Fihla njalo"</string>
+    <string name="auto_correction" msgid="4979925752001319458">"Ukulungisa okuzenzakalelayo"</string>
+    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Ngokuzenzakalelayo ilungisa igama elandulele"</string>
+    <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Valiwe"</string>
+    <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Thobekile"</string>
+    <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Bukhali"</string>
+    <!-- outdated translation 1323347224043514969 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"Iziphakamiso ze-Biagram"</string>
+    <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Sebenzisa igama elandulele ukuthuthukisa okusikiselwayo"</string>
+    <!-- no translation found for bigram_prediction (8914273444762259739) -->
+    <skip />
+    <!-- no translation found for bigram_prediction_summary (1747261921174300098) -->
+    <skip />
+    <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Kulondoloziwe"</string>
+    <string name="label_go_key" msgid="1635148082137219148">"Iya"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Okulandelayo"</string>
+    <string name="label_done_key" msgid="2441578748772529288">"Kwenziwe"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Thumela"</string>
+    <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_more_key" msgid="3760239494604948502">"Okungaphezulu"</string>
+    <string name="label_pause_key" msgid="181098308428035340">"Misa okwesikhashana"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Linda"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Okungenayo kwezwi"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Okungenayo kwezwi akusekelwa kolimi lwakho, kodwa kuyasebenza Ngesingisi."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Okufakwayo kwezwi kusebenzisa ukuqaphela izwi le-Google. "<a href="http://m.google.com/privacy">"Inqubomgomo Yobumfihlo Yefoni"</a>" iyasebenza."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Ukuvala okufakwayo kwezwi, iya kuzilungiselelo zendlela yokufakwayo"</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Ukusebenzisa okufakwayo kwezwi, cindezela inkinobho yemakrofoni."</string>
+    <string name="voice_listening" msgid="467518160751321844">"Khuluma manje"</string>
+    <string name="voice_working" msgid="6666937792815731889">"Kuyasebenza"</string>
+    <string name="voice_initializing" msgid="661962047129906646"></string>
+    <string name="voice_error" msgid="5140896300312186162">"Iphutha. Sicela uzame futhi."</string>
+    <string name="voice_network_error" msgid="6649556447401862563">"Ayikwazanga ukuxhuma"</string>
+    <string name="voice_too_much_speech" msgid="5746973620134227376">"Iphutha, kunamagama amaningi."</string>
+    <string name="voice_audio_error" msgid="5072707727016414454">"Inkinga yomsindo"</string>
+    <string name="voice_server_error" msgid="7807129913977261644">"Iphutha leseva"</string>
+    <string name="voice_speech_timeout" msgid="8461817525075498795">"Awekho amagama azwakele"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Akukho okufanayo okutholiwe"</string>
+    <string name="voice_not_installed" msgid="5552450909753842415">"Ukusesha ngezwi akufakiwe"</string>
+    <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Isexwayiso:"</b>"Shintshela kwikhibhodi ukuze ukhulume"</string>
+    <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Isixwayiso: "</b>"Esikhathini esilandelayo, zama ukukhuluma izimpimiselo ezinjengo \"isikhathi, \"ikhefu\" noma \"uphawu lombuzo\"."</string>
+    <string name="cancel" msgid="6830980399865683324">"Khansela"</string>
+    <string name="ok" msgid="7898366843681727667">"KULUNGILE"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Okungenayo kwezwi"</string>
+    <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Kwikhibhodi eyisisekelo"</string>
+    <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Ikhibhodi yezimpawu"</string>
+    <string name="voice_input_modes_off" msgid="3745699748218082014">"VALIWE"</string>
+    <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"I-mic kwikhibhodi eyisisekelo"</string>
+    <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Ikhibhodi yezimpawu ze-mic"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Okufakwayo kwezwi kuvimbelwe"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"Khetha indlela yokungenayo"</string>
+    <string name="language_selection_title" msgid="1651299598555326750">"Izilimi zokufakwayo"</string>
+    <string name="language_selection_summary" msgid="187110938289512256">"Slayida umunwe kwibha yesikhala ukushintsha ulimi"</string>
+    <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Thinta futhi ukulondoloza"</string>
+    <string name="has_dictionary" msgid="6071847973466625007">"Isichazamazwi siyatholakala"</string>
+    <string name="prefs_enable_log" msgid="6620424505072963557">"Vumela impendulo yomsebenzisi"</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Siza ukuthuthukisa umhleli wendlela yokungenayo ngokuthumela izibalo zokubala nokuphahlaza imibiko e-Google."</string>
+    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Thinta ukulungisa amagama"</string>
+    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Thinta amagama afakiwe ukuwalungisa, kuphela lapho okusikiselwayo kubonakala"</string>
+    <string name="keyboard_layout" msgid="437433231038683666">"Indikimba Yekhibhodi"</string>
+    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Ikhibhodi yesi-Czech"</string>
+    <!-- no translation found for subtype_mode_ar_keyboard (2655338636329774995) -->
+    <skip />
+    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Ikhibhodi yesi-Danish"</string>
+    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Ikhobhodi yei-German"</string>
+    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Ikhibhodi ye-English (UK)"</string>
+    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Ikhobhodi ye-English (US)"</string>
+    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Ikhobhodi yesi-Spanish"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
+    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Ikhibhodi yesi-French"</string>
+    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Ikhobhodi yesi-French (i-Canada)"</string>
+    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Ikhibhodi yesi-French (i-Switzerland"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
+    <!-- no translation found for subtype_mode_iw_keyboard (1787536828253289950) -->
+    <skip />
+    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Ikhibhodi yesi-Italian"</string>
+    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Ikhibhodi yesi-Norwegian"</string>
+    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Ikhibhodi yesi-Dutch"</string>
+    <!-- no translation found for subtype_mode_pl_keyboard (2225816414814396047) -->
+    <skip />
+    <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
+    <skip />
+    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ikhobhodi yesi-Russian"</string>
+    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Ikhibhodi yesi-Serbian"</string>
+    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Ikhobhodi yesi-Swedish"</string>
+    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
+    <skip />
+    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Izwi le-Czech"</string>
+    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Izwi lesi-German"</string>
+    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
+    <skip />
+    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Izwi lesi-Spanish"</string>
+    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Izwi lesi-French"</string>
+    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
+    <skip />
+    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Izwi lesi-Japanese"</string>
+    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Izwi lesi-Korean"</string>
+    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
+    <skip />
+    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Izwi lesi-Polish"</string>
+    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Izwi lesi-Portuguese"</string>
+    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Izwi lesi-Russian"</string>
+    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Izwi lesi-Turkish"</string>
+    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
+    <skip />
+    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
+    <skip />
+    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
+    <skip />
+    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"Imodi Yesitadi Yokusebenziseka"</string>
+</resources>

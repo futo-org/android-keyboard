@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008-2009 Google Inc.
+ * Copyright (C) 2008-2009 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.deprecated.languageswitcher;
 
-import com.android.inputmethod.keyboard.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.KeyboardParser;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;

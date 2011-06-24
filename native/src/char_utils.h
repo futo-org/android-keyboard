@@ -21,6 +21,6 @@ namespace latinime {
 
 unsigned short latin_tolower(unsigned short c);
 
-}; // namespace latinime
+} // namespace latinime
 
 #endif // LATINIME_CHAR_UTILS_H

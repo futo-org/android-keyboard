@@ -30,6 +30,15 @@
     <string name="correction_category" msgid="2236750915056607613">"텍스트 수정"</string>
     <string name="ngram_category" msgid="5337109164339320257">"이전 단어에 기반한 추천"</string>
     <string name="misc_category" msgid="6894192814868233453">"기타 옵션"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"고급 설정"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"전문 사용자용 옵션"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"키 팝업 해제 지연"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"지연 없음"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"기본값"</string>
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"빠른 수정"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"자주 발생하는 오타를 수정합니다."</string>
@@ -105,14 +114,21 @@
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"영어(영국) 키보드"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"영어(미국) 키보드"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"스페인어 키보드"</string>
-    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"스페인어(미국) 키보드"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"프랑스어 키보드"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"프랑스어(캐나다) 키보드"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"프랑스어(스위스) 키보드"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"히브리어 키보드"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"이탈리아어 키보드"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"노르웨이어 키보드"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"네덜란드어 키보드"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"폴란드어 키보드"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"포르투갈어 키보드"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"러시아어 키보드"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"세르비아어 키보드"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"스웨덴어 키보드"</string>

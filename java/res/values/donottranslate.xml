@@ -38,8 +38,10 @@
     <string name="label_tab_key">Tab</string>
     <!-- Label for "switch to symbols" key.  Must be short to fit on key! -->
     <string name="label_to_symbol_key">\?123</string>
-    <!-- Label for "switch to numeric" key.  Must be short to fit on key! -->
-    <string name="label_to_numeric_key">123</string>
+    <!-- Label for "switch to phone numeric" key.  Must be short to fit on key! -->
+    <string name="label_to_phone_numeric_key">123</string>
+    <!-- Label for "switch to phone symbols" key.  Must be short to fit on key! -->
+    <string name="label_to_phone_symbols_key">\uff0a\uff03\uff08</string>
 
     <!-- Option values to show/hide the settings key in onscreen keyboard -->
     <!-- Automatically decide to show or hide the settings key -->
@@ -126,7 +128,7 @@
     <string name="layout_stone_bold">Stone (bold)</string>
     <string name="layout_stone_normal">Stone (normal)</string>
     <string name="layout_gingerbread">Gingerbread</string>
-    <string name="layout_honeycomb">Honeycomb</string>
+    <string name="layout_ics">IceCreamSandwich</string>
 
     <!-- For keyboard theme switcher dialog -->
     <string-array name="keyboard_layout_modes">
@@ -135,7 +137,7 @@
         <item>@string/layout_stone_normal</item>
         <item>@string/layout_stone_bold</item>
         <item>@string/layout_gingerbread</item>
-        <item>@string/layout_honeycomb</item>
+        <item>@string/layout_ics</item>
     </string-array>
     <string-array name="keyboard_layout_modes_values">
         <item>0</item>
@@ -150,9 +152,11 @@
     <string-array name="subtype_locale_exception_keys">
         <item>en_US</item>
         <item>en_GB</item>
+        <item>de_ZZ</item>
     </string-array>
     <string-array name="subtype_locale_exception_values">
         <item>English (US)</item>
         <item>English (UK)</item>
+        <item>Deutsch (QWERTY)</item>
     </string-array>
 </resources>

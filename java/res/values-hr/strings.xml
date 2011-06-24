@@ -30,6 +30,15 @@
     <string name="correction_category" msgid="2236750915056607613">"Ispravak teksta"</string>
     <string name="ngram_category" msgid="5337109164339320257">"Prijedlozi na temelju prethodnih riječi"</string>
     <string name="misc_category" msgid="6894192814868233453">"Ostale opcije"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Napredne postavke"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"Opcije za stručne korisnike"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Bez odgode klj. skočnih"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Bez odgode"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Zadano"</string>
+    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
+    <skip />
+    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Automatsko pisanje velikih slova"</string>
     <string name="quick_fixes" msgid="5353213327680897927">"Brzi popravci"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Ispravlja uobičajene pogreške u pisanju"</string>
@@ -38,7 +47,7 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Uvijek prikaži"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Prikaži u portretnom načinu"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Uvijek sakrij"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Koristite razmaknicu za prebacivanje jezika"</string>
+    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Upotrijebite razmaknicu za prebacivanje jezika"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Prikaži tipku postavki"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatski"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Uvijek prikaži"</string>
@@ -51,7 +60,7 @@
     <string name="bigram_suggestion" msgid="2636414079905220518">"Bigram prijedlozi"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Upotrijebi prethodnu riječ radi poboljšanja prijedloga"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Bigram predviđanje"</string>
-    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Koristite prethodnu riječ i za predviđanje"</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Upotrijebite prethodnu riječ i za predviđanje"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Spremljeno"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Idi"</string>
     <string name="label_next_key" msgid="362972844525672568">"Dalje"</string>
@@ -61,7 +70,7 @@
     <string name="label_more_key" msgid="3760239494604948502">"Više"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pauza"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Pričekaj"</string>
-    <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni unos"</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Glasovni ulaz"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Vaš jezik trenutno nije podržan za glasovni unos, ali radi za engleski."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Glasovni unos upotrebljava Googleovo prepoznavanje govora. Primjenjuju se "<a href="http://m.google.com/privacy">"Pravila o privatnosti za uslugu Mobile"</a>"."</string>
     <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Za isključivanje glasovnog unosa idite na postavke načina unosa."</string>
@@ -81,7 +90,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Savjet:"</b>" Sljedeći put pokušajte izgovoriti znakove interpunkcije poput \"točka, \"zarez\" ili \"upitnik\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Odustani"</string>
     <string name="ok" msgid="7898366843681727667">"U redu"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Glasovni unos"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Glasovni ulaz"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na glavnoj tipkovnici"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na tipkovnici simb."</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Isključeno"</string>
@@ -105,14 +114,21 @@
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Engleska (UK) tipkovnica"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Engleska (SAD) tipkovnica"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Španjolska tipkovnica"</string>
-    <string name="subtype_mode_es_US_keyboard" msgid="3702125193532262008">"Tipkovnica za španjolski (SAD)"</string>
+    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
+    <skip />
     <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Francuska tipkovnica"</string>
     <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Francuska (Kanada) tipkovnica"</string>
     <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Francuska (Švicarska) tipkovnica"</string>
+    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
+    <skip />
+    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
+    <skip />
     <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Hebrejska tipkovnica"</string>
     <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Talijanska tipkovnica"</string>
     <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norveška tipkovnica"</string>
     <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Nizozemska tipkovnica"</string>
+    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Poljska tipkovnica"</string>
+    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Portugalska tipkovnica"</string>
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ruska tipkovnica"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Srpska tipkovnica"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Švedska tipkovnica"</string>

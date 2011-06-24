@@ -79,6 +79,8 @@ public class Settings extends PreferenceActivity
 
     public static final String PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY =
             "pref_key_preview_popup_dismiss_delay";
+    public static final String PREF_KEY_USE_CONTACTS_DICT =
+            "pref_key_use_contacts_dict";
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
@@ -87,7 +89,6 @@ public class Settings extends PreferenceActivity
 
     public static class Values {
         // From resources:
-        public final boolean mEnableShowSubtypeSettings;
         public final boolean mSwipeDownDismissKeyboardEnabled;
         public final int mDelayBeforeFadeoutLanguageOnSpacebar;
         public final int mDelayUpdateSuggestions;
@@ -115,21 +116,20 @@ public class Settings extends PreferenceActivity
         public final boolean mBigramSuggestionEnabled;
         // Prediction: use bigrams to predict the next word when there is no input for it yet
         public final boolean mBigramPredictionEnabled;
+        public final boolean mUseContactsDict;
 
         public Values(final SharedPreferences prefs, final Context context,
                 final String localeStr) {
             final Resources res = context.getResources();
             final Locale savedLocale;
             if (null != localeStr) {
-                final Locale keyboardLocale = new Locale(localeStr);
+                final Locale keyboardLocale = Utils.constructLocaleFromString(localeStr);
                 savedLocale = Utils.setSystemLocale(res, keyboardLocale);
             } else {
                 savedLocale = null;
             }
 
             // Get the resources
-            mEnableShowSubtypeSettings = res.getBoolean(
-                    R.bool.config_enable_show_subtype_settings);
             mSwipeDownDismissKeyboardEnabled = res.getBoolean(
                     R.bool.config_swipe_down_dismiss_keyboard_enabled);
             mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
@@ -177,6 +177,8 @@ public class Settings extends PreferenceActivity
                     && isBigramPredictionEnabled(prefs, res);
 
             mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
+
+            mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
 
             Utils.setSystemLocale(res, savedLocale);
         }
@@ -354,8 +356,6 @@ public class Settings extends PreferenceActivity
                 (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS_KEY);
         final PreferenceGroup textCorrectionGroup =
                 (PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS_KEY);
-        final PreferenceGroup bigramGroup =
-                (PreferenceGroup) findPreference(PREF_NGRAM_SETTINGS_KEY);
 
         final boolean showSettingsKeyOption = res.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
@@ -373,10 +373,7 @@ public class Settings extends PreferenceActivity
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 
-        final boolean showSubtypeSettings = res.getBoolean(
-                R.bool.config_enable_show_subtype_settings);
-        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED
-                && !showSubtypeSettings) {
+        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
             generalSettings.removePreference(findPreference(PREF_SUBTYPES));
         }
 
@@ -499,7 +496,6 @@ public class Settings extends PreferenceActivity
     }
 
     private void updateSettingsKeySummary() {
-        final ListPreference lp = mSettingsKeyPreference;
         mSettingsKeyPreference.setSummary(
                 getResources().getStringArray(R.array.settings_key_modes)
                 [mSettingsKeyPreference.findIndexOfValue(mSettingsKeyPreference.getValue())]);

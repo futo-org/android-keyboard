@@ -48,6 +48,8 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
             CompatUtils.getMethod(CLASS_InputMethodSubtype, "containsExtraValueKey", String.class);
     private static final Method METHOD_getExtraValueOf =
             CompatUtils.getMethod(CLASS_InputMethodSubtype, "getExtraValueOf", String.class);
+    private static final Method METHOD_isAuxiliary =
+            CompatUtils.getMethod(CLASS_InputMethodSubtype, "isAuxiliary");
 
     private final int mDummyNameResId;
     private final int mDummyIconResId;
@@ -114,6 +116,10 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
 
     public String getExtraValueOf(String key) {
         return (String)CompatUtils.invoke(mObj, null, METHOD_getExtraValueOf, key);
+    }
+
+    public boolean isAuxiliary() {
+        return (Boolean)CompatUtils.invoke(mObj, false, METHOD_isAuxiliary);
     }
 
     public boolean isDummy() {
