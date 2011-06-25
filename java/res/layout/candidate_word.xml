@@ -20,9 +20,14 @@
 
 <Button
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:minWidth="@dimen/candidate_min_width"
     android:textSize="@dimen/candidate_text_size"
-    android:padding="0dp"
+    android:paddingLeft="@dimen/candidate_padding"
+    android:paddingTop="0dp"
+    android:paddingRight="@dimen/candidate_padding"
+    android:paddingBottom="0dp"
+    android:singleLine="true"
+    android:ellipsize="none"
     style="?attr/suggestionBackgroundStyle" />

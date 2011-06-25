@@ -25,11 +25,11 @@ import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -57,12 +57,11 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         public void pickSuggestionManually(int index, CharSequence word);
     }
 
-    private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
     private static final int MAX_SUGGESTIONS = 18;
-    private static final int UNSPECIFIED_MEASURESPEC = MeasureSpec.makeMeasureSpec(
-            0, MeasureSpec.UNSPECIFIED);
+    private static final int MATCH_PARENT = MeasureSpec.makeMeasureSpec(
+            -1, MeasureSpec.UNSPECIFIED);
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
@@ -96,6 +95,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
     private boolean mShowingAutoCorrectionInverted;
     private boolean mShowingAddToDictionary;
+
+    private static final float MIN_TEXT_XSCALE = 0.4f;
+    private static final String ELLIPSIS = "\u2026";
 
     private final UiHandler mHandler = new UiHandler(this);
 
@@ -189,7 +191,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             switch (i) {
             case 0:
                 word = (TextView)findViewById(R.id.word_left);
-                word.setPadding(res.getDimensionPixelOffset(R.dimen.candidate_padding), 0, 0, 0);
                 info = (TextView)findViewById(R.id.info_left);
                 break;
             case 1:
@@ -213,7 +214,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mInfos.add(info);
             if (i > 0) {
                 final View divider = inflater.inflate(R.layout.candidate_divider, null);
-                divider.measure(UNSPECIFIED_MEASURESPEC, UNSPECIFIED_MEASURESPEC);
+                divider.measure(MATCH_PARENT, MATCH_PARENT);
                 mDividers.add(divider);
             }
         }
@@ -278,12 +279,14 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         }
     }
 
-    private CharSequence getStyledCandidateWord(CharSequence word, boolean isAutoCorrect) {
+    private CharSequence getStyledCandidateWord(CharSequence word, TextView v,
+            boolean isAutoCorrect) {
+        v.setTypeface(Typeface.DEFAULT);
         if (!isAutoCorrect)
             return word;
         final Spannable spannedWord = new SpannableString(word);
         if ((mAutoCorrectHighlight & AUTO_CORRECT_BOLD) != 0)
-            spannedWord.setSpan(BOLD_SPAN, 0, word.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            v.setTypeface(Typeface.DEFAULT_BOLD);
         if ((mAutoCorrectHighlight & AUTO_CORRECT_UNDERLINE) != 0)
             spannedWord.setSpan(UNDERLINE_SPAN, 0, word.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return spannedWord;
@@ -320,7 +323,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         int fromIndex = NUM_CANDIDATES_IN_STRIP;
         final int count = Math.min(mWords.size(), suggestions.size());
         closeCandidatesPane();
-        mExpandCandidatesPane.setEnabled(count >= NUM_CANDIDATES_IN_STRIP);
+        mExpandCandidatesPane.setVisibility(count > NUM_CANDIDATES_IN_STRIP ? VISIBLE : GONE);
         for (int i = 0; i < count; i++) {
             final CharSequence suggestion = suggestions.getWord(i);
             if (suggestion == null) continue;
@@ -341,11 +344,15 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             // the word when space is typed (valid typed word or auto corrected word).
             word.setTextColor(getCandidateTextColor(isAutoCorrect,
                     isSuggestedCandidate || isPunctuationSuggestions, suggestionInfo));
-            word.setText(getStyledCandidateWord(suggestion, isAutoCorrect));
-            // TODO: call TextView.setTextScaleX() to fit the candidate in single line.
-            word.measure(UNSPECIFIED_MEASURESPEC, UNSPECIFIED_MEASURESPEC);
-            final int width = word.getMeasuredWidth();
-            final int height = word.getMeasuredHeight();
+            final CharSequence text = getStyledCandidateWord(suggestion, word, isAutoCorrect);
+            if (i < NUM_CANDIDATES_IN_STRIP) {
+                final View parent = (View)word.getParent();
+                final int width = parent.getWidth() - word.getPaddingLeft()
+                        - word.getPaddingRight();
+                setTextWithAutoScaleAndEllipsis(text, width, word);
+            } else {
+                setTextWithAutoScaleAndEllipsis(text, paneWidth, word);
+            }
 
             final TextView info;
             if (DBG && suggestionInfo != null
@@ -353,18 +360,23 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 info = mInfos.get(i);
                 info.setText(suggestionInfo.getDebugString());
                 info.setVisibility(View.VISIBLE);
-                info.measure(UNSPECIFIED_MEASURESPEC, UNSPECIFIED_MEASURESPEC);
             } else {
                 info = null;
             }
 
             if (i < NUM_CANDIDATES_IN_STRIP) {
                 if (info != null) {
+                    word.measure(MATCH_PARENT, MATCH_PARENT);
+                    info.measure(MATCH_PARENT, MATCH_PARENT);
+                    final int width = word.getMeasuredWidth();
                     final int infoWidth = info.getMeasuredWidth();
                     FrameLayoutCompatUtils.placeViewAt(
                             info, width - infoWidth, 0, infoWidth, info.getMeasuredHeight());
                 }
             } else {
+                word.measure(MATCH_PARENT, MATCH_PARENT);
+                final int width = word.getMeasuredWidth();
+                final int height = word.getMeasuredHeight();
                 // TODO: Handle overflow case.
                 if (dividerWidth + x + width >= paneWidth) {
                     centeringCandidates(fromIndex, i - 1, x, paneWidth);
@@ -385,6 +397,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                         word, x, y + (mCandidateStripHeight - height) / 2, width, height);
                 if (info != null) {
                     mCandidatesPane.addView(info);
+                    info.measure(MATCH_PARENT, MATCH_PARENT);
                     final int infoWidth = info.getMeasuredWidth();
                     FrameLayoutCompatUtils.placeViewAt(
                             info, x + width - infoWidth, y, infoWidth, info.getMeasuredHeight());
@@ -421,6 +434,60 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             final ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams)lp;
             mlp.setMargins(mlp.leftMargin + dx, mlp.topMargin + dy, 0, 0);
         }
+    }
+
+    private static void setTextWithAutoScaleAndEllipsis(CharSequence text, int w, TextView v) {
+        // To prevent partially rendered character at the end of text, subtract few extra pixels
+        // from the width.
+        final int width = w - 4;
+
+        final TextPaint paint = v.getPaint();
+        final int textWidth = getTextWidth(text, paint, 1.0f);
+        if (textWidth < width || textWidth == 0 || width <= 0) {
+            v.setTextScaleX(1.0f);
+            v.setText(text);
+            return;
+        }
+
+        final float scaleX = Math.min((float)width / textWidth, 1.0f);
+        if (scaleX >= MIN_TEXT_XSCALE) {
+            v.setTextScaleX(scaleX);
+            v.setText(text);
+            return;
+        }
+
+        final int truncatedWidth = width - getTextWidth(ELLIPSIS, paint, MIN_TEXT_XSCALE);
+        final CharSequence ellipsized = getTextEllipsizedAtStart(text, paint, truncatedWidth);
+        v.setTextScaleX(MIN_TEXT_XSCALE);
+        v.setText(ELLIPSIS);
+        v.append(ellipsized);
+    }
+
+    private static int getTextWidth(CharSequence text, TextPaint paint, float scaleX) {
+        if (TextUtils.isEmpty(text)) return 0;
+        final int len = text.length();
+        final float[] widths = new float[len];
+        paint.setTextScaleX(scaleX);
+        final int count = paint.getTextWidths(text, 0, len, widths);
+        float width = 0;
+        for (int i = 0; i < count; i++) {
+            width += widths[i];
+        }
+        return (int)Math.round(width + 0.5);
+    }
+
+    private static CharSequence getTextEllipsizedAtStart(CharSequence text, TextPaint paint,
+            int maxWidth) {
+        final int len = text.length();
+        final float[] widths = new float[len];
+        final int count = paint.getTextWidths(text, 0, len, widths);
+        float width = 0;
+        for (int i = count - 1; i >= 0; i--) {
+            width += widths[i];
+            if (width > maxWidth)
+                return text.subSequence(i + 1, len);
+        }
+        return text;
     }
 
     private void expandCandidatesPane() {

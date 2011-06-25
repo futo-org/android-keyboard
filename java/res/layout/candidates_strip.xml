@@ -24,6 +24,7 @@
 >
     <LinearLayout
         android:id="@+id/candidates_strip"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
     >
@@ -83,13 +84,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                style="?attr/suggestionsStripBackgroundStyle" />
+                android:background="@null" />
             <ImageButton
                 android:id="@+id/close_candidates_pane"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                style="?attr/suggestionsStripBackgroundStyle" />
+                android:background="@null" />
         </LinearLayout>
     </LinearLayout>
     <LinearLayout
@@ -104,6 +105,7 @@
             android:layout_weight="1.0"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
             android:textSize="@dimen/candidate_text_size"
             android:singleLine="true"
             android:ellipsize="middle"
