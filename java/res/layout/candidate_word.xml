@@ -24,4 +24,5 @@
     android:layout_height="wrap_content"
     android:minWidth="@dimen/candidate_min_width"
     android:textSize="@dimen/candidate_text_size"
+    android:padding="0dp"
     style="?attr/suggestionBackgroundStyle" />

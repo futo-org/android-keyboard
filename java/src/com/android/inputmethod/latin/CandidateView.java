@@ -75,7 +75,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final ArrayList<TextView> mWords = new ArrayList<TextView>();
     private final ArrayList<TextView> mInfos = new ArrayList<TextView>();
     private final ArrayList<View> mDividers = new ArrayList<View>();
-    private final int mCandidatePadding;
     private final int mCandidateStripHeight;
     private final CharacterStyle mInvertedForegroundColorSpan;
     private final CharacterStyle mInvertedBackgroundColorSpan;
@@ -179,14 +178,13 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
 
-        mCandidatePadding = res.getDimensionPixelOffset(R.dimen.candidate_padding);
         mCandidateStripHeight = res.getDimensionPixelOffset(R.dimen.candidate_strip_height);
         for (int i = 0; i < MAX_SUGGESTIONS; i++) {
             final TextView word, info;
             switch (i) {
             case 0:
                 word = (TextView)findViewById(R.id.word_left);
-                word.setPadding(mCandidatePadding, 0, 0, 0);
+                word.setPadding(res.getDimensionPixelOffset(R.dimen.candidate_padding), 0, 0, 0);
                 info = (TextView)findViewById(R.id.info_left);
                 break;
             case 1:
@@ -355,7 +353,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 if (info != null) {
                     final int infoWidth = info.getMeasuredWidth();
                     FrameLayoutCompatUtils.placeViewAt(
-                            info, x + width - infoWidth, y, infoWidth, info.getMeasuredHeight());
+                            info, width - infoWidth, 0, infoWidth, info.getMeasuredHeight());
                 }
             } else {
                 // TODO: Handle overflow case.

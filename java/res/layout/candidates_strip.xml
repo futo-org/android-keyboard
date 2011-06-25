@@ -56,7 +56,7 @@
         android:orientation="horizontal"
         android:layout_weight="1.0"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:gravity="center_vertical"
     >
         <RelativeLayout
