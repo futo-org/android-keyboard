@@ -221,7 +221,7 @@ public class MiniKeyboardBuilder {
                     paint = new Paint();
                     paint.setAntiAlias(true);
                 }
-                final int labelSize = view.getLabelSizeAndSetPaint(label, 0, paint);
+                final int labelSize = view.getDefaultLabelSizeAndSetPaint(paint);
                 paint.setTextSize(labelSize);
                 if (bounds == null) bounds = new Rect();
                 paint.getTextBounds(label.toString(), 0, label.length(), bounds);

@@ -34,12 +34,12 @@
             <Key
                 latin:keyLabel=","
                 latin:keyLabelOption="hasUppercaseLetter"
-                latin:keyHintLetter="!"
+                latin:keyHintLabel="!"
                 latin:popupCharacters="!" />
             <Key
                 latin:keyLabel="."
                 latin:keyLabelOption="hasUppercaseLetter"
-                latin:keyHintLetter="\?"
+                latin:keyHintLabel="\?"
                 latin:popupCharacters="\?" />
         </default>
     </switch>

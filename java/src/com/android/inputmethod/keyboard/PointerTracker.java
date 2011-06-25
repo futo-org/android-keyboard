@@ -670,7 +670,7 @@ public class PointerTracker {
             // If keyboard is in manual temporary upper case state and key has manual temporary
             // uppercase letter as key hint letter, alternate character code should be sent.
             if (mKeyboard.isManualTemporaryUpperCase() && key.hasUppercaseLetter()) {
-                code = key.mHintLetter.charAt(0);
+                code = key.mHintLabel.charAt(0);
                 codes[0] = code;
             }
 

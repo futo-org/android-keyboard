@@ -32,14 +32,16 @@
     <dimen name="keyboard_bottom_padding">0.06in</dimen>
     <dimen name="key_bottom_gap_stone">0.00in</dimen>
     <dimen name="key_horizontal_gap_stone">0.00in</dimen>
+    <dimen name="keyboard_horizontal_edges_padding">0.0in</dimen>
+    <dimen name="mini_keyboard_horizontal_padding">16dip</dimen>
+    <dimen name="mini_keyboard_key_horizontal_padding">8dip</dimen>
+
     <dimen name="key_bottom_gap_ics">0.06in</dimen>
     <dimen name="key_horizontal_gap_ics">0.01in</dimen>
     <dimen name="keyboard_top_padding_ics">0.03in</dimen>
     <dimen name="keyboard_bottom_padding_ics">0.06in</dimen>
-    <dimen name="keyboard_horizontal_edges_padding">0.0in</dimen>
-    <dimen name="mini_keyboard_horizontal_padding">16dip</dimen>
-    <dimen name="mini_keyboard_horizontal_padding_holo">38dip</dimen>
-    <dimen name="mini_keyboard_key_horizontal_padding">8dip</dimen>
+    <dimen name="mini_keyboard_horizontal_padding_ics">38dip</dimen>
+
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
     <dimen name="mini_keyboard_slide_allowance">0.396in</dimen>
@@ -49,15 +51,20 @@
          to user's finger. -->
     <dimen name="keyboard_vertical_correction">-0.05in</dimen>
 
+    <!-- left or right padding of label alignment -->
+    <dimen name="key_label_horizontal_alignment_padding">4dip</dimen>
+
     <fraction name="key_letter_ratio">45%</fraction>
+    <fraction name="key_large_letter_ratio">55%</fraction>
     <fraction name="key_label_ratio">29%</fraction>
     <fraction name="key_hint_letter_ratio">23%</fraction>
+    <fraction name="key_hint_label_ratio">36%</fraction>
     <fraction name="key_uppercase_letter_ratio">35%</fraction>
-    <!-- left or right padding of label alignment -->
-    <dimen name="key_label_horizontal_alignment_padding">21dip</dimen>
     <fraction name="key_preview_text_ratio">82%</fraction>
     <dimen name="key_preview_height">80sp</dimen>
     <dimen name="key_preview_offset">0.1in</dimen>
+
+    <dimen name="key_preview_height_ics">80sp</dimen>
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
     <dimen name="candidate_strip_height">42dip</dimen>

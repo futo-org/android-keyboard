@@ -134,7 +134,7 @@ public class KeyCodeDescriptionMapper {
                 return context.getString(mKeyLabelMap.get(label));
             } else if (label.length() == 1
                     || (keyboard.isManualTemporaryUpperCase() && !TextUtils
-                            .isEmpty(key.mHintLetter))) {
+                            .isEmpty(key.mHintLabel))) {
                 return getDescriptionForKeyCode(context, keyboard, key);
             } else {
                 return label;
@@ -181,8 +181,8 @@ public class KeyCodeDescriptionMapper {
      * @return the key code for the specified key
      */
     private int getCorrectKeyCode(Keyboard keyboard, Key key) {
-        if (keyboard.isManualTemporaryUpperCase() && !TextUtils.isEmpty(key.mHintLetter)) {
-            return key.mHintLetter.charAt(0);
+        if (keyboard.isManualTemporaryUpperCase() && !TextUtils.isEmpty(key.mHintLabel)) {
+            return key.mHintLabel.charAt(0);
         } else {
             return key.mCode;
         }

@@ -165,7 +165,7 @@ public class KeyStyles {
             readInt(keyAttr, R.styleable.Keyboard_Key_code);
             readText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             readText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
-            readText(keyAttr, R.styleable.Keyboard_Key_keyHintLetter);
+            readText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
             readTextArray(keyAttr, R.styleable.Keyboard_Key_popupCharacters);
             readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIcon);

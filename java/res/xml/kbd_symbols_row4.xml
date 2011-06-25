@@ -43,7 +43,7 @@
                     latin:keyWidth="35.83%p" />
                 <Key
                     latin:keyLabel="."
-                    latin:keyLabelOption="popupHint"
+                    latin:keyLabelOption="hasPopupHint"
                     latin:popupCharacters="@string/alternates_for_punctuation"
                     latin:keyWidth="9.2%p"
                     latin:maxPopupKeyboardColumn="7"
@@ -62,7 +62,7 @@
                     latin:keyWidth="50%p" />
                 <Key
                     latin:keyLabel="."
-                    latin:keyLabelOption="popupHint"
+                    latin:keyLabelOption="hasPopupHint"
                     latin:popupCharacters="@string/alternates_for_punctuation"
                     latin:maxPopupKeyboardColumn="7"
                     latin:keyStyle="functionalKeyStyle" />

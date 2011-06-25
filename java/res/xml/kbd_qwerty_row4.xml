@@ -47,7 +47,7 @@
                     >
                         <Key
                             latin:keyStyle="tabKeyStyle"
-                            latin:keyLabelOption="popupHint"
+                            latin:keyLabelOption="hasPopupHint"
                             latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
                             latin:keyWidth="9.2%p"
                             latin:maxPopupKeyboardColumn="8" />
@@ -55,7 +55,7 @@
                     <default>
                         <Key
                             latin:keyLabel="."
-                            latin:keyLabelOption="popupHint"
+                            latin:keyLabelOption="hasPopupHint"
                             latin:popupCharacters="@string/alternates_for_punctuation"
                             latin:keyWidth="9.2%p"
                             latin:maxPopupKeyboardColumn="7"
@@ -80,14 +80,14 @@
                     >
                         <Key
                             latin:keyStyle="tabKeyStyle"
-                            latin:keyLabelOption="popupHint"
+                            latin:keyLabelOption="hasPopupHint"
                             latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
                             latin:maxPopupKeyboardColumn="8" />
                     </case>
                     <default>
                         <Key
                             latin:keyLabel="."
-                            latin:keyLabelOption="popupHint"
+                            latin:keyLabelOption="hasPopupHint"
                             latin:popupCharacters="@string/alternates_for_punctuation"
                             latin:maxPopupKeyboardColumn="7"
                             latin:keyStyle="functionalKeyStyle" />
