@@ -70,12 +70,15 @@ public class SlidingLocaleDrawable extends Drawable {
         mTextPaint = textPaint;
         mMiddleX = (background != null) ? (mWidth - mBackground.getIntrinsicWidth()) / 2 : 0;
 
-        final TypedArray a = context.obtainStyledAttributes(
+        final TypedArray lka = context.obtainStyledAttributes(
                 null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
-        mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboard_spacebarTextColor, 0);
-        mLeftDrawable = a.getDrawable(R.styleable.LatinKeyboard_spacebarArrowPreviewLeftIcon);
-        mRightDrawable = a.getDrawable(R.styleable.LatinKeyboard_spacebarArrowPreviewRightIcon);
-        a.recycle();
+        mLeftDrawable = lka.getDrawable(R.styleable.LatinKeyboard_spacebarArrowPreviewLeftIcon);
+        mRightDrawable = lka.getDrawable(R.styleable.LatinKeyboard_spacebarArrowPreviewRightIcon);
+        lka.recycle();
+        final TypedArray kva = context.obtainStyledAttributes(
+                null, R.styleable.KeyboardView, R.attr.keyboardViewStyle, R.style.KeyboardView);
+        mSpacebarTextColor = kva.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
+        kva.recycle();
 
         mThreshold = ViewConfiguration.get(context).getScaledTouchSlop();
     }

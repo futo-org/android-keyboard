@@ -118,6 +118,10 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private final float mBackgroundDimAmount;
     private final float mKeyHysteresisDistance;
     private final float mVerticalCorrection;
+    private final Drawable mPreviewBackground;
+    private final Drawable mPreviewSpacebarBackground;
+    private final int mPreviewTextColor;
+    private final float mPreviewTextRatio;
     private final int mPreviewOffset;
     private final int mPreviewHeight;
     private final int mPopupLayout;
@@ -138,9 +142,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     // Key preview
     private boolean mInForeground;
-    private TextView mPreviewText;
-    private Drawable mPreviewBackground;
-    private float mPreviewTextRatio;
+    private final TextView mPreviewText;
     private int mPreviewTextSize;
     private boolean mShowKeyPreviewPopup = true;
     private final int mDelayBeforePreview;
@@ -342,7 +344,18 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 R.styleable.KeyboardView_keyHysteresisDistance, 0);
         mVerticalCorrection = a.getDimensionPixelOffset(
                 R.styleable.KeyboardView_verticalCorrection, 0);
+        mPreviewTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
         final int previewLayout = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
+        if (previewLayout != 0) {
+            mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
+            mPreviewText.setTextColor(mPreviewTextColor);
+        } else {
+            mPreviewText = null;
+            mShowKeyPreviewPopup = false;
+        }
+        mPreviewBackground = a.getDrawable(R.styleable.KeyboardView_keyPreviewBackground);
+        mPreviewSpacebarBackground = a.getDrawable(
+                R.styleable.KeyboardView_keyPreviewSpacebarBackground);
         mPreviewOffset = a.getDimensionPixelOffset(R.styleable.KeyboardView_keyPreviewOffset, 0);
         mPreviewHeight = a.getDimensionPixelSize(R.styleable.KeyboardView_keyPreviewHeight, 80);
         mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
@@ -374,12 +387,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
         final Resources res = getResources();
 
-        if (previewLayout != 0) {
-            mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
-            mPreviewBackground = mPreviewText.getBackground();
-        } else {
-            mShowKeyPreviewPopup = false;
-        }
         mDelayBeforePreview = res.getInteger(R.integer.config_delay_before_preview);
         mDelayAfterPreview = res.getInteger(R.integer.config_delay_after_preview);
         mKeyLabelHorizontalPadding = (int)res.getDimension(
@@ -1010,7 +1017,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             previewText.setText(null);
         }
         if (key.mCode == Keyboard.CODE_SPACE) {
-            previewText.setBackgroundColor(Color.TRANSPARENT);
+            previewText.setBackgroundDrawable(mPreviewSpacebarBackground);
         } else {
             previewText.setBackgroundDrawable(mPreviewBackground);
         }

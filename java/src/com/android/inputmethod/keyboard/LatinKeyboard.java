@@ -216,8 +216,12 @@ public class LatinKeyboard extends Keyboard {
     // Layout local language name and left and right arrow on spacebar.
     private static String layoutSpacebar(Paint paint, Locale locale, Drawable icon, Drawable lArrow,
             Drawable rArrow, int width, int height, float origTextSize) {
-        final float arrowWidth = lArrow.getIntrinsicWidth();
-        final float arrowHeight = lArrow.getIntrinsicHeight();
+        final float arrowWidth;
+        if (lArrow != null && rArrow != null) {
+            arrowWidth = lArrow.getIntrinsicWidth();
+        } else {
+            arrowWidth = 0;
+        }
         final float maxTextWidth = width - (arrowWidth + arrowWidth);
         final Rect bounds = new Rect();
 
@@ -251,14 +255,17 @@ public class LatinKeyboard extends Keyboard {
         paint.setTextSize(textSize);
 
         // Place left and right arrow just before and after language text.
-        final float textHeight = -paint.ascent() + paint.descent();
-        final float baseline = (icon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
-                : height / 2 + textHeight / 2;
-        final int top = (int)(baseline - arrowHeight);
-        final float remains = (width - textWidth) / 2;
-        lArrow.setBounds((int)(remains - arrowWidth), top, (int)remains, (int)baseline);
-        rArrow.setBounds((int)(remains + textWidth), top, (int)(remains + textWidth + arrowWidth),
-                (int)baseline);
+        if (lArrow != null && rArrow != null) {
+            final float textHeight = -paint.ascent() + paint.descent();
+            final float baseline = (icon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
+                    : height / 2 + textHeight / 2;
+            final int arrowHeight = lArrow.getIntrinsicHeight();
+            final int top = (int)(baseline - arrowHeight);
+            final float remains = (width - textWidth) / 2;
+            lArrow.setBounds((int)(remains - arrowWidth), top, (int)remains, (int)baseline);
+            rArrow.setBounds((int)(remains + textWidth), top,
+                    (int)(remains + textWidth + arrowWidth), (int)baseline);
+        }
 
         return language;
     }
@@ -323,7 +330,8 @@ public class LatinKeyboard extends Keyboard {
             // Put arrows that are already laid out on either side of the text
             // Because language switch is disabled on phone and number layouts, hide arrows.
             // TODO: Sort out how to enable language switch on these layouts.
-            if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()
+            if (mSpacebarArrowLeftIcon != null && mSpacebarArrowRightIcon != null
+                    && mSubtypeSwitcher.useSpacebarLanguageSwitcher()
                     && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1
                     && !(isPhoneKeyboard() || isNumberKeyboard())) {
                 mSpacebarArrowLeftIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));

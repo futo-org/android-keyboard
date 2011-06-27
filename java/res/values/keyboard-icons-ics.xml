@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <style name="KeyboardIcons.IceCreamSandwich" parent="android:Theme">
+    <style name="KeyboardIcons.IceCreamSandwich">
         <!-- Keyboard icons -->
         <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are too
              large for phone.

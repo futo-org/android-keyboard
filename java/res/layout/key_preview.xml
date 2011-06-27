@@ -24,5 +24,4 @@
     android:textSize="40sp"
     android:minWidth="32dip"
     android:gravity="center"
-    style="?attr/keyPreviewStyle"
     />
