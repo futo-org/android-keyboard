@@ -1870,6 +1870,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Notify that language or mode have been changed and toggleLanguage will update KeyboardID
     // according to new language or mode.
     public void onRefreshKeyboard() {
+        if (!CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
+            // Before Honeycomb, Voice IME is in LatinIME and it changes the current input view,
+            // so that we need to re-create the keyboard input view here.
+            setInputView(mKeyboardSwitcher.onCreateInputView());
+        }
         // Reload keyboard because the current language has been changed.
         mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(),
                 mSubtypeSwitcher.isShortcutImeEnabled() && mVoiceProxy.isVoiceButtonEnabled(),
