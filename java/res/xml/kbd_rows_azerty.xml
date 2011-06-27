@@ -29,44 +29,44 @@
     >
         <Key
             latin:keyLabel="a"
-            latin:keyHintLetter="1"
+            latin:keyHintLabel="1"
             latin:popupCharacters="@string/alternates_for_a"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="z"
-            latin:keyHintLetter="2"
+            latin:keyHintLabel="2"
             latin:popupCharacters="@string/alternates_for_z" />
         <Key
             latin:keyLabel="e"
-            latin:keyHintLetter="3"
+            latin:keyHintLabel="3"
             latin:popupCharacters="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
-            latin:keyHintLetter="4"
+            latin:keyHintLabel="4"
             latin:popupCharacters="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
-            latin:keyHintLetter="5"
+            latin:keyHintLabel="5"
             latin:popupCharacters="@string/alternates_for_t" />
         <Key
             latin:keyLabel="y"
-            latin:keyHintLetter="6"
+            latin:keyHintLabel="6"
             latin:popupCharacters="@string/alternates_for_y" />
         <Key
             latin:keyLabel="u"
-            latin:keyHintLetter="7"
+            latin:keyHintLabel="7"
             latin:popupCharacters="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
-            latin:keyHintLetter="8"
+            latin:keyHintLabel="8"
             latin:popupCharacters="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
-            latin:keyHintLetter="9"
+            latin:keyHintLabel="9"
             latin:popupCharacters="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
-            latin:keyHintLetter="0"
+            latin:keyHintLabel="0"
             latin:popupCharacters="@string/alternates_for_p"
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />

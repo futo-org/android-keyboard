@@ -119,7 +119,7 @@
         <Key
             latin:keyLabel="."
             latin:keyLabelOption="hasUppercaseLetter"
-            latin:keyHintLetter=","
+            latin:keyHintLabel=","
             latin:popupCharacters="," />
         <include
             latin:keyboardLayout="@xml/kbd_row3_right" />

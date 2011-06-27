@@ -59,7 +59,7 @@
                         <Key
                             latin:keyLabel=":"
                             latin:keyLabelOption="hasUppercaseLetter"
-                            latin:keyHintLetter="+"
+                            latin:keyHintLabel="+"
                             latin:popupCharacters="+" />
                     </case>
                     <default>
@@ -78,7 +78,7 @@
                         <Key
                             latin:keyLabel="/"
                             latin:keyLabelOption="hasUppercaseLetter"
-                            latin:keyHintLetter="\@"
+                            latin:keyHintLabel="\@"
                             latin:popupCharacters="\@" />
                     </default>
                 </switch>
@@ -101,14 +101,14 @@
                 <Key
                     latin:keyLabel="/"
                     latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLetter=":"
+                    latin:keyHintLabel=":"
                     latin:popupCharacters=":" />
             </case>
             <default>
                 <Key
                     latin:keyLabel="\'"
                     latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLetter="&quot;"
+                    latin:keyHintLabel="&quot;"
                     latin:popupCharacters="&quot;" />
             </default>
         </switch>
@@ -123,7 +123,7 @@
                 <Key
                     latin:keyLabel="-"
                     latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLetter="_"
+                    latin:keyHintLabel="_"
                     latin:popupCharacters="_" />
             </default>
         </switch>

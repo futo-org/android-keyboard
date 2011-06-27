@@ -19,17 +19,18 @@ package com.android.inputmethod.keyboard;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeyStyles;
+import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
 import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
 import com.android.inputmethod.keyboard.internal.Row;
-import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
-import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
 import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
@@ -45,18 +46,22 @@ public class Key {
 
     /** Label to display */
     public final CharSequence mLabel;
-    /** Hint letter to display on the key in conjunction with the label */
-    public final CharSequence mHintLetter;
+    /** Hint label to display on the key in conjunction with the label */
+    public final CharSequence mHintLabel;
     /** Option of the label */
     public final int mLabelOption;
     public static final int LABEL_OPTION_ALIGN_LEFT = 0x01;
     public static final int LABEL_OPTION_ALIGN_RIGHT = 0x02;
-    public static final int LABEL_OPTION_ALIGN_BOTTOM = 0x08;
-    public static final int LABEL_OPTION_FONT_NORMAL = 0x10;
-    public static final int LABEL_OPTION_FONT_FIXED_WIDTH = 0x20;
-    public static final int LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO = 0x40;
-    private static final int LABEL_OPTION_POPUP_HINT = 0x80;
-    private static final int LABEL_OPTION_HAS_UPPERCASE_LETTER = 0x100;
+    public static final int LABEL_OPTION_ALIGN_BOTTOM = 0x04;
+    public static final int LABEL_OPTION_ALIGN_LEFT_OF_CENTER = 0x08;
+    private static final int LABEL_OPTION_LARGE_LETTER = 0x10;
+    private static final int LABEL_OPTION_FONT_NORMAL = 0x20;
+    private static final int LABEL_OPTION_FONT_MONO_SPACE = 0x40;
+    private static final int LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO = 0x80;
+    private static final int LABEL_OPTION_FOLLOW_KEY_HINT_LABEL_RATIO = 0x100;
+    private static final int LABEL_OPTION_HAS_POPUP_HINT = 0x200;
+    private static final int LABEL_OPTION_HAS_UPPERCASE_LETTER = 0x400;
+    private static final int LABEL_OPTION_HAS_HINT_LABEL = 0x800;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;
@@ -160,7 +165,7 @@ public class Key {
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mGap;
         mEdgeFlags = edgeFlags;
-        mHintLetter = null;
+        mHintLabel = null;
         mLabelOption = 0;
         mFunctional = false;
         mSticky = false;
@@ -282,7 +287,7 @@ public class Key {
                     keyAttr, R.styleable.Keyboard_Key_keyIcon,
                     KeyboardIconsSet.ICON_UNDEFINED));
             Keyboard.setDefaultBounds(mIcon);
-            mHintLetter = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLetter);
+            mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
             mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             mLabelOption = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption, 0);
@@ -309,12 +314,41 @@ public class Key {
         }
     }
 
+    public Typeface selectTypeface(Typeface defaultTypeface) {
+        // TODO: Handle "bold" here too?
+        if ((mLabelOption & LABEL_OPTION_FONT_NORMAL) != 0) {
+            return Typeface.DEFAULT;
+        } else if ((mLabelOption & LABEL_OPTION_FONT_MONO_SPACE) != 0) {
+            return Typeface.MONOSPACE;
+        } else {
+            return defaultTypeface;
+        }
+    }
+
+    public int selectTextSize(int letter, int largeLetter, int label, int hintLabel) {
+        if (mLabel.length() > 1
+                && (mLabelOption & (LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO
+                        | LABEL_OPTION_FOLLOW_KEY_HINT_LABEL_RATIO)) == 0) {
+            return label;
+        } else if ((mLabelOption & LABEL_OPTION_FOLLOW_KEY_HINT_LABEL_RATIO) != 0) {
+            return hintLabel;
+        } else if ((mLabelOption & LABEL_OPTION_LARGE_LETTER) != 0) {
+            return largeLetter;
+        } else {
+            return letter;
+        }
+    }
+
     public boolean hasPopupHint() {
-        return (mLabelOption & LABEL_OPTION_POPUP_HINT) != 0;
+        return (mLabelOption & LABEL_OPTION_HAS_POPUP_HINT) != 0;
     }
 
     public boolean hasUppercaseLetter() {
         return (mLabelOption & LABEL_OPTION_HAS_UPPERCASE_LETTER) != 0;
+    }
+
+    public boolean hasHintLabel() {
+        return (mLabelOption & LABEL_OPTION_HAS_HINT_LABEL) != 0;
     }
 
     private static boolean isDigitPopupCharacter(CharSequence label) {

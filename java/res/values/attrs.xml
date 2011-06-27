@@ -41,10 +41,15 @@
 
         <!-- Size of the text for one letter keys, in the proportion of key height. -->
         <attr name="keyLetterRatio" format="float" />
+        <!-- Large size of the text for one letter keys, in the proportion of key height. -->
+        <attr name="keyLargeLetterRatio" format="float" />
         <!-- Size of the text for keys with some text, in the proportion of key height. -->
         <attr name="keyLabelRatio" format="float" />
-        <!-- Size of the text for hint letter, in the proportion of key height. -->
+        <!-- Size of the text for hint letter (= one character hint label), in the proportion of
+             key height. -->
         <attr name="keyHintLetterRatio" format="float" />
+        <!-- Size of the text for hint label, in the proportion of key height. -->
+        <attr name="keyHintLabelRatio" format="float" />
         <!-- Size of the text for upper case letter, in the proportion of key height. -->
         <attr name="keyUppercaseLetterRatio" format="float" />
 
@@ -52,8 +57,10 @@
         <attr name="keyTextColor" format="color" />
         <!-- Color to use for the label in a key when in inactivated state. -->
         <attr name="keyTextInactivatedColor" format="color" />
-        <!-- Key hint letter color -->
+        <!-- Key hint letter (= one character hint label) color -->
         <attr name="keyHintLetterColor" format="color" />
+        <!-- Key hint label color -->
+        <attr name="keyHintLabelColor" format="color" />
         <!-- Upper case letter colors -->
         <attr name="keyUppercaseLetterInactivatedColor" format="color" />
         <attr name="keyUppercaseLetterActivatedColor" format="color" />
@@ -67,6 +74,8 @@
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->
         <attr name="keyPreviewHeight" format="dimension" />
+        <!-- Size of the text for key press feedback popup, int the proportion of key height -->
+        <attr name="keyPreviewTextRatio" format="float" />
 
         <!-- Hysteresis distance for key debouncing -->
         <attr name="keyHysteresisDistance" format="dimension" />
@@ -146,16 +155,6 @@
         <attr name="iconReturnKey" format="reference" />
         <attr name="iconSearchKey" format="reference" />
         <attr name="iconTabKey" format="reference" />
-        <attr name="iconNum1Key" format="reference" />
-        <attr name="iconNum2Key" format="reference" />
-        <attr name="iconNum3Key" format="reference" />
-        <attr name="iconNum4Key" format="reference" />
-        <attr name="iconNum5Key" format="reference" />
-        <attr name="iconNum6Key" format="reference" />
-        <attr name="iconNum7Key" format="reference" />
-        <attr name="iconNum8Key" format="reference" />
-        <attr name="iconNum9Key" format="reference" />
-        <attr name="iconNum0Key" format="reference" />
         <attr name="iconShiftedShiftKey" format="reference" />
         <attr name="iconPreviewSpaceKey" format="reference" />
         <attr name="iconPreviewTabKey" format="reference" />
@@ -187,19 +186,23 @@
         <attr name="keyOutputText" format="string" />
         <!-- The label to display on the key. -->
         <attr name="keyLabel" format="string" />
-        <!-- The hint letter to display on the key in conjunction with the label. -->
-        <attr name="keyHintLetter" format="string" />
+        <!-- The hint label to display on the key in conjunction with the label. -->
+        <attr name="keyHintLabel" format="string" />
         <!-- The key label option. -->
         <attr name="keyLabelOption" format="integer">
             <!-- This should be aligned with Key.LABEL_OPTION_* -->
             <flag name="alignLeft" value="0x01" />
             <flag name="alignRight" value="0x02" />
-            <flag name="alignBottom" value="0x08" />
-            <flag name="fontNormal" value="0x10" />
-            <flag name="fontFixedWidth" value="0x20" />
-            <flag name="followKeyLetterRatio" value="0x40" />
-            <flag name="popupHint" value="0x80" />
-            <flag name="hasUppercaseLetter" value="0x100" />
+            <flag name="alignBottom" value="0x04" />
+            <flag name="alignLeftOfCenter" value="0x08" />
+            <flag name="largeLetter" value="0x10" />
+            <flag name="fontNormal" value="0x20" />
+            <flag name="fontMonoSpace" value="0x40" />
+            <flag name="followKeyLetterRatio" value="0x80" />
+            <flag name="followKeyHintLabelRatio" value="0x100" />
+            <flag name="hasPopupHint" value="0x200" />
+            <flag name="hasUppercaseLetter" value="0x400" />
+            <flag name="hasHintLabel" value="0x800" />
         </attr>
         <!-- The icon to display on the key instead of the label. -->
         <attr name="keyIcon" format="enum">
@@ -214,29 +217,19 @@
             <enum name="iconReturnKey" value="8" />
             <enum name="iconSearchKey" value="9" />
             <enum name="iconTabKey" value="10" />
-            <enum name="iconNum1Key" value="11" />
-            <enum name="iconNum2Key" value="12" />
-            <enum name="iconNum3Key" value="13" />
-            <enum name="iconNum4Key" value="14" />
-            <enum name="iconNum5Key" value="15" />
-            <enum name="iconNum6Key" value="16" />
-            <enum name="iconNum7Key" value="17" />
-            <enum name="iconNum8Key" value="18" />
-            <enum name="iconNum9Key" value="19" />
-            <enum name="iconNum0Key" value="20" />
         </attr>
         <!-- Shift key icon for shifted state -->
         <attr name="keyIconShifted" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_SHIFTED_* -->
-            <enum name="iconShiftedShiftKey" value="21" />
+            <enum name="iconShiftedShiftKey" value="11" />
         </attr>
         <!-- The icon to show in the popup preview. -->
         <attr name="keyIconPreview" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_PREVIEW_* -->
-            <enum name="iconPreviewSpaceKey" value="22" />
-            <enum name="iconPreviewTabKey" value="23" />
-            <enum name="iconPreviewSettingsKey" value="24" />
-            <enum name="iconPreviewShortcutKey" value="25" />
+            <enum name="iconPreviewSpaceKey" value="12" />
+            <enum name="iconPreviewTabKey" value="13" />
+            <enum name="iconPreviewSettingsKey" value="14" />
+            <enum name="iconPreviewShortcutKey" value="15" />
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />

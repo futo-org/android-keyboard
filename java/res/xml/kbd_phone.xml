@@ -38,7 +38,7 @@
             latin:keyStyle="num3KeyStyle" />
         <Key
             latin:keyLabel="-"
-            latin:keyStyle="numLabelFunctionalStyle"
+            latin:keyStyle="numFunctionalKeyStyle"
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
@@ -52,7 +52,7 @@
             latin:keyStyle="num6KeyStyle" />
         <Key
             latin:keyLabel="."
-            latin:keyStyle="numLabelFunctionalStyle"
+            latin:keyStyle="numFunctionalKeyStyle"
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>

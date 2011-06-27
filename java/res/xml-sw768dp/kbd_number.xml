@@ -98,24 +98,27 @@
                     latin:keyEdgeFlags="left" />
                 <Key
                     latin:keyLabel="-"
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyXPos="13.829%p"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="+"
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="."
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="1"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyXPos="43.125%p" />
                 <Key
-                    latin:keyLabel="2" />
+                    latin:keyLabel="2"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
-                    latin:keyLabel="3" />
+                    latin:keyLabel="3"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
                     latin:keyStyle="deleteKeyStyle"
                     latin:keyXPos="-11.172%p"
@@ -124,25 +127,27 @@
             </Row>
             <Row>
                 <Key
-                    latin:keyLabel="*"
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numStarKeyStyle"
                     latin:keyXPos="13.829%p"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="/"
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel=","
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="4"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyXPos="43.125%p" />
                 <Key
-                    latin:keyLabel="5" />
+                    latin:keyLabel="5"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
-                    latin:keyLabel="6" />
+                    latin:keyLabel="6"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyXPos="-11.172%p"
@@ -155,24 +160,27 @@
                      edge key. -->
                 <Key
                     latin:keyLabel="("
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyXPos="13.829%p"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel=")"
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="="
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyWidth="8.047%p" />
                 <Key
                     latin:keyLabel="7"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyXPos="43.125%p" />
                 <Key
-                    latin:keyLabel="8" />
+                    latin:keyLabel="8"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
-                    latin:keyLabel="9" />
+                    latin:keyLabel="9"
+                    latin:keyStyle="numKeyStyle" />
                 <!-- There is an empty area below the "Enter" key and right of the "9" key. To
                      ignore the touch event on the area, "9" is intentionally not marked as a right
                      edge key. -->
@@ -191,14 +199,14 @@
                     latin:keyXPos="13.829%p"
                     latin:keyWidth="24.140%p" />
                 <Key
-                    latin:keyLabel="*"
-                    latin:keyStyle="numLabelStyle"
+                    latin:keyStyle="numStarKeyStyle"
                     latin:keyXPos="43.125%p" />
                 <Key
-                    latin:keyLabel="0" />
+                    latin:keyLabel="0"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
                     latin:keyLabel="#"
-                    latin:keyStyle="numLabelStyle" />
+                    latin:keyStyle="numKeyStyle" />
                 <switch>
                     <case
                         latin:voiceKeyEnabled="true"

@@ -55,7 +55,7 @@
         latin:styleName="smileyKeyStyle"
         latin:keyLabel=":-)"
         latin:keyOutputText=":-) "
-        latin:keyLabelOption="popupHint"
+        latin:keyLabelOption="hasPopupHint"
         latin:popupCharacters="@string/alternates_for_smiley"
         latin:maxPopupKeyboardColumn="5" />
     <key-style
@@ -98,7 +98,7 @@
     <key-style
         latin:styleName="comKeyStyle"
         latin:keyLabel="@string/keylabel_for_popular_domain"
-        latin:keyLabelOption="fontNormal|popupHint"
+        latin:keyLabelOption="fontNormal|hasPopupHint"
         latin:keyOutputText="@string/keylabel_for_popular_domain"
         latin:popupCharacters="@string/alternates_for_popular_domain" />
     <switch>

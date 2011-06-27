@@ -83,39 +83,48 @@
             >
                 <Key
                     latin:keyLabel="1"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:keyLabel="2" />
+                    latin:keyLabel="2"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
-                    latin:keyLabel="3" />
+                    latin:keyLabel="3"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
                     latin:keyLabel="-"
-                    latin:keyStyle="functionalKeyStyle"
+                    latin:keyStyle="numFunctionalKeyStyle"
                     latin:keyWidth="fillRight"
                     latin:keyEdgeFlags="right" />
             </Row>
             <Row>
                 <Key
                     latin:keyLabel="4"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:keyLabel="5" />
+                    latin:keyLabel="5"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
-                    latin:keyLabel="6" />
+                    latin:keyLabel="6"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
                     latin:keyLabel=","
-                    latin:keyStyle="functionalKeyStyle"
+                    latin:keyStyle="numFunctionalKeyStyle"
                     latin:keyWidth="fillRight"
                     latin:keyEdgeFlags="right" />
             </Row>
             <Row>
                 <Key
                     latin:keyLabel="7"
+                    latin:keyStyle="numKeyStyle"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:keyLabel="8" />
+                    latin:keyLabel="8"
+                    latin:keyStyle="numKeyStyle"/>
                 <Key
-                    latin:keyLabel="9" />
+                    latin:keyLabel="9"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
                     latin:keyStyle="deleteKeyStyle"
                     latin:keyWidth="fillRight"
@@ -128,9 +137,11 @@
                     latin:keyStyle="numSpaceKeyStyle"
                     latin:keyEdgeFlags="left" />
                 <Key
-                    latin:keyLabel="0" />
+                    latin:keyLabel="0"
+                    latin:keyStyle="numKeyStyle" />
                 <Key
-                    latin:keyLabel="." />
+                    latin:keyLabel="."
+                    latin:keyStyle="numKeyStyle" />
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyWidth="fillRight"

@@ -29,45 +29,45 @@
     >
         <Key
             latin:keyLabel="й"
-            latin:keyHintLetter="1"
+            latin:keyHintLabel="1"
             latin:popupCharacters="1"
             latin:keyWidth="8.75%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ц"
-            latin:keyHintLetter="2"
+            latin:keyHintLabel="2"
             latin:popupCharacters="2" />
         <Key
             latin:keyLabel="у"
-            latin:keyHintLetter="3"
+            latin:keyHintLabel="3"
             latin:popupCharacters="3" />
         <Key
             latin:keyLabel="к"
-            latin:keyHintLetter="4"
+            latin:keyHintLabel="4"
             latin:popupCharacters="4" />
         <Key
             latin:keyLabel="е"
-            latin:keyHintLetter="5"
+            latin:keyHintLabel="5"
             latin:popupCharacters="@string/alternates_for_cyrillic_e" />
         <Key
             latin:keyLabel="н"
-            latin:keyHintLetter="6"
+            latin:keyHintLabel="6"
             latin:popupCharacters="6" />
         <Key
             latin:keyLabel="г"
-            latin:keyHintLetter="7"
+            latin:keyHintLabel="7"
             latin:popupCharacters="7" />
         <Key
             latin:keyLabel="ш"
-            latin:keyHintLetter="8"
+            latin:keyHintLabel="8"
             latin:popupCharacters="8" />
         <Key
             latin:keyLabel="щ"
-            latin:keyHintLetter="9"
+            latin:keyHintLabel="9"
             latin:popupCharacters="9" />
         <Key
             latin:keyLabel="з"
-            latin:keyHintLetter="0"
+            latin:keyHintLabel="0"
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="х"

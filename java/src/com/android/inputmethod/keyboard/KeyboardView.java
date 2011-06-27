@@ -66,16 +66,20 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#KeyboardView_keyBackground
  * @attr ref R.styleable#KeyboardView_keyHysteresisDistance
  * @attr ref R.styleable#KeyboardView_keyLetterRatio
+ * @attr ref R.styleable#KeyboardView_keyLargeLetterRatio
  * @attr ref R.styleable#KeyboardView_keyLabelRatio
  * @attr ref R.styleable#KeyboardView_keyHintLetterRatio
  * @attr ref R.styleable#KeyboardView_keyUppercaseLetterRatio
+ * @attr ref R.styleable#KeyboardView_keyHintLabelRatio
  * @attr ref R.styleable#KeyboardView_keyTextStyle
  * @attr ref R.styleable#KeyboardView_keyPreviewLayout
+ * @attr ref R.styleable#KeyboardView_keyPreviewTextRatio
  * @attr ref R.styleable#KeyboardView_keyPreviewOffset
  * @attr ref R.styleable#KeyboardView_keyPreviewHeight
  * @attr ref R.styleable#KeyboardView_keyTextColor
  * @attr ref R.styleable#KeyboardView_keyTextColorDisabled
  * @attr ref R.styleable#KeyboardView_keyHintLetterColor
+ * @attr ref R.styleable#KeyboardView_keyHintLabelColor
  * @attr ref R.styleable#KeyboardView_keyUppercaseLetterInactivatedColor
  * @attr ref R.styleable#KeyboardView_keyUppercaseLetterActivatedColor
  * @attr ref R.styleable#KeyboardView_verticalCorrection
@@ -99,13 +103,15 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final int HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
     // XML attribute
-    private final float mKeyLetterRatio;
     private final int mKeyTextColor;
     private final int mKeyTextInactivatedColor;
     private final Typeface mKeyTextStyle;
+    private final float mKeyLetterRatio;
+    private final float mKeyLargeLetterRatio;
     private final float mKeyLabelRatio;
     private final float mKeyHintLetterRatio;
     private final float mKeyUppercaseLetterRatio;
+    private final float mKeyHintLabelRatio;
     private final int mShadowColor;
     private final float mShadowRadius;
     private final Drawable mKeyBackground;
@@ -117,15 +123,18 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private final int mPopupLayout;
     private final Drawable mKeyPopupHintIcon;
     private final int mKeyHintLetterColor;
+    private final int mKeyHintLabelColor;
     private final int mKeyUppercaseLetterInactivatedColor;
     private final int mKeyUppercaseLetterActivatedColor;
 
     // Main keyboard
     private Keyboard mKeyboard;
     private int mKeyLetterSize;
+    private int mKeyLargeLetterSize;
     private int mKeyLabelSize;
     private int mKeyHintLetterSize;
     private int mKeyUppercaseLetterSize;
+    private int mKeyHintLabelSize;
 
     // Key preview
     private boolean mInForeground;
@@ -182,7 +191,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private Canvas mCanvas;
     private final Paint mPaint = new Paint();
     private final Rect mPadding = new Rect();
-    private final Rect mTextBounds = new Rect();
     // This map caches key label text height in pixel as value and key label text size as map key.
     private final HashMap<Integer, Integer> mTextHeightCache = new HashMap<Integer, Integer>();
     // This map caches key label text width in pixel as value and key label text size as map key.
@@ -338,15 +346,19 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mPreviewOffset = a.getDimensionPixelOffset(R.styleable.KeyboardView_keyPreviewOffset, 0);
         mPreviewHeight = a.getDimensionPixelSize(R.styleable.KeyboardView_keyPreviewHeight, 80);
         mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
+        mKeyLargeLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLetterRatio);
         mKeyLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLabelRatio);
         mKeyHintLetterRatio = getRatio(a, R.styleable.KeyboardView_keyHintLetterRatio);
         mKeyUppercaseLetterRatio = getRatio(a,
                 R.styleable.KeyboardView_keyUppercaseLetterRatio);
+        mKeyHintLabelRatio = getRatio(a, R.styleable.KeyboardView_keyHintLabelRatio);
+        mPreviewTextRatio = getRatio(a, R.styleable.KeyboardView_keyPreviewTextRatio);
         mKeyTextColor = a.getColor(R.styleable.KeyboardView_keyTextColor, 0xFF000000);
         mKeyTextInactivatedColor = a.getColor(
                 R.styleable.KeyboardView_keyTextInactivatedColor, 0xFF000000);
         mKeyPopupHintIcon = a.getDrawable(R.styleable.KeyboardView_keyPopupHintIcon);
         mKeyHintLetterColor = a.getColor(R.styleable.KeyboardView_keyHintLetterColor, 0);
+        mKeyHintLabelColor = a.getColor(R.styleable.KeyboardView_keyHintLabelColor, 0);
         mKeyUppercaseLetterInactivatedColor = a.getColor(
                 R.styleable.KeyboardView_keyUppercaseLetterInactivatedColor, 0);
         mKeyUppercaseLetterActivatedColor = a.getColor(
@@ -365,7 +377,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         if (previewLayout != 0) {
             mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
             mPreviewBackground = mPreviewText.getBackground();
-            mPreviewTextRatio = getRatio(res, R.fraction.key_preview_text_ratio);
         } else {
             mShowKeyPreviewPopup = false;
         }
@@ -462,11 +473,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
     }
 
-    // Read fraction value in resource as float.
-    private static float getRatio(Resources res, int id) {
-        return res.getFraction(id, 1000, 1000) / 1000.0f;
-    }
-
     public void startIgnoringDoubleTap() {
         if (ENABLE_CAPSLOCK_BY_DOUBLETAP)
             mHandler.startIgnoringDoubleTap();
@@ -521,10 +527,12 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mPopupPanelCache.clear();
         final int keyHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
         mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
+        mKeyLargeLetterSize = (int)(keyHeight * mKeyLargeLetterRatio);
         mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
         mKeyHintLetterSize = (int)(keyHeight * mKeyHintLetterRatio);
         mKeyUppercaseLetterSize = (int)(
                 keyHeight * mKeyUppercaseLetterRatio);
+        mKeyHintLabelSize = (int)(keyHeight * mKeyHintLabelRatio);
         mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
     }
 
@@ -587,7 +595,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     protected CharSequence adjustCase(CharSequence label) {
         if (mKeyboard.isShiftedOrShiftLocked() && label != null && label.length() < 3
                 && Character.isLowerCase(label.charAt(0))) {
-            return label.toString().toUpperCase();
+            return label.toString().toUpperCase(mKeyboard.mId.mLocale);
         }
         return label;
     }
@@ -689,6 +697,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         final int kbdPaddingTop = getPaddingTop();
         final int keyDrawX = key.mX + key.mVisualInsetsLeft;
         final int keyDrawWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
+        final int centerX = (keyDrawWidth + padding.left - padding.right) / 2;
+        final float centerY = (key.mHeight + padding.top - padding.bottom) / 2;
         final int rowHeight = padding.top + key.mHeight;
         final boolean isManualTemporaryUpperCase = mKeyboard.isManualTemporaryUpperCase();
 
@@ -704,47 +714,48 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         keyBackground.draw(canvas);
 
         // Draw key label.
+        int positionX = centerX;
         if (key.mLabel != null) {
             // Switch the character to uppercase if shift is pressed
-            final String label = key.mLabel == null ? null : adjustCase(key.mLabel).toString();
-            // For characters, use large font. For labels like "Done", use small font.
-            final int labelSize = getLabelSizeAndSetPaint(label, key.mLabelOption, paint);
-            final int labelCharHeight = getLabelCharHeight(labelSize, paint);
+            final CharSequence label = key.mLabel == null ? null : adjustCase(key.mLabel);
+            // For characters, use large font. For labels like "Done", use smaller font.
+            paint.setTypeface(key.selectTypeface(mKeyTextStyle));
+            final int labelSize = key.selectTextSize(mKeyLetterSize, mKeyLargeLetterSize,
+                    mKeyLabelSize, mKeyHintLabelSize);
+            paint.setTextSize(labelSize);
+            final int labelCharHeight = getLabelCharHeight(paint);
+            final int labelCharWidth = getLabelCharWidth(paint);
 
             // Vertical label text alignment.
             final float baseline;
+            // TODO: Generalize the following calculations.
             if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_BOTTOM) != 0) {
                 baseline = key.mHeight - labelCharHeight * KEY_LABEL_VERTICAL_PADDING_FACTOR;
-                if (DEBUG_SHOW_ALIGN)
-                    drawHorizontalLine(canvas, (int)baseline, keyDrawWidth, 0xc0008000,
-                            new Paint());
             } else { // Align center
-                final float centerY = (key.mHeight + padding.top - padding.bottom) / 2;
                 baseline = centerY + labelCharHeight * KEY_LABEL_VERTICAL_ADJUSTMENT_FACTOR_CENTER;
-                if (DEBUG_SHOW_ALIGN)
-                    drawHorizontalLine(canvas, (int)baseline, keyDrawWidth, 0xc0008000,
-                            new Paint());
             }
+
             // Horizontal label text alignment
-            final int positionX;
             if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_LEFT) != 0) {
-                positionX = mKeyLabelHorizontalPadding + padding.left;
+                positionX = padding.left + mKeyLabelHorizontalPadding;
                 paint.setTextAlign(Align.LEFT);
-                if (DEBUG_SHOW_ALIGN)
-                    drawVerticalLine(canvas, positionX, rowHeight, 0xc0800080, new Paint());
             } else if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_RIGHT) != 0) {
                 positionX = keyDrawWidth - mKeyLabelHorizontalPadding - padding.right;
                 paint.setTextAlign(Align.RIGHT);
-                if (DEBUG_SHOW_ALIGN)
-                    drawVerticalLine(canvas, positionX, rowHeight, 0xc0808000, new Paint());
+            } else if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_LEFT_OF_CENTER) != 0) {
+                // TODO: Parameterise this?
+                positionX = centerX - labelCharWidth * 7 / 4;
+                paint.setTextAlign(Align.LEFT);
             } else {
-                positionX = (keyDrawWidth + padding.left - padding.right) / 2;
+                positionX = centerX;
                 paint.setTextAlign(Align.CENTER);
-                if (DEBUG_SHOW_ALIGN) {
-                    if (label.length() > 1)
-                        drawVerticalLine(canvas, positionX, rowHeight, 0xc0008080, new Paint());
-                }
             }
+            if (DEBUG_SHOW_ALIGN) {
+                final Paint line = new Paint();
+                drawHorizontalLine(canvas, (int)baseline, keyDrawWidth, 0xc0008000, line);
+                drawVerticalLine(canvas, positionX, rowHeight, 0xc0800080, line);
+            }
+
             if (key.hasUppercaseLetter() && isManualTemporaryUpperCase) {
                 paint.setColor(mKeyTextInactivatedColor);
             } else {
@@ -757,59 +768,67 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                 // Make label invisible
                 paint.setColor(Color.TRANSPARENT);
             }
-            canvas.drawText(label, positionX, baseline, paint);
+            canvas.drawText(label, 0, label.length(), positionX, baseline, paint);
             // Turn off drop shadow
             paint.setShadowLayer(0, 0, 0, 0);
+
         }
 
-        // Draw hint letter.
-        if (key.mHintLetter != null) {
-            final String label = key.mHintLetter.toString();
-            final int textColor;
-            final int textSize;
+        // Draw hint label.
+        if (key.mHintLabel != null) {
+            final CharSequence hint = key.mHintLabel;
+            final int hintColor;
+            final int hintSize;
             if (key.hasUppercaseLetter()) {
-                textColor = isManualTemporaryUpperCase ? mKeyUppercaseLetterActivatedColor
+                hintColor = isManualTemporaryUpperCase ? mKeyUppercaseLetterActivatedColor
                         : mKeyUppercaseLetterInactivatedColor;
-                textSize = mKeyUppercaseLetterSize;
+                hintSize = mKeyUppercaseLetterSize;
+            } else if (key.hasHintLabel()) {
+                hintColor = mKeyHintLabelColor;
+                hintSize = mKeyHintLabelSize;
+                paint.setTypeface(Typeface.DEFAULT);
             } else {
-                textColor = mKeyHintLetterColor;
-                textSize = mKeyHintLetterSize;
+                hintColor = mKeyHintLetterColor;
+                hintSize = mKeyHintLetterSize;
             }
-            paint.setColor(textColor);
-            paint.setTextSize(textSize);
+            paint.setColor(hintColor);
+            paint.setTextSize(hintSize);
             // Note: padding.right for drawX?
-            final float drawX = keyDrawWidth - getLabelCharWidth(textSize, paint);
-            final float drawY = -paint.ascent() + padding.top;
-            canvas.drawText(label, drawX, drawY, paint);
+            final float hintX, hintY;
+            if (key.hasHintLabel()) {
+                // TODO: Generalize the following calculations.
+                hintX = positionX + getLabelCharWidth(paint) * 2;
+                hintY = centerY + getLabelCharHeight(paint) / 2;
+            } else {
+                hintX = keyDrawWidth - getLabelCharWidth(paint);
+                hintY = -paint.ascent() + padding.top;
+            }
+            canvas.drawText(hint, 0, hint.length(), hintX, hintY, paint);
         }
 
         // Draw key icon.
         final Drawable icon = key.getIcon();
         if (key.mLabel == null && icon != null) {
-            final int drawableWidth = icon.getIntrinsicWidth();
-            final int drawableHeight = icon.getIntrinsicHeight();
-            final int drawableX;
-            final int drawableY = (key.mHeight + padding.top - padding.bottom - drawableHeight) / 2;
+            final int iconWidth = icon.getIntrinsicWidth();
+            final int iconHeight = icon.getIntrinsicHeight();
+            final int iconX, alignX;
+            final int iconY = (key.mHeight + padding.top - padding.bottom - iconHeight) / 2;
             if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_LEFT) != 0) {
-                drawableX = padding.left + mKeyLabelHorizontalPadding;
-                if (DEBUG_SHOW_ALIGN)
-                    drawVerticalLine(canvas, drawableX, rowHeight, 0xc0800080, new Paint());
+                iconX = padding.left + mKeyLabelHorizontalPadding;
+                alignX = iconX;
             } else if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_RIGHT) != 0) {
-                drawableX = keyDrawWidth - padding.right - mKeyLabelHorizontalPadding
-                        - drawableWidth;
-                if (DEBUG_SHOW_ALIGN)
-                    drawVerticalLine(canvas, drawableX + drawableWidth, rowHeight,
-                            0xc0808000, new Paint());
+                iconX = keyDrawWidth - padding.right - mKeyLabelHorizontalPadding - iconWidth;
+                alignX = iconX + iconWidth;
             } else { // Align center
-                drawableX = (keyDrawWidth + padding.left - padding.right - drawableWidth) / 2;
-                if (DEBUG_SHOW_ALIGN)
-                    drawVerticalLine(canvas, drawableX + drawableWidth / 2, rowHeight,
-                            0xc0008080, new Paint());
+                iconX = (keyDrawWidth + padding.left - padding.right - iconWidth) / 2;
+                alignX = iconX + iconWidth / 2;
             }
-            drawIcon(canvas, icon, drawableX, drawableY, drawableWidth, drawableHeight);
-            if (DEBUG_SHOW_ALIGN)
-                drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,
-                        0x80c00000, new Paint());
+            drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
+            if (DEBUG_SHOW_ALIGN) {
+                final Paint line = new Paint();
+                drawVerticalLine(canvas, alignX, rowHeight, 0xc0800080, line);
+                drawRectangle(canvas, iconX, iconY, iconWidth, iconHeight, 0x80c00000, line);
+            }
         }
 
         // Draw popup hint icon "...".
@@ -821,60 +840,60 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             final int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
             final Drawable hintIcon = mKeyPopupHintIcon;
             drawIcon(canvas, hintIcon, drawableX, drawableY, drawableWidth, drawableHeight);
-            if (DEBUG_SHOW_ALIGN)
+            if (DEBUG_SHOW_ALIGN) {
                 drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,
                         0x80c0c000, new Paint());
+            }
         }
 
         canvas.translate(-keyDrawX - kbdPaddingLeft, -key.mY - kbdPaddingTop);
     }
 
-    public int getLabelSizeAndSetPaint(CharSequence label, int keyLabelOption, Paint paint) {
+    // This method is currently being used only by MiniKeyboardBuilder
+    public int getDefaultLabelSizeAndSetPaint(Paint paint) {
         // For characters, use large font. For labels like "Done", use small font.
-        final int labelSize;
-        final Typeface labelStyle;
-        if ((keyLabelOption & Key.LABEL_OPTION_FONT_NORMAL) != 0) {
-            labelStyle = Typeface.DEFAULT;
-        } else if ((keyLabelOption & Key.LABEL_OPTION_FONT_FIXED_WIDTH) != 0) {
-            labelStyle = Typeface.MONOSPACE;
-        } else {
-            labelStyle = mKeyTextStyle;
-        }
-        if (label.length() > 1) {
-            labelSize = (keyLabelOption & Key.LABEL_OPTION_FOLLOW_KEY_LETTER_RATIO) != 0
-                    ? mKeyLetterSize : mKeyLabelSize;
-        } else {
-            labelSize = mKeyLetterSize;
-        }
+        final int labelSize = mKeyLabelSize;
         paint.setTextSize(labelSize);
-        paint.setTypeface(labelStyle);
+        paint.setTypeface(mKeyTextStyle);
         return labelSize;
     }
 
-    private int getLabelCharHeight(int labelSize, Paint paint) {
-        Integer labelHeightValue = mTextHeightCache.get(labelSize);
-        final int labelCharHeight;
-        if (labelHeightValue != null) {
-            labelCharHeight = labelHeightValue;
-        } else {
-            paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, mTextBounds);
-            labelCharHeight = mTextBounds.height();
-            mTextHeightCache.put(labelSize, labelCharHeight);
-        }
-        return labelCharHeight;
+    private final Rect mTextBounds = new Rect();
+
+    private int getLabelCharHeight(Paint paint) {
+        final int labelSize = (int)paint.getTextSize();
+        final Integer cachedValue = mTextHeightCache.get(labelSize);
+        if (cachedValue != null)
+            return cachedValue;
+
+        paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, mTextBounds);
+        final int height = mTextBounds.height();
+        mTextHeightCache.put(labelSize, height);
+        return height;
     }
 
-    private int getLabelCharWidth(int labelSize, Paint paint) {
-        Integer labelWidthValue = mTextWidthCache.get(labelSize);
-        final int labelCharWidth;
-        if (labelWidthValue != null) {
-            labelCharWidth = labelWidthValue;
+    private int getLabelCharWidth(Paint paint) {
+        final int labelSize = (int)paint.getTextSize();
+        final Typeface face = paint.getTypeface();
+        final Integer key;
+        if (face == Typeface.DEFAULT) {
+            key = labelSize;
+        } else if (face == Typeface.DEFAULT_BOLD) {
+            key = labelSize + 1000;
+        } else if (face == Typeface.MONOSPACE) {
+            key = labelSize + 2000;
         } else {
-            paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, mTextBounds);
-            labelCharWidth = mTextBounds.width();
-            mTextWidthCache.put(labelSize, labelCharWidth);
+            key = labelSize;
         }
-        return labelCharWidth;
+
+        final Integer cached = mTextWidthCache.get(key);
+        if (cached != null)
+            return cached;
+
+        paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, mTextBounds);
+        final int width = mTextBounds.width();
+        mTextWidthCache.put(key, width);
+        return width;
     }
 
     private static void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width,
