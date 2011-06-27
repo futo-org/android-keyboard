@@ -17,6 +17,10 @@
 <resources>
     <style name="KeyboardIcons.Black">
         <!-- Keyboard icons -->
+        <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are too
+             large for phone.
+             sym_bkeyboard_voice_off
+          -->
         <item name="iconShiftKey">@drawable/sym_bkeyboard_shift</item>
         <item name="iconToSymbolKeyWithShortcut">@drawable/sym_bkeyboard_123_mic</item>
         <item name="iconDeleteKey">@drawable/sym_bkeyboard_delete</item>
@@ -33,7 +37,7 @@
         <item name="iconPreviewShortcutKey">@drawable/sym_keyboard_feedback_mic</item>
         <!-- LatinKeyboard icons -->
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
-        <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
+        <item name="disabledShortcutIcon">@drawable/sym_bkeyboard_voice_off</item>
         <item name="spacebarArrowLeftIcon">@null</item>
         <item name="spacebarArrowRightIcon">@null</item>
         <item name="spacebarArrowPreviewLeftIcon">@drawable/sym_keyboard_feedback_language_arrows_left</item>
