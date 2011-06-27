@@ -19,7 +19,6 @@
         <item name="keyboardStyle">@style/Keyboard.Stone</item>
         <item name="latinKeyboardStyle">@style/LatinKeyboard.Stone</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Stone.Bold</item>
-        <item name="keyPreviewStyle">@style/KeyPreviewStyle</item>
         <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView.Stone</item>
         <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>

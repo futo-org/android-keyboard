@@ -22,7 +22,6 @@
         <attr name="latinKeyboardStyle" format="reference" />
         <!-- KeyboardView style -->
         <attr name="keyboardViewStyle" format="reference" />
-        <attr name="keyPreviewStyle" format="reference" />
         <!-- PopupMiniKeyboardView style -->
         <attr name="popupMiniKeyboardViewStyle" format="reference" />
         <attr name="popupMiniKeyboardPanelStyle" format="reference" />
@@ -70,6 +69,12 @@
 
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
+        <!-- The background for key press feedback. -->
+        <attr name="keyPreviewBackground" format="reference" />
+        <!-- The background for spacebar press feedback. -->
+        <attr name="keyPreviewSpacebarBackground" format="reference" />
+        <!-- The text color for key press feedback. -->
+        <attr name="keyPreviewTextColor" format="color" />
         <!-- Vertical offset of the key press feedback from the key. -->
         <attr name="keyPreviewOffset" format="dimension" />
         <!-- Height of the key press feedback popup. -->

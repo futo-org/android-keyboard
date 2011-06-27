@@ -51,6 +51,9 @@
         <item name="keyUppercaseLetterActivatedColor">#CCE0E4E5</item>
         <item name="keyPopupHintIcon">@drawable/hint_popup</item>
         <item name="keyPreviewLayout">@layout/key_preview</item>
+        <item name="keyPreviewBackground">@drawable/keyboard_key_feedback</item>
+        <item name="keyPreviewSpacebarBackground">@drawable/keyboard_key_feedback</item>
+        <item name="keyPreviewTextColor">#FFFFFFFF</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
         <item name="keyPreviewTextRatio">@fraction/key_preview_text_ratio</item>
@@ -60,10 +63,6 @@
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
-    </style>
-    <style name="KeyPreviewStyle">
-        <item name="android:background">@drawable/keyboard_key_feedback</item>
-        <item name="android:textColor">#FFFFFFFF</item>
     </style>
     <style name="PopupMiniKeyboardView" parent="KeyboardView">
         <item name="keyBackground">@drawable/btn_keyboard_key_popup</item>
@@ -99,18 +98,18 @@
     </style>
     <!-- Theme "Stone" -->
     <style name="Keyboard.Stone" parent="Keyboard">
-        <item name="horizontalGap">@dimen/key_horizontal_gap_stone</item>
-        <item name="verticalGap">@dimen/key_bottom_gap_stone</item>
+        <item name="horizontalGap">@dimen/key_horizontal_gap</item>
+        <item name="verticalGap">@dimen/key_bottom_gap</item>
     </style>
     <style name="LatinKeyboard.Stone" parent="LatinKeyboard">
-        <item name="spacebarTextColor">#FF444444</item>
-        <item name="spacebarTextShadowColor">#80FFFFFF</item>
+        <item name="spacebarTextColor">#FF000000</item>
+        <item name="spacebarTextShadowColor">#D0FFFFFF</item>
     </style>
     <style name="KeyboardView.Stone" parent="KeyboardView">
         <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
         <item name="keyTextColor">#FF000000</item>
         <item name="keyTextInactivatedColor">#FF808080</item>
-        <item name="keyHintLetterColor">#80FFFFFF</item>
+        <item name="keyHintLetterColor">#80000000</item>
         <item name="keyHintLabelColor">#E0000000</item>
         <item name="keyUppercaseLetterInactivatedColor">#66000000</item>
         <item name="keyUppercaseLetterActivatedColor">#CC000000</item>
@@ -153,13 +152,13 @@
         <item name="keyHintLabelColor">#A0FFFFFF</item>
         <item name="keyUppercaseLetterInactivatedColor">#66E0E4E5</item>
         <item name="keyUppercaseLetterActivatedColor">#FFFFFFFF</item>
+        <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_ics</item>
+        <item name="keyPreviewSpacebarBackground">@drawable/transparent</item>
+        <item name="keyPreviewTextColor">#FFFFFFFF</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height_ics</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>
         <item name="shadowColor">#00000000</item>
         <item name="shadowRadius">0.0</item>
-    </style>
-    <style name="KeyPreviewStyle.IceCreamSandwich">
-        <item name="android:background">@drawable/keyboard_key_feedback_ics</item>
     </style>
     <style name="PopupMiniKeyboardView.IceCreamSandwich" parent="PopupMiniKeyboardView">
         <item name="android:background">@null</item>

@@ -15,7 +15,7 @@
 -->
 
 <resources>
-    <style name="KeyboardIcons" parent="android:Theme">
+    <style name="KeyboardIcons">
         <!-- Keyboard icons -->
         <item name="iconShiftKey">@drawable/sym_keyboard_shift</item>
         <item name="iconToSymbolKeyWithShortcut">@drawable/sym_keyboard_123_mic</item>
