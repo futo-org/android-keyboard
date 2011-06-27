@@ -843,7 +843,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void setSuggestionStripShownInternal(boolean shown, boolean needsInputViewShown) {
         // TODO: Modify this if we support candidates with hard keyboard
-        if (onEvaluateInputViewShown()) {
+        if (onEvaluateInputViewShown() && mCandidateViewContainer != null) {
             final boolean shouldShowCandidates = shown
                     && (needsInputViewShown ? mKeyboardSwitcher.isInputViewShown() : true);
             if (isExtractViewShown()) {
