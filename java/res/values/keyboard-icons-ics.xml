@@ -52,9 +52,5 @@
         <!-- LatinKeyboard icons -->
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
         <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
-        <item name="spacebarArrowLeftIcon">@drawable/sym_keyboard_language_arrows_left</item>
-        <item name="spacebarArrowRightIcon">@drawable/sym_keyboard_language_arrows_right</item>
-        <item name="spacebarArrowPreviewLeftIcon">@null</item>
-        <item name="spacebarArrowPreviewRightIcon">@null</item>
     </style>
 </resources>

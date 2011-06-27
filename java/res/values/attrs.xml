@@ -309,9 +309,5 @@
         <attr name="disabledShortcutIcon" format="reference" />
         <attr name="spacebarTextColor" format="color" />
         <attr name="spacebarTextShadowColor" format="color" />
-        <attr name="spacebarArrowLeftIcon" format="reference" />
-        <attr name="spacebarArrowRightIcon" format="reference" />
-        <attr name="spacebarArrowPreviewLeftIcon" format="reference" />
-        <attr name="spacebarArrowPreviewRightIcon" format="reference" />
     </declare-styleable>
 </resources>

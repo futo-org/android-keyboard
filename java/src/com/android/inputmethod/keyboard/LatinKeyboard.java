@@ -23,9 +23,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.ColorMatrix;
-import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.PorterDuff;
@@ -61,8 +58,6 @@ public class LatinKeyboard extends Keyboard {
     private final int mSpaceKeyIndex;
     private final boolean mAutoCorrectionSpacebarLedEnabled;
     private final Drawable mAutoCorrectionSpacebarLedIcon;
-    private final Drawable mSpacebarArrowLeftIcon;
-    private final Drawable mSpacebarArrowRightIcon;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
     private float mSpacebarTextFadeFactor = 0.0f;
@@ -76,6 +71,11 @@ public class LatinKeyboard extends Keyboard {
     private final Key mShortcutKey;
     private final Drawable mEnabledShortcutIcon;
     private final Drawable mDisabledShortcutIcon;
+
+    // BLACK LEFT-POINTING TRIANGLE and two spaces.
+    public static final String ARROW_LEFT = "\u25C0  ";
+    // Two spaces and BLACK RIGHT-POINTING TRIANGLE.
+    public static final String ARROW_RIGHT = "  \u25B6";
 
     // Minimum width of spacebar dragging to trigger the language switch (represented by the number
     // of the most common key width of this keyboard).
@@ -131,10 +131,6 @@ public class LatinKeyboard extends Keyboard {
         mSpacebarTextColor = a.getColor(R.styleable.LatinKeyboard_spacebarTextColor, 0);
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboard_spacebarTextShadowColor, 0);
-        mSpacebarArrowLeftIcon = a.getDrawable(
-                R.styleable.LatinKeyboard_spacebarArrowLeftIcon);
-        mSpacebarArrowRightIcon = a.getDrawable(
-                R.styleable.LatinKeyboard_spacebarArrowRightIcon);
         a.recycle();
 
         // The threshold is "key width" x 1.25
@@ -163,12 +159,6 @@ public class LatinKeyboard extends Keyboard {
         final int newColor = Color.argb((int)(Color.alpha(color) * fadeFactor),
                 Color.red(color), Color.green(color), Color.blue(color));
         return newColor;
-    }
-
-    private static ColorFilter getSpacebarDrawableFilter(float fadeFactor) {
-        final ColorMatrix colorMatrix = new ColorMatrix();
-        colorMatrix.setScale(1, 1, 1, fadeFactor);
-        return new ColorMatrixColorFilter(colorMatrix);
     }
 
     public void updateShortcutKey(boolean available, LatinKeyboardView view) {
@@ -214,58 +204,39 @@ public class LatinKeyboard extends Keyboard {
     }
 
     // Layout local language name and left and right arrow on spacebar.
-    private static String layoutSpacebar(Paint paint, Locale locale, Drawable icon, Drawable lArrow,
-            Drawable rArrow, int width, int height, float origTextSize) {
-        final float arrowWidth;
-        if (lArrow != null && rArrow != null) {
-            arrowWidth = lArrow.getIntrinsicWidth();
-        } else {
-            arrowWidth = 0;
-        }
-        final float maxTextWidth = width - (arrowWidth + arrowWidth);
+    private static String layoutSpacebar(Paint paint, Locale locale, int width,
+            float origTextSize) {
         final Rect bounds = new Rect();
 
         // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = SubtypeSwitcher.getFullDisplayName(locale, true);
+        String language = ARROW_LEFT + SubtypeSwitcher.getFullDisplayName(locale, true)
+                + ARROW_RIGHT;
         int textWidth = getTextWidth(paint, language, origTextSize, bounds);
         // Assuming text width and text size are proportional to each other.
-        float textSize = origTextSize * Math.min(maxTextWidth / textWidth, 1.0f);
+        float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         // allow variable text size
         textWidth = getTextWidth(paint, language, textSize, bounds);
         // If text size goes too small or text does not fit, use middle or short name
         final boolean useMiddleName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
-                || (textWidth > maxTextWidth);
+                || (textWidth > width);
 
         final boolean useShortName;
         if (useMiddleName) {
-            language = SubtypeSwitcher.getMiddleDisplayLanguage(locale);
+            language = ARROW_LEFT + SubtypeSwitcher.getMiddleDisplayLanguage(locale) + ARROW_RIGHT;
             textWidth = getTextWidth(paint, language, origTextSize, bounds);
-            textSize = origTextSize * Math.min(maxTextWidth / textWidth, 1.0f);
+            textSize = origTextSize * Math.min(width / textWidth, 1.0f);
             useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
-                    || (textWidth > maxTextWidth);
+                    || (textWidth > width);
         } else {
             useShortName = false;
         }
 
         if (useShortName) {
-            language = SubtypeSwitcher.getShortDisplayLanguage(locale);
+            language = ARROW_LEFT + SubtypeSwitcher.getShortDisplayLanguage(locale) + ARROW_RIGHT;
             textWidth = getTextWidth(paint, language, origTextSize, bounds);
-            textSize = origTextSize * Math.min(maxTextWidth / textWidth, 1.0f);
+            textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         }
         paint.setTextSize(textSize);
-
-        // Place left and right arrow just before and after language text.
-        if (lArrow != null && rArrow != null) {
-            final float textHeight = -paint.ascent() + paint.descent();
-            final float baseline = (icon != null) ? height * SPACEBAR_LANGUAGE_BASELINE
-                    : height / 2 + textHeight / 2;
-            final int arrowHeight = lArrow.getIntrinsicHeight();
-            final int top = (int)(baseline - arrowHeight);
-            final float remains = (width - textWidth) / 2;
-            lArrow.setBounds((int)(remains - arrowWidth), top, (int)remains, (int)baseline);
-            rArrow.setBounds((int)(remains + textWidth), top,
-                    (int)(remains + textWidth + arrowWidth), (int)baseline);
-        }
 
         return language;
     }
@@ -311,9 +282,8 @@ public class LatinKeyboard extends Keyboard {
                 defaultTextSize = 14;
             }
 
-            final String language = layoutSpacebar(paint, inputLocale, mSpaceIcon,
-                    mSpacebarArrowLeftIcon, mSpacebarArrowRightIcon, width, height,
-                    getTextSizeFromTheme(mTheme, textStyle, defaultTextSize));
+            final String language = layoutSpacebar(paint, inputLocale, width, getTextSizeFromTheme(
+                    mTheme, textStyle, defaultTextSize));
 
             // Draw language text with shadow
             // In case there is no space icon, we will place the language text at the center of
@@ -326,19 +296,6 @@ public class LatinKeyboard extends Keyboard {
             canvas.drawText(language, width / 2, baseline - descent - 1, paint);
             paint.setColor(getSpacebarTextColor(mSpacebarTextColor, textFadeFactor));
             canvas.drawText(language, width / 2, baseline - descent, paint);
-
-            // Put arrows that are already laid out on either side of the text
-            // Because language switch is disabled on phone and number layouts, hide arrows.
-            // TODO: Sort out how to enable language switch on these layouts.
-            if (mSpacebarArrowLeftIcon != null && mSpacebarArrowRightIcon != null
-                    && mSubtypeSwitcher.useSpacebarLanguageSwitcher()
-                    && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1
-                    && !(isPhoneKeyboard() || isNumberKeyboard())) {
-                mSpacebarArrowLeftIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
-                mSpacebarArrowRightIcon.setColorFilter(getSpacebarDrawableFilter(textFadeFactor));
-                mSpacebarArrowLeftIcon.draw(canvas);
-                mSpacebarArrowRightIcon.draw(canvas);
-            }
         }
 
         // Draw the spacebar icon at the bottom

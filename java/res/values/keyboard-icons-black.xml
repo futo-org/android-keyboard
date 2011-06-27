@@ -38,9 +38,5 @@
         <!-- LatinKeyboard icons -->
         <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
         <item name="disabledShortcutIcon">@drawable/sym_bkeyboard_voice_off</item>
-        <item name="spacebarArrowLeftIcon">@null</item>
-        <item name="spacebarArrowRightIcon">@null</item>
-        <item name="spacebarArrowPreviewLeftIcon">@drawable/sym_keyboard_feedback_language_arrows_left</item>
-        <item name="spacebarArrowPreviewRightIcon">@drawable/sym_keyboard_feedback_language_arrows_right</item>
     </style>
 </resources>

@@ -46,8 +46,7 @@ public class SlidingLocaleDrawable extends Drawable {
     private final int mSpacebarTextColor;
     private final TextPaint mTextPaint;
     private final int mMiddleX;
-    private final Drawable mLeftDrawable;
-    private final Drawable mRightDrawable;
+    private final boolean mDrawArrows;
     private final int mThreshold;
 
     private int mDiff;
@@ -65,20 +64,18 @@ public class SlidingLocaleDrawable extends Drawable {
         textPaint.setTextSize(LatinKeyboard.getTextSizeFromTheme(
                 context.getTheme(), android.R.style.TextAppearance_Medium, 18));
         textPaint.setColor(Color.TRANSPARENT);
-        textPaint.setTextAlign(Align.CENTER);
         textPaint.setAntiAlias(true);
         mTextPaint = textPaint;
         mMiddleX = (background != null) ? (mWidth - mBackground.getIntrinsicWidth()) / 2 : 0;
 
-        final TypedArray lka = context.obtainStyledAttributes(
-                null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
-        mLeftDrawable = lka.getDrawable(R.styleable.LatinKeyboard_spacebarArrowPreviewLeftIcon);
-        mRightDrawable = lka.getDrawable(R.styleable.LatinKeyboard_spacebarArrowPreviewRightIcon);
-        lka.recycle();
-        final TypedArray kva = context.obtainStyledAttributes(
+        final TypedArray a = context.obtainStyledAttributes(
                 null, R.styleable.KeyboardView, R.attr.keyboardViewStyle, R.style.KeyboardView);
-        mSpacebarTextColor = kva.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
-        kva.recycle();
+        mSpacebarTextColor = a.getColor(R.styleable.KeyboardView_keyPreviewTextColor, 0);
+        final int spacebarPreviewBackrgound = a.getResourceId(
+                R.styleable.KeyboardView_keyPreviewSpacebarBackground, 0);
+        // If spacebar preview background is transparent, we need not draw arrows.
+        mDrawArrows = (spacebarPreviewBackrgound != R.drawable.transparent);
+        a.recycle();
 
         mThreshold = ViewConfiguration.get(context).getScaledTouchSlop();
     }
@@ -105,8 +102,6 @@ public class SlidingLocaleDrawable extends Drawable {
             final int width = mWidth;
             final int height = mHeight;
             final int diff = mDiff;
-            final Drawable lArrow = mLeftDrawable;
-            final Drawable rArrow = mRightDrawable;
             canvas.clipRect(0, 0, width, height);
             if (mCurrentLanguage == null) {
                 SubtypeSwitcher subtypeSwitcher = SubtypeSwitcher.getInstance();
@@ -114,20 +109,19 @@ public class SlidingLocaleDrawable extends Drawable {
                 mNextLanguage = subtypeSwitcher.getNextInputLanguageName();
                 mPrevLanguage = subtypeSwitcher.getPreviousInputLanguageName();
             }
-            // Draw language text with shadow
+            // Draw language text.
             final float baseline = mHeight * LatinKeyboard.SPACEBAR_LANGUAGE_BASELINE
                     - paint.descent();
             paint.setColor(mSpacebarTextColor);
+            paint.setTextAlign(Align.CENTER);
             canvas.drawText(mCurrentLanguage, width / 2 + diff, baseline, paint);
             canvas.drawText(mNextLanguage, diff - width / 2, baseline, paint);
             canvas.drawText(mPrevLanguage, diff + width + width / 2, baseline, paint);
-
-            if (lArrow != null && rArrow != null) {
-                Keyboard.setDefaultBounds(lArrow);
-                rArrow.setBounds(width - rArrow.getIntrinsicWidth(), 0, width,
-                        rArrow.getIntrinsicHeight());
-                lArrow.draw(canvas);
-                rArrow.draw(canvas);
+            if (mDrawArrows) {
+                paint.setTextAlign(Align.LEFT);
+                canvas.drawText(LatinKeyboard.ARROW_LEFT, 0, baseline, paint);
+                paint.setTextAlign(Align.RIGHT);
+                canvas.drawText(LatinKeyboard.ARROW_RIGHT, width, baseline, paint);
             }
         }
         if (mBackground != null) {
