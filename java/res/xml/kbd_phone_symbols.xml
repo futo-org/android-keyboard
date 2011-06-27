@@ -31,36 +31,36 @@
     >
         <Key
             latin:keyLabel="("
-            latin:keyStyle="numLabelStyle"
+            latin:keyStyle="numKeyStyle"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="/"
-            latin:keyStyle="numLabelStyle" />
+            latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyLabel=")"
-            latin:keyStyle="numLabelStyle" />
+            latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyLabel="-"
-            latin:keyStyle="numLabelFunctionalStyle"
+            latin:keyStyle="numFunctionalKeyStyle"
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row>
         <Key
             latin:keyLabel="N"
-            latin:keyStyle="numLabelStyle"
             latin:keyEdgeFlags="left" />
         <!-- Pause is a comma. Check PhoneNumberUtils.java to see if this 
             has changed. -->
         <Key
             latin:code="44"
-            latin:keyLabel="Pause" />
+            latin:keyLabel="@string/label_pause_key"
+            latin:keyLabelOption="followKeyHintLabelRatio" />
         <Key
             latin:keyLabel=","
-            latin:keyStyle="numLabelStyle" />
+            latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyLabel="."
-            latin:keyStyle="numLabelFunctionalStyle"
+            latin:keyStyle="numFunctionalKeyStyle"
             latin:keyWidth="fillRight"
             latin:keyEdgeFlags="right" />
     </Row>
@@ -71,10 +71,11 @@
         <!-- Wait is a semicolon. -->
         <Key
             latin:code="59"
-            latin:keyLabel="Wait" />
+            latin:keyLabel="@string/label_wait_key"
+            latin:keyLabelOption="followKeyHintLabelRatio" />
         <Key
             latin:keyLabel="#"
-            latin:keyStyle="numLabelStyle" />
+            latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
@@ -88,7 +89,7 @@
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="+"
-            latin:keyStyle="numLabelStyle" />
+            latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="numSpaceKeyStyle" />
         <Key

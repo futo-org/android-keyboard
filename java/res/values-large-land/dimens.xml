@@ -34,11 +34,15 @@
     <dimen name="keyboard_bottom_padding_ics">0.0mm</dimen>
     <dimen name="popup_key_height">13.0mm</dimen>
 
-    <fraction name="key_letter_ratio">45%</fraction>
-    <fraction name="key_label_ratio">32%</fraction>
-    <fraction name="key_hint_letter_ratio">23%</fraction>
-    <fraction name="key_uppercase_letter_ratio">29%</fraction>
     <!-- left or right padding of label alignment -->
     <dimen name="key_label_horizontal_alignment_padding">18dip</dimen>
+
+    <fraction name="key_letter_ratio">45%</fraction>
+    <fraction name="key_large_letter_ratio">45%</fraction>
+    <fraction name="key_label_ratio">32%</fraction>
+    <fraction name="key_hint_letter_ratio">23%</fraction>
+    <fraction name="key_hint_label_ratio">34%</fraction>
+    <fraction name="key_uppercase_letter_ratio">29%</fraction>
+
     <dimen name="candidate_strip_padding">40.0mm</dimen>
 </resources>

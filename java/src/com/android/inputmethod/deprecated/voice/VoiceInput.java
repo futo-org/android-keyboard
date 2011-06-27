@@ -19,6 +19,7 @@ package com.android.inputmethod.deprecated.voice;
 import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -26,7 +27,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
 import android.speech.RecognitionListener;
@@ -132,13 +132,20 @@ public class VoiceInput implements OnClickListener {
 
     private final static int MSG_RESET = 1;
 
-    private final Handler mHandler = new Handler() {
+    private final UIHandler mHandler = new UIHandler(this);
+
+    private static class UIHandler extends StaticInnerHandlerWrapper<VoiceInput> {
+        public UIHandler(VoiceInput outerInstance) {
+            super(outerInstance);
+        }
+
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == MSG_RESET) {
-                mState = DEFAULT;
-                mRecognitionView.finish();
-                mUiListener.onCancelVoice();
+                final VoiceInput voiceInput = getOuterInstance();
+                voiceInput.mState = DEFAULT;
+                voiceInput.mRecognitionView.finish();
+                voiceInput.mUiListener.onCancelVoice();
             }
         }
     };

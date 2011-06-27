@@ -40,25 +40,15 @@ public class KeyboardIconsSet {
     private static final int ICON_RETURN_KEY = 8;
     private static final int ICON_SEARCH_KEY = 9;
     private static final int ICON_TAB_KEY = 10;
-    private static final int ICON_NUM1_KEY = 11;
-    private static final int ICON_NUM2_KEY = 12;
-    private static final int ICON_NUM3_KEY = 13;
-    private static final int ICON_NUM4_KEY = 14;
-    private static final int ICON_NUM5_KEY = 15;
-    private static final int ICON_NUM6_KEY = 16;
-    private static final int ICON_NUM7_KEY = 17;
-    private static final int ICON_NUM8_KEY = 18;
-    private static final int ICON_NUM9_KEY = 19;
-    private static final int ICON_NUM0_KEY = 20;
     // This should be aligned with Keyboard.keyIconShifted enum.
-    private static final int ICON_SHIFTED_SHIFT_KEY = 21;
+    private static final int ICON_SHIFTED_SHIFT_KEY = 11;
     // This should be aligned with Keyboard.keyIconPreview enum.
-    private static final int ICON_PREVIEW_SPACE_KEY = 22;
-    private static final int ICON_PREVIEW_TAB_KEY = 23;
-    private static final int ICON_PREVIEW_SETTINGS_KEY = 24;
-    private static final int ICON_PREVIEW_SHORTCUT_KEY = 25;
+    private static final int ICON_PREVIEW_SPACE_KEY = 12;
+    private static final int ICON_PREVIEW_TAB_KEY = 13;
+    private static final int ICON_PREVIEW_SETTINGS_KEY = 14;
+    private static final int ICON_PREVIEW_SHORTCUT_KEY = 15;
 
-    private static final int ICON_LAST = 25;
+    private static final int ICON_LAST = 15;
 
     private final Drawable mIcons[] = new Drawable[ICON_LAST + 1];
 
@@ -84,26 +74,6 @@ public class KeyboardIconsSet {
             return ICON_SEARCH_KEY;
         case R.styleable.Keyboard_iconTabKey:
             return ICON_TAB_KEY;
-        case R.styleable.Keyboard_iconNum1Key:
-            return ICON_NUM1_KEY;
-        case R.styleable.Keyboard_iconNum2Key:
-            return ICON_NUM2_KEY;
-        case R.styleable.Keyboard_iconNum3Key:
-            return ICON_NUM3_KEY;
-        case R.styleable.Keyboard_iconNum4Key:
-            return ICON_NUM4_KEY;
-        case R.styleable.Keyboard_iconNum5Key:
-            return ICON_NUM5_KEY;
-        case R.styleable.Keyboard_iconNum6Key:
-            return ICON_NUM6_KEY;
-        case R.styleable.Keyboard_iconNum7Key:
-            return ICON_NUM7_KEY;
-        case R.styleable.Keyboard_iconNum8Key:
-            return ICON_NUM8_KEY;
-        case R.styleable.Keyboard_iconNum9Key:
-            return ICON_NUM9_KEY;
-        case R.styleable.Keyboard_iconNum0Key:
-            return ICON_NUM0_KEY;
         case R.styleable.Keyboard_iconShiftedShiftKey:
             return ICON_SHIFTED_SHIFT_KEY;
         case R.styleable.Keyboard_iconPreviewSpaceKey:

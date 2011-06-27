@@ -18,7 +18,6 @@ package com.android.inputmethod.accessibility;
 
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
-import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
@@ -26,6 +25,7 @@ import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
 import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
 public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActionListener {
     private static final AccessibleInputMethodServiceProxy sInstance =
@@ -42,18 +42,20 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
 
     private AccessibilityHandler mAccessibilityHandler;
 
-    private class AccessibilityHandler extends Handler {
+    private static class AccessibilityHandler
+            extends StaticInnerHandlerWrapper<AccessibleInputMethodServiceProxy> {
         private static final int MSG_NO_HOVER_SELECTION = 0;
 
-        public AccessibilityHandler(Looper looper) {
-            super(looper);
+        public AccessibilityHandler(AccessibleInputMethodServiceProxy outerInstance,
+                Looper looper) {
+            super(outerInstance, looper);
         }
 
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
             case MSG_NO_HOVER_SELECTION:
-                notifyNoHoverSelection();
+                getOuterInstance().notifyNoHoverSelection();
                 break;
             }
         }
@@ -82,7 +84,7 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
 
     private void initInternal(InputMethodService inputMethod, SharedPreferences prefs) {
         mInputMethod = inputMethod;
-        mAccessibilityHandler = new AccessibilityHandler(inputMethod.getMainLooper());
+        mAccessibilityHandler = new AccessibilityHandler(this, inputMethod.getMainLooper());
     }
 
     /**

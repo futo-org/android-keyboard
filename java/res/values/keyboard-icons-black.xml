@@ -26,16 +26,6 @@
         <item name="iconReturnKey">@drawable/sym_bkeyboard_return</item>
         <item name="iconSearchKey">@drawable/sym_bkeyboard_search</item>
         <item name="iconTabKey">@drawable/sym_bkeyboard_tab</item>
-        <item name="iconNum1Key">@drawable/sym_bkeyboard_num1</item>
-        <item name="iconNum2Key">@drawable/sym_bkeyboard_num2</item>
-        <item name="iconNum3Key">@drawable/sym_bkeyboard_num3</item>
-        <item name="iconNum4Key">@drawable/sym_bkeyboard_num4</item>
-        <item name="iconNum5Key">@drawable/sym_bkeyboard_num5</item>
-        <item name="iconNum6Key">@drawable/sym_bkeyboard_num6</item>
-        <item name="iconNum7Key">@drawable/sym_bkeyboard_num7</item>
-        <item name="iconNum8Key">@drawable/sym_bkeyboard_num8</item>
-        <item name="iconNum9Key">@drawable/sym_bkeyboard_num9</item>
-        <item name="iconNum0Key">@drawable/sym_bkeyboard_num0</item>
         <item name="iconShiftedShiftKey">@drawable/sym_bkeyboard_shift_locked</item>
         <item name="iconPreviewSpaceKey">@drawable/sym_keyboard_feedback_space</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>

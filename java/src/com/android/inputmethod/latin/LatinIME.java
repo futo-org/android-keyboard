@@ -29,7 +29,6 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Debug;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
@@ -206,9 +205,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private CharSequence mEnteredText;
 
 
-    public final UIHandler mHandler = new UIHandler();
+    public final UIHandler mHandler = new UIHandler(this);
 
-    public class UIHandler extends Handler {
+    public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SUGGESTIONS = 0;
         private static final int MSG_UPDATE_OLD_SUGGESTIONS = 1;
         private static final int MSG_UPDATE_SHIFT_STATE = 2;
@@ -218,42 +217,50 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_SPACE_TYPED = 6;
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
 
+        public UIHandler(LatinIME outerInstance) {
+            super(outerInstance);
+        }
+
         @Override
         public void handleMessage(Message msg) {
-            final KeyboardSwitcher switcher = mKeyboardSwitcher;
+            final LatinIME latinIme = getOuterInstance();
+            final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
             final LatinKeyboardView inputView = switcher.getKeyboardView();
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTIONS:
-                updateSuggestions();
+                latinIme.updateSuggestions();
                 break;
             case MSG_UPDATE_OLD_SUGGESTIONS:
-                mRecorrection.fetchAndDisplayRecorrectionSuggestions(mVoiceProxy, mCandidateView,
-                        mSuggest, mKeyboardSwitcher, mWord, mHasUncommittedTypedChars,
-                        mLastSelectionStart, mLastSelectionEnd, mSettingsValues.mWordSeparators);
+                latinIme.mRecorrection.fetchAndDisplayRecorrectionSuggestions(
+                        latinIme.mVoiceProxy, latinIme.mCandidateView,
+                        latinIme.mSuggest, latinIme.mKeyboardSwitcher, latinIme.mWord,
+                        latinIme.mHasUncommittedTypedChars, latinIme.mLastSelectionStart,
+                        latinIme.mLastSelectionEnd, latinIme.mSettingsValues.mWordSeparators);
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
                 break;
             case MSG_SET_BIGRAM_PREDICTIONS:
-                updateBigramPredictions();
+                latinIme.updateBigramPredictions();
                 break;
             case MSG_VOICE_RESULTS:
-                mVoiceProxy.handleVoiceResults(preferCapitalization()
+                latinIme.mVoiceProxy.handleVoiceResults(latinIme.preferCapitalization()
                         || (switcher.isAlphabetMode() && switcher.isShiftedOrShiftLocked()));
                 break;
             case MSG_FADEOUT_LANGUAGE_ON_SPACEBAR:
                 if (inputView != null) {
                     inputView.setSpacebarTextFadeFactor(
-                            (1.0f + mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar) / 2,
+                            (1.0f + latinIme.mSettingsValues.
+                                    mFinalFadeoutFactorOfLanguageOnSpacebar) / 2,
                             (LatinKeyboard)msg.obj);
                 }
                 sendMessageDelayed(obtainMessage(MSG_DISMISS_LANGUAGE_ON_SPACEBAR, msg.obj),
-                        mSettingsValues.mDurationOfFadeoutLanguageOnSpacebar);
+                        latinIme.mSettingsValues.mDurationOfFadeoutLanguageOnSpacebar);
                 break;
             case MSG_DISMISS_LANGUAGE_ON_SPACEBAR:
                 if (inputView != null) {
                     inputView.setSpacebarTextFadeFactor(
-                            mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar,
+                            latinIme.mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar,
                             (LatinKeyboard)msg.obj);
                 }
                 break;
@@ -263,7 +270,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public void postUpdateSuggestions() {
             removeMessages(MSG_UPDATE_SUGGESTIONS);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTIONS),
-                    mSettingsValues.mDelayUpdateSuggestions);
+                    getOuterInstance().mSettingsValues.mDelayUpdateSuggestions);
         }
 
         public void cancelUpdateSuggestions() {
@@ -277,7 +284,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public void postUpdateOldSuggestions() {
             removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_OLD_SUGGESTIONS),
-                    mSettingsValues.mDelayUpdateOldSuggestions);
+                    getOuterInstance().mSettingsValues.mDelayUpdateOldSuggestions);
         }
 
         public void cancelUpdateOldSuggestions() {
@@ -287,7 +294,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public void postUpdateShiftKeyState() {
             removeMessages(MSG_UPDATE_SHIFT_STATE);
             sendMessageDelayed(obtainMessage(MSG_UPDATE_SHIFT_STATE),
-                    mSettingsValues.mDelayUpdateShiftState);
+                    getOuterInstance().mSettingsValues.mDelayUpdateShiftState);
         }
 
         public void cancelUpdateShiftState() {
@@ -297,7 +304,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public void postUpdateBigramPredictions() {
             removeMessages(MSG_SET_BIGRAM_PREDICTIONS);
             sendMessageDelayed(obtainMessage(MSG_SET_BIGRAM_PREDICTIONS),
-                    mSettingsValues.mDelayUpdateSuggestions);
+                    getOuterInstance().mSettingsValues.mDelayUpdateSuggestions);
         }
 
         public void cancelUpdateBigramPredictions() {
@@ -309,23 +316,26 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         public void startDisplayLanguageOnSpacebar(boolean localeChanged) {
+            final LatinIME latinIme = getOuterInstance();
             removeMessages(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR);
             removeMessages(MSG_DISMISS_LANGUAGE_ON_SPACEBAR);
-            final LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
+            final LatinKeyboardView inputView = latinIme.mKeyboardSwitcher.getKeyboardView();
             if (inputView != null) {
-                final LatinKeyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
+                final LatinKeyboard keyboard = latinIme.mKeyboardSwitcher.getLatinKeyboard();
                 // The language is always displayed when the delay is negative.
                 final boolean needsToDisplayLanguage = localeChanged
-                        || mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar < 0;
+                        || latinIme.mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar < 0;
                 // The language is never displayed when the delay is zero.
-                if (mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar != 0) {
+                if (latinIme.mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar != 0) {
                     inputView.setSpacebarTextFadeFactor(needsToDisplayLanguage ? 1.0f
-                            : mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar, keyboard);
+                            : latinIme.mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar,
+                            keyboard);
                 }
                 // The fadeout animation will start when the delay is positive.
-                if (localeChanged && mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar > 0) {
+                if (localeChanged
+                        && latinIme.mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar > 0) {
                     sendMessageDelayed(obtainMessage(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR, keyboard),
-                            mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar);
+                            latinIme.mSettingsValues.mDelayBeforeFadeoutLanguageOnSpacebar);
                 }
             }
         }
@@ -333,7 +343,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public void startDoubleSpacesTimer() {
             removeMessages(MSG_SPACE_TYPED);
             sendMessageDelayed(obtainMessage(MSG_SPACE_TYPED),
-                    mSettingsValues.mDoubleSpacesTurnIntoPeriodTimeout);
+                    getOuterInstance().mSettingsValues.mDoubleSpacesTurnIntoPeriodTimeout);
         }
 
         public void cancelDoubleSpacesTimer() {

@@ -105,7 +105,7 @@
     <!-- Option to suggest auto correction candidates aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
     <string name="auto_correction_threshold_mode_aggeressive">Aggressive</string>
     <!-- Option to suggest auto correction candidates very aggressively. Auto-corrects to a word which has even large edit distance from typed word. [CHAR LIMIT=20] -->
-    <string name="auto_correction_threshold_mode_very_aggeressive">Very Aggressive</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive">Very aggressive</string>
 
     <!-- Option to enable bigram correction -->
     <string name="bigram_suggestion">Bigram suggestions</string>
@@ -322,7 +322,7 @@
     <string name="prefs_enable_recorrection_summary">Touch entered words to correct them, only when suggestions are visible</string>
 
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
-    <string name="keyboard_layout">Keyboard Theme</string>
+    <string name="keyboard_layout">Keyboard theme</string>
 
     <!-- Description for Czech keyboard subtype [CHAR LIMIT=35] -->
     <string name="subtype_mode_cs_keyboard">Czech Keyboard</string>
@@ -409,5 +409,5 @@
     <string name="subtype_mode_zu_voice">isiZulu Voice</string>
 
     <!-- Title of an option for usability study mode -->
-    <string name="prefs_usability_study_mode">Usability Study Mode</string>
+    <string name="prefs_usability_study_mode">Usability study mode</string>
 </resources>
