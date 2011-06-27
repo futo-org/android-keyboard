@@ -100,7 +100,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     // Miscellaneous constants
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
-    private static final int HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL = -1;
 
     // XML attribute
     private final int mKeyTextColor;
@@ -125,11 +124,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private final int mPreviewOffset;
     private final int mPreviewHeight;
     private final int mPopupLayout;
-    private final Drawable mKeyPopupHintIcon;
     private final int mKeyHintLetterColor;
     private final int mKeyHintLabelColor;
     private final int mKeyUppercaseLetterInactivatedColor;
     private final int mKeyUppercaseLetterActivatedColor;
+
+    // HORIZONTAL ELLIPSIS "...", character for popup hint.
+    private static final String POPUP_HINT_CHAR = "\u2026";
 
     // Main keyboard
     private Keyboard mKeyboard;
@@ -368,7 +369,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         mKeyTextColor = a.getColor(R.styleable.KeyboardView_keyTextColor, 0xFF000000);
         mKeyTextInactivatedColor = a.getColor(
                 R.styleable.KeyboardView_keyTextInactivatedColor, 0xFF000000);
-        mKeyPopupHintIcon = a.getDrawable(R.styleable.KeyboardView_keyPopupHintIcon);
         mKeyHintLetterColor = a.getColor(R.styleable.KeyboardView_keyHintLetterColor, 0);
         mKeyHintLabelColor = a.getColor(R.styleable.KeyboardView_keyHintLabelColor, 0);
         mKeyUppercaseLetterInactivatedColor = a.getColor(
@@ -837,19 +837,15 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             }
         }
 
-        // Draw popup hint icon "...".
-        // TODO: Draw "..." by text.
+        // Draw popup hint "..." at the bottom right corner of the key.
         if (key.hasPopupHint()) {
-            final int drawableWidth = keyDrawWidth;
-            final int drawableHeight = key.mHeight;
-            final int drawableX = 0;
-            final int drawableY = HINT_ICON_VERTICAL_ADJUSTMENT_PIXEL;
-            final Drawable hintIcon = mKeyPopupHintIcon;
-            drawIcon(canvas, hintIcon, drawableX, drawableY, drawableWidth, drawableHeight);
-            if (DEBUG_SHOW_ALIGN) {
-                drawRectangle(canvas, drawableX, drawableY, drawableWidth, drawableHeight,
-                        0x80c0c000, new Paint());
-            }
+            paint.setTextSize(mKeyHintLetterSize);
+            paint.setColor(mKeyHintLabelColor);
+            final int hintX = keyDrawWidth - getLabelCharWidth(paint);
+            // Using y-coordinate "key.mHeight - paint.descent()" draws "..." just on the bottom
+            // edge of the key. So we use slightly higher position by multiply descent length by 2.
+            final int hintY = key.mHeight - (int)paint.descent() * 2;
+            canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
         }
 
         canvas.translate(-keyDrawX - kbdPaddingLeft, -key.mY - kbdPaddingTop);

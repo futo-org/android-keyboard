@@ -64,9 +64,6 @@
         <attr name="keyUppercaseLetterInactivatedColor" format="color" />
         <attr name="keyUppercaseLetterActivatedColor" format="color" />
 
-        <!-- Popup hint icon "..." -->
-        <attr name="keyPopupHintIcon" format="reference" />
-
         <!-- Layout resource for key press feedback.-->
         <attr name="keyPreviewLayout" format="reference" />
         <!-- The background for key press feedback. -->
