@@ -66,6 +66,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
+    private final View mCandidatesStrip;
     private static final int NUM_CANDIDATES_IN_STRIP = 3;
     private final ImageView mExpandCandidatesPane;
     private final ImageView mCloseCandidatesPane;
@@ -87,6 +88,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final int mColorSuggestedCandidate;
     private final PopupWindow mPreviewPopup;
     private final TextView mPreviewText;
+
+    private final View mTouchToSave;
+    private final TextView mWordToSave;
 
     private Listener mListener;
     private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
@@ -178,6 +182,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
 
+        mCandidatesStrip = findViewById(R.id.candidates_strip);
         mCandidateStripHeight = res.getDimensionPixelOffset(R.dimen.candidate_strip_height);
         for (int i = 0; i < MAX_SUGGESTIONS; i++) {
             final TextView word, info;
@@ -212,6 +217,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 mDividers.add(divider);
             }
         }
+
+        mTouchToSave = findViewById(R.id.touch_to_save);
+        mWordToSave = (TextView)findViewById(R.id.word_to_save);
+        mWordToSave.setOnClickListener(this);
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.CandidateView, defStyle, R.style.CandidateViewStyle);
@@ -448,14 +457,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     public void showAddToDictionaryHint(CharSequence word) {
-        SuggestedWords.Builder builder = new SuggestedWords.Builder()
-                .addWord(word)
-                .addWord(getContext().getText(R.string.hint_add_to_dictionary));
-        setSuggestions(builder.build());
+        mWordToSave.setText(word);
         mShowingAddToDictionary = true;
-        // Disable R.string.hint_add_to_dictionary button
-        TextView tv = mWords.get(1);
-        tv.setClickable(false);
+        mCandidatesStrip.setVisibility(View.GONE);
+        mTouchToSave.setVisibility(View.VISIBLE);
     }
 
     public boolean dismissAddToDictionaryHint() {
@@ -475,6 +480,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mWords.get(i).setText(null);
             mInfos.get(i).setVisibility(View.GONE);
         }
+        mTouchToSave.setVisibility(View.GONE);
+        mCandidatesStrip.setVisibility(View.VISIBLE);
         mCandidatesPane.removeAllViews();
     }
 
@@ -530,6 +537,12 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     @Override
     public void onClick(View view) {
+        if (view == mWordToSave) {
+            addToDictionary(((TextView)view).getText());
+            clear();
+            return;
+        }
+
         final Object tag = view.getTag();
         if (!(tag instanceof Integer))
             return;
@@ -538,11 +551,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             return;
 
         final CharSequence word = mSuggestions.getWord(index);
-        if (mShowingAddToDictionary && index == 0) {
-            addToDictionary(word);
-        } else {
-            mListener.pickSuggestionManually(index, word);
-        }
+        mListener.pickSuggestionManually(index, word);
         // Because some punctuation letters are not treated as word separator depending on locale,
         // {@link #setSuggestions} might not be called and candidates pane left opened.
         closeCandidatesPane();
