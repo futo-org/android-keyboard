@@ -591,7 +591,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         inputView.setProximityCorrectionEnabled(true);
         // If we just entered a text field, maybe it has some old text that requires correction
         mRecorrection.checkRecorrectionOnStart();
-        inputView.setForeground(true);
 
         voiceIme.onStartInputView(inputView.getWindowToken());
 
@@ -679,7 +678,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView != null) inputView.setForeground(false);
+        if (inputView != null) inputView.cancelAllMessage();
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestions();
         mHandler.cancelUpdateOldSuggestions();

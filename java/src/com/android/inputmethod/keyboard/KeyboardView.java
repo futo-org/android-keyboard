@@ -141,7 +141,6 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private int mKeyHintLabelSize;
 
     // Key preview
-    private boolean mInForeground;
     private final TextView mPreviewText;
     private int mPreviewTextSize;
     private boolean mShowKeyPreviewPopup = true;
@@ -935,16 +934,16 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         canvas.translate(-x, -y);
     }
 
-    public void setForeground(boolean foreground) {
-        mInForeground = foreground;
-    }
-
     // TODO: clean up this method.
     private void dismissAllKeyPreviews() {
         for (PointerTracker tracker : mPointerTrackers) {
             tracker.setReleasedKeyGraphics();
             dismissKeyPreview(tracker);
         }
+    }
+
+    public void cancelAllMessage() {
+        mHandler.cancelAllMessages();
     }
 
     @Override
@@ -991,7 +990,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         // If keyIndex is invalid or IME is already closed, we must not show key preview.
         // Trying to show key preview while root window is closed causes
         // WindowManager.BadTokenException.
-        if (key == null || !mInForeground)
+        if (key == null)
             return;
 
         mHandler.cancelAllDismissKeyPreviews();
