@@ -118,6 +118,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private final float mKeyHysteresisDistance;
     private final float mVerticalCorrection;
     private final Drawable mPreviewBackground;
+    private final Drawable mPreviewLeftBackground;
+    private final Drawable mPreviewRightBackground;
     private final Drawable mPreviewSpacebarBackground;
     private final int mPreviewTextColor;
     private final float mPreviewTextRatio;
@@ -202,6 +204,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final float KEY_LABEL_VERTICAL_PADDING_FACTOR = 1.60f;
     private static final String KEY_LABEL_REFERENCE_CHAR = "M";
     private final int mKeyLabelHorizontalPadding;
+
+    private static final int MEASURESPEC_UNSPECIFIED = MeasureSpec.makeMeasureSpec(
+            0, MeasureSpec.UNSPECIFIED);
 
     private final UIHandler mHandler = new UIHandler(this);
 
@@ -354,6 +359,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
             mShowKeyPreviewPopup = false;
         }
         mPreviewBackground = a.getDrawable(R.styleable.KeyboardView_keyPreviewBackground);
+        mPreviewLeftBackground = a.getDrawable(R.styleable.KeyboardView_keyPreviewLeftBackground);
+        mPreviewRightBackground = a.getDrawable(R.styleable.KeyboardView_keyPreviewRightBackground);
         mPreviewSpacebarBackground = a.getDrawable(
                 R.styleable.KeyboardView_keyPreviewSpacebarBackground);
         mPreviewOffset = a.getDimensionPixelOffset(R.styleable.KeyboardView_keyPreviewOffset, 0);
@@ -1016,21 +1023,25 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         } else {
             previewText.setBackgroundDrawable(mPreviewBackground);
         }
-        // Set the preview background state
-        previewText.getBackground().setState(
-                key.mPopupCharacters != null ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
 
-        previewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        previewText.measure(MEASURESPEC_UNSPECIFIED, MEASURESPEC_UNSPECIFIED);
         final int previewWidth = Math.max(previewText.getMeasuredWidth(), keyDrawWidth
                 + previewText.getPaddingLeft() + previewText.getPaddingRight());
         final int previewHeight = mPreviewHeight;
         getLocationInWindow(mCoordinates);
-        final int previewX = keyDrawX - (previewWidth - keyDrawWidth) / 2 + mCoordinates[0];
+        int previewX = keyDrawX - (previewWidth - keyDrawWidth) / 2 + mCoordinates[0];
         final int previewY = key.mY - previewHeight + mCoordinates[1] + mPreviewOffset;
+        if (previewX < 0 && mPreviewLeftBackground != null) {
+            previewText.setBackgroundDrawable(mPreviewLeftBackground);
+            previewX = 0;
+        } else if (previewX + previewWidth > getWidth() && mPreviewRightBackground != null) {
+            previewText.setBackgroundDrawable(mPreviewRightBackground);
+            previewX = getWidth() - previewWidth;
+        }
 
-        // Place the key preview.
-        // TODO: Adjust position of key previews which touch screen edges
+        // Set the preview background state
+        previewText.getBackground().setState(
+                key.mPopupCharacters != null ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
         FrameLayoutCompatUtils.placeViewAt(
                 previewText, previewX, previewY, previewWidth, previewHeight);
         previewText.setVisibility(VISIBLE);
@@ -1147,7 +1158,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         miniKeyboardView.setKeyboard(keyboard);
 
         container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+                MEASURESPEC_UNSPECIFIED);
 
         return miniKeyboardView;
     }

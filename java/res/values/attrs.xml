@@ -68,6 +68,10 @@
         <attr name="keyPreviewLayout" format="reference" />
         <!-- The background for key press feedback. -->
         <attr name="keyPreviewBackground" format="reference" />
+        <!-- The background for the left edge key press feedback. -->
+        <attr name="keyPreviewLeftBackground" format="reference" />
+        <!-- The background for the right edge key press feedback. -->
+        <attr name="keyPreviewRightBackground" format="reference" />
         <!-- The background for spacebar press feedback. -->
         <attr name="keyPreviewSpacebarBackground" format="reference" />
         <!-- The text color for key press feedback. -->
