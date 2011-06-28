@@ -686,10 +686,6 @@ public class PointerTracker {
         }
     }
 
-    public CharSequence getPreviewText(Key key) {
-        return key.mLabel;
-    }
-
     private long mPreviousEventTime;
 
     private void printTouchEvent(String title, int x, int y, long eventTime) {

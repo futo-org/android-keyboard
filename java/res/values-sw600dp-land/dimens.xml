@@ -22,20 +22,28 @@
     <!-- keyboardHeight = key_height*4 + key_bottom_gap*3 -->
     <dimen name="keyboardHeight">45.0mm</dimen>
     <fraction name="minKeyboardHeight">45%p</fraction>
-    <!-- key_height + key_bottom_gap = popup_key_height -->
-    <!-- <dimen name="key_height">14.5mm</dimen> -->
-    <dimen name="key_bottom_gap">1.3mm</dimen>
-    <dimen name="key_horizontal_gap">1.3mm</dimen>
+
+    <dimen name="keyboard_horizontal_edges_padding">0dp</dimen>
     <dimen name="keyboard_top_padding">1.1mm</dimen>
     <dimen name="keyboard_bottom_padding">0.0mm</dimen>
-    <dimen name="key_bottom_gap_ics">1.3mm</dimen>
-    <dimen name="key_horizontal_gap_ics">1.3mm</dimen>
+    <dimen name="key_bottom_gap">2.21mm</dimen>
+    <dimen name="key_horizontal_gap">1.97mm</dimen>
+
+    <dimen name="key_bottom_gap_stone">1.96mm</dimen>
+    <dimen name="key_horizontal_gap_stone">2.31mm</dimen>
+
+    <dimen name="key_bottom_gap_gb">2.34mm</dimen>
+    <dimen name="key_horizontal_gap_gb">2.22mm</dimen>
+
+    <dimen name="key_bottom_gap_ics">1.66mm</dimen>
+    <dimen name="key_horizontal_gap_ics">1.66mm</dimen>
     <dimen name="keyboard_top_padding_ics">1.1mm</dimen>
     <dimen name="keyboard_bottom_padding_ics">0.0mm</dimen>
+
     <dimen name="popup_key_height">13.0mm</dimen>
 
     <!-- left or right padding of label alignment -->
-    <dimen name="key_label_horizontal_alignment_padding">18dip</dimen>
+    <dimen name="key_label_horizontal_padding">18dip</dimen>
 
     <fraction name="key_letter_ratio">45%</fraction>
     <fraction name="key_large_letter_ratio">45%</fraction>

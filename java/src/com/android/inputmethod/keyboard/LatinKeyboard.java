@@ -29,6 +29,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.internal.SlidingLocaleDrawable;
 import com.android.inputmethod.latin.R;
@@ -180,6 +181,15 @@ public class LatinKeyboard extends Keyboard {
     public Key onAutoCorrectionStateChanged(boolean isAutoCorrection) {
         updateSpacebarForLocale(isAutoCorrection);
         return mSpaceKey;
+    }
+
+    @Override
+    public CharSequence adjustLabelCase(CharSequence label) {
+        if (isAlphaKeyboard() && isShiftedOrShiftLocked() && !TextUtils.isEmpty(label)
+                && label.length() < 3 && Character.isLowerCase(label.charAt(0))) {
+            return label.toString().toUpperCase(mId.mLocale);
+        }
+        return label;
     }
 
     private void updateSpacebarForLocale(boolean isAutoCorrection) {

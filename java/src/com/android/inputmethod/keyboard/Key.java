@@ -52,7 +52,6 @@ public class Key {
     public final int mLabelOption;
     public static final int LABEL_OPTION_ALIGN_LEFT = 0x01;
     public static final int LABEL_OPTION_ALIGN_RIGHT = 0x02;
-    public static final int LABEL_OPTION_ALIGN_BOTTOM = 0x04;
     public static final int LABEL_OPTION_ALIGN_LEFT_OF_CENTER = 0x08;
     private static final int LABEL_OPTION_LARGE_LETTER = 0x10;
     private static final int LABEL_OPTION_FONT_NORMAL = 0x20;
@@ -276,9 +275,9 @@ public class Key {
 
             final KeyboardIconsSet iconsSet = mKeyboard.mIconsSet;
             mVisualInsetsLeft = KeyboardParser.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_visualInsetsLeft, mKeyboard.getDisplayHeight(), 0);
+                    R.styleable.Keyboard_Key_visualInsetsLeft, keyboardWidth, 0);
             mVisualInsetsRight = KeyboardParser.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_visualInsetsRight, mKeyboard.getDisplayHeight(), 0);
+                    R.styleable.Keyboard_Key_visualInsetsRight, keyboardWidth, 0);
             mPreviewIcon = iconsSet.getIcon(style.getInt(
                     keyAttr, R.styleable.Keyboard_Key_keyIconPreview,
                     KeyboardIconsSet.ICON_UNDEFINED));
@@ -312,6 +311,10 @@ public class Key {
         } finally {
             keyAttr.recycle();
         }
+    }
+
+    public CharSequence getCaseAdjustedLabel() {
+        return mKeyboard.adjustLabelCase(mLabel);
     }
 
     public Typeface selectTypeface(Typeface defaultTypeface) {

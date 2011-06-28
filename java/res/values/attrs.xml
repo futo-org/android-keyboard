@@ -51,6 +51,12 @@
         <attr name="keyHintLabelRatio" format="float" />
         <!-- Size of the text for upper case letter, in the proportion of key height. -->
         <attr name="keyUppercaseLetterRatio" format="float" />
+        <!-- Horizontal padding of left/right aligned key label to the edge of the key. -->
+        <attr name="keyLabelHorizontalPadding" format="dimension" />
+        <!-- Top and right padding of hint letter to the edge of the key.-->
+        <attr name="keyHintLetterPadding" format="dimension" />
+        <!-- Top and right padding of upper case letter to the edge of the key.-->
+        <attr name="keyUppercaseLetterPadding" format="dimension" />
 
         <!-- Color to use for the label in a key. -->
         <attr name="keyTextColor" format="color" />
@@ -199,7 +205,6 @@
             <!-- This should be aligned with Key.LABEL_OPTION_* -->
             <flag name="alignLeft" value="0x01" />
             <flag name="alignRight" value="0x02" />
-            <flag name="alignBottom" value="0x04" />
             <flag name="alignLeftOfCenter" value="0x08" />
             <flag name="largeLetter" value="0x10" />
             <flag name="fontNormal" value="0x20" />
