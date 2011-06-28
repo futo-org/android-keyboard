@@ -27,6 +27,7 @@ import java.util.List;
 public class LatinImeLogger implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     public static boolean sDBG = false;
+    public static boolean sVISUALDEBUG = false;
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {

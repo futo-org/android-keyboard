@@ -89,7 +89,7 @@ import java.util.WeakHashMap;
  */
 public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final String TAG = KeyboardView.class.getSimpleName();
-    private static final boolean DEBUG_SHOW_ALIGN = false;
+    private static final boolean DEBUG_SHOW_ALIGN = LatinImeLogger.sVISUALDEBUG;
     private static final boolean DEBUG_KEYBOARD_GRID = false;
 
     private static final boolean ENABLE_CAPSLOCK_BY_LONGPRESS = true;
