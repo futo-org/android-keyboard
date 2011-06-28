@@ -34,6 +34,7 @@
             android:label="@string/subtype_mode_en_US_keyboard"
             android:imeSubtypeLocale="en_US"
             android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="TrySuppressingImeSwitcher"
     />
 <!--     <subtype android:icon="@drawable/ic_subtype_mic" -->
 <!--             android:label="@string/subtype_mode_en_voice" -->
@@ -45,6 +46,7 @@
             android:label="@string/subtype_mode_en_GB_keyboard"
             android:imeSubtypeLocale="en_GB"
             android:imeSubtypeMode="keyboard"
+            android:imeSubtypeExtraValue="TrySuppressingImeSwitcher"
     />
     <!-- The file for Arabic layout is an alpha version. It needs to be run through UX. -->
     <subtype android:icon="@drawable/ic_subtype_keyboard"
