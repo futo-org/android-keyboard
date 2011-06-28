@@ -25,6 +25,10 @@
 #include "dictionary.h"
 #include "unigram_dictionary.h"
 
+#ifdef NEW_DICTIONARY_FORMAT
+#include "binary_format.h"
+#endif // NEW_DICTIONARY_FORMAT
+
 namespace latinime {
 
 const UnigramDictionary::digraph_t UnigramDictionary::GERMAN_UMLAUT_DIGRAPHS[] =
@@ -36,11 +40,20 @@ const UnigramDictionary::digraph_t UnigramDictionary::GERMAN_UMLAUT_DIGRAPHS[] =
 UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultiplier,
         int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
         const bool isLatestDictVersion)
+#ifndef NEW_DICTIONARY_FORMAT
     : DICT_ROOT(streamStart),
+#else // NEW_DICTIONARY_FORMAT
+    : DICT_ROOT(streamStart + NEW_DICTIONARY_HEADER_SIZE),
+#endif // NEW_DICTIONARY_FORMAT
     MAX_WORD_LENGTH(maxWordLength), MAX_WORDS(maxWords),
     MAX_PROXIMITY_CHARS(maxProximityChars), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier),
+#ifndef NEW_DICTIONARY_FORMAT
     ROOT_POS(isLatestDictVersion ? DICTIONARY_HEADER_SIZE : 0),
+#else // NEW_DICTIONARY_FORMAT
+      // TODO : remove this variable.
+    ROOT_POS(0),
+#endif // NEW_DICTIONARY_FORMAT
     BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(*mInputCodes)),
     MAX_UMLAUT_SEARCH_DEPTH(DEFAULT_MAX_UMLAUT_SEARCH_DEPTH) {
     if (DEBUG_DICT) {
@@ -716,8 +729,6 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
 }
 
 #ifndef NEW_DICTIONARY_FORMAT
-// TODO: Don't forget to bring inline functions back to over where they are used.
-
 // The following functions will be entirely replaced with new implementations.
 void UnigramDictionary::getWordsOld(const int initialPos, const int inputLength, const int skipPos,
         const int excessivePos, const int transposedPos,int *nextLetters,
@@ -991,10 +1002,241 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
 
 #else // NEW_DICTIONARY_FORMAT
 
+// Wrapper for getMostFrequentWordLikeInner, which matches it to the previous
+// interface.
+inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
+        const int inputLength, unsigned short *word) {
+    uint16_t inWord[inputLength];
+
+    for (int i = 0; i < inputLength; ++i) {
+        inWord[i] = *getInputCharsAt(startInputIndex + i);
+    }
+    return getMostFrequentWordLikeInner(inWord, inputLength, word);
+}
+
+// This function will take the position of a character array within a CharGroup,
+// and check it actually like-matches the word in inWord starting at startInputIndex,
+// that is, it matches it with case and accents squashed.
+// The function returns true if there was a full match, false otherwise.
+// The function will copy on-the-fly the characters in the CharGroup to outNewWord.
+// It will also place the end position of the array in outPos; in outInputIndex,
+// it will place the index of the first char AFTER the match if there was a match,
+// and the initial position if there was not. It makes sense because if there was
+// a match we want to continue searching, but if there was not, we want to go to
+// the next CharGroup.
+// In and out parameters may point to the same location. This function takes care
+// not to use any input parameters after it wrote into its outputs.
+static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
+        const uint8_t* const root, const int startPos,
+        const uint16_t* const inWord, const int startInputIndex,
+        int32_t* outNewWord, int* outInputIndex, int* outPos) {
+    const bool hasMultipleChars = (0 != (UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS & flags));
+    int pos = startPos;
+    int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+    int32_t baseChar = toBaseLowerCase(character);
+    const uint16_t wChar = toBaseLowerCase(inWord[startInputIndex]);
+
+    if (baseChar != wChar) {
+        *outPos = hasMultipleChars ? BinaryFormat::skipOtherCharacters(root, pos) : pos;
+        *outInputIndex = startInputIndex;
+        return false;
+    }
+    int inputIndex = startInputIndex;
+    outNewWord[inputIndex] = character;
+    if (hasMultipleChars) {
+        character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+        while (NOT_A_CHARACTER != character) {
+            baseChar = toBaseLowerCase(character);
+            if (toBaseLowerCase(inWord[++inputIndex]) != baseChar) {
+                *outPos = BinaryFormat::skipOtherCharacters(root, pos);
+                *outInputIndex = startInputIndex;
+                return false;
+            }
+            outNewWord[inputIndex] = character;
+            character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+        }
+    }
+    *outInputIndex = inputIndex + 1;
+    *outPos = pos;
+    return true;
+}
+
+// This function is invoked when a word like the word searched for is found.
+// It will compare the frequency to the max frequency, and if greater, will
+// copy the word into the output buffer. In output value maxFreq, it will
+// write the new maximum frequency if it changed.
+static inline void onTerminalWordLike(const int freq, int32_t* newWord, const int length,
+        short unsigned int* outWord, int* maxFreq) {
+    if (freq > *maxFreq) {
+        for (int q = 0; q < length; ++q)
+            outWord[q] = newWord[q];
+        outWord[length] = 0;
+        *maxFreq = freq;
+    }
+}
+
+// Will find the highest frequency of the words like the one passed as an argument,
+// that is, everything that only differs by case/accents.
+int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWord,
+        const int length, short unsigned int* outWord) {
+    int32_t newWord[MAX_WORD_LENGTH_INTERNAL];
+    int depth = 0;
+    int maxFreq = -1;
+    const uint8_t* const root = DICT_ROOT;
+
+    mStackChildCount[0] = root[0];
+    mStackInputIndex[0] = 0;
+    mStackSiblingPos[0] = 1;
+    while (depth >= 0) {
+        const int charGroupCount = mStackChildCount[depth];
+        int pos = mStackSiblingPos[depth];
+        for (int charGroupIndex = charGroupCount - 1; charGroupIndex >= 0; --charGroupIndex) {
+            int inputIndex = mStackInputIndex[depth];
+            const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+            // Test whether all chars in this group match with the word we are searching for. If so,
+            // we want to traverse its children (or if the length match, evaluate its frequency).
+            // Note that this function will output the position regardless, but will only write
+            // into inputIndex if there is a match.
+            const bool isAlike = testCharGroupForContinuedLikeness(flags, root, pos, inWord,
+                    inputIndex, newWord, &inputIndex, &pos);
+            if (isAlike && (FLAG_IS_TERMINAL & flags) && (inputIndex == length)) {
+                const int frequency = BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
+                onTerminalWordLike(frequency, newWord, inputIndex, outWord, &maxFreq);
+            }
+            pos = BinaryFormat::skipFrequency(flags, pos);
+            const int siblingPos = BinaryFormat::skipChildrenPosAndAttributes(root, flags, pos);
+            const int childrenNodePos = BinaryFormat::readChildrenPosition(root, flags, pos);
+            // If we had a match and the word has children, we want to traverse them. We don't have
+            // to traverse words longer than the one we are searching for, since they will not match
+            // anyway, so don't traverse unless inputIndex < length.
+            if (isAlike && (-1 != childrenNodePos) && (inputIndex < length)) {
+                // Save position for this depth, to get back to this once children are done
+                mStackChildCount[depth] = charGroupIndex;
+                mStackSiblingPos[depth] = siblingPos;
+                // Prepare stack values for next depth
+                ++depth;
+                int childrenPos = childrenNodePos;
+                mStackChildCount[depth] =
+                        BinaryFormat::getGroupCountAndForwardPointer(root, &childrenPos);
+                mStackSiblingPos[depth] = childrenPos;
+                mStackInputIndex[depth] = inputIndex;
+                pos = childrenPos;
+                // Go to the next depth level.
+                ++depth;
+                break;
+            } else {
+                // No match, or no children, or word too long to ever match: go the next sibling.
+                pos = siblingPos;
+            }
+        }
+        --depth;
+    }
+    return maxFreq;
+}
+
+// This function gets the frequency of the exact matching word in the dictionary.
+// If no match is found, it returns -1.
+int UnigramDictionary::getFrequency(const uint16_t* const inWord, const int length) const {
+    int pos = 0;
+    int wordPos = 0;
+    const uint8_t* const root = DICT_ROOT;
+
+    while (true) {
+        // If we already traversed the tree further than the word is long, there means
+        // there was no match (or we would have found it).
+        if (wordPos > length) return -1;
+        int charGroupCount = BinaryFormat::getGroupCountAndForwardPointer(root, &pos);
+        const uint16_t wChar = inWord[wordPos];
+        while (true) {
+            // If there are no more character groups in this node, it means we could not
+            // find a matching character for this depth, therefore there is no match.
+            if (0 >= charGroupCount) return -1;
+            const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+            int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+            if (character == wChar) {
+                // This is the correct node. Only one character group may start with the same
+                // char within a node, so either we found our match in this node, or there is
+                // no match and we can return -1. So we will check all the characters in this
+                // character group indeed does match.
+                if (FLAG_HAS_MULTIPLE_CHARS & flags) {
+                    character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+                    while (NOT_A_CHARACTER != character) {
+                        ++wordPos;
+                        // If we shoot the length of the word we search for, or if we find a single
+                        // character that does not match, as explained above, it means the word is
+                        // not in the dictionary (by virtue of this chargroup being the only one to
+                        // match the word on the first character, but not matching the whole word).
+                        if (wordPos > length) return -1;
+                        if (inWord[wordPos] != character) return -1;
+                        character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+                    }
+                }
+                // If we come here we know that so far, we do match. Either we are on a terminal
+                // and we match the length, in which case we found it, or we traverse children.
+                // If we don't match the length AND don't have children, then a word in the
+                // dictionary fully matches a prefix of the searched word but not the full word.
+                ++wordPos;
+                if (FLAG_IS_TERMINAL & flags) {
+                    if (wordPos == length) {
+                        return BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
+                    }
+                    pos = BinaryFormat::skipFrequency(FLAG_IS_TERMINAL, pos);
+                }
+                if (FLAG_GROUP_ADDRESS_TYPE_NOADDRESS == (MASK_GROUP_ADDRESS_TYPE & flags))
+                    return -1;
+                // We have children and we are still shorter than the word we are searching for, so
+                // we need to traverse children. Put the pointer on the children position, and
+                // break
+                pos = BinaryFormat::readChildrenPosition(root, flags, pos);
+                break;
+            } else {
+                // This chargroup does not match, so skip the remaining part and go to the next.
+                if (FLAG_HAS_MULTIPLE_CHARS & flags) {
+                    pos = BinaryFormat::skipOtherCharacters(root, pos);
+                }
+                pos = BinaryFormat::skipFrequency(flags, pos);
+                pos = BinaryFormat::skipChildrenPosAndAttributes(root, flags, pos);
+            }
+            --charGroupCount;
+        }
+    }
+}
+
+bool UnigramDictionary::isValidWord(const uint16_t* const inWord, const int length) const {
+    return -1 != getFrequency(inWord, length);
+}
+
+int UnigramDictionary::getBigrams(unsigned short *word, int length, int *codes, int codesSize,
+        unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
+        int maxAlternatives) {
+    // TODO: add implementation.
+    return 0;
+}
+
+// TODO: remove this function.
+int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offset,
+        int length) const {
+    return -1;
+}
+
+// ProcessCurrentNode returns a boolean telling whether to traverse children nodes or not.
+// If the return value is false, then the caller should read in the output "nextSiblingPosition"
+// to find out the address of the next sibling node and pass it to a new call of processCurrentNode.
+// It is worthy to note that when false is returned, the output values other than
+// nextSiblingPosition are undefined.
+// If the return value is true, then the caller must proceed to traverse the children of this
+// node. processCurrentNode will output the information about the children: their count in
+// newCount, their position in newChildrenPosition, the traverseAllNodes flag in
+// newTraverseAllNodes, the match weight into newMatchRate, the input index into newInputIndex, the
+// diffs into newDiffs, the sibling position in nextSiblingPosition, and the output index into
+// newOutputIndex. Please also note the following caveat: processCurrentNode does not know when
+// there aren't any more nodes at this level, it merely returns the address of the first byte after
+// the current node in nextSiblingPosition. Thus, the caller must keep count of the nodes at any
+// given level, as output into newCount when traversing this level's parent.
 inline bool UnigramDictionary::processCurrentNode(const int initialPos, const int initialDepth,
         const int maxDepth, const bool initialTraverseAllNodes, int matchWeight, int inputIndex,
         const int initialDiffs, const int skipPos, const int excessivePos, const int transposedPos,
-        int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
+        int *nextLetters, const int nextLettersSize, int *newCount, int *newChildrenPosition,
         bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
         int *nextSiblingPosition, int *newOutputIndex) {
     if (DEBUG_DICT) {
@@ -1004,84 +1246,187 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
         if (transposedPos >= 0) ++inputCount;
         assert(inputCount <= 1);
     }
-    unsigned short c;
-    int childPosition;
-    bool terminal;
-    int freq;
-    bool isSameAsUserTypedLength = false;
-
     int pos = initialPos;
     int depth = initialDepth;
     int traverseAllNodes = initialTraverseAllNodes;
     int diffs = initialDiffs;
 
-    const uint8_t flags = 0; // No flags for now
+    // Flags contain the following information:
+    // - Address type (MASK_GROUP_ADDRESS_TYPE) on two bits:
+    //   - FLAG_GROUP_ADDRESS_TYPE_{ONE,TWO,THREE}_BYTES means there are children and their address
+    //     is on the specified number of bytes.
+    //   - FLAG_GROUP_ADDRESS_TYPE_NOADDRESS means there are no children, and therefore no address.
+    // - FLAG_HAS_MULTIPLE_CHARS: whether this node has multiple char or not.
+    // - FLAG_IS_TERMINAL: whether this node is a terminal or not (it may still have children)
+    // - FLAG_HAS_BIGRAMS: whether this node has bigrams or not
+    const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(DICT_ROOT, &pos);
+    const bool hasMultipleChars = (0 != (FLAG_HAS_MULTIPLE_CHARS & flags));
 
-    if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
+    // This gets only ONE character from the stream. Next there will be:
+    // if FLAG_HAS_MULTIPLE CHARS: the other characters of the same node
+    // else if FLAG_IS_TERMINAL: the frequency
+    // else if MASK_GROUP_ADDRESS_TYPE is not NONE: the children address
+    // Note that you can't have a node that both is not a terminal and has no children.
+    int32_t c = BinaryFormat::getCharCodeAndForwardPointer(DICT_ROOT, &pos);
+    assert(NOT_A_CHARACTER != c);
 
-    *nextSiblingPosition = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, pos,
-            &c, &childPosition, &terminal, &freq);
-    *newOutputIndex = depth + 1;
+    // We are going to loop through each character and make it look like it's a different
+    // node each time. To do that, we will process characters in this node in order until
+    // we find the character terminator. This is signalled by getCharCode* returning
+    // NOT_A_CHARACTER.
+    // As a special case, if there is only one character in this node, we must not read the
+    // next bytes so we will simulate the NOT_A_CHARACTER return by testing the flags.
+    // This way, each loop run will look like a "virtual node".
+    do {
+        // We prefetch the next char. If 'c' is the last char of this node, we will have
+        // NOT_A_CHARACTER in the next char. From this we can decide whether this virtual node
+        // should behave as a terminal or not and whether we have children.
+        const int32_t nextc = hasMultipleChars
+                ? BinaryFormat::getCharCodeAndForwardPointer(DICT_ROOT, &pos) : NOT_A_CHARACTER;
+        const bool isLastChar = (NOT_A_CHARACTER == nextc);
+        // If there are more chars in this nodes, then this virtual node is not a terminal.
+        // If we are on the last char, this virtual node is a terminal if this node is.
+        const bool isTerminal = isLastChar && (0 != (FLAG_IS_TERMINAL & flags));
+        // If there are more chars in this node, then this virtual node has children.
+        // If we are on the last char, this virtual node has children if this node has.
+        const bool hasChildren = (!isLastChar) || BinaryFormat::hasChildrenInFlags(flags);
 
-    const bool needsToTraverseChildrenNodes = childPosition != 0;
+        // This has to be done for each virtual char (this forwards the "inputIndex" which
+        // is the index in the user-inputted chars, as read by getInputCharsAt.
+        if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
+        if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
+            mWord[depth] = c;
+            if (traverseAllNodes && isTerminal) {
+                // The frequency should be here, because we come here only if this is actually
+                // a terminal node, and we are on its last char.
+                const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
+                onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
+                           excessivePos, transposedPos, freq, false, nextLetters, nextLettersSize);
+            }
+            if (!hasChildren) {
+                // If we don't have children here, that means we finished processing all
+                // characters of this node (we are on the last virtual node), AND we are in
+                // traverseAllNodes mode, which means we are searching for *completions*. We
+                // should skip the frequency if we have a terminal, and report the position
+                // of the next sibling. We don't have to return other values because we are
+                // returning false, as in "don't traverse children".
+                if (isTerminal) pos = BinaryFormat::skipFrequency(flags, pos);
+                *nextSiblingPosition =
+                        BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+                return false;
+            }
+        } else {
+            const int *currentChars = getInputCharsAt(inputIndex);
 
-    // If we are only doing traverseAllNodes, no need to look at the typed characters.
-    if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
-        mWord[depth] = c;
-        if (traverseAllNodes && terminal) {
-            onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
-                       excessivePos, transposedPos, freq, false, nextLetters, nextLettersSize);
+            if (transposedPos >= 0) {
+                if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;
+                if (inputIndex == (transposedPos + 1)) currentChars -= MAX_PROXIMITY_CHARS;
+            }
+
+            const int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos,
+                    excessivePos, transposedPos);
+            if (UNRELATED_CHAR == matchedProximityCharId) {
+                // We found that this is an unrelated character, so we should give up traversing
+                // this node and its children entirely.
+                // However we may not be on the last virtual node yet so we skip the remaining
+                // characters in this node, the frequency if it's there, read the next sibling
+                // position to output it, then return false.
+                // We don't have to output other values because we return false, as in
+                // "don't traverse children".
+                if (!isLastChar) {
+                    pos = BinaryFormat::skipOtherCharacters(DICT_ROOT, pos);
+                }
+                pos = BinaryFormat::skipFrequency(flags, pos);
+                *nextSiblingPosition =
+                        BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+                return false;
+            }
+            mWord[depth] = c;
+            // If inputIndex is greater than mInputLength, that means there is no
+            // proximity chars. So, we don't need to check proximity.
+            if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+                multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &matchWeight);
+            }
+            const bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
+                    || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
+            if (isSameAsUserTypedLength && isTerminal) {
+                const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
+                onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
+                        excessivePos, transposedPos, freq, true, nextLetters, nextLettersSize);
+            }
+            // This character matched the typed character (enough to traverse the node at least)
+            // so we just evaluated it. Now we should evaluate this virtual node's children - that
+            // is, if it has any. If it has no children, we're done here - so we skip the end of
+            // the node, output the siblings position, and return false "don't traverse children".
+            // Note that !hasChildren implies isLastChar, so we know we don't have to skip any
+            // remaining char in this group for there can't be any.
+            if (!hasChildren) {
+                pos = BinaryFormat::skipFrequency(flags, pos);
+                *nextSiblingPosition =
+                        BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+                return false;
+            }
+            // Start traversing all nodes after the index exceeds the user typed length
+            traverseAllNodes = isSameAsUserTypedLength;
+            diffs = diffs + ((NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
+            // Finally, we are ready to go to the next character, the next "virtual node".
+            // We should advance the input index.
+            // We do this in this branch of the 'if traverseAllNodes' because we are still matching
+            // characters to input; the other branch is not matching them but searching for
+            // completions, this is why it does not have to do it.
+            ++inputIndex;
         }
-        if (!needsToTraverseChildrenNodes) return false;
-        *newTraverseAllNodes = traverseAllNodes;
-        *newMatchRate = matchWeight;
-        *newDiffs = diffs;
-        *newInputIndex = inputIndex;
-    } else {
-        const int *currentChars = getInputCharsAt(inputIndex);
-
-        if (transposedPos >= 0) {
-            if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;
-            if (inputIndex == (transposedPos + 1)) currentChars -= MAX_PROXIMITY_CHARS;
+        // Optimization: Prune out words that are too long compared to how much was typed.
+        if (depth >= maxDepth || diffs > mMaxEditDistance) {
+            // We are giving up parsing this node and its children. Skip the rest of the node,
+            // output the sibling position, and return that we don't want to traverse children.
+            if (!isLastChar) {
+                pos = BinaryFormat::skipOtherCharacters(DICT_ROOT, pos);
+            }
+            pos = BinaryFormat::skipFrequency(flags, pos);
+            *nextSiblingPosition =
+                    BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+            return false;
         }
 
-        int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos, excessivePos,
-                transposedPos);
-        if (UNRELATED_CHAR == matchedProximityCharId) return false;
-        mWord[depth] = c;
-        // If inputIndex is greater than mInputLength, that means there is no
-        // proximity chars. So, we don't need to check proximity.
-        if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
-            multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &matchWeight);
-        }
-        bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
-                || (excessivePos == mInputLength - 1 && inputIndex == mInputLength - 2);
-        if (isSameAsUserTypedLength && terminal) {
-            onTerminal(mWord, depth, DICT_ROOT, flags, pos, inputIndex, matchWeight, skipPos,
-                    excessivePos, transposedPos, freq, true, nextLetters, nextLettersSize);
-        }
-        if (!needsToTraverseChildrenNodes) return false;
-        // Start traversing all nodes after the index exceeds the user typed length
-        *newTraverseAllNodes = isSameAsUserTypedLength;
-        *newMatchRate = matchWeight;
-        *newDiffs = diffs + ((NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
-        *newInputIndex = inputIndex + 1;
-    }
-    // Optimization: Prune out words that are too long compared to how much was typed.
-    if (depth >= maxDepth || *newDiffs > mMaxEditDistance) {
-        return false;
-    }
+        // Prepare for the next character. Promote the prefetched char to current char - the loop
+        // will take care of prefetching the next. If we finally found our last char, nextc will
+        // contain NOT_A_CHARACTER.
+        c = nextc;
+        // Also, the next char is one "virtual node" depth more than this char.
+        ++depth;
+    } while (NOT_A_CHARACTER != c);
 
     // If inputIndex is greater than mInputLength, that means there are no proximity chars.
-    // TODO: Check if this can be isSameAsUserTypedLength only.
-    if (isSameAsUserTypedLength || mInputLength <= *newInputIndex) {
-        *newTraverseAllNodes = true;
+    // Here, that's all we are interested in so we don't need to check for isSameAsUserTypedLength.
+    if (mInputLength <= *newInputIndex) {
+        traverseAllNodes = true;
     }
-    // get the count of nodes and increment childAddress.
-    *newCount = Dictionary::getCount(DICT_ROOT, &childPosition);
-    *newChildPosition = childPosition;
-    if (DEBUG_DICT) assert(needsToTraverseChildrenNodes);
-    return needsToTraverseChildrenNodes;
+
+    // All the output values that are purely computation by this function are held in local
+    // variables. Output them to the caller.
+    *newTraverseAllNodes = traverseAllNodes;
+    *newMatchRate = matchWeight;
+    *newDiffs = diffs;
+    *newInputIndex = inputIndex;
+    *newOutputIndex = depth;
+
+    // Now we finished processing this node, and we want to traverse children. If there are no
+    // children, we can't come here.
+    assert(BinaryFormat::hasChildrenInFlags(flags));
+
+    // If this node was a terminal it still has the frequency under the pointer (it may have been
+    // read, but not skipped - see readFrequencyWithoutMovingPointer).
+    // Next come the children position, then possibly attributes (attributes are bigrams only for
+    // now, maybe something related to shortcuts in the future).
+    // Once this is read, we still need to output the number of nodes in the immediate children of
+    // this node, so we read and output it before returning true, as in "please traverse children".
+    pos = BinaryFormat::skipFrequency(flags, pos);
+    int childrenPos = BinaryFormat::readChildrenPosition(DICT_ROOT, flags, pos);
+    *nextSiblingPosition = BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+    *newCount = BinaryFormat::getGroupCountAndForwardPointer(DICT_ROOT, &childrenPos);
+    *newChildrenPosition = childrenPos;
+    return true;
 }
 
 #endif // NEW_DICTIONARY_FORMAT
