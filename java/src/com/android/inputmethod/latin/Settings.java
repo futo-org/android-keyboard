@@ -375,10 +375,6 @@ public class Settings extends PreferenceActivity
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 
-        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
-            generalSettings.removePreference(findPreference(PREF_SUBTYPES));
-        }
-
         final boolean showPopupOption = res.getBoolean(
                 R.bool.config_enable_show_popup_on_keypress_option);
         if (!showPopupOption) {
