@@ -20,8 +20,7 @@
     android:key="english_ime_settings">
     <PreferenceScreen
         android:key="subtype_settings"
-        android:title="@string/language_selection_title"
-        android:summary="@string/language_selection_summary" />
+        android:title="@string/language_selection_title" />
     <PreferenceCategory
         android:title="@string/general_category"
         android:key="general_settings">
