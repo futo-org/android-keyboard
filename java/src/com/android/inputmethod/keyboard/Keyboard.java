@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
@@ -345,15 +346,23 @@ public class Keyboard {
     }
 
     public boolean isAlphaKeyboard() {
-        return mId != null && mId.isAlphabetKeyboard();
+        return mId.isAlphabetKeyboard();
     }
 
     public boolean isPhoneKeyboard() {
-        return mId != null && mId.isPhoneKeyboard();
+        return mId.isPhoneKeyboard();
     }
 
     public boolean isNumberKeyboard() {
-        return mId != null && mId.isNumberKeyboard();
+        return mId.isNumberKeyboard();
+    }
+
+    public CharSequence adjustLabelCase(CharSequence label) {
+        if (isShiftedOrShiftLocked() && !TextUtils.isEmpty(label) && label.length() < 3
+                && Character.isLowerCase(label.charAt(0))) {
+            return label.toString().toUpperCase(mId.mLocale);
+        }
+        return label;
     }
 
     // TODO: Move this function to ProximityInfo and make this private.

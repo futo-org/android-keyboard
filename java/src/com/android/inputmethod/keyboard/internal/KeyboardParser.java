@@ -195,6 +195,7 @@ public class KeyboardParser {
 
     private void parseKeyboardAttributes(XmlResourceParser parser) {
         final Keyboard keyboard = mKeyboard;
+        final int displayWidth = keyboard.getDisplayWidth();
         final TypedArray keyboardAttr = mContext.obtainStyledAttributes(
                 Xml.asAttributeSet(parser), R.styleable.Keyboard, R.attr.keyboardStyle,
                 R.style.Keyboard);
@@ -211,7 +212,6 @@ public class KeyboardParser {
             if (minKeyboardHeight < 0) {
                 // Specified fraction was negative, so it should be calculated against display
                 // width.
-                final int displayWidth = keyboard.getDisplayWidth();
                 minKeyboardHeight = -getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_minKeyboardHeight, displayWidth, displayWidth / 2);
             }
@@ -219,20 +219,19 @@ public class KeyboardParser {
             // minKeyboardHeight.
             final int height = Math.max(
                     Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
-            final int width = keyboard.getDisplayWidth();
+
 
             keyboard.setKeyboardHeight(height);
             keyboard.setKeyWidth(getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyWidth, width, width / 10));
+                    R.styleable.Keyboard_keyWidth, displayWidth, displayWidth / 10));
             keyboard.setRowHeight(getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight, height, 50));
             keyboard.setHorizontalGap(getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_horizontalGap, width, 0));
+                    R.styleable.Keyboard_horizontalGap, displayWidth, 0));
             keyboard.setVerticalGap(getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_verticalGap, height, 0));
             keyboard.setPopupKeyboardResId(keyboardAttr.getResourceId(
                     R.styleable.Keyboard_popupKeyboardTemplate, 0));
-
             keyboard.setMaxPopupKeyboardColumn(keyAttr.getInt(
                     R.styleable.Keyboard_Key_maxPopupKeyboardColumn, 5));
 
@@ -352,18 +351,18 @@ public class KeyboardParser {
                     R.styleable.Keyboard);
             if (keyboardAttr.hasValue(R.styleable.Keyboard_horizontalGap))
                 throw new IllegalAttribute(parser, "horizontalGap");
-            final int defaultWidth = (row != null) ? row.mDefaultWidth : 0;
+            final int keyboardWidth = mKeyboard.getDisplayWidth();
             final int keyWidth = getDimensionOrFraction(keyboardAttr, R.styleable.Keyboard_keyWidth,
-                    mKeyboard.getDisplayWidth(), defaultWidth);
+                    keyboardWidth, row.mDefaultWidth);
             keyboardAttr.recycle();
 
             final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Key);
             int keyXPos = KeyboardParser.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyXPos, mKeyboard.getDisplayWidth(), mCurrentX);
+                    R.styleable.Keyboard_Key_keyXPos, keyboardWidth, mCurrentX);
             if (keyXPos < 0) {
                 // If keyXPos is negative, the actual x-coordinate will be display_width + keyXPos.
-                keyXPos += mKeyboard.getDisplayWidth();
+                keyXPos += keyboardWidth;
             }
 
             checkEndTag(TAG_SPACER, parser);

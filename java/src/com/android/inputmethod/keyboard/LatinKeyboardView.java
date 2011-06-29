@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -111,18 +110,6 @@ public class LatinKeyboardView extends KeyboardView {
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
                 KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
         return true;
-    }
-
-    @Override
-    protected CharSequence adjustCase(CharSequence label) {
-        LatinKeyboard keyboard = getLatinKeyboard();
-        if (keyboard.isAlphaKeyboard()
-                && keyboard.isShiftedOrShiftLocked()
-                && !TextUtils.isEmpty(label) && label.length() < 3
-                && Character.isLowerCase(label.charAt(0))) {
-            return label.toString().toUpperCase(keyboard.mId.mLocale);
-        }
-        return label;
     }
 
     /**
