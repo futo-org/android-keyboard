@@ -85,6 +85,7 @@ public class KeyCodeDescriptionMapper {
         mKeyCodeMap.put((int) '\u2105', R.string.spoken_description_care_of);
         mKeyCodeMap.put((int) '\u2026', R.string.spoken_description_ellipsis);
         mKeyCodeMap.put((int) '\u201E', R.string.spoken_description_low_double_quote);
+        mKeyCodeMap.put((int) '\uFF0A', R.string.spoken_description_star);
 
         // Special non-character codes defined in Keyboard
         mKeyCodeMap.put(Keyboard.CODE_DELETE, R.string.spoken_description_delete);
