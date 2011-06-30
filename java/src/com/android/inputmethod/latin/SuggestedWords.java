@@ -24,15 +24,17 @@ import java.util.HashSet;
 import java.util.List;
 
 public class SuggestedWords {
-    public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, null);
+    public static final SuggestedWords EMPTY = new SuggestedWords(null, false, false, false, null);
 
     public final List<CharSequence> mWords;
     public final boolean mTypedWordValid;
     public final boolean mHasMinimalSuggestion;
+    public final boolean mIsPunctuationSuggestions;
     public final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
     private SuggestedWords(List<CharSequence> words, boolean typedWordValid,
-            boolean hasMinimalSuggestion, List<SuggestedWordInfo> suggestedWordInfoList) {
+            boolean hasMinimalSuggestion, boolean isPunctuationSuggestions,
+            List<SuggestedWordInfo> suggestedWordInfoList) {
         if (words != null) {
             mWords = words;
         } else {
@@ -40,6 +42,7 @@ public class SuggestedWords {
         }
         mTypedWordValid = typedWordValid;
         mHasMinimalSuggestion = hasMinimalSuggestion;
+        mIsPunctuationSuggestions = isPunctuationSuggestions;
         mSuggestedWordInfoList = suggestedWordInfoList;
     }
 
@@ -59,10 +62,15 @@ public class SuggestedWords {
         return mHasMinimalSuggestion && ((size() > 1 && !mTypedWordValid) || mTypedWordValid);
     }
 
+    public boolean isPunctuationSuggestions() {
+        return mIsPunctuationSuggestions;
+    }
+
     public static class Builder {
         private List<CharSequence> mWords = new ArrayList<CharSequence>();
         private boolean mTypedWordValid;
         private boolean mHasMinimalSuggestion;
+        private boolean mIsPunctuationSuggestions;
         private List<SuggestedWordInfo> mSuggestedWordInfoList =
                 new ArrayList<SuggestedWordInfo>();
 
@@ -118,6 +126,11 @@ public class SuggestedWords {
             return this;
         }
 
+        public Builder setIsPunctuationSuggestions() {
+            mIsPunctuationSuggestions = true;
+            return this;
+        }
+
         // Should get rid of the first one (what the user typed previously) from suggestions
         // and replace it with what the user currently typed.
         public Builder addTypedWordAndPreviousSuggestions(CharSequence typedWord,
@@ -143,7 +156,7 @@ public class SuggestedWords {
 
         public SuggestedWords build() {
             return new SuggestedWords(mWords, mTypedWordValid, mHasMinimalSuggestion,
-                    mSuggestedWordInfoList);
+                    mIsPunctuationSuggestions, mSuggestedWordInfoList);
         }
 
         public int size() {

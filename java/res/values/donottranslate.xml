@@ -43,6 +43,13 @@
     <!-- Label for "switch to phone symbols" key.  Must be short to fit on key! -->
     <string name="label_to_phone_symbols_key">\uff0a\uff03\uff08</string>
 
+    <!-- Character for candidate divider (BOX DRAWINGS LIGHT VERTICAL) -->
+    <string name="label_candidate_divider">\u2502</string>
+    <!-- Character for expand candidates pane (BLACK DOWN-POINTING TRIANGLE) -->
+    <string name="label_expand_candidates_pane">\u25bc</string>
+    <!-- Character for close candidates pane (BLACK UP-POINTING TRIANGLE) -->
+    <string name="label_close_candidates_pane">\u25b2</string>
+
     <!-- Option values to show/hide the settings key in onscreen keyboard -->
     <!-- Automatically decide to show or hide the settings key -->
     <string name="settings_key_mode_auto">0</string>

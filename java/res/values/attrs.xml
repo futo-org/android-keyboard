@@ -120,8 +120,8 @@
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
         <attr name="colorSuggested" format="color" />
-        <attr name="iconExpandPane" format="reference" />
-        <attr name="iconClosePane" format="reference" />
+        <attr name="colorDivider" format="color" />
+        <attr name="candidateCountInStrip" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard">
