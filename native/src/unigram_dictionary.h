@@ -62,20 +62,11 @@ private:
             const int maxDepth);
     bool sameAsTyped(const unsigned short *word, int length) const;
     bool addWord(unsigned short *word, int length, int frequency);
-    void addWordAlternatesSpellings(const uint8_t* const root, int pos, int depth, int finalFreq);
-    void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
-            const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
-            const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
-            const int nextLettersSize);
     bool getSplitTwoWordsSuggestion(const int inputLength,
             const int firstWordStartPos, const int firstWordLength,
             const int secondWordStartPos, const int secondWordLength, const bool isSpaceProximity);
     bool getMissingSpaceWords(const int inputLength, const int missingSpacePos);
     bool getMistypedSpaceWords(const int inputLength, const int spaceProximityPos);
-    // Keep getWordsOld for comparing performance between getWords and getWordsOld
-    void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
-            const int excessivePos, const int transposedPos, int *nextLetters,
-            const int nextLettersSize);
     int calculateFinalFreq(const int inputIndex, const int depth, const int snr, const int skipPos,
             const int excessivePos, const int transposedPos, const int freq,
             const bool sameLength) const;
@@ -95,13 +86,21 @@ private:
             int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
             bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
             int *nextSiblingPosition, int *nextOutputIndex);
+    bool existsAdjacentProximityChars(const int inputIndex, const int inputLength) const;
+    void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
+            const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
+            const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
+            const int nextLettersSize);
+    // Keep getWordsOld for comparing performance between getWords and getWordsOld
+    void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
+            const int excessivePos, const int transposedPos, int *nextLetters,
+            const int nextLettersSize);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
     // Process a node by considering missing space
     bool processCurrentNodeForExactMatch(const int firstChildPos,
             const int startInputIndex, const int depth, unsigned short *word,
             int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
-    bool existsAdjacentProximityChars(const int inputIndex, const int inputLength) const;
     inline const int* getInputCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS);
     }

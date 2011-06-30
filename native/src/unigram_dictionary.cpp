@@ -866,7 +866,7 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
     const int newWordLength = firstWordLength + secondWordLength + 1;
     // Allocating variable length array on stack
     unsigned short word[newWordLength];
-    const int firstFreq = getBestWordFreq(firstWordStartPos, firstWordLength, mWord);
+    const int firstFreq = getMostFrequentWordLike(firstWordStartPos, firstWordLength, mWord);
     if (DEBUG_DICT) {
         LOGI("First freq: %d", firstFreq);
     }
@@ -876,7 +876,7 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
         word[i] = mWord[i];
     }
 
-    const int secondFreq = getBestWordFreq(secondWordStartPos, secondWordLength, mWord);
+    const int secondFreq = getMostFrequentWordLike(secondWordStartPos, secondWordLength, mWord);
     if (DEBUG_DICT) {
         LOGI("Second  freq:  %d", secondFreq);
     }
@@ -997,7 +997,7 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
     const int newWordLength = firstWordLength + secondWordLength + 1;
     // Allocating variable length array on stack
     unsigned short word[newWordLength];
-    const int firstFreq = getBestWordFreq(firstWordStartPos, firstWordLength, mWord);
+    const int firstFreq = getMostFrequentWordLike(firstWordStartPos, firstWordLength, mWord);
     if (DEBUG_DICT) {
         LOGI("First freq: %d", firstFreq);
     }
@@ -1007,7 +1007,7 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
         word[i] = mWord[i];
     }
 
-    const int secondFreq = getBestWordFreq(secondWordStartPos, secondWordLength, mWord);
+    const int secondFreq = getMostFrequentWordLike(secondWordStartPos, secondWordLength, mWord);
     if (DEBUG_DICT) {
         LOGI("Second  freq:  %d", secondFreq);
     }
