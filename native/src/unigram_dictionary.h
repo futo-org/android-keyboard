@@ -80,12 +80,12 @@ private:
     ProximityType getMatchedProximityId(const int *currentChars, const unsigned short c,
             const int skipPos, const int excessivePos, const int transposedPos);
     // Process a node by considering proximity, missing and excessive character
-    bool processCurrentNode(const int pos, const int depth,
-            const int maxDepth, const bool traverseAllNodes, const int snr, int inputIndex,
-            const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
-            int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
-            bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
-            int *nextSiblingPosition, int *nextOutputIndex);
+    bool processCurrentNode(const int initialPos, const int initialDepth,
+            const int maxDepth, const bool initialTraverseAllNodes, const int snr, int inputIndex,
+            const int initialDiffs, const int skipPos, const int excessivePos,
+            const int transposedPos, int *nextLetters, const int nextLettersSize, int *newCount,
+            int *newChildPosition, bool *newTraverseAllNodes, int *newSnr, int*newInputIndex,
+            int *newDiffs, int *nextSiblingPosition, int *nextOutputIndex);
     bool existsAdjacentProximityChars(const int inputIndex, const int inputLength) const;
     inline const int* getInputCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS);

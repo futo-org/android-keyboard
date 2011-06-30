@@ -897,9 +897,9 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
     return true;
 }
 
-inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
-        const int maxDepth, const bool traverseAllNodes, int matchWeight, int inputIndex,
-        const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
+inline bool UnigramDictionary::processCurrentNode(const int initialPos, const int initialDepth,
+        const int maxDepth, const bool initialTraverseAllNodes, int matchWeight, int inputIndex,
+        const int initialDiffs, const int skipPos, const int excessivePos, const int transposedPos,
         int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
         bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
         int *nextSiblingPosition, int *nextOutputIndex) {
@@ -915,6 +915,11 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
     bool terminal;
     int freq;
     bool isSameAsUserTypedLength = false;
+
+    const int pos = initialPos;
+    const int depth = initialDepth;
+    const int traverseAllNodes = initialTraverseAllNodes;
+    const int diffs = initialDiffs;
 
     const uint8_t flags = 0; // No flags for now
 
@@ -1028,9 +1033,9 @@ bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
     return true;
 }
 
-inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth,
-        const int maxDepth, const bool traverseAllNodes, int matchWeight, int inputIndex,
-        const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
+inline bool UnigramDictionary::processCurrentNode(const int initialPos, const int initialDepth,
+        const int maxDepth, const bool initialTraverseAllNodes, int matchWeight, int inputIndex,
+        const int initialDiffs, const int skipPos, const int excessivePos, const int transposedPos,
         int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
         bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
         int *nextSiblingPosition, int *newOutputIndex) {
@@ -1046,6 +1051,11 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
     bool terminal;
     int freq;
     bool isSameAsUserTypedLength = false;
+
+    int pos = initialPos;
+    int depth = initialDepth;
+    int traverseAllNodes = initialTraverseAllNodes;
+    int diffs = initialDiffs;
 
     const uint8_t flags = 0; // No flags for now
 
