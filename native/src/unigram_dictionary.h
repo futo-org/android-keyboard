@@ -60,10 +60,6 @@ private:
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
             const int transposedPos, int *nextLetters, const int nextLettersSize,
             const int maxDepth);
-    void getVersionNumber();
-    bool checkIfDictVersionIsLatest();
-    int getAddress(int *pos);
-    int getFreq(int *pos);
     bool sameAsTyped(const unsigned short *word, int length) const;
     bool addWord(unsigned short *word, int length, int frequency);
     void addWordAlternatesSpellings(const uint8_t* const root, int pos, int depth, int finalFreq);
