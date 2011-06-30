@@ -144,7 +144,7 @@ public class TextEntryState {
             break;
         case UNDO_COMMIT:
             if (isSpace || isSeparator) {
-                setState(ACCEPTED_DEFAULT);
+                setState(START);
             } else {
                 setState(IN_WORD);
             }
