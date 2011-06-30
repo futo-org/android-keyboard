@@ -1181,7 +1181,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         mVoiceProxy.handleBackspace();
 
-        boolean deleteChar = false;
+        final boolean deleteChar = !mHasUncommittedTypedChars;
         if (mHasUncommittedTypedChars) {
             final int length = mComposing.length();
             if (length > 0) {
@@ -1202,8 +1202,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             } else {
                 ic.deleteSurroundingText(1, 0);
             }
-        } else {
-            deleteChar = true;
         }
         mHandler.postUpdateShiftKeyState();
 
@@ -1231,7 +1229,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // different behavior only in the case of picking the first
                 // suggestion (typed word).  It's intentional to have made this
                 // inconsistent with backspacing after selecting other suggestions.
-                revertLastWord(deleteChar);
+                revertLastWord(true /* deleteChar */);
             } else {
                 sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
@@ -1799,7 +1797,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return TextUtils.equals(text, beforeText);
     }
 
-    public void revertLastWord(boolean deleteChar) {
+    private void revertLastWord(boolean deleteChar) {
         final int length = mComposing.length();
         if (!mHasUncommittedTypedChars && length > 0) {
             final InputConnection ic = getCurrentInputConnection();
@@ -1837,7 +1835,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    public boolean revertDoubleSpace() {
+    private boolean revertDoubleSpace() {
         mHandler.cancelDoubleSpacesTimer();
         final InputConnection ic = getCurrentInputConnection();
         // Here we test whether we indeed have a period and a space before us. This should not
