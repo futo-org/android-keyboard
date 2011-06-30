@@ -87,6 +87,9 @@ private:
             bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
             int *nextSiblingPosition, int *nextOutputIndex);
     bool existsAdjacentProximityChars(const int inputIndex, const int inputLength) const;
+    inline const int* getInputCharsAt(const int index) const {
+        return mInputCodes + (index * MAX_PROXIMITY_CHARS);
+    }
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
@@ -101,9 +104,6 @@ private:
     bool processCurrentNodeForExactMatch(const int firstChildPos,
             const int startInputIndex, const int depth, unsigned short *word,
             int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
-    inline const int* getInputCharsAt(const int index) const {
-        return mInputCodes + (index * MAX_PROXIMITY_CHARS);
-    }
 
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;

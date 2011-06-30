@@ -1033,7 +1033,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
         const int diffs, const int skipPos, const int excessivePos, const int transposedPos,
         int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
         bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
-        int *nextSiblingPosition, int *nextOutputIndex) {
+        int *nextSiblingPosition, int *newOutputIndex) {
     if (DEBUG_DICT) {
         int inputCount = 0;
         if (skipPos >= 0) ++inputCount;
@@ -1053,7 +1053,7 @@ inline bool UnigramDictionary::processCurrentNode(const int pos, const int depth
 
     *nextSiblingPosition = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, pos,
             &c, &childPosition, &terminal, &freq);
-    *nextOutputIndex = depth + 1;
+    *newOutputIndex = depth + 1;
 
     const bool needsToTraverseChildrenNodes = childPosition != 0;
 
