@@ -674,6 +674,47 @@ inline void UnigramDictionary::onTerminal(unsigned short int* word, const int de
     }
 }
 
+bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
+        const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
+        const int secondWordLength, const bool isSpaceProximity) {
+    if (inputLength >= MAX_WORD_LENGTH) return false;
+    if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
+            || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
+        return false;
+    const int newWordLength = firstWordLength + secondWordLength + 1;
+    // Allocating variable length array on stack
+    unsigned short word[newWordLength];
+    const int firstFreq = getMostFrequentWordLike(firstWordStartPos, firstWordLength, mWord);
+    if (DEBUG_DICT) {
+        LOGI("First freq: %d", firstFreq);
+    }
+    if (firstFreq <= 0) return false;
+
+    for (int i = 0; i < firstWordLength; ++i) {
+        word[i] = mWord[i];
+    }
+
+    const int secondFreq = getMostFrequentWordLike(secondWordStartPos, secondWordLength, mWord);
+    if (DEBUG_DICT) {
+        LOGI("Second  freq:  %d", secondFreq);
+    }
+    if (secondFreq <= 0) return false;
+
+    word[firstWordLength] = SPACE;
+    for (int i = (firstWordLength + 1); i < newWordLength; ++i) {
+        word[i] = mWord[i - firstWordLength - 1];
+    }
+
+    int pairFreq = calcFreqForSplitTwoWords(TYPED_LETTER_MULTIPLIER, firstWordLength,
+            secondWordLength, firstFreq, secondFreq, isSpaceProximity);
+    if (DEBUG_DICT) {
+        LOGI("Split two words:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
+                TYPED_LETTER_MULTIPLIER);
+    }
+    addWord(word, newWordLength, pairFreq);
+    return true;
+}
+
 #ifndef NEW_DICTIONARY_FORMAT
 // TODO: Don't forget to bring inline functions back to over where they are used.
 
@@ -854,49 +895,7 @@ int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offs
     return NOT_VALID_WORD;
 }
 
-
 // The following functions will be modified.
-bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
-        const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
-        const int secondWordLength, const bool isSpaceProximity) {
-    if (inputLength >= MAX_WORD_LENGTH) return false;
-    if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
-            || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
-        return false;
-    const int newWordLength = firstWordLength + secondWordLength + 1;
-    // Allocating variable length array on stack
-    unsigned short word[newWordLength];
-    const int firstFreq = getMostFrequentWordLike(firstWordStartPos, firstWordLength, mWord);
-    if (DEBUG_DICT) {
-        LOGI("First freq: %d", firstFreq);
-    }
-    if (firstFreq <= 0) return false;
-
-    for (int i = 0; i < firstWordLength; ++i) {
-        word[i] = mWord[i];
-    }
-
-    const int secondFreq = getMostFrequentWordLike(secondWordStartPos, secondWordLength, mWord);
-    if (DEBUG_DICT) {
-        LOGI("Second  freq:  %d", secondFreq);
-    }
-    if (secondFreq <= 0) return false;
-
-    word[firstWordLength] = SPACE;
-    for (int i = (firstWordLength + 1); i < newWordLength; ++i) {
-        word[i] = mWord[i - firstWordLength - 1];
-    }
-
-    int pairFreq = calcFreqForSplitTwoWords(TYPED_LETTER_MULTIPLIER, firstWordLength,
-            secondWordLength, firstFreq, secondFreq, isSpaceProximity);
-    if (DEBUG_DICT) {
-        LOGI("Split two words:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
-                TYPED_LETTER_MULTIPLIER);
-    }
-    addWord(word, newWordLength, pairFreq);
-    return true;
-}
-
 inline bool UnigramDictionary::processCurrentNode(const int initialPos, const int initialDepth,
         const int maxDepth, const bool initialTraverseAllNodes, int matchWeight, int inputIndex,
         const int initialDiffs, const int skipPos, const int excessivePos, const int transposedPos,
@@ -991,47 +990,6 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
 }
 
 #else // NEW_DICTIONARY_FORMAT
-
-bool UnigramDictionary::getSplitTwoWordsSuggestion(const int inputLength,
-        const int firstWordStartPos, const int firstWordLength, const int secondWordStartPos,
-        const int secondWordLength, const bool isSpaceProximity) {
-    if (inputLength >= MAX_WORD_LENGTH) return false;
-    if (0 >= firstWordLength || 0 >= secondWordLength || firstWordStartPos >= secondWordStartPos
-            || firstWordStartPos < 0 || secondWordStartPos + secondWordLength > inputLength)
-        return false;
-    const int newWordLength = firstWordLength + secondWordLength + 1;
-    // Allocating variable length array on stack
-    unsigned short word[newWordLength];
-    const int firstFreq = getMostFrequentWordLike(firstWordStartPos, firstWordLength, mWord);
-    if (DEBUG_DICT) {
-        LOGI("First freq: %d", firstFreq);
-    }
-    if (firstFreq <= 0) return false;
-
-    for (int i = 0; i < firstWordLength; ++i) {
-        word[i] = mWord[i];
-    }
-
-    const int secondFreq = getMostFrequentWordLike(secondWordStartPos, secondWordLength, mWord);
-    if (DEBUG_DICT) {
-        LOGI("Second  freq:  %d", secondFreq);
-    }
-    if (secondFreq <= 0) return false;
-
-    word[firstWordLength] = SPACE;
-    for (int i = (firstWordLength + 1); i < newWordLength; ++i) {
-        word[i] = mWord[i - firstWordLength - 1];
-    }
-
-    int pairFreq = calcFreqForSplitTwoWords(TYPED_LETTER_MULTIPLIER, firstWordLength,
-            secondWordLength, firstFreq, secondFreq, isSpaceProximity);
-    if (DEBUG_DICT) {
-        LOGI("Split two words:  %d, %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength,
-                TYPED_LETTER_MULTIPLIER);
-    }
-    addWord(word, newWordLength, pairFreq);
-    return true;
-}
 
 inline bool UnigramDictionary::processCurrentNode(const int initialPos, const int initialDepth,
         const int maxDepth, const bool initialTraverseAllNodes, int matchWeight, int inputIndex,
