@@ -90,6 +90,8 @@ private:
     inline const int* getInputCharsAt(const int index) const {
         return mInputCodes + (index * MAX_PROXIMITY_CHARS);
     }
+    int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
+            unsigned short *word);
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
@@ -98,8 +100,6 @@ private:
     void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
             const int excessivePos, const int transposedPos, int *nextLetters,
             const int nextLettersSize);
-    int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
-            unsigned short *word);
     // Process a node by considering missing space
     bool processCurrentNodeForExactMatch(const int firstChildPos,
             const int startInputIndex, const int depth, unsigned short *word,
