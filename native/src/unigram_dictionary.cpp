@@ -153,6 +153,13 @@ int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const 
 
     if (DEBUG_DICT) {
         LOGI("Returning %d words", suggestedWordsCount);
+        /// Print the returned words
+        for (int j = 0; j < suggestedWordsCount; ++j) {
+            short unsigned int* w = mOutputChars + j * MAX_WORD_LENGTH;
+            char s[MAX_WORD_LENGTH];
+            for (int i = 0; i <= MAX_WORD_LENGTH; i++) s[i] = w[i];
+            LOGI("%s %i", s, mFrequencies[j]);
+        }
         LOGI("Next letters: ");
         for (int k = 0; k < NEXT_LETTERS_SIZE; k++) {
             if (mNextLettersFrequency[k] > 0) {
@@ -322,16 +329,6 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     return false;
 }
 
-inline void UnigramDictionary::addWordAlternatesSpellings(const uint8_t* const root, int pos,
-        int depth, int finalFreq) {
-    // TODO: actually add alternates when the format supports it.
-}
-
-static inline bool hasAlternateSpellings(uint8_t flags) {
-    // TODO: when the format supports it, return the actual value.
-    return false;
-}
-
 static inline unsigned short toBaseLowerCase(unsigned short c) {
     if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
         c = BASE_CHARS[c];
@@ -372,7 +369,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
         assert(missingPos < mInputLength);
     }
     int rootPosition = ROOT_POS;
-    // Get the number of child of root, then increment the position
+    // Get the number of children of root, then increment the position
     int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
     int depth = 0;
 
@@ -657,22 +654,19 @@ inline UnigramDictionary::ProximityType UnigramDictionary::getMatchedProximityId
 }
 
 inline void UnigramDictionary::onTerminal(unsigned short int* word, const int depth,
-        const uint8_t* const root, const uint8_t flags, int pos,
+        const uint8_t* const root, const uint8_t flags, const int pos,
         const int inputIndex, const int matchWeight, const int skipPos,
         const int excessivePos, const int transposedPos, const int freq, const bool sameLength,
         int* nextLetters, const int nextLettersSize) {
 
     const bool isSameAsTyped = sameLength ? sameAsTyped(word, depth + 1) : false;
-    const bool hasAlternates = hasAlternateSpellings(flags);
-    if (isSameAsTyped && !hasAlternates) return;
+    if (isSameAsTyped) return;
 
     if (depth >= MIN_SUGGEST_DEPTH) {
         const int finalFreq = calculateFinalFreq(inputIndex, depth, matchWeight, skipPos,
                 excessivePos, transposedPos, freq, sameLength);
         if (!isSameAsTyped)
             addWord(word, depth + 1, finalFreq);
-        if (hasAlternates)
-            addWordAlternatesSpellings(DICT_ROOT, pos, flags, finalFreq);
     }
 
     if (sameLength && depth >= mInputLength && skipPos < 0) {
@@ -725,8 +719,8 @@ void UnigramDictionary::getWordsRec(const int childrenCount, const int pos, cons
     }
 }
 
-inline int UnigramDictionary::getBestWordFreq(const int startInputIndex, const int inputLength,
-        unsigned short *word) {
+inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
+        const int inputLength, unsigned short *word) {
     int pos = ROOT_POS;
     int count = Dictionary::getCount(DICT_ROOT, &pos);
     int maxFreq = 0;

@@ -80,7 +80,7 @@ private:
             const int excessivePos, const int transposedPos, const int freq,
             const bool sameLength) const;
     void onTerminal(unsigned short int* word, const int depth,
-            const uint8_t* const root, const uint8_t flags, int pos,
+            const uint8_t* const root, const uint8_t flags, const int pos,
             const int inputIndex, const int matchWeight, const int skipPos,
             const int excessivePos, const int transposedPos, const int freq, const bool sameLength,
             int *nextLetters, const int nextLettersSize);
@@ -95,7 +95,8 @@ private:
             int *nextLetters, const int nextLettersSize, int *newCount, int *newChildPosition,
             bool *newTraverseAllNodes, int *newSnr, int*newInputIndex, int *newDiffs,
             int *nextSiblingPosition, int *nextOutputIndex);
-    int getBestWordFreq(const int startInputIndex, const int inputLength, unsigned short *word);
+    int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
+            unsigned short *word);
     // Process a node by considering missing space
     bool processCurrentNodeForExactMatch(const int firstChildPos,
             const int startInputIndex, const int depth, unsigned short *word,
