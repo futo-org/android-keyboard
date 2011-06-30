@@ -288,7 +288,7 @@ public class Settings extends PreferenceActivity
                     builder.addWord(puncs.subSequence(i, i + 1));
                 }
             }
-            return builder.build();
+            return builder.setIsPunctuationSuggestions().build();
         }
     }
 

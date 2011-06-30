@@ -53,4 +53,5 @@
     <fraction name="key_uppercase_letter_ratio">29%</fraction>
 
     <dimen name="candidate_strip_padding">40.0mm</dimen>
+    <integer name="candidate_count_in_strip">5</integer>
 </resources>

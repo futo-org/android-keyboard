@@ -25,73 +25,39 @@
     <LinearLayout
         android:id="@+id/candidates_strip"
         android:orientation="horizontal"
-        android:layout_width="match_parent"
+        android:layout_weight="1.0"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
     >
-        <RelativeLayout
-            android:layout_weight="1.0"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/candidates_pane_control"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+    >
+        <TextView
+            android:id="@+id/expand_candidates_pane"
+            android:text="@string/label_expand_candidates_pane"
             android:gravity="center"
-        >
-            <include
-                android:id="@+id/word_left"
-                layout="@layout/candidate_word" />
-            <include
-                android:id="@+id/info_left"
-                layout="@layout/candidate_info" />
-        </RelativeLayout>
-        <include
-            layout="@layout/candidate_divider" />
-        <RelativeLayout
-            android:layout_weight="1.0"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:minWidth="30dp"
+            android:textSize="@dimen/candidate_text_size"
+            android:padding="0dp"
+            android:visibility="visible"
+            style="?attr/suggestionBackgroundStyle"  />
+        <TextView
+            android:id="@+id/close_candidates_pane"
+            android:text="@string/label_close_candidates_pane"
             android:gravity="center"
-        >
-            <include
-                android:id="@+id/word_center"
-                layout="@layout/candidate_word" />
-            <include
-                android:id="@+id/info_center"
-                layout="@layout/candidate_info" />
-        </RelativeLayout>
-        <include
-            layout="@layout/candidate_divider" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="1.0"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-        >
-            <RelativeLayout
-                android:layout_weight="1.0"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:gravity="center"
-            >
-                <include
-                    android:id="@+id/word_right"
-                    layout="@layout/candidate_word" />
-                <include
-                    android:id="@+id/info_right"
-                    layout="@layout/candidate_info" />
-            </RelativeLayout>
-            <!-- Image drawables are set in CandidateView constructor -->
-            <ImageButton
-                android:id="@+id/expand_candidates_pane"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:background="@null" />
-            <ImageButton
-                android:id="@+id/close_candidates_pane"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:background="@null" />
-        </LinearLayout>
+            android:minWidth="30dp"
+            android:textSize="@dimen/candidate_text_size"
+            android:padding="0dp"
+            android:visibility="gone"
+            style="?attr/suggestionBackgroundStyle"  />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/touch_to_save"

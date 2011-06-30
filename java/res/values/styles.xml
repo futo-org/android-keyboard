@@ -92,8 +92,8 @@
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
-        <item name="iconExpandPane">@drawable/btn_expand_candidates_pane</item>
-        <item name="iconClosePane">@drawable/btn_close_candidates_pane</item>"
+        <item name="colorDivider">#20FFFFFF</item>
+        <item name="candidateCountInStrip">@integer/candidate_count_in_strip</item>
     </style>
     <!-- Theme "Basic high contrast" -->
     <style name="KeyboardView.HighContrast" parent="KeyboardView">
@@ -189,12 +189,12 @@
         <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
     </style>
     <style name="CandidateViewStyle.IceCreamSandwich" parent="SuggestionsStripBackgroundStyle.IceCreamSandwich">
-        <item name="autoCorrectHighlight">autoCorrectUnderline|autoCorrectInvert</item>
+        <item name="autoCorrectHighlight">autoCorrectBold|autoCorrectInvert</item>
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FFFFFFFF</item>
         <item name="colorSuggested">#FFFFFFFF</item>
-        <item name="iconExpandPane">@drawable/btn_expand_candidates_pane</item>
-        <item name="iconClosePane">@drawable/btn_close_candidates_pane</item>"
+        <item name="colorDivider">#20FFFFFF</item>
+        <item name="candidateCountInStrip">@integer/candidate_count_in_strip</item>
     </style>
     <style name="PopupMiniKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>
