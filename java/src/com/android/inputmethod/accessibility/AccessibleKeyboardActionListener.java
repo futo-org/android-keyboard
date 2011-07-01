@@ -34,4 +34,15 @@ public interface AccessibleKeyboardActionListener {
      * @param primaryCode the code of the key that was hovered over
      */
     public void onHoverExit(int primaryCode);
+
+    /**
+     * @param direction the direction of the flick gesture, one of
+     *            <ul>
+     *              <li>{@link FlickGestureDetector#FLICK_UP}
+     *              <li>{@link FlickGestureDetector#FLICK_DOWN}
+     *              <li>{@link FlickGestureDetector#FLICK_LEFT}
+     *              <li>{@link FlickGestureDetector#FLICK_RIGHT}
+     *            </ul>
+     */
+    public void onFlickGesture(int direction);
 }

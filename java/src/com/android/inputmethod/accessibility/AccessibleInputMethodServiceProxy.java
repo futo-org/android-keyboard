@@ -16,11 +16,15 @@
 
 package com.android.inputmethod.accessibility;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
+import android.media.AudioManager;
 import android.os.Looper;
 import android.os.Message;
+import android.os.Vibrator;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 
@@ -38,8 +42,14 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
      */
     private static final long DELAY_NO_HOVER_SELECTION = 250;
 
-    private InputMethodService mInputMethod;
+    /**
+     * Duration of the key click vibration in milliseconds.
+     */
+    private static final long VIBRATE_KEY_CLICK = 50;
 
+    private InputMethodService mInputMethod;
+    private Vibrator mVibrator;
+    private AudioManager mAudioManager;
     private AccessibilityHandler mAccessibilityHandler;
 
     private static class AccessibilityHandler
@@ -84,6 +94,8 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
 
     private void initInternal(InputMethodService inputMethod, SharedPreferences prefs) {
         mInputMethod = inputMethod;
+        mVibrator = (Vibrator) inputMethod.getSystemService(Context.VIBRATOR_SERVICE);
+        mAudioManager = (AudioManager) inputMethod.getSystemService(Context.AUDIO_SERVICE);
         mAccessibilityHandler = new AccessibilityHandler(this, inputMethod.getMainLooper());
     }
 
@@ -104,6 +116,35 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
     @Override
     public void onHoverExit(int primaryCode) {
         mAccessibilityHandler.postNoHoverSelection();
+    }
+
+    /**
+     * Handle flick gestures by mapping them to directional pad keys.
+     */
+    @Override
+    public void onFlickGesture(int direction) {
+        final int keyEventCode;
+
+        switch (direction) {
+        case FlickGestureDetector.FLICK_LEFT:
+            sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_LEFT);
+            break;
+        case FlickGestureDetector.FLICK_RIGHT:
+            sendDownUpKeyEvents(KeyEvent.KEYCODE_DPAD_RIGHT);
+            break;
+        }
+    }
+
+    /**
+     * Provide haptic feedback and send the specified keyCode to the input
+     * connection as a pair of down/up events.
+     *
+     * @param keyCode
+     */
+    private void sendDownUpKeyEvents(int keyCode) {
+        mVibrator.vibrate(VIBRATE_KEY_CLICK);
+        mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+        mInputMethod.sendDownUpKeyEvents(keyCode);
     }
 
     /**
