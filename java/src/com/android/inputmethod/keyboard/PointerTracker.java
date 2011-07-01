@@ -21,7 +21,7 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 
-import com.android.inputmethod.keyboard.KeyboardView.UIHandler;
+import com.android.inputmethod.keyboard.LatinKeyboardBaseView.UIHandler;
 import com.android.inputmethod.keyboard.internal.PointerTrackerKeyState;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -42,8 +42,8 @@ public class PointerTracker {
     public interface UIProxy {
         public void invalidateKey(Key key);
         public void showKeyPreview(int keyIndex, PointerTracker tracker);
+        public void cancelShowKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
-        public boolean hasDistinctMultitouch();
     }
 
     public final int mPointerId;
@@ -53,7 +53,7 @@ public class PointerTracker {
     private final int mLongPressKeyTimeout;
     private final int mLongPressShiftKeyTimeout;
 
-    private final KeyboardView mKeyboardView;
+    private final LatinKeyboardBaseView mKeyboardView;
     private final UIProxy mProxy;
     private final UIHandler mHandler;
     private final KeyDetector mKeyDetector;
@@ -112,7 +112,7 @@ public class PointerTracker {
         public void onSwipeDown() {}
     };
 
-    public PointerTracker(int id, KeyboardView keyboardView, UIHandler handler,
+    public PointerTracker(int id, LatinKeyboardBaseView keyboardView, UIHandler handler,
             KeyDetector keyDetector, UIProxy proxy) {
         if (proxy == null || handler == null || keyDetector == null)
             throw new NullPointerException();
@@ -123,7 +123,7 @@ public class PointerTracker {
         mKeyDetector = keyDetector;
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mKeyState = new PointerTrackerKeyState(keyDetector);
-        mHasDistinctMultitouch = proxy.hasDistinctMultitouch();
+        mHasDistinctMultitouch = keyboardView.hasDistinctMultitouch();
         final Resources res = mKeyboardView.getResources();
         mConfigSlidingKeyInputEnabled = res.getBoolean(R.bool.config_sliding_key_input_enabled);
         mDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
@@ -504,7 +504,7 @@ public class PointerTracker {
     private void onUpEventInternal(int x, int y, long eventTime,
             boolean updateReleasedKeyGraphics) {
         mHandler.cancelKeyTimers();
-        mHandler.cancelShowKeyPreview(this);
+        mProxy.cancelShowKeyPreview(this);
         mIsInSlidingKeyInput = false;
         final PointerTrackerKeyState keyState = mKeyState;
         final int keyX, keyY;
@@ -564,7 +564,7 @@ public class PointerTracker {
 
     private void onCancelEventInternal() {
         mHandler.cancelKeyTimers();
-        mHandler.cancelShowKeyPreview(this);
+        mProxy.cancelShowKeyPreview(this);
         dismissKeyPreview();
         setReleasedKeyGraphics(mKeyState.getKeyIndex());
         mIsInSlidingKeyInput = false;

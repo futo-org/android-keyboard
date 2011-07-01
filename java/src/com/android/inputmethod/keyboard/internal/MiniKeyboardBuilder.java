@@ -23,7 +23,7 @@ import android.graphics.Rect;
 
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.LatinKeyboardBaseView;
 import com.android.inputmethod.keyboard.MiniKeyboard;
 import com.android.inputmethod.latin.R;
 
@@ -199,7 +199,7 @@ public class MiniKeyboardBuilder {
         }
     }
 
-    public MiniKeyboardBuilder(KeyboardView view, int layoutTemplateResId, Key parentKey,
+    public MiniKeyboardBuilder(LatinKeyboardBaseView view, int layoutTemplateResId, Key parentKey,
             Keyboard parentKeyboard) {
         final Context context = view.getContext();
         mRes = context.getResources();
@@ -223,7 +223,7 @@ public class MiniKeyboardBuilder {
         keyboard.setDefaultCoordX(params.getDefaultKeyCoordX() + params.mKeyWidth / 2);
     }
 
-    private static int getMaxKeyWidth(KeyboardView view, CharSequence[] popupCharacters,
+    private static int getMaxKeyWidth(LatinKeyboardBaseView view, CharSequence[] popupCharacters,
             int minKeyWidth) {
         Paint paint = null;
         Rect bounds = null;

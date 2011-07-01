@@ -27,7 +27,7 @@ import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.Utils;
 
 // TODO: We should remove this class
-public class LatinKeyboardView extends KeyboardView {
+public class LatinKeyboardView extends LatinKeyboardBaseView {
     private static final String TAG = LatinKeyboardView.class.getSimpleName();
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
 

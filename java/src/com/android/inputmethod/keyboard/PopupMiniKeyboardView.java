@@ -31,7 +31,7 @@ import com.android.inputmethod.latin.R;
  * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
  * key presses and touch movements.
  */
-public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
+public class PopupMiniKeyboardView extends LatinKeyboardBaseView implements PopupPanel {
     private final int[] mCoordinates = new int[2];
     private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
 
