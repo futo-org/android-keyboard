@@ -61,8 +61,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
     private static final int MAX_SUGGESTIONS = 18;
-    private static final int MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT;
     private static final int WRAP_CONTENT = ViewGroup.LayoutParams.WRAP_CONTENT;
+    private static final int MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT;
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
@@ -90,7 +90,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final int mColorTypedWord;
     private final int mColorAutoCorrect;
     private final int mColorSuggestedCandidate;
-    private final int mColorDivider;
 
     private final PopupWindow mPreviewPopup;
     private final TextView mPreviewText;
@@ -184,6 +183,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             final float textSize = res.getDimension(R.dimen.candidate_text_size);
             mPaint.setTextSize(textSize);
             mPadding = res.getDimensionPixelSize(R.dimen.candidate_padding);
+            divider.measure(WRAP_CONTENT, MATCH_PARENT);
             mDividerWidth = divider.getMeasuredWidth();
             mDividerHeight = divider.getMeasuredHeight();
             mControlWidth = control.getMeasuredWidth();
@@ -295,7 +295,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mColorTypedWord = a.getColor(R.styleable.CandidateView_colorTypedWord, 0);
         mColorAutoCorrect = a.getColor(R.styleable.CandidateView_colorAutoCorrect, 0);
         mColorSuggestedCandidate = a.getColor(R.styleable.CandidateView_colorSuggested, 0);
-        mColorDivider = a.getColor(R.styleable.CandidateView_colorDivider, 0);
         mCandidateCountInStrip = a.getInt(
                 R.styleable.CandidateView_candidateCountInStrip, DEFAULT_CANDIDATE_COUNT_IN_STRIP);
         a.recycle();
@@ -321,7 +320,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 word.setOnLongClickListener(this);
             mWords.add(word);
             mInfos.add((TextView)inflater.inflate(R.layout.candidate_info, null));
-            mDividers.add(getDivider(inflater));
+            mDividers.add(inflater.inflate(R.layout.candidate_divider, null));
         }
 
         mTouchToSave = findViewById(R.id.touch_to_save);
@@ -333,6 +332,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
         mCandidatesPaneControl = (ViewGroup)findViewById(R.id.candidates_pane_control);
         mExpandCandidatesPane = (TextView)findViewById(R.id.expand_candidates_pane);
+        mExpandCandidatesPane.getBackground().setAlpha(180);
         mExpandCandidatesPane.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -340,6 +340,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             }
         });
         mCloseCandidatesPane = (TextView)findViewById(R.id.close_candidates_pane);
+        mCloseCandidatesPane.getBackground().setAlpha(180);
         mCloseCandidatesPane.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -348,15 +349,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         });
         mCandidatesPaneControl.measure(WRAP_CONTENT, WRAP_CONTENT);
 
-        mParams = new CandidateViewLayoutParams(res, mDividers.get(0), mCandidatesPaneControl,
-                mAutoCorrectHighlight);
-    }
-
-    private View getDivider(LayoutInflater inflater) {
-        final TextView divider = (TextView)inflater.inflate(R.layout.candidate_divider, null);
-        divider.setTextColor(mColorDivider);
-        divider.measure(WRAP_CONTENT, WRAP_CONTENT);
-        return divider;
+        mParams = new CandidateViewLayoutParams(
+                res, mDividers.get(0), mCandidatesPaneControl, mAutoCorrectHighlight);
     }
 
     /**
@@ -429,7 +423,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 ? PUNCTUATIONS_IN_STRIP : mCandidateCountInStrip);
 
         final int count = Math.min(mWords.size(), suggestions.size());
-        if (count <= params.mCountInStrip) {
+        if (count <= params.mCountInStrip && !DBG) {
             mCandidatesPaneControl.setVisibility(GONE);
         } else {
             mCandidatesPaneControl.setVisibility(VISIBLE);
@@ -437,8 +431,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         }
 
         final int countInStrip = params.mCountInStrip;
-        int fromIndex = countInStrip;
-        int x = 0, y = 0;
+        View centeringFrom = null, lastView = null;
+        int x = 0, y = 0, infoX = 0;
         for (int i = 0; i < count; i++) {
             final int pos;
             if (i <= 1) {
@@ -497,18 +491,18 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 }
                 mCandidatesStrip.addView(word);
                 if (params.mCanUseFixedWidthColumns) {
-                    setLayoutWeight(word, 1.0f);
+                    setLayoutWeight(word, 1.0f, mCandidateStripHeight);
                 } else {
                     final int width = getTextWidth(text, paint) + params.mPadding * 2;
-                    setLayoutWeight(word, width);
+                    setLayoutWeight(word, width, mCandidateStripHeight);
                 }
                 if (info != null) {
-                    word.measure(WRAP_CONTENT, MATCH_PARENT);
-                    final int width = word.getMeasuredWidth();
+                    mCandidatesPane.addView(info);
                     info.measure(WRAP_CONTENT, WRAP_CONTENT);
-                    final int infoWidth = info.getMeasuredWidth();
-                    FrameLayoutCompatUtils.placeViewAt(
-                            info, width - infoWidth, 0, infoWidth, info.getMeasuredHeight());
+                    final int width = info.getMeasuredWidth();
+                    y = info.getMeasuredHeight();
+                    FrameLayoutCompatUtils.placeViewAt(info, infoX, 0, width, y);
+                    infoX += width * 2;
                 }
             } else {
                 paint.setTextScaleX(1.0f);
@@ -516,10 +510,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 int available = paneWidth - x - params.mPadding * 2;
                 if (textWidth >= available) {
                     // Needs new row, centering previous row.
-                    centeringCandidates(fromIndex, i - 1, x, paneWidth);
+                    centeringCandidates(centeringFrom, lastView, x, paneWidth);
                     x = 0;
                     y += mCandidateStripHeight;
-                    fromIndex = i;
                 }
                 if (x != 0) {
                     // Add divider if this isn't the left most suggestion in current row.
@@ -536,46 +529,45 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 word.setText(text);
                 word.setTextScaleX(scaleX);
                 mCandidatesPane.addView(word);
-                word.measure(WRAP_CONTENT, WRAP_CONTENT);
+                lastView = word;
+                if (x == 0) centeringFrom = word;
+                word.measure(WRAP_CONTENT,
+                        MeasureSpec.makeMeasureSpec(mCandidateStripHeight, MeasureSpec.EXACTLY));
                 final int width = word.getMeasuredWidth();
                 final int height = word.getMeasuredHeight();
                 FrameLayoutCompatUtils.placeViewAt(
                         word, x, y + (mCandidateStripHeight - height) / 2, width, height);
+                x += width;
                 if (info != null) {
                     mCandidatesPane.addView(info);
+                    lastView = info;
                     info.measure(WRAP_CONTENT, WRAP_CONTENT);
                     final int infoWidth = info.getMeasuredWidth();
                     FrameLayoutCompatUtils.placeViewAt(
-                            info, x + width - infoWidth, y, infoWidth, info.getMeasuredHeight());
+                            info, x - infoWidth, y, infoWidth, info.getMeasuredHeight());
                 }
-                x += width;
             }
         }
         if (x != 0) {
             // Centering last candidates row.
-            centeringCandidates(fromIndex, count - 1, x, paneWidth);
+            centeringCandidates(centeringFrom, lastView, x, paneWidth);
         }
     }
 
-    private static void setLayoutWeight(View v, float weight) {
+    private static void setLayoutWeight(View v, float weight, int height) {
         final ViewGroup.LayoutParams lp = v.getLayoutParams();
         if (lp instanceof LinearLayout.LayoutParams) {
             final LinearLayout.LayoutParams llp = (LinearLayout.LayoutParams)lp;
             llp.weight = weight;
             llp.width = 0;
-            llp.height = MATCH_PARENT;
+            llp.height = height;
         }
     }
 
-    private void centeringCandidates(int from, int to, int width, int paneWidth) {
+    private void centeringCandidates(View from, View to, int width, int paneWidth) {
         final ViewGroup pane = mCandidatesPane;
-        final int fromIndex = pane.indexOfChild(mWords.get(from));
-        final int toIndex;
-        if (mInfos.get(to).getParent() != null) {
-            toIndex = pane.indexOfChild(mInfos.get(to));
-        } else {
-            toIndex = pane.indexOfChild(mWords.get(to));
-        }
+        final int fromIndex = pane.indexOfChild(from);
+        final int toIndex = pane.indexOfChild(to);
         final int offset = (paneWidth - width) / 2;
         for (int index = fromIndex; index <= toIndex; index++) {
             offsetMargin(pane.getChildAt(index), offset, 0);

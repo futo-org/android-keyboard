@@ -394,6 +394,8 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         public int mKeyLetterSize;
         public final int[] mCoordinates = new int[2];
 
+        private static final int PREVIEW_ALPHA = 240;
+
         public KeyPreviewDrawParams(TypedArray a, KeyDrawParams keyDrawParams) {
             mPreviewBackground = a.getDrawable(R.styleable.KeyboardView_keyPreviewBackground);
             mPreviewLeftBackground = a.getDrawable(
@@ -402,6 +404,9 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
                     R.styleable.KeyboardView_keyPreviewRightBackground);
             mPreviewSpacebarBackground = a.getDrawable(
                     R.styleable.KeyboardView_keyPreviewSpacebarBackground);
+            setAlpha(mPreviewBackground, PREVIEW_ALPHA);
+            setAlpha(mPreviewLeftBackground, PREVIEW_ALPHA);
+            setAlpha(mPreviewRightBackground, PREVIEW_ALPHA);
             mPreviewOffset = a.getDimensionPixelOffset(
                     R.styleable.KeyboardView_keyPreviewOffset, 0);
             mPreviewHeight = a.getDimensionPixelSize(
@@ -416,6 +421,12 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         public void updateKeyHeight(int keyHeight) {
             mPreviewTextSize = (int)(keyHeight * mPreviewTextRatio);
             mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
+        }
+
+        private static void setAlpha(Drawable drawable, int alpha) {
+            if (drawable == null)
+                return;
+            drawable.setAlpha(alpha);
         }
     }
 

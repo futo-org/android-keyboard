@@ -92,7 +92,6 @@
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
-        <item name="colorDivider">#20FFFFFF</item>
         <item name="candidateCountInStrip">@integer/candidate_count_in_strip</item>
     </style>
     <!-- Theme "Basic high contrast" -->
@@ -191,9 +190,8 @@
     <style name="CandidateViewStyle.IceCreamSandwich" parent="SuggestionsStripBackgroundStyle.IceCreamSandwich">
         <item name="autoCorrectHighlight">autoCorrectBold|autoCorrectInvert</item>
         <item name="colorTypedWord">#FFFFFFFF</item>
-        <item name="colorAutoCorrect">#FFFFFFFF</item>
+        <item name="colorAutoCorrect">#FF3DC8FF</item>
         <item name="colorSuggested">#FFFFFFFF</item>
-        <item name="colorDivider">#20FFFFFF</item>
         <item name="candidateCountInStrip">@integer/candidate_count_in_strip</item>
     </style>
     <style name="PopupMiniKeyboardAnimation">

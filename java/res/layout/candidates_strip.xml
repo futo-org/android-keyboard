@@ -27,9 +27,7 @@
         android:orientation="horizontal"
         android:layout_weight="1.0"
         android:layout_width="0dp"
-        android:layout_height="match_parent"
-    >
-    </LinearLayout>
+        android:layout_height="match_parent" />
     <LinearLayout
         android:id="@+id/candidates_pane_control"
         android:orientation="horizontal"
@@ -42,22 +40,22 @@
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
             android:textSize="@dimen/candidate_text_size"
-            android:padding="0dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
             android:visibility="visible"
-            style="?attr/suggestionBackgroundStyle"  />
+            android:background="@drawable/btn_keyboard_key_ics" />
         <TextView
             android:id="@+id/close_candidates_pane"
             android:text="@string/label_close_candidates_pane"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:minWidth="30dp"
             android:textSize="@dimen/candidate_text_size"
-            android:padding="0dp"
+            android:paddingRight="8dp"
+            android:paddingLeft="8dp"
             android:visibility="gone"
-            style="?attr/suggestionBackgroundStyle"  />
+            android:background="@drawable/btn_keyboard_key_ics" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/touch_to_save"

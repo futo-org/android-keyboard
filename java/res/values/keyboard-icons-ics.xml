@@ -50,7 +50,7 @@
         <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_settings_holo</item>
         <item name="iconPreviewShortcutKey">@drawable/sym_keyboard_feedback_mic</item>
         <!-- LatinKeyboard icons -->
-        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led</item>
+        <item name="autoCorrectionSpacebarLedIcon">@drawable/sym_keyboard_space_led_holo</item>
         <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
 </resources>
