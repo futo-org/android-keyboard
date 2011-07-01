@@ -371,6 +371,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         if (suggestions == null)
             return;
         mSuggestions = suggestions;
+        mExpandCandidatesPane.setEnabled(false);
         if (mShowingAutoCorrectionInverted) {
             mHandler.postUpdateSuggestions();
         } else {
@@ -428,6 +429,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         } else {
             mCandidatesPaneControl.setVisibility(VISIBLE);
             mExpandCandidatesPane.setVisibility(VISIBLE);
+            mExpandCandidatesPane.setEnabled(true);
         }
 
         final int countInStrip = params.mCountInStrip;
