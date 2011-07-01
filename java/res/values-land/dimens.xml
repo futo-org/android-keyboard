@@ -40,7 +40,7 @@
 
     <dimen name="keyboard_top_padding_ics">0.03in</dimen>
     <dimen name="keyboard_bottom_padding_ics">0.00in</dimen>
-    <dimen name="key_bottom_gap_ics">1.79mm</dimen>
+    <dimen name="key_bottom_gap_ics">1.50mm</dimen>
     <dimen name="key_horizontal_gap_ics">0.88mm</dimen>
 
     <!-- left or right padding of label alignment -->

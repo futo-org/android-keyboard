@@ -44,7 +44,7 @@
     <dimen name="keyboard_top_padding_ics">0.03in</dimen>
     <dimen name="keyboard_bottom_padding_ics">0.06in</dimen>
     <dimen name="mini_keyboard_horizontal_edges_padding_ics">6dp</dimen>
-    <dimen name="key_bottom_gap_ics">2.37mm</dimen>
+    <dimen name="key_bottom_gap_ics">2.00mm</dimen>
     <dimen name="key_horizontal_gap_ics">0.90mm</dimen>
 
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
