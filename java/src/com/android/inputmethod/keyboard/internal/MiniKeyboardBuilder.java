@@ -43,7 +43,7 @@ public class MiniKeyboardBuilder {
         public final int mNumColumns;
         public final int mLeftKeys;
         public final int mRightKeys; // includes default key.
-        public final int mTopPadding;
+        public int mTopPadding;
 
         /**
          * The object holding mini keyboard layout parameters.
@@ -54,17 +54,15 @@ public class MiniKeyboardBuilder {
          * @param rowHeight mini keyboard row height in pixel, including vertical gap.
          * @param coordXInParent coordinate x of the popup key in parent keyboard.
          * @param parentKeyboardWidth parent keyboard width in pixel.
-         * @param topPadding top padding of mini keyboard, maybe equals to vertical gap of the
          * parent keyboard.
          */
         public MiniKeyboardLayoutParams(int numKeys, int maxColumns, int keyWidth, int rowHeight,
-                int coordXInParent, int parentKeyboardWidth, int topPadding) {
+                int coordXInParent, int parentKeyboardWidth) {
             if (parentKeyboardWidth / keyWidth < maxColumns)
                 throw new IllegalArgumentException("Keyboard is too small to hold mini keyboard: "
                         + parentKeyboardWidth + " " + keyWidth + " " + maxColumns);
             mKeyWidth = keyWidth;
             mRowHeight = rowHeight;
-            mTopPadding = topPadding;
 
             final int numRows = (numKeys + maxColumns - 1) / maxColumns;
             mNumRows = numRows;
@@ -188,6 +186,10 @@ public class MiniKeyboardBuilder {
             return rowCount == mNumRows - 1;
         }
 
+        public void setTopPadding (int topPadding) {
+            mTopPadding = topPadding;
+        }
+
         public int getKeyboardHeight() {
             return mNumRows * mRowHeight + mTopPadding;
         }
@@ -211,7 +213,8 @@ public class MiniKeyboardBuilder {
                 mPopupCharacters.length, parentKey.mMaxPopupColumn,
                 keyWidth, parentKeyboard.getRowHeight(),
                 parentKey.mX + (parentKey.mWidth + parentKey.mGap) / 2 - keyWidth / 2,
-                view.getMeasuredWidth(), keyboard.getVerticalGap());
+                view.getMeasuredWidth());
+        params.setTopPadding(keyboard.getVerticalGap());
         mParams = params;
 
         keyboard.setRowHeight(params.mRowHeight);
