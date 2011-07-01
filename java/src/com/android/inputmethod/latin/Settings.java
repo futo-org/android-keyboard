@@ -18,14 +18,14 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.backup.BackupManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -40,7 +40,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.speech.SpeechRecognizer;
-import android.text.AutoText;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -321,10 +320,22 @@ public class Settings extends PreferenceActivity
         mBigramPrediction.setEnabled(!currentSetting.equals(autoCorrectionOff));
     }
 
+    public Activity getActivityInternal() {
+        Object thisObject = (Object) this;
+        if (thisObject instanceof Activity) {
+            return (Activity) thisObject;
+        } else if (thisObject instanceof Fragment) {
+            return ((Fragment) thisObject).getActivity();
+        } else {
+            return null;
+        }
+    }
+
     @Override
-    protected void onCreate(Bundle icicle) {
+    public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         final Resources res = getResources();
+        final Context context = getActivityInternal();
 
         addPreferencesFromResource(R.xml.prefs);
         mInputLanguageSelection = (PreferenceScreen) findPreference(PREF_SUBTYPES);
@@ -340,7 +351,7 @@ public class Settings extends PreferenceActivity
         mVoiceModeOff = getString(R.string.voice_mode_off);
         mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
                 .equals(mVoiceModeOff));
-        mVoiceLogger = VoiceProxy.VoiceLoggerWrapper.getInstance(this);
+        mVoiceLogger = VoiceProxy.VoiceLoggerWrapper.getInstance(context);
 
         mAutoCorrectionThreshold = (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
@@ -348,7 +359,8 @@ public class Settings extends PreferenceActivity
         mDebugSettingsPreference = findPreference(PREF_DEBUG_SETTINGS);
         if (mDebugSettingsPreference != null) {
             final Intent debugSettingsIntent = new Intent(Intent.ACTION_MAIN);
-            debugSettingsIntent.setClassName(getPackageName(), DebugSettings.class.getName());
+            debugSettingsIntent.setClassName(
+                    context.getPackageName(), DebugSettings.class.getName());
             mDebugSettingsPreference.setIntent(debugSettingsIntent);
         }
 
@@ -371,7 +383,7 @@ public class Settings extends PreferenceActivity
             generalSettings.removePreference(mVoicePreference);
         }
 
-        if (!VibratorCompatWrapper.getInstance(this).hasVibrator()) {
+        if (!VibratorCompatWrapper.getInstance(context).hasVibrator()) {
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
         }
 
@@ -427,22 +439,17 @@ public class Settings extends PreferenceActivity
                 (PreferenceScreen) findPreference(PREF_CONFIGURE_DICTIONARIES_KEY);
         final Intent intent = dictionaryLink.getIntent();
 
-        final int number = getPackageManager().queryIntentActivities(intent, 0).size();
+        final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
         if (0 >= number) {
             textCorrectionGroup.removePreference(dictionaryLink);
         }
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        int autoTextSize = AutoText.getSize(getListView());
-        if (autoTextSize < 1) {
-            ((PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS_KEY))
-                    .removePreference(mQuickFixes);
-        }
         if (!VoiceProxy.VOICE_INSTALLED
-                || !SpeechRecognizer.isRecognitionAvailable(this)) {
+                || !SpeechRecognizer.isRecognitionAvailable(getActivityInternal())) {
             getPreferenceScreen().removePreference(mVoicePreference);
         } else {
             updateVoiceModeSummary();
@@ -453,7 +460,7 @@ public class Settings extends PreferenceActivity
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(
                 this);
         super.onDestroy();
@@ -461,7 +468,7 @@ public class Settings extends PreferenceActivity
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
-        (new BackupManager(this)).dataChanged();
+        (new BackupManager(getActivityInternal())).dataChanged();
         // If turning on voice input, show dialog
         if (key.equals(PREF_VOICE_SETTINGS_KEY) && !mVoiceOn) {
             if (!prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
@@ -488,8 +495,9 @@ public class Settings extends PreferenceActivity
     public boolean onPreferenceClick(Preference pref) {
         if (pref == mInputLanguageSelection) {
             startActivity(CompatUtils.getInputLanguageSelectionIntent(
-                    Utils.getInputMethodId(InputMethodManagerCompatWrapper.getInstance(this),
-                            getApplicationInfo().packageName), 0));
+                    Utils.getInputMethodId(
+                            InputMethodManagerCompatWrapper.getInstance(getActivityInternal()),
+                            getActivityInternal().getApplicationInfo().packageName), 0));
             return true;
         }
         return false;
@@ -515,7 +523,7 @@ public class Settings extends PreferenceActivity
 
     private void showVoiceConfirmation() {
         mOkClicked = false;
-        showDialog(VOICE_INPUT_CONFIRM_DIALOG);
+        getActivityInternal().showDialog(VOICE_INPUT_CONFIRM_DIALOG);
         // Make URL in the dialog message clickable
         if (mDialog != null) {
             TextView textView = (TextView) mDialog.findViewById(android.R.id.message);
@@ -531,7 +539,6 @@ public class Settings extends PreferenceActivity
                 [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
     }
 
-    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case VOICE_INPUT_CONFIRM_DIALOG:
@@ -548,7 +555,7 @@ public class Settings extends PreferenceActivity
                         updateVoicePreference();
                     }
                 };
-                AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivityInternal())
                         .setTitle(R.string.voice_warning_title)
                         .setPositiveButton(android.R.string.ok, listener)
                         .setNegativeButton(android.R.string.cancel, listener);
