@@ -672,6 +672,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mWordToSave.setText(word);
         mShowingAddToDictionary = true;
         mCandidatesStrip.setVisibility(GONE);
+        mCandidatesPaneControl.setVisibility(GONE);
         mTouchToSave.setVisibility(VISIBLE);
     }
 
