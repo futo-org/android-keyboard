@@ -73,7 +73,7 @@
     <dimen name="key_preview_height_ics">80sp</dimen>
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
-    <dimen name="candidate_strip_height">42dip</dimen>
+    <dimen name="candidate_strip_height">40dip</dimen>
     <!-- candidate_strip_minimum_height =
          key_preview_height_holo - key_preview_offset_holo + alpha -->
     <dimen name="candidate_strip_minimum_height">100sp</dimen>
