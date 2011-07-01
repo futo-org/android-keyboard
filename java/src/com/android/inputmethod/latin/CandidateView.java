@@ -104,7 +104,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private final CandidateViewLayoutParams mParams;
     private static final int PUNCTUATIONS_IN_STRIP = 6;
-    private static final float MIN_TEXT_XSCALE = 0.8f;
+    private static final float MIN_TEXT_XSCALE = 0.75f;
 
     private final UiHandler mHandler = new UiHandler(this);
 
@@ -177,12 +177,12 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         public int mVariableWidthForWords;
         public float mScaleX;
 
-        public CandidateViewLayoutParams(Resources res, View divider, View control,
+        public CandidateViewLayoutParams(Resources res, TextView word, View divider, View control,
                 int autoCorrectHighlight) {
             mPaint = new TextPaint();
             final float textSize = res.getDimension(R.dimen.candidate_text_size);
             mPaint.setTextSize(textSize);
-            mPadding = res.getDimensionPixelSize(R.dimen.candidate_padding);
+            mPadding = word.getCompoundPaddingLeft() + word.getCompoundPaddingRight();
             divider.measure(WRAP_CONTENT, MATCH_PARENT);
             mDividerWidth = divider.getMeasuredWidth();
             mDividerHeight = divider.getMeasuredHeight();
@@ -224,11 +224,11 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         public void tryLayout() {
             final int maxCount = mCountInStrip;
             final int dividers = mDividerWidth * (maxCount - 1);
-            mConstantWidthForPaddings = dividers + mPadding * maxCount * 2;
+            mConstantWidthForPaddings = dividers + mPadding * maxCount;
             mAvailableWidthForWords = mMaxWidth - mConstantWidthForPaddings;
 
             mPaint.setTextScaleX(mScaleX);
-            final int maxFixedWidthForWord = (mMaxWidth - dividers) / maxCount - mPadding * 2;
+            final int maxFixedWidthForWord = (mMaxWidth - dividers) / maxCount - mPadding;
             mCanUseFixedWidthColumns = true;
             mVariableWidthForWords = 0;
             for (int i = 0; i < maxCount; i++) {
@@ -349,8 +349,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         });
         mCandidatesPaneControl.measure(WRAP_CONTENT, WRAP_CONTENT);
 
-        mParams = new CandidateViewLayoutParams(
-                res, mDividers.get(0), mCandidatesPaneControl, mAutoCorrectHighlight);
+        mParams = new CandidateViewLayoutParams(res,
+                mWords.get(0), mDividers.get(0), mCandidatesPaneControl, mAutoCorrectHighlight);
     }
 
     /**
@@ -493,7 +493,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 if (params.mCanUseFixedWidthColumns) {
                     setLayoutWeight(word, 1.0f, mCandidateStripHeight);
                 } else {
-                    final int width = getTextWidth(text, paint) + params.mPadding * 2;
+                    final int width = getTextWidth(text, paint) + params.mPadding;
                     setLayoutWeight(word, width, mCandidateStripHeight);
                 }
                 if (info != null) {
@@ -507,7 +507,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             } else {
                 paint.setTextScaleX(1.0f);
                 final int textWidth = getTextWidth(styled, paint);
-                int available = paneWidth - x - params.mPadding * 2;
+                int available = paneWidth - x - params.mPadding;
                 if (textWidth >= available) {
                     // Needs new row, centering previous row.
                     centeringCandidates(centeringFrom, lastView, x, paneWidth);
@@ -523,7 +523,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                             params.mDividerWidth, params.mDividerHeight);
                     x += params.mDividerWidth;
                 }
-                available = paneWidth - x - params.mPadding * 2;
+                available = paneWidth - x - params.mPadding;
                 text = getEllipsizedText(styled, available, paint);
                 scaleX = paint.getTextScaleX();
                 word.setText(text);
@@ -604,15 +604,17 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private static int getTextWidth(CharSequence text, TextPaint paint) {
         if (TextUtils.isEmpty(text)) return 0;
+        final Typeface savedTypeface = paint.getTypeface();
         paint.setTypeface(getTextTypeface(text));
         final int len = text.length();
         final float[] widths = new float[len];
         final int count = paint.getTextWidths(text, 0, len, widths);
-        float width = 0;
+        int width = 0;
         for (int i = 0; i < count; i++) {
-            width += widths[i];
+            width += Math.round(widths[i] + 0.5f);
         }
-        return (int)Math.round(width + 0.5);
+        paint.setTypeface(savedTypeface);
+        return width;
     }
 
     private static Typeface getTextTypeface(CharSequence text) {
