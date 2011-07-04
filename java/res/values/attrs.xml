@@ -89,9 +89,6 @@
         <!-- Size of the text for key press feedback popup, int the proportion of key height -->
         <attr name="keyPreviewTextRatio" format="float" />
 
-        <!-- Hysteresis distance for key debouncing -->
-        <attr name="keyHysteresisDistance" format="dimension" />
-
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
 

@@ -37,7 +37,7 @@ public class SuggestHelper {
         // (and not try to find a dictionary provider for a specified locale)
         mSuggest = new Suggest(context, dictionaryId, null);
         mKeyboard = new LatinKeyboard(context, keyboardId, keyboardId.mWidth);
-        mKeyDetector = new KeyDetector();
+        mKeyDetector = new KeyDetector(0);
         init();
     }
 
@@ -45,7 +45,7 @@ public class SuggestHelper {
             KeyboardId keyboardId) {
         mSuggest = new Suggest(context, dictionaryPath, startOffset, length, null);
         mKeyboard = new LatinKeyboard(context, keyboardId, keyboardId.mWidth);
-        mKeyDetector = new KeyDetector();
+        mKeyDetector = new KeyDetector(0);
         init();
     }
 

@@ -56,7 +56,7 @@ public class PointerTracker {
     private final LatinKeyboardBaseView mKeyboardView;
     private final UIProxy mProxy;
     private final UIHandler mHandler;
-    private final KeyDetector mKeyDetector;
+    private KeyDetector mKeyDetector;
     private KeyboardActionListener mListener = EMPTY_LISTENER;
     private final KeyboardSwitcher mKeyboardSwitcher;
     private final boolean mHasDistinctMultitouch;
@@ -67,7 +67,6 @@ public class PointerTracker {
 
     private Keyboard mKeyboard;
     private List<Key> mKeys;
-    private int mKeyHysteresisDistanceSquared = -1;
     private int mKeyQuarterWidthSquared;
 
     private final PointerTrackerKeyState mKeyState;
@@ -198,12 +197,13 @@ public class PointerTracker {
         mListener.onCancelInput();
     }
 
-    public void setKeyboard(Keyboard keyboard, float keyHysteresisDistance) {
-        if (keyboard == null || keyHysteresisDistance < 0)
-            throw new IllegalArgumentException();
+    public void setKeyboard(Keyboard keyboard, KeyDetector keyDetector) {
+        if (keyboard == null || keyDetector == null)
+            throw new NullPointerException();
         mKeyboard = keyboard;
         mKeys = keyboard.getKeys();
-        mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
+        mKeyDetector = keyDetector;
+        mKeyState.setKeyDetector(keyDetector);
         final int keyQuarterWidth = keyboard.getKeyWidth() / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
         // Mark that keyboard layout has been changed.
@@ -602,13 +602,14 @@ public class PointerTracker {
     }
 
     private boolean isMajorEnoughMoveToBeOnNewKey(int x, int y, int newKey) {
-        if (mKeys == null || mKeyHysteresisDistanceSquared < 0)
-            throw new IllegalStateException("keyboard and/or hysteresis not set");
+        if (mKeys == null || mKeyDetector == null)
+            throw new NullPointerException("keyboard and/or key detector not set");
         int curKey = mKeyState.getKeyIndex();
         if (newKey == curKey) {
             return false;
         } else if (isValidKeyIndex(curKey)) {
-            return mKeys.get(curKey).squaredDistanceToEdge(x, y) >= mKeyHysteresisDistanceSquared;
+            return mKeys.get(curKey).squaredDistanceToEdge(x, y)
+                    >= mKeyDetector.getKeyHysteresisDistanceSquared();
         } else {
             return true;
         }

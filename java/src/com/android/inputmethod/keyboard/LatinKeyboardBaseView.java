@@ -59,7 +59,6 @@ public class LatinKeyboardBaseView extends KeyboardView {
     private final int mKeyRepeatInterval;
 
     // XML attribute
-    private final float mKeyHysteresisDistance;
     private final float mVerticalCorrection;
     private final int mPopupLayout;
 
@@ -81,7 +80,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
     private int mOldPointerCount = 1;
     private int mOldKeyIndex;
 
-    protected KeyDetector mKeyDetector = new KeyDetector();
+    protected KeyDetector mKeyDetector;
 
     // Swipe gesture detector
     protected GestureDetector mGestureDetector;
@@ -182,8 +181,6 @@ public class LatinKeyboardBaseView extends KeyboardView {
 
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        mKeyHysteresisDistance = a.getDimensionPixelOffset(
-                R.styleable.KeyboardView_keyHysteresisDistance, 0);
         mVerticalCorrection = a.getDimensionPixelOffset(
                 R.styleable.KeyboardView_verticalCorrection, 0);
 
@@ -193,6 +190,8 @@ public class LatinKeyboardBaseView extends KeyboardView {
 
         final Resources res = getResources();
 
+        final float keyHysteresisDistance = res.getDimension(R.dimen.key_hysteresis_distance);
+        mKeyDetector = new KeyDetector(keyHysteresisDistance);
         mSwipeThreshold = (int) (500 * res.getDisplayMetrics().density);
         // TODO: Refer to frameworks/base/core/res/res/values/config.xml
         mDisambiguateSwipe = res.getBoolean(R.bool.config_swipeDisambiguation);
@@ -309,7 +308,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
         mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
         for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setKeyboard(keyboard, mKeyHysteresisDistance);
+            tracker.setKeyboard(keyboard, mKeyDetector);
         }
         mKeyDetector.setProximityThreshold(keyboard.getMostCommonKeyWidth());
         mPopupPanelCache.clear();
@@ -484,7 +483,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
             final PointerTracker tracker =
                 new PointerTracker(i, this, mHandler, mKeyDetector, this);
             if (keyboard != null)
-                tracker.setKeyboard(keyboard, mKeyHysteresisDistance);
+                tracker.setKeyboard(keyboard, mKeyDetector);
             if (listener != null)
                 tracker.setOnKeyboardActionListener(listener);
             pointers.add(tracker);

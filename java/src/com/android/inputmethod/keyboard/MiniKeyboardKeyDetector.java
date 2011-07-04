@@ -23,7 +23,7 @@ public class MiniKeyboardKeyDetector extends KeyDetector {
     private final int mSlideAllowanceSquareTop;
 
     public MiniKeyboardKeyDetector(float slideAllowance) {
-        super();
+        super(/* keyHysteresisDistance */0);
         mSlideAllowanceSquare = (int)(slideAllowance * slideAllowance);
         // Top slide allowance is slightly longer (sqrt(2) times) than other edges.
         mSlideAllowanceSquareTop = mSlideAllowanceSquare * 2;

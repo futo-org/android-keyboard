@@ -28,6 +28,8 @@ public class KeyDetector {
     public static final int NOT_A_CODE = -1;
     public static final int NOT_A_KEY = -1;
 
+    private final int mKeyHysteresisDistanceSquared;
+
     private Keyboard mKeyboard;
     private int mCorrectionX;
     private int mCorrectionY;
@@ -39,12 +41,28 @@ public class KeyDetector {
     private final int[] mDistances = new int[MAX_NEARBY_KEYS];
     private final int[] mIndices = new int[MAX_NEARBY_KEYS];
 
+    /**
+     * This class handles key detection.
+     *
+     * @param keyHysteresisDistance if the pointer movement distance is smaller than this, the
+     * movement will not been handled as meaningful movement. The unit is pixel.
+     */
+    public KeyDetector(float keyHysteresisDistance) {
+        mKeyHysteresisDistanceSquared = (int)(keyHysteresisDistance * keyHysteresisDistance);
+    }
+
     public void setKeyboard(Keyboard keyboard, float correctionX, float correctionY) {
         if (keyboard == null)
             throw new NullPointerException();
         mCorrectionX = (int)correctionX;
         mCorrectionY = (int)correctionY;
         mKeyboard = keyboard;
+        final int threshold = keyboard.getMostCommonKeyWidth();
+        mProximityThresholdSquare = threshold * threshold;
+    }
+
+    public int getKeyHysteresisDistanceSquared() {
+        return mKeyHysteresisDistanceSquared;
     }
 
     protected int getTouchX(int x) {
