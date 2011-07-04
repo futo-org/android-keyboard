@@ -236,10 +236,10 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Key_maxPopupKeyboardColumn, 5));
 
             mKeyboard.mIconsSet.loadIcons(keyboardAttr);
-            mKeyboardTopPadding = keyboardAttr.getDimensionPixelSize(
-                    R.styleable.Keyboard_keyboardTopPadding, 0);
-            mKeyboardBottomPadding = keyboardAttr.getDimensionPixelSize(
-                    R.styleable.Keyboard_keyboardBottomPadding, 0);
+            mKeyboardTopPadding = getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyboardTopPadding, height, 0);
+            mKeyboardBottomPadding = getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyboardBottomPadding, height, 0);
         } finally {
             keyAttr.recycle();
             keyboardAttr.recycle();

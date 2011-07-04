@@ -22,10 +22,10 @@
         <item name="maxKeyboardHeight">@fraction/maxKeyboardHeight</item>
         <item name="minKeyboardHeight">@fraction/minKeyboardHeight</item>
         <item name="popupKeyboardTemplate">@xml/kbd_popup_template</item>
-        <item name="keyboardTopPadding">@dimen/keyboard_top_padding</item>
-        <item name="keyboardBottomPadding">@dimen/keyboard_bottom_padding</item>
-        <item name="horizontalGap">@dimen/key_horizontal_gap</item>
-        <item name="verticalGap">@dimen/key_bottom_gap</item>
+        <item name="keyboardTopPadding">@fraction/keyboard_top_padding</item>
+        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding</item>
+        <item name="horizontalGap">@fraction/key_horizontal_gap</item>
+        <item name="verticalGap">@fraction/key_bottom_gap</item>
         <item name="maxPopupKeyboardColumn">@integer/config_max_popup_keyboard_column</item>
     </style>
     <style name="LatinKeyboard">
@@ -101,8 +101,11 @@
     </style>
     <!-- Theme "Stone" -->
     <style name="Keyboard.Stone" parent="Keyboard">
-        <item name="horizontalGap">@dimen/key_horizontal_gap_stone</item>
-        <item name="verticalGap">@dimen/key_bottom_gap_stone</item>
+        <item name="keyboardHeight">@dimen/keyboardHeight_stone</item>
+        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_stone</item>
+        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_stone</item>
+        <item name="horizontalGap">@fraction/key_horizontal_gap_stone</item>
+        <item name="verticalGap">@fraction/key_bottom_gap_stone</item>
     </style>
     <style name="LatinKeyboard.Stone" parent="LatinKeyboard">
         <item name="spacebarTextColor">#FF000000</item>
@@ -129,8 +132,8 @@
     </style>
     <!-- Theme "Gingerbread" -->
     <style name="Keyboard.Gingerbread" parent="Keyboard">
-        <item name="horizontalGap">@dimen/key_horizontal_gap_gb</item>
-        <item name="verticalGap">@dimen/key_bottom_gap_gb</item>
+        <item name="horizontalGap">@fraction/key_horizontal_gap_gb</item>
+        <item name="verticalGap">@fraction/key_bottom_gap_gb</item>
     </style>
     <style name="KeyboardView.Gingerbread" parent="KeyboardView">
         <item name="android:background">@drawable/keyboard_dark_background</item>
@@ -142,10 +145,10 @@
     </style>
     <!-- Theme "IceCreamSandwich" -->
     <style name="Keyboard.IceCreamSandwich" parent="Keyboard" >
-        <item name="keyboardTopPadding">@dimen/keyboard_top_padding_ics</item>
-        <item name="keyboardBottomPadding">@dimen/keyboard_bottom_padding_ics</item>
-        <item name="horizontalGap">@dimen/key_horizontal_gap_ics</item>
-        <item name="verticalGap">@dimen/key_bottom_gap_ics</item>
+        <item name="keyboardTopPadding">@fraction/keyboard_top_padding_ics</item>
+        <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_ics</item>
+        <item name="horizontalGap">@fraction/key_horizontal_gap_ics</item>
+        <item name="verticalGap">@fraction/key_bottom_gap_ics</item>
     </style>
     <style name="LatinKeyboard.IceCreamSandwich" parent="LatinKeyboard">
         <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
