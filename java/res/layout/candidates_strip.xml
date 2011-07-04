@@ -40,22 +40,18 @@
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:minWidth="28dp"
             android:textSize="@dimen/candidate_text_size"
-            android:paddingRight="8dp"
-            android:paddingLeft="8dp"
-            android:visibility="visible"
-            android:background="@drawable/btn_keyboard_key_ics" />
+            android:visibility="visible" />
         <TextView
             android:id="@+id/close_candidates_pane"
             android:text="@string/label_close_candidates_pane"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:minWidth="28dp"
             android:textSize="@dimen/candidate_text_size"
-            android:paddingRight="8dp"
-            android:paddingLeft="8dp"
-            android:visibility="gone"
-            android:background="@drawable/btn_keyboard_key_ics" />
+            android:visibility="gone" />
     </LinearLayout>
     <LinearLayout
         android:id="@+id/touch_to_save"
