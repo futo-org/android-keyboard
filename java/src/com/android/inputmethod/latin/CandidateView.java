@@ -21,6 +21,7 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -330,9 +331,18 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
         mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
 
+        final TypedArray keyboardViewAttr = context.obtainStyledAttributes(
+                attrs, R.styleable.KeyboardView, R.attr.keyboardViewStyle, R.style.KeyboardView);
+        final Drawable keyBackground = keyboardViewAttr.getDrawable(
+                R.styleable.KeyboardView_keyBackground);
+        final int keyTextColor = keyboardViewAttr.getColor(
+                R.styleable.KeyboardView_keyTextColor, 0xFF000000);
+        keyboardViewAttr.recycle();
+
         mCandidatesPaneControl = (ViewGroup)findViewById(R.id.candidates_pane_control);
         mExpandCandidatesPane = (TextView)findViewById(R.id.expand_candidates_pane);
-        mExpandCandidatesPane.getBackground().setAlpha(180);
+        mExpandCandidatesPane.setBackgroundDrawable(keyBackground);
+        mExpandCandidatesPane.setTextColor(keyTextColor);
         mExpandCandidatesPane.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -340,7 +350,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             }
         });
         mCloseCandidatesPane = (TextView)findViewById(R.id.close_candidates_pane);
-        mCloseCandidatesPane.getBackground().setAlpha(180);
+        mCloseCandidatesPane.setBackgroundDrawable(keyBackground);
+        mCloseCandidatesPane.setTextColor(keyTextColor);
         mCloseCandidatesPane.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
