@@ -72,7 +72,7 @@ import java.util.HashMap;
  * @attr ref R.styleable#KeyboardView_shadowColor
  * @attr ref R.styleable#KeyboardView_shadowRadius
  */
-public class KeyboardView extends View implements PointerTracker.UIProxy {
+public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static final boolean DEBUG_KEYBOARD_GRID = false;
 
     // Miscellaneous constants
@@ -123,13 +123,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     private static final int MEASURESPEC_UNSPECIFIED = MeasureSpec.makeMeasureSpec(
             0, MeasureSpec.UNSPECIFIED);
 
-    private final UIHandler mHandler = new UIHandler(this);
+    private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
 
-    public static class UIHandler extends StaticInnerHandlerWrapper<KeyboardView> {
+    public static class DrawingHandler extends StaticInnerHandlerWrapper<KeyboardView> {
         private static final int MSG_SHOW_KEY_PREVIEW = 1;
         private static final int MSG_DISMISS_KEY_PREVIEW = 2;
 
-        public UIHandler(KeyboardView outerInstance) {
+        public DrawingHandler(KeyboardView outerInstance) {
             super(outerInstance);
         }
 
@@ -365,7 +365,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
      */
     public void setKeyboard(Keyboard keyboard) {
         // Remove any pending messages, except dismissing preview
-        mHandler.cancelAllShowKeyPreviews();
+        mDrawingHandler.cancelAllShowKeyPreviews();
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(keyboard);
         requestLayout();
@@ -766,13 +766,13 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
     }
 
     public void cancelAllMessages() {
-        mHandler.cancelAllMessages();
+        mDrawingHandler.cancelAllMessages();
     }
 
     @Override
     public void showKeyPreview(int keyIndex, PointerTracker tracker) {
         if (mShowKeyPreviewPopup) {
-            mHandler.showKeyPreview(mDelayBeforePreview, keyIndex, tracker);
+            mDrawingHandler.showKeyPreview(mDelayBeforePreview, keyIndex, tracker);
         } else if (mKeyboard.needSpacebarPreview(keyIndex)) {
             // Show key preview (in this case, slide language switcher) without any delay.
             showKey(keyIndex, tracker);
@@ -781,14 +781,14 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
 
     @Override
     public void cancelShowKeyPreview(PointerTracker tracker) {
-        mHandler.cancelShowKeyPreview(tracker);
+        mDrawingHandler.cancelShowKeyPreview(tracker);
     }
 
     @Override
     public void dismissKeyPreview(PointerTracker tracker) {
         if (mShowKeyPreviewPopup) {
-            mHandler.cancelShowKeyPreview(tracker);
-            mHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
+            mDrawingHandler.cancelShowKeyPreview(tracker);
+            mDrawingHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
         } else if (mKeyboard.needSpacebarPreview(KeyDetector.NOT_A_KEY)) {
             // Dismiss key preview (in this case, slide language switcher) without any delay.
             mPreviewText.setVisibility(View.INVISIBLE);
@@ -821,7 +821,7 @@ public class KeyboardView extends View implements PointerTracker.UIProxy {
         if (key == null)
             return;
 
-        mHandler.cancelAllDismissKeyPreviews();
+        mDrawingHandler.cancelAllDismissKeyPreviews();
         final KeyPreviewDrawParams params = mKeyPreviewDrawParams;
         final int keyDrawX = key.mX + key.mVisualInsetsLeft;
         final int keyDrawWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;

@@ -29,7 +29,7 @@ import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
-import com.android.inputmethod.keyboard.LatinKeyboardBaseView;
+import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
 
 public class AccessibleKeyboardViewProxy {
@@ -40,7 +40,7 @@ public class AccessibleKeyboardViewProxy {
     private static final long DELAY_KEY_PRESS = 10;
 
     private int mScaledEdgeSlop;
-    private LatinKeyboardBaseView mView;
+    private KeyboardView mView;
     private AccessibleKeyboardActionListener mListener;
     private FlickGestureDetector mGestureDetector;
 
@@ -57,7 +57,7 @@ public class AccessibleKeyboardViewProxy {
         return sInstance;
     }
 
-    public static void setView(LatinKeyboardBaseView view) {
+    public static void setView(KeyboardView view) {
         sInstance.mView = view;
     }
 

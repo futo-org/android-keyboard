@@ -66,7 +66,7 @@ import com.android.inputmethod.deprecated.recorrection.Recorrection;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.LatinKeyboardBaseView;
+import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
 
@@ -655,7 +655,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onWindowHidden() {
         super.onWindowHidden();
-        LatinKeyboardBaseView inputView = mKeyboardSwitcher.getKeyboardView();
+        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
     }
 
@@ -668,7 +668,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         mVoiceProxy.flushVoiceInputLogs(mConfigurationChanging);
 
-        LatinKeyboardBaseView inputView = mKeyboardSwitcher.getKeyboardView();
+        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
         if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
         if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
@@ -677,7 +677,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
-        LatinKeyboardBaseView inputView = mKeyboardSwitcher.getKeyboardView();
+        KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.cancelAllMessages();
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestions();
@@ -866,7 +866,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onComputeInsets(InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
-        final LatinKeyboardBaseView inputView = mKeyboardSwitcher.getKeyboardView();
+        final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView == null || mCandidateViewContainer == null)
             return;
         final int containerHeight = mCandidateViewContainer.getHeight();

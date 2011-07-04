@@ -88,17 +88,17 @@ public class LatinKeyboardBaseView extends KeyboardView {
     private final int mSwipeThreshold;
     private final boolean mDisambiguateSwipe;
 
-    private final UIHandler mHandler = new UIHandler(this);
+    private final KeyTimerHandler mKeyTimerHandler = new KeyTimerHandler(this);
 
-    public static class UIHandler extends StaticInnerHandlerWrapper<LatinKeyboardBaseView> {
-        private static final int MSG_REPEAT_KEY = 3;
-        private static final int MSG_LONGPRESS_KEY = 4;
-        private static final int MSG_LONGPRESS_SHIFT_KEY = 5;
-        private static final int MSG_IGNORE_DOUBLE_TAP = 6;
+    public static class KeyTimerHandler extends StaticInnerHandlerWrapper<LatinKeyboardBaseView> {
+        private static final int MSG_REPEAT_KEY = 1;
+        private static final int MSG_LONGPRESS_KEY = 2;
+        private static final int MSG_LONGPRESS_SHIFT_KEY = 3;
+        private static final int MSG_IGNORE_DOUBLE_TAP = 4;
 
         private boolean mInKeyRepeat;
 
-        public UIHandler(LatinKeyboardBaseView outerInstance) {
+        public KeyTimerHandler(LatinKeyboardBaseView outerInstance) {
             super(outerInstance);
         }
 
@@ -249,7 +249,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
                         // Detected a double tap on shift key. If we are in the ignoring double tap
                         // mode, it means we have already turned off caps lock in
                         // {@link KeyboardSwitcher#onReleaseShift} .
-                        final boolean ignoringDoubleTap = mHandler.isIgnoringDoubleTap();
+                        final boolean ignoringDoubleTap = mKeyTimerHandler.isIgnoringDoubleTap();
                         if (!ignoringDoubleTap)
                             onDoubleTapShiftKey(tracker);
                         return true;
@@ -272,7 +272,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
 
     public void startIgnoringDoubleTap() {
         if (ENABLE_CAPSLOCK_BY_DOUBLETAP)
-            mHandler.startIgnoringDoubleTap();
+            mKeyTimerHandler.startIgnoringDoubleTap();
     }
 
     public void setOnKeyboardActionListener(KeyboardActionListener listener) {
@@ -303,7 +303,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
             dismissAllKeyPreviews();
         }
         // Remove any pending messages, except dismissing preview
-        mHandler.cancelKeyTimers();
+        mKeyTimerHandler.cancelKeyTimers();
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
@@ -349,7 +349,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
 
     @Override
     public void cancelAllMessages() {
-        mHandler.cancelAllMessages();
+        mKeyTimerHandler.cancelAllMessages();
         super.cancelAllMessages();
     }
 
@@ -481,7 +481,8 @@ public class LatinKeyboardBaseView extends KeyboardView {
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = pointers.size(); i <= id; i++) {
             final PointerTracker tracker =
-                new PointerTracker(i, this, mHandler, mKeyDetector, this);
+                new PointerTracker(i, getContext(), mKeyTimerHandler, mKeyDetector, this,
+                        mHasDistinctMultitouch);
             if (keyboard != null)
                 tracker.setKeyboard(keyboard, mKeyDetector);
             if (listener != null)
@@ -506,6 +507,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
+        final boolean nonDistinctMultitouch = !mHasDistinctMultitouch;
         final int action = me.getActionMasked();
         final int pointerCount = me.getPointerCount();
         final int oldPointerCount = mOldPointerCount;
@@ -514,7 +516,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // If the device does not have distinct multi-touch support panel, ignore all multi-touch
         // events except a transition from/to single-touch.
-        if (!mHasDistinctMultitouch && pointerCount > 1 && oldPointerCount > 1) {
+        if (nonDistinctMultitouch && pointerCount > 1 && oldPointerCount > 1) {
             return true;
         }
 
@@ -525,7 +527,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
         if (mPopupMiniKeyboardPanel == null && mGestureDetector != null
                 && mGestureDetector.onTouchEvent(me)) {
             dismissAllKeyPreviews();
-            mHandler.cancelKeyTimers();
+            mKeyTimerHandler.cancelKeyTimers();
             return true;
         }
 
@@ -541,12 +543,12 @@ public class LatinKeyboardBaseView extends KeyboardView {
             return mPopupMiniKeyboardPanel.onTouchEvent(me);
         }
 
-        if (mHandler.isInKeyRepeat()) {
+        if (mKeyTimerHandler.isInKeyRepeat()) {
             final PointerTracker tracker = getPointerTracker(id);
             // Key repeating timer will be canceled if 2 or more keys are in action, and current
             // event (UP or DOWN) is non-modifier key.
             if (pointerCount > 1 && !tracker.isModifier()) {
-                mHandler.cancelKeyRepeatTimer();
+                mKeyTimerHandler.cancelKeyRepeatTimer();
             }
             // Up event will pass through.
         }
@@ -554,7 +556,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
         // TODO: cleanup this code into a multi-touch to single-touch event converter class?
         // Translate mutli-touch event to single-touch events on the device that has no distinct
         // multi-touch panel.
-        if (!mHasDistinctMultitouch) {
+        if (nonDistinctMultitouch) {
             // Use only main (id=0) pointer tracker.
             PointerTracker tracker = getPointerTracker(0);
             if (pointerCount == 1 && oldPointerCount == 2) {
