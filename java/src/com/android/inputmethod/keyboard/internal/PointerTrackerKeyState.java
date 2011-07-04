@@ -23,7 +23,7 @@ import com.android.inputmethod.keyboard.PointerTracker;
  * This class keeps track of a key index and a position where {@link PointerTracker} is.
  */
 public class PointerTrackerKeyState {
-    private final KeyDetector mKeyDetector;
+    private KeyDetector mKeyDetector;
 
     // The position and time at which first down event occurred.
     private long mDownTime;
@@ -41,6 +41,10 @@ public class PointerTrackerKeyState {
 
     public PointerTrackerKeyState(KeyDetector keyDetecor) {
         mKeyDetector = keyDetecor;
+    }
+
+    public void setKeyDetector(KeyDetector keyDetector) {
+        mKeyDetector = keyDetector;
     }
 
     public int getKeyIndex() {

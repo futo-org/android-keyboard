@@ -62,7 +62,6 @@
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
         <item name="keyPreviewTextRatio">@fraction/key_preview_text_ratio</item>
         <item name="popupLayout">@layout/keyboard_popup</item>
-        <item name="keyHysteresisDistance">@dimen/key_hysteresis_distance</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>
@@ -70,7 +69,6 @@
     </style>
     <style name="PopupMiniKeyboardView" parent="KeyboardView">
         <item name="keyBackground">@drawable/btn_keyboard_key_popup</item>
-        <item name="keyHysteresisDistance">0dip</item>
         <item name="verticalCorrection">@dimen/mini_keyboard_vertical_correction</item>
     </style>
     <style name="PopupMiniKeyboardPanelStyle">
