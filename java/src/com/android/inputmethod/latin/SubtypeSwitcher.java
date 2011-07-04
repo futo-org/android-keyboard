@@ -188,6 +188,8 @@ public class SubtypeSwitcher {
         // TODO: Update an icon for shortcut IME
         final Map<InputMethodInfoCompatWrapper, List<InputMethodSubtypeCompatWrapper>> shortcuts =
                 mImm.getShortcutInputMethodsAndSubtypes();
+        mShortcutInputMethodInfo = null;
+        mShortcutSubtype = null;
         for (InputMethodInfoCompatWrapper imi : shortcuts.keySet()) {
             List<InputMethodSubtypeCompatWrapper> subtypes = shortcuts.get(imi);
             // TODO: Returns the first found IMI for now. Should handle all shortcuts as
