@@ -26,3 +26,7 @@
 -keep class com.android.inputmethod.latin.spellcheck.SpellChecker {
   *;
 }
+
+-keep class com.android.inputmethod.latin.SettingsActivity {
+  *;
+}
