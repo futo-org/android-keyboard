@@ -34,7 +34,6 @@ import java.util.List;
 
 public class PointerTracker {
     private static final String TAG = PointerTracker.class.getSimpleName();
-    private static final boolean ENABLE_ASSERTION = false;
     private static final boolean DEBUG_EVENT = false;
     private static final boolean DEBUG_MOVE_EVENT = false;
     private static final boolean DEBUG_LISTENER = false;
@@ -56,10 +55,10 @@ public class PointerTracker {
 
     private final DrawingProxy mDrawingProxy;
     private final KeyTimerHandler mKeyTimerHandler;
+    private final PointerTrackerQueue mPointerTrackerQueue;
     private KeyDetector mKeyDetector;
     private KeyboardActionListener mListener = EMPTY_LISTENER;
     private final KeyboardSwitcher mKeyboardSwitcher;
-    private final boolean mHasDistinctMultitouch;
     private final boolean mConfigSlidingKeyInputEnabled;
 
     private final int mTouchNoiseThresholdMillis;
@@ -112,16 +111,16 @@ public class PointerTracker {
     };
 
     public PointerTracker(int id, Context context, KeyTimerHandler keyTimerHandler,
-            KeyDetector keyDetector, DrawingProxy drawingProxy, boolean hasDistinctMultitouch) {
+            KeyDetector keyDetector, DrawingProxy drawingProxy, PointerTrackerQueue queue) {
         if (drawingProxy == null || keyTimerHandler == null || keyDetector == null)
             throw new NullPointerException();
         mPointerId = id;
         mDrawingProxy = drawingProxy;
         mKeyTimerHandler = keyTimerHandler;
+        mPointerTrackerQueue = queue;  // This is null for non-distinct multi-touch device.
         mKeyDetector = keyDetector;
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mKeyState = new PointerTrackerKeyState(keyDetector);
-        mHasDistinctMultitouch = hasDistinctMultitouch;
         final Resources res = context.getResources();
         mConfigSlidingKeyInputEnabled = res.getBoolean(R.bool.config_sliding_key_input_enabled);
         mDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
@@ -273,36 +272,26 @@ public class PointerTracker {
         }
     }
 
-    private void checkAssertion(PointerTrackerQueue queue) {
-        if (mHasDistinctMultitouch && queue == null)
-            throw new RuntimeException(
-                    "PointerTrackerQueue must be passed on distinct multi touch device");
-        if (!mHasDistinctMultitouch && queue != null)
-            throw new RuntimeException(
-                    "PointerTrackerQueue must be null on non-distinct multi touch device");
-    }
-
-    public void onTouchEvent(int action, int x, int y, long eventTime, PointerTrackerQueue queue) {
+    public void onTouchEvent(int action, int x, int y, long eventTime) {
         switch (action) {
         case MotionEvent.ACTION_MOVE:
-            onMoveEvent(x, y, eventTime, queue);
+            onMoveEvent(x, y, eventTime);
             break;
         case MotionEvent.ACTION_DOWN:
         case MotionEvent.ACTION_POINTER_DOWN:
-            onDownEvent(x, y, eventTime, queue);
+            onDownEvent(x, y, eventTime);
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_POINTER_UP:
-            onUpEvent(x, y, eventTime, queue);
+            onUpEvent(x, y, eventTime);
             break;
         case MotionEvent.ACTION_CANCEL:
-            onCancelEvent(x, y, eventTime, queue);
+            onCancelEvent(x, y, eventTime);
             break;
         }
     }
 
-    public void onDownEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
-        if (ENABLE_ASSERTION) checkAssertion(queue);
+    public void onDownEvent(int x, int y, long eventTime) {
         if (DEBUG_EVENT)
             printTouchEvent("onDownEvent:", x, y, eventTime);
 
@@ -321,6 +310,7 @@ public class PointerTracker {
             }
         }
 
+        final PointerTrackerQueue queue = mPointerTrackerQueue;
         if (queue != null) {
             if (isOnModifierKey(x, y)) {
                 // Before processing a down event of modifier key, all pointers already being
@@ -364,8 +354,7 @@ public class PointerTracker {
         mIsInSlidingKeyInput = true;
     }
 
-    public void onMoveEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
-        if (ENABLE_ASSERTION) checkAssertion(queue);
+    public void onMoveEvent(int x, int y, long eventTime) {
         if (DEBUG_MOVE_EVENT)
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         if (mKeyAlreadyProcessed)
@@ -449,6 +438,7 @@ public class PointerTracker {
                         keyboard.updateSpacebarPreviewIcon(diff);
                         // Display spacebar slide language switcher.
                         showKeyPreview(keyIndex);
+                        final PointerTrackerQueue queue = mPointerTrackerQueue;
                         if (queue != null)
                             queue.releaseAllPointersExcept(this, eventTime, true);
                     }
@@ -472,11 +462,11 @@ public class PointerTracker {
         }
     }
 
-    public void onUpEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
-        if (ENABLE_ASSERTION) checkAssertion(queue);
+    public void onUpEvent(int x, int y, long eventTime) {
         if (DEBUG_EVENT)
             printTouchEvent("onUpEvent  :", x, y, eventTime);
 
+        final PointerTrackerQueue queue = mPointerTrackerQueue;
         if (queue != null) {
             if (isModifier()) {
                 // Before processing an up event of modifier key, all pointers already being
@@ -540,8 +530,9 @@ public class PointerTracker {
         }
     }
 
-    public void onLongPressed(PointerTrackerQueue queue) {
+    public void onLongPressed() {
         mKeyAlreadyProcessed = true;
+        final PointerTrackerQueue queue = mPointerTrackerQueue;
         if (queue != null) {
             // TODO: Support chording + long-press input.
             queue.releaseAllPointersExcept(this, SystemClock.uptimeMillis(), true);
@@ -549,11 +540,11 @@ public class PointerTracker {
         }
     }
 
-    public void onCancelEvent(int x, int y, long eventTime, PointerTrackerQueue queue) {
-        if (ENABLE_ASSERTION) checkAssertion(queue);
+    public void onCancelEvent(int x, int y, long eventTime) {
         if (DEBUG_EVENT)
             printTouchEvent("onCancelEvt:", x, y, eventTime);
 
+        final PointerTrackerQueue queue = mPointerTrackerQueue;
         if (queue != null) {
             queue.releaseAllPointersExcept(this, eventTime, true);
             queue.remove(this);
