@@ -2033,7 +2033,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     protected void launchSettings() {
-        launchSettings(Settings.class);
+        launchSettings(SettingsActivity.class);
     }
 
     public void launchDebugSettings() {
