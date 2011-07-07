@@ -580,6 +580,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             switcher.updateShiftState();
         }
 
+        if (mCandidateView != null)
+            mCandidateView.clear();
         setSuggestionStripShownInternal(isCandidateStripVisible(), /* needsInputViewShown */ false);
         // Delay updating suggestions because keyboard input view may not be shown at this point.
         mHandler.postUpdateSuggestions();
