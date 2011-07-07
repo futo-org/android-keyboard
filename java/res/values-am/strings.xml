@@ -49,6 +49,8 @@
     <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
     <skip />
     <string name="auto_cap" msgid="1719746674854628252">"ራስ-ሰር አቢይ ማድረግ"</string>
+    <!-- no translation found for configure_dictionaries_title (3758288002414557345) -->
+    <skip />
     <string name="quick_fixes" msgid="5353213327680897927">"ፈጣንጥገና"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">" የተለመዱ የትየባ ስህተቶችንያስተካክላል"</string>
     <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
@@ -68,6 +70,8 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ውጪ"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"መጠነኛ"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"ኃይለኛ"</string>
+    <!-- no translation found for auto_correction_threshold_mode_very_aggeressive (3386782235540547678) -->
+    <skip />
     <!-- outdated translation 1323347224043514969 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"ቢግራም ምክሮች"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"ምክርን ለማሻሻል የቀደመ ቃልን ተጠቀም"</string>
     <!-- no translation found for bigram_prediction (8914273444762259739) -->
@@ -83,6 +87,78 @@
     <string name="label_more_key" msgid="3760239494604948502">"ተጨማሪ"</string>
     <string name="label_pause_key" msgid="181098308428035340">"ላፍታ አቁም"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"ቆይ"</string>
+    <!-- no translation found for spoken_current_text_is (2485723011272583845) -->
+    <skip />
+    <!-- no translation found for spoken_no_text_entered (7479685225597344496) -->
+    <skip />
+    <!-- no translation found for spoken_description_unknown (3197434010402179157) -->
+    <skip />
+    <!-- no translation found for spoken_description_shift (244197883292549308) -->
+    <skip />
+    <!-- no translation found for spoken_description_shift_shifted (954941524766465022) -->
+    <skip />
+    <!-- no translation found for spoken_description_caps_lock (5660626444912131764) -->
+    <skip />
+    <!-- no translation found for spoken_description_delete (8740376944276199801) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_symbol (5486340107500448969) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_alpha (23129338819771807) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_numeric (591752092685161732) -->
+    <skip />
+    <!-- no translation found for spoken_description_settings (4627462689603838099) -->
+    <skip />
+    <!-- no translation found for spoken_description_tab (2667716002663482248) -->
+    <skip />
+    <!-- no translation found for spoken_description_space (2582521050049860859) -->
+    <skip />
+    <!-- no translation found for spoken_description_mic (615536748882611950) -->
+    <skip />
+    <!-- no translation found for spoken_description_smiley (2256309826200113918) -->
+    <skip />
+    <!-- no translation found for spoken_description_return (8178083177238315647) -->
+    <skip />
+    <!-- no translation found for spoken_description_comma (4970844442999724586) -->
+    <skip />
+    <!-- no translation found for spoken_description_period (5286614628077903945) -->
+    <skip />
+    <!-- no translation found for spoken_description_left_parenthesis (8524822120595052415) -->
+    <skip />
+    <!-- no translation found for spoken_description_right_parenthesis (1085757995851933164) -->
+    <skip />
+    <!-- no translation found for spoken_description_colon (4312420908484277077) -->
+    <skip />
+    <!-- no translation found for spoken_description_semicolon (37737920987155179) -->
+    <skip />
+    <!-- no translation found for spoken_description_exclamation_mark (2625684427460737157) -->
+    <skip />
+    <!-- no translation found for spoken_description_question_mark (7074097784255379666) -->
+    <skip />
+    <!-- no translation found for spoken_description_double_quote (5485320575389905967) -->
+    <skip />
+    <!-- no translation found for spoken_description_single_quote (4451320362665463938) -->
+    <skip />
+    <!-- no translation found for spoken_description_dot (40711082435231673) -->
+    <skip />
+    <!-- no translation found for spoken_description_square_root (190595160284757811) -->
+    <skip />
+    <!-- no translation found for spoken_description_pi (4554418247799952239) -->
+    <skip />
+    <!-- no translation found for spoken_description_delta (3607948313655721579) -->
+    <skip />
+    <!-- no translation found for spoken_description_trademark (475877774077871369) -->
+    <skip />
+    <!-- no translation found for spoken_description_care_of (7492800237237796530) -->
+    <skip />
+    <!-- no translation found for spoken_description_star (1009742725387231977) -->
+    <skip />
+    <!-- no translation found for spoken_description_pound (5530577649206922631) -->
+    <skip />
+    <!-- no translation found for spoken_description_ellipsis (1687670869947652062) -->
+    <skip />
+    <!-- no translation found for spoken_description_low_double_quote (3551394572784840975) -->
+    <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"የድምፅ ግቤ ት"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"የድምፅ ግቤት በአሁኑ ጊዜ ለእርስዎን ቋንቋ አይደግፍም፣ ግን በእንግሊዘኛ ይሰራል።"</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"የድምፅ ግቤት የGoogleን ንግግር ለይቶ ማወቂያ ይጠቀማል።"<a href="http://m.google.com/privacy">"የተንቀሳቃሽ ስልክ ግላዊ ፖሊሲ"</a>" ይተገበራል።"</string>
@@ -112,19 +188,20 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"የድምፅ ግቤት ቦዝኗል"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"የግቤት ሜተድ ምረጥ"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"ቋንቋዎች አግቤት"</string>
-    <string name="language_selection_summary" msgid="187110938289512256">"ቋንቋ ለመለወጥ የቦታ ቁልፍ ላይ ጣትዎን ያንሸራቱ"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← ለማስቀመጥ ድጋሚ ንካ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"መዝገበ ቃላት አለ"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"የተጠቃሚ ግብረ ምላሽ አንቃ"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"ወደ Google የተሰናከለ ሪፖርቶች እና አጠቃቀም ስታስቲክስ በራስ ሰር በመላክ ይህን ግቤት ሜተድ አርትኢ እገዛ ያሻሽላል።"</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"ቃላትን ለማስተካከል ንካ"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"የገቡ ቃላትን ለማስተካከል ንካ፣ አማራጮች ሲታዩብቻ"</string>
-    <string name="keyboard_layout" msgid="437433231038683666">"የቁልፍ ሰሌዳ ገጽታ"</string>
+    <!-- outdated translation 437433231038683666 -->     <string name="keyboard_layout" msgid="8451164783510487501">"የቁልፍ ሰሌዳ ገጽታ"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"የቼክ ቁልፍሰሌዳ"</string>
     <!-- no translation found for subtype_mode_ar_keyboard (2655338636329774995) -->
     <skip />
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"የዳኒሽኛ ቁልፍሰሌዳ"</string>
     <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"የጀርመንኛ ቁልፍሰሌዳ"</string>
+    <!-- no translation found for subtype_mode_de_qwerty_keyboard (54890770769303956) -->
+    <skip />
     <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"የእንግሊዘኛ(ዩኬ) ቁልፍሰሌዳ"</string>
     <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"የእንግሊዘኛ(ዩኤስ) ቁልፍሰሌዳ"</string>
     <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"የስፖኒሽኛቁልፍ ሰሌዳ"</string>
@@ -149,6 +226,8 @@
     <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"የራሽኛቁልፍ ሰሌዳ"</string>
     <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"የሩሲኪኛቁልፍ ሰሌዳ"</string>
     <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"የሲውድናዊ ቁልፍሰሌዳ"</string>
+    <!-- no translation found for subtype_mode_tr_keyboard (3155981874829226370) -->
+    <skip />
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
     <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"የቼክ ድምፅ"</string>
@@ -173,5 +252,5 @@
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <string name="prefs_usability_study_mode" msgid="6937813623647419810">"የተገልጋይነት ጥናት ሁነታ"</string>
+    <!-- outdated translation 6937813623647419810 -->     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"የተገልጋይነት ጥናት ሁነታ"</string>
 </resources>

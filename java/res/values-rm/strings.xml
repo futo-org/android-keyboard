@@ -50,6 +50,8 @@
     <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
     <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Maiusclas automaticas"</string>
+    <!-- no translation found for configure_dictionaries_title (3758288002414557345) -->
+    <skip />
     <string name="quick_fixes" msgid="5353213327680897927">"Correcturas sveltas"</string>
     <string name="quick_fixes_summary" msgid="3405028402510332373">"Curregia sbagls da tippar currents"</string>
     <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
@@ -80,6 +82,8 @@
     <skip />
     <!-- no translation found for auto_correction_threshold_mode_aggeressive (3524029103734923819) -->
     <skip />
+    <!-- no translation found for auto_correction_threshold_mode_very_aggeressive (3386782235540547678) -->
+    <skip />
     <!-- outdated translation 1323347224043514969 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"Propostas da tip bigram"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Meglierar la proposta cun agid dal pled precedent"</string>
     <!-- no translation found for bigram_prediction (8914273444762259739) -->
@@ -98,6 +102,78 @@
     <!-- no translation found for label_pause_key (181098308428035340) -->
     <skip />
     <!-- no translation found for label_wait_key (6402152600878093134) -->
+    <skip />
+    <!-- no translation found for spoken_current_text_is (2485723011272583845) -->
+    <skip />
+    <!-- no translation found for spoken_no_text_entered (7479685225597344496) -->
+    <skip />
+    <!-- no translation found for spoken_description_unknown (3197434010402179157) -->
+    <skip />
+    <!-- no translation found for spoken_description_shift (244197883292549308) -->
+    <skip />
+    <!-- no translation found for spoken_description_shift_shifted (954941524766465022) -->
+    <skip />
+    <!-- no translation found for spoken_description_caps_lock (5660626444912131764) -->
+    <skip />
+    <!-- no translation found for spoken_description_delete (8740376944276199801) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_symbol (5486340107500448969) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_alpha (23129338819771807) -->
+    <skip />
+    <!-- no translation found for spoken_description_to_numeric (591752092685161732) -->
+    <skip />
+    <!-- no translation found for spoken_description_settings (4627462689603838099) -->
+    <skip />
+    <!-- no translation found for spoken_description_tab (2667716002663482248) -->
+    <skip />
+    <!-- no translation found for spoken_description_space (2582521050049860859) -->
+    <skip />
+    <!-- no translation found for spoken_description_mic (615536748882611950) -->
+    <skip />
+    <!-- no translation found for spoken_description_smiley (2256309826200113918) -->
+    <skip />
+    <!-- no translation found for spoken_description_return (8178083177238315647) -->
+    <skip />
+    <!-- no translation found for spoken_description_comma (4970844442999724586) -->
+    <skip />
+    <!-- no translation found for spoken_description_period (5286614628077903945) -->
+    <skip />
+    <!-- no translation found for spoken_description_left_parenthesis (8524822120595052415) -->
+    <skip />
+    <!-- no translation found for spoken_description_right_parenthesis (1085757995851933164) -->
+    <skip />
+    <!-- no translation found for spoken_description_colon (4312420908484277077) -->
+    <skip />
+    <!-- no translation found for spoken_description_semicolon (37737920987155179) -->
+    <skip />
+    <!-- no translation found for spoken_description_exclamation_mark (2625684427460737157) -->
+    <skip />
+    <!-- no translation found for spoken_description_question_mark (7074097784255379666) -->
+    <skip />
+    <!-- no translation found for spoken_description_double_quote (5485320575389905967) -->
+    <skip />
+    <!-- no translation found for spoken_description_single_quote (4451320362665463938) -->
+    <skip />
+    <!-- no translation found for spoken_description_dot (40711082435231673) -->
+    <skip />
+    <!-- no translation found for spoken_description_square_root (190595160284757811) -->
+    <skip />
+    <!-- no translation found for spoken_description_pi (4554418247799952239) -->
+    <skip />
+    <!-- no translation found for spoken_description_delta (3607948313655721579) -->
+    <skip />
+    <!-- no translation found for spoken_description_trademark (475877774077871369) -->
+    <skip />
+    <!-- no translation found for spoken_description_care_of (7492800237237796530) -->
+    <skip />
+    <!-- no translation found for spoken_description_star (1009742725387231977) -->
+    <skip />
+    <!-- no translation found for spoken_description_pound (5530577649206922631) -->
+    <skip />
+    <!-- no translation found for spoken_description_ellipsis (1687670869947652062) -->
+    <skip />
+    <!-- no translation found for spoken_description_low_double_quote (3551394572784840975) -->
     <skip />
     <string name="voice_warning_title" msgid="4419354150908395008">"Cumonds vocals"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"\"Cumonds vocals en Vossa lingua na vegnan actualmain betg sustegnids, ma la funcziun è disponibla per englais.\""</string>
@@ -135,7 +211,6 @@
     <!-- no translation found for selectInputMethod (315076553378705821) -->
     <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Linguas da cumonds vocals"</string>
-    <string name="language_selection_summary" msgid="187110938289512256">"Stritgar cun il det sur la tasta da vid per midar la lingua"</string>
     <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tippar danovamain per memorisar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activar il feedback da l\'utilisader"</string>
@@ -144,7 +219,7 @@
     <skip />
     <!-- no translation found for prefs_enable_recorrection_summary (5082041365862396329) -->
     <skip />
-    <string name="keyboard_layout" msgid="437433231038683666">"Design da la tastatura"</string>
+    <!-- outdated translation 437433231038683666 -->     <string name="keyboard_layout" msgid="8451164783510487501">"Design da la tastatura"</string>
     <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
     <skip />
     <!-- no translation found for subtype_mode_ar_keyboard (2655338636329774995) -->
@@ -152,6 +227,8 @@
     <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->
     <skip />
     <!-- no translation found for subtype_mode_de_keyboard (1990979135959462145) -->
+    <skip />
+    <!-- no translation found for subtype_mode_de_qwerty_keyboard (54890770769303956) -->
     <skip />
     <!-- no translation found for subtype_mode_en_GB_keyboard (7945856548410373708) -->
     <skip />
@@ -189,6 +266,8 @@
     <skip />
     <!-- no translation found for subtype_mode_sv_keyboard (4933838139861753401) -->
     <skip />
+    <!-- no translation found for subtype_mode_tr_keyboard (3155981874829226370) -->
+    <skip />
     <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
     <skip />
     <!-- no translation found for subtype_mode_cs_voice (1136386688120958641) -->
@@ -223,6 +302,6 @@
     <skip />
     <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
     <skip />
-    <!-- no translation found for prefs_usability_study_mode (6937813623647419810) -->
+    <!-- no translation found for prefs_usability_study_mode (1261130555134595254) -->
     <skip />
 </resources>
