@@ -703,6 +703,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mShowingAddToDictionary = false;
         mShowingAutoCorrectionInverted = false;
         mTouchToSave.setVisibility(GONE);
+        mCandidatesStrip.setVisibility(VISIBLE);
         mCandidatesStrip.removeAllViews();
         mCandidatesPane.removeAllViews();
         closeCandidatesPane();
