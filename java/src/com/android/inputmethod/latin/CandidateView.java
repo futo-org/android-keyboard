@@ -333,7 +333,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
         final TypedArray keyboardViewAttr = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, R.attr.keyboardViewStyle, R.style.KeyboardView);
-        final Drawable keyBackground = keyboardViewAttr.getDrawable(
+        final Drawable expandBackground = keyboardViewAttr.getDrawable(
+                R.styleable.KeyboardView_keyBackground);
+        final Drawable closeBackground = keyboardViewAttr.getDrawable(
                 R.styleable.KeyboardView_keyBackground);
         final int keyTextColor = keyboardViewAttr.getColor(
                 R.styleable.KeyboardView_keyTextColor, 0xFF000000);
@@ -341,7 +343,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
         mCandidatesPaneControl = (ViewGroup)findViewById(R.id.candidates_pane_control);
         mExpandCandidatesPane = (TextView)findViewById(R.id.expand_candidates_pane);
-        mExpandCandidatesPane.setBackgroundDrawable(keyBackground);
+        mExpandCandidatesPane.setBackgroundDrawable(expandBackground);
         mExpandCandidatesPane.setTextColor(keyTextColor);
         mExpandCandidatesPane.setOnClickListener(new OnClickListener() {
             @Override
@@ -350,7 +352,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             }
         });
         mCloseCandidatesPane = (TextView)findViewById(R.id.close_candidates_pane);
-        mCloseCandidatesPane.setBackgroundDrawable(keyBackground);
+        mCloseCandidatesPane.setBackgroundDrawable(closeBackground);
         mCloseCandidatesPane.setTextColor(keyTextColor);
         mCloseCandidatesPane.setOnClickListener(new OnClickListener() {
             @Override
