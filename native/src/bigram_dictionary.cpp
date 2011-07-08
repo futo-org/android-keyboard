@@ -42,8 +42,10 @@ BigramDictionary::~BigramDictionary() {
 bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequency) {
     word[length] = 0;
     if (DEBUG_DICT) {
+#ifdef FLAG_DBG
         char s[length + 1];
         for (int i = 0; i <= length; i++) s[i] = word[i];
+#endif
         LOGI("Bigram: Found word = %s, freq = %d :", s, frequency);
     }
 

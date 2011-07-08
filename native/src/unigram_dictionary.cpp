@@ -155,9 +155,11 @@ int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const 
         LOGI("Returning %d words", suggestedWordsCount);
         /// Print the returned words
         for (int j = 0; j < suggestedWordsCount; ++j) {
+#ifdef FLAG_DBG
             short unsigned int* w = mOutputChars + j * MAX_WORD_LENGTH;
             char s[MAX_WORD_LENGTH];
             for (int i = 0; i <= MAX_WORD_LENGTH; i++) s[i] = w[i];
+#endif
             LOGI("%s %i", s, mFrequencies[j]);
         }
         LOGI("Next letters: ");
@@ -283,8 +285,10 @@ static inline void registerNextLetter(unsigned short c, int *nextLetters, int ne
 bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency) {
     word[length] = 0;
     if (DEBUG_DICT && DEBUG_SHOW_FOUND_WORD) {
+#ifdef FLAG_DBG
         char s[length + 1];
         for (int i = 0; i <= length; i++) s[i] = word[i];
+#endif
         LOGI("Found word = %s, freq = %d", s, frequency);
     }
     if (length > MAX_WORD_LENGTH) {
@@ -305,8 +309,10 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     }
     if (insertAt < MAX_WORDS) {
         if (DEBUG_DICT) {
+#ifdef FLAG_DBG
             char s[length + 1];
             for (int i = 0; i <= length; i++) s[i] = word[i];
+#endif
             LOGI("Added word = %s, freq = %d, %d", s, frequency, S_INT_MAX);
         }
         memmove((char*) mFrequencies + (insertAt + 1) * sizeof(mFrequencies[0]),
@@ -788,9 +794,11 @@ inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
                     if (newFreq > maxFreq) {
                         for (int i = 0; i < inputLength; ++i) word[i] = newWord[i];
                         if (DEBUG_DICT && DEBUG_NODE) {
+#ifdef FLAG_DBG
                             char s[inputLength + 1];
                             for (int i = 0; i < inputLength; ++i) s[i] = word[i];
                             s[inputLength] = 0;
+#endif
                             LOGI("New missing space word found: %d > %d (%s), %d, %d",
                                     newFreq, maxFreq, s, inputLength, depth);
                         }
