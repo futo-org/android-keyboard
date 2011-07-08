@@ -16,5 +16,15 @@
 
 package com.android.inputmethod.latin;
 
-public class SettingsActivity extends Settings {
+import android.content.Intent;
+import android.preference.PreferenceActivity;
+
+public class SettingsActivity extends PreferenceActivity {
+    @Override
+    public Intent getIntent() {
+        final Intent modIntent = new Intent(super.getIntent());
+        modIntent.putExtra(EXTRA_SHOW_FRAGMENT, Settings.class.getName());
+        modIntent.putExtra(EXTRA_NO_HEADERS, true);
+        return modIntent;
+    }
 }
