@@ -536,7 +536,6 @@ public class Settings extends PreferenceActivity
                 [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
     }
 
-    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case VOICE_INPUT_CONFIRM_DIALOG:
