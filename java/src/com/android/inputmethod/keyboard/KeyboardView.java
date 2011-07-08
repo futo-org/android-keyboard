@@ -350,12 +350,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        // TODO: Should notify InputMethodService instead?
-        KeyboardSwitcher.getInstance().onSizeChanged();
-    }
-
     /**
      * Attaches a keyboard to this view. The keyboard can be switched at any time and the
      * view will re-layout itself to accommodate the keyboard.
