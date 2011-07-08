@@ -58,6 +58,11 @@ public class PopupMiniKeyboardView extends LatinKeyboardBaseView implements Popu
     }
 
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        // Do nothing for the mini keyboard.
+    }
+
+    @Override
     public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
         // Mini keyboard needs no pop-up key preview displayed, so we pass always false with a
         // delay of 0. The delay does not matter actually since the popup is not shown anyway.
