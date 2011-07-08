@@ -23,7 +23,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.keyboard.LatinKeyboardBaseView.KeyTimerHandler;
-import com.android.inputmethod.keyboard.internal.PointerTrackerKeyState;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
@@ -68,7 +67,19 @@ public class PointerTracker {
     private List<Key> mKeys;
     private int mKeyQuarterWidthSquared;
 
-    private final PointerTrackerKeyState mKeyState;
+    // The position and time at which first down event occurred.
+    private long mDownTime;
+    private long mUpTime;
+
+    // The current key index where this pointer is.
+    private int mKeyIndex = KeyDetector.NOT_A_KEY;
+    // The position where mKeyIndex was recognized for the first time.
+    private int mKeyX;
+    private int mKeyY;
+
+    // Last pointer position.
+    private int mLastX;
+    private int mLastY;
 
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
@@ -116,7 +127,6 @@ public class PointerTracker {
         mDrawingProxy = drawingProxy;
         mKeyTimerHandler = keyTimerHandler;
         mPointerTrackerQueue = queue;  // This is null for non-distinct multi-touch device.
-        mKeyState = new PointerTrackerKeyState(keyDetector);
         setKeyDetectorInner(keyDetector);
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         final Resources res = context.getResources();
@@ -197,7 +207,6 @@ public class PointerTracker {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
         mKeys = mKeyboard.getKeys();
-        mKeyState.setKeyDetector(keyDetector);
         final int keyQuarterWidth = mKeyboard.getKeyWidth() / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
     }
@@ -233,7 +242,7 @@ public class PointerTracker {
     }
 
     public boolean isModifier() {
-        return isModifierInternal(mKeyState.getKeyIndex());
+        return isModifierInternal(mKeyIndex);
     }
 
     private boolean isOnModifierKey(int x, int y) {
@@ -255,7 +264,7 @@ public class PointerTracker {
     }
 
     public void setReleasedKeyGraphics() {
-        setReleasedKeyGraphics(mKeyState.getKeyIndex());
+        setReleasedKeyGraphics(mKeyIndex);
     }
 
     private void setReleasedKeyGraphics(int keyIndex) {
@@ -272,6 +281,46 @@ public class PointerTracker {
             key.onPressed();
             mDrawingProxy.invalidateKey(key);
         }
+    }
+
+    public int getLastX() {
+        return mLastX;
+    }
+
+    public int getLastY() {
+        return mLastY;
+    }
+
+    public long getDownTime() {
+        return mDownTime;
+    }
+
+    private int onDownKey(int x, int y, long eventTime) {
+        mDownTime = eventTime;
+        return onMoveToNewKey(onMoveKeyInternal(x, y), x, y);
+    }
+
+    private int onMoveKeyInternal(int x, int y) {
+        mLastX = x;
+        mLastY = y;
+        return mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
+    }
+
+    private int onMoveKey(int x, int y) {
+        return onMoveKeyInternal(x, y);
+    }
+
+    private int onMoveToNewKey(int keyIndex, int x, int y) {
+        mKeyIndex = keyIndex;
+        mKeyX = x;
+        mKeyY = y;
+        return keyIndex;
+    }
+
+    private int onUpKey(int x, int y, long eventTime) {
+        mUpTime = eventTime;
+        mKeyIndex = KeyDetector.NOT_A_KEY;
+        return onMoveKeyInternal(x, y);
     }
 
     public void onTouchEvent(int action, int x, int y, long eventTime) {
@@ -298,10 +347,10 @@ public class PointerTracker {
             printTouchEvent("onDownEvent:", x, y, eventTime);
 
         // Naive up-to-down noise filter.
-        final long deltaT = eventTime - mKeyState.getUpTime();
+        final long deltaT = eventTime - mUpTime;
         if (deltaT < mTouchNoiseThresholdMillis) {
-            final int dx = x - mKeyState.getLastX();
-            final int dy = y - mKeyState.getLastY();
+            final int dx = x - mLastX;
+            final int dy = y - mLastY;
             final int distanceSquared = (dx * dx + dy * dy);
             if (distanceSquared < mTouchNoiseThresholdDistanceSquared) {
                 if (DEBUG_MODE)
@@ -325,7 +374,7 @@ public class PointerTracker {
     }
 
     private void onDownEventInternal(int x, int y, long eventTime) {
-        int keyIndex = mKeyState.onDownKey(x, y, eventTime);
+        int keyIndex = onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
         // from modifier key, or 3) this pointer is on mini-keyboard.
         mIsAllowedSlidingKeyInput = mConfigSlidingKeyInputEnabled || isModifierInternal(keyIndex)
@@ -341,7 +390,7 @@ public class PointerTracker {
             // {@link #setKeyboard}. In those cases, we should update keyIndex according to the new
             // keyboard layout.
             if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex), false))
-                keyIndex = mKeyState.onDownKey(x, y, eventTime);
+                keyIndex = onDownKey(x, y, eventTime);
 
             startRepeatKey(keyIndex);
             startLongPressTimer(keyIndex);
@@ -361,19 +410,18 @@ public class PointerTracker {
             printTouchEvent("onMoveEvent:", x, y, eventTime);
         if (mKeyAlreadyProcessed)
             return;
-        final PointerTrackerKeyState keyState = mKeyState;
 
         // TODO: Remove this hacking code
         if (mIsInSlidingLanguageSwitch) {
-            ((LatinKeyboard)mKeyboard).updateSpacebarPreviewIcon(x - keyState.getKeyX());
+            ((LatinKeyboard)mKeyboard).updateSpacebarPreviewIcon(x - mKeyX);
             showKeyPreview(mSpaceKeyIndex);
             return;
         }
-        final int lastX = keyState.getLastX();
-        final int lastY = keyState.getLastY();
-        final int oldKeyIndex = keyState.getKeyIndex();
+        final int lastX = mLastX;
+        final int lastY = mLastY;
+        final int oldKeyIndex = mKeyIndex;
         final Key oldKey = getKey(oldKeyIndex);
-        int keyIndex = keyState.onMoveKey(x, y);
+        int keyIndex = onMoveKey(x, y);
         if (isValidKeyIndex(keyIndex)) {
             if (oldKey == null) {
                 // The pointer has been slid in to the new key, but the finger was not on any keys.
@@ -382,8 +430,8 @@ public class PointerTracker {
                 // {@link #setKeyboard}. In those cases, we should update keyIndex according to the
                 // new keyboard layout.
                 if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex), true))
-                    keyIndex = keyState.onMoveKey(x, y);
-                keyState.onMoveToNewKey(keyIndex, x, y);
+                    keyIndex = onMoveKey(x, y);
+                onMoveToNewKey(keyIndex, x, y);
                 startLongPressTimer(keyIndex);
                 showKeyPreview(keyIndex);
                 setPressedKeyGraphics(keyIndex);
@@ -401,8 +449,8 @@ public class PointerTracker {
                     // at {@link #setKeyboard}. In those cases, we should update keyIndex according
                     // to the new keyboard layout.
                     if (callListenerOnPressAndCheckKeyboardLayoutChange(getKey(keyIndex), true))
-                        keyIndex = keyState.onMoveKey(x, y);
-                    keyState.onMoveToNewKey(keyIndex, x, y);
+                        keyIndex = onMoveKey(x, y);
+                    onMoveToNewKey(keyIndex, x, y);
                     startLongPressTimer(keyIndex);
                     setPressedKeyGraphics(keyIndex);
                     showKeyPreview(keyIndex);
@@ -432,7 +480,7 @@ public class PointerTracker {
                 final LatinKeyboard keyboard = ((LatinKeyboard)mKeyboard);
                 if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()
                         && mSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1) {
-                    final int diff = x - keyState.getKeyX();
+                    final int diff = x - mKeyX;
                     if (keyboard.shouldTriggerSpacebarSlidingLanguageSwitch(diff)) {
                         // Detect start sliding language switch.
                         mIsInSlidingLanguageSwitch = true;
@@ -455,7 +503,7 @@ public class PointerTracker {
                 startSlidingKeyInput(oldKey);
                 mKeyTimerHandler.cancelLongPressTimers();
                 if (mIsAllowedSlidingKeyInput) {
-                    keyState.onMoveToNewKey(keyIndex, x, y);
+                    onMoveToNewKey(keyIndex, x, y);
                 } else {
                     mKeyAlreadyProcessed = true;
                     dismissKeyPreview();
@@ -497,17 +545,16 @@ public class PointerTracker {
         mKeyTimerHandler.cancelKeyTimers();
         mDrawingProxy.cancelShowKeyPreview(this);
         mIsInSlidingKeyInput = false;
-        final PointerTrackerKeyState keyState = mKeyState;
         final int keyX, keyY;
-        if (isMajorEnoughMoveToBeOnNewKey(x, y, keyState.onMoveKey(x, y))) {
+        if (isMajorEnoughMoveToBeOnNewKey(x, y, onMoveKey(x, y))) {
             keyX = x;
             keyY = y;
         } else {
             // Use previous fixed key coordinates.
-            keyX = keyState.getKeyX();
-            keyY = keyState.getKeyY();
+            keyX = mKeyX;
+            keyY = mKeyY;
         }
-        final int keyIndex = keyState.onUpKey(keyX, keyY, eventTime);
+        final int keyIndex = onUpKey(keyX, keyY, eventTime);
         dismissKeyPreview();
         if (updateReleasedKeyGraphics)
             setReleasedKeyGraphics(keyIndex);
@@ -558,7 +605,7 @@ public class PointerTracker {
         mKeyTimerHandler.cancelKeyTimers();
         mDrawingProxy.cancelShowKeyPreview(this);
         dismissKeyPreview();
-        setReleasedKeyGraphics(mKeyState.getKeyIndex());
+        setReleasedKeyGraphics(mKeyIndex);
         mIsInSlidingKeyInput = false;
     }
 
@@ -581,22 +628,10 @@ public class PointerTracker {
         }
     }
 
-    public int getLastX() {
-        return mKeyState.getLastX();
-    }
-
-    public int getLastY() {
-        return mKeyState.getLastY();
-    }
-
-    public long getDownTime() {
-        return mKeyState.getDownTime();
-    }
-
     private boolean isMajorEnoughMoveToBeOnNewKey(int x, int y, int newKey) {
         if (mKeys == null || mKeyDetector == null)
             throw new NullPointerException("keyboard and/or key detector not set");
-        int curKey = mKeyState.getKeyIndex();
+        int curKey = mKeyIndex;
         if (newKey == curKey) {
             return false;
         } else if (isValidKeyIndex(curKey)) {
