@@ -35,7 +35,6 @@ import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
-import com.android.inputmethod.keyboard.internal.SwipeTracker;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
@@ -82,11 +81,8 @@ public class LatinKeyboardBaseView extends KeyboardView {
 
     protected KeyDetector mKeyDetector;
 
-    // Swipe gesture detector
+    // To detect double tap.
     protected GestureDetector mGestureDetector;
-    private final SwipeTracker mSwipeTracker = new SwipeTracker();
-    private final int mSwipeThreshold;
-    private final boolean mDisambiguateSwipe;
 
     private final KeyTimerHandler mKeyTimerHandler = new KeyTimerHandler(this);
 
@@ -172,6 +168,52 @@ public class LatinKeyboardBaseView extends KeyboardView {
         }
     }
 
+    private class DoubleTapListener extends GestureDetector.SimpleOnGestureListener {
+        private boolean mProcessingShiftDoubleTapEvent = false;
+
+        @Override
+        public boolean onDoubleTap(MotionEvent firstDown) {
+            final Keyboard keyboard = getKeyboard();
+            if (ENABLE_CAPSLOCK_BY_DOUBLETAP && keyboard instanceof LatinKeyboard
+                    && ((LatinKeyboard) keyboard).isAlphaKeyboard()) {
+                final int pointerIndex = firstDown.getActionIndex();
+                final int id = firstDown.getPointerId(pointerIndex);
+                final PointerTracker tracker = getPointerTracker(id);
+                // If the first down event is on shift key.
+                if (tracker.isOnShiftKey((int) firstDown.getX(), (int) firstDown.getY())) {
+                    mProcessingShiftDoubleTapEvent = true;
+                    return true;
+                }
+            }
+            mProcessingShiftDoubleTapEvent = false;
+            return false;
+        }
+
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent secondTap) {
+            if (mProcessingShiftDoubleTapEvent
+                    && secondTap.getAction() == MotionEvent.ACTION_DOWN) {
+                final MotionEvent secondDown = secondTap;
+                final int pointerIndex = secondDown.getActionIndex();
+                final int id = secondDown.getPointerId(pointerIndex);
+                final PointerTracker tracker = getPointerTracker(id);
+                // If the second down event is also on shift key.
+                if (tracker.isOnShiftKey((int) secondDown.getX(), (int) secondDown.getY())) {
+                    // Detected a double tap on shift key. If we are in the ignoring double tap
+                    // mode, it means we have already turned off caps lock in
+                    // {@link KeyboardSwitcher#onReleaseShift} .
+                    final boolean ignoringDoubleTap = mKeyTimerHandler.isIgnoringDoubleTap();
+                    if (!ignoringDoubleTap)
+                        onDoubleTapShiftKey(tracker);
+                    return true;
+                }
+                // Otherwise these events should not be handled as double tap.
+                mProcessingShiftDoubleTapEvent = false;
+            }
+            return mProcessingShiftDoubleTapEvent;
+        }
+    }
+
     public LatinKeyboardBaseView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
@@ -189,77 +231,10 @@ public class LatinKeyboardBaseView extends KeyboardView {
         final Resources res = getResources();
         final float keyHysteresisDistance = res.getDimension(R.dimen.key_hysteresis_distance);
         mKeyDetector = new KeyDetector(keyHysteresisDistance);
-        mSwipeThreshold = (int) (500 * res.getDisplayMetrics().density);
-        // TODO: Refer to frameworks/base/core/res/res/values/config.xml
-        mDisambiguateSwipe = res.getBoolean(R.bool.config_swipeDisambiguation);
-
-        GestureDetector.SimpleOnGestureListener listener =
-                new GestureDetector.SimpleOnGestureListener() {
-            private boolean mProcessingShiftDoubleTapEvent = false;
-
-            @Override
-            public boolean onFling(MotionEvent me1, MotionEvent me2, float velocityX,
-                    float velocityY) {
-                final float absX = Math.abs(velocityX);
-                final float absY = Math.abs(velocityY);
-                float deltaY = me2.getY() - me1.getY();
-                int travelY = getHeight() / 2; // Half the keyboard height
-                mSwipeTracker.computeCurrentVelocity(1000);
-                final float endingVelocityY = mSwipeTracker.getYVelocity();
-                if (velocityY > mSwipeThreshold && absX < absY / 2 && deltaY > travelY) {
-                    if (mDisambiguateSwipe && endingVelocityY >= velocityY / 4) {
-                        onSwipeDown();
-                        return true;
-                    }
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onDoubleTap(MotionEvent firstDown) {
-                final Keyboard keyboard = getKeyboard();
-                if (ENABLE_CAPSLOCK_BY_DOUBLETAP && keyboard instanceof LatinKeyboard
-                        && ((LatinKeyboard) keyboard).isAlphaKeyboard()) {
-                    final int pointerIndex = firstDown.getActionIndex();
-                    final int id = firstDown.getPointerId(pointerIndex);
-                    final PointerTracker tracker = getPointerTracker(id);
-                    // If the first down event is on shift key.
-                    if (tracker.isOnShiftKey((int)firstDown.getX(), (int)firstDown.getY())) {
-                        mProcessingShiftDoubleTapEvent = true;
-                        return true;
-                    }
-                }
-                mProcessingShiftDoubleTapEvent = false;
-                return false;
-            }
-
-            @Override
-            public boolean onDoubleTapEvent(MotionEvent secondTap) {
-                if (mProcessingShiftDoubleTapEvent
-                        && secondTap.getAction() == MotionEvent.ACTION_DOWN) {
-                    final MotionEvent secondDown = secondTap;
-                    final int pointerIndex = secondDown.getActionIndex();
-                    final int id = secondDown.getPointerId(pointerIndex);
-                    final PointerTracker tracker = getPointerTracker(id);
-                    // If the second down event is also on shift key.
-                    if (tracker.isOnShiftKey((int)secondDown.getX(), (int)secondDown.getY())) {
-                        // Detected a double tap on shift key. If we are in the ignoring double tap
-                        // mode, it means we have already turned off caps lock in
-                        // {@link KeyboardSwitcher#onReleaseShift} .
-                        final boolean ignoringDoubleTap = mKeyTimerHandler.isIgnoringDoubleTap();
-                        if (!ignoringDoubleTap)
-                            onDoubleTapShiftKey(tracker);
-                        return true;
-                    }
-                    // Otherwise these events should not be handled as double tap.
-                    mProcessingShiftDoubleTapEvent = false;
-                }
-                return mProcessingShiftDoubleTapEvent;
-            }
-        };
 
         final boolean ignoreMultitouch = true;
-        mGestureDetector = new GestureDetector(getContext(), listener, null, ignoreMultitouch);
+        mGestureDetector = new GestureDetector(
+                getContext(), new DoubleTapListener(), null, ignoreMultitouch);
         mGestureDetector.setIsLongpressEnabled(false);
 
         mHasDistinctMultitouch = context.getPackageManager()
@@ -419,10 +394,6 @@ public class LatinKeyboardBaseView extends KeyboardView {
             }
 
             @Override
-            public void onSwipeDown() {
-                // Nothing to do.
-            }
-            @Override
             public void onPress(int primaryCode, boolean withSliding) {
                 mKeyboardActionListener.onPress(primaryCode, withSliding);
             }
@@ -525,9 +496,6 @@ public class LatinKeyboardBaseView extends KeyboardView {
             return true;
         }
 
-        // Track the last few movements to look for spurious swipes.
-        mSwipeTracker.addMovement(me);
-
         // Gesture detector must be enabled only when mini-keyboard is not on the screen.
         if (mPopupMiniKeyboardPanel == null && mGestureDetector != null
                 && mGestureDetector.onTouchEvent(me)) {
@@ -613,10 +581,6 @@ public class LatinKeyboardBaseView extends KeyboardView {
         }
 
         return true;
-    }
-
-    protected void onSwipeDown() {
-        mKeyboardActionListener.onSwipeDown();
     }
 
     @Override

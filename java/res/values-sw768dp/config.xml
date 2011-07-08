@@ -25,7 +25,6 @@
     <bool name="config_enable_show_recorrection_option">false</bool>
     <bool name="config_enable_quick_fixes_option">false</bool>
     <bool name="config_enable_bigram_suggestions_option">false</bool>
-    <bool name="config_swipe_down_dismiss_keyboard_enabled">false</bool>
     <bool name="config_sliding_key_input_enabled">false</bool>
     <bool name="config_digit_popup_characters_enabled">false</bool>
     <!-- Whether or not Popup on key press is enabled by default -->

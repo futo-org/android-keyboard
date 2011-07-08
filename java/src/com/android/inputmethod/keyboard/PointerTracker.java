@@ -106,8 +106,6 @@ public class PointerTracker {
         public void onTextInput(CharSequence text) {}
         @Override
         public void onCancelInput() {}
-        @Override
-        public void onSwipeDown() {}
     };
 
     public PointerTracker(int id, Context context, KeyTimerHandler keyTimerHandler,
