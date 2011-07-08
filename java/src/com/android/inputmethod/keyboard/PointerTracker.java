@@ -118,9 +118,9 @@ public class PointerTracker {
         mDrawingProxy = drawingProxy;
         mKeyTimerHandler = keyTimerHandler;
         mPointerTrackerQueue = queue;  // This is null for non-distinct multi-touch device.
-        mKeyDetector = keyDetector;
-        mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mKeyState = new PointerTrackerKeyState(keyDetector);
+        setKeyDetectorInner(keyDetector);
+        mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         final Resources res = context.getResources();
         mConfigSlidingKeyInputEnabled = res.getBoolean(R.bool.config_sliding_key_input_enabled);
         mDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
@@ -134,7 +134,7 @@ public class PointerTracker {
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
     }
 
-    public void setOnKeyboardActionListener(KeyboardActionListener listener) {
+    public void setKeyboardActionListener(KeyboardActionListener listener) {
         mListener = listener;
     }
 
@@ -195,15 +195,19 @@ public class PointerTracker {
         mListener.onCancelInput();
     }
 
-    public void setKeyboard(Keyboard keyboard, KeyDetector keyDetector) {
-        if (keyboard == null || keyDetector == null)
-            throw new NullPointerException();
-        mKeyboard = keyboard;
-        mKeys = keyboard.getKeys();
+    public void setKeyDetectorInner(KeyDetector keyDetector) {
         mKeyDetector = keyDetector;
+        mKeyboard = keyDetector.getKeyboard();
+        mKeys = mKeyboard.getKeys();
         mKeyState.setKeyDetector(keyDetector);
-        final int keyQuarterWidth = keyboard.getKeyWidth() / 4;
+        final int keyQuarterWidth = mKeyboard.getKeyWidth() / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
+    }
+
+    public void setKeyDetector(KeyDetector keyDetector) {
+        if (keyDetector == null)
+            throw new NullPointerException();
+        setKeyDetectorInner(keyDetector);
         // Mark that keyboard layout has been changed.
         mKeyboardLayoutHasBeenChanged = true;
     }

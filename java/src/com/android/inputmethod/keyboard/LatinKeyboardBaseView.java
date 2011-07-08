@@ -274,10 +274,10 @@ public class LatinKeyboardBaseView extends KeyboardView {
             mKeyTimerHandler.startIgnoringDoubleTap();
     }
 
-    public void setOnKeyboardActionListener(KeyboardActionListener listener) {
+    public void setKeyboardActionListener(KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
         for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setOnKeyboardActionListener(listener);
+            tracker.setKeyboardActionListener(listener);
         }
     }
 
@@ -285,7 +285,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
      * Returns the {@link KeyboardActionListener} object.
      * @return the listener attached to this keyboard
      */
-    protected KeyboardActionListener getOnKeyboardActionListener() {
+    protected KeyboardActionListener getKeyboardActionListener() {
         return mKeyboardActionListener;
     }
 
@@ -310,10 +310,10 @@ public class LatinKeyboardBaseView extends KeyboardView {
         // Remove any pending messages, except dismissing preview
         mKeyTimerHandler.cancelKeyTimers();
         super.setKeyboard(keyboard);
-        mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
-                -getPaddingTop() + mVerticalCorrection);
+        mKeyDetector.setKeyboard(
+                keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
         for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setKeyboard(keyboard, mKeyDetector);
+            tracker.setKeyDetector(mKeyDetector);
         }
         mKeyDetector.setProximityThreshold(keyboard.getMostCommonKeyWidth());
         mPopupPanelCache.clear();
@@ -399,7 +399,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
 
         final PopupMiniKeyboardView miniKeyboardView =
                 (PopupMiniKeyboardView)container.findViewById(R.id.mini_keyboard_view);
-        miniKeyboardView.setOnKeyboardActionListener(new KeyboardActionListener() {
+        miniKeyboardView.setKeyboardActionListener(new KeyboardActionListener() {
             @Override
             public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
                 mKeyboardActionListener.onCodeInput(primaryCode, keyCodes, x, y);
@@ -489,9 +489,9 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 new PointerTracker(i, getContext(), mKeyTimerHandler, mKeyDetector, this,
                         mPointerQueue);
             if (keyboard != null)
-                tracker.setKeyboard(keyboard, mKeyDetector);
+                tracker.setKeyDetector(mKeyDetector);
             if (listener != null)
-                tracker.setOnKeyboardActionListener(listener);
+                tracker.setKeyboardActionListener(listener);
             pointers.add(tracker);
         }
 

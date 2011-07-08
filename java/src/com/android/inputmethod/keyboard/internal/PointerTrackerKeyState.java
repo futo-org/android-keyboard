@@ -39,8 +39,10 @@ public class PointerTrackerKeyState {
     private int mLastX;
     private int mLastY;
 
-    public PointerTrackerKeyState(KeyDetector keyDetecor) {
-        mKeyDetector = keyDetecor;
+    public PointerTrackerKeyState(KeyDetector keyDetector) {
+        if (keyDetector == null)
+            throw new NullPointerException();
+        mKeyDetector = keyDetector;
     }
 
     public void setKeyDetector(KeyDetector keyDetector) {

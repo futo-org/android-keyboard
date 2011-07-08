@@ -37,7 +37,7 @@ public class MiniKeyboardKeyDetector extends KeyDetector {
 
     @Override
     public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
-        final List<Key> keys = getKeys();
+        final List<Key> keys = getKeyboard().getKeys();
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 

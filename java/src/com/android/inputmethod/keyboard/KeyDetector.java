@@ -73,11 +73,10 @@ public class KeyDetector {
         return y + mCorrectionY;
     }
 
-    protected List<Key> getKeys() {
+    public Keyboard getKeyboard() {
         if (mKeyboard == null)
             throw new IllegalStateException("keyboard isn't set");
-        // mKeyboard is guaranteed not to be null at setKeybaord() method if mKeys is not null
-        return mKeyboard.getKeys();
+        return mKeyboard;
     }
 
     public void setProximityCorrectionEnabled(boolean enabled) {
@@ -154,7 +153,7 @@ public class KeyDetector {
     }
 
     private void getNearbyKeyCodes(final int[] allCodes) {
-        final List<Key> keys = getKeys();
+        final List<Key> keys = getKeyboard().getKeys();
         final int[] indices = mIndices;
 
         // allCodes[0] should always have the key code even if it is a non-letter key.
@@ -188,7 +187,7 @@ public class KeyDetector {
      * @return The nearest key index
      */
     public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
-        final List<Key> keys = getKeys();
+        final List<Key> keys = getKeyboard().getKeys();
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 

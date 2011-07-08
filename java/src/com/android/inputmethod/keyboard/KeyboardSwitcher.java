@@ -763,7 +763,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
 
         mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
-        mKeyboardView.setOnKeyboardActionListener(mInputMethodService);
+        mKeyboardView.setKeyboardActionListener(mInputMethodService);
 
         // This always needs to be set since the accessibility state can
         // potentially change without the input view being re-created.
