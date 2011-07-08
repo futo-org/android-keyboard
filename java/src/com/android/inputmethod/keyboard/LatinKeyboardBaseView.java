@@ -183,13 +183,10 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         mVerticalCorrection = a.getDimensionPixelOffset(
                 R.styleable.KeyboardView_verticalCorrection, 0);
-
         mPopupLayout = a.getResourceId(R.styleable.KeyboardView_popupLayout, 0);
-        // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
         a.recycle();
 
         final Resources res = getResources();
-
         final float keyHysteresisDistance = res.getDimension(R.dimen.key_hysteresis_distance);
         mKeyDetector = new KeyDetector(keyHysteresisDistance);
         mSwipeThreshold = (int) (500 * res.getDisplayMetrics().density);

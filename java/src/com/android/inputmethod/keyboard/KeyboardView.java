@@ -331,7 +331,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             mPreviewText = null;
             mShowKeyPreviewPopup = false;
         }
-        // TODO: Use Theme (android.R.styleable.Theme_backgroundDimAmount)
         mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
         a.recycle();
 
