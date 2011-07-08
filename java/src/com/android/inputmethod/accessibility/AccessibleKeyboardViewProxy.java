@@ -200,8 +200,8 @@ public class AccessibleKeyboardViewProxy {
     }
 
     private void fireKeyPressEvent(PointerTracker tracker, int x, int y, long eventTime) {
-        tracker.onDownEvent(x, y, eventTime, null);
-        tracker.onUpEvent(x, y, eventTime + DELAY_KEY_PRESS, null);
+        tracker.onDownEvent(x, y, eventTime);
+        tracker.onUpEvent(x, y, eventTime + DELAY_KEY_PRESS);
     }
 
     private class KeyboardFlickGestureDetector extends FlickGestureDetector {

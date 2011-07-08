@@ -74,7 +74,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
     private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
 
     // TODO: Let the PointerTracker class manage this pointer queue
-    private final PointerTrackerQueue mPointerQueue = new PointerTrackerQueue();
+    private final PointerTrackerQueue mPointerQueue;
 
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
@@ -268,6 +268,8 @@ public class LatinKeyboardBaseView extends KeyboardView {
         mHasDistinctMultitouch = context.getPackageManager()
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
         mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
+
+        mPointerQueue = mHasDistinctMultitouch ? new PointerTrackerQueue() : null;
     }
 
     public void startIgnoringDoubleTap() {
@@ -365,20 +367,20 @@ public class LatinKeyboardBaseView extends KeyboardView {
         boolean result = onLongPress(parentKey, tracker);
         if (result) {
             dismissAllKeyPreviews();
-            tracker.onLongPressed(mPointerQueue);
+            tracker.onLongPressed();
         }
         return result;
     }
 
     private void onLongPressShiftKey(PointerTracker tracker) {
-        tracker.onLongPressed(mPointerQueue);
+        tracker.onLongPressed();
         mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
     private void onDoubleTapShiftKey(@SuppressWarnings("unused") PointerTracker tracker) {
         // When shift key is double tapped, the first tap is correctly processed as usual tap. And
         // the second tap is treated as this double tap event, so that we need not mark tracker
-        // calling setAlreadyProcessed() nor remove the tracker from mPointerQueueueue.
+        // calling setAlreadyProcessed() nor remove the tracker from mPointerQueue.
         mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
@@ -482,7 +484,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
         for (int i = pointers.size(); i <= id; i++) {
             final PointerTracker tracker =
                 new PointerTracker(i, getContext(), mKeyTimerHandler, mKeyDetector, this,
-                        mHasDistinctMultitouch);
+                        mPointerQueue);
             if (keyboard != null)
                 tracker.setKeyboard(keyboard, mKeyDetector);
             if (listener != null)
@@ -565,9 +567,9 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 // previous key.
                 final int newKeyIndex = tracker.getKeyIndexOn(x, y);
                 if (mOldKeyIndex != newKeyIndex) {
-                    tracker.onDownEvent(x, y, eventTime, null);
+                    tracker.onDownEvent(x, y, eventTime);
                     if (action == MotionEvent.ACTION_UP)
-                        tracker.onUpEvent(x, y, eventTime, null);
+                        tracker.onUpEvent(x, y, eventTime);
                 }
             } else if (pointerCount == 2 && oldPointerCount == 1) {
                 // Single-touch to multi-touch transition.
@@ -575,9 +577,9 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 final int lastX = tracker.getLastX();
                 final int lastY = tracker.getLastY();
                 mOldKeyIndex = tracker.getKeyIndexOn(lastX, lastY);
-                tracker.onUpEvent(lastX, lastY, eventTime, null);
+                tracker.onUpEvent(lastX, lastY, eventTime);
             } else if (pointerCount == 1 && oldPointerCount == 1) {
-                tracker.onTouchEvent(action, x, y, eventTime, null);
+                tracker.onTouchEvent(action, x, y, eventTime);
             } else {
                 Log.w(TAG, "Unknown touch panel behavior: pointer count is " + pointerCount
                         + " (old " + oldPointerCount + ")");
@@ -585,25 +587,24 @@ public class LatinKeyboardBaseView extends KeyboardView {
             return true;
         }
 
-        final PointerTrackerQueue queue = mPointerQueue;
         if (action == MotionEvent.ACTION_MOVE) {
             for (int i = 0; i < pointerCount; i++) {
                 final PointerTracker tracker = getPointerTracker(me.getPointerId(i));
-                tracker.onMoveEvent((int)me.getX(i), (int)me.getY(i), eventTime, queue);
+                tracker.onMoveEvent((int)me.getX(i), (int)me.getY(i), eventTime);
             }
         } else {
             final PointerTracker tracker = getPointerTracker(id);
             switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-                tracker.onDownEvent(x, y, eventTime, queue);
+                tracker.onDownEvent(x, y, eventTime);
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-                tracker.onUpEvent(x, y, eventTime, queue);
+                tracker.onUpEvent(x, y, eventTime);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                tracker.onCancelEvent(x, y, eventTime, queue);
+                tracker.onCancelEvent(x, y, eventTime);
                 break;
             }
         }
