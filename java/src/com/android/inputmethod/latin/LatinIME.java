@@ -1892,12 +1892,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // subtype changes.
         if (!CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED)
             onRefreshKeyboard();
-     }
-
-    @Override
-    public void onSwipeDown() {
-        if (mSettingsValues.mSwipeDownDismissKeyboardEnabled)
-            handleClose();
     }
 
     @Override

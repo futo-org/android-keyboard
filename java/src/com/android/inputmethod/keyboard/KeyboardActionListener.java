@@ -70,9 +70,4 @@ public interface KeyboardActionListener {
      * Called when user released a finger outside any key.
      */
     public void onCancelInput();
-
-    /**
-     * Called when the user quickly moves the finger from up to down.
-     */
-    public void onSwipeDown();
 }

@@ -90,7 +90,6 @@ public class Settings extends PreferenceActivity
 
     public static class Values {
         // From resources:
-        public final boolean mSwipeDownDismissKeyboardEnabled;
         public final int mDelayBeforeFadeoutLanguageOnSpacebar;
         public final int mDelayUpdateSuggestions;
         public final int mDelayUpdateOldSuggestions;
@@ -131,8 +130,6 @@ public class Settings extends PreferenceActivity
             }
 
             // Get the resources
-            mSwipeDownDismissKeyboardEnabled = res.getBoolean(
-                    R.bool.config_swipe_down_dismiss_keyboard_enabled);
             mDelayBeforeFadeoutLanguageOnSpacebar = res.getInteger(
                     R.integer.config_delay_before_fadeout_language_on_spacebar);
             mDelayUpdateSuggestions =
@@ -539,6 +536,7 @@ public class Settings extends PreferenceActivity
                 [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
     }
 
+    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case VOICE_INPUT_CONFIRM_DIALOG:
