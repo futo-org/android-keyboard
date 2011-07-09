@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import com.android.inputmethod.compat.CompatUtils;
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
 
@@ -289,7 +290,6 @@ public class Settings extends PreferenceActivity
     }
 
     private PreferenceScreen mInputLanguageSelection;
-    private CheckBoxPreference mQuickFixes;
     private ListPreference mVoicePreference;
     private ListPreference mSettingsKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
@@ -337,7 +337,6 @@ public class Settings extends PreferenceActivity
         addPreferencesFromResource(R.xml.prefs);
         mInputLanguageSelection = (PreferenceScreen) findPreference(PREF_SUBTYPES);
         mInputLanguageSelection.setOnPreferenceClickListener(this);
-        mQuickFixes = (CheckBoxPreference) findPreference(PREF_QUICK_FIXES);
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_SETTINGS_KEY);
         mSettingsKeyPreference = (ListPreference) findPreference(PREF_SETTINGS_KEY);
         mShowCorrectionSuggestionsPreference =
@@ -382,6 +381,10 @@ public class Settings extends PreferenceActivity
 
         if (!VibratorCompatWrapper.getInstance(context).hasVibrator()) {
             generalSettings.removePreference(findPreference(PREF_VIBRATE_ON));
+        }
+
+        if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
+            generalSettings.removePreference(findPreference(PREF_SUBTYPES));
         }
 
         final boolean showPopupOption = res.getBoolean(
