@@ -18,12 +18,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/english_ime_settings"
     android:key="english_ime_settings">
-    <PreferenceScreen
-        android:key="subtype_settings"
-        android:title="@string/language_selection_title" />
     <PreferenceCategory
         android:title="@string/general_category"
         android:key="general_settings">
+        <PreferenceScreen
+            android:key="subtype_settings"
+            android:title="@string/language_selection_title" />
         <CheckBoxPreference
             android:key="auto_cap"
             android:title="@string/auto_cap"
