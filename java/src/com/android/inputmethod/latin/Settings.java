@@ -21,6 +21,7 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
+import com.android.inputmethodcommon.InputMethodSettingsFragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -49,7 +50,7 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class Settings extends PreferenceActivity
+public class Settings extends InputMethodSettingsFragment
         implements SharedPreferences.OnSharedPreferenceChangeListener,
         DialogInterface.OnDismissListener, OnPreferenceClickListener {
     private static final String TAG = "Settings";
@@ -331,6 +332,8 @@ public class Settings extends PreferenceActivity
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
+        setInputMethodSettingsCategoryTitle(R.string.language_selection_title);
+        setSubtypeEnablerTitle(R.string.select_language);
         final Resources res = getResources();
         final Context context = getActivityInternal();
 

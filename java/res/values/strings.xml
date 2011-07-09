@@ -304,6 +304,9 @@
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Input languages</string>
 
+    <!-- Preference for input language selection -->
+    <string name="select_language">Select input languages</string>
+
     <!-- Add to dictionary hint -->
     <string name="hint_add_to_dictionary">\u2190 Touch again to save</string>
 
