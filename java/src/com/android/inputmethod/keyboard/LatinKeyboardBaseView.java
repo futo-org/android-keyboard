@@ -33,6 +33,7 @@ import android.widget.PopupWindow;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.R;
@@ -86,7 +87,8 @@ public class LatinKeyboardBaseView extends KeyboardView {
 
     private final KeyTimerHandler mKeyTimerHandler = new KeyTimerHandler(this);
 
-    public static class KeyTimerHandler extends StaticInnerHandlerWrapper<LatinKeyboardBaseView> {
+    private static class KeyTimerHandler extends StaticInnerHandlerWrapper<LatinKeyboardBaseView>
+            implements TimerProxy {
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
         private static final int MSG_LONGPRESS_SHIFT_KEY = 3;
@@ -116,6 +118,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
             }
         }
 
+        @Override
         public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker) {
             mInKeyRepeat = true;
             sendMessageDelayed(obtainMessage(MSG_REPEAT_KEY, keyIndex, 0, tracker), delay);
@@ -130,11 +133,13 @@ public class LatinKeyboardBaseView extends KeyboardView {
             return mInKeyRepeat;
         }
 
+        @Override
         public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {
             cancelLongPressTimers();
             sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, keyIndex, 0, tracker), delay);
         }
 
+        @Override
         public void startLongPressShiftTimer(long delay, int keyIndex, PointerTracker tracker) {
             cancelLongPressTimers();
             if (ENABLE_CAPSLOCK_BY_LONGPRESS) {
@@ -143,11 +148,13 @@ public class LatinKeyboardBaseView extends KeyboardView {
             }
         }
 
+        @Override
         public void cancelLongPressTimers() {
             removeMessages(MSG_LONGPRESS_KEY);
             removeMessages(MSG_LONGPRESS_SHIFT_KEY);
         }
 
+        @Override
         public void cancelKeyTimers() {
             cancelKeyRepeatTimer();
             cancelLongPressTimers();
