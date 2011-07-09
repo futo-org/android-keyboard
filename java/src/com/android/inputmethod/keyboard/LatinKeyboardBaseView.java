@@ -267,8 +267,19 @@ public class LatinKeyboardBaseView extends KeyboardView {
      * Returns the {@link KeyboardActionListener} object.
      * @return the listener attached to this keyboard
      */
-    protected KeyboardActionListener getKeyboardActionListener() {
+    @Override
+    public KeyboardActionListener getKeyboardActionListener() {
         return mKeyboardActionListener;
+    }
+
+    @Override
+    public KeyDetector getKeyDetector() {
+        return mKeyDetector;
+    }
+
+    @Override
+    public TimerProxy getTimerProxy() {
+        return mKeyTimerHandler;
     }
 
     @Override
@@ -545,7 +556,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 // previous key.
                 final int newKeyIndex = tracker.getKeyIndexOn(x, y);
                 if (mOldKeyIndex != newKeyIndex) {
-                    tracker.onDownEvent(x, y, eventTime);
+                    tracker.onDownEvent(x, y, eventTime, this);
                     if (action == MotionEvent.ACTION_UP)
                         tracker.onUpEvent(x, y, eventTime);
                 }
@@ -557,7 +568,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 mOldKeyIndex = tracker.getKeyIndexOn(lastX, lastY);
                 tracker.onUpEvent(lastX, lastY, eventTime);
             } else if (pointerCount == 1 && oldPointerCount == 1) {
-                processMotionEvent(tracker, action, x, y, eventTime);
+                processMotionEvent(tracker, action, x, y, eventTime, this);
             } else {
                 Log.w(TAG, "Unknown touch panel behavior: pointer count is " + pointerCount
                         + " (old " + oldPointerCount + ")");
@@ -571,18 +582,18 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 tracker.onMoveEvent((int)me.getX(i), (int)me.getY(i), eventTime);
             }
         } else {
-            processMotionEvent(getPointerTracker(id), action, x, y, eventTime);
+            processMotionEvent(getPointerTracker(id), action, x, y, eventTime, this);
         }
 
         return true;
     }
 
     private static void processMotionEvent(PointerTracker tracker, int action, int x, int y,
-            long eventTime) {
+            long eventTime, KeyboardView keyboardView) {
         switch (action) {
         case MotionEvent.ACTION_DOWN:
         case MotionEvent.ACTION_POINTER_DOWN:
-            tracker.onDownEvent(x, y, eventTime);
+            tracker.onDownEvent(x, y, eventTime, keyboardView);
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_POINTER_UP:

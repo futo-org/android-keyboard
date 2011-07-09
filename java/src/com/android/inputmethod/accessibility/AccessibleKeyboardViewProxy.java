@@ -200,7 +200,7 @@ public class AccessibleKeyboardViewProxy {
     }
 
     private void fireKeyPressEvent(PointerTracker tracker, int x, int y, long eventTime) {
-        tracker.onDownEvent(x, y, eventTime);
+        tracker.onDownEvent(x, y, eventTime, mView);
         tracker.onUpEvent(x, y, eventTime + DELAY_KEY_PRESS);
     }
 

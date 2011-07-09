@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -59,8 +58,8 @@ public class PointerTracker {
     private final int mLongPressKeyTimeout;
     private final int mLongPressShiftKeyTimeout;
 
-    private final DrawingProxy mDrawingProxy;
-    private final TimerProxy mTimerProxy;
+    private DrawingProxy mDrawingProxy;
+    private TimerProxy mTimerProxy;
     private final PointerTrackerQueue mPointerTrackerQueue;
     private KeyDetector mKeyDetector;
     private KeyboardActionListener mListener = EMPTY_LISTENER;
@@ -330,10 +329,13 @@ public class PointerTracker {
         return onMoveKeyInternal(x, y);
     }
 
-    public void onDownEvent(int x, int y, long eventTime) {
+    public void onDownEvent(int x, int y, long eventTime, KeyboardView keyboardView) {
         if (DEBUG_EVENT)
             printTouchEvent("onDownEvent:", x, y, eventTime);
 
+        mDrawingProxy = keyboardView;
+        setKeyboardActionListener(keyboardView.getKeyboardActionListener());
+        setKeyDetectorInner(keyboardView.getKeyDetector());
         // Naive up-to-down noise filter.
         final long deltaT = eventTime - mUpTime;
         if (deltaT < mTouchNoiseThresholdMillis) {
