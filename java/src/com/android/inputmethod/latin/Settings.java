@@ -21,7 +21,7 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.compat.VibratorCompatWrapper;
-import com.android.inputmethodcommon.InputMethodSettingsFragment;
+import com.android.inputmethodcommon.InputMethodSettingsActivity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -38,7 +38,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
 import android.speech.SpeechRecognizer;
@@ -50,7 +49,7 @@ import android.widget.TextView;
 import java.util.Arrays;
 import java.util.Locale;
 
-public class Settings extends InputMethodSettingsFragment
+public class Settings extends InputMethodSettingsActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
         DialogInterface.OnDismissListener, OnPreferenceClickListener {
     private static final String TAG = "Settings";
