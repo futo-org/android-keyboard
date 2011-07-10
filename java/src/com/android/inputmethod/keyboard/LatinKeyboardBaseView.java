@@ -557,7 +557,7 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 mOldKeyIndex = tracker.getKeyIndexOn(lastX, lastY);
                 tracker.onUpEvent(lastX, lastY, eventTime);
             } else if (pointerCount == 1 && oldPointerCount == 1) {
-                tracker.onTouchEvent(action, x, y, eventTime);
+                processMotionEvent(tracker, action, x, y, eventTime);
             } else {
                 Log.w(TAG, "Unknown touch panel behavior: pointer count is " + pointerCount
                         + " (old " + oldPointerCount + ")");
@@ -571,23 +571,27 @@ public class LatinKeyboardBaseView extends KeyboardView {
                 tracker.onMoveEvent((int)me.getX(i), (int)me.getY(i), eventTime);
             }
         } else {
-            final PointerTracker tracker = getPointerTracker(id);
-            switch (action) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_POINTER_DOWN:
-                tracker.onDownEvent(x, y, eventTime);
-                break;
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-                tracker.onUpEvent(x, y, eventTime);
-                break;
-            case MotionEvent.ACTION_CANCEL:
-                tracker.onCancelEvent(x, y, eventTime);
-                break;
-            }
+            processMotionEvent(getPointerTracker(id), action, x, y, eventTime);
         }
 
         return true;
+    }
+
+    private static void processMotionEvent(PointerTracker tracker, int action, int x, int y,
+            long eventTime) {
+        switch (action) {
+        case MotionEvent.ACTION_DOWN:
+        case MotionEvent.ACTION_POINTER_DOWN:
+            tracker.onDownEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_POINTER_UP:
+            tracker.onUpEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_CANCEL:
+            tracker.onCancelEvent(x, y, eventTime);
+            break;
+        }
     }
 
     @Override

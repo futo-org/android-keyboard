@@ -330,25 +330,6 @@ public class PointerTracker {
         return onMoveKeyInternal(x, y);
     }
 
-    public void onTouchEvent(int action, int x, int y, long eventTime) {
-        switch (action) {
-        case MotionEvent.ACTION_MOVE:
-            onMoveEvent(x, y, eventTime);
-            break;
-        case MotionEvent.ACTION_DOWN:
-        case MotionEvent.ACTION_POINTER_DOWN:
-            onDownEvent(x, y, eventTime);
-            break;
-        case MotionEvent.ACTION_UP:
-        case MotionEvent.ACTION_POINTER_UP:
-            onUpEvent(x, y, eventTime);
-            break;
-        case MotionEvent.ACTION_CANCEL:
-            onCancelEvent(x, y, eventTime);
-            break;
-        }
-    }
-
     public void onDownEvent(int x, int y, long eventTime) {
         if (DEBUG_EVENT)
             printTouchEvent("onDownEvent:", x, y, eventTime);
