@@ -63,7 +63,7 @@ public class PointerTrackerQueue {
         mQueue.remove(tracker);
     }
 
-    public boolean isInSlidingKeyInput() {
+    public boolean isAnyInSlidingKeyInput() {
         for (final PointerTracker tracker : mQueue) {
             if (tracker.isInSlidingKeyInput())
                 return true;

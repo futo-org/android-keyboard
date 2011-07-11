@@ -37,11 +37,9 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
-import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
 
-import java.util.ArrayList;
 import java.util.WeakHashMap;
 
 /**
@@ -73,11 +71,6 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
     /** Listener for {@link KeyboardActionListener}. */
     private KeyboardActionListener mKeyboardActionListener;
-
-    private final ArrayList<PointerTracker> mPointerTrackers = new ArrayList<PointerTracker>();
-
-    // TODO: Let the PointerTracker class manage this pointer queue
-    private final PointerTrackerQueue mPointerQueue;
 
     private final boolean mHasDistinctMultitouch;
     private int mOldPointerCount = 1;
@@ -251,7 +244,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
                 .hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN_MULTITOUCH_DISTINCT);
         mKeyRepeatInterval = res.getInteger(R.integer.config_key_repeat_interval);
 
-        mPointerQueue = mHasDistinctMultitouch ? new PointerTrackerQueue() : null;
+        PointerTracker.init(mHasDistinctMultitouch, getContext());
     }
 
     public void startIgnoringDoubleTap() {
@@ -261,9 +254,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
     public void setKeyboardActionListener(KeyboardActionListener listener) {
         mKeyboardActionListener = listener;
-        for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setKeyboardActionListener(listener);
-        }
+        PointerTracker.setKeyboardActionListener(listener);
     }
 
     /**
@@ -306,17 +297,15 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     @Override
     public void setKeyboard(Keyboard keyboard) {
         if (getKeyboard() != null) {
-            dismissAllKeyPreviews();
+            PointerTracker.dismissAllKeyPreviews();
         }
         // Remove any pending messages, except dismissing preview
         mKeyTimerHandler.cancelKeyTimers();
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setKeyDetector(mKeyDetector);
-        }
         mKeyDetector.setProximityThreshold(keyboard.getMostCommonKeyWidth());
+        PointerTracker.setKeyDetector(mKeyDetector);
         mPopupPanelCache.clear();
     }
 
@@ -343,14 +332,6 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
      */
     public boolean isProximityCorrectionEnabled() {
         return mKeyDetector.isProximityCorrectionEnabled();
-    }
-
-    // TODO: clean up this method.
-    private void dismissAllKeyPreviews() {
-        for (PointerTracker tracker : mPointerTrackers) {
-            tracker.setReleasedKeyGraphics();
-            dismissKeyPreview(tracker);
-        }
     }
 
     @Override
@@ -451,29 +432,14 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     }
 
     private PointerTracker getPointerTracker(final int id) {
-        final ArrayList<PointerTracker> pointers = mPointerTrackers;
-        final KeyboardActionListener listener = mKeyboardActionListener;
-
-        // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
-        for (int i = pointers.size(); i <= id; i++) {
-            final PointerTracker tracker =
-                new PointerTracker(i, getContext(), mKeyTimerHandler, mKeyDetector, this,
-                        mPointerQueue);
-            if (listener != null)
-                tracker.setKeyboardActionListener(listener);
-            pointers.add(tracker);
-        }
-
-        return pointers.get(id);
+        return PointerTracker.getPointerTracker(id, this);
     }
 
     public boolean isInSlidingKeyInput() {
         if (mPopupPanel != null) {
             return true;
-        } else if (mPointerQueue != null) {
-            return mPointerQueue.isInSlidingKeyInput();
         } else {
-            return getPointerTracker(0).isInSlidingKeyInput();
+            return PointerTracker.isAnyInSlidingKeyInput();
         }
     }
 
@@ -499,7 +465,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         // Gesture detector must be enabled only when mini-keyboard is not on the screen.
         if (mPopupPanel == null && mGestureDetector != null
                 && mGestureDetector.onTouchEvent(me)) {
-            dismissAllKeyPreviews();
+            PointerTracker.dismissAllKeyPreviews();
             mKeyTimerHandler.cancelKeyTimers();
             return true;
         }
