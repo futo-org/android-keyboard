@@ -38,7 +38,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
-import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -73,7 +72,7 @@ import java.util.HashMap;
  * @attr ref R.styleable#KeyboardView_shadowColor
  * @attr ref R.styleable#KeyboardView_shadowRadius
  */
-public abstract class KeyboardView extends View implements PointerTracker.DrawingProxy {
+public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static final boolean DEBUG_KEYBOARD_GRID = false;
 
     // Miscellaneous constants
@@ -918,23 +917,4 @@ public abstract class KeyboardView extends View implements PointerTracker.Drawin
         super.onDetachedFromWindow();
         closing();
     }
-
-    /**
-     * Get KeyDetector object that is used for the Keyboard of this KeyboardView.
-     * @return the KeyDetector object that is used for the Keyboard
-     */
-    public abstract KeyDetector getKeyDetector();
-
-    /**
-     * Get KeyboardActionListener object that is used to register key code and so on.
-     * @return the KeyboardActionListner for this KeyboardView
-     */
-    public abstract KeyboardActionListener getKeyboardActionListener();
-
-    /**
-     * Get TimerProxy object that handles key repeat and long press timer event for the Keyboard
-     * of this KeyboardView.
-     * @return the TimerProxy object that handles key repeat and long press timer event.
-     */
-    public abstract TimerProxy getTimerProxy();
 }

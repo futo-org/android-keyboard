@@ -33,6 +33,7 @@ import android.widget.PopupWindow;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
@@ -49,7 +50,7 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#KeyboardView_verticalCorrection
  * @attr ref R.styleable#KeyboardView_popupLayout
  */
-public class LatinKeyboardBaseView extends KeyboardView {
+public class LatinKeyboardBaseView extends KeyboardView implements PointerTracker.KeyEventHandler {
     private static final String TAG = LatinKeyboardBaseView.class.getSimpleName();
 
     private static final boolean ENABLE_CAPSLOCK_BY_LONGPRESS = true;
@@ -275,6 +276,11 @@ public class LatinKeyboardBaseView extends KeyboardView {
     @Override
     public KeyDetector getKeyDetector() {
         return mKeyDetector;
+    }
+
+    @Override
+    public DrawingProxy getDrawingProxy() {
+        return this;
     }
 
     @Override
@@ -589,11 +595,11 @@ public class LatinKeyboardBaseView extends KeyboardView {
     }
 
     private static void processMotionEvent(PointerTracker tracker, int action, int x, int y,
-            long eventTime, KeyboardView keyboardView) {
+            long eventTime, PointerTracker.KeyEventHandler handler) {
         switch (action) {
         case MotionEvent.ACTION_DOWN:
         case MotionEvent.ACTION_POINTER_DOWN:
-            tracker.onDownEvent(x, y, eventTime, keyboardView);
+            tracker.onDownEvent(x, y, eventTime, handler);
             break;
         case MotionEvent.ACTION_UP:
         case MotionEvent.ACTION_POINTER_UP:
