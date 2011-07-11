@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.SystemClock;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
@@ -361,6 +360,7 @@ public class PointerTracker {
             printTouchEvent("onDownEvent:", x, y, eventTime);
 
         mDrawingProxy = handler.getDrawingProxy();
+        mTimerProxy = handler.getTimerProxy();
         setKeyboardActionListener(handler.getKeyboardActionListener());
         setKeyDetectorInner(handler.getKeyDetector());
         // Naive up-to-down noise filter.
@@ -598,10 +598,10 @@ public class PointerTracker {
 
     public void onLongPressed() {
         mKeyAlreadyProcessed = true;
+        setReleasedKeyGraphics();
+        dismissKeyPreview();
         final PointerTrackerQueue queue = mPointerTrackerQueue;
         if (queue != null) {
-            // TODO: Support chording + long-press input.
-            queue.releaseAllPointersExcept(this, SystemClock.uptimeMillis(), true);
             queue.remove(this);
         }
     }

@@ -18,26 +18,73 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.os.SystemClock;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
 
+import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
+import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.R;
 
 /**
  * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
  * key presses and touch movements.
  */
-public class PopupMiniKeyboardView extends LatinKeyboardBaseView implements PopupPanel {
+public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     private final int[] mCoordinates = new int[2];
     private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
 
+    private final KeyDetector mKeyDetector;
+    private final int mVerticalCorrection;
+
+    private LatinKeyboardBaseView mParentKeyboardView;
     private int mOriginX;
     private int mOriginY;
-    private long mDownTime;
+
+    private static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy() {
+        @Override
+        public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker) {}
+        @Override
+        public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {}
+        @Override
+        public void startLongPressShiftTimer(long delay, int keyIndex, PointerTracker tracker) {}
+        @Override
+        public void cancelLongPressTimers() {}
+        @Override
+        public void cancelKeyTimers() {}
+    };
+
+    private final KeyboardActionListener mListner = new KeyboardActionListener() {
+        @Override
+        public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
+            mParentKeyboardView.getKeyboardActionListener()
+                    .onCodeInput(primaryCode, keyCodes, x, y);
+            mParentKeyboardView.dismissMiniKeyboard();
+        }
+
+        @Override
+        public void onTextInput(CharSequence text) {
+            mParentKeyboardView.getKeyboardActionListener().onTextInput(text);
+            mParentKeyboardView.dismissMiniKeyboard();
+        }
+
+        @Override
+        public void onCancelInput() {
+            mParentKeyboardView.getKeyboardActionListener().onCancelInput();
+            mParentKeyboardView.dismissMiniKeyboard();
+        }
+
+        @Override
+        public void onPress(int primaryCode, boolean withSliding) {
+            mParentKeyboardView.getKeyboardActionListener().onPress(primaryCode, withSliding);
+        }
+        @Override
+        public void onRelease(int primaryCode, boolean withSliding) {
+            mParentKeyboardView.getKeyboardActionListener().onRelease(primaryCode, withSliding);
+        }
+    };
 
     public PopupMiniKeyboardView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.popupMiniKeyboardViewStyle);
@@ -46,6 +93,12 @@ public class PopupMiniKeyboardView extends LatinKeyboardBaseView implements Popu
     public PopupMiniKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        final TypedArray a = context.obtainStyledAttributes(
+                attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
+        mVerticalCorrection = a.getDimensionPixelOffset(
+                R.styleable.KeyboardView_verticalCorrection, 0);
+        a.recycle();
+
         final Resources res = context.getResources();
         mConfigShowMiniKeyboardAtTouchedPoint = res.getBoolean(
                 R.bool.config_show_mini_keyboard_at_touched_point);
@@ -53,8 +106,34 @@ public class PopupMiniKeyboardView extends LatinKeyboardBaseView implements Popu
         mKeyDetector = new MiniKeyboardKeyDetector(res.getDimension(
                 R.dimen.mini_keyboard_slide_allowance));
         // Remove gesture detector on mini-keyboard
-        mGestureDetector = null;
         setKeyPreviewPopupEnabled(false, 0);
+    }
+
+    @Override
+    public void setKeyboard(Keyboard keyboard) {
+        super.setKeyboard(keyboard);
+        mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
+                -getPaddingTop() + mVerticalCorrection);
+    }
+
+    @Override
+    public KeyDetector getKeyDetector() {
+        return mKeyDetector;
+    }
+
+    @Override
+    public KeyboardActionListener getKeyboardActionListener() {
+        return mListner;
+    }
+
+    @Override
+    public DrawingProxy getDrawingProxy() {
+        return  this;
+    }
+
+    @Override
+    public TimerProxy getTimerProxy() {
+        return EMPTY_TIMER_PROXY;
     }
 
     @Override
@@ -70,8 +149,9 @@ public class PopupMiniKeyboardView extends LatinKeyboardBaseView implements Popu
     }
 
     @Override
-    public void showPanel(KeyboardView parentKeyboardView, Key parentKey,
+    public void showPanel(LatinKeyboardBaseView parentKeyboardView, Key parentKey,
             PointerTracker tracker, PopupWindow window) {
+        mParentKeyboardView = parentKeyboardView;
         final View container = (View)getParent();
         final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
         final Keyboard parentKeyboard = parentKeyboardView.getKeyboard();
@@ -99,19 +179,15 @@ public class PopupMiniKeyboardView extends LatinKeyboardBaseView implements Popu
 
         mOriginX = x + container.getPaddingLeft() - mCoordinates[0];
         mOriginY = y + container.getPaddingTop() - mCoordinates[1];
-        mDownTime = SystemClock.uptimeMillis();
-
-        // Inject down event on the key to mini keyboard.
-        final MotionEvent downEvent = MotionEvent.obtain(mDownTime, mDownTime,
-                MotionEvent.ACTION_DOWN, pointX - mOriginX,
-                pointY + parentKey.mHeight / 2 - mOriginY, 0);
-        onTouchEvent(downEvent);
-        downEvent.recycle();
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent me) {
-        me.offsetLocation(-mOriginX, -mOriginY);
-        return super.onTouchEvent(me);
+    public int translateX(int x) {
+        return x - mOriginX;
+    }
+
+    @Override
+    public int translateY(int y) {
+        return y - mOriginY;
     }
 }

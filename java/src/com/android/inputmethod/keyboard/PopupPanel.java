@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.view.MotionEvent;
 import android.widget.PopupWindow;
 
 public interface PopupPanel extends PointerTracker.KeyEventHandler {
@@ -27,19 +26,20 @@ public interface PopupPanel extends PointerTracker.KeyEventHandler {
      * @param tracker the pointer tracker that pressesd the parent key
      * @param window PopupWindow to be used to show this popup panel
      */
-    public void showPanel(KeyboardView parentKeyboardView, Key parentKey,
+    public void showPanel(LatinKeyboardBaseView parentKeyboardView, Key parentKey,
             PointerTracker tracker, PopupWindow window);
 
     /**
-     * Check if the pointer is in siding key input mode.
-     * @return true if the pointer is sliding key input mode.
+     * Translate X-coordinate of touch event to the local X-coordinate of this PopupPanel.
+     * @param x the global X-coordinate
+     * @return the local X-coordinate to this PopupPanel
      */
-    public boolean isInSlidingKeyInput();
+    public int translateX(int x);
 
     /**
-     * The motion event handler.
-     * @param me the MotionEvent to be processed.
-     * @return true if the motion event is processed and should be consumed.
+     * Translate Y-coordinate of touch event to the local Y-coordinate of this PopupPanel.
+     * @param y the global Y-coordinate
+     * @return the local Y-coordinate to this PopupPanel
      */
-    public boolean onTouchEvent(MotionEvent me);
+    public int translateY(int y);
 }

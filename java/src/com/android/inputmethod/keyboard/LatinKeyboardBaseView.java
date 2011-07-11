@@ -21,6 +21,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -65,7 +66,8 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
     // Mini keyboard
     private PopupWindow mPopupWindow;
-    private PopupPanel mPopupMiniKeyboardPanel;
+    private PopupPanel mPopupPanel;
+    private int mPopupPanelPointerTrackerId;
     private final WeakHashMap<Key, PopupPanel> mPopupPanelCache =
             new WeakHashMap<Key, PopupPanel>();
 
@@ -363,15 +365,13 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
             return false;
         }
 
+        // Check if we are already displaying popup panel.
+        if (mPopupPanel != null)
+            return false;
         final Key parentKey = tracker.getKey(keyIndex);
         if (parentKey == null)
             return false;
-        boolean result = onLongPress(parentKey, tracker);
-        if (result) {
-            dismissAllKeyPreviews();
-            tracker.onLongPressed();
-        }
-        return result;
+        return onLongPress(parentKey, tracker);
     }
 
     private void onLongPressShiftKey(PointerTracker tracker) {
@@ -398,35 +398,6 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
         final PopupMiniKeyboardView miniKeyboardView =
                 (PopupMiniKeyboardView)container.findViewById(R.id.mini_keyboard_view);
-        miniKeyboardView.setKeyboardActionListener(new KeyboardActionListener() {
-            @Override
-            public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
-                mKeyboardActionListener.onCodeInput(primaryCode, keyCodes, x, y);
-                dismissMiniKeyboard();
-            }
-
-            @Override
-            public void onTextInput(CharSequence text) {
-                mKeyboardActionListener.onTextInput(text);
-                dismissMiniKeyboard();
-            }
-
-            @Override
-            public void onCancelInput() {
-                mKeyboardActionListener.onCancelInput();
-                dismissMiniKeyboard();
-            }
-
-            @Override
-            public void onPress(int primaryCode, boolean withSliding) {
-                mKeyboardActionListener.onPress(primaryCode, withSliding);
-            }
-            @Override
-            public void onRelease(int primaryCode, boolean withSliding) {
-                mKeyboardActionListener.onRelease(primaryCode, withSliding);
-            }
-        });
-
         final Keyboard parentKeyboard = getKeyboard();
         final Keyboard miniKeyboard = new MiniKeyboardBuilder(
                 this, parentKeyboard.getPopupKeyboardResId(), parentKey, parentKeyboard).build();
@@ -440,7 +411,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
     @Override
     protected boolean needsToDimKeyboard() {
-        return mPopupMiniKeyboardPanel != null;
+        return mPopupPanel != null;
     }
 
     /**
@@ -466,8 +437,14 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
             // Allow popup window to be drawn off the screen.
             mPopupWindow.setClippingEnabled(false);
         }
-        mPopupMiniKeyboardPanel = popupPanel;
+        mPopupPanel = popupPanel;
+        mPopupPanelPointerTrackerId = tracker.mPointerId;
+
+        tracker.onLongPressed();
         popupPanel.showPanel(this, parentKey, tracker, mPopupWindow);
+        final int translatedX = popupPanel.translateX(tracker.getLastX());
+        final int translatedY = popupPanel.translateY(tracker.getLastY());
+        tracker.onDownEvent(translatedX, translatedY, SystemClock.uptimeMillis(), popupPanel);
 
         invalidateAllKeys();
         return true;
@@ -476,15 +453,12 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     private PointerTracker getPointerTracker(final int id) {
         final ArrayList<PointerTracker> pointers = mPointerTrackers;
         final KeyboardActionListener listener = mKeyboardActionListener;
-        final Keyboard keyboard = getKeyboard();
 
         // Create pointer trackers until we can get 'id+1'-th tracker, if needed.
         for (int i = pointers.size(); i <= id; i++) {
             final PointerTracker tracker =
                 new PointerTracker(i, getContext(), mKeyTimerHandler, mKeyDetector, this,
                         mPointerQueue);
-            if (keyboard != null)
-                tracker.setKeyDetector(mKeyDetector);
             if (listener != null)
                 tracker.setKeyboardActionListener(listener);
             pointers.add(tracker);
@@ -494,10 +468,12 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     }
 
     public boolean isInSlidingKeyInput() {
-        if (mPopupMiniKeyboardPanel != null) {
-            return mPopupMiniKeyboardPanel.isInSlidingKeyInput();
-        } else {
+        if (mPopupPanel != null) {
+            return true;
+        } else if (mPointerQueue != null) {
             return mPointerQueue.isInSlidingKeyInput();
+        } else {
+            return getPointerTracker(0).isInSlidingKeyInput();
         }
     }
 
@@ -521,7 +497,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         }
 
         // Gesture detector must be enabled only when mini-keyboard is not on the screen.
-        if (mPopupMiniKeyboardPanel == null && mGestureDetector != null
+        if (mPopupPanel == null && mGestureDetector != null
                 && mGestureDetector.onTouchEvent(me)) {
             dismissAllKeyPreviews();
             mKeyTimerHandler.cancelKeyTimers();
@@ -531,13 +507,13 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         final long eventTime = me.getEventTime();
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
-        final int x = (int)me.getX(index);
-        final int y = (int)me.getY(index);
-
-        // Needs to be called after the gesture detector gets a turn, as it may have displayed the
-        // mini keyboard
-        if (mPopupMiniKeyboardPanel != null) {
-            return mPopupMiniKeyboardPanel.onTouchEvent(me);
+        final int x, y;
+        if (mPopupPanel != null && id == mPopupPanelPointerTrackerId) {
+            x = mPopupPanel.translateX((int)me.getX(index));
+            y = mPopupPanel.translateY((int)me.getY(index));
+        } else {
+            x = (int)me.getX(index);
+            y = (int)me.getY(index);
         }
 
         if (mKeyTimerHandler.isInKeyRepeat()) {
@@ -585,7 +561,15 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         if (action == MotionEvent.ACTION_MOVE) {
             for (int i = 0; i < pointerCount; i++) {
                 final PointerTracker tracker = getPointerTracker(me.getPointerId(i));
-                tracker.onMoveEvent((int)me.getX(i), (int)me.getY(i), eventTime);
+                final int px, py;
+                if (mPopupPanel != null && tracker.mPointerId == mPopupPanelPointerTrackerId) {
+                    px = mPopupPanel.translateX((int)me.getX(i));
+                    py = mPopupPanel.translateY((int)me.getY(i));
+                } else {
+                    px = (int)me.getX(i);
+                    py = (int)me.getY(i);
+                }
+                tracker.onMoveEvent(px, py, eventTime);
             }
         } else {
             processMotionEvent(getPointerTracker(id), action, x, y, eventTime, this);
@@ -618,10 +602,11 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         mPopupPanelCache.clear();
     }
 
-    private boolean dismissMiniKeyboard() {
+    public boolean dismissMiniKeyboard() {
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
-            mPopupMiniKeyboardPanel = null;
+            mPopupPanel = null;
+            mPopupPanelPointerTrackerId = -1;
             invalidateAllKeys();
             return true;
         }
