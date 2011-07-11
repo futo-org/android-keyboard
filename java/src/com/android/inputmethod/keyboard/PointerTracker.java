@@ -36,6 +36,33 @@ public class PointerTracker {
     private static final boolean DEBUG_LISTENER = false;
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
 
+    public interface KeyEventHandler {
+        /**
+         * Get KeyDetector object that is used for this PointerTracker.
+         * @return the KeyDetector object that is used for this PointerTracker
+         */
+        public KeyDetector getKeyDetector();
+
+        /**
+         * Get KeyboardActionListener object that is used to register key code and so on.
+         * @return the KeyboardActionListner for this PointerTracker
+         */
+        public KeyboardActionListener getKeyboardActionListener();
+
+        /**
+         * Get DrawingProxy object that is used for this PointerTracker.
+         * @return the DrawingProxy object that is used for this PointerTracker
+         */
+        public DrawingProxy getDrawingProxy();
+
+        /**
+         * Get TimerProxy object that handles key repeat and long press timer event for this
+         * PointerTracker.
+         * @return the TimerProxy object that handles key repeat and long press timer event.
+         */
+        public TimerProxy getTimerProxy();
+    }
+
     public interface DrawingProxy {
         public void invalidateKey(Key key);
         public void showKeyPreview(int keyIndex, PointerTracker tracker);
@@ -329,13 +356,13 @@ public class PointerTracker {
         return onMoveKeyInternal(x, y);
     }
 
-    public void onDownEvent(int x, int y, long eventTime, KeyboardView keyboardView) {
+    public void onDownEvent(int x, int y, long eventTime, KeyEventHandler handler) {
         if (DEBUG_EVENT)
             printTouchEvent("onDownEvent:", x, y, eventTime);
 
-        mDrawingProxy = keyboardView;
-        setKeyboardActionListener(keyboardView.getKeyboardActionListener());
-        setKeyDetectorInner(keyboardView.getKeyDetector());
+        mDrawingProxy = handler.getDrawingProxy();
+        setKeyboardActionListener(handler.getKeyboardActionListener());
+        setKeyDetectorInner(handler.getKeyDetector());
         // Naive up-to-down noise filter.
         final long deltaT = eventTime - mUpTime;
         if (deltaT < mTouchNoiseThresholdMillis) {

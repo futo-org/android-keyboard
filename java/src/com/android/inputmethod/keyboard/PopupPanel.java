@@ -19,7 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.view.MotionEvent;
 import android.widget.PopupWindow;
 
-public interface PopupPanel {
+public interface PopupPanel extends PointerTracker.KeyEventHandler {
     /**
      * Show popup panel.
      * @param parentKeyboardView the parent KeyboardView that has the parent key.
