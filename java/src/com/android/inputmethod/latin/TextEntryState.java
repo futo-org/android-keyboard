@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.Utils.RingCharBuffer;
 
 import android.util.Log;
@@ -100,7 +101,7 @@ public class TextEntryState {
     }
 
     public static void typedCharacter(char c, boolean isSeparator, int x, int y) {
-        final boolean isSpace = (c == ' ');
+        final boolean isSpace = (c == Keyboard.CODE_SPACE);
         switch (sState) {
         case IN_WORD:
             if (isSpace || isSeparator) {
