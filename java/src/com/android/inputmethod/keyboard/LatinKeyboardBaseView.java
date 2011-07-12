@@ -605,6 +605,9 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         case MotionEvent.ACTION_POINTER_UP:
             tracker.onUpEvent(x, y, eventTime);
             break;
+        case MotionEvent.ACTION_MOVE:
+            tracker.onMoveEvent(x, y, eventTime);
+            break;
         case MotionEvent.ACTION_CANCEL:
             tracker.onCancelEvent(x, y, eventTime);
             break;
