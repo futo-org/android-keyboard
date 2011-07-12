@@ -141,14 +141,6 @@ public class Keyboard {
     // TODO: Change GRID_WIDTH and GRID_HEIGHT to private.
     public final int GRID_WIDTH;
     public final int GRID_HEIGHT;
-    private final int GRID_SIZE;
-    private int mCellWidth;
-    private int mCellHeight;
-    private int[][] mGridNeighbors;
-    private int mProximityThreshold;
-    private static int[] EMPTY_INT_ARRAY = new int[0];
-    /** Number of key widths from current touch point to search for nearest keys. */
-    private static float SEARCH_DISTANCE = 1.2f;
 
     private final ProximityInfo mProximityInfo;
 
@@ -164,7 +156,6 @@ public class Keyboard {
         final Resources res = context.getResources();
         GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
-        GRID_SIZE = GRID_WIDTH * GRID_HEIGHT;
 
         final int horizontalEdgesPadding = (int)res.getDimension(
                 R.dimen.keyboard_horizontal_edges_padding);
@@ -177,12 +168,13 @@ public class Keyboard {
         mDefaultVerticalGap = 0;
         mDefaultHeight = mDefaultWidth;
         mId = id;
-        mProximityInfo = new ProximityInfo(GRID_WIDTH, GRID_HEIGHT);
         loadKeyboard(context, xmlLayoutResId);
+        mProximityInfo = new ProximityInfo(
+                GRID_WIDTH, GRID_HEIGHT, getMinWidth(), getHeight(), getKeyWidth(), mKeys);
     }
 
     public int getProximityInfo() {
-        return mProximityInfo.getNativeProximityInfo(this);
+        return mProximityInfo.getNativeProximityInfo();
     }
 
     public List<Key> getKeys() {
@@ -219,8 +211,6 @@ public class Keyboard {
 
     public void setKeyWidth(int width) {
         mDefaultWidth = width;
-        final int threshold = (int) (width * SEARCH_DISTANCE);
-        mProximityThreshold = threshold * threshold;
     }
 
     /**
@@ -365,34 +355,6 @@ public class Keyboard {
         return label;
     }
 
-    // TODO: Move this function to ProximityInfo and make this private.
-    public void computeNearestNeighbors() {
-        // Round-up so we don't have any pixels outside the grid
-        mCellWidth = (getMinWidth() + GRID_WIDTH - 1) / GRID_WIDTH;
-        mCellHeight = (getHeight() + GRID_HEIGHT - 1) / GRID_HEIGHT;
-        mGridNeighbors = new int[GRID_SIZE][];
-        final int[] indices = new int[mKeys.size()];
-        final int gridWidth = GRID_WIDTH * mCellWidth;
-        final int gridHeight = GRID_HEIGHT * mCellHeight;
-        final int threshold = mProximityThreshold;
-        for (int x = 0; x < gridWidth; x += mCellWidth) {
-            for (int y = 0; y < gridHeight; y += mCellHeight) {
-                final int centerX = x + mCellWidth / 2;
-                final int centerY = y + mCellHeight / 2;
-                int count = 0;
-                for (int i = 0; i < mKeys.size(); i++) {
-                    final Key key = mKeys.get(i);
-                    if (key.squaredDistanceToEdge(centerX, centerY) < threshold)
-                        indices[count++] = i;
-                }
-                final int[] cell = new int[count];
-                System.arraycopy(indices, 0, cell, 0, count);
-                mGridNeighbors[(y / mCellHeight) * GRID_WIDTH + (x / mCellWidth)] = cell;
-            }
-        }
-        mProximityInfo.setProximityInfo(mGridNeighbors, getMinWidth(), getHeight(), mKeys);
-    }
-
     /**
      * Returns the indices of the keys that are closest to the given point.
      * @param x the x-coordinate of the point
@@ -401,14 +363,7 @@ public class Keyboard {
      * point is out of range, then an array of size zero is returned.
      */
     public int[] getNearestKeys(int x, int y) {
-        if (mGridNeighbors == null) computeNearestNeighbors();
-        if (x >= 0 && x < getMinWidth() && y >= 0 && y < getHeight()) {
-            int index = (y / mCellHeight) * GRID_WIDTH + (x / mCellWidth);
-            if (index < GRID_SIZE) {
-                return mGridNeighbors[index];
-            }
-        }
-        return EMPTY_INT_ARRAY;
+        return mProximityInfo.getNearestKeys(x, y);
     }
 
     /**
