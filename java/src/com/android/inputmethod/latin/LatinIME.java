@@ -740,11 +740,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 ic.finishComposingText();
             }
             mVoiceProxy.setVoiceInputHighlighted(false);
-        } else if (!mHasUncommittedTypedChars && !mExpectingUpdateSelection) {
-            if (TextEntryState.isAcceptedDefault() || TextEntryState.isSpaceAfterPicked()) {
-                if (TextEntryState.isAcceptedDefault())
-                    TextEntryState.reset();
-            }
+        } else if (!mHasUncommittedTypedChars && !mExpectingUpdateSelection
+                && TextEntryState.isAcceptedDefault()) {
+            TextEntryState.reset();
         }
         if (!mExpectingUpdateSelection) {
             mJustAddedMagicSpace = false; // The user moved the cursor.
@@ -945,19 +943,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public void commitTyped(InputConnection inputConnection) {
-        if (mHasUncommittedTypedChars) {
-            mHasUncommittedTypedChars = false;
-            if (mComposingStringBuilder.length() > 0) {
-                if (inputConnection != null) {
-                    inputConnection.commitText(mComposingStringBuilder, 1);
-                }
-                mCommittedLength = mComposingStringBuilder.length();
-                TextEntryState.acceptedTyped(mComposingStringBuilder);
-                addToAutoAndUserBigramDictionaries(mComposingStringBuilder,
-                        AutoDictionary.FREQUENCY_FOR_TYPED);
+        if (!mHasUncommittedTypedChars) return;
+        mHasUncommittedTypedChars = false;
+        if (mComposingStringBuilder.length() > 0) {
+            if (inputConnection != null) {
+                inputConnection.commitText(mComposingStringBuilder, 1);
             }
-            updateSuggestions();
+            mCommittedLength = mComposingStringBuilder.length();
+            TextEntryState.acceptedTyped(mComposingStringBuilder);
+            addToAutoAndUserBigramDictionaries(mComposingStringBuilder,
+                    AutoDictionary.FREQUENCY_FOR_TYPED);
         }
+        updateSuggestions();
     }
 
     public boolean getCurrentAutoCapsState() {
@@ -1500,18 +1497,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
                 mKeyboardSwitcher.getKeyboardView(), wordComposer, prevWord);
 
-        boolean correctionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
+        boolean autoCorrectionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = wordComposer.getTypedWord();
         // Here, we want to promote a whitelisted word if exists.
         final boolean typedWordValid = AutoCorrection.isValidWordForAutoCorrection(
                 mSuggest.getUnigramDictionaries(), typedWord, preferCapitalization());
         if (mCorrectionMode == Suggest.CORRECTION_FULL
                 || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
-            correctionAvailable |= typedWordValid;
+            autoCorrectionAvailable |= typedWordValid;
         }
         // Don't auto-correct words with multiple capital letter
-        correctionAvailable &= !wordComposer.isMostlyCaps();
-        correctionAvailable &= !TextEntryState.isRecorrecting();
+        autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
+        autoCorrectionAvailable &= !TextEntryState.isRecorrecting();
 
         // Basically, we update the suggestion strip only when suggestion count > 1.  However,
         // there is an exception: We update the suggestion strip whenever typed word's length
@@ -1523,7 +1520,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (builder.size() > 1 || typedWord.length() == 1 || typedWordValid
                     || mCandidateView.isShowingAddToDictionaryHint()) {
                 builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(
-                        correctionAvailable);
+                        autoCorrectionAvailable);
             } else {
                 final SuggestedWords previousSuggestions = mCandidateView.getSuggestions();
                 if (previousSuggestions == mSettingsValues.mSuggestPuncList)
@@ -1681,8 +1678,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     /**
-     * Commits the chosen word to the text field and saves it for later
-     * retrieval.
+     * Commits the chosen word to the text field and saves it for later retrieval.
      */
     private void commitBestWord(CharSequence bestWord) {
         KeyboardSwitcher switcher = mKeyboardSwitcher;
@@ -1799,41 +1795,41 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void revertLastWord(boolean deleteChar) {
-        final int length = mComposingStringBuilder.length();
-        if (!mHasUncommittedTypedChars && length > 0) {
-            final InputConnection ic = getCurrentInputConnection();
-            final CharSequence punctuation = ic.getTextBeforeCursor(1, 0);
-            if (deleteChar) ic.deleteSurroundingText(1, 0);
-            int toDelete = mCommittedLength;
-            final CharSequence toTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
-            if (!TextUtils.isEmpty(toTheLeft)
-                    && mSettingsValues.isWordSeparator(toTheLeft.charAt(0))) {
-                toDelete--;
-            }
-            ic.deleteSurroundingText(toDelete, 0);
-            // Re-insert punctuation only when the deleted character was word separator and the
-            // composing text wasn't equal to the auto-corrected text.
-            if (deleteChar
-                    && !TextUtils.isEmpty(punctuation)
-                    && mSettingsValues.isWordSeparator(punctuation.charAt(0))
-                    && !TextUtils.equals(mComposingStringBuilder, toTheLeft)) {
-                ic.commitText(mComposingStringBuilder, 1);
-                TextEntryState.acceptedTyped(mComposingStringBuilder);
-                ic.commitText(punctuation, 1);
-                TextEntryState.typedCharacter(punctuation.charAt(0), true,
-                        WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
-                // Clear composing text
-                mComposingStringBuilder.setLength(0);
-            } else {
-                mHasUncommittedTypedChars = true;
-                ic.setComposingText(mComposingStringBuilder, 1);
-                TextEntryState.backspace();
-            }
-            mHandler.cancelUpdateBigramPredictions();
-            mHandler.postUpdateSuggestions();
-        } else {
+        if (mHasUncommittedTypedChars || mComposingStringBuilder.length() <= 0) {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
+            return;
         }
+
+        final InputConnection ic = getCurrentInputConnection();
+        final CharSequence punctuation = ic.getTextBeforeCursor(1, 0);
+        if (deleteChar) ic.deleteSurroundingText(1, 0);
+        int toDelete = mCommittedLength;
+        final CharSequence toTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
+        if (!TextUtils.isEmpty(toTheLeft)
+                && mSettingsValues.isWordSeparator(toTheLeft.charAt(0))) {
+            toDelete--;
+        }
+        ic.deleteSurroundingText(toDelete, 0);
+        // Re-insert punctuation only when the deleted character was word separator and the
+        // composing text wasn't equal to the auto-corrected text.
+        if (deleteChar
+                && !TextUtils.isEmpty(punctuation)
+                && mSettingsValues.isWordSeparator(punctuation.charAt(0))
+                && !TextUtils.equals(mComposingStringBuilder, toTheLeft)) {
+            ic.commitText(mComposingStringBuilder, 1);
+            TextEntryState.acceptedTyped(mComposingStringBuilder);
+            ic.commitText(punctuation, 1);
+            TextEntryState.typedCharacter(punctuation.charAt(0), true,
+                    WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+            // Clear composing text
+            mComposingStringBuilder.setLength(0);
+        } else {
+            mHasUncommittedTypedChars = true;
+            ic.setComposingText(mComposingStringBuilder, 1);
+            TextEntryState.backspace();
+        }
+        mHandler.cancelUpdateBigramPredictions();
+        mHandler.postUpdateSuggestions();
     }
 
     private boolean revertDoubleSpace() {
