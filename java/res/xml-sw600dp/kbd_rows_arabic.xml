@@ -18,9 +18,6 @@
 */
 -->
 
-<!-- This file for Arabic layout is an alpha version. It allows to enter   -->
-<!-- some right-to-left text, but it has gone through no study whatsoever, -->
-<!-- and needs to be run through UX.                                       -->
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
@@ -40,21 +37,23 @@
             latin:keyLabel="ق" />
         <Key
             latin:keyLabel="ف"
-            latin:popupCharacters="ف,ڤ" />
+            latin:popupCharacters="ڤ" />
         <Key
             latin:keyLabel="غ" />
         <Key
             latin:keyLabel="ع" />
+        <!-- \ufeeb: ARABIC LETTER HEH INITIAL FORM
+             \u0647\u0640: ARABIC LETTER HEH + ARABIC TATWEEL -->
         <Key
             latin:keyLabel="ه"
-            latin:popupCharacters="ه,هـ" />
+            latin:popupCharacters="\ufeeb|\u0647\u0640" />
         <Key
             latin:keyLabel="خ" />
         <Key
             latin:keyLabel="ح" />
         <Key
             latin:keyLabel="ج"
-            latin:popupCharacters="ج,چ" />
+            latin:popupCharacters="چ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
@@ -73,13 +72,25 @@
             latin:keyLabel="ي" />
         <Key
             latin:keyLabel="ب"
-            latin:popupCharacters="ب,پ" />
+            latin:popupCharacters="پ" />
+        <!-- \ufefb: ARABIC LIGATURE LAM WITH ALEF ISOLATED FORM
+             \u0644: ARABIC LETTER LAM
+             \u0627: ARABIC LETTER ALEF
+             \ufef7: ARABIC LIGATURE LAM WITH ALEF WITH HAMZA ABOVE ISOLATED FORM
+             \u0623: ARABIC LETTER ALEF WITH HAMZA ABOVE
+             \ufef9: ARABIC LIGATURE LAM WITH ALEF WITH HAMZA BELOW ISOLATED FORM
+             \u0625: ARABIC LETTER ALEF WITH HAMZA BELOW
+             \ufef5: ARABIC LIGATURE LAM WITH ALEF WITH MADDA ABOVE ISOLATED FORM
+             \u0622: ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
             latin:keyLabel="ل"
-            latin:popupCharacters="ل,لا" />
+            latin:popupCharacters="\ufefb|\u0644\u0627,\ufef7|\u0644\u0623,\ufef9|\u0644\u0625,\ufef5|\u0644\u0622" />
+        <!-- \u0623: ARABIC LETTER ALEF WITH HAMZA ABOVE
+             \u0625: ARABIC LETTER ALEF WITH HAMZA BELOW
+             \u0622: ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
             latin:keyLabel="ا"
-            latin:popupCharacters="ا,أ,إ,آ" />
+            latin:popupCharacters="\u0623,\u0625,\u0622" />
         <Key
             latin:keyLabel="ت" />
         <Key
@@ -88,7 +99,7 @@
             latin:keyLabel="م" />
         <Key
             latin:keyLabel="ك"
-            latin:popupCharacters="ك,گ" />
+            latin:popupCharacters="گ" />
         <Key
             latin:keyLabel="ط" />
         <Key
@@ -98,12 +109,43 @@
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="7.65%p"
+        latin:keyWidth="8.0%p"
     >
-        <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="8.0%p"
-            latin:keyEdgeFlags="left" />
+    <!-- kbd_row3_smiley -->
+        <switch>
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="\@"
+                    latin:keyEdgeFlags="left" />
+            </case>
+            <case
+                latin:mode="url"
+            >
+                <Key
+                    latin:keyLabel="-"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel="_"
+                    latin:popupCharacters="_"
+                    latin:keyEdgeFlags="left" />
+            </case>
+            <case
+                latin:imeAction="actionSearch"
+            >
+                <Key
+                    latin:keyLabel=":"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel="+"
+                    latin:popupCharacters="+"
+                    latin:keyEdgeFlags="left" />
+            </case>
+            <default>
+                <Key
+                    latin:keyStyle="smileyKeyStyle"
+                    latin:keyEdgeFlags="left" />
+            </default>
+        </switch>
         <Key
             latin:keyLabel="ئ" />
         <Key
@@ -122,13 +164,12 @@
             latin:keyLabel="و" />
         <Key
             latin:keyLabel="ز"
-            latin:popupCharacters="ز,ژ" />
+            latin:popupCharacters="ژ" />
         <Key
             latin:keyLabel="ظ" />
         <Key
             latin:keyLabel="د" />
-        <include
-            latin:keyboardLayout="@xml/kbd_row3_smiley" />
-        </Row>
-    <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />
+    </Row>
+    <include
+        latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </merge>

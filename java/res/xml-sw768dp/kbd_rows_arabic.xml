@@ -18,9 +18,6 @@
 */
 -->
 
-<!-- This file for Arabic layout is an alpha version. It allows to enter   -->
-<!-- some right-to-left text, but it has gone through no study whatsoever, -->
-<!-- and needs to be run through UX.                                       -->
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
@@ -44,21 +41,23 @@
             latin:keyLabel="ق" />
         <Key
             latin:keyLabel="ف"
-            latin:popupCharacters="ف,ڤ" />
+            latin:popupCharacters="ڤ" />
         <Key
             latin:keyLabel="غ" />
         <Key
             latin:keyLabel="ع" />
+        <!-- \ufeeb: ARABIC LETTER HEH INITIAL FORM
+             \u0647\u0640: ARABIC LETTER HEH + ARABIC TATWEEL -->
         <Key
             latin:keyLabel="ه"
-            latin:popupCharacters="ه,هـ" />
+            latin:popupCharacters="\ufeeb|\u0647\u0640" />
         <Key
             latin:keyLabel="خ" />
         <Key
             latin:keyLabel="ح" />
         <Key
             latin:keyLabel="ج"
-            latin:popupCharacters="ج,چ" />
+            latin:popupCharacters="چ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-11.500%p"
@@ -81,13 +80,25 @@
             latin:keyLabel="ي" />
         <Key
             latin:keyLabel="ب"
-            latin:popupCharacters="ب,پ" />
+            latin:popupCharacters="پ" />
+        <!-- \ufefb: ARABIC LIGATURE LAM WITH ALEF ISOLATED FORM
+             \u0644: ARABIC LETTER LAM
+             \u0627: ARABIC LETTER ALEF
+             \ufef7: ARABIC LIGATURE LAM WITH ALEF WITH HAMZA ABOVE ISOLATED FORM
+             \u0623: ARABIC LETTER ALEF WITH HAMZA ABOVE
+             \ufef9: ARABIC LIGATURE LAM WITH ALEF WITH HAMZA BELOW ISOLATED FORM
+             \u0625: ARABIC LETTER ALEF WITH HAMZA BELOW
+             \ufef5: ARABIC LIGATURE LAM WITH ALEF WITH MADDA ABOVE ISOLATED FORM
+             \u0622: ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
             latin:keyLabel="ل"
-            latin:popupCharacters="ل,لا" />
+            latin:popupCharacters="\ufefb|\u0644\u0627,\ufef7|\u0644\u0623,\ufef9|\u0644\u0625,\ufef5|\u0644\u0622" />
+        <!-- \u0623: ARABIC LETTER ALEF WITH HAMZA ABOVE
+             \u0625: ARABIC LETTER ALEF WITH HAMZA BELOW
+             \u0622: ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
             latin:keyLabel="ا"
-            latin:popupCharacters="ا,أ,إ,آ" />
+            latin:popupCharacters="\u0623,\u0625,\u0622" />
         <Key
             latin:keyLabel="ت" />
         <Key
@@ -96,7 +107,7 @@
             latin:keyLabel="م" />
         <Key
             latin:keyLabel="ك"
-            latin:popupCharacters="ك,گ" />
+            latin:popupCharacters="گ" />
         <Key
             latin:keyLabel="ط" />
         <Key
@@ -109,11 +120,8 @@
         latin:keyWidth="7.375%p"
     >
         <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.750%p"
-            latin:keyEdgeFlags="left" />
-        <Key
-            latin:keyLabel="ئ" />
+            latin:keyLabel="ئ"
+            latin:keyXPos="12.750%p" />
         <Key
             latin:keyLabel="ء" />
         <Key
@@ -130,11 +138,12 @@
             latin:keyLabel="و" />
         <Key
             latin:keyLabel="ز"
-            latin:popupCharacters="ز,ژ" />
+            latin:popupCharacters="ژ" />
         <Key
             latin:keyLabel="ظ" />
         <Key
             latin:keyLabel="د" />
     </Row>
-    <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />
+    <include
+        latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </merge>

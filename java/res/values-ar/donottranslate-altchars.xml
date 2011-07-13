@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2011, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- \u060c: ARABIC COMMA
+         \u061b: ARABIC SEMICOLON
+         \u061f: ARABIC QUESTION MARK
+         \u0651: ARABIC SHADDA
+         \u0652: ARABIC SUKUN
+         \u064c: ARABIC DAMMATAN
+         \u0640: ARABIC TATWEEL
+         \u064f: ARABIC DAMMA
+         \u064e: ARABIC FATHA
+         \u0650: ARABIC KASRA
+         \u064b: ARABIC FATHATAN
+         \u064d: ARABIC KASRATAN -->
+    <string name="alternates_for_punctuation">"\u060c,\u061b,\u061f,!,:,-,/,\',\",\u0651,\u0652,\u064c,\u0640,\u064f,\u064e,\u0650,\u064b,\u064d"</string>
+    <string name="alternates_for_web_tab_punctuation">".,\u060c,\u061b,\u061f,!,:,-,/,\',\",\u0651,\u0652,\u064c,\u0640,\u064f,\u064e,\u0650,\u064b,\u064d"</string>
+    <integer name="popup_keyboard_column_for_punctuation">9</integer>
+    <integer name="popup_keyboard_column_for_web_punctuation">10</integer>
+    <string name="keyhintlabel_for_punctuation">\u064b</string>
+    <string name="keylabel_for_symbols_1">"١"</string>
+    <string name="keylabel_for_symbols_2">"٢"</string>
+    <string name="keylabel_for_symbols_3">"٣"</string>
+    <string name="keylabel_for_symbols_4">"٤"</string>
+    <string name="keylabel_for_symbols_5">"٥"</string>
+    <string name="keylabel_for_symbols_6">"٦"</string>
+    <string name="keylabel_for_symbols_7">"٧"</string>
+    <string name="keylabel_for_symbols_8">"٨"</string>
+    <string name="keylabel_for_symbols_9">"٩"</string>
+    <string name="keylabel_for_symbols_0">"٠"</string>
+    <string name="alternates_for_symbols_1">1,¹,½,⅓,¼,⅛</string>
+    <string name="alternates_for_symbols_2">2,²,⅔</string>
+    <string name="alternates_for_symbols_3">3,³,¾,⅜</string>
+    <string name="alternates_for_symbols_4">4,⁴</string>
+    <string name="alternates_for_symbols_5">5,⅝</string>
+    <string name="alternates_for_symbols_6">6</string>
+    <string name="alternates_for_symbols_7">7,⅞</string>
+    <string name="alternates_for_symbols_8">8</string>
+    <string name="alternates_for_symbols_9">9</string>
+    <string name="alternates_for_symbols_0">0,ⁿ,∅</string>
+    <string name="keylabel_for_symbols_comma">\u060c</string>
+    <string name="keylabel_for_symbols_question">\u061f</string>
+    <string name="keylabel_for_symbols_semicolon">\u061b</string>
+    <string name="alternates_for_symbols_comma">,</string>
+    <string name="alternates_for_symbols_question">\?,¿</string>
+    <string name="alternates_for_symbols_semicolon">;</string>
+    <string name="keylabel_for_apostrophe">"،"</string>
+    <string name="keylabel_for_dash">"."</string>
+    <string name="keyhintlabel_for_apostrophe">"؟"</string>
+    <string name="keyhintlabel_for_dash">"\u064b"</string>
+    <string name="alternates_for_apostrophe">"\u061f,\u061b,!,:,-,/,\',\""</string>
+    <string name="alternates_for_dash">"\u0651,\u0652,\u064c,\u0640,\u064f,\u064e,\u0650,\u064b,\u064d"</string>
+</resources>

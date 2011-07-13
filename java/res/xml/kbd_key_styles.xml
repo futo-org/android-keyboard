@@ -60,7 +60,9 @@
         latin:parentStyle="functionalKeyStyle"
         latin:isSticky="true" />
     <switch>
-        <case latin:languageCode="ar|iw">
+        <case
+            latin:languageCode="ar|iw"
+        >
             <key-style
                 latin:styleName="deleteKeyStyle"
                 latin:code="@integer/key_delete"
@@ -222,6 +224,29 @@
             <key-style
                 latin:styleName="nonPasswordFunctionalKeyStyle"
                 latin:enabled="true"
+                latin:parentStyle="functionalKeyStyle" />
+        </default>
+    </switch>
+    <switch>
+        <case
+            latin:navigateAction="true"
+        >
+            <key-style
+                latin:styleName="punctuationKeyStyle"
+                latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
+                latin:keyLabelOption="hasPopupHint"
+                latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
+                latin:maxPopupKeyboardColumn="@integer/popup_keyboard_column_for_web_punctuation"
+                latin:parentStyle="tabKeyStyle" />
+        </case>
+        <default>
+            <key-style
+                latin:styleName="punctuationKeyStyle"
+                latin:keyLabel="."
+                latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
+                latin:keyLabelOption="hasPopupHint"
+                latin:popupCharacters="@string/alternates_for_punctuation"
+                latin:maxPopupKeyboardColumn="@integer/popup_keyboard_column_for_punctuation"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>

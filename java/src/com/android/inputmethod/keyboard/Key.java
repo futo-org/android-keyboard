@@ -257,10 +257,13 @@ public class Key {
 
             final CharSequence[] popupCharacters = style.getTextArray(keyAttr,
                     R.styleable.Keyboard_Key_popupCharacters);
-            if (res.getBoolean(R.bool.config_digit_popup_characters_enabled)) {
-                mPopupCharacters = popupCharacters;
-            } else {
+            // In Arabic symbol layouts, we'd like to keep digits in popup characters regardless of
+            // config_digit_popup_characters_enabled.
+            if (mKeyboard.mId.isAlphabetKeyboard() && !res.getBoolean(
+                    R.bool.config_digit_popup_characters_enabled)) {
                 mPopupCharacters = filterOutDigitPopupCharacters(popupCharacters);
+            } else {
+                mPopupCharacters = popupCharacters;
             }
             mMaxPopupColumn = style.getInt(keyboardAttr,
                     R.styleable.Keyboard_Key_maxPopupKeyboardColumn,

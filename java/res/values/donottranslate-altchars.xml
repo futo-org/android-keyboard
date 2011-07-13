@@ -51,7 +51,42 @@
     <string name="alternates_for_smiley">":-)|:-) ,:-(|:-( ,;-)|;-) ,:-P|:-P ,=-O|=-O ,:-*|:-* ,:O|:O ,B-)|B-) ,:-$|:-$ ,:-!|:-! ,:-[|:-[ ,O:-)|O:-) ,:-\\\\\\\\|:-\\\\\\\\ ,:\'(|:\'( ,:-D|:-D "</string>
     <string name="alternates_for_punctuation">"\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
     <string name="alternates_for_web_tab_punctuation">".,\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
+    <integer name="popup_keyboard_column_for_punctuation">7</integer>
+    <integer name="popup_keyboard_column_for_web_punctuation">8</integer>
+    <string name="keyhintlabel_for_punctuation"></string>
     <string name="keylabel_for_popular_domain">".com"</string>
     <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
     <string name="alternates_for_popular_domain">".net,.org,.gov,.edu"</string>
+    <string name="keylabel_for_symbols_1">1</string>
+    <string name="keylabel_for_symbols_2">2</string>
+    <string name="keylabel_for_symbols_3">3</string>
+    <string name="keylabel_for_symbols_4">4</string>
+    <string name="keylabel_for_symbols_5">5</string>
+    <string name="keylabel_for_symbols_6">6</string>
+    <string name="keylabel_for_symbols_7">7</string>
+    <string name="keylabel_for_symbols_8">8</string>
+    <string name="keylabel_for_symbols_9">9</string>
+    <string name="keylabel_for_symbols_0">0</string>
+    <string name="alternates_for_symbols_1">¹,½,⅓,¼,⅛</string>
+    <string name="alternates_for_symbols_2">²,⅔</string>
+    <string name="alternates_for_symbols_3">³,¾,⅜</string>
+    <string name="alternates_for_symbols_4">⁴</string>
+    <string name="alternates_for_symbols_5">⅝</string>
+    <string name="alternates_for_symbols_6"></string>
+    <string name="alternates_for_symbols_7">⅞</string>
+    <string name="alternates_for_symbols_8"></string>
+    <string name="alternates_for_symbols_9"></string>
+    <string name="alternates_for_symbols_0">ⁿ,∅</string>
+    <string name="keylabel_for_symbols_comma">,</string>
+    <string name="keylabel_for_symbols_question">\?</string>
+    <string name="keylabel_for_symbols_semicolon">;</string>
+    <string name="alternates_for_symbols_comma"></string>
+    <string name="alternates_for_symbols_question">¿</string>
+    <string name="alternates_for_symbols_semicolon"></string>
+    <string name="keylabel_for_apostrophe">\'</string>
+    <string name="keylabel_for_dash">-</string>
+    <string name="keyhintlabel_for_apostrophe">\"</string>
+    <string name="keyhintlabel_for_dash">_</string>
+    <string name="alternates_for_apostrophe">\"</string>
+    <string name="alternates_for_dash">_</string>
 </resources>

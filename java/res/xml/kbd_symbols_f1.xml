@@ -36,7 +36,8 @@
                 <!-- latin:hasVoiceKey="false" -->
                 <default>
                     <Key
-                        latin:keyLabel=","
+                        latin:keyLabel="@string/keylabel_for_symbols_comma"
+                        latin:popupCharacters="@string/alternates_for_symbols_comma"
                         latin:keyWidth="9.2%p"
                         latin:keyStyle="settingsPopupStyle" />
                 </default>
@@ -54,7 +55,8 @@
                 <!-- latin:hasVoiceKey="false" -->
                 <default>
                     <Key
-                        latin:keyLabel=","
+                        latin:keyLabel="@string/keylabel_for_symbols_comma"
+                        latin:popupCharacters="@string/alternates_for_symbols_comma"
                         latin:keyStyle="settingsPopupStyle" />
                 </default>
             </switch>

@@ -39,10 +39,10 @@
         </case>
         <default>
             <Key
-                latin:keyLabel="\'"
+                latin:keyLabel="@string/keylabel_for_apostrophe"
                 latin:keyLabelOption="hasUppercaseLetter"
-                latin:keyHintLabel="&quot;"
-                latin:popupCharacters="&quot;" />
+                latin:keyHintLabel="@string/keyhintlabel_for_apostrophe"
+                latin:popupCharacters="@string/alternates_for_apostrophe" />
         </default>
     </switch>
     <switch>
@@ -54,10 +54,10 @@
         </case>
         <default>
             <Key
-                latin:keyLabel="-"
+                latin:keyLabel="@string/keylabel_for_dash"
                 latin:keyLabelOption="hasUppercaseLetter"
-                latin:keyHintLabel="_"
-                latin:popupCharacters="_" />
+                latin:keyHintLabel="@string/keyhintlabel_for_dash"
+                latin:popupCharacters="@string/alternates_for_dash" />
         </default>
     </switch>
 </merge>

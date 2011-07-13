@@ -41,27 +41,9 @@
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="35.83%p" />
-                <switch>
-                    <case
-                        latin:navigateAction="true"
-                    >
-                        <Key
-                            latin:keyStyle="tabKeyStyle"
-                            latin:keyLabelOption="hasPopupHint"
-                            latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
-                            latin:keyWidth="9.2%p"
-                            latin:maxPopupKeyboardColumn="8" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="."
-                            latin:keyLabelOption="hasPopupHint"
-                            latin:popupCharacters="@string/alternates_for_punctuation"
-                            latin:keyWidth="9.2%p"
-                            latin:maxPopupKeyboardColumn="7"
-                            latin:keyStyle="functionalKeyStyle" />
-                    </default>
-                </switch>
+                <Key
+                    latin:keyStyle="punctuationKeyStyle"
+                    latin:keyWidth="9.2%p" />
             </case>
             <!-- latin:hasSettingsKey="false" -->
             <default>
@@ -74,25 +56,8 @@
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="50%p" />
-                <switch>
-                    <case
-                        latin:navigateAction="true"
-                    >
-                        <Key
-                            latin:keyStyle="tabKeyStyle"
-                            latin:keyLabelOption="hasPopupHint"
-                            latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
-                            latin:maxPopupKeyboardColumn="8" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="."
-                            latin:keyLabelOption="hasPopupHint"
-                            latin:popupCharacters="@string/alternates_for_punctuation"
-                            latin:maxPopupKeyboardColumn="7"
-                            latin:keyStyle="functionalKeyStyle" />
-                    </default>
-                </switch>
+                <Key
+                    latin:keyStyle="punctuationKeyStyle" />
             </default>
         </switch>
         <switch>
