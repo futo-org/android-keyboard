@@ -19,6 +19,7 @@ LOCAL_SRC_FILES := \
     src/unigram_dictionary.cpp
 
 #FLAG_DBG := true
+#FLAG_DO_PROFILE := true
 
 TARGETING_UNBUNDLED_FROYO := true
 
@@ -39,10 +40,15 @@ LOCAL_MODULE := libjni_latinime
 
 LOCAL_MODULE_TAGS := user
 
+ifeq ($(FLAG_DO_PROFILE), true)
+    $(warning Making profiling version of native library)
+    LOCAL_CFLAGS += -DFLAG_DO_PROFILE
+else # FLAG_DO_PROFILE
 ifeq ($(FLAG_DBG), true)
     $(warning Making debug version of native library)
     LOCAL_CFLAGS += -DFLAG_DBG
     LOCAL_SHARED_LIBRARIES := libcutils libutils
-endif
+endif # FLAG_DBG
+endif # FLAG_DO_PROFILE
 
 include $(BUILD_SHARED_LIBRARY)
