@@ -16,12 +16,14 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.RemoteException;
 import android.provider.UserDictionary.Words;
 
 public class UserDictionary extends ExpandableDictionary {
@@ -99,24 +101,34 @@ public class UserDictionary extends ExpandableDictionary {
         values.put(Words.APP_ID, 0);
 
         final ContentResolver contentResolver = getContext().getContentResolver();
+        final ContentProviderClient client =
+                contentResolver.acquireContentProviderClient(Words.CONTENT_URI);
+        if (null == client) return;
         new Thread("addWord") {
             @Override
             public void run() {
-                Cursor cursor = contentResolver.query(Words.CONTENT_URI, PROJECTION_ADD,
-                        "word=? and ((locale IS NULL) or (locale=?))",
-                        new String[] { word, mLocale }, null);
-                if (cursor != null && cursor.moveToFirst()) {
-                    String locale = cursor.getString(cursor.getColumnIndex(Words.LOCALE));
-                    // If locale is null, we will not override the entry.
-                    if (locale != null && locale.equals(mLocale.toString())) {
-                        long id = cursor.getLong(cursor.getColumnIndex(Words._ID));
-                        Uri uri = Uri.withAppendedPath(Words.CONTENT_URI, Long.toString(id));
-                        // Update the entry with new frequency value.
-                        contentResolver.update(uri, values, null, null);
+                try {
+                    final Cursor cursor = client.query(Words.CONTENT_URI, PROJECTION_ADD,
+                            "word=? and ((locale IS NULL) or (locale=?))",
+                                    new String[] { word, mLocale }, null);
+                    if (cursor != null && cursor.moveToFirst()) {
+                        final String locale = cursor.getString(cursor.getColumnIndex(Words.LOCALE));
+                        // If locale is null, we will not override the entry.
+                        if (locale != null && locale.equals(mLocale.toString())) {
+                            final long id = cursor.getLong(cursor.getColumnIndex(Words._ID));
+                            final Uri uri =
+                                    Uri.withAppendedPath(Words.CONTENT_URI, Long.toString(id));
+                            // Update the entry with new frequency value.
+                            client.update(uri, values, null, null);
+                        }
+                    } else {
+                        // Insert new entry.
+                        client.insert(Words.CONTENT_URI, values);
                     }
-                } else {
-                    // Insert new entry.
-                    contentResolver.insert(Words.CONTENT_URI, values);
+                } catch (RemoteException e) {
+                    // If we come here, the activity is already about to be killed, and we
+                    // have no means of contacting the content provider any more.
+                    // See ContentResolver#insert, inside the catch(){}
                 }
             }
         }.start();
