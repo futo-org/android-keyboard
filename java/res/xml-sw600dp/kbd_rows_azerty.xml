@@ -149,7 +149,7 @@
             </default>
         </switch>
         <include
-            latin:keyboardLayout="@xml/kbd_row3_right" />
+            latin:keyboardLayout="@xml/kbd_row3_smiley" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

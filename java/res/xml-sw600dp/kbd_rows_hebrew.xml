@@ -24,13 +24,11 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="8.600%p"
+        latin:keyWidth="9.0%p"
         latin:rowEdgeFlags="top"
     >
-        <Key
-            latin:keyLabel="," />
-        <Key
-            latin:keyLabel="." />
+        <include
+            latin:keyboardLayout="@xml/kbd_row4_apostrophe_dash" />
         <Key
             latin:keyLabel="ק" />
         <Key
@@ -54,48 +52,78 @@
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.600%p"
+        latin:keyWidth="9.0%p"
     >
         <Key
             latin:keyLabel="ש"
-            latin:keyXPos="4.000%p" />
+            latin:keyXPos="4.500%p" />
         <Key
             latin:keyLabel="ד" />
         <Key
             latin:keyLabel="ג"
-            latin:popupCharacters="ג,ג׳" />
+            latin:popupCharacters="ג׳" />
         <Key
             latin:keyLabel="כ" />
         <Key
             latin:keyLabel="ע" />
         <Key
             latin:keyLabel="י"
-            latin:popupCharacters="י,ײַ" />
+            latin:popupCharacters="ײַ" />
         <Key
             latin:keyLabel="ח"
-            latin:popupCharacters="ח,ח׳" />
+            latin:popupCharacters="ח׳" />
         <Key
             latin:keyLabel="ל" />
         <Key
             latin:keyLabel="ך" />
         <Key
             latin:keyLabel="ף" />
-        <Key
-            latin:keyStyle="returnKeyStyle"
-            latin:keyXPos="-10.400%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.600%p"
+        latin:keyWidth="8.9%p"
     >
-        <Key
-            latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.000%p"
-            latin:keyEdgeFlags="left" />
+        <!-- kbd_row3_smiley -->
+        <switch>
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="\@"
+                    latin:keyWidth="10.0%p"
+                    latin:keyEdgeFlags="left" />
+            </case>
+            <case
+                latin:mode="url"
+            >
+                <Key
+                    latin:keyLabel="-"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel="_"
+                    latin:popupCharacters="_"
+                    latin:keyWidth="10.0%p"
+                    latin:keyEdgeFlags="left" />
+            </case>
+            <case
+                latin:imeAction="actionSearch"
+            >
+                <Key
+                    latin:keyLabel=":"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel="+"
+                    latin:popupCharacters="+"
+                    latin:keyWidth="10.0%p"
+                    latin:keyEdgeFlags="left" />
+            </case>
+            <default>
+                <Key
+                    latin:keyStyle="smileyKeyStyle"
+                    latin:keyWidth="10.0%p"
+                    latin:keyEdgeFlags="left" />
+            </default>
+        </switch>
         <Key
             latin:keyLabel="ז"
-            latin:popupCharacters="ז,ז׳" />
+            latin:popupCharacters="ז׳" />
         <Key
             latin:keyLabel="ס" />
         <Key
@@ -108,15 +136,19 @@
             latin:keyLabel="מ" />
         <Key
             latin:keyLabel="צ"
-            latin:popupCharacters="צ,צ׳" />
+            latin:popupCharacters="צ׳" />
         <Key
             latin:keyLabel="ת"
-            latin:popupCharacters="ת,ת׳" />
+            latin:popupCharacters="ת׳" />
         <Key
             latin:keyLabel="ץ"
-            latin:popupCharacters="ץ,ץ׳" />
-        <include
-            latin:keyboardLayout="@xml/kbd_row3_right" />
+            latin:popupCharacters="ץ׳" />
+        <Key
+            latin:keyStyle="returnKeyStyle"
+            latin:keyXPos="-10.400%p"
+            latin:keyWidth="fillBoth"
+            latin:keyEdgeFlags="right" />
     </Row>
-    <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />
+    <include
+        latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </merge>

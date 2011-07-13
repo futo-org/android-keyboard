@@ -123,7 +123,7 @@
         <Key
             latin:keyLabel="ю" />
         <include
-            latin:keyboardLayout="@xml/kbd_row3_right2" />
+            latin:keyboardLayout="@xml/kbd_row3_comma_period" />
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="fillBoth"

@@ -158,16 +158,13 @@
             latin:keyStyle="spaceKeyStyle"
             latin:keyXPos="30.750%p"
             latin:keyWidth="39.750%p" />
-                <!-- Note: DroidSans doesn't have double-high-reversed-quotation
-                    '\u201f' glyph. -->
-                <!-- latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" -->
+        <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
+        <!-- latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" -->
         <Key
             latin:keyLabel="&quot;"
-            latin:popupCharacters="“,”,«,»,‘,’,‚,‛"
-            latin:keyWidth="9.750%p" />
+            latin:popupCharacters="“,”,«,»,‘,’,‚,‛" />
         <Key
-            latin:keyLabel="_"
-            latin:keyWidth="9.750%p" />
+            latin:keyLabel="_" />
         <Spacer
             latin:keyXPos="-10.00%p"
             latin:keyWidth="0%p" />

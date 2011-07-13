@@ -18,9 +18,6 @@
 */
 -->
 
-<!-- This file for Hebrew layout is an alpha version. It allows to enter   -->
-<!-- some right-to-left text, but it has gone through no study whatsoever, -->
-<!-- and needs to be run through UX.                                       -->
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
@@ -63,15 +60,18 @@
         <Key
             latin:keyLabel="ד" />
         <Key
-            latin:keyLabel="ג" />
+            latin:keyLabel="ג"
+            latin:popupCharacters="ג׳" />
         <Key
             latin:keyLabel="כ" />
         <Key
             latin:keyLabel="ע" />
         <Key
-            latin:keyLabel="י" />
+            latin:keyLabel="י"
+            latin:popupCharacters="ײַ" />
         <Key
-            latin:keyLabel="ח" />
+            latin:keyLabel="ח"
+            latin:popupCharacters="ח׳" />
         <Key
             latin:keyLabel="ל" />
         <Key
@@ -86,6 +86,7 @@
     >
         <Key
             latin:keyLabel="ז"
+            latin:popupCharacters="ז׳"
             latin:keyXPos="5%p"
             latin:keyEdgeFlags="left" />
         <Key
@@ -99,13 +100,17 @@
         <Key
             latin:keyLabel="מ" />
         <Key
-            latin:keyLabel="צ" />
+            latin:keyLabel="צ"
+            latin:popupCharacters="צ׳" />
         <Key
-            latin:keyLabel="ת" />
+            latin:keyLabel="ת"
+            latin:popupCharacters="ת׳" />
         <Key
             latin:keyLabel="ץ"
+            latin:popupCharacters="ץ׳"
             latin:keyEdgeFlags="right" />
         <!-- Here is 5%p space -->
     </Row>
-    <include latin:keyboardLayout="@xml/kbd_qwerty_row4" />
+    <include
+        latin:keyboardLayout="@xml/kbd_qwerty_row4" />
 </merge>

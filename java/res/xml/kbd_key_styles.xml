@@ -60,7 +60,7 @@
         latin:parentStyle="functionalKeyStyle"
         latin:isSticky="true" />
     <switch>
-        <case latin:localeCode="ar|iw">
+        <case latin:languageCode="ar|iw">
             <key-style
                 latin:styleName="deleteKeyStyle"
                 latin:code="@integer/key_delete"

@@ -114,30 +114,10 @@
             latin:keyLabel="ђ" />
         <Key
             latin:keyLabel="ж" />
-        <switch>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyLabel="," />
-                <Key
-                    latin:keyLabel="." />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel=","
-                    latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLabel="!"
-                    latin:popupCharacters="!" />
-                <Key
-                    latin:keyLabel="."
-                    latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLabel="\?"
-                    latin:popupCharacters="\?" />
-            </default>
-        </switch>
         <include
-            latin:keyboardLayout="@xml/kbd_row3_right" />
+            latin:keyboardLayout="@xml/kbd_row3_comma_period" />
+        <include
+            latin:keyboardLayout="@xml/kbd_row3_smiley" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

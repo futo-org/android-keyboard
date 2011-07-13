@@ -59,46 +59,15 @@
             latin:keyWidth="39.750%p" />
         <switch>
             <case
-                latin:mode="email"
+                latin:languageCode="iw"
             >
-                <Key
-                    latin:keyLabel="-"
-                    latin:keyWidth="9.750%p" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_row3_comma_period" />
             </case>
-            <case
-                latin:mode="url"
-            >
-                <Key
-                    latin:keyLabel="/"
-                    latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLabel=":"
-                    latin:popupCharacters=":"
-                    latin:keyWidth="9.750%p" />
-            </case>
+            <!-- not languageCode="iw" -->
             <default>
-                <Key
-                    latin:keyLabel="\'"
-                    latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLabel="&quot;"
-                    latin:popupCharacters="&quot;"
-                    latin:keyWidth="9.750%p" />
-            </default>
-        </switch>
-        <switch>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyLabel="_"
-                    latin:keyWidth="9.750%p" />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel="-"
-                    latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLabel="_"
-                    latin:popupCharacters="_"
-                    latin:keyWidth="9.750%p" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_row4_apostrophe_dash" />
             </default>
         </switch>
         <Spacer
