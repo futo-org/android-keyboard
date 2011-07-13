@@ -17,27 +17,14 @@
 <resources>
     <style name="KeyboardIcons.IceCreamSandwich">
         <!-- Keyboard icons -->
-        <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are too
-             large for phone.
-             sym_keyboard_shift_holo
-             sym_keyboard_shift_locked_holo
-             sym_keyboard_delete_holo,
-             sym_keyboard_settings_holo
-             sym_keyboard_voice_holo
-             sym_keyboard_voice_holo_off
-             sym_keyboard_space_holo
-             sym_keyboard_return_holo
-             sym_keyboard_tab_holo
-             -->
         <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are missing.
              sym_keyboard_123_mic_holo
-             sym_keyboard_search_holo
-             sym_keyboard_feedback_tab_holo
-             sym_keyboard_feedback_voice_holo
              -->
         <item name="iconShiftKey">@drawable/sym_keyboard_shift_holo</item>
         <item name="iconToSymbolKeyWithShortcut">@drawable/sym_keyboard_123_mic_holo</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete_holo</item>
+        <!-- TODO: update this icon drawable -->
+        <item name="iconDeleteRtlKey">@drawable/sym_keyboard_delete_rtl_holo</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings_holo</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_voice_holo</item>
         <item name="iconSpaceKey">@drawable/sym_keyboard_space_holo</item>

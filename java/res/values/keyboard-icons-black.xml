@@ -18,12 +18,14 @@
     <style name="KeyboardIcons.Black">
         <!-- Keyboard icons -->
         <!-- TODO: The following holo icon for phone (drawable-hdpi and drawable-xhdpi) are too
-             large for phone.
+             ambiguous.
              sym_bkeyboard_voice_off
           -->
         <item name="iconShiftKey">@drawable/sym_bkeyboard_shift</item>
         <item name="iconToSymbolKeyWithShortcut">@drawable/sym_bkeyboard_123_mic</item>
         <item name="iconDeleteKey">@drawable/sym_bkeyboard_delete</item>
+        <!-- TODO: update this icon drawable -->
+        <item name="iconDeleteRtlKey">@drawable/sym_bkeyboard_delete_rtl</item>
         <item name="iconSettingsKey">@drawable/sym_bkeyboard_settings</item>
         <item name="iconShortcutKey">@drawable/sym_bkeyboard_mic</item>
         <item name="iconSpaceKey">@drawable/sym_bkeyboard_space</item>
