@@ -1803,19 +1803,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final InputConnection ic = getCurrentInputConnection();
         final CharSequence punctuation = ic.getTextBeforeCursor(1, 0);
         if (deleteChar) ic.deleteSurroundingText(1, 0);
-        int toDelete = mCommittedLength;
-        final CharSequence toTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
-        if (!TextUtils.isEmpty(toTheLeft)
-                && mSettingsValues.isWordSeparator(toTheLeft.charAt(0))) {
-            toDelete--;
-        }
-        ic.deleteSurroundingText(toDelete, 0);
+        final CharSequence textToTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
+        final int toDeleteLength = (!TextUtils.isEmpty(textToTheLeft)
+                && mSettingsValues.isWordSeparator(toTheLeft.charAt(0)))
+                ? mCommittedLength - 1 : mCommittedLength;
+        ic.deleteSurroundingText(toDeleteLength, 0);
+
         // Re-insert punctuation only when the deleted character was word separator and the
         // composing text wasn't equal to the auto-corrected text.
         if (deleteChar
                 && !TextUtils.isEmpty(punctuation)
                 && mSettingsValues.isWordSeparator(punctuation.charAt(0))
-                && !TextUtils.equals(mComposingStringBuilder, toTheLeft)) {
+                && !TextUtils.equals(mComposingStringBuilder, textToTheLeft)) {
             ic.commitText(mComposingStringBuilder, 1);
             TextEntryState.acceptedTyped(mComposingStringBuilder);
             ic.commitText(punctuation, 1);
