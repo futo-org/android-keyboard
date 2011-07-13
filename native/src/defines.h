@@ -20,6 +20,7 @@
 
 #ifdef FLAG_DO_PROFILE
 // Profiler
+#include <cutils/log.h>
 #include <time.h>
 #define PROF_BUF_SIZE 100
 static double profile_buf[PROF_BUF_SIZE];
@@ -92,8 +93,10 @@ static void prof_out(void) {
 #define DEBUG_PROXIMITY_INFO true
 
 #else // FLAG_DBG
+#ifndef FLAG_DO_PROFILE
 #define LOGE(fmt, ...)
 #define LOGI(fmt, ...)
+#endif // FLAG_DO_PROFILE
 #define DEBUG_DICT false
 #define DEBUG_DICT_FULL false
 #define DEBUG_SHOW_FOUND_WORD false

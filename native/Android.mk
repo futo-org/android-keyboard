@@ -31,6 +31,10 @@ ifeq ($(FLAG_DBG), true)
     TARGETING_UNBUNDLED_FROYO := false
 endif
 
+ifeq ($(FLAG_DO_PROFILE), true)
+    TARGETING_UNBUNDLED_FROYO := false
+endif
+
 ifeq ($(TARGETING_UNBUNDLED_FROYO), true)
     LOCAL_NDK_VERSION := 4
     LOCAL_SDK_VERSION := 8
@@ -43,6 +47,7 @@ LOCAL_MODULE_TAGS := user
 ifeq ($(FLAG_DO_PROFILE), true)
     $(warning Making profiling version of native library)
     LOCAL_CFLAGS += -DFLAG_DO_PROFILE
+    LOCAL_SHARED_LIBRARIES := libcutils libutils
 else # FLAG_DO_PROFILE
 ifeq ($(FLAG_DBG), true)
     $(warning Making debug version of native library)

@@ -172,8 +172,8 @@ int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const 
             short unsigned int* w = mOutputChars + j * MAX_WORD_LENGTH;
             char s[MAX_WORD_LENGTH];
             for (int i = 0; i <= MAX_WORD_LENGTH; i++) s[i] = w[i];
-#endif
             LOGI("%s %i", s, mFrequencies[j]);
+#endif
         }
         LOGI("Next letters: ");
         for (int k = 0; k < NEXT_LETTERS_SIZE; k++) {
@@ -301,8 +301,8 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
 #ifdef FLAG_DBG
         char s[length + 1];
         for (int i = 0; i <= length; i++) s[i] = word[i];
-#endif
         LOGI("Found word = %s, freq = %d", s, frequency);
+#endif
     }
     if (length > MAX_WORD_LENGTH) {
         if (DEBUG_DICT) {
@@ -325,8 +325,8 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
 #ifdef FLAG_DBG
             char s[length + 1];
             for (int i = 0; i <= length; i++) s[i] = word[i];
-#endif
             LOGI("Added word = %s, freq = %d, %d", s, frequency, S_INT_MAX);
+#endif
         }
         memmove((char*) mFrequencies + (insertAt + 1) * sizeof(mFrequencies[0]),
                (char*) mFrequencies + insertAt * sizeof(mFrequencies[0]),
@@ -809,9 +809,9 @@ inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
                             char s[inputLength + 1];
                             for (int i = 0; i < inputLength; ++i) s[i] = word[i];
                             s[inputLength] = 0;
-#endif
                             LOGI("New missing space word found: %d > %d (%s), %d, %d",
                                     newFreq, maxFreq, s, inputLength, depth);
+#endif
                         }
                         maxFreq = newFreq;
                     }
