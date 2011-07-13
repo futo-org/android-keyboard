@@ -36,10 +36,51 @@ class UnigramDictionary {
     } ProximityType;
 
 public:
+#ifdef NEW_DICTIONARY_FORMAT
+
+    // Mask and flags for children address type selection.
+    static const int MASK_GROUP_ADDRESS_TYPE = 0xC0;
+    static const int FLAG_GROUP_ADDRESS_TYPE_NOADDRESS = 0x00;
+    static const int FLAG_GROUP_ADDRESS_TYPE_ONEBYTE = 0x40;
+    static const int FLAG_GROUP_ADDRESS_TYPE_TWOBYTES = 0x80;
+    static const int FLAG_GROUP_ADDRESS_TYPE_THREEBYTES = 0xC0;
+
+    // Flag for single/multiple char group
+    static const int FLAG_HAS_MULTIPLE_CHARS = 0x20;
+
+    // Flag for terminal groups
+    static const int FLAG_IS_TERMINAL = 0x10;
+
+    // Flag for bigram presence
+    static const int FLAG_HAS_BIGRAMS = 0x04;
+
+    // Attribute (bigram/shortcut) related flags:
+    // Flag for presence of more attributes
+    static const int FLAG_ATTRIBUTE_HAS_NEXT = 0x80;
+    // Flag for sign of offset. If this flag is set, the offset value must be negated.
+    static const int FLAG_ATTRIBUTE_OFFSET_NEGATIVE = 0x40;
+
+    // Mask for attribute frequency, stored on 4 bits inside the flags byte.
+    static const int MASK_ATTRIBUTE_FREQUENCY = 0x0F;
+
+    // Mask and flags for attribute address type selection.
+    static const int MASK_ATTRIBUTE_ADDRESS_TYPE = 0x30;
+    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
+    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
+    static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
+#endif // NEW_DICTIONARY_FORMAT
+
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
             const bool isLatestDictVersion);
+#ifndef NEW_DICTIONARY_FORMAT
     bool isValidWord(unsigned short *word, int length);
+#else // NEW_DICTIONARY_FORMAT
+    bool isValidWord(const uint16_t* const inWord, const int length) const;
+    int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
+            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
+            int maxAlternatives);
+#endif // NEW_DICTIONARY_FORMAT
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
@@ -92,6 +133,7 @@ private:
     }
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
+#ifndef NEW_DICTIONARY_FORMAT
     void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
             const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
             const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
@@ -104,6 +146,11 @@ private:
     bool processCurrentNodeForExactMatch(const int firstChildPos,
             const int startInputIndex, const int depth, unsigned short *word,
             int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
+#else // NEW_DICTIONARY_FORMAT
+    int getFrequency(const uint16_t* const inWord, const int length) const;
+    int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
+            short unsigned int* outWord);
+#endif // NEW_DICTIONARY_FORMAT
 
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
