@@ -1805,7 +1805,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (deleteChar) ic.deleteSurroundingText(1, 0);
         final CharSequence textToTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
         final int toDeleteLength = (!TextUtils.isEmpty(textToTheLeft)
-                && mSettingsValues.isWordSeparator(toTheLeft.charAt(0)))
+                && mSettingsValues.isWordSeparator(textToTheLeft.charAt(0)))
                 ? mCommittedLength - 1 : mCommittedLength;
         ic.deleteSurroundingText(toDeleteLength, 0);
 
