@@ -30,6 +30,9 @@ public:
             const uint32_t *proximityCharsArray);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
+    void setInputParams(const int* inputCodes, const int inputLength);
+    const int* getProximityCharsAt(const int index) const;
+    bool sameAsTyped(const unsigned short *word, int length) const;
 private:
     int getStartIndexFromCoordinates(const int x, const int y) const;
     const int MAX_PROXIMITY_CHARS_SIZE;
@@ -39,7 +42,9 @@ private:
     const int GRID_HEIGHT;
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
+    const int *mInputCodes;
     uint32_t *mProximityCharsArray;
+    int mInputLength;
 };
 
 } // namespace latinime

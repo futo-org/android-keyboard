@@ -82,26 +82,26 @@ public:
             int maxAlternatives);
 #endif // NEW_DICTIONARY_FORMAT
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
-    int getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
+    int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
             unsigned short *outWords, int *frequencies);
     ~UnigramDictionary();
 
 private:
-    void getWordSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
+    void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
             unsigned short *outWords, int *frequencies);
     bool isDigraph(const int* codes, const int i, const int codesSize) const;
-    void getWordWithDigraphSuggestionsRec(const ProximityInfo *proximityInfo,
+    void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
         const int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies);
-    void initSuggestions(const int *codes, const int codesSize, unsigned short *outWords,
-            int *frequencies);
+    void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
+            const int *ycoordinates, const int *codes, const int codesSize,
+            unsigned short *outWords, int *frequencies);
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
             const int transposedPos, int *nextLetters, const int nextLettersSize,
             const int maxDepth);
-    bool sameAsTyped(const unsigned short *word, int length) const;
     bool addWord(unsigned short *word, int length, int frequency);
     bool getSplitTwoWordsSuggestion(const int inputLength,
             const int firstWordStartPos, const int firstWordLength,
@@ -129,7 +129,7 @@ private:
             int *newDiffs, int *nextSiblingPosition, int *nextOutputIndex);
     bool existsAdjacentProximityChars(const int inputIndex, const int inputLength) const;
     inline const int* getInputCharsAt(const int index) const {
-        return mInputCodes + (index * MAX_PROXIMITY_CHARS);
+        return mProximityInfo->getProximityCharsAt(index);
     }
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
@@ -174,7 +174,7 @@ private:
 
     int *mFrequencies;
     unsigned short *mOutputChars;
-    const int *mInputCodes;
+    const ProximityInfo *mProximityInfo;
     int mInputLength;
     // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
