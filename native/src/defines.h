@@ -18,18 +18,7 @@
 #ifndef LATINIME_DEFINES_H
 #define LATINIME_DEFINES_H
 
-#ifdef FLAG_DBG
-#include <cutils/log.h>
-#ifndef LOG_TAG
-#define LOG_TAG "LatinIME: "
-#endif
-#define DEBUG_DICT true
-#define DEBUG_DICT_FULL false
-#define DEBUG_SHOW_FOUND_WORD DEBUG_DICT_FULL
-#define DEBUG_NODE DEBUG_DICT_FULL
-#define DEBUG_TRACE DEBUG_DICT_FULL
-#define DEBUG_PROXIMITY_INFO true
-
+#ifdef FLAG_DO_PROFILE
 // Profiler
 #include <time.h>
 #define PROF_BUF_SIZE 100
@@ -76,16 +65,7 @@ static void prof_out(void) {
     }
 }
 
-#else // FLAG_DBG
-#define LOGE(fmt, ...)
-#define LOGI(fmt, ...)
-#define DEBUG_DICT false
-#define DEBUG_DICT_FULL false
-#define DEBUG_SHOW_FOUND_WORD false
-#define DEBUG_NODE false
-#define DEBUG_TRACE false
-#define DEBUG_PROXIMITY_INFO false
-
+#else // FLAG_DO_PROFILE
 #define PROF_BUF_SIZE 0
 #define PROF_RESET
 #define PROF_COUNT(prof_buf_id)
@@ -96,6 +76,30 @@ static void prof_out(void) {
 #define PROF_CLOCK_OUT(prof_buf_id)
 #define PROF_CLOCKOUT(prof_buf_id)
 #define PROF_OUTALL
+
+#endif // FLAG_DO_PROFILE
+
+#ifdef FLAG_DBG
+#include <cutils/log.h>
+#ifndef LOG_TAG
+#define LOG_TAG "LatinIME: "
+#endif
+#define DEBUG_DICT true
+#define DEBUG_DICT_FULL false
+#define DEBUG_SHOW_FOUND_WORD DEBUG_DICT_FULL
+#define DEBUG_NODE DEBUG_DICT_FULL
+#define DEBUG_TRACE DEBUG_DICT_FULL
+#define DEBUG_PROXIMITY_INFO true
+
+#else // FLAG_DBG
+#define LOGE(fmt, ...)
+#define LOGI(fmt, ...)
+#define DEBUG_DICT false
+#define DEBUG_DICT_FULL false
+#define DEBUG_SHOW_FOUND_WORD false
+#define DEBUG_NODE false
+#define DEBUG_TRACE false
+#define DEBUG_PROXIMITY_INFO false
 
 #endif // FLAG_DBG
 
