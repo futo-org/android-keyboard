@@ -96,8 +96,10 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     protected boolean onLongPress(Key key, PointerTracker tracker) {
         int primaryCode = key.mCode;
         if (primaryCode == Keyboard.CODE_SETTINGS) {
+            tracker.onLongPressed();
             return invokeOnKey(Keyboard.CODE_SETTINGS_LONGPRESS);
         } else if (primaryCode == '0' && getLatinKeyboard().isPhoneKeyboard()) {
+            tracker.onLongPressed();
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
         } else {
