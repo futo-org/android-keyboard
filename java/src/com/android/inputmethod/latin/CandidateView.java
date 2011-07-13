@@ -193,6 +193,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
         public void layoutStrip(SuggestedWords suggestions, int maxWidth, int maxCount) {
             final int size = suggestions.size();
+            if (size == 0) return;
             setupTexts(suggestions, size, mAutoCorrectHighlight);
             mCountInStrip = Math.min(maxCount, size);
             mScaleX = 1.0f;
