@@ -59,99 +59,46 @@
             latin:keyWidth="39.750%p" />
         <switch>
             <case
-                latin:languageCode="ru"
+                latin:mode="email"
             >
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="-"
-                            latin:keyWidth="9.750%p" />
-                    </case>
-                    <case
-                        latin:mode="url"
-                    >
-                        <Key
-                            latin:keyLabel="/"
-                            latin:keyLabelOption="hasUppercaseLetter"
-                            latin:keyHintLabel=":"
-                            latin:popupCharacters=":"
-                            latin:keyWidth="9.750%p" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="\?"
-                            latin:keyLabelOption="hasUppercaseLetter"
-                            latin:keyHintLabel="_"
-                            latin:popupCharacters="_"
-                            latin:keyWidth="9.750%p" />
-                    </default>
-                </switch>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="_"
-                            latin:keyWidth="9.750%p" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="!"
-                            latin:keyLabelOption="hasUppercaseLetter"
-                            latin:keyHintLabel="\'"
-                            latin:popupCharacters="\'"
-                            latin:keyWidth="9.750%p" />
-                    </default>
-                </switch>
+                <Key
+                    latin:keyLabel="-"
+                    latin:keyWidth="9.750%p" />
             </case>
-            <!-- not languageCode="ru" -->
+            <case
+                latin:mode="url"
+            >
+                <Key
+                    latin:keyLabel="/"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel=":"
+                    latin:popupCharacters=":"
+                    latin:keyWidth="9.750%p" />
+            </case>
             <default>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="-"
-                            latin:keyWidth="9.750%p" />
-                    </case>
-                    <case
-                        latin:mode="url"
-                    >
-                        <Key
-                            latin:keyLabel="/"
-                            latin:keyLabelOption="hasUppercaseLetter"
-                            latin:keyHintLabel=":"
-                            latin:popupCharacters=":"
-                            latin:keyWidth="9.750%p" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="\'"
-                            latin:keyLabelOption="hasUppercaseLetter"
-                            latin:keyHintLabel="&quot;"
-                            latin:popupCharacters="&quot;"
-                            latin:keyWidth="9.750%p" />
-                    </default>
-                </switch>
-                <switch>
-                    <case
-                        latin:mode="email"
-                    >
-                        <Key
-                            latin:keyLabel="_"
-                            latin:keyWidth="9.750%p" />
-                    </case>
-                    <default>
-                        <Key
-                            latin:keyLabel="-"
-                            latin:keyLabelOption="hasUppercaseLetter"
-                            latin:keyHintLabel="_"
-                            latin:popupCharacters="_"
-                            latin:keyWidth="9.750%p" />
-                    </default>
-                </switch>
+                <Key
+                    latin:keyLabel="\'"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel="&quot;"
+                    latin:popupCharacters="&quot;"
+                    latin:keyWidth="9.750%p" />
+            </default>
+        </switch>
+        <switch>
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="_"
+                    latin:keyWidth="9.750%p" />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel="-"
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel="_"
+                    latin:popupCharacters="_"
+                    latin:keyWidth="9.750%p" />
             </default>
         </switch>
         <Spacer
