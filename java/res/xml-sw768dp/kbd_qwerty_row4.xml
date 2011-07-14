@@ -90,41 +90,14 @@
             latin:keyWidth="37.500%p" />
         <switch>
             <case
-                latin:mode="email"
+                latin:languageCode="iw"
             >
-                <Key
-                    latin:keyLabel="-" />
-            </case>
-            <case
-                latin:mode="url"
-            >
-                <Key
-                    latin:keyLabel="/"
-                    latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLabel=":"
-                    latin:popupCharacters=":" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_row3_comma_period" />
             </case>
             <default>
-                <Key
-                    latin:keyLabel="\'"
-                    latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLabel="&quot;"
-                    latin:popupCharacters="&quot;" />
-            </default>
-        </switch>
-        <switch>
-            <case
-                latin:mode="email"
-            >
-                <Key
-                    latin:keyLabel="_" />
-            </case>
-            <default>
-                <Key
-                    latin:keyLabel="-"
-                    latin:keyLabelOption="hasUppercaseLetter"
-                    latin:keyHintLabel="_"
-                    latin:popupCharacters="_" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_row4_apostrophe_dash" />
             </default>
         </switch>
         <switch>

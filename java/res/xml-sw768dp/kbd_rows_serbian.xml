@@ -118,7 +118,7 @@
         <Key
             latin:keyLabel="м" />
         <include
-            latin:keyboardLayout="@xml/kbd_row3_right2" />
+            latin:keyboardLayout="@xml/kbd_row3_comma_period" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-13.750%p"

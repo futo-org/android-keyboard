@@ -47,7 +47,7 @@
         <Key
             latin:keyLabel="m" />
         <include
-            latin:keyboardLayout="@xml/kbd_row3_right2" />
+            latin:keyboardLayout="@xml/kbd_row3_comma_period" />
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyXPos="-13.750%p"

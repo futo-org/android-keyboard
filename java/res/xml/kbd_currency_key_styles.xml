@@ -80,6 +80,14 @@
                 latin:keyLabel="€"
                 latin:popupCharacters="@string/alternates_for_currency_euro" />
         </case>
+        <case
+            latin:languageCode="iw"
+        >
+            <key-style
+                latin:styleName="currencyKeyStyle"
+                latin:keyLabel="₪"
+                latin:popupCharacters="@string/alternates_for_currency_general" />
+        </case>
         <!-- United Kingdom -->
         <case
             latin:countryCode="GB"
