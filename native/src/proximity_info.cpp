@@ -63,4 +63,29 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
     return false;
 }
 
+// TODO: Calculate nearby codes here.
+void ProximityInfo::setInputParams(const int* inputCodes, const int inputLength) {
+    mInputCodes = inputCodes;
+    mInputLength = inputLength;
+}
+
+const int* ProximityInfo::getProximityCharsAt(const int index) const {
+    return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE);
+}
+
+bool ProximityInfo::sameAsTyped(const unsigned short *word, int length) const {
+    if (length != mInputLength) {
+        return false;
+    }
+    const int *inputCodes = mInputCodes;
+    while (length--) {
+        if ((unsigned int) *inputCodes != (unsigned int) *word) {
+            return false;
+        }
+        inputCodes += MAX_PROXIMITY_CHARS_SIZE;
+        word++;
+    }
+    return true;
+}
+
 } // namespace latinime

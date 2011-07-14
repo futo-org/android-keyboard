@@ -54,7 +54,7 @@ UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typed
       // TODO : remove this variable.
     ROOT_POS(0),
 #endif // NEW_DICTIONARY_FORMAT
-    BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(*mInputCodes)),
+    BYTES_IN_ONE_CHAR(MAX_PROXIMITY_CHARS * sizeof(int)),
     MAX_UMLAUT_SEARCH_DEPTH(DEFAULT_MAX_UMLAUT_SEARCH_DEPTH) {
     if (DEBUG_DICT) {
         LOGI("UnigramDictionary - constructor");
@@ -93,7 +93,7 @@ bool UnigramDictionary::isDigraph(const int* codes, const int i, const int codes
 // codesDest is the current point in the work buffer.
 // codesSrc is the current point in the user-input, original, content-unmodified buffer.
 // codesRemain is the remaining size in codesSrc.
-void UnigramDictionary::getWordWithDigraphSuggestionsRec(const ProximityInfo *proximityInfo,
+void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
         const int codesBufferSize, const int flags, const int* codesSrc, const int codesRemain,
         const int currentDepth, int* codesDest, unsigned short* outWords, int* frequencies) {
@@ -143,7 +143,7 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(const ProximityInfo *pr
             (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, outWords, frequencies);
 }
 
-int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const int *xcoordinates,
+int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
         const int *ycoordinates, const int *codes, const int codesSize, const int flags,
         unsigned short *outWords, int *frequencies) {
 
@@ -187,13 +187,14 @@ int UnigramDictionary::getSuggestions(const ProximityInfo *proximityInfo, const 
     return suggestedWordsCount;
 }
 
-void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
+void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes, const int codesSize,
         unsigned short *outWords, int *frequencies) {
 
     PROF_OPEN;
     PROF_START(0);
-    initSuggestions(codes, codesSize, outWords, frequencies);
+    initSuggestions(
+            proximityInfo, xcoordinates, ycoordinates, codes, codesSize, outWords, frequencies);
     if (DEBUG_DICT) assert(codesSize == mInputLength);
 
     const int MAX_DEPTH = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
@@ -275,16 +276,18 @@ void UnigramDictionary::getWordSuggestions(const ProximityInfo *proximityInfo,
     PROF_END(6);
 }
 
-void UnigramDictionary::initSuggestions(const int *codes, const int codesSize,
+void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
+        const int *ycoordinates, const int *codes, const int codesSize,
         unsigned short *outWords, int *frequencies) {
     if (DEBUG_DICT) {
         LOGI("initSuggest");
     }
     mFrequencies = frequencies;
     mOutputChars = outWords;
-    mInputCodes = codes;
     mInputLength = codesSize;
     mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
+    proximityInfo->setInputParams(codes, codesSize);
+    mProximityInfo = proximityInfo;
 }
 
 static inline void registerNextLetter(unsigned short c, int *nextLetters, int nextLettersSize) {
@@ -358,21 +361,6 @@ static inline unsigned short toBaseLowerCase(unsigned short c) {
         c = latin_tolower(c);
     }
     return c;
-}
-
-bool UnigramDictionary::sameAsTyped(const unsigned short *word, int length) const {
-    if (length != mInputLength) {
-        return false;
-    }
-    const int *inputCodes = mInputCodes;
-    while (length--) {
-        if ((unsigned int) *inputCodes != (unsigned int) *word) {
-            return false;
-        }
-        inputCodes += MAX_PROXIMITY_CHARS;
-        word++;
-    }
-    return true;
 }
 
 static const char QUOTE = '\'';
@@ -569,6 +557,8 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
     if (excessivePos >= 0) {
         multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
         if (!existsAdjacentProximityChars(inputIndex, mInputLength)) {
+            // If an excessive character is not adjacent to the left char or the right char,
+            // we will demote this word.
             multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE, &finalFreq);
         }
     }
@@ -678,7 +668,7 @@ inline void UnigramDictionary::onTerminal(unsigned short int* word, const int de
         const int excessivePos, const int transposedPos, const int freq, const bool sameLength,
         int* nextLetters, const int nextLettersSize) {
 
-    const bool isSameAsTyped = sameLength ? sameAsTyped(word, depth + 1) : false;
+    const bool isSameAsTyped = sameLength ? mProximityInfo->sameAsTyped(word, depth + 1) : false;
     if (isSameAsTyped) return;
 
     if (depth >= MIN_SUGGEST_DEPTH) {
