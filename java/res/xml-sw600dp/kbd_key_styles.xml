@@ -38,7 +38,7 @@
             <key-style
                 latin:styleName="settingsPopupStyle"
                 latin:keyLabelOption="hasPopupHint"
-                latin:popupCharacters="\@icon/5|\@integer/key_settings"
+                latin:popupCharacters="\@icon/6|\@integer/key_settings"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>
