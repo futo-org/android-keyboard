@@ -20,7 +20,6 @@
 
 #define LOG_TAG "LatinIME: unigram_dictionary.cpp"
 
-#include "basechars.h"
 #include "char_utils.h"
 #include "dictionary.h"
 #include "unigram_dictionary.h"
@@ -351,18 +350,6 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
     return false;
 }
 
-static inline unsigned short toBaseLowerCase(unsigned short c) {
-    if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
-        c = BASE_CHARS[c];
-    }
-    if (c >='A' && c <= 'Z') {
-        c |= 32;
-    } else if (c > 127) {
-        c = latin_tolower(c);
-    }
-    return c;
-}
-
 static const char QUOTE = '\'';
 static const char SPACE = ' ';
 
@@ -556,7 +543,7 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
             WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE, &finalFreq);
     if (excessivePos >= 0) {
         multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
-        if (!existsAdjacentProximityChars(inputIndex, mInputLength)) {
+        if (!mProximityInfo->existsAdjacentProximityChars(inputIndex)) {
             // If an excessive character is not adjacent to the left char or the right char,
             // we will demote this word.
             multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE, &finalFreq);
@@ -592,75 +579,11 @@ inline int UnigramDictionary::calculateFinalFreq(const int inputIndex, const int
 
 inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
         const int inputIndex, const int skipPos, const int depth) {
-    const unsigned short userTypedChar = getInputCharsAt(inputIndex)[0];
+    const unsigned short userTypedChar = mProximityInfo->getPrimaryCharAt(inputIndex);
     // Skip the ' or other letter and continue deeper
     return (c == QUOTE && userTypedChar != QUOTE) || skipPos == depth;
 }
 
-inline bool UnigramDictionary::existsAdjacentProximityChars(const int inputIndex,
-        const int inputLength) const {
-    if (inputIndex < 0 || inputIndex >= inputLength) return false;
-    const int currentChar = *getInputCharsAt(inputIndex);
-    const int leftIndex = inputIndex - 1;
-    if (leftIndex >= 0) {
-        const int *leftChars = getInputCharsAt(leftIndex);
-        int i = 0;
-        while (leftChars[i] > 0 && i < MAX_PROXIMITY_CHARS) {
-            if (leftChars[i++] == currentChar) return true;
-        }
-    }
-    const int rightIndex = inputIndex + 1;
-    if (rightIndex < inputLength) {
-        const int *rightChars = getInputCharsAt(rightIndex);
-        int i = 0;
-        while (rightChars[i] > 0 && i < MAX_PROXIMITY_CHARS) {
-            if (rightChars[i++] == currentChar) return true;
-        }
-    }
-    return false;
-}
-
-// In the following function, c is the current character of the dictionary word
-// currently examined.
-// currentChars is an array containing the keys close to the character the
-// user actually typed at the same position. We want to see if c is in it: if so,
-// then the word contains at that position a character close to what the user
-// typed.
-// What the user typed is actually the first character of the array.
-// Notice : accented characters do not have a proximity list, so they are alone
-// in their list. The non-accented version of the character should be considered
-// "close", but not the other keys close to the non-accented version.
-inline UnigramDictionary::ProximityType UnigramDictionary::getMatchedProximityId(
-        const int *currentChars, const unsigned short c, const int skipPos,
-        const int excessivePos, const int transposedPos) {
-    const unsigned short baseLowerC = toBaseLowerCase(c);
-
-    // The first char in the array is what user typed. If it matches right away,
-    // that means the user typed that same char for this pos.
-    if (currentChars[0] == baseLowerC || currentChars[0] == c)
-        return SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR;
-
-    // If one of those is true, we should not check for close characters at all.
-    if (skipPos >= 0 || excessivePos >= 0 || transposedPos >= 0)
-        return UNRELATED_CHAR;
-
-    // If the non-accented, lowercased version of that first character matches c,
-    // then we have a non-accented version of the accented character the user
-    // typed. Treat it as a close char.
-    if (toBaseLowerCase(currentChars[0]) == baseLowerC)
-        return NEAR_PROXIMITY_CHAR;
-
-    // Not an exact nor an accent-alike match: search the list of close keys
-    int j = 1;
-    while (currentChars[j] > 0 && j < MAX_PROXIMITY_CHARS) {
-        const bool matched = (currentChars[j] == baseLowerC || currentChars[j] == c);
-        if (matched) return NEAR_PROXIMITY_CHAR;
-        ++j;
-    }
-
-    // Was not included, signal this as an unrelated character.
-    return UNRELATED_CHAR;
-}
 
 inline void UnigramDictionary::onTerminal(unsigned short int* word, const int depth,
         const uint8_t* const root, const uint8_t flags, const int pos,
@@ -826,15 +749,14 @@ inline bool UnigramDictionary::processCurrentNodeForExactMatch(const int firstCh
         const int startInputIndex, const int depth, unsigned short *word, int *newChildPosition,
         int *newCount, bool *newTerminal, int *newFreq, int *siblingPos) {
     const int inputIndex = startInputIndex + depth;
-    const int *currentChars = getInputCharsAt(inputIndex);
     unsigned short c;
     *siblingPos = Dictionary::setDictionaryValues(DICT_ROOT, IS_LATEST_DICT_VERSION, firstChildPos,
             &c, newChildPosition, newTerminal, newFreq);
-    const unsigned int inputC = currentChars[0];
+    const unsigned int inputC = mProximityInfo->getPrimaryCharAt(inputIndex);
     if (DEBUG_DICT) {
         assert(inputC <= U_SHORT_MAX);
     }
-    const unsigned short baseLowerC = toBaseLowerCase(c);
+    const unsigned short baseLowerC = Dictionary::toBaseLowerCase(c);
     const bool matched = (inputC == baseLowerC || inputC == c);
     const bool hasChild = *newChildPosition != 0;
     if (matched) {
@@ -952,20 +874,20 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
         *newDiffs = diffs;
         *newInputIndex = inputIndex;
     } else {
-        const int *currentChars = getInputCharsAt(inputIndex);
+        int inputIndexForProximity = inputIndex;
 
         if (transposedPos >= 0) {
-            if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;
-            if (inputIndex == (transposedPos + 1)) currentChars -= MAX_PROXIMITY_CHARS;
+            if (inputIndex == transposedPos) ++inputIndexForProximity;
+            if (inputIndex == (transposedPos + 1)) --inputIndexForProximity;
         }
 
-        int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos, excessivePos,
-                transposedPos);
-        if (UNRELATED_CHAR == matchedProximityCharId) return false;
+        ProximityInfo::ProximityType matchedProximityCharId = mProximityInfo->getMatchedProximityId(
+                inputIndexForProximity, c, skipPos, excessivePos, transposedPos);
+        if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) return false;
         mWord[depth] = c;
         // If inputIndex is greater than mInputLength, that means there is no
         // proximity chars. So, we don't need to check proximity.
-        if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+        if (ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
             multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &matchWeight);
         }
         bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
@@ -978,7 +900,8 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
         // Start traversing all nodes after the index exceeds the user typed length
         *newTraverseAllNodes = isSameAsUserTypedLength;
         *newMatchRate = matchWeight;
-        *newDiffs = diffs + ((NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
+        *newDiffs = diffs
+                + ((ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
         *newInputIndex = inputIndex + 1;
     }
     // Optimization: Prune out words that are too long compared to how much was typed.
@@ -1007,7 +930,7 @@ inline int UnigramDictionary::getMostFrequentWordLike(const int startInputIndex,
     uint16_t inWord[inputLength];
 
     for (int i = 0; i < inputLength; ++i) {
-        inWord[i] = *getInputCharsAt(startInputIndex + i);
+        inWord[i] = (uint16_t)mProximityInfo->getPrimaryCharAt(startInputIndex + i);
     }
     return getMostFrequentWordLikeInner(inWord, inputLength, word);
 }
@@ -1031,8 +954,8 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
     const bool hasMultipleChars = (0 != (UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS & flags));
     int pos = startPos;
     int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
-    int32_t baseChar = toBaseLowerCase(character);
-    const uint16_t wChar = toBaseLowerCase(inWord[startInputIndex]);
+    int32_t baseChar = Dictionary::toBaseLowerCase(character);
+    const uint16_t wChar = Dictionary::toBaseLowerCase(inWord[startInputIndex]);
 
     if (baseChar != wChar) {
         *outPos = hasMultipleChars ? BinaryFormat::skipOtherCharacters(root, pos) : pos;
@@ -1044,8 +967,8 @@ static inline bool testCharGroupForContinuedLikeness(const uint8_t flags,
     if (hasMultipleChars) {
         character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
         while (NOT_A_CHARACTER != character) {
-            baseChar = toBaseLowerCase(character);
-            if (toBaseLowerCase(inWord[++inputIndex]) != baseChar) {
+            baseChar = Dictionary::toBaseLowerCase(character);
+            if (Dictionary::toBaseLowerCase(inWord[++inputIndex]) != baseChar) {
                 *outPos = BinaryFormat::skipOtherCharacters(root, pos);
                 *outInputIndex = startInputIndex;
                 return false;
@@ -1290,7 +1213,7 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
         const bool hasChildren = (!isLastChar) || BinaryFormat::hasChildrenInFlags(flags);
 
         // This has to be done for each virtual char (this forwards the "inputIndex" which
-        // is the index in the user-inputted chars, as read by getInputCharsAt.
+        // is the index in the user-inputted chars, as read by proximity chars.
         if (excessivePos == depth && inputIndex < mInputLength - 1) ++inputIndex;
         if (traverseAllNodes || needsToSkipCurrentNode(c, inputIndex, skipPos, depth)) {
             mWord[depth] = c;
@@ -1314,16 +1237,16 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
                 return false;
             }
         } else {
-            const int *currentChars = getInputCharsAt(inputIndex);
+            int inputIndexForProximity = inputIndex;
 
             if (transposedPos >= 0) {
-                if (inputIndex == transposedPos) currentChars += MAX_PROXIMITY_CHARS;
-                if (inputIndex == (transposedPos + 1)) currentChars -= MAX_PROXIMITY_CHARS;
+                if (inputIndex == transposedPos) ++inputIndexForProximity;
+                if (inputIndex == (transposedPos + 1)) --inputIndexForProximity;
             }
 
-            const int matchedProximityCharId = getMatchedProximityId(currentChars, c, skipPos,
-                    excessivePos, transposedPos);
-            if (UNRELATED_CHAR == matchedProximityCharId) {
+            int matchedProximityCharId = mProximityInfo->getMatchedProximityId(
+                    inputIndexForProximity, c, skipPos, excessivePos, transposedPos);
+            if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
                 // We found that this is an unrelated character, so we should give up traversing
                 // this node and its children entirely.
                 // However we may not be on the last virtual node yet so we skip the remaining
@@ -1342,7 +1265,7 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
             mWord[depth] = c;
             // If inputIndex is greater than mInputLength, that means there is no
             // proximity chars. So, we don't need to check proximity.
-            if (SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+            if (ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
                 multiplyIntCapped(TYPED_LETTER_MULTIPLIER, &matchWeight);
             }
             const bool isSameAsUserTypedLength = mInputLength == inputIndex + 1
@@ -1366,7 +1289,8 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
             }
             // Start traversing all nodes after the index exceeds the user typed length
             traverseAllNodes = isSameAsUserTypedLength;
-            diffs = diffs + ((NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
+            diffs = diffs
+                    + ((ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) ? 1 : 0);
             // Finally, we are ready to go to the next character, the next "virtual node".
             // We should advance the input index.
             // We do this in this branch of the 'if traverseAllNodes' because we are still matching

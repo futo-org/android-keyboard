@@ -25,6 +25,12 @@ namespace latinime {
 
 class ProximityInfo {
 public:
+    typedef enum {                             // Used as a return value for character comparison
+        SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR,  // Same char, possibly with different case or accent
+        NEAR_PROXIMITY_CHAR,                   // It is a char located nearby on the keyboard
+        UNRELATED_CHAR                         // It is an unrelated char
+    } ProximityType;
+
     ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
             const int keybaordHeight, const int gridWidth, const int gridHeight,
             const uint32_t *proximityCharsArray);
@@ -32,6 +38,12 @@ public:
     bool hasSpaceProximity(const int x, const int y) const;
     void setInputParams(const int* inputCodes, const int inputLength);
     const int* getProximityCharsAt(const int index) const;
+    unsigned short getPrimaryCharAt(const int index) const;
+    bool existsCharInProximityAt(const int index, const int c) const;
+    bool existsAdjacentProximityChars(const int index) const;
+    ProximityType getMatchedProximityId(
+            const int index, const unsigned short c, const int skipPos,
+            const int excessivePos, const int transposedPos) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
 private:
     int getStartIndexFromCoordinates(const int x, const int y) const;

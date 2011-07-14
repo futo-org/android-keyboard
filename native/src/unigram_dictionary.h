@@ -29,12 +29,6 @@ namespace latinime {
 
 class UnigramDictionary {
 
-    typedef enum {                             // Used as a return value for character comparison
-        SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR,  // Same char, possibly with different case or accent
-        NEAR_PROXIMITY_CHAR,                   // It is a char located nearby on the keyboard
-        UNRELATED_CHAR                         // It is an unrelated char
-    } ProximityType;
-
 public:
 #ifdef NEW_DICTIONARY_FORMAT
 
@@ -118,8 +112,6 @@ private:
             int *nextLetters, const int nextLettersSize);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
-    ProximityType getMatchedProximityId(const int *currentChars, const unsigned short c,
-            const int skipPos, const int excessivePos, const int transposedPos);
     // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int initialPos, const int initialDepth,
             const int maxDepth, const bool initialTraverseAllNodes, const int snr, int inputIndex,
@@ -127,10 +119,6 @@ private:
             const int transposedPos, int *nextLetters, const int nextLettersSize, int *newCount,
             int *newChildPosition, bool *newTraverseAllNodes, int *newSnr, int*newInputIndex,
             int *newDiffs, int *nextSiblingPosition, int *nextOutputIndex);
-    bool existsAdjacentProximityChars(const int inputIndex, const int inputLength) const;
-    inline const int* getInputCharsAt(const int index) const {
-        return mProximityInfo->getProximityCharsAt(index);
-    }
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
 #ifndef NEW_DICTIONARY_FORMAT
@@ -189,7 +177,6 @@ private:
     int mStackOutputIndex[MAX_WORD_LENGTH_INTERNAL];
     int mNextLettersFrequency[NEXT_LETTERS_SIZE];
 };
-
 } // namespace latinime
 
 #endif // LATINIME_UNIGRAM_DICTIONARY_H
