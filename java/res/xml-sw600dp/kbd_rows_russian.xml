@@ -24,12 +24,11 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="8.0%p"
+        latin:keyWidth="7.60%p"
         latin:rowEdgeFlags="top"
     >
         <Key
             latin:keyLabel="й"
-            latin:keyXPos="2.15%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="ц" />
@@ -53,17 +52,19 @@
         <Key
             latin:keyLabel="х" />
         <Key
+            latin:keyLabel="ъ" />
+        <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
             latin:keyWidth="fillBoth"
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-            latin:keyWidth="8.0%p"
+        latin:keyWidth="7.60%p"
     >
         <Key
             latin:keyLabel="ф"
-            latin:keyEdgeFlags="left" />
+            latin:keyXPos="2.25%p" />
         <Key
             latin:keyLabel="ы" />
         <Key
@@ -91,11 +92,10 @@
             latin:keyEdgeFlags="right" />
     </Row>
     <Row
-        latin:keyWidth="8.0%p"
+        latin:keyWidth="7.60%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.0%p"
             latin:keyEdgeFlags="left" />
         <Key
             latin:keyLabel="я" />
@@ -116,11 +116,28 @@
             latin:keyLabel="б" />
         <Key
             latin:keyLabel="ю" />
-        <Key
-            latin:keyLabel="."
-            latin:keyLabelOption="hasUppercaseLetter"
-            latin:keyHintLabel=","
-            latin:popupCharacters="," />
+        <switch>
+            <case
+                latin:mode="email"
+            >
+                <Key
+                    latin:keyLabel="," />
+                <Key
+                    latin:keyLabel="." />
+            </case>
+            <default>
+                <Key
+                    latin:keyLabel=","
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel="!"
+                    latin:popupCharacters="!" />
+                <Key
+                    latin:keyLabel="."
+                    latin:keyLabelOption="hasUppercaseLetter"
+                    latin:keyHintLabel="\?"
+                    latin:popupCharacters="\?" />
+            </default>
+        </switch>
         <include
             latin:keyboardLayout="@xml/kbd_row3_right" />
     </Row>
