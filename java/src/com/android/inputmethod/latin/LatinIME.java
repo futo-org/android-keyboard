@@ -992,13 +992,25 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
+    private static boolean canBeFollowedByPeriod(final int codePoint) {
+        // TODO: Check again whether there really ain't a better way to check this.
+        // TODO: This should probably be language-dependant...
+        return Character.isLetterOrDigit(codePoint)
+                || codePoint == Keyboard.CODE_SINGLE_QUOTE
+                || codePoint == Keyboard.CODE_DOUBLE_QUOTE
+                || codePoint == Keyboard.CODE_CLOSING_PARENTHESIS
+                || codePoint == Keyboard.CODE_CLOSING_SQUARE_BRACKET
+                || codePoint == Keyboard.CODE_CLOSING_CURLY_BRACKET
+                || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
+    }
+
     private void maybeDoubleSpace() {
         if (mCorrectionMode == Suggest.CORRECTION_NONE) return;
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
-        CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
+        final CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
-                && Character.isLetterOrDigit(lastThree.charAt(0))
+                && canBeFollowedByPeriod(lastThree.charAt(0))
                 && lastThree.charAt(1) == Keyboard.CODE_SPACE
                 && lastThree.charAt(2) == Keyboard.CODE_SPACE
                 && mHandler.isAcceptingDoubleSpaces()) {
