@@ -62,7 +62,7 @@
                         </case>
                         <default>
                             <Key
-                                latin:keyLabel=","
+                                latin:keyLabel="@string/keylabel_for_symbols_comma"
                                 latin:keyWidth="9.2%p"
                                 latin:keyStyle="settingsPopupStyle" />
                         </default>
@@ -105,7 +105,7 @@
                         </case>
                         <default>
                             <Key
-                                latin:keyLabel=","
+                                latin:keyLabel="@string/keylabel_for_symbols_comma"
                                 latin:keyStyle="settingsPopupStyle" />
                         </default>
                     </switch>
