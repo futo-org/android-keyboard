@@ -155,7 +155,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private UserDictionary mUserDictionary;
     private UserBigramDictionary mUserBigramDictionary;
-    private AutoDictionary mAutoDictionary;
+    private UserUnigramDictionary mUserUnigramDictionary;
 
     // TODO: Create an inner class to group options and pseudo-options to improve readability.
     // These variables are initialized according to the {@link EditorInfo#inputType}.
@@ -443,10 +443,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         resetContactsDictionary();
 
-        mAutoDictionary = new AutoDictionary(this, this, localeStr, Suggest.DIC_AUTO);
-        mSuggest.setAutoDictionary(mAutoDictionary);
+        mUserUnigramDictionary
+                = new UserUnigramDictionary(this, this, localeStr, Suggest.DIC_USER_UNIGRAM);
+        mSuggest.setUserUnigramDictionary(mUserUnigramDictionary);
 
-        mUserBigramDictionary = new UserBigramDictionary(this, this, localeStr, Suggest.DIC_USER);
+        mUserBigramDictionary
+                = new UserBigramDictionary(this, this, localeStr, Suggest.DIC_USER_BIGRAM);
         mSuggest.setUserBigramDictionary(mUserBigramDictionary);
 
         updateCorrectionMode();
@@ -672,7 +674,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.closing();
-        if (mAutoDictionary != null) mAutoDictionary.flushPendingWrites();
+        if (mUserUnigramDictionary != null) mUserUnigramDictionary.flushPendingWrites();
         if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
     }
 
@@ -951,8 +953,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             mCommittedLength = mComposingStringBuilder.length();
             TextEntryState.acceptedTyped(mComposingStringBuilder);
-            addToAutoAndUserBigramDictionaries(mComposingStringBuilder,
-                    AutoDictionary.FREQUENCY_FOR_TYPED);
+            addToUserUnigramAndBigramDictionaries(mComposingStringBuilder,
+                    UserUnigramDictionary.FREQUENCY_FOR_TYPED);
         }
         updateSuggestions();
     }
@@ -1557,8 +1559,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             TextEntryState.acceptedDefault(mWordComposer.getTypedWord(), mBestWord, separatorCode);
             mExpectingUpdateSelection = true;
             commitBestWord(mBestWord);
-            // Add the word to the auto dictionary if it's not a known word
-            addToAutoAndUserBigramDictionaries(mBestWord, AutoDictionary.FREQUENCY_FOR_TYPED);
+            // Add the word to the user unigram dictionary if it's not a known word
+            addToUserUnigramAndBigramDictionaries(mBestWord,
+                    UserUnigramDictionary.FREQUENCY_FOR_TYPED);
             return true;
         }
         return false;
@@ -1627,7 +1630,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         commitBestWord(suggestion);
         // Add the word to the auto dictionary if it's not a known word
         if (index == 0) {
-            addToAutoAndUserBigramDictionaries(suggestion, AutoDictionary.FREQUENCY_FOR_PICKED);
+            addToUserUnigramAndBigramDictionaries(suggestion,
+                    UserUnigramDictionary.FREQUENCY_FOR_PICKED);
         } else {
             addToOnlyBigramDictionary(suggestion, 1);
         }
@@ -1725,7 +1729,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setSuggestionStripShown(isCandidateStripVisible());
     }
 
-    private void addToAutoAndUserBigramDictionaries(CharSequence suggestion, int frequencyDelta) {
+    private void addToUserUnigramAndBigramDictionaries(CharSequence suggestion,
+            int frequencyDelta) {
         checkAddToDictionary(suggestion, frequencyDelta, false);
     }
 
@@ -1734,7 +1739,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     /**
-     * Adds to the UserBigramDictionary and/or AutoDictionary
+     * Adds to the UserBigramDictionary and/or UserUnigramDictionary
      * @param selectedANotTypedWord true if it should be added to bigram dictionary if possible
      */
     private void checkAddToDictionary(CharSequence suggestion, int frequencyDelta,
@@ -1749,14 +1754,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        final boolean selectedATypedWordAndItsInAutoDic =
-                !selectedANotTypedWord && mAutoDictionary.isValidWord(suggestion);
+        final boolean selectedATypedWordAndItsInUserUnigramDic =
+                !selectedANotTypedWord && mUserUnigramDictionary.isValidWord(suggestion);
         final boolean isValidWord = AutoCorrection.isValidWord(
                 mSuggest.getUnigramDictionaries(), suggestion, true);
-        final boolean needsToAddToAutoDictionary = selectedATypedWordAndItsInAutoDic
+        final boolean needsToAddToUserUnigramDictionary = selectedATypedWordAndItsInUserUnigramDic
                 || !isValidWord;
-        if (needsToAddToAutoDictionary) {
-            mAutoDictionary.addWord(suggestion.toString(), frequencyDelta);
+        if (needsToAddToUserUnigramDictionary) {
+            mUserUnigramDictionary.addWord(suggestion.toString(), frequencyDelta);
         }
 
         if (mUserBigramDictionary != null) {

@@ -31,12 +31,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 /**
- * Stores new words temporarily until they are promoted to the user dictionary
- * for longevity. Words in the auto dictionary are used to determine if it's ok
- * to accept a word that's not in the main or user dictionary. Using a new word
- * repeatedly will promote it to the user dictionary.
+ * This class (inherited from the old AutoDictionary) is used for user history
+ * based dictionary. It stores words that the user typed to supply a provision
+ * for suggesting and re-ordering of candidates.
  */
-public class AutoDictionary extends ExpandableDictionary {
+public class UserUnigramDictionary extends ExpandableDictionary {
     // Weight added to a user picking a new word from the suggestion strip
     static final int FREQUENCY_FOR_PICKED = 3;
     // Weight added to a user typing a new word that doesn't get corrected (or is reverted)
@@ -45,12 +44,13 @@ public class AutoDictionary extends ExpandableDictionary {
     private static final int VALIDITY_THRESHOLD = 2 * FREQUENCY_FOR_PICKED;
 
     private LatinIME mIme;
-    // Locale for which this auto dictionary is storing words
+    // Locale for which this user unigram dictionary is storing words
     private String mLocale;
 
     private HashMap<String,Integer> mPendingWrites = new HashMap<String,Integer>();
     private final Object mPendingWritesLock = new Object();
 
+    // TODO: we should probably change the database name
     private static final String DATABASE_NAME = "auto_dict.db";
     private static final int DATABASE_VERSION = 1;
 
@@ -65,8 +65,8 @@ public class AutoDictionary extends ExpandableDictionary {
     /** Sort by descending order of frequency. */
     public static final String DEFAULT_SORT_ORDER = COLUMN_FREQUENCY + " DESC";
 
-    /** Name of the words table in the auto_dict.db */
-    private static final String AUTODICT_TABLE_NAME = "words";
+    /** Name of the words table in the database */
+    private static final String USER_UNIGRAM_DICT_TABLE_NAME = "words";
 
     private static HashMap<String, String> sDictProjectionMap;
 
@@ -80,7 +80,7 @@ public class AutoDictionary extends ExpandableDictionary {
 
     private static DatabaseHelper sOpenHelper = null;
 
-    public AutoDictionary(Context context, LatinIME ime, String locale, int dicTypeId) {
+    public UserUnigramDictionary(Context context, LatinIME ime, String locale, int dicTypeId) {
         super(context, dicTypeId);
         mIme = ime;
         mLocale = locale;
@@ -177,7 +177,7 @@ public class AutoDictionary extends ExpandableDictionary {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("CREATE TABLE " + AUTODICT_TABLE_NAME + " ("
+            db.execSQL("CREATE TABLE " + USER_UNIGRAM_DICT_TABLE_NAME + " ("
                     + COLUMN_ID + " INTEGER PRIMARY KEY,"
                     + COLUMN_WORD + " TEXT,"
                     + COLUMN_FREQUENCY + " INTEGER,"
@@ -187,16 +187,16 @@ public class AutoDictionary extends ExpandableDictionary {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w("AutoDictionary", "Upgrading database from version " + oldVersion + " to "
+            Log.w("UserUnigramDictionary", "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS " + AUTODICT_TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + USER_UNIGRAM_DICT_TABLE_NAME);
             onCreate(db);
         }
     }
 
     private Cursor query(String selection, String[] selectionArgs) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
-        qb.setTables(AUTODICT_TABLE_NAME);
+        qb.setTables(USER_UNIGRAM_DICT_TABLE_NAME);
         qb.setProjectionMap(sDictProjectionMap);
 
         // Get the database and run the query
@@ -229,10 +229,10 @@ public class AutoDictionary extends ExpandableDictionary {
             Set<Entry<String,Integer>> mEntries = mMap.entrySet();
             for (Entry<String,Integer> entry : mEntries) {
                 Integer freq = entry.getValue();
-                db.delete(AUTODICT_TABLE_NAME, COLUMN_WORD + "=? AND " + COLUMN_LOCALE + "=?",
-                        new String[] { entry.getKey(), mLocale });
+                db.delete(USER_UNIGRAM_DICT_TABLE_NAME, COLUMN_WORD + "=? AND " + COLUMN_LOCALE
+                        + "=?", new String[] { entry.getKey(), mLocale });
                 if (freq != null) {
-                    db.insert(AUTODICT_TABLE_NAME, null,
+                    db.insert(USER_UNIGRAM_DICT_TABLE_NAME, null,
                             getContentValues(entry.getKey(), freq, mLocale));
                 }
             }
