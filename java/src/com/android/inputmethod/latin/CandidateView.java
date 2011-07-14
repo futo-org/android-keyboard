@@ -245,7 +245,12 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mTexts.clear();
             for (int i = 0; i < count; i++) {
                 final CharSequence suggestion = suggestions.getWord(i);
-                if (suggestion == null) continue;
+                if (suggestion == null) {
+                    // Skip an empty suggestion, but we need to add a place-holder for it in order
+                    // to avoid an exception in the loop in updateSuggestions().
+                    mTexts.add("");
+                    continue;
+                }
 
                 final boolean isAutoCorrect = suggestions.mHasMinimalSuggestion
                         && ((i == 1 && !suggestions.mTypedWordValid)
