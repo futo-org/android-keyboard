@@ -8,6 +8,9 @@ LOCAL_CFLAGS += -Werror -Wall
 # To suppress compiler warnings for unused variables/functions used for debug features etc.
 LOCAL_CFLAGS += -Wno-unused-parameter -Wno-unused-function
 
+# Use the new dictionary format
+LOCAL_CFLAGS += -DNEW_DICTIONARY_FORMAT
+
 LOCAL_SRC_FILES := \
     jni/com_android_inputmethod_keyboard_ProximityInfo.cpp \
     jni/com_android_inputmethod_latin_BinaryDictionary.cpp \
