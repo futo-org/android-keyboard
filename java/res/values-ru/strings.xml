@@ -56,7 +56,7 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Откл."</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Умеренное"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Активное"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Жестко"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Очень активно"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"Биграммные подсказки"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Используйте предыдущее слово, чтобы исправить подсказку"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"Биграммный прогноз"</string>
@@ -135,6 +135,8 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голосовой ввод откл."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Выбрать способ ввода"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Языки ввода"</string>
+    <!-- no translation found for select_language (2573265881207142437) -->
+    <skip />
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Нажмите еще раз, чтобы сохранить"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Доступен словарь"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Включить отправку сведений"</string>

@@ -56,7 +56,7 @@
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"OFF"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"中"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"強"</string>
-    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"最強"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"最も強い"</string>
     <string name="bigram_suggestion" msgid="2636414079905220518">"バイグラム入力候補表示"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"直前の単語から入力候補を予測します"</string>
     <string name="bigram_prediction" msgid="8914273444762259739">"バイグラム予測"</string>
@@ -135,6 +135,8 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"音声入力は無効です"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"入力方法の選択"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"入力言語"</string>
+    <!-- no translation found for select_language (2573265881207142437) -->
+    <skip />
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"←保存するにはもう一度タップ"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"辞書を利用できます"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"ユーザーフィードバックを有効にする"</string>

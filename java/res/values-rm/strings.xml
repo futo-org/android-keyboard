@@ -211,6 +211,8 @@
     <!-- no translation found for selectInputMethod (315076553378705821) -->
     <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Linguas da cumonds vocals"</string>
+    <!-- no translation found for select_language (2573265881207142437) -->
+    <skip />
     <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tippar danovamain per memorisar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activar il feedback da l\'utilisader"</string>

@@ -101,7 +101,7 @@
     <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
     <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
     <string name="spoken_description_trademark" msgid="475877774077871369">"Marque commerciale"</string>
-    <string name="spoken_description_care_of" msgid="7492800237237796530">"Aux bons soins de"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"à l\'attention de"</string>
     <string name="spoken_description_star" msgid="1009742725387231977">"Étoile"</string>
     <string name="spoken_description_pound" msgid="5530577649206922631">"Dièse"</string>
     <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Ellipse"</string>
@@ -135,6 +135,8 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Saisie vocale désactivée"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Sélectionner un mode de saisie."</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Langues de saisie"</string>
+    <!-- no translation found for select_language (2573265881207142437) -->
+    <skip />
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Appuyer de nouveau pour enregistrer"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dictionnaire disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Autoriser les commentaires des utilisateurs"</string>
@@ -183,5 +185,5 @@
     <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Voix parlant chinois (cantonais)"</string>
     <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Voix parlant chinois (mandarin)"</string>
     <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Voix parlant zoulou"</string>
-    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mode d\'étude de l\'utilisation"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mode d\'étude de l\'utilisabilité"</string>
 </resources>

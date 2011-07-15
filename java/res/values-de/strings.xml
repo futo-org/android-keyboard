@@ -135,6 +135,8 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Spracheingabe deaktiviert"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Eingabemethode auswählen"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Eingabesprachen"</string>
+    <!-- no translation found for select_language (2573265881207142437) -->
+    <skip />
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Zum Speichern erneut berühren"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Wörterbuch verfügbar"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Nutzer-Feedback aktivieren"</string>

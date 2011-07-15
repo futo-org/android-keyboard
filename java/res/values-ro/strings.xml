@@ -135,13 +135,15 @@
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Intr. vocală dezact."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Selectaţi metoda de introducere a textului"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Selectaţi limba"</string>
+    <!-- no translation found for select_language (2573265881207142437) -->
+    <skip />
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Atingeţi din nou pentru a salva"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicţionar disponibil"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activaţi feedback de la utilizatori"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ajutaţi la îmbunătăţirea acestui instrument de editare a metodelor de introducere a textului trimiţând în mod automat la Google statistici de utilizare şi rapoarte de blocare."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Atingeţi pentru a corecta cuvintele"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Atingeţi cuvintele introduse pentru a le corecta, numai când pot fi văzute sugestii"</string>
-    <string name="keyboard_layout" msgid="8451164783510487501">"Temă tastatură"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Temă pentru tastatură"</string>
     <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tastatură cehă"</string>
     <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Tastatură arabă"</string>
     <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Tastatură daneză"</string>
