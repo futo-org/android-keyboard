@@ -78,7 +78,7 @@ unsigned short ProximityInfo::getPrimaryCharAt(const int index) const {
     return getProximityCharsAt(index)[0];
 }
 
-bool ProximityInfo::existsCharInProximityAt(const int index, const int c) const {
+inline bool ProximityInfo::existsCharInProximityAt(const int index, const int c) const {
     const int *chars = getProximityCharsAt(index);
     int i = 0;
     while (chars[i] > 0 && i < MAX_PROXIMITY_CHARS_SIZE) {
@@ -114,8 +114,10 @@ bool ProximityInfo::existsAdjacentProximityChars(const int index) const {
 // in their list. The non-accented version of the character should be considered
 // "close", but not the other keys close to the non-accented version.
 ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(
-        const int index, const unsigned short c, const int skipPos,
-        const int excessivePos, const int transposedPos) const {
+        const int index, const unsigned short c, CorrectionState *correctionState) const {
+    const int skipPos = correctionState->getSkipPos();
+    const int excessivePos = correctionState->getExcessivePos();
+    const int transposedPos = correctionState->getTransposedPos();
     const int *currentChars = getProximityCharsAt(index);
     const unsigned short baseLowerC = Dictionary::toBaseLowerCase(c);
 
