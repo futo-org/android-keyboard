@@ -36,6 +36,8 @@ import java.util.Set;
  * for suggesting and re-ordering of candidates.
  */
 public class UserUnigramDictionary extends ExpandableDictionary {
+    static final boolean ENABLE_USER_UNIGRAM_DICTIONARY = false;
+
     // Weight added to a user picking a new word from the suggestion strip
     static final int FREQUENCY_FOR_PICKED = 3;
     // Weight added to a user typing a new word that doesn't get corrected (or is reverted)
@@ -71,17 +73,22 @@ public class UserUnigramDictionary extends ExpandableDictionary {
     private static HashMap<String, String> sDictProjectionMap;
 
     static {
-        sDictProjectionMap = new HashMap<String, String>();
-        sDictProjectionMap.put(COLUMN_ID, COLUMN_ID);
-        sDictProjectionMap.put(COLUMN_WORD, COLUMN_WORD);
-        sDictProjectionMap.put(COLUMN_FREQUENCY, COLUMN_FREQUENCY);
-        sDictProjectionMap.put(COLUMN_LOCALE, COLUMN_LOCALE);
+        if (ENABLE_USER_UNIGRAM_DICTIONARY) {
+            sDictProjectionMap = new HashMap<String, String>();
+            sDictProjectionMap.put(COLUMN_ID, COLUMN_ID);
+            sDictProjectionMap.put(COLUMN_WORD, COLUMN_WORD);
+            sDictProjectionMap.put(COLUMN_FREQUENCY, COLUMN_FREQUENCY);
+            sDictProjectionMap.put(COLUMN_LOCALE, COLUMN_LOCALE);
+        }
     }
 
     private static DatabaseHelper sOpenHelper = null;
 
     public UserUnigramDictionary(Context context, LatinIME ime, String locale, int dicTypeId) {
         super(context, dicTypeId);
+        // Super must be first statement of the constructor... I'd like not to do it if the
+        // user unigram dictionary is not enabled, but Java won't let me.
+        if (!ENABLE_USER_UNIGRAM_DICTIONARY) return;
         mIme = ime;
         mLocale = locale;
         if (sOpenHelper == null) {
@@ -94,22 +101,25 @@ public class UserUnigramDictionary extends ExpandableDictionary {
 
     @Override
     public synchronized boolean isValidWord(CharSequence word) {
+        if (!ENABLE_USER_UNIGRAM_DICTIONARY) return false;
         final int frequency = getWordFrequency(word);
         return frequency >= VALIDITY_THRESHOLD;
     }
 
     @Override
     public void close() {
+        super.close();
+        if (!ENABLE_USER_UNIGRAM_DICTIONARY) return;
         flushPendingWrites();
         // Don't close the database as locale changes will require it to be reopened anyway
         // Also, the database is written to somewhat frequently, so it needs to be kept alive
         // throughout the life of the process.
         // mOpenHelper.close();
-        super.close();
     }
 
     @Override
     public void loadDictionaryAsync() {
+        if (!ENABLE_USER_UNIGRAM_DICTIONARY) return;
         // Load the words that correspond to the current input locale
         Cursor cursor = query(COLUMN_LOCALE + "=?", new String[] { mLocale });
         try {
@@ -134,6 +144,7 @@ public class UserUnigramDictionary extends ExpandableDictionary {
 
     @Override
     public void addWord(String newWord, int addFrequency) {
+        if (!ENABLE_USER_UNIGRAM_DICTIONARY) return;
         String word = newWord;
         final int length = word.length();
         // Don't add very short or very long words.
@@ -156,6 +167,7 @@ public class UserUnigramDictionary extends ExpandableDictionary {
      * Schedules a background thread to write any pending words to the database.
      */
     public void flushPendingWrites() {
+        if (!ENABLE_USER_UNIGRAM_DICTIONARY) return;
         synchronized (mPendingWritesLock) {
             // Nothing pending? Return
             if (mPendingWrites.isEmpty()) return;
