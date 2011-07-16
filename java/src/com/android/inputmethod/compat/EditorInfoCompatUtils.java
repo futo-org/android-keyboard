@@ -26,12 +26,16 @@ public class EditorInfoCompatUtils {
             EditorInfo.class, "IME_FLAG_NAVIGATE_NEXT");
     private static final Field FIELD_IME_FLAG_NAVIGATE_PREVIOUS = CompatUtils.getField(
             EditorInfo.class, "IME_FLAG_NAVIGATE_PREVIOUS");
+    private static final Field FIELD_IME_FLAG_NO_FULLSCREEN = CompatUtils.getField(
+            EditorInfo.class, "IME_FLAG_NO_FULLSCREEN");
     private static final Field FIELD_IME_ACTION_PREVIOUS = CompatUtils.getField(
             EditorInfo.class, "IME_ACTION_PREVIOUS");
     private static final Integer OBJ_IME_FLAG_NAVIGATE_NEXT = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_FLAG_NAVIGATE_NEXT);
     private static final Integer OBJ_IME_FLAG_NAVIGATE_PREVIOUS = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_FLAG_NAVIGATE_PREVIOUS);
+    private static final Integer OBJ_IME_FLAG_NO_FULLSCREEN = (Integer) CompatUtils
+            .getFieldValue(null, null, FIELD_IME_FLAG_NO_FULLSCREEN);
     private static final Integer OBJ_IME_ACTION_PREVIOUS = (Integer) CompatUtils
             .getFieldValue(null, null, FIELD_IME_ACTION_PREVIOUS);
 
@@ -45,6 +49,12 @@ public class EditorInfoCompatUtils {
         if (OBJ_IME_FLAG_NAVIGATE_PREVIOUS == null)
             return false;
         return (imeOptions & OBJ_IME_FLAG_NAVIGATE_PREVIOUS) != 0;
+    }
+
+    public static boolean hasFlagNoFullscreen(int imeOptions) {
+        if (FIELD_IME_FLAG_NO_FULLSCREEN == null)
+            return false;
+        return (imeOptions & OBJ_IME_FLAG_NO_FULLSCREEN) != 0;
     }
 
     public static void performEditorActionNext(InputConnection ic) {
