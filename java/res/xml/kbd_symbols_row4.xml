@@ -42,7 +42,7 @@
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="35.83%p" />
                 <Key
-                    latin:keyStyle="punctuationKeyStyle"
+                    latin:keyStyle="basePunctuationKeyStyle"
                     latin:keyWidth="9.2%p" />
             </case>
             <!-- latin:hasSettingsKey="false" -->
@@ -57,7 +57,7 @@
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="50%p" />
                 <Key
-                    latin:keyStyle="punctuationKeyStyle" />
+                    latin:keyStyle="basePunctuationKeyStyle" />
             </default>
         </switch>
         <switch>

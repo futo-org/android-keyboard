@@ -227,6 +227,14 @@
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>
+    <key-style
+        latin:styleName="basePunctuationKeyStyle"
+        latin:keyLabel="."
+        latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
+        latin:keyLabelOption="hasPopupHint"
+        latin:popupCharacters="@string/alternates_for_punctuation"
+        latin:maxPopupKeyboardColumn="@integer/popup_keyboard_column_for_punctuation"
+        latin:parentStyle="functionalKeyStyle" />
     <switch>
         <case
             latin:navigateAction="true"
@@ -242,12 +250,7 @@
         <default>
             <key-style
                 latin:styleName="punctuationKeyStyle"
-                latin:keyLabel="."
-                latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
-                latin:keyLabelOption="hasPopupHint"
-                latin:popupCharacters="@string/alternates_for_punctuation"
-                latin:maxPopupKeyboardColumn="@integer/popup_keyboard_column_for_punctuation"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:parentStyle="basePunctuationKeyStyle" />
         </default>
     </switch>
 </merge>
