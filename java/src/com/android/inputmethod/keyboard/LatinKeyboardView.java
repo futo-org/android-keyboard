@@ -95,13 +95,17 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     @Override
     protected boolean onLongPress(Key key, PointerTracker tracker) {
         int primaryCode = key.mCode;
-        if (primaryCode == Keyboard.CODE_SETTINGS) {
+        if (primaryCode == Keyboard.CODE_SETTINGS || primaryCode == Keyboard.CODE_SPACE) {
             tracker.onLongPressed();
+            // Both long pressing settings key and space key invoke IME switcher dialog.
             return invokeOnKey(Keyboard.CODE_SETTINGS_LONGPRESS);
         } else if (primaryCode == '0' && getLatinKeyboard().isPhoneKeyboard()) {
             tracker.onLongPressed();
             // Long pressing on 0 in phone number keypad gives you a '+'.
             return invokeOnKey('+');
+        } else if (primaryCode == Keyboard.CODE_SHIFT) {
+            tracker.onLongPressed();
+            return invokeOnKey(Keyboard.CODE_CAPSLOCK);
         } else {
             return super.onLongPress(key, tracker);
         }
