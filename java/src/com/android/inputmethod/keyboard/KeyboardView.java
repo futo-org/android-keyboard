@@ -142,7 +142,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 keyboardView.showKey(msg.arg1, tracker);
                 break;
             case MSG_DISMISS_KEY_PREVIEW:
-                keyboardView.mPreviewText.setVisibility(View.INVISIBLE);
+                if (keyboardView.mPreviewText != null) {
+                    keyboardView.mPreviewText.setVisibility(View.INVISIBLE);
+                }
                 break;
             }
         }
