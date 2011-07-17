@@ -46,7 +46,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vždy zobrazovať"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Zobraziť v režime na výšku"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Vždy skrývať"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Použite medzerník na prepínanie medzi jazykmi"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Zobraziť kláves Nastavenia"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automaticky"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Vždy zobrazovať"</string>

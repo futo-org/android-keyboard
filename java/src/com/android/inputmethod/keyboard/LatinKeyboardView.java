@@ -40,8 +40,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     private boolean mDisableDisambiguation;
     /** The distance threshold at which we start treating the touch session as a multi-touch */
     private int mJumpThresholdSquare = Integer.MAX_VALUE;
-    /** The y coordinate of the last row */
-    private int mLastRowY;
     private int mLastX;
     private int mLastY;
 
@@ -71,8 +69,6 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         // One-seventh of the keyboard width seems like a reasonable threshold
         mJumpThresholdSquare = newKeyboard.getMinWidth() / 7;
         mJumpThresholdSquare *= mJumpThresholdSquare;
-        // Assuming there are 4 rows, this is the coordinate of the last row
-        mLastRowY = (newKeyboard.getHeight() * 3) / 4;
     }
 
     private LatinKeyboard getLatinKeyboard() {
@@ -127,7 +123,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
      * the sudden moves subside, a DOWN event is simulated for the second key.
      * @param me the motion event
      * @return true if the event was consumed, so that it doesn't continue to be handled by
-     * KeyboardView.
+     * {@link LatinKeyboardBaseView}.
      */
     private boolean handleSuddenJump(MotionEvent me) {
         // If device has distinct multi touch panel, there is no need to check sudden jump.
@@ -157,11 +153,8 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         case MotionEvent.ACTION_MOVE:
             // Is this a big jump?
             final int distanceSquare = (mLastX - x) * (mLastX - x) + (mLastY - y) * (mLastY - y);
-            // Check the distance and also if the move is not entirely within the bottom row
-            // If it's only in the bottom row, it might be an intentional slide gesture
-            // for language switching
-            if (distanceSquare > mJumpThresholdSquare
-                    && (mLastY < mLastRowY || y < mLastRowY)) {
+            // Check the distance.
+            if (distanceSquare > mJumpThresholdSquare) {
                 // If we're not yet dropping events, start dropping and send an UP event
                 if (!mDroppingEvents) {
                     mDroppingEvents = true;

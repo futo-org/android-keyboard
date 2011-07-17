@@ -32,7 +32,6 @@
         <item name="iconSearchKey">@drawable/sym_keyboard_search</item>
         <item name="iconTabKey">@drawable/sym_keyboard_tab_holo</item>
         <item name="iconShiftedShiftKey">@drawable/sym_keyboard_shift_locked_holo</item>
-        <item name="iconPreviewSpaceKey">@drawable/transparent</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
         <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_settings_holo</item>
         <item name="iconPreviewShortcutKey">@drawable/sym_keyboard_feedback_mic</item>

@@ -23,7 +23,6 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -133,12 +132,6 @@ public class PointerTracker {
     // ignore modifier key if true
     private boolean mIgnoreModifierKey;
 
-    // TODO: Remove these hacking variables
-    // true if this pointer is in sliding language switch
-    private boolean mIsInSlidingLanguageSwitch;
-    private int mSpaceKeyIndex;
-    private static SubtypeSwitcher sSubtypeSwitcher;
-
     // Empty {@link KeyboardActionListener}
     private static final KeyboardActionListener EMPTY_LISTENER = new KeyboardActionListener() {
         @Override
@@ -172,7 +165,6 @@ public class PointerTracker {
         sTouchNoiseThresholdDistanceSquared = (int)(
                 touchNoiseThresholdDistance * touchNoiseThresholdDistance);
         sKeyboardSwitcher = KeyboardSwitcher.getInstance();
-        sSubtypeSwitcher = SubtypeSwitcher.getInstance();
     }
 
     public static PointerTracker getPointerTracker(final int id, KeyEventHandler handler) {
@@ -436,7 +428,6 @@ public class PointerTracker {
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
         mIsInSlidingKeyInput = false;
-        mIsInSlidingLanguageSwitch = false;
         mIgnoreModifierKey = false;
         if (isValidKeyIndex(keyIndex)) {
             // This onPress call may have changed keyboard layout. Those cases are detected at
@@ -464,12 +455,6 @@ public class PointerTracker {
         if (mKeyAlreadyProcessed)
             return;
 
-        // TODO: Remove this hacking code
-        if (mIsInSlidingLanguageSwitch) {
-            ((LatinKeyboard)mKeyboard).updateSpacebarPreviewIcon(x - mKeyX);
-            showKeyPreview(mSpaceKeyIndex);
-            return;
-        }
         final int lastX = mLastX;
         final int lastY = mLastY;
         final int oldKeyIndex = mKeyIndex;
@@ -524,26 +509,6 @@ public class PointerTracker {
                         mKeyAlreadyProcessed = true;
                         dismissKeyPreview();
                         setReleasedKeyGraphics(oldKeyIndex);
-                    }
-                }
-            }
-            // TODO: Remove this hack code
-            else if (isSpaceKey(keyIndex) && !mIsInSlidingLanguageSwitch
-                    && mKeyboard instanceof LatinKeyboard) {
-                final LatinKeyboard keyboard = ((LatinKeyboard)mKeyboard);
-                if (sSubtypeSwitcher.useSpacebarLanguageSwitcher()
-                        && sSubtypeSwitcher.getEnabledKeyboardLocaleCount() > 1) {
-                    final int diff = x - mKeyX;
-                    if (keyboard.shouldTriggerSpacebarSlidingLanguageSwitch(diff)) {
-                        // Detect start sliding language switch.
-                        mIsInSlidingLanguageSwitch = true;
-                        mSpaceKeyIndex = keyIndex;
-                        keyboard.updateSpacebarPreviewIcon(diff);
-                        // Display spacebar slide language switcher.
-                        showKeyPreview(keyIndex);
-                        final PointerTrackerQueue queue = sPointerTrackerQueue;
-                        if (queue != null)
-                            queue.releaseAllPointersExcept(this, eventTime, true);
                     }
                 }
             }
@@ -613,20 +578,6 @@ public class PointerTracker {
             setReleasedKeyGraphics(keyIndex);
         if (mKeyAlreadyProcessed)
             return;
-        // TODO: Remove this hacking code
-        if (mIsInSlidingLanguageSwitch) {
-            setReleasedKeyGraphics(mSpaceKeyIndex);
-            final int languageDir = ((LatinKeyboard)mKeyboard).getLanguageChangeDirection();
-            if (languageDir != 0) {
-                final int code = (languageDir == 1)
-                        ? LatinKeyboard.CODE_NEXT_LANGUAGE : LatinKeyboard.CODE_PREV_LANGUAGE;
-                // This will change keyboard layout.
-                mListener.onCodeInput(code, new int[] {code}, keyX, keyY);
-            }
-            mIsInSlidingLanguageSwitch = false;
-            ((LatinKeyboard)mKeyboard).setSpacebarSlidingLanguageSwitchDiff(0);
-            return;
-        }
         if (!mIsRepeatableKey) {
             detectAndSendKey(keyIndex, keyX, keyY);
         }
@@ -700,9 +651,6 @@ public class PointerTracker {
         final Key key = getKey(keyIndex);
         if (key == null || !key.isEnabled())
             return true;
-        // Such as spacebar sliding language switch.
-        if (mKeyboard.needSpacebarPreview(keyIndex))
-            return false;
         final int code = key.mCode;
         return isModifierCode(code) || code == Keyboard.CODE_DELETE
                 || code == Keyboard.CODE_ENTER || code == Keyboard.CODE_SPACE;

@@ -102,6 +102,5 @@
     <key-style
         latin:styleName="numSpaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyIcon="iconSpaceKey"
-        latin:keyIconPreview="iconPreviewSpaceKey" />
+        latin:keyIcon="iconSpaceKey" />
 </merge>

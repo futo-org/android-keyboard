@@ -31,7 +31,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
-import com.android.inputmethod.keyboard.internal.SlidingLocaleDrawable;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
@@ -45,9 +44,6 @@ import java.util.Locale;
 public class LatinKeyboard extends Keyboard {
     private static final int SPACE_LED_LENGTH_PERCENT = 80;
 
-    public static final int CODE_NEXT_LANGUAGE = -100;
-    public static final int CODE_PREV_LANGUAGE = -101;
-
     private final Resources mRes;
     private final Theme mTheme;
     private final SubtypeSwitcher mSubtypeSwitcher = SubtypeSwitcher.getInstance();
@@ -55,16 +51,11 @@ public class LatinKeyboard extends Keyboard {
     /* Space key and its icons, drawables and colors. */
     private final Key mSpaceKey;
     private final Drawable mSpaceIcon;
-    private final Drawable mSpacePreviewIcon;
-    private final int mSpaceKeyIndex;
     private final boolean mAutoCorrectionSpacebarLedEnabled;
     private final Drawable mAutoCorrectionSpacebarLedIcon;
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
     private float mSpacebarTextFadeFactor = 0.0f;
-    private final int mSpacebarLanguageSwitchThreshold;
-    private int mSpacebarSlidingLanguageSwitchDiff;
-    private final SlidingLocaleDrawable mSlidingLocaleIcon;
     private final HashMap<Integer, SoftReference<BitmapDrawable>> mSpaceDrawableCache =
             new HashMap<Integer, SoftReference<BitmapDrawable>>();
 
@@ -73,16 +64,6 @@ public class LatinKeyboard extends Keyboard {
     private final Drawable mEnabledShortcutIcon;
     private final Drawable mDisabledShortcutIcon;
 
-    // BLACK LEFT-POINTING TRIANGLE and two spaces.
-    public static final String ARROW_LEFT = "\u25C0  ";
-    // Two spaces and BLACK RIGHT-POINTING TRIANGLE.
-    public static final String ARROW_RIGHT = "  \u25B6";
-
-    // Minimum width of spacebar dragging to trigger the language switch (represented by the number
-    // of the most common key width of this keyboard).
-    private static final int SPACEBAR_DRAG_WIDTH = 3;
-    // Minimum width of space key preview (proportional to keyboard width).
-    private static final float SPACEBAR_POPUP_MIN_RATIO = 0.5f;
     // Height in space key the language name will be drawn. (proportional to space key height)
     public static final float SPACEBAR_LANGUAGE_BASELINE = 0.6f;
     // If the full language name needs to be smaller than this value to be drawn on space key,
@@ -116,8 +97,6 @@ public class LatinKeyboard extends Keyboard {
         // The index of space key is available only after Keyboard constructor has finished.
         mSpaceKey = (spaceKeyIndex >= 0) ? keys.get(spaceKeyIndex) : null;
         mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon() : null;
-        mSpacePreviewIcon = (mSpaceKey != null) ? mSpaceKey.getPreviewIcon() : null;
-        mSpaceKeyIndex = spaceKeyIndex;
 
         mShortcutKey = (shortcutKeyIndex >= 0) ? keys.get(shortcutKeyIndex) : null;
         mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
@@ -133,20 +112,6 @@ public class LatinKeyboard extends Keyboard {
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboard_spacebarTextShadowColor, 0);
         a.recycle();
-
-        // The threshold is "key width" x 1.25
-        mSpacebarLanguageSwitchThreshold = (getMostCommonKeyWidth() * 5) / 4;
-
-        if (mSpaceKey != null && mSpacePreviewIcon != null) {
-            final int slidingIconWidth = Math.max(mSpaceKey.mWidth,
-                    (int)(getMinWidth() * SPACEBAR_POPUP_MIN_RATIO));
-            final int spaceKeyheight = mSpacePreviewIcon.getIntrinsicHeight();
-            mSlidingLocaleIcon = new SlidingLocaleDrawable(
-                    context, mSpacePreviewIcon, slidingIconWidth, spaceKeyheight);
-            mSlidingLocaleIcon.setBounds(0, 0, slidingIconWidth, spaceKeyheight);
-        } else {
-            mSlidingLocaleIcon = null;
-        }
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
@@ -219,8 +184,7 @@ public class LatinKeyboard extends Keyboard {
         final Rect bounds = new Rect();
 
         // Estimate appropriate language name text size to fit in maxTextWidth.
-        String language = ARROW_LEFT + SubtypeSwitcher.getFullDisplayName(locale, true)
-                + ARROW_RIGHT;
+        String language = SubtypeSwitcher.getFullDisplayName(locale, true);
         int textWidth = getTextWidth(paint, language, origTextSize, bounds);
         // Assuming text width and text size are proportional to each other.
         float textSize = origTextSize * Math.min(width / textWidth, 1.0f);
@@ -232,7 +196,7 @@ public class LatinKeyboard extends Keyboard {
 
         final boolean useShortName;
         if (useMiddleName) {
-            language = ARROW_LEFT + SubtypeSwitcher.getMiddleDisplayLanguage(locale) + ARROW_RIGHT;
+            language = SubtypeSwitcher.getMiddleDisplayLanguage(locale);
             textWidth = getTextWidth(paint, language, origTextSize, bounds);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
             useShortName = (textSize / origTextSize < MINIMUM_SCALE_OF_LANGUAGE_NAME)
@@ -242,7 +206,7 @@ public class LatinKeyboard extends Keyboard {
         }
 
         if (useShortName) {
-            language = ARROW_LEFT + SubtypeSwitcher.getShortDisplayLanguage(locale) + ARROW_RIGHT;
+            language = SubtypeSwitcher.getShortDisplayLanguage(locale);
             textWidth = getTextWidth(paint, language, origTextSize, bounds);
             textSize = origTextSize * Math.min(width / textWidth, 1.0f);
         }
@@ -325,63 +289,6 @@ public class LatinKeyboard extends Keyboard {
             mSpaceIcon.draw(canvas);
         }
         return buffer;
-    }
-
-    public void setSpacebarSlidingLanguageSwitchDiff(int diff) {
-        mSpacebarSlidingLanguageSwitchDiff = diff;
-    }
-
-    public void updateSpacebarPreviewIcon(int diff) {
-        if (mSpacebarSlidingLanguageSwitchDiff == diff)
-            return;
-        mSpacebarSlidingLanguageSwitchDiff = diff;
-        if (mSlidingLocaleIcon == null)
-            return;
-        mSlidingLocaleIcon.setDiff(diff);
-        if (Math.abs(diff) == Integer.MAX_VALUE) {
-            mSpaceKey.setPreviewIcon(mSpacePreviewIcon);
-        } else {
-            mSpaceKey.setPreviewIcon(mSlidingLocaleIcon);
-        }
-        mSpaceKey.getPreviewIcon().invalidateSelf();
-    }
-
-    public boolean shouldTriggerSpacebarSlidingLanguageSwitch(int diff) {
-        // On phone and number layouts, sliding language switch is disabled.
-        // TODO: Sort out how to enable language switch on these layouts.
-        if (isPhoneKeyboard() || isNumberKeyboard())
-            return false;
-        return Math.abs(diff) > mSpacebarLanguageSwitchThreshold;
-    }
-
-    /**
-     * Return true if spacebar needs showing preview even when "popup on keypress" is off.
-     * @param keyIndex index of the pressing key
-     * @return true if spacebar needs showing preview
-     */
-    @Override
-    public boolean needSpacebarPreview(int keyIndex) {
-        // This method is called when "popup on keypress" is off.
-        if (!mSubtypeSwitcher.useSpacebarLanguageSwitcher())
-            return false;
-        // Dismiss key preview.
-        if (keyIndex == KeyDetector.NOT_A_KEY)
-            return true;
-        // Key is not a spacebar.
-        if (keyIndex != mSpaceKeyIndex)
-            return false;
-        // The language switcher will be displayed only when the dragging distance is greater
-        // than the threshold.
-        return shouldTriggerSpacebarSlidingLanguageSwitch(mSpacebarSlidingLanguageSwitchDiff);
-    }
-
-    public int getLanguageChangeDirection() {
-        if (mSpaceKey == null || mSubtypeSwitcher.getEnabledKeyboardLocaleCount() <= 1
-                || Math.abs(mSpacebarSlidingLanguageSwitchDiff)
-                    < getMostCommonKeyWidth() * SPACEBAR_DRAG_WIDTH) {
-            return 0; // No change
-        }
-        return mSpacebarSlidingLanguageSwitchDiff > 0 ? 1 : -1;
     }
 
     @Override

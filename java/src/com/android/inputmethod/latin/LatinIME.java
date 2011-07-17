@@ -357,7 +357,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LatinImeLogger.init(this, prefs);
         LanguageSwitcherProxy.init(this, prefs);
         InputMethodManagerCompatWrapper.init(this);
-        SubtypeSwitcher.init(this, prefs);
+        SubtypeSwitcher.init(this);
         KeyboardSwitcher.init(this, prefs);
         Recorrection.init(this, prefs);
         AccessibilityUtils.init(this, prefs);
@@ -1130,12 +1130,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         case Keyboard.CODE_SETTINGS_LONGPRESS:
             onSettingsKeyLongPressed();
             break;
-        case LatinKeyboard.CODE_NEXT_LANGUAGE:
-            toggleLanguage(true);
-            break;
-        case LatinKeyboard.CODE_PREV_LANGUAGE:
-            toggleLanguage(false);
-            break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
             break;
@@ -1905,17 +1899,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         initSuggest();
         loadSettings();
         mKeyboardSwitcher.updateShiftState();
-    }
-
-    // "reset" and "next" are used only for USE_SPACEBAR_LANGUAGE_SWITCHER.
-    private void toggleLanguage(boolean next) {
-        if (mSubtypeSwitcher.useSpacebarLanguageSwitcher()) {
-            mSubtypeSwitcher.toggleLanguage(next);
-        }
-        // The following is necessary because on API levels < 10, we don't get notified when
-        // subtype changes.
-        if (!CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED)
-            onRefreshKeyboard();
     }
 
     @Override

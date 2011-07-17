@@ -241,7 +241,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // we should reset the text fade factor. It is also applicable to shortcut key.
         keyboard.setSpacebarTextFadeFactor(0.0f, null);
         keyboard.updateShortcutKey(mSubtypeSwitcher.isShortcutImeReady(), null);
-        keyboard.setSpacebarSlidingLanguageSwitchDiff(0);
         return keyboard;
     }
 

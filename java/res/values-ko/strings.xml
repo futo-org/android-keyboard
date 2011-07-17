@@ -46,7 +46,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"세로 모드로 표시"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"항상 숨기기"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"스페이스 바 언어 교환기 사용"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"설정 키 표시"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"자동"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"항상 표시"</string>

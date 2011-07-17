@@ -56,7 +56,6 @@
         <item name="keyPreviewBackground">@drawable/keyboard_key_feedback</item>
         <item name="keyPreviewLeftBackground">@null</item>
         <item name="keyPreviewRightBackground">@null</item>
-        <item name="keyPreviewSpacebarBackground">@drawable/keyboard_key_feedback</item>
         <item name="keyPreviewTextColor">#FFFFFFFF</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
@@ -163,7 +162,6 @@
         <item name="keyPreviewBackground">@drawable/keyboard_key_feedback_ics</item>
         <item name="keyPreviewLeftBackground">@drawable/keyboard_key_feedback_left_ics</item>
         <item name="keyPreviewRightBackground">@drawable/keyboard_key_feedback_right_ics</item>
-        <item name="keyPreviewSpacebarBackground">@drawable/transparent</item>
         <item name="keyPreviewTextColor">#FFFFFFFF</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height_ics</item>
         <item name="keyPreviewOffset">@dimen/key_preview_offset_ics</item>

@@ -59,8 +59,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Bonisa njalo"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Bonisa kwimodi emile"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Fihla njalo"</string>
-    <!-- no translation found for prefs_use_spacebar_language_switch (8828538114550634449) -->
-    <skip />
     <string name="prefs_settings_key" msgid="4623341240804046498">"Bonisa ukhiye wezilungiselelo"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Okuzenzakalelayo"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Bonisa njalo"</string>

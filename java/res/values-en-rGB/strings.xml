@@ -46,7 +46,6 @@
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Always show"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Show on portrait mode"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Always hide"</string>
-    <string name="prefs_use_spacebar_language_switch" msgid="8828538114550634449">"Use the spacebar language switcher"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Show settings key"</string>
     <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automatic"</string>
     <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Always show"</string>

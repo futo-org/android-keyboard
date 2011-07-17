@@ -31,7 +31,6 @@
     <bool name="config_default_popup_preview">false</bool>
     <bool name="config_default_sound_enabled">true</bool>
     <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
-    <bool name="config_use_spacebar_language_switcher">false</bool>
     <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
     <bool name="config_show_mini_keyboard_at_touched_point">true</bool>
     <integer name="config_delay_update_suggestions">180</integer>

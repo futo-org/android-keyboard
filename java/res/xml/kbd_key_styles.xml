@@ -137,7 +137,6 @@
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:keyIconPreview="iconPreviewSpaceKey"
         latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="smileyKeyStyle"

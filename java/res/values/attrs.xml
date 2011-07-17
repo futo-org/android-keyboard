@@ -78,8 +78,6 @@
         <attr name="keyPreviewLeftBackground" format="reference" />
         <!-- The background for the right edge key press feedback. -->
         <attr name="keyPreviewRightBackground" format="reference" />
-        <!-- The background for spacebar press feedback. -->
-        <attr name="keyPreviewSpacebarBackground" format="reference" />
         <!-- The text color for key press feedback. -->
         <attr name="keyPreviewTextColor" format="color" />
         <!-- Vertical offset of the key press feedback from the key. -->
@@ -165,7 +163,6 @@
         <attr name="iconSearchKey" format="reference" />
         <attr name="iconTabKey" format="reference" />
         <attr name="iconShiftedShiftKey" format="reference" />
-        <attr name="iconPreviewSpaceKey" format="reference" />
         <attr name="iconPreviewTabKey" format="reference" />
         <attr name="iconPreviewSettingsKey" format="reference" />
         <attr name="iconPreviewShortcutKey" format="reference" />
@@ -235,10 +232,9 @@
         <!-- The icon to show in the popup preview. -->
         <attr name="keyIconPreview" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_PREVIEW_* -->
-            <enum name="iconPreviewSpaceKey" value="13" />
-            <enum name="iconPreviewTabKey" value="14" />
-            <enum name="iconPreviewSettingsKey" value="15" />
-            <enum name="iconPreviewShortcutKey" value="16" />
+            <enum name="iconPreviewTabKey" value="13" />
+            <enum name="iconPreviewSettingsKey" value="14" />
+            <enum name="iconPreviewShortcutKey" value="15" />
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />

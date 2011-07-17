@@ -400,15 +400,6 @@ public class Keyboard {
         return mMostCommonKeyWidth;
     }
 
-    /**
-     * Return true if spacebar needs showing preview even when "popup on keypress" is off.
-     * @param keyIndex index of the pressing key
-     * @return true if spacebar needs showing preview
-     */
-    public boolean needSpacebarPreview(int keyIndex) {
-        return false;
-    }
-
     private void loadKeyboard(Context context, int xmlLayoutResId) {
         try {
             KeyboardParser parser = new KeyboardParser(this, context);

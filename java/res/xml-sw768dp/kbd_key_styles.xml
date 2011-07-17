@@ -57,12 +57,10 @@
         latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="spaceKeyStyle"
-        latin:code="@integer/key_space"
-        latin:keyIconPreview="iconPreviewSpaceKey" />
+        latin:code="@integer/key_space" />
     <key-style
         latin:styleName="nonSpecialBackgroundSpaceKeyStyle"
-        latin:code="@integer/key_space"
-        latin:keyIconPreview="iconPreviewSpaceKey" />
+        latin:code="@integer/key_space" />
     <key-style
         latin:styleName="smileyKeyStyle"
         latin:keyLabel=":-)"

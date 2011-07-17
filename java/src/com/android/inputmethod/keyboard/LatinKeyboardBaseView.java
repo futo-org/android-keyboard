@@ -348,7 +348,6 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     }
 
     // This default implementation returns a popup mini keyboard panel.
-    // A derived class may return a language switcher popup panel, for instance.
     protected PopupPanel onCreatePopupPanel(Key parentKey) {
         if (parentKey.mPopupCharacters == null)
             return null;

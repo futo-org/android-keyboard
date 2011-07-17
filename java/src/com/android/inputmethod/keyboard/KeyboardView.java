@@ -265,7 +265,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final Drawable mPreviewBackground;
         public final Drawable mPreviewLeftBackground;
         public final Drawable mPreviewRightBackground;
-        public final Drawable mPreviewSpacebarBackground;
         public final int mPreviewTextColor;
         public final int mPreviewOffset;
         public final int mPreviewHeight;
@@ -286,8 +285,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyPreviewLeftBackground);
             mPreviewRightBackground = a.getDrawable(
                     R.styleable.KeyboardView_keyPreviewRightBackground);
-            mPreviewSpacebarBackground = a.getDrawable(
-                    R.styleable.KeyboardView_keyPreviewSpacebarBackground);
             setAlpha(mPreviewBackground, PREVIEW_ALPHA);
             setAlpha(mPreviewLeftBackground, PREVIEW_ALPHA);
             setAlpha(mPreviewRightBackground, PREVIEW_ALPHA);
@@ -768,9 +765,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public void showKeyPreview(int keyIndex, PointerTracker tracker) {
         if (mShowKeyPreviewPopup) {
             mDrawingHandler.showKeyPreview(mDelayBeforePreview, keyIndex, tracker);
-        } else if (mKeyboard.needSpacebarPreview(keyIndex)) {
-            // Show key preview (in this case, slide language switcher) without any delay.
-            showKey(keyIndex, tracker);
         }
     }
 
@@ -784,9 +778,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mShowKeyPreviewPopup) {
             mDrawingHandler.cancelShowKeyPreview(tracker);
             mDrawingHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
-        } else if (mKeyboard.needSpacebarPreview(KeyDetector.NOT_A_KEY)) {
-            // Dismiss key preview (in this case, slide language switcher) without any delay.
-            mPreviewText.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -838,11 +829,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                    previewIcon != null ? previewIcon : key.getIcon());
             previewText.setText(null);
         }
-        if (key.mCode == Keyboard.CODE_SPACE) {
-            previewText.setBackgroundDrawable(params.mPreviewSpacebarBackground);
-        } else {
-            previewText.setBackgroundDrawable(params.mPreviewBackground);
-        }
+        previewText.setBackgroundDrawable(params.mPreviewBackground);
 
         previewText.measure(MEASURESPEC_UNSPECIFIED, MEASURESPEC_UNSPECIFIED);
         final int previewWidth = Math.max(previewText.getMeasuredWidth(), keyDrawWidth
