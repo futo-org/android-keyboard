@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.compat;
 
+import android.content.pm.PackageManager;
 import android.content.pm.ServiceInfo;
 import android.view.inputmethod.InputMethodInfo;
 
@@ -55,5 +56,22 @@ public class InputMethodInfoCompatWrapper {
     public InputMethodSubtypeCompatWrapper getSubtypeAt(int index) {
         return new InputMethodSubtypeCompatWrapper(CompatUtils.invoke(mImi, null,
                 METHOD_getSubtypeAt, index));
+    }
+
+    public CharSequence loadLabel(PackageManager pm) {
+        return mImi.loadLabel(pm);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof InputMethodInfoCompatWrapper) {
+            return mImi.equals(((InputMethodInfoCompatWrapper)o).mImi);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return mImi.hashCode();
     }
 }

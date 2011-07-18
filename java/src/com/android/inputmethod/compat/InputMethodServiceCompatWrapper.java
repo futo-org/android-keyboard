@@ -16,10 +16,15 @@
 
 package com.android.inputmethod.compat;
 
+import android.app.AlertDialog;
 import android.inputmethodservice.InputMethodService;
+import android.os.IBinder;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodSubtype;
 
 import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
 public class InputMethodServiceCompatWrapper extends InputMethodService {
@@ -32,10 +37,33 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
 
     private InputMethodManagerCompatWrapper mImm;
 
+    // For compatibility of {@link InputMethodManager#showInputMethodPicker}.
+    // TODO: Move this variable back to LatinIME when this compatibility wrapper is removed.
+    protected AlertDialog mOptionsDialog;
+
+    public void showOptionDialogInternal(AlertDialog dialog) {
+        final IBinder windowToken = KeyboardSwitcher.getInstance().getKeyboardView()
+                .getWindowToken();
+        if (windowToken == null) return;
+
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        final Window window = dialog.getWindow();
+        final WindowManager.LayoutParams lp = window.getAttributes();
+        lp.token = windowToken;
+        lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
+        window.setAttributes(lp);
+        window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+
+        mOptionsDialog = dialog;
+        dialog.show();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
-        mImm = InputMethodManagerCompatWrapper.getInstance(this);
+        mImm = InputMethodManagerCompatWrapper.getInstance();
     }
 
     // When the API level is 10 or previous, notifyOnCurrentInputMethodSubtypeChanged should

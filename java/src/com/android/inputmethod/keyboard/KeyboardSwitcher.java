@@ -822,7 +822,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
                     || (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_AUTO))
                             && Utils.hasMultipleEnabledIMEsOrSubtypes(
-                                    (InputMethodManagerCompatWrapper.getInstance(context))))) {
+                                    (InputMethodManagerCompatWrapper.getInstance())))) {
                 return true;
             }
             return false;

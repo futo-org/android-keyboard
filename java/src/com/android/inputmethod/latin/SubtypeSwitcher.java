@@ -104,7 +104,7 @@ public class SubtypeSwitcher {
     private void initialize(LatinIME service, SharedPreferences prefs) {
         mService = service;
         mResources = service.getResources();
-        mImm = InputMethodManagerCompatWrapper.getInstance(service);
+        mImm = InputMethodManagerCompatWrapper.getInstance();
         mConnectivityManager = (ConnectivityManager) service.getSystemService(
                 Context.CONNECTIVITY_SERVICE);
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();

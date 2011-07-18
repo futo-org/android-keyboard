@@ -498,7 +498,7 @@ public class Settings extends InputMethodSettingsActivity
         if (pref == mInputLanguageSelection) {
             startActivity(CompatUtils.getInputLanguageSelectionIntent(
                     Utils.getInputMethodId(
-                            InputMethodManagerCompatWrapper.getInstance(getActivityInternal()),
+                            InputMethodManagerCompatWrapper.getInstance(),
                             getActivityInternal().getApplicationInfo().packageName), 0));
             return true;
         }
