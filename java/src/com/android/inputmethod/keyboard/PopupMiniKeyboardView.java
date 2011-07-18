@@ -49,9 +49,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         @Override
         public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {}
         @Override
-        public void startLongPressShiftTimer(long delay, int keyIndex, PointerTracker tracker) {}
-        @Override
-        public void cancelLongPressTimers() {}
+        public void cancelLongPressTimer() {}
         @Override
         public void cancelKeyTimers() {}
     };

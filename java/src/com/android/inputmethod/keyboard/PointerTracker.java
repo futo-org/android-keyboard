@@ -73,8 +73,7 @@ public class PointerTracker {
     public interface TimerProxy {
         public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker);
         public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker);
-        public void startLongPressShiftTimer(long delay, int keyIndex, PointerTracker tracker);
-        public void cancelLongPressTimers();
+        public void cancelLongPressTimer();
         public void cancelKeyTimers();
     }
 
@@ -84,6 +83,7 @@ public class PointerTracker {
     private static int sDelayBeforeKeyRepeatStart;
     private static int sLongPressKeyTimeout;
     private static int sLongPressShiftKeyTimeout;
+    private static int sLongPressSpaceKeyTimeout;
     private static int sTouchNoiseThresholdMillis;
     private static int sTouchNoiseThresholdDistanceSquared;
 
@@ -165,6 +165,7 @@ public class PointerTracker {
         sDelayBeforeKeyRepeatStart = res.getInteger(R.integer.config_delay_before_key_repeat_start);
         sLongPressKeyTimeout = res.getInteger(R.integer.config_long_press_key_timeout);
         sLongPressShiftKeyTimeout = res.getInteger(R.integer.config_long_press_shift_key_timeout);
+        sLongPressSpaceKeyTimeout = res.getInteger(R.integer.config_long_press_space_key_timeout);
         sTouchNoiseThresholdMillis = res.getInteger(R.integer.config_touch_noise_threshold_millis);
         final float touchNoiseThresholdDistance = res.getDimension(
                 R.dimen.config_touch_noise_threshold_distance);
@@ -553,7 +554,7 @@ public class PointerTracker {
                 setReleasedKeyGraphics(oldKeyIndex);
                 callListenerOnRelease(oldKey, oldKey.mCode, true);
                 startSlidingKeyInput(oldKey);
-                mTimerProxy.cancelLongPressTimers();
+                mTimerProxy.cancelLongPressTimer();
                 if (mIsAllowedSlidingKeyInput) {
                     onMoveToNewKey(keyIndex, x, y);
                 } else {
@@ -720,7 +721,13 @@ public class PointerTracker {
     private void startLongPressTimer(int keyIndex) {
         Key key = getKey(keyIndex);
         if (key.mCode == Keyboard.CODE_SHIFT) {
-            mTimerProxy.startLongPressShiftTimer(sLongPressShiftKeyTimeout, keyIndex, this);
+            if (sLongPressShiftKeyTimeout > 0) {
+                mTimerProxy.startLongPressTimer(sLongPressShiftKeyTimeout, keyIndex, this);
+            }
+        } else if (key.mCode == Keyboard.CODE_SPACE) {
+            if (sLongPressSpaceKeyTimeout > 0) {
+                mTimerProxy.startLongPressTimer(sLongPressSpaceKeyTimeout, keyIndex, this);
+            }
         } else if (key.hasUppercaseLetter() && mKeyboard.isManualTemporaryUpperCase()) {
             // We need not start long press timer on the key which has manual temporary upper case
             // code defined and the keyboard is in manual temporary upper case mode.

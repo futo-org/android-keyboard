@@ -52,7 +52,6 @@ import java.util.WeakHashMap;
 public class LatinKeyboardBaseView extends KeyboardView implements PointerTracker.KeyEventHandler {
     private static final String TAG = LatinKeyboardBaseView.class.getSimpleName();
 
-    private static final boolean ENABLE_CAPSLOCK_BY_LONGPRESS = true;
     private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
 
     // Timing constants
@@ -87,8 +86,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
             implements TimerProxy {
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
-        private static final int MSG_LONGPRESS_SHIFT_KEY = 3;
-        private static final int MSG_IGNORE_DOUBLE_TAP = 4;
+        private static final int MSG_IGNORE_DOUBLE_TAP = 3;
 
         private boolean mInKeyRepeat;
 
@@ -107,9 +105,6 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
                 break;
             case MSG_LONGPRESS_KEY:
                 keyboardView.openMiniKeyboardIfRequired(msg.arg1, tracker);
-                break;
-            case MSG_LONGPRESS_SHIFT_KEY:
-                keyboardView.onLongPressShiftKey(tracker);
                 break;
             }
         }
@@ -131,29 +126,19 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
         @Override
         public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {
-            cancelLongPressTimers();
+            cancelLongPressTimer();
             sendMessageDelayed(obtainMessage(MSG_LONGPRESS_KEY, keyIndex, 0, tracker), delay);
         }
 
         @Override
-        public void startLongPressShiftTimer(long delay, int keyIndex, PointerTracker tracker) {
-            cancelLongPressTimers();
-            if (ENABLE_CAPSLOCK_BY_LONGPRESS) {
-                sendMessageDelayed(
-                        obtainMessage(MSG_LONGPRESS_SHIFT_KEY, keyIndex, 0, tracker), delay);
-            }
-        }
-
-        @Override
-        public void cancelLongPressTimers() {
+        public void cancelLongPressTimer() {
             removeMessages(MSG_LONGPRESS_KEY);
-            removeMessages(MSG_LONGPRESS_SHIFT_KEY);
         }
 
         @Override
         public void cancelKeyTimers() {
             cancelKeyRepeatTimer();
-            cancelLongPressTimers();
+            cancelLongPressTimer();
             removeMessages(MSG_IGNORE_DOUBLE_TAP);
         }
 
@@ -353,11 +338,6 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         if (parentKey == null)
             return false;
         return onLongPress(parentKey, tracker);
-    }
-
-    private void onLongPressShiftKey(PointerTracker tracker) {
-        tracker.onLongPressed();
-        mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
     }
 
     private void onDoubleTapShiftKey(@SuppressWarnings("unused") PointerTracker tracker) {
