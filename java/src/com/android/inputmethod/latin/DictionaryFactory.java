@@ -52,13 +52,23 @@ public class DictionaryFactory {
         }
 
         final List<Dictionary> dictList = new LinkedList<Dictionary>();
-        for (final AssetFileAddress f : BinaryDictionaryGetter.getDictionaryFiles(locale,
-                context, fallbackResId)) {
-            dictList.add(new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength, null));
+        final List<AssetFileAddress> assetFileList =
+                BinaryDictionaryGetter.getDictionaryFiles(locale, context, fallbackResId);
+        if (null != assetFileList) {
+            for (final AssetFileAddress f : assetFileList) {
+                dictList.add(
+                        new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength, null));
+            }
         }
 
-        if (null == dictList) return null;
-        return new DictionaryCollection(dictList);
+        // null == dictList is not supposed to be possible, but better safe than sorry and it's
+        // safer for future extension. In this case, rather than returning null, it should be safer
+        // to return an empty DictionaryCollection.
+        if (null == dictList) {
+            return new DictionaryCollection();
+        } else {
+            return new DictionaryCollection(dictList);
+        }
     }
 
     /**

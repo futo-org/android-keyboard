@@ -32,7 +32,11 @@ public class DictionaryCollection extends Dictionary {
     }
 
     public DictionaryCollection(Dictionary... dictionaries) {
-        mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+        if (null == dictionaries) {
+            mDictionaries = new CopyOnWriteArrayList<Dictionary>();
+        } else {
+            mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+        }
     }
 
     public DictionaryCollection(Collection<Dictionary> dictionaries) {

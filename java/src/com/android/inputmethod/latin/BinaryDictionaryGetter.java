@@ -91,7 +91,9 @@ class BinaryDictionaryGetter {
                 Log.e(TAG, "Unable to read source data for locale "
                         + locale.toString() + ": falling back to internal dictionary");
             }
-            return Arrays.asList(loadFallbackResource(context, fallbackResId));
+            final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId);
+            if (null == fallbackAsset) return null;
+            return Arrays.asList(fallbackAsset);
         }
     }
 }
