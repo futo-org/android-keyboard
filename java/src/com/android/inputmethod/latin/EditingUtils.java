@@ -33,6 +33,7 @@ public class EditingUtils {
      * Number of characters we want to look back in order to identify the previous word
      */
     private static final int LOOKBACK_CHARACTER_NUM = 15;
+    private static final int INVALID_CURSOR_POSITION = -1;
 
     private EditingUtils() {
         // Unintentional empty constructor for singleton.
@@ -63,10 +64,11 @@ public class EditingUtils {
     }
 
     private static int getCursorPosition(InputConnection connection) {
+        if (null == connection) return INVALID_CURSOR_POSITION;
         ExtractedText extracted = connection.getExtractedText(
             new ExtractedTextRequest(), 0);
         if (extracted == null) {
-          return -1;
+            return INVALID_CURSOR_POSITION;
         }
         return extracted.startOffset + extracted.selectionStart;
     }
@@ -79,6 +81,7 @@ public class EditingUtils {
      *   represents the cursor, then "hello " will be returned.
      */
     public static String getWordAtCursor(InputConnection connection, String separators) {
+        // getWordRangeAtCursor returns null if the connection is null
         Range r = getWordRangeAtCursor(connection, separators);
         return (r == null) ? null : r.mWord;
     }
@@ -88,6 +91,7 @@ public class EditingUtils {
      * getWordAtCursor.
      */
     public static void deleteWordAtCursor(InputConnection connection, String separators) {
+        // getWordRangeAtCursor returns null if the connection is null
         Range range = getWordRangeAtCursor(connection, separators);
         if (range == null) return;
 
@@ -165,6 +169,7 @@ public class EditingUtils {
     public static CharSequence getPreviousWord(InputConnection connection,
             String sentenceSeperators) {
         //TODO: Should fix this. This could be slow!
+        if (null == connection) return null;
         CharSequence prev = connection.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
         return getPreviousWord(prev, sentenceSeperators);
     }
@@ -194,6 +199,7 @@ public class EditingUtils {
     }
 
     public static CharSequence getThisWord(InputConnection connection, String sentenceSeperators) {
+        if (null == connection) return null;
         final CharSequence prev = connection.getTextBeforeCursor(LOOKBACK_CHARACTER_NUM, 0);
         return getThisWord(prev, sentenceSeperators);
     }
@@ -256,12 +262,14 @@ public class EditingUtils {
             int selStart, int selEnd, String wordSeparators) {
         if (selStart == selEnd) {
             // There is just a cursor, so get the word at the cursor
+            // getWordRangeAtCursor returns null if the connection is null
             EditingUtils.Range range = getWordRangeAtCursor(ic, wordSeparators);
             if (range != null && !TextUtils.isEmpty(range.mWord)) {
                 return new SelectedWord(selStart - range.mCharsBefore, selEnd + range.mCharsAfter,
                         range.mWord);
             }
         } else {
+            if (null == ic) return null;
             // Is the previous character empty or a word separator? If not, return null.
             CharSequence charsBefore = ic.getTextBeforeCursor(1, 0);
             if (!isWordBoundary(charsBefore, wordSeparators)) {

@@ -1514,9 +1514,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final WordComposer wordComposer = mWordComposer;
         // TODO: May need a better way of retrieving previous word
-        CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
-                mSettingsValues.mWordSeparators);
-        SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
+        final InputConnection ic = getCurrentInputConnection();
+        final CharSequence prevWord;
+        if (null == ic) {
+            prevWord = null;
+        } else {
+            prevWord = EditingUtils.getPreviousWord(ic, mSettingsValues.mWordSeparators);
+        }
+        // getSuggestedWordBuilder handles gracefully a null value of prevWord
+        final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
                 mKeyboardSwitcher.getKeyboardView(), wordComposer, prevWord);
 
         boolean autoCorrectionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
@@ -1788,10 +1794,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // We don't want to register as bigrams words separated by a separator.
             // For example "I will, and you too" : we don't want the pair ("will" "and") to be
             // a bigram.
-            CharSequence prevWord = EditingUtils.getPreviousWord(getCurrentInputConnection(),
-                    mSettingsValues.mWordSeparators);
-            if (!TextUtils.isEmpty(prevWord)) {
-                mUserBigramDictionary.addBigrams(prevWord.toString(), suggestion.toString());
+            final InputConnection ic = getCurrentInputConnection();
+            if (null != ic) {
+                final CharSequence prevWord =
+                        EditingUtils.getPreviousWord(ic, mSettingsValues.mWordSeparators);
+                if (!TextUtils.isEmpty(prevWord)) {
+                    mUserBigramDictionary.addBigrams(prevWord.toString(), suggestion.toString());
+                }
             }
         }
     }
