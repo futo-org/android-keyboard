@@ -29,8 +29,7 @@
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.500%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="7.500%p" />
         <Key
             latin:keyLabel="ض" />
         <Key
@@ -61,8 +60,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-11.500%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.375%p"
@@ -70,8 +68,7 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="9.375%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="9.375%p" />
         <Key
             latin:keyLabel="ش" />
         <Key
@@ -113,8 +110,7 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-9.375%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.375%p"

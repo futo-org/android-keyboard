@@ -25,12 +25,10 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
         latin:keyWidth="8.0%p"
-        latin:rowEdgeFlags="top"
     >
         <Key
             latin:keyLabel="љ"
-            latin:keyXPos="2.15%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyXPos="2.15%p" />
         <Key
             latin:keyLabel="њ" />
         <Key
@@ -54,15 +52,13 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.9%p"
     >
         <Key
-            latin:keyLabel="а"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabel="а" />
         <Key
             latin:keyLabel="с" />
         <Key
@@ -86,16 +82,14 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-14.6%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.5%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="8.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="8.0%p" />
         <Key
             latin:keyLabel="ѕ" />
         <Key

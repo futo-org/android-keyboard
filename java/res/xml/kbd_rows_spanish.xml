@@ -30,8 +30,7 @@
     >
         <Key
             latin:keyLabel="a"
-            latin:popupCharacters="@string/alternates_for_a"
-            latin:keyEdgeFlags="left" />
+            latin:popupCharacters="@string/alternates_for_a" />
         <Key
             latin:keyLabel="s"
             latin:popupCharacters="@string/alternates_for_s" />
@@ -54,8 +53,7 @@
             latin:keyLabel="l"
             latin:popupCharacters="@string/alternates_for_l" />
         <Key
-            latin:keyLabel="ñ"
-            latin:keyEdgeFlags="right" />
+            latin:keyLabel="ñ" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row3" />

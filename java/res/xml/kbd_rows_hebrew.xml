@@ -25,12 +25,10 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
         latin:keyWidth="10%p"
-        latin:rowEdgeFlags="top"
     >
         <Key
             latin:keyLabel="ק"
-            latin:keyXPos="5%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyXPos="5%p" />
         <Key
             latin:keyLabel="ר" />
         <Key
@@ -48,15 +46,13 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
-            latin:visualInsetsLeft="1%p"
-            latin:keyEdgeFlags="right" />
+            latin:visualInsetsLeft="1%p" />
     </Row>
     <Row
         latin:keyWidth="10%p"
     >
         <Key
-            latin:keyLabel="ש"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabel="ש" />
         <Key
             latin:keyLabel="ד" />
         <Key
@@ -78,8 +74,7 @@
             latin:keyLabel="ך" />
         <Key
             latin:keyLabel="ף"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="10%p"
@@ -87,8 +82,7 @@
         <Key
             latin:keyLabel="ז"
             latin:popupCharacters="ז׳"
-            latin:keyXPos="5%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyXPos="5%p" />
         <Key
             latin:keyLabel="ס" />
         <Key
@@ -107,8 +101,7 @@
             latin:popupCharacters="ת׳" />
         <Key
             latin:keyLabel="ץ"
-            latin:popupCharacters="ץ׳"
-            latin:keyEdgeFlags="right" />
+            latin:popupCharacters="ץ׳" />
         <!-- Here is 5%p space -->
     </Row>
     <include

@@ -26,13 +26,10 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <include
         latin:keyboardLayout="@xml/kbd_numkey_styles" />
-    <Row
-        latin:rowEdgeFlags="top"
-    >
+    <Row>
         <Key
             latin:keyLabel="("
-            latin:keyStyle="numKeyStyle"
-            latin:keyEdgeFlags="left" />
+            latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyLabel="/"
             latin:keyStyle="numKeyStyle" />
@@ -42,13 +39,11 @@
         <Key
             latin:keyLabel="-"
             latin:keyStyle="numFunctionalKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
-            latin:keyLabel="N"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabel="N" />
         <!-- Pause is a comma. Check PhoneNumberUtils.java to see if this 
             has changed. -->
         <Key
@@ -61,13 +56,11 @@
         <Key
             latin:keyLabel="."
             latin:keyStyle="numFunctionalKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
-            latin:keyStyle="numStarKeyStyle"
-            latin:keyEdgeFlags="left" />
+            latin:keyStyle="numStarKeyStyle" />
         <!-- Wait is a semicolon. -->
         <Key
             latin:code="59"
@@ -78,15 +71,11 @@
             latin:keyStyle="numKeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
-    <Row
-        latin:rowEdgeFlags="bottom"
-    >
+    <Row>
         <Key
-            latin:keyStyle="numSwitchToNumericKeyStyle"
-            latin:keyEdgeFlags="left" />
+            latin:keyStyle="numSwitchToNumericKeyStyle" />
         <Key
             latin:keyLabel="+"
             latin:keyStyle="numKeyStyle" />
@@ -94,7 +83,6 @@
             latin:keyStyle="numSpaceKeyStyle" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
 </Keyboard>

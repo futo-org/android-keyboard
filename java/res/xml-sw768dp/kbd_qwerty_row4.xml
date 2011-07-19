@@ -21,7 +21,6 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- This row is intentionally not marked as a bottom row -->
     <Row
         latin:keyWidth="8.047%p"
     >

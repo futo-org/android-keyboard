@@ -29,8 +29,7 @@
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.969%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="7.969%p" />
         <include
             latin:keyboardLayout="@xml/kbd_row4_apostrophe_dash" />
         <Key
@@ -52,8 +51,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-12.000%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="8.125%p"
@@ -61,8 +59,7 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="11.172%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="11.172%p" />
         <Key
             latin:keyLabel="ש" />
         <Key
@@ -116,8 +113,7 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-10.400%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

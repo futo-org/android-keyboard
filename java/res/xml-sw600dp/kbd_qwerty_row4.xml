@@ -21,15 +21,13 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- This row is intentionally not marked as a bottom row -->
     <Row
         latin:keyWidth="8.9%p"
     >
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="13.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="13.0%p" />
         <Key
             latin:keyStyle="tabKeyStyle" />
         <switch>

@@ -26,12 +26,9 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <include
         latin:keyboardLayout="@xml/kbd_numkey_styles" />
-    <Row
-        latin:rowEdgeFlags="top"
-    >
+    <Row>
         <Key
-            latin:keyStyle="num1KeyStyle"
-            latin:keyEdgeFlags="left" />
+            latin:keyStyle="num1KeyStyle" />
         <Key
             latin:keyStyle="num2KeyStyle" />
         <Key
@@ -39,13 +36,11 @@
         <Key
             latin:keyLabel="-"
             latin:keyStyle="numFunctionalKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
-            latin:keyStyle="num4KeyStyle"
-            latin:keyEdgeFlags="left" />
+            latin:keyStyle="num4KeyStyle" />
         <Key
             latin:keyStyle="num5KeyStyle" />
         <Key
@@ -53,35 +48,28 @@
         <Key
             latin:keyLabel="."
             latin:keyStyle="numFunctionalKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
-            latin:keyStyle="num7KeyStyle"
-            latin:keyEdgeFlags="left" />
+            latin:keyStyle="num7KeyStyle" />
         <Key
             latin:keyStyle="num8KeyStyle" />
         <Key
             latin:keyStyle="num9KeyStyle" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
-    <Row
-        latin:rowEdgeFlags="bottom"
-    >
+    <Row>
         <Key
-            latin:keyStyle="numSwitchToAltKeyStyle"
-            latin:keyEdgeFlags="left" />
+            latin:keyStyle="numSwitchToAltKeyStyle" />
         <Key
             latin:keyStyle="num0KeyStyle" />
         <Key
             latin:keyStyle="numSpaceKeyStyle" />
         <Key
             latin:keyStyle="returnKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
 </Keyboard>

@@ -23,7 +23,6 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
-    <!-- This row is intentionally not marked as a top row -->
     <Row
         latin:keyWidth="9.0%p"
     >
@@ -60,8 +59,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="9.0%p"
@@ -97,16 +95,14 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-14.6%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="8.9%p"
     >
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="10.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="10.0%p" />
         <Key
             latin:keyLabel="\\" />
         <Key
@@ -132,15 +128,13 @@
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¿" />
     </Row>
-    <!-- This row is intentionally not marked as a bottom row -->
     <Row
         latin:keyWidth="8.9%p"
     >
         <Key
             latin:keyStyle="toAlphaKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="13.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="13.0%p" />
         <Key
             latin:keyStyle="tabKeyStyle" />
         <Key

@@ -23,7 +23,6 @@
 >
     <Row
         latin:keyWidth="10%p"
-        latin:rowEdgeFlags="bottom"
     >
         <switch>
             <case
@@ -31,8 +30,7 @@
             >
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="13.75%p"
-                    latin:keyEdgeFlags="left" />
+                    latin:keyWidth="13.75%p" />
                 <Key
                     latin:keyStyle="settingsKeyStyle"
                     latin:keyWidth="9.2%p" />
@@ -53,8 +51,7 @@
             <default>
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="15%p"
-                    latin:keyEdgeFlags="left" />
+                    latin:keyWidth="15%p" />
                 <Key
                     latin:keyLabel="„"
                     latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
@@ -73,14 +70,12 @@
             >
                 <Key
                     latin:keyStyle="smileyKeyStyle"
-                    latin:keyWidth="fillRight"
-                    latin:keyEdgeFlags="right" />
+                    latin:keyWidth="fillRight" />
             </case>
             <default>
                 <Key
                     latin:keyStyle="returnKeyStyle"
-                    latin:keyWidth="fillRight"
-                    latin:keyEdgeFlags="right" />
+                    latin:keyWidth="fillRight" />
             </default>
         </switch>
     </Row>

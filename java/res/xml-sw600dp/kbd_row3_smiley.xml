@@ -28,8 +28,7 @@
             <Key
                 latin:keyLabel="\@"
                 latin:keyXPos="-8.9%p"
-                latin:keyWidth="fillBoth"
-                latin:keyEdgeFlags="right" />
+                latin:keyWidth="fillBoth" />
         </case>
         <case
             latin:mode="url"
@@ -40,8 +39,7 @@
                 latin:keyHintLabel="_"
                 latin:popupCharacters="_"
                 latin:keyXPos="-8.9%p"
-                latin:keyWidth="fillBoth"
-                latin:keyEdgeFlags="right" />
+                latin:keyWidth="fillBoth" />
         </case>
         <case
             latin:imeAction="actionSearch"
@@ -52,15 +50,13 @@
                 latin:keyHintLabel="+"
                 latin:popupCharacters="+"
                 latin:keyXPos="-8.9%p"
-                latin:keyWidth="fillBoth"
-                latin:keyEdgeFlags="right" />
+                latin:keyWidth="fillBoth" />
         </case>
         <default>
             <Key
                 latin:keyStyle="smileyKeyStyle"
                 latin:keyXPos="-8.9%p"
-                latin:keyWidth="fillBoth"
-                latin:keyEdgeFlags="right" />
+                latin:keyWidth="fillBoth" />
         </default>
     </switch>
 </merge>

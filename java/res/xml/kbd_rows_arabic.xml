@@ -29,8 +29,7 @@
         <Key
             latin:keyLabel="ض"
             latin:keyHintLabel="1"
-            latin:popupCharacters="1,١"
-            latin:keyEdgeFlags="left" />
+            latin:popupCharacters="1,١" />
         <Key
             latin:keyLabel="ص"
             latin:keyHintLabel="2"
@@ -71,15 +70,13 @@
             latin:keyLabel="ج"
             latin:keyHintLabel="0"
             latin:popupCharacters="0,٠,\u0686"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="10%p"
     >
         <Key
-            latin:keyLabel="ش"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabel="ش" />
         <Key
             latin:keyLabel="س" />
         <!-- \u0626: ARABIC LETTER YEH WITH HAMZA ABOVE
@@ -119,16 +116,14 @@
         <Key
             latin:keyLabel="ك"
             latin:popupCharacters="گ"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="10%p"
     >
         <Key
             latin:keyLabel="ظ"
-            latin:keyXPos="5.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyXPos="5.0%p" />
         <Key
             latin:keyLabel="ط" />
         <Key
@@ -148,8 +143,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
-            latin:visualInsetsLeft="1%p"
-            latin:keyEdgeFlags="right" />
+            latin:visualInsetsLeft="1%p" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

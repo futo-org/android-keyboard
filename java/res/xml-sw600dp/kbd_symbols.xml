@@ -25,14 +25,12 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <include
         latin:keyboardLayout="@xml/kbd_currency_key_styles" />
-    <!-- This row is intentionally not marked as a top row -->
     <Row
         latin:keyWidth="9.0%p"
     >
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_1"
-            latin:popupCharacters="@string/alternates_for_symbols_1"
-            latin:keyEdgeFlags="left" />
+            latin:popupCharacters="@string/alternates_for_symbols_1" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_2"
             latin:popupCharacters="@string/alternates_for_symbols_2" />
@@ -63,8 +61,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="9.0%p"
@@ -97,16 +94,14 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-14.6%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="8.9%p"
     >
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="10.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="10.0%p" />
         <Key
             latin:keyLabel="&lt;"
             latin:popupCharacters="≤,«,‹" />
@@ -147,15 +142,13 @@
             latin:keyLabel="/"
             latin:keyWidth="fillRight" />
     </Row>
-    <!-- This row is intentionally not marked as a bottom row -->
     <Row
         latin:keyWidth="8.9%p"
     >
         <Key
             latin:keyStyle="toAlphaKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="13.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="13.0%p" />
         <Key
             latin:keyStyle="tabKeyStyle" />
         <Key

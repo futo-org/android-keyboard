@@ -26,8 +26,7 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="10.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="10.0%p" />
         <Key
             latin:keyLabel="z"
             latin:popupCharacters="@string/alternates_for_z" />

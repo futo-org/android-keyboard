@@ -26,13 +26,10 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <include
         latin:keyboardLayout="@xml/kbd_currency_key_styles" />
-    <Row
-        latin:rowEdgeFlags="top"
-    >
+    <Row>
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_1"
-            latin:popupCharacters="@string/alternates_for_symbols_1"
-            latin:keyEdgeFlags="left" />
+            latin:popupCharacters="@string/alternates_for_symbols_1" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_2"
             latin:popupCharacters="@string/alternates_for_symbols_2" />
@@ -60,13 +57,11 @@
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_0"
             latin:popupCharacters="@string/alternates_for_symbols_0"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
-            latin:keyLabel="\@"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabel="\@" />
         <Key
             latin:keyLabel="\#" />
         <Key
@@ -91,15 +86,13 @@
         <Key
             latin:keyLabel=")"
             latin:popupCharacters="],},&gt;"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
             latin:keyStyle="altKeyStyle"
             latin:keyWidth="15%p"
-            latin:visualInsetsRight="1%p"
-            latin:keyEdgeFlags="left" />
+            latin:visualInsetsRight="1%p" />
         <Key
             latin:keyLabel="!"
             latin:popupCharacters="¡" />
@@ -125,8 +118,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
-            latin:visualInsetsLeft="1%p"
-            latin:keyEdgeFlags="right" />
+            latin:visualInsetsLeft="1%p" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_symbols_row4" />

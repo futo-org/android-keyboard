@@ -25,14 +25,12 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
         latin:keyWidth="9.091%p"
-        latin:rowEdgeFlags="top"
     >
         <Key
             latin:keyLabel="й"
             latin:keyHintLabel="1"
             latin:popupCharacters="1"
-            latin:keyWidth="8.75%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="8.75%p" />
         <Key
             latin:keyLabel="ц"
             latin:keyHintLabel="2"
@@ -71,16 +69,14 @@
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="х"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
             latin:keyWidth="9.091%p"
     >
         <Key
             latin:keyLabel="ф"
-            latin:keyWidth="8.75%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="8.75%p" />
         <Key
             latin:keyLabel="ы" />
         <Key
@@ -101,16 +97,14 @@
             latin:keyLabel="ж" />
         <Key
             latin:keyLabel="э"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="8.5%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="11.75%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="11.75%p" />
         <Key
             latin:keyLabel="я" />
         <Key
@@ -132,8 +126,7 @@
             latin:keyLabel="ю" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />
