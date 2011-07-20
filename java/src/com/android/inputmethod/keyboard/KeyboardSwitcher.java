@@ -152,8 +152,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             boolean voiceButtonOnPrimary) {
         mSwitchState = SWITCH_STATE_ALPHA;
         try {
-            final boolean isSymbols = (mCurrentId != null) ? mCurrentId.isSymbolsKeyboard() : false;
-            loadKeyboardInternal(attribute, voiceKeyEnabled, voiceButtonOnPrimary, isSymbols);
+            loadKeyboardInternal(attribute, voiceKeyEnabled, voiceButtonOnPrimary, false);
         } catch (RuntimeException e) {
             // Get KeyboardId to record which keyboard has been failed to load.
             final KeyboardId id = getKeyboardId(attribute, false);
