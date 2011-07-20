@@ -38,7 +38,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -51,7 +50,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CandidateView extends LinearLayout implements OnClickListener, OnLongClickListener {
+public class CandidateView extends LinearLayout implements OnClickListener {
 
     public interface Listener {
         public boolean addWordToDictionary(String word);
@@ -323,8 +322,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             final TextView word = (TextView)inflater.inflate(R.layout.candidate_word, null);
             word.setTag(i);
             word.setOnClickListener(this);
-            if (i == 0)
-                word.setOnLongClickListener(this);
             mWords.add(word);
             mInfos.add((TextView)inflater.inflate(R.layout.candidate_info, null));
             mDividers.add(inflater.inflate(R.layout.candidate_divider, null));
@@ -747,22 +744,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         if (mListener.addWordToDictionary(word.toString())) {
             showPreview(0, getContext().getString(R.string.added_word, word));
         }
-    }
-
-    @Override
-    public boolean onLongClick(View view) {
-        final Object tag = view.getTag();
-        if (!(tag instanceof Integer))
-            return true;
-        final int index = (Integer) tag;
-        if (index >= mSuggestions.size())
-            return true;
-
-        final CharSequence word = mSuggestions.getWord(index);
-        if (word.length() < 2)
-            return false;
-        addToDictionary(word);
-        return true;
     }
 
     @Override
