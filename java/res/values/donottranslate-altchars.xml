@@ -80,9 +80,11 @@
     <string name="keylabel_for_symbols_comma">,</string>
     <string name="keylabel_for_symbols_question">\?</string>
     <string name="keylabel_for_symbols_semicolon">;</string>
+    <string name="keylabel_for_symbols_percent">%</string>
     <string name="alternates_for_symbols_comma"></string>
     <string name="alternates_for_symbols_question">¿</string>
     <string name="alternates_for_symbols_semicolon"></string>
+    <string name="alternates_for_symbols_percent">‰</string>
     <string name="keylabel_for_apostrophe">\'</string>
     <string name="keylabel_for_dash">-</string>
     <string name="keyhintlabel_for_apostrophe">\"</string>

@@ -58,9 +58,12 @@
     <string name="keylabel_for_symbols_comma">\u060c</string>
     <string name="keylabel_for_symbols_question">\u061f</string>
     <string name="keylabel_for_symbols_semicolon">\u061b</string>
+    <!-- \u066a: ARABIC PERCENT SIGN -->
+    <string name="keylabel_for_symbols_percent">\u066a</string>
     <string name="alternates_for_symbols_comma">,</string>
     <string name="alternates_for_symbols_question">\?,¿</string>
     <string name="alternates_for_symbols_semicolon">;</string>
+    <string name="alternates_for_symbols_percent">%,‰</string>
     <string name="keylabel_for_apostrophe">"،"</string>
     <string name="keylabel_for_dash">"."</string>
     <string name="keyhintlabel_for_apostrophe">"؟"</string>

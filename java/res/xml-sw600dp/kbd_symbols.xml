@@ -75,8 +75,8 @@
         <Key
             latin:keyStyle="currencyKeyStyle" />
         <Key
-            latin:keyLabel="%"
-            latin:popupCharacters="‰" />
+            latin:keyLabel="@string/keylabel_for_symbols_percent"
+            latin:popupCharacters="@string/alternates_for_symbols_percent" />
         <Key
             latin:keyLabel="&amp;" />
         <Key
