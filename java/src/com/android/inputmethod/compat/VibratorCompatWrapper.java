@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
 
 public class VibratorCompatWrapper {
     private static final Method METHOD_hasVibrator = CompatUtils.getMethod(Vibrator.class,
-            "hasVibrator", int.class);
+            "hasVibrator");
 
     private static final VibratorCompatWrapper sInstance = new VibratorCompatWrapper();
     private Vibrator mVibrator;
