@@ -17,6 +17,7 @@
 
 #define LOG_TAG "LatinIME: jni: BinaryDictionary"
 
+#include "binary_format.h"
 #include "com_android_inputmethod_latin_BinaryDictionary.h"
 #include "dictionary.h"
 #include "jni.h"
@@ -37,6 +38,8 @@
 #endif // USE_MMAP_FOR_DICTIONARY
 
 namespace latinime {
+
+void releaseDictBuf(void* dictBuf, const size_t length, int fd);
 
 static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         jstring sourceDir, jlong dictOffset, jlong dictSize,
@@ -104,8 +107,18 @@ static jint latinime_BinaryDictionary_open(JNIEnv *env, jobject object,
         LOGE("DICT: dictBuf is null");
         return 0;
     }
-    Dictionary *dictionary = new Dictionary(dictBuf, dictSize, fd, adjust, typedLetterMultiplier,
-            fullWordMultiplier, maxWordLength, maxWords, maxAlternatives);
+    Dictionary *dictionary = NULL;
+    if (BinaryFormat::UNKNOWN_FORMAT == BinaryFormat::detectFormat((uint8_t*)dictBuf)) {
+        LOGE("DICT: dictionary format is unknown, bad magic number");
+#ifdef USE_MMAP_FOR_DICTIONARY
+        releaseDictBuf(((char*)dictBuf) - adjust, adjDictSize, fd);
+#else // USE_MMAP_FOR_DICTIONARY
+        releaseDictBuf(dictBuf, 0, 0);
+#endif // USE_MMAP_FOR_DICTIONARY
+    } else {
+        dictionary = new Dictionary(dictBuf, dictSize, fd, adjust, typedLetterMultiplier,
+                fullWordMultiplier, maxWordLength, maxWords, maxAlternatives);
+    }
     PROF_END(66);
     PROF_CLOSE;
     return (jint)dictionary;
@@ -180,19 +193,27 @@ static void latinime_BinaryDictionary_close(JNIEnv *env, jobject object, jint di
     void *dictBuf = dictionary->getDict();
     if (!dictBuf) return;
 #ifdef USE_MMAP_FOR_DICTIONARY
-    int ret = munmap((void *)((char *)dictBuf - dictionary->getDictBufAdjust()),
-            dictionary->getDictSize() + dictionary->getDictBufAdjust());
+    releaseDictBuf((void *)((char *)dictBuf - dictionary->getDictBufAdjust()),
+            dictionary->getDictSize() + dictionary->getDictBufAdjust(), dictionary->getMmapFd());
+#else // USE_MMAP_FOR_DICTIONARY
+    releaseDictBuf(dictBuf, 0, 0);
+#endif // USE_MMAP_FOR_DICTIONARY
+    delete dictionary;
+}
+
+void releaseDictBuf(void* dictBuf, const size_t length, int fd) {
+#ifdef USE_MMAP_FOR_DICTIONARY
+    int ret = munmap(dictBuf, length);
     if (ret != 0) {
         LOGE("DICT: Failure in munmap. ret=%d errno=%d", ret, errno);
     }
-    ret = close(dictionary->getMmapFd());
+    ret = close(fd);
     if (ret != 0) {
         LOGE("DICT: Failure in close. ret=%d errno=%d", ret, errno);
     }
 #else // USE_MMAP_FOR_DICTIONARY
     free(dictBuf);
 #endif // USE_MMAP_FOR_DICTIONARY
-    delete dictionary;
 }
 
 static JNINativeMethod sMethods[] = {
