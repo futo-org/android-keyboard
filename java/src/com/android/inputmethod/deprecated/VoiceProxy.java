@@ -129,7 +129,7 @@ public class VoiceProxy implements VoiceInput.UiListener {
         mHandler = h;
         mMinimumVoiceRecognitionViewHeightPixel = Utils.dipToPixel(
                 Utils.getDipScale(service), RECOGNITIONVIEW_MINIMUM_HEIGHT_DIP);
-        mImm = InputMethodManagerCompatWrapper.getInstance(service);
+        mImm = InputMethodManagerCompatWrapper.getInstance();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         if (VOICE_INSTALLED) {
             mVoiceInput = new VoiceInput(service, this);

@@ -16,13 +16,16 @@
 
 package com.android.inputmethod.compat;
 
-import com.android.inputmethod.latin.LatinImeLogger;
-
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.android.inputmethod.latin.LatinImeLogger;
+
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Locale;
 
 // TODO: Override this class with the concrete implementation if we need to take care of the
 // performance.
@@ -50,6 +53,9 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
             CompatUtils.getMethod(CLASS_InputMethodSubtype, "getExtraValueOf", String.class);
     private static final Method METHOD_isAuxiliary =
             CompatUtils.getMethod(CLASS_InputMethodSubtype, "isAuxiliary");
+    private static final Method METHOD_getDisplayName =
+            CompatUtils.getMethod(CLASS_InputMethodSubtype, "getDisplayName", Context.class,
+                    String.class, ApplicationInfo.class);
 
     private final int mDummyNameResId;
     private final int mDummyIconResId;
@@ -120,6 +126,28 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
 
     public boolean isAuxiliary() {
         return (Boolean)CompatUtils.invoke(mObj, false, METHOD_isAuxiliary);
+    }
+
+    public CharSequence getDisplayName(Context context, String packageName,
+            ApplicationInfo appInfo) {
+        if (mObj != null) {
+            return (CharSequence)CompatUtils.invoke(
+                    mObj, "", METHOD_getDisplayName, context, packageName, appInfo);
+        }
+
+        // The code below are based on {@link InputMethodSubtype#getDisplayName}.
+
+        final Locale locale = new Locale(getLocale());
+        final String localeStr = locale.getDisplayName();
+        if (getNameResId() == 0) {
+            return localeStr;
+        }
+        final CharSequence subtypeName = context.getText(getNameResId());
+        if (!TextUtils.isEmpty(localeStr)) {
+            return String.format(subtypeName.toString(), localeStr);
+        } else {
+            return localeStr;
+        }
     }
 
     public boolean isDummy() {

@@ -301,6 +301,9 @@
     <!-- Title of the dialog for selecting input methods. [CHAR LIMIT=20] -->
     <string name="selectInputMethod">Select input method</string>
 
+    <!-- Title for configuring input method settings [CHAR LIMIT=35] -->
+    <string name="configure_input_method">Configure input methods</string>
+
     <!-- Title for input language selection screen -->
     <string name="language_selection_title">Input languages</string>
 

@@ -29,7 +29,6 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
 import android.os.Debug;
-import android.os.IBinder;
 import android.os.Message;
 import android.os.SystemClock;
 import android.preference.PreferenceActivity;
@@ -45,8 +44,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedText;
@@ -141,8 +138,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private CandidateView mCandidateView;
     private Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
-
-    private AlertDialog mOptionsDialog;
 
     private InputMethodManagerCompatWrapper mImm;
     private Resources mResources;
@@ -361,6 +356,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mPrefs = prefs;
         LatinImeLogger.init(this, prefs);
         LanguageSwitcherProxy.init(this, prefs);
+        InputMethodManagerCompatWrapper.init(this);
         SubtypeSwitcher.init(this, prefs);
         KeyboardSwitcher.init(this, prefs);
         Recorrection.init(this, prefs);
@@ -368,7 +364,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         super.onCreate();
 
-        mImm = InputMethodManagerCompatWrapper.getInstance(this);
+        mImm = InputMethodManagerCompatWrapper.getInstance();
         mInputMethodId = Utils.getInputMethodId(mImm, getPackageName());
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
@@ -2097,7 +2093,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
             }
         };
-        showOptionsMenuInternal(title, items, listener);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_dialog_keyboard)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setItems(items, listener)
+                .setTitle(title);
+        showOptionDialogInternal(builder.create());
     }
 
     private void showOptionsMenu() {
@@ -2120,28 +2121,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
             }
         };
-        showOptionsMenuInternal(title, items, listener);
-    }
-
-    private void showOptionsMenuInternal(CharSequence title, CharSequence[] items,
-            DialogInterface.OnClickListener listener) {
-        final IBinder windowToken = mKeyboardSwitcher.getKeyboardView().getWindowToken();
-        if (windowToken == null) return;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setIcon(R.drawable.ic_dialog_keyboard);
-        builder.setNegativeButton(android.R.string.cancel, null);
-        builder.setItems(items, listener);
-        builder.setTitle(title);
-        mOptionsDialog = builder.create();
-        mOptionsDialog.setCanceledOnTouchOutside(true);
-        Window window = mOptionsDialog.getWindow();
-        WindowManager.LayoutParams lp = window.getAttributes();
-        lp.token = windowToken;
-        lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_ATTACHED_DIALOG;
-        window.setAttributes(lp);
-        window.addFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-        mOptionsDialog.show();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setIcon(R.drawable.ic_dialog_keyboard)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setItems(items, listener)
+                .setTitle(title);
+        showOptionDialogInternal(builder.create());
     }
 
     @Override
