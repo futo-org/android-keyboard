@@ -23,13 +23,11 @@
 >
     <Row
         latin:keyWidth="10%p"
-        latin:rowEdgeFlags="top"
     >
         <Key
             latin:keyLabel="q"
             latin:keyHintLabel="1"
-            latin:popupCharacters="@string/alternates_for_q"
-            latin:keyEdgeFlags="left" />
+            latin:popupCharacters="@string/alternates_for_q" />
         <Key
             latin:keyLabel="w"
             latin:keyHintLabel="2"
@@ -66,7 +64,6 @@
             latin:keyLabel="p"
             latin:keyHintLabel="0"
             latin:popupCharacters="@string/alternates_for_p"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
 </merge>

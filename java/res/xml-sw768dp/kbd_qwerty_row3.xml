@@ -26,8 +26,7 @@
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="13.829%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="13.829%p"/>
         <Key
             latin:keyLabel="z"
             latin:popupCharacters="@string/alternates_for_z" />
@@ -51,7 +50,6 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyXPos="-13.750%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
 </merge>

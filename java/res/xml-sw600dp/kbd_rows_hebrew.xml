@@ -25,7 +25,6 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
         latin:keyWidth="9.0%p"
-        latin:rowEdgeFlags="top"
     >
         <include
             latin:keyboardLayout="@xml/kbd_row4_apostrophe_dash" />
@@ -48,8 +47,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-12.000%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="9.0%p"
@@ -89,8 +87,7 @@
             >
                 <Key
                     latin:keyLabel="\@"
-                    latin:keyWidth="10.0%p"
-                    latin:keyEdgeFlags="left" />
+                    latin:keyWidth="10.0%p" />
             </case>
             <case
                 latin:mode="url"
@@ -100,8 +97,7 @@
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="_"
                     latin:popupCharacters="_"
-                    latin:keyWidth="10.0%p"
-                    latin:keyEdgeFlags="left" />
+                    latin:keyWidth="10.0%p" />
             </case>
             <case
                 latin:imeAction="actionSearch"
@@ -111,14 +107,12 @@
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="+"
                     latin:popupCharacters="+"
-                    latin:keyWidth="10.0%p"
-                    latin:keyEdgeFlags="left" />
+                    latin:keyWidth="10.0%p" />
             </case>
             <default>
                 <Key
                     latin:keyStyle="smileyKeyStyle"
-                    latin:keyWidth="10.0%p"
-                    latin:keyEdgeFlags="left" />
+                    latin:keyWidth="10.0%p" />
             </default>
         </switch>
         <Key
@@ -146,8 +140,7 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-10.400%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

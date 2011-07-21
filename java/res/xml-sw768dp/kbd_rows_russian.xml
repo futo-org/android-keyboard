@@ -23,14 +23,12 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
-    <!-- This row is intentionally not marked as a top row -->
     <Row
         latin:keyWidth="7.125%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabelOption="alignLeft" />
         <Key
             latin:keyLabel="й" />
         <Key
@@ -58,8 +56,7 @@
             latin:keyLabel="ъ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.125%p"
@@ -67,8 +64,7 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="9.375%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="9.375%p" />
         <Key
             latin:keyLabel="ф" />
         <Key
@@ -94,16 +90,14 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-9.375%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.125%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.750%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="12.750%p" />
         <Key
             latin:keyLabel="я" />
         <Key
@@ -126,8 +120,7 @@
             latin:keyboardLayout="@xml/kbd_row3_comma_period" />
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

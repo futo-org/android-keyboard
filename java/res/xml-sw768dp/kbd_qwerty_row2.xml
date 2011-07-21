@@ -27,8 +27,7 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="11.172%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="11.172%p"/>
         <Key
             latin:keyLabel="a"
             latin:popupCharacters="@string/alternates_for_a" />
@@ -56,7 +55,6 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-15.704%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
 </merge>

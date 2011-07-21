@@ -29,8 +29,7 @@
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.500%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="7.500%p" />
         <Key
             latin:keyLabel="q"
             latin:popupCharacters="@string/alternates_for_q" />
@@ -66,8 +65,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-11.500%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.375%p"
@@ -75,8 +73,7 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="9.375%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="9.375%p" />
         <Key
             latin:keyLabel="a"
             latin:popupCharacters="@string/alternates_for_a" />
@@ -110,16 +107,14 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-9.375%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.375%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="12.750%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="12.750%p" />
         <Key
             latin:keyLabel="z"
             latin:popupCharacters="@string/alternates_for_z" />
@@ -143,8 +138,7 @@
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyXPos="-12.750%p"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

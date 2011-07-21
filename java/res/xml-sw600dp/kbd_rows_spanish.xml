@@ -31,8 +31,7 @@
         <Key
             latin:keyLabel="a"
             latin:popupCharacters="@string/alternates_for_a"
-            latin:keyXPos="5.0%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyXPos="5.0%p" />
         <Key
             latin:keyLabel="s"
             latin:popupCharacters="@string/alternates_for_s" />
@@ -59,8 +58,7 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-14.6%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row3" />

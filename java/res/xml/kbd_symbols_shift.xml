@@ -24,12 +24,9 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
-    <Row
-        latin:rowEdgeFlags="top"
-    >
+    <Row>
         <Key
-            latin:keyLabel="~"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabel="~" />
         <Key
             latin:keyLabel="`" />
         <Key
@@ -55,13 +52,11 @@
             latin:keyLabel="{" />
         <Key
             latin:keyLabel="}"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
-            latin:keyStyle="nonSpecialBackgroundTabKeyStyle"
-            latin:keyEdgeFlags="left" />
+            latin:keyStyle="nonSpecialBackgroundTabKeyStyle" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="£" />
@@ -87,15 +82,13 @@
             latin:keyLabel="[" />
         <Key
             latin:keyLabel="]"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
             latin:keyStyle="shiftKeyStyle"
             latin:keyWidth="15%p"
-            latin:visualInsetsRight="1%p"
-            latin:keyEdgeFlags="left" />
+            latin:visualInsetsRight="1%p" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="™" />
@@ -120,8 +113,7 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"
-            latin:visualInsetsLeft="1%p"
-            latin:keyEdgeFlags="right" />
+            latin:visualInsetsLeft="1%p" />
     </Row>
     <include latin:keyboardLayout="@xml/kbd_symbols_shift_row4" />
 </Keyboard>

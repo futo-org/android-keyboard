@@ -27,8 +27,7 @@
         >
             <Key
                 latin:keyStyle="settingsKeyStyle"
-                latin:keyWidth="fillBoth"
-                latin:keyEdgeFlags="right" />
+                latin:keyWidth="fillBoth" />
         </case>
         <case
             latin:f2KeyMode="shortcutIme"
@@ -39,8 +38,7 @@
                 >
                     <Key
                         latin:keyStyle="shortcutKeyStyle"
-                        latin:keyWidth="fillBoth"
-                        latin:keyEdgeFlags="right" />
+                        latin:keyWidth="fillBoth" />
                 </case>
                 <!-- voiceKeyEnabled="false" -->
                 <default>
@@ -57,15 +55,13 @@
                 >
                     <Key
                         latin:keyStyle="shortcutKeyStyle"
-                        latin:keyWidth="fillBoth"
-                        latin:keyEdgeFlags="right" />
+                        latin:keyWidth="fillBoth" />
                 </case>
                 <!-- voiceKeyEnabled="false" -->
                 <default>
                     <Key
                         latin:keyStyle="settingsKeyStyle"
-                        latin:keyWidth="fillBoth"
-                        latin:keyEdgeFlags="right" />
+                        latin:keyWidth="fillBoth" />
                 </default>
             </switch>
         </case>

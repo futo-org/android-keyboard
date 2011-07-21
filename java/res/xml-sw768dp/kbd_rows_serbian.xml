@@ -23,14 +23,12 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
-    <!-- This row is intentionally not marked as a top row -->
     <Row
         latin:keyWidth="7.125%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyLabelOption="alignLeft"
-            latin:keyEdgeFlags="left" />
+            latin:keyLabelOption="alignLeft" />
         <Key
             latin:keyLabel="љ" />
         <Key
@@ -57,8 +55,7 @@
             latin:keyLabel="ђ" />
         <Key
             latin:keyLabel="ж"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right"/>
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="7.250%p"
@@ -66,8 +63,7 @@
         <Key
             latin:keyStyle="toSymbolKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="11.172%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="11.172%p" />
         <Key
             latin:keyLabel="а" />
         <Key
@@ -93,16 +89,14 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row
         latin:keyWidth="7.250%p"
     >
         <Key
             latin:keyStyle="shiftKeyStyle"
-            latin:keyWidth="13.829%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="13.829%p" />
         <Key
             latin:keyLabel="ѕ" />
         <Key
@@ -122,8 +116,7 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-13.750%p"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row4" />

@@ -25,14 +25,12 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
         latin:keyWidth="9.09%p"
-        latin:rowEdgeFlags="top"
     >
         <Key
             latin:keyLabel="q"
             latin:keyHintLabel="1"
             latin:popupCharacters="@string/alternates_for_q"
-            latin:keyWidth="8.75%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="8.75%p" />
         <Key
             latin:keyLabel="w"
             latin:keyHintLabel="2"
@@ -71,8 +69,7 @@
             latin:popupCharacters="@string/alternates_for_p" />
         <Key
             latin:keyLabel="å"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
         latin:keyWidth="9.09%p"
@@ -80,8 +77,7 @@
         <Key
             latin:keyLabel="a"
             latin:popupCharacters="@string/alternates_for_a"
-            latin:keyWidth="8.75%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="8.75%p" />
         <Key
             latin:keyLabel="s"
             latin:popupCharacters="@string/alternates_for_s" />
@@ -109,8 +105,7 @@
         <Key
             latin:keyLabel="@string/keylabel_for_scandinavia_row2_11"
             latin:popupCharacters="@string/alternates_for_scandinavia_row2_11"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <include
         latin:keyboardLayout="@xml/kbd_qwerty_row3" />

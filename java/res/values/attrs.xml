@@ -175,13 +175,6 @@
         <attr name="popupCharacters" format="string" />
         <!-- Maximum column of popup keyboard -->
         <attr name="maxPopupKeyboardColumn" format="integer" />
-        <!-- Key edge flags. -->
-        <attr name="keyEdgeFlags" format="integer">
-            <!-- Key is anchored to the left of the keyboard. -->
-            <flag name="left" value="1" />
-            <!-- Key is anchored to the right of the keyboard. -->
-            <flag name="right" value="2" />
-        </attr>
         <!-- Whether this is a functional key which has different key top than normal key. -->
         <attr name="isFunctional" format="boolean" />
         <!-- Whether this is a toggle key. -->
@@ -246,16 +239,6 @@
         <!-- The X-coordinate of upper right corner of this key including horizontal gap.
              If the value is negative, the origin is the right edge of the keyboard. -->
         <attr name="keyXPos" format="dimension|fraction" />
-    </declare-styleable>
-
-    <declare-styleable name="Keyboard_Row">
-        <!-- Row edge flags. -->
-        <attr name="rowEdgeFlags" format="integer">
-            <!-- Row is anchored to the top of the keyboard. -->
-            <flag name="top" value="4" />
-            <!-- Row is anchored to the bottom of the keyboard. -->
-            <flag name="bottom" value="8" />
-        </attr>
     </declare-styleable>
 
     <declare-styleable name="Keyboard_Include">

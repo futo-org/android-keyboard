@@ -38,11 +38,6 @@ public class Row {
     public final int mDefaultHorizontalGap;
     /** Vertical gap following this row. */
     public final int mVerticalGap;
-    /**
-     * Edge flags for this row of keys. Possible values that can be assigned are
-     * {@link Keyboard#EDGE_TOP EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM EDGE_BOTTOM}
-     */
-    public final int mRowEdgeFlags;
 
     private final Keyboard mKeyboard;
 
@@ -60,10 +55,6 @@ public class Row {
                 R.styleable.Keyboard_horizontalGap, keyboardWidth, keyboard.getHorizontalGap());
         mVerticalGap = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_verticalGap, keyboardHeight, keyboard.getVerticalGap());
-        a.recycle();
-        a = res.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.Keyboard_Row);
-        mRowEdgeFlags = a.getInt(R.styleable.Keyboard_Row_rowEdgeFlags, 0);
         a.recycle();
     }
 

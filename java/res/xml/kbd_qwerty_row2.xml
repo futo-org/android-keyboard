@@ -27,8 +27,7 @@
         <Key
             latin:keyLabel="a"
             latin:popupCharacters="@string/alternates_for_a"
-            latin:keyXPos="5%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyXPos="5%p" />
         <Key
             latin:keyLabel="s"
             latin:popupCharacters="@string/alternates_for_s" />
@@ -49,8 +48,7 @@
             latin:popupCharacters="@string/alternates_for_k" />
         <Key
             latin:keyLabel="l"
-            latin:popupCharacters="@string/alternates_for_l"
-            latin:keyEdgeFlags="right" />
+            latin:popupCharacters="@string/alternates_for_l" />
         <!-- Here is 5%p space -->
     </Row>
 </merge>

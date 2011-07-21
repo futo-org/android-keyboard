@@ -26,12 +26,13 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <include
         latin:keyboardLayout="@xml/kbd_numkey_styles" />
-    <!-- This row is intentionally not marked as a top row -->
     <Row>
+        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+        <Spacer
+            latin:keyWidth="15.625%p" />
         <Key
             latin:keyLabel="-"
             latin:keyStyle="numKeyStyle"
-            latin:keyXPos="15.625%p"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyLabel="+"
@@ -47,14 +48,15 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-11.00%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row>
+        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+        <Spacer
+            latin:keyWidth="15.625%p" />
         <Key
             latin:keyLabel=","
             latin:keyStyle="numKeyStyle"
-            latin:keyXPos="15.625%p"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyLabel="."
@@ -70,16 +72,12 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-11.00%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth" />
     </Row>
     <Row>
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="11.0%p"
-            latin:keyEdgeFlags="left" />
-        <!-- There is an empty area below the "More" key and left of the "(" key.  To ignore
-             the touch event on the area, "(" is intentionally not marked as a left edge key. -->
+            latin:keyWidth="11.0%p" />
         <Key
             latin:keyLabel="("
             latin:keyStyle="numKeyStyle"
@@ -96,13 +94,14 @@
             latin:keyStyle="num8KeyStyle" />
         <Key
             latin:keyStyle="num9KeyStyle" />
+        <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+        <Spacer
+            latin:keyWidth="0%p" />
         </Row>
-    <!-- This row is intentionally not marked as a bottom row -->
     <Row>
         <Key
             latin:keyStyle="tabKeyStyle"
-            latin:keyWidth="11.00%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="11.00%p" />
         <Key
             latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
             latin:keyXPos="15.625%p"

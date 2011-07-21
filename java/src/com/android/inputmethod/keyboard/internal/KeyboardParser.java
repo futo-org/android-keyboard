@@ -135,6 +135,8 @@ public class KeyboardParser {
     private int mMaxRowWidth = 0;
     private int mTotalHeight = 0;
     private Row mCurrentRow = null;
+    private boolean mLeftEdge;
+    private Key mRightEdgeKey = null;
     private final KeyStyles mKeyStyles = new KeyStyles();
 
     public KeyboardParser(Keyboard keyboard, Context context) {
@@ -623,6 +625,8 @@ public class KeyboardParser {
         mCurrentX = 0;
         setSpacer(mCurrentX, mHorizontalEdgesPadding);
         mCurrentRow = row;
+        mLeftEdge = true;
+        mRightEdgeKey = null;
     }
 
     private void endRow() {
@@ -633,10 +637,19 @@ public class KeyboardParser {
             mMaxRowWidth = mCurrentX;
         mCurrentY += mCurrentRow.mDefaultHeight;
         mCurrentRow = null;
+        if (mRightEdgeKey != null) {
+            mRightEdgeKey.addEdgeFlags(Keyboard.EDGE_RIGHT);
+            mRightEdgeKey = null;
+        }
     }
 
     private void endKey(Key key) {
         mCurrentX = key.mX - key.mGap / 2 + key.mWidth + key.mGap;
+        if (mLeftEdge) {
+            key.addEdgeFlags(Keyboard.EDGE_LEFT);
+            mLeftEdge = false;
+        }
+        mRightEdgeKey = key;
     }
 
     private void endKeyboard(int defaultVerticalGap) {
@@ -646,6 +659,8 @@ public class KeyboardParser {
 
     private void setSpacer(int keyXPos, int width) {
         mCurrentX = keyXPos + width;
+        mLeftEdge = false;
+        mRightEdgeKey = null;
     }
 
     public static int getDimensionOrFraction(TypedArray a, int index, int base, int defValue) {

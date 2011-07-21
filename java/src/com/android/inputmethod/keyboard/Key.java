@@ -95,7 +95,7 @@ public class Key {
      * {@link Keyboard#EDGE_LEFT}, {@link Keyboard#EDGE_RIGHT},
      * {@link Keyboard#EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM}.
      */
-    public final int mEdgeFlags;
+    private int mEdgeFlags;
     /** Whether this is a functional key which has different key top than normal key */
     public final boolean mFunctional;
     /** Whether this key repeats itself when held down */
@@ -273,8 +273,7 @@ public class Key {
             mFunctional = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional, false);
             mSticky = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky, false);
             mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
-            mEdgeFlags = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyEdgeFlags, 0)
-                    | row.mRowEdgeFlags;
+            mEdgeFlags = 0;
 
             final KeyboardIconsSet iconsSet = mKeyboard.mIconsSet;
             mVisualInsetsLeft = KeyboardParser.getDimensionOrFraction(keyAttr,
@@ -314,6 +313,10 @@ public class Key {
         } finally {
             keyAttr.recycle();
         }
+    }
+
+    public void addEdgeFlags(int flags) {
+        mEdgeFlags |= flags;
     }
 
     public CharSequence getCaseAdjustedLabel() {
@@ -441,15 +444,18 @@ public class Key {
      * assume that all points between the key and the edge are considered to be on the key.
      */
     public boolean isOnKey(int x, int y) {
-        final int flags = mEdgeFlags;
-        final boolean leftEdge = (flags & Keyboard.EDGE_LEFT) != 0;
-        final boolean rightEdge = (flags & Keyboard.EDGE_RIGHT) != 0;
-        final boolean topEdge = (flags & Keyboard.EDGE_TOP) != 0;
-        final boolean bottomEdge = (flags & Keyboard.EDGE_BOTTOM) != 0;
         final int left = mX - mGap / 2;
         final int right = left + mWidth + mGap;
         final int top = mY;
         final int bottom = top + mHeight + mKeyboard.getVerticalGap();
+        final int flags = mEdgeFlags;
+        if (flags == 0) {
+            return x >= left && x <= right && y >= top && y <= bottom;
+        }
+        final boolean leftEdge = (flags & Keyboard.EDGE_LEFT) != 0;
+        final boolean rightEdge = (flags & Keyboard.EDGE_RIGHT) != 0;
+        final boolean topEdge = (flags & Keyboard.EDGE_TOP) != 0;
+        final boolean bottomEdge = (flags & Keyboard.EDGE_BOTTOM) != 0;
         // In order to mitigate rounding errors, we use (left <= x <= right) here.
         return (x >= left || leftEdge) && (x <= right || rightEdge)
                 && (y >= top || topEdge) && (y <= bottom || bottomEdge);

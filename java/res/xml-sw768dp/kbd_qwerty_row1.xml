@@ -21,15 +21,13 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- This row is intentionally not marked as a top row -->
     <Row
         latin:keyWidth="8.282%p"
     >
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="7.969%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="7.969%p" />
         <Key
             latin:keyLabel="q"
             latin:popupCharacters="@string/alternates_for_q" />
@@ -63,7 +61,6 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
-            latin:keyWidth="fillBoth"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillBoth"/>
     </Row>
 </merge>

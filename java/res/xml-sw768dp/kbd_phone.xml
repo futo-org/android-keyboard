@@ -26,13 +26,11 @@
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <include
         latin:keyboardLayout="@xml/kbd_numkey_styles" />
-    <!-- This row is intentionally not marked as a top row -->
     <Row>
         <Key
             latin:keyStyle="tabKeyStyle"
             latin:keyLabelOption="alignLeft"
-            latin:keyWidth="11.172%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="11.172%p" />
         <Key
             latin:keyLabel="-"
             latin:keyStyle="numKeyStyle"
@@ -52,14 +50,12 @@
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-11.172%p"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
         <Key
             latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="11.172%p"
-            latin:keyEdgeFlags="left" />
+            latin:keyWidth="11.172%p" />
         <Key
             latin:keyLabel=","
             latin:keyStyle="numKeyStyle"
@@ -79,16 +75,15 @@
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-11.172%p"
-            latin:keyWidth="fillRight"
-            latin:keyEdgeFlags="right" />
+            latin:keyWidth="fillRight" />
     </Row>
     <Row>
-        <!-- There is an empty area below the "More" key and left of the "(" key.  To ignore
-             the touch event on the area, "(" is intentionally not marked as a left edge key. -->
+        <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+        <Spacer
+            latin:keyWidth="20.400%p" />
         <Key
             latin:keyLabel="("
             latin:keyStyle="numKeyStyle"
-            latin:keyXPos="20.400%p"
             latin:keyWidth="8.047%p" />
         <Key
             latin:keyLabel=")"
@@ -101,10 +96,10 @@
             latin:keyStyle="num8KeyStyle" />
         <Key
             latin:keyStyle="num9KeyStyle" />
-        <!-- There is an empty area below the "Enter" key and right of the "9" key.  To ignore
-             the touch event on the area, "9" is intentionally not marked as a right edge key. -->
+        <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+        <Spacer
+            latin:keyWidth="0%p" />
         </Row>
-    <!-- This row is intentionally not marked as a bottom row -->
     <Row>
         <switch>
             <case latin:hasSettingsKey="true">
@@ -112,6 +107,11 @@
                     latin:keyStyle="settingsKeyStyle"
                     latin:keyWidth="8.047%p" />
             </case>
+            <default>
+                <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+                <Spacer
+                    latin:keyWidth="8.047%p" />
+            </default>
         </switch>
         <Key
             latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
@@ -134,6 +134,11 @@
                     latin:keyXPos="-8.047%p"
                     latin:keyWidth="fillRight" />
             </case>
+            <default>
+                <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+                <Spacer
+                    latin:keyWidth="0%p" />
+            </default>
         </switch>
     </Row>
 </Keyboard>

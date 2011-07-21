@@ -30,11 +30,12 @@
         <case
             latin:passwordInput="true"
         >
-            <!-- This row is intentionally not marked as a top row -->
             <Row>
+                <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+                <Spacer
+                    latin:keyWidth="24.875%p" />
                 <Key
-                    latin:keyStyle="num1KeyStyle"
-                    latin:keyXPos="24.875%p" />
+                    latin:keyStyle="num1KeyStyle" />
                 <Key
                     latin:keyStyle="num2KeyStyle" />
                 <Key
@@ -42,13 +43,14 @@
                 <Key
                     latin:keyStyle="deleteKeyStyle"
                     latin:keyXPos="-11.00%p"
-                    latin:keyWidth="fillRight"
-                    latin:keyEdgeFlags="right" />
+                    latin:keyWidth="fillRight" />
             </Row>
             <Row>
+                <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+                <Spacer
+                    latin:keyWidth="24.875%p" />
                 <Key
-                    latin:keyStyle="num4KeyStyle"
-                    latin:keyXPos="24.875%p" />
+                    latin:keyStyle="num4KeyStyle" />
                 <Key
                     latin:keyStyle="num5KeyStyle" />
                 <Key
@@ -56,24 +58,26 @@
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyXPos="-11.00%p"
-                    latin:keyWidth="fillRight"
-                    latin:keyEdgeFlags="right" />
+                    latin:keyWidth="fillRight" />
             </Row>
             <Row>
+                <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+                <Spacer
+                    latin:keyWidth="24.875%p" />
                 <Key
-                    latin:keyStyle="num7KeyStyle"
-                    latin:keyXPos="24.875%p" />
+                    latin:keyStyle="num7KeyStyle" />
                 <Key
                     latin:keyStyle="num8KeyStyle" />
                 <Key
                     latin:keyStyle="num9KeyStyle" />
+                <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+                <Spacer
+                    latin:keyWidth="0%p" />
             </Row>
-            <!-- This row is intentionally not marked as a bottom row -->
             <Row>
                 <Key
                     latin:keyStyle="tabKeyStyle"
-                    latin:keyWidth="11.00%p"
-                    latin:keyEdgeFlags="left" />
+                    latin:keyWidth="11.00%p" />
                 <Spacer
                     latin:keyXPos="24.875%p" />
                 <Key
@@ -87,12 +91,13 @@
         </case>
         <!-- latin:passwordInput="false" -->
         <default>
-            <!-- This row is intentionally not marked as a top row -->
             <Row>
+                <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+                <Spacer
+                    latin:keyWidth="11.00%p" />
                 <Key
                     latin:keyLabel="-"
                     latin:keyStyle="numKeyStyle"
-                    latin:keyXPos="11.00%p"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="+"
@@ -115,13 +120,14 @@
                 <Key
                     latin:keyStyle="deleteKeyStyle"
                     latin:keyXPos="-11.00%p"
-                    latin:keyWidth="fillBoth"
-                    latin:keyEdgeFlags="right" />
+                    latin:keyWidth="fillBoth" />
             </Row>
             <Row>
+                <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+                <Spacer
+                    latin:keyWidth="11.00%p" />
                 <Key
                     latin:keyStyle="numStarKeyStyle"
-                    latin:keyXPos="11.00%p"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel="/"
@@ -144,17 +150,15 @@
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyXPos="-11.00%p"
-                    latin:keyWidth="fillBoth"
-                    latin:keyEdgeFlags="right" />
+                    latin:keyWidth="fillBoth" />
             </Row>
             <Row>
-                <!-- There is an empty area below the "More" key and left of the "(" key. To
-                     ignore the touch event on the area, "(" is intentionally not marked as a left
-                     edge key. -->
+                <!-- Note: This Spacer prevents the below key from being marked as a left edge key. -->
+                <Spacer
+                    latin:keyWidth="11.00%p" />
                 <Key
                     latin:keyLabel="("
                     latin:keyStyle="numKeyStyle"
-                    latin:keyXPos="11.00%p"
                     latin:keyWidth="9.25%p" />
                 <Key
                     latin:keyLabel=")"
@@ -174,13 +178,14 @@
                 <Key
                     latin:keyLabel="9"
                     latin:keyStyle="numKeyStyle" />
+                <!-- Note: This Spacer prevents the above key from being marked as a right edge key. -->
+                <Spacer
+                    latin:keyWidth="0%p" />
             </Row>
-            <!-- This row is intentionally not marked as a bottom row -->
             <Row>
                 <Key
                     latin:keyStyle="tabKeyStyle"
-                    latin:keyWidth="11.00%p"
-                    latin:keyEdgeFlags="left" />
+                    latin:keyWidth="11.00%p" />
                 <Key
                     latin:keyStyle="nonSpecialBackgroundSpaceKeyStyle"
                     latin:keyWidth="27.75%p" />
