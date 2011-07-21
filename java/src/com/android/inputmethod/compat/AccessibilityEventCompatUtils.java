@@ -16,24 +16,7 @@
 
 package com.android.inputmethod.compat;
 
-import android.view.accessibility.AccessibilityEvent;
-
-import java.lang.reflect.Field;
-
 public class AccessibilityEventCompatUtils {
     public static final int TYPE_VIEW_HOVER_ENTER = 0x80;
     public static final int TYPE_VIEW_HOVER_EXIT = 0x100;
-
-    private static final Field FIELD_TYPE_VIEW_HOVER_ENTER = CompatUtils.getField(
-            AccessibilityEvent.class, "TYPE_VIEW_HOVER_ENTER");
-    private static final Field FIELD_TYPE_VIEW_HOVER_EXIT = CompatUtils.getField(
-            AccessibilityEvent.class, "TYPE_VIEW_HOVER_EXIT");
-    private static final Integer OBJ_TYPE_VIEW_HOVER_ENTER = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_TYPE_VIEW_HOVER_ENTER);
-    private static final Integer OBJ_TYPE_VIEW_HOVER_EXIT = (Integer) CompatUtils
-            .getFieldValue(null, null, FIELD_TYPE_VIEW_HOVER_EXIT);
-
-    public static boolean supportsTouchExploration() {
-        return OBJ_TYPE_VIEW_HOVER_ENTER != null && OBJ_TYPE_VIEW_HOVER_EXIT != null;
-    }
 }
