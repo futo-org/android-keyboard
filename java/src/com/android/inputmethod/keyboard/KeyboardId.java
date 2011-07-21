@@ -125,10 +125,10 @@ public class KeyboardId {
                 mEnableShiftLock);
     }
 
-    public KeyboardId cloneWithNewGeometry(int width) {
+    public KeyboardId cloneWithNewGeometry(int orientation, int width) {
         if (mWidth == width)
             return this;
-        return new KeyboardId(mXmlName, mXmlId, mLocale, mOrientation, width, mMode, mAttribute,
+        return new KeyboardId(mXmlName, mXmlId, mLocale, orientation, width, mMode, mAttribute,
                 mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey,
                 mEnableShiftLock);
     }

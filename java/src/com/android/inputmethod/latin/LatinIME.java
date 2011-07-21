@@ -173,7 +173,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private int mCorrectionMode;
     private int mCommittedLength;
-    private int mOrientation;
     // Keep track of the last selection range to decide if we need to show word alternatives
     private int mLastSelectionStart;
     private int mLastSelectionEnd;
@@ -192,13 +191,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // TODO: Move this flag to VoiceProxy
     private boolean mConfigurationChanging;
 
+    // Member variables for remembering the current device orientation.
+    private int mDisplayOrientation;
+    private int mDisplayWidth;
+    private int mDisplayHeight;
+
     // Object for reacting to adding/removing a dictionary pack.
     private BroadcastReceiver mDictionaryPackInstallReceiver =
             new DictionaryPackInstallBroadcastReceiver(this);
 
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private CharSequence mEnteredText;
-
 
     public final UIHandler mHandler = new UIHandler(this);
 
@@ -211,6 +214,29 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 5;
         private static final int MSG_SPACE_TYPED = 6;
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
+        private static final int MSG_CONFIRM_ORIENTATION_CHANGE = 8;
+        private static final int MSG_START_INPUT_VIEW = 9;
+
+        private static class OrientationChangeArgs {
+            public final int mOldWidth;
+            public final int mOldHeight;
+            private int mRetryCount;
+
+            public OrientationChangeArgs(int oldw, int oldh) {
+                mOldWidth = oldw;
+                mOldHeight = oldh;
+                mRetryCount = 0;
+            }
+
+            public boolean hasTimedOut() {
+                mRetryCount++;
+                return mRetryCount >= 10;
+            }
+
+            public boolean hasOrientationChangeFinished(DisplayMetrics dm) {
+                return dm.widthPixels != mOldWidth && dm.heightPixels != mOldHeight;
+            }
+        }
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
@@ -258,6 +284,21 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                             latinIme.mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar,
                             (LatinKeyboard)msg.obj);
                 }
+                break;
+            case MSG_CONFIRM_ORIENTATION_CHANGE: {
+                final OrientationChangeArgs args = (OrientationChangeArgs)msg.obj;
+                final Resources res = latinIme.mResources;
+                final DisplayMetrics dm = res.getDisplayMetrics();
+                if (args.hasTimedOut() || args.hasOrientationChangeFinished(dm)) {
+                    latinIme.setDisplayGeometry(res.getConfiguration(), dm);
+                } else {
+                    // It seems orientation changing is on going.
+                    postConfirmOrientationChange(args);
+                }
+                break;
+            }
+            case MSG_START_INPUT_VIEW:
+                latinIme.onStartInputView((EditorInfo)msg.obj, false);
                 break;
             }
         }
@@ -348,6 +389,33 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public boolean isAcceptingDoubleSpaces() {
             return hasMessages(MSG_SPACE_TYPED);
         }
+
+        private void postConfirmOrientationChange(OrientationChangeArgs args) {
+            removeMessages(MSG_CONFIRM_ORIENTATION_CHANGE);
+            // Will confirm whether orientation change has finished or not after 2ms again.
+            sendMessageDelayed(obtainMessage(MSG_CONFIRM_ORIENTATION_CHANGE, args), 2);
+        }
+
+        public void startOrientationChanging(int oldw, int oldh) {
+            postConfirmOrientationChange(new OrientationChangeArgs(oldw, oldh));
+        }
+
+        public boolean postStartInputView(EditorInfo attribute) {
+            if (hasMessages(MSG_CONFIRM_ORIENTATION_CHANGE) || hasMessages(MSG_START_INPUT_VIEW)) {
+                removeMessages(MSG_START_INPUT_VIEW);
+                // Postpone onStartInputView 20ms afterward and see if orientation change has
+                // finished.
+                sendMessageDelayed(obtainMessage(MSG_START_INPUT_VIEW, attribute), 20);
+                return true;
+            }
+            return false;
+        }
+    }
+
+    private void setDisplayGeometry(Configuration conf, DisplayMetrics metric) {
+        mDisplayOrientation = conf.orientation;
+        mDisplayWidth = metric.widthPixels;
+        mDisplayHeight = metric.heightPixels;
     }
 
     @Override
@@ -387,7 +455,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
-        mOrientation = res.getConfiguration().orientation;
+        setDisplayGeometry(res.getConfiguration(), res.getDisplayMetrics());
 
         // Register to receive ringer mode change and network state change.
         // Also receive installation and removal of a dictionary pack.
@@ -484,11 +552,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void onConfigurationChanged(Configuration conf) {
         mSubtypeSwitcher.onConfigurationChanged(conf);
         // If orientation changed while predicting, commit the change
-        if (conf.orientation != mOrientation) {
+        if (conf.orientation != mDisplayOrientation) {
+            mHandler.startOrientationChanging(mDisplayWidth, mDisplayHeight);
             InputConnection ic = getCurrentInputConnection();
             commitTyped(ic);
             if (ic != null) ic.finishComposingText(); // For voice input
-            mOrientation = conf.orientation;
             if (isShowingOptionDialog())
                 mOptionsDialog.dismiss();
         }
@@ -525,6 +593,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
+        if (mHandler.postStartInputView(attribute)) {
+            return;
+        }
+
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getKeyboardView();
 
@@ -1446,7 +1518,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public boolean isShowingSuggestionsStrip() {
         return (mSuggestionVisibility == SUGGESTION_VISIBILILTY_SHOW_VALUE)
                 || (mSuggestionVisibility == SUGGESTION_VISIBILILTY_SHOW_ONLY_PORTRAIT_VALUE
-                        && mOrientation == Configuration.ORIENTATION_PORTRAIT);
+                        && mDisplayOrientation == Configuration.ORIENTATION_PORTRAIT);
     }
 
     public boolean isCandidateStripVisible() {

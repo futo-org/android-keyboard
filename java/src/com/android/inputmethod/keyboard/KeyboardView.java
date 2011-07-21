@@ -73,8 +73,6 @@ import java.util.HashMap;
  * @attr ref R.styleable#KeyboardView_shadowRadius
  */
 public class KeyboardView extends View implements PointerTracker.DrawingProxy {
-    private static final boolean DEBUG_KEYBOARD_GRID = false;
-
     // Miscellaneous constants
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
 
@@ -97,17 +95,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private ViewGroup mPreviewPlacer;
 
     // Drawing
-    /** Whether the keyboard bitmap needs to be redrawn before it's blitted. **/
-    private boolean mDrawPending;
-    /** Notes if the keyboard just changed, so that we could possibly reallocate the mBuffer. */
-    private boolean mKeyboardChanged;
+    /** Whether the keyboard bitmap buffer needs to be redrawn before it's blitted. **/
+    private boolean mBufferNeedsUpdate;
     /** The dirty region in the keyboard bitmap */
     private final Rect mDirtyRect = new Rect();
     /** The key to invalidate. */
     private Key mInvalidatedKey;
     /** The dirty region for single key drawing */
     private final Rect mInvalidatedKeyRect = new Rect();
-    /** The keyboard bitmap for faster updates */
+    /** The keyboard bitmap buffer for faster updates */
     private Bitmap mBuffer;
     /** The canvas for the above mutable keyboard bitmap */
     private Canvas mCanvas;
@@ -361,7 +357,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(keyboard);
         requestLayout();
-        mKeyboardChanged = true;
+        mDirtyRect.set(0, 0, getWidth(), getHeight());
+        mBufferNeedsUpdate = true;
         invalidateAllKeys();
         final int keyHeight = keyboard.getRowHeight() - keyboard.getVerticalGap();
         mKeyDrawParams.updateKeyHeight(keyHeight);
@@ -399,25 +396,21 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     @Override
-    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        // Round up a little
-        if (mKeyboard == null) {
-            setMeasuredDimension(
-                    getPaddingLeft() + getPaddingRight(), getPaddingTop() + getPaddingBottom());
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        if (mKeyboard != null) {
+            // The main keyboard expands to the display width.
+            final int height = mKeyboard.getKeyboardHeight() + getPaddingTop() + getPaddingBottom();
+            setMeasuredDimension(widthMeasureSpec, height);
         } else {
-            int width = mKeyboard.getMinWidth() + getPaddingLeft() + getPaddingRight();
-            if (MeasureSpec.getSize(widthMeasureSpec) < width + 10) {
-                width = MeasureSpec.getSize(widthMeasureSpec);
-            }
-            setMeasuredDimension(
-                    width, mKeyboard.getHeight() + getPaddingTop() + getPaddingBottom());
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (mDrawPending || mBuffer == null || mKeyboardChanged) {
+        if (mBufferNeedsUpdate || mBuffer == null) {
+            mBufferNeedsUpdate = false;
             onBufferDraw();
         }
         canvas.drawBitmap(mBuffer, 0, 0, null);
@@ -428,14 +421,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final int height = getHeight();
         if (width == 0 || height == 0)
             return;
-        if (mBuffer == null || mKeyboardChanged) {
-            mKeyboardChanged = false;
-            mDirtyRect.union(0, 0, width, height);
-        }
         if (mBuffer == null || mBuffer.getWidth() != width || mBuffer.getHeight() != height) {
             if (mBuffer != null)
                 mBuffer.recycle();
             mBuffer = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            mDirtyRect.union(0, 0, width, height);
             if (mCanvas != null) {
                 mCanvas.setBitmap(mBuffer);
             } else {
@@ -469,24 +459,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
         }
 
-        // TODO: Move this function to ProximityInfo for getting rid of
-        // public declarations for
-        // GRID_WIDTH and GRID_HEIGHT
-        if (DEBUG_KEYBOARD_GRID) {
-            Paint p = new Paint();
-            p.setStyle(Paint.Style.STROKE);
-            p.setStrokeWidth(1.0f);
-            p.setColor(0x800000c0);
-            int cw = (mKeyboard.getMinWidth() + mKeyboard.GRID_WIDTH - 1)
-                    / mKeyboard.GRID_WIDTH;
-            int ch = (mKeyboard.getHeight() + mKeyboard.GRID_HEIGHT - 1)
-                    / mKeyboard.GRID_HEIGHT;
-            for (int i = 0; i <= mKeyboard.GRID_WIDTH; i++)
-                canvas.drawLine(i * cw, 0, i * cw, ch * mKeyboard.GRID_HEIGHT, p);
-            for (int i = 0; i <= mKeyboard.GRID_HEIGHT; i++)
-                canvas.drawLine(0, i * ch, cw * mKeyboard.GRID_WIDTH, i * ch, p);
-        }
-
         // Overlay a dark rectangle to dim the keyboard
         if (needsToDimKeyboard()) {
             mPaint.setColor((int) (mBackgroundDimAmount * 0xFF) << 24);
@@ -494,7 +466,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         mInvalidatedKey = null;
-        mDrawPending = false;
         mDirtyRect.setEmpty();
     }
 
@@ -864,7 +835,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
      */
     public void invalidateAllKeys() {
         mDirtyRect.union(0, 0, getWidth(), getHeight());
-        mDrawPending = true;
+        mBufferNeedsUpdate = true;
         invalidate();
     }
 
@@ -884,7 +855,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final int y = key.mY + getPaddingTop();
         mInvalidatedKeyRect.set(x, y, x + key.mWidth, y + key.mHeight);
         mDirtyRect.union(mInvalidatedKeyRect);
-        onBufferDraw();
+        mBufferNeedsUpdate = true;
         invalidate(mInvalidatedKeyRect);
     }
 

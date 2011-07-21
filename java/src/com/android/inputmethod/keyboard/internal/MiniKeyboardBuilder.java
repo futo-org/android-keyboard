@@ -218,7 +218,7 @@ public class MiniKeyboardBuilder {
         mParams = params;
 
         keyboard.setRowHeight(params.mRowHeight);
-        keyboard.setHeight(params.getKeyboardHeight());
+        keyboard.setKeyboardHeight(params.getKeyboardHeight());
         keyboard.setMinWidth(params.getKeyboardWidth());
         keyboard.setDefaultCoordX(params.getDefaultKeyCoordX() + params.mKeyWidth / 2);
     }
