@@ -304,6 +304,8 @@ public class Settings extends InputMethodSettingsActivity
 
     private AlertDialog mDialog;
 
+    private VoiceProxy.VoiceLoggerWrapper mVoiceLogger;
+
     private boolean mOkClicked = false;
     private String mVoiceModeOff;
 
@@ -347,6 +349,7 @@ public class Settings extends InputMethodSettingsActivity
         mVoiceModeOff = getString(R.string.voice_mode_off);
         mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
                 .equals(mVoiceModeOff));
+        mVoiceLogger = VoiceProxy.VoiceLoggerWrapper.getInstance(context);
 
         mAutoCorrectionThreshold = (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
@@ -444,7 +447,6 @@ public class Settings extends InputMethodSettingsActivity
         }
     }
 
-    @SuppressWarnings("unused")
     @Override
     public void onResume() {
         super.onResume();
@@ -539,7 +541,6 @@ public class Settings extends InputMethodSettingsActivity
                 [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
     }
 
-    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case VOICE_INPUT_CONFIRM_DIALOG:
@@ -548,9 +549,12 @@ public class Settings extends InputMethodSettingsActivity
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (whichButton == DialogInterface.BUTTON_NEGATIVE) {
                             mVoicePreference.setValue(mVoiceModeOff);
+                            mVoiceLogger.settingsWarningDialogCancel();
                         } else if (whichButton == DialogInterface.BUTTON_POSITIVE) {
                             mOkClicked = true;
+                            mVoiceLogger.settingsWarningDialogOk();
                         }
+                        updateVoicePreference();
                     }
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivityInternal())
@@ -579,6 +583,7 @@ public class Settings extends InputMethodSettingsActivity
                 AlertDialog dialog = builder.create();
                 mDialog = dialog;
                 dialog.setOnDismissListener(this);
+                mVoiceLogger.settingsWarningDialogShown();
                 return dialog;
             default:
                 Log.e(TAG, "unknown dialog " + id);
@@ -588,10 +593,16 @@ public class Settings extends InputMethodSettingsActivity
 
     @Override
     public void onDismiss(DialogInterface dialog) {
+        mVoiceLogger.settingsWarningDialogDismissed();
         if (!mOkClicked) {
             // This assumes that onPreferenceClick gets called first, and this if the user
             // agreed after the warning, we set the mOkClicked value to true.
             mVoicePreference.setValue(mVoiceModeOff);
         }
+    }
+
+    private void updateVoicePreference() {
+        boolean isChecked = !mVoicePreference.getValue().equals(mVoiceModeOff);
+        mVoiceLogger.voiceInputSettingEnabled(isChecked);
     }
 }
