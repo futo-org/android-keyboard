@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 import android.util.Log;
 
 import java.io.FileNotFoundException;
@@ -42,8 +43,13 @@ class BinaryDictionaryGetter {
     /**
      * Returns a file address from a resource, or null if it cannot be opened.
      */
-    private static AssetFileAddress loadFallbackResource(Context context, int fallbackResId) {
-        final AssetFileDescriptor afd = context.getResources().openRawResourceFd(fallbackResId);
+    private static AssetFileAddress loadFallbackResource(final Context context,
+            final int fallbackResId, final Locale locale) {
+        final Resources res = context.getResources();
+        final Locale savedLocale = Utils.setSystemLocale(res, locale);
+        final AssetFileDescriptor afd = res.openRawResourceFd(fallbackResId);
+        Utils.setSystemLocale(res, savedLocale);
+
         if (afd == null) {
             Log.e(TAG, "Found the resource but cannot read it. Is it compressed? resId="
                     + fallbackResId);
@@ -91,7 +97,8 @@ class BinaryDictionaryGetter {
                 Log.e(TAG, "Unable to read source data for locale "
                         + locale.toString() + ": falling back to internal dictionary");
             }
-            final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId);
+            final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId,
+                    locale);
             if (null == fallbackAsset) return null;
             return Arrays.asList(fallbackAsset);
         }

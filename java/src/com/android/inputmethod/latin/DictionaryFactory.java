@@ -48,7 +48,7 @@ public class DictionaryFactory {
             int fallbackResId) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
-            return new DictionaryCollection(createBinaryDictionary(context, fallbackResId));
+            return new DictionaryCollection(createBinaryDictionary(context, fallbackResId, locale));
         }
 
         final List<Dictionary> dictList = new LinkedList<Dictionary>();
@@ -76,7 +76,8 @@ public class DictionaryFactory {
                 // we found could not be opened by the native code for any reason (format mismatch,
                 // file too big to fit in memory, etc) then we could have an empty list. In this
                 // case we want to fall back on the resource.
-                return new DictionaryCollection(createBinaryDictionary(context, fallbackResId));
+                return new DictionaryCollection(createBinaryDictionary(context, fallbackResId,
+                        locale));
             } else {
                 return new DictionaryCollection(dictList);
             }
@@ -87,12 +88,21 @@ public class DictionaryFactory {
      * Initializes a dictionary from a raw resource file
      * @param context application context for reading resources
      * @param resId the resource containing the raw binary dictionary
+     * @param locale the locale to use for the resource
      * @return an initialized instance of BinaryDictionary
      */
-    protected static BinaryDictionary createBinaryDictionary(Context context, int resId) {
+    protected static BinaryDictionary createBinaryDictionary(final Context context,
+            final int resId, final Locale locale) {
         AssetFileDescriptor afd = null;
         try {
-            afd = context.getResources().openRawResourceFd(resId);
+            final Resources res = context.getResources();
+            if (null != locale) {
+                final Locale savedLocale = Utils.setSystemLocale(res, locale);
+                afd = res.openRawResourceFd(resId);
+                Utils.setSystemLocale(res, savedLocale);
+            } else {
+                afd = res.openRawResourceFd(resId);
+            }
             if (afd == null) {
                 Log.e(TAG, "Found the resource but it is compressed. resId=" + resId);
                 return null;

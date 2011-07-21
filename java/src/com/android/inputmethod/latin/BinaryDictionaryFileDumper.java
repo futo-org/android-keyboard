@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.text.TextUtils;
 
@@ -129,8 +130,11 @@ public class BinaryDictionaryFileDumper {
      */
     public static String getDictionaryFileFromResource(int resource, Locale locale,
             Context context) throws FileNotFoundException, IOException {
-        return copyFileTo(context.getResources().openRawResource(resource),
-                getCacheFileNameForLocale(locale, context));
+        final Resources res = context.getResources();
+        final Locale savedLocale = Utils.setSystemLocale(res, locale);
+        final InputStream stream = res.openRawResource(resource);
+        Utils.setSystemLocale(res, savedLocale);
+        return copyFileTo(stream, getCacheFileNameForLocale(locale, context));
     }
 
     /**
