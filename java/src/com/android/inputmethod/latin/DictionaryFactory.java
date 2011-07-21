@@ -56,8 +56,11 @@ public class DictionaryFactory {
                 BinaryDictionaryGetter.getDictionaryFiles(locale, context, fallbackResId);
         if (null != assetFileList) {
             for (final AssetFileAddress f : assetFileList) {
-                dictList.add(
-                        new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength, null));
+                final BinaryDictionary binaryDictionary =
+                        new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength, null);
+                if (binaryDictionary.isValidDictionary()) {
+                    dictList.add(binaryDictionary);
+                }
             }
         }
 
@@ -67,7 +70,16 @@ public class DictionaryFactory {
         if (null == dictList) {
             return new DictionaryCollection();
         } else {
-            return new DictionaryCollection(dictList);
+            if (dictList.isEmpty()) {
+                // The list may be empty if no dictionaries have been added. The getter should not
+                // return an empty list, but if it does we end up here. Likewise, if the files
+                // we found could not be opened by the native code for any reason (format mismatch,
+                // file too big to fit in memory, etc) then we could have an empty list. In this
+                // case we want to fall back on the resource.
+                return new DictionaryCollection(createBinaryDictionary(context, fallbackResId));
+            } else {
+                return new DictionaryCollection(dictList);
+            }
         }
     }
 
