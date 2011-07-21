@@ -47,6 +47,8 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
      */
     private static final long VIBRATE_KEY_CLICK = 50;
 
+    private static final float FX_VOLUME = -1.0f;
+
     private InputMethodService mInputMethod;
     private Vibrator mVibrator;
     private AudioManager mAudioManager;
@@ -143,7 +145,7 @@ public class AccessibleInputMethodServiceProxy implements AccessibleKeyboardActi
      */
     private void sendDownUpKeyEvents(int keyCode) {
         mVibrator.vibrate(VIBRATE_KEY_CLICK);
-        mAudioManager.playSoundEffect(AudioManager.FX_KEY_CLICK);
+        mAudioManager.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, FX_VOLUME);
         mInputMethod.sendDownUpKeyEvents(keyCode);
     }
 
