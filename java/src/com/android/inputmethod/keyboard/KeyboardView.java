@@ -136,6 +136,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         @Override
         public void handleMessage(Message msg) {
             final KeyboardView keyboardView = getOuterInstance();
+            if (keyboardView == null) return;
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_SHOW_KEY_PREVIEW:
@@ -150,8 +151,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         public void showKeyPreview(long delay, int keyIndex, PointerTracker tracker) {
-            final KeyboardView keyboardView = getOuterInstance();
             removeMessages(MSG_SHOW_KEY_PREVIEW);
+            final KeyboardView keyboardView = getOuterInstance();
+            if (keyboardView == null) return;
             if (keyboardView.mPreviewText.getVisibility() == VISIBLE || delay == 0) {
                 // Show right away, if it's already visible and finger is moving around
                 keyboardView.showKey(keyIndex, tracker);
