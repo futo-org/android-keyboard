@@ -33,6 +33,9 @@
             <key-style
                 latin:styleName="settingsPopupStyle"
                 latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="symbolsF1PopupStyle"
+                latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
             latin:clobberSettingsKey="false"
@@ -41,6 +44,9 @@
             <key-style
                 latin:styleName="settingsPopupStyle"
                 latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="symbolsF1PopupStyle"
+                latin:parentStyle="functionalKeyStyle" />
         </case>
         <!-- clobberSettingsKey="false" and hasSettingsKey="false" -->
         <default>
@@ -48,6 +54,11 @@
                 latin:styleName="settingsPopupStyle"
                 latin:keyLabelOption="hasPopupHint"
                 latin:popupCharacters="\@icon/5|\@integer/key_settings"
+                latin:parentStyle="functionalKeyStyle" />
+            <key-style
+                latin:styleName="symbolsF1PopupStyle"
+                latin:keyLabelOption="hasPopupHint"
+                latin:popupCharacters="@string/alternates_for_symbols_f1"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>
