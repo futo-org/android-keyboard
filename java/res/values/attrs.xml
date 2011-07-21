@@ -155,7 +155,6 @@
         <attr name="iconToSymbolKey" format="reference" />
         <attr name="iconToSymbolKeyWithShortcut" format="reference" />
         <attr name="iconDeleteKey" format="reference" />
-        <attr name="iconDeleteRtlKey" format="reference" />
         <attr name="iconSettingsKey" format="reference" />
         <attr name="iconShortcutKey" format="reference" />
         <attr name="iconSpaceKey" format="reference" />
@@ -209,25 +208,24 @@
             <enum name="iconToSymbolKey" value="2" />
             <enum name="iconToSymbolKeyWithShortcut" value="3" />
             <enum name="iconDeleteKey" value="4" />
-            <enum name="iconDeleteRtlKey" value="5" />
-            <enum name="iconSettingsKey" value="6" />
-            <enum name="iconShortcutKey" value="7" />
-            <enum name="iconSpaceKey" value="8" />
-            <enum name="iconReturnKey" value="9" />
-            <enum name="iconSearchKey" value="10" />
-            <enum name="iconTabKey" value="11" />
+            <enum name="iconSettingsKey" value="5" />
+            <enum name="iconShortcutKey" value="6" />
+            <enum name="iconSpaceKey" value="7" />
+            <enum name="iconReturnKey" value="8" />
+            <enum name="iconSearchKey" value="9" />
+            <enum name="iconTabKey" value="10" />
         </attr>
         <!-- Shift key icon for shifted state -->
         <attr name="keyIconShifted" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_SHIFTED_* -->
-            <enum name="iconShiftedShiftKey" value="12" />
+            <enum name="iconShiftedShiftKey" value="11" />
         </attr>
         <!-- The icon to show in the popup preview. -->
         <attr name="keyIconPreview" format="enum">
             <!-- This should be aligned with KeyboardIcons.ICON_PREVIEW_* -->
-            <enum name="iconPreviewTabKey" value="13" />
-            <enum name="iconPreviewSettingsKey" value="14" />
-            <enum name="iconPreviewShortcutKey" value="15" />
+            <enum name="iconPreviewTabKey" value="12" />
+            <enum name="iconPreviewSettingsKey" value="13" />
+            <enum name="iconPreviewShortcutKey" value="14" />
         </attr>
         <!-- The key style to specify a set of key attributes defined by <key_style/> -->
         <attr name="keyStyle" format="string" />
