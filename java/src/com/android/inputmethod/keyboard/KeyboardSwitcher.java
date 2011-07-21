@@ -148,11 +148,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    public void loadKeyboard(EditorInfo attribute, boolean voiceKeyEnabled,
-            boolean voiceButtonOnPrimary) {
+    public void loadKeyboard(EditorInfo attribute, Settings.Values settings) {
         mSwitchState = SWITCH_STATE_ALPHA;
         try {
-            loadKeyboardInternal(attribute, voiceKeyEnabled, voiceButtonOnPrimary, false);
+            loadKeyboardInternal(attribute, settings.isVoiceButtonEnabled(attribute),
+                    settings.isVoiceButtonOnPrimary(), false);
         } catch (RuntimeException e) {
             // Get KeyboardId to record which keyboard has been failed to load.
             final KeyboardId id = getKeyboardId(attribute, false);

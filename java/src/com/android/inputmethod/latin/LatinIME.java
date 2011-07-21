@@ -573,9 +573,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         LanguageSwitcherProxy.loadSettings();
 
         if (mSubtypeSwitcher.isKeyboardMode()) {
-            switcher.loadKeyboard(attribute,
-                    mSubtypeSwitcher.isShortcutImeEnabled() && voiceIme.isVoiceButtonEnabled(),
-                    voiceIme.isVoiceButtonOnPrimary());
+            switcher.loadKeyboard(attribute, mSettingsValues);
             switcher.updateShiftState();
         }
 
@@ -1894,9 +1892,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             setInputView(mKeyboardSwitcher.onCreateInputView());
         }
         // Reload keyboard because the current language has been changed.
-        mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(),
-                mSubtypeSwitcher.isShortcutImeEnabled() && mVoiceProxy.isVoiceButtonEnabled(),
-                mVoiceProxy.isVoiceButtonOnPrimary());
+        mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettingsValues);
         initSuggest();
         loadSettings();
         mKeyboardSwitcher.updateShiftState();
