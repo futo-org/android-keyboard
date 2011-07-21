@@ -16,16 +16,13 @@
 
 package com.android.inputmethod.compat;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.view.accessibility.AccessibilityManager;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
-import java.util.List;
 
 public class AccessibilityManagerCompatWrapper {
-    private static final Method METHOD_getEnabledAccessibilityServiceList = CompatUtils.getMethod(
-            AccessibilityManager.class, "getEnabledAccessibilityServiceList", int.class);
+    private static final Method METHOD_isTouchExplorationEnabled = CompatUtils.getMethod(
+            AccessibilityManager.class, "isTouchExplorationEnabled");
 
     private final AccessibilityManager mManager;
 
@@ -33,10 +30,7 @@ public class AccessibilityManagerCompatWrapper {
         mManager = manager;
     }
 
-    @SuppressWarnings("unchecked")
-    public List<AccessibilityServiceInfo> getEnabledAccessibilityServiceList(int feedbackType) {
-        return (List<AccessibilityServiceInfo>) CompatUtils.invoke(mManager,
-                Collections.<AccessibilityServiceInfo>emptyList(),
-                METHOD_getEnabledAccessibilityServiceList, feedbackType);
+    public boolean isTouchExplorationEnabled() {
+        return (Boolean) CompatUtils.invoke(mManager, false, METHOD_isTouchExplorationEnabled);
     }
 }

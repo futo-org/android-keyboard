@@ -16,7 +16,6 @@
 
 package com.android.inputmethod.accessibility;
 
-import android.accessibilityservice.AccessibilityServiceInfo;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
@@ -82,10 +81,8 @@ public class AccessibilityUtils {
      */
     public boolean isTouchExplorationEnabled() {
         return ENABLE_ACCESSIBILITY
-                && AccessibilityEventCompatUtils.supportsTouchExploration()
                 && mAccessibilityManager.isEnabled()
-                && !mCompatManager.getEnabledAccessibilityServiceList(
-                        AccessibilityServiceInfo.FEEDBACK_SPOKEN).isEmpty();
+                && mCompatManager.isTouchExplorationEnabled();
     }
 
     /**
