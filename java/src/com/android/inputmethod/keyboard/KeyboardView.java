@@ -526,7 +526,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         canvas.translate(-bgX, -bgY);
 
         // Draw key top visuals.
-        final int keyWidth = key.mWidth;
+        final int keyWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
         final int keyHeight = key.mHeight;
         final float centerX = keyWidth * 0.5f;
         final float centerY = keyHeight * 0.5f;
