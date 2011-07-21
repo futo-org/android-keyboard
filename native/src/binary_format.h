@@ -17,6 +17,8 @@
 #ifndef LATINIME_BINARY_FORMAT_H
 #define LATINIME_BINARY_FORMAT_H
 
+#include "unigram_dictionary.h"
+
 namespace latinime {
 
 class BinaryFormat {
@@ -26,6 +28,11 @@ private:
     const static int MULTIPLE_BYTE_CHARACTER_ADDITIONAL_SIZE = 2;
 
 public:
+    const static int UNKNOWN_FORMAT = -1;
+    const static int FORMAT_VERSION_1 = 1;
+    const static uint16_t FORMAT_VERSION_1_MAGIC_NUMBER = 0x78B1;
+
+    static int detectFormat(const uint8_t* const dict);
     static int getGroupCountAndForwardPointer(const uint8_t* const dict, int* pos);
     static uint8_t getFlagsAndForwardPointer(const uint8_t* const dict, int* pos);
     static int32_t getCharCodeAndForwardPointer(const uint8_t* const dict, int* pos);
@@ -42,6 +49,12 @@ public:
     static int getAttributeAddressAndForwardPointer(const uint8_t* const dict, const uint8_t flags,
             int *pos);
 };
+
+inline int BinaryFormat::detectFormat(const uint8_t* const dict) {
+    const uint16_t magicNumber = (dict[0] << 8) + dict[1]; // big endian
+    if (FORMAT_VERSION_1_MAGIC_NUMBER == magicNumber) return FORMAT_VERSION_1;
+    return UNKNOWN_FORMAT;
+}
 
 inline int BinaryFormat::getGroupCountAndForwardPointer(const uint8_t* const dict, int* pos) {
     return dict[(*pos)++];
