@@ -17,11 +17,11 @@
 package com.android.inputmethod.deprecated;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.deprecated.voice.FieldContext;
 import com.android.inputmethod.deprecated.voice.Hints;
 import com.android.inputmethod.deprecated.voice.SettingsUtil;
 import com.android.inputmethod.deprecated.voice.VoiceInput;
-import com.android.inputmethod.deprecated.voice.VoiceInputLogger;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.latin.EditingUtils;
 import com.android.inputmethod.latin.LatinIME;
@@ -71,7 +71,8 @@ import java.util.Map;
 public class VoiceProxy implements VoiceInput.UiListener {
     private static final VoiceProxy sInstance = new VoiceProxy();
 
-    public static final boolean VOICE_INSTALLED = true;
+    public static final boolean VOICE_INSTALLED =
+            !InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED;
     private static final boolean ENABLE_VOICE_BUTTON = true;
     private static final String PREF_VOICE_MODE = "voice_mode";
     // Whether or not the user has used voice input before (and thus, whether to show the
@@ -125,24 +126,23 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     private void initInternal(LatinIME service, SharedPreferences prefs, UIHandler h) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         mService = service;
         mHandler = h;
         mMinimumVoiceRecognitionViewHeightPixel = Utils.dipToPixel(
                 Utils.getDipScale(service), RECOGNITIONVIEW_MINIMUM_HEIGHT_DIP);
         mImm = InputMethodManagerCompatWrapper.getInstance();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
-        if (VOICE_INSTALLED) {
-            mVoiceInput = new VoiceInput(service, this);
-            mHints = new Hints(service, prefs, new Hints.Display() {
-                @Override
-                public void showHint(int viewResource) {
-                    View view = LayoutInflater.from(mService).inflate(viewResource, null);
-//                    mService.setCandidatesView(view);
-//                    mService.setCandidatesViewShown(true);
-                    mIsShowingHint = true;
-                }
-              });
-        }
+        mVoiceInput = new VoiceInput(service, this);
+        mHints = new Hints(service, prefs, new Hints.Display() {
+            @Override
+            public void showHint(int viewResource) {
+                View view = LayoutInflater.from(mService).inflate(viewResource, null);
+                mIsShowingHint = true;
+            }
+        });
     }
 
     private VoiceProxy() {
@@ -170,6 +170,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
 
     public void flushAndLogAllTextModificationCounters(int index, CharSequence suggestion,
             String wordSeparators) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (mAfterVoiceInput && mShowingVoiceSuggestions) {
             mVoiceInput.flushAllTextModificationCounters();
             // send this intent AFTER logging any prior aggregated edits.
@@ -308,6 +311,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void hideVoiceWindow(boolean configurationChanging) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (!configurationChanging) {
             if (mAfterVoiceInput)
                 mVoiceInput.logInputEnded();
@@ -324,6 +330,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void setCursorAndSelection(int newSelEnd, int newSelStart) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (mAfterVoiceInput) {
             mVoiceInput.setCursorPos(newSelEnd);
             mVoiceInput.setSelectionSpan(newSelEnd - newSelStart);
@@ -366,6 +375,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     private void revertVoiceInput() {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         InputConnection ic = mService.getCurrentInputConnection();
         if (ic != null) ic.commitText("", 1);
         mService.updateSuggestions();
@@ -393,6 +405,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void rememberReplacedWord(CharSequence suggestion,String wordSeparators) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (mShowingVoiceSuggestions) {
             // Retain the replaced word in the alternatives array.
             String wordToBeReplaced = EditingUtils.getWordAtCursor(
@@ -419,6 +434,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
      * @return true if an alternative was found, false otherwise.
      */
     public boolean applyVoiceAlternatives(EditingUtils.SelectedWord touching) {
+        if (!VOICE_INSTALLED) {
+            return false;
+        }
         // Search for result in spoken word alternatives
         String selectedWord = touching.mWord.toString().trim();
         if (!mWordToSuggestions.containsKey(selectedWord)) {
@@ -448,6 +466,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void handleBackspace() {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (mAfterVoiceInput) {
             // Don't log delete if the user is pressing delete at
             // the beginning of the text box (hence not deleting anything)
@@ -462,6 +483,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void handleCharacter() {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         commitVoiceInput();
         if (mAfterVoiceInput) {
             // Assume input length is 1. This assumption fails for smiley face insertions.
@@ -470,6 +494,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void handleSeparator() {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         commitVoiceInput();
         if (mAfterVoiceInput){
             // Assume input length is 1. This assumption fails for smiley face insertions.
@@ -485,6 +512,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
 
 
     public void handleVoiceResults(boolean capitalizeFirstWord) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         mAfterVoiceInput = true;
         mImmediatelyAfterVoiceInput = true;
 
@@ -660,6 +690,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void loadSettings(EditorInfo attribute, SharedPreferences sp) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         mHasUsedVoiceInput = sp.getBoolean(PREF_HAS_USED_VOICE_INPUT, false);
         mHasUsedVoiceInputUnsupportedLocale =
                 sp.getBoolean(PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE, false);
@@ -683,6 +716,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void onStartInputView(IBinder keyboardViewToken) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         // If keyboardViewToken is null, keyboardView is not attached but voiceView is attached.
         IBinder windowToken = keyboardViewToken != null ? keyboardViewToken
                 : mVoiceInput.getView().getWindowToken();
@@ -699,12 +735,18 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void onAttachedToWindow() {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         // After onAttachedToWindow, we can show the voice warning dialog. See startListening()
         // above.
         VoiceInputWrapper.getInstance().setVoiceInput(mVoiceInput, mSubtypeSwitcher);
     }
 
     public void onConfigurationChanged(Configuration configuration) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (mRecognizing) {
             switchToRecognitionStatusView(configuration);
         }
@@ -712,6 +754,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
 
     @Override
     public void onCancelVoice() {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (mRecognizing) {
             if (mSubtypeSwitcher.isVoiceMode()) {
                 // If voice mode is being canceled within LatinIME (i.e. time-out or user
@@ -733,6 +778,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     @Override
     public void onVoiceResults(List<String> candidates,
             Map<String, List<CharSequence>> alternatives) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         if (!mRecognizing) {
             return;
         }
@@ -748,50 +796,10 @@ public class VoiceProxy implements VoiceInput.UiListener {
                 switcher.getEnabledLanguages());
     }
 
-    private class VoiceResults {
+    // TODO: make this private (proguard issue)
+    public static class VoiceResults {
         List<String> candidates;
         Map<String, List<CharSequence>> alternatives;
-    }
-
-    public static class VoiceLoggerWrapper {
-        private static final VoiceLoggerWrapper sLoggerWrapperInstance = new VoiceLoggerWrapper();
-        private VoiceInputLogger mLogger;
-
-        public static VoiceLoggerWrapper getInstance(Context context) {
-            if (sLoggerWrapperInstance.mLogger == null) {
-                // Not thread safe, but it's ok.
-                sLoggerWrapperInstance.mLogger = VoiceInputLogger.getLogger(context);
-            }
-            return sLoggerWrapperInstance;
-        }
-
-        // private for the singleton
-        private VoiceLoggerWrapper() {
-        }
-
-        public void settingsWarningDialogCancel() {
-            mLogger.settingsWarningDialogCancel();
-        }
-
-        public void settingsWarningDialogOk() {
-            mLogger.settingsWarningDialogOk();
-        }
-
-        public void settingsWarningDialogShown() {
-            mLogger.settingsWarningDialogShown();
-        }
-
-        public void settingsWarningDialogDismissed() {
-            mLogger.settingsWarningDialogDismissed();
-        }
-
-        public void voiceInputSettingEnabled(boolean enabled) {
-            if (enabled) {
-                mLogger.voiceInputSettingEnabled();
-            } else {
-                mLogger.voiceInputSettingDisabled();
-            }
-        }
     }
 
     public static class VoiceInputWrapper {
@@ -800,7 +808,10 @@ public class VoiceProxy implements VoiceInput.UiListener {
         public static VoiceInputWrapper getInstance() {
             return sInputWrapperInstance;
         }
-        public void setVoiceInput(VoiceInput voiceInput, SubtypeSwitcher switcher) {
+        private void setVoiceInput(VoiceInput voiceInput, SubtypeSwitcher switcher) {
+            if (!VOICE_INSTALLED) {
+                return;
+            }
             if (mVoiceInput == null && voiceInput != null) {
                 mVoiceInput = voiceInput;
             }
