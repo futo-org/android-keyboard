@@ -34,21 +34,20 @@ public class KeyboardIconsSet {
     private static final int ICON_TO_SYMBOL_KEY = 2;
     private static final int ICON_TO_SYMBOL_KEY_WITH_SHORTCUT = 3;
     private static final int ICON_DELETE_KEY = 4;
-    private static final int ICON_DELETE_RTL_KEY = 5;
-    private static final int ICON_SETTINGS_KEY = 6; // This is also represented as "@icon/6" in xml.
-    private static final int ICON_SHORTCUT_KEY = 7;
-    private static final int ICON_SPACE_KEY = 8;
-    private static final int ICON_RETURN_KEY = 9;
-    private static final int ICON_SEARCH_KEY = 10;
-    private static final int ICON_TAB_KEY = 11;
+    private static final int ICON_SETTINGS_KEY = 5; // This is also represented as "@icon/5" in xml.
+    private static final int ICON_SHORTCUT_KEY = 6;
+    private static final int ICON_SPACE_KEY = 7;
+    private static final int ICON_RETURN_KEY = 8;
+    private static final int ICON_SEARCH_KEY = 9;
+    private static final int ICON_TAB_KEY = 10;
     // This should be aligned with Keyboard.keyIconShifted enum.
-    private static final int ICON_SHIFTED_SHIFT_KEY = 12;
+    private static final int ICON_SHIFTED_SHIFT_KEY = 11;
     // This should be aligned with Keyboard.keyIconPreview enum.
-    private static final int ICON_PREVIEW_TAB_KEY = 13;
-    private static final int ICON_PREVIEW_SETTINGS_KEY = 14;
-    private static final int ICON_PREVIEW_SHORTCUT_KEY = 15;
+    private static final int ICON_PREVIEW_TAB_KEY = 12;
+    private static final int ICON_PREVIEW_SETTINGS_KEY = 13;
+    private static final int ICON_PREVIEW_SHORTCUT_KEY = 14;
 
-    private static final int ICON_LAST = 15;
+    private static final int ICON_LAST = 14;
 
     private final Drawable mIcons[] = new Drawable[ICON_LAST + 1];
 
@@ -62,8 +61,6 @@ public class KeyboardIconsSet {
             return ICON_TO_SYMBOL_KEY_WITH_SHORTCUT;
         case R.styleable.Keyboard_iconDeleteKey:
             return ICON_DELETE_KEY;
-        case R.styleable.Keyboard_iconDeleteRtlKey:
-            return ICON_DELETE_RTL_KEY;
         case R.styleable.Keyboard_iconSettingsKey:
             return ICON_SETTINGS_KEY;
         case R.styleable.Keyboard_iconShortcutKey:

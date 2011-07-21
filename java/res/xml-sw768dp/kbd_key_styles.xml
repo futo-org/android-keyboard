@@ -32,24 +32,12 @@
         latin:keyIconShifted="iconShiftedShiftKey"
         latin:parentStyle="functionalKeyStyle"
         latin:isSticky="true" />
-    <switch>
-        <case latin:languageCode="ar|iw">
-            <key-style
-                latin:styleName="deleteKeyStyle"
-                latin:code="@integer/key_delete"
-                latin:keyIcon="iconDeleteRtlKey"
-                latin:parentStyle="functionalKeyStyle"
-                latin:isRepeatable="true" />
-        </case>
-        <default>
-            <key-style
-                latin:styleName="deleteKeyStyle"
-                latin:code="@integer/key_delete"
-                latin:keyIcon="iconDeleteKey"
-                latin:parentStyle="functionalKeyStyle"
-                latin:isRepeatable="true" />
-        </default>
-    </switch>
+    <key-style
+        latin:styleName="deleteKeyStyle"
+        latin:code="@integer/key_delete"
+        latin:keyIcon="iconDeleteKey"
+        latin:parentStyle="functionalKeyStyle"
+        latin:isRepeatable="true" />
     <key-style
         latin:styleName="returnKeyStyle"
         latin:code="@integer/key_return"

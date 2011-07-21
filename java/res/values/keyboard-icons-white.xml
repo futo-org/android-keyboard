@@ -20,8 +20,6 @@
         <item name="iconShiftKey">@drawable/sym_keyboard_shift</item>
         <item name="iconToSymbolKeyWithShortcut">@drawable/sym_keyboard_123_mic</item>
         <item name="iconDeleteKey">@drawable/sym_keyboard_delete</item>
-        <!-- TODO: update this icon drawable -->
-        <item name="iconDeleteRtlKey">@drawable/sym_keyboard_delete_rtl</item>
         <item name="iconSettingsKey">@drawable/sym_keyboard_settings</item>
         <item name="iconShortcutKey">@drawable/sym_keyboard_mic</item>
         <item name="iconSpaceKey">@drawable/sym_keyboard_space</item>
