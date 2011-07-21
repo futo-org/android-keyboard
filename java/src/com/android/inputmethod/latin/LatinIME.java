@@ -542,15 +542,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         TextEntryState.reset();
 
-        if (attribute != null) {
-            // Most such things we decide below in initializeInputAttributesAndGetMode, but we need
-            // to know now whether this is a password text field, because we need to know now
-            // whether we want to enable the voice button.
-            mVoiceProxy.resetVoiceStates(
-                    InputTypeCompatUtils.isPasswordInputType(attribute.inputType)
-                            || InputTypeCompatUtils.isVisiblePasswordInputType(
-                                    attribute.inputType));
-        }
+        // Most such things we decide below in initializeInputAttributesAndGetMode, but we need to
+        // know now whether this is a password text field, because we need to know now whether we
+        // want to enable the voice button.
+        final VoiceProxy voiceIme = mVoiceProxy;
+        voiceIme.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(attribute.inputType)
+                || InputTypeCompatUtils.isVisiblePasswordInputType(attribute.inputType));
 
         initializeInputAttributes(attribute);
 
@@ -576,8 +573,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         if (mSubtypeSwitcher.isKeyboardMode()) {
             switcher.loadKeyboard(attribute,
-                    mSubtypeSwitcher.isShortcutImeEnabled() && mVoiceProxy.isVoiceButtonEnabled(),
-                    mVoiceProxy.isVoiceButtonOnPrimary());
+                    mSubtypeSwitcher.isShortcutImeEnabled() && voiceIme.isVoiceButtonEnabled(),
+                    voiceIme.isVoiceButtonOnPrimary());
             switcher.updateShiftState();
         }
 
@@ -595,7 +592,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // If we just entered a text field, maybe it has some old text that requires correction
         mRecorrection.checkRecorrectionOnStart();
 
-        mVoiceProxy.onStartInputView(inputView.getWindowToken());
+        voiceIme.onStartInputView(inputView.getWindowToken());
 
         if (TRACE) Debug.startMethodTracing("/data/trace/latinime");
     }
