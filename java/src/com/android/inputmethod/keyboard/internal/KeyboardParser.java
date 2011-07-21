@@ -632,15 +632,15 @@ public class KeyboardParser {
     private void endRow() {
         if (mCurrentRow == null)
             throw new InflateException("orphant end row tag");
+        if (mRightEdgeKey != null) {
+            mRightEdgeKey.addEdgeFlags(Keyboard.EDGE_RIGHT);
+            mRightEdgeKey = null;
+        }
         setSpacer(mCurrentX, mHorizontalEdgesPadding);
         if (mCurrentX > mMaxRowWidth)
             mMaxRowWidth = mCurrentX;
         mCurrentY += mCurrentRow.mDefaultHeight;
         mCurrentRow = null;
-        if (mRightEdgeKey != null) {
-            mRightEdgeKey.addEdgeFlags(Keyboard.EDGE_RIGHT);
-            mRightEdgeKey = null;
-        }
     }
 
     private void endKey(Key key) {
