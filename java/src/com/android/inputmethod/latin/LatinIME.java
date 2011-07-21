@@ -546,8 +546,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // know now whether this is a password text field, because we need to know now whether we
         // want to enable the voice button.
         final VoiceProxy voiceIme = mVoiceProxy;
-        voiceIme.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(attribute.inputType)
-                || InputTypeCompatUtils.isVisiblePasswordInputType(attribute.inputType));
+        final int inputType = (attribute != null) ? attribute.inputType : 0;
+        voiceIme.resetVoiceStates(InputTypeCompatUtils.isPasswordInputType(inputType)
+                || InputTypeCompatUtils.isVisiblePasswordInputType(inputType));
 
         initializeInputAttributes(attribute);
 
