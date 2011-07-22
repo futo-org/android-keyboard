@@ -135,7 +135,6 @@ private:
             const int startInputIndex, const int depth, unsigned short *word,
             int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
 #else // NEW_DICTIONARY_FORMAT
-    int getFrequency(const uint16_t* const inWord, const int length) const;
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
             short unsigned int* outWord);
 #endif // NEW_DICTIONARY_FORMAT

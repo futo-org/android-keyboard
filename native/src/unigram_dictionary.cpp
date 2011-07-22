@@ -1056,30 +1056,30 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWor
 }
 
 // This function gets the frequency of the exact matching word in the dictionary.
-// If no match is found, it returns -1.
-int UnigramDictionary::getFrequency(const uint16_t* const inWord, const int length) const {
+// If no match is found, it returns NOT_VALID_WORD.
+static inline int getFrequency(const uint8_t* const root, const uint16_t* const inWord,
+        const int length) {
     int pos = 0;
     int wordPos = 0;
-    const uint8_t* const root = DICT_ROOT;
 
     while (true) {
         // If we already traversed the tree further than the word is long, there means
         // there was no match (or we would have found it).
-        if (wordPos > length) return -1;
+        if (wordPos > length) return NOT_VALID_WORD;
         int charGroupCount = BinaryFormat::getGroupCountAndForwardPointer(root, &pos);
         const uint16_t wChar = inWord[wordPos];
         while (true) {
             // If there are no more character groups in this node, it means we could not
             // find a matching character for this depth, therefore there is no match.
-            if (0 >= charGroupCount) return -1;
+            if (0 >= charGroupCount) return NOT_VALID_WORD;
             const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
             int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
             if (character == wChar) {
                 // This is the correct node. Only one character group may start with the same
                 // char within a node, so either we found our match in this node, or there is
-                // no match and we can return -1. So we will check all the characters in this
-                // character group indeed does match.
-                if (FLAG_HAS_MULTIPLE_CHARS & flags) {
+                // no match and we can return NOT_VALID_WORD. So we will check all the characters
+                // in this character group indeed does match.
+                if (UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS & flags) {
                     character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
                     while (NOT_A_CHARACTER != character) {
                         ++wordPos;
@@ -1087,8 +1087,8 @@ int UnigramDictionary::getFrequency(const uint16_t* const inWord, const int leng
                         // character that does not match, as explained above, it means the word is
                         // not in the dictionary (by virtue of this chargroup being the only one to
                         // match the word on the first character, but not matching the whole word).
-                        if (wordPos > length) return -1;
-                        if (inWord[wordPos] != character) return -1;
+                        if (wordPos > length) return NOT_VALID_WORD;
+                        if (inWord[wordPos] != character) return NOT_VALID_WORD;
                         character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
                     }
                 }
@@ -1097,14 +1097,16 @@ int UnigramDictionary::getFrequency(const uint16_t* const inWord, const int leng
                 // If we don't match the length AND don't have children, then a word in the
                 // dictionary fully matches a prefix of the searched word but not the full word.
                 ++wordPos;
-                if (FLAG_IS_TERMINAL & flags) {
+                if (UnigramDictionary::FLAG_IS_TERMINAL & flags) {
                     if (wordPos == length) {
                         return BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
                     }
-                    pos = BinaryFormat::skipFrequency(FLAG_IS_TERMINAL, pos);
+                    pos = BinaryFormat::skipFrequency(UnigramDictionary::FLAG_IS_TERMINAL, pos);
                 }
-                if (FLAG_GROUP_ADDRESS_TYPE_NOADDRESS == (MASK_GROUP_ADDRESS_TYPE & flags))
-                    return -1;
+                if (UnigramDictionary::FLAG_GROUP_ADDRESS_TYPE_NOADDRESS
+                        == (UnigramDictionary::MASK_GROUP_ADDRESS_TYPE & flags)) {
+                    return NOT_VALID_WORD;
+                }
                 // We have children and we are still shorter than the word we are searching for, so
                 // we need to traverse children. Put the pointer on the children position, and
                 // break
@@ -1112,7 +1114,7 @@ int UnigramDictionary::getFrequency(const uint16_t* const inWord, const int leng
                 break;
             } else {
                 // This chargroup does not match, so skip the remaining part and go to the next.
-                if (FLAG_HAS_MULTIPLE_CHARS & flags) {
+                if (UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS & flags) {
                     pos = BinaryFormat::skipOtherCharacters(root, pos);
                 }
                 pos = BinaryFormat::skipFrequency(flags, pos);
@@ -1124,7 +1126,7 @@ int UnigramDictionary::getFrequency(const uint16_t* const inWord, const int leng
 }
 
 bool UnigramDictionary::isValidWord(const uint16_t* const inWord, const int length) const {
-    return -1 != getFrequency(inWord, length);
+    return NOT_VALID_WORD != getFrequency(DICT_ROOT, inWord, length);
 }
 
 int UnigramDictionary::getBigrams(unsigned short *word, int length, int *codes, int codesSize,
