@@ -158,7 +158,10 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void flushVoiceInputLogs(boolean configurationChanged) {
-        if (VOICE_INSTALLED && !configurationChanged) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
+        if (!configurationChanged) {
             if (mAfterVoiceInput) {
                 mVoiceInput.flushAllTextModificationCounters();
                 mVoiceInput.logInputEnded();
@@ -301,6 +304,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void showPunctuationHintIfNecessary() {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         InputConnection ic = mService.getCurrentInputConnection();
         if (!mImmediatelyAfterVoiceInput && mAfterVoiceInput && ic != null) {
             if (mHints.showPunctuationHintIfNecessary(ic)) {
@@ -375,9 +381,6 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     private void revertVoiceInput() {
-        if (!VOICE_INSTALLED) {
-            return;
-        }
         InputConnection ic = mService.getCurrentInputConnection();
         if (ic != null) ic.commitText("", 1);
         mService.updateSuggestions();
@@ -394,7 +397,10 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public boolean logAndRevertVoiceInput() {
-        if (VOICE_INSTALLED && mVoiceInputHighlighted) {
+        if (!VOICE_INSTALLED) {
+            return false;
+        }
+        if (mVoiceInputHighlighted) {
             mVoiceInput.incrementTextModificationDeleteCount(
                     mVoiceResults.candidates.get(0).toString().length());
             revertVoiceInput();
@@ -505,7 +511,10 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void handleClose() {
-        if (VOICE_INSTALLED & mRecognizing) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
+        if (mRecognizing) {
             mVoiceInput.cancel();
         }
     }
@@ -553,6 +562,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void switchToRecognitionStatusView(final Configuration configuration) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -597,6 +609,9 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     private void switchToLastInputMethod() {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         final IBinder token = mService.getWindow().getWindow().getAttributes().token;
         new AsyncTask<Void, Void, Boolean>() {
             @Override
@@ -662,14 +677,15 @@ public class VoiceProxy implements VoiceInput.UiListener {
     }
 
     public void startListening(final boolean swipe, IBinder token) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
         // TODO: remove swipe which is no longer used.
-        if (VOICE_INSTALLED) {
-            if (needsToShowWarningDialog()) {
-                // Calls reallyStartListening if user clicks OK, does nothing if user clicks Cancel.
-                showVoiceWarningDialog(swipe, token);
-            } else {
-                reallyStartListening(swipe);
-            }
+        if (needsToShowWarningDialog()) {
+            // Calls reallyStartListening if user clicks OK, does nothing if user clicks Cancel.
+            showVoiceWarningDialog(swipe, token);
+        } else {
+            reallyStartListening(swipe);
         }
     }
 
@@ -704,17 +720,18 @@ public class VoiceProxy implements VoiceInput.UiListener {
         mLocaleSupportedForVoiceInput = SubtypeSwitcher.getInstance().isVoiceSupported(
                 SubtypeSwitcher.getInstance().getInputLocaleStr());
 
-        if (VOICE_INSTALLED) {
-            final String voiceMode = sp.getString(PREF_VOICE_MODE,
-                    mService.getString(R.string.voice_mode_main));
-            mVoiceButtonEnabled = !voiceMode.equals(mService.getString(R.string.voice_mode_off))
-                    && shouldShowVoiceButton(makeFieldContext(), attribute);
-            mVoiceButtonOnPrimary = voiceMode.equals(mService.getString(R.string.voice_mode_main));
-        }
+        final String voiceMode = sp.getString(PREF_VOICE_MODE,
+                mService.getString(R.string.voice_mode_main));
+        mVoiceButtonEnabled = !voiceMode.equals(mService.getString(R.string.voice_mode_off))
+                && shouldShowVoiceButton(makeFieldContext(), attribute);
+        mVoiceButtonOnPrimary = voiceMode.equals(mService.getString(R.string.voice_mode_main));
     }
 
     public void destroy() {
-        if (VOICE_INSTALLED && mVoiceInput != null) {
+        if (!VOICE_INSTALLED) {
+            return;
+        }
+        if (mVoiceInput != null) {
             mVoiceInput.destroy();
         }
     }
@@ -826,10 +843,16 @@ public class VoiceProxy implements VoiceInput.UiListener {
         }
 
         public void cancel() {
+            if (!VOICE_INSTALLED) {
+                return;
+            }
             if (mVoiceInput != null) mVoiceInput.cancel();
         }
 
         public void reset() {
+            if (!VOICE_INSTALLED) {
+                return;
+            }
             if (mVoiceInput != null) mVoiceInput.reset();
         }
     }
