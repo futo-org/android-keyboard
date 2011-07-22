@@ -16,13 +16,6 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.compat.CompatUtils;
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
-import com.android.inputmethod.deprecated.VoiceProxy;
-import com.android.inputmethod.compat.VibratorCompatWrapper;
-import com.android.inputmethodcommon.InputMethodSettingsActivity;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -40,11 +33,19 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceGroup;
 import android.preference.PreferenceScreen;
-import android.speech.SpeechRecognizer;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.inputmethod.EditorInfo;
 import android.widget.TextView;
+
+import com.android.inputmethod.compat.CompatUtils;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.compat.VibratorCompatWrapper;
+import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethodcommon.InputMethodSettingsActivity;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -119,6 +120,9 @@ public class Settings extends InputMethodSettingsActivity
         public final boolean mBigramPredictionEnabled;
         public final boolean mUseContactsDict;
 
+        private final boolean mVoiceButtonEnabled;
+        private final boolean mVoiceButtonOnPrimary;
+
         public Values(final SharedPreferences prefs, final Context context,
                 final String localeStr) {
             final Resources res = context.getResources();
@@ -178,6 +182,12 @@ public class Settings extends InputMethodSettingsActivity
             mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
 
             mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
+
+            final String voiceMode = prefs.getString(PREF_VOICE_SETTINGS_KEY, null);
+            mVoiceButtonEnabled = voiceMode != null && !voiceMode.equals(
+                    res.getString(R.string.voice_mode_off));
+            mVoiceButtonOnPrimary = voiceMode != null && voiceMode.equals(
+                    res.getString(R.string.voice_mode_main));
 
             Utils.setSystemLocale(res, savedLocale);
         }
@@ -287,6 +297,17 @@ public class Settings extends InputMethodSettingsActivity
             }
             return builder.setIsPunctuationSuggestions().build();
         }
+
+        public boolean isVoiceButtonEnabled(EditorInfo attribute) {
+            final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
+            final int inputType = (attribute != null) ? attribute.inputType : 0;
+            return shortcutImeEnabled && mVoiceButtonEnabled
+                    && !InputTypeCompatUtils.isPasswordInputType(inputType);
+        }
+
+        public boolean isVoiceButtonOnPrimary() {
+            return mVoiceButtonOnPrimary;
+        }
     }
 
     private PreferenceScreen mInputLanguageSelection;
@@ -303,8 +324,6 @@ public class Settings extends InputMethodSettingsActivity
     private boolean mVoiceOn;
 
     private AlertDialog mDialog;
-
-    private VoiceProxy.VoiceLoggerWrapper mVoiceLogger;
 
     private boolean mOkClicked = false;
     private String mVoiceModeOff;
@@ -349,7 +368,6 @@ public class Settings extends InputMethodSettingsActivity
         mVoiceModeOff = getString(R.string.voice_mode_off);
         mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
                 .equals(mVoiceModeOff));
-        mVoiceLogger = VoiceProxy.VoiceLoggerWrapper.getInstance(context);
 
         mAutoCorrectionThreshold = (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
@@ -447,14 +465,17 @@ public class Settings extends InputMethodSettingsActivity
         }
     }
 
+    @SuppressWarnings("unused")
     @Override
     public void onResume() {
         super.onResume();
-        if (!VoiceProxy.VOICE_INSTALLED
-                || !SpeechRecognizer.isRecognitionAvailable(getActivityInternal())) {
-            getPreferenceScreen().removePreference(mVoicePreference);
-        } else {
+        final boolean isShortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
+        if (isShortcutImeEnabled
+                || (VoiceProxy.VOICE_INSTALLED
+                        && VoiceProxy.isRecognitionAvailable(getActivityInternal()))) {
             updateVoiceModeSummary();
+        } else {
+            getPreferenceScreen().removePreference(mVoicePreference);
         }
         updateSettingsKeySummary();
         updateShowCorrectionSuggestionsSummary();
@@ -541,6 +562,7 @@ public class Settings extends InputMethodSettingsActivity
                 [mVoicePreference.findIndexOfValue(mVoicePreference.getValue())]);
     }
 
+    @Override
     protected Dialog onCreateDialog(int id) {
         switch (id) {
             case VOICE_INPUT_CONFIRM_DIALOG:
@@ -549,12 +571,9 @@ public class Settings extends InputMethodSettingsActivity
                     public void onClick(DialogInterface dialog, int whichButton) {
                         if (whichButton == DialogInterface.BUTTON_NEGATIVE) {
                             mVoicePreference.setValue(mVoiceModeOff);
-                            mVoiceLogger.settingsWarningDialogCancel();
                         } else if (whichButton == DialogInterface.BUTTON_POSITIVE) {
                             mOkClicked = true;
-                            mVoiceLogger.settingsWarningDialogOk();
                         }
-                        updateVoicePreference();
                     }
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivityInternal())
@@ -583,7 +602,6 @@ public class Settings extends InputMethodSettingsActivity
                 AlertDialog dialog = builder.create();
                 mDialog = dialog;
                 dialog.setOnDismissListener(this);
-                mVoiceLogger.settingsWarningDialogShown();
                 return dialog;
             default:
                 Log.e(TAG, "unknown dialog " + id);
@@ -593,16 +611,10 @@ public class Settings extends InputMethodSettingsActivity
 
     @Override
     public void onDismiss(DialogInterface dialog) {
-        mVoiceLogger.settingsWarningDialogDismissed();
         if (!mOkClicked) {
             // This assumes that onPreferenceClick gets called first, and this if the user
             // agreed after the warning, we set the mOkClicked value to true.
             mVoicePreference.setValue(mVoiceModeOff);
         }
-    }
-
-    private void updateVoicePreference() {
-        boolean isChecked = !mVoicePreference.getValue().equals(mVoiceModeOff);
-        mVoiceLogger.voiceInputSettingEnabled(isChecked);
     }
 }
