@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -36,11 +37,13 @@ public class DictionaryCollection extends Dictionary {
             mDictionaries = new CopyOnWriteArrayList<Dictionary>();
         } else {
             mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+            mDictionaries.removeAll(Collections.singleton(null));
         }
     }
 
     public DictionaryCollection(Collection<Dictionary> dictionaries) {
         mDictionaries = new CopyOnWriteArrayList<Dictionary>(dictionaries);
+        mDictionaries.removeAll(Collections.singleton(null));
     }
 
     @Override
@@ -70,6 +73,6 @@ public class DictionaryCollection extends Dictionary {
     }
 
     public void addDictionary(Dictionary newDict) {
-        mDictionaries.add(newDict);
+        if (null != newDict) mDictionaries.add(newDict);
     }
 }
