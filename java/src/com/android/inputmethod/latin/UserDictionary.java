@@ -38,23 +38,24 @@ public class UserDictionary extends ExpandableDictionary {
         Words.FREQUENCY,
         Words.LOCALE,
     };
-    
+
     private ContentObserver mObserver;
     private String mLocale;
 
     public UserDictionary(Context context, String locale) {
         super(context, Suggest.DIC_USER);
         mLocale = locale;
-        // Perform a managed query. The Activity will handle closing and requerying the cursor
+        // Perform a managed query. The Activity will handle closing and re-querying the cursor
         // when needed.
         ContentResolver cres = context.getContentResolver();
-        
-        cres.registerContentObserver(Words.CONTENT_URI, true, mObserver = new ContentObserver(null) {
+
+        mObserver = new ContentObserver(null) {
             @Override
             public void onChange(boolean self) {
                 setRequiresReload(true);
             }
-        });
+        };
+        cres.registerContentObserver(Words.CONTENT_URI, true, mObserver);
 
         loadDictionary();
     }
@@ -74,6 +75,17 @@ public class UserDictionary extends ExpandableDictionary {
                 .query(Words.CONTENT_URI, PROJECTION_QUERY, "(locale IS NULL) or (locale=?)",
                         new String[] { mLocale }, null);
         addWords(cursor);
+    }
+
+    public boolean isEnabled() {
+        final ContentResolver cr = getContext().getContentResolver();
+        final ContentProviderClient client = cr.acquireContentProviderClient(Words.CONTENT_URI);
+        if (client != null) {
+            client.release();
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
