@@ -106,7 +106,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private int mThemeIndex = -1;
     private Context mThemeContext;
-    private int mKeyboardWidth;
+    private int mWindowWidth;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
 
@@ -187,13 +187,24 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         setKeyboard(getKeyboard(id));
     }
 
-    public void onSizeChanged() {
+    @SuppressWarnings("unused")
+    public void onSizeChanged(int w, int h, int oldw, int oldh) {
         final int width = mInputMethodService.getWindow().getWindow().getDecorView().getWidth();
+        // If the window width hasn't fixed yet or keyboard doesn't exist, nothing to do with.
         if (width == 0 || mCurrentId == null)
             return;
-        mKeyboardWidth = width;
-        // Set keyboard with new width.
-        final KeyboardId newId = mCurrentId.cloneWithNewGeometry(width);
+        // The window width is fixed.
+        mWindowWidth = width;
+        // If this is the first time the {@link KeyboardView} has been shown, no need to reload
+        // keyboard.
+        if (oldw == 0 && oldh == 0)
+            return;
+        // Reload keyboard with new width.
+        final int orientation = mInputMethodService.getResources().getConfiguration().orientation;
+        final KeyboardId newId = mCurrentId.cloneWithNewGeometry(orientation, width);
+        // If the new keyboard is the same as the current one, no need to reload it.
+        if (newId.equals(mCurrentId))
+            return;
         setKeyboard(getKeyboard(newId));
     }
 
@@ -289,11 +300,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 attribute);
         final Resources res = mInputMethodService.getResources();
         final int orientation = res.getConfiguration().orientation;
-        if (mKeyboardWidth == 0)
-            mKeyboardWidth = res.getDisplayMetrics().widthPixels;
+        if (mWindowWidth == 0)
+            mWindowWidth = res.getDisplayMetrics().widthPixels;
         final Locale locale = mSubtypeSwitcher.getInputLocale();
         return new KeyboardId(
-                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mKeyboardWidth,
+                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mWindowWidth,
                 mode, attribute, hasSettingsKey, f2KeyMode, clobberSettingsKey, mVoiceKeyEnabled,
                 hasVoiceKey, enableShiftLock);
     }

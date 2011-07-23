@@ -269,7 +269,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         // TODO: Should notify InputMethodService instead?
-        KeyboardSwitcher.getInstance().onSizeChanged();
+        KeyboardSwitcher.getInstance().onSizeChanged(w, h, oldw, oldh);
     }
 
     /**

@@ -108,6 +108,18 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard != null) {
+            final int width = keyboard.getMinWidth() + getPaddingLeft() + getPaddingRight();
+            final int height = keyboard.getKeyboardHeight() + getPaddingTop() + getPaddingBottom();
+            setMeasuredDimension(width, height);
+        } else {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    @Override
     public void setKeyboard(Keyboard keyboard) {
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
