@@ -199,8 +199,7 @@ public class PointerTracker {
 
     public static void dismissAllKeyPreviews() {
         for (final PointerTracker tracker : sTrackers) {
-            tracker.setReleasedKeyGraphics();
-            tracker.dismissKeyPreview();
+            tracker.setReleasedKeyGraphics(tracker.mKeyIndex);
         }
     }
 
@@ -323,11 +322,8 @@ public class PointerTracker {
         return key != null && key.mCode == Keyboard.CODE_SPACE;
     }
 
-    public void setReleasedKeyGraphics() {
-        setReleasedKeyGraphics(mKeyIndex);
-    }
-
     private void setReleasedKeyGraphics(int keyIndex) {
+        mDrawingProxy.dismissKeyPreview(this);
         final Key key = getKey(keyIndex);
         if (key != null) {
             key.onReleased();
@@ -336,11 +332,26 @@ public class PointerTracker {
     }
 
     private void setPressedKeyGraphics(int keyIndex) {
+        if (isKeyPreviewRequired(keyIndex)) {
+            mDrawingProxy.showKeyPreview(keyIndex, this);
+        }
         final Key key = getKey(keyIndex);
         if (key != null && key.isEnabled()) {
             key.onPressed();
             mDrawingProxy.invalidateKey(key);
         }
+    }
+
+    // The modifier key, such as shift key, should not show its key preview.
+    private boolean isKeyPreviewRequired(int keyIndex) {
+        final Key key = getKey(keyIndex);
+        if (key == null || !key.isEnabled())
+            return false;
+        final int code = key.mCode;
+        if (isModifierCode(code) || code == Keyboard.CODE_DELETE
+                || code == Keyboard.CODE_ENTER || code == Keyboard.CODE_SPACE)
+            return false;
+        return true;
     }
 
     public int getLastX() {
@@ -438,7 +449,6 @@ public class PointerTracker {
 
             startRepeatKey(keyIndex);
             startLongPressTimer(keyIndex);
-            showKeyPreview(keyIndex);
             setPressedKeyGraphics(keyIndex);
         }
     }
@@ -471,7 +481,6 @@ public class PointerTracker {
                     keyIndex = onMoveKey(x, y);
                 onMoveToNewKey(keyIndex, x, y);
                 startLongPressTimer(keyIndex);
-                showKeyPreview(keyIndex);
                 setPressedKeyGraphics(keyIndex);
             } else if (isMajorEnoughMoveToBeOnNewKey(x, y, keyIndex)) {
                 // The pointer has been slid in to the new key from the previous key, we must call
@@ -491,7 +500,6 @@ public class PointerTracker {
                     onMoveToNewKey(keyIndex, x, y);
                     startLongPressTimer(keyIndex);
                     setPressedKeyGraphics(keyIndex);
-                    showKeyPreview(keyIndex);
                 } else {
                     // HACK: On some devices, quick successive touches may be translated to sudden
                     // move by touch panel firmware. This hack detects the case and translates the
@@ -503,11 +511,10 @@ public class PointerTracker {
                         if (DEBUG_MODE)
                             Log.w(TAG, String.format("onMoveEvent: sudden move is translated to "
                                     + "up[%d,%d]/down[%d,%d] events", lastX, lastY, x, y));
-                        onUpEventInternal(lastX, lastY, eventTime, true);
+                        onUpEventInternal(lastX, lastY, eventTime);
                         onDownEventInternal(x, y, eventTime);
                     } else {
                         mKeyAlreadyProcessed = true;
-                        dismissKeyPreview();
                         setReleasedKeyGraphics(oldKeyIndex);
                     }
                 }
@@ -524,7 +531,6 @@ public class PointerTracker {
                     onMoveToNewKey(keyIndex, x, y);
                 } else {
                     mKeyAlreadyProcessed = true;
-                    dismissKeyPreview();
                 }
             }
         }
@@ -539,27 +545,26 @@ public class PointerTracker {
             if (isModifier()) {
                 // Before processing an up event of modifier key, all pointers already being
                 // tracked should be released.
-                queue.releaseAllPointersExcept(this, eventTime, true);
+                queue.releaseAllPointersExcept(this, eventTime);
             } else {
                 queue.releaseAllPointersOlderThan(this, eventTime);
             }
             queue.remove(this);
         }
-        onUpEventInternal(x, y, eventTime, true);
+        onUpEventInternal(x, y, eventTime);
     }
 
     // Let this pointer tracker know that one of newer-than-this pointer trackers got an up event.
     // This pointer tracker needs to keep the key top graphics "pressed", but needs to get a
     // "virtual" up event.
-    public void onPhantomUpEvent(int x, int y, long eventTime, boolean updateReleasedKeyGraphics) {
+    public void onPhantomUpEvent(int x, int y, long eventTime) {
         if (DEBUG_EVENT)
             printTouchEvent("onPhntEvent:", x, y, eventTime);
-        onUpEventInternal(x, y, eventTime, updateReleasedKeyGraphics);
+        onUpEventInternal(x, y, eventTime);
         mKeyAlreadyProcessed = true;
     }
 
-    private void onUpEventInternal(int x, int y, long eventTime,
-            boolean updateReleasedKeyGraphics) {
+    private void onUpEventInternal(int x, int y, long eventTime) {
         mTimerProxy.cancelKeyTimers();
         mDrawingProxy.cancelShowKeyPreview(this);
         mIsInSlidingKeyInput = false;
@@ -573,9 +578,7 @@ public class PointerTracker {
             keyY = mKeyY;
         }
         final int keyIndex = onUpKey(keyX, keyY, eventTime);
-        dismissKeyPreview();
-        if (updateReleasedKeyGraphics)
-            setReleasedKeyGraphics(keyIndex);
+        setReleasedKeyGraphics(keyIndex);
         if (mKeyAlreadyProcessed)
             return;
         if (!mIsRepeatableKey) {
@@ -585,8 +588,7 @@ public class PointerTracker {
 
     public void onLongPressed() {
         mKeyAlreadyProcessed = true;
-        setReleasedKeyGraphics();
-        dismissKeyPreview();
+        setReleasedKeyGraphics(mKeyIndex);
         final PointerTrackerQueue queue = sPointerTrackerQueue;
         if (queue != null) {
             queue.remove(this);
@@ -599,7 +601,7 @@ public class PointerTracker {
 
         final PointerTrackerQueue queue = sPointerTrackerQueue;
         if (queue != null) {
-            queue.releaseAllPointersExcept(this, eventTime, true);
+            queue.releaseAllPointersExcept(this, eventTime);
             queue.remove(this);
         }
         onCancelEventInternal();
@@ -608,7 +610,6 @@ public class PointerTracker {
     private void onCancelEventInternal() {
         mTimerProxy.cancelKeyTimers();
         mDrawingProxy.cancelShowKeyPreview(this);
-        dismissKeyPreview();
         setReleasedKeyGraphics(mKeyIndex);
         mIsInSlidingKeyInput = false;
     }
@@ -616,7 +617,6 @@ public class PointerTracker {
     private void startRepeatKey(int keyIndex) {
         final Key key = getKey(keyIndex);
         if (key != null && key.mRepeatable) {
-            dismissKeyPreview();
             onRepeatKey(keyIndex);
             mTimerProxy.startKeyRepeatTimer(sDelayBeforeKeyRepeatStart, keyIndex, this);
             mIsRepeatableKey = true;
@@ -644,26 +644,6 @@ public class PointerTracker {
         } else {
             return true;
         }
-    }
-
-    // The modifier key, such as shift key, should not show its key preview.
-    private boolean isKeyPreviewNotRequired(int keyIndex) {
-        final Key key = getKey(keyIndex);
-        if (key == null || !key.isEnabled())
-            return true;
-        final int code = key.mCode;
-        return isModifierCode(code) || code == Keyboard.CODE_DELETE
-                || code == Keyboard.CODE_ENTER || code == Keyboard.CODE_SPACE;
-    }
-
-    private void showKeyPreview(int keyIndex) {
-        if (isKeyPreviewNotRequired(keyIndex))
-            return;
-        mDrawingProxy.showKeyPreview(keyIndex, this);
-    }
-
-    private void dismissKeyPreview() {
-        mDrawingProxy.dismissKeyPreview(this);
     }
 
     private void startLongPressTimer(int keyIndex) {
