@@ -26,7 +26,7 @@ public interface PopupPanel extends PointerTracker.KeyEventHandler {
      * @param tracker the pointer tracker that pressesd the parent key
      * @param window PopupWindow to be used to show this popup panel
      */
-    public void showPanel(LatinKeyboardBaseView parentKeyboardView, Key parentKey,
+    public void showPopupPanel(LatinKeyboardBaseView parentKeyboardView, Key parentKey,
             PointerTracker tracker, PopupWindow window);
 
     /**
