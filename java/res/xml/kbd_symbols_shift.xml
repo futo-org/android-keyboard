@@ -86,7 +86,7 @@
     </Row>
     <Row>
         <Key
-            latin:keyStyle="shiftKeyStyle"
+            latin:keyStyle="altKeyStyle"
             latin:keyWidth="15%p"
             latin:visualInsetsRight="1%p" />
         <Key
