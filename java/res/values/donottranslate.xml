@@ -169,4 +169,7 @@
         <item>English (UK)</item>
         <item>Deutsch (QWERTY)</item>
     </string-array>
+
+    <!-- Generic subtype label -->
+    <string name="subtype_generic">%s</string>
 </resources>
