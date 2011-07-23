@@ -171,10 +171,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, tracker), delay);
         }
 
-        public void cancelDismissKeyPreview(PointerTracker tracker) {
-            removeMessages(MSG_DISMISS_KEY_PREVIEW, tracker);
-        }
-
         public void cancelAllDismissKeyPreviews() {
             removeMessages(MSG_DISMISS_KEY_PREVIEW);
         }

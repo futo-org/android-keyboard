@@ -37,22 +37,21 @@ public class PointerTrackerQueue {
             if (t.isModifier()) {
                 oldestPos++;
             } else {
-                t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime, true);
+                t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime);
                 queue.remove(oldestPos);
             }
         }
     }
 
     public void releaseAllPointers(long eventTime) {
-        releaseAllPointersExcept(null, eventTime, true);
+        releaseAllPointersExcept(null, eventTime);
     }
 
-    public void releaseAllPointersExcept(PointerTracker tracker, long eventTime,
-            boolean updateReleasedKeyGraphics) {
+    public void releaseAllPointersExcept(PointerTracker tracker, long eventTime) {
         for (PointerTracker t : mQueue) {
             if (t == tracker)
                 continue;
-            t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime, updateReleasedKeyGraphics);
+            t.onPhantomUpEvent(t.getLastX(), t.getLastY(), eventTime);
         }
         mQueue.clear();
         if (tracker != null)
