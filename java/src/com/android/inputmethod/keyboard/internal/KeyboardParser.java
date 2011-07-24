@@ -222,8 +222,9 @@ public class KeyboardParser {
             final int height = Math.max(
                     Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
 
-
             keyboard.setKeyboardHeight(height);
+            keyboard.setRtlKeyboard(keyboardAttr.getBoolean(
+                    R.styleable.Keyboard_isRtlKeyboard, false));
             keyboard.setKeyWidth(getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyWidth, displayWidth, displayWidth / 10));
             keyboard.setRowHeight(getDimensionOrFraction(keyboardAttr,

@@ -110,6 +110,9 @@ public class Keyboard {
     /** Maximum column for popup keyboard */
     private int mMaxPopupColumn;
 
+    /** True if Right-To-Left keyboard */
+    private boolean mIsRtlKeyboard;
+
     /** List of shift keys in this keyboard and its icons and state */
     private final List<Key> mShiftKeys = new ArrayList<Key>();
     private final HashMap<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
@@ -255,6 +258,14 @@ public class Keyboard {
 
     public void setKeyboardHeight(int height) {
         mKeyboardHeight = height;
+    }
+
+    public boolean isRtlKeyboard() {
+        return mIsRtlKeyboard;
+    }
+
+    public void setRtlKeyboard(boolean isRtl) {
+        mIsRtlKeyboard = isRtl;
     }
 
     public int getPopupKeyboardResId() {

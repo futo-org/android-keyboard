@@ -18,7 +18,7 @@
 */
 -->
 
-<Keyboard
+<merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <include
@@ -170,4 +170,4 @@
         <include
             latin:keyboardLayout="@xml/kbd_qwerty_f2" />
     </Row>
-</Keyboard>
+</merge>

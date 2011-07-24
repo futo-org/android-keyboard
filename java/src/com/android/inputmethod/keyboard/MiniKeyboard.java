@@ -34,6 +34,8 @@ public class MiniKeyboard extends Keyboard {
         // revert the above hacks and uncomment the following lines.
         //setHorizontalGap(parentKeyboard.getHorizontalGap());
         //setVerticalGap(parentKeyboard.getVerticalGap());
+
+        setRtlKeyboard(parentKeyboard.isRtlKeyboard());
     }
 
     public void setDefaultCoordX(int pos) {

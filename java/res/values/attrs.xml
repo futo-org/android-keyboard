@@ -150,6 +150,8 @@
         <attr name="popupKeyboardTemplate" format="reference" />
         <!-- Locale of the keyboard layout -->
         <attr name="keyboardLocale" format="string" />
+        <!-- True if the keyboard is Right-To-Left -->
+        <attr name="isRtlKeyboard" format="boolean" />
         <!-- Icon set for key top and key preview. -->
         <attr name="iconShiftKey" format="reference" />
         <attr name="iconToSymbolKey" format="reference" />

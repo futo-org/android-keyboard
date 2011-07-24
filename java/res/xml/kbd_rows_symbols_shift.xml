@@ -2,7 +2,7 @@
 <!--
 /*
 **
-** Copyright 2011, The Android Open Source Project
+** Copyright 2008, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -18,13 +18,13 @@
 */
 -->
 
-<Keyboard
+<merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="9.0%p"
+        latin:keyWidth="10%p"
     >
         <Key
             latin:keyLabel="~" />
@@ -50,24 +50,19 @@
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="×" />
         <Key
-            latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="§"
-            latin:popupCharacters="¶" />
+            latin:keyLabel="{" />
         <Key
-            latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="Δ" />
-        <Key
-            latin:keyStyle="deleteKeyStyle"
-            latin:keyXPos="-10.0%p"
-            latin:keyWidth="fillBoth" />
+            latin:keyLabel="}"
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="9.0%p"
+        latin:keyWidth="10%p"
     >
         <Key
+            latin:keyStyle="nonSpecialBackgroundTabKeyStyle" />
+        <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="£"
-            latin:keyXPos="4.5%p" />
+            latin:keyLabel="£" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="¢" />
@@ -76,75 +71,55 @@
             latin:keyLabel="€" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="¥" />
+            latin:keyLabel="°"
+            latin:popupCharacters="′,″" />
         <Key
             latin:keyLabel="^"
             latin:popupCharacters="↑,↓,←,→" />
         <Key
-            latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="°"
-            latin:popupCharacters="′,″" />
+            latin:keyLabel="_" />
         <Key
-            latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="±"
-            latin:popupCharacters="∞" />
+            latin:keyLabel="="
+            latin:popupCharacters="≠,≈,∞" />
         <Key
-            latin:keyLabel="{" />
+            latin:keyLabel="[" />
         <Key
-            latin:keyLabel="}" />
-        <Key
-            latin:keyStyle="returnKeyStyle"
-            latin:keyXPos="-14.6%p"
-            latin:keyWidth="fillBoth" />
+            latin:keyLabel="]"
+            latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="8.9%p"
+        latin:keyWidth="10%p"
     >
         <Key
-            latin:keyStyle="moreKeyStyle"
-            latin:keyWidth="10.0%p" />
-        <Key
-            latin:keyLabel="\\" />
-        <Key
-            latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="©" />
-        <Key
-            latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="®" />
+            latin:keyStyle="altKeyStyle"
+            latin:keyWidth="15%p"
+            latin:visualInsetsRight="1%p" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
             latin:keyLabel="™" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="℅" />
-        <Key
-            latin:keyLabel="[" />
-        <Key
-            latin:keyLabel="]" />
+            latin:keyLabel="®" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="¡" />
+            latin:keyLabel="©" />
         <Key
             latin:keyStyle="nonPasswordSymbolKeyStyle"
-            latin:keyLabel="¿" />
+            latin:keyLabel="¶"
+            latin:popupCharacters="§" />
+        <Key
+            latin:keyLabel="\\" />
+        <Key
+            latin:keyLabel="&lt;"
+            latin:popupCharacters="≤,«,‹" />
+        <Key
+            latin:keyLabel="&gt;"
+            latin:popupCharacters="≥,»,›" />
+        <Key
+            latin:keyStyle="deleteKeyStyle"
+            latin:keyWidth="fillRight"
+            latin:visualInsetsLeft="1%p" />
     </Row>
-    <Row
-        latin:keyWidth="8.9%p"
-    >
-        <Key
-            latin:keyStyle="toAlphaKeyStyle"
-            latin:keyLabelOption="alignLeft"
-            latin:keyWidth="13.0%p" />
-        <Key
-            latin:keyStyle="tabKeyStyle" />
-        <Key
-            latin:keyStyle="spaceKeyStyle"
-            latin:keyXPos="30.750%p"
-            latin:keyWidth="39.750%p" />
-        <Spacer
-            latin:keyXPos="-10.00%p"
-            latin:keyWidth="0%p" />
-        <include
-            latin:keyboardLayout="@xml/kbd_qwerty_f2" />
-    </Row>
-</Keyboard>
+    <include
+        latin:keyboardLayout="@xml/kbd_symbols_shift_row4" />
+</merge>

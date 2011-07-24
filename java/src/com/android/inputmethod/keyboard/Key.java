@@ -34,6 +34,8 @@ import com.android.inputmethod.keyboard.internal.Row;
 import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Class for describing the position and characteristics of a single key in the keyboard.
@@ -153,6 +155,38 @@ public class Key {
             android.R.attr.state_pressed
     };
 
+    // RTL parenthesis character swapping map.
+    private static final Map<Integer, Integer> sRtlParenthesisMap = new HashMap<Integer, Integer>();
+
+    static {
+        addRtlParenthesisPair('(', ')');
+        addRtlParenthesisPair('[', ']');
+        addRtlParenthesisPair('{', '}');
+        addRtlParenthesisPair('<', '>');
+        // \u00ab: LEFT-POINTING DOUBLE ANGLE QUOTATION MARK
+        // \u00bb: RIGHT-POINTING DOUBLE ANGLE QUOTATION MARK
+        addRtlParenthesisPair('\u00ab', '\u00bb');
+        // \u2039: SINGLE LEFT-POINTING ANGLE QUOTATION MARK
+        // \u203a: SINGLE RIGHT-POINTING ANGLE QUOTATION MARK
+        addRtlParenthesisPair('\u2039', '\u203a');
+        // \u2264: LESS-THAN OR EQUAL TO
+        // \u2265: GREATER-THAN OR EQUAL TO
+        addRtlParenthesisPair('\u2264', '\u2265');
+    }
+
+    private static void addRtlParenthesisPair(int left, int right) {
+        sRtlParenthesisMap.put(left, right);
+        sRtlParenthesisMap.put(right, left);
+    }
+
+    private static int getRtlParenthesisCode(int code) {
+        if (sRtlParenthesisMap.containsKey(code)) {
+            return sRtlParenthesisMap.get(code);
+        } else {
+            return code;
+        }
+    }
+
     /**
      * This constructor is being used only for key in popup mini keyboard.
      */
@@ -174,7 +208,8 @@ public class Key {
         final String popupSpecification = popupCharacter.toString();
         mLabel = PopupCharactersParser.getLabel(popupSpecification);
         mOutputText = PopupCharactersParser.getOutputText(popupSpecification);
-        mCode = PopupCharactersParser.getCode(res, popupSpecification);
+        final int code = PopupCharactersParser.getCode(res, popupSpecification);
+        mCode = keyboard.isRtlKeyboard() ? getRtlParenthesisCode(code) : code;
         mIcon = keyboard.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpecification));
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mGap / 2;
@@ -298,7 +333,8 @@ public class Key {
             final int code = style.getInt(keyAttr, R.styleable.Keyboard_Key_code,
                     Keyboard.CODE_UNSPECIFIED);
             if (code == Keyboard.CODE_UNSPECIFIED && !TextUtils.isEmpty(mLabel)) {
-                mCode = mLabel.charAt(0);
+                final int firstChar = mLabel.charAt(0);
+                mCode = mKeyboard.isRtlKeyboard() ? getRtlParenthesisCode(firstChar) : firstChar;
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
                 mCode = code;
             } else {
