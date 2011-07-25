@@ -60,6 +60,7 @@ import com.android.inputmethod.compat.SuggestionSpanUtils;
 import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.deprecated.recorrection.Recorrection;
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
@@ -1695,7 +1696,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // for punctuation entered through the suggestion strip, it should be considered
             // a magic space even if it was a normal space. This is meant to help in case the user
             // pressed space on purpose of displaying the suggestion strip punctuation.
-            final char primaryCode = suggestion.charAt(0);
+            final int rawPrimaryCode = suggestion.charAt(0);
+            // Maybe apply the "bidi mirrored" conversions for parentheses
+            final LatinKeyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
+            final int primaryCode = keyboard.isRtlKeyboard()
+                    ? Key.getRtlParenthesisCode(rawPrimaryCode) : rawPrimaryCode;
+
             final CharSequence beforeText = ic != null ? ic.getTextBeforeCursor(1, 0) : "";
             final int toLeft = (ic == null || TextUtils.isEmpty(beforeText))
                     ? 0 : beforeText.charAt(0);

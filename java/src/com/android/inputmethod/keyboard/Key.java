@@ -179,7 +179,7 @@ public class Key {
         sRtlParenthesisMap.put(right, left);
     }
 
-    private static int getRtlParenthesisCode(int code) {
+    public static int getRtlParenthesisCode(int code) {
         if (sRtlParenthesisMap.containsKey(code)) {
             return sRtlParenthesisMap.get(code);
         } else {
