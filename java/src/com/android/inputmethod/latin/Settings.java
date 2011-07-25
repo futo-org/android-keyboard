@@ -183,11 +183,11 @@ public class Settings extends InputMethodSettingsActivity
 
             mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
 
-            final String voiceMode = prefs.getString(PREF_VOICE_SETTINGS_KEY, null);
-            mVoiceButtonEnabled = voiceMode != null && !voiceMode.equals(
-                    res.getString(R.string.voice_mode_off));
-            mVoiceButtonOnPrimary = voiceMode != null && voiceMode.equals(
-                    res.getString(R.string.voice_mode_main));
+            final String voiceModeMain = res.getString(R.string.voice_mode_main);
+            final String voiceModeOff = res.getString(R.string.voice_mode_off);
+            final String voiceMode = prefs.getString(PREF_VOICE_SETTINGS_KEY, voiceModeMain);
+            mVoiceButtonEnabled = voiceMode != null && !voiceMode.equals(voiceModeOff);
+            mVoiceButtonOnPrimary = voiceMode != null && voiceMode.equals(voiceModeMain);
 
             Utils.setSystemLocale(res, savedLocale);
         }
