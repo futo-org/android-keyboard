@@ -159,6 +159,8 @@ public class Key {
     private static final Map<Integer, Integer> sRtlParenthesisMap = new HashMap<Integer, Integer>();
 
     static {
+        // The all letters need to be mirrored are found at
+        // http://www.unicode.org/Public/6.0.0/ucd/extracted/DerivedBinaryProperties.txt
         addRtlParenthesisPair('(', ')');
         addRtlParenthesisPair('[', ']');
         addRtlParenthesisPair('{', '}');
