@@ -39,8 +39,6 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"A névjegyek használata a javaslatokhoz és javításokhoz"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automatikusan nagy kezdőbetű"</string>
     <string name="configure_dictionaries_title" msgid="3758288002414557345">"Szótárak konfigurálása"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"Gyorsjavítások"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"Kijavítja a gyakori gépelési hibákat"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Javítási ajánlások megjelenítése"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"A javasolt szavak megjelenítése gépelés közben"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mindig látszik"</string>

@@ -39,8 +39,6 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Namen aus \"Kontakte\" als Vorschläge und Korrekturmöglichkeiten anzeigen"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Autom. Groß-/Kleinschr."</string>
     <string name="configure_dictionaries_title" msgid="3758288002414557345">"Wörterbücher konfigurieren"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"Quick Fixes"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"Korrigiert gängige Tippfehler"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Änderungsvorschläge anzeigen"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Vorgeschlagene Wörter während des Tippens anzeigen"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Immer anzeigen"</string>

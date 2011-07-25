@@ -39,8 +39,6 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"추천 및 수정에 주소록의 이름 사용"</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="configure_dictionaries_title" msgid="3758288002414557345">"사전 설정"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"빠른 수정"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"자주 발생하는 오타를 수정합니다."</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"수정 제안 표시"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"글자를 입력하는 동안 추천 단어 표시"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>

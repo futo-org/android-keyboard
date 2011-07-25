@@ -69,7 +69,6 @@ public class Settings extends InputMethodSettingsActivity
 
     public static final String PREF_CONFIGURE_DICTIONARIES_KEY = "configure_dictionaries_key";
     public static final String PREF_CORRECTION_SETTINGS_KEY = "correction_settings";
-    public static final String PREF_QUICK_FIXES = "quick_fixes";
     public static final String PREF_SHOW_SUGGESTIONS_SETTING = "show_suggestions_setting";
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
@@ -111,7 +110,6 @@ public class Settings extends InputMethodSettingsActivity
         public final boolean mKeyPreviewPopupOn;
         public final int mKeyPreviewPopupDismissDelay;
         public final boolean mAutoCap;
-        public final boolean mQuickFixes;
         public final boolean mAutoCorrectEnabled;
         public final double mAutoCorrectionThreshold;
         // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
@@ -171,7 +169,6 @@ public class Settings extends InputMethodSettingsActivity
             mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
             mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
             mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
-            mQuickFixes = isQuickFixesEnabled(prefs, res);
 
             mAutoCorrectEnabled = isAutoCorrectEnabled(prefs, res);
             mBigramSuggestionEnabled = mAutoCorrectEnabled
@@ -206,17 +203,6 @@ public class Settings extends InputMethodSettingsActivity
 
         public boolean isMagicSpaceSwapper(int code) {
             return mMagicSpaceSwappers.contains(String.valueOf((char)code));
-        }
-
-        // Helper methods
-        private static boolean isQuickFixesEnabled(SharedPreferences sp, Resources resources) {
-            final boolean showQuickFixesOption = resources.getBoolean(
-                    R.bool.config_enable_quick_fixes_option);
-            if (!showQuickFixesOption) {
-                return isAutoCorrectEnabled(sp, resources);
-            }
-            return sp.getBoolean(Settings.PREF_QUICK_FIXES, resources.getBoolean(
-                    R.bool.config_default_quick_fixes));
         }
 
         private static boolean isAutoCorrectEnabled(SharedPreferences sp, Resources resources) {
@@ -417,12 +403,6 @@ public class Settings extends InputMethodSettingsActivity
                 R.bool.config_enable_show_recorrection_option);
         if (!showRecorrectionOption) {
             generalSettings.removePreference(findPreference(PREF_RECORRECTION_ENABLED));
-        }
-
-        final boolean showQuickFixesOption = res.getBoolean(
-                R.bool.config_enable_quick_fixes_option);
-        if (!showQuickFixesOption) {
-            textCorrectionGroup.removePreference(findPreference(PREF_QUICK_FIXES));
         }
 
         final boolean showBigramSuggestionsOption = res.getBoolean(

@@ -39,8 +39,6 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Използване на имена от „Контакти“ за предложения и поправки"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Автоматично поставяне на главни букви"</string>
     <string name="configure_dictionaries_title" msgid="3758288002414557345">"Конфигуриране на речници"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"Бързи корекции"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"Коригира най-честите грешки при въвеждане"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения за поправка"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Показване на предложения, докато пишете"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Винаги да се показва"</string>

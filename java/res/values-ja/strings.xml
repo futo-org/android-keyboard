@@ -39,8 +39,6 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"連絡先の名前を使用して候補表示や自動修正を行います"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大文字変換"</string>
     <string name="configure_dictionaries_title" msgid="3758288002414557345">"辞書を設定"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"クイックフィックス"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"よくある誤字・脱字を修正します"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"修正候補を表示する"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"入力中に入力候補を表示する"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"常に表示"</string>

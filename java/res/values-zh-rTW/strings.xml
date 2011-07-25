@@ -39,8 +39,6 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"使用「聯絡人」的名稱提供建議與修正"</string>
     <string name="auto_cap" msgid="1719746674854628252">"自動大寫"</string>
     <string name="configure_dictionaries_title" msgid="3758288002414557345">"設定字典"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"快速修正"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"修正一般打字錯誤"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"顯示修正建議"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"輸入時顯示建議字詞"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"一律顯示"</string>

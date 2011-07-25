@@ -75,12 +75,6 @@
               android:targetPackage="com.google.android.inputmethod.latin.dictionarypack"
               android:targetClass="com.google.android.inputmethod.latin.dictionarypack.DictionarySettings" />
         </PreferenceScreen>
-        <CheckBoxPreference
-            android:key="quick_fixes"
-            android:title="@string/quick_fixes"
-            android:summary="@string/quick_fixes_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
         <ListPreference
             android:key="auto_correction_threshold"
             android:title="@string/auto_correction"

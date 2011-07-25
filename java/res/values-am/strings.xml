@@ -51,8 +51,6 @@
     <string name="auto_cap" msgid="1719746674854628252">"ራስ-ሰር አቢይ ማድረግ"</string>
     <!-- no translation found for configure_dictionaries_title (3758288002414557345) -->
     <skip />
-    <string name="quick_fixes" msgid="5353213327680897927">"ፈጣንጥገና"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">" የተለመዱ የትየባ ስህተቶችንያስተካክላል"</string>
     <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
     <skip />
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"እየተየብክ ተመራጭ ቃላትን አሳይ"</string>

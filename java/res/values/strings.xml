@@ -72,11 +72,6 @@
     <!-- Option to configure dictionaries -->
     <string name="configure_dictionaries_title">Configure dictionaries</string>
 
-    <!-- Option to enable quick fixes -->
-    <string name="quick_fixes">Quick fixes</string>
-    <!-- Description for quick fixes -->
-    <string name="quick_fixes_summary">Corrects commonly typed mistakes</string>
-
     <!-- Option to enable showing suggestions -->
     <string name="prefs_show_suggestions">Show correction suggestions</string>
     <!-- Description for show suggestions -->

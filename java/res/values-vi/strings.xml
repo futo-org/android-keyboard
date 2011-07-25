@@ -39,8 +39,6 @@
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Sử dụng tên từ Danh bạ cho các đề xuất và chỉnh sửa"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Tự động viết hoa"</string>
     <string name="configure_dictionaries_title" msgid="3758288002414557345">"Cấu hình từ điển"</string>
-    <string name="quick_fixes" msgid="5353213327680897927">"Sửa nhanh"</string>
-    <string name="quick_fixes_summary" msgid="3405028402510332373">"Sửa lỗi nhập thông thường"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Hiển thị gợi ý sửa"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Hiển thị từ được đề xuất khi nhập"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Luôn hiển thị"</string>

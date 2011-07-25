@@ -1442,8 +1442,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // not to auto correct, but accept the typed word. For instance,
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
-            final boolean shouldAutoCorrect =
-                    (mSettingsValues.mAutoCorrectEnabled || mSettingsValues.mQuickFixes)
+            final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
                     && !mInputTypeNoAutoCorrect && mHasDictionary;
             if (shouldAutoCorrect && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
                 pickedDefault = pickDefaultSuggestion(primaryCode);
@@ -2085,8 +2084,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private void updateCorrectionMode() {
         // TODO: cleanup messy flags
         mHasDictionary = mSuggest != null ? mSuggest.hasMainDictionary() : false;
-        final boolean shouldAutoCorrect = (mSettingsValues.mAutoCorrectEnabled
-                || mSettingsValues.mQuickFixes) && !mInputTypeNoAutoCorrect && mHasDictionary;
+        final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
+                && !mInputTypeNoAutoCorrect && mHasDictionary;
         mCorrectionMode = (shouldAutoCorrect && mSettingsValues.mAutoCorrectEnabled)
                 ? Suggest.CORRECTION_FULL
                 : (shouldAutoCorrect ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
@@ -2100,7 +2099,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void updateAutoTextEnabled() {
         if (mSuggest == null) return;
-        mSuggest.setQuickFixesEnabled(mSettingsValues.mQuickFixes
+        // We want to use autotext if the settings are asking for auto corrections, and if
+        // the input language is the same as the system language (because autotext will only
+        // work in the system language so if we are entering text in a different language we
+        // do not want it on).
+        // We used to look at the "quick fixes" option instead of mAutoCorrectEnabled, but
+        // this option was redundant and confusing and therefore removed.
+        mSuggest.setQuickFixesEnabled(mSettingsValues.mAutoCorrectEnabled
                 && SubtypeSwitcher.getInstance().isSystemLanguageSameAsInputLanguage());
     }
 
