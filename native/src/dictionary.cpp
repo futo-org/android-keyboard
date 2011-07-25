@@ -57,12 +57,4 @@ bool Dictionary::isValidWord(unsigned short *word, int length) {
     return mUnigramDictionary->isValidWord(word, length);
 }
 
-int Dictionary::getBigramPosition(unsigned short *word, int length) {
-    if (IS_LATEST_DICT_VERSION) {
-        return mUnigramDictionary->getBigramPosition(DICTIONARY_HEADER_SIZE, word, 0, length);
-    } else {
-        return mUnigramDictionary->getBigramPosition(0, word, 0, length);
-    }
-}
-
 } // namespace latinime

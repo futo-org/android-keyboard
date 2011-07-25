@@ -64,8 +64,6 @@ public:
             const int pos, unsigned short *c, int *childrenPosition,
             bool *terminal, int *freq);
     static inline unsigned short toBaseLowerCase(unsigned short c);
-    // TODO: delete this
-    int getBigramPosition(unsigned short *word, int length);
 
 private:
     bool hasBigram();

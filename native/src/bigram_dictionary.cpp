@@ -21,13 +21,14 @@
 
 #include "bigram_dictionary.h"
 #include "dictionary.h"
+#include "binary_format.h"
 
 namespace latinime {
 
 BigramDictionary::BigramDictionary(const unsigned char *dict, int maxWordLength,
         int maxAlternatives, const bool isLatestDictVersion, const bool hasBigram,
         Dictionary *parentDictionary)
-    : DICT(dict), MAX_WORD_LENGTH(maxWordLength),
+    : DICT(dict + NEW_DICTIONARY_HEADER_SIZE), MAX_WORD_LENGTH(maxWordLength),
     MAX_ALTERNATIVES(maxAlternatives), IS_LATEST_DICT_VERSION(isLatestDictVersion),
     HAS_BIGRAM(hasBigram), mParentDictionary(parentDictionary) {
     if (DEBUG_DICT) {
@@ -82,169 +83,64 @@ bool BigramDictionary::addWordBigram(unsigned short *word, int length, int frequ
     return false;
 }
 
-int BigramDictionary::getBigramAddress(int *pos, bool advance) {
-    int address = 0;
-
-    address += (DICT[*pos] & 0x3F) << 16;
-    address += (DICT[*pos + 1] & 0xFF) << 8;
-    address += (DICT[*pos + 2] & 0xFF);
-
-    if (advance) {
-        *pos += 3;
-    }
-
-    return address;
-}
-
-int BigramDictionary::getBigramFreq(int *pos) {
-    int freq = DICT[(*pos)++] & FLAG_BIGRAM_FREQ;
-
-    return freq;
-}
-
-
+/* Parameters :
+ * prevWord: the word before, the one for which we need to look up bigrams.
+ * prevWordLength: its length.
+ * codes: what user typed, in the same format as for UnigramDictionary::getSuggestions.
+ * codesSize: the size of the codes array.
+ * bigramChars: an array for output, at the same format as outwords for getSuggestions.
+ * bigramFreq: an array to output frequencies.
+ * maxWordLength: the maximum size of a word.
+ * maxBigrams: the maximum number of bigrams fitting in the bigramChars array.
+ * maxAlteratives: unused.
+ * This method returns the number of bigrams this word has, for backward compatibility.
+ * Note: this is not the number of bigrams output in the array, which is the number of
+ * bigrams this word has WHOSE first letter also matches the letter the user typed.
+ * TODO: this may not be a sensible thing to do. It makes sense when the bigrams are
+ * used to match the first letter of the second word, but once the user has typed more
+ * and the bigrams are used to boost unigram result scores, it makes little sense to
+ * reduce their scope to the ones that match the first letter.
+ */
 int BigramDictionary::getBigrams(unsigned short *prevWord, int prevWordLength, int *codes,
         int codesSize, unsigned short *bigramChars, int *bigramFreq, int maxWordLength,
         int maxBigrams, int maxAlternatives) {
+    // TODO: remove unused arguments, and refrain from storing stuff in members of this class
+    // TODO: have "in" arguments before "out" ones, and make out args explicit in the name
     mBigramFreq = bigramFreq;
     mBigramChars = bigramChars;
     mInputCodes = codes;
-    mInputLength = codesSize;
     mMaxBigrams = maxBigrams;
 
-    if (HAS_BIGRAM && IS_LATEST_DICT_VERSION) {
-        int pos = mParentDictionary->getBigramPosition(prevWord, prevWordLength);
-        if (DEBUG_DICT) {
-            LOGI("Pos -> %d", pos);
-        }
-        if (pos < 0) {
-            return 0;
-        }
+    const uint8_t* const root = DICT;
+    int pos = BinaryFormat::getTerminalPosition(root, prevWord, prevWordLength);
 
-        int bigramCount = 0;
-        int bigramExist = (DICT[pos] & FLAG_BIGRAM_READ);
-        if (bigramExist > 0) {
-            int nextBigramExist = 1;
-            while (nextBigramExist > 0 && bigramCount < maxBigrams) {
-                int bigramAddress = getBigramAddress(&pos, true);
-                int frequency = (FLAG_BIGRAM_FREQ & DICT[pos]);
-                // search for all bigrams and store them
-                searchForTerminalNode(bigramAddress, frequency);
-                nextBigramExist = (DICT[pos++] & FLAG_BIGRAM_CONTINUED);
-                bigramCount++;
-            }
-        }
-
-        return bigramCount;
+    if (NOT_VALID_WORD == pos) return 0;
+    const int flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+    if (0 == (flags & UnigramDictionary::FLAG_HAS_BIGRAMS)) return 0;
+    if (0 == (flags & UnigramDictionary::FLAG_HAS_MULTIPLE_CHARS)) {
+        BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
+    } else {
+        pos = BinaryFormat::skipOtherCharacters(root, pos);
     }
-    return 0;
-}
+    pos = BinaryFormat::skipChildrenPosition(flags, pos);
+    pos = BinaryFormat::skipFrequency(flags, pos);
+    int bigramFlags;
+    int bigramCount = 0;
+    do {
+        bigramFlags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
+        uint16_t bigramBuffer[MAX_WORD_LENGTH];
+        const int bigramPos = BinaryFormat::getAttributeAddressAndForwardPointer(root, bigramFlags,
+                &pos);
+        const int length = BinaryFormat::getWordAtAddress(root, bigramPos, MAX_WORD_LENGTH,
+                bigramBuffer);
 
-void BigramDictionary::searchForTerminalNode(int addressLookingFor, int frequency) {
-    // track word with such address and store it in an array
-    unsigned short word[MAX_WORD_LENGTH];
-
-    int pos;
-    int followDownBranchAddress = DICTIONARY_HEADER_SIZE;
-    bool found = false;
-    char followingChar = ' ';
-    int depth = -1;
-
-    while(!found) {
-        bool followDownAddressSearchStop = false;
-        bool firstAddress = true;
-        bool haveToSearchAll = true;
-
-        if (depth < MAX_WORD_LENGTH && depth >= 0) {
-            word[depth] = (unsigned short) followingChar;
+        if (checkFirstCharacter(bigramBuffer)) {
+            const int frequency = UnigramDictionary::MASK_ATTRIBUTE_FREQUENCY & bigramFlags;
+            addWordBigram(bigramBuffer, length, frequency);
         }
-        pos = followDownBranchAddress; // pos start at count
-        int count = DICT[pos] & 0xFF;
-        if (DEBUG_DICT) {
-            LOGI("count - %d",count);
-        }
-        pos++;
-        for (int i = 0; i < count; i++) {
-            // pos at data
-            pos++;
-            // pos now at flag
-            if (!getFirstBitOfByte(&pos)) { // non-terminal
-                if (!followDownAddressSearchStop) {
-                    int addr = getBigramAddress(&pos, false);
-                    if (addr > addressLookingFor) {
-                        followDownAddressSearchStop = true;
-                        if (firstAddress) {
-                            firstAddress = false;
-                            haveToSearchAll = true;
-                        } else if (!haveToSearchAll) {
-                            break;
-                        }
-                    } else {
-                        followDownBranchAddress = addr;
-                        followingChar = (char)(0xFF & DICT[pos-1]);
-                        if (firstAddress) {
-                            firstAddress = false;
-                            haveToSearchAll = false;
-                        }
-                    }
-                }
-                pos += 3;
-            } else if (getFirstBitOfByte(&pos)) { // terminal
-                if (addressLookingFor == (pos-1)) { // found !!
-                    depth++;
-                    word[depth] = (0xFF & DICT[pos-1]);
-                    found = true;
-                    break;
-                }
-                if (getSecondBitOfByte(&pos)) { // address + freq (4 byte)
-                    if (!followDownAddressSearchStop) {
-                        int addr = getBigramAddress(&pos, false);
-                        if (addr > addressLookingFor) {
-                            followDownAddressSearchStop = true;
-                            if (firstAddress) {
-                                firstAddress = false;
-                                haveToSearchAll = true;
-                            } else if (!haveToSearchAll) {
-                                break;
-                            }
-                        } else {
-                            followDownBranchAddress = addr;
-                            followingChar = (char)(0xFF & DICT[pos-1]);
-                            if (firstAddress) {
-                                firstAddress = false;
-                                haveToSearchAll = true;
-                            }
-                        }
-                    }
-                    pos += 4;
-                } else { // freq only (2 byte)
-                    pos += 2;
-                }
-
-                // skipping bigram
-                int bigramExist = (DICT[pos] & FLAG_BIGRAM_READ);
-                if (bigramExist > 0) {
-                    int nextBigramExist = 1;
-                    while (nextBigramExist > 0) {
-                        pos += 3;
-                        nextBigramExist = (DICT[pos++] & FLAG_BIGRAM_CONTINUED);
-                    }
-                } else {
-                    pos++;
-                }
-            }
-        }
-        depth++;
-        if (followDownBranchAddress == 0) {
-            if (DEBUG_DICT) {
-                LOGI("ERROR!!! Cannot find bigram!!");
-            }
-            break;
-        }
-    }
-    if (checkFirstCharacter(word)) {
-        addWordBigram(word, depth, frequency);
-    }
+        ++bigramCount;
+    } while (0 != (UnigramDictionary::FLAG_ATTRIBUTE_HAS_NEXT & bigramFlags));
+    return bigramCount;
 }
 
 bool BigramDictionary::checkFirstCharacter(unsigned short *word) {
