@@ -25,6 +25,9 @@
     <!-- Title for Latin keyboard input options dialog [CHAR LIMIT=25] -->
     <string name="english_ime_input_options">Input options</string>
 
+    <!-- Title for Latin Keyboard spell checker service -->
+    <string name="spell_checker_service_name">Android correction</string>
+
     <!-- Option to provide vibrate/haptic feedback on keypress -->
     <string name="vibrate_on_keypress">Vibrate on keypress</string>
 
