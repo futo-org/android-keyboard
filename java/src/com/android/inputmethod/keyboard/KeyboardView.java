@@ -87,8 +87,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final KeyDrawParams mKeyDrawParams;
 
     // Key preview
+    private final int mKeyPreviewLayoutId;
     private final KeyPreviewDrawParams mKeyPreviewDrawParams;
-    private final TextView mPreviewText;
     private boolean mShowKeyPreviewPopup = true;
     private final int mDelayBeforePreview;
     private int mDelayAfterPreview;
@@ -139,9 +139,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 keyboardView.showKey(msg.arg1, tracker);
                 break;
             case MSG_DISMISS_KEY_PREVIEW:
-                if (keyboardView.mPreviewText != null) {
-                    keyboardView.mPreviewText.setVisibility(View.INVISIBLE);
-                }
+                tracker.getKeyPreviewText().setVisibility(View.INVISIBLE);
                 break;
             }
         }
@@ -150,7 +148,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             removeMessages(MSG_SHOW_KEY_PREVIEW);
             final KeyboardView keyboardView = getOuterInstance();
             if (keyboardView == null) return;
-            if (keyboardView.mPreviewText.getVisibility() == VISIBLE || delay == 0) {
+            if (tracker.getKeyPreviewText().getVisibility() == VISIBLE || delay == 0) {
                 // Show right away, if it's already visible and finger is moving around
                 keyboardView.showKey(keyIndex, tracker);
             } else {
@@ -169,6 +167,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         public void dismissKeyPreview(long delay, PointerTracker tracker) {
             sendMessageDelayed(obtainMessage(MSG_DISMISS_KEY_PREVIEW, tracker), delay);
+        }
+
+        public void cancelDismissKeyPreview(PointerTracker tracker) {
+            removeMessages(MSG_DISMISS_KEY_PREVIEW, tracker);
         }
 
         public void cancelAllDismissKeyPreviews() {
@@ -317,11 +319,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         mKeyDrawParams = new KeyDrawParams(a);
         mKeyPreviewDrawParams = new KeyPreviewDrawParams(a, mKeyDrawParams);
-        final int previewLayout = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
-        if (previewLayout != 0) {
-            mPreviewText = (TextView) LayoutInflater.from(context).inflate(previewLayout, null);
-        } else {
-            mPreviewText = null;
+        mKeyPreviewLayoutId = a.getResourceId(R.styleable.KeyboardView_keyPreviewLayout, 0);
+        if (mKeyPreviewLayoutId == 0) {
             mShowKeyPreviewPopup = false;
         }
         mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
@@ -730,6 +729,17 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDrawingHandler.cancelAllMessages();
     }
 
+    // Called by {@link PointerTracker} constructor to create a TextView.
+    @Override
+    public TextView inflateKeyPreviewText() {
+        final Context context = getContext();
+        if (mKeyPreviewLayoutId != 0) {
+            return (TextView)LayoutInflater.from(context).inflate(mKeyPreviewLayoutId, null);
+        } else {
+            return new TextView(context);
+        }
+    }
+
     @Override
     public void showKeyPreview(int keyIndex, PointerTracker tracker) {
         if (mShowKeyPreviewPopup) {
@@ -760,15 +770,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     // TODO: Introduce minimum duration for displaying key previews
-    // TODO: Display up to two key previews when the user presses two keys at the same time
     private void showKey(final int keyIndex, PointerTracker tracker) {
-        final TextView previewText = mPreviewText;
+        final TextView previewText = tracker.getKeyPreviewText();
         // If the key preview has no parent view yet, add it to the ViewGroup which can place
         // key preview absolutely in SoftInputWindow.
         if (previewText.getParent() == null) {
             addKeyPreview(previewText);
         }
 
+        mDrawingHandler.cancelDismissKeyPreview(tracker);
         final Key key = tracker.getKey(keyIndex);
         // If keyIndex is invalid or IME is already closed, we must not show key preview.
         // Trying to show key preview while root window is closed causes
@@ -776,7 +786,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (key == null)
             return;
 
-        mDrawingHandler.cancelAllDismissKeyPreviews();
         final KeyPreviewDrawParams params = mKeyPreviewDrawParams;
         final int keyDrawX = key.mX + key.mVisualInsetsLeft;
         final int keyDrawWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;
@@ -858,7 +867,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     public void closing() {
-        mPreviewText.setVisibility(View.GONE);
+        PointerTracker.dismissAllKeyPreviews();
         cancelAllMessages();
 
         mDirtyRect.union(0, 0, getWidth(), getHeight());
