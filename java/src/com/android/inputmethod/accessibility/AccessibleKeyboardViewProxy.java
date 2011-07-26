@@ -105,13 +105,13 @@ public class AccessibleKeyboardViewProxy {
     }
 
     /**
-     * Receives hover events when accessibility is turned on in API > 11. In
-     * earlier API levels, events are manually routed from onTouchEvent.
+     * Receives hover events when accessibility is turned on in SDK versions ICS
+     * and higher.
      *
      * @param event The hover event.
      * @return {@code true} if the event is handled
      */
-    public boolean onHoverEvent(MotionEvent event, PointerTracker tracker) {
+    public boolean dispatchHoverEvent(MotionEvent event, PointerTracker tracker) {
         if (mGestureDetector.onHoverEvent(event, this, tracker))
             return true;
 
