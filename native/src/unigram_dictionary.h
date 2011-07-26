@@ -71,9 +71,6 @@ public:
     bool isValidWord(unsigned short *word, int length);
 #else // NEW_DICTIONARY_FORMAT
     bool isValidWord(const uint16_t* const inWord, const int length) const;
-    int getBigrams(unsigned short *word, int length, int *codes, int codesSize,
-            unsigned short *outWords, int *frequencies, int maxWordLength, int maxBigrams,
-            int maxAlternatives);
 #endif // NEW_DICTIONARY_FORMAT
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
