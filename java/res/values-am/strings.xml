@@ -185,6 +185,8 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"የድምፅ ማጉያ ምልክትበቁልፍ ሰሌዳላይ"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"የድምፅ ግቤት ቦዝኗል"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"የግቤት ሜተድ ምረጥ"</string>
+    <!-- no translation found for configure_input_method (373356270290742459) -->
+    <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"ቋንቋዎች አግቤት"</string>
     <!-- no translation found for select_language (2573265881207142437) -->
     <skip />
@@ -195,62 +197,11 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"ቃላትን ለማስተካከል ንካ"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"የገቡ ቃላትን ለማስተካከል ንካ፣ አማራጮች ሲታዩብቻ"</string>
     <!-- outdated translation 437433231038683666 -->     <string name="keyboard_layout" msgid="8451164783510487501">"የቁልፍ ሰሌዳ ገጽታ"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"የቼክ ቁልፍሰሌዳ"</string>
-    <!-- no translation found for subtype_mode_ar_keyboard (2655338636329774995) -->
+    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
     <skip />
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"የዳኒሽኛ ቁልፍሰሌዳ"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"የጀርመንኛ ቁልፍሰሌዳ"</string>
-    <!-- no translation found for subtype_mode_de_qwerty_keyboard (54890770769303956) -->
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
     <skip />
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"የእንግሊዘኛ(ዩኬ) ቁልፍሰሌዳ"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"የእንግሊዘኛ(ዩኤስ) ቁልፍሰሌዳ"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"የስፖኒሽኛቁልፍ ሰሌዳ"</string>
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"የፈረንሳይኛ ቁልፍሰሌዳ"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"የፈረንሳይኛ(ካናዳ) ቁልፍሰሌዳ"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"የፈረንሳይኛ(ስዊዘርላንድ) ቁልፍሰሌዳ"</string>
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
-    <!-- no translation found for subtype_mode_iw_keyboard (1787536828253289950) -->
-    <skip />
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"የጣሊያንኛ ቁልፍ ሰሌዳ"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"የኖርዌጂኛ ቁልፍሰሌዳ"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"የደች ቁልፍሰሌዳ"</string>
-    <!-- no translation found for subtype_mode_pl_keyboard (2225816414814396047) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
-    <skip />
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"የራሽኛቁልፍ ሰሌዳ"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"የሩሲኪኛቁልፍ ሰሌዳ"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"የሲውድናዊ ቁልፍሰሌዳ"</string>
-    <!-- no translation found for subtype_mode_tr_keyboard (3155981874829226370) -->
-    <skip />
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"የቼክ ድምፅ"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"የጀርመናዊ ድምፅ"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"የስፔናዊ ድምፅ"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"የፈረንሳዊ ድምፅ"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"የጃፓናዊ ድምፅ"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"የኮሪያዊ ድምፅ"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"የፖሊሽኛ ድምፅ"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"የፖርቹጊኛ ድምፅ"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"የራሽኛድምፅ"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"የቱርካዊ ድምፅ"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
     <skip />
     <!-- outdated translation 6937813623647419810 -->     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"የተገልጋይነት ጥናት ሁነታ"</string>
 </resources>

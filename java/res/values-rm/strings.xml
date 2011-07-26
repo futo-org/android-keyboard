@@ -208,6 +208,8 @@
     <skip />
     <!-- no translation found for selectInputMethod (315076553378705821) -->
     <skip />
+    <!-- no translation found for configure_input_method (373356270290742459) -->
+    <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Linguas da cumonds vocals"</string>
     <!-- no translation found for select_language (2573265881207142437) -->
     <skip />
@@ -220,87 +222,11 @@
     <!-- no translation found for prefs_enable_recorrection_summary (5082041365862396329) -->
     <skip />
     <!-- outdated translation 437433231038683666 -->     <string name="keyboard_layout" msgid="8451164783510487501">"Design da la tastatura"</string>
-    <!-- no translation found for subtype_mode_cs_keyboard (1141718931112377586) -->
+    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
     <skip />
-    <!-- no translation found for subtype_mode_ar_keyboard (2655338636329774995) -->
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
     <skip />
-    <!-- no translation found for subtype_mode_da_keyboard (1243570804427922104) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_keyboard (1990979135959462145) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_qwerty_keyboard (54890770769303956) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_GB_keyboard (7945856548410373708) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_US_keyboard (3708655163769735410) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_keyboard (1775125478866113148) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_keyboard (8016515336759761014) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CA_keyboard (2628517247158376263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_CH_keyboard (6742806653181621228) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
-    <!-- no translation found for subtype_mode_iw_keyboard (1787536828253289950) -->
-    <skip />
-    <!-- no translation found for subtype_mode_it_keyboard (4934199655425394484) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nb_keyboard (1175783216100212360) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nl_keyboard (5090278083256037936) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pl_keyboard (2225816414814396047) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_keyboard (1383995915064277943) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sr_keyboard (5019440799612208168) -->
-    <skip />
-    <!-- no translation found for subtype_mode_sv_keyboard (4933838139861753401) -->
-    <skip />
-    <!-- no translation found for subtype_mode_tr_keyboard (3155981874829226370) -->
-    <skip />
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
-    <!-- no translation found for subtype_mode_cs_voice (1136386688120958641) -->
-    <skip />
-    <!-- no translation found for subtype_mode_de_voice (8378803143958089866) -->
-    <skip />
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
-    <!-- no translation found for subtype_mode_es_voice (1323473601346507487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_fr_voice (4675914209337824269) -->
-    <skip />
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ja_voice (6604859132669646367) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ko_voice (4890391190762324561) -->
-    <skip />
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pl_voice (2076196021014840487) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pt_voice (8036522712795994397) -->
-    <skip />
-    <!-- no translation found for subtype_mode_ru_voice (8034596947963787529) -->
-    <skip />
-    <!-- no translation found for subtype_mode_tr_voice (3402067436761140005) -->
-    <skip />
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
     <skip />
     <!-- no translation found for prefs_usability_study_mode (1261130555134595254) -->
     <skip />

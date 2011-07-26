@@ -157,11 +157,11 @@
     <skip />
     <!-- no translation found for spoken_description_low_double_quote (3551394572784840975) -->
     <skip />
-    <string name="voice_warning_title" msgid="4419354150908395008">"Okungenayo kwezwi"</string>
-    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Okungenayo kwezwi akusekelwa kolimi lwakho, kodwa kuyasebenza Ngesingisi."</string>
-    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Okufakwayo kwezwi kusebenzisa ukuqaphela izwi le-Google. "<a href="http://m.google.com/privacy">"Inqubomgomo Yobumfihlo Yefoni"</a>" iyasebenza."</string>
-    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Ukuvala okufakwayo kwezwi, iya kuzilungiselelo zendlela yokufakwayo"</string>
-    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Ukusebenzisa okufakwayo kwezwi, cindezela inkinobho yemakrofoni."</string>
+    <string name="voice_warning_title" msgid="4419354150908395008">"Okufakwa ngezwi"</string>
+    <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Okufakwa ngezwi akusekelwa olimini lwakho, kodwa kuyasebenza nge-English."</string>
+    <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Okufakwayo ngezwi kusebenzisa ukufanisa izwi kwe-Google. "<a href="http://m.google.com/privacy">"Inqubomgomo Yobumfihlo Yefoni"</a>" iyasebenza."</string>
+    <string name="voice_warning_how_to_turn_off" msgid="3190378129944934856">"Ukuvala okufakwayo ngezwi, iya kuzilungiselelo zendlela yokufakwayo"</string>
+    <string name="voice_hint_dialog_message" msgid="1420686286820661548">"Ukusebenzisa okufakwayo ngezwi, cindezela inkinobho yemakrofoni."</string>
     <string name="voice_listening" msgid="467518160751321844">"Khuluma manje"</string>
     <string name="voice_working" msgid="6666937792815731889">"Kuyasebenza"</string>
     <string name="voice_initializing" msgid="661962047129906646"></string>
@@ -177,80 +177,31 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Isixwayiso: "</b>"Esikhathini esilandelayo, zama ukukhuluma izimpimiselo ezinjengo \"isikhathi, \"ikhefu\" noma \"uphawu lombuzo\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Khansela"</string>
     <string name="ok" msgid="7898366843681727667">"KULUNGILE"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Okungenayo kwezwi"</string>
+    <string name="voice_input" msgid="2466640768843347841">"Okufakwa ngezwi"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Kwikhibhodi eyisisekelo"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Ikhibhodi yezimpawu"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"VALIWE"</string>
     <string name="voice_input_modes_summary_main_keyboard" msgid="6586544292900314339">"I-mic kwikhibhodi eyisisekelo"</string>
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Ikhibhodi yezimpawu ze-mic"</string>
-    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Okufakwayo kwezwi kuvimbelwe"</string>
-    <string name="selectInputMethod" msgid="315076553378705821">"Khetha indlela yokungenayo"</string>
+    <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Okufakwayo ngezwi kuvinjelwe"</string>
+    <string name="selectInputMethod" msgid="315076553378705821">"Khetha indlela yokufaka"</string>
+    <!-- no translation found for configure_input_method (373356270290742459) -->
+    <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Izilimi zokufakwayo"</string>
     <!-- no translation found for select_language (2573265881207142437) -->
     <skip />
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Thinta futhi ukulondoloza"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Isichazamazwi siyatholakala"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Vumela impendulo yomsebenzisi"</string>
-    <string name="prefs_description_log" msgid="5827825607258246003">"Siza ukuthuthukisa umhleli wendlela yokungenayo ngokuthumela izibalo zokubala nokuphahlaza imibiko e-Google."</string>
+    <string name="prefs_description_log" msgid="5827825607258246003">"Siza ukuthuthukisa lo mhleli wendlela yokufakwa ngokusithumela ngokuzenzakalela izibalo zokusetshenziswa nokukhubeka ku-Google."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Thinta ukulungisa amagama"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Thinta amagama afakiwe ukuwalungisa, kuphela lapho okusikiselwayo kubonakala"</string>
     <!-- outdated translation 437433231038683666 -->     <string name="keyboard_layout" msgid="8451164783510487501">"Indikimba Yekhibhodi"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Ikhibhodi yesi-Czech"</string>
-    <!-- no translation found for subtype_mode_ar_keyboard (2655338636329774995) -->
+    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
     <skip />
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Ikhibhodi yesi-Danish"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Ikhobhodi yei-German"</string>
-    <!-- no translation found for subtype_mode_de_qwerty_keyboard (54890770769303956) -->
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
     <skip />
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Ikhibhodi ye-English (UK)"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Ikhobhodi ye-English (US)"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Ikhobhodi yesi-Spanish"</string>
-    <!-- no translation found for subtype_mode_fi_keyboard (3198596464082614532) -->
-    <skip />
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Ikhibhodi yesi-French"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Ikhobhodi yesi-French (i-Canada)"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Ikhibhodi yesi-French (i-Switzerland"</string>
-    <!-- no translation found for subtype_mode_hr_keyboard (7177182405440070112) -->
-    <skip />
-    <!-- no translation found for subtype_mode_hu_keyboard (8843338355732633647) -->
-    <skip />
-    <!-- no translation found for subtype_mode_iw_keyboard (1787536828253289950) -->
-    <skip />
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Ikhibhodi yesi-Italian"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Ikhibhodi yesi-Norwegian"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Ikhibhodi yesi-Dutch"</string>
-    <!-- no translation found for subtype_mode_pl_keyboard (2225816414814396047) -->
-    <skip />
-    <!-- no translation found for subtype_mode_pt_keyboard (7503997804861754840) -->
-    <skip />
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ikhobhodi yesi-Russian"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Ikhibhodi yesi-Serbian"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Ikhobhodi yesi-Swedish"</string>
-    <!-- no translation found for subtype_mode_tr_keyboard (3155981874829226370) -->
-    <skip />
-    <!-- no translation found for subtype_mode_af_voice (7542487489657902699) -->
-    <skip />
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Izwi le-Czech"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Izwi lesi-German"</string>
-    <!-- no translation found for subtype_mode_en_voice (6643420989651848728) -->
-    <skip />
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Izwi lesi-Spanish"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Izwi lesi-French"</string>
-    <!-- no translation found for subtype_mode_it_voice (5077373057157441323) -->
-    <skip />
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Izwi lesi-Japanese"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Izwi lesi-Korean"</string>
-    <!-- no translation found for subtype_mode_nl_voice (2603552312869575021) -->
-    <skip />
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Izwi lesi-Polish"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Izwi lesi-Portuguese"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Izwi lesi-Russian"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Izwi lesi-Turkish"</string>
-    <!-- no translation found for subtype_mode_yue_voice (1576887891614624263) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zh_voice (4360533229467271152) -->
-    <skip />
-    <!-- no translation found for subtype_mode_zu_voice (1146122571698884636) -->
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
     <skip />
     <!-- outdated translation 6937813623647419810 -->     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Imodi Yesitadi Yokusebenziseka"</string>
 </resources>
