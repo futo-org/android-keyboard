@@ -865,6 +865,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         requestLayout();
     }
 
+    @Override
+    public boolean dismissPopupPanel() {
+        return false;
+    }
+
     public void purgeKeyboardAndClosing() {
         mKeyboard = null;
         closing();

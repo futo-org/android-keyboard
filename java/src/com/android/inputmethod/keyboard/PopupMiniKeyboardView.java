@@ -59,19 +59,16 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
             mParentKeyboardView.getKeyboardActionListener()
                     .onCodeInput(primaryCode, keyCodes, x, y);
-            mParentKeyboardView.dismissMiniKeyboard();
         }
 
         @Override
         public void onTextInput(CharSequence text) {
             mParentKeyboardView.getKeyboardActionListener().onTextInput(text);
-            mParentKeyboardView.dismissMiniKeyboard();
         }
 
         @Override
         public void onCancelInput() {
             mParentKeyboardView.getKeyboardActionListener().onCancelInput();
-            mParentKeyboardView.dismissMiniKeyboard();
         }
 
         @Override
@@ -159,7 +156,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     }
 
     @Override
-    public void showPanel(LatinKeyboardBaseView parentKeyboardView, Key parentKey,
+    public void showPopupPanel(LatinKeyboardBaseView parentKeyboardView, Key parentKey,
             PointerTracker tracker, PopupWindow window) {
         mParentKeyboardView = parentKeyboardView;
         final View container = (View)getParent();
@@ -189,6 +186,11 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
         mOriginX = x + container.getPaddingLeft() - mCoordinates[0];
         mOriginY = y + container.getPaddingTop() - mCoordinates[1];
+    }
+
+    @Override
+    public boolean dismissPopupPanel() {
+        return mParentKeyboardView.dismissPopupPanel();
     }
 
     @Override

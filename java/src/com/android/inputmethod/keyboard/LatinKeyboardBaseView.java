@@ -400,11 +400,10 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         mPopupPanel = popupPanel;
         mPopupPanelPointerTrackerId = tracker.mPointerId;
 
-        tracker.onLongPressed();
-        popupPanel.showPanel(this, parentKey, tracker, mPopupWindow);
+        popupPanel.showPopupPanel(this, parentKey, tracker, mPopupWindow);
         final int translatedX = popupPanel.translateX(tracker.getLastX());
         final int translatedY = popupPanel.translateY(tracker.getLastY());
-        tracker.onDownEvent(translatedX, translatedY, SystemClock.uptimeMillis(), popupPanel);
+        tracker.onShowPopupPanel(translatedX, translatedY, SystemClock.uptimeMillis(), popupPanel);
 
         invalidateAllKeys();
         return true;
@@ -546,11 +545,12 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     @Override
     public void closing() {
         super.closing();
-        dismissMiniKeyboard();
+        dismissPopupPanel();
         mPopupPanelCache.clear();
     }
 
-    public boolean dismissMiniKeyboard() {
+    @Override
+    public boolean dismissPopupPanel() {
         if (mPopupWindow != null && mPopupWindow.isShowing()) {
             mPopupWindow.dismiss();
             mPopupPanel = null;
@@ -562,7 +562,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     }
 
     public boolean handleBack() {
-        return dismissMiniKeyboard();
+        return dismissPopupPanel();
     }
 
     @Override

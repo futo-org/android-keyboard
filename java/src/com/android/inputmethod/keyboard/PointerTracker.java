@@ -67,6 +67,7 @@ public class PointerTracker {
         public void showKeyPreview(int keyIndex, PointerTracker tracker);
         public void cancelShowKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
+        public boolean dismissPopupPanel();
     }
 
     public interface TimerProxy {
@@ -117,8 +118,11 @@ public class PointerTracker {
     // true if keyboard layout has been changed.
     private boolean mKeyboardLayoutHasBeenChanged;
 
-    // true if event is already translated to a key action (long press or mini-keyboard)
+    // true if event is already translated to a key action.
     private boolean mKeyAlreadyProcessed;
+
+    // true if this pointer has been long-pressed and is showing a popup panel.
+    private boolean mIsShowingPopupPanel;
 
     // true if this pointer is repeatable key
     private boolean mIsRepeatableKey;
@@ -579,11 +583,21 @@ public class PointerTracker {
         }
         final int keyIndex = onUpKey(keyX, keyY, eventTime);
         setReleasedKeyGraphics(keyIndex);
+        if (mIsShowingPopupPanel) {
+            mDrawingProxy.dismissPopupPanel();
+            mIsShowingPopupPanel = false;
+        }
         if (mKeyAlreadyProcessed)
             return;
         if (!mIsRepeatableKey) {
             detectAndSendKey(keyIndex, keyX, keyY);
         }
+    }
+
+    public void onShowPopupPanel(int x, int y, long eventTime, KeyEventHandler handler) {
+        onLongPressed();
+        onDownEvent(x, y, eventTime, handler);
+        mIsShowingPopupPanel = true;
     }
 
     public void onLongPressed() {
@@ -612,6 +626,10 @@ public class PointerTracker {
         mDrawingProxy.cancelShowKeyPreview(this);
         setReleasedKeyGraphics(mKeyIndex);
         mIsInSlidingKeyInput = false;
+        if (mIsShowingPopupPanel) {
+            mDrawingProxy.dismissPopupPanel();
+            mIsShowingPopupPanel = false;
+        }
     }
 
     private void startRepeatKey(int keyIndex) {
