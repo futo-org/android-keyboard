@@ -107,6 +107,7 @@ public class BinaryDictionaryFileDumper {
         if (null == afd) return null;
         final String fileName =
                 copyFileTo(afd.createInputStream(), getCacheFileNameForLocale(locale, context));
+        afd.close();
         return Arrays.asList(AssetFileAddress.makeFromFileName(fileName));
     }
 
