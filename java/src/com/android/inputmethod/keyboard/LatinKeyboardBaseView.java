@@ -586,15 +586,22 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         return super.dispatchPopulateAccessibilityEvent(event);
     }
 
-    public boolean onHoverEvent(MotionEvent event) {
-        // Since reflection doesn't support calling superclass methods, this
-        // method checks for the existence of onHoverEvent() in the View class
-        // before returning a value.
+    /**
+     * Receives hover events from the input framework. This method overrides
+     * View.dispatchHoverEvent(MotionEvent) on SDK version ICS or higher. On
+     * lower SDK versions, this method is never called.
+     *
+     * @param event The motion event to be dispatched.
+     * @return {@code true} if the event was handled by the view, {@code false}
+     *         otherwise
+     */
+    public boolean dispatchHoverEvent(MotionEvent event) {
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
             final PointerTracker tracker = getPointerTracker(0);
-            return AccessibleKeyboardViewProxy.getInstance().onHoverEvent(event, tracker);
+            return AccessibleKeyboardViewProxy.getInstance().dispatchHoverEvent(event, tracker);
         }
 
+        // Reflection doesn't support calling superclass methods.
         return false;
     }
 }
