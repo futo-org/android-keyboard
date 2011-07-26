@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
+import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
 import com.android.inputmethod.latin.LatinImeLogger;
@@ -64,6 +65,7 @@ public class PointerTracker {
 
     public interface DrawingProxy {
         public void invalidateKey(Key key);
+        public TextView inflateKeyPreviewText();
         public void showKeyPreview(int keyIndex, PointerTracker tracker);
         public void cancelShowKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
@@ -100,6 +102,7 @@ public class PointerTracker {
     private Keyboard mKeyboard;
     private List<Key> mKeys;
     private int mKeyQuarterWidthSquared;
+    private final TextView mKeyPreviewText;
 
     // The position and time at which first down event occurred.
     private long mDownTime;
@@ -215,6 +218,11 @@ public class PointerTracker {
         mListener = handler.getKeyboardActionListener();
         mDrawingProxy = handler.getDrawingProxy();
         mTimerProxy = handler.getTimerProxy();
+        mKeyPreviewText = mDrawingProxy.inflateKeyPreviewText();
+    }
+
+    public TextView getKeyPreviewText() {
+        return mKeyPreviewText;
     }
 
     // Returns true if keyboard has been changed by this callback.
