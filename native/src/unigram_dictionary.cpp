@@ -1055,9 +1055,9 @@ int UnigramDictionary::getMostFrequentWordLikeInner(const uint16_t * const inWor
     return maxFreq;
 }
 
-// This function gets the frequency of the exact matching word in the dictionary.
-// If no match is found, it returns NOT_VALID_WORD.
-static inline int getFrequency(const uint8_t* const root, const uint16_t* const inWord,
+// This function gets the byte position of the last chargroup of the exact matching word in the
+// dictionary. If no match is found, it returns NOT_VALID_WORD.
+static inline int getTerminalPosition(const uint8_t* const root, const uint16_t* const inWord,
         const int length) {
     int pos = 0;
     int wordPos = 0;
@@ -1072,6 +1072,7 @@ static inline int getFrequency(const uint8_t* const root, const uint16_t* const 
             // If there are no more character groups in this node, it means we could not
             // find a matching character for this depth, therefore there is no match.
             if (0 >= charGroupCount) return NOT_VALID_WORD;
+            const int charGroupPos = pos;
             const uint8_t flags = BinaryFormat::getFlagsAndForwardPointer(root, &pos);
             int32_t character = BinaryFormat::getCharCodeAndForwardPointer(root, &pos);
             if (character == wChar) {
@@ -1099,7 +1100,7 @@ static inline int getFrequency(const uint8_t* const root, const uint16_t* const 
                 ++wordPos;
                 if (UnigramDictionary::FLAG_IS_TERMINAL & flags) {
                     if (wordPos == length) {
-                        return BinaryFormat::readFrequencyWithoutMovingPointer(root, pos);
+                        return charGroupPos;
                     }
                     pos = BinaryFormat::skipFrequency(UnigramDictionary::FLAG_IS_TERMINAL, pos);
                 }
@@ -1126,7 +1127,7 @@ static inline int getFrequency(const uint8_t* const root, const uint16_t* const 
 }
 
 bool UnigramDictionary::isValidWord(const uint16_t* const inWord, const int length) const {
-    return NOT_VALID_WORD != getFrequency(DICT_ROOT, inWord, length);
+    return NOT_VALID_WORD != getTerminalPosition(DICT_ROOT, inWord, length);
 }
 
 int UnigramDictionary::getBigrams(unsigned short *word, int length, int *codes, int codesSize,
