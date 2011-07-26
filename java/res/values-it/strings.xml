@@ -131,6 +131,8 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mic su tastiera simboli"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Comandi vocali disatt."</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Seleziona metodo di inserimento"</string>
+    <!-- no translation found for configure_input_method (373356270290742459) -->
+    <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Lingue comandi"</string>
     <string name="select_language" msgid="2573265881207142437">"Seleziona lingue di immissione"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tocca di nuovo per salvare"</string>
@@ -140,46 +142,11 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocca per correggere"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tocca le parole inserite per correggerle, solo quando sono visibili i suggerimenti"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema della tastiera"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tastiera ceca"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Tastiera araba"</string>
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Tastiera danese"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Tastiera tedesca"</string>
-    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Tastiera QWERTY tedesca"</string>
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Tastiera inglese (Regno Unito)"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Tastiera inglese (Stati Uniti)"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Tastiera spagnola"</string>
-    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Tastiera finlandese"</string>
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Tastiera francese"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Tastiera francese (Canada)"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Tastiera francese (Svizzera)"</string>
-    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Tastiera croata"</string>
-    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Tastiera ungherese"</string>
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Tastiera ebraica"</string>
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Tastiera italiana"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Tastiera norvegese"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Tastiera olandese"</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Tastiera polacca"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Tastiera portoghese"</string>
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Tastiera russa"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Tastiera serba"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Tastiera svedese"</string>
-    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Tastiera turca"</string>
-    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Voce afrikaans"</string>
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Voce ceca"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Voce tedesca"</string>
-    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Voce inglese"</string>
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Voce spagnola"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Voce francese"</string>
-    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Voce italiana"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Voce giapponese"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Voce coreana"</string>
-    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Voce olandese"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Voce polacca"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Voce portoghese"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Voce russa"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Voce turca"</string>
-    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Voce cinese Yue"</string>
-    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Voce cinese mandarino"</string>
-    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Voce isiZulu"</string>
+    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
+    <skip />
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
+    <skip />
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modalità Studio sull\'usabilità"</string>
 </resources>

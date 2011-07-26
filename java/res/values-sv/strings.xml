@@ -131,9 +131,10 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mick bland symboler"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Röstinmatning inaktiv"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Välj inmatningsmetod"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Inmatningsspråk"</string>
-    <!-- no translation found for select_language (2573265881207142437) -->
+    <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />
+    <string name="language_selection_title" msgid="1651299598555326750">"Inmatningsspråk"</string>
+    <string name="select_language" msgid="2573265881207142437">"Välj inmatningsspråk"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tryck igen för att spara"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"En ordlista är tillgänglig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktivera synpunkter från användare"</string>
@@ -141,46 +142,11 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryck om du vill korrigera ord"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tryck på skrivna ord om du vill korrigera dem, endast när förslag visas"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tangentbordstema"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Tjeckiskt tangentbord"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Arabiskt tangentbord"</string>
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Danskt tangentbord"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Tyskt tangentbord"</string>
-    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Tyskt QWERTY-tangentbord"</string>
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Engelskt tangentbord (Storbrit.)"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Engelskt tangentbord (USA)"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Spanskt tangentbord"</string>
-    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Finskt tangentbord"</string>
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Franskt tangentbord"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Franskt tangentbord (Kanada)"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Franskt tangentbord (Schweiz)"</string>
-    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Kroatiskt tangentbord"</string>
-    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Ungerskt tangentbord"</string>
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Hebreiskt tangentbord"</string>
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Italienskt tangentbord"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Norskt tangentbord"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Holländskt tangentbord"</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Polskt tangentbord"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Portugisiskt tangentbord"</string>
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Ryskt tangentbord"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Serbiskt tangentbord"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Svenskt tangentbord"</string>
-    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Turkiskt tangentbord"</string>
-    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Röst, afrikaans"</string>
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Röst på tjeckiska"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Röst på tyska"</string>
-    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Röst, engelska"</string>
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Röst på spanska"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Röst på franska"</string>
-    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Röst på italienska"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Röst på japanska"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Röst på koreanska"</string>
-    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Röst på holländska"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Röst på polska"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Röst på portugisiska"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Röst på ryska"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Röst på turkiska"</string>
-    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Röst, kinesiska, yue"</string>
-    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Röst, kinesiska, mandarin"</string>
-    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Röst, isiZulusk"</string>
+    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
+    <skip />
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
+    <skip />
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Läge för studie av användbarhet"</string>
 </resources>

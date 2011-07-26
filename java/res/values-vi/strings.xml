@@ -131,9 +131,10 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micrô trên bàn phím biểu tượng"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Nhập liệu bằng giọng nói đã bị vô hiệu hóa"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Chọn phương thức nhập"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Ngôn ngữ nhập"</string>
-    <!-- no translation found for select_language (2573265881207142437) -->
+    <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />
+    <string name="language_selection_title" msgid="1651299598555326750">"Ngôn ngữ nhập"</string>
+    <string name="select_language" msgid="2573265881207142437">"Chọn ngôn ngữ nhập"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Chạm lại để lưu"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Có sẵn từ điển"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Bật phản hồi của người dùng"</string>
@@ -141,46 +142,11 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Chạm để sửa từ"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Chạm các từ đã nhập để sửa, chỉ khi các đề xuất hiển thị"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Bàn phím tiếng Séc"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Bàn phím tiếng Ả Rập"</string>
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Bàn phím tiếng Đan Mạch"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Bàn phím tiếng Đức"</string>
-    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Bàn phím QWERTY Tiếng Đức"</string>
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Bàn phím tiếng Anh (Anh)"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Bàn phím tiếng Anh (Mỹ)"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Bàn phím tiếng Tây Ban Nha"</string>
-    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Bàn phím tiếng Phần Lan"</string>
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Bàn phím tiếng Pháp"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Bàn phím tiếng Pháp (Canada)"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Bàn phím tiếng Pháp (Thụy Sĩ)"</string>
-    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Bàn phím tiếng Croatia"</string>
-    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Bàn phím tiếng Hungari"</string>
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Bàn phím tiếng Do Thái"</string>
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Bàn phím tiếng Ý"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Bàn phím tiếng Na Uy"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Bàn phím tiếng Hà Lan"</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Bàn phím tiếng Ba Lan"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Bàn phím tiếng Bồ Đào Nha"</string>
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Bàn phím tiếng Nga"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Bàn phím tiếng Serbia"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Bàn phím tiếng Thụy Điển"</string>
-    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Bàn phím tiếng Thổ Nhĩ Kỳ"</string>
-    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Giọng tiếng Hà Lan ở Nam Phi"</string>
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Giọng nói tiếng Séc"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Giọng nói tiếng Đức"</string>
-    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Giọng tiếng Anh"</string>
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Giọng nói tiếng Tây Ban Nha"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Giọng nói tiếng Pháp"</string>
-    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Giọng nói tiếng Ý"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Giọng nói tiếng Nhật"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Giọng nói tiếng Hàn"</string>
-    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Giọng nói tiếng Hà Lan"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Giọng nói tiếng Ba Lan"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Giọng nói tiếng Bồ Đào Nha"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Giọng nói tiếng Nga"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Giọng nói tiếng Thổ Nhĩ Kỳ"</string>
-    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Giọng tiếng Trung, Yue"</string>
-    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Giọng tiếng Trung, tiếng Quan thoại"</string>
-    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Giọng isiZulu"</string>
+    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
+    <skip />
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
+    <skip />
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Chế độ nghiên cứu tính khả dụng"</string>
 </resources>

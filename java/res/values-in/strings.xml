@@ -131,9 +131,10 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mik pada keyboard simbol"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Masukan suara dinonaktifkan"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Pilih metode masukan"</string>
-    <string name="language_selection_title" msgid="1651299598555326750">"Bahasa masukan"</string>
-    <!-- no translation found for select_language (2573265881207142437) -->
+    <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />
+    <string name="language_selection_title" msgid="1651299598555326750">"Bahasa masukan"</string>
+    <string name="select_language" msgid="2573265881207142437">"Pilih bahasa masukan"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Sentuh sekali lagi untuk menyimpan"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Kamus yang tersedia"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktifkan umpan balik pengguna"</string>
@@ -141,46 +142,11 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Sentuh untuk memperbaiki kata"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Sentuh kata yang dimasukkan untuk memperbaikinya, hanya saat saran dapat dilihat"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema keyboard"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Keyboard Cheska"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Papan Tombol Arab"</string>
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Keyboard Denmark"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Keyboard Jerman"</string>
-    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Keyboard QWERTY Jerman"</string>
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Keyboard Inggris (Britania Raya)"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Keyboard Inggris (AS)"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Keyboard Spanyol"</string>
-    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Keyboard Suomi"</string>
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Keyboard Prancis"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Keyboard Prancis (Kanada)"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Keyboard Prancis (Swiss)"</string>
-    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Keyboard Kroat"</string>
-    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Keyboard Magyar"</string>
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Papan tombol Ibrani"</string>
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Keyboard Italia"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Keyboard Norwegia"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Keyboard Belanda"</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Keyboard bahasa Polski"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Keyboard Portugis"</string>
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Keyboard Rusia"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Keyboard Serbia"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Keyboard Swedia"</string>
-    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Keyboard Bahasa Turki"</string>
-    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Suara Bahasa Afrika"</string>
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Suara Bahasa Cheska"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Suara Bahasa Jerman"</string>
-    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Suara Bahasa Inggris"</string>
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Suara Bahasa Spanyol"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Suara Bahasa Prancis"</string>
-    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Suara Bahasa Italia"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Suara Bahasa Jepang"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Suara Bahasa Korea"</string>
-    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Suara Bahasa Belanda"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Suara Bahasa Polandia"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Suara Bahasa Portugis"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Suara Bahasa Rusia"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Suara Bahasa Turki"</string>
-    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Suara Bahasa China, Yue"</string>
-    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Suara Bahasa China, Mandarin"</string>
-    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Suara Zulu"</string>
+    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
+    <skip />
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
+    <skip />
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modus studi daya guna"</string>
 </resources>

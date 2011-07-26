@@ -131,6 +131,8 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Miкр. на симв. клавіат."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Голос. ввід вимкнено"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Вибрати метод введення"</string>
+    <!-- no translation found for configure_input_method (373356270290742459) -->
+    <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Мови вводу"</string>
     <string name="select_language" msgid="2573265881207142437">"Вибрати мову введення"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Торкн. ще, щоб збер."</string>
@@ -140,46 +142,11 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Торкн., щоб виправ. слова"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Торкніться введених слів, щоб виправити їх, лише коли ввімкнено пропозиції"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавіатури"</string>
-    <string name="subtype_mode_cs_keyboard" msgid="1141718931112377586">"Чеська розкладка"</string>
-    <string name="subtype_mode_ar_keyboard" msgid="2655338636329774995">"Розкладка для арабської мови"</string>
-    <string name="subtype_mode_da_keyboard" msgid="1243570804427922104">"Данська розкладка"</string>
-    <string name="subtype_mode_de_keyboard" msgid="1990979135959462145">"Німецька розкладка"</string>
-    <string name="subtype_mode_de_qwerty_keyboard" msgid="54890770769303956">"Німецька клавіатура QWERTY"</string>
-    <string name="subtype_mode_en_GB_keyboard" msgid="7945856548410373708">"Англ. розкладка (Великобританія)"</string>
-    <string name="subtype_mode_en_US_keyboard" msgid="3708655163769735410">"Англійська розкладка (США)"</string>
-    <string name="subtype_mode_es_keyboard" msgid="1775125478866113148">"Іспанська розкладка"</string>
-    <string name="subtype_mode_fi_keyboard" msgid="3198596464082614532">"Фінська розкладка"</string>
-    <string name="subtype_mode_fr_keyboard" msgid="8016515336759761014">"Французька розкладка"</string>
-    <string name="subtype_mode_fr_CA_keyboard" msgid="2628517247158376263">"Французька розкладка (Канада)"</string>
-    <string name="subtype_mode_fr_CH_keyboard" msgid="6742806653181621228">"Французька розкладка (Швейцарія)"</string>
-    <string name="subtype_mode_hr_keyboard" msgid="7177182405440070112">"Хорватська розкладка"</string>
-    <string name="subtype_mode_hu_keyboard" msgid="8843338355732633647">"Угорська розкладка"</string>
-    <string name="subtype_mode_iw_keyboard" msgid="1787536828253289950">"Розкладка для івриту"</string>
-    <string name="subtype_mode_it_keyboard" msgid="4934199655425394484">"Італійська розкладка"</string>
-    <string name="subtype_mode_nb_keyboard" msgid="1175783216100212360">"Норвезька розкладка"</string>
-    <string name="subtype_mode_nl_keyboard" msgid="5090278083256037936">"Голланд. розклад."</string>
-    <string name="subtype_mode_pl_keyboard" msgid="2225816414814396047">"Польська розкладка"</string>
-    <string name="subtype_mode_pt_keyboard" msgid="7503997804861754840">"Португальська розкладка"</string>
-    <string name="subtype_mode_ru_keyboard" msgid="1383995915064277943">"Російська розкладка"</string>
-    <string name="subtype_mode_sr_keyboard" msgid="5019440799612208168">"Сербська розкладка"</string>
-    <string name="subtype_mode_sv_keyboard" msgid="4933838139861753401">"Шведська розкладка"</string>
-    <string name="subtype_mode_tr_keyboard" msgid="3155981874829226370">"Турецька розкладка"</string>
-    <string name="subtype_mode_af_voice" msgid="7542487489657902699">"Voice мовою африкаанс"</string>
-    <string name="subtype_mode_cs_voice" msgid="1136386688120958641">"Голос чеською"</string>
-    <string name="subtype_mode_de_voice" msgid="8378803143958089866">"Голос німецькою"</string>
-    <string name="subtype_mode_en_voice" msgid="6643420989651848728">"Voice англійською мовою"</string>
-    <string name="subtype_mode_es_voice" msgid="1323473601346507487">"Голос іспанською"</string>
-    <string name="subtype_mode_fr_voice" msgid="4675914209337824269">"Голос французькою"</string>
-    <string name="subtype_mode_it_voice" msgid="5077373057157441323">"Voice італійською мовою"</string>
-    <string name="subtype_mode_ja_voice" msgid="6604859132669646367">"Голос японською"</string>
-    <string name="subtype_mode_ko_voice" msgid="4890391190762324561">"Голос корейською"</string>
-    <string name="subtype_mode_nl_voice" msgid="2603552312869575021">"Voice голландською мовою"</string>
-    <string name="subtype_mode_pl_voice" msgid="2076196021014840487">"Голос польською"</string>
-    <string name="subtype_mode_pt_voice" msgid="8036522712795994397">"Голос португальською"</string>
-    <string name="subtype_mode_ru_voice" msgid="8034596947963787529">"Голос російською"</string>
-    <string name="subtype_mode_tr_voice" msgid="3402067436761140005">"Голос турецькою"</string>
-    <string name="subtype_mode_yue_voice" msgid="1576887891614624263">"Voice китайською, юеською мовою"</string>
-    <string name="subtype_mode_zh_voice" msgid="4360533229467271152">"Voice китайською, мандарин. мовою"</string>
-    <string name="subtype_mode_zu_voice" msgid="1146122571698884636">"Voice мовою ісізулу"</string>
+    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
+    <skip />
+    <!-- no translation found for subtype_en_GB (88170601942311355) -->
+    <skip />
+    <!-- no translation found for subtype_en_US (6160452336634534239) -->
+    <skip />
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим вивчення зручності у використанні"</string>
 </resources>
