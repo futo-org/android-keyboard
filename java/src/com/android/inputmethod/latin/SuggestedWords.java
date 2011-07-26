@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin;
 
+import android.text.TextUtils;
 import android.view.inputmethod.CompletionInfo;
 
 import java.util.ArrayList;
@@ -105,14 +106,18 @@ public class SuggestedWords {
         }
 
         private Builder addWord(CharSequence word, SuggestedWordInfo suggestedWordInfo) {
-            mWords.add(word);
-            mSuggestedWordInfoList.add(suggestedWordInfo);
+            if (!TextUtils.isEmpty(word)) {
+                mWords.add(word);
+                // It's okay if suggestedWordInfo is null since it's checked where it's used.
+                mSuggestedWordInfoList.add(suggestedWordInfo);
+            }
             return this;
         }
 
         public Builder setApplicationSpecifiedCompletions(CompletionInfo[] infos) {
-            for (CompletionInfo info : infos)
-                addWord(info.getText());
+            for (CompletionInfo info : infos) {
+                if (null != info) addWord(info.getText());
+            }
             return this;
         }
 
