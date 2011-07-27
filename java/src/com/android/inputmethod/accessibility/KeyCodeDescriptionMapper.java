@@ -164,7 +164,7 @@ public class KeyCodeDescriptionMapper {
             return context.getString(R.string.spoken_description_to_symbol);
         } else if (id.isSymbolsKeyboard()) {
             return context.getString(R.string.spoken_description_to_alpha);
-        } else if (id.isPhoneSymbolsKeyboard()) {
+        } else if (id.isPhoneShiftKeyboard()) {
             return context.getString(R.string.spoken_description_to_numeric);
         } else if (id.isPhoneKeyboard()) {
             return context.getString(R.string.spoken_description_to_symbol);

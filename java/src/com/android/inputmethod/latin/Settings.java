@@ -118,8 +118,8 @@ public class Settings extends InputMethodSettingsActivity
         public final boolean mBigramPredictionEnabled;
         public final boolean mUseContactsDict;
 
-        private final boolean mVoiceButtonEnabled;
-        private final boolean mVoiceButtonOnPrimary;
+        private final boolean mVoiceKeyEnabled;
+        private final boolean mVoiceKeyOnMain;
 
         public Values(final SharedPreferences prefs, final Context context,
                 final String localeStr) {
@@ -183,8 +183,8 @@ public class Settings extends InputMethodSettingsActivity
             final String voiceModeMain = res.getString(R.string.voice_mode_main);
             final String voiceModeOff = res.getString(R.string.voice_mode_off);
             final String voiceMode = prefs.getString(PREF_VOICE_SETTINGS_KEY, voiceModeMain);
-            mVoiceButtonEnabled = voiceMode != null && !voiceMode.equals(voiceModeOff);
-            mVoiceButtonOnPrimary = voiceMode != null && voiceMode.equals(voiceModeMain);
+            mVoiceKeyEnabled = voiceMode != null && !voiceMode.equals(voiceModeOff);
+            mVoiceKeyOnMain = voiceMode != null && voiceMode.equals(voiceModeMain);
 
             Utils.setSystemLocale(res, savedLocale);
         }
@@ -284,15 +284,15 @@ public class Settings extends InputMethodSettingsActivity
             return builder.setIsPunctuationSuggestions().build();
         }
 
-        public boolean isVoiceButtonEnabled(EditorInfo attribute) {
+        public boolean isVoiceKeyEnabled(EditorInfo attribute) {
             final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
             final int inputType = (attribute != null) ? attribute.inputType : 0;
-            return shortcutImeEnabled && mVoiceButtonEnabled
+            return shortcutImeEnabled && mVoiceKeyEnabled
                     && !InputTypeCompatUtils.isPasswordInputType(inputType);
         }
 
-        public boolean isVoiceButtonOnPrimary() {
-            return mVoiceButtonOnPrimary;
+        public boolean isVoiceKeyOnMain() {
+            return mVoiceKeyOnMain;
         }
     }
 

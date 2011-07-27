@@ -91,12 +91,12 @@
         latin:parentStyle="numKeyStyle" />
     <key-style
         latin:styleName="numSwitchToAltKeyStyle"
-        latin:code="@integer/key_switch_alpha_symbol"
+        latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_phone_symbols_key"
         latin:parentStyle="numModeKeyStyle" />
     <key-style
         latin:styleName="numSwitchToNumericKeyStyle"
-        latin:code="@integer/key_switch_alpha_symbol"
+        latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_phone_numeric_key"
         latin:parentStyle="numModeKeyStyle" />
     <key-style

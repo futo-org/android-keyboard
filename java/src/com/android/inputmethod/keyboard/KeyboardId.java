@@ -119,12 +119,6 @@ public class KeyboardId {
                 mWidth, mMode, mAttribute, false, F2KEY_MODE_NONE, false, false, false, false);
     }
 
-    public KeyboardId cloneWithNewLayout(String xmlName, int xmlId) {
-        return new KeyboardId(xmlName, xmlId, mLocale, mOrientation, mWidth, mMode, mAttribute,
-                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey,
-                mEnableShiftLock);
-    }
-
     public KeyboardId cloneWithNewGeometry(int orientation, int width) {
         if (mWidth == width)
             return this;
@@ -153,8 +147,8 @@ public class KeyboardId {
         return mMode == MODE_PHONE;
     }
 
-    public boolean isPhoneSymbolsKeyboard() {
-        return mXmlId == R.xml.kbd_phone_symbols;
+    public boolean isPhoneShiftKeyboard() {
+        return mXmlId == R.xml.kbd_phone_shift;
     }
 
     public boolean isNumberKeyboard() {
