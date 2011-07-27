@@ -872,7 +872,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void hideWindow() {
         LatinImeLogger.commit();
-        mKeyboardSwitcher.onAutoCorrectionStateChanged(false);
+        mKeyboardSwitcher.onHideWindow();
 
         if (TRACE) Debug.stopMethodTracing();
         if (mOptionsDialog != null && mOptionsDialog.isShowing()) {

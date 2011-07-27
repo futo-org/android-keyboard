@@ -161,24 +161,25 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    public void onHideWindow() {
+        mWindowWidth = 0;
+        mIsAutoCorrectionActive = false;
+    }
+
     @SuppressWarnings("unused")
     public void onSizeChanged(int w, int h, int oldw, int oldh) {
+        // TODO: This hack should be removed when display metric returns a proper width.
+        // Until then, the behavior of KeyboardSwitcher is suboptimal on a device that has a
+        // vertical system navigation bar in landscape screen orientation, for instance.
         final int width = mInputMethodService.getWindow().getWindow().getDecorView().getWidth();
         // If the window width hasn't fixed yet or keyboard doesn't exist, nothing to do with.
         if (width == 0 || mCurrentId == null)
             return;
         // The window width is fixed.
         mWindowWidth = width;
-        // If this is the first time the {@link KeyboardView} has been shown, no need to reload
-        // keyboard.
-        if (oldw == 0 && oldh == 0)
-            return;
         // Reload keyboard with new width.
         final int orientation = mInputMethodService.getResources().getConfiguration().orientation;
         final KeyboardId newId = mCurrentId.cloneWithNewGeometry(orientation, width);
-        // If the new keyboard is the same as the current one, no need to reload it.
-        if (newId.equals(mCurrentId))
-            return;
         setKeyboard(getKeyboard(newId));
     }
 

@@ -160,7 +160,7 @@ public class KeyboardId {
         return other instanceof KeyboardId && equals((KeyboardId) other);
     }
 
-    boolean equals(KeyboardId other) {
+    private boolean equals(KeyboardId other) {
         return other.mLocale.equals(this.mLocale)
             && other.mOrientation == this.mOrientation
             && other.mWidth == this.mWidth
