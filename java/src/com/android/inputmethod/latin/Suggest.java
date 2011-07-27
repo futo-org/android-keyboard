@@ -102,6 +102,8 @@ public class Suggest implements Dictionary.WordCallback {
 
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
+    // TODO: maybe this should be synchronized, it's quite scary as it is.
+    // TODO: if it becomes synchronized, also move initPool in the thread in initAsynchronously
     private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
     private CharSequence mTypedWord;
 
@@ -111,25 +113,37 @@ public class Suggest implements Dictionary.WordCallback {
 
     private int mCorrectionMode = CORRECTION_BASIC;
 
-    public Suggest(Context context, int dictionaryResId, Locale locale) {
-        init(context, DictionaryFactory.createDictionaryFromManager(context, locale,
-                dictionaryResId));
+    public Suggest(final Context context, final int dictionaryResId, final Locale locale) {
+        initAsynchronously(context, dictionaryResId, locale);
     }
 
     /* package for test */ Suggest(Context context, File dictionary, long startOffset, long length,
             Flag[] flagArray) {
-        init(null, DictionaryFactory.createDictionaryForTest(context, dictionary, startOffset,
-                length, flagArray));
+        initSynchronously(null, DictionaryFactory.createDictionaryForTest(context, dictionary,
+                startOffset, length, flagArray));
     }
 
-    private void init(Context context, Dictionary mainDict) {
-        mMainDict = mainDict;
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
+    private void initWhitelistAndAutocorrectAndPool(final Context context) {
         mWhiteListDictionary = WhitelistDictionary.init(context);
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
         mAutoCorrection = new AutoCorrection();
         initPool();
+    }
+
+    private void initAsynchronously(final Context context, final int dictionaryResId,
+            final Locale locale) {
+        resetMainDict(context, dictionaryResId, locale);
+
+        // TODO: read the whitelist and init the pool asynchronously too.
+        // initPool should be done asynchronously but the pool is not thread-safe at the moment.
+        initWhitelistAndAutocorrectAndPool(context);
+    }
+
+    private void initSynchronously(Context context, Dictionary mainDict) {
+        mMainDict = mainDict;
+        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
+        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
+        initWhitelistAndAutocorrectAndPool(context);
     }
 
     private void addOrReplaceDictionary(Map<String, Dictionary> dictionaries, String key,
@@ -142,12 +156,18 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    public void resetMainDict(Context context, int dictionaryResId, Locale locale) {
-        final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
-                context, locale, dictionaryResId);
-        mMainDict = newMainDict;
-        addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
-        addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
+    public void resetMainDict(final Context context, final int dictionaryResId,
+            final Locale locale) {
+        mMainDict = null;
+        new Thread("InitializeBinaryDictionary") {
+            public void run() {
+                final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
+                        context, locale, dictionaryResId);
+                mMainDict = newMainDict;
+                addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, newMainDict);
+                addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
+            }
+        }.start();
     }
 
     private void initPool() {
