@@ -674,6 +674,7 @@ public class PointerTracker {
 
     private void startLongPressTimer(int keyIndex) {
         Key key = getKey(keyIndex);
+        if (key == null) return;
         if (key.mCode == Keyboard.CODE_SHIFT) {
             if (sLongPressShiftKeyTimeout > 0) {
                 mTimerProxy.startLongPressTimer(sLongPressShiftKeyTimeout, keyIndex, this);
