@@ -77,6 +77,8 @@ public class Keyboard {
     public static final int CODE_CLOSING_SQUARE_BRACKET = ']';
     public static final int CODE_CLOSING_CURLY_BRACKET = '}';
     public static final int CODE_CLOSING_ANGLE_BRACKET = '>';
+    public static final int CODE_DIGIT0 = '0';
+    public static final int CODE_PLUS = '+';
 
 
     /** Special keys code.  These should be aligned with values/keycodes.xml */

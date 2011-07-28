@@ -53,55 +53,55 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     @Override
     public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
-        LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null
-                && (latinKeyboard.isPhoneKeyboard() || latinKeyboard.isNumberKeyboard())) {
-            // Phone and number keyboard never shows popup preview (except language switch).
-            super.setKeyPreviewPopupEnabled(false, delay);
-        } else {
-            super.setKeyPreviewPopupEnabled(previewEnabled, delay);
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard instanceof LatinKeyboard) {
+            final LatinKeyboard latinKeyboard = (LatinKeyboard)keyboard;
+            if (latinKeyboard.isPhoneKeyboard() || latinKeyboard.isNumberKeyboard()) {
+                // Phone and number keyboard never shows popup preview.
+                super.setKeyPreviewPopupEnabled(false, delay);
+                return;
+            }
         }
+        super.setKeyPreviewPopupEnabled(previewEnabled, delay);
     }
 
     @Override
     public void setKeyboard(Keyboard newKeyboard) {
         super.setKeyboard(newKeyboard);
         // One-seventh of the keyboard width seems like a reasonable threshold
-        mJumpThresholdSquare = newKeyboard.getMinWidth() / 7;
-        mJumpThresholdSquare *= mJumpThresholdSquare;
-    }
-
-    private LatinKeyboard getLatinKeyboard() {
-        Keyboard keyboard = getKeyboard();
-        if (keyboard instanceof LatinKeyboard) {
-            return (LatinKeyboard)keyboard;
-        } else {
-            return null;
-        }
+        final int jumpThreshold = newKeyboard.getMinWidth() / 7;
+        mJumpThresholdSquare = jumpThreshold * jumpThreshold;
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboard oldKeyboard) {
-        final LatinKeyboard currentKeyboard = getLatinKeyboard();
+        final Keyboard keyboard = getKeyboard();
         // We should not set text fade factor to the keyboard which does not display the language on
         // its spacebar.
-        if (currentKeyboard != null && currentKeyboard == oldKeyboard)
-            currentKeyboard.setSpacebarTextFadeFactor(fadeFactor, this);
+        if (keyboard instanceof LatinKeyboard && keyboard == oldKeyboard) {
+            ((LatinKeyboard)keyboard).setSpacebarTextFadeFactor(fadeFactor, this);
+        }
     }
 
     @Override
     protected boolean onLongPress(Key key, PointerTracker tracker) {
-        int primaryCode = key.mCode;
+        final int primaryCode = key.mCode;
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard instanceof LatinKeyboard) {
+            final LatinKeyboard latinKeyboard = (LatinKeyboard) keyboard;
+            if (primaryCode == Keyboard.CODE_DIGIT0 && latinKeyboard.isPhoneKeyboard()) {
+                tracker.onLongPressed();
+                // Long pressing on 0 in phone number keypad gives you a '+'.
+                return invokeOnKey(Keyboard.CODE_PLUS);
+            }
+            if (primaryCode == Keyboard.CODE_SHIFT && latinKeyboard.isAlphaKeyboard()) {
+                tracker.onLongPressed();
+                return invokeOnKey(Keyboard.CODE_CAPSLOCK);
+            }
+        }
         if (primaryCode == Keyboard.CODE_SETTINGS || primaryCode == Keyboard.CODE_SPACE) {
             tracker.onLongPressed();
             // Both long pressing settings key and space key invoke IME switcher dialog.
             return invokeOnKey(Keyboard.CODE_SETTINGS_LONGPRESS);
-        } else if (primaryCode == '0' && getLatinKeyboard().isPhoneKeyboard()) {
-            tracker.onLongPressed();
-            // Long pressing on 0 in phone number keypad gives you a '+'.
-            return invokeOnKey('+');
-        } else if (primaryCode == Keyboard.CODE_SHIFT) {
-            tracker.onLongPressed();
-            return invokeOnKey(Keyboard.CODE_CAPSLOCK);
         } else {
             return super.onLongPress(key, tracker);
         }
@@ -194,7 +194,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
-        if (getLatinKeyboard() == null) return true;
+        if (getKeyboard() == null) return true;
 
         // If there was a sudden jump, return without processing the actual motion event.
         if (handleSuddenJump(me)) {
