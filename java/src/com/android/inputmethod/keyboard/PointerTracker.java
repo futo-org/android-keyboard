@@ -329,36 +329,28 @@ public class PointerTracker {
         return mKeyDetector.getKeyIndexAndNearbyCodes(x, y, null);
     }
 
-    public boolean isSpaceKey(int keyIndex) {
-        Key key = getKey(keyIndex);
-        return key != null && key.mCode == Keyboard.CODE_SPACE;
-    }
-
     private void setReleasedKeyGraphics(int keyIndex) {
         mDrawingProxy.dismissKeyPreview(this);
         final Key key = getKey(keyIndex);
-        if (key != null) {
+        if (key != null && key.isEnabled()) {
             key.onReleased();
             mDrawingProxy.invalidateKey(key);
         }
     }
 
     private void setPressedKeyGraphics(int keyIndex) {
-        if (isKeyPreviewRequired(keyIndex)) {
-            mDrawingProxy.showKeyPreview(keyIndex, this);
-        }
         final Key key = getKey(keyIndex);
         if (key != null && key.isEnabled()) {
+            if (isKeyPreviewRequired(key)) {
+                mDrawingProxy.showKeyPreview(keyIndex, this);
+            }
             key.onPressed();
             mDrawingProxy.invalidateKey(key);
         }
     }
 
     // The modifier key, such as shift key, should not show its key preview.
-    private boolean isKeyPreviewRequired(int keyIndex) {
-        final Key key = getKey(keyIndex);
-        if (key == null || !key.isEnabled())
-            return false;
+    private static boolean isKeyPreviewRequired(Key key) {
         final int code = key.mCode;
         if (isModifierCode(code) || code == Keyboard.CODE_DELETE
                 || code == Keyboard.CODE_ENTER || code == Keyboard.CODE_SPACE)
