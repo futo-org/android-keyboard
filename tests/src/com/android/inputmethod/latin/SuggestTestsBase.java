@@ -42,7 +42,7 @@ public class SuggestTestsBase extends AndroidTestCase {
         return new KeyboardId(locale.toString() + " keyboard",
                 com.android.inputmethod.latin.R.xml.kbd_qwerty, locale,
                 Configuration.ORIENTATION_LANDSCAPE, displayWidth, KeyboardId.MODE_TEXT,
-                new EditorInfo(), false, KeyboardId.F2KEY_MODE_NONE, false, false, false, false);
+                new EditorInfo(), false, KeyboardId.F2KEY_MODE_NONE, false, false, false);
     }
 
     protected InputStream openTestRawResource(int resIdInTest) {

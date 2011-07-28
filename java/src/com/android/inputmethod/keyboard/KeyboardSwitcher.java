@@ -204,11 +204,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     mSubtypeSwitcher.getInputLocale());
 
             keyboard = new LatinKeyboard(mThemeContext, id, id.mWidth);
-
-            if (id.mEnableShiftLock) {
-                keyboard.enableShiftLock();
-            }
-
             mKeyboardCache.put(id, new SoftReference<LatinKeyboard>(keyboard));
             if (DEBUG_CACHE)
                 Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": "
@@ -241,16 +236,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final int mode = Utils.getKeyboardMode(attribute);
         final boolean hasVoiceKey = voiceKeyEnabled && (isSymbols != voiceKeyOnMain);
         final int xmlId;
-        final boolean enableShiftLock;
 
         switch (mode) {
         case KeyboardId.MODE_PHONE:
             xmlId = (isSymbols && isShift) ? R.xml.kbd_phone_shift : R.xml.kbd_phone;
-            enableShiftLock = true;
             break;
         case KeyboardId.MODE_NUMBER:
             xmlId = R.xml.kbd_number;
-            enableShiftLock = false;
             break;
         default:
             if (isSymbols) {
@@ -258,7 +250,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             } else {
                 xmlId = R.xml.kbd_qwerty;
             }
-            enableShiftLock = true;
             break;
         }
 
@@ -275,7 +266,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return new KeyboardId(
                 res.getResourceEntryName(xmlId), xmlId, locale, orientation, mWindowWidth,
                 mode, attribute, hasSettingsKey, f2KeyMode, clobberSettingsKey, voiceKeyEnabled,
-                hasVoiceKey, enableShiftLock);
+                hasVoiceKey);
     }
 
     public int getKeyboardMode() {
@@ -571,7 +562,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             // Symbol keyboard may have an ALT key that has a caps lock style indicator (a.k.a.
             // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
             // that takes care of the current keyboard having such ALT key or not.
-            keyboard.setShiftLocked(hasStickyShiftKey(keyboard));
+            keyboard.setShiftLocked(keyboard.hasShiftLockKey());
         } else {
             keyboard = getKeyboard(mSymbolsKeyboardId);
             // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
@@ -579,14 +570,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             keyboard.setShiftLocked(false);
         }
         setKeyboard(keyboard);
-    }
-
-    private static boolean hasStickyShiftKey(Keyboard keyboard) {
-        for (final Key shiftKey : keyboard.getShiftKeys()) {
-            if (shiftKey.mSticky)
-                return true;
-        }
-        return false;
     }
 
     public boolean isInMomentarySwitchState() {

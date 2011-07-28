@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -116,8 +115,8 @@ public class Keyboard {
     /** List of shift keys in this keyboard and its icons and state */
     private final List<Key> mShiftKeys = new ArrayList<Key>();
     private final HashMap<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
-    private final HashMap<Key, Drawable> mNormalShiftIcons = new HashMap<Key, Drawable>();
-    private final HashSet<Key> mShiftLockEnabled = new HashSet<Key>();
+    private final HashMap<Key, Drawable> mUnshiftedIcons = new HashMap<Key, Drawable>();
+    private final HashSet<Key> mShiftLockKeys = new HashSet<Key>();
     private final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
     /** Total height of the keyboard, including the padding and keys */
@@ -284,30 +283,35 @@ public class Keyboard {
         mMaxPopupColumn = column;
     }
 
-    public List<Key> getShiftKeys() {
-        return mShiftKeys;
-    }
-
-    public Map<Key, Drawable> getShiftedIcons() {
-        return mShiftedIcons;
-    }
-
-    public void enableShiftLock() {
-        for (final Key key : getShiftKeys()) {
-            mShiftLockEnabled.add(key);
-            mNormalShiftIcons.put(key, key.getIcon());
+    public void addShiftKey(Key key) {
+        if (key == null) return;
+        mShiftKeys.add(key);
+        if (key.mSticky) {
+            mShiftLockKeys.add(key);
         }
     }
 
-    public boolean isShiftLockEnabled(Key key) {
-        return mShiftLockEnabled.contains(key);
+    public void addShiftedIcon(Key key, Drawable icon) {
+        if (key == null) return;
+        mUnshiftedIcons.put(key, key.getIcon());
+        mShiftedIcons.put(key, icon);
+    }
+
+    public boolean hasShiftLockKey() {
+        return !mShiftLockKeys.isEmpty();
     }
 
     public boolean setShiftLocked(boolean newShiftLockState) {
-        final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
-        for (final Key key : getShiftKeys()) {
+        for (final Key key : mShiftLockKeys) {
+            // To represent "shift locked" state. The highlight is handled by background image that
+            // might be a StateListDrawable.
             key.setHighlightOn(newShiftLockState);
-            key.setIcon(newShiftLockState ? shiftedIcons.get(key) : mNormalShiftIcons.get(key));
+            // To represent "shifted" state. The key might have a shifted icon.
+            if (newShiftLockState && mShiftedIcons.containsKey(key)) {
+                key.setIcon(mShiftedIcons.get(key));
+            } else {
+                key.setIcon(mUnshiftedIcons.get(key));
+            }
         }
         mShiftState.setShiftLocked(newShiftLockState);
         return true;
@@ -318,12 +322,11 @@ public class Keyboard {
     }
 
     public boolean setShifted(boolean newShiftState) {
-        final Map<Key, Drawable> shiftedIcons = getShiftedIcons();
-        for (final Key key : getShiftKeys()) {
+        for (final Key key : mShiftKeys) {
             if (!newShiftState && !mShiftState.isShiftLocked()) {
-                key.setIcon(mNormalShiftIcons.get(key));
+                key.setIcon(mUnshiftedIcons.get(key));
             } else if (newShiftState && !mShiftState.isShiftedOrShiftLocked()) {
-                key.setIcon(shiftedIcons.get(key));
+                key.setIcon(mShiftedIcons.get(key));
             }
         }
         return mShiftState.setShifted(newShiftState);
