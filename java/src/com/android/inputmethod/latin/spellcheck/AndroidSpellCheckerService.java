@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin.spellcheck;
 
 import android.service.textservice.SpellCheckerService;
+import android.util.Log;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
@@ -24,11 +25,26 @@ import android.view.textservice.TextInfo;
  * Service for spell checking, using LatinIME's dictionaries and mechanisms.
  */
 public class AndroidSpellCheckerService extends SpellCheckerService {
+    private static final String TAG = AndroidSpellCheckerService.class.getSimpleName();
+    private static final boolean DBG = true;
     @Override
     public SuggestionsInfo getSuggestions(TextInfo textInfo, int suggestionsLimit,
             String locale) {
         // TODO: implement this
-        String[] candidates = new String[] {"candidate1", "candidate2", "candidate3"};
-        return new SuggestionsInfo(0, candidates);
+        final String text = textInfo.getText();
+        if (DBG) {
+            Log.w(TAG, "getSuggestions: " + text);
+        }
+        String[] candidates0 = new String[] {text, "candidate1", "candidate2", "candidate3"};
+        String[] candidates1 = new String[] {text, "candidateA", "candidateB"};
+        final int textLength = textInfo.getText().length() % 3;
+        if (textLength % 3 == 0) {
+            return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_LOOKS_TYPO
+                    | SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY, candidates0);
+        } else if (textLength % 3 == 1) {
+            return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY, candidates1);
+        } else {
+            return new SuggestionsInfo(0, null);
+        }
     }
 }
