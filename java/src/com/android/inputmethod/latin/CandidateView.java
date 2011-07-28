@@ -323,8 +323,11 @@ public class CandidateView extends LinearLayout implements OnClickListener {
             word.setTag(i);
             word.setOnClickListener(this);
             mWords.add(word);
+            final View divider = inflater.inflate(R.layout.candidate_divider, null);
+            divider.setTag(i);
+            divider.setOnClickListener(this);
+            mDividers.add(divider);
             mInfos.add((TextView)inflater.inflate(R.layout.candidate_info, null));
-            mDividers.add(inflater.inflate(R.layout.candidate_divider, null));
         }
 
         mTouchToSave = findViewById(R.id.touch_to_save);
@@ -476,6 +479,7 @@ public class CandidateView extends LinearLayout implements OnClickListener {
 
             final TextView word = mWords.get(pos);
             final TextPaint paint = word.getPaint();
+            final View divider = mDividers.get(pos);
             // TODO: Reorder candidates in strip as appropriate. The center candidate should hold
             // the word when space is typed (valid typed word or auto corrected word).
             word.setTextColor(getCandidateTextColor(isAutoCorrect,
@@ -505,7 +509,7 @@ public class CandidateView extends LinearLayout implements OnClickListener {
                 word.setTextScaleX(scaleX);
                 if (i != 0) {
                     // Add divider if this isn't the left most suggestion in candidate strip.
-                    mCandidatesStrip.addView(mDividers.get(i));
+                    mCandidatesStrip.addView(divider);
                 }
                 mCandidatesStrip.addView(word);
                 if (params.mCanUseFixedWidthColumns) {
@@ -534,7 +538,6 @@ public class CandidateView extends LinearLayout implements OnClickListener {
                 }
                 if (x != 0) {
                     // Add divider if this isn't the left most suggestion in current row.
-                    final View divider = mDividers.get(i);
                     mCandidatesPane.addView(divider);
                     FrameLayoutCompatUtils.placeViewAt(
                             divider, x, y + (mCandidateStripHeight - params.mDividerHeight) / 2,
