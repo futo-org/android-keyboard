@@ -62,6 +62,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private View mCurrentInputView;
     private LatinKeyboardView mKeyboardView;
     private LatinIME mInputMethodService;
+    private String mPackageName;
+    private Resources mResources;
 
     // TODO: Combine these key state objects with auto mode switch state.
     private ShiftKeyState mShiftKeyState = new ShiftKeyState("Shift");
@@ -115,6 +117,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     public static void init(LatinIME ims, SharedPreferences prefs) {
         sInstance.mInputMethodService = ims;
+        sInstance.mPackageName = ims.getPackageName();
+        sInstance.mResources = ims.getResources();
         sInstance.mPrefs = prefs;
         sInstance.mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         sInstance.setContextThemeWrapper(ims, getKeyboardThemeIndex(ims, prefs));
@@ -146,14 +150,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     public void loadKeyboard(EditorInfo attribute, Settings.Values settings) {
         mSwitchState = SWITCH_STATE_ALPHA;
         try {
+            final Locale locale = mSubtypeSwitcher.getInputLocale();
+            final int orientation = mResources.getConfiguration().orientation;
+            final int width = (mWindowWidth != 0) ? mWindowWidth
+                    : mResources.getDisplayMetrics().widthPixels;
             final boolean voiceKeyEnabled = settings.isVoiceKeyEnabled(attribute);
             final boolean voiceKeyOnMain = settings.isVoiceKeyOnMain();
-            mMainKeyboardId = getKeyboardId(
-                    attribute, false, false, voiceKeyEnabled, voiceKeyOnMain);
-            mSymbolsKeyboardId = getKeyboardId(
-                    attribute, true, false, voiceKeyEnabled, voiceKeyOnMain);
-            mSymbolsShiftedKeyboardId = getKeyboardId(
-                    attribute, true, true, voiceKeyEnabled, voiceKeyOnMain);
+            mMainKeyboardId = getKeyboardId(attribute, locale, orientation, width,
+                    false, false, voiceKeyEnabled, voiceKeyOnMain);
+            mSymbolsKeyboardId = getKeyboardId(attribute, locale, orientation, width,
+                    true, false, voiceKeyEnabled, voiceKeyOnMain);
+            mSymbolsShiftedKeyboardId = getKeyboardId(attribute, locale, orientation, width,
+                    true, true, voiceKeyEnabled, voiceKeyOnMain);
             setKeyboard(getKeyboard(mMainKeyboardId));
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
@@ -187,10 +195,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final Keyboard oldKeyboard = mKeyboardView.getKeyboard();
         mKeyboardView.setKeyboard(newKeyboard);
         mCurrentId = newKeyboard.mId;
-        final Resources res = mInputMethodService.getResources();
         mKeyboardView.setKeyPreviewPopupEnabled(
-                Settings.Values.isKeyPreviewPopupEnabled(mPrefs, res),
-                Settings.Values.getKeyPreviewPopupDismissDelay(mPrefs, res));
+                Settings.Values.isKeyPreviewPopupEnabled(mPrefs, mResources),
+                Settings.Values.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
         final boolean localeChanged = (oldKeyboard == null)
                 || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
@@ -200,9 +207,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final SoftReference<LatinKeyboard> ref = mKeyboardCache.get(id);
         LatinKeyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
-            final Resources res = mInputMethodService.getResources();
-            final Locale savedLocale = Utils.setSystemLocale(res,
-                    mSubtypeSwitcher.getInputLocale());
+            final Locale savedLocale = Utils.setSystemLocale(
+                    mResources, mSubtypeSwitcher.getInputLocale());
 
             keyboard = new LatinKeyboard(mThemeContext, id, id.mWidth);
             mKeyboardCache.put(id, new SoftReference<LatinKeyboard>(keyboard));
@@ -210,7 +216,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": "
                         + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
 
-            Utils.setSystemLocale(res, savedLocale);
+            Utils.setSystemLocale(mResources, savedLocale);
         } else if (DEBUG_CACHE) {
             Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id);
         }
@@ -225,19 +231,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return keyboard;
     }
 
-    private static boolean hasSettingsKey(SharedPreferences prefs, Context context,
-            EditorInfo attribute) {
-        return getSettingsKeyMode(prefs, context)
-            && !Utils.inPrivateImeOptions(context.getPackageName(),
-                    LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
-    }
-
-    private KeyboardId getKeyboardId(EditorInfo attribute, final boolean isSymbols,
-            final boolean isShift, final boolean voiceKeyEnabled, final boolean voiceKeyOnMain) {
+    private KeyboardId getKeyboardId(EditorInfo attribute, Locale locale, final int orientation,
+            final int width, final boolean isSymbols, final boolean isShift,
+            final boolean voiceKeyEnabled, final boolean voiceKeyOnMain) {
         final int mode = Utils.getKeyboardMode(attribute);
-        final boolean hasVoiceKey = voiceKeyEnabled && (isSymbols != voiceKeyOnMain);
         final int xmlId;
-
         switch (mode) {
         case KeyboardId.MODE_PHONE:
             xmlId = (isSymbols && isShift) ? R.xml.kbd_phone_shift : R.xml.kbd_phone;
@@ -254,20 +252,16 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             break;
         }
 
-        final boolean hasSettingsKey = hasSettingsKey(mPrefs, mInputMethodService, attribute);
-        final int f2KeyMode = getF2KeyMode(mPrefs, mInputMethodService, attribute);
-        final boolean clobberSettingsKey = Utils.inPrivateImeOptions(
-                mInputMethodService.getPackageName(), LatinIME.IME_OPTION_NO_SETTINGS_KEY,
-                attribute);
-        final Resources res = mInputMethodService.getResources();
-        final int orientation = res.getConfiguration().orientation;
-        if (mWindowWidth == 0)
-            mWindowWidth = res.getDisplayMetrics().widthPixels;
-        final Locale locale = mSubtypeSwitcher.getInputLocale();
+        final boolean noSettingsKey = Utils.inPrivateImeOptions(
+                mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
+        final boolean hasSettingsKey = getSettingsKeyMode(mPrefs, mResources) && !noSettingsKey;
+        final int f2KeyMode = getF2KeyMode(mPrefs, mResources, mPackageName, attribute);
+        final boolean hasVoiceKey = voiceKeyEnabled && (isSymbols != voiceKeyOnMain);
+
         return new KeyboardId(
-                res.getResourceEntryName(xmlId), xmlId, locale, orientation, mWindowWidth,
-                mode, attribute, hasSettingsKey, f2KeyMode, clobberSettingsKey, voiceKeyEnabled,
-                hasVoiceKey);
+                mResources.getResourceEntryName(xmlId), xmlId, locale,
+                orientation, width, mode, attribute, hasSettingsKey, f2KeyMode, noSettingsKey,
+                voiceKeyEnabled, hasVoiceKey);
     }
 
     public int getKeyboardMode() {
@@ -775,8 +769,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    private static boolean getSettingsKeyMode(SharedPreferences prefs, Context context) {
-        final Resources res = context.getResources();
+    private static boolean getSettingsKeyMode(SharedPreferences prefs, Resources res) {
         final boolean showSettingsKeyOption = res.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
         if (showSettingsKeyOption) {
@@ -796,11 +789,10 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return true;
     }
 
-    private static int getF2KeyMode(SharedPreferences prefs, Context context,
+    private static int getF2KeyMode(SharedPreferences prefs, Resources res, String packageName,
             EditorInfo attribute) {
         final boolean clobberSettingsKey = Utils.inPrivateImeOptions(
-                context.getPackageName(), LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
-        final Resources res = context.getResources();
+                packageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
         final String settingsKeyMode = prefs.getString(Settings.PREF_SETTINGS_KEY,
                 res.getString(DEFAULT_SETTINGS_KEY_MODE));
         if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_AUTO))) {
