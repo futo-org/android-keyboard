@@ -567,9 +567,9 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        // Drop non-hover touch events when touch exploration is enabled.
         if (AccessibilityUtils.getInstance().isTouchExplorationEnabled()) {
-            return AccessibleKeyboardViewProxy.getInstance().dispatchTouchEvent(event)
-                    || super.dispatchTouchEvent(event);
+            return false;
         }
 
         return super.dispatchTouchEvent(event);

@@ -118,15 +118,6 @@ public class AccessibleKeyboardViewProxy {
         return onHoverEventInternal(event, tracker);
     }
 
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        // Since touch exploration translates hover double-tap to a regular
-        // single-tap, we're going to drop non-touch exploration events.
-        if (!AccessibilityUtils.getInstance().isTouchExplorationEvent(event))
-            return true;
-
-        return false;
-    }
-
     /**
      * Handles touch exploration events when Accessibility is turned on.
      *
