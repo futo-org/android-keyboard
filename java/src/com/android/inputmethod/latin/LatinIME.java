@@ -2163,8 +2163,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         };
         final AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setIcon(R.drawable.ic_dialog_keyboard)
-                .setNegativeButton(android.R.string.cancel, null)
                 .setItems(items, listener)
                 .setTitle(title);
         showOptionDialogInternal(builder.create());
@@ -2191,8 +2189,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         };
         final AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setIcon(R.drawable.ic_dialog_keyboard)
-                .setNegativeButton(android.R.string.cancel, null)
                 .setItems(items, listener)
                 .setTitle(title);
         showOptionDialogInternal(builder.create());
