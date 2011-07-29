@@ -31,26 +31,19 @@ import com.android.inputmethod.latin.R;
  */
 public class Row {
     /** Default width of a key in this row. */
-    public final int mDefaultWidth;
+    public final int mDefaultKeyWidth;
     /** Default height of a key in this row. */
-    public final int mDefaultHeight;
+    public final int mRowHeight;
 
-    private final Keyboard mKeyboard;
-
-    public Row(Resources res, Keyboard keyboard, XmlResourceParser parser) {
-        this.mKeyboard = keyboard;
-        final int keyboardWidth = keyboard.getDisplayWidth();
-        final int keyboardHeight = keyboard.getKeyboardHeight();
+    public Row(Resources res, KeyboardParams params, XmlResourceParser parser) {
+        final int keyboardWidth = params.mWidth;
+        final int keyboardHeight = params.mHeight;
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
-        mDefaultWidth = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_keyWidth, keyboardWidth, keyboard.getKeyWidth());
-        mDefaultHeight = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_rowHeight, keyboardHeight, keyboard.getRowHeight());
+        mDefaultKeyWidth = KeyboardParser.getDimensionOrFraction(a,
+                R.styleable.Keyboard_keyWidth, keyboardWidth, params.mDefaultKeyWidth);
+        mRowHeight = KeyboardParser.getDimensionOrFraction(a,
+                R.styleable.Keyboard_rowHeight, keyboardHeight, params.mDefaultRowHeight);
         a.recycle();
-    }
-
-    public Keyboard getKeyboard() {
-        return mKeyboard;
     }
 }

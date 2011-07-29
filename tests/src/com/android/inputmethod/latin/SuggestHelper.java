@@ -36,7 +36,7 @@ public class SuggestHelper {
         // Use null as the locale for Suggest so as to force it to use the internal dictionary
         // (and not try to find a dictionary provider for a specified locale)
         mSuggest = new Suggest(context, dictionaryId, null);
-        mKeyboard = new LatinKeyboard(context, keyboardId, keyboardId.mWidth);
+        mKeyboard = new LatinKeyboard.Builder(context).load(keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();
     }
@@ -44,7 +44,7 @@ public class SuggestHelper {
     protected SuggestHelper(Context context, File dictionaryPath, long startOffset, long length,
             KeyboardId keyboardId) {
         mSuggest = new Suggest(context, dictionaryPath, startOffset, length, null);
-        mKeyboard = new LatinKeyboard(context, keyboardId, keyboardId.mWidth);
+        mKeyboard = new LatinKeyboard.Builder(context).load(keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();
     }
@@ -54,7 +54,7 @@ public class SuggestHelper {
         mSuggest.setCorrectionMode(Suggest.CORRECTION_FULL);
         mKeyDetector.setKeyboard(mKeyboard, 0, 0);
         mKeyDetector.setProximityCorrectionEnabled(true);
-        mKeyDetector.setProximityThreshold(mKeyboard.getMostCommonKeyWidth());
+        mKeyDetector.setProximityThreshold(mKeyboard.mMostCommonKeyWidth);
     }
 
     public void setCorrectionMode(int correctionMode) {

@@ -16,8 +16,6 @@
 
 package com.android.inputmethod.keyboard.internal;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -27,26 +25,30 @@ import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MiniKeyboard;
 import com.android.inputmethod.latin.R;
 
-import java.util.List;
-
-public class MiniKeyboardBuilder {
-    private final Resources mRes;
-    private final MiniKeyboard mKeyboard;
+public class MiniKeyboardBuilder extends
+        KeyboardParser<MiniKeyboardBuilder.MiniKeyboardLayoutParams> {
     private final CharSequence[] mPopupCharacters;
-    private final MiniKeyboardLayoutParams mParams;
 
-    /* package */ static class MiniKeyboardLayoutParams {
-        public final int mKeyWidth;
-        public final int mRowHeight;
-        /* package */ final int mTopRowAdjustment;
-        public final int mNumRows;
-        public final int mNumColumns;
-        public final int mLeftKeys;
-        public final int mRightKeys; // includes default key.
-        public int mTopPadding;
+    public static class MiniKeyboardLayoutParams extends KeyboardParams {
+        /* package */ int mTopRowAdjustment;
+        public int mNumRows;
+        public int mNumColumns;
+        public int mLeftKeys;
+        public int mRightKeys; // includes default key.
+
+        public MiniKeyboardLayoutParams() {
+            super();
+        }
+
+        /* package for test */ MiniKeyboardLayoutParams(int numKeys, int maxColumns, int keyWidth,
+                int rowHeight, int coordXInParent, int parentKeyboardWidth) {
+            super();
+            setParameters(
+                    numKeys, maxColumns, keyWidth, rowHeight, coordXInParent, parentKeyboardWidth);
+        }
 
         /**
-         * The object holding mini keyboard layout parameters.
+         * Set keyboard parameters of mini keyboard.
          *
          * @param numKeys number of keys in this mini keyboard.
          * @param maxColumns number of maximum columns of this mini keyboard.
@@ -54,15 +56,15 @@ public class MiniKeyboardBuilder {
          * @param rowHeight mini keyboard row height in pixel, including vertical gap.
          * @param coordXInParent coordinate x of the popup key in parent keyboard.
          * @param parentKeyboardWidth parent keyboard width in pixel.
-         * parent keyboard.
          */
-        public MiniKeyboardLayoutParams(int numKeys, int maxColumns, int keyWidth, int rowHeight,
+        public void setParameters(int numKeys, int maxColumns, int keyWidth, int rowHeight,
                 int coordXInParent, int parentKeyboardWidth) {
-            if (parentKeyboardWidth / keyWidth < maxColumns)
+            if (parentKeyboardWidth / keyWidth < maxColumns) {
                 throw new IllegalArgumentException("Keyboard is too small to hold mini keyboard: "
                         + parentKeyboardWidth + " " + keyWidth + " " + maxColumns);
-            mKeyWidth = keyWidth;
-            mRowHeight = rowHeight;
+            }
+            mDefaultKeyWidth = keyWidth;
+            mDefaultRowHeight = rowHeight;
 
             final int numRows = (numKeys + maxColumns - 1) / maxColumns;
             mNumRows = numRows;
@@ -108,6 +110,9 @@ public class MiniKeyboardBuilder {
             } else {
                 mTopRowAdjustment = -1;
             }
+
+            mWidth = mOccupiedWidth = mNumColumns * mDefaultKeyWidth;
+            mHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight + mVerticalGap;
         }
 
         // Return key position according to column count (0 is default).
@@ -160,19 +165,19 @@ public class MiniKeyboardBuilder {
         }
 
         public int getDefaultKeyCoordX() {
-            return mLeftKeys * mKeyWidth;
+            return mLeftKeys * mDefaultKeyWidth;
         }
 
         public int getX(int n, int row) {
-            final int x = getColumnPos(n) * mKeyWidth + getDefaultKeyCoordX();
+            final int x = getColumnPos(n) * mDefaultKeyWidth + getDefaultKeyCoordX();
             if (isTopRow(row)) {
-                return x + mTopRowAdjustment * (mKeyWidth / 2);
+                return x + mTopRowAdjustment * (mDefaultKeyWidth / 2);
             }
             return x;
         }
 
         public int getY(int row) {
-            return (mNumRows - 1 - row) * mRowHeight + mTopPadding;
+            return (mNumRows - 1 - row) * mDefaultRowHeight + mTopPadding;
         }
 
         public int getRowFlags(int row) {
@@ -185,42 +190,32 @@ public class MiniKeyboardBuilder {
         private boolean isTopRow(int rowCount) {
             return rowCount == mNumRows - 1;
         }
-
-        public void setTopPadding (int topPadding) {
-            mTopPadding = topPadding;
-        }
-
-        public int getKeyboardHeight() {
-            return mNumRows * mRowHeight + mTopPadding;
-        }
-
-        public int getKeyboardWidth() {
-            return mNumColumns * mKeyWidth;
-        }
     }
 
-    public MiniKeyboardBuilder(KeyboardView view, int layoutTemplateResId, Key parentKey,
+    public MiniKeyboardBuilder(KeyboardView view, int xmlId, Key parentKey,
             Keyboard parentKeyboard) {
-        final Context context = view.getContext();
-        mRes = context.getResources();
-        final MiniKeyboard keyboard = new MiniKeyboard(
-                context, layoutTemplateResId, parentKeyboard);
-        mKeyboard = keyboard;
+        super(view.getContext(), new MiniKeyboardLayoutParams());
+        load(parentKeyboard.mId.cloneWithNewXml(mResources.getResourceEntryName(xmlId), xmlId));
+
+        // HACK: Current mini keyboard design totally relies on the 9-patch padding about horizontal
+        // and vertical key spacing. To keep the visual of mini keyboard as is, these hacks are
+        // needed to keep having the same horizontal and vertical key spacing.
+        mParams.mHorizontalGap = 0;
+        mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
+        // TODO: When we have correctly padded key background 9-patch drawables for mini keyboard,
+        // revert the above hacks and uncomment the following lines.
+        //mParams.mHorizontalGap = parentKeyboard.mHorizontalGap;
+        //mParams.mVerticalGap = parentKeyboard.mVerticalGap;
+
+        mParams.mIsRtlKeyboard = parentKeyboard.mIsRtlKeyboard;
         mPopupCharacters = parentKey.mPopupCharacters;
 
-        final int keyWidth = getMaxKeyWidth(view, mPopupCharacters, keyboard.getKeyWidth());
-        final MiniKeyboardLayoutParams params = new MiniKeyboardLayoutParams(
+        final int keyWidth = getMaxKeyWidth(view, mPopupCharacters, mParams.mDefaultKeyWidth);
+        mParams.setParameters(
                 mPopupCharacters.length, parentKey.mMaxPopupColumn,
-                keyWidth, parentKeyboard.getRowHeight(),
-                parentKey.mX + (parentKey.mWidth + parentKey.mHorizontalGap) / 2 - keyWidth / 2,
+                keyWidth, parentKeyboard.mDefaultRowHeight,
+                parentKey.mX + (mParams.mDefaultKeyWidth - keyWidth) / 2,
                 view.getMeasuredWidth());
-        params.setTopPadding(keyboard.getVerticalGap());
-        mParams = params;
-
-        keyboard.setRowHeight(params.mRowHeight);
-        keyboard.setKeyboardHeight(params.getKeyboardHeight());
-        keyboard.setMinWidth(params.getKeyboardWidth());
-        keyboard.setDefaultCoordX(params.getDefaultKeyCoordX() + params.mKeyWidth / 2);
     }
 
     private static int getMaxKeyWidth(KeyboardView view, CharSequence[] popupCharacters,
@@ -249,17 +244,16 @@ public class MiniKeyboardBuilder {
         return Math.max(minKeyWidth, maxWidth + horizontalPadding);
     }
 
+    @Override
     public MiniKeyboard build() {
-        final MiniKeyboard keyboard = mKeyboard;
-        final List<Key> keys = keyboard.getKeys();
         final MiniKeyboardLayoutParams params = mParams;
         for (int n = 0; n < mPopupCharacters.length; n++) {
             final CharSequence label = mPopupCharacters[n];
             final int row = n / params.mNumColumns;
-            final Key key = new Key(mRes, keyboard, label, params.getX(n, row), params.getY(row),
-                    params.mKeyWidth, params.mRowHeight, params.getRowFlags(row));
-            keys.add(key);
+            final Key key = new Key(mResources, params, label, params.getX(n, row), params.getY(row),
+                    params.mDefaultKeyWidth, params.mDefaultRowHeight, params.getRowFlags(row));
+            params.onAddKey(key);
         }
-        return keyboard;
+        return new MiniKeyboard(params);
     }
 }

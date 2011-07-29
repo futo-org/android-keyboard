@@ -289,7 +289,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         super.setKeyboard(keyboard);
         mKeyDetector.setKeyboard(
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
-        mKeyDetector.setProximityThreshold(keyboard.getMostCommonKeyWidth());
+        mKeyDetector.setProximityThreshold(keyboard.mMostCommonKeyWidth);
         PointerTracker.setKeyDetector(mKeyDetector);
         mPopupPanelCache.clear();
     }
@@ -360,7 +360,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
                 (PopupMiniKeyboardView)container.findViewById(R.id.mini_keyboard_view);
         final Keyboard parentKeyboard = getKeyboard();
         final Keyboard miniKeyboard = new MiniKeyboardBuilder(
-                this, parentKeyboard.getPopupKeyboardResId(), parentKey, parentKeyboard).build();
+                this, parentKeyboard.mPopupKeyboardResId, parentKey, parentKeyboard).build();
         miniKeyboardView.setKeyboard(miniKeyboard);
 
         container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),

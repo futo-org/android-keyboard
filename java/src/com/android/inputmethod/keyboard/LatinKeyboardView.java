@@ -69,7 +69,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     public void setKeyboard(Keyboard newKeyboard) {
         super.setKeyboard(newKeyboard);
         // One-seventh of the keyboard width seems like a reasonable threshold
-        final int jumpThreshold = newKeyboard.getMinWidth() / 7;
+        final int jumpThreshold = newKeyboard.mOccupiedWidth / 7;
         mJumpThresholdSquare = jumpThreshold * jumpThreshold;
     }
 

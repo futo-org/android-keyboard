@@ -30,3 +30,7 @@
 -keep class com.android.inputmethod.latin.SettingsActivity {
   *;
 }
+
+-keep class com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder$MiniKeyboardLayoutParams {
+  <init>(...);
+}

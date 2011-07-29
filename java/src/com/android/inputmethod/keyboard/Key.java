@@ -27,6 +27,7 @@ import android.util.Xml;
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeyboardParser;
 import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
 import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
@@ -190,11 +191,11 @@ public class Key {
     /**
      * This constructor is being used only for key in popup mini keyboard.
      */
-    public Key(Resources res, Keyboard keyboard, CharSequence popupCharacter, int x, int y,
+    public Key(Resources res, KeyboardParams params, CharSequence popupCharacter, int x, int y,
             int width, int height, int edgeFlags) {
-        mHeight = height - keyboard.getVerticalGap();
-        mHorizontalGap = keyboard.getHorizontalGap();
-        mVerticalGap = keyboard.getVerticalGap();
+        mHeight = height - params.mVerticalGap;
+        mHorizontalGap = params.mHorizontalGap;
+        mVerticalGap = params.mVerticalGap;
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mHorizontalGap;
         mEdgeFlags = edgeFlags;
@@ -209,8 +210,8 @@ public class Key {
         mLabel = PopupCharactersParser.getLabel(popupSpecification);
         mOutputText = PopupCharactersParser.getOutputText(popupSpecification);
         final int code = PopupCharactersParser.getCode(res, popupSpecification);
-        mCode = keyboard.isRtlKeyboard() ? getRtlParenthesisCode(code) : code;
-        mIcon = keyboard.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpecification));
+        mCode = params.mIsRtlKeyboard ? getRtlParenthesisCode(code) : code;
+        mIcon = params.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpecification));
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
         mY = y;
@@ -220,16 +221,15 @@ public class Key {
      * Create a key with the given top-left coordinate and extract its attributes from the XML
      * parser.
      * @param res resources associated with the caller's context
-     * @param row the row that this key belongs to. The row must already be attached to
-     * a {@link Keyboard}.
+     * @param params the keyboard building parameters.
+     * @param row the row that this key belongs to.
      * @param x the x coordinate of the top-left
      * @param y the y coordinate of the top-left
      * @param parser the XML parser containing the attributes for this key
      * @param keyStyles active key styles set
      */
-    public Key(Resources res, Row row, int x, int y, XmlResourceParser parser,
-            KeyStyles keyStyles) {
-        final Keyboard keyboard = row.getKeyboard();
+    public Key(Resources res, KeyboardParams params, Row row, int x, int y,
+            XmlResourceParser parser, KeyStyles keyStyles) {
 
         final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
@@ -237,14 +237,14 @@ public class Key {
         try {
             mHeight = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight,
-                    keyboard.getKeyboardHeight(), row.mDefaultHeight) - keyboard.getVerticalGap();
+                    params.mHeight, row.mRowHeight) - params.mVerticalGap;
             mHorizontalGap = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_horizontalGap,
-                    keyboard.getDisplayWidth(), keyboard.getHorizontalGap());
-            mVerticalGap = keyboard.getVerticalGap();
+                    params.mWidth, params.mHorizontalGap);
+            mVerticalGap = params.mVerticalGap;
             keyWidth = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyWidth,
-                    keyboard.getDisplayWidth(), row.mDefaultWidth);
+                    params.mWidth, row.mDefaultKeyWidth);
         } finally {
             keyboardAttr.recycle();
         }
@@ -262,7 +262,7 @@ public class Key {
                 style = keyStyles.getEmptyKeyStyle();
             }
 
-            final int keyboardWidth = keyboard.getDisplayWidth();
+            final int keyboardWidth = params.mOccupiedWidth;
             int keyXPos = KeyboardParser.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_keyXPos, keyboardWidth, x);
             if (keyXPos < 0) {
@@ -293,13 +293,13 @@ public class Key {
 
             CharSequence[] popupCharacters = style.getTextArray(
                     keyAttr, R.styleable.Keyboard_Key_popupCharacters);
-            if (keyboard.mId.mPasswordInput) {
+            if (params.mId.mPasswordInput) {
                 popupCharacters = PopupCharactersParser.filterOut(
                         res, popupCharacters, PopupCharactersParser.NON_ASCII_FILTER);
             }
             // In Arabic symbol layouts, we'd like to keep digits in popup characters regardless of
             // config_digit_popup_characters_enabled.
-            if (keyboard.mId.isAlphabetKeyboard() && !res.getBoolean(
+            if (params.mId.isAlphabetKeyboard() && !res.getBoolean(
                     R.bool.config_digit_popup_characters_enabled)) {
                 mPopupCharacters = PopupCharactersParser.filterOut(
                         res, popupCharacters, PopupCharactersParser.DIGIT_FILTER);
@@ -308,7 +308,7 @@ public class Key {
             }
             mMaxPopupColumn = style.getInt(keyboardAttr,
                     R.styleable.Keyboard_Key_maxPopupKeyboardColumn,
-                    keyboard.getMaxPopupKeyboardColumn());
+                    params.mMaxPopupColumn);
 
             mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
             mFunctional = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional, false);
@@ -316,7 +316,7 @@ public class Key {
             mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
             mEdgeFlags = 0;
 
-            final KeyboardIconsSet iconsSet = keyboard.mIconsSet;
+            final KeyboardIconsSet iconsSet = params.mIconsSet;
             mVisualInsetsLeft = KeyboardParser.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_visualInsetsLeft, keyboardWidth, 0);
             mVisualInsetsRight = KeyboardParser.getDimensionOrFraction(keyAttr,
@@ -331,7 +331,7 @@ public class Key {
                     KeyboardIconsSet.ICON_UNDEFINED);
             if (shiftedIconId != KeyboardIconsSet.ICON_UNDEFINED) {
                 final Drawable shiftedIcon = iconsSet.getIcon(shiftedIconId);
-                keyboard.addShiftedIcon(this, shiftedIcon);
+                params.addShiftedIcon(this, shiftedIcon);
             }
             mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
 
@@ -344,14 +344,11 @@ public class Key {
                     Keyboard.CODE_UNSPECIFIED);
             if (code == Keyboard.CODE_UNSPECIFIED && !TextUtils.isEmpty(mLabel)) {
                 final int firstChar = mLabel.charAt(0);
-                mCode = keyboard.isRtlKeyboard() ? getRtlParenthesisCode(firstChar) : firstChar;
+                mCode = params.mIsRtlKeyboard ? getRtlParenthesisCode(firstChar) : firstChar;
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
                 mCode = code;
             } else {
                 mCode = Keyboard.CODE_DUMMY;
-            }
-            if (mCode == Keyboard.CODE_SHIFT) {
-                keyboard.addShiftKey(this);
             }
         } finally {
             keyAttr.recycle();

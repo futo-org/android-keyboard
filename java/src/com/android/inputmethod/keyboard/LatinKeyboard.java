@@ -31,13 +31,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import com.android.inputmethod.keyboard.internal.KeyboardParams;
+import com.android.inputmethod.keyboard.internal.KeyboardParser;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 
 // TODO: We should remove this class
@@ -73,32 +74,16 @@ public class LatinKeyboard extends Keyboard {
     private static final String SMALL_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "small";
     private static final String MEDIUM_TEXT_SIZE_OF_LANGUAGE_ON_SPACEBAR = "medium";
 
-    public LatinKeyboard(Context context, KeyboardId id, int width) {
-        super(context, id.getXmlId(), id, width);
+    private LatinKeyboard(Context context, LatinKeyboardParams params) {
+        super(params);
         mRes = context.getResources();
         mTheme = context.getTheme();
 
-        final List<Key> keys = getKeys();
-        int spaceKeyIndex = -1;
-        int shortcutKeyIndex = -1;
-        final int keyCount = keys.size();
-        for (int index = 0; index < keyCount; index++) {
-            // For now, assuming there are up to one space key and one shortcut key respectively.
-            switch (keys.get(index).mCode) {
-            case CODE_SPACE:
-                spaceKeyIndex = index;
-                break;
-            case CODE_SHORTCUT:
-                shortcutKeyIndex = index;
-                break;
-            }
-        }
-
         // The index of space key is available only after Keyboard constructor has finished.
-        mSpaceKey = (spaceKeyIndex >= 0) ? keys.get(spaceKeyIndex) : null;
+        mSpaceKey = params.mSpaceKey;
         mSpaceIcon = (mSpaceKey != null) ? mSpaceKey.getIcon() : null;
 
-        mShortcutKey = (shortcutKeyIndex >= 0) ? keys.get(shortcutKeyIndex) : null;
+        mShortcutKey = params.mShortcutKey;
         mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
 
         final TypedArray a = context.obtainStyledAttributes(
@@ -112,6 +97,42 @@ public class LatinKeyboard extends Keyboard {
         mSpacebarTextShadowColor = a.getColor(
                 R.styleable.LatinKeyboard_spacebarTextShadowColor, 0);
         a.recycle();
+    }
+
+    private static class LatinKeyboardParams extends KeyboardParams {
+        public Key mSpaceKey = null;
+        public Key mShortcutKey = null;
+
+        @Override
+        public void onAddKey(Key key) {
+            super.onAddKey(key);
+
+            switch (key.mCode) {
+            case Keyboard.CODE_SPACE:
+                mSpaceKey = key;
+                break;
+            case Keyboard.CODE_SHORTCUT:
+                mShortcutKey = key;
+                break;
+            }
+        }
+    }
+
+    public static class Builder extends KeyboardParser<LatinKeyboardParams> {
+        public Builder(Context context) {
+            super(context, new LatinKeyboardParams());
+        }
+
+        @Override
+        public Builder load(KeyboardId id) {
+            super.load(id);
+            return this;
+        }
+
+        @Override
+        public LatinKeyboard build() {
+            return new LatinKeyboard(mContext, mParams);
+        }
     }
 
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
@@ -294,8 +315,8 @@ public class LatinKeyboard extends Keyboard {
     @Override
     public int[] getNearestKeys(int x, int y) {
         // Avoid dead pixels at edges of the keyboard
-        return super.getNearestKeys(Math.max(0, Math.min(x, getMinWidth() - 1)),
-                Math.max(0, Math.min(y, getHeight() - 1)));
+        return super.getNearestKeys(Math.max(0, Math.min(x, mOccupiedWidth - 1)),
+                Math.max(0, Math.min(y, mOccupiedHeight - 1)));
     }
 
     public static int getTextSizeFromTheme(Theme theme, int style, int defValue) {

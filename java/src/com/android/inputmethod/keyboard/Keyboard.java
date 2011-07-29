@@ -16,23 +16,14 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.keyboard.internal.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeyboardShiftState;
-import com.android.inputmethod.latin.R;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,8 +47,6 @@ import java.util.Set;
  * </pre>
  */
 public class Keyboard {
-    private static final String TAG = Keyboard.class.getSimpleName();
-
     public static final int EDGE_LEFT = 0x01;
     public static final int EDGE_RIGHT = 0x02;
     public static final int EDGE_TOP = 0x04;
@@ -98,207 +87,75 @@ public class Keyboard {
     public final KeyboardId mId;
 
     /** Total height of the keyboard, including the padding and keys */
-    private int mTotalHeight;
+    public final int mOccupiedHeight;
+    /** Total width of the keyboard, including the padding and keys */
+    public final int mOccupiedWidth;
 
-    /**
-     * Total width (minimum width) of the keyboard, including left side gaps and keys, but not any
-     * gaps on the right side.
-     */
-    private int mMinWidth;
-
-    /** Horizontal gap default for all rows */
-    private int mHorizontalGap;
-
-    /** Default key width */
-    private int mDefaultKeyWidth;
+    public final int mHeight;
+    public final int mWidth;
 
     /** Default row height */
-    private int mDefaultRowHeight;
+    public final int mDefaultRowHeight;
 
     /** Default gap between rows */
-    private int mVerticalGap;
+    public final int mVerticalGap;
+
+    public final int mMostCommonKeyWidth;
 
     /** Popup keyboard template */
-    private int mPopupKeyboardResId;
+    public final int mPopupKeyboardResId;
 
     /** Maximum column for popup keyboard */
-    private int mMaxPopupColumn;
+    public final int mMaxPopupColumn;
 
     /** True if Right-To-Left keyboard */
-    private boolean mIsRtlKeyboard;
+    public final boolean mIsRtlKeyboard;
 
-    /** List of keys in this keyboard */
-    private final List<Key> mKeys = new ArrayList<Key>();
-    /** List of shift keys in this keyboard and its icons and state */
-    private final List<Key> mShiftKeys = new ArrayList<Key>();
-    private final Map<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
-    private final Map<Key, Drawable> mUnshiftedIcons = new HashMap<Key, Drawable>();
-    private final Set<Key> mShiftLockKeys = new HashSet<Key>();
-    public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
-
-
-    /** Width of the screen available to fit the keyboard */
-    private final int mDisplayWidth;
-
-    /** Height of the screen */
-    private final int mDisplayHeight;
-
-    /** Height of keyboard */
-    private int mKeyboardHeight;
-
-    private int mMostCommonKeyWidth = 0;
+    /** List of keys and icons in this keyboard */
+    public final List<Key> mKeys;
+    public final List<Key> mShiftKeys;
+    public final Set<Key> mShiftLockKeys;
+    public final Map<Key, Drawable> mShiftedIcons;
+    public final Map<Key, Drawable> mUnshiftedIcons;
+    public final KeyboardIconsSet mIconsSet;
 
     private final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
-    // Variables for pre-computing nearest keys.
-
-    // TODO: Change GRID_WIDTH and GRID_HEIGHT to private.
-    public final int GRID_WIDTH;
-    public final int GRID_HEIGHT;
-
     private final ProximityInfo mProximityInfo;
 
-    /**
-     * Creates a keyboard from the given xml key layout file.
-     * @param context the application or service context
-     * @param xmlLayoutResId the resource file that contains the keyboard layout and keys.
-     * @param id keyboard identifier
-     * @param width keyboard width
-     */
+    public Keyboard(KeyboardParams params) {
+        mId = params.mId;
+        mOccupiedHeight = params.mOccupiedHeight;
+        mOccupiedWidth = params.mOccupiedWidth;
+        mHeight = params.mHeight;
+        mWidth = params.mWidth;
+        mMostCommonKeyWidth = params.mMostCommonKeyWidth;
+        mIsRtlKeyboard = params.mIsRtlKeyboard;
+        mPopupKeyboardResId = params.mPopupKeyboardResId;
+        mMaxPopupColumn = params.mMaxPopupColumn;
 
-    public Keyboard(Context context, int xmlLayoutResId, KeyboardId id, int width) {
-        final Resources res = context.getResources();
-        GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
-        GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
+        mDefaultRowHeight = params.mDefaultRowHeight;
+        mVerticalGap = params.mVerticalGap;
 
-        final int horizontalEdgesPadding = (int)res.getDimension(
-                R.dimen.keyboard_horizontal_edges_padding);
-        mDisplayWidth = width - horizontalEdgesPadding * 2;
-        // TODO: Adjust the height by referring to the height of area available for drawing as well.
-        mDisplayHeight = res.getDisplayMetrics().heightPixels;
+        mKeys = Collections.unmodifiableList(params.mKeys);
+        mShiftKeys = Collections.unmodifiableList(params.mShiftKeys);
+        mShiftLockKeys = Collections.unmodifiableSet(params.mShiftLockKeys);
+        mShiftedIcons = Collections.unmodifiableMap(params.mShiftedIcons);
+        mUnshiftedIcons = Collections.unmodifiableMap(params.mUnshiftedIcons);
+        mIconsSet = params.mIconsSet;
 
-        mHorizontalGap = 0;
-        setKeyWidth(mDisplayWidth / 10);
-        mVerticalGap = 0;
-        mDefaultRowHeight = mDefaultKeyWidth;
-        mId = id;
-        loadKeyboard(context, xmlLayoutResId);
         mProximityInfo = new ProximityInfo(
-                GRID_WIDTH, GRID_HEIGHT, getMinWidth(), getHeight(), getKeyWidth(), mKeys);
+                params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
+                mMostCommonKeyWidth, mKeys);
     }
 
     public int getProximityInfo() {
         return mProximityInfo.getNativeProximityInfo();
     }
 
+    // TODO: Access mKeys directly
     public List<Key> getKeys() {
         return mKeys;
-    }
-
-    public int getHorizontalGap() {
-        return mHorizontalGap;
-    }
-
-    public void setHorizontalGap(int gap) {
-        mHorizontalGap = gap;
-    }
-
-    public int getVerticalGap() {
-        return mVerticalGap;
-    }
-
-    public void setVerticalGap(int gap) {
-        mVerticalGap = gap;
-    }
-
-    public int getRowHeight() {
-        return mDefaultRowHeight;
-    }
-
-    public void setRowHeight(int height) {
-        mDefaultRowHeight = height;
-    }
-
-    public int getKeyWidth() {
-        return mDefaultKeyWidth;
-    }
-
-    public void setKeyWidth(int width) {
-        mDefaultKeyWidth = width;
-    }
-
-    /**
-     * Returns the total height of the keyboard
-     * @return the total height of the keyboard
-     */
-    public int getHeight() {
-        return mTotalHeight;
-    }
-
-    public void setHeight(int height) {
-        mTotalHeight = height;
-    }
-
-    public int getMinWidth() {
-        return mMinWidth;
-    }
-
-    public void setMinWidth(int minWidth) {
-        mMinWidth = minWidth;
-    }
-
-    public int getDisplayHeight() {
-        return mDisplayHeight;
-    }
-
-    public int getDisplayWidth() {
-        return mDisplayWidth;
-    }
-
-    public int getKeyboardHeight() {
-        return mKeyboardHeight;
-    }
-
-    public void setKeyboardHeight(int height) {
-        mKeyboardHeight = height;
-    }
-
-    public boolean isRtlKeyboard() {
-        return mIsRtlKeyboard;
-    }
-
-    public void setRtlKeyboard(boolean isRtl) {
-        mIsRtlKeyboard = isRtl;
-    }
-
-    public int getPopupKeyboardResId() {
-        return mPopupKeyboardResId;
-    }
-
-    public void setPopupKeyboardResId(int resId) {
-        mPopupKeyboardResId = resId;
-    }
-
-    public int getMaxPopupKeyboardColumn() {
-        return mMaxPopupColumn;
-    }
-
-    public void setMaxPopupKeyboardColumn(int column) {
-        mMaxPopupColumn = column;
-    }
-
-    public void addShiftKey(Key key) {
-        if (key == null) return;
-        mShiftKeys.add(key);
-        if (key.mSticky) {
-            mShiftLockKeys.add(key);
-        }
-    }
-
-    public void addShiftedIcon(Key key, Drawable icon) {
-        if (key == null) return;
-        mUnshiftedIcons.put(key, key.getIcon());
-        mShiftedIcons.put(key, icon);
     }
 
     public boolean hasShiftLockKey() {
@@ -390,47 +247,5 @@ public class Keyboard {
      */
     public int[] getNearestKeys(int x, int y) {
         return mProximityInfo.getNearestKeys(x, y);
-    }
-
-    /**
-     * Compute the most common key width in order to use it as proximity key detection threshold.
-     *
-     * @return The most common key width in the keyboard
-     */
-    public int getMostCommonKeyWidth() {
-        if (mMostCommonKeyWidth == 0) {
-            final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
-            int maxCount = 0;
-            int mostCommonWidth = 0;
-            for (final Key key : mKeys) {
-                final Integer width = key.mWidth + key.mHorizontalGap;
-                Integer count = histogram.get(width);
-                if (count == null)
-                    count = 0;
-                histogram.put(width, ++count);
-                if (count > maxCount) {
-                    maxCount = count;
-                    mostCommonWidth = width;
-                }
-            }
-            mMostCommonKeyWidth = mostCommonWidth;
-        }
-        return mMostCommonKeyWidth;
-    }
-
-    private void loadKeyboard(Context context, int xmlLayoutResId) {
-        try {
-            KeyboardParser parser = new KeyboardParser(this, context);
-            parser.parseKeyboard(xmlLayoutResId);
-            // mMinWidth is the width of this keyboard which is maximum width of row.
-            mMinWidth = parser.getMaxRowWidth();
-            mTotalHeight = parser.getTotalHeight();
-        } catch (XmlPullParserException e) {
-            Log.w(TAG, "keyboard XML parse error: " + e);
-            throw new IllegalArgumentException(e);
-        } catch (IOException e) {
-            Log.w(TAG, "keyboard XML parse error: " + e);
-            throw new RuntimeException(e);
-        }
     }
 }

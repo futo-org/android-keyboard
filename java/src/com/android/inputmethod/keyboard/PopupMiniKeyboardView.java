@@ -108,8 +108,8 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         final Keyboard keyboard = getKeyboard();
         if (keyboard != null) {
-            final int width = keyboard.getMinWidth() + getPaddingLeft() + getPaddingRight();
-            final int height = keyboard.getKeyboardHeight() + getPaddingTop() + getPaddingBottom();
+            final int width = keyboard.mOccupiedWidth + getPaddingLeft() + getPaddingRight();
+            final int height = keyboard.mOccupiedHeight + getPaddingTop() + getPaddingBottom();
             setMeasuredDimension(width, height);
         } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -170,9 +170,9 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
                 + parentKeyboardView.getPaddingLeft();
         final int x = Math.max(0, Math.min(miniKeyboardLeft,
-                parentKeyboardView.getWidth() - miniKeyboard.getMinWidth()))
+                parentKeyboardView.getWidth() - miniKeyboard.mOccupiedWidth))
                 - container.getPaddingLeft() + mCoordinates[0];
-        final int y = pointY - parentKeyboard.getVerticalGap()
+        final int y = pointY - parentKeyboard.mVerticalGap
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + parentKeyboardView.getPaddingTop() + mCoordinates[1];
 

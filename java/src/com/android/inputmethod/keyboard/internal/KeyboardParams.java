@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.graphics.drawable.Drawable;
 
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
 
 import java.util.ArrayList;
@@ -31,8 +32,8 @@ import java.util.Set;
 public class KeyboardParams {
     public KeyboardId mId;
 
-    public int mTotalHeight;
-    public int mTotalWidth;
+    public int mOccupiedHeight;
+    public int mOccupiedWidth;
 
     public int mHeight;
     public int mWidth;
@@ -61,40 +62,34 @@ public class KeyboardParams {
     public final Map<Key, Drawable> mUnshiftedIcons = new HashMap<Key, Drawable>();
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
 
-    public void addShiftKey(Key key) {
-        if (key == null) return;
-        mShiftKeys.add(key);
-        if (key.mSticky) {
-            mShiftLockKeys.add(key);
+    public int mMostCommonKeyWidth = 0;
+
+    public void onAddKey(Key key) {
+        mKeys.add(key);
+        updateHistogram(key);
+        if (key.mCode == Keyboard.CODE_SHIFT) {
+            mShiftKeys.add(key);
+            if (key.mSticky) {
+                mShiftLockKeys.add(key);
+            }
         }
     }
 
     public void addShiftedIcon(Key key, Drawable icon) {
-        if (key == null) return;
         mUnshiftedIcons.put(key, key.getIcon());
         mShiftedIcons.put(key, icon);
     }
 
-    /**
-     * Compute the most common key width in order to use it as proximity key detection threshold.
-     *
-     * @return The most common key width in the keyboard
-     */
-    public int getMostCommonKeyWidth() {
-        final HashMap<Integer, Integer> histogram = new HashMap<Integer, Integer>();
-        int maxCount = 0;
-        int mostCommonWidth = 0;
-        for (final Key key : mKeys) {
-            final Integer width = key.mWidth + key.mHorizontalGap;
-            Integer count = histogram.get(width);
-            if (count == null)
-                count = 0;
-            histogram.put(width, ++count);
-            if (count > maxCount) {
-                maxCount = count;
-                mostCommonWidth = width;
-            }
+    private int mMaxCount = 0;
+    private final Map<Integer, Integer> mHistogram = new HashMap<Integer, Integer>();
+
+    private void updateHistogram(Key key) {
+        final Integer width = key.mWidth + key.mHorizontalGap;
+        final int count = (mHistogram.containsKey(width) ? mHistogram.get(width) : 0) + 1;
+        mHistogram.put(width, count);
+        if (count > mMaxCount) {
+            mMaxCount = count;
+            mMostCommonKeyWidth = width;
         }
-        return mostCommonWidth;
     }
 }

@@ -29,7 +29,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.keyboard.internal.ModifierKeyState;
 import com.android.inputmethod.keyboard.internal.ShiftKeyState;
 import com.android.inputmethod.latin.LatinIME;
@@ -270,14 +269,17 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (keyboard == null) {
             final Locale savedLocale = Utils.setSystemLocale(
                     mResources, mSubtypeSwitcher.getInputLocale());
-
-            keyboard = new LatinKeyboard(mThemeContext, id, id.mWidth);
+            try {
+                keyboard = new LatinKeyboard.Builder(mThemeContext).load(id).build();
+            } finally {
+                Utils.setSystemLocale(mResources, savedLocale);
+            }
             mKeyboardCache.put(id, new SoftReference<LatinKeyboard>(keyboard));
-            if (DEBUG_CACHE)
+
+            if (DEBUG_CACHE) {
                 Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": "
                         + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
-
-            Utils.setSystemLocale(mResources, savedLocale);
+            }
         } else if (DEBUG_CACHE) {
             Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id);
         }

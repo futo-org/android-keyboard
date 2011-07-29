@@ -57,7 +57,7 @@ public class KeyDetector {
         mCorrectionX = (int)correctionX;
         mCorrectionY = (int)correctionY;
         mKeyboard = keyboard;
-        final int threshold = keyboard.getMostCommonKeyWidth();
+        final int threshold = keyboard.mMostCommonKeyWidth;
         mProximityThresholdSquare = threshold * threshold;
     }
 

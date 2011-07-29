@@ -42,8 +42,6 @@ public class KeyboardId {
     public static final int F2KEY_MODE_SHORTCUT_IME = 2;
     public static final int F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS = 3;
 
-    private static final int MINI_KEYBOARD_ID_MARKER = -1;
-
     public final Locale mLocale;
     public final int mOrientation;
     public final int mWidth;
@@ -110,9 +108,9 @@ public class KeyboardId {
         });
     }
 
-    public KeyboardId cloneAsMiniKeyboard() {
-        return new KeyboardId("mini popup keyboard", MINI_KEYBOARD_ID_MARKER, mLocale, mOrientation,
-                mWidth, mMode, mAttribute, false, F2KEY_MODE_NONE, false, false, false);
+    public KeyboardId cloneWithNewXml(String xmlName, int xmlId) {
+        return new KeyboardId(xmlName, xmlId, mLocale, mOrientation, mWidth, mMode, mAttribute,
+                false, F2KEY_MODE_NONE, false, false, false);
     }
 
     public KeyboardId cloneWithNewGeometry(int orientation, int width) {
@@ -125,10 +123,6 @@ public class KeyboardId {
 
     public int getXmlId() {
         return mXmlId;
-    }
-
-    public boolean isMiniKeyboard() {
-        return mXmlId == MINI_KEYBOARD_ID_MARKER;
     }
 
     public boolean isAlphabetKeyboard() {

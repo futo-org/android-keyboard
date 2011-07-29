@@ -16,30 +16,14 @@
 
 package com.android.inputmethod.keyboard;
 
-import android.content.Context;
+import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder.MiniKeyboardLayoutParams;
 
 public class MiniKeyboard extends Keyboard {
-    private int mDefaultKeyCoordX;
+    private final int mDefaultKeyCoordX;
 
-    public MiniKeyboard(Context context, int xmlLayoutResId, Keyboard parentKeyboard) {
-        super(context, xmlLayoutResId, parentKeyboard.mId.cloneAsMiniKeyboard(),
-                parentKeyboard.getMinWidth());
-        // HACK: Current mini keyboard design totally relies on the 9-patch padding about horizontal
-        // and vertical key spacing. To keep the visual of mini keyboard as is, these hacks are
-        // needed to keep having the same horizontal and vertical key spacing.
-        setHorizontalGap(0);
-        setVerticalGap(parentKeyboard.getVerticalGap() / 2);
-
-        // TODO: When we have correctly padded key background 9-patch drawables for mini keyboard,
-        // revert the above hacks and uncomment the following lines.
-        //setHorizontalGap(parentKeyboard.getHorizontalGap());
-        //setVerticalGap(parentKeyboard.getVerticalGap());
-
-        setRtlKeyboard(parentKeyboard.isRtlKeyboard());
-    }
-
-    public void setDefaultCoordX(int pos) {
-        mDefaultKeyCoordX = pos;
+    public MiniKeyboard(MiniKeyboardLayoutParams params) {
+        super(params);
+        mDefaultKeyCoordX = params.getDefaultKeyCoordX() + params.mDefaultKeyWidth / 2;
     }
 
     public int getDefaultCoordX() {
