@@ -917,7 +917,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (onEvaluateInputViewShown() && mCandidateViewContainer != null) {
             final boolean shouldShowCandidates = shown
                     && (needsInputViewShown ? mKeyboardSwitcher.isInputViewShown() : true);
-            if (isExtractViewShown()) {
+            if (isFullscreenMode()) {
                 // No need to have extra space to show the key preview.
                 mCandidateViewContainer.setMinimumHeight(0);
                 mCandidateViewContainer.setVisibility(
