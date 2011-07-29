@@ -338,8 +338,6 @@ public class KeyboardParser {
                     Arrays.toString(key.mPopupCharacters)));
             checkEndTag(TAG_KEY, parser);
             keys.add(key);
-            if (key.mCode == Keyboard.CODE_SHIFT)
-                mKeyboard.getShiftKeys().add(key);
             endKey(key);
         }
     }

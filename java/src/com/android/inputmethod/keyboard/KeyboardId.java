@@ -58,7 +58,6 @@ public class KeyboardId {
     public final boolean mVoiceKeyEnabled;
     public final boolean mHasVoiceKey;
     public final int mImeAction;
-    public final boolean mEnableShiftLock;
 
     public final String mXmlName;
     public final EditorInfo mAttribute;
@@ -67,8 +66,7 @@ public class KeyboardId {
 
     public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int width,
             int mode, EditorInfo attribute, boolean hasSettingsKey, int f2KeyMode,
-            boolean clobberSettingsKey, boolean voiceKeyEnabled, boolean hasVoiceKey,
-            boolean enableShiftLock) {
+            boolean clobberSettingsKey, boolean voiceKeyEnabled, boolean hasVoiceKey) {
         final int inputType = (attribute != null) ? attribute.inputType : 0;
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         this.mLocale = locale;
@@ -91,7 +89,6 @@ public class KeyboardId {
         // {@link EditorInfo#IME_FLAG_NO_ENTER_ACTION}.
         this.mImeAction = imeOptions & (
                 EditorInfo.IME_MASK_ACTION | EditorInfo.IME_FLAG_NO_ENTER_ACTION);
-        this.mEnableShiftLock = enableShiftLock;
 
         this.mXmlName = xmlName;
         this.mAttribute = attribute;
@@ -110,21 +107,19 @@ public class KeyboardId {
                 voiceKeyEnabled,
                 hasVoiceKey,
                 mImeAction,
-                enableShiftLock,
         });
     }
 
     public KeyboardId cloneAsMiniKeyboard() {
         return new KeyboardId("mini popup keyboard", MINI_KEYBOARD_ID_MARKER, mLocale, mOrientation,
-                mWidth, mMode, mAttribute, false, F2KEY_MODE_NONE, false, false, false, false);
+                mWidth, mMode, mAttribute, false, F2KEY_MODE_NONE, false, false, false);
     }
 
     public KeyboardId cloneWithNewGeometry(int orientation, int width) {
         if (mWidth == width)
             return this;
         return new KeyboardId(mXmlName, mXmlId, mLocale, orientation, width, mMode, mAttribute,
-                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey,
-                mEnableShiftLock);
+                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey);
     }
 
     public int getXmlId() {
@@ -173,8 +168,7 @@ public class KeyboardId {
             && other.mClobberSettingsKey == this.mClobberSettingsKey
             && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
             && other.mHasVoiceKey == this.mHasVoiceKey
-            && other.mImeAction == this.mImeAction
-            && other.mEnableShiftLock == this.mEnableShiftLock;
+            && other.mImeAction == this.mImeAction;
     }
 
     @Override
@@ -184,7 +178,7 @@ public class KeyboardId {
 
     @Override
     public String toString() {
-        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s%s%s]",
+        return String.format("[%s.xml %s %s%d %s %s %s%s%s%s%s%s%s]",
                 mXmlName,
                 mLocale,
                 (mOrientation == 1 ? "port" : "land"), mWidth,
@@ -196,8 +190,7 @@ public class KeyboardId {
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
                 (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
-                (mHasVoiceKey ? " hasVoiceKey" : ""),
-                (mEnableShiftLock ? " enableShiftLock" : "")
+                (mHasVoiceKey ? " hasVoiceKey" : "")
         );
     }
 
