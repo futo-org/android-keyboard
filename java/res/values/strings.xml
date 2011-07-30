@@ -82,12 +82,6 @@
 
     <!-- Option to show/hide the settings key -->
     <string name="prefs_settings_key">Show settings key</string>
-    <!-- Option to automatically decide to show/hide the settings key -->
-    <string name="settings_key_mode_auto_name">Automatic</string>
-    <!-- Option to always show the settings key -->
-    <string name="settings_key_mode_always_show_name">Always show</string>
-    <!-- Option to always hide the settings key -->
-    <string name="settings_key_mode_always_hide_name">Always hide</string>
 
     <!-- Option to decide the auto correction threshold score -->
     <!-- Option to enable auto correction [CHAR LIMIT=20]-->

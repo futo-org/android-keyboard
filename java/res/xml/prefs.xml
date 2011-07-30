@@ -49,13 +49,11 @@
             android:summary="@string/prefs_enable_recorrection_summary"
             android:persistent="true"
             android:defaultValue="@bool/config_default_recorrection_enabled" />
-        <ListPreference
-            android:key="settings_key"
+        <CheckBoxPreference
+            android:key="show_settings_key"
             android:title="@string/prefs_settings_key"
             android:persistent="true"
-            android:entryValues="@array/settings_key_modes_values"
-            android:entries="@array/settings_key_modes"
-            android:defaultValue="@string/settings_key_mode_auto" />
+            android:defaultValue="false" />
         <ListPreference
             android:key="voice_mode"
             android:title="@string/voice_input"

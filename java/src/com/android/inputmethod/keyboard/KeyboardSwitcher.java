@@ -99,14 +99,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int SWITCH_STATE_CHORDING_SYMBOL = 6;
     private int mSwitchState = SWITCH_STATE_ALPHA;
 
-    private static final int SETTINGS_KEY_MODE_AUTO = R.string.settings_key_mode_auto;
-    private static final int SETTINGS_KEY_MODE_ALWAYS_SHOW =
-            R.string.settings_key_mode_always_show;
-    // NOTE: No need to have SETTINGS_KEY_MODE_ALWAYS_HIDE here because it's not being referred to
-    // in the source code now.
-    // Default is SETTINGS_KEY_MODE_AUTO.
-    private static final int DEFAULT_SETTINGS_KEY_MODE = SETTINGS_KEY_MODE_AUTO;
-
     private int mThemeIndex = -1;
     private Context mThemeContext;
 
@@ -228,21 +220,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    public void loadKeyboard(EditorInfo attribute, Settings.Values settings) {
+    public void loadKeyboard(EditorInfo editorInfo, Settings.Values settingsValues) {
         mSwitchState = SWITCH_STATE_ALPHA;
         try {
-            final Locale locale = mSubtypeSwitcher.getInputLocale();
-            final Configuration conf = mResources.getConfiguration();
-            final int width = mWindowWidthCache.getWidth(conf);
-            final int orientation = conf.orientation;
-            final boolean voiceKeyEnabled = settings.isVoiceKeyEnabled(attribute);
-            final boolean voiceKeyOnMain = settings.isVoiceKeyOnMain();
-            mMainKeyboardId = getKeyboardId(attribute, locale, orientation, width,
-                    false, false, voiceKeyEnabled, voiceKeyOnMain);
-            mSymbolsKeyboardId = getKeyboardId(attribute, locale, orientation, width,
-                    true, false, voiceKeyEnabled, voiceKeyOnMain);
-            mSymbolsShiftedKeyboardId = getKeyboardId(attribute, locale, orientation, width,
-                    true, true, voiceKeyEnabled, voiceKeyOnMain);
+            mMainKeyboardId = getKeyboardId(editorInfo, false, false, settingsValues);
+            mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
+            mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
             setKeyboard(getKeyboard(mMainKeyboardId));
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
@@ -309,10 +292,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return keyboard;
     }
 
-    private KeyboardId getKeyboardId(EditorInfo attribute, Locale locale, final int orientation,
-            final int width, final boolean isSymbols, final boolean isShift,
-            final boolean voiceKeyEnabled, final boolean voiceKeyOnMain) {
-        final int mode = Utils.getKeyboardMode(attribute);
+    private KeyboardId getKeyboardId(EditorInfo editorInfo, final boolean isSymbols,
+            final boolean isShift, Settings.Values settingsValues) {
+        final int mode = Utils.getKeyboardMode(editorInfo);
         final int xmlId;
         switch (mode) {
         case KeyboardId.MODE_PHONE:
@@ -330,16 +312,20 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             break;
         }
 
+        final boolean settingsKeyEnabled = settingsValues.isSettingsKeyEnabled(editorInfo);
+        final boolean voiceKeyEnabled = settingsValues.isVoiceKeyEnabled(editorInfo);
+        final boolean voiceKeyOnMain = settingsValues.isVoiceKeyOnMain();
         final boolean noSettingsKey = Utils.inPrivateImeOptions(
-                mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
-        final boolean hasSettingsKey = getSettingsKeyMode(mPrefs, mResources) && !noSettingsKey;
-        final int f2KeyMode = getF2KeyMode(mPrefs, mResources, mPackageName, attribute);
+                mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, editorInfo);
+        final boolean hasSettingsKey = settingsKeyEnabled && !noSettingsKey;
+        final int f2KeyMode = getF2KeyMode(settingsKeyEnabled, noSettingsKey);
         final boolean hasVoiceKey = voiceKeyEnabled && (isSymbols != voiceKeyOnMain);
+        final Configuration conf = mResources.getConfiguration();
 
         return new KeyboardId(
-                mResources.getResourceEntryName(xmlId), xmlId, locale,
-                orientation, width, mode, attribute, hasSettingsKey, f2KeyMode, noSettingsKey,
-                voiceKeyEnabled, hasVoiceKey);
+                mResources.getResourceEntryName(xmlId), xmlId, mSubtypeSwitcher.getInputLocale(),
+                conf.orientation, mWindowWidthCache.getWidth(conf), mode, editorInfo,
+                hasSettingsKey, f2KeyMode, noSettingsKey, voiceKeyEnabled, hasVoiceKey);
     }
 
     public int getKeyboardMode() {
@@ -828,9 +814,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (PREF_KEYBOARD_LAYOUT.equals(key)) {
-            final int layoutId = getKeyboardThemeIndex(mInputMethodService, sharedPreferences);
-            postSetInputView(createInputView(layoutId, false));
-        } else if (Settings.PREF_SETTINGS_KEY.equals(key)) {
+            final int themeIndex = getKeyboardThemeIndex(mInputMethodService, sharedPreferences);
+            postSetInputView(createInputView(themeIndex, false));
+        } else if (Settings.PREF_SHOW_SETTINGS_KEY.equals(key)) {
             postSetInputView(createInputView(mThemeIndex, true));
         }
     }
@@ -848,39 +834,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    private static boolean getSettingsKeyMode(SharedPreferences prefs, Resources res) {
-        final boolean showSettingsKeyOption = res.getBoolean(
-                R.bool.config_enable_show_settings_key_option);
-        if (showSettingsKeyOption) {
-            final String settingsKeyMode = prefs.getString(Settings.PREF_SETTINGS_KEY,
-                    res.getString(DEFAULT_SETTINGS_KEY_MODE));
-            // We show the settings key when 1) SETTINGS_KEY_MODE_ALWAYS_SHOW or
-            // 2) SETTINGS_KEY_MODE_AUTO and there are two or more enabled IMEs on the system
-            if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))
-                    || (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_AUTO))
-                            && Utils.hasMultipleEnabledIMEsOrSubtypes(
-                                    (InputMethodManagerCompatWrapper.getInstance())))) {
-                return true;
-            }
-            return false;
-        }
-        // If the show settings key option is disabled, we always try showing the settings key.
-        return true;
-    }
-
-    private static int getF2KeyMode(SharedPreferences prefs, Resources res, String packageName,
-            EditorInfo attribute) {
-        final boolean clobberSettingsKey = Utils.inPrivateImeOptions(
-                packageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, attribute);
-        final String settingsKeyMode = prefs.getString(Settings.PREF_SETTINGS_KEY,
-                res.getString(DEFAULT_SETTINGS_KEY_MODE));
-        if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_AUTO))) {
-            return clobberSettingsKey ? KeyboardId.F2KEY_MODE_SHORTCUT_IME
-                    : KeyboardId.F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS;
-        } else if (settingsKeyMode.equals(res.getString(SETTINGS_KEY_MODE_ALWAYS_SHOW))) {
-            return clobberSettingsKey ? KeyboardId.F2KEY_MODE_NONE : KeyboardId.F2KEY_MODE_SETTINGS;
-        } else { // SETTINGS_KEY_MODE_ALWAYS_HIDE
+    private static int getF2KeyMode(boolean settingsKeyEnabled, boolean noSettingsKey) {
+        if (noSettingsKey) {
+            // Never shows the Settings key
             return KeyboardId.F2KEY_MODE_SHORTCUT_IME;
+        }
+
+        if (settingsKeyEnabled) {
+            return KeyboardId.F2KEY_MODE_SETTINGS;
+        } else {
+            // It should be alright to fall back to the Settings key on 7-inch layouts
+            // even when the Settings key is not explicitly enabled.
+            return KeyboardId.F2KEY_MODE_SHORTCUT_IME_OR_SETTINGS;
         }
     }
 }

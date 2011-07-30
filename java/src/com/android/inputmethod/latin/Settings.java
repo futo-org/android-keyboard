@@ -61,7 +61,7 @@ public class Settings extends InputMethodSettingsActivity
     public static final String PREF_KEY_PREVIEW_POPUP_ON = "popup_on";
     public static final String PREF_RECORRECTION_ENABLED = "recorrection_enabled";
     public static final String PREF_AUTO_CAP = "auto_cap";
-    public static final String PREF_SETTINGS_KEY = "settings_key";
+    public static final String PREF_SHOW_SETTINGS_KEY = "show_settings_key";
     public static final String PREF_VOICE_SETTINGS_KEY = "voice_mode";
     public static final String PREF_INPUT_LANGUAGE = "input_language";
     public static final String PREF_SELECTED_LANGUAGES = "selected_languages";
@@ -118,6 +118,7 @@ public class Settings extends InputMethodSettingsActivity
         public final boolean mBigramPredictionEnabled;
         public final boolean mUseContactsDict;
 
+        private final boolean mShowSettingsKey;
         private final boolean mVoiceKeyEnabled;
         private final boolean mVoiceKeyOnMain;
 
@@ -165,21 +166,17 @@ public class Settings extends InputMethodSettingsActivity
             mVibrateOn = hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
             mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                     res.getBoolean(R.bool.config_default_sound_enabled));
-
             mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
             mKeyPreviewPopupDismissDelay = getKeyPreviewPopupDismissDelay(prefs, res);
             mAutoCap = prefs.getBoolean(Settings.PREF_AUTO_CAP, true);
-
             mAutoCorrectEnabled = isAutoCorrectEnabled(prefs, res);
             mBigramSuggestionEnabled = mAutoCorrectEnabled
                     && isBigramSuggestionEnabled(prefs, res, mAutoCorrectEnabled);
             mBigramPredictionEnabled = mBigramSuggestionEnabled
                     && isBigramPredictionEnabled(prefs, res);
-
             mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
-
             mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
-
+            mShowSettingsKey = prefs.getBoolean(Settings.PREF_SHOW_SETTINGS_KEY, false);
             final String voiceModeMain = res.getString(R.string.voice_mode_main);
             final String voiceModeOff = res.getString(R.string.voice_mode_off);
             final String voiceMode = prefs.getString(PREF_VOICE_SETTINGS_KEY, voiceModeMain);
@@ -284,6 +281,10 @@ public class Settings extends InputMethodSettingsActivity
             return builder.setIsPunctuationSuggestions().build();
         }
 
+        public boolean isSettingsKeyEnabled(EditorInfo attribute) {
+            return mShowSettingsKey;
+        }
+
         public boolean isVoiceKeyEnabled(EditorInfo attribute) {
             final boolean shortcutImeEnabled = SubtypeSwitcher.getInstance().isShortcutImeEnabled();
             final int inputType = (attribute != null) ? attribute.inputType : 0;
@@ -298,7 +299,7 @@ public class Settings extends InputMethodSettingsActivity
 
     private PreferenceScreen mInputLanguageSelection;
     private ListPreference mVoicePreference;
-    private ListPreference mSettingsKeyPreference;
+    private CheckBoxPreference mShowSettingsKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
     private ListPreference mAutoCorrectionThreshold;
     private ListPreference mKeyPreviewPopupDismissDelay;
@@ -345,7 +346,7 @@ public class Settings extends InputMethodSettingsActivity
         mInputLanguageSelection = (PreferenceScreen) findPreference(PREF_SUBTYPES);
         mInputLanguageSelection.setOnPreferenceClickListener(this);
         mVoicePreference = (ListPreference) findPreference(PREF_VOICE_SETTINGS_KEY);
-        mSettingsKeyPreference = (ListPreference) findPreference(PREF_SETTINGS_KEY);
+        mShowSettingsKeyPreference = (CheckBoxPreference) findPreference(PREF_SHOW_SETTINGS_KEY);
         mShowCorrectionSuggestionsPreference =
                 (ListPreference) findPreference(PREF_SHOW_SUGGESTIONS_SETTING);
         SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
@@ -376,7 +377,7 @@ public class Settings extends InputMethodSettingsActivity
         final boolean showSettingsKeyOption = res.getBoolean(
                 R.bool.config_enable_show_settings_key_option);
         if (!showSettingsKeyOption) {
-            generalSettings.removePreference(mSettingsKeyPreference);
+            generalSettings.removePreference(mShowSettingsKeyPreference);
         }
 
         final boolean showVoiceKeyOption = res.getBoolean(
@@ -457,7 +458,6 @@ public class Settings extends InputMethodSettingsActivity
         } else {
             getPreferenceScreen().removePreference(mVoicePreference);
         }
-        updateSettingsKeySummary();
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
     }
@@ -489,7 +489,6 @@ public class Settings extends InputMethodSettingsActivity
         mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
                 .equals(mVoiceModeOff));
         updateVoiceModeSummary();
-        updateSettingsKeySummary();
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
     }
@@ -511,12 +510,6 @@ public class Settings extends InputMethodSettingsActivity
                 getResources().getStringArray(R.array.prefs_suggestion_visibilities)
                 [mShowCorrectionSuggestionsPreference.findIndexOfValue(
                         mShowCorrectionSuggestionsPreference.getValue())]);
-    }
-
-    private void updateSettingsKeySummary() {
-        mSettingsKeyPreference.setSummary(
-                getResources().getStringArray(R.array.settings_key_modes)
-                [mSettingsKeyPreference.findIndexOfValue(mSettingsKeyPreference.getValue())]);
     }
 
     private void updateKeyPreviewPopupDelaySummary() {

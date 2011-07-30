@@ -50,26 +50,6 @@
     <!-- Character for close candidates pane (BLACK UP-POINTING TRIANGLE) -->
     <string name="label_close_candidates_pane">\u25b2</string>
 
-    <!-- Option values to show/hide the settings key in onscreen keyboard -->
-    <!-- Automatically decide to show or hide the settings key -->
-    <string name="settings_key_mode_auto">0</string>
-    <!-- Always show the settings key -->
-    <string name="settings_key_mode_always_show">1</string>
-    <!-- Always hide the settings key -->
-    <string name="settings_key_mode_always_hide">2</string>
-    <!-- Array of the settings key mode values -->
-    <string-array name="settings_key_modes_values">
-        <item>@string/settings_key_mode_auto</item>
-        <item>@string/settings_key_mode_always_show</item>
-        <item>@string/settings_key_mode_always_hide</item>
-    </string-array>
-    <!-- Array of the settings key modes -->
-    <string-array name="settings_key_modes">
-        <item>@string/settings_key_mode_auto_name</item>
-        <item>@string/settings_key_mode_always_show_name</item>
-        <item>@string/settings_key_mode_always_hide_name</item>
-    </string-array>
-
     <!--  Always show the suggestion strip -->
     <string name="prefs_suggestion_visibility_show_value">0</string>
     <!--  Show the suggestion strip only on portrait mode -->

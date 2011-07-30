@@ -546,11 +546,11 @@ public class Utils {
         }
     }
 
-    public static int getKeyboardMode(EditorInfo attribute) {
-        if (attribute == null)
+    public static int getKeyboardMode(EditorInfo editorInfo) {
+        if (editorInfo == null)
             return KeyboardId.MODE_TEXT;
 
-        final int inputType = attribute.inputType;
+        final int inputType = editorInfo.inputType;
         final int variation = inputType & InputType.TYPE_MASK_VARIATION;
 
         switch (inputType & InputType.TYPE_MASK_CLASS) {
@@ -587,11 +587,11 @@ public class Utils {
     }
 
     public static boolean inPrivateImeOptions(String packageName, String key,
-            EditorInfo attribute) {
-        if (attribute == null)
+            EditorInfo editorInfo) {
+        if (editorInfo == null)
             return false;
         return containsInCsv(packageName != null ? packageName + "." + key : key,
-                attribute.privateImeOptions);
+                editorInfo.privateImeOptions);
     }
 
     /**
