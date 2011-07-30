@@ -754,10 +754,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     @Override
     public void dismissKeyPreview(PointerTracker tracker) {
-        if (mShowKeyPreviewPopup) {
-            mDrawingHandler.cancelShowKeyPreview(tracker);
-            mDrawingHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
-        }
+        mDrawingHandler.cancelShowKeyPreview(tracker);
+        mDrawingHandler.dismissKeyPreview(mDelayAfterPreview, tracker);
     }
 
     private void addKeyPreview(TextView keyPreview) {
