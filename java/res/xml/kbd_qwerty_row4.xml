@@ -26,25 +26,9 @@
     >
         <switch>
             <case
-                latin:hasSettingsKey="true"
+                latin:hasSettingsKey="false"
+                latin:navigateAction="false"
             >
-                <Key
-                    latin:keyStyle="toSymbolKeyStyle"
-                    latin:keyWidth="13.75%p" />
-                <Key
-                    latin:keyStyle="settingsKeyStyle"
-                    latin:keyWidth="9.2%p" />
-                <include
-                    latin:keyboardLayout="@xml/kbd_qwerty_f1" />
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="35.83%p" />
-                <Key
-                    latin:keyStyle="punctuationKeyStyle"
-                    latin:keyWidth="9.2%p" />
-            </case>
-            <!-- latin:hasSettingsKey="false" -->
-            <default>
                 <Key
                     latin:keyStyle="toSymbolKeyStyle"
                     latin:keyWidth="15%p" />
@@ -55,6 +39,22 @@
                     latin:keyWidth="50%p" />
                 <Key
                     latin:keyStyle="punctuationKeyStyle" />
+            </case>
+            <!-- hasSettingsKey="true" or navigateAction="true" -->
+            <default>
+                <Key
+                    latin:keyStyle="toSymbolKeyStyle"
+                    latin:keyWidth="13.75%p" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_settings_or_tab" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_qwerty_f1" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="35.83%p" />
+                <Key
+                    latin:keyStyle="punctuationKeyStyle"
+                    latin:keyWidth="9.2%p" />
             </default>
         </switch>
         <switch>

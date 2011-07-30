@@ -50,9 +50,7 @@
     <string name="alternates_for_currency_general">¢,$,€,£,¥,₱</string>
     <string name="alternates_for_smiley">":-)|:-) ,:-(|:-( ,;-)|;-) ,:-P|:-P ,=-O|=-O ,:-*|:-* ,:O|:O ,B-)|B-) ,:-$|:-$ ,:-!|:-! ,:-[|:-[ ,O:-)|O:-) ,:-\\\\\\\\|:-\\\\\\\\ ,:\'(|:\'( ,:-D|:-D "</string>
     <string name="alternates_for_punctuation">"\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
-    <string name="alternates_for_web_tab_punctuation">".,\\,,\?,!,:,-,\',\",(,),/,;,+,&amp;,\@"</string>
     <integer name="popup_keyboard_column_for_punctuation">7</integer>
-    <integer name="popup_keyboard_column_for_web_punctuation">8</integer>
     <string name="keyhintlabel_for_punctuation"></string>
     <string name="keylabel_for_popular_domain">".com"</string>
     <!-- popular web domains for the locale - most popular, displayed on the keyboard -->
@@ -83,8 +81,11 @@
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>
     <string name="alternates_for_comma"></string>
-    <!-- @icon/5 is iconsSettingsKey -->
-    <string name="alternates_for_f1">\@icon/5|\@integer/key_settings</string>
+    <string name="alternates_for_f1"></string>
+    <!-- @icon/5 is iconSettingsKey -->
+    <string name="alternates_for_f1_settings">\@icon/5|\@integer/key_settings</string>
+    <!-- @icon/10 is iconTabKey -->
+    <string name="alternates_for_f1_navigate">\@icon/10|\@integer/key_tab</string>
     <string name="alternates_for_symbols_question">¿</string>
     <string name="alternates_for_symbols_semicolon"></string>
     <string name="alternates_for_symbols_percent">‰</string>

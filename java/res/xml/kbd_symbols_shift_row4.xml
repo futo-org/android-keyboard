@@ -26,29 +26,9 @@
     >
         <switch>
             <case
-                latin:hasSettingsKey="true"
+                latin:hasSettingsKey="false"
+                latin:navigateAction="false"
             >
-                <Key
-                    latin:keyStyle="toAlphaKeyStyle"
-                    latin:keyWidth="13.75%p" />
-                <Key
-                    latin:keyStyle="settingsKeyStyle"
-                    latin:keyWidth="9.2%p" />
-                <Key
-                    latin:keyLabel="„"
-                    latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
-                    latin:keyWidth="9.2%p"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
-                <Key
-                    latin:keyStyle="spaceKeyStyle"
-                    latin:keyWidth="35.83%p" />
-                <Key
-                    latin:keyLabel="…"
-                    latin:keyWidth="9.2%p"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
-            </case>
-            <!-- latin:hasSettingsKey="false" -->
-            <default>
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
                     latin:keyWidth="15%p" />
@@ -61,6 +41,26 @@
                     latin:keyWidth="50%p" />
                 <Key
                     latin:keyLabel="…"
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
+            </case>
+            <!-- hasSettingsKey="true" or navigateAction="true" -->
+            <default>
+                <Key
+                    latin:keyStyle="toAlphaKeyStyle"
+                    latin:keyWidth="13.75%p" />
+                <include
+                    latin:keyboardLayout="@xml/kbd_settings_or_tab" />
+                <Key
+                    latin:keyLabel="„"
+                    latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
+                    latin:keyWidth="9.2%p"
+                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
+                <Key
+                    latin:keyStyle="spaceKeyStyle"
+                    latin:keyWidth="35.83%p" />
+                <Key
+                    latin:keyLabel="…"
+                    latin:keyWidth="9.2%p"
                     latin:keyStyle="nonPasswordFunctionalKeyStyle" />
             </default>
         </switch>

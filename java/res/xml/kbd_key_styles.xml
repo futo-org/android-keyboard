@@ -25,38 +25,41 @@
     <key-style
         latin:styleName="functionalKeyStyle"
         latin:isFunctional="true" />
-    <!-- Base key style for the key which may have settings key as popup key -->
+    <!-- Base key style for the key which may have settings or tab key as popup key. -->
     <switch>
         <case
             latin:clobberSettingsKey="true"
         >
             <key-style
                 latin:styleName="f1PopupStyle"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
-                latin:styleName="symbolsF1PopupStyle"
+                latin:keyLabelOption="hasPopupHint"
+                latin:popupCharacters="@string/alternates_for_f1"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
+        <!-- clobberSettingsKey="false -->
         <case
-            latin:clobberSettingsKey="false"
-            latin:hasSettingsKey="true"
+            latin:hasSettingsKey="false"
         >
             <key-style
                 latin:styleName="f1PopupStyle"
-                latin:parentStyle="functionalKeyStyle" />
-            <key-style
-                latin:styleName="symbolsF1PopupStyle"
+                latin:keyLabelOption="hasPopupHint"
+                latin:popupCharacters="@string/alternates_for_f1_settings"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
-        <!-- clobberSettingsKey="false" and hasSettingsKey="false" -->
-        <default>
+        <!-- clobberSettingsKey="false" hasSettingsKey="true" -->
+        <case
+            latin:navigateAction="true"
+        >
             <key-style
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
-                latin:popupCharacters="\@icon/5|\@integer/key_settings"
+                latin:popupCharacters="@string/alternates_for_f1_navigate"
                 latin:parentStyle="functionalKeyStyle" />
+        </case>
+        <!-- clobberSettingsKey="false" and hasSettingsKey="true" navigateAction="false" -->
+        <default>
             <key-style
-                latin:styleName="symbolsF1PopupStyle"
+                latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
                 latin:popupCharacters="@string/alternates_for_f1"
                 latin:parentStyle="functionalKeyStyle" />
@@ -225,29 +228,11 @@
         </default>
     </switch>
     <key-style
-        latin:styleName="basePunctuationKeyStyle"
+        latin:styleName="punctuationKeyStyle"
         latin:keyLabel="."
         latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
         latin:keyLabelOption="hasPopupHint"
         latin:popupCharacters="@string/alternates_for_punctuation"
         latin:maxPopupKeyboardColumn="@integer/popup_keyboard_column_for_punctuation"
         latin:parentStyle="functionalKeyStyle" />
-    <switch>
-        <case
-            latin:navigateAction="true"
-        >
-            <key-style
-                latin:styleName="punctuationKeyStyle"
-                latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
-                latin:keyLabelOption="hasPopupHint"
-                latin:popupCharacters="@string/alternates_for_web_tab_punctuation"
-                latin:maxPopupKeyboardColumn="@integer/popup_keyboard_column_for_web_punctuation"
-                latin:parentStyle="tabKeyStyle" />
-        </case>
-        <default>
-            <key-style
-                latin:styleName="punctuationKeyStyle"
-                latin:parentStyle="basePunctuationKeyStyle" />
-        </default>
-    </switch>
 </merge>

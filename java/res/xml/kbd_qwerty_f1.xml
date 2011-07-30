@@ -23,7 +23,8 @@
 >
     <switch>
         <case
-            latin:hasSettingsKey="true"
+            latin:hasSettingsKey="false"
+            latin:navigateAction="false"
         >
             <switch>
                 <case
@@ -31,7 +32,6 @@
                 >
                     <Key
                         latin:keyLabel="/"
-                        latin:keyWidth="9.2%p"
                         latin:keyStyle="f1PopupStyle" />
                 </case>
                 <case
@@ -39,38 +39,23 @@
                 >
                     <Key
                         latin:keyLabel="\@"
-                        latin:keyWidth="9.2%p"
                         latin:keyStyle="f1PopupStyle" />
                 </case>
+                <case
+                    latin:hasShortcutKey="true"
+                >
+                    <Key
+                        latin:keyStyle="shortcutKeyStyle" />
+                </case>
+                <!-- latin:hasShortcutKey="false" -->
                 <default>
-                    <switch>
-                        <case
-                            latin:hasShortcutKey="true"
-                        >
-                            <Key
-                                latin:keyStyle="shortcutKeyStyle"
-                                latin:keyWidth="9.2%p" />
-                        </case>
-                        <!-- latin:hasShortcutKey="false" -->
-                        <case
-                            latin:navigateAction="true"
-                        >
-                            <Key
-                                latin:keyLabel="."
-                                latin:keyWidth="9.2%p"
-                                latin:keyStyle="f1PopupStyle" />
-                        </case>
-                        <default>
-                            <Key
-                                latin:keyLabel="@string/keylabel_for_comma"
-                                latin:keyWidth="9.2%p"
-                                latin:keyStyle="f1PopupStyle" />
-                        </default>
-                    </switch>
+                    <Key
+                        latin:keyLabel="@string/keylabel_for_comma"
+                        latin:keyStyle="f1PopupStyle" />
                 </default>
             </switch>
         </case>
-        <!-- hasSettingsKey="false" -->
+        <!-- hasSettingsKey="true" or navigateAction="true" -->
         <default>
             <switch>
                 <case
@@ -78,6 +63,7 @@
                 >
                     <Key
                         latin:keyLabel="/"
+                        latin:keyWidth="9.2%p"
                         latin:keyStyle="f1PopupStyle" />
                 </case>
                 <case
@@ -85,30 +71,22 @@
                 >
                     <Key
                         latin:keyLabel="\@"
+                        latin:keyWidth="9.2%p"
                         latin:keyStyle="f1PopupStyle" />
                 </case>
+                <case
+                    latin:hasShortcutKey="true"
+                >
+                    <Key
+                        latin:keyStyle="shortcutKeyStyle"
+                        latin:keyWidth="9.2%p" />
+                </case>
+                <!-- hasShortcutKey="false" -->
                 <default>
-                    <switch>
-                        <case
-                            latin:hasShortcutKey="true"
-                        >
-                            <Key
-                                latin:keyStyle="shortcutKeyStyle" />
-                        </case>
-                        <!-- latin:hasShortcutKey="false" -->
-                        <case
-                            latin:navigateAction="true"
-                        >
-                            <Key
-                                latin:keyLabel="."
-                                latin:keyStyle="f1PopupStyle" />
-                        </case>
-                        <default>
-                            <Key
-                                latin:keyLabel="@string/keylabel_for_comma"
-                                latin:keyStyle="f1PopupStyle" />
-                        </default>
-                    </switch>
+                    <Key
+                        latin:keyLabel="@string/keylabel_for_comma"
+                        latin:keyWidth="9.2%p"
+                        latin:keyStyle="f1PopupStyle" />
                 </default>
             </switch>
         </default>

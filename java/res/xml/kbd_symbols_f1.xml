@@ -23,8 +23,26 @@
 >
     <switch>
         <case
-            latin:hasSettingsKey="true"
+            latin:hasSettingsKey="false"
+            latin:navigateAction="false"
         >
+            <switch>
+                <case
+                    latin:hasShortcutKey="true"
+                >
+                    <Key
+                        latin:keyStyle="shortcutKeyStyle" />
+                </case>
+                <!-- latin:hasShortcutKey="false" -->
+                <default>
+                    <Key
+                        latin:keyLabel="@string/keylabel_for_f1"
+                        latin:keyStyle="f1PopupStyle" />
+                </default>
+            </switch>
+        </case>
+        <!-- hasSettingsKey="true" or navigateAction="true" -->
+        <default>
             <switch>
                 <case
                     latin:hasShortcutKey="true"
@@ -38,24 +56,7 @@
                     <Key
                         latin:keyLabel="@string/keylabel_for_f1"
                         latin:keyWidth="9.2%p"
-                        latin:keyStyle="symbolsF1PopupStyle" />
-                </default>
-            </switch>
-        </case>
-        <!-- hasSettingsKey="false" -->
-        <default>
-            <switch>
-                <case
-                    latin:hasShortcutKey="true"
-                >
-                    <Key
-                        latin:keyStyle="shortcutKeyStyle" />
-                </case>
-                <!-- latin:hasShortcutKey="false" -->
-                <default>
-                    <Key
-                        latin:keyLabel="@string/keylabel_for_f1"
-                        latin:keyStyle="symbolsF1PopupStyle" />
+                        latin:keyStyle="f1PopupStyle" />
                 </default>
             </switch>
         </default>
