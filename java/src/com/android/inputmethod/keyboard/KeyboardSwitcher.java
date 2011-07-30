@@ -18,7 +18,9 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.inputmethodservice.InputMethodService;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.InflateException;
@@ -38,6 +40,7 @@ import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 
 import java.lang.ref.SoftReference;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -76,6 +79,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private KeyboardId mCurrentId;
     private final HashMap<KeyboardId, SoftReference<LatinKeyboard>> mKeyboardCache =
             new HashMap<KeyboardId, SoftReference<LatinKeyboard>>();
+    // TODO: Remove this cache object when {@link DisplayMetrics} has actual window width excluding
+    // system navigation bar.
+    private WindowWidthCache mWindowWidthCache;
 
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
@@ -103,9 +109,79 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private int mThemeIndex = -1;
     private Context mThemeContext;
-    private int mWindowWidth;
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
+
+    private static class WindowWidthCache {
+        private final InputMethodService mService;
+        private final Resources mResources;
+        private final boolean mIsRegistered[] = new boolean[Configuration.ORIENTATION_SQUARE + 1];
+        private final int mWidth[] = new int[Configuration.ORIENTATION_SQUARE + 1];
+
+        public WindowWidthCache(InputMethodService service) {
+            mService = service;
+            mResources = service.getResources();
+
+            Arrays.fill(mIsRegistered, false);
+            Arrays.fill(mWidth, 0);
+        }
+
+        private int getCurrentWindowWidth() {
+            return mService.getWindow().getWindow().getDecorView().getWidth();
+        }
+
+        public int getWidth(Configuration conf) {
+            final int orientation = conf.orientation;
+            try {
+                final int width = mWidth[orientation];
+                if (mIsRegistered[orientation] || width > 0) {
+                    // Return registered or cached window width for this orientation.
+                    return width;
+                }
+                // Fall through
+            } catch (IndexOutOfBoundsException e) {
+                Log.w(TAG, "unknwon orientation value " + orientation);
+                // Fall through
+            }
+
+            // Return screen width as default window width.
+            return mResources.getDisplayMetrics().widthPixels;
+        }
+
+        public int getWidthOnSizeChanged(Configuration conf) {
+            final int orientation = conf.orientation;
+            try {
+                if (mIsRegistered[orientation]) {
+                    // Return registered window width for this orientation.
+                    return mWidth[orientation];
+                }
+
+                // Cache the current window width without registering.
+                final int width = getCurrentWindowWidth();
+                mWidth[orientation] = width;
+                return width;
+            } catch (IndexOutOfBoundsException e) {
+                Log.w(TAG, "unknwon orientation value " + orientation);
+                return 0;
+            }
+        }
+
+        public void registerWidth() {
+            final int orientation = mResources.getConfiguration().orientation;
+            try {
+                if (!mIsRegistered[orientation]) {
+                    final int width = getCurrentWindowWidth();
+                    if (width > 0) {
+                        // Register current window width.
+                        mWidth[orientation] = width;
+                        mIsRegistered[orientation] = true;
+                    }
+                }
+            } catch (IndexOutOfBoundsException e) {
+                Log.w(TAG, "unknwon orientation value " + orientation);
+            }
+        }
+    }
 
     public static KeyboardSwitcher getInstance() {
         return sInstance;
@@ -116,13 +192,18 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public static void init(LatinIME ims, SharedPreferences prefs) {
-        sInstance.mInputMethodService = ims;
-        sInstance.mPackageName = ims.getPackageName();
-        sInstance.mResources = ims.getResources();
-        sInstance.mPrefs = prefs;
-        sInstance.mSubtypeSwitcher = SubtypeSwitcher.getInstance();
-        sInstance.setContextThemeWrapper(ims, getKeyboardThemeIndex(ims, prefs));
-        prefs.registerOnSharedPreferenceChangeListener(sInstance);
+        sInstance.initInternal(ims, prefs);
+    }
+
+    private void initInternal(LatinIME ims, SharedPreferences prefs) {
+        mInputMethodService = ims;
+        mPackageName = ims.getPackageName();
+        mResources = ims.getResources();
+        mPrefs = prefs;
+        mSubtypeSwitcher = SubtypeSwitcher.getInstance();
+        mWindowWidthCache = new WindowWidthCache(ims);
+        setContextThemeWrapper(ims, getKeyboardThemeIndex(ims, prefs));
+        prefs.registerOnSharedPreferenceChangeListener(this);
     }
 
     private static int getKeyboardThemeIndex(Context context, SharedPreferences prefs) {
@@ -151,9 +232,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         mSwitchState = SWITCH_STATE_ALPHA;
         try {
             final Locale locale = mSubtypeSwitcher.getInputLocale();
-            final int orientation = mResources.getConfiguration().orientation;
-            final int width = (mWindowWidth != 0) ? mWindowWidth
-                    : mResources.getDisplayMetrics().widthPixels;
+            final Configuration conf = mResources.getConfiguration();
+            final int width = mWindowWidthCache.getWidth(conf);
+            final int orientation = conf.orientation;
             final boolean voiceKeyEnabled = settings.isVoiceKeyEnabled(attribute);
             final boolean voiceKeyOnMain = settings.isVoiceKeyOnMain();
             mMainKeyboardId = getKeyboardId(attribute, locale, orientation, width,
@@ -170,7 +251,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void onHideWindow() {
-        mWindowWidth = 0;
         mIsAutoCorrectionActive = false;
     }
 
@@ -179,15 +259,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         // TODO: This hack should be removed when display metric returns a proper width.
         // Until then, the behavior of KeyboardSwitcher is suboptimal on a device that has a
         // vertical system navigation bar in landscape screen orientation, for instance.
-        final int width = mInputMethodService.getWindow().getWindow().getDecorView().getWidth();
+        final Configuration conf = mResources.getConfiguration();
+        final int width = mWindowWidthCache.getWidthOnSizeChanged(conf);
         // If the window width hasn't fixed yet or keyboard doesn't exist, nothing to do with.
         if (width == 0 || mCurrentId == null)
             return;
-        // The window width is fixed.
-        mWindowWidth = width;
         // Reload keyboard with new width.
-        final int orientation = mInputMethodService.getResources().getConfiguration().orientation;
-        final KeyboardId newId = mCurrentId.cloneWithNewGeometry(orientation, width);
+        final KeyboardId newId = mCurrentId.cloneWithNewGeometry(conf.orientation, width);
         setKeyboard(getKeyboard(newId));
     }
 
@@ -534,6 +612,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     + " symbolKeyState=" + mSymbolKeyState);
         mShiftKeyState.onOtherKeyPressed();
         mSymbolKeyState.onOtherKeyPressed();
+        mWindowWidthCache.registerWidth();
     }
 
     public void onCancelInput() {
