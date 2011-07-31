@@ -190,6 +190,18 @@ public class Utils {
         }
     }
 
+    public static boolean canBeFollowedByPeriod(final int codePoint) {
+        // TODO: Check again whether there really ain't a better way to check this.
+        // TODO: This should probably be language-dependant...
+        return Character.isLetterOrDigit(codePoint)
+                || codePoint == Keyboard.CODE_SINGLE_QUOTE
+                || codePoint == Keyboard.CODE_DOUBLE_QUOTE
+                || codePoint == Keyboard.CODE_CLOSING_PARENTHESIS
+                || codePoint == Keyboard.CODE_CLOSING_SQUARE_BRACKET
+                || codePoint == Keyboard.CODE_CLOSING_CURLY_BRACKET
+                || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
+    }
+
     /* package */ static class RingCharBuffer {
         private static RingCharBuffer sRingCharBuffer = new RingCharBuffer();
         private static final char PLACEHOLDER_DELIMITER_CHAR = '\uFFFC';
