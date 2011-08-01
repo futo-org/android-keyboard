@@ -31,12 +31,12 @@
             latin:clobberSettingsKey="true"
         >
             <key-style
-                latin:styleName="settingsPopupStyle"
+                latin:styleName="f2PopupStyle"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <default>
             <key-style
-                latin:styleName="settingsPopupStyle"
+                latin:styleName="f2PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
                 latin:popupCharacters="\@icon/5|\@integer/key_settings"
                 latin:parentStyle="functionalKeyStyle" />
@@ -79,7 +79,7 @@
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
         latin:keyIconPreview="iconPreviewShortcutKey"
-        latin:parentStyle="settingsPopupStyle" />
+        latin:parentStyle="f2PopupStyle" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"
