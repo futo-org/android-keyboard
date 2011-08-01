@@ -644,7 +644,7 @@ public class KeyboardParser {
     }
 
     private void endKey(Key key) {
-        mCurrentX = key.mX - key.mGap / 2 + key.mWidth + key.mGap;
+        mCurrentX = key.mX - key.mHorizontalGap / 2 + key.mWidth + key.mHorizontalGap;
         if (mLeftEdge) {
             key.addEdgeFlags(Keyboard.EDGE_LEFT);
             mLeftEdge = false;

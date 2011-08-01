@@ -401,7 +401,7 @@ public class Keyboard {
             int maxCount = 0;
             int mostCommonWidth = 0;
             for (final Key key : mKeys) {
-                final Integer width = key.mWidth + key.mGap;
+                final Integer width = key.mWidth + key.mHorizontalGap;
                 Integer count = histogram.get(width);
                 if (count == null)
                     count = 0;

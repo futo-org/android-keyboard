@@ -212,7 +212,7 @@ public class MiniKeyboardBuilder {
         final MiniKeyboardLayoutParams params = new MiniKeyboardLayoutParams(
                 mPopupCharacters.length, parentKey.mMaxPopupColumn,
                 keyWidth, parentKeyboard.getRowHeight(),
-                parentKey.mX + (parentKey.mWidth + parentKey.mGap) / 2 - keyWidth / 2,
+                parentKey.mX + (parentKey.mWidth + parentKey.mHorizontalGap) / 2 - keyWidth / 2,
                 view.getMeasuredWidth());
         params.setTopPadding(keyboard.getVerticalGap());
         mParams = params;
