@@ -21,7 +21,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
 
 public class KeyboardIconsSet {
@@ -51,7 +50,7 @@ public class KeyboardIconsSet {
 
     private final Drawable mIcons[] = new Drawable[ICON_LAST + 1];
 
-    private static final int getIconId(int attrIndex) {
+    private static final int getIconId(final int attrIndex) {
         switch (attrIndex) {
         case R.styleable.Keyboard_iconShiftKey:
             return ICON_SHIFT_KEY;
@@ -86,16 +85,14 @@ public class KeyboardIconsSet {
         }
     }
 
-    public void loadIcons(TypedArray keyboardAttrs) {
+    public void loadIcons(final TypedArray keyboardAttrs) {
         final int count = keyboardAttrs.getIndexCount();
         for (int i = 0; i < count; i++) {
             final int attrIndex = keyboardAttrs.getIndex(i);
             final int iconId = getIconId(attrIndex);
             if (iconId != ICON_UNDEFINED) {
                 try {
-                    final Drawable icon = keyboardAttrs.getDrawable(attrIndex);
-                    Keyboard.setDefaultBounds(icon);
-                    mIcons[iconId] = icon;
+                    mIcons[iconId] = setDefaultBounds(keyboardAttrs.getDrawable(attrIndex));
                 } catch (Resources.NotFoundException e) {
                     Log.w(TAG, "Drawable resource for icon #" + iconId + " not found");
                 }
@@ -103,11 +100,18 @@ public class KeyboardIconsSet {
         }
     }
 
-    public Drawable getIcon(int iconId) {
+    public Drawable getIcon(final int iconId) {
         if (iconId == ICON_UNDEFINED)
             return null;
         if (iconId < 0 || iconId >= mIcons.length)
             throw new IllegalArgumentException("icon id is out of range: " + iconId);
         return mIcons[iconId];
+    }
+
+    private static Drawable setDefaultBounds(final Drawable icon)  {
+        if (icon != null) {
+            icon.setBounds(0, 0, icon.getIntrinsicWidth(), icon.getIntrinsicHeight());
+        }
+        return icon;
     }
 }

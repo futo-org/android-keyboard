@@ -431,10 +431,4 @@ public class Keyboard {
             throw new RuntimeException(e);
         }
     }
-
-    public static void setDefaultBounds(Drawable drawable)  {
-        if (drawable != null)
-            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight());
-    }
 }

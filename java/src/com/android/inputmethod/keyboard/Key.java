@@ -324,16 +324,13 @@ public class Key {
             mPreviewIcon = iconsSet.getIcon(style.getInt(
                     keyAttr, R.styleable.Keyboard_Key_keyIconPreview,
                     KeyboardIconsSet.ICON_UNDEFINED));
-            Keyboard.setDefaultBounds(mPreviewIcon);
             mIcon = iconsSet.getIcon(style.getInt(
                     keyAttr, R.styleable.Keyboard_Key_keyIcon,
                     KeyboardIconsSet.ICON_UNDEFINED));
-            Keyboard.setDefaultBounds(mIcon);
             final int shiftedIconId = style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted,
                     KeyboardIconsSet.ICON_UNDEFINED);
             if (shiftedIconId != KeyboardIconsSet.ICON_UNDEFINED) {
                 final Drawable shiftedIcon = iconsSet.getIcon(shiftedIconId);
-                Keyboard.setDefaultBounds(shiftedIcon);
                 mKeyboard.addShiftedIcon(this, shiftedIcon);
             }
             mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
