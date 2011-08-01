@@ -57,7 +57,7 @@
     <dimen name="mini_keyboard_vertical_correction">-0.330in</dimen>
     <!-- We use "inch", not "dip" because this value tries dealing with physical distance related
          to user's finger. -->
-    <dimen name="keyboard_vertical_correction">-0.05in</dimen>
+    <dimen name="keyboard_vertical_correction">0.0in</dimen>
 
     <fraction name="key_letter_ratio">55%</fraction>
     <fraction name="key_large_letter_ratio">65%</fraction>
