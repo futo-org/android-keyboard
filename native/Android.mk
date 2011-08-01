@@ -17,6 +17,7 @@ LOCAL_SRC_FILES := \
     jni/jni_common.cpp \
     src/bigram_dictionary.cpp \
     src/char_utils.cpp \
+    src/correction_state.cpp \
     src/dictionary.cpp \
     src/proximity_info.cpp \
     src/unigram_dictionary.cpp

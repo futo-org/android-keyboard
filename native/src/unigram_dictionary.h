@@ -18,6 +18,7 @@
 #define LATINIME_UNIGRAM_DICTIONARY_H
 
 #include <stdint.h>
+#include "correction_state.h"
 #include "defines.h"
 #include "proximity_info.h"
 
@@ -76,7 +77,7 @@ public:
     int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
             unsigned short *outWords, int *frequencies);
-    ~UnigramDictionary();
+    virtual ~UnigramDictionary();
 
 private:
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
@@ -99,34 +100,24 @@ private:
             const int secondWordStartPos, const int secondWordLength, const bool isSpaceProximity);
     bool getMissingSpaceWords(const int inputLength, const int missingSpacePos);
     bool getMistypedSpaceWords(const int inputLength, const int spaceProximityPos);
-    int calculateFinalFreq(const int inputIndex, const int depth, const int snr, const int skipPos,
-            const int excessivePos, const int transposedPos, const int freq,
-            const bool sameLength) const;
+    int calculateFinalFreq(const int inputIndex, const int depth, const int snr,
+            const int freq, const bool sameLength, CorrectionState *correctionState) const;
     void onTerminal(unsigned short int* word, const int depth,
             const uint8_t* const root, const uint8_t flags, const int pos,
-            const int inputIndex, const int matchWeight, const int skipPos,
-            const int excessivePos, const int transposedPos, const int freq, const bool sameLength,
-            int *nextLetters, const int nextLettersSize);
+            const int inputIndex, const int matchWeight, const int freq, const bool sameLength,
+            int* nextLetters, const int nextLettersSize, CorrectionState *correctionState);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int initialPos, const int initialDepth,
-            const int maxDepth, const bool initialTraverseAllNodes, const int snr, int inputIndex,
-            const int initialDiffs, const int skipPos, const int excessivePos,
-            const int transposedPos, int *nextLetters, const int nextLettersSize, int *newCount,
-            int *newChildPosition, bool *newTraverseAllNodes, int *newSnr, int*newInputIndex,
-            int *newDiffs, int *nextSiblingPosition, int *nextOutputIndex);
+            const int maxDepth, const bool initialTraverseAllNodes, int matchWeight, int inputIndex,
+            const int initialDiffs, int *nextLetters, const int nextLettersSize,
+            CorrectionState *correctionState, int *newCount, int *newChildPosition,
+            bool *newTraverseAllNodes, int *newMatchRate, int *newInputIndex, int *newDiffs,
+            int *nextSiblingPosition, int *nextOutputIndex);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
 #ifndef NEW_DICTIONARY_FORMAT
-    void getWordsRec(const int childrenCount, const int pos, const int depth, const int maxDepth,
-            const bool traverseAllNodes, const int snr, const int inputIndex, const int diffs,
-            const int skipPos, const int excessivePos, const int transposedPos, int *nextLetters,
-            const int nextLettersSize);
-    // Keep getWordsOld for comparing performance between getWords and getWordsOld
-    void getWordsOld(const int initialPos, const int inputLength, const int skipPos,
-            const int excessivePos, const int transposedPos, int *nextLetters,
-            const int nextLettersSize);
     // Process a node by considering missing space
     bool processCurrentNodeForExactMatch(const int firstChildPos,
             const int startInputIndex, const int depth, unsigned short *word,
@@ -158,7 +149,8 @@ private:
 
     int *mFrequencies;
     unsigned short *mOutputChars;
-    const ProximityInfo *mProximityInfo;
+    ProximityInfo *mProximityInfo;
+    CorrectionState *mCorrectionState;
     int mInputLength;
     // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];

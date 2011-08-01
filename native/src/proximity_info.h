@@ -23,6 +23,8 @@
 
 namespace latinime {
 
+class CorrectionState;
+
 class ProximityInfo {
 public:
     typedef enum {                             // Used as a return value for character comparison
@@ -42,8 +44,7 @@ public:
     bool existsCharInProximityAt(const int index, const int c) const;
     bool existsAdjacentProximityChars(const int index) const;
     ProximityType getMatchedProximityId(
-            const int index, const unsigned short c, const int skipPos,
-            const int excessivePos, const int transposedPos) const;
+            const int index, const unsigned short c, CorrectionState *correctionState) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
 private:
     int getStartIndexFromCoordinates(const int x, const int y) const;
