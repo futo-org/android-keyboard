@@ -31,7 +31,7 @@
             latin:clobberSettingsKey="true"
         >
             <key-style
-                latin:styleName="settingsPopupStyle"
+                latin:styleName="f1PopupStyle"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="symbolsF1PopupStyle"
@@ -42,7 +42,7 @@
             latin:hasSettingsKey="true"
         >
             <key-style
-                latin:styleName="settingsPopupStyle"
+                latin:styleName="f1PopupStyle"
                 latin:parentStyle="functionalKeyStyle" />
             <key-style
                 latin:styleName="symbolsF1PopupStyle"
@@ -51,7 +51,7 @@
         <!-- clobberSettingsKey="false" and hasSettingsKey="false" -->
         <default>
             <key-style
-                latin:styleName="settingsPopupStyle"
+                latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
                 latin:popupCharacters="\@icon/5|\@integer/key_settings"
                 latin:parentStyle="functionalKeyStyle" />
@@ -148,7 +148,7 @@
         latin:code="@integer/key_shortcut"
         latin:keyIcon="iconShortcutKey"
         latin:keyIconPreview="iconPreviewShortcutKey"
-        latin:parentStyle="settingsPopupStyle" />
+        latin:parentStyle="f1PopupStyle" />
     <key-style
         latin:styleName="settingsKeyStyle"
         latin:code="@integer/key_settings"

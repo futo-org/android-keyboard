@@ -32,7 +32,7 @@
                     <Key
                         latin:keyLabel="/"
                         latin:keyWidth="9.2%p"
-                        latin:keyStyle="settingsPopupStyle" />
+                        latin:keyStyle="f1PopupStyle" />
                 </case>
                 <case
                     latin:mode="email"
@@ -40,7 +40,7 @@
                     <Key
                         latin:keyLabel="\@"
                         latin:keyWidth="9.2%p"
-                        latin:keyStyle="settingsPopupStyle" />
+                        latin:keyStyle="f1PopupStyle" />
                 </case>
                 <default>
                     <switch>
@@ -58,13 +58,13 @@
                             <Key
                                 latin:keyLabel="."
                                 latin:keyWidth="9.2%p"
-                                latin:keyStyle="settingsPopupStyle" />
+                                latin:keyStyle="f1PopupStyle" />
                         </case>
                         <default>
                             <Key
                                 latin:keyLabel="@string/keylabel_for_comma"
                                 latin:keyWidth="9.2%p"
-                                latin:keyStyle="settingsPopupStyle" />
+                                latin:keyStyle="f1PopupStyle" />
                         </default>
                     </switch>
                 </default>
@@ -78,14 +78,14 @@
                 >
                     <Key
                         latin:keyLabel="/"
-                        latin:keyStyle="settingsPopupStyle" />
+                        latin:keyStyle="f1PopupStyle" />
                 </case>
                 <case
                     latin:mode="email"
                 >
                     <Key
                         latin:keyLabel="\@"
-                        latin:keyStyle="settingsPopupStyle" />
+                        latin:keyStyle="f1PopupStyle" />
                 </case>
                 <default>
                     <switch>
@@ -101,12 +101,12 @@
                         >
                             <Key
                                 latin:keyLabel="."
-                                latin:keyStyle="settingsPopupStyle" />
+                                latin:keyStyle="f1PopupStyle" />
                         </case>
                         <default>
                             <Key
                                 latin:keyLabel="@string/keylabel_for_comma"
-                                latin:keyStyle="settingsPopupStyle" />
+                                latin:keyStyle="f1PopupStyle" />
                         </default>
                     </switch>
                 </default>
