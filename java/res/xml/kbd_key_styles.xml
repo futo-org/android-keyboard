@@ -58,7 +58,7 @@
             <key-style
                 latin:styleName="symbolsF1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
-                latin:popupCharacters="@string/alternates_for_symbols_f1"
+                latin:popupCharacters="@string/alternates_for_f1"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>

@@ -77,14 +77,14 @@
     <string name="alternates_for_symbols_8"></string>
     <string name="alternates_for_symbols_9"></string>
     <string name="alternates_for_symbols_0">ⁿ,∅</string>
-    <string name="keylabel_for_symbols_comma">,</string>
-    <string name="keylabel_for_symbols_f1">,</string>
+    <string name="keylabel_for_comma">,</string>
+    <string name="keylabel_for_f1">,</string>
     <string name="keylabel_for_symbols_question">\?</string>
     <string name="keylabel_for_symbols_semicolon">;</string>
     <string name="keylabel_for_symbols_percent">%</string>
-    <string name="alternates_for_symbols_comma"></string>
+    <string name="alternates_for_comma"></string>
     <!-- @icon/5 is iconsSettingsKey -->
-    <string name="alternates_for_symbols_f1">\@icon/5|\@integer/key_settings</string>
+    <string name="alternates_for_f1">\@icon/5|\@integer/key_settings</string>
     <string name="alternates_for_symbols_question">¿</string>
     <string name="alternates_for_symbols_semicolon"></string>
     <string name="alternates_for_symbols_percent">‰</string>

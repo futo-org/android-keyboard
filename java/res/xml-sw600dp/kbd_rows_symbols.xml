@@ -128,8 +128,8 @@
             latin:keyLabel="@string/keylabel_for_symbols_semicolon"
             latin:popupCharacters="@string/alternates_for_symbols_semicolon" />
         <Key
-            latin:keyLabel="@string/keylabel_for_symbols_comma"
-            latin:popupCharacters="@string/alternates_for_symbols_comma" />
+            latin:keyLabel="@string/keylabel_for_comma"
+            latin:popupCharacters="@string/alternates_for_comma" />
         <Key
             latin:keyLabel="." />
         <Key

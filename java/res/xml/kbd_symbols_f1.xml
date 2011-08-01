@@ -36,7 +36,7 @@
                 <!-- latin:hasShortcutKey="false" -->
                 <default>
                     <Key
-                        latin:keyLabel="@string/keylabel_for_symbols_f1"
+                        latin:keyLabel="@string/keylabel_for_f1"
                         latin:keyWidth="9.2%p"
                         latin:keyStyle="symbolsF1PopupStyle" />
                 </default>
@@ -54,7 +54,7 @@
                 <!-- latin:hasShortcutKey="false" -->
                 <default>
                     <Key
-                        latin:keyLabel="@string/keylabel_for_symbols_f1"
+                        latin:keyLabel="@string/keylabel_for_f1"
                         latin:keyStyle="symbolsF1PopupStyle" />
                 </default>
             </switch>
