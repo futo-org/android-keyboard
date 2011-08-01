@@ -23,6 +23,8 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
 
+import java.util.ArrayList;
+
 /**
  * String parser of popupCharacters attribute of Key.
  * The string is comma separated texts each of which represents one popup key.
@@ -181,5 +183,55 @@ public class PopupCharactersParser {
         public PopupCharactersParserError(String message) {
             super(message);
         }
+    }
+
+    public interface CodeFilter {
+        public boolean shouldFilterOut(int code);
+    }
+
+    public static final CodeFilter DIGIT_FILTER = new CodeFilter() {
+        @Override
+        public boolean shouldFilterOut(int code) {
+            return Character.isDigit(code);
+        }
+    };
+
+    public static final CodeFilter NON_ASCII_FILTER = new CodeFilter() {
+        @Override
+        public boolean shouldFilterOut(int code) {
+            return code < 0x20 || code > 0x7e;
+        }
+    };
+
+    public static CharSequence[] filterOut(Resources res, CharSequence[] popupCharacters,
+            CodeFilter filter) {
+        if (popupCharacters == null || popupCharacters.length < 1) {
+            return null;
+        }
+        if (popupCharacters.length == 1
+                && filter.shouldFilterOut(getCode(res, popupCharacters[0].toString()))) {
+            return null;
+        }
+        ArrayList<CharSequence> filtered = null;
+        for (int i = 0; i < popupCharacters.length; i++) {
+            final CharSequence popupSpec = popupCharacters[i];
+            if (filter.shouldFilterOut(getCode(res, popupSpec.toString()))) {
+                if (filtered == null) {
+                    filtered = new ArrayList<CharSequence>();
+                    for (int j = 0; j < i; j++) {
+                        filtered.add(popupCharacters[j]);
+                    }
+                }
+            } else if (filtered != null) {
+                filtered.add(popupSpec);
+            }
+        }
+        if (filtered == null) {
+            return popupCharacters;
+        }
+        if (filtered.size() == 0) {
+            return null;
+        }
+        return filtered.toArray(new CharSequence[filtered.size()]);
     }
 }
