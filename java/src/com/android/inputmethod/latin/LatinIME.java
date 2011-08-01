@@ -557,7 +557,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // If orientation changed while predicting, commit the change
         if (conf.orientation != mDisplayOrientation) {
             mHandler.startOrientationChanging(mDisplayWidth, mDisplayHeight);
-            InputConnection ic = getCurrentInputConnection();
+            final InputConnection ic = getCurrentInputConnection();
             commitTyped(ic);
             if (ic != null) ic.finishComposingText(); // For voice input
             if (isShowingOptionDialog())
@@ -807,7 +807,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 setPunctuationSuggestions();
             }
             TextEntryState.reset();
-            InputConnection ic = getCurrentInputConnection();
+            final InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
                 ic.finishComposingText();
             }
@@ -1012,7 +1012,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                         event.getAction(), event.getKeyCode(), event.getRepeatCount(),
                         event.getDeviceId(), event.getScanCode(),
                         KeyEvent.META_SHIFT_LEFT_ON | KeyEvent.META_SHIFT_ON);
-                InputConnection ic = getCurrentInputConnection();
+                final InputConnection ic = getCurrentInputConnection();
                 if (ic != null)
                     ic.sendKeyEvent(newEvent);
                 return true;
@@ -1022,12 +1022,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return super.onKeyUp(keyCode, event);
     }
 
-    public void commitTyped(InputConnection inputConnection) {
+    public void commitTyped(final InputConnection ic) {
         if (!mHasUncommittedTypedChars) return;
         mHasUncommittedTypedChars = false;
         if (mComposingStringBuilder.length() > 0) {
-            if (inputConnection != null) {
-                inputConnection.commitText(mComposingStringBuilder, 1);
+            if (ic != null) {
+                ic.commitText(mComposingStringBuilder, 1);
             }
             mCommittedLength = mComposingStringBuilder.length();
             TextEntryState.acceptedTyped(mComposingStringBuilder);
@@ -1038,7 +1038,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public boolean getCurrentAutoCapsState() {
-        InputConnection ic = getCurrentInputConnection();
+        final InputConnection ic = getCurrentInputConnection();
         EditorInfo ei = getCurrentInputEditorInfo();
         if (mSettingsValues.mAutoCap && ic != null && ei != null
                 && ei.inputType != InputType.TYPE_NULL) {
@@ -1062,25 +1062,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private static boolean canBeFollowedByPeriod(final int codePoint) {
-        // TODO: Check again whether there really ain't a better way to check this.
-        // TODO: This should probably be language-dependant...
-        return Character.isLetterOrDigit(codePoint)
-                || codePoint == Keyboard.CODE_SINGLE_QUOTE
-                || codePoint == Keyboard.CODE_DOUBLE_QUOTE
-                || codePoint == Keyboard.CODE_CLOSING_PARENTHESIS
-                || codePoint == Keyboard.CODE_CLOSING_SQUARE_BRACKET
-                || codePoint == Keyboard.CODE_CLOSING_CURLY_BRACKET
-                || codePoint == Keyboard.CODE_CLOSING_ANGLE_BRACKET;
-    }
-
     private void maybeDoubleSpace() {
         if (mCorrectionMode == Suggest.CORRECTION_NONE) return;
         final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         final CharSequence lastThree = ic.getTextBeforeCursor(3, 0);
         if (lastThree != null && lastThree.length() == 3
-                && canBeFollowedByPeriod(lastThree.charAt(0))
+                && Utils.canBeFollowedByPeriod(lastThree.charAt(0))
                 && lastThree.charAt(1) == Keyboard.CODE_SPACE
                 && lastThree.charAt(2) == Keyboard.CODE_SPACE
                 && mHandler.isAcceptingDoubleSpaces()) {
@@ -1096,10 +1084,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     }
 
-    private void maybeRemovePreviousPeriod(CharSequence text) {
-        final InputConnection ic = getCurrentInputConnection();
-        if (ic == null) return;
-
+    // "ic" must not null
+    private void maybeRemovePreviousPeriod(final InputConnection ic, CharSequence text) {
         // When the text's first character is '.', remove the previous period
         // if there is one.
         CharSequence lastOne = ic.getTextBeforeCursor(1, 0);
@@ -1238,12 +1224,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onTextInput(CharSequence text) {
         mVoiceProxy.commitVoiceInput();
-        InputConnection ic = getCurrentInputConnection();
+        final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return;
         mRecorrection.abortRecorrection(false);
         ic.beginBatchEdit();
         commitTyped(ic);
-        maybeRemovePreviousPeriod(text);
+        maybeRemovePreviousPeriod(ic, text);
         ic.commitText(text, 1);
         ic.endBatchEdit();
         mKeyboardSwitcher.updateShiftState();
@@ -1293,14 +1279,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         TextEntryState.backspace();
         if (TextEntryState.isUndoCommit()) {
-            revertLastWord(deleteChar);
+            revertLastWord(ic);
             ic.endBatchEdit();
             return;
         }
         if (justReplacedDoubleSpace) {
-            if (revertDoubleSpace()) {
-              ic.endBatchEdit();
-              return;
+            if (revertDoubleSpace(ic)) {
+                ic.endBatchEdit();
+                return;
             }
         }
 
@@ -1315,7 +1301,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // different behavior only in the case of picking the first
                 // suggestion (typed word).  It's intentional to have made this
                 // inconsistent with backspacing after selecting other suggestions.
-                revertLastWord(true /* deleteChar */);
+                revertLastWord(ic);
             } else {
                 sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
                 if (mDeleteCount > DELETE_ACCELERATE_AT) {
@@ -1398,7 +1384,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             mComposingStringBuilder.append((char) code);
             mWordComposer.add(code, keyCodes, x, y);
-            InputConnection ic = getCurrentInputConnection();
+            final InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
                 // If it's the first letter, make note of auto-caps state
                 if (mWordComposer.size() == 1) {
@@ -1663,15 +1649,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mSettingsValues.mWordSeparators);
 
         final boolean recorrecting = TextEntryState.isRecorrecting();
-        InputConnection ic = getCurrentInputConnection();
+        final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             ic.beginBatchEdit();
         }
         if (mApplicationSpecifiedCompletionOn && mApplicationSpecifiedCompletions != null
                 && index >= 0 && index < mApplicationSpecifiedCompletions.length) {
-            CompletionInfo ci = mApplicationSpecifiedCompletions[index];
             if (ic != null) {
-                ic.commitCompletion(ci);
+                final CompletionInfo completionInfo = mApplicationSpecifiedCompletions[index];
+                ic.commitCompletion(completionInfo);
             }
             mCommittedLength = suggestion.length();
             if (mCandidateView != null) {
@@ -1783,10 +1769,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      * Commits the chosen word to the text field and saves it for later retrieval.
      */
     private void commitBestWord(CharSequence bestWord) {
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
+        final KeyboardSwitcher switcher = mKeyboardSwitcher;
         if (!switcher.isKeyboardAvailable())
             return;
-        InputConnection ic = getCurrentInputConnection();
+        final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             mVoiceProxy.rememberReplacedWord(bestWord, mSettingsValues.mWordSeparators);
             SuggestedWords suggestedWords = mCandidateView.getSuggestions();
@@ -1878,7 +1864,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     public boolean isCursorTouchingWord() {
-        InputConnection ic = getCurrentInputConnection();
+        final InputConnection ic = getCurrentInputConnection();
         if (ic == null) return false;
         CharSequence toLeft = ic.getTextBeforeCursor(1, 0);
         CharSequence toRight = ic.getTextAfterCursor(1, 0);
@@ -1895,36 +1881,33 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         return false;
     }
 
-    private boolean sameAsTextBeforeCursor(InputConnection ic, CharSequence text) {
+    // "ic" must not null
+    private boolean sameAsTextBeforeCursor(final InputConnection ic, CharSequence text) {
         CharSequence beforeText = ic.getTextBeforeCursor(text.length(), 0);
         return TextUtils.equals(text, beforeText);
     }
 
-    private void revertLastWord(boolean deleteChar) {
+    // "ic" must not null
+    private void revertLastWord(final InputConnection ic) {
         if (mHasUncommittedTypedChars || mComposingStringBuilder.length() <= 0) {
             sendDownUpKeyEvents(KeyEvent.KEYCODE_DEL);
             return;
         }
 
-        final InputConnection ic = getCurrentInputConnection();
-        final CharSequence punctuation = ic.getTextBeforeCursor(1, 0);
-        if (deleteChar) ic.deleteSurroundingText(1, 0);
-        final CharSequence textToTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
-        final int toDeleteLength = (!TextUtils.isEmpty(textToTheLeft)
-                && mSettingsValues.isWordSeparator(textToTheLeft.charAt(0)))
-                ? mCommittedLength - 1 : mCommittedLength;
-        ic.deleteSurroundingText(toDeleteLength, 0);
+        final CharSequence separator = ic.getTextBeforeCursor(1, 0);
+        ic.deleteSurroundingText(mCommittedLength + 1 /* separator */, 0);
 
-        // Re-insert punctuation only when the deleted character was word separator and the
-        // composing text wasn't equal to the auto-corrected text.
-        if (deleteChar
-                && !TextUtils.isEmpty(punctuation)
-                && mSettingsValues.isWordSeparator(punctuation.charAt(0))
-                && !TextUtils.equals(mComposingStringBuilder, textToTheLeft)) {
+        // Re-insert "separator" only when the deleted character was word separator and the
+        // composing text wasn't equal to the auto-corrected text which can be found before
+        // the cursor.
+        if (!TextUtils.isEmpty(separator)
+                && mSettingsValues.isWordSeparator(separator.charAt(0))
+                && !TextUtils.equals(mComposingStringBuilder,
+                        ic.getTextBeforeCursor(mCommittedLength, 0))) {
             ic.commitText(mComposingStringBuilder, 1);
             TextEntryState.acceptedTyped(mComposingStringBuilder);
-            ic.commitText(punctuation, 1);
-            TextEntryState.typedCharacter(punctuation.charAt(0), true,
+            ic.commitText(separator, 1);
+            TextEntryState.typedCharacter(separator.charAt(0), true,
                     WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
             // Clear composing text
             mComposingStringBuilder.setLength(0);
@@ -1937,9 +1920,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mHandler.postUpdateSuggestions();
     }
 
-    private boolean revertDoubleSpace() {
+    // "ic" must not null
+    private boolean revertDoubleSpace(final InputConnection ic) {
         mHandler.cancelDoubleSpacesTimer();
-        final InputConnection ic = getCurrentInputConnection();
         // Here we test whether we indeed have a period and a space before us. This should not
         // be needed, but it's there just in case something went wrong.
         final CharSequence textBeforeCursor = ic.getTextBeforeCursor(2, 0);
