@@ -31,7 +31,6 @@ namespace latinime {
 class UnigramDictionary {
 
 public:
-#ifdef NEW_DICTIONARY_FORMAT
 
     // Mask and flags for children address type selection.
     static const int MASK_GROUP_ADDRESS_TYPE = 0xC0;
@@ -63,16 +62,11 @@ public:
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_ONEBYTE = 0x10;
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_TWOBYTES = 0x20;
     static const int FLAG_ATTRIBUTE_ADDRESS_TYPE_THREEBYTES = 0x30;
-#endif // NEW_DICTIONARY_FORMAT
 
     UnigramDictionary(const uint8_t* const streamStart, int typedLetterMultipler,
             int fullWordMultiplier, int maxWordLength, int maxWords, int maxProximityChars,
             const bool isLatestDictVersion);
-#ifndef NEW_DICTIONARY_FORMAT
-    bool isValidWord(unsigned short *word, int length);
-#else // NEW_DICTIONARY_FORMAT
     bool isValidWord(const uint16_t* const inWord, const int length) const;
-#endif // NEW_DICTIONARY_FORMAT
     int getBigramPosition(int pos, unsigned short *word, int offset, int length) const;
     int getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize, const int flags,
@@ -117,15 +111,8 @@ private:
             int *nextSiblingPosition, int *nextOutputIndex);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
-#ifndef NEW_DICTIONARY_FORMAT
-    // Process a node by considering missing space
-    bool processCurrentNodeForExactMatch(const int firstChildPos,
-            const int startInputIndex, const int depth, unsigned short *word,
-            int *newChildPosition, int *newCount, bool *newTerminal, int *newFreq, int *siblingPos);
-#else // NEW_DICTIONARY_FORMAT
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
             short unsigned int* outWord);
-#endif // NEW_DICTIONARY_FORMAT
 
     const uint8_t* const DICT_ROOT;
     const int MAX_WORD_LENGTH;
