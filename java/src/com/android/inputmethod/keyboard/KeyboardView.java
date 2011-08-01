@@ -630,7 +630,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         // Draw popup hint "..." at the bottom right corner of the key.
-        if (key.hasPopupHint()) {
+        if (key.hasPopupHint() && key.mPopupCharacters != null && key.mPopupCharacters.length > 0) {
             paint.setTextSize(params.mKeyHintLetterSize);
             paint.setColor(params.mKeyHintLabelColor);
             paint.setTextAlign(Align.CENTER);
