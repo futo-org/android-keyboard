@@ -74,6 +74,7 @@ public:
     virtual ~UnigramDictionary();
 
 private:
+
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
             unsigned short *outWords, int *frequencies);
@@ -89,13 +90,11 @@ private:
             const int transposedPos, int *nextLetters, const int nextLettersSize,
             const int maxDepth);
     bool addWord(unsigned short *word, int length, int frequency);
-    bool getSplitTwoWordsSuggestion(const int inputLength,
-            const int firstWordStartPos, const int firstWordLength,
-            const int secondWordStartPos, const int secondWordLength, const bool isSpaceProximity);
-    bool getMissingSpaceWords(const int inputLength, const int missingSpacePos);
-    bool getMistypedSpaceWords(const int inputLength, const int spaceProximityPos);
-    int calculateFinalFreq(const int inputIndex, const int depth, const int snr,
-            const int freq, const bool sameLength, CorrectionState *correctionState) const;
+    void getSplitTwoWordsSuggestion(const int inputLength, CorrectionState *correctionState);
+    void getMissingSpaceWords(
+            const int inputLength, const int missingSpacePos, CorrectionState *correctionState);
+    void getMistypedSpaceWords(
+            const int inputLength, const int spaceProximityPos, CorrectionState *correctionState);
     void onTerminal(unsigned short int* word, const int depth,
             const uint8_t* const root, const uint8_t flags, const int pos,
             const int inputIndex, const int matchWeight, const int freq, const bool sameLength,
@@ -145,7 +144,7 @@ private:
 
     int mStackChildCount[MAX_WORD_LENGTH_INTERNAL];
     bool mStackTraverseAll[MAX_WORD_LENGTH_INTERNAL];
-    int mStackNodeFreq[MAX_WORD_LENGTH_INTERNAL];
+    int mStackMatchCount[MAX_WORD_LENGTH_INTERNAL];
     int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];
     int mStackDiffs[MAX_WORD_LENGTH_INTERNAL];
     int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];
