@@ -42,6 +42,9 @@
                 <Key
                     latin:keyLabel="…"
                     latin:keyStyle="nonPasswordFunctionalKeyStyle" />
+                <Key
+                    latin:keyStyle="returnKeyStyle"
+                    latin:keyWidth="fillRight" />
             </case>
             <!-- hasSettingsKey="true" or navigateAction="true" -->
             <default>
@@ -62,17 +65,6 @@
                     latin:keyLabel="…"
                     latin:keyWidth="9.2%p"
                     latin:keyStyle="nonPasswordFunctionalKeyStyle" />
-            </default>
-        </switch>
-        <switch>
-            <case
-                latin:mode="im"
-            >
-                <Key
-                    latin:keyStyle="smileyKeyStyle"
-                    latin:keyWidth="fillRight" />
-            </case>
-            <default>
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyWidth="fillRight" />

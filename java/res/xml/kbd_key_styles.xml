@@ -82,6 +82,19 @@
     <!-- Return key style -->
     <switch>
         <case
+            latin:mode="im"
+        >
+            <!-- Smiley key. -->
+            <key-style
+                latin:styleName="returnKeyStyle"
+                latin:keyLabel=":-)"
+                latin:keyOutputText=":-) "
+                latin:keyLabelOption="hasPopupHint"
+                latin:popupCharacters="@string/alternates_for_smiley"
+                latin:maxPopupKeyboardColumn="5"
+                latin:parentStyle="functionalKeyStyle" />
+        </case>
+        <case
             latin:imeAction="actionGo"
         >
             <key-style
@@ -137,14 +150,6 @@
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:parentStyle="functionalKeyStyle" />
-    <key-style
-        latin:styleName="smileyKeyStyle"
-        latin:keyLabel=":-)"
-        latin:keyOutputText=":-) "
-        latin:keyLabelOption="hasPopupHint"
-        latin:popupCharacters="@string/alternates_for_smiley"
-        latin:maxPopupKeyboardColumn="5"
         latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="shortcutKeyStyle"

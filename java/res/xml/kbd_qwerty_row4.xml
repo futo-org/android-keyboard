@@ -39,6 +39,9 @@
                     latin:keyWidth="50%p" />
                 <Key
                     latin:keyStyle="punctuationKeyStyle" />
+                <Key
+                    latin:keyStyle="returnKeyStyle"
+                    latin:keyWidth="fillRight" />
             </case>
             <!-- hasSettingsKey="true" or navigateAction="true" -->
             <default>
@@ -55,17 +58,6 @@
                 <Key
                     latin:keyStyle="punctuationKeyStyle"
                     latin:keyWidth="9.2%p" />
-            </default>
-        </switch>
-        <switch>
-            <case
-                latin:mode="im"
-            >
-                <Key
-                    latin:keyStyle="smileyKeyStyle"
-                    latin:keyWidth="fillRight" />
-            </case>
-            <default>
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyWidth="fillRight" />
