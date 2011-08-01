@@ -41,7 +41,7 @@
     <!-- Label for "switch to phone numeric" key.  Must be short to fit on key! -->
     <string name="label_to_phone_numeric_key">123</string>
     <!-- Label for "switch to phone symbols" key.  Must be short to fit on key! -->
-    <string name="label_to_phone_symbols_key">\uff0a\uff03\uff08</string>
+    <string name="label_to_phone_symbols_key">\uff0a\uff03</string>
 
     <!-- Character for candidate divider (BOX DRAWINGS LIGHT VERTICAL) -->
     <string name="label_candidate_divider">\u2502</string>
