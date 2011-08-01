@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.latin.tests.R;
 
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Configuration;
 
 import java.util.Locale;
 
@@ -31,7 +32,7 @@ public class SuggestTests extends SuggestTestsBase {
         final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
         mHelper = new SuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
-                createKeyboardId(Locale.US));
+                createKeyboardId(Locale.US, Configuration.ORIENTATION_PORTRAIT));
         mHelper.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
     }
 

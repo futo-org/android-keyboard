@@ -15,9 +15,10 @@
  */
 
 package com.android.inputmethod.latin;
-import com.android.inputmethod.latin.tests.R;
-
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Configuration;
+
+import com.android.inputmethod.latin.tests.R;
 
 import java.util.Locale;
 
@@ -34,7 +35,8 @@ public class UserBigramSuggestTests extends SuggestTestsBase {
         final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
         mHelper = new UserBigramSuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
-                MAX_DATA, DELETE_DATA, createKeyboardId(Locale.US));
+                MAX_DATA, DELETE_DATA,
+                createKeyboardId(Locale.US, Configuration.ORIENTATION_PORTRAIT));
     }
 
     /************************** Tests ************************/

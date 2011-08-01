@@ -20,6 +20,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Configuration;
 import android.test.AndroidTestCase;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.keyboard.KeyboardId;
@@ -37,12 +38,22 @@ public class SuggestTestsBase extends AndroidTestCase {
         mTestPackageFile = new File(getTestContext().getApplicationInfo().sourceDir);
     }
 
-    protected KeyboardId createKeyboardId(Locale locale) {
-        final int displayWidth = getContext().getResources().getDisplayMetrics().widthPixels;
+    protected KeyboardId createKeyboardId(Locale locale, int orientation) {
+        final DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
+        final int width;
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            width = Math.max(dm.widthPixels, dm.heightPixels);
+        } else if (orientation == Configuration.ORIENTATION_PORTRAIT) {
+            width = Math.min(dm.widthPixels, dm.heightPixels);
+        } else {
+            fail("Orientation should be ORIENTATION_LANDSCAPE or ORIENTATION_PORTRAIT: "
+                    + "orientation=" + orientation);
+            return null;
+        }
         return new KeyboardId(locale.toString() + " keyboard",
-                com.android.inputmethod.latin.R.xml.kbd_qwerty, locale,
-                Configuration.ORIENTATION_LANDSCAPE, displayWidth, KeyboardId.MODE_TEXT,
-                new EditorInfo(), false, KeyboardId.F2KEY_MODE_NONE, false, false, false);
+                com.android.inputmethod.latin.R.xml.kbd_qwerty, locale, orientation, width,
+                KeyboardId.MODE_TEXT, new EditorInfo(), false, KeyboardId.F2KEY_MODE_NONE,
+                false, false, false);
     }
 
     protected InputStream openTestRawResource(int resIdInTest) {
