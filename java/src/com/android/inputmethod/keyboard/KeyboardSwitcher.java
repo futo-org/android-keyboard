@@ -313,7 +313,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
 
         final boolean settingsKeyEnabled = settingsValues.isSettingsKeyEnabled(editorInfo);
-        final boolean voiceKeyEnabled = settingsValues.isVoiceKeyEnabled(editorInfo);
+        final boolean noMicrophone = Utils.inPrivateImeOptions(
+                mPackageName, LatinIME.IME_OPTION_NO_MICROPHONE, editorInfo)
+                || Utils.inPrivateImeOptions(
+                        null, LatinIME.IME_OPTION_NO_MICROPHONE_COMPAT, editorInfo);
+        final boolean voiceKeyEnabled = settingsValues.isVoiceKeyEnabled(editorInfo)
+                && !noMicrophone;
         final boolean voiceKeyOnMain = settingsValues.isVoiceKeyOnMain();
         final boolean noSettingsKey = Utils.inPrivateImeOptions(
                 mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, editorInfo);
