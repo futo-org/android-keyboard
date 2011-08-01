@@ -33,7 +33,6 @@ import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
 import com.android.inputmethod.keyboard.internal.Row;
 import com.android.inputmethod.latin.R;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -292,13 +291,18 @@ public class Key {
             mY = y;
             mWidth = keyWidth - mGap;
 
-            final CharSequence[] popupCharacters = style.getTextArray(keyAttr,
-                    R.styleable.Keyboard_Key_popupCharacters);
+            CharSequence[] popupCharacters = style.getTextArray(
+                    keyAttr, R.styleable.Keyboard_Key_popupCharacters);
+            if (mKeyboard.mId.mPasswordInput) {
+                popupCharacters = PopupCharactersParser.filterOut(
+                        res, popupCharacters, PopupCharactersParser.NON_ASCII_FILTER);
+            }
             // In Arabic symbol layouts, we'd like to keep digits in popup characters regardless of
             // config_digit_popup_characters_enabled.
             if (mKeyboard.mId.isAlphabetKeyboard() && !res.getBoolean(
                     R.bool.config_digit_popup_characters_enabled)) {
-                mPopupCharacters = filterOutDigitPopupCharacters(popupCharacters);
+                mPopupCharacters = PopupCharactersParser.filterOut(
+                        res, popupCharacters, PopupCharactersParser.DIGIT_FILTER);
             } else {
                 mPopupCharacters = popupCharacters;
             }
@@ -400,36 +404,6 @@ public class Key {
 
     public boolean hasHintLabel() {
         return (mLabelOption & LABEL_OPTION_HAS_HINT_LABEL) != 0;
-    }
-
-    private static boolean isDigitPopupCharacter(CharSequence label) {
-        return label != null && label.length() == 1 && Character.isDigit(label.charAt(0));
-    }
-
-    private static CharSequence[] filterOutDigitPopupCharacters(CharSequence[] popupCharacters) {
-        if (popupCharacters == null || popupCharacters.length < 1)
-            return null;
-        if (popupCharacters.length == 1 && isDigitPopupCharacter(
-                PopupCharactersParser.getLabel(popupCharacters[0].toString())))
-            return null;
-        ArrayList<CharSequence> filtered = null;
-        for (int i = 0; i < popupCharacters.length; i++) {
-            final CharSequence popupSpec = popupCharacters[i];
-            if (isDigitPopupCharacter(PopupCharactersParser.getLabel(popupSpec.toString()))) {
-                if (filtered == null) {
-                    filtered = new ArrayList<CharSequence>();
-                    for (int j = 0; j < i; j++)
-                        filtered.add(popupCharacters[j]);
-                }
-            } else if (filtered != null) {
-                filtered.add(popupSpec);
-            }
-        }
-        if (filtered == null)
-            return popupCharacters;
-        if (filtered.size() == 0)
-            return null;
-        return filtered.toArray(new CharSequence[filtered.size()]);
     }
 
     public Drawable getIcon() {
