@@ -365,10 +365,6 @@ public class Key {
         mEdgeFlags |= flags;
     }
 
-    public CharSequence getCaseAdjustedLabel() {
-        return mKeyboard.adjustLabelCase(mLabel);
-    }
-
     public Typeface selectTypeface(Typeface defaultTypeface) {
         // TODO: Handle "bold" here too?
         if ((mLabelOption & LABEL_OPTION_FONT_NORMAL) != 0) {
