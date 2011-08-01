@@ -789,7 +789,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final boolean selectionChanged = (newSelStart != candidatesEnd
                 || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart;
         final boolean candidatesCleared = candidatesStart == -1 && candidatesEnd == -1;
-        if (((mComposingStringBuilder.length() > 0 && mHasUncommittedTypedChars)
+        if (!mExpectingUpdateSelection
+                && ((mComposingStringBuilder.length() > 0 && mHasUncommittedTypedChars)
                 || mVoiceProxy.isVoiceInputHighlighted())
                 && (selectionChanged || candidatesCleared)) {
             if (candidatesCleared) {
@@ -807,7 +808,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 setPunctuationSuggestions();
             }
             TextEntryState.reset();
-            InputConnection ic = getCurrentInputConnection();
+            final InputConnection ic = getCurrentInputConnection();
             if (ic != null) {
                 ic.finishComposingText();
             }
