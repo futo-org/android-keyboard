@@ -18,6 +18,7 @@ package com.android.inputmethod.latin;
 import com.android.inputmethod.latin.tests.R;
 
 import android.content.res.AssetFileDescriptor;
+import android.content.res.Configuration;
 import android.text.TextUtils;
 import android.util.Slog;
 
@@ -38,7 +39,7 @@ public class SuggestPerformanceTests extends SuggestTestsBase {
         final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
         mHelper = new SuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
-                createKeyboardId(Locale.US));
+                createKeyboardId(Locale.US, Configuration.ORIENTATION_PORTRAIT));
         loadString(R.raw.testtext);
     }
 
