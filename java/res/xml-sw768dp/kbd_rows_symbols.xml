@@ -180,7 +180,7 @@
             latin:keyLabel="_" />
         <switch>
             <case
-                latin:voiceKeyEnabled="true"
+                latin:shortcutKeyEnabled="true"
             >
                 <Key
                     latin:keyStyle="shortcutKeyStyle"

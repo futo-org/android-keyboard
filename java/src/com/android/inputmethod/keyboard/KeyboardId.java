@@ -55,8 +55,8 @@ public class KeyboardId {
     public final boolean mHasSettingsKey;
     public final int mF2KeyMode;
     public final boolean mClobberSettingsKey;
-    public final boolean mVoiceKeyEnabled;
-    public final boolean mHasVoiceKey;
+    public final boolean mShortcutKeyEnabled;
+    public final boolean mHasShortcutKey;
     public final int mImeAction;
 
     public final String mXmlName;
@@ -66,7 +66,7 @@ public class KeyboardId {
 
     public KeyboardId(String xmlName, int xmlId, Locale locale, int orientation, int width,
             int mode, EditorInfo attribute, boolean hasSettingsKey, int f2KeyMode,
-            boolean clobberSettingsKey, boolean voiceKeyEnabled, boolean hasVoiceKey) {
+            boolean clobberSettingsKey, boolean shortcutKeyEnabled, boolean hasShortcutKey) {
         final int inputType = (attribute != null) ? attribute.inputType : 0;
         final int imeOptions = (attribute != null) ? attribute.imeOptions : 0;
         this.mLocale = locale;
@@ -83,8 +83,8 @@ public class KeyboardId {
         this.mHasSettingsKey = hasSettingsKey;
         this.mF2KeyMode = f2KeyMode;
         this.mClobberSettingsKey = clobberSettingsKey;
-        this.mVoiceKeyEnabled = voiceKeyEnabled;
-        this.mHasVoiceKey = hasVoiceKey;
+        this.mShortcutKeyEnabled = shortcutKeyEnabled;
+        this.mHasShortcutKey = hasShortcutKey;
         // We are interested only in {@link EditorInfo#IME_MASK_ACTION} enum value and
         // {@link EditorInfo#IME_FLAG_NO_ENTER_ACTION}.
         this.mImeAction = imeOptions & (
@@ -104,8 +104,8 @@ public class KeyboardId {
                 hasSettingsKey,
                 f2KeyMode,
                 clobberSettingsKey,
-                voiceKeyEnabled,
-                hasVoiceKey,
+                shortcutKeyEnabled,
+                hasShortcutKey,
                 mImeAction,
         });
     }
@@ -119,7 +119,8 @@ public class KeyboardId {
         if (mWidth == width)
             return this;
         return new KeyboardId(mXmlName, mXmlId, mLocale, orientation, width, mMode, mAttribute,
-                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mVoiceKeyEnabled, mHasVoiceKey);
+                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mShortcutKeyEnabled,
+                mHasShortcutKey);
     }
 
     public int getXmlId() {
@@ -166,8 +167,8 @@ public class KeyboardId {
             && other.mHasSettingsKey == this.mHasSettingsKey
             && other.mF2KeyMode == this.mF2KeyMode
             && other.mClobberSettingsKey == this.mClobberSettingsKey
-            && other.mVoiceKeyEnabled == this.mVoiceKeyEnabled
-            && other.mHasVoiceKey == this.mHasVoiceKey
+            && other.mShortcutKeyEnabled == this.mShortcutKeyEnabled
+            && other.mHasShortcutKey == this.mHasShortcutKey
             && other.mImeAction == this.mImeAction;
     }
 
@@ -189,8 +190,8 @@ public class KeyboardId {
                 (mNavigateAction ? " navigateAction" : ""),
                 (mPasswordInput ? " passwordInput" : ""),
                 (mHasSettingsKey ? " hasSettingsKey" : ""),
-                (mVoiceKeyEnabled ? " voiceKeyEnabled" : ""),
-                (mHasVoiceKey ? " hasVoiceKey" : "")
+                (mShortcutKeyEnabled ? " shortcutKeyEnabled" : ""),
+                (mHasShortcutKey ? " hasShortcutKey" : "")
         );
     }
 

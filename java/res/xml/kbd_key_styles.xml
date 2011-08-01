@@ -169,11 +169,12 @@
         latin:keyIcon="iconTabKey"
         latin:keyIconPreview="iconPreviewTabKey" />
     <switch>
-        <!-- When this qwerty keyboard has no voice key but voice key is enabled, then symbol
-             keyboard will have mic key. That means we should use "?123mic" key here. -->
+        <!-- When this qwerty keyboard has no shortcut keys but shortcut key is enabled, then symbol
+             keyboard will have a shortcut key. That means we should use
+             iconToSymbolKeyWithShortcutKey here. -->
         <case
-            latin:voiceKeyEnabled="true"
-            latin:hasVoiceKey="false"
+            latin:shortcutKeyEnabled="true"
+            latin:hasShortcutKey="false"
         >
             <key-style
                 latin:styleName="toSymbolKeyStyle"

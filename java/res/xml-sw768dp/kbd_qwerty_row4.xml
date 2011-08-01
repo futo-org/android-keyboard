@@ -101,7 +101,7 @@
         </switch>
         <switch>
             <case
-                latin:voiceKeyEnabled="true"
+                latin:shortcutKeyEnabled="true"
             >
                 <Key
                     latin:keyStyle="shortcutKeyStyle"

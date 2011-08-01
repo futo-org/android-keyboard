@@ -266,8 +266,8 @@
             <enum name="shortcutImeOrSettings" value="3" />
         </attr>
         <attr name="clobberSettingsKey" format="boolean" />
-        <attr name="voiceKeyEnabled" format="boolean" />
-        <attr name="hasVoiceKey" format="boolean" />
+        <attr name="shortcutKeyEnabled" format="boolean" />
+        <attr name="hasShortcutKey" format="boolean" />
         <attr name="imeAction" format="enum">
             <!-- This should be aligned with EditorInfo.IME_ACTION_* -->
             <enum name="actionUnspecified" value="0" />

@@ -494,10 +494,10 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_f2KeyMode, id.mF2KeyMode);
             final boolean clobberSettingsKeyMatched = matchBoolean(a,
                     R.styleable.Keyboard_Case_clobberSettingsKey, id.mClobberSettingsKey);
-            final boolean voiceEnabledMatched = matchBoolean(a,
-                    R.styleable.Keyboard_Case_voiceKeyEnabled, id.mVoiceKeyEnabled);
-            final boolean voiceKeyMatched = matchBoolean(a,
-                    R.styleable.Keyboard_Case_hasVoiceKey, id.mHasVoiceKey);
+            final boolean shortcutKeyEnabledMatched = matchBoolean(a,
+                    R.styleable.Keyboard_Case_shortcutKeyEnabled, id.mShortcutKeyEnabled);
+            final boolean hasShortcutKeyMatched = matchBoolean(a,
+                    R.styleable.Keyboard_Case_hasShortcutKey, id.mHasShortcutKey);
             // As noted at {@link KeyboardId} class, we are interested only in enum value masked by
             // {@link android.view.inputmethod.EditorInfo#IME_MASK_ACTION} and
             // {@link android.view.inputmethod.EditorInfo#IME_FLAG_NO_ENTER_ACTION}. So matching
@@ -512,7 +512,7 @@ public class KeyboardParser {
                     R.styleable.Keyboard_Case_countryCode, id.mLocale.getCountry());
             final boolean selected = modeMatched && navigateActionMatched && passwordInputMatched
                     && hasSettingsKeyMatched && f2KeyModeMatched && clobberSettingsKeyMatched
-                    && voiceEnabledMatched && voiceKeyMatched && imeActionMatched &&
+                    && shortcutKeyEnabledMatched && hasShortcutKeyMatched && imeActionMatched &&
                     localeCodeMatched && languageCodeMatched && countryCodeMatched;
 
             if (DEBUG) Log.d(TAG, String.format("<%s%s%s%s%s%s%s%s%s%s%s%s%s> %s", TAG_CASE,
@@ -524,8 +524,9 @@ public class KeyboardParser {
                             a.getInt(R.styleable.Keyboard_Case_f2KeyMode, -1)), "f2KeyMode"),
                     booleanAttr(a, R.styleable.Keyboard_Case_clobberSettingsKey,
                             "clobberSettingsKey"),
-                    booleanAttr(a, R.styleable.Keyboard_Case_voiceKeyEnabled, "voiceKeyEnabled"),
-                    booleanAttr(a, R.styleable.Keyboard_Case_hasVoiceKey, "hasVoiceKey"),
+                    booleanAttr(
+                            a, R.styleable.Keyboard_Case_shortcutKeyEnabled, "shortcutKeyEnabled"),
+                    booleanAttr(a, R.styleable.Keyboard_Case_hasShortcutKey, "hasShortcutKey"),
                     textAttr(EditorInfoCompatUtils.imeOptionsName(
                             a.getInt(R.styleable.Keyboard_Case_imeAction, -1)), "imeAction"),
                     textAttr(a.getString(R.styleable.Keyboard_Case_localeCode), "localeCode"),

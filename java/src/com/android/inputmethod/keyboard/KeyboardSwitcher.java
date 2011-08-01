@@ -324,13 +324,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 mPackageName, LatinIME.IME_OPTION_NO_SETTINGS_KEY, editorInfo);
         final boolean hasSettingsKey = settingsKeyEnabled && !noSettingsKey;
         final int f2KeyMode = getF2KeyMode(settingsKeyEnabled, noSettingsKey);
-        final boolean hasVoiceKey = voiceKeyEnabled && (isSymbols != voiceKeyOnMain);
+        final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != voiceKeyOnMain);
         final Configuration conf = mResources.getConfiguration();
 
         return new KeyboardId(
                 mResources.getResourceEntryName(xmlId), xmlId, mSubtypeSwitcher.getInputLocale(),
                 conf.orientation, mWindowWidthCache.getWidth(conf), mode, editorInfo,
-                hasSettingsKey, f2KeyMode, noSettingsKey, voiceKeyEnabled, hasVoiceKey);
+                hasSettingsKey, f2KeyMode, noSettingsKey, voiceKeyEnabled, hasShortcutKey);
     }
 
     public int getKeyboardMode() {

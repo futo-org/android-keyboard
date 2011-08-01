@@ -27,13 +27,13 @@
         >
             <switch>
                 <case
-                    latin:hasVoiceKey="true"
+                    latin:hasShortcutKey="true"
                 >
                     <Key
                         latin:keyStyle="shortcutKeyStyle"
                         latin:keyWidth="9.2%p" />
                 </case>
-                <!-- latin:hasVoiceKey="false" -->
+                <!-- latin:hasShortcutKey="false" -->
                 <default>
                     <Key
                         latin:keyLabel="@string/keylabel_for_symbols_f1"
@@ -46,12 +46,12 @@
         <default>
             <switch>
                 <case
-                    latin:hasVoiceKey="true"
+                    latin:hasShortcutKey="true"
                 >
                     <Key
                         latin:keyStyle="shortcutKeyStyle" />
                 </case>
-                <!-- latin:hasVoiceKey="false" -->
+                <!-- latin:hasShortcutKey="false" -->
                 <default>
                     <Key
                         latin:keyLabel="@string/keylabel_for_symbols_f1"

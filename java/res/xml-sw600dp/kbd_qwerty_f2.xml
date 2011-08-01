@@ -34,13 +34,13 @@
         >
             <switch>
                 <case
-                    latin:voiceKeyEnabled="true"
+                    latin:shortcutKeyEnabled="true"
                 >
                     <Key
                         latin:keyStyle="shortcutKeyStyle"
                         latin:keyWidth="fillBoth" />
                 </case>
-                <!-- voiceKeyEnabled="false" -->
+                <!-- shortcutKeyEnabled="false" -->
                 <default>
                     <Spacer />
                 </default>
@@ -51,13 +51,13 @@
         >
             <switch>
                 <case
-                    latin:voiceKeyEnabled="true"
+                    latin:shortcutKeyEnabled="true"
                 >
                     <Key
                         latin:keyStyle="shortcutKeyStyle"
                         latin:keyWidth="fillBoth" />
                 </case>
-                <!-- voiceKeyEnabled="false" -->
+                <!-- shortcutKeyEnabled="false" -->
                 <default>
                     <Key
                         latin:keyStyle="settingsKeyStyle"

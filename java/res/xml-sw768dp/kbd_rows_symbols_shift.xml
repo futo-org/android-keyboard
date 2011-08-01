@@ -155,7 +155,7 @@
             latin:keyWidth="37.500%p" />
         <switch>
             <case
-                latin:voiceKeyEnabled="true"
+                latin:shortcutKeyEnabled="true"
             >
                 <Key
                     latin:keyStyle="shortcutKeyStyle"

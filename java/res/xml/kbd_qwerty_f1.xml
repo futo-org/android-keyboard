@@ -45,13 +45,13 @@
                 <default>
                     <switch>
                         <case
-                            latin:hasVoiceKey="true"
+                            latin:hasShortcutKey="true"
                         >
                             <Key
                                 latin:keyStyle="shortcutKeyStyle"
                                 latin:keyWidth="9.2%p" />
                         </case>
-                        <!-- latin:hasVoiceKey="false" -->
+                        <!-- latin:hasShortcutKey="false" -->
                         <case
                             latin:navigateAction="true"
                         >
@@ -90,12 +90,12 @@
                 <default>
                     <switch>
                         <case
-                            latin:hasVoiceKey="true"
+                            latin:hasShortcutKey="true"
                         >
                             <Key
                                 latin:keyStyle="shortcutKeyStyle" />
                         </case>
-                        <!-- latin:hasVoiceKey="false" -->
+                        <!-- latin:hasShortcutKey="false" -->
                         <case
                             latin:navigateAction="true"
                         >
