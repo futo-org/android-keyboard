@@ -212,7 +212,7 @@ public class KeyStyles {
 
     public void parseKeyStyleAttributes(TypedArray keyStyleAttr, TypedArray keyAttrs,
             XmlResourceParser parser) {
-        String styleName = keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName);
+        final String styleName = keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName);
         if (DEBUG) Log.d(TAG, String.format("<%s styleName=%s />",
                 KeyboardParser.TAG_KEY_STYLE, styleName));
         if (mStyles.containsKey(styleName))
@@ -220,11 +220,11 @@ public class KeyStyles {
 
         final DeclaredKeyStyle style = new DeclaredKeyStyle();
         if (keyStyleAttr.hasValue(R.styleable.Keyboard_KeyStyle_parentStyle)) {
-            String parentStyle = keyStyleAttr.getString(
+            final String parentStyle = keyStyleAttr.getString(
                     R.styleable.Keyboard_KeyStyle_parentStyle);
             final DeclaredKeyStyle parent = mStyles.get(parentStyle);
             if (parent == null)
-                throw new ParseException("Unknown parentStyle " + parent, parser);
+                throw new ParseException("Unknown parentStyle " + parentStyle, parser);
             style.addParent(parent);
         }
         style.parseKeyStyleAttributes(keyAttrs);
