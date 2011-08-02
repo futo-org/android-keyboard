@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Loads an XML description of a keyboard and stores the attributes of the keys. A keyboard
@@ -93,33 +95,7 @@ public class Keyboard {
     // Code value representing the code is not specified.
     public static final int CODE_UNSPECIFIED = -99;
 
-    /** Horizontal gap default for all rows */
-    private int mDefaultHorizontalGap;
-
-    /** Default key width */
-    private int mDefaultWidth;
-
-    /** Default key height */
-    private int mDefaultHeight;
-
-    /** Default gap between rows */
-    private int mDefaultVerticalGap;
-
-    /** Popup keyboard template */
-    private int mPopupKeyboardResId;
-
-    /** Maximum column for popup keyboard */
-    private int mMaxPopupColumn;
-
-    /** True if Right-To-Left keyboard */
-    private boolean mIsRtlKeyboard;
-
-    /** List of shift keys in this keyboard and its icons and state */
-    private final List<Key> mShiftKeys = new ArrayList<Key>();
-    private final HashMap<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
-    private final HashMap<Key, Drawable> mUnshiftedIcons = new HashMap<Key, Drawable>();
-    private final HashSet<Key> mShiftLockKeys = new HashSet<Key>();
-    private final KeyboardShiftState mShiftState = new KeyboardShiftState();
+    public final KeyboardId mId;
 
     /** Total height of the keyboard, including the padding and keys */
     private int mTotalHeight;
@@ -130,8 +106,36 @@ public class Keyboard {
      */
     private int mMinWidth;
 
+    /** Horizontal gap default for all rows */
+    private int mHorizontalGap;
+
+    /** Default key width */
+    private int mDefaultKeyWidth;
+
+    /** Default row height */
+    private int mDefaultRowHeight;
+
+    /** Default gap between rows */
+    private int mVerticalGap;
+
+    /** Popup keyboard template */
+    private int mPopupKeyboardResId;
+
+    /** Maximum column for popup keyboard */
+    private int mMaxPopupColumn;
+
+    /** True if Right-To-Left keyboard */
+    private boolean mIsRtlKeyboard;
+
     /** List of keys in this keyboard */
     private final List<Key> mKeys = new ArrayList<Key>();
+    /** List of shift keys in this keyboard and its icons and state */
+    private final List<Key> mShiftKeys = new ArrayList<Key>();
+    private final Map<Key, Drawable> mShiftedIcons = new HashMap<Key, Drawable>();
+    private final Map<Key, Drawable> mUnshiftedIcons = new HashMap<Key, Drawable>();
+    private final Set<Key> mShiftLockKeys = new HashSet<Key>();
+    public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
+
 
     /** Width of the screen available to fit the keyboard */
     private final int mDisplayWidth;
@@ -144,9 +148,7 @@ public class Keyboard {
 
     private int mMostCommonKeyWidth = 0;
 
-    public final KeyboardId mId;
-
-    public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
+    private final KeyboardShiftState mShiftState = new KeyboardShiftState();
 
     // Variables for pre-computing nearest keys.
 
@@ -175,10 +177,10 @@ public class Keyboard {
         // TODO: Adjust the height by referring to the height of area available for drawing as well.
         mDisplayHeight = res.getDisplayMetrics().heightPixels;
 
-        mDefaultHorizontalGap = 0;
+        mHorizontalGap = 0;
         setKeyWidth(mDisplayWidth / 10);
-        mDefaultVerticalGap = 0;
-        mDefaultHeight = mDefaultWidth;
+        mVerticalGap = 0;
+        mDefaultRowHeight = mDefaultKeyWidth;
         mId = id;
         loadKeyboard(context, xmlLayoutResId);
         mProximityInfo = new ProximityInfo(
@@ -194,35 +196,35 @@ public class Keyboard {
     }
 
     public int getHorizontalGap() {
-        return mDefaultHorizontalGap;
+        return mHorizontalGap;
     }
 
     public void setHorizontalGap(int gap) {
-        mDefaultHorizontalGap = gap;
+        mHorizontalGap = gap;
     }
 
     public int getVerticalGap() {
-        return mDefaultVerticalGap;
+        return mVerticalGap;
     }
 
     public void setVerticalGap(int gap) {
-        mDefaultVerticalGap = gap;
+        mVerticalGap = gap;
     }
 
     public int getRowHeight() {
-        return mDefaultHeight;
+        return mDefaultRowHeight;
     }
 
     public void setRowHeight(int height) {
-        mDefaultHeight = height;
+        mDefaultRowHeight = height;
     }
 
     public int getKeyWidth() {
-        return mDefaultWidth;
+        return mDefaultKeyWidth;
     }
 
     public void setKeyWidth(int width) {
-        mDefaultWidth = width;
+        mDefaultKeyWidth = width;
     }
 
     /**
