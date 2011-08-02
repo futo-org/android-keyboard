@@ -23,6 +23,8 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Teclado de Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Configuración de teclado de Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones de entrada"</string>
+    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
+    <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar teclas"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonar al pulsar las teclas"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Aviso emergente al pulsar tecla"</string>
@@ -45,9 +47,6 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Mostrar en modo retrato"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ocultar siempre"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Mostrar tecla de configuración"</string>
-    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automático"</string>
-    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Mostrar siempre"</string>
-    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Ocultar siempre"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Corrección automática"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"La barra espaciadora y puntuación insertan automáticamente las palabras corregidas"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Desactivado"</string>
@@ -131,8 +130,7 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micrófono en el teclado de símbolos"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"La entrada por voz está inhabilitada"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Seleccionar método de entrada"</string>
-    <!-- no translation found for configure_input_method (373356270290742459) -->
-    <skip />
+    <string name="configure_input_method" msgid="373356270290742459">"Configurar métodos de entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomas de entrada"</string>
     <string name="select_language" msgid="2573265881207142437">"Seleccionar idiomas de entrada"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tocar de nuevo para guardar"</string>
@@ -142,11 +140,8 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocar para corregir palabras"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Toca las palabras ingresadas que desees corregir solo cuando las sugerencias estén visibles."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema del teclado"</string>
-    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
-    <skip />
-    <!-- no translation found for subtype_en_GB (88170601942311355) -->
-    <skip />
-    <!-- no translation found for subtype_en_US (6160452336634534239) -->
-    <skip />
+    <string name="subtype_de_qwerty" msgid="3358900499589259491">"QWERTY alemán"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Inglés (Reino Unido)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Inglés (EE.UU.)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modo de estudio de usabilidad"</string>
 </resources>

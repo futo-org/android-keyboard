@@ -24,6 +24,8 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Parameters da la tastatura Android"</string>
     <!-- no translation found for english_ime_input_options (3909945612939668554) -->
     <skip />
+    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
+    <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar cun smatgar in buttun"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Tun cun smatgar in buttun"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up cun smatgar ina tasta"</string>
@@ -63,12 +65,6 @@
     <!-- no translation found for prefs_suggestion_visibility_hide_name (6309143926422234673) -->
     <skip />
     <!-- no translation found for prefs_settings_key (4623341240804046498) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_auto_name (2993460277873684680) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_show_name (3047567041784760575) -->
-    <skip />
-    <!-- no translation found for settings_key_mode_always_hide_name (7833948046716923994) -->
     <skip />
     <!-- outdated translation 7911639788808958255 -->     <string name="auto_correction" msgid="4979925752001319458">"Propostas da pleds"</string>
     <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Curreger automaticamain il pled precedent"</string>

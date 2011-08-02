@@ -23,6 +23,8 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Bàn phím Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Cài đặt bàn phím Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Tùy chọn nhập"</string>
+    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
+    <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Rung khi nhấn phím"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Âm thanh khi nhấn phím"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Cửa sổ bật lên khi nhấn phím"</string>
@@ -45,9 +47,6 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Hiển thị trên chế độ khổ đứng"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Luôn ẩn"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Hiển thị phím cài đặt"</string>
-    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Tự động"</string>
-    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Luôn hiển thị"</string>
-    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Luôn ẩn"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Tự động sửa"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Phím cách và dấu câu tự động sửa từ nhập sai"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Tắt"</string>
@@ -131,8 +130,7 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Micrô trên bàn phím biểu tượng"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Nhập liệu bằng giọng nói đã bị vô hiệu hóa"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Chọn phương thức nhập"</string>
-    <!-- no translation found for configure_input_method (373356270290742459) -->
-    <skip />
+    <string name="configure_input_method" msgid="373356270290742459">"Định cấu hình phương thức nhập"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Ngôn ngữ nhập"</string>
     <string name="select_language" msgid="2573265881207142437">"Chọn ngôn ngữ nhập"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Chạm lại để lưu"</string>
@@ -142,11 +140,8 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Chạm để sửa từ"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Chạm các từ đã nhập để sửa, chỉ khi các đề xuất hiển thị"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Chủ đề bàn phím"</string>
-    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
-    <skip />
-    <!-- no translation found for subtype_en_GB (88170601942311355) -->
-    <skip />
-    <!-- no translation found for subtype_en_US (6160452336634534239) -->
-    <skip />
+    <string name="subtype_de_qwerty" msgid="3358900499589259491">"Bàn phím QWERTY tiếng Đức"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Tiếng Anh (Anh)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Tiếng Anh (Mỹ)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Chế độ nghiên cứu tính khả dụng"</string>
 </resources>
