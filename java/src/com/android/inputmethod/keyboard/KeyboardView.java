@@ -443,7 +443,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     + getPaddingLeft();
             final int keyDrawY = mInvalidatedKey.mY + getPaddingTop();
             canvas.translate(keyDrawX, keyDrawY);
-            onBufferDrawKey(mInvalidatedKey, canvas, mPaint, params, isManualTemporaryUpperCase);
+            onBufferDrawKey(mInvalidatedKey, mKeyboard, canvas, mPaint, params,
+                    isManualTemporaryUpperCase);
             canvas.translate(-keyDrawX, -keyDrawY);
         } else {
             // Draw all keys.
@@ -451,7 +452,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 final int keyDrawX = key.mX + key.mVisualInsetsLeft + getPaddingLeft();
                 final int keyDrawY = key.mY + getPaddingTop();
                 canvas.translate(keyDrawX, keyDrawY);
-                onBufferDrawKey(key, canvas, mPaint, params, isManualTemporaryUpperCase);
+                onBufferDrawKey(key, mKeyboard, canvas, mPaint, params, isManualTemporaryUpperCase);
                 canvas.translate(-keyDrawX, -keyDrawY);
             }
         }
@@ -470,8 +471,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         return false;
     }
 
-    private static void onBufferDrawKey(final Key key, final Canvas canvas, Paint paint,
-            KeyDrawParams params, boolean isManualTemporaryUpperCase) {
+    private static void onBufferDrawKey(final Key key, final Keyboard keyboard, final Canvas canvas,
+            Paint paint, KeyDrawParams params, boolean isManualTemporaryUpperCase) {
         final boolean debugShowAlign = LatinImeLogger.sVISUALDEBUG;
         // Draw key background.
         final int bgWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight
@@ -507,7 +508,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         float positionX = centerX;
         if (key.mLabel != null) {
             // Switch the character to uppercase if shift is pressed
-            final CharSequence label = key.getCaseAdjustedLabel();
+            final CharSequence label = keyboard.adjustLabelCase(key.mLabel);
             // For characters, use large font. For labels like "Done", use smaller font.
             paint.setTypeface(key.selectTypeface(params.mKeyTextStyle));
             final int labelSize = key.selectTextSize(params.mKeyLetterSize,
@@ -798,7 +799,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 previewText.setTextSize(TypedValue.COMPLEX_UNIT_PX, params.mPreviewTextSize);
                 previewText.setTypeface(params.mKeyTextStyle);
             }
-            previewText.setText(key.getCaseAdjustedLabel());
+            previewText.setText(mKeyboard.adjustLabelCase(key.mLabel));
         } else {
             final Drawable previewIcon = key.getPreviewIcon();
             previewText.setCompoundDrawables(null, null, null,
