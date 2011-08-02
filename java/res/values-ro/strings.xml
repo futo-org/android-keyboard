@@ -23,6 +23,8 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Tastatură Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Setările tastaturii Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opţiuni de introducere text"</string>
+    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
+    <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrare la apăsarea tastei"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sunet la apăsarea tastei"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Fereastră pop-up la apăsarea tastei"</string>
@@ -45,9 +47,6 @@
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Afişaţi în modul Portret"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ascundeţi întotdeauna"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Afişaţi tasta setări"</string>
-    <string name="settings_key_mode_auto_name" msgid="2993460277873684680">"Automat"</string>
-    <string name="settings_key_mode_always_show_name" msgid="3047567041784760575">"Afişaţi întotdeauna"</string>
-    <string name="settings_key_mode_always_hide_name" msgid="7833948046716923994">"Ascundeţi întotdeauna"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Autocorecţie"</string>
     <string name="auto_correction_summary" msgid="5625751551134658006">"Corectare automată cuvinte prin bară spaţiu/semne punctuaţie"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Dezactivată"</string>
