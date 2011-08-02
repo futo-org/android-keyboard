@@ -109,17 +109,17 @@
     <!-- Indicates that a word has been added to the dictionary -->
     <string name="added_word"><xliff:g id="word">%s</xliff:g> : Saved</string>
 
-    <!-- Label for soft enter key when it performs GO action.  Must be short to fit on key! -->
+    <!-- Label for soft enter key when it performs GO action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_go_key">Go</string>
-    <!-- Label for soft enter key when it performs NEXT action.  Must be short to fit on key! -->
+    <!-- Label for soft enter key when it performs NEXT action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_next_key">Next</string>
-    <!-- Label for soft enter key when it performs DONE action.  Must be short to fit on key! -->
+    <!-- Label for soft enter key when it performs DONE action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_done_key">Done</string>
-    <!-- Label for soft enter key when it performs SEND action.  Must be short to fit on key! -->
+    <!-- Label for soft enter key when it performs SEND action.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_send_key">Send</string>
-    <!-- Label for "switch to alphabetic" key.  Must be short to fit on key! -->
+    <!-- Label for "switch to alphabetic" key.  Must be short to fit on key! [CHAR LIMIT=3] -->
     <string name="label_to_alpha_key">ABC</string>
-    <!-- Label for Shift modifier key of symbol keyboard.  Must be short to fit on key! -->
+    <!-- Label for Shift modifier key of symbol keyboard.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_more_key">More</string>
     <!-- Label for "Pause" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_pause_key">Pause</string>
