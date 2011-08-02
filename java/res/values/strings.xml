@@ -119,6 +119,8 @@
     <string name="label_send_key">Send</string>
     <!-- Label for "switch to alphabetic" key.  Must be short to fit on key! [CHAR LIMIT=3] -->
     <string name="label_to_alpha_key">ABC</string>
+    <!-- Label for "switch to symbols" key.  Must be short to fit on key! [CHAR LIMIT=4] -->
+    <string name="label_to_symbol_key">\?123</string>
     <!-- Label for Shift modifier key of symbol keyboard.  Must be short to fit on key! [CHAR LIMIT=5] -->
     <string name="label_more_key">More</string>
     <!-- Label for "Pause" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5] -->

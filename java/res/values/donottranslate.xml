@@ -36,8 +36,6 @@
     <string name="label_alt_key">ALT</string>
     <!-- Label for "Tab" key.  Must be short to fit on key! -->
     <string name="label_tab_key">Tab</string>
-    <!-- Label for "switch to symbols" key.  Must be short to fit on key! -->
-    <string name="label_to_symbol_key">\?123</string>
     <!-- Label for "switch to phone numeric" key.  Must be short to fit on key! -->
     <string name="label_to_phone_numeric_key">123</string>
     <!-- Label for "switch to phone symbols" key.  Must be short to fit on key! -->
