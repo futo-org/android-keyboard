@@ -32,7 +32,12 @@ public:
     void initCorrectionState(const ProximityInfo *pi, const int inputLength);
     void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
             const int spaceProximityPos, const int missingSpacePos);
+    void initDepth();
     void checkState();
+    void goUpTree(const int matchCount);
+    void slideTree(const int matchCount);
+    void goDownTree(int *matchedCount);
+    void charMatched();
     virtual ~CorrectionState();
     int getSkipPos() const {
         return mSkipPos;
@@ -50,13 +55,13 @@ public:
         return mMissingSpacePos;
     }
     int getFreqForSplitTwoWords(const int firstFreq, const int secondFreq);
-    int getFinalFreq(const int inputIndex, const int depth, const int matchWeight, const int freq,
-            const bool sameLength);
+    int getFinalFreq(const int inputIndex, const int outputIndex, const int freq);
 
 private:
 
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
+
     const ProximityInfo *mProximityInfo;
     int mInputLength;
     int mSkipPos;
@@ -64,6 +69,8 @@ private:
     int mTransposedPos;
     int mSpaceProximityPos;
     int mMissingSpacePos;
+
+    int mMatchedCharCount;
 
     class RankingAlgorithm {
     public:

@@ -58,10 +58,32 @@ int CorrectionState::getFreqForSplitTwoWords(const int firstFreq, const int seco
     return CorrectionState::RankingAlgorithm::calcFreqForSplitTwoWords(firstFreq, secondFreq, this);
 }
 
-int CorrectionState::getFinalFreq(const int inputIndex, const int depth, const int matchWeight,
-        const int freq, const bool sameLength) {
-    return CorrectionState::RankingAlgorithm::calculateFinalFreq(inputIndex, depth, matchWeight,
-            freq, sameLength, this);
+int CorrectionState::getFinalFreq(const int inputIndex, const int outputIndex, const int freq) {
+    const bool sameLength = (mExcessivePos == mInputLength - 1) ? (mInputLength == inputIndex + 2)
+            : (mInputLength == inputIndex + 1);
+    const int matchCount = mMatchedCharCount;
+    return CorrectionState::RankingAlgorithm::calculateFinalFreq(
+            inputIndex, outputIndex, matchCount, freq, sameLength, this);
+}
+
+void CorrectionState::initDepth() {
+    mMatchedCharCount = 0;
+}
+
+void CorrectionState::charMatched() {
+    ++mMatchedCharCount;
+}
+
+void CorrectionState::goUpTree(const int matchCount) {
+    mMatchedCharCount = matchCount;
+}
+
+void CorrectionState::slideTree(const int matchCount) {
+    mMatchedCharCount = matchCount;
+}
+
+void CorrectionState::goDownTree(int *matchedCount) {
+    *matchedCount = mMatchedCharCount;
 }
 
 CorrectionState::~CorrectionState() {
@@ -117,7 +139,8 @@ inline static void multiplyRate(const int rate, int *freq) {
 // RankingAlgorithm //
 //////////////////////
 
-int CorrectionState::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const int depth,
+int CorrectionState::RankingAlgorithm::calculateFinalFreq(
+        const int inputIndex, const int outputIndex,
         const int matchCount, const int freq, const bool sameLength,
         const CorrectionState* correctionState) {
     const int skipPos = correctionState->getSkipPos();
@@ -156,10 +179,10 @@ int CorrectionState::RankingAlgorithm::calculateFinalFreq(const int inputIndex, 
         }
     }
     int lengthFreq = typedLetterMultiplier;
-    multiplyIntCapped(powerIntCapped(typedLetterMultiplier, depth), &lengthFreq);
-    if (lengthFreq == matchWeight) {
+    multiplyIntCapped(powerIntCapped(typedLetterMultiplier, outputIndex), &lengthFreq);
+    if ((outputIndex + 1) == matchCount) {
         // Full exact match
-        if (depth > 1) {
+        if (outputIndex > 1) {
             if (DEBUG_DICT) {
                 LOGI("Found full matched word.");
             }
@@ -168,7 +191,8 @@ int CorrectionState::RankingAlgorithm::calculateFinalFreq(const int inputIndex, 
         if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0) {
             finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
-    } else if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0 && depth > 0) {
+    } else if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0
+            && outputIndex > 0) {
         // A word with proximity corrections
         if (DEBUG_DICT) {
             LOGI("Found one proximity correction.");
@@ -177,7 +201,7 @@ int CorrectionState::RankingAlgorithm::calculateFinalFreq(const int inputIndex, 
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
     }
     if (DEBUG_DICT) {
-        LOGI("calc: %d, %d", depth, sameLength);
+        LOGI("calc: %d, %d", outputIndex, sameLength);
     }
     if (sameLength) multiplyIntCapped(fullWordMultiplier, &finalFreq);
     return finalFreq;
