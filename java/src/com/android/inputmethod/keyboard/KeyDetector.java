@@ -153,7 +153,7 @@ public class KeyDetector {
     }
 
     private void getNearbyKeyCodes(final int[] allCodes) {
-        final List<Key> keys = getKeyboard().getKeys();
+        final List<Key> keys = getKeyboard().mKeys;
         final int[] indices = mIndices;
 
         // allCodes[0] should always have the key code even if it is a non-letter key.
@@ -187,7 +187,7 @@ public class KeyDetector {
      * @return The nearest key index
      */
     public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
-        final List<Key> keys = getKeyboard().getKeys();
+        final List<Key> keys = getKeyboard().mKeys;
         final int touchX = getTouchX(x);
         final int touchY = getTouchY(y);
 

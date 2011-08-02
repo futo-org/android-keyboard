@@ -26,21 +26,21 @@ import com.android.inputmethod.keyboard.MiniKeyboard;
 import com.android.inputmethod.latin.R;
 
 public class MiniKeyboardBuilder extends
-        KeyboardParser<MiniKeyboardBuilder.MiniKeyboardLayoutParams> {
+        KeyboardBuilder<MiniKeyboardBuilder.MiniKeyboardParams> {
     private final CharSequence[] mPopupCharacters;
 
-    public static class MiniKeyboardLayoutParams extends KeyboardParams {
+    public static class MiniKeyboardParams extends KeyboardParams {
         /* package */ int mTopRowAdjustment;
         public int mNumRows;
         public int mNumColumns;
         public int mLeftKeys;
         public int mRightKeys; // includes default key.
 
-        public MiniKeyboardLayoutParams() {
+        public MiniKeyboardParams() {
             super();
         }
 
-        /* package for test */ MiniKeyboardLayoutParams(int numKeys, int maxColumns, int keyWidth,
+        /* package for test */ MiniKeyboardParams(int numKeys, int maxColumns, int keyWidth,
                 int rowHeight, int coordXInParent, int parentKeyboardWidth) {
             super();
             setParameters(
@@ -194,7 +194,7 @@ public class MiniKeyboardBuilder extends
 
     public MiniKeyboardBuilder(KeyboardView view, int xmlId, Key parentKey,
             Keyboard parentKeyboard) {
-        super(view.getContext(), new MiniKeyboardLayoutParams());
+        super(view.getContext(), new MiniKeyboardParams());
         load(parentKeyboard.mId.cloneWithNewXml(mResources.getResourceEntryName(xmlId), xmlId));
 
         // HACK: Current mini keyboard design totally relies on the 9-patch padding about horizontal
@@ -246,7 +246,7 @@ public class MiniKeyboardBuilder extends
 
     @Override
     public MiniKeyboard build() {
-        final MiniKeyboardLayoutParams params = mParams;
+        final MiniKeyboardParams params = mParams;
         for (int n = 0; n < mPopupCharacters.length; n++) {
             final CharSequence label = mPopupCharacters[n];
             final int row = n / params.mNumColumns;

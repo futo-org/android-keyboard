@@ -20,7 +20,7 @@ import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.util.Log;
 
-import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
 import com.android.inputmethod.latin.R;
 
 import java.util.ArrayList;
@@ -214,7 +214,7 @@ public class KeyStyles {
             XmlResourceParser parser) {
         final String styleName = keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName);
         if (DEBUG) Log.d(TAG, String.format("<%s styleName=%s />",
-                KeyboardParser.TAG_KEY_STYLE, styleName));
+                KeyboardBuilder.TAG_KEY_STYLE, styleName));
         if (mStyles.containsKey(styleName))
             throw new ParseException("duplicate key style declared: " + styleName, parser);
 

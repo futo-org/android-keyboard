@@ -16,12 +16,12 @@
 
 package com.android.inputmethod.keyboard;
 
-import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder.MiniKeyboardLayoutParams;
+import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder.MiniKeyboardParams;
 
 public class MiniKeyboard extends Keyboard {
     private final int mDefaultKeyCoordX;
 
-    public MiniKeyboard(MiniKeyboardLayoutParams params) {
+    public MiniKeyboard(MiniKeyboardParams params) {
         super(params);
         mDefaultKeyCoordX = params.getDefaultKeyCoordX() + params.mDefaultKeyWidth / 2;
     }

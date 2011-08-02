@@ -153,11 +153,6 @@ public class Keyboard {
         return mProximityInfo.getNativeProximityInfo();
     }
 
-    // TODO: Access mKeys directly
-    public List<Key> getKeys() {
-        return mKeys;
-    }
-
     public boolean hasShiftLockKey() {
         return !mShiftLockKeys.isEmpty();
     }

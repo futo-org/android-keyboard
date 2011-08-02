@@ -37,12 +37,11 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.List;
 
 /**
- * Parser for BaseKeyboard.
+ * Keyboard Building helper.
  *
- * This class parses Keyboard XML file and fill out keys in Keyboard.
+ * This class parses Keyboard XML file and eventually build a Keyboard.
  * The Keyboard XML file looks like:
  * <pre>
  *   &gt;!-- xml/keyboard.xml --&lt;
@@ -108,8 +107,8 @@ import java.util.List;
  * </pre>
  */
 
-public class KeyboardParser<KP extends KeyboardParams> {
-    private static final String TAG = KeyboardParser.class.getSimpleName();
+public class KeyboardBuilder<KP extends KeyboardParams> {
+    private static final String TAG = KeyboardBuilder.class.getSimpleName();
     private static final boolean DEBUG = false;
 
     // Keyboard XML Tags
@@ -136,7 +135,7 @@ public class KeyboardParser<KP extends KeyboardParams> {
     private Key mRightEdgeKey = null;
     private final KeyStyles mKeyStyles = new KeyStyles();
 
-    public KeyboardParser(Context context, KP params) {
+    public KeyboardBuilder(Context context, KP params) {
         mContext = context;
         final Resources res = context.getResources();
         mResources = res;
@@ -150,7 +149,7 @@ public class KeyboardParser<KP extends KeyboardParams> {
         mParams.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
     }
 
-    public KeyboardParser<KP> load(KeyboardId id) {
+    public KeyboardBuilder<KP> load(KeyboardId id) {
         mParams.mId = id;
         try {
             parseKeyboard(id.getXmlId());
@@ -253,10 +252,12 @@ public class KeyboardParser<KP extends KeyboardParams> {
             mParams.mVerticalGap = getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_verticalGap, height, 0);
 
-            mParams.mIsRtlKeyboard = keyboardAttr.getBoolean(R.styleable.Keyboard_isRtlKeyboard, false);
+            mParams.mIsRtlKeyboard = keyboardAttr.getBoolean(
+                    R.styleable.Keyboard_isRtlKeyboard, false);
             mParams.mPopupKeyboardResId = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_popupKeyboardTemplate, 0);
-            mParams.mMaxPopupColumn = keyAttr.getInt(R.styleable.Keyboard_Key_maxPopupKeyboardColumn, 5);
+            mParams.mMaxPopupColumn = keyAttr.getInt(
+                    R.styleable.Keyboard_Key_maxPopupKeyboardColumn, 5);
 
             mParams.mIconsSet.loadIcons(keyboardAttr);
         } finally {
@@ -389,7 +390,7 @@ public class KeyboardParser<KP extends KeyboardParams> {
 
             final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Key);
-            int keyXPos = KeyboardParser.getDimensionOrFraction(keyAttr,
+            int keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_keyXPos, keyboardWidth, mCurrentX);
             if (keyXPos < 0) {
                 // If keyXPos is negative, the actual x-coordinate will be display_width + keyXPos.

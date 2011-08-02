@@ -28,8 +28,8 @@ import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
-import com.android.inputmethod.keyboard.internal.KeyboardParser;
-import com.android.inputmethod.keyboard.internal.KeyboardParser.ParseException;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
 import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
 import com.android.inputmethod.keyboard.internal.Row;
 import com.android.inputmethod.latin.R;
@@ -235,14 +235,14 @@ public class Key {
                 R.styleable.Keyboard);
         int keyWidth;
         try {
-            mHeight = KeyboardParser.getDimensionOrFraction(keyboardAttr,
+            mHeight = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight,
                     params.mHeight, row.mRowHeight) - params.mVerticalGap;
-            mHorizontalGap = KeyboardParser.getDimensionOrFraction(keyboardAttr,
+            mHorizontalGap = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_horizontalGap,
                     params.mWidth, params.mHorizontalGap);
             mVerticalGap = params.mVerticalGap;
-            keyWidth = KeyboardParser.getDimensionOrFraction(keyboardAttr,
+            keyWidth = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyWidth,
                     params.mWidth, row.mDefaultKeyWidth);
         } finally {
@@ -263,7 +263,7 @@ public class Key {
             }
 
             final int keyboardWidth = params.mOccupiedWidth;
-            int keyXPos = KeyboardParser.getDimensionOrFraction(keyAttr,
+            int keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_keyXPos, keyboardWidth, x);
             if (keyXPos < 0) {
                 // If keyXPos is negative, the actual x-coordinate will be k + keyXPos.
@@ -317,9 +317,9 @@ public class Key {
             mEdgeFlags = 0;
 
             final KeyboardIconsSet iconsSet = params.mIconsSet;
-            mVisualInsetsLeft = KeyboardParser.getDimensionOrFraction(keyAttr,
+            mVisualInsetsLeft = KeyboardBuilder.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_visualInsetsLeft, keyboardWidth, 0);
-            mVisualInsetsRight = KeyboardParser.getDimensionOrFraction(keyAttr,
+            mVisualInsetsRight = KeyboardBuilder.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_visualInsetsRight, keyboardWidth, 0);
             mPreviewIcon = iconsSet.getIcon(style.getInt(
                     keyAttr, R.styleable.Keyboard_Key_keyIconPreview,
