@@ -26,10 +26,12 @@ namespace latinime {
 class ProximityInfo;
 
 class CorrectionState {
+
 public:
-    CorrectionState();
-    void setCorrectionParams(const ProximityInfo *pi, const int inputLength, const int skipPos,
-        const int excessivePos, const int transposedPos);
+    CorrectionState(const int typedLetterMultiplier, const int fullWordMultiplier);
+    void initCorrectionState(const ProximityInfo *pi, const int inputLength);
+    void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
+            const int spaceProximityPos, const int missingSpacePos);
     void checkState();
     virtual ~CorrectionState();
     int getSkipPos() const {
@@ -41,12 +43,36 @@ public:
     int getTransposedPos() const {
         return mTransposedPos;
     }
+    int getSpaceProximityPos() const {
+        return mSpaceProximityPos;
+    }
+    int getMissingSpacePos() const {
+        return mMissingSpacePos;
+    }
+    int getFreqForSplitTwoWords(const int firstFreq, const int secondFreq);
+    int getFinalFreq(const int inputIndex, const int depth, const int matchWeight, const int freq,
+            const bool sameLength);
+
 private:
+
+    const int TYPED_LETTER_MULTIPLIER;
+    const int FULL_WORD_MULTIPLIER;
     const ProximityInfo *mProximityInfo;
     int mInputLength;
     int mSkipPos;
     int mExcessivePos;
     int mTransposedPos;
+    int mSpaceProximityPos;
+    int mMissingSpacePos;
+
+    class RankingAlgorithm {
+    public:
+        static int calculateFinalFreq(const int inputIndex, const int depth,
+                const int matchCount, const int freq, const bool sameLength,
+                const CorrectionState* correctionState);
+        static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
+                const CorrectionState* correctionState);
+    };
 };
 } // namespace latinime
 #endif // LATINIME_CORRECTION_INFO_H
