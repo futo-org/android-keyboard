@@ -34,10 +34,6 @@ public class Row {
     public final int mDefaultWidth;
     /** Default height of a key in this row. */
     public final int mDefaultHeight;
-    /** Default horizontal gap between keys in this row. */
-    public final int mDefaultHorizontalGap;
-    /** Vertical gap following this row. */
-    public final int mVerticalGap;
 
     private final Keyboard mKeyboard;
 
@@ -51,10 +47,6 @@ public class Row {
                 R.styleable.Keyboard_keyWidth, keyboardWidth, keyboard.getKeyWidth());
         mDefaultHeight = KeyboardParser.getDimensionOrFraction(a,
                 R.styleable.Keyboard_rowHeight, keyboardHeight, keyboard.getRowHeight());
-        mDefaultHorizontalGap = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_horizontalGap, keyboardWidth, keyboard.getHorizontalGap());
-        mVerticalGap = KeyboardParser.getDimensionOrFraction(a,
-                R.styleable.Keyboard_verticalGap, keyboardHeight, keyboard.getVerticalGap());
         a.recycle();
     }
 

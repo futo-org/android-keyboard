@@ -237,10 +237,10 @@ public class Key {
         try {
             mHeight = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight,
-                    keyboard.getKeyboardHeight(), row.mDefaultHeight) - row.mVerticalGap;
+                    keyboard.getKeyboardHeight(), row.mDefaultHeight) - keyboard.getVerticalGap();
             mHorizontalGap = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_horizontalGap,
-                    keyboard.getDisplayWidth(), row.mDefaultHorizontalGap);
+                    keyboard.getDisplayWidth(), keyboard.getHorizontalGap());
             mVerticalGap = keyboard.getVerticalGap();
             keyWidth = KeyboardParser.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyWidth,

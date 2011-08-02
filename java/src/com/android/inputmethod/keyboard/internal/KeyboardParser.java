@@ -256,7 +256,7 @@ public class KeyboardParser {
             if (event == XmlPullParser.START_TAG) {
                 final String tag = parser.getName();
                 if (TAG_ROW.equals(tag)) {
-                    Row row = new Row(mResources, mKeyboard, parser);
+                    Row row = parseRowAttributes(parser);
                     if (DEBUG) Log.d(TAG, String.format("<%s>", TAG_ROW));
                     if (keys != null)
                         startRow(row);
@@ -285,6 +285,20 @@ public class KeyboardParser {
                     throw new IllegalEndTag(parser, TAG_ROW);
                 }
             }
+        }
+    }
+
+    private Row parseRowAttributes(XmlResourceParser parser) {
+        final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
+                R.styleable.Keyboard);
+        try {
+            if (a.hasValue(R.styleable.Keyboard_horizontalGap))
+                throw new IllegalAttribute(parser, "horizontalGap");
+            if (a.hasValue(R.styleable.Keyboard_verticalGap))
+                throw new IllegalAttribute(parser, "verticalGap");
+            return new Row(mResources, mKeyboard, parser);
+        } finally {
+            a.recycle();
         }
     }
 
