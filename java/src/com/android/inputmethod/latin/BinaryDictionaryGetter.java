@@ -63,9 +63,6 @@ class BinaryDictionaryGetter {
      * Returns a list of file addresses for a given locale, trying relevant methods in order.
      *
      * Tries to get binary dictionaries from various sources, in order:
-     * - Uses a private method of getting a private dictionaries, as implemented by the
-     *   PrivateBinaryDictionaryGetter class.
-     * If that fails:
      * - Uses a content provider to get a public dictionary set, as per the protocol described
      *   in BinaryDictionaryFileDumper.
      * If that fails:
@@ -76,31 +73,23 @@ class BinaryDictionaryGetter {
      */
     public static List<AssetFileAddress> getDictionaryFiles(Locale locale, Context context,
             int fallbackResId) {
-        // Try first to query a private package signed the same way for private files.
-        final List<AssetFileAddress> privateFiles =
-                PrivateBinaryDictionaryGetter.getDictionaryFiles(locale, context);
-        if (null != privateFiles) {
-            return privateFiles;
-        } else {
-            try {
-                // If that was no-go, try to find a publicly exported dictionary.
-                List<AssetFileAddress> listFromContentProvider =
-                        BinaryDictionaryFileDumper.getDictSetFromContentProvider(locale, context);
-                if (null != listFromContentProvider) {
-                    return listFromContentProvider;
-                }
-                // If the list is null, fall through and return the fallback
-            } catch (FileNotFoundException e) {
-                Log.e(TAG, "Unable to create dictionary file from provider for locale "
-                        + locale.toString() + ": falling back to internal dictionary");
-            } catch (IOException e) {
-                Log.e(TAG, "Unable to read source data for locale "
-                        + locale.toString() + ": falling back to internal dictionary");
+        try {
+            List<AssetFileAddress> listFromContentProvider =
+                    BinaryDictionaryFileDumper.getDictSetFromContentProvider(locale, context);
+            if (null != listFromContentProvider) {
+                return listFromContentProvider;
             }
-            final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId,
-                    locale);
-            if (null == fallbackAsset) return null;
-            return Arrays.asList(fallbackAsset);
+            // If the list is null, fall through and return the fallback
+        } catch (FileNotFoundException e) {
+            Log.e(TAG, "Unable to create dictionary file from provider for locale "
+                    + locale.toString() + ": falling back to internal dictionary");
+        } catch (IOException e) {
+            Log.e(TAG, "Unable to read source data for locale "
+                    + locale.toString() + ": falling back to internal dictionary");
         }
+        final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId,
+                locale);
+        if (null == fallbackAsset) return null;
+        return Arrays.asList(fallbackAsset);
     }
 }

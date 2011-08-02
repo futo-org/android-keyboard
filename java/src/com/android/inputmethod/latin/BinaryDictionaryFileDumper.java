@@ -20,8 +20,10 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +31,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,6 +45,8 @@ public class BinaryDictionaryFileDumper {
      * The size of the temporary buffer to copy files.
      */
     static final int FILE_READ_BUFFER_SIZE = 1024;
+
+    private static final String DICTIONARY_PROJECTION[] = { "id" };
 
     // Prevents this class to be accidentally instantiated.
     private BinaryDictionaryFileDumper() {
@@ -75,10 +80,45 @@ public class BinaryDictionaryFileDumper {
     /**
      * Return for a given locale the provider URI to query to get the dictionary.
      */
+    // TODO: remove this
     public static Uri getProviderUri(Locale locale) {
         return new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
                 .authority(BinaryDictionary.DICTIONARY_PACK_AUTHORITY).appendPath(
                         locale.toString()).build();
+    }
+
+    /**
+     * Return for a given locale or dictionary id the provider URI to get the dictionary.
+     */
+    private static Uri getProviderUri(String path) {
+        return new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
+                .authority(BinaryDictionary.DICTIONARY_PACK_AUTHORITY).appendPath(
+                        path).build();
+    }
+
+    /**
+     * Queries a content provider for the list of dictionaries for a specific locale
+     * available to copy into Latin IME.
+     */
+    private static List<String> getDictIdList(final Locale locale, final Context context) {
+        final ContentResolver resolver = context.getContentResolver();
+        final Uri dictionaryPackUri = getProviderUri(locale);
+
+        final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null, null);
+        if (null == c) return Collections.<String>emptyList();
+        if (c.getCount() <= 0 || !c.moveToFirst()) {
+            c.close();
+            return Collections.<String>emptyList();
+        }
+
+        final List<String> list = new ArrayList<String>();
+        do {
+            final String id = c.getString(0);
+            if (TextUtils.isEmpty(id)) continue;
+            list.add(id);
+        } while (c.moveToNext());
+        c.close();
+        return list;
     }
 
     /**
@@ -95,20 +135,26 @@ public class BinaryDictionaryFileDumper {
      * @throw FileNotFoundException if the provider returns non-existent data.
      * @throw IOException if the provider-returned data could not be read.
      */
-    public static List<AssetFileAddress> getDictSetFromContentProvider(Locale locale,
-            Context context) throws FileNotFoundException, IOException {
+    public static List<AssetFileAddress> getDictSetFromContentProvider(final Locale locale,
+            final Context context) throws FileNotFoundException, IOException {
         // TODO: check whether the dictionary is the same or not and if it is, return the cached
         // file.
         // TODO: This should be able to read a number of files from the dictionary pack, copy
         // them all and return them.
         final ContentResolver resolver = context.getContentResolver();
-        final Uri dictionaryPackUri = getProviderUri(locale);
-        final AssetFileDescriptor afd = resolver.openAssetFileDescriptor(dictionaryPackUri, "r");
-        if (null == afd) return null;
-        final String fileName =
-                copyFileTo(afd.createInputStream(), getCacheFileNameForLocale(locale, context));
-        afd.close();
-        return Arrays.asList(AssetFileAddress.makeFromFileName(fileName));
+        final List<String> idList = getDictIdList(locale, context);
+        final List<AssetFileAddress> fileAddressList = new ArrayList<AssetFileAddress>();
+        for (String id : idList) {
+            final Uri dictionaryPackUri = getProviderUri(id);
+            final AssetFileDescriptor afd =
+                    resolver.openAssetFileDescriptor(dictionaryPackUri, "r");
+            if (null == afd) continue;
+            final String fileName =
+                    copyFileTo(afd.createInputStream(), getCacheFileNameForLocale(locale, context));
+            afd.close();
+            fileAddressList.add(AssetFileAddress.makeFromFileName(fileName));
+        }
+        return fileAddressList;
     }
 
     /**
