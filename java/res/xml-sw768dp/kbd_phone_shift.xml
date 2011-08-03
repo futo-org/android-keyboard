@@ -58,7 +58,7 @@
     </Row>
     <Row>
         <Key
-            latin:keyStyle="moreKeyStyle"
+            latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="11.172%p" />
         <Key
             latin:keyLabel=","

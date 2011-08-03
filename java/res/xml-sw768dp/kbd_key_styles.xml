@@ -87,12 +87,17 @@
         latin:keyLabelOption="fontNormal"
         latin:parentStyle="functionalKeyStyle" />
     <key-style
-        latin:styleName="moreKeyStyle"
+        latin:styleName="toMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
-        latin:keyLabel="@string/label_more_key"
+        latin:keyLabel="@string/label_to_more_symbol_for_tablet_key"
         latin:keyLabelOption="fontNormal"
-        latin:parentStyle="functionalKeyStyle"
-        latin:isSticky="true" />
+        latin:parentStyle="functionalKeyStyle" />
+    <key-style
+        latin:styleName="backFromMoreSymbolKeyStyle"
+        latin:code="@integer/key_shift"
+        latin:keyLabel="@string/label_to_symbol_key"
+        latin:keyLabelOption="fontNormal"
+        latin:parentStyle="functionalKeyStyle" />
     <key-style
         latin:styleName="comKeyStyle"
         latin:keyLabel="@string/keylabel_for_popular_domain"
