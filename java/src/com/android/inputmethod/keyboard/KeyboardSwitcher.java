@@ -364,6 +364,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
 
         keyboard.onAutoCorrectionStateChanged(mIsAutoCorrectionActive);
+        keyboard.setShiftLocked(false);
         keyboard.setShifted(false);
         // If the cached keyboard had been switched to another keyboard while the language was
         // displayed on its spacebar, it might have had arbitrary text fade factor. In such case,
