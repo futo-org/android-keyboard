@@ -19,5 +19,5 @@
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Symbols that do NOT separate words -->
-    <string name="non_word_separator_symbols"></string>
+    <string name="symbols_excluded_from_word_separators"></string>
 </resources>

@@ -27,10 +27,10 @@
     <!-- Symbols that should convert magic spaces into real space -->
     <string name="magic_space_promoting_symbols">([*&amp;@{&lt;&gt;+=|</string>
     <!-- Symbols that do NOT separate words -->
-    <string name="non_word_separator_symbols">\u0027-</string>
+    <string name="symbols_excluded_from_word_separators">\u0027-</string>
     <!-- Word separator list is the union of all symbols except those that are not separators:
     magic_space_swapping_symbols | magic_space_stripping_symbols |
-            magic_space_neutral_symbols \ non_word_separator_symbols -->
+            magic_space_neutral_symbols \ symbols_excluded_from_word_separators -->
 
     <!-- Label for "switch to more symbol" modifier key.  Must be short to fit on key! -->
     <string name="label_to_more_symbol_key">= \\ &lt;</string>

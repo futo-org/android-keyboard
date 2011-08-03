@@ -103,6 +103,7 @@ public class Settings extends InputMethodSettingsActivity
         public final String mMagicSpaceSwappers;
         public final String mSuggestPuncs;
         public final SuggestedWords mSuggestPuncList;
+        private final String mSymbolsExcludedFromWordSeparators;
 
         // From preferences:
         public final boolean mSoundOn; // Sound setting private to Latin IME (see mSilentModeOn)
@@ -152,10 +153,13 @@ public class Settings extends InputMethodSettingsActivity
             mMagicSpaceSwappers = res.getString(R.string.magic_space_swapping_symbols);
             String wordSeparators = mMagicSpaceStrippers + mMagicSpaceSwappers
                     + res.getString(R.string.magic_space_promoting_symbols);
-            final String notWordSeparators = res.getString(R.string.non_word_separator_symbols);
-            for (int i = notWordSeparators.length() - 1; i >= 0; --i) {
-                wordSeparators = wordSeparators.replace(notWordSeparators.substring(i, i + 1), "");
+            final String symbolsExcludedFromWordSeparators =
+                    res.getString(R.string.symbols_excluded_from_word_separators);
+            for (int i = symbolsExcludedFromWordSeparators.length() - 1; i >= 0; --i) {
+                wordSeparators = wordSeparators.replace(
+                        symbolsExcludedFromWordSeparators.substring(i, i + 1), "");
             }
+            mSymbolsExcludedFromWordSeparators = symbolsExcludedFromWordSeparators;
             mWordSeparators = wordSeparators;
             mSuggestPuncs = res.getString(R.string.suggested_punctuations);
             // TODO: it would be nice not to recreate this each time we change the configuration
@@ -195,6 +199,10 @@ public class Settings extends InputMethodSettingsActivity
 
         public boolean isWordSeparator(int code) {
             return mWordSeparators.contains(String.valueOf((char)code));
+        }
+
+        public boolean isSymbolExcludedFromWordSeparators(int code) {
+            return mSymbolsExcludedFromWordSeparators.contains(String.valueOf((char)code));
         }
 
         public boolean isMagicSpaceStripper(int code) {

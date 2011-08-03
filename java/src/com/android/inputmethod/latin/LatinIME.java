@@ -1374,7 +1374,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         int code = primaryCode;
-        if (isAlphabet(code) && isSuggestionsRequested() && !isCursorTouchingWord()) {
+        if ((isAlphabet(code) || mSettingsValues.isSymbolExcludedFromWordSeparators(code))
+                && isSuggestionsRequested() && !isCursorTouchingWord()) {
             if (!mHasUncommittedTypedChars) {
                 mHasUncommittedTypedChars = true;
                 mComposingStringBuilder.setLength(0);
