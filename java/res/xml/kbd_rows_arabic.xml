@@ -42,7 +42,7 @@
         <Key
             latin:keyLabel="ف"
             latin:keyHintLabel="4"
-            latin:popupCharacters="\u06a4,4,٤" />
+            latin:popupCharacters="4,٤,\u06a4" />
         <Key
             latin:keyLabel="غ"
             latin:keyHintLabel="5"
