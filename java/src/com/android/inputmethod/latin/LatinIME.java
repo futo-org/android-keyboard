@@ -115,7 +115,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private static final int SCREEN_ORIENTATION_CHANGE_DETECTION_DELAY = 2;
     private static final int ACCUMULATE_START_INPUT_VIEW_DELAY = 20;
-    private static final int RESTORE_KEYBOARD_STATE_DELAY = 200;
+    private static final int RESTORE_KEYBOARD_STATE_DELAY = 300;
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
