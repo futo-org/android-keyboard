@@ -39,7 +39,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         String[] candidates1 = new String[] {text, "candidateA", "candidateB"};
         final int textLength = textInfo.getText().length() % 3;
         if (textLength % 3 == 0) {
-            return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_LOOKS_TYPO
+            return new SuggestionsInfo(2
                     | SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY, candidates0);
         } else if (textLength % 3 == 1) {
             return new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY, candidates1);
