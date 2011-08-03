@@ -176,7 +176,10 @@ public class Settings extends InputMethodSettingsActivity
                     && isBigramPredictionEnabled(prefs, res);
             mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
             mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
-            mShowSettingsKey = prefs.getBoolean(Settings.PREF_SHOW_SETTINGS_KEY, false);
+            final boolean defaultShowSettingsKey = res.getBoolean(
+                    R.bool.config_default_show_settings_key);
+            mShowSettingsKey = prefs.getBoolean(Settings.PREF_SHOW_SETTINGS_KEY,
+                    defaultShowSettingsKey);
             final String voiceModeMain = res.getString(R.string.voice_mode_main);
             final String voiceModeOff = res.getString(R.string.voice_mode_off);
             final String voiceMode = prefs.getString(PREF_VOICE_SETTINGS_KEY, voiceModeMain);
@@ -301,7 +304,7 @@ public class Settings extends InputMethodSettingsActivity
     private ListPreference mVoicePreference;
     private CheckBoxPreference mShowSettingsKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
-    private ListPreference mAutoCorrectionThreshold;
+    private ListPreference mAutoCorrectionThresholdPreference;
     private ListPreference mKeyPreviewPopupDismissDelay;
     // Suggestion: use bigrams to adjust scores of suggestions obtained from unigram dictionary
     private CheckBoxPreference mBigramSuggestion;
@@ -318,7 +321,7 @@ public class Settings extends InputMethodSettingsActivity
     private void ensureConsistencyOfAutoCorrectionSettings() {
         final String autoCorrectionOff = getResources().getString(
                 R.string.auto_correction_threshold_mode_index_off);
-        final String currentSetting = mAutoCorrectionThreshold.getValue();
+        final String currentSetting = mAutoCorrectionThresholdPreference.getValue();
         mBigramSuggestion.setEnabled(!currentSetting.equals(autoCorrectionOff));
         mBigramPrediction.setEnabled(!currentSetting.equals(autoCorrectionOff));
     }
@@ -356,7 +359,8 @@ public class Settings extends InputMethodSettingsActivity
         mVoiceOn = !(prefs.getString(PREF_VOICE_SETTINGS_KEY, mVoiceModeOff)
                 .equals(mVoiceModeOff));
 
-        mAutoCorrectionThreshold = (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
+        mAutoCorrectionThresholdPreference =
+                (ListPreference) findPreference(PREF_AUTO_CORRECTION_THRESHOLD);
         mBigramSuggestion = (CheckBoxPreference) findPreference(PREF_BIGRAM_SUGGESTIONS);
         mBigramPrediction = (CheckBoxPreference) findPreference(PREF_BIGRAM_PREDICTIONS);
         mDebugSettingsPreference = findPreference(PREF_DEBUG_SETTINGS);
