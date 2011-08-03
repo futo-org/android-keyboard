@@ -31,8 +31,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
-import com.android.inputmethod.keyboard.internal.KeyboardParser;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 
@@ -118,7 +118,7 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    public static class Builder extends KeyboardParser<LatinKeyboardParams> {
+    public static class Builder extends KeyboardBuilder<LatinKeyboardParams> {
         public Builder(Context context) {
             super(context, new LatinKeyboardParams());
         }

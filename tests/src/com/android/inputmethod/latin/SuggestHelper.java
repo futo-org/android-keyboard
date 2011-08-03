@@ -16,16 +16,15 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.Context;
+import android.text.TextUtils;
+
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.LatinKeyboard;
 
-import android.content.Context;
-import android.text.TextUtils;
-
 import java.io.File;
-import java.util.List;
 
 public class SuggestHelper {
     protected final Suggest mSuggest;
@@ -66,8 +65,7 @@ public class SuggestHelper {
     }
 
     private void addKeyInfo(WordComposer word, char c) {
-        final List<Key> keys = mKeyboard.getKeys();
-        for (final Key key : keys) {
+        for (final Key key : mKeyboard.mKeys) {
             if (key.mCode == c) {
                 final int x = key.mX + key.mWidth / 2;
                 final int y = key.mY + key.mHeight / 2;

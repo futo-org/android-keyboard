@@ -448,7 +448,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             canvas.translate(-keyDrawX, -keyDrawY);
         } else {
             // Draw all keys.
-            for (final Key key : mKeyboard.getKeys()) {
+            for (final Key key : mKeyboard.mKeys) {
                 final int keyDrawX = key.mX + key.mVisualInsetsLeft + getPaddingLeft();
                 final int keyDrawY = key.mY + getPaddingTop();
                 canvas.translate(keyDrawX, keyDrawY);

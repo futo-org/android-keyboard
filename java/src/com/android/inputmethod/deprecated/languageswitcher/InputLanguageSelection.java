@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.deprecated.languageswitcher;
 
-import com.android.inputmethod.keyboard.internal.KeyboardParser;
+import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
@@ -162,7 +162,7 @@ public class InputLanguageSelection extends PreferenceActivity {
 
         try {
             final String localeStr = locale.toString();
-            final String[] layoutCountryCodes = KeyboardParser.parseKeyboardLocale(
+            final String[] layoutCountryCodes = KeyboardBuilder.parseKeyboardLocale(
                     this, R.xml.kbd_qwerty).split(",", -1);
             if (!TextUtils.isEmpty(localeStr) && layoutCountryCodes.length > 0) {
                 for (String s : layoutCountryCodes) {

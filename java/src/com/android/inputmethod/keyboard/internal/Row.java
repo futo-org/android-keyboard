@@ -40,9 +40,9 @@ public class Row {
         final int keyboardHeight = params.mHeight;
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
-        mDefaultKeyWidth = KeyboardParser.getDimensionOrFraction(a,
+        mDefaultKeyWidth = KeyboardBuilder.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyWidth, keyboardWidth, params.mDefaultKeyWidth);
-        mRowHeight = KeyboardParser.getDimensionOrFraction(a,
+        mRowHeight = KeyboardBuilder.getDimensionOrFraction(a,
                 R.styleable.Keyboard_rowHeight, keyboardHeight, params.mDefaultRowHeight);
         a.recycle();
     }

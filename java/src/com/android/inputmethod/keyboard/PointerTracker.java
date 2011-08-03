@@ -285,7 +285,7 @@ public class PointerTracker {
     public void setKeyDetectorInner(KeyDetector keyDetector) {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
-        mKeys = mKeyboard.getKeys();
+        mKeys = mKeyboard.mKeys;
         final int keyQuarterWidth = mKeyboard.mMostCommonKeyWidth / 4;
         mKeyQuarterWidthSquared = keyQuarterWidth * keyQuarterWidth;
     }
