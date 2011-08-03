@@ -188,8 +188,13 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
         public void save() {
             mIsAlphabetMode = isAlphabetMode();
-            mIsShiftLocked = mIsAlphabetMode && isShiftLocked();
-            mIsShifted = !mIsShiftLocked && isShiftedOrShiftLocked();
+            if (mIsAlphabetMode) {
+                mIsShiftLocked = isShiftLocked();
+                mIsShifted = !mIsShiftLocked && isShiftedOrShiftLocked();
+            } else {
+                mIsShiftLocked = false;
+                mIsShifted = mSymbolsShiftedKeyboardId.equals(mCurrentId);
+            }
             mIsValid = true;
         }
 
