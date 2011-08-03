@@ -28,16 +28,25 @@ class ProximityInfo;
 class CorrectionState {
 
 public:
+    typedef enum {
+        ALLOW_ALL,
+        UNRELATED,
+        RELATED
+    } CorrectionStateType;
+
     CorrectionState(const int typedLetterMultiplier, const int fullWordMultiplier);
     void initCorrectionState(const ProximityInfo *pi, const int inputLength);
     void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
             const int spaceProximityPos, const int missingSpacePos);
-    void initDepth();
     void checkState();
-    void goUpTree(const int matchCount);
-    void slideTree(const int matchCount);
-    void goDownTree(int *matchedCount);
+    void initProcessState(const int matchCount, const int inputIndex, const int outputIndex);
+    void getProcessState(int *matchedCount, int *inputIndex, int *outputIndex);
     void charMatched();
+    void incrementInputIndex();
+    void incrementOutputIndex();
+    int getOutputIndex();
+    int getInputIndex();
+
     virtual ~CorrectionState();
     int getSkipPos() const {
         return mSkipPos;
@@ -55,7 +64,7 @@ public:
         return mMissingSpacePos;
     }
     int getFreqForSplitTwoWords(const int firstFreq, const int secondFreq);
-    int getFinalFreq(const int inputIndex, const int outputIndex, const int freq);
+    int getFinalFreq(const unsigned short *word, const int freq);
 
 private:
 
@@ -71,6 +80,8 @@ private:
     int mMissingSpacePos;
 
     int mMatchedCharCount;
+    int mInputIndex;
+    int mOutputIndex;
 
     class RankingAlgorithm {
     public:

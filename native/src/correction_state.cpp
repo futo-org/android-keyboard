@@ -58,32 +58,49 @@ int CorrectionState::getFreqForSplitTwoWords(const int firstFreq, const int seco
     return CorrectionState::RankingAlgorithm::calcFreqForSplitTwoWords(firstFreq, secondFreq, this);
 }
 
-int CorrectionState::getFinalFreq(const int inputIndex, const int outputIndex, const int freq) {
-    const bool sameLength = (mExcessivePos == mInputLength - 1) ? (mInputLength == inputIndex + 2)
-            : (mInputLength == inputIndex + 1);
-    const int matchCount = mMatchedCharCount;
+int CorrectionState::getFinalFreq(const unsigned short *word, const int freq) {
+    if (mProximityInfo->sameAsTyped(word, mOutputIndex + 1) || mOutputIndex < MIN_SUGGEST_DEPTH) {
+        return -1;
+    }
+    const bool sameLength = (mExcessivePos == mInputLength - 1) ? (mInputLength == mInputIndex + 2)
+            : (mInputLength == mInputIndex + 1);
     return CorrectionState::RankingAlgorithm::calculateFinalFreq(
-            inputIndex, outputIndex, matchCount, freq, sameLength, this);
+            mInputIndex, mOutputIndex, mMatchedCharCount, freq, sameLength, this);
 }
 
-void CorrectionState::initDepth() {
-    mMatchedCharCount = 0;
+void CorrectionState::initProcessState(
+        const int matchCount, const int inputIndex, const int outputIndex) {
+    mMatchedCharCount = matchCount;
+    mInputIndex = inputIndex;
+    mOutputIndex = outputIndex;
+}
+
+void CorrectionState::getProcessState(int *matchedCount, int *inputIndex, int *outputIndex) {
+    *matchedCount = mMatchedCharCount;
+    *inputIndex = mInputIndex;
+    *outputIndex = mOutputIndex;
 }
 
 void CorrectionState::charMatched() {
     ++mMatchedCharCount;
 }
 
-void CorrectionState::goUpTree(const int matchCount) {
-    mMatchedCharCount = matchCount;
+// TODO: remove
+int CorrectionState::getOutputIndex() {
+    return mOutputIndex;
 }
 
-void CorrectionState::slideTree(const int matchCount) {
-    mMatchedCharCount = matchCount;
+// TODO: remove
+int CorrectionState::getInputIndex() {
+    return mInputIndex;
 }
 
-void CorrectionState::goDownTree(int *matchedCount) {
-    *matchedCount = mMatchedCharCount;
+void CorrectionState::incrementInputIndex() {
+    ++mInputIndex;
+}
+
+void CorrectionState::incrementOutputIndex() {
+    ++mOutputIndex;
 }
 
 CorrectionState::~CorrectionState() {
