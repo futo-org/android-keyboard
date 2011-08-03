@@ -64,6 +64,7 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.keyboard.KeyboardSwitcher.KeyboardLayoutState;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
@@ -111,6 +112,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private static final int DELETE_ACCELERATE_AT = 20;
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
+
+    private static final int SCREEN_ORIENTATION_CHANGE_DETECTION_DELAY = 2;
+    private static final int ACCUMULATE_START_INPUT_VIEW_DELAY = 20;
+    private static final int RESTORE_KEYBOARD_STATE_DELAY = 200;
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -218,6 +223,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
         private static final int MSG_CONFIRM_ORIENTATION_CHANGE = 8;
         private static final int MSG_START_INPUT_VIEW = 9;
+        private static final int MSG_RESTORE_KEYBOARD_LAYOUT = 10;
 
         private static class OrientationChangeArgs {
             public final int mOldWidth;
@@ -301,6 +307,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             case MSG_START_INPUT_VIEW:
                 latinIme.onStartInputView((EditorInfo)msg.obj, false);
+                break;
+            case MSG_RESTORE_KEYBOARD_LAYOUT:
+                removeMessages(MSG_UPDATE_SHIFT_STATE);
+                ((KeyboardLayoutState)msg.obj).restore();
                 break;
             }
         }
@@ -392,14 +402,29 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return hasMessages(MSG_SPACE_TYPED);
         }
 
+        public void postRestoreKeyboardLayout() {
+            final LatinIME latinIme = getOuterInstance();
+            final KeyboardLayoutState state = latinIme.mKeyboardSwitcher.getKeyboardState();
+            if (state.isValid()) {
+                removeMessages(MSG_RESTORE_KEYBOARD_LAYOUT);
+                sendMessageDelayed(
+                        obtainMessage(MSG_RESTORE_KEYBOARD_LAYOUT, state),
+                        RESTORE_KEYBOARD_STATE_DELAY);
+            }
+        }
+
         private void postConfirmOrientationChange(OrientationChangeArgs args) {
             removeMessages(MSG_CONFIRM_ORIENTATION_CHANGE);
-            // Will confirm whether orientation change has finished or not after 2ms again.
-            sendMessageDelayed(obtainMessage(MSG_CONFIRM_ORIENTATION_CHANGE, args), 2);
+            // Will confirm whether orientation change has finished or not again.
+            sendMessageDelayed(obtainMessage(MSG_CONFIRM_ORIENTATION_CHANGE, args),
+                    SCREEN_ORIENTATION_CHANGE_DETECTION_DELAY);
         }
 
         public void startOrientationChanging(int oldw, int oldh) {
             postConfirmOrientationChange(new OrientationChangeArgs(oldw, oldh));
+            final LatinIME latinIme = getOuterInstance();
+            latinIme.mKeyboardSwitcher.getKeyboardState().save();
+            postRestoreKeyboardLayout();
         }
 
         public boolean postStartInputView(EditorInfo attribute) {
@@ -407,7 +432,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 removeMessages(MSG_START_INPUT_VIEW);
                 // Postpone onStartInputView 20ms afterward and see if orientation change has
                 // finished.
-                sendMessageDelayed(obtainMessage(MSG_START_INPUT_VIEW, attribute), 20);
+                sendMessageDelayed(obtainMessage(MSG_START_INPUT_VIEW, attribute),
+                        ACCUMULATE_START_INPUT_VIEW_DELAY);
                 return true;
             }
             return false;
@@ -596,6 +622,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public void onStartInputView(EditorInfo attribute, boolean restarting) {
+        mHandler.postRestoreKeyboardLayout();
         if (mHandler.postStartInputView(attribute)) {
             return;
         }
@@ -649,7 +676,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         if (mSubtypeSwitcher.isKeyboardMode()) {
             switcher.loadKeyboard(attribute, mSettingsValues);
-            switcher.updateShiftState();
         }
 
         if (mCandidateView != null)
@@ -738,7 +764,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.onFinishInput();
 
         LatinImeLogger.commit();
-        mKeyboardSwitcher.onAutoCorrectionStateChanged(false);
 
         mVoiceProxy.flushVoiceInputLogs(mConfigurationChanging);
 
@@ -751,6 +776,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onFinishInputView(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
+        mKeyboardSwitcher.onFinishInputView();
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) inputView.cancelAllMessages();
         // Remove pending messages related to update suggestions
@@ -1962,16 +1988,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mKeyboardSwitcher.loadKeyboard(getCurrentInputEditorInfo(), mSettingsValues);
         initSuggest();
         loadSettings();
-        mKeyboardSwitcher.updateShiftState();
     }
 
     @Override
     public void onPress(int primaryCode, boolean withSliding) {
-        if (mKeyboardSwitcher.isVibrateAndSoundFeedbackRequired()) {
+        final KeyboardSwitcher switcher = mKeyboardSwitcher;
+        switcher.registerWindowWidth();
+        if (switcher.isVibrateAndSoundFeedbackRequired()) {
             vibrate();
             playKeyClick(primaryCode);
         }
-        KeyboardSwitcher switcher = mKeyboardSwitcher;
         final boolean distinctMultiTouch = switcher.hasDistinctMultitouch();
         if (distinctMultiTouch && primaryCode == Keyboard.CODE_SHIFT) {
             switcher.onPressShift(withSliding);

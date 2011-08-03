@@ -82,6 +82,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     // system navigation bar.
     private WindowWidthCache mWindowWidthCache;
 
+    private KeyboardLayoutState mSavedKeyboardState = new KeyboardLayoutState();
+
     /** mIsAutoCorrectionActive indicates that auto corrected word will be input instead of
      * what user actually typed. */
     private boolean mIsAutoCorrectionActive;
@@ -174,6 +176,51 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
+    public class KeyboardLayoutState {
+        private boolean mIsValid;
+        private boolean mIsAlphabetMode;
+        private boolean mIsShiftLocked;
+        private boolean mIsShifted;
+
+        public boolean isValid() {
+            return mIsValid;
+        }
+
+        public void save() {
+            mIsAlphabetMode = isAlphabetMode();
+            mIsShiftLocked = mIsAlphabetMode && isShiftLocked();
+            mIsShifted = !mIsShiftLocked && isShiftedOrShiftLocked();
+            mIsValid = true;
+        }
+
+        public KeyboardId getKeyboardId() {
+            if (!mIsValid) return mMainKeyboardId;
+
+            if (mIsAlphabetMode) {
+                return mMainKeyboardId;
+            } else {
+                return mIsShifted ? mSymbolsShiftedKeyboardId : mSymbolsKeyboardId;
+            }
+        }
+
+        public void restore() {
+            if (!mIsValid) return;
+            mIsValid = false;
+
+            if (mIsAlphabetMode) {
+                final boolean isAlphabetMode = isAlphabetMode();
+                final boolean isShiftLocked = isAlphabetMode && isShiftLocked();
+                final boolean isShifted = !isShiftLocked && isShiftedOrShiftLocked();
+                if (mIsShiftLocked != isShiftLocked) {
+                    toggleCapsLock();
+                } else if (mIsShifted != isShifted) {
+                    onPressShift(false);
+                    onReleaseShift(false);
+                }
+            }
+        }
+    }
+
     public static KeyboardSwitcher getInstance() {
         return sInstance;
     }
@@ -220,20 +267,32 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public void loadKeyboard(EditorInfo editorInfo, Settings.Values settingsValues) {
-        mSwitchState = SWITCH_STATE_ALPHA;
         try {
             mMainKeyboardId = getKeyboardId(editorInfo, false, false, settingsValues);
             mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
-            setKeyboard(getKeyboard(mMainKeyboardId));
+            setKeyboard(getKeyboard(mSavedKeyboardState.getKeyboardId()));
+            updateShiftState();
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
         }
     }
 
+    public KeyboardLayoutState getKeyboardState() {
+        return mSavedKeyboardState;
+    }
+
+    public void onFinishInputView() {
+        mIsAutoCorrectionActive = false;
+    }
+
     public void onHideWindow() {
         mIsAutoCorrectionActive = false;
+    }
+
+    public void registerWindowWidth() {
+        mWindowWidthCache.registerWidth();
     }
 
     @SuppressWarnings("unused")
@@ -248,19 +307,39 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             return;
         // Reload keyboard with new width.
         final KeyboardId newId = mCurrentId.cloneWithNewGeometry(conf.orientation, width);
+        mInputMethodService.mHandler.postRestoreKeyboardLayout();
         setKeyboard(getKeyboard(newId));
     }
 
-    private void setKeyboard(final Keyboard newKeyboard) {
+    private void setKeyboard(final Keyboard keyboard) {
         final Keyboard oldKeyboard = mKeyboardView.getKeyboard();
-        mKeyboardView.setKeyboard(newKeyboard);
-        mCurrentId = newKeyboard.mId;
+        mKeyboardView.setKeyboard(keyboard);
+        mCurrentId = keyboard.mId;
+        mSwitchState = getSwitchState(mCurrentId);
+        updateShiftLockState(keyboard);
         mKeyboardView.setKeyPreviewPopupEnabled(
                 Settings.Values.isKeyPreviewPopupEnabled(mPrefs, mResources),
                 Settings.Values.getKeyPreviewPopupDismissDelay(mPrefs, mResources));
         final boolean localeChanged = (oldKeyboard == null)
-                || !newKeyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
+                || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
+    }
+
+    private int getSwitchState(KeyboardId id) {
+        return id.equals(mMainKeyboardId) ? SWITCH_STATE_ALPHA : SWITCH_STATE_SYMBOL_BEGIN;
+    }
+
+    private void updateShiftLockState(Keyboard keyboard) {
+        if (mCurrentId.equals(mSymbolsShiftedKeyboardId)) {
+            // Symbol keyboard may have an ALT key that has a caps lock style indicator (a.k.a.
+            // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
+            // that takes care of the current keyboard having such ALT key or not.
+            keyboard.setShiftLocked(keyboard.hasShiftLockKey());
+        } else if (mCurrentId.equals(mSymbolsKeyboardId)) {
+            // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
+            // indicator, we need to call setShiftLocked(false).
+            keyboard.setShiftLocked(false);
+        }
     }
 
     private LatinKeyboard getKeyboard(KeyboardId id) {
@@ -605,7 +684,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                     + " symbolKeyState=" + mSymbolKeyState);
         mShiftKeyState.onOtherKeyPressed();
         mSymbolKeyState.onOtherKeyPressed();
-        mWindowWidthCache.registerWidth();
     }
 
     public void onCancelInput() {
@@ -626,15 +704,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (mCurrentId.equals(mSymbolsKeyboardId)
                 || !mCurrentId.equals(mSymbolsShiftedKeyboardId)) {
             keyboard = getKeyboard(mSymbolsShiftedKeyboardId);
-            // Symbol keyboard may have an ALT key that has a caps lock style indicator (a.k.a.
-            // sticky shift key). To show or dismiss the indicator, we need to call setShiftLocked()
-            // that takes care of the current keyboard having such ALT key or not.
-            keyboard.setShiftLocked(keyboard.hasShiftLockKey());
         } else {
             keyboard = getKeyboard(mSymbolsKeyboardId);
-            // Symbol keyboard has an ALT key that has a caps lock style indicator. To disable the
-            // indicator, we need to call setShiftLocked(false).
-            keyboard.setShiftLocked(false);
         }
         setKeyboard(keyboard);
     }
@@ -655,10 +726,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private void toggleKeyboardMode() {
         if (mCurrentId.equals(mMainKeyboardId)) {
             setKeyboard(getKeyboard(mSymbolsKeyboardId));
-            mSwitchState = SWITCH_STATE_SYMBOL_BEGIN;
         } else {
             setKeyboard(getKeyboard(mMainKeyboardId));
-            mSwitchState = SWITCH_STATE_ALPHA;
         }
     }
 
