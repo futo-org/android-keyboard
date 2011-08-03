@@ -61,10 +61,10 @@
     <string name="keylabel_for_symbols_percent">\u066a</string>
     <string name="alternates_for_comma">,</string>
     <string name="alternates_for_f1">,</string>
-    <!-- @icon/5 is iconSettingsKey -->
-    <string name="alternates_for_f1_settings">\\,,\@icon/5|\@integer/key_settings</string>
-    <!-- @icon/10 is iconTabKey -->
-    <string name="alternates_for_f1_navigate">\\,,\@icon/10|\@integer/key_tab</string>
+    <!-- @icon/3 is iconSettingsKey -->
+    <string name="alternates_for_f1_settings">\\,,\@icon/3|\@integer/key_settings</string>
+    <!-- @icon/7 is iconTabKey -->
+    <string name="alternates_for_f1_navigate">\\,,\@icon/7|\@integer/key_tab</string>
     <string name="alternates_for_symbols_question">\?,¿</string>
     <string name="alternates_for_symbols_semicolon">;</string>
     <string name="alternates_for_symbols_percent">%,‰</string>

@@ -30,23 +30,22 @@ public class KeyboardIconsSet {
 
     // This should be aligned with Keyboard.keyIcon enum.
     private static final int ICON_SHIFT_KEY = 1;
-    private static final int ICON_TO_SYMBOL_KEY = 2;
-    private static final int ICON_TO_SYMBOL_KEY_WITH_SHORTCUT = 3;
-    private static final int ICON_DELETE_KEY = 4;
-    private static final int ICON_SETTINGS_KEY = 5; // This is also represented as "@icon/5" in xml.
-    private static final int ICON_SHORTCUT_KEY = 6;
-    private static final int ICON_SPACE_KEY = 7;
-    private static final int ICON_RETURN_KEY = 8;
-    private static final int ICON_SEARCH_KEY = 9;
-    private static final int ICON_TAB_KEY = 10;
+    private static final int ICON_DELETE_KEY = 2;
+    private static final int ICON_SETTINGS_KEY = 3; // This is also represented as "@icon/3" in XML.
+    private static final int ICON_SPACE_KEY = 4;
+    private static final int ICON_RETURN_KEY = 5;
+    private static final int ICON_SEARCH_KEY = 6;
+    private static final int ICON_TAB_KEY = 7; // This is also represented as "@icon/7" in XML.
+    private static final int ICON_SHORTCUT_KEY = 8;
+    private static final int ICON_SHORTCUT_FOR_LABEL = 9;
     // This should be aligned with Keyboard.keyIconShifted enum.
-    private static final int ICON_SHIFTED_SHIFT_KEY = 11;
+    private static final int ICON_SHIFTED_SHIFT_KEY = 10;
     // This should be aligned with Keyboard.keyIconPreview enum.
-    private static final int ICON_PREVIEW_TAB_KEY = 12;
-    private static final int ICON_PREVIEW_SETTINGS_KEY = 13;
-    private static final int ICON_PREVIEW_SHORTCUT_KEY = 14;
+    private static final int ICON_PREVIEW_TAB_KEY = 11;
+    private static final int ICON_PREVIEW_SETTINGS_KEY = 12;
+    private static final int ICON_PREVIEW_SHORTCUT_KEY = 13;
 
-    private static final int ICON_LAST = 14;
+    private static final int ICON_LAST = 13;
 
     private final Drawable mIcons[] = new Drawable[ICON_LAST + 1];
 
@@ -54,16 +53,10 @@ public class KeyboardIconsSet {
         switch (attrIndex) {
         case R.styleable.Keyboard_iconShiftKey:
             return ICON_SHIFT_KEY;
-        case R.styleable.Keyboard_iconToSymbolKey:
-            return ICON_TO_SYMBOL_KEY;
-        case R.styleable.Keyboard_iconToSymbolKeyWithShortcut:
-            return ICON_TO_SYMBOL_KEY_WITH_SHORTCUT;
         case R.styleable.Keyboard_iconDeleteKey:
             return ICON_DELETE_KEY;
         case R.styleable.Keyboard_iconSettingsKey:
             return ICON_SETTINGS_KEY;
-        case R.styleable.Keyboard_iconShortcutKey:
-            return ICON_SHORTCUT_KEY;
         case R.styleable.Keyboard_iconSpaceKey:
             return ICON_SPACE_KEY;
         case R.styleable.Keyboard_iconReturnKey:
@@ -72,6 +65,10 @@ public class KeyboardIconsSet {
             return ICON_SEARCH_KEY;
         case R.styleable.Keyboard_iconTabKey:
             return ICON_TAB_KEY;
+        case R.styleable.Keyboard_iconShortcutKey:
+            return ICON_SHORTCUT_KEY;
+        case R.styleable.Keyboard_iconShortcutForLabel:
+            return ICON_SHORTCUT_FOR_LABEL;
         case R.styleable.Keyboard_iconShiftedShiftKey:
             return ICON_SHIFTED_SHIFT_KEY;
         case R.styleable.Keyboard_iconPreviewTabKey:

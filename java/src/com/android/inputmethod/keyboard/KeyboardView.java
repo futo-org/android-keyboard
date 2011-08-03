@@ -505,6 +505,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         // Draw key label.
+        final Drawable icon = key.getIcon();
         float positionX = centerX;
         if (key.mLabel != null) {
             // Switch the character to uppercase if shift is pressed
@@ -521,15 +522,24 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             final float baseline = centerY + labelCharHeight / 2;
 
             // Horizontal label text alignment
-            if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_LEFT) != 0) {
+            float labelWidth = 0;
+            if (key.isAlignLeft()) {
                 positionX = (int)params.mKeyLabelHorizontalPadding;
                 paint.setTextAlign(Align.LEFT);
-            } else if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_RIGHT) != 0) {
+            } else if (key.isAlignRight()) {
                 positionX = keyWidth - (int)params.mKeyLabelHorizontalPadding;
                 paint.setTextAlign(Align.RIGHT);
-            } else if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_LEFT_OF_CENTER) != 0) {
+            } else if (key.isAlignLeftOfCenter()) {
                 // TODO: Parameterise this?
                 positionX = centerX - labelCharWidth * 7 / 4;
+                paint.setTextAlign(Align.LEFT);
+            } else if (key.hasLabelWithIconLeft() && icon != null) {
+                labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth();
+                positionX = centerX + labelWidth / 2;
+                paint.setTextAlign(Align.RIGHT);
+            } else if (key.hasLabelWithIconRight() && icon != null) {
+                labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth();
+                positionX = centerX - labelWidth / 2;
                 paint.setTextAlign(Align.LEFT);
             } else {
                 positionX = centerX;
@@ -551,6 +561,19 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             canvas.drawText(label, 0, label.length(), positionX, baseline, paint);
             // Turn off drop shadow
             paint.setShadowLayer(0, 0, 0, 0);
+
+            if (icon != null) {
+                final int iconWidth = icon.getIntrinsicWidth();
+                final int iconHeight = icon.getIntrinsicHeight();
+                final int iconY = (keyHeight - iconHeight) / 2;
+                if (key.hasLabelWithIconLeft()) {
+                    final int iconX = (int)(centerX - labelWidth / 2);
+                    drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
+                } else if (key.hasLabelWithIconRight()) {
+                    final int iconX = (int)(centerX + labelWidth / 2 - iconWidth);
+                    drawIcon(canvas, icon, iconX, iconY, iconWidth, iconHeight);
+                }
+            }
 
             if (debugShowAlign) {
                 final Paint line = new Paint();
@@ -605,16 +628,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         // Draw key icon.
-        final Drawable icon = key.getIcon();
         if (key.mLabel == null && icon != null) {
             final int iconWidth = icon.getIntrinsicWidth();
             final int iconHeight = icon.getIntrinsicHeight();
             final int iconX, alignX;
             final int iconY = (keyHeight - iconHeight) / 2;
-            if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_LEFT) != 0) {
+            if (key.isAlignLeft()) {
                 iconX = (int)params.mKeyLabelHorizontalPadding;
                 alignX = iconX;
-            } else if ((key.mLabelOption & Key.LABEL_OPTION_ALIGN_RIGHT) != 0) {
+            } else if (key.isAlignRight()) {
                 iconX = keyWidth - (int)params.mKeyLabelHorizontalPadding - iconWidth;
                 alignX = iconX + iconWidth;
             } else { // Align center
@@ -692,6 +714,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         final float width = sTextBounds.width();
         sTextWidthCache.put(key, width);
         return width;
+    }
+
+    private static float getLabelWidth(CharSequence label, Paint paint) {
+        paint.getTextBounds(label.toString(), 0, label.length(), sTextBounds);
+        return sTextBounds.width();
     }
 
     private static void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width,

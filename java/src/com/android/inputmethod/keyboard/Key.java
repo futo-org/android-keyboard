@@ -51,10 +51,10 @@ public class Key {
     /** Hint label to display on the key in conjunction with the label */
     public final CharSequence mHintLabel;
     /** Option of the label */
-    public final int mLabelOption;
-    public static final int LABEL_OPTION_ALIGN_LEFT = 0x01;
-    public static final int LABEL_OPTION_ALIGN_RIGHT = 0x02;
-    public static final int LABEL_OPTION_ALIGN_LEFT_OF_CENTER = 0x08;
+    private final int mLabelOption;
+    private static final int LABEL_OPTION_ALIGN_LEFT = 0x01;
+    private static final int LABEL_OPTION_ALIGN_RIGHT = 0x02;
+    private static final int LABEL_OPTION_ALIGN_LEFT_OF_CENTER = 0x08;
     private static final int LABEL_OPTION_LARGE_LETTER = 0x10;
     private static final int LABEL_OPTION_FONT_NORMAL = 0x20;
     private static final int LABEL_OPTION_FONT_MONO_SPACE = 0x40;
@@ -63,6 +63,8 @@ public class Key {
     private static final int LABEL_OPTION_HAS_POPUP_HINT = 0x200;
     private static final int LABEL_OPTION_HAS_UPPERCASE_LETTER = 0x400;
     private static final int LABEL_OPTION_HAS_HINT_LABEL = 0x800;
+    private static final int LABEL_OPTION_WITH_ICON_LEFT = 0x1000;
+    private static final int LABEL_OPTION_WITH_ICON_RIGHT = 0x2000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;
@@ -384,6 +386,18 @@ public class Key {
         }
     }
 
+    public boolean isAlignLeft() {
+        return (mLabelOption & LABEL_OPTION_ALIGN_LEFT) != 0;
+    }
+
+    public boolean isAlignRight() {
+        return (mLabelOption & LABEL_OPTION_ALIGN_RIGHT) != 0;
+    }
+
+    public boolean isAlignLeftOfCenter() {
+        return (mLabelOption & LABEL_OPTION_ALIGN_LEFT_OF_CENTER) != 0;
+    }
+
     public boolean hasPopupHint() {
         return (mLabelOption & LABEL_OPTION_HAS_POPUP_HINT) != 0;
     }
@@ -394,6 +408,14 @@ public class Key {
 
     public boolean hasHintLabel() {
         return (mLabelOption & LABEL_OPTION_HAS_HINT_LABEL) != 0;
+    }
+
+    public boolean hasLabelWithIconLeft() {
+        return (mLabelOption & LABEL_OPTION_WITH_ICON_LEFT) != 0;
+    }
+
+    public boolean hasLabelWithIconRight() {
+        return (mLabelOption & LABEL_OPTION_WITH_ICON_RIGHT) != 0;
     }
 
     public Drawable getIcon() {

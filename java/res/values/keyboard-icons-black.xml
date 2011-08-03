@@ -22,14 +22,14 @@
              sym_bkeyboard_voice_off
           -->
         <item name="iconShiftKey">@drawable/sym_bkeyboard_shift</item>
-        <item name="iconToSymbolKeyWithShortcut">@drawable/sym_bkeyboard_123_mic</item>
         <item name="iconDeleteKey">@drawable/sym_bkeyboard_delete</item>
         <item name="iconSettingsKey">@drawable/sym_bkeyboard_settings</item>
-        <item name="iconShortcutKey">@drawable/sym_bkeyboard_mic</item>
         <item name="iconSpaceKey">@drawable/sym_bkeyboard_space</item>
         <item name="iconReturnKey">@drawable/sym_bkeyboard_return</item>
         <item name="iconSearchKey">@drawable/sym_bkeyboard_search</item>
         <item name="iconTabKey">@drawable/sym_bkeyboard_tab</item>
+        <item name="iconShortcutKey">@drawable/sym_bkeyboard_mic</item>
+        <item name="iconShortcutForLabel">@drawable/sym_bkeyboard_label_mic</item>
         <item name="iconShiftedShiftKey">@drawable/sym_bkeyboard_shift_locked</item>
         <item name="iconPreviewTabKey">@drawable/sym_keyboard_feedback_tab</item>
         <item name="iconPreviewSettingsKey">@drawable/sym_keyboard_feedback_settings</item>
