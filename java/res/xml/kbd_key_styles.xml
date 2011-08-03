@@ -187,7 +187,9 @@
             <key-style
                 latin:styleName="toSymbolKeyStyle"
                 latin:code="@integer/key_switch_alpha_symbol"
-                latin:keyIcon="iconToSymbolKeyWithShortcut"
+                latin:keyIcon="iconShortcutForLabel"
+                latin:keyLabel="@string/label_to_symbol_with_microphone_key"
+                latin:keyLabelOption="withIconRight"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <default>
