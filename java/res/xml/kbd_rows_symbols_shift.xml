@@ -91,7 +91,7 @@
         latin:keyWidth="10%p"
     >
         <Key
-            latin:keyStyle="altKeyStyle"
+            latin:keyStyle="backFromMoreSymbolKeyStyle"
             latin:keyWidth="15%p"
             latin:visualInsetsRight="1%p" />
         <Key
