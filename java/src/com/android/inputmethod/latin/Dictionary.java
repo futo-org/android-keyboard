@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2008 The Android Open Source Project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -15,6 +15,8 @@
  */
 
 package com.android.inputmethod.latin;
+
+import com.android.inputmethod.keyboard.ProximityInfo;
 
 /**
  * Abstract base class for a dictionary that can do a fuzzy search for words based on a set of key
@@ -25,7 +27,7 @@ public abstract class Dictionary {
      * Whether or not to replicate the typed word in the suggested list, even if it's valid.
      */
     protected static final boolean INCLUDE_TYPED_WORD_IF_VALID = false;
-    
+
     /**
      * The weight to give to a word if it's length is the same as the number of typed characters.
      */
@@ -57,13 +59,15 @@ public abstract class Dictionary {
     }
 
     /**
-     * Searches for words in the dictionary that match the characters in the composer. Matched 
+     * Searches for words in the dictionary that match the characters in the composer. Matched
      * words are added through the callback object.
      * @param composer the key sequence to match
      * @param callback the callback object to send matched words to as possible candidates
+     * @param proximityInfo the object for key proximity. May be ignored by some implementations.
      * @see WordCallback#addWord(char[], int, int, int, int, DataType)
      */
-    abstract public void getWords(final WordComposer composer, final WordCallback callback);
+    abstract public void getWords(final WordComposer composer, final WordCallback callback,
+            final ProximityInfo proximityInfo);
 
     /**
      * Searches for pairs in the bigram dictionary that matches the previous word and all the
@@ -83,7 +87,7 @@ public abstract class Dictionary {
      * @return true if the word exists, false otherwise
      */
     abstract public boolean isValidWord(CharSequence word);
-    
+
     /**
      * Compares the contents of the character array with the typed word and returns true if they
      * are the same.

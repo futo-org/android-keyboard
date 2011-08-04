@@ -26,6 +26,8 @@ import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.UserDictionary.Words;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
+
 public class UserDictionary extends ExpandableDictionary {
     
     private static final String[] PROJECTION_QUERY = {
@@ -150,8 +152,9 @@ public class UserDictionary extends ExpandableDictionary {
     }
 
     @Override
-    public synchronized void getWords(final WordComposer codes, final WordCallback callback) {
-        super.getWords(codes, callback);
+    public synchronized void getWords(final WordComposer codes, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
+        super.getWords(codes, callback, proximityInfo);
     }
 
     @Override

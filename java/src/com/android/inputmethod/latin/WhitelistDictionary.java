@@ -21,6 +21,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
+
 import java.util.HashMap;
 
 public class WhitelistDictionary extends Dictionary {
@@ -89,7 +91,8 @@ public class WhitelistDictionary extends Dictionary {
 
     // Not used for WhitelistDictionary.  We use getWhitelistedWord() in Suggest.java instead
     @Override
-    public void getWords(WordComposer composer, WordCallback callback) {
+    public void getWords(final WordComposer composer, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
     }
 
     @Override

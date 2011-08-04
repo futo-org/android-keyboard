@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.ProximityInfo;
 
 import java.util.LinkedList;
 
@@ -193,7 +194,8 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback) {
+    public void getWords(final WordComposer codes, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
         synchronized (mUpdatingLock) {
             // If we need to update, start off a background task
             if (mRequiresReload) startDictionaryLoadingTaskLocked();

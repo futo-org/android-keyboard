@@ -156,10 +156,11 @@ public class BinaryDictionary extends Dictionary {
         }
     }
 
+    // proximityInfo may not be null.
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback) {
-        final int count = getSuggestions(codes, mKeyboardSwitcher.getLatinKeyboard(),
-                mOutputChars, mScores);
+    public void getWords(final WordComposer codes, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
+        final int count = getSuggestions(codes, proximityInfo, mOutputChars, mScores);
 
         for (int j = 0; j < count; ++j) {
             if (mScores[j] < 1) break;
@@ -179,8 +180,9 @@ public class BinaryDictionary extends Dictionary {
         return mNativeDict != 0;
     }
 
-    /* package for test */ int getSuggestions(final WordComposer codes, final Keyboard keyboard,
-            char[] outputChars, int[] scores) {
+    // proximityInfo may not be null.
+    /* package for test */ int getSuggestions(final WordComposer codes,
+            final ProximityInfo proximityInfo, char[] outputChars, int[] scores) {
         if (!isValidDictionary()) return -1;
 
         final int codesSize = codes.size();
@@ -196,9 +198,8 @@ public class BinaryDictionary extends Dictionary {
         Arrays.fill(outputChars, (char) 0);
         Arrays.fill(scores, 0);
 
-        final int proximityInfo = keyboard == null ? 0 : keyboard.getProximityInfo();
         return getSuggestionsNative(
-                mNativeDict, proximityInfo,
+                mNativeDict, proximityInfo.getNativeProximityInfo(),
                 codes.getXCoordinates(), codes.getYCoordinates(), mInputCodes, codesSize,
                 mFlags, outputChars, scores);
     }
