@@ -149,8 +149,8 @@ public class Keyboard {
                 mMostCommonKeyWidth, mKeys);
     }
 
-    public int getProximityInfo() {
-        return mProximityInfo.getNativeProximityInfo();
+    public ProximityInfo getProximityInfo() {
+        return mProximityInfo;
     }
 
     public boolean hasShiftLockKey() {

@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import com.android.inputmethod.latin.Utils;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class ProximityInfo {
@@ -52,6 +53,10 @@ public class ProximityInfo {
             return;
         }
         computeNearestNeighbors(keyWidth, keys);
+    }
+
+    public static ProximityInfo getDummyProximityInfo() {
+        return new ProximityInfo(1, 1, 1, 1, 1, Collections.<Key>emptyList());
     }
 
     private int mNativeProximityInfo;

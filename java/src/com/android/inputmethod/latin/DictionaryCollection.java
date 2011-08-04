@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -47,9 +49,10 @@ public class DictionaryCollection extends Dictionary {
     }
 
     @Override
-    public void getWords(final WordComposer composer, final WordCallback callback) {
+    public void getWords(final WordComposer composer, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
         for (final Dictionary dict : mDictionaries)
-            dict.getWords(composer, callback);
+            dict.getWords(composer, callback, proximityInfo);
     }
 
     @Override

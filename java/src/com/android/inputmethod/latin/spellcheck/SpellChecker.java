@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.android.inputmethod.compat.ArraysCompatUtils;
+import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Dictionary.DataType;
 import com.android.inputmethod.latin.Dictionary.WordCallback;
@@ -109,7 +110,7 @@ public class SpellChecker {
             composer.add(character, new int[] { character },
                     WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
         }
-        mDictionary.getWords(composer, suggestionsGatherer);
+        mDictionary.getWords(composer, suggestionsGatherer, ProximityInfo.getDummyProximityInfo());
         return suggestionsGatherer.getGatheredSuggestions();
     }
 }

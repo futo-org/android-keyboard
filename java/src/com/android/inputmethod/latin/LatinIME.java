@@ -1600,7 +1600,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
-                mKeyboardSwitcher.getKeyboardView(), wordComposer, prevWord);
+                mKeyboardSwitcher.getKeyboardView(), wordComposer, prevWord,
+                mKeyboardSwitcher.getLatinKeyboard().getProximityInfo());
 
         boolean autoCorrectionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = wordComposer.getTypedWord();
@@ -1825,7 +1826,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                 mSettingsValues.mWordSeparators);
         SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
-                mKeyboardSwitcher.getKeyboardView(), sEmptyWordComposer, prevWord);
+                mKeyboardSwitcher.getKeyboardView(), sEmptyWordComposer, prevWord,
+                mKeyboardSwitcher.getLatinKeyboard().getProximityInfo());
 
         if (builder.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of

@@ -28,7 +28,7 @@ import java.io.File;
 
 public class SuggestHelper {
     protected final Suggest mSuggest;
-    private final LatinKeyboard mKeyboard;
+    protected final LatinKeyboard mKeyboard;
     private final KeyDetector mKeyDetector;
 
     public SuggestHelper(Context context, int dictionaryId, KeyboardId keyboardId) {
@@ -94,19 +94,22 @@ public class SuggestHelper {
 
     // TODO: This may be slow, but is OK for test so far.
     public SuggestedWords getSuggestions(CharSequence typed) {
-        return mSuggest.getSuggestions(null, createWordComposer(typed), null);
+        return mSuggest.getSuggestions(null, createWordComposer(typed), null,
+                mKeyboard.getProximityInfo());
     }
 
     public CharSequence getFirstSuggestion(CharSequence typed) {
         WordComposer word = createWordComposer(typed);
-        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null,
+                mKeyboard.getProximityInfo());
         // Note that suggestions.getWord(0) is the word user typed.
         return suggestions.size() > 1 ? suggestions.getWord(1) : null;
     }
 
     public CharSequence getAutoCorrection(CharSequence typed) {
         WordComposer word = createWordComposer(typed);
-        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null,
+                mKeyboard.getProximityInfo());
         // Note that suggestions.getWord(0) is the word user typed.
         return (suggestions.size() > 1 && mSuggest.hasAutoCorrection())
                 ? suggestions.getWord(1) : null;
@@ -114,7 +117,8 @@ public class SuggestHelper {
 
     public int getSuggestIndex(CharSequence typed, CharSequence expected) {
         WordComposer word = createWordComposer(typed);
-        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, null,
+                mKeyboard.getProximityInfo());
         // Note that suggestions.getWord(0) is the word user typed.
         for (int i = 1; i < suggestions.size(); i++) {
             if (TextUtils.equals(suggestions.getWord(i), expected))
@@ -126,21 +130,23 @@ public class SuggestHelper {
     private void getBigramSuggestions(CharSequence previous, CharSequence typed) {
         if (!TextUtils.isEmpty(previous) && (typed.length() > 1)) {
             WordComposer firstChar = createWordComposer(Character.toString(typed.charAt(0)));
-            mSuggest.getSuggestions(null, firstChar, previous);
+            mSuggest.getSuggestions(null, firstChar, previous, mKeyboard.getProximityInfo());
         }
     }
 
     public CharSequence getBigramFirstSuggestion(CharSequence previous, CharSequence typed) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
-        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous,
+                mKeyboard.getProximityInfo());
         return suggestions.size() > 1 ? suggestions.getWord(1) : null;
     }
 
     public CharSequence getBigramAutoCorrection(CharSequence previous, CharSequence typed) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
-        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous,
+                mKeyboard.getProximityInfo());
         return (suggestions.size() > 1 && mSuggest.hasAutoCorrection())
                 ? suggestions.getWord(1) : null;
     }
@@ -149,7 +155,8 @@ public class SuggestHelper {
             CharSequence expected) {
         WordComposer word = createWordComposer(typed);
         getBigramSuggestions(previous, typed);
-        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous);
+        SuggestedWords suggestions = mSuggest.getSuggestions(null, word, previous,
+                mKeyboard.getProximityInfo());
         for (int i = 1; i < suggestions.size(); i++) {
             if (TextUtils.equals(suggestions.getWord(i), expected))
                 return i;

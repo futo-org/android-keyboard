@@ -22,6 +22,8 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import com.android.inputmethod.keyboard.ProximityInfo;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -263,9 +265,10 @@ public class Suggest implements Dictionary.WordCallback {
      * @param prevWordForBigram previous word (used only for bigram)
      * @return suggested words object.
      */
-    public SuggestedWords getSuggestions(View view, WordComposer wordComposer,
-            CharSequence prevWordForBigram) {
-        return getSuggestedWordBuilder(view, wordComposer, prevWordForBigram).build();
+    public SuggestedWords getSuggestions(final View view, final WordComposer wordComposer,
+            final CharSequence prevWordForBigram, final ProximityInfo proximityInfo) {
+        return getSuggestedWordBuilder(view, wordComposer, prevWordForBigram,
+                proximityInfo).build();
     }
 
     private CharSequence capitalizeWord(boolean all, boolean first, CharSequence word) {
@@ -299,8 +302,9 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
-    public SuggestedWords.Builder getSuggestedWordBuilder(View view, WordComposer wordComposer,
-            CharSequence prevWordForBigram) {
+    public SuggestedWords.Builder getSuggestedWordBuilder(final View view,
+            final WordComposer wordComposer, CharSequence prevWordForBigram,
+            final ProximityInfo proximityInfo) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
         mAutoCorrection.init();
         mIsFirstCharCapitalized = wordComposer.isFirstCharCapitalized();
@@ -365,7 +369,7 @@ public class Suggest implements Dictionary.WordCallback {
                 if (key.equals(DICT_KEY_USER_UNIGRAM) || key.equals(DICT_KEY_WHITELIST))
                     continue;
                 final Dictionary dictionary = mUnigramDictionaries.get(key);
-                dictionary.getWords(wordComposer, this);
+                dictionary.getWords(wordComposer, this, proximityInfo);
             }
         }
         CharSequence autoText = null;
