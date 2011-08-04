@@ -87,21 +87,20 @@ private:
             const int *ycoordinates, const int *codes, const int codesSize,
             unsigned short *outWords, int *frequencies);
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
-            const int transposedPos, const int maxDepth);
+            const int transposedPos);
     bool addWord(unsigned short *word, int length, int frequency);
     void getSplitTwoWordsSuggestion(const int inputLength, CorrectionState *correctionState);
     void getMissingSpaceWords(
             const int inputLength, const int missingSpacePos, CorrectionState *correctionState);
     void getMistypedSpaceWords(
             const int inputLength, const int spaceProximityPos, CorrectionState *correctionState);
-    void onTerminal(unsigned short int* word, const int freq, CorrectionState *correctionState);
+    void onTerminal(const int freq, CorrectionState *correctionState);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
-    bool processCurrentNode(const int initialPos, const int maxDepth,
-            const bool initialTraverseAllNodes, const int initialDiffs,
-            CorrectionState *correctionState, int *newCount, int *newChildPosition,
-            bool *newTraverseAllNodes, int *newDiffs, int *nextSiblingPosition);
+    bool processCurrentNode(const int initialPos,
+            CorrectionState *correctionState, int *newCount,
+            int *newChildPosition, int *nextSiblingPosition);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
@@ -134,7 +133,6 @@ private:
     int mInputLength;
     // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
-    int mMaxEditDistance;
 
     int mStackMatchedCount[MAX_WORD_LENGTH_INTERNAL];
     int mStackChildCount[MAX_WORD_LENGTH_INTERNAL];
