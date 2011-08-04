@@ -31,7 +31,7 @@ public class SuggestedWords {
     public final boolean mTypedWordValid;
     public final boolean mHasMinimalSuggestion;
     public final boolean mIsPunctuationSuggestions;
-    public final List<SuggestedWordInfo> mSuggestedWordInfoList;
+    private final List<SuggestedWordInfo> mSuggestedWordInfoList;
 
     private SuggestedWords(List<CharSequence> words, boolean typedWordValid,
             boolean hasMinimalSuggestion, boolean isPunctuationSuggestions,
@@ -53,6 +53,10 @@ public class SuggestedWords {
 
     public CharSequence getWord(int pos) {
         return mWords.get(pos);
+    }
+
+    public SuggestedWordInfo getInfo(int pos) {
+        return mSuggestedWordInfoList != null ? mSuggestedWordInfoList.get(pos) : null;
     }
 
     public boolean hasAutoCorrectionWord() {
