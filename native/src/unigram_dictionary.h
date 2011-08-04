@@ -94,18 +94,14 @@ private:
             const int inputLength, const int missingSpacePos, CorrectionState *correctionState);
     void getMistypedSpaceWords(
             const int inputLength, const int spaceProximityPos, CorrectionState *correctionState);
-    void onTerminal(unsigned short int* word, const int depth,
-            const int inputIndex, const int freq,
-            CorrectionState *correctionState);
+    void onTerminal(unsigned short int* word, const int freq, CorrectionState *correctionState);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
-    bool processCurrentNode(const int initialPos, const int initialDepth,
-            const int maxDepth, const bool initialTraverseAllNodes, int inputIndex,
-            const int initialDiffs,
+    bool processCurrentNode(const int initialPos, const int maxDepth,
+            const bool initialTraverseAllNodes, const int initialDiffs,
             CorrectionState *correctionState, int *newCount, int *newChildPosition,
-            bool *newTraverseAllNodes, int *newInputIndex, int *newDiffs,
-            int *nextSiblingPosition, int *nextOutputIndex);
+            bool *newTraverseAllNodes, int *newDiffs, int *nextSiblingPosition);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
     int getMostFrequentWordLikeInner(const uint16_t* const inWord, const int length,
