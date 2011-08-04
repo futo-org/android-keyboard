@@ -808,7 +808,8 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos, const in
             }
         }
         // Optimization: Prune out words that are too long compared to how much was typed.
-        if (correctionState->getOutputIndex() >= maxDepth || diffs > mMaxEditDistance) {
+        if (isTerminal
+                && (correctionState->getOutputIndex() >= maxDepth || diffs > mMaxEditDistance)) {
             // We are giving up parsing this node and its children. Skip the rest of the node,
             // output the sibling position, and return that we don't want to traverse children.
             if (!isLastChar) {
