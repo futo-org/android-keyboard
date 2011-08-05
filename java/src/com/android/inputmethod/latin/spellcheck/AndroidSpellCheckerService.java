@@ -18,6 +18,7 @@ package com.android.inputmethod.latin.spellcheck;
 
 import android.content.res.Resources;
 import android.service.textservice.SpellCheckerService;
+import android.service.textservice.SpellCheckerService.Session;
 import android.util.Log;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
@@ -50,6 +51,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private final ProximityInfo mProximityInfo = ProximityInfo.getDummyProximityInfo();
     private final Map<String, Dictionary> mDictionaries =
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+
+    @Override
+    public Session createSession() {
+        return new AndroidSpellCheckerSession();
+    }
 
     private static class SuggestionsGatherer implements WordCallback {
         private final int DEFAULT_SUGGESTION_LENGTH = 16;
@@ -112,34 +118,42 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         return dictionary;
     }
 
-    // Note : this must be reentrant
-    /**
-     * Gets a list of suggestions for a specific string.
-     *
-     * This returns a list of possible corrections for the text passed as an
-     * arguments. It may split or group words, and even perform grammatical
-     * analysis.
-     */
-    @Override
-    public SuggestionsInfo getSuggestions(final TextInfo textInfo, final int suggestionsLimit,
-            final String locale) {
-        final Dictionary dictionary = getDictionary(locale);
-        final String text = textInfo.getText();
-
-        final SuggestionsGatherer suggestionsGatherer = new SuggestionsGatherer(suggestionsLimit);
-        final WordComposer composer = new WordComposer();
-        final int length = text.length();
-        for (int i = 0; i < length; ++i) {
-            int character = text.codePointAt(i);
-            composer.add(character, new int[] { character },
-                    WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+    private class AndroidSpellCheckerSession extends Session {
+        @Override
+        public void onCreate() {
         }
-        dictionary.getWords(composer, suggestionsGatherer, mProximityInfo);
-        final boolean isInDict = dictionary.isValidWord(text);
-        final String[] suggestions = suggestionsGatherer.getGatheredSuggestions();
 
-        final int flags = (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
-                | (null != suggestions ? SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO : 0);
-        return new SuggestionsInfo(flags, suggestions);
+        // Note : this must be reentrant
+        /**
+         * Gets a list of suggestions for a specific string. This returns a list of possible
+         * corrections for the text passed as an arguments. It may split or group words, and
+         * even perform grammatical analysis.
+         */
+        @Override
+        public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
+                final int suggestionsLimit) {
+            final String locale = getLocale();
+            final Dictionary dictionary = getDictionary(locale);
+            final String text = textInfo.getText();
+
+            final SuggestionsGatherer suggestionsGatherer =
+                    new SuggestionsGatherer(suggestionsLimit);
+            final WordComposer composer = new WordComposer();
+            final int length = text.length();
+            for (int i = 0; i < length; ++i) {
+                int character = text.codePointAt(i);
+                composer.add(character, new int[] { character },
+                        WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
+            }
+            dictionary.getWords(composer, suggestionsGatherer, mProximityInfo);
+            final boolean isInDict = dictionary.isValidWord(text);
+            final String[] suggestions = suggestionsGatherer.getGatheredSuggestions();
+
+            final int flags =
+                    (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
+                            | (null != suggestions
+                                    ? SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO : 0);
+            return new SuggestionsInfo(flags, suggestions);
+        }
     }
 }
