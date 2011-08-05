@@ -25,13 +25,31 @@
 
 namespace latinime {
 
+//////////////////////
+// inline functions //
+//////////////////////
+static const char QUOTE = '\'';
+
+inline bool CorrectionState::needsToSkipCurrentNode(const unsigned short c) {
+    const unsigned short userTypedChar = mProximityInfo->getPrimaryCharAt(mInputIndex);
+    // Skip the ' or other letter and continue deeper
+    return (c == QUOTE && userTypedChar != QUOTE) || mSkipPos == mOutputIndex;
+}
+
+/////////////////////
+// CorrectionState //
+/////////////////////
+
 CorrectionState::CorrectionState(const int typedLetterMultiplier, const int fullWordMultiplier)
         : TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier) {
 }
 
-void CorrectionState::initCorrectionState(const ProximityInfo *pi, const int inputLength) {
+void CorrectionState::initCorrectionState(const ProximityInfo *pi, const int inputLength,
+        const int maxDepth) {
     mProximityInfo = pi;
     mInputLength = inputLength;
+    mMaxDepth = maxDepth;
+    mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
 }
 
 void CorrectionState::setCorrectionParams(const int skipPos, const int excessivePos,
@@ -58,27 +76,37 @@ int CorrectionState::getFreqForSplitTwoWords(const int firstFreq, const int seco
     return CorrectionState::RankingAlgorithm::calcFreqForSplitTwoWords(firstFreq, secondFreq, this);
 }
 
-int CorrectionState::getFinalFreq(const unsigned short *word, const int freq) {
-    if (mProximityInfo->sameAsTyped(word, mOutputIndex + 1) || mOutputIndex < MIN_SUGGEST_DEPTH) {
+int CorrectionState::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
+    const int outputIndex = mOutputIndex - 1;
+    const int inputIndex = (mCurrentStateType == TRAVERSE_ALL_ON_TERMINAL
+            || mCurrentStateType == TRAVERSE_ALL_NOT_ON_TERMINAL) ? mInputIndex : mInputIndex - 1;
+    *wordLength = outputIndex + 1;
+    if (mProximityInfo->sameAsTyped(mWord, outputIndex + 1) || outputIndex < MIN_SUGGEST_DEPTH) {
         return -1;
     }
-    const bool sameLength = (mExcessivePos == mInputLength - 1) ? (mInputLength == mInputIndex + 2)
-            : (mInputLength == mInputIndex + 1);
+    *word = mWord;
+    const bool sameLength = (mExcessivePos == mInputLength - 1) ? (mInputLength == inputIndex + 2)
+            : (mInputLength == inputIndex + 1);
     return CorrectionState::RankingAlgorithm::calculateFinalFreq(
-            mInputIndex, mOutputIndex, mMatchedCharCount, freq, sameLength, this);
+            inputIndex, outputIndex, mMatchedCharCount, freq, sameLength, this);
 }
 
-void CorrectionState::initProcessState(
-        const int matchCount, const int inputIndex, const int outputIndex) {
+void CorrectionState::initProcessState(const int matchCount, const int inputIndex,
+        const int outputIndex, const bool traverseAllNodes, const int diffs) {
     mMatchedCharCount = matchCount;
     mInputIndex = inputIndex;
     mOutputIndex = outputIndex;
+    mTraverseAllNodes = traverseAllNodes;
+    mDiffs = diffs;
 }
 
-void CorrectionState::getProcessState(int *matchedCount, int *inputIndex, int *outputIndex) {
+void CorrectionState::getProcessState(int *matchedCount, int *inputIndex, int *outputIndex,
+        bool *traverseAllNodes, int *diffs) {
     *matchedCount = mMatchedCharCount;
     *inputIndex = mInputIndex;
     *outputIndex = mOutputIndex;
+    *traverseAllNodes = mTraverseAllNodes;
+    *diffs = mDiffs;
 }
 
 void CorrectionState::charMatched() {
@@ -95,12 +123,97 @@ int CorrectionState::getInputIndex() {
     return mInputIndex;
 }
 
+// TODO: remove
+bool CorrectionState::needsToTraverseAll() {
+    return mTraverseAllNodes;
+}
+
 void CorrectionState::incrementInputIndex() {
     ++mInputIndex;
 }
 
 void CorrectionState::incrementOutputIndex() {
     ++mOutputIndex;
+}
+
+void CorrectionState::startTraverseAll() {
+    mTraverseAllNodes = true;
+}
+
+bool CorrectionState::needsToPrune() const {
+    return (mOutputIndex - 1 >= (mTransposedPos >= 0 ? mInputLength - 1 : mMaxDepth)
+            || mDiffs > mMaxEditDistance);
+}
+
+CorrectionState::CorrectionStateType CorrectionState::processCharAndCalcState(
+        const int32_t c, const bool isTerminal) {
+    mCurrentStateType = NOT_ON_TERMINAL;
+    // This has to be done for each virtual char (this forwards the "inputIndex" which
+    // is the index in the user-inputted chars, as read by proximity chars.
+    if (mExcessivePos == mOutputIndex && mInputIndex < mInputLength - 1) {
+        incrementInputIndex();
+    }
+
+    if (mTraverseAllNodes || needsToSkipCurrentNode(c)) {
+        mWord[mOutputIndex] = c;
+        if (needsToTraverseAll() && isTerminal) {
+            mCurrentStateType = TRAVERSE_ALL_ON_TERMINAL;
+        } else {
+            mCurrentStateType = TRAVERSE_ALL_NOT_ON_TERMINAL;
+        }
+    } else {
+        int inputIndexForProximity = mInputIndex;
+
+        if (mTransposedPos >= 0) {
+            if (mInputIndex == mTransposedPos) {
+                ++inputIndexForProximity;
+            }
+            if (mInputIndex == (mTransposedPos + 1)) {
+                --inputIndexForProximity;
+            }
+        }
+
+        int matchedProximityCharId = mProximityInfo->getMatchedProximityId(
+                inputIndexForProximity, c, this);
+        if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
+            mCurrentStateType = UNRELATED;
+            return mCurrentStateType;
+        }
+        mWord[mOutputIndex] = c;
+        // If inputIndex is greater than mInputLength, that means there is no
+        // proximity chars. So, we don't need to check proximity.
+        if (ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+            charMatched();
+        }
+
+        if (ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
+            incrementDiffs();
+        }
+
+        const bool isSameAsUserTypedLength = mInputLength
+                == getInputIndex() + 1
+                        || (mExcessivePos == mInputLength - 1
+                                    && getInputIndex() == mInputLength - 2);
+        if (isSameAsUserTypedLength && isTerminal) {
+            mCurrentStateType = ON_TERMINAL;
+        }
+        // Start traversing all nodes after the index exceeds the user typed length
+        if (isSameAsUserTypedLength) {
+            startTraverseAll();
+        }
+
+        // Finally, we are ready to go to the next character, the next "virtual node".
+        // We should advance the input index.
+        // We do this in this branch of the 'if traverseAllNodes' because we are still matching
+        // characters to input; the other branch is not matching them but searching for
+        // completions, this is why it does not have to do it.
+        incrementInputIndex();
+    }
+
+    // Also, the next char is one "virtual node" depth more than this char.
+    incrementOutputIndex();
+
+    return mCurrentStateType;
 }
 
 CorrectionState::~CorrectionState() {

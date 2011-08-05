@@ -29,49 +29,76 @@ class CorrectionState {
 
 public:
     typedef enum {
-        ALLOW_ALL,
+        TRAVERSE_ALL_ON_TERMINAL,
+        TRAVERSE_ALL_NOT_ON_TERMINAL,
         UNRELATED,
-        RELATED
+        ON_TERMINAL,
+        NOT_ON_TERMINAL
     } CorrectionStateType;
 
     CorrectionState(const int typedLetterMultiplier, const int fullWordMultiplier);
-    void initCorrectionState(const ProximityInfo *pi, const int inputLength);
+    void initCorrectionState(
+            const ProximityInfo *pi, const int inputLength, const int maxWordLength);
     void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
             const int spaceProximityPos, const int missingSpacePos);
     void checkState();
-    void initProcessState(const int matchCount, const int inputIndex, const int outputIndex);
-    void getProcessState(int *matchedCount, int *inputIndex, int *outputIndex);
-    void charMatched();
-    void incrementInputIndex();
-    void incrementOutputIndex();
+    void initProcessState(const int matchCount, const int inputIndex, const int outputIndex,
+            const bool traverseAllNodes, const int diffs);
+    void getProcessState(int *matchedCount, int *inputIndex, int *outputIndex,
+            bool *traverseAllNodes, int *diffs);
     int getOutputIndex();
     int getInputIndex();
+    bool needsToTraverseAll();
 
     virtual ~CorrectionState();
-    int getSkipPos() const {
-        return mSkipPos;
-    }
-    int getExcessivePos() const {
-        return mExcessivePos;
-    }
-    int getTransposedPos() const {
-        return mTransposedPos;
-    }
     int getSpaceProximityPos() const {
         return mSpaceProximityPos;
     }
     int getMissingSpacePos() const {
         return mMissingSpacePos;
     }
-    int getFreqForSplitTwoWords(const int firstFreq, const int secondFreq);
-    int getFinalFreq(const unsigned short *word, const int freq);
 
+    int getSkipPos() const {
+        return mSkipPos;
+    }
+
+    int getExcessivePos() const {
+        return mExcessivePos;
+    }
+
+    int getTransposedPos() const {
+        return mTransposedPos;
+    }
+
+    bool needsToPrune() const;
+
+    int getFreqForSplitTwoWords(const int firstFreq, const int secondFreq);
+    int getFinalFreq(const int freq, unsigned short **word, int* wordLength);
+
+    CorrectionStateType processCharAndCalcState(const int32_t c, const bool isTerminal);
+
+    int getDiffs() const {
+        return mDiffs;
+    }
 private:
+    void charMatched();
+    void incrementInputIndex();
+    void incrementOutputIndex();
+    void startTraverseAll();
+
+    // TODO: remove
+
+    void incrementDiffs() {
+        ++mDiffs;
+    }
 
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
 
     const ProximityInfo *mProximityInfo;
+
+    int mMaxEditDistance;
+    int mMaxDepth;
     int mInputLength;
     int mSkipPos;
     int mExcessivePos;
@@ -82,6 +109,12 @@ private:
     int mMatchedCharCount;
     int mInputIndex;
     int mOutputIndex;
+    int mDiffs;
+    bool mTraverseAllNodes;
+    CorrectionStateType mCurrentStateType;
+    unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
+
+    inline bool needsToSkipCurrentNode(const unsigned short c);
 
     class RankingAlgorithm {
     public:
