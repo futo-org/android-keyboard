@@ -101,6 +101,7 @@ private:
     int mMaxDepth;
     int mInputLength;
     int mSkipPos;
+    int mSkippedOutputIndex;
     int mExcessivePos;
     int mTransposedPos;
     int mSpaceProximityPos;
@@ -109,12 +110,14 @@ private:
     int mMatchedCharCount;
     int mInputIndex;
     int mOutputIndex;
+    int mTerminalInputIndex;
+    int mTerminalOutputIndex;
     int mDiffs;
     bool mTraverseAllNodes;
-    CorrectionStateType mCurrentStateType;
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
 
-    inline bool needsToSkipCurrentNode(const unsigned short c);
+    inline bool isQuote(const unsigned short c);
+    inline CorrectionStateType processSkipChar(const int32_t c, const bool isTerminal);
 
     class RankingAlgorithm {
     public:

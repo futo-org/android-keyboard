@@ -30,10 +30,9 @@ namespace latinime {
 //////////////////////
 static const char QUOTE = '\'';
 
-inline bool CorrectionState::needsToSkipCurrentNode(const unsigned short c) {
+inline bool CorrectionState::isQuote(const unsigned short c) {
     const unsigned short userTypedChar = mProximityInfo->getPrimaryCharAt(mInputIndex);
-    // Skip the ' or other letter and continue deeper
-    return (c == QUOTE && userTypedChar != QUOTE) || mSkipPos == mOutputIndex;
+    return (c == QUOTE && userTypedChar != QUOTE);
 }
 
 /////////////////////
@@ -50,6 +49,7 @@ void CorrectionState::initCorrectionState(const ProximityInfo *pi, const int inp
     mInputLength = inputLength;
     mMaxDepth = maxDepth;
     mMaxEditDistance = mInputLength < 5 ? 2 : mInputLength / 2;
+    mSkippedOutputIndex = -1;
 }
 
 void CorrectionState::setCorrectionParams(const int skipPos, const int excessivePos,
@@ -77,9 +77,8 @@ int CorrectionState::getFreqForSplitTwoWords(const int firstFreq, const int seco
 }
 
 int CorrectionState::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
-    const int outputIndex = mOutputIndex - 1;
-    const int inputIndex = (mCurrentStateType == TRAVERSE_ALL_ON_TERMINAL
-            || mCurrentStateType == TRAVERSE_ALL_NOT_ON_TERMINAL) ? mInputIndex : mInputIndex - 1;
+    const int outputIndex = mTerminalOutputIndex;
+    const int inputIndex = mTerminalInputIndex;
     *wordLength = outputIndex + 1;
     if (mProximityInfo->sameAsTyped(mWord, outputIndex + 1) || outputIndex < MIN_SUGGEST_DEPTH) {
         return -1;
@@ -145,22 +144,36 @@ bool CorrectionState::needsToPrune() const {
             || mDiffs > mMaxEditDistance);
 }
 
+CorrectionState::CorrectionStateType CorrectionState::processSkipChar(
+        const int32_t c, const bool isTerminal) {
+    mWord[mOutputIndex] = c;
+    if (needsToTraverseAll() && isTerminal) {
+        mTerminalInputIndex = mInputIndex;
+        mTerminalOutputIndex = mOutputIndex;
+        incrementOutputIndex();
+        return TRAVERSE_ALL_ON_TERMINAL;
+    } else {
+        incrementOutputIndex();
+        return TRAVERSE_ALL_NOT_ON_TERMINAL;
+    }
+}
+
 CorrectionState::CorrectionStateType CorrectionState::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
-    mCurrentStateType = NOT_ON_TERMINAL;
+    CorrectionStateType currentStateType = NOT_ON_TERMINAL;
     // This has to be done for each virtual char (this forwards the "inputIndex" which
     // is the index in the user-inputted chars, as read by proximity chars.
     if (mExcessivePos == mOutputIndex && mInputIndex < mInputLength - 1) {
         incrementInputIndex();
     }
 
-    if (mTraverseAllNodes || needsToSkipCurrentNode(c)) {
-        mWord[mOutputIndex] = c;
-        if (needsToTraverseAll() && isTerminal) {
-            mCurrentStateType = TRAVERSE_ALL_ON_TERMINAL;
-        } else {
-            mCurrentStateType = TRAVERSE_ALL_NOT_ON_TERMINAL;
-        }
+    bool skip = false;
+    if (mSkipPos >= 0) {
+        skip = mSkipPos == mOutputIndex;
+    }
+
+    if (mTraverseAllNodes || isQuote(c)) {
+        return processSkipChar(c, isTerminal);
     } else {
         int inputIndexForProximity = mInputIndex;
 
@@ -173,12 +186,30 @@ CorrectionState::CorrectionStateType CorrectionState::processCharAndCalcState(
             }
         }
 
+        const bool checkProximityChars =
+                !(mSkipPos >= 0 || mExcessivePos >= 0 || mTransposedPos >= 0);
         int matchedProximityCharId = mProximityInfo->getMatchedProximityId(
-                inputIndexForProximity, c, this);
-        if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
-            mCurrentStateType = UNRELATED;
-            return mCurrentStateType;
+                inputIndexForProximity, c, checkProximityChars);
+
+        const bool unrelated = ProximityInfo::UNRELATED_CHAR == matchedProximityCharId;
+        if (unrelated) {
+            if (skip) {
+                // Skip this letter and continue deeper
+                mSkippedOutputIndex = mOutputIndex;
+                return processSkipChar(c, isTerminal);
+            } else {
+                return UNRELATED;
+            }
         }
+
+        // No need to skip. Finish traversing and increment skipPos.
+        // TODO: Remove this?
+        if (skip) {
+            mWord[mOutputIndex] = c;
+            incrementOutputIndex();
+            return TRAVERSE_ALL_NOT_ON_TERMINAL;
+        }
+
         mWord[mOutputIndex] = c;
         // If inputIndex is greater than mInputLength, that means there is no
         // proximity chars. So, we don't need to check proximity.
@@ -195,7 +226,9 @@ CorrectionState::CorrectionStateType CorrectionState::processCharAndCalcState(
                         || (mExcessivePos == mInputLength - 1
                                     && getInputIndex() == mInputLength - 2);
         if (isSameAsUserTypedLength && isTerminal) {
-            mCurrentStateType = ON_TERMINAL;
+            mTerminalInputIndex = mInputIndex;
+            mTerminalOutputIndex = mOutputIndex;
+            currentStateType = ON_TERMINAL;
         }
         // Start traversing all nodes after the index exceeds the user typed length
         if (isSameAsUserTypedLength) {
@@ -213,7 +246,7 @@ CorrectionState::CorrectionStateType CorrectionState::processCharAndCalcState(
     // Also, the next char is one "virtual node" depth more than this char.
     incrementOutputIndex();
 
-    return mCurrentStateType;
+    return currentStateType;
 }
 
 CorrectionState::~CorrectionState() {

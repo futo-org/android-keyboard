@@ -114,10 +114,7 @@ bool ProximityInfo::existsAdjacentProximityChars(const int index) const {
 // in their list. The non-accented version of the character should be considered
 // "close", but not the other keys close to the non-accented version.
 ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(
-        const int index, const unsigned short c, CorrectionState *correctionState) const {
-    const int skipPos = correctionState->getSkipPos();
-    const int excessivePos = correctionState->getExcessivePos();
-    const int transposedPos = correctionState->getTransposedPos();
+        const int index, const unsigned short c, const bool checkProximityChars) const {
     const int *currentChars = getProximityCharsAt(index);
     const unsigned short baseLowerC = Dictionary::toBaseLowerCase(c);
 
@@ -126,9 +123,7 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(
     if (currentChars[0] == baseLowerC || currentChars[0] == c)
         return SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR;
 
-    // If one of those is true, we should not check for close characters at all.
-    if (skipPos >= 0 || excessivePos >= 0 || transposedPos >= 0)
-        return UNRELATED_CHAR;
+    if (!checkProximityChars) return UNRELATED_CHAR;
 
     // If the non-accented, lowercased version of that first character matches c,
     // then we have a non-accented version of the accented character the user
