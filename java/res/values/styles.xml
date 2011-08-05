@@ -90,6 +90,7 @@
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
         <item name="candidateCountInStrip">@integer/candidate_count_in_strip</item>
+        <item name="centerCandidatePercentile">@integer/center_candidate_percentile</item>
     </style>
     <!-- Theme "Basic high contrast" -->
     <style name="KeyboardView.HighContrast" parent="KeyboardView">
@@ -192,6 +193,7 @@
         <item name="colorAutoCorrect">#FF3DC8FF</item>
         <item name="colorSuggested">#FFFFFFFF</item>
         <item name="candidateCountInStrip">@integer/candidate_count_in_strip</item>
+        <item name="centerCandidatePercentile">@integer/center_candidate_percentile</item>
     </style>
     <style name="PopupMiniKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>

@@ -259,12 +259,15 @@ public class CandidateView extends LinearLayout implements OnClickListener {
 
     private static class SuggestionsStripParams extends CandidateViewParams {
         private static final int DEFAULT_CANDIDATE_COUNT_IN_STRIP = 3;
+        private static final int DEFAULT_CENTER_CANDIDATE_PERCENTILE = 40;
         private static final int PUNCTUATIONS_IN_STRIP = 6;
 
         private final int mColorTypedWord;
         private final int mColorAutoCorrect;
         private final int mColorSuggestedCandidate;
         private final int mCandidateCountInStrip;
+        private final float mCenterCandidateWeight;
+        private final int mCenterCandidateIndex;
 
         private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
         private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
@@ -278,17 +281,6 @@ public class CandidateView extends LinearLayout implements OnClickListener {
         private final int mAutoCorrectHighlight;
 
         private final ArrayList<CharSequence> mTexts = new ArrayList<CharSequence>();
-        private SuggestedWords mSuggestedWords;
-
-        private int mCountInStrip;
-        // True if the mCountInStrip suggestions can fit in suggestion strip in equally divided
-        // width without squeezing the text.
-        private boolean mCanUseFixedWidthColumns;
-        private int mMaxWidth;
-        private int mAvailableWidthForWords;
-        private int mConstantWidthForPaddings;
-        private int mVariableWidthForWords;
-        private float mScaleX;
 
         public SuggestionsStripParams(Context context, AttributeSet attrs, int defStyle,
                 List<TextView> words, List<View> dividers, List<TextView> infos, View control) {
@@ -302,7 +294,12 @@ public class CandidateView extends LinearLayout implements OnClickListener {
             mCandidateCountInStrip = a.getInt(
                     R.styleable.CandidateView_candidateCountInStrip,
                     DEFAULT_CANDIDATE_COUNT_IN_STRIP);
+            mCenterCandidateWeight = a.getInt(
+                    R.styleable.CandidateView_centerCandidatePercentile,
+                    DEFAULT_CENTER_CANDIDATE_PERCENTILE) / 100.0f;
             a.recycle();
+
+            mCenterCandidateIndex = mCandidateCountInStrip / 2;
 
             mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
             mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
@@ -328,35 +325,38 @@ public class CandidateView extends LinearLayout implements OnClickListener {
             return spannedWord;
         }
 
-        private int getWordPosition(int index) {
-            if (index >= 2) {
-                return index;
-            }
-            final boolean willAutoCorrect = !mSuggestedWords.mTypedWordValid
-                    && mSuggestedWords.mHasMinimalSuggestion;
-            return willAutoCorrect ? 1 - index : index;
+        private static boolean willAutoCorrect(SuggestedWords suggestions) {
+            return !suggestions.mTypedWordValid && suggestions.mHasMinimalSuggestion;
         }
 
-        private int getCandidateTextColor(int pos) {
-            final SuggestedWords suggestions = mSuggestedWords;
-            final boolean isAutoCorrect = suggestions.mHasMinimalSuggestion
-                    && ((pos == 1 && !suggestions.mTypedWordValid)
-                            || (pos == 0 && suggestions.mTypedWordValid));
+        private int getWordPosition(int index, SuggestedWords suggestions) {
+            // TODO: This works for 3 suggestions. Revisit this algorithm when there are 5 or more
+            // suggestions.
+            final int centerPos = willAutoCorrect(suggestions) ? 1 : 0;
+            if (index == mCenterCandidateIndex) {
+                return centerPos;
+            } else if (index == centerPos) {
+                return mCenterCandidateIndex;
+            } else {
+                return index;
+            }
+        }
+
+        private int getCandidateTextColor(int index, SuggestedWords suggestions, int pos) {
             // TODO: Need to revisit this logic with bigram suggestions
             final boolean isSuggestedCandidate = (pos != 0);
-            final boolean isPunctuationSuggestions = suggestions.isPunctuationSuggestions();
 
             final int color;
-            if (isPunctuationSuggestions) {
-                color = mColorTypedWord;
-            } else if (isAutoCorrect) {
+            if (index == mCenterCandidateIndex && willAutoCorrect(suggestions)) {
                 color = mColorAutoCorrect;
             } else if (isSuggestedCandidate) {
                 color = mColorSuggestedCandidate;
             } else {
                 color = mColorTypedWord;
             }
-            final SuggestedWordInfo info = suggestions.getInfo(pos);
+
+            final SuggestedWordInfo info = (pos < suggestions.size())
+                    ? suggestions.getInfo(pos) : null;
             if (info != null && info.isPreviousSuggestedWord()) {
                 return applyAlpha(color, 0.5f);
             } else {
@@ -381,136 +381,105 @@ public class CandidateView extends LinearLayout implements OnClickListener {
 
         public int layout(SuggestedWords suggestions, ViewGroup stripView, ViewGroup paneView,
                 int stripWidth) {
-            mSuggestedWords = suggestions;
-            final int maxCount = suggestions.isPunctuationSuggestions()
-                    ? PUNCTUATIONS_IN_STRIP : mCandidateCountInStrip;
-            final int size = suggestions.size();
-            setupTexts(suggestions, size);
-            mCountInStrip = Math.min(maxCount, size);
-            mScaleX = 1.0f;
-            calculateParameters(size, stripWidth);
+            if (suggestions.isPunctuationSuggestions()) {
+                return layoutPunctuationSuggestions(suggestions, stripView);
+            }
 
-            int infoX = 0;
-            for (int index = 0; index < mCountInStrip; index++) {
-                final int pos = getWordPosition(index);
-                final TextView word = mWords.get(pos);
-                final View divider = mDividers.get(pos);
-                final TextPaint paint = word.getPaint();
-                // TODO: Reorder candidates in strip as appropriate. The center candidate should 
-                // hold the word when space is typed (valid typed word or auto corrected word).
-                word.setTextColor(getCandidateTextColor(pos));
-                final CharSequence styled = mTexts.get(pos);
+            final int countInStrip = mCandidateCountInStrip;
+            setupTexts(suggestions, countInStrip);
+            final int maxWidth = (suggestions.size() <= countInStrip)
+                    ? stripWidth : stripWidth - mControlWidth;
 
-                final TextView info;
-                if (DBG) {
-                    final CharSequence debugInfo = getDebugInfo(mSuggestedWords, index);
-                    if (debugInfo != null) {
-                        info = mInfos.get(index);
-                        info.setText(debugInfo);
-                    } else {
-                        info = null;
-                    }
-                } else {
-                    info = null;
+            int x = 0;
+            for (int index = 0; index < countInStrip; index++) {
+                final int pos = getWordPosition(index, suggestions);
+
+                if (index != 0) {
+                    final View divider = mDividers.get(pos);
+                    // Add divider if this isn't the left most suggestion in candidate strip.
+                    stripView.addView(divider);
                 }
 
-                final CharSequence text;
-                final float scaleX;
-                    if (index == 0 && mCountInStrip == 1) {
-                        text = getEllipsizedText(styled, mMaxWidth, paint);
-                        scaleX = paint.getTextScaleX();
-                    } else {
-                        text = styled;
-                        scaleX = mScaleX;
-                    }
-                    word.setText(text);
-                    word.setTextScaleX(scaleX);
-                    if (index != 0) {
-                        // Add divider if this isn't the left most suggestion in candidate strip.
-                        stripView.addView(divider);
-                    }
-                    stripView.addView(word);
-                    if (mCanUseFixedWidthColumns) {
-                        setLayoutWeight(word, 1.0f, mCandidateStripHeight);
-                    } else {
-                        final int width = getTextWidth(text, paint) + mPadding;
-                        setLayoutWeight(word, width, mCandidateStripHeight);
-                    }
-                    if (info != null) {
+                final CharSequence styled = mTexts.get(pos);
+                final TextView word = mWords.get(pos);
+                // Disable this candidate if the suggestion is null or empty.
+                word.setEnabled(!TextUtils.isEmpty(styled));
+                word.setTextColor(getCandidateTextColor(index, suggestions, pos));
+                final int width = getCandidateWidth(index, maxWidth);
+                final CharSequence text = getEllipsizedText(styled, width, word.getPaint());
+                final float scaleX = word.getTextScaleX();
+                word.setText(text); // TextView.setText() resets text scale x to 1.0.
+                word.setTextScaleX(scaleX);
+                stripView.addView(word);
+                setLayoutWeight(word, getCandidateWeight(index), mCandidateStripHeight);
+
+                if (DBG) {
+                    final CharSequence debugInfo = getDebugInfo(suggestions, pos);
+                    if (debugInfo != null) {
+                        final TextView info = mInfos.get(pos);
+                        info.setText(debugInfo);
                         paneView.addView(info);
                         info.measure(WRAP_CONTENT, WRAP_CONTENT);
-                        final int width = info.getMeasuredWidth();
+                        final int infoWidth = info.getMeasuredWidth();
                         final int y = info.getMeasuredHeight();
-                        FrameLayoutCompatUtils.placeViewAt(info, infoX, 0, width, y);
-                        infoX += width * 2;
+                        FrameLayoutCompatUtils.placeViewAt(info, x, 0, infoWidth, y);
+                        x += infoWidth * 2;
                     }
+                }
             }
 
-            return mCountInStrip;
+            return countInStrip;
         }
 
-        private void calculateParameters(int size, int maxWidth) {
-            do {
-                mMaxWidth = maxWidth;
-                if (size > mCountInStrip) {
-                    mMaxWidth -= mControlWidth;
-                }
-
-                tryLayout();
-
-                if (mCanUseFixedWidthColumns) {
-                    return;
-                }
-                if (mVariableWidthForWords <= mAvailableWidthForWords) {
-                    return;
-                }
-
-                final float scaleX = mAvailableWidthForWords / (float)mVariableWidthForWords;
-                if (scaleX >= MIN_TEXT_XSCALE) {
-                    mScaleX = scaleX;
-                    return;
-                }
-
-                mCountInStrip--;
-            } while (mCountInStrip > 1);
+        private int getCandidateWidth(int index, int maxWidth) {
+            final int paddings = mPadding * mCandidateCountInStrip;
+            final int dividers = mDividerWidth * (mCandidateCountInStrip - 1);
+            final int availableWidth = maxWidth - paddings - dividers;
+            return (int)(availableWidth * getCandidateWeight(index));
         }
 
-        private void tryLayout() {
-            final int maxCount = mCountInStrip;
-            final int dividers = mDividerWidth * (maxCount - 1);
-            mConstantWidthForPaddings = dividers + mPadding * maxCount;
-            mAvailableWidthForWords = mMaxWidth - mConstantWidthForPaddings;
-
-            mPaint.setTextScaleX(mScaleX);
-            final int maxFixedWidthForWord = (mMaxWidth - dividers) / maxCount - mPadding;
-            mCanUseFixedWidthColumns = true;
-            mVariableWidthForWords = 0;
-            for (int i = 0; i < maxCount; i++) {
-                final int width = getTextWidth(mTexts.get(i), mPaint);
-                if (width > maxFixedWidthForWord)
-                    mCanUseFixedWidthColumns = false;
-                mVariableWidthForWords += width;
+        private float getCandidateWeight(int index) {
+            if (index == mCenterCandidateIndex) {
+                return mCenterCandidateWeight;
+            } else {
+                // TODO: Revisit this for cases of 5 or more suggestions
+                return (1.0f - mCenterCandidateWeight) / (mCandidateCountInStrip - 1);
             }
         }
 
-        private void setupTexts(SuggestedWords suggestions, int count) {
+        private void setupTexts(SuggestedWords suggestions, int countInStrip) {
             mTexts.clear();
-            for (int i = 0; i < count; i++) {
-                final CharSequence word = suggestions.getWord(i);
-                final boolean isAutoCorrect = suggestions.mHasMinimalSuggestion
-                        && ((i == 1 && !suggestions.mTypedWordValid)
-                                || (i == 0 && suggestions.mTypedWordValid));
+            final int count = Math.min(suggestions.size(), countInStrip);
+            for (int pos = 0; pos < count; pos++) {
+                final CharSequence word = suggestions.getWord(pos);
+                final boolean isAutoCorrect = pos == 1 && willAutoCorrect(suggestions);
                 final CharSequence styled = getStyledCandidateWord(word, isAutoCorrect);
                 mTexts.add(styled);
             }
+            for (int pos = count; pos < countInStrip; pos++) {
+                // Make this inactive for touches in layout().
+                mTexts.add(null);
+            }
         }
 
-        @Override
-        public String toString() {
-            return String.format(
-                    "count=%d width=%d avail=%d fixcol=%s scaleX=%4.2f const=%d var=%d",
-                    mCountInStrip, mMaxWidth, mAvailableWidthForWords, mCanUseFixedWidthColumns,
-                    mScaleX, mConstantWidthForPaddings, mVariableWidthForWords);
+        private int layoutPunctuationSuggestions(SuggestedWords suggestions, ViewGroup stripView) {
+            final int countInStrip = Math.min(suggestions.size(), PUNCTUATIONS_IN_STRIP);
+            for (int index = 0; index < countInStrip; index++) {
+                if (index != 0) {
+                    // Add divider if this isn't the left most suggestion in candidate strip.
+                    stripView.addView(mDividers.get(index));
+                }
+
+                final TextView word = mWords.get(index);
+                word.setEnabled(true);
+                word.setTextColor(mColorTypedWord);
+                final CharSequence text = suggestions.getWord(index);
+                word.setText(text);
+                word.setTextScaleX(1.0f);
+                stripView.addView(word);
+                setLayoutWeight(word, 1.0f, mCandidateStripHeight);
+            }
+            return countInStrip;
         }
     }
 
@@ -548,13 +517,13 @@ public class CandidateView extends LinearLayout implements OnClickListener {
         mPreviewPopup.setBackgroundDrawable(null);
 
         mCandidatesStrip = (ViewGroup)findViewById(R.id.candidates_strip);
-        for (int i = 0; i < MAX_SUGGESTIONS; i++) {
+        for (int pos = 0; pos < MAX_SUGGESTIONS; pos++) {
             final TextView word = (TextView)inflater.inflate(R.layout.candidate_word, null);
-            word.setTag(i);
+            word.setTag(pos);
             word.setOnClickListener(this);
             mWords.add(word);
             final View divider = inflater.inflate(R.layout.candidate_divider, null);
-            divider.setTag(i);
+            divider.setTag(pos);
             divider.setOnClickListener(this);
             mDividers.add(divider);
             mInfos.add((TextView)inflater.inflate(R.layout.candidate_info, null));
@@ -649,7 +618,7 @@ public class CandidateView extends LinearLayout implements OnClickListener {
     }
 
     private static CharSequence getDebugInfo(SuggestedWords suggestions, int pos) {
-        if (DBG) {
+        if (DBG && pos < suggestions.size()) {
             final SuggestedWordInfo wordInfo = suggestions.getInfo(pos);
             if (wordInfo != null) {
                 final CharSequence debugInfo = wordInfo.getDebugString();
@@ -695,14 +664,17 @@ public class CandidateView extends LinearLayout implements OnClickListener {
             TextPaint paint) {
         paint.setTextScaleX(1.0f);
         final int width = getTextWidth(text, paint);
-        final float scaleX = Math.min(maxWidth / (float)width, 1.0f);
+        if (width <= maxWidth) {
+            return text;
+        }
+        final float scaleX = maxWidth / (float)width;
         if (scaleX >= MIN_TEXT_XSCALE) {
             paint.setTextScaleX(scaleX);
             return text;
         }
 
         // Note that TextUtils.ellipsize() use text-x-scale as 1.0 if ellipsize is needed. To get
-        // squeezed and ellipsezed text, passes enlarged width (maxWidth / MIN_TEXT_XSCALE).
+        // squeezed and ellipsized text, passes enlarged width (maxWidth / MIN_TEXT_XSCALE).
         final CharSequence ellipsized = TextUtils.ellipsize(
                 text, paint, maxWidth / MIN_TEXT_XSCALE, TextUtils.TruncateAt.MIDDLE);
         paint.setTextScaleX(MIN_TEXT_XSCALE);

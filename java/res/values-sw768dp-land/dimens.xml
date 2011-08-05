@@ -59,5 +59,4 @@
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
     <dimen name="candidate_strip_padding">40.0mm</dimen>
-    <integer name="candidate_count_in_strip">5</integer>
 </resources>

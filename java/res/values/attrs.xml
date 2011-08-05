@@ -116,6 +116,7 @@
         <attr name="colorAutoCorrect" format="color" />
         <attr name="colorSuggested" format="color" />
         <attr name="candidateCountInStrip" format="integer" />
+        <attr name="centerCandidatePercentile" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard">
