@@ -35,6 +35,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
@@ -349,8 +350,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
      * @param keyboard the keyboard to display in this view
      */
     public void setKeyboard(Keyboard keyboard) {
-        // Remove any pending messages, except dismissing preview
+        // Remove any pending dismissing preview
         mDrawingHandler.cancelAllShowKeyPreviews();
+        if (mKeyboard != null) {
+            PointerTracker.dismissAllKeyPreviews();
+        }
         mKeyboard = keyboard;
         LatinImeLogger.onSetKeyboard(keyboard);
         requestLayout();
@@ -788,14 +792,15 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     private void addKeyPreview(TextView keyPreview) {
         if (mPreviewPlacer == null) {
-            mPreviewPlacer = FrameLayoutCompatUtils.getPlacer(
-                    (ViewGroup)getRootView().findViewById(android.R.id.content));
+            mPreviewPlacer = new RelativeLayout(getContext());
+            final ViewGroup windowContentView =
+                    (ViewGroup)getRootView().findViewById(android.R.id.content);
+            windowContentView.addView(mPreviewPlacer);
         }
-        final ViewGroup placer = mPreviewPlacer;
-        placer.addView(keyPreview, FrameLayoutCompatUtils.newLayoutParam(placer, 0, 0));
+        mPreviewPlacer.addView(
+                keyPreview, FrameLayoutCompatUtils.newLayoutParam(mPreviewPlacer, 0, 0));
     }
 
-    // TODO: Introduce minimum duration for displaying key previews
     private void showKey(final int keyIndex, PointerTracker tracker) {
         final TextView previewText = tracker.getKeyPreviewText();
         // If the key preview has no parent view yet, add it to the ViewGroup which can place
@@ -914,5 +919,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         closing();
+        if (mPreviewPlacer != null) {
+            mPreviewPlacer.removeAllViews();
+        }
     }
 }
