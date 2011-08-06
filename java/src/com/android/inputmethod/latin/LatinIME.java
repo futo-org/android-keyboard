@@ -1930,15 +1930,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         final CharSequence separator = ic.getTextBeforeCursor(1, 0);
-        ic.deleteSurroundingText(mCommittedLength + 1 /* separator */, 0);
+        ic.deleteSurroundingText(1, 0);
+        final CharSequence textToTheLeft = ic.getTextBeforeCursor(mCommittedLength, 0);
+        ic.deleteSurroundingText(mCommittedLength, 0);
 
         // Re-insert "separator" only when the deleted character was word separator and the
         // composing text wasn't equal to the auto-corrected text which can be found before
         // the cursor.
         if (!TextUtils.isEmpty(separator)
                 && mSettingsValues.isWordSeparator(separator.charAt(0))
-                && !TextUtils.equals(mComposingStringBuilder,
-                        ic.getTextBeforeCursor(mCommittedLength, 0))) {
+                && !TextUtils.equals(mComposingStringBuilder, textToTheLeft)) {
             ic.commitText(mComposingStringBuilder, 1);
             TextEntryState.acceptedTyped(mComposingStringBuilder);
             ic.commitText(separator, 1);
