@@ -281,9 +281,6 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
      */
     @Override
     public void setKeyboard(Keyboard keyboard) {
-        if (getKeyboard() != null) {
-            PointerTracker.dismissAllKeyPreviews();
-        }
         // Remove any pending messages, except dismissing preview
         mKeyTimerHandler.cancelKeyTimers();
         super.setKeyboard(keyboard);
