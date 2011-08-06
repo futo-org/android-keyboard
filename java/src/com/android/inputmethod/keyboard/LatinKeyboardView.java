@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.Utils;
 
@@ -99,9 +100,14 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
             }
         }
         if (primaryCode == Keyboard.CODE_SETTINGS || primaryCode == Keyboard.CODE_SPACE) {
-            tracker.onLongPressed();
             // Both long pressing settings key and space key invoke IME switcher dialog.
-            return invokeOnKey(Keyboard.CODE_SETTINGS_LONGPRESS);
+            if (getKeyboardActionListener().onCustomRequest(
+                    LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
+                tracker.onLongPressed();
+                return true;
+            } else {
+                return super.onLongPress(key, tracker);
+            }
         } else {
             return super.onLongPress(key, tracker);
         }

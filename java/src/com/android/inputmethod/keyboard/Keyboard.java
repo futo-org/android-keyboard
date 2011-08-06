@@ -79,8 +79,7 @@ public class Keyboard {
     public static final int CODE_CANCEL = -4;
     public static final int CODE_DELETE = -5;
     public static final int CODE_SETTINGS = -6;
-    public static final int CODE_SETTINGS_LONGPRESS = -7;
-    public static final int CODE_SHORTCUT = -8;
+    public static final int CODE_SHORTCUT = -7;
     // Code value representing the code is not specified.
     public static final int CODE_UNSPECIFIED = -99;
 

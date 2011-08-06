@@ -151,6 +151,8 @@ public class PointerTracker {
         public void onTextInput(CharSequence text) {}
         @Override
         public void onCancelInput() {}
+        @Override
+        public boolean onCustomRequest(int requestCode) { return false; }
     };
 
     public static void init(boolean hasDistinctMultitouch, Context context) {

@@ -27,5 +27,5 @@
     <integer name="key_switch_alpha_symbol">-2</integer>
     <integer name="key_delete">-5</integer>
     <integer name="key_settings">-6</integer>
-    <integer name="key_shortcut">-8</integer>
+    <integer name="key_shortcut">-7</integer>
 </resources>

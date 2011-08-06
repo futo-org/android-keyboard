@@ -430,8 +430,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public boolean postStartInputView(EditorInfo attribute) {
             if (hasMessages(MSG_CONFIRM_ORIENTATION_CHANGE) || hasMessages(MSG_START_INPUT_VIEW)) {
                 removeMessages(MSG_START_INPUT_VIEW);
-                // Postpone onStartInputView 20ms afterward and see if orientation change has
-                // finished.
+                // Postpone onStartInputView by ACCUMULATE_START_INPUT_VIEW_DELAY and see if
+                // orientation change has finished.
                 sendMessageDelayed(obtainMessage(MSG_START_INPUT_VIEW, attribute),
                         ACCUMULATE_START_INPUT_VIEW_DELAY);
                 return true;
@@ -1152,25 +1152,33 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void onSettingsKeyPressed() {
-        if (isShowingOptionDialog())
-            return;
+        if (isShowingOptionDialog()) return;
         if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
             showSubtypeSelectorAndSettings();
-        } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
+        } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm,
+                false /* should exclude auxiliary subtypes */)) {
             showOptionsMenu();
         } else {
             launchSettings();
         }
     }
 
-    private void onSettingsKeyLongPressed() {
-        if (!isShowingOptionDialog()) {
-            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm)) {
+    // Virtual codes representing custom requests.  These are used in onCustomRequest() below.
+    public static final int CODE_SHOW_INPUT_METHOD_PICKER = 1;
+
+    @Override
+    public boolean onCustomRequest(int requestCode) {
+        if (isShowingOptionDialog()) return false;
+        switch (requestCode) {
+        case CODE_SHOW_INPUT_METHOD_PICKER:
+            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm,
+                    true /* should include auxiliary subtypes */)) {
                 mImm.showInputMethodPicker();
-            } else {
-                launchSettings();
+                return true;
             }
+            return false;
         }
+        return false;
     }
 
     private boolean isShowingOptionDialog() {
@@ -1213,9 +1221,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             break;
         case Keyboard.CODE_SETTINGS:
             onSettingsKeyPressed();
-            break;
-        case Keyboard.CODE_SETTINGS_LONGPRESS:
-            onSettingsKeyLongPressed();
             break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
@@ -2135,14 +2140,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     protected void launchSettings() {
-        launchSettings(Settings.class);
+        launchSettingsClass(Settings.class);
     }
 
     public void launchDebugSettings() {
-        launchSettings(DebugSettings.class);
+        launchSettingsClass(DebugSettings.class);
     }
 
-    protected void launchSettings(Class<? extends PreferenceActivity> settingsClass) {
+    protected void launchSettingsClass(Class<? extends PreferenceActivity> settingsClass) {
         handleClose();
         Intent intent = new Intent();
         intent.setClass(LatinIME.this, settingsClass);

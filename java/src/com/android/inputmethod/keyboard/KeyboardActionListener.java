@@ -70,4 +70,10 @@ public interface KeyboardActionListener {
      * Called when user released a finger outside any key.
      */
     public void onCancelInput();
+
+    /**
+     * Send a non-"code input" custom request to the listener.
+     * @return true if the request has been consumed, false otherwise.
+     */
+    public boolean onCustomRequest(int requestCode);
 }

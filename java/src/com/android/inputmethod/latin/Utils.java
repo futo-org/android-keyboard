@@ -111,35 +111,42 @@ public class Utils {
         }
     }
 
-    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManagerCompatWrapper imm) {
+    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManagerCompatWrapper imm,
+            boolean shouldIncludeAuxiliarySubtypes) {
         final List<InputMethodInfoCompatWrapper> enabledImis = imm.getEnabledInputMethodList();
 
-        // Filters out IMEs that have auxiliary subtypes only (including either implicitly or
-        // explicitly enabled ones).
-        final ArrayList<InputMethodInfoCompatWrapper> filteredImis =
-                new ArrayList<InputMethodInfoCompatWrapper>();
+        // Number of the filtered IMEs
+        int filteredImisCount = 0;
 
-        outerloop:
         for (InputMethodInfoCompatWrapper imi : enabledImis) {
             // We can return true immediately after we find two or more filtered IMEs.
-            if (filteredImis.size() > 1) return true;
+            if (filteredImisCount > 1) return true;
             final List<InputMethodSubtypeCompatWrapper> subtypes =
                     imm.getEnabledInputMethodSubtypeList(imi, true);
-            // IMEs that have no subtypes should be included.
+            // IMEs that have no subtypes should be counted.
             if (subtypes.isEmpty()) {
-                filteredImis.add(imi);
+                ++filteredImisCount;
                 continue;
             }
-            // IMEs that have one or more non-auxiliary subtypes should be included.
+
+            int auxCount = 0;
             for (InputMethodSubtypeCompatWrapper subtype : subtypes) {
-                if (!subtype.isAuxiliary()) {
-                    filteredImis.add(imi);
-                    continue outerloop;
+                if (subtype.isAuxiliary()) {
+                    ++auxCount;
                 }
+            }
+            final int nonAuxCount = subtypes.size() - auxCount;
+
+            // IMEs that have one or more non-auxiliary subtypes should be counted.
+            // If shouldIncludeAuxiliarySubtypes is true, IMEs that have two or more auxiliary
+            // subtypes should be counted as well.
+            if (nonAuxCount > 0 || (shouldIncludeAuxiliarySubtypes && auxCount > 1)) {
+                ++filteredImisCount;
+                continue;
             }
         }
 
-        return filteredImis.size() > 1
+        return filteredImisCount > 1
         // imm.getEnabledInputMethodSubtypeList(null, false) will return the current IME's enabled
         // input method subtype (The current IME should be LatinIME.)
                 || imm.getEnabledInputMethodSubtypeList(null, false).size() > 1;

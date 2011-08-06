@@ -79,6 +79,8 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         public void onRelease(int primaryCode, boolean withSliding) {
             mParentKeyboardView.getKeyboardActionListener().onRelease(primaryCode, withSliding);
         }
+        @Override
+        public boolean onCustomRequest(int requestCode) { return false; }
     };
 
     public PopupMiniKeyboardView(Context context, AttributeSet attrs) {
