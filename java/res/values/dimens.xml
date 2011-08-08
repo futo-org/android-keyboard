@@ -86,7 +86,7 @@
     <dimen name="candidate_padding">6dip</dimen>
     <dimen name="candidate_text_size">18dip</dimen>
     <integer name="candidate_count_in_strip">3</integer>
-    <integer name="center_candidate_percentile">40</integer>
+    <integer name="center_candidate_percentile">36</integer>
 
     <!-- If the screen height in landscape is larger than the below value, then the keyboard
          will not go into extract (fullscreen) mode. -->

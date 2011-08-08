@@ -29,31 +29,6 @@
         android:layout_width="0dp"
         android:layout_height="match_parent" />
     <LinearLayout
-        android:id="@+id/candidates_pane_control"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-    >
-        <TextView
-            android:id="@+id/expand_candidates_pane"
-            android:text="@string/label_expand_candidates_pane"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:minWidth="28dp"
-            android:textSize="@dimen/candidate_text_size"
-            android:visibility="visible" />
-        <TextView
-            android:id="@+id/close_candidates_pane"
-            android:text="@string/label_close_candidates_pane"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:minWidth="28dp"
-            android:textSize="@dimen/candidate_text_size"
-            android:visibility="gone" />
-    </LinearLayout>
-    <LinearLayout
         android:id="@+id/touch_to_save"
         android:orientation="horizontal"
         android:layout_width="match_parent"
