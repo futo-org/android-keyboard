@@ -23,7 +23,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -53,38 +52,55 @@ public class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Generates a file name that matches the locale passed as an argument.
-     * The file name is basically the result of the .toString() method, except we replace
-     * any @File.separator with an underscore to avoid generating a file name that may not
-     * be created.
+     * Escapes a string for any characters that may be suspicious for a file or directory name.
+     *
+     * Concretely this does a sort of URL-encoding except it will encode everything that's not
+     * alphanumeric or underscore. (true URL-encoding leaves alone characters like '*', which
+     * we cannot allow here)
+     */
+    // TODO: create a unit test for this method
+    private static String replaceFileNameDangerousCharacters(String name) {
+        // This assumes '%' is fully available as a non-separator, normal
+        // character in a file name. This is probably true for all file systems.
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < name.length(); ++i) {
+            final int codePoint = name.codePointAt(i);
+            if (Character.isLetterOrDigit(codePoint) || '_' == codePoint) {
+                sb.appendCodePoint(codePoint);
+            } else {
+                sb.append('%');
+                sb.append(Integer.toHexString(codePoint));
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Find out the cache directory associated with a specific locale.
+     */
+    private static String getCacheDirectoryForLocale(Locale locale, Context context) {
+        final String directoryName = replaceFileNameDangerousCharacters(locale.toString());
+        return context.getFilesDir() + File.separator + directoryName;
+    }
+
+    /**
+     * Generates a file name for the id and locale passed as an argument.
+     *
+     * In the current implementation the file name returned will always be unique for
+     * any id/locale pair, but please do not expect that the id can be the same for
+     * different dictionaries with different locales. An id should be unique for any
+     * dictionary.
+     * The file name is pretty much an URL-encoded version of the id inside a directory
+     * named like the locale, except it will also escape characters that look dangerous
+     * to some file systems.
+     * @param id the id of the dictionary for which to get a file name
      * @param locale the locale for which to get the file name
      * @param context the context to use for getting the directory
      * @return the name of the file to be created
      */
-    private static String getCacheFileNameForLocale(Locale locale, Context context) {
-        // The following assumes two things :
-        // 1. That File.separator is not the same character as "_"
-        //    I don't think any android system will ever use "_" as a path separator
-        // 2. That no two locales differ by only a File.separator versus a "_"
-        //    Since "_" can't be part of locale components this should be safe.
-        // Examples:
-        // en -> en
-        // en_US_POSIX -> en_US_POSIX
-        // en__foo/bar -> en__foo_bar
-        final String[] separator = { File.separator };
-        final String[] empty = { "_" };
-        final CharSequence basename = TextUtils.replace(locale.toString(), separator, empty);
-        return context.getFilesDir() + File.separator + basename;
-    }
-
-    /**
-     * Return for a given locale the provider URI to query to get the dictionary.
-     */
-    // TODO: remove this
-    public static Uri getProviderUri(Locale locale) {
-        return new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT)
-                .authority(BinaryDictionary.DICTIONARY_PACK_AUTHORITY).appendPath(
-                        locale.toString()).build();
+    private static String getCacheFileName(String id, Locale locale, Context context) {
+        final String fileName = replaceFileNameDangerousCharacters(id);
+        return getCacheDirectoryForLocale(locale, context) + File.separator + fileName;
     }
 
     /**
@@ -102,7 +118,7 @@ public class BinaryDictionaryFileDumper {
      */
     private static List<String> getDictIdList(final Locale locale, final Context context) {
         final ContentResolver resolver = context.getContentResolver();
-        final Uri dictionaryPackUri = getProviderUri(locale);
+        final Uri dictionaryPackUri = getProviderUri(locale.toString());
 
         final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null, null);
         if (null == c) return Collections.<String>emptyList();
@@ -137,10 +153,6 @@ public class BinaryDictionaryFileDumper {
      */
     public static List<AssetFileAddress> getDictSetFromContentProvider(final Locale locale,
             final Context context) throws FileNotFoundException, IOException {
-        // TODO: check whether the dictionary is the same or not and if it is, return the cached
-        // file.
-        // TODO: This should be able to read a number of files from the dictionary pack, copy
-        // them all and return them.
         final ContentResolver resolver = context.getContentResolver();
         final List<String> idList = getDictIdList(locale, context);
         final List<AssetFileAddress> fileAddressList = new ArrayList<AssetFileAddress>();
@@ -149,24 +161,12 @@ public class BinaryDictionaryFileDumper {
             final AssetFileDescriptor afd =
                     resolver.openAssetFileDescriptor(dictionaryPackUri, "r");
             if (null == afd) continue;
-            final String fileName =
-                    copyFileTo(afd.createInputStream(), getCacheFileNameForLocale(locale, context));
+            final String fileName = copyFileTo(afd.createInputStream(),
+                    getCacheFileName(id, locale, context));
             afd.close();
             fileAddressList.add(AssetFileAddress.makeFromFileName(fileName));
         }
         return fileAddressList;
-    }
-
-    /**
-     * Accepts a file as dictionary data for some locale and returns the name of a file.
-     *
-     * This will make the data in the input file the cached dictionary for this locale, overwriting
-     * any previous cached data.
-     */
-    public static String getDictionaryFileFromFile(String fileName, Locale locale,
-            Context context) throws FileNotFoundException, IOException {
-        return copyFileTo(new FileInputStream(fileName), getCacheFileNameForLocale(locale,
-                context));
     }
 
     /**
@@ -181,7 +181,7 @@ public class BinaryDictionaryFileDumper {
         final Locale savedLocale = Utils.setSystemLocale(res, locale);
         final InputStream stream = res.openRawResource(resource);
         Utils.setSystemLocale(res, savedLocale);
-        return copyFileTo(stream, getCacheFileNameForLocale(locale, context));
+        return copyFileTo(stream, getCacheFileName(Integer.toString(resource), locale, context));
     }
 
     /**
