@@ -387,7 +387,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
             final int countInStrip = mCandidateCountInStrip;
             setupTexts(suggestions, countInStrip);
-
+            mMoreSuggestionsAvailable = (suggestions.size() > countInStrip);
             int x = 0;
             for (int index = 0; index < countInStrip; index++) {
                 final int pos = getWordPosition(index, suggestions);
@@ -400,14 +400,12 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
                 final CharSequence styled = mTexts.get(pos);
                 final TextView word = mWords.get(pos);
-                if (index == mCenterCandidateIndex && suggestions.size() > countInStrip) {
+                if (index == mCenterCandidateIndex && mMoreSuggestionsAvailable) {
                     // TODO: This "more suggestions hint" should have nicely designed icon.
                     word.setCompoundDrawablesWithIntrinsicBounds(
                             null, null, null, mMoreCandidateHint);
-                    mMoreSuggestionsAvailable = true;
                 } else {
                     word.setCompoundDrawables(null, null, null, null);
-                    mMoreSuggestionsAvailable = false;
                 }
 
                 // Disable this candidate if the suggestion is null or empty.
@@ -693,6 +691,14 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mKeyboardView.setVisibility(VISIBLE);
     }
 
+    private void toggleCandidatesPane() {
+        if (mCandidatesPaneContainer.getVisibility() == VISIBLE) {
+            closeCandidatesPane();
+        } else {
+            expandCandidatesPane();
+        }
+    }
+
     public void onAutoCorrectionInverted(CharSequence autoCorrectedWord) {
         final CharSequence inverted = mStripParams.getInvertedText(autoCorrectedWord);
         if (inverted == null)
@@ -770,7 +776,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     @Override
     public boolean onLongClick(View view) {
         if (mStripParams.mMoreSuggestionsAvailable) {
-            expandCandidatesPane();
+            toggleCandidatesPane();
             return true;
         }
         return false;
