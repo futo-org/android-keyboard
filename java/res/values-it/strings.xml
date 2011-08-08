@@ -23,8 +23,7 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Tastiera Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Impostazioni tastiera Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opzioni inserimento"</string>
-    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
-    <skip />
+    <string name="spell_checker_service_name" msgid="2003013122022285508">"Correzione Android"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrazione tasti"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Suono tasti"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup sui tasti"</string>
@@ -63,6 +62,9 @@
     <string name="label_done_key" msgid="2441578748772529288">"Fine"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Invia"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
+    <skip />
     <string name="label_more_key" msgid="3760239494604948502">"Altro"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Attesa"</string>

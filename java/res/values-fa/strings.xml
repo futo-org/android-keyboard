@@ -63,6 +63,9 @@
     <string name="label_done_key" msgid="2441578748772529288">"انجام شد"</string>
     <string name="label_send_key" msgid="2815056534433717444">"ارسال"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
+    <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
+    <skip />
     <string name="label_more_key" msgid="3760239494604948502">"بیشتر"</string>
     <string name="label_pause_key" msgid="181098308428035340">"توقف موقت"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"منتظر بمانید"</string>
@@ -130,8 +133,7 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"میکروفن در صفحه کلید نمادها"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"ورودی صدا غیرفعال است"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"انتخاب روش ورودی"</string>
-    <!-- no translation found for configure_input_method (373356270290742459) -->
-    <skip />
+    <string name="configure_input_method" msgid="373356270290742459">"پیکربندی روش های ورودی"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"زبان های ورودی"</string>
     <string name="select_language" msgid="2573265881207142437">"انتخاب زبان های ورودی"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← جهت ذخیره دوباره لمس کنید"</string>
@@ -141,11 +143,8 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"برای تصحیح کلمات لمس کنید"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"فقط هنگامی که پیشنهادات قابل مشاهده هستند، برای تصحیح کلمات وارد شده آنها را لمس کنید"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه کلید"</string>
-    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
-    <skip />
-    <!-- no translation found for subtype_en_GB (88170601942311355) -->
-    <skip />
-    <!-- no translation found for subtype_en_US (6160452336634534239) -->
-    <skip />
+    <string name="subtype_de_qwerty" msgid="3358900499589259491">"آلمانی QWERTY"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"انگیسی (انگلستان)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"انگیسی (US)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"حالت بررسی قابلیت استفاده"</string>
 </resources>
