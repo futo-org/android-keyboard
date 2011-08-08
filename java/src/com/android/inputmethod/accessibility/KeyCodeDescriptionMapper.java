@@ -28,6 +28,9 @@ import com.android.inputmethod.latin.R;
 import java.util.HashMap;
 
 public class KeyCodeDescriptionMapper {
+    // The resource ID of the string spoken for obscured keys
+    private static final int OBSCURED_KEY_RES_ID = R.string.spoken_description_dot;
+
     private static KeyCodeDescriptionMapper sInstance = new KeyCodeDescriptionMapper();
 
     // Map of key labels to spoken description resource IDs
@@ -118,10 +121,12 @@ public class KeyCodeDescriptionMapper {
      * @param context The package's context.
      * @param keyboard The keyboard on which the key resides.
      * @param key The key from which to obtain a description.
+     * @param shouldObscure {@true} if text (e.g. non-control) characters should be obscured.
      * @return a character sequence describing the action performed by pressing
      *         the key
      */
-    public CharSequence getDescriptionForKey(Context context, Keyboard keyboard, Key key) {
+    public CharSequence getDescriptionForKey(Context context, Keyboard keyboard, Key key,
+            boolean shouldObscure) {
         if (key.mCode == Keyboard.CODE_SWITCH_ALPHA_SYMBOL) {
             final CharSequence description = getDescriptionForSwitchAlphaSymbol(context, keyboard);
             if (description != null)
@@ -136,12 +141,12 @@ public class KeyCodeDescriptionMapper {
             } else if (label.length() == 1
                     || (keyboard.isManualTemporaryUpperCase() && !TextUtils
                             .isEmpty(key.mHintLabel))) {
-                return getDescriptionForKeyCode(context, keyboard, key);
+                return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
             } else {
                 return label;
             }
         } else if (key.mCode != Keyboard.CODE_DUMMY) {
-            return getDescriptionForKeyCode(context, keyboard, key);
+            return getDescriptionForKeyCode(context, keyboard, key, shouldObscure);
         }
 
         return null;
@@ -206,19 +211,29 @@ public class KeyCodeDescriptionMapper {
      * @param context The package's context.
      * @param keyboard The keyboard on which the key resides.
      * @param key The key from which to obtain a description.
+     * @param shouldObscure {@true} if text (e.g. non-control) characters should be obscured.
      * @return a character sequence describing the action performed by pressing
      *         the key
      */
-    private CharSequence getDescriptionForKeyCode(Context context, Keyboard keyboard, Key key) {
+    private CharSequence getDescriptionForKeyCode(Context context, Keyboard keyboard, Key key,
+            boolean shouldObscure) {
         final int code = getCorrectKeyCode(keyboard, key);
 
         if (keyboard.isShiftLocked() && mShiftLockedKeyCodeMap.containsKey(code)) {
             return context.getString(mShiftLockedKeyCodeMap.get(code));
         } else if (keyboard.isShiftedOrShiftLocked() && mShiftedKeyCodeMap.containsKey(code)) {
             return context.getString(mShiftedKeyCodeMap.get(code));
-        } else if (mKeyCodeMap.containsKey(code)) {
+        }
+
+        // If the key description should be obscured, now is the time to do it.
+        final boolean isDefinedNonCtrl = Character.isDefined(code) && !Character.isISOControl(code);
+        if (shouldObscure && isDefinedNonCtrl) {
+            return context.getString(OBSCURED_KEY_RES_ID);
+        }
+
+        if (mKeyCodeMap.containsKey(code)) {
             return context.getString(mKeyCodeMap.get(code));
-        } else if (Character.isDefined(code) && !Character.isISOControl(code)) {
+        } else if (isDefinedNonCtrl) {
             return Character.toString((char) code);
         } else {
             return context.getString(R.string.spoken_description_unknown, code);

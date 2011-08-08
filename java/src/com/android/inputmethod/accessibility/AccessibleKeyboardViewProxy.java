@@ -20,12 +20,18 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.inputmethodservice.InputMethodService;
+import android.media.AudioManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
+import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
+import com.android.inputmethod.compat.AudioManagerCompatWrapper;
+import com.android.inputmethod.compat.EditorInfoCompatUtils;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
@@ -39,17 +45,19 @@ public class AccessibleKeyboardViewProxy {
     // Delay in milliseconds between key press DOWN and UP events
     private static final long DELAY_KEY_PRESS = 10;
 
-    private int mScaledEdgeSlop;
+    private InputMethodService mInputMethod;
+    private FlickGestureDetector mGestureDetector;
     private LatinKeyboardBaseView mView;
     private AccessibleKeyboardActionListener mListener;
-    private FlickGestureDetector mGestureDetector;
+    private AudioManagerCompatWrapper mAudioManager;
 
+    private int mScaledEdgeSlop;
     private int mLastHoverKeyIndex = KeyDetector.NOT_A_KEY;
     private int mLastX = -1;
     private int mLastY = -1;
 
-    public static void init(Context context, SharedPreferences prefs) {
-        sInstance.initInternal(context, prefs);
+    public static void init(InputMethodService inputMethod, SharedPreferences prefs) {
+        sInstance.initInternal(inputMethod, prefs);
         sInstance.mListener = AccessibleInputMethodServiceProxy.getInstance();
     }
 
@@ -65,15 +73,36 @@ public class AccessibleKeyboardViewProxy {
         // Not publicly instantiable.
     }
 
-    private void initInternal(Context context, SharedPreferences prefs) {
+    private void initInternal(InputMethodService inputMethod, SharedPreferences prefs) {
         final Paint paint = new Paint();
         paint.setTextAlign(Paint.Align.LEFT);
         paint.setTextSize(14.0f);
         paint.setAntiAlias(true);
         paint.setColor(Color.YELLOW);
 
-        mGestureDetector = new KeyboardFlickGestureDetector(context);
-        mScaledEdgeSlop = ViewConfiguration.get(context).getScaledEdgeSlop();
+        mInputMethod = inputMethod;
+        mGestureDetector = new KeyboardFlickGestureDetector(inputMethod);
+        mScaledEdgeSlop = ViewConfiguration.get(inputMethod).getScaledEdgeSlop();
+
+        final AudioManager audioManager = (AudioManager) inputMethod
+                .getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = new AudioManagerCompatWrapper(audioManager);
+    }
+
+    /**
+     * @return {@code true} if the device should not speak text (eg. non-control) characters
+     */
+    private boolean shouldObscureInput() {
+        // Always speak if the user is listening through headphones.
+        if (mAudioManager.isWiredHeadsetOn() || mAudioManager.isBluetoothA2dpOn())
+            return false;
+
+        final EditorInfo info = mInputMethod.getCurrentInputEditorInfo();
+        if (info == null)
+            return false;
+
+        // Don't speak if the IME is connected to a password field.
+        return InputTypeCompatUtils.isPasswordInputType(info.inputType);
     }
 
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event,
@@ -90,8 +119,10 @@ public class AccessibleKeyboardViewProxy {
             if (key == null)
                 break;
 
+            final boolean shouldObscure = shouldObscureInput();
             final CharSequence description = KeyCodeDescriptionMapper.getInstance()
-                    .getDescriptionForKey(mView.getContext(), mView.getKeyboard(), key);
+                    .getDescriptionForKey(mView.getContext(), mView.getKeyboard(), key,
+                            shouldObscure);
 
             if (description == null)
                 return false;
