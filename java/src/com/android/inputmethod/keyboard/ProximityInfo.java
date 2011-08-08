@@ -17,6 +17,7 @@
 package com.android.inputmethod.keyboard;
 
 import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,6 +58,15 @@ public class ProximityInfo {
 
     public static ProximityInfo getDummyProximityInfo() {
         return new ProximityInfo(1, 1, 1, 1, 1, Collections.<Key>emptyList());
+    }
+
+    public static ProximityInfo getSpellCheckerProximityInfo() {
+        final ProximityInfo spellCheckerProximityInfo = getDummyProximityInfo();
+        spellCheckerProximityInfo.mNativeProximityInfo =
+                spellCheckerProximityInfo.setProximityInfoNative(
+                        SpellCheckerProximityInfo.ROW_SIZE,
+                        480, 300, 10, 3, SpellCheckerProximityInfo.PROXIMITY);
+        return spellCheckerProximityInfo;
     }
 
     private int mNativeProximityInfo;

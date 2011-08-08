@@ -19,7 +19,6 @@ package com.android.inputmethod.latin.spellcheck;
 import android.content.res.Resources;
 import android.service.textservice.SpellCheckerService;
 import android.service.textservice.SpellCheckerService.Session;
-import android.util.Log;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
@@ -33,6 +32,7 @@ import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WordComposer;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.LinkedList;
@@ -48,7 +48,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static final boolean DBG = true;
 
     private final static String[] emptyArray = new String[0];
-    private final ProximityInfo mProximityInfo = ProximityInfo.getDummyProximityInfo();
+    private final ProximityInfo mProximityInfo = ProximityInfo.getSpellCheckerProximityInfo();
     private final Map<String, Dictionary> mDictionaries =
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
 
@@ -141,8 +141,16 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             final WordComposer composer = new WordComposer();
             final int length = text.length();
             for (int i = 0; i < length; ++i) {
-                int character = text.codePointAt(i);
-                composer.add(character, new int[] { character },
+                final int character = text.codePointAt(i);
+                final int proximityIndex = SpellCheckerProximityInfo.getIndexOf(character);
+                final int[] proximities;
+                if (-1 == proximityIndex) {
+                    proximities = new int[] { character };
+                } else {
+                    proximities = Arrays.copyOfRange(SpellCheckerProximityInfo.PROXIMITY,
+                            proximityIndex, proximityIndex + SpellCheckerProximityInfo.ROW_SIZE);
+                }
+                composer.add(character, proximities,
                         WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
             }
             dictionary.getWords(composer, suggestionsGatherer, mProximityInfo);
