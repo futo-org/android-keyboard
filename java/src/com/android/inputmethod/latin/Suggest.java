@@ -191,6 +191,8 @@ public class Suggest implements Dictionary.WordCallback {
         mCorrectionMode = mode;
     }
 
+    // The main dictionary could have been loaded asynchronously.  Don't cache the return value
+    // of this method.
     public boolean hasMainDictionary() {
         return mMainDict != null;
     }

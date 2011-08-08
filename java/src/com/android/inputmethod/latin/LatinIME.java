@@ -170,7 +170,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private WordComposer mWordComposer = new WordComposer();
     private CharSequence mBestWord;
     private boolean mHasUncommittedTypedChars;
-    private boolean mHasDictionary;
     // Magic space: a space that should disappear on space/apostrophe insertion, move after the
     // punctuation on punctuation insertion, and become a real space on alpha char insertion.
     private boolean mJustAddedMagicSpace; // This indicates whether the last char is a magic space.
@@ -683,8 +682,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         setSuggestionStripShownInternal(isCandidateStripVisible(), /* needsInputViewShown */ false);
         // Delay updating suggestions because keyboard input view may not be shown at this point.
         mHandler.postUpdateSuggestions();
-
-        updateCorrectionMode();
 
         inputView.setKeyPreviewPopupEnabled(mSettingsValues.mKeyPreviewPopupOn,
                 mSettingsValues.mKeyPreviewPopupDismissDelay);
@@ -1462,7 +1459,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             // in Italian dov' should not be expanded to dove' because the elision
             // requires the last vowel to be removed.
             final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
-                    && !mInputTypeNoAutoCorrect && mHasDictionary;
+                    && !mInputTypeNoAutoCorrect;
             if (shouldAutoCorrect && primaryCode != Keyboard.CODE_SINGLE_QUOTE) {
                 pickedDefault = pickDefaultSuggestion(primaryCode);
             } else {
@@ -1757,9 +1754,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             sendMagicSpace();
         }
 
-        // We should show the hint if the user pressed the first entry AND either:
+        // We should show the "Touch again to save" hint if the user pressed the first entry
+        // AND either:
         // - There is no dictionary (we know that because we tried to load it => null != mSuggest
-        //   AND mHasDictionary is false)
+        //   AND mSuggest.hasMainDictionary() is false)
         // - There is a dictionary and the word is not in it
         // Please note that if mSuggest is null, it means that everything is off: suggestion
         // and correction, so we shouldn't try to show the hint
@@ -1767,7 +1765,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // to do with the autocorrection setting.
         final boolean showingAddToDictionaryHint = index == 0 && mSuggest != null
                 // If there is no dictionary the hint should be shown.
-                && (!mHasDictionary
+                && (!mSuggest.hasMainDictionary()
                         // If "suggestion" is not in the dictionary, the hint should be shown.
                         || !AutoCorrection.isValidWord(
                                 mSuggest.getUnigramDictionaries(), suggestion, true));
@@ -2102,9 +2100,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void updateCorrectionMode() {
         // TODO: cleanup messy flags
-        mHasDictionary = mSuggest != null ? mSuggest.hasMainDictionary() : false;
         final boolean shouldAutoCorrect = mSettingsValues.mAutoCorrectEnabled
-                && !mInputTypeNoAutoCorrect && mHasDictionary;
+                && !mInputTypeNoAutoCorrect;
         mCorrectionMode = (shouldAutoCorrect && mSettingsValues.mAutoCorrectEnabled)
                 ? Suggest.CORRECTION_FULL
                 : (shouldAutoCorrect ? Suggest.CORRECTION_BASIC : Suggest.CORRECTION_NONE);
