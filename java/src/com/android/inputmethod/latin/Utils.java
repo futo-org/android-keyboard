@@ -111,8 +111,9 @@ public class Utils {
         }
     }
 
-    public static boolean hasMultipleEnabledIMEsOrSubtypes(InputMethodManagerCompatWrapper imm,
-            boolean shouldIncludeAuxiliarySubtypes) {
+    public static boolean hasMultipleEnabledIMEsOrSubtypes(
+            final InputMethodManagerCompatWrapper imm,
+            final boolean shouldIncludeAuxiliarySubtypes) {
         final List<InputMethodInfoCompatWrapper> enabledImis = imm.getEnabledInputMethodList();
 
         // Number of the filtered IMEs

@@ -31,10 +31,12 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.Utils;
 
 import java.lang.ref.SoftReference;
 import java.util.Arrays;
@@ -59,6 +61,7 @@ public class LatinKeyboard extends Keyboard {
     private float mSpacebarTextFadeFactor = 0.0f;
     private final HashMap<Integer, SoftReference<BitmapDrawable>> mSpaceDrawableCache =
             new HashMap<Integer, SoftReference<BitmapDrawable>>();
+    private final boolean mIsSpacebarTriggeringPopupByLongPress;
 
     /* Shortcut key and its icons if available */
     private final Key mShortcutKey;
@@ -85,6 +88,9 @@ public class LatinKeyboard extends Keyboard {
 
         mShortcutKey = params.mShortcutKey;
         mEnabledShortcutIcon = (mShortcutKey != null) ? mShortcutKey.getIcon() : null;
+        final int longPressSpaceKeyTimeout =
+                mRes.getInteger(R.integer.config_long_press_space_key_timeout);
+        mIsSpacebarTriggeringPopupByLongPress = (longPressSpaceKeyTimeout > 0);
 
         final TypedArray a = context.obtainStyledAttributes(
                 null, R.styleable.LatinKeyboard, R.attr.latinKeyboardStyle, R.style.LatinKeyboard);
@@ -179,8 +185,13 @@ public class LatinKeyboard extends Keyboard {
     }
 
     private void updateSpacebarForLocale(boolean isAutoCorrection) {
-        if (mSpaceKey == null)
-            return;
+        if (mSpaceKey == null) return;
+        final InputMethodManagerCompatWrapper imm = InputMethodManagerCompatWrapper.getInstance();
+        if (imm == null) return;
+        // The "..." popup hint for triggering something by a long-pressing the spacebar
+        final boolean shouldShowInputMethodPicker = mIsSpacebarTriggeringPopupByLongPress
+                && Utils.hasMultipleEnabledIMEsOrSubtypes(imm, true /* include aux subtypes */);
+        mSpaceKey.setNeedsSpecialPopupHint(shouldShowInputMethodPicker);
         // If application locales are explicitly selected.
         if (mSubtypeSwitcher.needsToDisplayLanguage()) {
             mSpaceKey.setIcon(getSpaceDrawable(

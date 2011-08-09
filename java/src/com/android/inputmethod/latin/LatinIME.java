@@ -1181,8 +1181,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (isShowingOptionDialog()) return;
         if (InputMethodServiceCompatWrapper.CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED) {
             showSubtypeSelectorAndSettings();
-        } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm,
-                false /* should exclude auxiliary subtypes */)) {
+        } else if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm, false /* exclude aux subtypes */)) {
             showOptionsMenu();
         } else {
             launchSettings();
@@ -1197,8 +1196,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case CODE_SHOW_INPUT_METHOD_PICKER:
-            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm,
-                    true /* should include auxiliary subtypes */)) {
+            if (Utils.hasMultipleEnabledIMEsOrSubtypes(mImm, true /* include aux subtypes */)) {
                 mImm.showInputMethodPicker();
                 return true;
             }
