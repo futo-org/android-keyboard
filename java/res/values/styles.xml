@@ -149,7 +149,6 @@
         <item name="verticalGap">@fraction/key_bottom_gap_ics</item>
     </style>
     <style name="LatinKeyboard.IceCreamSandwich" parent="LatinKeyboard">
-        <item name="autoCorrectionSpacebarLedEnabled">false</item>
         <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
     <style name="KeyboardView.IceCreamSandwich" parent="KeyboardView">
