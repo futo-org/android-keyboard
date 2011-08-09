@@ -88,6 +88,7 @@ public class Suggest implements Dictionary.WordCallback {
     private AutoCorrection mAutoCorrection;
 
     private Dictionary mMainDict;
+    private ContactsDictionary mContactsDict;
     private WhitelistDictionary mWhiteListDictionary;
     private final Map<String, Dictionary> mUnigramDictionaries = new HashMap<String, Dictionary>();
     private final Map<String, Dictionary> mBigramDictionaries = new HashMap<String, Dictionary>();
@@ -197,6 +198,10 @@ public class Suggest implements Dictionary.WordCallback {
         return mMainDict != null;
     }
 
+    public ContactsDictionary getContactsDictionary() {
+        return mContactsDict;
+    }
+
     public Map<String, Dictionary> getUnigramDictionaries() {
         return mUnigramDictionaries;
     }
@@ -218,7 +223,8 @@ public class Suggest implements Dictionary.WordCallback {
      * the contacts dictionary by passing null to this method. In this case no contacts dictionary
      * won't be used.
      */
-    public void setContactsDictionary(Dictionary contactsDictionary) {
+    public void setContactsDictionary(ContactsDictionary contactsDictionary) {
+        mContactsDict = contactsDictionary;
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_CONTACTS, contactsDictionary);
     }

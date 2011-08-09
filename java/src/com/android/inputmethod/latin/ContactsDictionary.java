@@ -49,20 +49,28 @@ public class ContactsDictionary extends ExpandableDictionary {
 
     private long mLastLoadedContacts;
 
-    public ContactsDictionary(Context context, int dicTypeId) {
+    public ContactsDictionary(final Context context, final int dicTypeId) {
         super(context, dicTypeId);
+        registerObserver(context);
+        loadDictionary();
+    }
+
+    private synchronized void registerObserver(final Context context) {
         // Perform a managed query. The Activity will handle closing and requerying the cursor
         // when needed.
+        if (mObserver != null) return;
         ContentResolver cres = context.getContentResolver();
-
         cres.registerContentObserver(
-                Contacts.CONTENT_URI, true,mObserver = new ContentObserver(null) {
+                Contacts.CONTENT_URI, true, mObserver = new ContentObserver(null) {
                     @Override
                     public void onChange(boolean self) {
                         setRequiresReload(true);
                     }
                 });
-        loadDictionary();
+    }
+
+    public void reopen(final Context context) {
+        registerObserver(context);
     }
 
     @Override
