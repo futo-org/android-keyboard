@@ -509,7 +509,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (null == mPrefs) mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (null == mSubtypeSwitcher) mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mSettingsValues = new Settings.Values(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
-        resetContactsDictionary();
+        resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
     }
 
     private void initSuggest() {
@@ -518,8 +518,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final Resources res = mResources;
         final Locale savedLocale = Utils.setSystemLocale(res, keyboardLocale);
+        final ContactsDictionary oldContactsDictionary;
         if (mSuggest != null) {
+            oldContactsDictionary = mSuggest.getContactsDictionary();
             mSuggest.close();
+        } else {
+            oldContactsDictionary = null;
         }
 
         int mainDicResId = Utils.getMainDictionaryResourceId(res);
@@ -533,7 +537,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSuggest.setUserDictionary(mUserDictionary);
         mIsUserDictionaryAvaliable = mUserDictionary.isEnabled();
 
-        resetContactsDictionary();
+        resetContactsDictionary(oldContactsDictionary);
 
         mUserUnigramDictionary
                 = new UserUnigramDictionary(this, this, localeStr, Suggest.DIC_USER_UNIGRAM);
@@ -548,11 +552,36 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         Utils.setSystemLocale(res, savedLocale);
     }
 
-    private void resetContactsDictionary() {
-        if (null == mSuggest) return;
-        ContactsDictionary contactsDictionary = mSettingsValues.mUseContactsDict
-                ? new ContactsDictionary(this, Suggest.DIC_CONTACTS) : null;
-        mSuggest.setContactsDictionary(contactsDictionary);
+    /**
+     * Resets the contacts dictionary in mSuggest according to the user settings.
+     *
+     * This method takes an optional contacts dictionary to use. Since the contacts dictionary
+     * does not depend on the locale, it can be reused across different instances of Suggest.
+     * The dictionary will also be opened or closed as necessary depending on the settings.
+     *
+     * @param oldContactsDictionary an optional dictionary to use, or null
+     */
+    private void resetContactsDictionary(final ContactsDictionary oldContactsDictionary) {
+        final boolean shouldSetDictionary = (null != mSuggest && mSettingsValues.mUseContactsDict);
+
+        final ContactsDictionary dictionaryToUse;
+        if (!shouldSetDictionary) {
+            // Make sure the dictionary is closed. If it is already closed, this is a no-op,
+            // so it's safe to call it anyways.
+            if (null != oldContactsDictionary) oldContactsDictionary.close();
+            dictionaryToUse = null;
+        } else if (null != oldContactsDictionary) {
+            // Make sure the old contacts dictionary is opened. If it is already open, this is a
+            // no-op, so it's safe to call it anyways.
+            oldContactsDictionary.reopen(this);
+            dictionaryToUse = oldContactsDictionary;
+        } else {
+            dictionaryToUse = new ContactsDictionary(this, Suggest.DIC_CONTACTS);
+        }
+
+        if (null != mSuggest) {
+            mSuggest.setContactsDictionary(dictionaryToUse);
+        }
     }
 
     /* package private */ void resetSuggestMainDict() {
