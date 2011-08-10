@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +41,8 @@ import java.util.Locale;
  * file from the dictionary provider
  */
 public class BinaryDictionaryFileDumper {
+    private static final String TAG = BinaryDictionaryFileDumper.class.getSimpleName();
+
     /**
      * The size of the temporary buffer to copy files.
      */
@@ -79,8 +82,16 @@ public class BinaryDictionaryFileDumper {
      * Find out the cache directory associated with a specific locale.
      */
     private static String getCacheDirectoryForLocale(Locale locale, Context context) {
-        final String directoryName = replaceFileNameDangerousCharacters(locale.toString());
-        return context.getFilesDir() + File.separator + directoryName;
+        final String relativeDirectoryName = replaceFileNameDangerousCharacters(locale.toString());
+        final String absoluteDirectoryName = context.getFilesDir() + File.separator
+                + relativeDirectoryName;
+        final File directory = new File(absoluteDirectoryName);
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                Log.e(TAG, "Could not create the directory for locale" + locale);
+            }
+        }
+        return absoluteDirectoryName;
     }
 
     /**
