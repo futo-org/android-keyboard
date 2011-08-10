@@ -318,7 +318,7 @@ public class SubtypeSwitcher {
                 // when the API level is 10 or previous.
                 mService.notifyOnCurrentInputMethodSubtypeChanged(subtype);
             }
-        }.execute();
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public Drawable getShortcutIcon() {
