@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef LATINIME_CORRECTION_STATE_H
-#define LATINIME_CORRECTION_STATE_H
+#ifndef LATINIME_CORRECTION_H
+#define LATINIME_CORRECTION_H
 
 #include <stdint.h>
 
@@ -25,7 +25,7 @@ namespace latinime {
 
 class ProximityInfo;
 
-class CorrectionState {
+class Correction {
 
 public:
     typedef enum {
@@ -34,10 +34,10 @@ public:
         UNRELATED,
         ON_TERMINAL,
         NOT_ON_TERMINAL
-    } CorrectionStateType;
+    } CorrectionType;
 
-    CorrectionState(const int typedLetterMultiplier, const int fullWordMultiplier);
-    void initCorrectionState(
+    Correction(const int typedLetterMultiplier, const int fullWordMultiplier);
+    void initCorrection(
             const ProximityInfo *pi, const int inputLength, const int maxWordLength);
     void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
             const int spaceProximityPos, const int missingSpacePos);
@@ -50,7 +50,7 @@ public:
     int getInputIndex();
     bool needsToTraverseAll();
 
-    virtual ~CorrectionState();
+    virtual ~Correction();
     int getSpaceProximityPos() const {
         return mSpaceProximityPos;
     }
@@ -75,7 +75,7 @@ public:
     int getFreqForSplitTwoWords(const int firstFreq, const int secondFreq);
     int getFinalFreq(const int freq, unsigned short **word, int* wordLength);
 
-    CorrectionStateType processCharAndCalcState(const int32_t c, const bool isTerminal);
+    CorrectionType processCharAndCalcState(const int32_t c, const bool isTerminal);
 
     int getDiffs() const {
         return mDiffs;
@@ -117,16 +117,16 @@ private:
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
 
     inline bool isQuote(const unsigned short c);
-    inline CorrectionStateType processSkipChar(const int32_t c, const bool isTerminal);
+    inline CorrectionType processSkipChar(const int32_t c, const bool isTerminal);
 
     class RankingAlgorithm {
     public:
         static int calculateFinalFreq(const int inputIndex, const int depth,
                 const int matchCount, const int freq, const bool sameLength,
-                const CorrectionState* correctionState);
+                const Correction* correction);
         static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
-                const CorrectionState* correctionState);
+                const Correction* correction);
     };
 };
 } // namespace latinime
-#endif // LATINIME_CORRECTION_INFO_H
+#endif // LATINIME_CORRECTION_H

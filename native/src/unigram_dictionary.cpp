@@ -48,11 +48,11 @@ UnigramDictionary::UnigramDictionary(const uint8_t* const streamStart, int typed
     if (DEBUG_DICT) {
         LOGI("UnigramDictionary - constructor");
     }
-    mCorrectionState = new CorrectionState(typedLetterMultiplier, fullWordMultiplier);
+    mCorrection = new Correction(typedLetterMultiplier, fullWordMultiplier);
 }
 
 UnigramDictionary::~UnigramDictionary() {
-    delete mCorrectionState;
+    delete mCorrection;
 }
 
 static inline unsigned int getCodesBufferSize(const int* codes, const int codesSize,
@@ -184,7 +184,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     if (DEBUG_DICT) assert(codesSize == mInputLength);
 
     const int maxDepth = min(mInputLength * MAX_DEPTH_MULTIPLIER, MAX_WORD_LENGTH);
-    mCorrectionState->initCorrectionState(mProximityInfo, mInputLength, maxDepth);
+    mCorrection->initCorrection(mProximityInfo, mInputLength, maxDepth);
     PROF_END(0);
 
     PROF_START(1);
@@ -237,7 +237,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
             if (DEBUG_DICT) {
                 LOGI("--- Suggest missing space characters %d", i);
             }
-            getMissingSpaceWords(mInputLength, i, mCorrectionState);
+            getMissingSpaceWords(mInputLength, i, mCorrection);
         }
     }
     PROF_END(5);
@@ -256,7 +256,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                         i, x, y, proximityInfo->hasSpaceProximity(x, y));
             }
             if (proximityInfo->hasSpaceProximity(x, y)) {
-                getMistypedSpaceWords(mInputLength, i, mCorrectionState);
+                getMistypedSpaceWords(mInputLength, i, mCorrection);
             }
         }
     }
@@ -347,7 +347,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
         assert(excessivePos < mInputLength);
         assert(missingPos < mInputLength);
     }
-    mCorrectionState->setCorrectionParams(skipPos, excessivePos, transposedPos,
+    mCorrection->setCorrectionParams(skipPos, excessivePos, transposedPos,
             -1 /* spaceProximityPos */, -1 /* missingSpacePos */);
     int rootPosition = ROOT_POS;
     // Get the number of children of root, then increment the position
@@ -368,13 +368,13 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
             --mStackChildCount[depth];
             int siblingPos = mStackSiblingPos[depth];
             int firstChildPos;
-            mCorrectionState->initProcessState(
+            mCorrection->initProcessState(
                     mStackMatchedCount[depth], mStackInputIndex[depth], mStackOutputIndex[depth],
                     mStackTraverseAll[depth], mStackDiffs[depth]);
 
             // needsToTraverseChildrenNodes should be false
             const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos,
-                    mCorrectionState, &childCount, &firstChildPos, &siblingPos);
+                    mCorrection, &childCount, &firstChildPos, &siblingPos);
             // Update next sibling pos
             mStackSiblingPos[depth] = siblingPos;
             if (needsToTraverseChildrenNodes) {
@@ -383,7 +383,7 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
                 mStackChildCount[depth] = childCount;
                 mStackSiblingPos[depth] = firstChildPos;
 
-                mCorrectionState->getProcessState(&mStackMatchedCount[depth],
+                mCorrection->getProcessState(&mStackMatchedCount[depth],
                         &mStackInputIndex[depth], &mStackOutputIndex[depth],
                         &mStackTraverseAll[depth], &mStackDiffs[depth]);
             }
@@ -409,17 +409,17 @@ inline static void multiplyIntCapped(const int multiplier, int *base) {
 }
 
 void UnigramDictionary::getMissingSpaceWords(
-        const int inputLength, const int missingSpacePos, CorrectionState *correctionState) {
-    correctionState->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
+        const int inputLength, const int missingSpacePos, Correction *correction) {
+    correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, -1 /* spaceProximityPos */, missingSpacePos);
-    getSplitTwoWordsSuggestion(inputLength, correctionState);
+    getSplitTwoWordsSuggestion(inputLength, correction);
 }
 
 void UnigramDictionary::getMistypedSpaceWords(
-        const int inputLength, const int spaceProximityPos, CorrectionState *correctionState) {
-    correctionState->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
+        const int inputLength, const int spaceProximityPos, Correction *correction) {
+    correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
             -1 /* transposedPos */, spaceProximityPos, -1 /* missingSpacePos */);
-    getSplitTwoWordsSuggestion(inputLength, correctionState);
+    getSplitTwoWordsSuggestion(inputLength, correction);
 }
 
 inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
@@ -429,19 +429,19 @@ inline bool UnigramDictionary::needsToSkipCurrentNode(const unsigned short c,
     return (c == QUOTE && userTypedChar != QUOTE) || skipPos == depth;
 }
 
-inline void UnigramDictionary::onTerminal(const int freq, CorrectionState *correctionState) {
+inline void UnigramDictionary::onTerminal(const int freq, Correction *correction) {
     int wordLength;
     unsigned short* wordPointer;
-    const int finalFreq = correctionState->getFinalFreq(freq, &wordPointer, &wordLength);
+    const int finalFreq = correction->getFinalFreq(freq, &wordPointer, &wordLength);
     if (finalFreq >= 0) {
         addWord(wordPointer, wordLength, finalFreq);
     }
 }
 
 void UnigramDictionary::getSplitTwoWordsSuggestion(
-        const int inputLength, CorrectionState* correctionState) {
-    const int spaceProximityPos = correctionState->getSpaceProximityPos();
-    const int missingSpacePos = correctionState->getMissingSpacePos();
+        const int inputLength, Correction* correction) {
+    const int spaceProximityPos = correction->getSpaceProximityPos();
+    const int missingSpacePos = correction->getMissingSpacePos();
     if (DEBUG_DICT) {
         int inputCount = 0;
         if (spaceProximityPos >= 0) ++inputCount;
@@ -485,7 +485,7 @@ void UnigramDictionary::getSplitTwoWordsSuggestion(
         word[i] = mWord[i - firstWordLength - 1];
     }
 
-    const int pairFreq = mCorrectionState->getFreqForSplitTwoWords(firstFreq, secondFreq);
+    const int pairFreq = mCorrection->getFreqForSplitTwoWords(firstFreq, secondFreq);
     if (DEBUG_DICT) {
         LOGI("Split two words:  %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength);
     }
@@ -650,10 +650,10 @@ int UnigramDictionary::getBigramPosition(int pos, unsigned short *word, int offs
 // the current node in nextSiblingPosition. Thus, the caller must keep count of the nodes at any
 // given level, as output into newCount when traversing this level's parent.
 inline bool UnigramDictionary::processCurrentNode(const int initialPos,
-        CorrectionState *correctionState, int *newCount,
+        Correction *correction, int *newCount,
         int *newChildrenPosition, int *nextSiblingPosition) {
     if (DEBUG_DICT) {
-        correctionState->checkState();
+        correction->checkState();
     }
     int pos = initialPos;
 
@@ -697,12 +697,12 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         // If we are on the last char, this virtual node is a terminal if this node is.
         const bool isTerminal = isLastChar && isTerminalNode;
 
-        CorrectionState::CorrectionStateType stateType = correctionState->processCharAndCalcState(
+        Correction::CorrectionType stateType = correction->processCharAndCalcState(
                 c, isTerminal);
-        if (stateType == CorrectionState::TRAVERSE_ALL_ON_TERMINAL
-                || stateType == CorrectionState::ON_TERMINAL) {
+        if (stateType == Correction::TRAVERSE_ALL_ON_TERMINAL
+                || stateType == Correction::ON_TERMINAL) {
             needsToInvokeOnTerminal = true;
-        } else if (stateType == CorrectionState::UNRELATED) {
+        } else if (stateType == Correction::UNRELATED) {
             // We found that this is an unrelated character, so we should give up traversing
             // this node and its children entirely.
             // However we may not be on the last virtual node yet so we skip the remaining
@@ -730,7 +730,7 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
             // The frequency should be here, because we come here only if this is actually
             // a terminal node, and we are on its last char.
             const int freq = BinaryFormat::readFrequencyWithoutMovingPointer(DICT_ROOT, pos);
-            onTerminal(freq, mCorrectionState);
+            onTerminal(freq, mCorrection);
         }
 
         // If there are more chars in this node, then this virtual node has children.
@@ -751,7 +751,7 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
         }
 
         // Optimization: Prune out words that are too long compared to how much was typed.
-        if (correctionState->needsToPrune()) {
+        if (correction->needsToPrune()) {
             pos = BinaryFormat::skipFrequency(flags, pos);
             *nextSiblingPosition =
                     BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);

@@ -23,7 +23,7 @@
 
 namespace latinime {
 
-class CorrectionState;
+class Correction;
 
 class ProximityInfo {
 public:

@@ -18,7 +18,7 @@
 #define LATINIME_UNIGRAM_DICTIONARY_H
 
 #include <stdint.h>
-#include "correction_state.h"
+#include "correction.h"
 #include "defines.h"
 #include "proximity_info.h"
 
@@ -89,17 +89,17 @@ private:
     void getSuggestionCandidates(const int skipPos, const int excessivePos,
             const int transposedPos);
     bool addWord(unsigned short *word, int length, int frequency);
-    void getSplitTwoWordsSuggestion(const int inputLength, CorrectionState *correctionState);
+    void getSplitTwoWordsSuggestion(const int inputLength, Correction *correction);
     void getMissingSpaceWords(
-            const int inputLength, const int missingSpacePos, CorrectionState *correctionState);
+            const int inputLength, const int missingSpacePos, Correction *correction);
     void getMistypedSpaceWords(
-            const int inputLength, const int spaceProximityPos, CorrectionState *correctionState);
-    void onTerminal(const int freq, CorrectionState *correctionState);
+            const int inputLength, const int spaceProximityPos, Correction *correction);
+    void onTerminal(const int freq, Correction *correction);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
     // Process a node by considering proximity, missing and excessive character
     bool processCurrentNode(const int initialPos,
-            CorrectionState *correctionState, int *newCount,
+            Correction *correction, int *newCount,
             int *newChildPosition, int *nextSiblingPosition);
     int getMostFrequentWordLike(const int startInputIndex, const int inputLength,
             unsigned short *word);
@@ -129,7 +129,7 @@ private:
     int *mFrequencies;
     unsigned short *mOutputChars;
     ProximityInfo *mProximityInfo;
-    CorrectionState *mCorrectionState;
+    Correction *mCorrection;
     int mInputLength;
     // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];

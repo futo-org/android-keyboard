@@ -18,9 +18,9 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LOG_TAG "LatinIME: correction_state.cpp"
+#define LOG_TAG "LatinIME: correction.cpp"
 
-#include "correction_state.h"
+#include "correction.h"
 #include "proximity_info.h"
 
 namespace latinime {
@@ -30,20 +30,20 @@ namespace latinime {
 //////////////////////
 static const char QUOTE = '\'';
 
-inline bool CorrectionState::isQuote(const unsigned short c) {
+inline bool Correction::isQuote(const unsigned short c) {
     const unsigned short userTypedChar = mProximityInfo->getPrimaryCharAt(mInputIndex);
     return (c == QUOTE && userTypedChar != QUOTE);
 }
 
-/////////////////////
-// CorrectionState //
-/////////////////////
+////////////////
+// Correction //
+////////////////
 
-CorrectionState::CorrectionState(const int typedLetterMultiplier, const int fullWordMultiplier)
+Correction::Correction(const int typedLetterMultiplier, const int fullWordMultiplier)
         : TYPED_LETTER_MULTIPLIER(typedLetterMultiplier), FULL_WORD_MULTIPLIER(fullWordMultiplier) {
 }
 
-void CorrectionState::initCorrectionState(const ProximityInfo *pi, const int inputLength,
+void Correction::initCorrection(const ProximityInfo *pi, const int inputLength,
         const int maxDepth) {
     mProximityInfo = pi;
     mInputLength = inputLength;
@@ -52,7 +52,7 @@ void CorrectionState::initCorrectionState(const ProximityInfo *pi, const int inp
     mSkippedOutputIndex = -1;
 }
 
-void CorrectionState::setCorrectionParams(const int skipPos, const int excessivePos,
+void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
         const int transposedPos, const int spaceProximityPos, const int missingSpacePos) {
     mSkipPos = skipPos;
     mExcessivePos = excessivePos;
@@ -61,7 +61,7 @@ void CorrectionState::setCorrectionParams(const int skipPos, const int excessive
     mMissingSpacePos = missingSpacePos;
 }
 
-void CorrectionState::checkState() {
+void Correction::checkState() {
     if (DEBUG_DICT) {
         int inputCount = 0;
         if (mSkipPos >= 0) ++inputCount;
@@ -72,11 +72,11 @@ void CorrectionState::checkState() {
     }
 }
 
-int CorrectionState::getFreqForSplitTwoWords(const int firstFreq, const int secondFreq) {
-    return CorrectionState::RankingAlgorithm::calcFreqForSplitTwoWords(firstFreq, secondFreq, this);
+int Correction::getFreqForSplitTwoWords(const int firstFreq, const int secondFreq) {
+    return Correction::RankingAlgorithm::calcFreqForSplitTwoWords(firstFreq, secondFreq, this);
 }
 
-int CorrectionState::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
+int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
     const int outputIndex = mTerminalOutputIndex;
     const int inputIndex = mTerminalInputIndex;
     *wordLength = outputIndex + 1;
@@ -86,11 +86,11 @@ int CorrectionState::getFinalFreq(const int freq, unsigned short **word, int *wo
     *word = mWord;
     const bool sameLength = (mExcessivePos == mInputLength - 1) ? (mInputLength == inputIndex + 2)
             : (mInputLength == inputIndex + 1);
-    return CorrectionState::RankingAlgorithm::calculateFinalFreq(
+    return Correction::RankingAlgorithm::calculateFinalFreq(
             inputIndex, outputIndex, mMatchedCharCount, freq, sameLength, this);
 }
 
-void CorrectionState::initProcessState(const int matchCount, const int inputIndex,
+void Correction::initProcessState(const int matchCount, const int inputIndex,
         const int outputIndex, const bool traverseAllNodes, const int diffs) {
     mMatchedCharCount = matchCount;
     mInputIndex = inputIndex;
@@ -99,7 +99,7 @@ void CorrectionState::initProcessState(const int matchCount, const int inputInde
     mDiffs = diffs;
 }
 
-void CorrectionState::getProcessState(int *matchedCount, int *inputIndex, int *outputIndex,
+void Correction::getProcessState(int *matchedCount, int *inputIndex, int *outputIndex,
         bool *traverseAllNodes, int *diffs) {
     *matchedCount = mMatchedCharCount;
     *inputIndex = mInputIndex;
@@ -108,43 +108,43 @@ void CorrectionState::getProcessState(int *matchedCount, int *inputIndex, int *o
     *diffs = mDiffs;
 }
 
-void CorrectionState::charMatched() {
+void Correction::charMatched() {
     ++mMatchedCharCount;
 }
 
 // TODO: remove
-int CorrectionState::getOutputIndex() {
+int Correction::getOutputIndex() {
     return mOutputIndex;
 }
 
 // TODO: remove
-int CorrectionState::getInputIndex() {
+int Correction::getInputIndex() {
     return mInputIndex;
 }
 
 // TODO: remove
-bool CorrectionState::needsToTraverseAll() {
+bool Correction::needsToTraverseAll() {
     return mTraverseAllNodes;
 }
 
-void CorrectionState::incrementInputIndex() {
+void Correction::incrementInputIndex() {
     ++mInputIndex;
 }
 
-void CorrectionState::incrementOutputIndex() {
+void Correction::incrementOutputIndex() {
     ++mOutputIndex;
 }
 
-void CorrectionState::startTraverseAll() {
+void Correction::startTraverseAll() {
     mTraverseAllNodes = true;
 }
 
-bool CorrectionState::needsToPrune() const {
+bool Correction::needsToPrune() const {
     return (mOutputIndex - 1 >= (mTransposedPos >= 0 ? mInputLength - 1 : mMaxDepth)
             || mDiffs > mMaxEditDistance);
 }
 
-CorrectionState::CorrectionStateType CorrectionState::processSkipChar(
+Correction::CorrectionType Correction::processSkipChar(
         const int32_t c, const bool isTerminal) {
     mWord[mOutputIndex] = c;
     if (needsToTraverseAll() && isTerminal) {
@@ -158,9 +158,9 @@ CorrectionState::CorrectionStateType CorrectionState::processSkipChar(
     }
 }
 
-CorrectionState::CorrectionStateType CorrectionState::processCharAndCalcState(
+Correction::CorrectionType Correction::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
-    CorrectionStateType currentStateType = NOT_ON_TERMINAL;
+    CorrectionType currentStateType = NOT_ON_TERMINAL;
     // This has to be done for each virtual char (this forwards the "inputIndex" which
     // is the index in the user-inputted chars, as read by proximity chars.
     if (mExcessivePos == mOutputIndex && mInputIndex < mInputLength - 1) {
@@ -249,7 +249,7 @@ CorrectionState::CorrectionStateType CorrectionState::processCharAndCalcState(
     return currentStateType;
 }
 
-CorrectionState::~CorrectionState() {
+Correction::~Correction() {
 }
 
 /////////////////////////
@@ -302,17 +302,17 @@ inline static void multiplyRate(const int rate, int *freq) {
 // RankingAlgorithm //
 //////////////////////
 
-int CorrectionState::RankingAlgorithm::calculateFinalFreq(
+int Correction::RankingAlgorithm::calculateFinalFreq(
         const int inputIndex, const int outputIndex,
         const int matchCount, const int freq, const bool sameLength,
-        const CorrectionState* correctionState) {
-    const int skipPos = correctionState->getSkipPos();
-    const int excessivePos = correctionState->getExcessivePos();
-    const int transposedPos = correctionState->getTransposedPos();
-    const int inputLength = correctionState->mInputLength;
-    const int typedLetterMultiplier = correctionState->TYPED_LETTER_MULTIPLIER;
-    const int fullWordMultiplier = correctionState->FULL_WORD_MULTIPLIER;
-    const ProximityInfo *proximityInfo = correctionState->mProximityInfo;
+        const Correction* correction) {
+    const int skipPos = correction->getSkipPos();
+    const int excessivePos = correction->getExcessivePos();
+    const int transposedPos = correction->getTransposedPos();
+    const int inputLength = correction->mInputLength;
+    const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
+    const int fullWordMultiplier = correction->FULL_WORD_MULTIPLIER;
+    const ProximityInfo *proximityInfo = correction->mProximityInfo;
     const int matchWeight = powerIntCapped(typedLetterMultiplier, matchCount);
 
     // TODO: Demote by edit distance
@@ -370,10 +370,10 @@ int CorrectionState::RankingAlgorithm::calculateFinalFreq(
     return finalFreq;
 }
 
-int CorrectionState::RankingAlgorithm::calcFreqForSplitTwoWords(
-        const int firstFreq, const int secondFreq, const CorrectionState* correctionState) {
-    const int spaceProximityPos = correctionState->mSpaceProximityPos;
-    const int missingSpacePos = correctionState->mMissingSpacePos;
+int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
+        const int firstFreq, const int secondFreq, const Correction* correction) {
+    const int spaceProximityPos = correction->mSpaceProximityPos;
+    const int missingSpacePos = correction->mMissingSpacePos;
     if (DEBUG_DICT) {
         int inputCount = 0;
         if (spaceProximityPos >= 0) ++inputCount;
@@ -381,12 +381,12 @@ int CorrectionState::RankingAlgorithm::calcFreqForSplitTwoWords(
         assert(inputCount <= 1);
     }
     const bool isSpaceProximity = spaceProximityPos >= 0;
-    const int inputLength = correctionState->mInputLength;
+    const int inputLength = correction->mInputLength;
     const int firstWordLength = isSpaceProximity ? spaceProximityPos : missingSpacePos;
     const int secondWordLength = isSpaceProximity
             ? (inputLength - spaceProximityPos - 1)
             : (inputLength - missingSpacePos);
-    const int typedLetterMultiplier = correctionState->TYPED_LETTER_MULTIPLIER;
+    const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
 
     if (firstWordLength == 0 || secondWordLength == 0) {
         return 0;
