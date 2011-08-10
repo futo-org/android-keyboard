@@ -52,6 +52,11 @@ void Correction::initCorrection(const ProximityInfo *pi, const int inputLength,
     mSkippedOutputIndex = -1;
 }
 
+void Correction::initCorrectionState(
+        const int rootPos, const int childCount, const bool traverseAll) {
+    mCorrectionStates[0].init(rootPos, childCount, traverseAll);
+}
+
 void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
         const int transposedPos, const int spaceProximityPos, const int missingSpacePos) {
     mSkipPos = skipPos;
@@ -90,22 +95,25 @@ int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLen
             inputIndex, outputIndex, mMatchedCharCount, freq, sameLength, this);
 }
 
-void Correction::initProcessState(const int matchCount, const int inputIndex,
-        const int outputIndex, const bool traverseAllNodes, const int diffs) {
-    mMatchedCharCount = matchCount;
-    mInputIndex = inputIndex;
+bool Correction::initProcessState(const int outputIndex) {
+    if (mCorrectionStates[outputIndex].mChildCount <= 0) {
+        return false;
+    }
     mOutputIndex = outputIndex;
-    mTraverseAllNodes = traverseAllNodes;
-    mDiffs = diffs;
+    --(mCorrectionStates[outputIndex].mChildCount);
+    mMatchedCharCount = mCorrectionStates[outputIndex].mMatchedCount;
+    mInputIndex = mCorrectionStates[outputIndex].mInputIndex;
+    mTraverseAllNodes = mCorrectionStates[outputIndex].mTraverseAll;
+    mDiffs = mCorrectionStates[outputIndex].mDiffs;
+    return true;
 }
 
-void Correction::getProcessState(int *matchedCount, int *inputIndex, int *outputIndex,
-        bool *traverseAllNodes, int *diffs) {
-    *matchedCount = mMatchedCharCount;
-    *inputIndex = mInputIndex;
-    *outputIndex = mOutputIndex;
-    *traverseAllNodes = mTraverseAllNodes;
-    *diffs = mDiffs;
+int Correction::goDownTree(
+        const int parentIndex, const int childCount, const int firstChildPos) {
+    mCorrectionStates[mOutputIndex].mParentIndex = parentIndex;
+    mCorrectionStates[mOutputIndex].mChildCount = childCount;
+    mCorrectionStates[mOutputIndex].mSiblingPos = firstChildPos;
+    return mOutputIndex;
 }
 
 void Correction::charMatched() {
@@ -133,6 +141,13 @@ void Correction::incrementInputIndex() {
 
 void Correction::incrementOutputIndex() {
     ++mOutputIndex;
+    mCorrectionStates[mOutputIndex].mParentIndex = mCorrectionStates[mOutputIndex - 1].mParentIndex;
+    mCorrectionStates[mOutputIndex].mChildCount = mCorrectionStates[mOutputIndex - 1].mChildCount;
+    mCorrectionStates[mOutputIndex].mSiblingPos = mCorrectionStates[mOutputIndex - 1].mSiblingPos;
+    mCorrectionStates[mOutputIndex].mMatchedCount = mMatchedCharCount;
+    mCorrectionStates[mOutputIndex].mInputIndex = mInputIndex;
+    mCorrectionStates[mOutputIndex].mTraverseAll = mTraverseAllNodes;
+    mCorrectionStates[mOutputIndex].mDiffs = mDiffs;
 }
 
 void Correction::startTraverseAll() {

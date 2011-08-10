@@ -352,44 +352,28 @@ void UnigramDictionary::getSuggestionCandidates(const int skipPos,
     int rootPosition = ROOT_POS;
     // Get the number of children of root, then increment the position
     int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
-    int depth = 0;
+    int outputIndex = 0;
 
-    mStackChildCount[0] = childCount;
-    mStackTraverseAll[0] = (mInputLength <= 0);
-    mStackInputIndex[0] = 0;
-    mStackDiffs[0] = 0;
-    mStackSiblingPos[0] = rootPosition;
-    mStackOutputIndex[0] = 0;
-    mStackMatchedCount[0] = 0;
+    mCorrection->initCorrectionState(rootPosition, childCount, (mInputLength <= 0));
 
     // Depth first search
-    while (depth >= 0) {
-        if (mStackChildCount[depth] > 0) {
-            --mStackChildCount[depth];
-            int siblingPos = mStackSiblingPos[depth];
+    while (outputIndex >= 0) {
+        if (mCorrection->initProcessState(outputIndex)) {
+            int siblingPos = mCorrection->getTreeSiblingPos(outputIndex);
             int firstChildPos;
-            mCorrection->initProcessState(
-                    mStackMatchedCount[depth], mStackInputIndex[depth], mStackOutputIndex[depth],
-                    mStackTraverseAll[depth], mStackDiffs[depth]);
 
-            // needsToTraverseChildrenNodes should be false
             const bool needsToTraverseChildrenNodes = processCurrentNode(siblingPos,
                     mCorrection, &childCount, &firstChildPos, &siblingPos);
             // Update next sibling pos
-            mStackSiblingPos[depth] = siblingPos;
+            mCorrection->setTreeSiblingPos(outputIndex, siblingPos);
+
             if (needsToTraverseChildrenNodes) {
                 // Goes to child node
-                ++depth;
-                mStackChildCount[depth] = childCount;
-                mStackSiblingPos[depth] = firstChildPos;
-
-                mCorrection->getProcessState(&mStackMatchedCount[depth],
-                        &mStackInputIndex[depth], &mStackOutputIndex[depth],
-                        &mStackTraverseAll[depth], &mStackDiffs[depth]);
+                outputIndex = mCorrection->goDownTree(outputIndex, childCount, firstChildPos);
             }
         } else {
             // Goes to parent sibling node
-            --depth;
+            outputIndex = mCorrection->getTreeParentIndex(outputIndex);
         }
     }
 }

@@ -19,6 +19,7 @@
 
 #include <stdint.h>
 #include "correction.h"
+#include "correction_state.h"
 #include "defines.h"
 #include "proximity_info.h"
 
@@ -134,13 +135,9 @@ private:
     // MAX_WORD_LENGTH_INTERNAL must be bigger than MAX_WORD_LENGTH
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
 
-    int mStackMatchedCount[MAX_WORD_LENGTH_INTERNAL];
-    int mStackChildCount[MAX_WORD_LENGTH_INTERNAL];
-    bool mStackTraverseAll[MAX_WORD_LENGTH_INTERNAL];
-    int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];
-    int mStackDiffs[MAX_WORD_LENGTH_INTERNAL];
-    int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];
-    int mStackOutputIndex[MAX_WORD_LENGTH_INTERNAL];
+    int mStackChildCount[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
+    int mStackInputIndex[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
+    int mStackSiblingPos[MAX_WORD_LENGTH_INTERNAL];// TODO: remove
 };
 } // namespace latinime
 

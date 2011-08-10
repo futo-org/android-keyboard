@@ -18,6 +18,7 @@
 #define LATINIME_CORRECTION_H
 
 #include <stdint.h>
+#include "correction_state.h"
 
 #include "defines.h"
 
@@ -39,11 +40,14 @@ public:
     Correction(const int typedLetterMultiplier, const int fullWordMultiplier);
     void initCorrection(
             const ProximityInfo *pi, const int inputLength, const int maxWordLength);
+    void initCorrectionState(const int rootPos, const int childCount, const bool traverseAll);
+
+    // TODO: remove
     void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
             const int spaceProximityPos, const int missingSpacePos);
     void checkState();
-    void initProcessState(const int matchCount, const int inputIndex, const int outputIndex,
-            const bool traverseAllNodes, const int diffs);
+    bool initProcessState(const int index);
+
     void getProcessState(int *matchedCount, int *inputIndex, int *outputIndex,
             bool *traverseAllNodes, int *diffs);
     int getOutputIndex();
@@ -80,6 +84,22 @@ public:
     int getDiffs() const {
         return mDiffs;
     }
+
+    /////////////////////////
+    // Tree helper methods
+    int goDownTree(const int parentIndex, const int childCount, const int firstChildPos);
+
+    inline int getTreeSiblingPos(const int index) const {
+        return mCorrectionStates[index].mSiblingPos;
+    }
+
+    inline void setTreeSiblingPos(const int index, const int pos) {
+        mCorrectionStates[index].mSiblingPos = pos;
+    }
+
+    inline int getTreeParentIndex(const int index) const {
+        return mCorrectionStates[index].mParentIndex;
+    }
 private:
     void charMatched();
     void incrementInputIndex();
@@ -115,6 +135,8 @@ private:
     int mDiffs;
     bool mTraverseAllNodes;
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
+
+    CorrectionState mCorrectionStates[MAX_WORD_LENGTH_INTERNAL];
 
     inline bool isQuote(const unsigned short c);
     inline CorrectionType processSkipChar(const int32_t c, const bool isTerminal);
