@@ -168,13 +168,17 @@ public class BinaryDictionaryFileDumper {
         final List<String> idList = getDictIdList(locale, context);
         final List<AssetFileAddress> fileAddressList = new ArrayList<AssetFileAddress>();
         for (String id : idList) {
-            final Uri dictionaryPackUri = getProviderUri(id);
+            final Uri wordListUri = getProviderUri(id);
             final AssetFileDescriptor afd =
-                    resolver.openAssetFileDescriptor(dictionaryPackUri, "r");
+                    resolver.openAssetFileDescriptor(wordListUri, "r");
             if (null == afd) continue;
             final String fileName = copyFileTo(afd.createInputStream(),
                     getCacheFileName(id, locale, context));
             afd.close();
+            if (0 >= resolver.delete(wordListUri, null, null)) {
+                // I'd rather not print the word list ID to the log here out of security concerns
+                Log.e(TAG, "Could not have the dictionary pack delete a word list");
+            }
             fileAddressList.add(AssetFileAddress.makeFromFileName(fileName));
         }
         return fileAddressList;
