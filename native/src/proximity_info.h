@@ -46,6 +46,7 @@ public:
     ProximityType getMatchedProximityId(
             const int index, const unsigned short c, const bool checkProximityChars) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
+
 private:
     int getStartIndexFromCoordinates(const int x, const int y) const;
     const int MAX_PROXIMITY_CHARS_SIZE;

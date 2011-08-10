@@ -160,6 +160,7 @@ static void prof_out(void) {
 #define WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE 60
 #define FULL_MATCHED_WORDS_PROMOTION_RATE 120
 #define WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE 90
+#define WORDS_WITH_MATCH_SKIP_PROMOTION_RATE 105
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.

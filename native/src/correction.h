@@ -52,7 +52,6 @@ public:
             bool *traverseAllNodes, int *diffs);
     int getOutputIndex();
     int getInputIndex();
-    bool needsToTraverseAll();
 
     virtual ~Correction();
     int getSpaceProximityPos() const {
@@ -101,45 +100,46 @@ public:
         return mCorrectionStates[index].mParentIndex;
     }
 private:
-    void charMatched();
-    void incrementInputIndex();
-    void incrementOutputIndex();
-    void startTraverseAll();
+    inline void charMatched();
+    inline void incrementInputIndex();
+    inline void incrementOutputIndex();
+    inline bool needsToTraverseAllNodes();
+    inline void startToTraverseAllNodes();
+    inline bool isQuote(const unsigned short c);
+    inline CorrectionType processSkipChar(const int32_t c, const bool isTerminal);
 
     // TODO: remove
-
-    void incrementDiffs() {
+    inline void incrementDiffs() {
         ++mDiffs;
     }
 
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
-
     const ProximityInfo *mProximityInfo;
 
     int mMaxEditDistance;
     int mMaxDepth;
     int mInputLength;
     int mSkipPos;
-    int mSkippedOutputIndex;
     int mExcessivePos;
     int mTransposedPos;
     int mSpaceProximityPos;
     int mMissingSpacePos;
-
-    int mMatchedCharCount;
-    int mInputIndex;
-    int mOutputIndex;
     int mTerminalInputIndex;
     int mTerminalOutputIndex;
-    int mDiffs;
-    bool mTraverseAllNodes;
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
 
     CorrectionState mCorrectionStates[MAX_WORD_LENGTH_INTERNAL];
 
-    inline bool isQuote(const unsigned short c);
-    inline CorrectionType processSkipChar(const int32_t c, const bool isTerminal);
+    // The following member variables are being used as cache values of the correction state.
+    int mOutputIndex;
+    int mInputIndex;
+    int mDiffs;
+    int mMatchedCharCount;
+    int mSkippedCount;
+    bool mNeedsToTraverseAllNodes;
+    bool mMatching;
+    bool mSkipping;
 
     class RankingAlgorithm {
     public:

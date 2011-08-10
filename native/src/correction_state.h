@@ -23,32 +23,33 @@
 
 namespace latinime {
 
-class CorrectionState {
-public:
+struct CorrectionState {
     int mParentIndex;
-    int mMatchedCount;
-    int mChildCount;
-    int mInputIndex;
-    int mDiffs;
     int mSiblingPos;
-    bool mTraverseAll;
+    uint16_t mChildCount;
+    uint8_t mInputIndex;
+    uint8_t mDiffs;
+    uint8_t mMatchedCount;
+    uint8_t mSkippedCount;
+    bool mMatching;
+    bool mSkipping;
+    bool mNeedsToTraverseAllNodes;
 
-    inline void init(const int rootPos, const int childCount, const bool traverseAll) {
-        set(-1, 0, childCount, 0, 0, rootPos, traverseAll);
-    }
-
-private:
-    inline void set(const int parentIndex, const int matchedCount, const int childCount,
-            const int inputIndex, const int diffs, const int siblingPos,
-            const bool traverseAll) {
-        mParentIndex = parentIndex;
-        mMatchedCount = matchedCount;
-        mChildCount = childCount;
-        mInputIndex = inputIndex;
-        mDiffs = diffs;
-        mSiblingPos = siblingPos;
-        mTraverseAll = traverseAll;
-    }
 };
+
+inline static void initCorrectionState(CorrectionState *state, const int rootPos,
+        const uint16_t childCount, const bool traverseAll) {
+    state->mParentIndex = -1;
+    state->mChildCount = childCount;
+    state->mInputIndex = 0;
+    state->mDiffs = 0;
+    state->mSiblingPos = rootPos;
+    state->mMatchedCount = 0;
+    state->mSkippedCount = 0;
+    state->mMatching = false;
+    state->mSkipping = false;
+    state->mNeedsToTraverseAllNodes = traverseAll;
+}
+
 } // namespace latinime
 #endif // LATINIME_CORRECTION_STATE_H
