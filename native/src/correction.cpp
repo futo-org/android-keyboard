@@ -54,11 +54,16 @@ void Correction::initCorrection(const ProximityInfo *pi, const int inputLength,
 void Correction::initCorrectionState(
         const int rootPos, const int childCount, const bool traverseAll) {
     latinime::initCorrectionState(mCorrectionStates, rootPos, childCount, traverseAll);
+    // TODO: remove
+    mCorrectionStates[0].mSkipPos = mSkipPos;
 }
 
 void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
         const int transposedPos, const int spaceProximityPos, const int missingSpacePos) {
+    // TODO: remove
     mSkipPos = skipPos;
+    // TODO: remove
+    mCorrectionStates[0].mSkipPos = skipPos;
     mExcessivePos = excessivePos;
     mTransposedPos = transposedPos;
     mSpaceProximityPos = spaceProximityPos;
@@ -111,6 +116,7 @@ bool Correction::initProcessState(const int outputIndex) {
     mNeedsToTraverseAllNodes = mCorrectionStates[outputIndex].mNeedsToTraverseAllNodes;
     mDiffs = mCorrectionStates[outputIndex].mDiffs;
     mSkippedCount = mCorrectionStates[outputIndex].mSkippedCount;
+    mSkipPos = mCorrectionStates[outputIndex].mSkipPos;
     mSkipping = false;
     mMatching = false;
     return true;
@@ -158,6 +164,7 @@ void Correction::incrementOutputIndex() {
     mCorrectionStates[mOutputIndex].mDiffs = mDiffs;
     mCorrectionStates[mOutputIndex].mSkippedCount = mSkippedCount;
     mCorrectionStates[mOutputIndex].mSkipping = mSkipping;
+    mCorrectionStates[mOutputIndex].mSkipPos = mSkipPos;
     mCorrectionStates[mOutputIndex].mMatching = mMatching;
 }
 
@@ -195,6 +202,12 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 
     bool skip = false;
     if (mSkipPos >= 0) {
+        if (mSkippedCount == 0 && mSkipPos < mOutputIndex) {
+            if (DEBUG_DICT) {
+                assert(mSkipPos == mOutputIndex - 1);
+            }
+            ++mSkipPos;
+        }
         skip = mSkipPos == mOutputIndex;
         mSkipping = true;
     }
@@ -227,11 +240,6 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             } else {
                 return UNRELATED;
             }
-        }
-
-        // TODO: remove after allowing combination errors
-        if (skip) {
-            return UNRELATED;
         }
 
         mWord[mOutputIndex] = c;

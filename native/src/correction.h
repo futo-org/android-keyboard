@@ -120,7 +120,6 @@ private:
     int mMaxEditDistance;
     int mMaxDepth;
     int mInputLength;
-    int mSkipPos;
     int mExcessivePos;
     int mTransposedPos;
     int mSpaceProximityPos;
@@ -137,6 +136,7 @@ private:
     int mDiffs;
     int mMatchedCharCount;
     int mSkippedCount;
+    int mSkipPos;
     bool mNeedsToTraverseAllNodes;
     bool mMatching;
     bool mSkipping;

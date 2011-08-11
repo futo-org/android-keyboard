@@ -31,6 +31,7 @@ struct CorrectionState {
     uint8_t mDiffs;
     uint8_t mMatchedCount;
     uint8_t mSkippedCount;
+    int8_t mSkipPos; // should be signed
     bool mMatching;
     bool mSkipping;
     bool mNeedsToTraverseAllNodes;
@@ -49,6 +50,7 @@ inline static void initCorrectionState(CorrectionState *state, const int rootPos
     state->mMatching = false;
     state->mSkipping = false;
     state->mNeedsToTraverseAllNodes = traverseAll;
+    state->mSkipPos = -1;
 }
 
 } // namespace latinime
