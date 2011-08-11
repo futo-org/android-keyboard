@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -121,6 +122,30 @@ class BinaryDictionaryGetter {
     }
 
     /**
+     * Returns the list of cached files for a specific locale.
+     *
+     * @param locale the locale to find the dictionary files for.
+     * @param context the context on which to open the files upon.
+     * @return a list of binary dictionary files, which may be null but may not be empty.
+     */
+    private static List<AssetFileAddress> getCachedDictionaryList(final Locale locale,
+            final Context context) {
+        final String directoryName = getCacheDirectoryForLocale(locale, context);
+        final File[] cacheFiles = new File(directoryName).listFiles();
+        if (null == cacheFiles) return null;
+
+        final ArrayList<AssetFileAddress> fileList = new ArrayList<AssetFileAddress>();
+        for (File f : cacheFiles) {
+            if (f.canRead()) {
+                fileList.add(AssetFileAddress.makeFromFileName(f.getPath()));
+            } else {
+                Log.e(TAG, "Found a cached dictionary file but cannot read it");
+            }
+        }
+        return fileList.size() > 0 ? fileList : null;
+    }
+
+    /**
      * Returns a list of file addresses for a given locale, trying relevant methods in order.
      *
      * Tries to get binary dictionaries from various sources, in order:
@@ -132,12 +157,14 @@ class BinaryDictionaryGetter {
      * - Returns null.
      * @return The address of a valid file, or null.
      */
-    public static List<AssetFileAddress> getDictionaryFiles(Locale locale, Context context,
-            int fallbackResId) {
+    public static List<AssetFileAddress> getDictionaryFiles(final Locale locale,
+            final Context context, final int fallbackResId) {
         try {
-            List<AssetFileAddress> cachedDictionaryList =
-                    BinaryDictionaryFileDumper.cacheDictionariesFromContentProvider(locale,
-                            context);
+            // cacheDictionariesFromContentProvider returns the list of files it copied to local
+            // storage, but we don't really care about what was copied NOW: what we want is the
+            // list of everything we ever cached, so we ignore the return value.
+            BinaryDictionaryFileDumper.cacheDictionariesFromContentProvider(locale, context);
+            List<AssetFileAddress> cachedDictionaryList = getCachedDictionaryList(locale, context);
             if (null != cachedDictionaryList) {
                 return cachedDictionaryList;
             }
