@@ -187,8 +187,9 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     mCorrection->initCorrection(mProximityInfo, mInputLength, maxDepth);
     PROF_END(0);
 
+    // TODO: remove
     PROF_START(1);
-    getSuggestionCandidates(-1, -1, -1);
+    // Note: This line is intentionally left blank
     PROF_END(1);
 
     PROF_START(2);

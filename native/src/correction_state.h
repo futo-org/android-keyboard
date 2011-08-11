@@ -33,6 +33,7 @@ struct CorrectionState {
     int8_t mSkipPos; // should be signed
     bool mMatching;
     bool mSkipping;
+    bool mProximityMatching;
     bool mNeedsToTraverseAllNodes;
 
 };
@@ -47,6 +48,7 @@ inline static void initCorrectionState(CorrectionState *state, const int rootPos
     state->mSkippedCount = 0;
     state->mMatching = false;
     state->mSkipping = false;
+    state->mProximityMatching = false;
     state->mNeedsToTraverseAllNodes = traverseAll;
     state->mSkipPos = -1;
 }

@@ -120,6 +120,8 @@ private:
     int mTerminalInputIndex;
     int mTerminalOutputIndex;
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
+    // Caveat: Do not create multiple tables per thread as this table eats up RAM a lot.
+    int mEditDistanceTable[MAX_WORD_LENGTH_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
 
     CorrectionState mCorrectionStates[MAX_WORD_LENGTH_INTERNAL];
 
@@ -132,11 +134,13 @@ private:
     bool mNeedsToTraverseAllNodes;
     bool mMatching;
     bool mSkipping;
+    bool mProximityMatching;
 
     class RankingAlgorithm {
     public:
         static int calculateFinalFreq(const int inputIndex, const int depth,
-                const int freq, const bool sameLength, const Correction* correction);
+                const int freq, const bool sameLength, int *editDistanceTable,
+                const Correction* correction);
         static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
                 const Correction* correction);
     };
