@@ -28,8 +28,7 @@ struct CorrectionState {
     int mSiblingPos;
     uint16_t mChildCount;
     uint8_t mInputIndex;
-    uint8_t mDiffs;
-    uint8_t mMatchedCount;
+    uint8_t mProximityCount;
     uint8_t mSkippedCount;
     int8_t mSkipPos; // should be signed
     bool mMatching;
@@ -43,9 +42,8 @@ inline static void initCorrectionState(CorrectionState *state, const int rootPos
     state->mParentIndex = -1;
     state->mChildCount = childCount;
     state->mInputIndex = 0;
-    state->mDiffs = 0;
+    state->mProximityCount = 0;
     state->mSiblingPos = rootPos;
-    state->mMatchedCount = 0;
     state->mSkippedCount = 0;
     state->mMatching = false;
     state->mSkipping = false;
