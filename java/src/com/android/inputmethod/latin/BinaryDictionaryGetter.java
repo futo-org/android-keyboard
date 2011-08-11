@@ -17,6 +17,8 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.util.Log;
@@ -39,8 +41,25 @@ class BinaryDictionaryGetter {
      */
     private static final String TAG = BinaryDictionaryGetter.class.getSimpleName();
 
+    /**
+     * Name of the common preferences name to know which word list are on and which are off.
+     */
+    private static final String COMMON_PREFERENCES_NAME = "LatinImeDictPrefs";
+
     // Prevents this from being instantiated
     private BinaryDictionaryGetter() {}
+
+    /**
+     * Returns whether we may want to use this character as part of a file name.
+     *
+     * This basically only accepts ascii letters and numbers, and rejects everything else.
+     */
+    private static boolean isFileNameCharacter(int codePoint) {
+        if (codePoint >= 0x30 && codePoint <= 0x39) return true; // Digit
+        if (codePoint >= 0x41 && codePoint <= 0x5A) return true; // Uppercase
+        if (codePoint >= 0x61 && codePoint <= 0x7A) return true; // Lowercase
+        return codePoint == '_'; // Underscore
+    }
 
     /**
      * Escapes a string for any characters that may be suspicious for a file or directory name.
@@ -50,17 +69,35 @@ class BinaryDictionaryGetter {
      * we cannot allow here)
      */
     // TODO: create a unit test for this method
-    private static String replaceFileNameDangerousCharacters(String name) {
+    private static String replaceFileNameDangerousCharacters(final String name) {
         // This assumes '%' is fully available as a non-separator, normal
         // character in a file name. This is probably true for all file systems.
         final StringBuilder sb = new StringBuilder();
         for (int i = 0; i < name.length(); ++i) {
             final int codePoint = name.codePointAt(i);
-            if (Character.isLetterOrDigit(codePoint) || '_' == codePoint) {
+            if (isFileNameCharacter(codePoint)) {
                 sb.appendCodePoint(codePoint);
             } else {
-                sb.append('%');
-                sb.append(Integer.toHexString(codePoint));
+                // 6 digits - unicode is limited to 21 bits
+                sb.append(String.format((Locale)null, "%%%1$06x", codePoint));
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Reverse escaping done by replaceFileNameDangerousCharacters.
+     */
+    private static String getWordListIdFromFileName(final String fname) {
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < fname.length(); ++i) {
+            final int codePoint = fname.codePointAt(i);
+            if ('%' != codePoint) {
+                sb.appendCodePoint(codePoint);
+            } else {
+                final int encodedCodePoint = Integer.parseInt(fname.substring(i + 1, i + 7), 16);
+                i += 6;
+                sb.appendCodePoint(encodedCodePoint);
             }
         }
         return sb.toString();
@@ -132,10 +169,28 @@ class BinaryDictionaryGetter {
             final Context context) {
         final String directoryName = getCacheDirectoryForLocale(locale, context);
         final File[] cacheFiles = new File(directoryName).listFiles();
+        // TODO: Never return null. Fallback on the built-in dictionary, and if that's
+        // not present or disabled, then return an empty list.
         if (null == cacheFiles) return null;
+
+        final SharedPreferences dictPackSettings;
+        try {
+            final String dictPackName = context.getString(R.string.dictionary_pack_package_name);
+            final Context dictPackContext = context.createPackageContext(dictPackName, 0);
+            dictPackSettings = dictPackContext.getSharedPreferences(COMMON_PREFERENCES_NAME,
+                    Context.MODE_WORLD_READABLE | Context.MODE_MULTI_PROCESS);
+        } catch (NameNotFoundException e) {
+            // The dictionary pack is not installed...
+            // TODO: fallback on the built-in dict, see the TODO above
+            Log.e(TAG, "Could not find a dictionary pack");
+            return null;
+        }
 
         final ArrayList<AssetFileAddress> fileList = new ArrayList<AssetFileAddress>();
         for (File f : cacheFiles) {
+            final String wordListId = getWordListIdFromFileName(f.getName());
+            final boolean isActive = dictPackSettings.getBoolean(wordListId, true);
+            if (!isActive) continue;
             if (f.canRead()) {
                 fileList.add(AssetFileAddress.makeFromFileName(f.getPath()));
             } else {
