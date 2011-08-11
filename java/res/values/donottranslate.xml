@@ -153,4 +153,8 @@
 
     <!-- Generic subtype label -->
     <string name="subtype_generic">%s</string>
+
+    <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->
+    <string name="dictionary_pack_package_name">com.google.android.inputmethod.latin.dictionarypack</string>
+    <string name="dictionary_pack_settings_activity">com.google.android.inputmethod.latin.dictionarypack.DictionarySettingsActivity</string>
 </resources>
