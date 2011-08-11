@@ -21,6 +21,7 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.Resources;
 import android.util.Log;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
@@ -39,6 +40,66 @@ class BinaryDictionaryGetter {
 
     // Prevents this from being instantiated
     private BinaryDictionaryGetter() {}
+
+    /**
+     * Escapes a string for any characters that may be suspicious for a file or directory name.
+     *
+     * Concretely this does a sort of URL-encoding except it will encode everything that's not
+     * alphanumeric or underscore. (true URL-encoding leaves alone characters like '*', which
+     * we cannot allow here)
+     */
+    // TODO: create a unit test for this method
+    private static String replaceFileNameDangerousCharacters(String name) {
+        // This assumes '%' is fully available as a non-separator, normal
+        // character in a file name. This is probably true for all file systems.
+        final StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < name.length(); ++i) {
+            final int codePoint = name.codePointAt(i);
+            if (Character.isLetterOrDigit(codePoint) || '_' == codePoint) {
+                sb.appendCodePoint(codePoint);
+            } else {
+                sb.append('%');
+                sb.append(Integer.toHexString(codePoint));
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Find out the cache directory associated with a specific locale.
+     */
+    private static String getCacheDirectoryForLocale(Locale locale, Context context) {
+        final String relativeDirectoryName = replaceFileNameDangerousCharacters(locale.toString());
+        final String absoluteDirectoryName = context.getFilesDir() + File.separator
+                + relativeDirectoryName;
+        final File directory = new File(absoluteDirectoryName);
+        if (!directory.exists()) {
+            if (!directory.mkdirs()) {
+                Log.e(TAG, "Could not create the directory for locale" + locale);
+            }
+        }
+        return absoluteDirectoryName;
+    }
+
+    /**
+     * Generates a file name for the id and locale passed as an argument.
+     *
+     * In the current implementation the file name returned will always be unique for
+     * any id/locale pair, but please do not expect that the id can be the same for
+     * different dictionaries with different locales. An id should be unique for any
+     * dictionary.
+     * The file name is pretty much an URL-encoded version of the id inside a directory
+     * named like the locale, except it will also escape characters that look dangerous
+     * to some file systems.
+     * @param id the id of the dictionary for which to get a file name
+     * @param locale the locale for which to get the file name
+     * @param context the context to use for getting the directory
+     * @return the name of the file to be created
+     */
+    public static String getCacheFileName(String id, Locale locale, Context context) {
+        final String fileName = replaceFileNameDangerousCharacters(id);
+        return getCacheDirectoryForLocale(locale, context) + File.separator + fileName;
+    }
 
     /**
      * Returns a file address from a resource, or null if it cannot be opened.
@@ -74,10 +135,11 @@ class BinaryDictionaryGetter {
     public static List<AssetFileAddress> getDictionaryFiles(Locale locale, Context context,
             int fallbackResId) {
         try {
-            List<AssetFileAddress> listFromContentProvider =
-                    BinaryDictionaryFileDumper.getDictSetFromContentProvider(locale, context);
-            if (null != listFromContentProvider) {
-                return listFromContentProvider;
+            List<AssetFileAddress> cachedDictionaryList =
+                    BinaryDictionaryFileDumper.cacheDictionariesFromContentProvider(locale,
+                            context);
+            if (null != cachedDictionaryList) {
+                return cachedDictionaryList;
             }
             // If the list is null, fall through and return the fallback
         } catch (FileNotFoundException e) {

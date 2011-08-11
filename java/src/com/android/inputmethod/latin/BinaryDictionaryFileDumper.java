@@ -25,7 +25,6 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -52,66 +51,6 @@ public class BinaryDictionaryFileDumper {
 
     // Prevents this class to be accidentally instantiated.
     private BinaryDictionaryFileDumper() {
-    }
-
-    /**
-     * Escapes a string for any characters that may be suspicious for a file or directory name.
-     *
-     * Concretely this does a sort of URL-encoding except it will encode everything that's not
-     * alphanumeric or underscore. (true URL-encoding leaves alone characters like '*', which
-     * we cannot allow here)
-     */
-    // TODO: create a unit test for this method
-    private static String replaceFileNameDangerousCharacters(String name) {
-        // This assumes '%' is fully available as a non-separator, normal
-        // character in a file name. This is probably true for all file systems.
-        final StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < name.length(); ++i) {
-            final int codePoint = name.codePointAt(i);
-            if (Character.isLetterOrDigit(codePoint) || '_' == codePoint) {
-                sb.appendCodePoint(codePoint);
-            } else {
-                sb.append('%');
-                sb.append(Integer.toHexString(codePoint));
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Find out the cache directory associated with a specific locale.
-     */
-    private static String getCacheDirectoryForLocale(Locale locale, Context context) {
-        final String relativeDirectoryName = replaceFileNameDangerousCharacters(locale.toString());
-        final String absoluteDirectoryName = context.getFilesDir() + File.separator
-                + relativeDirectoryName;
-        final File directory = new File(absoluteDirectoryName);
-        if (!directory.exists()) {
-            if (!directory.mkdirs()) {
-                Log.e(TAG, "Could not create the directory for locale" + locale);
-            }
-        }
-        return absoluteDirectoryName;
-    }
-
-    /**
-     * Generates a file name for the id and locale passed as an argument.
-     *
-     * In the current implementation the file name returned will always be unique for
-     * any id/locale pair, but please do not expect that the id can be the same for
-     * different dictionaries with different locales. An id should be unique for any
-     * dictionary.
-     * The file name is pretty much an URL-encoded version of the id inside a directory
-     * named like the locale, except it will also escape characters that look dangerous
-     * to some file systems.
-     * @param id the id of the dictionary for which to get a file name
-     * @param locale the locale for which to get the file name
-     * @param context the context to use for getting the directory
-     * @return the name of the file to be created
-     */
-    private static String getCacheFileName(String id, Locale locale, Context context) {
-        final String fileName = replaceFileNameDangerousCharacters(id);
-        return getCacheDirectoryForLocale(locale, context) + File.separator + fileName;
     }
 
     /**
@@ -149,20 +88,16 @@ public class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Queries a content provider for dictionary data for some locale and returns the file addresses
+     * Queries a content provider for dictionary data for some locale and cache the returned files
      *
-     * This will query a content provider for dictionary data for a given locale, and return
-     * the addresses of a file set the members of which are suitable to be mmap'ed. It will copy
-     * them to local storage if needed.
-     * It should also check the dictionary versions to avoid unnecessary copies but this is
-     * still in TODO state.
-     * This will make the data from the content provider the cached dictionary for this locale,
-     * overwriting any previous cached data.
+     * This will query a content provider for dictionary data for a given locale, and copy the
+     * files locally so that they can be mmap'ed. This may overwrite previously cached dictionaries
+     * with newer versions if a newer version is made available by the content provider.
      * @returns the addresses of the files, or null if no data could be obtained.
      * @throw FileNotFoundException if the provider returns non-existent data.
      * @throw IOException if the provider-returned data could not be read.
      */
-    public static List<AssetFileAddress> getDictSetFromContentProvider(final Locale locale,
+    public static List<AssetFileAddress> cacheDictionariesFromContentProvider(final Locale locale,
             final Context context) throws FileNotFoundException, IOException {
         final ContentResolver resolver = context.getContentResolver();
         final List<String> idList = getDictIdList(locale, context);
@@ -173,7 +108,7 @@ public class BinaryDictionaryFileDumper {
                     resolver.openAssetFileDescriptor(wordListUri, "r");
             if (null == afd) continue;
             final String fileName = copyFileTo(afd.createInputStream(),
-                    getCacheFileName(id, locale, context));
+                    BinaryDictionaryGetter.getCacheFileName(id, locale, context));
             afd.close();
             if (0 >= resolver.delete(wordListUri, null, null)) {
                 // I'd rather not print the word list ID to the log here out of security concerns
@@ -196,7 +131,9 @@ public class BinaryDictionaryFileDumper {
         final Locale savedLocale = Utils.setSystemLocale(res, locale);
         final InputStream stream = res.openRawResource(resource);
         Utils.setSystemLocale(res, savedLocale);
-        return copyFileTo(stream, getCacheFileName(Integer.toString(resource), locale, context));
+        return copyFileTo(stream,
+                BinaryDictionaryGetter.getCacheFileName(Integer.toString(resource),
+                        locale, context));
     }
 
     /**
