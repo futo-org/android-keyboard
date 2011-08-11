@@ -193,14 +193,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 
     PROF_START(2);
     // Suggestion with missing character
-    if (SUGGEST_WORDS_WITH_MISSING_CHARACTER) {
-        for (int i = 0; i < codesSize; ++i) {
-            if (DEBUG_DICT) {
-                LOGI("--- Suggest missing characters %d", i);
-            }
-            getSuggestionCandidates(i, -1, -1);
-        }
-    }
+    LOGI("--- Suggest missing characters");
+    getSuggestionCandidates(0, -1, -1);
     PROF_END(2);
 
     PROF_START(3);
