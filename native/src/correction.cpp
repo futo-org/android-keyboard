@@ -102,7 +102,7 @@ int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLen
     const bool sameLength = (mExcessivePos == mInputLength - 1) ? (mInputLength == inputIndex + 2)
             : (mInputLength == inputIndex + 1);
     return Correction::RankingAlgorithm::calculateFinalFreq(
-            inputIndex, outputIndex, mMatchedCharCount, freq, sameLength, this);
+            inputIndex, outputIndex, freq, sameLength, this);
 }
 
 bool Correction::initProcessState(const int outputIndex) {
@@ -111,10 +111,9 @@ bool Correction::initProcessState(const int outputIndex) {
     }
     mOutputIndex = outputIndex;
     --(mCorrectionStates[outputIndex].mChildCount);
-    mMatchedCharCount = mCorrectionStates[outputIndex].mMatchedCount;
     mInputIndex = mCorrectionStates[outputIndex].mInputIndex;
     mNeedsToTraverseAllNodes = mCorrectionStates[outputIndex].mNeedsToTraverseAllNodes;
-    mDiffs = mCorrectionStates[outputIndex].mDiffs;
+    mProximityCount = mCorrectionStates[outputIndex].mProximityCount;
     mSkippedCount = mCorrectionStates[outputIndex].mSkippedCount;
     mSkipPos = mCorrectionStates[outputIndex].mSkipPos;
     mSkipping = false;
@@ -128,10 +127,6 @@ int Correction::goDownTree(
     mCorrectionStates[mOutputIndex].mChildCount = childCount;
     mCorrectionStates[mOutputIndex].mSiblingPos = firstChildPos;
     return mOutputIndex;
-}
-
-void Correction::charMatched() {
-    ++mMatchedCharCount;
 }
 
 // TODO: remove
@@ -158,10 +153,9 @@ void Correction::incrementOutputIndex() {
     mCorrectionStates[mOutputIndex].mParentIndex = mCorrectionStates[mOutputIndex - 1].mParentIndex;
     mCorrectionStates[mOutputIndex].mChildCount = mCorrectionStates[mOutputIndex - 1].mChildCount;
     mCorrectionStates[mOutputIndex].mSiblingPos = mCorrectionStates[mOutputIndex - 1].mSiblingPos;
-    mCorrectionStates[mOutputIndex].mMatchedCount = mMatchedCharCount;
     mCorrectionStates[mOutputIndex].mInputIndex = mInputIndex;
     mCorrectionStates[mOutputIndex].mNeedsToTraverseAllNodes = mNeedsToTraverseAllNodes;
-    mCorrectionStates[mOutputIndex].mDiffs = mDiffs;
+    mCorrectionStates[mOutputIndex].mProximityCount = mProximityCount;
     mCorrectionStates[mOutputIndex].mSkippedCount = mSkippedCount;
     mCorrectionStates[mOutputIndex].mSkipping = mSkipping;
     mCorrectionStates[mOutputIndex].mSkipPos = mSkipPos;
@@ -174,7 +168,7 @@ void Correction::startToTraverseAllNodes() {
 
 bool Correction::needsToPrune() const {
     return (mOutputIndex - 1 >= (mTransposedPos >= 0 ? mInputLength - 1 : mMaxDepth)
-            || mDiffs > mMaxEditDistance);
+            || mProximityCount > mMaxEditDistance);
 }
 
 Correction::CorrectionType Correction::processSkipChar(
@@ -231,8 +225,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         int matchedProximityCharId = mProximityInfo->getMatchedProximityId(
                 inputIndexForProximity, c, checkProximityChars);
 
-        const bool unrelated = ProximityInfo::UNRELATED_CHAR == matchedProximityCharId;
-        if (unrelated) {
+        if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
             if (skip) {
                 // Skip this letter and continue deeper
                 ++mSkippedCount;
@@ -240,19 +233,15 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             } else {
                 return UNRELATED;
             }
+        } else if (ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+            // If inputIndex is greater than mInputLength, that means there is no
+            // proximity chars. So, we don't need to check proximity.
+            mMatching = true;
+        } else if (ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
+            incrementProximityCount();
         }
 
         mWord[mOutputIndex] = c;
-        // If inputIndex is greater than mInputLength, that means there is no
-        // proximity chars. So, we don't need to check proximity.
-        if (ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
-            mMatching = true;
-            charMatched();
-        }
-
-        if (ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
-            incrementDiffs();
-        }
 
         const bool isSameAsUserTypedLength = mInputLength
                 == getInputIndex() + 1
@@ -336,24 +325,25 @@ inline static void multiplyRate(const int rate, int *freq) {
 //////////////////////
 
 /* static */
-int Correction::RankingAlgorithm::calculateFinalFreq(
-        const int inputIndex, const int outputIndex,
-        const int matchCount, const int freq, const bool sameLength,
-        const Correction* correction) {
-    const int skipPos = correction->getSkipPos();
+int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const int outputIndex,
+        const int freq, const bool sameLength, const Correction* correction) {
     const int excessivePos = correction->getExcessivePos();
     const int transposedPos = correction->getTransposedPos();
     const int inputLength = correction->mInputLength;
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
     const int fullWordMultiplier = correction->FULL_WORD_MULTIPLIER;
     const ProximityInfo *proximityInfo = correction->mProximityInfo;
+
+    // TODO: use mExcessiveCount
+    const int matchCount = inputLength - correction->mProximityCount - (excessivePos >= 0 ? 1 : 0);
     const int matchWeight = powerIntCapped(typedLetterMultiplier, matchCount);
+
     const unsigned short* word = correction->mWord;
-    const int skippedCount = correction->mSkippedCount;
+    const bool skipped = correction->mSkippedCount > 0;
 
     // TODO: Demote by edit distance
     int finalFreq = freq * matchWeight;
-    if (skipPos >= 0) {
+    if (skipped) {
         if (inputLength >= 2) {
             const int demotionRate = WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE
                     * (10 * inputLength - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X)
@@ -387,10 +377,10 @@ int Correction::RankingAlgorithm::calculateFinalFreq(
             }
             multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
         }
-        if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0) {
+        if (sameLength && transposedPos < 0 && !skipped && excessivePos < 0) {
             finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
-    } else if (sameLength && transposedPos < 0 && skipPos < 0 && excessivePos < 0
+    } else if (sameLength && transposedPos < 0 && !skipped && excessivePos < 0
             && outputIndex > 0) {
         // A word with proximity corrections
         if (DEBUG_DICT) {
@@ -418,7 +408,7 @@ int Correction::RankingAlgorithm::calculateFinalFreq(
      s ... skipping
      a ... traversing all
      */
-    if (matchCount == inputLength && matchCount >= 2 && skippedCount == 0
+    if (matchCount == inputLength && matchCount >= 2 && !skipped
             && word[matchCount] == word[matchCount - 1]) {
         multiplyRate(WORDS_WITH_MATCH_SKIP_PROMOTION_RATE, &finalFreq);
     }

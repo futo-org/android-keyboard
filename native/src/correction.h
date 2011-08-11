@@ -48,8 +48,6 @@ public:
     void checkState();
     bool initProcessState(const int index);
 
-    void getProcessState(int *matchedCount, int *inputIndex, int *outputIndex,
-            bool *traverseAllNodes, int *diffs);
     int getOutputIndex();
     int getInputIndex();
 
@@ -80,10 +78,6 @@ public:
 
     CorrectionType processCharAndCalcState(const int32_t c, const bool isTerminal);
 
-    int getDiffs() const {
-        return mDiffs;
-    }
-
     /////////////////////////
     // Tree helper methods
     int goDownTree(const int parentIndex, const int childCount, const int firstChildPos);
@@ -100,7 +94,6 @@ public:
         return mCorrectionStates[index].mParentIndex;
     }
 private:
-    inline void charMatched();
     inline void incrementInputIndex();
     inline void incrementOutputIndex();
     inline bool needsToTraverseAllNodes();
@@ -109,8 +102,8 @@ private:
     inline CorrectionType processSkipChar(const int32_t c, const bool isTerminal);
 
     // TODO: remove
-    inline void incrementDiffs() {
-        ++mDiffs;
+    inline void incrementProximityCount() {
+        ++mProximityCount;
     }
 
     const int TYPED_LETTER_MULTIPLIER;
@@ -133,8 +126,7 @@ private:
     // The following member variables are being used as cache values of the correction state.
     int mOutputIndex;
     int mInputIndex;
-    int mDiffs;
-    int mMatchedCharCount;
+    int mProximityCount;
     int mSkippedCount;
     int mSkipPos;
     bool mNeedsToTraverseAllNodes;
@@ -144,8 +136,7 @@ private:
     class RankingAlgorithm {
     public:
         static int calculateFinalFreq(const int inputIndex, const int depth,
-                const int matchCount, const int freq, const bool sameLength,
-                const Correction* correction);
+                const int freq, const bool sameLength, const Correction* correction);
         static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
                 const Correction* correction);
     };
