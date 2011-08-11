@@ -190,8 +190,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private long mLastKeyTime;
 
     private AudioManager mAudioManager;
-    // Align sound effect volume on music volume
-    private static final float FX_VOLUME = -1.0f;
+    private static float mFxVolume = -1.0f; // just a default value to be updated runtime
     private boolean mSilentModeOn; // System-wide current configuration
 
     // TODO: Move this flag to VoiceProxy
@@ -510,6 +509,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (null == mSubtypeSwitcher) mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mSettingsValues = new Settings.Values(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
+        updateSoundEffectVolume();
     }
 
     private void initSuggest() {
@@ -2068,14 +2068,24 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     };
 
+    // update sound effect volume
+    private void updateSoundEffectVolume() {
+        if (mAudioManager == null) {
+            mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (mAudioManager == null) return;
+        }
+        // This aligns with the current media volume minus 6dB
+        mFxVolume = (float) mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+                / (float) mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 4.0f;
+    }
+
     // update flags for silent mode
     private void updateRingerMode() {
         if (mAudioManager == null) {
             mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            if (mAudioManager == null) return;
         }
-        if (mAudioManager != null) {
-            mSilentModeOn = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
-        }
+        mSilentModeOn = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
     }
 
     private void playKeyClick(int primaryCode) {
@@ -2087,8 +2097,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         if (isSoundOn()) {
-            // FIXME: Volume and enable should come from UI settings
-            // FIXME: These should be triggered after auto-repeat logic
             int sound = AudioManager.FX_KEYPRESS_STANDARD;
             switch (primaryCode) {
                 case Keyboard.CODE_DELETE:
@@ -2101,7 +2109,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     sound = AudioManager.FX_KEYPRESS_SPACEBAR;
                     break;
             }
-            mAudioManager.playSoundEffect(sound, FX_VOLUME);
+            mAudioManager.playSoundEffect(sound, mFxVolume);
         }
     }
 
