@@ -53,7 +53,7 @@
             android:key="show_settings_key"
             android:title="@string/prefs_settings_key"
             android:persistent="true"
-            android:defaultValue="false" />
+            android:defaultValue="@bool/config_default_show_settings_key" />
         <ListPreference
             android:key="voice_mode"
             android:title="@string/voice_input"
