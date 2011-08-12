@@ -105,8 +105,7 @@
         <Key
             latin:keyLabel="т" />
         <Key
-            latin:keyLabel="ь"
-            latin:popupCharacters="@string/alternates_for_cyrillic_soft_sign" />
+            latin:keyLabel="ь" />
         <Key
             latin:keyLabel="б" />
         <Key
