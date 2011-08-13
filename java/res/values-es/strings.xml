@@ -25,6 +25,12 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones introducción texto"</string>
     <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
     <skip />
+    <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
+    <skip />
+    <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
+    <skip />
+    <!-- no translation found for use_proximity_option_summary (2857708859847261945) -->
+    <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Vibrar al pulsar tecla"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Sonido al pulsar tecla"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup al pulsar tecla"</string>
@@ -64,8 +70,7 @@
     <string name="label_send_key" msgid="2815056534433717444">"Enviar"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
-    <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
-    <skip />
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Más"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Espera"</string>

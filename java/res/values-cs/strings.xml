@@ -23,7 +23,12 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Klávesnice Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Nastavení klávesnice Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Možnosti zadávání textu a dat"</string>
-    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
+    <string name="spell_checker_service_name" msgid="2003013122022285508">"Opravy pravopisu Android"</string>
+    <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
+    <skip />
+    <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
+    <skip />
+    <!-- no translation found for use_proximity_option_summary (2857708859847261945) -->
     <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Při stisku klávesy vibrovat"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Zvuk při stisku klávesy"</string>
@@ -64,8 +69,7 @@
     <string name="label_send_key" msgid="2815056534433717444">"Odeslat"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
-    <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
-    <skip />
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Další"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pauza"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Čekat"</string>
@@ -133,7 +137,7 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Mikr. na kláv. se symb."</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Hlasový vstup vypnut"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Výběr metody zadávání dat"</string>
-    <string name="configure_input_method" msgid="373356270290742459">"Nakonfigurovat metody vstupu"</string>
+    <string name="configure_input_method" msgid="373356270290742459">"Konfigurace metod vstupu"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Vstupní jazyky"</string>
     <string name="select_language" msgid="2573265881207142437">"Výběr jazyků vstupu"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Dalším dotykem slovo uložíte"</string>
@@ -144,7 +148,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Klepnutím na zadaná slova tato slova opravíte, musí však být viditelné návrhy."</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motiv klávesnice"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"němčina (QWERTY)"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"angličtina (VB)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"angličtina (Spojené království)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"angličtina (USA)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Režim studie použitelnosti"</string>
 </resources>

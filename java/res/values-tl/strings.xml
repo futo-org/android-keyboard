@@ -23,7 +23,12 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Android keyboard"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Mga setting ng Android keyboard"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Mga pagpipilian sa input"</string>
-    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
+    <string name="spell_checker_service_name" msgid="2003013122022285508">"Pagwawasto sa Android"</string>
+    <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
+    <skip />
+    <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
+    <skip />
+    <!-- no translation found for use_proximity_option_summary (2857708859847261945) -->
     <skip />
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Mag-vibrate sa keypress"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Tunog sa keypress"</string>
@@ -64,8 +69,7 @@
     <string name="label_send_key" msgid="2815056534433717444">"Ipadala"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
-    <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
-    <skip />
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Higit pa"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Intay"</string>
@@ -143,8 +147,8 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Pindutin upang itama ang mga salita"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Pindutin ang mga inilagay na salita upang iwasto ang mga ito, kapag nakikita lang ang mga suhestiyon"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema ng keyboard"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"German QWERTY"</string>
+    <string name="subtype_de_qwerty" msgid="3358900499589259491">"German na QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Ingles (UK)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"Ingles (US)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Ingles (Estados Unidos)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Study mode ng pagiging kapaki-pakinabang"</string>
 </resources>
