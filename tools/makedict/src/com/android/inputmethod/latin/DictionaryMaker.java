@@ -71,7 +71,7 @@ public class DictionaryMaker {
         }
 
         private void displayHelp() {
-            MakedictLog.i("Usage: makedict2 "
+            MakedictLog.i("Usage: makedict "
                     + "[-s <unigrams.xml> [-b <bigrams.xml>] | -s <binary input>] "
                     + " [-d <binary output>] [-x <xml output>] [-2]\n"
                     + "\n"
