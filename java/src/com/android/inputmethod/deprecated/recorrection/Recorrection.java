@@ -271,10 +271,9 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
         // but always use the default setting defined in the resources.
         if (res.getBoolean(R.bool.config_enable_show_recorrection_option)) {
             mRecorrectionEnabled = prefs.getBoolean(Settings.PREF_RECORRECTION_ENABLED,
-                    res.getBoolean(R.bool.config_default_compat_recorrection_enabled));
+                    res.getBoolean(R.bool.config_default_recorrection_enabled));
         } else {
-            mRecorrectionEnabled =
-                    res.getBoolean(R.bool.config_default_compat_recorrection_enabled);
+            mRecorrectionEnabled = res.getBoolean(R.bool.config_default_recorrection_enabled);
         }
     }
 
