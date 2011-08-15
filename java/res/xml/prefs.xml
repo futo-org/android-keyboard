@@ -48,7 +48,7 @@
             android:title="@string/prefs_enable_recorrection"
             android:summary="@string/prefs_enable_recorrection_summary"
             android:persistent="true"
-            android:defaultValue="@bool/config_default_recorrection_enabled" />
+            android:defaultValue="@bool/config_default_compat_recorrection_enabled" />
         <CheckBoxPreference
             android:key="show_settings_key"
             android:title="@string/prefs_settings_key"
