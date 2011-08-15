@@ -21,7 +21,7 @@ import android.util.Log;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
 
 public class KeyboardShiftState {
-    private static final String TAG = "KeyboardShiftState";
+    private static final String TAG = KeyboardShiftState.class.getSimpleName();
     private static final boolean DEBUG = KeyboardSwitcher.DEBUG_STATE;
 
     private static final int NORMAL = 0;

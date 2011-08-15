@@ -280,7 +280,6 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
             setKeyboard(getKeyboard(mSavedKeyboardState.getKeyboardId()));
-            updateShiftState();
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
@@ -331,6 +330,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final boolean localeChanged = (oldKeyboard == null)
                 || !keyboard.mId.mLocale.equals(oldKeyboard.mId.mLocale);
         mInputMethodService.mHandler.startDisplayLanguageOnSpacebar(localeChanged);
+        updateShiftState();
     }
 
     private int getSwitchState(KeyboardId id) {
@@ -543,11 +543,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     private void setAutomaticTemporaryUpperCase() {
-        LatinKeyboard latinKeyboard = getLatinKeyboard();
-        if (latinKeyboard != null) {
-            latinKeyboard.setAutomaticTemporaryUpperCase();
-            mKeyboardView.invalidateAllKeys();
+        if (mKeyboardView == null) return;
+        final Keyboard keyboard = mKeyboardView.getKeyboard();
+        if (keyboard != null) {
+            keyboard.setAutomaticTemporaryUpperCase();
         }
+        mKeyboardView.invalidateAllKeys();
     }
 
     /**
@@ -559,7 +560,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             Log.d(TAG, "updateShiftState:"
                     + " autoCaps=" + mInputMethodService.getCurrentAutoCapsState()
                     + " keyboard=" + getLatinKeyboard().getKeyboardShiftState()
-                    + " shiftKeyState=" + shiftKeyState);
+                    + " shiftKeyState=" + shiftKeyState
+                    + " isAlphabetMode=" + isAlphabetMode()
+                    + " isShiftLocked=" + isShiftLocked());
         if (isAlphabetMode()) {
             if (!isShiftLocked() && !shiftKeyState.isIgnoring()) {
                 if (shiftKeyState.isReleasing() && mInputMethodService.getCurrentAutoCapsState()) {
