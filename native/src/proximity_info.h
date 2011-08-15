@@ -46,6 +46,9 @@ public:
     ProximityType getMatchedProximityId(
             const int index, const unsigned short c, const bool checkProximityChars) const;
     bool sameAsTyped(const unsigned short *word, int length) const;
+    const unsigned short* getPrimaryInputWord() const {
+        return mPrimaryInputWord;
+    }
 
 private:
     int getStartIndexFromCoordinates(const int x, const int y) const;
@@ -59,6 +62,7 @@ private:
     const int *mInputCodes;
     uint32_t *mProximityCharsArray;
     int mInputLength;
+    unsigned short mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
 };
 
 } // namespace latinime

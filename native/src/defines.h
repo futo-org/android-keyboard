@@ -94,19 +94,35 @@ static void prof_out(void) {
 #endif
 #define DEBUG_DICT true
 #define DEBUG_DICT_FULL false
+#define DEBUG_EDIT_DISTANCE false
 #define DEBUG_SHOW_FOUND_WORD DEBUG_DICT_FULL
 #define DEBUG_NODE DEBUG_DICT_FULL
 #define DEBUG_TRACE DEBUG_DICT_FULL
 #define DEBUG_PROXIMITY_INFO true
 
+#define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
+
+static char charBuf[50];
+
+static void dumpWord(const unsigned short* word, const int length) {
+    for (int i = 0; i < length; ++i) {
+        charBuf[i] = word[i];
+    }
+    charBuf[length] = 0;
+    LOGI("[ %s ]", charBuf);
+}
+
 #else // FLAG_DBG
 
 #define DEBUG_DICT false
 #define DEBUG_DICT_FULL false
+#define DEBUG_EDIT_DISTANCE false
 #define DEBUG_SHOW_FOUND_WORD false
 #define DEBUG_NODE false
 #define DEBUG_TRACE false
 #define DEBUG_PROXIMITY_INFO false
+
+#define DUMP_WORD(word, length)
 
 #endif // FLAG_DBG
 

@@ -68,6 +68,10 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 void ProximityInfo::setInputParams(const int* inputCodes, const int inputLength) {
     mInputCodes = inputCodes;
     mInputLength = inputLength;
+    for (int i = 0; i < inputLength; ++i) {
+        mPrimaryInputWord[i] = getPrimaryCharAt(i);
+    }
+    mPrimaryInputWord[inputLength] = 0;
 }
 
 inline const int* ProximityInfo::getProximityCharsAt(const int index) const {
