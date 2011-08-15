@@ -95,10 +95,8 @@ int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLen
     }
 
     *word = mWord;
-    const bool sameLength = (mExcessivePos == mInputLength - 1) ? (mInputLength == inputIndex + 2)
-            : (mInputLength == inputIndex + 1);
     return Correction::RankingAlgorithm::calculateFinalFreq(
-            inputIndex, outputIndex, freq, sameLength, mEditDistanceTable, this);
+            inputIndex, outputIndex, freq, mEditDistanceTable, this);
 }
 
 bool Correction::initProcessState(const int outputIndex) {
@@ -205,20 +203,6 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     }
 
     if (mNeedsToTraverseAllNodes || isQuote(c)) {
-        const bool checkProximityChars =
-                !(mSkippedCount > 0 || mExcessivePos >= 0 || mTransposedPos >= 0);
-        // Note: This logic tries saving cases like contrst --> contrast -- "a" is one of
-        // proximity chars of "s", but it should rather be handled as a skipped char.
-        if (checkProximityChars
-                && mInputIndex > 0
-                && mCorrectionStates[mOutputIndex].mProximityMatching
-                && mCorrectionStates[mOutputIndex].mSkipping
-                && mProximityInfo->getMatchedProximityId(
-                        mInputIndex - 1, c, false)
-                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
-            ++mSkippedCount;
-            --mProximityCount;
-        }
         return processSkipChar(c, isTerminal);
     } else {
         int inputIndexForProximity = mInputIndex;
@@ -250,6 +234,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                     && mProximityInfo->getMatchedProximityId(
                             inputIndexForProximity - 1, c, false)
                                     == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+                // Note: This logic tries saving cases like contrst --> contrast -- "a" is one of
+                // proximity chars of "s", but it should rather be handled as a skipped char.
                 ++mSkippedCount;
                 --mProximityCount;
                 return processSkipChar(c, isTerminal);
@@ -344,6 +330,16 @@ inline static void multiplyRate(const int rate, int *freq) {
     }
 }
 
+inline static int getQuoteCount(const unsigned short* word, const int length) {
+    int quoteCount = 0;
+    for (int i = 0; i < length; ++i) {
+        if(word[i] == '\'') {
+            ++quoteCount;
+        }
+    }
+    return quoteCount;
+}
+
 /* static */
 inline static int editDistance(
         int* editDistanceTable, const unsigned short* input,
@@ -392,8 +388,7 @@ inline static int editDistance(
 
 /* static */
 int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const int outputIndex,
-        const int freq, const bool sameLength, int* editDistanceTable,
-        const Correction* correction) {
+        const int freq, int* editDistanceTable, const Correction* correction) {
     const int excessivePos = correction->getExcessivePos();
     const int transposedPos = correction->getTransposedPos();
     const int inputLength = correction->mInputLength;
@@ -402,6 +397,12 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     const ProximityInfo *proximityInfo = correction->mProximityInfo;
     const int skipCount = correction->mSkippedCount;
     const int proximityMatchedCount = correction->mProximityCount;
+    if (skipCount >= inputLength || inputLength == 0) {
+        return -1;
+    }
+    const bool sameLength = (excessivePos == inputLength - 1) ? (inputLength == inputIndex + 2)
+            : (inputLength == inputIndex + 1);
+
 
     // TODO: use mExcessiveCount
     int matchCount = inputLength - correction->mProximityCount - (excessivePos >= 0 ? 1 : 0);
@@ -409,67 +410,52 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     const unsigned short* word = correction->mWord;
     const bool skipped = skipCount > 0;
 
-    // ----- TODO: use edit distance here as follows? ---------------------- /
-    //if (!skipped && excessivePos < 0 && transposedPos < 0) {
-    //    const int ed = editDistance(dp, proximityInfo->getInputWord(),
-    //            inputLength, word, outputIndex + 1);
-    //    matchCount = outputIndex + 1 - ed;
-    //    if (ed == 1 && !sameLength) ++matchCount;
-    //}
-    //    const int ed = editDistance(dp, proximityInfo->getInputWord(),
-    //    inputLength, word, outputIndex + 1);
-    //    if (ed == 1 && !sameLength) ++matchCount; ------------------------ /
-    int matchWeight = powerIntCapped(typedLetterMultiplier, matchCount);
+    const int quoteDiffCount = max(0, getQuoteCount(word, outputIndex + 1)
+            - getQuoteCount(proximityInfo->getPrimaryInputWord(), inputLength));
+
+    // TODO: Calculate edit distance for transposed and excessive
+    int matchWeight;
+    int ed = 0;
+    int adJustedProximityMatchedCount = proximityMatchedCount;
+    if (excessivePos < 0 && transposedPos < 0 && (proximityMatchedCount > 0 || skipped)) {
+        const unsigned short* primaryInputWord = proximityInfo->getPrimaryInputWord();
+        ed = editDistance(editDistanceTable, primaryInputWord,
+                inputLength, word, outputIndex + 1);
+        matchWeight = powerIntCapped(typedLetterMultiplier, outputIndex + 1 - ed);
+        if (ed == 1 && inputLength == outputIndex) {
+            // Promote a word with just one skipped char
+            multiplyRate(WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE, &matchWeight);
+        }
+        ed = max(0, ed - quoteDiffCount);
+        adJustedProximityMatchedCount = min(max(0, ed - (outputIndex + 1 - inputLength)),
+                proximityMatchedCount);
+    } else {
+        matchWeight = powerIntCapped(typedLetterMultiplier, matchCount);
+    }
 
     // TODO: Demote by edit distance
     int finalFreq = freq * matchWeight;
-    // +1 +11/-12
-    /*if (inputLength == outputIndex && !skipped && excessivePos < 0 && transposedPos < 0) {
-        const int ed = editDistance(dp, proximityInfo->getInputWord(),
-                inputLength, word, outputIndex + 1);
-        if (ed == 1) {
-            multiplyRate(160, &finalFreq);
-        }
-    }*/
-    if (inputLength == outputIndex && excessivePos < 0 && transposedPos < 0
-            && (proximityMatchedCount > 0 || skipped)) {
-        const int ed = editDistance(editDistanceTable, proximityInfo->getPrimaryInputWord(),
-                inputLength, word, outputIndex + 1);
-        if (ed == 1) {
-            multiplyRate(160, &finalFreq);
-        }
-    }
 
-    // TODO: Promote properly?
-    //if (skipCount == 1 && excessivePos < 0 && transposedPos < 0 && inputLength == outputIndex
-    //        && !sameLength) {
-    //    multiplyRate(150, &finalFreq);
-    //}
-    //if (skipCount == 0 && excessivePos < 0 && transposedPos < 0 && inputLength == outputIndex
-    //        && !sameLength) {
-    //    multiplyRate(150, &finalFreq);
-    //}
-    //if (skipCount == 0 && excessivePos < 0 && transposedPos < 0
-    //        && inputLength == outputIndex + 1) {
-    //    multiplyRate(150, &finalFreq);
-    //}
+    ///////////////////////////////////////////////
+    // Promotion and Demotion for each correction
 
+    // Demotion for a word with missing character
     if (skipped) {
-        if (inputLength >= 2) {
-            const int demotionRate = WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE
-                    * (10 * inputLength - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X)
-                    / (10 * inputLength
-                            - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X + 10);
-            if (DEBUG_DICT_FULL) {
-                LOGI("Demotion rate for missing character is %d.", demotionRate);
-            }
-            multiplyRate(demotionRate, &finalFreq);
-        } else {
-            finalFreq = 0;
+        const int demotionRate = WORDS_WITH_MISSING_CHARACTER_DEMOTION_RATE
+                * (10 * inputLength - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X)
+                / (10 * inputLength
+                        - WORDS_WITH_MISSING_CHARACTER_DEMOTION_START_POS_10X + 10);
+        if (DEBUG_DICT_FULL) {
+            LOGI("Demotion rate for missing character is %d.", demotionRate);
         }
+        multiplyRate(demotionRate, &finalFreq);
     }
+
+    // Demotion for a word with transposed character
     if (transposedPos >= 0) multiplyRate(
             WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE, &finalFreq);
+
+    // Demotion for a word with excessive character
     if (excessivePos >= 0) {
         multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
         if (!proximityInfo->existsAdjacentProximityChars(inputIndex)) {
@@ -478,50 +464,60 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
             multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE, &finalFreq);
         }
     }
-    int lengthFreq = typedLetterMultiplier;
-    multiplyIntCapped(powerIntCapped(typedLetterMultiplier, outputIndex), &lengthFreq);
-    if ((outputIndex + 1) == matchCount) {
-        // Full exact match
-        if (outputIndex > 1) {
-            if (DEBUG_DICT) {
-                LOGI("Found full matched word.");
-            }
-            multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
-        }
-        if (sameLength && transposedPos < 0 && !skipped && excessivePos < 0) {
-            finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
-        }
-    } else if (sameLength && transposedPos < 0 && !skipped && excessivePos < 0
-            && outputIndex > 0) {
+
+    // Promotion for a word with proximity characters
+    for (int i = 0; i < adJustedProximityMatchedCount; ++i) {
         // A word with proximity corrections
-        if (DEBUG_DICT) {
-            LOGI("Found one proximity correction.");
+        if (DEBUG_DICT_FULL) {
+            LOGI("Found a proximity correction.");
         }
         multiplyIntCapped(typedLetterMultiplier, &finalFreq);
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
     }
-    if (DEBUG_DICT_FULL) {
-        LOGI("calc: %d, %d", outputIndex, sameLength);
-    }
-    if (sameLength) multiplyIntCapped(fullWordMultiplier, &finalFreq);
 
-    // TODO: check excessive count and transposed count
+    const int errorCount = proximityMatchedCount + skipCount;
+    multiplyRate(
+            100 - CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE * errorCount / inputLength, &finalFreq);
+
+    // Promotion for an exactly matched word
+    if (matchCount == outputIndex + 1) {
+        // Full exact match
+        if (sameLength && transposedPos < 0 && !skipped && excessivePos < 0) {
+            finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
+        }
+    }
+
+    // Promote a word with no correction
+    if (proximityMatchedCount == 0 && transposedPos < 0 && !skipped && excessivePos < 0) {
+        multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
+    }
+
+    // TODO: Check excessive count and transposed count
+    // TODO: Remove this if possible
     /*
-     If the last character of the user input word is the same as the next character
-     of the output word, and also all of characters of the user input are matched
-     to the output word, we'll promote that word a bit because
-     that word can be considered the combination of skipped and matched characters.
-     This means that the 'sm' pattern wins over the 'ma' pattern.
-     e.g.)
-     shel -> shell [mmmma] or [mmmsm]
-     hel -> hello [mmmaa] or [mmsma]
-     m ... matching
-     s ... skipping
-     a ... traversing all
+         If the last character of the user input word is the same as the next character
+         of the output word, and also all of characters of the user input are matched
+         to the output word, we'll promote that word a bit because
+         that word can be considered the combination of skipped and matched characters.
+         This means that the 'sm' pattern wins over the 'ma' pattern.
+         e.g.)
+         shel -> shell [mmmma] or [mmmsm]
+         hel -> hello [mmmaa] or [mmsma]
+         m ... matching
+         s ... skipping
+         a ... traversing all
      */
     if (matchCount == inputLength && matchCount >= 2 && !skipped
             && word[matchCount] == word[matchCount - 1]) {
         multiplyRate(WORDS_WITH_MATCH_SKIP_PROMOTION_RATE, &finalFreq);
+    }
+
+    if (sameLength) {
+        multiplyIntCapped(fullWordMultiplier, &finalFreq);
+    }
+
+    if (DEBUG_DICT_FULL) {
+        LOGI("calc: %d, %d", outputIndex, sameLength);
     }
 
     return finalFreq;
