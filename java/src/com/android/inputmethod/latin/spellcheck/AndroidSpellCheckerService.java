@@ -126,7 +126,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         // Note : this must be reentrant
         /**
          * Gets a list of suggestions for a specific string. This returns a list of possible
-         * corrections for the text passed as an arguments. It may split or group words, and
+         * corrections for the text passed as an argument. It may split or group words, and
          * even perform grammatical analysis.
          */
         @Override
@@ -153,9 +153,14 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 composer.add(character, proximities,
                         WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
             }
-            dictionary.getWords(composer, suggestionsGatherer, mProximityInfo);
-            final boolean isInDict = dictionary.isValidWord(text);
-            final String[] suggestions = suggestionsGatherer.getGatheredSuggestions();
+            final boolean isInDict;
+            final String[] suggestions;
+            synchronized(dictionary) {
+                // TODO: make the dictionary reentrant so that we don't have to synchronize here
+                dictionary.getWords(composer, suggestionsGatherer, mProximityInfo);
+                isInDict = dictionary.isValidWord(text);
+                suggestions = suggestionsGatherer.getGatheredSuggestions();
+            }
 
             final int flags =
                     (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
