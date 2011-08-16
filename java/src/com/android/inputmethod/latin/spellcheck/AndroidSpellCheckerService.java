@@ -19,6 +19,7 @@ package com.android.inputmethod.latin.spellcheck;
 import android.content.res.Resources;
 import android.service.textservice.SpellCheckerService;
 import android.service.textservice.SpellCheckerService.Session;
+import android.util.Log;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
 
@@ -34,8 +35,6 @@ import com.android.inputmethod.latin.WordComposer;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
-import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -45,12 +44,12 @@ import java.util.TreeMap;
  */
 public class AndroidSpellCheckerService extends SpellCheckerService {
     private static final String TAG = AndroidSpellCheckerService.class.getSimpleName();
-    private static final boolean DBG = true;
+    private static final boolean DBG = false;
+    private static final int POOL_SIZE = 2;
 
     private final static String[] emptyArray = new String[0];
-    private final ProximityInfo mProximityInfo = ProximityInfo.getSpellCheckerProximityInfo();
-    private final Map<String, Dictionary> mDictionaries =
-            Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+    private final Map<String, DictionaryPool> mDictionaryPools =
+            Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
 
     @Override
     public Session createSession() {
@@ -105,22 +104,32 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         }
     }
 
-    private Dictionary getDictionary(final String locale) {
-        Dictionary dictionary = mDictionaries.get(locale);
-        if (null == dictionary) {
-            final Resources resources = getResources();
-            final int fallbackResourceId = Utils.getMainDictionaryResourceId(resources);
+    private DictionaryPool getDictionaryPool(final String locale) {
+        DictionaryPool pool = mDictionaryPools.get(locale);
+        if (null == pool) {
             final Locale localeObject = Utils.constructLocaleFromString(locale);
-            dictionary = DictionaryFactory.createDictionaryFromManager(this, localeObject,
-                    fallbackResourceId);
-            mDictionaries.put(locale, dictionary);
+            pool = new DictionaryPool(POOL_SIZE, this, localeObject);
+            mDictionaryPools.put(locale, pool);
         }
-        return dictionary;
+        return pool;
+    }
+
+    public DictAndProximity createDictAndProximity(final Locale locale) {
+        final ProximityInfo proximityInfo = ProximityInfo.createSpellCheckerProximityInfo();
+        final Resources resources = getResources();
+        final int fallbackResourceId = Utils.getMainDictionaryResourceId(resources);
+        final Dictionary dictionary =
+                DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId);
+        return new DictAndProximity(dictionary, proximityInfo);
     }
 
     private class AndroidSpellCheckerSession extends Session {
+        // Immutable, but need the locale which is not available in the constructor yet
+        DictionaryPool mDictionaryPool;
+
         @Override
         public void onCreate() {
+            mDictionaryPool = getDictionaryPool(getLocale());
         }
 
         // Note : this must be reentrant
@@ -132,8 +141,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         @Override
         public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
                 final int suggestionsLimit) {
-            final String locale = getLocale();
-            final Dictionary dictionary = getDictionary(locale);
             final String text = textInfo.getText();
 
             final SuggestionsGatherer suggestionsGatherer =
@@ -153,14 +160,20 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 composer.add(character, proximities,
                         WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
             }
-            final boolean isInDict;
-            final String[] suggestions;
-            synchronized(dictionary) {
-                // TODO: make the dictionary reentrant so that we don't have to synchronize here
-                dictionary.getWords(composer, suggestionsGatherer, mProximityInfo);
-                isInDict = dictionary.isValidWord(text);
-                suggestions = suggestionsGatherer.getGatheredSuggestions();
+
+            boolean isInDict = true;
+            try {
+                final DictAndProximity dictInfo = mDictionaryPool.take();
+                dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
+                        dictInfo.mProximityInfo);
+                isInDict = dictInfo.mDictionary.isValidWord(text);
+                mDictionaryPool.offer(dictInfo);
+            } catch (InterruptedException e) {
+                // I don't think this can happen.
+                return new SuggestionsInfo(0, new String[0]);
             }
+
+            final String[] suggestions = suggestionsGatherer.getGatheredSuggestions();
 
             final int flags =
                     (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
