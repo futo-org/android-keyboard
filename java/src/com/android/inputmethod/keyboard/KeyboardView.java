@@ -741,7 +741,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         canvas.translate(-x, -y);
     }
 
-    private static void drawHorizontalLine(Canvas canvas, float y, float w, int color, Paint paint) {
+    private static void drawHorizontalLine(Canvas canvas, float y, float w, int color,
+            Paint paint) {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(1.0f);
         paint.setColor(color);

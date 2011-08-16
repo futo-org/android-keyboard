@@ -20,10 +20,8 @@
 <!-- The attributes in this XML file provide configuration information -->
 <!-- for the Input Method Manager. -->
 
-<!-- Keyboard: en_US, en_GB, ar, cs, da, de, es, es_US, fi, fr, fr_CA, fr_CH, hr, hu, it, iw, nb, nl, pl, pt, ru, sr, sv, tr -->
-<!-- Voice: af, cs, da, de, en, es, fr, it, ja, ko, nl, pl, pt, ru, tr, yue, zh, zu -->
+<!-- Keyboard: en_US, en_GB, ar, cs, da, de, de_ZZ, es, es_US, fi, fr, fr_CA, fr_CH, hr, hu, it, iw, nb, nl, pl, pt, ru, sr, sv, tr -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
-<!-- TODO: use <lang>_mic icon instead of a common mic icon. -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
      subtype.-->
 <input-method xmlns:android="http://schemas.android.com/apk/res/android"
