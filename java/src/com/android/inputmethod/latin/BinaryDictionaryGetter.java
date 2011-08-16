@@ -214,23 +214,16 @@ class BinaryDictionaryGetter {
      */
     public static List<AssetFileAddress> getDictionaryFiles(final Locale locale,
             final Context context, final int fallbackResId) {
-        try {
-            // cacheDictionariesFromContentProvider returns the list of files it copied to local
-            // storage, but we don't really care about what was copied NOW: what we want is the
-            // list of everything we ever cached, so we ignore the return value.
-            BinaryDictionaryFileDumper.cacheDictionariesFromContentProvider(locale, context);
-            List<AssetFileAddress> cachedDictionaryList = getCachedDictionaryList(locale, context);
-            if (null != cachedDictionaryList) {
-                return cachedDictionaryList;
-            }
-            // If the list is null, fall through and return the fallback
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "Unable to create dictionary file from provider for locale "
-                    + locale.toString() + ": falling back to internal dictionary");
-        } catch (IOException e) {
-            Log.e(TAG, "Unable to read source data for locale "
-                    + locale.toString() + ": falling back to internal dictionary");
+
+        // cacheDictionariesFromContentProvider returns the list of files it copied to local
+        // storage, but we don't really care about what was copied NOW: what we want is the
+        // list of everything we ever cached, so we ignore the return value.
+        BinaryDictionaryFileDumper.cacheDictionariesFromContentProvider(locale, context);
+        List<AssetFileAddress> cachedDictionaryList = getCachedDictionaryList(locale, context);
+        if (null != cachedDictionaryList) {
+            return cachedDictionaryList;
         }
+
         final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId,
                 locale);
         if (null == fallbackAsset) return null;
