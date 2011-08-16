@@ -158,6 +158,41 @@ class BinaryDictionaryGetter {
                 context.getApplicationInfo().sourceDir, afd.getStartOffset(), afd.getLength());
     }
 
+    static private class DictPackSettings {
+        final SharedPreferences mDictPreferences;
+        public DictPackSettings(final Context context) {
+            Context dictPackContext = null;
+            try {
+                final String dictPackName =
+                        context.getString(R.string.dictionary_pack_package_name);
+                dictPackContext = context.createPackageContext(dictPackName, 0);
+            } catch (NameNotFoundException e) {
+                // The dictionary pack is not installed...
+                // TODO: fallback on the built-in dict, see the TODO above
+                Log.e(TAG, "Could not find a dictionary pack");
+            }
+            mDictPreferences = null == dictPackContext ? null
+                    : dictPackContext.getSharedPreferences(COMMON_PREFERENCES_NAME,
+                            Context.MODE_WORLD_READABLE | Context.MODE_MULTI_PROCESS);
+        }
+        public boolean isWordListActive(final String dictId) {
+            if (null == mDictPreferences) {
+                // If we don't have preferences it basically means we can't find the dictionary
+                // pack - either it's not installed, or it's disabled, or there is some strange
+                // bug. Either way, a word list with no settings should be on by default: default
+                // dictionaries in LatinIME are on if there is no settings at all, and if for some
+                // reason some dictionaries have been installed BUT the dictionary pack can't be
+                // found anymore it's safer to actually supply installed dictionaries.
+                return true;
+            } else {
+                // The default is true here for the same reasons as above. We got the dictionary
+                // pack but if we don't have any settings for it it means the user has never been
+                // to the settings yet. So by default, the main dictionaries should be on.
+                return mDictPreferences.getBoolean(dictId, true);
+            }
+        }
+    }
+
     /**
      * Returns the list of cached files for a specific locale.
      *
@@ -173,24 +208,12 @@ class BinaryDictionaryGetter {
         // not present or disabled, then return an empty list.
         if (null == cacheFiles) return null;
 
-        final SharedPreferences dictPackSettings;
-        try {
-            final String dictPackName = context.getString(R.string.dictionary_pack_package_name);
-            final Context dictPackContext = context.createPackageContext(dictPackName, 0);
-            dictPackSettings = dictPackContext.getSharedPreferences(COMMON_PREFERENCES_NAME,
-                    Context.MODE_WORLD_READABLE | Context.MODE_MULTI_PROCESS);
-        } catch (NameNotFoundException e) {
-            // The dictionary pack is not installed...
-            // TODO: fallback on the built-in dict, see the TODO above
-            Log.e(TAG, "Could not find a dictionary pack");
-            return null;
-        }
+        final DictPackSettings dictPackSettings = new DictPackSettings(context);
 
         final ArrayList<AssetFileAddress> fileList = new ArrayList<AssetFileAddress>();
         for (File f : cacheFiles) {
             final String wordListId = getWordListIdFromFileName(f.getName());
-            final boolean isActive = dictPackSettings.getBoolean(wordListId, true);
-            if (!isActive) continue;
+            if (!dictPackSettings.isWordListActive(wordListId)) continue;
             if (f.canRead()) {
                 fileList.add(AssetFileAddress.makeFromFileName(f.getPath()));
             } else {
