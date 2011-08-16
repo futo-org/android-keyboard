@@ -16,6 +16,7 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.service.textservice.SpellCheckerService;
 import android.service.textservice.SpellCheckerService.Session;
@@ -48,7 +49,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static final int POOL_SIZE = 2;
 
     private final static String[] emptyArray = new String[0];
-    private final Map<String, DictionaryPool> mDictionaryPools =
+    private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
 
     @Override
@@ -102,6 +103,16 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             }
             return results;
         }
+    }
+
+    @Override
+    public boolean onUnbind(final Intent intent) {
+        final Map<String, DictionaryPool> oldPools = mDictionaryPools;
+        mDictionaryPools = Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
+        for (DictionaryPool pool : oldPools.values()) {
+            pool.close();
+        }
+        return false;
     }
 
     private DictionaryPool getDictionaryPool(final String locale) {
@@ -167,7 +178,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
                         dictInfo.mProximityInfo);
                 isInDict = dictInfo.mDictionary.isValidWord(text);
-                mDictionaryPool.offer(dictInfo);
+                if (!mDictionaryPool.offer(dictInfo)) {
+                    Log.e(TAG, "Can't re-insert a dictionary into its pool");
+                }
             } catch (InterruptedException e) {
                 // I don't think this can happen.
                 return new SuggestionsInfo(0, new String[0]);

@@ -28,7 +28,8 @@ public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
     private final AndroidSpellCheckerService mService;
     private final int mMaxSize;
     private final Locale mLocale;
-    private int mSize = 0;
+    private int mSize;
+    private volatile boolean mClosed;
 
     public DictionaryPool(final int maxSize, final AndroidSpellCheckerService service,
             final Locale locale) {
@@ -36,6 +37,8 @@ public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
         mMaxSize = maxSize;
         mService = service;
         mLocale = locale;
+        mSize = 0;
+        mClosed = false;
     }
 
     @Override
@@ -50,6 +53,26 @@ public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
                 ++mSize;
                 return mService.createDictAndProximity(mLocale);
             }
+        }
+    }
+
+    public void close() {
+        synchronized(this) {
+            mClosed = true;
+            for (DictAndProximity dict : this) {
+                dict.mDictionary.close();
+            }
+            clear();
+        }
+    }
+
+    @Override
+    public boolean offer(final DictAndProximity dict) {
+        if (mClosed) {
+            dict.mDictionary.close();
+            return false;
+        } else {
+            return super.offer(dict);
         }
     }
 }
