@@ -56,12 +56,12 @@ public class ProximityInfo {
         computeNearestNeighbors(keyWidth, keys);
     }
 
-    public static ProximityInfo getDummyProximityInfo() {
+    public static ProximityInfo createDummyProximityInfo() {
         return new ProximityInfo(1, 1, 1, 1, 1, Collections.<Key>emptyList());
     }
 
-    public static ProximityInfo getSpellCheckerProximityInfo() {
-        final ProximityInfo spellCheckerProximityInfo = getDummyProximityInfo();
+    public static ProximityInfo createSpellCheckerProximityInfo() {
+        final ProximityInfo spellCheckerProximityInfo = createDummyProximityInfo();
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative(
                         SpellCheckerProximityInfo.ROW_SIZE,
