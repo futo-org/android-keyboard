@@ -132,6 +132,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private int mCurrentY = 0;
     private Row mCurrentRow = null;
     private boolean mLeftEdge;
+    private boolean mTopEdge;
     private Key mRightEdgeKey = null;
     private final KeyStyles mKeyStyles = new KeyStyles();
 
@@ -650,6 +651,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     private void startKeyboard() {
         mCurrentY += mParams.mTopPadding;
+        mTopEdge = true;
     }
 
     private void startRow(Row row) {
@@ -670,6 +672,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         setSpacer(mCurrentX, mParams.mHorizontalEdgesPadding);
         mCurrentY += mCurrentRow.mRowHeight;
         mCurrentRow = null;
+        mTopEdge = false;
     }
 
     private void endKey(Key key) {
@@ -677,6 +680,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         if (mLeftEdge) {
             key.addEdgeFlags(Keyboard.EDGE_LEFT);
             mLeftEdge = false;
+        }
+        if (mTopEdge) {
+            key.addEdgeFlags(Keyboard.EDGE_TOP);
         }
         mRightEdgeKey = key;
     }
