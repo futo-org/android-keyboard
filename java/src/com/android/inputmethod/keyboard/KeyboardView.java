@@ -83,6 +83,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
     private static final String POPUP_HINT_CHAR = "\u2026";
 
+    // Margin between the label and the icon on a key that has both of them.
+    // Specified by the fraction of the key width.
+    // TODO: Use resource parameter for this value.
+    private static final float LABEL_ICON_MARGIN = 0.05f;
+
     // Main keyboard
     private Keyboard mKeyboard;
     private final KeyDrawParams mKeyDrawParams;
@@ -538,11 +543,13 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 positionX = centerX - labelCharWidth * 7 / 4;
                 paint.setTextAlign(Align.LEFT);
             } else if (key.hasLabelWithIconLeft() && icon != null) {
-                labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth();
+                labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth()
+                        + (int)(LABEL_ICON_MARGIN * keyWidth);
                 positionX = centerX + labelWidth / 2;
                 paint.setTextAlign(Align.RIGHT);
             } else if (key.hasLabelWithIconRight() && icon != null) {
-                labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth();
+                labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth()
+                        + (int)(LABEL_ICON_MARGIN * keyWidth);
                 positionX = centerX - labelWidth / 2;
                 paint.setTextAlign(Align.LEFT);
             } else {
