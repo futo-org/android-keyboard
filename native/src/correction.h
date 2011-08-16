@@ -139,8 +139,7 @@ private:
     class RankingAlgorithm {
     public:
         static int calculateFinalFreq(const int inputIndex, const int depth,
-                const int freq, const bool sameLength, int *editDistanceTable,
-                const Correction* correction);
+                const int freq, int *editDistanceTable, const Correction* correction);
         static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
                 const Correction* correction);
     };
