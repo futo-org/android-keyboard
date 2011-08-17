@@ -426,7 +426,7 @@ public class Suggest implements Dictionary.WordCallback {
         if (typedWord != null) {
             mSuggestions.add(0, typedWordString);
         }
-        removeDupes();
+        removeDupes(mSuggestions);
 
         if (DBG) {
             double normalizedScore = mAutoCorrection.getNormalizedScore();
@@ -453,8 +453,7 @@ public class Suggest implements Dictionary.WordCallback {
         return new SuggestedWords.Builder().addWords(mSuggestions, null);
     }
 
-    private void removeDupes() {
-        final ArrayList<CharSequence> suggestions = mSuggestions;
+    private static void removeDupes(final ArrayList<CharSequence> suggestions) {
         if (suggestions.size() < 2) return;
         int i = 1;
         // Don't cache suggestions.size(), since we may be removing items
@@ -464,7 +463,7 @@ public class Suggest implements Dictionary.WordCallback {
             for (int j = 0; j < i; j++) {
                 CharSequence previous = suggestions.get(j);
                 if (TextUtils.equals(cur, previous)) {
-                    removeFromSuggestions(i);
+                    removeFromSuggestions(suggestions, i);
                     i--;
                     break;
                 }
@@ -473,10 +472,12 @@ public class Suggest implements Dictionary.WordCallback {
         }
     }
 
-    private void removeFromSuggestions(int index) {
-        CharSequence garbage = mSuggestions.remove(index);
+    private static void removeFromSuggestions(final ArrayList<CharSequence> suggestions,
+            final int index) {
+        final CharSequence garbage = suggestions.remove(index);
         if (garbage != null && garbage instanceof StringBuilder) {
-            mStringPool.add(garbage);
+            // TODO: rebase this over the static string builder pool
+            //            mStringPool.add(garbage);
         }
     }
 
