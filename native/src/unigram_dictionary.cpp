@@ -194,34 +194,27 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 
     PROF_START(2);
     // Suggestion with missing character
-    LOGI("--- Suggest missing characters");
+    if (DEBUG_DICT) {
+        LOGI("--- Suggest missing characters");
+    }
     getSuggestionCandidates(0, -1, -1);
     PROF_END(2);
 
     PROF_START(3);
     // Suggestion with excessive character
-    if (SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER
-            && mInputLength >= MIN_USER_TYPED_LENGTH_FOR_EXCESSIVE_CHARACTER_SUGGESTION) {
-        for (int i = 0; i < codesSize; ++i) {
-            if (DEBUG_DICT) {
-                LOGI("--- Suggest excessive characters %d", i);
-            }
-            getSuggestionCandidates(-1, i, -1);
-        }
+    if (DEBUG_DICT) {
+        LOGI("--- Suggest excessive characters");
     }
+    getSuggestionCandidates(-1, 0, -1);
     PROF_END(3);
 
     PROF_START(4);
     // Suggestion with transposed characters
     // Only suggest words that length is mInputLength
-    if (SUGGEST_WORDS_WITH_TRANSPOSED_CHARACTERS) {
-        for (int i = 0; i < codesSize; ++i) {
-            if (DEBUG_DICT) {
-                LOGI("--- Suggest transposed characters %d", i);
-            }
-            getSuggestionCandidates(-1, -1, i);
-        }
+    if (DEBUG_DICT) {
+        LOGI("--- Suggest transposed characters");
     }
+    getSuggestionCandidates(-1, -1, 0);
     PROF_END(4);
 
     PROF_START(5);

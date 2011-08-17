@@ -113,8 +113,6 @@ private:
     int mMaxEditDistance;
     int mMaxDepth;
     int mInputLength;
-    int mExcessivePos;
-    int mTransposedPos;
     int mSpaceProximityPos;
     int mMissingSpacePos;
     int mTerminalInputIndex;
@@ -126,15 +124,26 @@ private:
     CorrectionState mCorrectionStates[MAX_WORD_LENGTH_INTERNAL];
 
     // The following member variables are being used as cache values of the correction state.
+    bool mNeedsToTraverseAllNodes;
     int mOutputIndex;
     int mInputIndex;
+
     int mProximityCount;
+    int mExcessiveCount;
+    int mTransposedCount;
     int mSkippedCount;
+
+    int mTransposedPos;
+    int mExcessivePos;
     int mSkipPos;
-    bool mNeedsToTraverseAllNodes;
+
+    bool mLastCharExceeded;
+
     bool mMatching;
-    bool mSkipping;
     bool mProximityMatching;
+    bool mExceeding;
+    bool mTransposing;
+    bool mSkipping;
 
     class RankingAlgorithm {
     public:
