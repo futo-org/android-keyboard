@@ -23,6 +23,7 @@ import android.service.textservice.SpellCheckerService.Session;
 import android.util.Log;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
+import android.text.TextUtils;
 
 import com.android.inputmethod.compat.ArraysCompatUtils;
 import com.android.inputmethod.keyboard.Key;
@@ -50,7 +51,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static final boolean DBG = false;
     private static final int POOL_SIZE = 2;
 
-    private final static String[] emptyArray = new String[0];
+    private final static SuggestionsInfo EMPTY_SUGGESTIONS_INFO =
+            new SuggestionsInfo(0, new String[0]);
     private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
     private Map<String, Dictionary> mUserDictionaries =
@@ -153,10 +155,14 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private class AndroidSpellCheckerSession extends Session {
         // Immutable, but need the locale which is not available in the constructor yet
         DictionaryPool mDictionaryPool;
+        // Likewise
+        Locale mLocale;
 
         @Override
         public void onCreate() {
-            mDictionaryPool = getDictionaryPool(getLocale());
+            final String localeString = getLocale();
+            mDictionaryPool = getDictionaryPool(localeString);
+            mLocale = Utils.constructLocaleFromString(localeString);
         }
 
         // Note : this must be reentrant
@@ -169,6 +175,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
                 final int suggestionsLimit) {
             final String text = textInfo.getText();
+
+            if (TextUtils.isEmpty(text)) return EMPTY_SUGGESTIONS_INFO;
 
             final SuggestionsGatherer suggestionsGatherer =
                     new SuggestionsGatherer(suggestionsLimit);
@@ -194,12 +202,32 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
                         dictInfo.mProximityInfo);
                 isInDict = dictInfo.mDictionary.isValidWord(text);
+                if (!isInDict && Character.isUpperCase(text.codePointAt(0))) {
+                    // If the first char is not uppercase, then the word is either all lower case,
+                    // in which case we already tested it, or mixed case, in which case we don't
+                    // want to test a lower-case version of it. Hence the test above.
+                    // Also note that by isEmpty() test at the top of the method codePointAt(0) is
+                    // guaranteed to be there.
+                    final int len = text.codePointCount(0, text.length());
+                    int capsCount = 1;
+                    for (int i = 1; i < len; ++i) {
+                        if (1 != capsCount && i != capsCount) break;
+                        if (Character.isUpperCase(text.codePointAt(i))) ++capsCount;
+                    }
+                    // We know the first char is upper case. So we want to test if either everything
+                    // else is lower case, or if everything else is upper case. If the string is
+                    // exactly one char long, then we will arrive here with capsCount 0, and this is
+                    // correct, too.
+                    if (1 == capsCount || len == capsCount) {
+                        isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
+                    }
+                }
                 if (!mDictionaryPool.offer(dictInfo)) {
                     Log.e(TAG, "Can't re-insert a dictionary into its pool");
                 }
             } catch (InterruptedException e) {
                 // I don't think this can happen.
-                return new SuggestionsInfo(0, new String[0]);
+                return EMPTY_SUGGESTIONS_INFO;
             }
 
             final String[] suggestions = suggestionsGatherer.getGatheredSuggestions();
