@@ -107,10 +107,11 @@
     </declare-styleable>
 
     <declare-styleable name="CandidateView">
-        <attr name="autoCorrectHighlight" format="integer">
+        <attr name="suggestionStripOption" format="integer">
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />
             <flag name="autoCorrectInvert" value="0x04" />
+            <flag name="validTypedWordBold" value="0x08" />
         </attr>
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
