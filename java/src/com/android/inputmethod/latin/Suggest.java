@@ -105,9 +105,6 @@ public class Suggest implements Dictionary.WordCallback {
 
     private ArrayList<CharSequence> mSuggestions = new ArrayList<CharSequence>();
     ArrayList<CharSequence> mBigramSuggestions  = new ArrayList<CharSequence>();
-    // TODO: maybe this should be synchronized, it's quite scary as it is.
-    // TODO: if it becomes synchronized, also move initPool in the thread in initAsynchronously
-    private ArrayList<CharSequence> mStringPool = new ArrayList<CharSequence>();
     private CharSequence mTypedWord;
 
     // TODO: Remove these member variables by passing more context to addWord() callback method
@@ -130,7 +127,7 @@ public class Suggest implements Dictionary.WordCallback {
         mWhiteListDictionary = WhitelistDictionary.init(context);
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
         mAutoCorrection = new AutoCorrection();
-        initPool();
+        StringBuilderPool.ensureCapacity(mPrefMaxSuggestions, getApproxMaxWordLength());
     }
 
     private void initAsynchronously(final Context context, final int dictionaryResId,
@@ -138,7 +135,7 @@ public class Suggest implements Dictionary.WordCallback {
         resetMainDict(context, dictionaryResId, locale);
 
         // TODO: read the whitelist and init the pool asynchronously too.
-        // initPool should be done asynchronously but the pool is not thread-safe at the moment.
+        // initPool should be done asynchronously now that the pool is thread-safe.
         initWhitelistAndAutocorrectAndPool(context);
     }
 
@@ -173,12 +170,6 @@ public class Suggest implements Dictionary.WordCallback {
         }.start();
     }
 
-    private void initPool() {
-        for (int i = 0; i < mPrefMaxSuggestions; i++) {
-            StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
-            mStringPool.add(sb);
-        }
-    }
 
     public void setQuickFixesEnabled(boolean enabled) {
         mQuickFixesEnabled = enabled;
@@ -259,10 +250,7 @@ public class Suggest implements Dictionary.WordCallback {
         mScores = new int[mPrefMaxSuggestions];
         mBigramScores = new int[PREF_MAX_BIGRAMS];
         collectGarbage(mSuggestions, mPrefMaxSuggestions);
-        while (mStringPool.size() < mPrefMaxSuggestions) {
-            StringBuilder sb = new StringBuilder(getApproxMaxWordLength());
-            mStringPool.add(sb);
-        }
+        StringBuilderPool.ensureCapacity(mPrefMaxSuggestions, getApproxMaxWordLength());
     }
 
     /**
@@ -282,11 +270,7 @@ public class Suggest implements Dictionary.WordCallback {
     private CharSequence capitalizeWord(boolean all, boolean first, CharSequence word) {
         if (TextUtils.isEmpty(word) || !(all || first)) return word;
         final int wordLength = word.length();
-        final int poolSize = mStringPool.size();
-        final StringBuilder sb =
-                poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
-                        : new StringBuilder(getApproxMaxWordLength());
-        sb.setLength(0);
+        final StringBuilder sb = StringBuilderPool.getStringBuilder(getApproxMaxWordLength());
         // TODO: Must pay attention to locale when changing case.
         if (all) {
             sb.append(word.toString().toUpperCase());
@@ -300,13 +284,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     protected void addBigramToSuggestions(CharSequence bigram) {
-        final int poolSize = mStringPool.size();
-        final StringBuilder sb = poolSize > 0 ?
-                (StringBuilder) mStringPool.remove(poolSize - 1)
-                        : new StringBuilder(getApproxMaxWordLength());
-        sb.setLength(0);
-        sb.append(bigram);
-        mSuggestions.add(sb);
+        mSuggestions.add(bigram);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
@@ -475,9 +453,8 @@ public class Suggest implements Dictionary.WordCallback {
     private static void removeFromSuggestions(final ArrayList<CharSequence> suggestions,
             final int index) {
         final CharSequence garbage = suggestions.remove(index);
-        if (garbage != null && garbage instanceof StringBuilder) {
-            // TODO: rebase this over the static string builder pool
-            //            mStringPool.add(garbage);
+        if (garbage instanceof StringBuilder) {
+            StringBuilderPool.recycle((StringBuilder)garbage);
         }
     }
 
@@ -555,10 +532,7 @@ public class Suggest implements Dictionary.WordCallback {
 
         System.arraycopy(sortedScores, pos, sortedScores, pos + 1, prefMaxSuggestions - pos - 1);
         sortedScores[pos] = score;
-        int poolSize = mStringPool.size();
-        StringBuilder sb = poolSize > 0 ? (StringBuilder) mStringPool.remove(poolSize - 1)
-                : new StringBuilder(getApproxMaxWordLength());
-        sb.setLength(0);
+        final StringBuilder sb = StringBuilderPool.getStringBuilder(getApproxMaxWordLength());
         // TODO: Must pay attention to locale when changing case.
         if (mIsAllUpperCase) {
             sb.append(new String(word, offset, length).toUpperCase());
@@ -572,9 +546,9 @@ public class Suggest implements Dictionary.WordCallback {
         }
         suggestions.add(pos, sb);
         if (suggestions.size() > prefMaxSuggestions) {
-            CharSequence garbage = suggestions.remove(prefMaxSuggestions);
+            final CharSequence garbage = suggestions.remove(prefMaxSuggestions);
             if (garbage instanceof StringBuilder) {
-                mStringPool.add(garbage);
+                StringBuilderPool.recycle((StringBuilder)garbage);
             }
         } else {
             LatinImeLogger.onAddSuggestedWord(sb.toString(), dicTypeId, dataTypeForLog);
@@ -603,12 +577,12 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     private void collectGarbage(ArrayList<CharSequence> suggestions, int prefMaxSuggestions) {
-        int poolSize = mStringPool.size();
+        int poolSize = StringBuilderPool.getSize();
         int garbageSize = suggestions.size();
         while (poolSize < prefMaxSuggestions && garbageSize > 0) {
-            CharSequence garbage = suggestions.get(garbageSize - 1);
-            if (garbage != null && garbage instanceof StringBuilder) {
-                mStringPool.add(garbage);
+            final CharSequence garbage = suggestions.get(garbageSize - 1);
+            if (garbage instanceof StringBuilder) {
+                StringBuilderPool.recycle((StringBuilder)garbage);
                 poolSize++;
             }
             garbageSize--;
