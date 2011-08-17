@@ -85,7 +85,6 @@
         <item name="android:background">@drawable/candidate_feedback_background</item>
     </style>
     <style name="CandidateViewStyle" parent="SuggestionsStripBackgroundStyle">
-        <item name="autoCorrectionVisualFlashEnabled">@bool/config_auto_correction_suggestion_strip_visual_flash_enabled</item>
         <item name="autoCorrectHighlight">autoCorrectBold</item>
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
@@ -189,8 +188,7 @@
         <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
     </style>
     <style name="CandidateViewStyle.IceCreamSandwich" parent="SuggestionsStripBackgroundStyle.IceCreamSandwich">
-        <item name="autoCorrectionVisualFlashEnabled">@bool/config_auto_correction_suggestion_strip_visual_flash_enabled</item>
-        <item name="autoCorrectHighlight">autoCorrectBold|autoCorrectInvert</item>
+        <item name="autoCorrectHighlight">autoCorrectBold</item>
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FF3DC8FF</item>
         <item name="colorSuggested">#FFFFFFFF</item>
