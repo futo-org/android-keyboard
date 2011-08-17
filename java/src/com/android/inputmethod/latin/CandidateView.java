@@ -633,6 +633,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private static CharSequence getEllipsizedText(CharSequence text, int maxWidth,
             TextPaint paint) {
+        if (text == null) return null;
         paint.setTextScaleX(1.0f);
         final int width = getTextWidth(text, paint);
         if (width <= maxWidth) {
