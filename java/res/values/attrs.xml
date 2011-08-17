@@ -107,7 +107,6 @@
     </declare-styleable>
 
     <declare-styleable name="CandidateView">
-        <attr name="autoCorrectionVisualFlashEnabled" format="boolean" />
         <attr name="autoCorrectHighlight" format="integer">
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />

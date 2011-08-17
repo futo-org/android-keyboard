@@ -278,7 +278,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
         private final ArrayList<CharSequence> mTexts = new ArrayList<CharSequence>();
 
-        public final boolean mAutoCorrectionVisualFlashEnabled;
         public boolean mMoreSuggestionsAvailable;
 
         public SuggestionsStripParams(Context context, AttributeSet attrs, int defStyle,
@@ -286,8 +285,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             super(words, dividers, infos);
             final TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.CandidateView, defStyle, R.style.CandidateViewStyle);
-            mAutoCorrectionVisualFlashEnabled = a.getBoolean(
-                    R.styleable.CandidateView_autoCorrectionVisualFlashEnabled, false);
             mAutoCorrectHighlight = a.getInt(R.styleable.CandidateView_autoCorrectHighlight, 0);
             mColorTypedWord = a.getColor(R.styleable.CandidateView_colorTypedWord, 0);
             mColorAutoCorrect = a.getColor(R.styleable.CandidateView_colorAutoCorrect, 0);
@@ -584,7 +581,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         final int width = getWidth();
         final int countInStrip = mStripParams.layout(
                 mSuggestions, mCandidatesStrip, mCandidatesPane, width);
-        final int countInPane = mPaneParams.layout(
+        mPaneParams.layout(
                 mSuggestions, mCandidatesPane, countInStrip, mStripParams.getTextColor(), width);
     }
 
@@ -703,9 +700,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     public void onAutoCorrectionInverted(CharSequence autoCorrectedWord) {
-        if (!mStripParams.mAutoCorrectionVisualFlashEnabled) {
-            return;
-        }
         final CharSequence inverted = mStripParams.getInvertedText(autoCorrectedWord);
         if (inverted == null)
             return;
