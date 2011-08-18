@@ -30,7 +30,9 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Dictionary.DataType;
 import com.android.inputmethod.latin.Dictionary.WordCallback;
+import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
+import com.android.inputmethod.latin.UserDictionary;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WordComposer;
 
@@ -51,6 +53,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private final static String[] emptyArray = new String[0];
     private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
+    private Map<String, Dictionary> mUserDictionaries =
+            Collections.synchronizedMap(new TreeMap<String, Dictionary>());
 
     @Override
     public Session createSession() {
@@ -109,8 +113,13 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     public boolean onUnbind(final Intent intent) {
         final Map<String, DictionaryPool> oldPools = mDictionaryPools;
         mDictionaryPools = Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
+        final Map<String, Dictionary> oldUserDictionaries = mUserDictionaries;
+        mUserDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
         for (DictionaryPool pool : oldPools.values()) {
             pool.close();
+        }
+        for (Dictionary dict : oldUserDictionaries.values()) {
+            dict.close();
         }
         return false;
     }
@@ -129,9 +138,16 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         final ProximityInfo proximityInfo = ProximityInfo.createSpellCheckerProximityInfo();
         final Resources resources = getResources();
         final int fallbackResourceId = Utils.getMainDictionaryResourceId(resources);
-        final Dictionary dictionary =
+        final DictionaryCollection dictionaryCollection =
                 DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId);
-        return new DictAndProximity(dictionary, proximityInfo);
+        final String localeStr = locale.toString();
+        Dictionary userDict = mUserDictionaries.get(localeStr);
+        if (null == userDict) {
+            userDict = new UserDictionary(this, localeStr);
+            mUserDictionaries.put(localeStr, userDict);
+        }
+        dictionaryCollection.addDictionary(userDict);
+        return new DictAndProximity(dictionaryCollection, proximityInfo);
     }
 
     private class AndroidSpellCheckerSession extends Session {
