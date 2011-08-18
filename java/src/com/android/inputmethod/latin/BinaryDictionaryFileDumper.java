@@ -98,23 +98,32 @@ public class BinaryDictionaryFileDumper {
      * @throw IOException if the provider-returned data could not be read.
      */
     public static List<AssetFileAddress> cacheDictionariesFromContentProvider(final Locale locale,
-            final Context context) throws FileNotFoundException, IOException {
+            final Context context) {
         final ContentResolver resolver = context.getContentResolver();
         final List<String> idList = getDictIdList(locale, context);
         final List<AssetFileAddress> fileAddressList = new ArrayList<AssetFileAddress>();
         for (String id : idList) {
             final Uri wordListUri = getProviderUri(id);
-            final AssetFileDescriptor afd =
-                    resolver.openAssetFileDescriptor(wordListUri, "r");
-            if (null == afd) continue;
-            final String fileName = copyFileTo(afd.createInputStream(),
-                    BinaryDictionaryGetter.getCacheFileName(id, locale, context));
-            afd.close();
-            if (0 >= resolver.delete(wordListUri, null, null)) {
-                // I'd rather not print the word list ID to the log here out of security concerns
-                Log.e(TAG, "Could not have the dictionary pack delete a word list");
+            AssetFileDescriptor afd = null;
+            try {
+                afd = resolver.openAssetFileDescriptor(wordListUri, "r");
+            } catch (FileNotFoundException e) {
+                // leave null inside afd and continue
             }
-            fileAddressList.add(AssetFileAddress.makeFromFileName(fileName));
+            if (null == afd) continue;
+            try {
+                final String fileName = copyFileTo(afd.createInputStream(),
+                        BinaryDictionaryGetter.getCacheFileName(id, locale, context));
+                afd.close();
+                if (0 >= resolver.delete(wordListUri, null, null)) {
+                    // I'd rather not print the word list ID to the log out of security concerns
+                    Log.e(TAG, "Could not have the dictionary pack delete a word list");
+                }
+                fileAddressList.add(AssetFileAddress.makeFromFileName(fileName));
+            } catch (IOException e) {
+                // Can't read the file for some reason. Continue onto the next file.
+                Log.e(TAG, "Cannot read a word list from the dictionary pack : " + e);
+            }
         }
         return fileAddressList;
     }
