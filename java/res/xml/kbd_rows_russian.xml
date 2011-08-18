@@ -69,7 +69,7 @@
             latin:popupCharacters="0" />
         <Key
             latin:keyLabel="х"
-            latin:popupCharacters="@string/alternates_for_cyrillic_soft_sign"
+            latin:popupCharacters="@string/alternates_for_cyrillic_ha"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
