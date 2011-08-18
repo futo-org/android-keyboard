@@ -42,6 +42,11 @@ class BinaryDictionaryGetter {
     private static final String TAG = BinaryDictionaryGetter.class.getSimpleName();
 
     /**
+     * Used to return empty lists
+     */
+    private static final File[] EMPTY_FILE_ARRAY = new File[0];
+
+    /**
      * Name of the common preferences name to know which word list are on and which are off.
      */
     private static final String COMMON_PREFERENCES_NAME = "LatinImeDictPrefs";
@@ -198,29 +203,14 @@ class BinaryDictionaryGetter {
      *
      * @param locale the locale to find the dictionary files for.
      * @param context the context on which to open the files upon.
-     * @return a list of binary dictionary files, which may be null but may not be empty.
+     * @return an array of binary dictionary files, which may be empty but may not be null.
      */
-    private static List<AssetFileAddress> getCachedDictionaryList(final Locale locale,
+    private static File[] getCachedDictionaryList(final Locale locale,
             final Context context) {
         final String directoryName = getCacheDirectoryForLocale(locale, context);
         final File[] cacheFiles = new File(directoryName).listFiles();
-        // TODO: Never return null. Fallback on the built-in dictionary, and if that's
-        // not present or disabled, then return an empty list.
-        if (null == cacheFiles) return null;
-
-        final DictPackSettings dictPackSettings = new DictPackSettings(context);
-
-        final ArrayList<AssetFileAddress> fileList = new ArrayList<AssetFileAddress>();
-        for (File f : cacheFiles) {
-            final String wordListId = getWordListIdFromFileName(f.getName());
-            if (!dictPackSettings.isWordListActive(wordListId)) continue;
-            if (f.canRead()) {
-                fileList.add(AssetFileAddress.makeFromFileName(f.getPath()));
-            } else {
-                Log.e(TAG, "Found a cached dictionary file but cannot read it");
-            }
-        }
-        return fileList.size() > 0 ? fileList : null;
+        if (null == cacheFiles) return EMPTY_FILE_ARRAY;
+        return cacheFiles;
     }
 
     /**
@@ -242,10 +232,26 @@ class BinaryDictionaryGetter {
         // storage, but we don't really care about what was copied NOW: what we want is the
         // list of everything we ever cached, so we ignore the return value.
         BinaryDictionaryFileDumper.cacheDictionariesFromContentProvider(locale, context);
-        List<AssetFileAddress> cachedDictionaryList = getCachedDictionaryList(locale, context);
-        if (null != cachedDictionaryList) {
-            return cachedDictionaryList;
+        final File[] cachedDictionaryList = getCachedDictionaryList(locale, context);
+
+        final DictPackSettings dictPackSettings = new DictPackSettings(context);
+
+        final ArrayList<AssetFileAddress> fileList = new ArrayList<AssetFileAddress>();
+        // cachedDictionaryList may not be null, see doc for getCachedDictionaryList
+        for (final File f : cachedDictionaryList) {
+            final String wordListId = getWordListIdFromFileName(f.getName());
+            if (!dictPackSettings.isWordListActive(wordListId)) continue;
+            if (f.canRead()) {
+                fileList.add(AssetFileAddress.makeFromFileName(f.getPath()));
+            } else {
+                Log.e(TAG, "Found a cached dictionary file but cannot read it");
+            }
         }
+
+        if (!fileList.isEmpty()) {
+            return fileList;
+        }
+        // If the list is empty, fall through and return the fallback
 
         final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId,
                 locale);
