@@ -214,6 +214,13 @@ class BinaryDictionaryGetter {
     }
 
     /**
+     * Returns the id of the main dict for a specified locale.
+     */
+    private static String getMainDictId(final Locale locale) {
+        return locale.toString();
+    }
+
+    /**
      * Returns a list of file addresses for a given locale, trying relevant methods in order.
      *
      * Tries to get binary dictionaries from various sources, in order:
@@ -234,12 +241,18 @@ class BinaryDictionaryGetter {
         BinaryDictionaryFileDumper.cacheDictionariesFromContentProvider(locale, context);
         final File[] cachedDictionaryList = getCachedDictionaryList(locale, context);
 
+        final String mainDictId = getMainDictId(locale);
+
         final DictPackSettings dictPackSettings = new DictPackSettings(context);
 
+        boolean foundMainDict = false;
         final ArrayList<AssetFileAddress> fileList = new ArrayList<AssetFileAddress>();
         // cachedDictionaryList may not be null, see doc for getCachedDictionaryList
         for (final File f : cachedDictionaryList) {
             final String wordListId = getWordListIdFromFileName(f.getName());
+            if (wordListId.equals(mainDictId)) {
+                foundMainDict = true;
+            }
             if (!dictPackSettings.isWordListActive(wordListId)) continue;
             if (f.canRead()) {
                 fileList.add(AssetFileAddress.makeFromFileName(f.getPath()));
@@ -248,14 +261,14 @@ class BinaryDictionaryGetter {
             }
         }
 
-        if (!fileList.isEmpty()) {
-            return fileList;
+        if (!foundMainDict && dictPackSettings.isWordListActive(mainDictId)) {
+            final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId,
+                    locale);
+            if (null != fallbackAsset) {
+                fileList.add(fallbackAsset);
+            }
         }
-        // If the list is empty, fall through and return the fallback
 
-        final AssetFileAddress fallbackAsset = loadFallbackResource(context, fallbackResId,
-                locale);
-        if (null == fallbackAsset) return null;
-        return Arrays.asList(fallbackAsset);
+        return fileList;
     }
 }
