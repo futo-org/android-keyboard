@@ -545,9 +545,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private void setAutomaticTemporaryUpperCase() {
         if (mKeyboardView == null) return;
         final Keyboard keyboard = mKeyboardView.getKeyboard();
-        if (keyboard != null) {
-            keyboard.setAutomaticTemporaryUpperCase();
-        }
+        if (keyboard == null) return;
+        keyboard.setAutomaticTemporaryUpperCase();
         mKeyboardView.invalidateAllKeys();
     }
 
