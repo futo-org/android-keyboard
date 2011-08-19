@@ -210,11 +210,14 @@ Correction::CorrectionType Correction::processSkipChar(
 
 Correction::CorrectionType Correction::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
-    CorrectionType currentStateType = NOT_ON_TERMINAL;
+
+    if (mNeedsToTraverseAllNodes || isQuote(c)) {
+        return processSkipChar(c, isTerminal);
+    }
 
     if (mExcessivePos >= 0) {
         if (mExcessiveCount == 0 && mExcessivePos < mOutputIndex) {
-            ++mExcessivePos;
+            mExcessivePos = mOutputIndex;
         }
         if (mExcessivePos < mInputLength - 1) {
             mExceeding = mExcessivePos == mInputIndex;
@@ -226,117 +229,114 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             if (DEBUG_DICT) {
                 assert(mSkipPos == mOutputIndex - 1);
             }
-            ++mSkipPos;
+            mSkipPos = mOutputIndex;
         }
         mSkipping = mSkipPos == mOutputIndex;
     }
 
     if (mTransposedPos >= 0) {
         if (mTransposedCount == 0 && mTransposedPos < mOutputIndex) {
-                ++mTransposedPos;
-            }
+            mTransposedPos = mOutputIndex;
+        }
         if (mTransposedPos < mInputLength - 1) {
             mTransposing = mInputIndex == mTransposedPos;
         }
     }
 
-    if (mNeedsToTraverseAllNodes || isQuote(c)) {
-        return processSkipChar(c, isTerminal);
-    } else {
-        bool secondTransposing = false;
-        if (mTransposedCount % 2 == 1) {
-            if (mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
-                    == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
-                ++mTransposedCount;
-                secondTransposing = true;
-            } else if (mCorrectionStates[mOutputIndex].mExceeding) {
-                --mTransposedCount;
-                ++mExcessiveCount;
-                incrementInputIndex();
-            } else {
-                --mTransposedCount;
-                return UNRELATED;
-            }
-        }
-
-        // TODO: sum counters
-        const bool checkProximityChars =
-                !(mSkippedCount > 0 || mExcessivePos >= 0 || mTransposedPos >= 0);
-        // TODO: do not check if second transposing
-        const int matchedProximityCharId = mProximityInfo->getMatchedProximityId(
-                mInputIndex, c, checkProximityChars);
-
-        if (!secondTransposing && ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
-            if (mInputIndex - 1 < mInputLength && (mExceeding || mTransposing)
-                    && mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false)
-                            == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
-                if (mTransposing) {
-                    ++mTransposedCount;
-                } else {
-                    ++mExcessiveCount;
-                    incrementInputIndex();
-                }
-            } else if (mSkipping && mProximityCount == 0) {
-                // Skip this letter and continue deeper
-                ++mSkippedCount;
-                return processSkipChar(c, isTerminal);
-            } else if (checkProximityChars
-                    && mInputIndex > 0
-                    && mCorrectionStates[mOutputIndex].mProximityMatching
-                    && mCorrectionStates[mOutputIndex].mSkipping
-                    && mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
-                            == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
-                // Note: This logic tries saving cases like contrst --> contrast -- "a" is one of
-                // proximity chars of "s", but it should rather be handled as a skipped char.
-                ++mSkippedCount;
-                --mProximityCount;
-                return processSkipChar(c, isTerminal);
-            } else {
-                return UNRELATED;
-            }
-        } else if (secondTransposing
-                || ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
-            // If inputIndex is greater than mInputLength, that means there is no
-            // proximity chars. So, we don't need to check proximity.
-            mMatching = true;
-        } else if (ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
-            mProximityMatching = true;
-            incrementProximityCount();
-        }
-
-        mWord[mOutputIndex] = c;
-
-        mLastCharExceeded = mExcessiveCount == 0 && mSkippedCount == 0
-                && mProximityCount == 0 && mTransposedCount == 0
-                // TODO: remove this line once excessive correction is conmibned to others.
-                && mExcessivePos >= 0 && (mInputIndex == mInputLength - 2);
-        const bool isSameAsUserTypedLength = (mInputLength == mInputIndex + 1) || mLastCharExceeded;
-        if (mLastCharExceeded) {
-            // TODO: Decrement mExcessiveCount if next char is matched word.
+    bool secondTransposing = false;
+    if (mTransposedCount % 2 == 1) {
+        if (mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
+                == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            ++mTransposedCount;
+            secondTransposing = true;
+        } else if (mCorrectionStates[mOutputIndex].mExceeding) {
+            --mTransposedCount;
             ++mExcessiveCount;
+            incrementInputIndex();
+        } else {
+            --mTransposedCount;
+            return UNRELATED;
         }
-        if (isSameAsUserTypedLength && isTerminal) {
-            mTerminalInputIndex = mInputIndex;
-            mTerminalOutputIndex = mOutputIndex;
-            currentStateType = ON_TERMINAL;
-        }
-        // Start traversing all nodes after the index exceeds the user typed length
-        if (isSameAsUserTypedLength) {
-            startToTraverseAllNodes();
-        }
-
-        // Finally, we are ready to go to the next character, the next "virtual node".
-        // We should advance the input index.
-        // We do this in this branch of the 'if traverseAllNodes' because we are still matching
-        // characters to input; the other branch is not matching them but searching for
-        // completions, this is why it does not have to do it.
-        incrementInputIndex();
     }
 
+    // TODO: sum counters
+    const bool checkProximityChars =
+            !(mSkippedCount > 0 || mExcessivePos >= 0 || mTransposedPos >= 0);
+    const int matchedProximityCharId = secondTransposing
+            ? ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR
+            : mProximityInfo->getMatchedProximityId(mInputIndex, c, checkProximityChars);
+
+    if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
+        if (mInputIndex - 1 < mInputLength && (mExceeding || mTransposing)
+                && mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false)
+                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            if (mTransposing) {
+                ++mTransposedCount;
+            } else {
+                ++mExcessiveCount;
+                incrementInputIndex();
+            }
+        } else if (mSkipping && mProximityCount == 0) {
+            // Skip this letter and continue deeper
+            ++mSkippedCount;
+            return processSkipChar(c, isTerminal);
+        } else if (checkProximityChars
+                && mInputIndex > 0
+                && mCorrectionStates[mOutputIndex].mProximityMatching
+                && mCorrectionStates[mOutputIndex].mSkipping
+                && mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
+                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            // Note: This logic tries saving cases like contrst --> contrast -- "a" is one of
+            // proximity chars of "s", but it should rather be handled as a skipped char.
+            ++mSkippedCount;
+            --mProximityCount;
+            return processSkipChar(c, isTerminal);
+        } else {
+            return UNRELATED;
+        }
+    } else if (secondTransposing
+            || ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+        // If inputIndex is greater than mInputLength, that means there is no
+        // proximity chars. So, we don't need to check proximity.
+        mMatching = true;
+    } else if (ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
+        mProximityMatching = true;
+        incrementProximityCount();
+    }
+
+    mWord[mOutputIndex] = c;
+
+    mLastCharExceeded = mExcessiveCount == 0 && mSkippedCount == 0
+            && mProximityCount == 0 && mTransposedCount == 0
+            // TODO: remove this line once excessive correction is conmibned to others.
+            && mExcessivePos >= 0 && (mInputIndex == mInputLength - 2);
+    const bool isSameAsUserTypedLength = (mInputLength == mInputIndex + 1) || mLastCharExceeded;
+    if (mLastCharExceeded) {
+        // TODO: Decrement mExcessiveCount if next char is matched word.
+        ++mExcessiveCount;
+    }
+
+    // Start traversing all nodes after the index exceeds the user typed length
+    if (isSameAsUserTypedLength) {
+        startToTraverseAllNodes();
+    }
+
+    // Finally, we are ready to go to the next character, the next "virtual node".
+    // We should advance the input index.
+    // We do this in this branch of the 'if traverseAllNodes' because we are still matching
+    // characters to input; the other branch is not matching them but searching for
+    // completions, this is why it does not have to do it.
+    incrementInputIndex();
     // Also, the next char is one "virtual node" depth more than this char.
     incrementOutputIndex();
 
-    return currentStateType;
+    if (isSameAsUserTypedLength && isTerminal) {
+        mTerminalInputIndex = mInputIndex - 1;
+        mTerminalOutputIndex = mOutputIndex - 1;
+        return ON_TERMINAL;
+    } else {
+        return NOT_ON_TERMINAL;
+    }
 }
 
 Correction::~Correction() {
