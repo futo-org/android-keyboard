@@ -127,7 +127,7 @@ public class ExpandableDictionary extends Dictionary {
         if (!mUpdatingDictionary) {
             mUpdatingDictionary = true;
             mRequiresReload = false;
-            new LoadDictionaryTask().execute();
+            new LoadDictionaryTask().start();
         }
     }
 
@@ -541,14 +541,13 @@ public class ExpandableDictionary extends Dictionary {
         mRoots = new NodeArray();
     }
 
-    private class LoadDictionaryTask extends AsyncTask<Void, Void, Void> {
+    private class LoadDictionaryTask extends Thread {
         @Override
-        protected Void doInBackground(Void... v) {
+        public void run() {
             loadDictionaryAsync();
             synchronized (mUpdatingLock) {
                 mUpdatingDictionary = false;
             }
-            return null;
         }
     }
 

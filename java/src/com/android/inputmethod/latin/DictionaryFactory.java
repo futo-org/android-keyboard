@@ -42,9 +42,9 @@ public class DictionaryFactory {
      * @param context application context for reading resources
      * @param locale the locale for which to create the dictionary
      * @param fallbackResId the id of the resource to use as a fallback if no pack is found
-     * @return an initialized instance of Dictionary
+     * @return an initialized instance of DictionaryCollection
      */
-    public static Dictionary createDictionaryFromManager(Context context, Locale locale,
+    public static DictionaryCollection createDictionaryFromManager(Context context, Locale locale,
             int fallbackResId) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
