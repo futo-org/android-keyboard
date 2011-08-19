@@ -32,6 +32,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.text.InputType;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
@@ -733,6 +734,39 @@ public class Utils {
                 sLocaleCache.put(localeStr, retval);
             }
             return retval;
+        }
+    }
+
+    /**
+     * Remove duplicates from an array of strings.
+     *
+     * This method will always keep the first occurence of all strings at their position
+     * in the array, removing the subsequent ones.
+     */
+    public static void removeDupes(final ArrayList<CharSequence> suggestions) {
+        if (suggestions.size() < 2) return;
+        int i = 1;
+        // Don't cache suggestions.size(), since we may be removing items
+        while (i < suggestions.size()) {
+            final CharSequence cur = suggestions.get(i);
+            // Compare each candidate with each previous candidate
+            for (int j = 0; j < i; j++) {
+                CharSequence previous = suggestions.get(j);
+                if (TextUtils.equals(cur, previous)) {
+                    removeFromSuggestions(suggestions, i);
+                    i--;
+                    break;
+                }
+            }
+            i++;
+        }
+    }
+
+    private static void removeFromSuggestions(final ArrayList<CharSequence> suggestions,
+            final int index) {
+        final CharSequence garbage = suggestions.remove(index);
+        if (garbage instanceof StringBuilder) {
+            StringBuilderPool.recycle((StringBuilder)garbage);
         }
     }
 }
