@@ -34,5 +34,9 @@
         <item>thisd</item>
         <item>this\'d</item>
 
+        <item>255</item>
+        <item>lets</item>
+        <item>let\'s</item>
+
     </string-array>
 </resources>
