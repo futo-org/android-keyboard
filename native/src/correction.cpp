@@ -190,15 +190,15 @@ void Correction::startToTraverseAllNodes() {
 }
 
 bool Correction::needsToPrune() const {
-    return (mOutputIndex - 1 >= (mTransposedPos >= 0 ? mInputLength - 1 : mMaxDepth)
-            || mProximityCount > mMaxEditDistance);
+    return mOutputIndex - 1 >= mMaxDepth || mProximityCount > mMaxEditDistance;
 }
 
+// TODO: inline?
 Correction::CorrectionType Correction::processSkipChar(
-        const int32_t c, const bool isTerminal) {
+        const int32_t c, const bool isTerminal, const bool inputIndexIncremented) {
     mWord[mOutputIndex] = c;
     if (needsToTraverseAllNodes() && isTerminal) {
-        mTerminalInputIndex = mInputIndex;
+        mTerminalInputIndex = mInputIndex - (inputIndexIncremented ? 1 : 0);
         mTerminalOutputIndex = mOutputIndex;
         incrementOutputIndex();
         return TRAVERSE_ALL_ON_TERMINAL;
@@ -212,13 +212,22 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
 
     if (mNeedsToTraverseAllNodes || isQuote(c)) {
-        if (mLastCharExceeded > 0 && mInputIndex == mInputLength - 1
-                && mProximityInfo->getMatchedProximityId(mInputIndex, c, false)
-                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
-            mLastCharExceeded = false;
-            --mExcessiveCount;
+        bool incremented = false;
+        if (mLastCharExceeded && mInputIndex == mInputLength - 1) {
+            // TODO: Do not check the proximity if EditDistance exceeds the threshold
+            const int matchId = mProximityInfo->getMatchedProximityId(mInputIndex, c, true);
+            if (matchId == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+                mLastCharExceeded = false;
+                --mExcessiveCount;
+            } else if (matchId == ProximityInfo::NEAR_PROXIMITY_CHAR) {
+                mLastCharExceeded = false;
+                --mExcessiveCount;
+                ++mProximityCount;
+            }
+            incrementInputIndex();
+            incremented = true;
         }
-        return processSkipChar(c, isTerminal);
+        return processSkipChar(c, isTerminal, incremented);
     }
 
     if (mExcessivePos >= 0) {
@@ -258,22 +267,67 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         } else if (mCorrectionStates[mOutputIndex].mExceeding) {
             --mTransposedCount;
             ++mExcessiveCount;
+            --mExcessivePos;
             incrementInputIndex();
         } else {
             --mTransposedCount;
+            if (DEBUG_CORRECTION) {
+                DUMP_WORD(mWord, mOutputIndex);
+                LOGI("UNRELATED(0): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
+                        mTransposedCount, mExcessiveCount, c);
+            }
             return UNRELATED;
         }
     }
 
+    const bool noCorrectionsHappenedSoFar =
+            (mSkippedCount + mExcessiveCount + mTransposedCount) == 0;
     // TODO: sum counters
-    const bool checkProximityChars =
-            !(mSkippedCount > 0 || mExcessivePos >= 0 || mTransposedPos >= 0);
+    const bool checkProximityChars = noCorrectionsHappenedSoFar;
     const int matchedProximityCharId = secondTransposing
             ? ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR
             : mProximityInfo->getMatchedProximityId(mInputIndex, c, checkProximityChars);
 
     if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
-        if (mInputIndex - 1 < mInputLength && (mExceeding || mTransposing)
+        // TODO: Optimize
+        // As the current char turned out to be an unrelated char,
+        // we will try other correction-types. Please note that mCorrectionStates[mOutputIndex]
+        // here refers to the previous state.
+        if (noCorrectionsHappenedSoFar
+                && mCorrectionStates[mOutputIndex].mProximityMatching
+                && mCorrectionStates[mOutputIndex].mExceeding
+                && mProximityInfo->getMatchedProximityId(mInputIndex, mWord[mOutputIndex], false)
+                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            // TODO: check transpose in the same way?
+            ++mExcessiveCount;
+            --mProximityCount;
+        } else if (mInputIndex < mInputLength - 1 && mOutputIndex > 0
+                && mTransposedCount > 0 && mExcessiveCount == 0
+                && !mCorrectionStates[mOutputIndex].mTransposing
+                && mCorrectionStates[mOutputIndex - 1].mTransposing
+                && mProximityInfo->getMatchedProximityId(
+                        mInputIndex, mWord[mOutputIndex - 1], false)
+                                == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR
+                && mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false)
+                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            // Example:
+            // occaisional -> occa   sional
+            // mmmmttx     -> mmmm(E)mmmmmm
+            mTransposedCount -= 2;
+            ++mExcessiveCount;
+            ++mInputIndex;
+        } else if (mOutputIndex > 0 && mInputIndex > 0 && mTransposedCount > 0 && mSkippedCount == 0
+                && !mCorrectionStates[mOutputIndex].mTransposing
+                && mCorrectionStates[mOutputIndex - 1].mTransposing
+                && mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
+                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            // Example:
+            // chcolate -> chocolate
+            // mmttx    -> mmsmmmmmm
+            mTransposedCount -= 2;
+            ++mSkippedCount;
+            --mInputIndex;
+        } else if (mInputIndex - 1 < mInputLength && (mExceeding || mTransposing)
                 && mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false)
                         == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
             if (mTransposing) {
@@ -282,11 +336,11 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                 ++mExcessiveCount;
                 incrementInputIndex();
             }
-        } else if (mSkipping && mProximityCount == 0) {
+        } else if (mProximityCount == 0 && noCorrectionsHappenedSoFar) {
             // Skip this letter and continue deeper
             ++mSkippedCount;
-            return processSkipChar(c, isTerminal);
-        } else if (checkProximityChars
+            return processSkipChar(c, isTerminal, false);
+        } else if (noCorrectionsHappenedSoFar
                 && mInputIndex > 0
                 && mCorrectionStates[mOutputIndex].mProximityMatching
                 && mCorrectionStates[mOutputIndex].mSkipping
@@ -296,8 +350,13 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             // proximity chars of "s", but it should rather be handled as a skipped char.
             ++mSkippedCount;
             --mProximityCount;
-            return processSkipChar(c, isTerminal);
+            return processSkipChar(c, isTerminal, false);
         } else {
+            if (DEBUG_CORRECTION) {
+                DUMP_WORD(mWord, mOutputIndex);
+                LOGI("UNRELATED(1): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
+                        mTransposedCount, mExcessiveCount, c);
+            }
             return UNRELATED;
         }
     } else if (secondTransposing
@@ -314,8 +373,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 
     mLastCharExceeded = mExcessiveCount == 0 && mSkippedCount == 0
             && mProximityCount == 0 && mTransposedCount == 0
-            // TODO: remove this line once excessive correction is conmibned to others.
-            && mExcessivePos >= 0 && (mInputIndex == mInputLength - 2);
+            && (mInputIndex == mInputLength - 2);
     const bool isSameAsUserTypedLength = (mInputLength == mInputIndex + 1) || mLastCharExceeded;
     if (mLastCharExceeded) {
         ++mExcessiveCount;
@@ -326,6 +384,9 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         startToTraverseAllNodes();
     }
 
+    const bool needsToTryOnTerminalForTheLastPossibleExcessiveChar =
+            mExceeding && mInputIndex == mInputLength - 2;
+
     // Finally, we are ready to go to the next character, the next "virtual node".
     // We should advance the input index.
     // We do this in this branch of the 'if traverseAllNodes' because we are still matching
@@ -335,7 +396,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     // Also, the next char is one "virtual node" depth more than this char.
     incrementOutputIndex();
 
-    if (isSameAsUserTypedLength && isTerminal) {
+    if ((needsToTryOnTerminalForTheLastPossibleExcessiveChar
+            || isSameAsUserTypedLength) && isTerminal) {
         mTerminalInputIndex = mInputIndex - 1;
         mTerminalOutputIndex = mOutputIndex - 1;
         return ON_TERMINAL;
@@ -453,35 +515,25 @@ inline static int editDistance(
 int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const int outputIndex,
         const int freq, int* editDistanceTable, const Correction* correction) {
     const int excessivePos = correction->getExcessivePos();
-    const int transposedPos = correction->getTransposedPos();
     const int inputLength = correction->mInputLength;
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
     const int fullWordMultiplier = correction->FULL_WORD_MULTIPLIER;
     const ProximityInfo *proximityInfo = correction->mProximityInfo;
     const int skippedCount = correction->mSkippedCount;
-    const int transposedCount = correction->mTransposedCount;
-    const int excessiveCount = correction->mExcessiveCount;
+    const int transposedCount = correction->mTransposedCount / 2;
+    const int excessiveCount = correction->mExcessiveCount + correction->mTransposedCount % 2;
     const int proximityMatchedCount = correction->mProximityCount;
     const bool lastCharExceeded = correction->mLastCharExceeded;
     if (skippedCount >= inputLength || inputLength == 0) {
         return -1;
     }
 
-    // TODO: remove
-    if (transposedPos >= 0 && transposedCount == 0) {
-        return -1;
-    }
-
-    // TODO: remove
-    if (excessivePos >= 0 && excessiveCount == 0) {
-        return -1;
-    }
-
-    const bool sameLength = lastCharExceeded ? (inputLength == inputIndex + 2)
+    // TODO: find more robust way
+    bool sameLength = lastCharExceeded ? (inputLength == inputIndex + 2)
             : (inputLength == inputIndex + 1);
 
     // TODO: use mExcessiveCount
-    int matchCount = inputLength - correction->mProximityCount - (excessivePos >= 0 ? 1 : 0);
+    const int matchCount = inputLength - correction->mProximityCount - excessiveCount;
 
     const unsigned short* word = correction->mWord;
     const bool skipped = skippedCount > 0;
@@ -490,29 +542,51 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
             - getQuoteCount(proximityInfo->getPrimaryInputWord(), inputLength));
 
     // TODO: Calculate edit distance for transposed and excessive
-    int matchWeight;
     int ed = 0;
-    int adJustedProximityMatchedCount = proximityMatchedCount;
+    int adjustedProximityMatchedCount = proximityMatchedCount;
+
+    int finalFreq = freq;
 
     // TODO: Optimize this.
-    if (excessivePos < 0 && transposedPos < 0 && (proximityMatchedCount > 0 || skipped)) {
+    // TODO: Ignoring edit distance for transposed char, for now
+    if (transposedCount == 0 && (proximityMatchedCount > 0 || skipped || excessiveCount > 0)) {
         const unsigned short* primaryInputWord = proximityInfo->getPrimaryInputWord();
         ed = editDistance(editDistanceTable, primaryInputWord,
                 inputLength, word, outputIndex + 1);
-        matchWeight = powerIntCapped(typedLetterMultiplier, outputIndex + 1 - ed);
-        if (ed == 1 && inputLength == outputIndex) {
-            // Promote a word with just one skipped char
-            multiplyRate(WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE, &matchWeight);
+        const int matchWeight = powerIntCapped(typedLetterMultiplier,
+                max(inputLength, outputIndex + 1) - ed);
+        multiplyIntCapped(matchWeight, &finalFreq);
+
+        // TODO: Demote further if there are two or more excessive chars with longer user input?
+        if (inputLength > outputIndex + 1) {
+            multiplyRate(INPUT_EXCEEDS_OUTPUT_DEMOTION_RATE, &finalFreq);
         }
+
         ed = max(0, ed - quoteDiffCount);
-        adJustedProximityMatchedCount = min(max(0, ed - (outputIndex + 1 - inputLength)),
+
+        if (ed == 1 && (inputLength == outputIndex || inputLength == outputIndex + 2)) {
+            // Promote a word with just one skipped or excessive char
+            if (sameLength) {
+                multiplyRate(WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE, &finalFreq);
+            } else {
+                multiplyIntCapped(typedLetterMultiplier, &finalFreq);
+            }
+        } else if (ed == 0) {
+            multiplyIntCapped(typedLetterMultiplier, &finalFreq);
+            sameLength = true;
+        }
+        adjustedProximityMatchedCount = min(max(0, ed - (outputIndex + 1 - inputLength)),
                 proximityMatchedCount);
     } else {
-        matchWeight = powerIntCapped(typedLetterMultiplier, matchCount);
+        // TODO: Calculate the edit distance for transposed char
+        const int matchWeight = powerIntCapped(typedLetterMultiplier, matchCount);
+        multiplyIntCapped(matchWeight, &finalFreq);
     }
 
-    // TODO: Demote by edit distance
-    int finalFreq = freq * matchWeight;
+    if (proximityInfo->getMatchedProximityId(0, word[0], true)
+            == ProximityInfo::UNRELATED_CHAR) {
+        multiplyRate(FIRST_CHAR_DIFFERENT_DEMOTION_RATE, &finalFreq);
+    }
 
     ///////////////////////////////////////////////
     // Promotion and Demotion for each correction
@@ -530,13 +604,16 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     }
 
     // Demotion for a word with transposed character
-    if (transposedPos >= 0) multiplyRate(
+    if (transposedCount > 0) multiplyRate(
             WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE, &finalFreq);
 
     // Demotion for a word with excessive character
-    if (excessivePos >= 0) {
+    if (excessiveCount > 0) {
         multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE, &finalFreq);
-        if (!proximityInfo->existsAdjacentProximityChars(inputIndex)) {
+        if (!lastCharExceeded && !proximityInfo->existsAdjacentProximityChars(excessivePos)) {
+            if (DEBUG_CORRECTION_FREQ) {
+                LOGI("Double excessive demotion");
+            }
             // If an excessive character is not adjacent to the left char or the right char,
             // we will demote this word.
             multiplyRate(WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE, &finalFreq);
@@ -544,7 +621,7 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     }
 
     // Promotion for a word with proximity characters
-    for (int i = 0; i < adJustedProximityMatchedCount; ++i) {
+    for (int i = 0; i < adjustedProximityMatchedCount; ++i) {
         // A word with proximity corrections
         if (DEBUG_DICT_FULL) {
             LOGI("Found a proximity correction.");
@@ -553,20 +630,22 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
     }
 
-    const int errorCount = proximityMatchedCount + skippedCount;
+    const int errorCount = adjustedProximityMatchedCount > 0
+            ? adjustedProximityMatchedCount
+            : (proximityMatchedCount + transposedCount);
     multiplyRate(
             100 - CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE * errorCount / inputLength, &finalFreq);
 
     // Promotion for an exactly matched word
-    if (matchCount == outputIndex + 1) {
+    if (ed == 0) {
         // Full exact match
-        if (sameLength && transposedPos < 0 && !skipped && excessivePos < 0) {
+        if (sameLength && transposedCount == 0 && !skipped && excessiveCount == 0) {
             finalFreq = capped255MultForFullMatchAccentsOrCapitalizationDifference(finalFreq);
         }
     }
 
     // Promote a word with no correction
-    if (proximityMatchedCount == 0 && transposedPos < 0 && !skipped && excessivePos < 0) {
+    if (proximityMatchedCount == 0 && transposedCount == 0 && !skipped && excessiveCount == 0) {
         multiplyRate(FULL_MATCHED_WORDS_PROMOTION_RATE, &finalFreq);
     }
 
@@ -590,12 +669,20 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
         multiplyRate(WORDS_WITH_MATCH_SKIP_PROMOTION_RATE, &finalFreq);
     }
 
+    // TODO: Do not use sameLength?
     if (sameLength) {
         multiplyIntCapped(fullWordMultiplier, &finalFreq);
     }
 
     if (DEBUG_DICT_FULL) {
         LOGI("calc: %d, %d", outputIndex, sameLength);
+    }
+
+    if (DEBUG_CORRECTION_FREQ) {
+        DUMP_WORD(correction->mWord, outputIndex + 1);
+        LOGI("FinalFreq: [P%d, S%d, T%d, E%d] %d, %d, %d, %d, %d", proximityMatchedCount,
+                skippedCount, transposedCount, excessiveCount, lastCharExceeded, sameLength,
+                quoteDiffCount, ed, finalFreq);
     }
 
     return finalFreq;

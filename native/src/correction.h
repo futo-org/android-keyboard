@@ -99,7 +99,8 @@ private:
     inline bool needsToTraverseAllNodes();
     inline void startToTraverseAllNodes();
     inline bool isQuote(const unsigned short c);
-    inline CorrectionType processSkipChar(const int32_t c, const bool isTerminal);
+    inline CorrectionType processSkipChar(
+            const int32_t c, const bool isTerminal, const bool inputIndexIncremented);
 
     // TODO: remove
     inline void incrementProximityCount() {

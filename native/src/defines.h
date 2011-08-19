@@ -95,10 +95,12 @@ static void prof_out(void) {
 #define DEBUG_DICT true
 #define DEBUG_DICT_FULL false
 #define DEBUG_EDIT_DISTANCE false
-#define DEBUG_SHOW_FOUND_WORD DEBUG_DICT_FULL
+#define DEBUG_SHOW_FOUND_WORD false
 #define DEBUG_NODE DEBUG_DICT_FULL
 #define DEBUG_TRACE DEBUG_DICT_FULL
 #define DEBUG_PROXIMITY_INFO true
+#define DEBUG_CORRECTION false
+#define DEBUG_CORRECTION_FREQ true
 
 #define DUMP_WORD(word, length) do { dumpWord(word, length); } while(0)
 
@@ -121,6 +123,8 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define DEBUG_NODE false
 #define DEBUG_TRACE false
 #define DEBUG_PROXIMITY_INFO false
+#define DEBUG_CORRECTION false
+#define DEBUG_CORRECTION_FREQ false
 
 #define DUMP_WORD(word, length)
 
@@ -178,7 +182,9 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE 90
 #define WORDS_WITH_MATCH_SKIP_PROMOTION_RATE 105
 #define WORDS_WITH_JUST_ONE_CORRECTION_PROMOTION_RATE 160
-#define CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE 42
+#define CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE 45
+#define INPUT_EXCEEDS_OUTPUT_DEMOTION_RATE 70
+#define FIRST_CHAR_DIFFERENT_DEMOTION_RATE 96
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.
