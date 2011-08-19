@@ -212,6 +212,12 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
 
     if (mNeedsToTraverseAllNodes || isQuote(c)) {
+        if (mLastCharExceeded > 0 && mInputIndex == mInputLength - 1
+                && mProximityInfo->getMatchedProximityId(mInputIndex, c, false)
+                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            mLastCharExceeded = false;
+            --mExcessiveCount;
+        }
         return processSkipChar(c, isTerminal);
     }
 
@@ -312,7 +318,6 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             && mExcessivePos >= 0 && (mInputIndex == mInputLength - 2);
     const bool isSameAsUserTypedLength = (mInputLength == mInputIndex + 1) || mLastCharExceeded;
     if (mLastCharExceeded) {
-        // TODO: Decrement mExcessiveCount if next char is matched word.
         ++mExcessiveCount;
     }
 
