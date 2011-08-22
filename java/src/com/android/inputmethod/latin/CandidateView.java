@@ -272,9 +272,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         private static final int AUTO_CORRECT_BOLD = 0x01;
         private static final int AUTO_CORRECT_UNDERLINE = 0x02;
         private static final int AUTO_CORRECT_INVERT = 0x04;
+        private static final int VALID_TYPED_WORD_BOLD = 0x08;
 
         private final TextPaint mPaint;
-        private final int mAutoCorrectHighlight;
+        private final int mSuggestionStripOption;
 
         private final ArrayList<CharSequence> mTexts = new ArrayList<CharSequence>();
 
@@ -285,7 +286,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             super(words, dividers, infos);
             final TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.CandidateView, defStyle, R.style.CandidateViewStyle);
-            mAutoCorrectHighlight = a.getInt(R.styleable.CandidateView_autoCorrectHighlight, 0);
+            mSuggestionStripOption = a.getInt(R.styleable.CandidateView_suggestionStripOption, 0);
             mColorTypedWord = a.getColor(R.styleable.CandidateView_colorTypedWord, 0);
             mColorAutoCorrect = a.getColor(R.styleable.CandidateView_colorAutoCorrect, 0);
             mColorSuggestedCandidate = a.getColor(R.styleable.CandidateView_colorSuggested, 0);
@@ -313,15 +314,23 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             return mColorTypedWord;
         }
 
-        private CharSequence getStyledCandidateWord(CharSequence word, boolean isAutoCorrect) {
-            if (!isAutoCorrect)
+        private CharSequence getStyledCandidateWord(SuggestedWords suggestions, int pos) {
+            final CharSequence word = suggestions.getWord(pos);
+            final boolean isAutoCorrect = pos == 1 && willAutoCorrect(suggestions);
+            final boolean isTypedWordValid = pos == 0 && suggestions.mTypedWordValid;
+            if (!isAutoCorrect && !isTypedWordValid)
                 return word;
+
             final int len = word.length();
             final Spannable spannedWord = new SpannableString(word);
-            if ((mAutoCorrectHighlight & AUTO_CORRECT_BOLD) != 0)
+            final int option = mSuggestionStripOption;
+            if ((isAutoCorrect && (option & AUTO_CORRECT_BOLD) != 0)
+                    || (isTypedWordValid && (option & VALID_TYPED_WORD_BOLD) != 0)) {
                 spannedWord.setSpan(BOLD_SPAN, 0, len, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            if ((mAutoCorrectHighlight & AUTO_CORRECT_UNDERLINE) != 0)
+            }
+            if (isAutoCorrect && (option & AUTO_CORRECT_UNDERLINE) != 0) {
                 spannedWord.setSpan(UNDERLINE_SPAN, 0, len, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            }
             return spannedWord;
         }
 
@@ -370,7 +379,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         }
 
         public CharSequence getInvertedText(CharSequence text) {
-            if ((mAutoCorrectHighlight & AUTO_CORRECT_INVERT) == 0)
+            if ((mSuggestionStripOption & AUTO_CORRECT_INVERT) == 0)
                 return null;
             final int len = text.length();
             final Spannable word = new SpannableString(text);
@@ -457,9 +466,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mTexts.clear();
             final int count = Math.min(suggestions.size(), countInStrip);
             for (int pos = 0; pos < count; pos++) {
-                final CharSequence word = suggestions.getWord(pos);
-                final boolean isAutoCorrect = pos == 1 && willAutoCorrect(suggestions);
-                final CharSequence styled = getStyledCandidateWord(word, isAutoCorrect);
+                final CharSequence styled = getStyledCandidateWord(suggestions, pos);
                 mTexts.add(styled);
             }
             for (int pos = count; pos < countInStrip; pos++) {
