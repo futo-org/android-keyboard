@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.UserDictionary;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WordComposer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Locale;
@@ -51,8 +52,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static final boolean DBG = false;
     private static final int POOL_SIZE = 2;
 
+    private final static String[] EMPTY_STRING_ARRAY = new String[0];
     private final static SuggestionsInfo EMPTY_SUGGESTIONS_INFO =
-            new SuggestionsInfo(0, new String[0]);
+            new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
     private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
     private Map<String, Dictionary> mUserDictionaries =
@@ -65,14 +67,15 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
 
     private static class SuggestionsGatherer implements WordCallback {
         private final int DEFAULT_SUGGESTION_LENGTH = 16;
-        private final String[] mSuggestions;
+        private final ArrayList<CharSequence> mSuggestions;
         private final int[] mScores;
         private final int mMaxLength;
         private int mLength = 0;
+        private boolean mSeenSuggestions = false;
 
         SuggestionsGatherer(final int maxLength) {
             mMaxLength = maxLength;
-            mSuggestions = new String[mMaxLength];
+            mSuggestions = new ArrayList<CharSequence>(maxLength + 1);
             mScores = new int[mMaxLength];
         }
 
@@ -84,30 +87,37 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             // if it doesn't. See documentation for binarySearch.
             final int insertIndex = positionIndex >= 0 ? positionIndex : -positionIndex - 1;
 
+            mSeenSuggestions = true;
             if (mLength < mMaxLength) {
                 final int copyLen = mLength - insertIndex;
                 ++mLength;
                 System.arraycopy(mScores, insertIndex, mScores, insertIndex + 1, copyLen);
-                System.arraycopy(mSuggestions, insertIndex, mSuggestions, insertIndex + 1, copyLen);
+                mSuggestions.add(insertIndex, new String(word, wordOffset, wordLength));
             } else {
                 if (insertIndex == 0) return true;
                 System.arraycopy(mScores, 1, mScores, 0, insertIndex);
-                System.arraycopy(mSuggestions, 1, mSuggestions, 0, insertIndex);
+                mSuggestions.add(insertIndex, new String(word, wordOffset, wordLength));
+                mSuggestions.remove(0);
             }
             mScores[insertIndex] = score;
-            mSuggestions[insertIndex] = new String(word, wordOffset, wordLength);
 
             return true;
         }
 
         public String[] getGatheredSuggestions() {
-            if (0 == mLength) return null;
+            if (!mSeenSuggestions) return null;
+            if (0 == mLength) return EMPTY_STRING_ARRAY;
 
-            final String[] results = new String[mLength];
-            for (int i = mLength - 1; i >= 0; --i) {
-                results[mLength - i - 1] = mSuggestions[i];
+            if (DBG) {
+                if (mLength != mSuggestions.size()) {
+                    Log.e(TAG, "Suggestion size is not the same as stored mLength");
+                }
             }
-            return results;
+            Collections.reverse(mSuggestions);
+            Utils.removeDupes(mSuggestions);
+            // This returns a String[], while toArray() returns an Object[] which cannot be cast
+            // into a String[].
+            return mSuggestions.toArray(EMPTY_STRING_ARRAY);
         }
     }
 
