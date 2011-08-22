@@ -69,14 +69,17 @@
     <string name="label_send_key" msgid="2815056534433717444">"ارسال"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
-    <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
-    <skip />
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_more_key" msgid="3760239494604948502">"بیشتر"</string>
     <string name="label_pause_key" msgid="181098308428035340">"توقف موقت"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"منتظر بمانید"</string>
-    <string name="spoken_current_text_is" msgid="2485723011272583845">"متن کنونی s% است"</string>
+    <!-- String.format failed for translation -->
+    <!-- no translation found for spoken_current_text_is (2485723011272583845) -->
+    <skip />
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"متنی وارد نشده است"</string>
-    <string name="spoken_description_unknown" msgid="3197434010402179157">"کد کلید d%"</string>
+    <!-- String.format failed for translation -->
+    <!-- no translation found for spoken_description_unknown (3197434010402179157) -->
+    <skip />
     <string name="spoken_description_shift" msgid="244197883292549308">"Shift"</string>
     <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Shift فعال است"</string>
     <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Caps lock فعال شد"</string>

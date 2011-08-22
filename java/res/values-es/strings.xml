@@ -23,8 +23,7 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Teclado de Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Ajustes del teclado de Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Opciones introducción texto"</string>
-    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
-    <skip />
+    <string name="spell_checker_service_name" msgid="2003013122022285508">"Corrector de Android"</string>
     <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
     <skip />
     <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
