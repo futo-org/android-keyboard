@@ -44,7 +44,7 @@
     <dimen name="key_label_horizontal_padding">18dip</dimen>
 
     <fraction name="key_letter_ratio">45%</fraction>
-    <fraction name="key_large_letter_ratio">45%</fraction>
+    <fraction name="key_large_letter_ratio">48%</fraction>
     <fraction name="key_label_ratio">32%</fraction>
     <fraction name="key_hint_letter_ratio">23%</fraction>
     <fraction name="key_hint_label_ratio">34%</fraction>
