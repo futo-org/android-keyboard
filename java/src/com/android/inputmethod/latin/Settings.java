@@ -53,7 +53,7 @@ import java.util.Locale;
 public class Settings extends InputMethodSettingsActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
         DialogInterface.OnDismissListener, OnPreferenceClickListener {
-    private static final String TAG = "Settings";
+    private static final String TAG = Settings.class.getSimpleName();
 
     public static final String PREF_GENERAL_SETTINGS_KEY = "general_settings";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
@@ -182,8 +182,9 @@ public class Settings extends InputMethodSettingsActivity
             mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
             final boolean defaultShowSettingsKey = res.getBoolean(
                     R.bool.config_default_show_settings_key);
-            mShowSettingsKey = prefs.getBoolean(Settings.PREF_SHOW_SETTINGS_KEY,
-                    defaultShowSettingsKey);
+            mShowSettingsKey = isShowSettingsKeyOption(res)
+                    ? prefs.getBoolean(Settings.PREF_SHOW_SETTINGS_KEY, defaultShowSettingsKey)
+                    : defaultShowSettingsKey;
             final String voiceModeMain = res.getString(R.string.voice_mode_main);
             final String voiceModeOff = res.getString(R.string.voice_mode_off);
             final String voiceMode = prefs.getString(PREF_VOICE_SETTINGS_KEY, voiceModeMain);
@@ -292,7 +293,12 @@ public class Settings extends InputMethodSettingsActivity
             return builder.setIsPunctuationSuggestions().build();
         }
 
-        public boolean isSettingsKeyEnabled(EditorInfo attribute) {
+        public static boolean isShowSettingsKeyOption(final Resources resources) {
+            return resources.getBoolean(R.bool.config_enable_show_settings_key_option);
+
+        }
+
+        public boolean isSettingsKeyEnabled() {
             return mShowSettingsKey;
         }
 
@@ -386,9 +392,7 @@ public class Settings extends InputMethodSettingsActivity
         final PreferenceGroup textCorrectionGroup =
                 (PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS_KEY);
 
-        final boolean showSettingsKeyOption = res.getBoolean(
-                R.bool.config_enable_show_settings_key_option);
-        if (!showSettingsKeyOption) {
+        if (!Values.isShowSettingsKeyOption(res)) {
             generalSettings.removePreference(mShowSettingsKeyPreference);
         }
 
@@ -445,8 +449,7 @@ public class Settings extends InputMethodSettingsActivity
         if (null == mKeyPreviewPopupDismissDelay.getValue()) {
             mKeyPreviewPopupDismissDelay.setValue(popupDismissDelayDefaultValue);
         }
-        mKeyPreviewPopupDismissDelay.setEnabled(
-                Settings.Values.isKeyPreviewPopupEnabled(prefs, res));
+        mKeyPreviewPopupDismissDelay.setEnabled(Values.isKeyPreviewPopupEnabled(prefs, res));
 
         final PreferenceScreen dictionaryLink =
                 (PreferenceScreen) findPreference(PREF_CONFIGURE_DICTIONARIES_KEY);

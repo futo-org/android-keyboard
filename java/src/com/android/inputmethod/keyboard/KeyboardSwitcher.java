@@ -402,7 +402,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             break;
         }
 
-        final boolean settingsKeyEnabled = settingsValues.isSettingsKeyEnabled(editorInfo);
+        final boolean settingsKeyEnabled = settingsValues.isSettingsKeyEnabled();
         final boolean noMicrophone = Utils.inPrivateImeOptions(
                 mPackageName, LatinIME.IME_OPTION_NO_MICROPHONE, editorInfo)
                 || Utils.inPrivateImeOptions(
