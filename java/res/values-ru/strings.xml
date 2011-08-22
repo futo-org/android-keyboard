@@ -123,7 +123,7 @@
     <string name="voice_audio_error" msgid="5072707727016414454">"Неполадка со звуком"</string>
     <string name="voice_server_error" msgid="7807129913977261644">"Ошибка сервера"</string>
     <string name="voice_speech_timeout" msgid="8461817525075498795">"Речи не слышно"</string>
-    <string name="voice_no_match" msgid="4285117547030179174">"Соответствий не найдено"</string>
+    <string name="voice_no_match" msgid="4285117547030179174">"Ничего не найдено"</string>
     <string name="voice_not_installed" msgid="5552450909753842415">"Голосовой поиск не установлен"</string>
     <string name="voice_swipe_hint" msgid="6943546180310682021"><b>"Совет"</b>". Проведите пальцем по клавиатуре для голосового ввода."</string>
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Совет"</b>". В следующий раз проговаривайте знаки препинания, например \"точка\", \"запятая\", \"вопросительный знак\"."</string>

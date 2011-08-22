@@ -23,8 +23,7 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Android-näppäimistö"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Android-näppäimistön asetukset"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Syöttövalinnat"</string>
-    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
-    <skip />
+    <string name="spell_checker_service_name" msgid="2003013122022285508">"Android-korjaus"</string>
     <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
     <skip />
     <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
@@ -70,8 +69,7 @@
     <string name="label_send_key" msgid="2815056534433717444">"Lähetä"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
-    <!-- no translation found for label_to_symbol_with_microphone_key (9035925553010061906) -->
-    <skip />
+    <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_more_key" msgid="3760239494604948502">"Lisää"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Tauko"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Odota"</string>
@@ -150,7 +148,7 @@
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Korjaa annetut sanat napauttamalla. (Vain, kun ehdotuksia on näkyvillä.)"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Näppäimistöteema"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"saksa, QWERTY"</string>
-    <string name="subtype_en_GB" msgid="88170601942311355">"englanti (UK)"</string>
-    <string name="subtype_en_US" msgid="6160452336634534239">"englanti (USA)"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"englanti (Iso-Britannia)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"englanti (Yhdysvallat)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Käytettävyystutkimustila"</string>
 </resources>
