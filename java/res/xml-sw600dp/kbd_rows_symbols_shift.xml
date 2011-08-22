@@ -133,7 +133,6 @@
     >
         <Key
             latin:keyStyle="toAlphaKeyStyle"
-            latin:keyLabelOption="alignLeft"
             latin:keyWidth="13.0%p" />
         <Key
             latin:keyStyle="tabKeyStyle" />
