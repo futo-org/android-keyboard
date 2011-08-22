@@ -266,12 +266,6 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         return mKeyTimerHandler;
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        // TODO: Should notify InputMethodService instead?
-        KeyboardSwitcher.getInstance().onSizeChanged(w, h, oldw, oldh);
-    }
-
     /**
      * Attaches a keyboard to this view. The keyboard can be switched at any time and the
      * view will re-layout itself to accommodate the keyboard.

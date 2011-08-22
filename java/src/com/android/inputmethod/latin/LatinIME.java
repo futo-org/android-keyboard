@@ -2027,7 +2027,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onPress(int primaryCode, boolean withSliding) {
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        switcher.registerWindowWidth();
         if (switcher.isVibrateAndSoundFeedbackRequired()) {
             vibrate();
             playKeyClick(primaryCode);

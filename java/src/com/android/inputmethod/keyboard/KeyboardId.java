@@ -113,14 +113,6 @@ public class KeyboardId {
                 false, F2KEY_MODE_NONE, false, false, false);
     }
 
-    public KeyboardId cloneWithNewGeometry(int orientation, int width) {
-        if (mWidth == width)
-            return this;
-        return new KeyboardId(mXmlName, mXmlId, mLocale, orientation, width, mMode, mAttribute,
-                mHasSettingsKey, mF2KeyMode, mClobberSettingsKey, mShortcutKeyEnabled,
-                mHasShortcutKey);
-    }
-
     public int getXmlId() {
         return mXmlId;
     }
