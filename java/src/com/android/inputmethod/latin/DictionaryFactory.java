@@ -64,24 +64,10 @@ public class DictionaryFactory {
             }
         }
 
-        // null == dictList is not supposed to be possible, but better safe than sorry and it's
-        // safer for future extension. In this case, rather than returning null, it should be safer
-        // to return an empty DictionaryCollection.
-        if (null == dictList) {
-            return new DictionaryCollection();
-        } else {
-            if (dictList.isEmpty()) {
-                // The list may be empty if no dictionaries have been added. The getter should not
-                // return an empty list, but if it does we end up here. Likewise, if the files
-                // we found could not be opened by the native code for any reason (format mismatch,
-                // file too big to fit in memory, etc) then we could have an empty list. In this
-                // case we want to fall back on the resource.
-                return new DictionaryCollection(createBinaryDictionary(context, fallbackResId,
-                        locale));
-            } else {
-                return new DictionaryCollection(dictList);
-            }
-        }
+        // If the list is empty, that means we should not use any dictionary (for example, the user
+        // explicitly disabled the main dictionary), so the following is okay. dictList is never
+        // null, but if for some reason it is, DictionaryCollection handles it gracefully.
+        return new DictionaryCollection(dictList);
     }
 
     /**
