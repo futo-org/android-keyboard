@@ -91,6 +91,10 @@ public class KeyDetector {
         mProximityThresholdSquare = threshold * threshold;
     }
 
+    public boolean alwaysAllowsSlidingInput() {
+        return false;
+    }
+
     /**
      * Computes maximum size of the array that can contain all nearby key indices returned by
      * {@link #getKeyIndexAndNearbyCodes}.

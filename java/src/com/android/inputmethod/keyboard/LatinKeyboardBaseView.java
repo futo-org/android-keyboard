@@ -38,7 +38,6 @@ import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
-import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
@@ -374,7 +373,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         final PopupMiniKeyboardView miniKeyboardView =
                 (PopupMiniKeyboardView)container.findViewById(R.id.mini_keyboard_view);
         final Keyboard parentKeyboard = getKeyboard();
-        final Keyboard miniKeyboard = new MiniKeyboardBuilder(
+        final Keyboard miniKeyboard = new MiniKeyboard.Builder(
                 this, parentKeyboard.mPopupKeyboardResId, parentKey, parentKeyboard).build();
         miniKeyboardView.setKeyboard(miniKeyboard);
 

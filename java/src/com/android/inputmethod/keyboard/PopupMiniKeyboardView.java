@@ -28,6 +28,8 @@ import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.latin.R;
 
+import java.util.List;
+
 /**
  * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
  * key presses and touch movements.
@@ -42,6 +44,51 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     private LatinKeyboardBaseView mParentKeyboardView;
     private int mOriginX;
     private int mOriginY;
+
+    private static class MiniKeyboardKeyDetector extends KeyDetector {
+        private final int mSlideAllowanceSquare;
+        private final int mSlideAllowanceSquareTop;
+
+        public MiniKeyboardKeyDetector(float slideAllowance) {
+            super(/* keyHysteresisDistance */0);
+            mSlideAllowanceSquare = (int)(slideAllowance * slideAllowance);
+            // Top slide allowance is slightly longer (sqrt(2) times) than other edges.
+            mSlideAllowanceSquareTop = mSlideAllowanceSquare * 2;
+        }
+
+        @Override
+        public boolean alwaysAllowsSlidingInput() {
+            return true;
+        }
+
+        @Override
+        protected int getMaxNearbyKeys() {
+            // No nearby key will be returned.
+            return 1;
+        }
+
+        @Override
+        public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
+            final List<Key> keys = getKeyboard().mKeys;
+            final int touchX = getTouchX(x);
+            final int touchY = getTouchY(y);
+
+            int nearestIndex = NOT_A_KEY;
+            int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
+            final int keyCount = keys.size();
+            for (int index = 0; index < keyCount; index++) {
+                final int dist = keys.get(index).squaredDistanceToEdge(touchX, touchY);
+                if (dist < nearestDist) {
+                    nearestIndex = index;
+                    nearestDist = dist;
+                }
+            }
+
+            if (allCodes != null && nearestIndex != NOT_A_KEY)
+                allCodes[0] = keys.get(nearestIndex).mCode;
+            return nearestIndex;
+        }
+    }
 
     private static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy() {
         @Override
@@ -143,11 +190,6 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     @Override
     public TimerProxy getTimerProxy() {
         return EMPTY_TIMER_PROXY;
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        // Do nothing for the mini keyboard.
     }
 
     @Override

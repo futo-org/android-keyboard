@@ -438,9 +438,9 @@ public class PointerTracker {
     private void onDownEventInternal(int x, int y, long eventTime) {
         int keyIndex = onDownKey(x, y, eventTime);
         // Sliding key is allowed when 1) enabled by configuration, 2) this pointer starts sliding
-        // from modifier key, or 3) this pointer is on mini-keyboard.
+        // from modifier key, or 3) this pointer's KeyDetector always allows sliding input.
         mIsAllowedSlidingKeyInput = sConfigSlidingKeyInputEnabled || isModifierInternal(keyIndex)
-                || mKeyDetector instanceof MiniKeyboardKeyDetector;
+                || mKeyDetector.alwaysAllowsSlidingInput();
         mKeyboardLayoutHasBeenChanged = false;
         mKeyAlreadyProcessed = false;
         mIsRepeatableKey = false;
