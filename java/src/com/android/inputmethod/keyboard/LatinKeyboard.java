@@ -141,7 +141,7 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardBaseView view) {
+    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
         mSpacebarTextFadeFactor = fadeFactor;
         updateSpacebarForLocale(false);
         if (view != null)
@@ -154,7 +154,7 @@ public class LatinKeyboard extends Keyboard {
         return newColor;
     }
 
-    public void updateShortcutKey(boolean available, LatinKeyboardBaseView view) {
+    public void updateShortcutKey(boolean available, LatinKeyboardView view) {
         if (mShortcutKey == null)
             return;
         mShortcutKey.setEnabled(available);

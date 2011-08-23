@@ -41,7 +41,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     private final KeyDetector mKeyDetector;
     private final int mVerticalCorrection;
 
-    private LatinKeyboardBaseView mParentKeyboardView;
+    private LatinKeyboardView mParentKeyboardView;
     private int mOriginX;
     private int mOriginY;
 
@@ -200,7 +200,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     }
 
     @Override
-    public void showPopupPanel(LatinKeyboardBaseView parentKeyboardView, Key parentKey,
+    public void showPopupPanel(LatinKeyboardView parentKeyboardView, Key parentKey,
             PointerTracker tracker, PopupWindow window) {
         mParentKeyboardView = parentKeyboardView;
         final View container = (View)getParent();

@@ -35,7 +35,7 @@ import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
-import com.android.inputmethod.keyboard.LatinKeyboardBaseView;
+import com.android.inputmethod.keyboard.LatinKeyboardView;
 import com.android.inputmethod.keyboard.PointerTracker;
 
 public class AccessibleKeyboardViewProxy {
@@ -47,7 +47,7 @@ public class AccessibleKeyboardViewProxy {
 
     private InputMethodService mInputMethod;
     private FlickGestureDetector mGestureDetector;
-    private LatinKeyboardBaseView mView;
+    private LatinKeyboardView mView;
     private AccessibleKeyboardActionListener mListener;
     private AudioManagerCompatWrapper mAudioManager;
 
@@ -65,7 +65,7 @@ public class AccessibleKeyboardViewProxy {
         return sInstance;
     }
 
-    public static void setView(LatinKeyboardBaseView view) {
+    public static void setView(LatinKeyboardView view) {
         sInstance.mView = view;
     }
 

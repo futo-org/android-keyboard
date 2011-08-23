@@ -61,7 +61,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private SharedPreferences mPrefs;
 
     private View mCurrentInputView;
-    private LatinKeyboardBaseView mKeyboardView;
+    private LatinKeyboardView mKeyboardView;
     private LatinIME mInputMethodService;
     private String mPackageName;
     private Resources mResources;
@@ -745,7 +745,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         }
     }
 
-    public LatinKeyboardBaseView getKeyboardView() {
+    public LatinKeyboardView getKeyboardView() {
         return mKeyboardView;
     }
 
@@ -781,7 +781,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             }
         }
 
-        mKeyboardView = (LatinKeyboardBaseView) mCurrentInputView.findViewById(R.id.keyboard_view);
+        mKeyboardView = (LatinKeyboardView) mCurrentInputView.findViewById(R.id.keyboard_view);
         mKeyboardView.setKeyboardActionListener(mInputMethodService);
 
         // This always needs to be set since the accessibility state can
@@ -819,7 +819,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             final LatinKeyboard keyboard = getLatinKeyboard();
             if (keyboard != null && keyboard.needsAutoCorrectionSpacebarLed()) {
                 final Key invalidatedKey = keyboard.onAutoCorrectionStateChanged(isAutoCorrection);
-                final LatinKeyboardBaseView keyboardView = getKeyboardView();
+                final LatinKeyboardView keyboardView = getKeyboardView();
                 if (keyboardView != null)
                     keyboardView.invalidateKey(invalidatedKey);
             }

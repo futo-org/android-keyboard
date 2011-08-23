@@ -52,9 +52,9 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#KeyboardView_verticalCorrection
  * @attr ref R.styleable#KeyboardView_popupLayout
  */
-public class LatinKeyboardBaseView extends KeyboardView implements PointerTracker.KeyEventHandler,
+public class LatinKeyboardView extends KeyboardView implements PointerTracker.KeyEventHandler,
         SuddenJumpingTouchEventHandler.ProcessMotionEvent {
-    private static final String TAG = LatinKeyboardBaseView.class.getSimpleName();
+    private static final String TAG = LatinKeyboardView.class.getSimpleName();
 
     private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
 
@@ -88,7 +88,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
     private final KeyTimerHandler mKeyTimerHandler = new KeyTimerHandler(this);
 
-    private static class KeyTimerHandler extends StaticInnerHandlerWrapper<LatinKeyboardBaseView>
+    private static class KeyTimerHandler extends StaticInnerHandlerWrapper<LatinKeyboardView>
             implements TimerProxy {
         private static final int MSG_REPEAT_KEY = 1;
         private static final int MSG_LONGPRESS_KEY = 2;
@@ -96,13 +96,13 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
         private boolean mInKeyRepeat;
 
-        public KeyTimerHandler(LatinKeyboardBaseView outerInstance) {
+        public KeyTimerHandler(LatinKeyboardView outerInstance) {
             super(outerInstance);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            final LatinKeyboardBaseView keyboardView = getOuterInstance();
+            final LatinKeyboardView keyboardView = getOuterInstance();
             final PointerTracker tracker = (PointerTracker) msg.obj;
             switch (msg.what) {
             case MSG_REPEAT_KEY:
@@ -208,11 +208,11 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         }
     }
 
-    public LatinKeyboardBaseView(Context context, AttributeSet attrs) {
+    public LatinKeyboardView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.keyboardViewStyle);
     }
 
-    public LatinKeyboardBaseView(Context context, AttributeSet attrs, int defStyle) {
+    public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         mTouchScreenRegulator = new SuddenJumpingTouchEventHandler(getContext(), this);
