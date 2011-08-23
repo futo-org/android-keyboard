@@ -106,6 +106,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
      */
     public static final String IME_OPTION_NO_SETTINGS_KEY = "noSettingsKey";
 
+    /**
+     * The private IME option used to indicate that the given text field needs
+     * ASCII code points input.
+     */
+    public static final String IME_OPTION_FORCE_ASCII = "forceAscii";
+
+    /**
+     * The subtype extra value used to indicate that the subtype keyboard layout is capable for
+     * typing ASCII characters.
+     */
+    public static final String SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE = "AsciiCapable";
+
     private static final int EXTENDED_TOUCHABLE_REGION_HEIGHT = 100;
 
     // How many continuous deletes at which to start deleting at a higher speed.

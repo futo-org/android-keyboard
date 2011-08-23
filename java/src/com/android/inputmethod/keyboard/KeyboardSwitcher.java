@@ -258,8 +258,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final SoftReference<LatinKeyboard> ref = mKeyboardCache.get(id);
         LatinKeyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
-            final Locale savedLocale = Utils.setSystemLocale(
-                    mResources, mSubtypeSwitcher.getInputLocale());
+            final Locale savedLocale = Utils.setSystemLocale(mResources, id.mLocale);
             try {
                 keyboard = new LatinKeyboard.Builder(mThemeContext).load(id).build();
             } finally {
@@ -319,13 +318,19 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final boolean hasSettingsKey = settingsKeyEnabled && !noSettingsKey;
         final int f2KeyMode = getF2KeyMode(settingsKeyEnabled, noSettingsKey);
         final boolean hasShortcutKey = voiceKeyEnabled && (isSymbols != voiceKeyOnMain);
+        final boolean forceAscii = Utils.inPrivateImeOptions(
+                mPackageName, LatinIME.IME_OPTION_FORCE_ASCII, editorInfo);
+        final boolean asciiCapable = mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
+                LatinIME.SUBTYPE_EXTRA_VALUE_ASCII_CAPABLE);
+        final Locale locale = (forceAscii && !asciiCapable)
+                ? Locale.US : mSubtypeSwitcher.getInputLocale();
         final Configuration conf = mResources.getConfiguration();
         final DisplayMetrics dm = mResources.getDisplayMetrics();
 
         return new KeyboardId(
-                mResources.getResourceEntryName(xmlId), xmlId, mSubtypeSwitcher.getInputLocale(),
-                conf.orientation, dm.widthPixels, mode, editorInfo,
-                hasSettingsKey, f2KeyMode, noSettingsKey, voiceKeyEnabled, hasShortcutKey);
+                mResources.getResourceEntryName(xmlId), xmlId, locale, conf.orientation,
+                dm.widthPixels, mode, editorInfo, hasSettingsKey, f2KeyMode, noSettingsKey,
+                voiceKeyEnabled, hasShortcutKey);
     }
 
     public int getKeyboardMode() {

@@ -415,7 +415,10 @@ public class SubtypeSwitcher {
         return mEnabledKeyboardSubtypesOfCurrentInputMethod.size();
     }
 
-    public boolean needsToDisplayLanguage() {
+    public boolean needsToDisplayLanguage(Locale keyboardLocale) {
+        if (!keyboardLocale.equals(mInputLocale)) {
+            return false;
+        }
         return mNeedsToDisplayLanguage;
     }
 

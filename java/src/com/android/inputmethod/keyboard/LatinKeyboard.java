@@ -141,7 +141,7 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
+    public void setSpacebarTextFadeFactor(float fadeFactor, KeyboardView view) {
         mSpacebarTextFadeFactor = fadeFactor;
         updateSpacebarForLocale(false);
         if (view != null)
@@ -154,7 +154,7 @@ public class LatinKeyboard extends Keyboard {
         return newColor;
     }
 
-    public void updateShortcutKey(boolean available, LatinKeyboardView view) {
+    public void updateShortcutKey(boolean available, KeyboardView view) {
         if (mShortcutKey == null)
             return;
         mShortcutKey.setEnabled(available);
@@ -193,9 +193,8 @@ public class LatinKeyboard extends Keyboard {
                 && Utils.hasMultipleEnabledIMEsOrSubtypes(imm, true /* include aux subtypes */);
         mSpaceKey.setNeedsSpecialPopupHint(shouldShowInputMethodPicker);
         // If application locales are explicitly selected.
-        if (mSubtypeSwitcher.needsToDisplayLanguage()) {
-            mSpaceKey.setIcon(getSpaceDrawable(
-                    mSubtypeSwitcher.getInputLocale(), isAutoCorrection));
+        if (mSubtypeSwitcher.needsToDisplayLanguage(mId.mLocale)) {
+            mSpaceKey.setIcon(getSpaceDrawable(mId.mLocale, isAutoCorrection));
         } else if (isAutoCorrection) {
             mSpaceKey.setIcon(getSpaceDrawable(null, true));
         } else {
