@@ -196,13 +196,6 @@ public class PopupCharactersParser {
         }
     };
 
-    public static final CodeFilter NON_ASCII_FILTER = new CodeFilter() {
-        @Override
-        public boolean shouldFilterOut(int code) {
-            return code < 0x20 || code > 0x7e;
-        }
-    };
-
     public static CharSequence[] filterOut(Resources res, CharSequence[] popupCharacters,
             CodeFilter filter) {
         if (popupCharacters == null || popupCharacters.length < 1) {

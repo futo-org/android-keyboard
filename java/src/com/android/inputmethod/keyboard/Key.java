@@ -295,12 +295,8 @@ public class Key {
             mY = y;
             mWidth = keyWidth - mHorizontalGap;
 
-            CharSequence[] popupCharacters = style.getTextArray(
+            final CharSequence[] popupCharacters = style.getTextArray(
                     keyAttr, R.styleable.Keyboard_Key_popupCharacters);
-            if (params.mId.mPasswordInput) {
-                popupCharacters = PopupCharactersParser.filterOut(
-                        res, popupCharacters, PopupCharactersParser.NON_ASCII_FILTER);
-            }
             // In Arabic symbol layouts, we'd like to keep digits in popup characters regardless of
             // config_digit_popup_characters_enabled.
             if (params.mId.isAlphabetKeyboard() && !res.getBoolean(
