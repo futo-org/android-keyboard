@@ -53,10 +53,13 @@ import java.util.WeakHashMap;
  * @attr ref R.styleable#KeyboardView_verticalCorrection
  * @attr ref R.styleable#KeyboardView_popupLayout
  */
-public class LatinKeyboardBaseView extends KeyboardView implements PointerTracker.KeyEventHandler {
+public class LatinKeyboardBaseView extends KeyboardView implements PointerTracker.KeyEventHandler,
+        SuddenJumpingTouchEventHandler.ProcessMotionEvent {
     private static final String TAG = LatinKeyboardBaseView.class.getSimpleName();
 
     private static final boolean ENABLE_CAPSLOCK_BY_DOUBLETAP = true;
+
+    private final SuddenJumpingTouchEventHandler mTouchScreenRegulator;
 
     // Timing constants
     private final int mKeyRepeatInterval;
@@ -213,6 +216,8 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
     public LatinKeyboardBaseView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
+        mTouchScreenRegulator = new SuddenJumpingTouchEventHandler(getContext(), this);
+
         final TypedArray a = context.obtainStyledAttributes(
                 attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
         mVerticalCorrection = a.getDimensionPixelOffset(
@@ -300,6 +305,7 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
                 keyboard, -getPaddingLeft(), -getPaddingTop() + mVerticalCorrection);
         mKeyDetector.setProximityThreshold(keyboard.mMostCommonKeyWidth);
         PointerTracker.setKeyDetector(mKeyDetector);
+        mTouchScreenRegulator.setKeyboard(keyboard);
         mPopupPanelCache.clear();
     }
 
@@ -481,6 +487,11 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
+        return mTouchScreenRegulator.onTouchEvent(me);
+    }
+
+    @Override
+    public boolean processMotionEvent(MotionEvent me) {
         final boolean nonDistinctMultitouch = !mHasDistinctMultitouch;
         final int action = me.getActionMasked();
         final int pointerCount = me.getPointerCount();

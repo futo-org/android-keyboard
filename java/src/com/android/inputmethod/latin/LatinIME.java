@@ -67,7 +67,7 @@ import com.android.inputmethod.keyboard.KeyboardSwitcher;
 import com.android.inputmethod.keyboard.KeyboardSwitcher.KeyboardLayoutState;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
-import com.android.inputmethod.keyboard.LatinKeyboardView;
+import com.android.inputmethod.keyboard.LatinKeyboardBaseView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -229,7 +229,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         public void handleMessage(Message msg) {
             final LatinIME latinIme = getOuterInstance();
             final KeyboardSwitcher switcher = latinIme.mKeyboardSwitcher;
-            final LatinKeyboardView inputView = switcher.getKeyboardView();
+            final LatinKeyboardBaseView inputView = switcher.getKeyboardView();
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTIONS:
                 latinIme.updateSuggestions();
@@ -330,7 +330,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final LatinIME latinIme = getOuterInstance();
             removeMessages(MSG_FADEOUT_LANGUAGE_ON_SPACEBAR);
             removeMessages(MSG_DISMISS_LANGUAGE_ON_SPACEBAR);
-            final LatinKeyboardView inputView = latinIme.mKeyboardSwitcher.getKeyboardView();
+            final LatinKeyboardBaseView inputView = latinIme.mKeyboardSwitcher.getKeyboardView();
             if (inputView != null) {
                 final LatinKeyboard keyboard = latinIme.mKeyboardSwitcher.getLatinKeyboard();
                 // The language is always displayed when the delay is negative.
@@ -610,7 +610,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
-        LatinKeyboardView inputView = switcher.getKeyboardView();
+        LatinKeyboardBaseView inputView = switcher.getKeyboardView();
 
         if (DEBUG) {
             Log.d(TAG, "onStartInputView: attribute:" + ((attribute == null) ? "none"
@@ -1498,7 +1498,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         commitTyped(getCurrentInputConnection());
         mVoiceProxy.handleClose();
         requestHideSelf(0);
-        LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
+        LatinKeyboardBaseView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null)
             inputView.closing();
     }
@@ -2070,7 +2070,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
-        LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
+        LatinKeyboardBaseView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView != null) {
             inputView.performHapticFeedback(
                     HapticFeedbackConstants.KEYBOARD_TAP,

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,18 +17,23 @@
 package com.android.inputmethod.keyboard;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.util.AttributeSet;
+import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 
 import com.android.inputmethod.latin.LatinImeLogger;
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.R;
 
-// TODO: We should remove this class
-public class LatinKeyboardView extends LatinKeyboardBaseView {
-    private static final String TAG = LatinKeyboardView.class.getSimpleName();
+public class SuddenJumpingTouchEventHandler {
+    private static final String TAG = SuddenJumpingTouchEventHandler.class.getSimpleName();
     private static boolean DEBUG_MODE = LatinImeLogger.sDBG;
+
+    public interface ProcessMotionEvent {
+        public boolean processMotionEvent(MotionEvent me);
+    }
+
+    private final ProcessMotionEvent mView;
+    private final boolean mNeedsSuddenJumpingHack;
 
     /** Whether we've started dropping move events because we found a big jump */
     private boolean mDroppingEvents;
@@ -42,17 +47,23 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
     private int mLastX;
     private int mLastY;
 
-    public LatinKeyboardView(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public SuddenJumpingTouchEventHandler(Context context, ProcessMotionEvent view) {
+        mView = view;
+        final String[] deviceList = context.getResources().getStringArray(
+                R.array.sudden_jumping_touch_event_device_list);
+        mNeedsSuddenJumpingHack = needsSuddenJumpingHack(Build.DEVICE, deviceList);
     }
 
-    public LatinKeyboardView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
+    private static boolean needsSuddenJumpingHack(String deviceName, String[] deviceList) {
+        for (String device : deviceList) {
+            if (device.equalsIgnoreCase(deviceName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    @Override
     public void setKeyboard(Keyboard newKeyboard) {
-        super.setKeyboard(newKeyboard);
         // One-seventh of the keyboard width seems like a reasonable threshold
         final int jumpThreshold = newKeyboard.mOccupiedWidth / 7;
         mJumpThresholdSquare = jumpThreshold * jumpThreshold;
@@ -69,9 +80,8 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
      * @return true if the event was consumed, so that it doesn't continue to be handled by
      * {@link LatinKeyboardBaseView}.
      */
-    private boolean handleSuddenJump(MotionEvent me) {
-        // If device has distinct multi touch panel, there is no need to check sudden jump.
-        if (hasDistinctMultitouch())
+    private boolean handleSuddenJumping(MotionEvent me) {
+        if (!mNeedsSuddenJumpingHack)
             return false;
         final int action = me.getAction();
         final int x = (int) me.getX();
@@ -107,7 +117,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
                             me.getEventTime(), me.getEventTime(),
                             MotionEvent.ACTION_UP,
                             mLastX, mLastY, me.getMetaState());
-                    super.onTouchEvent(translated);
+                    mView.processMotionEvent(translated);
                     translated.recycle();
                 }
                 result = true;
@@ -123,7 +133,7 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
                 MotionEvent translated = MotionEvent.obtain(me.getEventTime(), me.getEventTime(),
                         MotionEvent.ACTION_DOWN,
                         x, y, me.getMetaState());
-                super.onTouchEvent(translated);
+                mView.processMotionEvent(translated);
                 translated.recycle();
                 mDroppingEvents = false;
                 // Let the up event get processed as well, result = false
@@ -136,17 +146,13 @@ public class LatinKeyboardView extends LatinKeyboardBaseView {
         return result;
     }
 
-    @Override
     public boolean onTouchEvent(MotionEvent me) {
-        if (getKeyboard() == null) return true;
-
         // If there was a sudden jump, return without processing the actual motion event.
-        if (handleSuddenJump(me)) {
+        if (handleSuddenJumping(me)) {
             if (DEBUG_MODE)
                 Log.w(TAG, "onTouchEvent: ignore sudden jump " + me);
             return true;
         }
-
-        return super.onTouchEvent(me);
+        return mView.processMotionEvent(me);
     }
 }
