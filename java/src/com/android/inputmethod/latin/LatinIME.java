@@ -113,7 +113,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
 
-    private static final int SCREEN_ORIENTATION_CHANGE_DETECTION_DELAY = 2;
+    private static final int START_INPUT_VIEW_DELAY_WHEN_SCREEN_ORIENTATION_STARTED = 10;
     private static final int ACCUMULATE_START_INPUT_VIEW_DELAY = 20;
     private static final int RESTORE_KEYBOARD_STATE_DELAY = 500;
 
@@ -198,8 +198,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // Member variables for remembering the current device orientation.
     private int mDisplayOrientation;
-    private int mDisplayWidth;
-    private int mDisplayHeight;
 
     // Object for reacting to adding/removing a dictionary pack.
     private BroadcastReceiver mDictionaryPackInstallReceiver =
@@ -219,30 +217,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 5;
         private static final int MSG_SPACE_TYPED = 6;
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
-        private static final int MSG_CONFIRM_ORIENTATION_CHANGE = 8;
+        private static final int MSG_START_ORIENTATION_CHANGE = 8;
         private static final int MSG_START_INPUT_VIEW = 9;
         private static final int MSG_RESTORE_KEYBOARD_LAYOUT = 10;
-
-        private static class OrientationChangeArgs {
-            public final int mOldWidth;
-            public final int mOldHeight;
-            private int mRetryCount;
-
-            public OrientationChangeArgs(int oldw, int oldh) {
-                mOldWidth = oldw;
-                mOldHeight = oldh;
-                mRetryCount = 0;
-            }
-
-            public boolean hasTimedOut() {
-                mRetryCount++;
-                return mRetryCount >= 10;
-            }
-
-            public boolean hasOrientationChangeFinished(DisplayMetrics dm) {
-                return dm.widthPixels != mOldWidth && dm.heightPixels != mOldHeight;
-            }
-        }
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
@@ -291,18 +268,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                             (LatinKeyboard)msg.obj);
                 }
                 break;
-            case MSG_CONFIRM_ORIENTATION_CHANGE: {
-                final OrientationChangeArgs args = (OrientationChangeArgs)msg.obj;
-                final Resources res = latinIme.mResources;
-                final DisplayMetrics dm = res.getDisplayMetrics();
-                if (args.hasTimedOut() || args.hasOrientationChangeFinished(dm)) {
-                    latinIme.setDisplayGeometry(res.getConfiguration(), dm);
-                } else {
-                    // It seems orientation changing is on going.
-                    postConfirmOrientationChange(args);
-                }
-                break;
-            }
             case MSG_START_INPUT_VIEW:
                 latinIme.onStartInputView((EditorInfo)msg.obj, false);
                 break;
@@ -411,22 +376,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
-        private void postConfirmOrientationChange(OrientationChangeArgs args) {
-            removeMessages(MSG_CONFIRM_ORIENTATION_CHANGE);
-            // Will confirm whether orientation change has finished or not again.
-            sendMessageDelayed(obtainMessage(MSG_CONFIRM_ORIENTATION_CHANGE, args),
-                    SCREEN_ORIENTATION_CHANGE_DETECTION_DELAY);
-        }
-
-        public void startOrientationChanging(int oldw, int oldh) {
-            postConfirmOrientationChange(new OrientationChangeArgs(oldw, oldh));
+        public void startOrientationChanging() {
+            sendMessageDelayed(obtainMessage(MSG_START_ORIENTATION_CHANGE),
+                    START_INPUT_VIEW_DELAY_WHEN_SCREEN_ORIENTATION_STARTED);
             final LatinIME latinIme = getOuterInstance();
             latinIme.mKeyboardSwitcher.getKeyboardState().save();
             postRestoreKeyboardLayout();
         }
 
         public boolean postStartInputView(EditorInfo attribute) {
-            if (hasMessages(MSG_CONFIRM_ORIENTATION_CHANGE) || hasMessages(MSG_START_INPUT_VIEW)) {
+            if (hasMessages(MSG_START_ORIENTATION_CHANGE) || hasMessages(MSG_START_INPUT_VIEW)) {
                 removeMessages(MSG_START_INPUT_VIEW);
                 // Postpone onStartInputView by ACCUMULATE_START_INPUT_VIEW_DELAY and see if
                 // orientation change has finished.
@@ -436,12 +395,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
             return false;
         }
-    }
-
-    private void setDisplayGeometry(Configuration conf, DisplayMetrics metric) {
-        mDisplayOrientation = conf.orientation;
-        mDisplayWidth = metric.widthPixels;
-        mDisplayHeight = metric.heightPixels;
     }
 
     @Override
@@ -481,7 +434,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
 
-        setDisplayGeometry(res.getConfiguration(), res.getDisplayMetrics());
+        mDisplayOrientation = res.getConfiguration().orientation;
 
         // Register to receive ringer mode change and network state change.
         // Also receive installation and removal of a dictionary pack.
@@ -609,8 +562,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public void onConfigurationChanged(Configuration conf) {
         mSubtypeSwitcher.onConfigurationChanged(conf);
         // If orientation changed while predicting, commit the change
-        if (conf.orientation != mDisplayOrientation) {
-            mHandler.startOrientationChanging(mDisplayWidth, mDisplayHeight);
+        if (mDisplayOrientation != conf.orientation) {
+            mDisplayOrientation = conf.orientation;
+            mHandler.startOrientationChanging();
             final InputConnection ic = getCurrentInputConnection();
             commitTyped(ic);
             if (ic != null) ic.finishComposingText(); // For voice input
