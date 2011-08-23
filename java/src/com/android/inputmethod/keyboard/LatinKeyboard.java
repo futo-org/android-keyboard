@@ -154,7 +154,7 @@ public class LatinKeyboard extends Keyboard {
         return newColor;
     }
 
-    public void updateShortcutKey(boolean available, LatinKeyboardView view) {
+    public void updateShortcutKey(boolean available, LatinKeyboardBaseView view) {
         if (mShortcutKey == null)
             return;
         mShortcutKey.setEnabled(available);
