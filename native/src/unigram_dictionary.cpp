@@ -189,32 +189,19 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
 
     // TODO: remove
     PROF_START(1);
-    // Note: This line is intentionally left blank
+    getSuggestionCandidates();
     PROF_END(1);
 
     PROF_START(2);
-    // Suggestion with missing character
-    if (DEBUG_DICT) {
-        LOGI("--- Suggest missing characters");
-    }
-    getSuggestionCandidates(0, -1, -1);
+    // Note: This line is intentionally left blank
     PROF_END(2);
 
     PROF_START(3);
-    // Suggestion with excessive character
-    if (DEBUG_DICT) {
-        LOGI("--- Suggest excessive characters");
-    }
-    getSuggestionCandidates(-1, 0, -1);
+    // Note: This line is intentionally left blank
     PROF_END(3);
 
     PROF_START(4);
-    // Suggestion with transposed characters
-    // Only suggest words that length is mInputLength
-    if (DEBUG_DICT) {
-        LOGI("--- Suggest transposed characters");
-    }
-    getSuggestionCandidates(-1, -1, 0);
+    // Note: This line is intentionally left blank
     PROF_END(4);
 
     PROF_START(5);
@@ -328,14 +315,9 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
 static const char QUOTE = '\'';
 static const char SPACE = ' ';
 
-void UnigramDictionary::getSuggestionCandidates(const int skipPos,
-        const int excessivePos, const int transposedPos) {
-    if (DEBUG_DICT) {
-        assert(transposedPos + 1 < mInputLength);
-        assert(excessivePos < mInputLength);
-        assert(missingPos < mInputLength);
-    }
-    mCorrection->setCorrectionParams(skipPos, excessivePos, transposedPos,
+void UnigramDictionary::getSuggestionCandidates() {
+    // TODO: Remove setCorrectionParams
+    mCorrection->setCorrectionParams(0, 0, 0,
             -1 /* spaceProximityPos */, -1 /* missingSpacePos */);
     int rootPosition = ROOT_POS;
     // Get the number of children of root, then increment the position
@@ -727,6 +709,9 @@ inline bool UnigramDictionary::processCurrentNode(const int initialPos,
             pos = BinaryFormat::skipFrequency(flags, pos);
             *nextSiblingPosition =
                     BinaryFormat::skipChildrenPosAndAttributes(DICT_ROOT, flags, pos);
+            if (DEBUG_DICT_FULL) {
+                LOGI("Traversing was pruned.");
+            }
             return false;
         }
     }

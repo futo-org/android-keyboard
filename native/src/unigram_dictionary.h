@@ -87,8 +87,7 @@ private:
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
             unsigned short *outWords, int *frequencies);
-    void getSuggestionCandidates(const int skipPos, const int excessivePos,
-            const int transposedPos);
+    void getSuggestionCandidates();
     bool addWord(unsigned short *word, int length, int frequency);
     void getSplitTwoWordsSuggestion(const int inputLength, Correction *correction);
     void getMissingSpaceWords(
