@@ -35,13 +35,13 @@
                 <Key
                     latin:keyLabel="„"
                     latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
+                    latin:keyStyle="functionalKeyStyle" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="50%p" />
                 <Key
                     latin:keyLabel="…"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
+                    latin:keyStyle="functionalKeyStyle" />
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyWidth="fillRight" />
@@ -57,14 +57,14 @@
                     latin:keyLabel="„"
                     latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
                     latin:keyWidth="9.2%p"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
+                    latin:keyStyle="functionalKeyStyle" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="35.83%p" />
                 <Key
                     latin:keyLabel="…"
                     latin:keyWidth="9.2%p"
-                    latin:keyStyle="nonPasswordFunctionalKeyStyle" />
+                    latin:keyStyle="functionalKeyStyle" />
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyWidth="fillRight" />
