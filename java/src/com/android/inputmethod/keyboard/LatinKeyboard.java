@@ -141,7 +141,7 @@ public class LatinKeyboard extends Keyboard {
         }
     }
 
-    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardView view) {
+    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboardBaseView view) {
         mSpacebarTextFadeFactor = fadeFactor;
         updateSpacebarForLocale(false);
         if (view != null)

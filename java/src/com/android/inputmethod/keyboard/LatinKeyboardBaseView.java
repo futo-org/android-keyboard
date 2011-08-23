@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
 import android.os.Message;
 import android.os.SystemClock;
 import android.util.AttributeSet;
@@ -34,11 +35,14 @@ import android.widget.PopupWindow;
 
 import com.android.inputmethod.accessibility.AccessibilityUtils;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
+import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 import com.android.inputmethod.keyboard.internal.MiniKeyboardBuilder;
+import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.StaticInnerHandlerWrapper;
+import com.android.inputmethod.latin.Utils;
 
 import java.util.WeakHashMap;
 
@@ -266,6 +270,20 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         return mKeyTimerHandler;
     }
 
+    @Override
+    public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard instanceof LatinKeyboard) {
+            final LatinKeyboard latinKeyboard = (LatinKeyboard)keyboard;
+            if (latinKeyboard.isPhoneKeyboard() || latinKeyboard.isNumberKeyboard()) {
+                // Phone and number keyboard never shows popup preview.
+                super.setKeyPreviewPopupEnabled(false, delay);
+                return;
+            }
+        }
+        super.setKeyPreviewPopupEnabled(previewEnabled, delay);
+    }
+
     /**
      * Attaches a keyboard to this view. The keyboard can be switched at any time and the
      * view will re-layout itself to accommodate the keyboard.
@@ -365,6 +383,15 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
         return mPopupPanel != null;
     }
 
+    public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboard oldKeyboard) {
+        final Keyboard keyboard = getKeyboard();
+        // We should not set text fade factor to the keyboard which does not display the language on
+        // its spacebar.
+        if (keyboard instanceof LatinKeyboard && keyboard == oldKeyboard) {
+            ((LatinKeyboard)keyboard).setSpacebarTextFadeFactor(fadeFactor, this);
+        }
+    }
+
     /**
      * Called when a key is long pressed. By default this will open mini keyboard associated
      * with this key.
@@ -374,6 +401,42 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
      * method on the base class if the subclass doesn't wish to handle the call.
      */
     protected boolean onLongPress(Key parentKey, PointerTracker tracker) {
+        final int primaryCode = parentKey.mCode;
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard instanceof LatinKeyboard) {
+            final LatinKeyboard latinKeyboard = (LatinKeyboard) keyboard;
+            if (primaryCode == Keyboard.CODE_DIGIT0 && latinKeyboard.isPhoneKeyboard()) {
+                tracker.onLongPressed();
+                // Long pressing on 0 in phone number keypad gives you a '+'.
+                return invokeOnKey(Keyboard.CODE_PLUS);
+            }
+            if (primaryCode == Keyboard.CODE_SHIFT && latinKeyboard.isAlphaKeyboard()) {
+                tracker.onLongPressed();
+                return invokeOnKey(Keyboard.CODE_CAPSLOCK);
+            }
+        }
+        if (primaryCode == Keyboard.CODE_SETTINGS || primaryCode == Keyboard.CODE_SPACE) {
+            // Both long pressing settings key and space key invoke IME switcher dialog.
+            if (getKeyboardActionListener().onCustomRequest(
+                    LatinIME.CODE_SHOW_INPUT_METHOD_PICKER)) {
+                tracker.onLongPressed();
+                return true;
+            } else {
+                return openPopupPanel(parentKey, tracker);
+            }
+        } else {
+            return openPopupPanel(parentKey, tracker);
+        }
+    }
+
+    private boolean invokeOnKey(int primaryCode) {
+        getKeyboardActionListener().onCodeInput(primaryCode, null,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE,
+                KeyboardActionListener.NOT_A_TOUCH_COORDINATE);
+        return true;
+    }
+
+    private boolean openPopupPanel(Key parentKey, PointerTracker tracker) {
         PopupPanel popupPanel = mPopupPanelCache.get(parentKey);
         if (popupPanel == null) {
             popupPanel = onCreatePopupPanel(parentKey);
@@ -554,6 +617,26 @@ public class LatinKeyboardBaseView extends KeyboardView implements PointerTracke
 
     public boolean handleBack() {
         return dismissPopupPanel();
+    }
+
+    @Override
+    public void draw(Canvas c) {
+        Utils.GCUtils.getInstance().reset();
+        boolean tryGC = true;
+        for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
+            try {
+                super.draw(c);
+                tryGC = false;
+            } catch (OutOfMemoryError e) {
+                tryGC = Utils.GCUtils.getInstance().tryGCOrWait("LatinKeyboardView", e);
+            }
+        }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        // Token is available from here.
+        VoiceProxy.getInstance().onAttachedToWindow();
     }
 
     @Override
