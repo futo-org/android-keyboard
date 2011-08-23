@@ -26,12 +26,20 @@ import java.util.List;
 public class StringBuilderPool {
     // Singleton
     private static final StringBuilderPool sInstance = new StringBuilderPool();
+    private static final boolean DEBUG = false;
     private StringBuilderPool() {}
-    // TODO: Make this a normal array with a size of 20
+    // TODO: Make this a normal array with a size of 20, or a ConcurrentQueue
     private final List<StringBuilder> mPool =
             Collections.synchronizedList(new ArrayList<StringBuilder>());
 
     public static StringBuilder getStringBuilder(final int initialSize) {
+        // TODO: although the pool is synchronized, the following is not thread-safe.
+        // Two threads entering this at the same time could take the same size of the pool and the
+        // second to attempt removing this index from the pool would crash with an
+        // IndexOutOfBoundsException.
+        // At the moment this pool is only used in Suggest.java and only in one thread so it's
+        // okay. The simplest thing to do here is probably to replace the ArrayList with a
+        // ConcurrentQueue.
         final int poolSize = sInstance.mPool.size();
         final StringBuilder sb = poolSize > 0 ? (StringBuilder) sInstance.mPool.remove(poolSize - 1)
                 : new StringBuilder(initialSize);
@@ -40,6 +48,12 @@ public class StringBuilderPool {
     }
 
     public static void recycle(final StringBuilder garbage) {
+        if (DEBUG) {
+            final int gid = garbage.hashCode();
+            for (final StringBuilder q : sInstance.mPool) {
+                if (gid == q.hashCode()) throw new RuntimeException("Duplicate id " + gid);
+            }
+        }
         sInstance.mPool.add(garbage);
     }
 

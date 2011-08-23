@@ -284,7 +284,14 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     protected void addBigramToSuggestions(CharSequence bigram) {
-        mSuggestions.add(bigram);
+        // TODO: Try to be a little more shrewd with resource allocation.
+        // At the moment we copy this object because the StringBuilders are pooled (see
+        // StringBuilderPool.java) and when we are finished using mSuggestions and
+        // mBigramSuggestions we will take everything from both and insert them back in the
+        // pool, so we can't allow the same object to be in both lists at the same time.
+        final StringBuilder sb = StringBuilderPool.getStringBuilder(getApproxMaxWordLength());
+        sb.append(bigram);
+        mSuggestions.add(sb);
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
