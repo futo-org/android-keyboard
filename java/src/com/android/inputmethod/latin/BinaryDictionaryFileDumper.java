@@ -168,7 +168,9 @@ public class BinaryDictionaryFileDumper {
                 // Success! Close files (through the finally{} clause) and return.
                 return AssetFileAddress.makeFromFileName(outputFileName);
             } catch (Exception e) {
-                Log.e(TAG, "Can't open word list in mode " + mode + " : " + e);
+                if (DEBUG) {
+                    Log.i(TAG, "Can't open word list in mode " + mode + " : " + e);
+                }
                 // Try the next method.
             } finally {
                 // Ignore exceptions while closing files.
