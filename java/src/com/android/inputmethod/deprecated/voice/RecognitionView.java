@@ -18,6 +18,7 @@ package com.android.inputmethod.deprecated.voice;
 
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SubtypeSwitcher;
+import com.android.inputmethod.latin.Utils;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -221,7 +222,7 @@ public class RecognitionView {
                 Locale locale = SubtypeSwitcher.getInstance().getInputLocale();
 
                 mLanguage.setVisibility(View.VISIBLE);
-                mLanguage.setText(SubtypeSwitcher.getFullDisplayName(locale, true));
+                mLanguage.setText(Utils.getFullDisplayName(locale, true));
 
                 mPopupLayout.setBackgroundDrawable(mListeningBorder);
                 break;
