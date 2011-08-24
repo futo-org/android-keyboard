@@ -63,10 +63,10 @@ public class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Queries a content provider for the list of dictionaries for a specific locale
+     * Queries a content provider for the list of word lists for a specific locale
      * available to copy into Latin IME.
      */
-    private static List<String> getDictIdList(final Locale locale, final Context context) {
+    private static List<String> getWordListIds(final Locale locale, final Context context) {
         final ContentResolver resolver = context.getContentResolver();
         final Uri dictionaryPackUri = getProviderUri(locale.toString());
 
@@ -88,41 +88,51 @@ public class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Queries a content provider for dictionary data for some locale and cache the returned files
+     * Caches a word list the id of which is passed as an argument.
+     */
+    private static AssetFileAddress cacheWordList(final String id, final Locale locale,
+            final ContentResolver resolver, final Context context) {
+        final Uri wordListUri = getProviderUri(id);
+        try {
+            final AssetFileDescriptor afd = resolver.openAssetFileDescriptor(wordListUri, "r");
+            if (null == afd) return null;
+            final String fileName = copyFileTo(afd.createInputStream(),
+                    BinaryDictionaryGetter.getCacheFileName(id, locale, context));
+            afd.close();
+            if (0 >= resolver.delete(wordListUri, null, null)) {
+                // I'd rather not print the word list ID to the log out of security concerns
+                Log.e(TAG, "Could not have the dictionary pack delete a word list");
+            }
+            return AssetFileAddress.makeFromFileName(fileName);
+        } catch (FileNotFoundException e) {
+            // This may only come from openAssetFileDescriptor
+            return null;
+        } catch (IOException e) {
+            // Can't read the file for some reason.
+            Log.e(TAG, "Cannot read a word list from the dictionary pack : " + e);
+        }
+        return null;
+    }
+
+    /**
+     * Queries a content provider for word list data for some locale and cache the returned files
      *
-     * This will query a content provider for dictionary data for a given locale, and copy the
-     * files locally so that they can be mmap'ed. This may overwrite previously cached dictionaries
+     * This will query a content provider for word list data for a given locale, and copy the
+     * files locally so that they can be mmap'ed. This may overwrite previously cached word lists
      * with newer versions if a newer version is made available by the content provider.
-     * @returns the addresses of the files, or null if no data could be obtained.
+     * @returns the addresses of the word list files, or null if no data could be obtained.
      * @throw FileNotFoundException if the provider returns non-existent data.
      * @throw IOException if the provider-returned data could not be read.
      */
-    public static List<AssetFileAddress> cacheDictionariesFromContentProvider(final Locale locale,
+    public static List<AssetFileAddress> cacheWordListsFromContentProvider(final Locale locale,
             final Context context) {
         final ContentResolver resolver = context.getContentResolver();
-        final List<String> idList = getDictIdList(locale, context);
+        final List<String> idList = getWordListIds(locale, context);
         final List<AssetFileAddress> fileAddressList = new ArrayList<AssetFileAddress>();
         for (String id : idList) {
-            final Uri wordListUri = getProviderUri(id);
-            AssetFileDescriptor afd = null;
-            try {
-                afd = resolver.openAssetFileDescriptor(wordListUri, "r");
-            } catch (FileNotFoundException e) {
-                // leave null inside afd and continue
-            }
-            if (null == afd) continue;
-            try {
-                final String fileName = copyFileTo(afd.createInputStream(),
-                        BinaryDictionaryGetter.getCacheFileName(id, locale, context));
-                afd.close();
-                if (0 >= resolver.delete(wordListUri, null, null)) {
-                    // I'd rather not print the word list ID to the log out of security concerns
-                    Log.e(TAG, "Could not have the dictionary pack delete a word list");
-                }
-                fileAddressList.add(AssetFileAddress.makeFromFileName(fileName));
-            } catch (IOException e) {
-                // Can't read the file for some reason. Continue onto the next file.
-                Log.e(TAG, "Cannot read a word list from the dictionary pack : " + e);
+            final AssetFileAddress afd = cacheWordList(id, locale, resolver, context);
+            if (null != afd) {
+                fileAddressList.add(afd);
             }
         }
         return fileAddressList;

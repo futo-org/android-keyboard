@@ -205,7 +205,7 @@ class BinaryDictionaryGetter {
      * @param context the context on which to open the files upon.
      * @return an array of binary dictionary files, which may be empty but may not be null.
      */
-    private static File[] getCachedDictionaryList(final Locale locale,
+    private static File[] getCachedWordLists(final Locale locale,
             final Context context) {
         final String directoryName = getCacheDirectoryForLocale(locale, context);
         final File[] cacheFiles = new File(directoryName).listFiles();
@@ -235,11 +235,11 @@ class BinaryDictionaryGetter {
     public static List<AssetFileAddress> getDictionaryFiles(final Locale locale,
             final Context context, final int fallbackResId) {
 
-        // cacheDictionariesFromContentProvider returns the list of files it copied to local
+        // cacheWordListsFromContentProvider returns the list of files it copied to local
         // storage, but we don't really care about what was copied NOW: what we want is the
         // list of everything we ever cached, so we ignore the return value.
-        BinaryDictionaryFileDumper.cacheDictionariesFromContentProvider(locale, context);
-        final File[] cachedDictionaryList = getCachedDictionaryList(locale, context);
+        BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context);
+        final File[] cachedWordLists = getCachedWordLists(locale, context);
 
         final String mainDictId = getMainDictId(locale);
 
@@ -247,8 +247,8 @@ class BinaryDictionaryGetter {
 
         boolean foundMainDict = false;
         final ArrayList<AssetFileAddress> fileList = new ArrayList<AssetFileAddress>();
-        // cachedDictionaryList may not be null, see doc for getCachedDictionaryList
-        for (final File f : cachedDictionaryList) {
+        // cachedWordLists may not be null, see doc for getCachedDictionaryList
+        for (final File f : cachedWordLists) {
             final String wordListId = getWordListIdFromFileName(f.getName());
             if (wordListId.equals(mainDictId)) {
                 foundMainDict = true;
