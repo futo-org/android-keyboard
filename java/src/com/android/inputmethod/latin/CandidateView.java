@@ -413,8 +413,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                     // TODO: This "more suggestions hint" should have nicely designed icon.
                     word.setCompoundDrawablesWithIntrinsicBounds(
                             null, null, null, mMoreCandidateHint);
+                    // HACK: To align with other TextView that has no compound drawables.
+                    word.setCompoundDrawablePadding(-mMoreCandidateHint.getIntrinsicHeight());
                 } else {
-                    word.setCompoundDrawables(null, null, null, null);
+                    word.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 }
 
                 // Disable this candidate if the suggestion is null or empty.
@@ -426,7 +428,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 word.setText(text); // TextView.setText() resets text scale x to 1.0.
                 word.setTextScaleX(scaleX);
                 stripView.addView(word);
-                setLayoutWeight(word, getCandidateWeight(index), mCandidateStripHeight);
+                setLayoutWeight(word, getCandidateWeight(index), MATCH_PARENT);
 
                 if (DBG) {
                     final CharSequence debugInfo = getDebugInfo(suggestions, pos);
@@ -526,8 +528,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
         mPreviewPopup = new PopupWindow(context);
         mPreviewText = (TextView) inflater.inflate(R.layout.candidate_preview, null);
-        mPreviewPopup.setWindowLayoutMode(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
+        mPreviewPopup.setWindowLayoutMode(WRAP_CONTENT, WRAP_CONTENT);
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
 
