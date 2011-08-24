@@ -21,7 +21,6 @@ import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -237,12 +236,12 @@ public class InputLanguageSelection extends PreferenceActivity {
 
             if (finalSize == 0) {
                 preprocess[finalSize++] =
-                        new LocaleEntry(SubtypeSwitcher.getFullDisplayName(l, false), l);
+                        new LocaleEntry(Utils.getFullDisplayName(l, false), l);
             } else {
                 if (s.equals("zz_ZZ")) {
                     // ignore this locale
                 } else {
-                    final String displayName = SubtypeSwitcher.getFullDisplayName(l, false);
+                    final String displayName = Utils.getFullDisplayName(l, false);
                     preprocess[finalSize++] = new LocaleEntry(displayName, l);
                 }
             }

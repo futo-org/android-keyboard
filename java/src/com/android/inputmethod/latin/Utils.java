@@ -769,4 +769,32 @@ public class Utils {
             StringBuilderPool.recycle((StringBuilder)garbage);
         }
     }
+
+    public static String getFullDisplayName(Locale locale, boolean returnsNameInThisLocale) {
+        if (returnsNameInThisLocale) {
+            return toTitleCase(SubtypeLocale.getFullDisplayName(locale), locale);
+        } else {
+            return toTitleCase(locale.getDisplayName(), locale);
+        }
+    }
+
+    public static String getDisplayLanguage(Locale locale) {
+        return toTitleCase(SubtypeLocale.getFullDisplayName(locale), locale);
+    }
+
+    public static String getMiddleDisplayLanguage(Locale locale) {
+        return toTitleCase((constructLocaleFromString(
+                locale.getLanguage()).getDisplayLanguage(locale)), locale);
+    }
+
+    public static String getShortDisplayLanguage(Locale locale) {
+        return toTitleCase(locale.getLanguage(), locale);
+    }
+
+    private static String toTitleCase(String s, Locale locale) {
+        if (s.length() <= 1) {
+            return s;
+        }
+        return s.toUpperCase(locale).charAt(0) + s.substring(1);
+    }
 }
