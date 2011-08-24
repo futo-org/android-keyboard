@@ -210,6 +210,10 @@ Correction::CorrectionType Correction::processSkipChar(
 
 Correction::CorrectionType Correction::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
+    const int correctionCount = (mSkippedCount + mExcessiveCount + mTransposedCount);
+    // TODO: Change the limit if we'll allow two or more corrections
+    const bool noCorrectionsHappenedSoFar = correctionCount == 0;
+    const bool canTryCorrection = noCorrectionsHappenedSoFar;
 
     if (mNeedsToTraverseAllNodes || isQuote(c)) {
         bool incremented = false;
@@ -235,7 +239,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             mExcessivePos = mOutputIndex;
         }
         if (mExcessivePos < mInputLength - 1) {
-            mExceeding = mExcessivePos == mInputIndex;
+            mExceeding = mExcessivePos == mInputIndex && canTryCorrection;
         }
     }
 
@@ -246,7 +250,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             }
             mSkipPos = mOutputIndex;
         }
-        mSkipping = mSkipPos == mOutputIndex;
+        mSkipping = mSkipPos == mOutputIndex && canTryCorrection;
     }
 
     if (mTransposedPos >= 0) {
@@ -254,7 +258,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             mTransposedPos = mOutputIndex;
         }
         if (mTransposedPos < mInputLength - 1) {
-            mTransposing = mInputIndex == mTransposedPos;
+            mTransposing = mInputIndex == mTransposedPos && canTryCorrection;
         }
     }
 
@@ -280,10 +284,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         }
     }
 
-    const bool noCorrectionsHappenedSoFar =
-            (mSkippedCount + mExcessiveCount + mTransposedCount) == 0;
-    // TODO: sum counters
-    const bool checkProximityChars = noCorrectionsHappenedSoFar;
+    // TODO: Change the limit if we'll allow two or more proximity chars with corrections
+    const bool checkProximityChars = noCorrectionsHappenedSoFar ||  mProximityCount == 0;
     const int matchedProximityCharId = secondTransposing
             ? ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR
             : mProximityInfo->getMatchedProximityId(mInputIndex, c, checkProximityChars);
@@ -293,16 +295,14 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         // As the current char turned out to be an unrelated char,
         // we will try other correction-types. Please note that mCorrectionStates[mOutputIndex]
         // here refers to the previous state.
-        if (noCorrectionsHappenedSoFar
-                && mCorrectionStates[mOutputIndex].mProximityMatching
+        if (canTryCorrection && mCorrectionStates[mOutputIndex].mProximityMatching
                 && mCorrectionStates[mOutputIndex].mExceeding
                 && mProximityInfo->getMatchedProximityId(mInputIndex, mWord[mOutputIndex], false)
                         == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
-            // TODO: check transpose in the same way?
+            // Conversion p->e
             ++mExcessiveCount;
             --mProximityCount;
-        } else if (mInputIndex < mInputLength - 1 && mOutputIndex > 0
-                && mTransposedCount > 0 && mExcessiveCount == 0
+        } else if (mInputIndex < mInputLength - 1 && mOutputIndex > 0 && mTransposedCount > 0
                 && !mCorrectionStates[mOutputIndex].mTransposing
                 && mCorrectionStates[mOutputIndex - 1].mTransposing
                 && mProximityInfo->getMatchedProximityId(
@@ -310,46 +310,49 @@ Correction::CorrectionType Correction::processCharAndCalcState(
                                 == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR
                 && mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false)
                         == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            // Conversion t->e
             // Example:
             // occaisional -> occa   sional
             // mmmmttx     -> mmmm(E)mmmmmm
             mTransposedCount -= 2;
             ++mExcessiveCount;
             ++mInputIndex;
-        } else if (mOutputIndex > 0 && mInputIndex > 0 && mTransposedCount > 0 && mSkippedCount == 0
+        } else if (mOutputIndex > 0 && mInputIndex > 0 && mTransposedCount > 0
                 && !mCorrectionStates[mOutputIndex].mTransposing
                 && mCorrectionStates[mOutputIndex - 1].mTransposing
                 && mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
                         == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            // Conversion t->s
             // Example:
             // chcolate -> chocolate
             // mmttx    -> mmsmmmmmm
             mTransposedCount -= 2;
             ++mSkippedCount;
             --mInputIndex;
-        } else if (mInputIndex - 1 < mInputLength && (mExceeding || mTransposing)
+        } else if (canTryCorrection && mInputIndex > 0
+                && mCorrectionStates[mOutputIndex].mProximityMatching
+                && mCorrectionStates[mOutputIndex].mSkipping
+                && mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
+                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            // Conversion p->s
+            // Note: This logic tries saving cases like contrst --> contrast -- "a" is one of
+            // proximity chars of "s", but it should rather be handled as a skipped char.
+            ++mSkippedCount;
+            --mProximityCount;
+            return processSkipChar(c, isTerminal, false);
+        } else if ((mExceeding || mTransposing) && mInputIndex - 1 < mInputLength
                 && mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false)
                         == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            // 1.2. Excessive or transpose correction
             if (mTransposing) {
                 ++mTransposedCount;
             } else {
                 ++mExcessiveCount;
                 incrementInputIndex();
             }
-        } else if (mProximityCount == 0 && noCorrectionsHappenedSoFar) {
-            // Skip this letter and continue deeper
+        } else if (mSkipping) {
+            // 3. Skip correction
             ++mSkippedCount;
-            return processSkipChar(c, isTerminal, false);
-        } else if (noCorrectionsHappenedSoFar
-                && mInputIndex > 0
-                && mCorrectionStates[mOutputIndex].mProximityMatching
-                && mCorrectionStates[mOutputIndex].mSkipping
-                && mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
-                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
-            // Note: This logic tries saving cases like contrst --> contrast -- "a" is one of
-            // proximity chars of "s", but it should rather be handled as a skipped char.
-            ++mSkippedCount;
-            --mProximityCount;
             return processSkipChar(c, isTerminal, false);
         } else {
             if (DEBUG_CORRECTION) {
@@ -371,9 +374,9 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 
     mWord[mOutputIndex] = c;
 
-    mLastCharExceeded = mExcessiveCount == 0 && mSkippedCount == 0
-            && mProximityCount == 0 && mTransposedCount == 0
-            && (mInputIndex == mInputLength - 2);
+    // 4. Last char excessive correction
+    mLastCharExceeded = mExcessiveCount == 0 && mSkippedCount == 0 && mTransposedCount == 0
+            && mProximityCount == 0 && (mInputIndex == mInputLength - 2);
     const bool isSameAsUserTypedLength = (mInputLength == mInputIndex + 1) || mLastCharExceeded;
     if (mLastCharExceeded) {
         ++mExcessiveCount;
@@ -663,6 +666,9 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
          m ... matching
          s ... skipping
          a ... traversing all
+         t ... transposing
+         e ... exceeding
+         p ... proximity matching
      */
     if (matchCount == inputLength && matchCount >= 2 && !skipped
             && word[matchCount] == word[matchCount - 1]) {
