@@ -79,6 +79,11 @@
         <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_edges_padding</item>
         <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_edges_padding</item>
     </style>
+    <style
+        name="SuggestionsPaneViewStyle"
+        parent="MiniKeyboardView"
+    >
+    </style>
     <style name="SuggestionsStripBackgroundStyle">
         <item name="android:background">@drawable/keyboard_suggest_strip</item>
     </style>
@@ -233,6 +238,11 @@
     <style
         name="SuggestionPreviewBackgroundStyle.IceCreamSandwich"
         parent="MiniKeyboardPanelStyle.IceCreamSandwich"
+    >
+    </style>
+    <style
+        name="SuggestionsPaneViewStyle.IceCreamSandwich"
+        parent="MiniKeyboardView.IceCreamSandwich"
     >
     </style>
     <style

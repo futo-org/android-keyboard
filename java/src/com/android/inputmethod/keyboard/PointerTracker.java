@@ -76,6 +76,17 @@ public class PointerTracker {
         public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker);
         public void cancelLongPressTimer();
         public void cancelKeyTimers();
+
+        public static class Adapter implements TimerProxy {
+            @Override
+            public void startKeyRepeatTimer(long delay, int keyIndex, PointerTracker tracker) {}
+            @Override
+            public void startLongPressTimer(long delay, int keyIndex, PointerTracker tracker) {}
+            @Override
+            public void cancelLongPressTimer() {}
+            @Override
+            public void cancelKeyTimers() {}
+        }
     }
 
     private static KeyboardSwitcher sKeyboardSwitcher;

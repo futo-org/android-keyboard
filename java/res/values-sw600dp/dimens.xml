@@ -67,6 +67,7 @@
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
     <dimen name="candidate_strip_height">44dip</dimen>
+    <dimen name="more_suggestions_row_height">44dip</dimen>
     <dimen name="candidate_strip_padding">15.0mm</dimen>
     <dimen name="candidate_min_width">0.3in</dimen>
     <dimen name="candidate_padding">12dip</dimen>

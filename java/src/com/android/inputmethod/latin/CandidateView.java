@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
+import android.os.SystemClock;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -34,8 +35,10 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -46,6 +49,9 @@ import android.widget.TextView;
 
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
 import com.android.inputmethod.compat.LinearLayoutCompatUtils;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.MoreKeysPanel;
+import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 
 import java.util.ArrayList;
@@ -58,15 +64,21 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
-    private static final int MAX_SUGGESTIONS = 18;
+    public static final int MAX_SUGGESTIONS = 18;
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
     private final ViewGroup mCandidatesPlacer;
     private final ViewGroup mCandidatesStrip;
+    // TODO: Remove these pane related fields and stuffs.
     private ViewGroup mCandidatesPane;
     private ViewGroup mCandidatesPaneContainer;
     private View mKeyboardView;
+
+    private final View mMoreSuggestionsContainer;
+    private final MoreSuggestionsView mMoreSuggestionsView;
+    private final MoreSuggestions.Builder mMoreSuggestionsBuilder;
+    private final PopupWindow mMoreSuggestionsWindow;
 
     private final ArrayList<TextView> mWords = new ArrayList<TextView>();
     private final ArrayList<TextView> mInfos = new ArrayList<TextView>();
@@ -159,7 +171,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mDividerHeight = divider.getMeasuredHeight();
 
             final Resources res = word.getResources();
-            mCandidateStripHeight = res.getDimensionPixelOffset(R.dimen.candidate_strip_height);
+            mCandidateStripHeight = res.getDimensionPixelSize(R.dimen.candidate_strip_height);
         }
     }
 
@@ -257,7 +269,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         private final int mColorTypedWord;
         private final int mColorAutoCorrect;
         private final int mColorSuggestedCandidate;
-        private final int mCandidateCountInStrip;
+        public final int mCandidateCountInStrip;
         private final float mCenterCandidateWeight;
         private final int mCenterCandidateIndex;
         private final Drawable mMoreCandidateHint;
@@ -449,7 +461,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                     }
                 }
             }
-
             return countInStrip;
         }
 
@@ -585,6 +596,15 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 mInfos);
         mPaneParams = new SuggestionsPaneParams(mWords, mDividers, mInfos);
         mStripParams.mWordToSaveView.setOnClickListener(this);
+
+        mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
+        mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
+                .findViewById(R.id.more_suggestions_view);
+        mMoreSuggestionsBuilder = new MoreSuggestions.Builder(mMoreSuggestionsView);
+        mMoreSuggestionsWindow = new PopupWindow(context);
+        mMoreSuggestionsWindow.setWindowLayoutMode(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        mMoreSuggestionsWindow.setBackgroundDrawable(null);
     }
 
     /**
@@ -621,8 +641,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         final int width = getWidth();
         final int countInStrip = mStripParams.layout(
                 mSuggestions, mCandidatesStrip, mCandidatesPlacer, width);
-        mPaneParams.layout(
-                mSuggestions, mCandidatesPane, countInStrip, mStripParams.getTextColor(), width);
     }
 
     private static CharSequence getDebugInfo(SuggestedWords suggestions, int pos) {
@@ -787,6 +805,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mCandidatesStrip.removeAllViews();
         mCandidatesPane.removeAllViews();
         closeCandidatesPane();
+        mMoreSuggestionsWindow.dismiss();
     }
 
     private void hidePreview() {
@@ -823,13 +842,100 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         }
     }
 
+    private final KeyboardActionListener mMoreSuggestionsListener =
+            new KeyboardActionListener.Adapter() {
+        @Override
+        public boolean onCustomRequest(int requestCode) {
+            final int index = requestCode;
+            final CharSequence word = mSuggestions.getWord(index);
+            mListener.pickSuggestionManually(index, word);
+            mMoreSuggestionsView.dismissMoreKeysPanel();
+            return true;
+        }
+
+        @Override
+        public void onCancelInput() {
+            mMoreSuggestionsView.dismissMoreKeysPanel();
+        }
+    };
+
+    private final MoreKeysPanel.Controller mMoreSuggestionsController =
+            new MoreKeysPanel.Controller() {
+        @Override
+        public boolean dismissMoreKeysPanel() {
+            if (mMoreSuggestionsWindow.isShowing()) {
+                mMoreSuggestionsWindow.dismiss();
+                return true;
+            }
+            return false;
+        }
+    };
+
     @Override
     public boolean onLongClick(View view) {
-        if (mStripParams.mMoreSuggestionsAvailable) {
-            toggleCandidatesPane();
+        final SuggestionsStripParams params = mStripParams;
+        if (params.mMoreSuggestionsAvailable) {
+            final int stripWidth = getWidth();
+            final View container = mMoreSuggestionsContainer;
+            final int maxWidth = stripWidth - container.getPaddingLeft()
+                    - container.getPaddingRight();
+            final DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
+            // TODO: Revise how we determine the height
+            final int maxHeight = dm.heightPixels - mKeyboardView.getHeight() - getHeight() * 3;
+            final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
+            builder.layout(mSuggestions, params.mCandidateCountInStrip, maxWidth, maxHeight);
+            mMoreSuggestionsView.setKeyboard(builder.build());
+            container.measure(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+            final MoreKeysPanel moreKeysPanel = mMoreSuggestionsView;
+            final int pointX = stripWidth / 2;
+            final int pointY = 0;
+            moreKeysPanel.showMoreKeysPanel(
+                    this, mMoreSuggestionsController, pointX, pointY,
+                    mMoreSuggestionsWindow, mMoreSuggestionsListener);
+            // TODO: Should figure out how to select the pointer tracker correctly.
+            final PointerTracker tracker = PointerTracker.getPointerTracker(0, moreKeysPanel);
+            final int translatedX = moreKeysPanel.translateX(tracker.getLastX());
+            final int translatedY = moreKeysPanel.translateY(tracker.getLastY());
+            tracker.onShowMoreKeysPanel(
+                    translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
+            view.setPressed(false);
+            // TODO: Should gray out the keyboard here as well?
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent me) {
+        if (!mMoreSuggestionsWindow.isShowing()) {
+            return super.dispatchTouchEvent(me);
+        }
+        final int action = me.getAction();
+        final long eventTime = me.getEventTime();
+        final int index = me.getActionIndex();
+        final int id = me.getPointerId(index);
+        final PointerTracker tracker = PointerTracker.getPointerTracker(id, mMoreSuggestionsView);
+        final int x = mMoreSuggestionsView.translateX((int)me.getX(index));
+        final int y = mMoreSuggestionsView.translateY((int)me.getY(index));
+        switch (action) {
+        case MotionEvent.ACTION_DOWN:
+        case MotionEvent.ACTION_POINTER_DOWN:
+            tracker.onDownEvent(x, y, eventTime, mMoreSuggestionsView);
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_POINTER_UP:
+            tracker.onUpEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_MOVE:
+            tracker.onMoveEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_CANCEL:
+            tracker.onCancelEvent(x, y, eventTime);
+            break;
+        }
+        return true;
     }
 
     @Override

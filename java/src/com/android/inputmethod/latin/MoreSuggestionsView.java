@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.android.inputmethod.keyboard;
+package com.android.inputmethod.latin;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -23,17 +23,23 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
 
+import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.keyboard.KeyDetector;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.MoreKeysPanel;
+import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
-import com.android.inputmethod.latin.R;
 
 import java.util.List;
 
 /**
- * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
+ * A view that renders a virtual {@link MoreSuggestions}. It handles rendering of keys and detecting
  * key presses and touch movements.
  */
-public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
+public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = new int[2];
 
     private final KeyDetector mKeyDetector;
@@ -43,11 +49,11 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
     private int mOriginX;
     private int mOriginY;
 
-    private static class MiniKeyboardKeyDetector extends KeyDetector {
+    private static class SuggestionsPaneKeyDetector extends KeyDetector {
         private final int mSlideAllowanceSquare;
         private final int mSlideAllowanceSquareTop;
 
-        public MiniKeyboardKeyDetector(float slideAllowance) {
+        public SuggestionsPaneKeyDetector(float slideAllowance) {
             super(/* keyHysteresisDistance */0);
             mSlideAllowanceSquare = (int)(slideAllowance * slideAllowance);
             // Top slide allowance is slightly longer (sqrt(2) times) than other edges.
@@ -90,45 +96,41 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
 
     private static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy.Adapter();
 
-    private final KeyboardActionListener mMiniKeyboardListener =
+    private final KeyboardActionListener mSuggestionsPaneListener =
             new KeyboardActionListener.Adapter() {
         @Override
-        public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
-            mListener.onCodeInput(primaryCode, keyCodes, x, y);
+        public void onPress(int primaryCode, boolean withSliding) {
+            mListener.onPress(primaryCode, withSliding);
         }
 
         @Override
-        public void onTextInput(CharSequence text) {
-            mListener.onTextInput(text);
+        public void onRelease(int primaryCode, boolean withSliding) {
+            mListener.onRelease(primaryCode, withSliding);
+        }
+
+        @Override
+        public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
+            mListener.onCustomRequest(primaryCode - MoreSuggestions.SUGGESTION_CODE_BASE);
         }
 
         @Override
         public void onCancelInput() {
             mListener.onCancelInput();
         }
-
-        @Override
-        public void onPress(int primaryCode, boolean withSliding) {
-            mListener.onPress(primaryCode, withSliding);
-        }
-        @Override
-        public void onRelease(int primaryCode, boolean withSliding) {
-            mListener.onRelease(primaryCode, withSliding);
-        }
     };
 
-    public MiniKeyboardView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.miniKeyboardViewStyle);
+    public MoreSuggestionsView(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.suggestionsPaneViewStyle);
     }
 
-    public MiniKeyboardView(Context context, AttributeSet attrs, int defStyle) {
+    public MoreSuggestionsView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         final Resources res = context.getResources();
         // Override default ProximityKeyDetector.
-        mKeyDetector = new MiniKeyboardKeyDetector(res.getDimension(
-                R.dimen.mini_keyboard_slide_allowance));
-        // Remove gesture detector on mini-keyboard
+        mKeyDetector = new SuggestionsPaneKeyDetector(res.getDimension(
+                R.dimen.more_suggestions_slide_allowance));
+        // Remove gesture detector on suggestions pane
         setKeyPreviewPopupEnabled(false, 0);
     }
 
@@ -158,7 +160,7 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
 
     @Override
     public KeyboardActionListener getKeyboardActionListener() {
-        return mMiniKeyboardListener;
+        return mSuggestionsPaneListener;
     }
 
     @Override
@@ -173,17 +175,14 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
 
     @Override
     public void setKeyPreviewPopupEnabled(boolean previewEnabled, int delay) {
-        // Mini keyboard needs no pop-up key preview displayed, so we pass always false with a
+        // Suggestions pane needs no pop-up key preview displayed, so we pass always false with a
         // delay of 0. The delay does not matter actually since the popup is not shown anyway.
         super.setKeyPreviewPopupEnabled(false, 0);
     }
 
     @Override
     public void setShifted(boolean shifted) {
-        final Keyboard keyboard = getKeyboard();
-        if (keyboard.setShifted(shifted)) {
-            invalidateAllKeys();
-        }
+        // Nothing to do with.
     }
 
     @Override
@@ -192,13 +191,12 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
         mController = controller;
         mListener = listener;
         final View container = (View)getParent();
-        final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
+        final MoreSuggestions pane = (MoreSuggestions)getKeyboard();
 
         parentView.getLocationInWindow(mCoordinates);
-        final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
-                + parentView.getPaddingLeft();
-        final int x = wrapUp(Math.max(0, Math.min(miniKeyboardLeft,
-                parentView.getWidth() - miniKeyboard.mOccupiedWidth))
+        final int paneLeft = pointX - (pane.mOccupiedWidth / 2) + parentView.getPaddingLeft();
+        final int x = wrapUp(Math.max(0, Math.min(paneLeft,
+                parentView.getWidth() - pane.mOccupiedWidth))
                 - container.getPaddingLeft() + mCoordinates[0],
                 container.getMeasuredWidth(), 0, parentView.getWidth());
         final int y = pointY

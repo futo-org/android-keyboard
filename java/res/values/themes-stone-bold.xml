@@ -22,7 +22,8 @@
         <item name="miniKeyboardViewStyle">@style/MiniKeyboardView.Stone</item>
         <item name="miniKeyboardPanelStyle">@style/MiniKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
-        <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
+        <item name="suggestionsPaneViewStyle">@style/SuggestionsPaneViewStyle</item>
+            <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>
         <item name="candidateViewStyle">@style/CandidateViewStyle</item>
     </style>
