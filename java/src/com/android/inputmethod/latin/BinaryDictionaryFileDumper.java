@@ -87,29 +87,112 @@ public class BinaryDictionaryFileDumper {
         return list;
     }
 
+
     /**
-     * Caches a word list the id of which is passed as an argument.
+     * Helper method to encapsulate exception handling.
+     */
+    private static AssetFileDescriptor openAssetFileDescriptor(final ContentResolver resolver,
+            final Uri uri) {
+        try {
+            return resolver.openAssetFileDescriptor(uri, "r");
+        } catch (FileNotFoundException e) {
+            // I don't want to log the word list URI here for security concerns
+            Log.e(TAG, "Could not find a word list from the dictionary provider.");
+            return null;
+        }
+    }
+
+    /**
+     * Caches a word list the id of which is passed as an argument. This will write the file
+     * to the cache file name designated by its id and locale, overwriting it if already present
+     * and creating it (and its containing directory) if necessary.
      */
     private static AssetFileAddress cacheWordList(final String id, final Locale locale,
             final ContentResolver resolver, final Context context) {
+
+        final int COMPRESSED_CRYPTED_COMPRESSED = 0;
+        final int CRYPTED_COMPRESSED = 1;
+        final int COMPRESSED_CRYPTED = 2;
+        final int COMPRESSED_ONLY = 3;
+        final int CRYPTED_ONLY = 4;
+        final int NONE = 5;
+        final int MODE_MIN = COMPRESSED_CRYPTED_COMPRESSED;
+        final int MODE_MAX = NONE;
+
         final Uri wordListUri = getProviderUri(id);
-        try {
-            final AssetFileDescriptor afd = resolver.openAssetFileDescriptor(wordListUri, "r");
-            if (null == afd) return null;
-            final String fileName = copyFileTo(afd.createInputStream(),
-                    BinaryDictionaryGetter.getCacheFileName(id, locale, context));
-            afd.close();
-            if (0 >= resolver.delete(wordListUri, null, null)) {
-                // I'd rather not print the word list ID to the log out of security concerns
-                Log.e(TAG, "Could not have the dictionary pack delete a word list");
+        final String outputFileName = BinaryDictionaryGetter.getCacheFileName(id, locale, context);
+
+        for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
+            InputStream originalSourceStream = null;
+            InputStream inputStream = null;
+            FileOutputStream outputStream = null;
+            AssetFileDescriptor afd = null;
+            try {
+                // Open input.
+                afd = openAssetFileDescriptor(resolver, wordListUri);
+                // If we can't open it at all, don't even try a number of times.
+                if (null == afd) return null;
+                originalSourceStream = afd.createInputStream();
+                // Open output.
+                outputStream = new FileOutputStream(outputFileName);
+                // Get the appropriate decryption method for this try
+                switch (mode) {
+                    case COMPRESSED_CRYPTED_COMPRESSED:
+                        inputStream = FileTransforms.getUncompressedStream(
+                                FileTransforms.getDecryptedStream(
+                                        FileTransforms.getUncompressedStream(
+                                                originalSourceStream)));
+                        break;
+                    case CRYPTED_COMPRESSED:
+                        inputStream = FileTransforms.getUncompressedStream(
+                                FileTransforms.getDecryptedStream(originalSourceStream));
+                        break;
+                    case COMPRESSED_CRYPTED:
+                        inputStream = FileTransforms.getDecryptedStream(
+                                FileTransforms.getUncompressedStream(originalSourceStream));
+                        break;
+                    case COMPRESSED_ONLY:
+                        inputStream = FileTransforms.getUncompressedStream(originalSourceStream);
+                        break;
+                    case CRYPTED_ONLY:
+                        inputStream = FileTransforms.getDecryptedStream(originalSourceStream);
+                        break;
+                    case NONE:
+                        inputStream = originalSourceStream;
+                        break;
+                    }
+                copyFileTo(inputStream, outputStream);
+                if (0 >= resolver.delete(wordListUri, null, null)) {
+                    Log.e(TAG, "Could not have the dictionary pack delete a word list");
+                }
+                // Success! Close files (through the finally{} clause) and return.
+                return AssetFileAddress.makeFromFileName(outputFileName);
+            } catch (Exception e) {
+                Log.e(TAG, "Can't open word list in mode " + mode + " : " + e);
+                // Try the next method.
+            } finally {
+                // Ignore exceptions while closing files.
+                try {
+                    // afd.close() will close inputStream, we should not call inputStream.close().
+                    if (null != afd) afd.close();
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception while closing a cross-process file descriptor : " + e);
+                }
+                try {
+                    if (null != outputStream) outputStream.close();
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception while closing a file : " + e);
+                }
             }
-            return AssetFileAddress.makeFromFileName(fileName);
-        } catch (FileNotFoundException e) {
-            // This may only come from openAssetFileDescriptor
-            return null;
-        } catch (IOException e) {
-            // Can't read the file for some reason.
-            Log.e(TAG, "Cannot read a word list from the dictionary pack : " + e);
+        }
+
+        // We could not copy the file at all. This is very unexpected.
+        // I'd rather not print the word list ID to the log out of security concerns
+        Log.e(TAG, "Could not copy a word list. Will not be able to use it.");
+        // If we can't copy it we should probably delete it to avoid trying to copy it over
+        // and over each time we open LatinIME.
+        if (0 >= resolver.delete(wordListUri, null, null)) {
+            Log.e(TAG, "In addition, we were unable to delete it.");
         }
         return null;
     }
@@ -139,35 +222,15 @@ public class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Accepts a resource number as dictionary data for some locale and returns the name of a file.
-     *
-     * This will make the resource the cached dictionary for this locale, overwriting any previous
-     * cached data.
-     */
-    public static String getDictionaryFileFromResource(int resource, Locale locale,
-            Context context) throws FileNotFoundException, IOException {
-        final Resources res = context.getResources();
-        final Locale savedLocale = Utils.setSystemLocale(res, locale);
-        final InputStream stream = res.openRawResource(resource);
-        Utils.setSystemLocale(res, savedLocale);
-        return copyFileTo(stream,
-                BinaryDictionaryGetter.getCacheFileName(Integer.toString(resource),
-                        locale, context));
-    }
-
-    /**
-     * Copies the data in an input stream to a target file, creating the file if necessary and
-     * overwriting it if it already exists.
+     * Copies the data in an input stream to a target file.
      * @param input the stream to be copied.
-     * @param outputFileName the name of a file to copy the data to. It is created if necessary.
+     * @param outputFile an outputstream to copy the data to.
      */
-    private static String copyFileTo(final InputStream input, final String outputFileName)
+    private static void copyFileTo(final InputStream input, final FileOutputStream output)
             throws FileNotFoundException, IOException {
         final byte[] buffer = new byte[FILE_READ_BUFFER_SIZE];
-        final FileOutputStream output = new FileOutputStream(outputFileName);
         for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer))
             output.write(buffer, 0, readBytes);
         input.close();
-        return outputFileName;
     }
 }
