@@ -32,7 +32,6 @@
     <bool name="config_auto_correction_spacebar_led_enabled">false</bool>
     <!-- Showing mini keyboard, just above the touched point if true, aligned to the key if false -->
     <bool name="config_show_mini_keyboard_at_touched_point">true</bool>
-    <integer name="config_delay_update_suggestions">180</integer>
     <!-- Long pressing space will invoke IME switcher if > 0, never invoke IME switcher if == 0 -->
     <integer name="config_long_press_space_key_timeout">0</integer>
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
