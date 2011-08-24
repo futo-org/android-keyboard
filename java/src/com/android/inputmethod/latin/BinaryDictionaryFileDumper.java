@@ -41,6 +41,7 @@ import java.util.Locale;
  */
 public class BinaryDictionaryFileDumper {
     private static final String TAG = BinaryDictionaryFileDumper.class.getSimpleName();
+    private static final boolean DEBUG = false;
 
     /**
      * The size of the temporary buffer to copy files.
