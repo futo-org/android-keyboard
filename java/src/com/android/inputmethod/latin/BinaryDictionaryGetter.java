@@ -109,11 +109,18 @@ class BinaryDictionaryGetter {
     }
 
     /**
+     * Helper method to get the top level cache directory.
+     */
+    private static String getWordListCacheDirectory(final Context context) {
+        return context.getFilesDir() + File.separator + "dicts";
+    }
+
+    /**
      * Find out the cache directory associated with a specific locale.
      */
-    private static String getCacheDirectoryForLocale(Locale locale, Context context) {
-        final String relativeDirectoryName = replaceFileNameDangerousCharacters(locale.toString());
-        final String absoluteDirectoryName = context.getFilesDir() + File.separator
+    private static String getCacheDirectoryForLocale(final String locale, final Context context) {
+        final String relativeDirectoryName = replaceFileNameDangerousCharacters(locale);
+        final String absoluteDirectoryName = getWordListCacheDirectory(context) + File.separator
                 + relativeDirectoryName;
         final File directory = new File(absoluteDirectoryName);
         if (!directory.exists()) {
@@ -135,11 +142,11 @@ class BinaryDictionaryGetter {
      * named like the locale, except it will also escape characters that look dangerous
      * to some file systems.
      * @param id the id of the dictionary for which to get a file name
-     * @param locale the locale for which to get the file name
+     * @param locale the locale for which to get the file name as a string
      * @param context the context to use for getting the directory
      * @return the name of the file to be created
      */
-    public static String getCacheFileName(String id, Locale locale, Context context) {
+    public static String getCacheFileName(String id, String locale, Context context) {
         final String fileName = replaceFileNameDangerousCharacters(id);
         return getCacheDirectoryForLocale(locale, context) + File.separator + fileName;
     }
@@ -199,25 +206,53 @@ class BinaryDictionaryGetter {
     }
 
     /**
-     * Returns the list of cached files for a specific locale.
-     *
-     * @param locale the locale to find the dictionary files for.
-     * @param context the context on which to open the files upon.
-     * @return an array of binary dictionary files, which may be empty but may not be null.
+     * Helper method to the list of cache directories, one for each distinct locale.
      */
-    private static File[] getCachedWordLists(final Locale locale,
-            final Context context) {
-        final String directoryName = getCacheDirectoryForLocale(locale, context);
-        final File[] cacheFiles = new File(directoryName).listFiles();
-        if (null == cacheFiles) return EMPTY_FILE_ARRAY;
-        return cacheFiles;
+    private static File[] getCachedDirectoryList(final Context context) {
+        return new File(getWordListCacheDirectory(context)).listFiles();
     }
 
     /**
-     * Returns the id of the main dict for a specified locale.
+     * Returns the list of cached files for a specific locale.
+     *
+     * @param locale the locale to find the dictionary files for, as a string.
+     * @param context the context on which to open the files upon.
+     * @return an array of binary dictionary files, which may be empty but may not be null.
+     */
+    private static File[] getCachedWordLists(final String locale,
+            final Context context) {
+        final File[] directoryList = getCachedDirectoryList(context);
+        if (null == directoryList) return EMPTY_FILE_ARRAY;
+        final ArrayList<File> cacheFiles = new ArrayList<File>();
+        for (File directory : directoryList) {
+            if (!directory.isDirectory()) continue;
+            final String dirLocale = getWordListIdFromFileName(directory.getName());
+            if (LocaleUtils.isMatch(LocaleUtils.getMatchLevel(dirLocale, locale))) {
+                final File[] wordLists = directory.listFiles();
+                if (null != wordLists) {
+                    for (File wordList : wordLists) {
+                        cacheFiles.add(wordList);
+                    }
+                }
+            }
+        }
+        if (cacheFiles.isEmpty()) return EMPTY_FILE_ARRAY;
+        return cacheFiles.toArray(EMPTY_FILE_ARRAY);
+    }
+
+    /**
+     * Returns the id associated with the main word list for a specified locale.
+     *
+     * Word lists stored in Android Keyboard's resources are referred to as the "main"
+     * word lists. Since they can be updated like any other list, we need to assign a
+     * unique ID to them. This ID is just the name of the language (locale-wise) they
+     * are for, and this method returns this ID.
      */
     private static String getMainDictId(final Locale locale) {
-        return locale.toString();
+        // This works because we don't include by default different dictionaries for
+        // different countries. This actually needs to return the id that we would
+        // like to use for word lists included in resources, and the following is okay.
+        return locale.getLanguage().toString();
     }
 
     /**
@@ -239,7 +274,7 @@ class BinaryDictionaryGetter {
         // storage, but we don't really care about what was copied NOW: what we want is the
         // list of everything we ever cached, so we ignore the return value.
         BinaryDictionaryFileDumper.cacheWordListsFromContentProvider(locale, context);
-        final File[] cachedWordLists = getCachedWordLists(locale, context);
+        final File[] cachedWordLists = getCachedWordLists(locale.toString(), context);
 
         final String mainDictId = getMainDictId(locale);
 

@@ -67,25 +67,34 @@ public class BinaryDictionaryFileDumper {
      * Queries a content provider for the list of word lists for a specific locale
      * available to copy into Latin IME.
      */
-    private static List<String> getWordListIds(final Locale locale, final Context context) {
+    private static List<WordListInfo> getWordListWordListInfos(final Locale locale,
+            final Context context) {
         final ContentResolver resolver = context.getContentResolver();
         final Uri dictionaryPackUri = getProviderUri(locale.toString());
 
         final Cursor c = resolver.query(dictionaryPackUri, DICTIONARY_PROJECTION, null, null, null);
-        if (null == c) return Collections.<String>emptyList();
+        if (null == c) return Collections.<WordListInfo>emptyList();
         if (c.getCount() <= 0 || !c.moveToFirst()) {
             c.close();
-            return Collections.<String>emptyList();
+            return Collections.<WordListInfo>emptyList();
         }
 
-        final List<String> list = new ArrayList<String>();
-        do {
-            final String id = c.getString(0);
-            if (TextUtils.isEmpty(id)) continue;
-            list.add(id);
-        } while (c.moveToNext());
-        c.close();
-        return list;
+        try {
+            final List<WordListInfo> list = new ArrayList<WordListInfo>();
+            do {
+                final String wordListId = c.getString(0);
+                final String wordListLocale = c.getString(1);
+                if (TextUtils.isEmpty(wordListId)) continue;
+                list.add(new WordListInfo(wordListId, wordListLocale));
+            } while (c.moveToNext());
+            c.close();
+            return list;
+        } catch (Exception e) {
+            // Just in case we hit a problem in communication with the dictionary pack.
+            // We don't want to die.
+            Log.e(TAG, "Exception communicating with the dictionary pack : " + e);
+            return Collections.<WordListInfo>emptyList();
+        }
     }
 
 
@@ -108,7 +117,7 @@ public class BinaryDictionaryFileDumper {
      * to the cache file name designated by its id and locale, overwriting it if already present
      * and creating it (and its containing directory) if necessary.
      */
-    private static AssetFileAddress cacheWordList(final String id, final Locale locale,
+    private static AssetFileAddress cacheWordList(final String id, final String locale,
             final ContentResolver resolver, final Context context) {
 
         final int COMPRESSED_CRYPTED_COMPRESSED = 0;
@@ -213,10 +222,10 @@ public class BinaryDictionaryFileDumper {
     public static List<AssetFileAddress> cacheWordListsFromContentProvider(final Locale locale,
             final Context context) {
         final ContentResolver resolver = context.getContentResolver();
-        final List<String> idList = getWordListIds(locale, context);
+        final List<WordListInfo> idList = getWordListWordListInfos(locale, context);
         final List<AssetFileAddress> fileAddressList = new ArrayList<AssetFileAddress>();
-        for (String id : idList) {
-            final AssetFileAddress afd = cacheWordList(id, locale, resolver, context);
+        for (WordListInfo id : idList) {
+            final AssetFileAddress afd = cacheWordList(id.mId, id.mLocale, resolver, context);
             if (null != afd) {
                 fileAddressList.add(afd);
             }
