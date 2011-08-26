@@ -199,7 +199,7 @@ public class SuggestedWords {
             }
         }
 
-        public boolean isPreviousSuggestedWord () {
+        public boolean isObsoleteSuggestedWord () {
             return mPreviousSuggestedWord;
         }
     }

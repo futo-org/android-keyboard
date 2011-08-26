@@ -366,7 +366,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
             final SuggestedWordInfo info = (pos < suggestions.size())
                     ? suggestions.getInfo(pos) : null;
-            if (info != null && info.isPreviousSuggestedWord()) {
+            if (info != null && info.isObsoleteSuggestedWord()) {
                 return applyAlpha(color, 0.5f);
             } else {
                 return color;

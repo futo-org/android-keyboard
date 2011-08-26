@@ -53,7 +53,8 @@ public class SuggestionSpanUtils {
     public static CharSequence getTextWithSuggestionSpan(Context context,
             CharSequence pickedWord, SuggestedWords suggestedWords) {
         if (TextUtils.isEmpty(pickedWord) || CONSTRUCTOR_SuggestionSpan == null
-                || suggestedWords == null || suggestedWords.size() == 0) {
+                || suggestedWords == null || suggestedWords.size() == 0
+                || suggestedWords.getInfo(0).isObsoleteSuggestedWord()) {
             return pickedWord;
         }
 
