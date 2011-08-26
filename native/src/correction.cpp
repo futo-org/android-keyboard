@@ -490,8 +490,7 @@ inline static int editDistance(
             const uint16_t cost = (ci == co) ? 0 : 1;
             dp[(i + 1) * lo + (j + 1)] = min(dp[i * lo + (j + 1)] + 1,
                     min(dp[(i + 1) * lo + j] + 1, dp[i * lo + j] + cost));
-            if (li > 0 && lo > 0
-                    && ci == Dictionary::toBaseLowerCase(output[j - 1])
+            if (ci == Dictionary::toBaseLowerCase(output[j - 1])
                     && co == Dictionary::toBaseLowerCase(input[i - 1])) {
                 dp[(i + 1) * lo + (j + 1)] = min(
                         dp[(i + 1) * lo + (j + 1)], dp[(i - 1) * lo + (j - 1)] + cost);
