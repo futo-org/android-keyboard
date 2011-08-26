@@ -213,9 +213,10 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         final int pointY = parentKey.mY;
         final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
                 + parentKeyboardView.getPaddingLeft();
-        final int x = Math.max(0, Math.min(miniKeyboardLeft,
+        final int x = wrapUp(Math.max(0, Math.min(miniKeyboardLeft,
                 parentKeyboardView.getWidth() - miniKeyboard.mOccupiedWidth))
-                - container.getPaddingLeft() + mCoordinates[0];
+                - container.getPaddingLeft() + mCoordinates[0],
+                container.getMeasuredWidth(), 0, parentKeyboardView.getWidth());
         final int y = pointY - parentKeyboard.mVerticalGap
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + parentKeyboardView.getPaddingTop() + mCoordinates[1];
@@ -230,6 +231,14 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
         mOriginX = x + container.getPaddingLeft() - mCoordinates[0];
         mOriginY = y + container.getPaddingTop() - mCoordinates[1];
+    }
+
+    private static int wrapUp(int x, int width, int left, int right) {
+        if (x < left)
+            return left;
+        if (x + width > right)
+            return right - width;
+        return x;
     }
 
     @Override
