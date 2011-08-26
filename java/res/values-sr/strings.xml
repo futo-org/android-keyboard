@@ -24,12 +24,9 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Подешавања Android тастатуре"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Опције уноса"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Android исправљање"</string>
-    <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
-    <skip />
-    <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
-    <skip />
-    <!-- no translation found for use_proximity_option_summary (2857708859847261945) -->
-    <skip />
+    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Подешавања провере правописа"</string>
+    <string name="use_proximity_option_title" msgid="7469233942295924620">"Употреба података близине"</string>
+    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Употреба алгоритма близине попут тастатуре за проверу правописа"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Вибрирај на притисак тастера"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук на притисак тастера"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Искачући прозор приликом притиска тастера"</string>

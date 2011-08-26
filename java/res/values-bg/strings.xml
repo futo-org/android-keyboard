@@ -24,12 +24,9 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Настройки на клавиатурата на Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Опции за въвеждане"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Корекция на Android"</string>
-    <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
-    <skip />
-    <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
-    <skip />
-    <!-- no translation found for use_proximity_option_summary (2857708859847261945) -->
-    <skip />
+    <string name="android_spell_checker_settings" msgid="5822324635435443689">"Настройки за проверка на правописа"</string>
+    <string name="use_proximity_option_title" msgid="7469233942295924620">"Данни за близост: Изп."</string>
+    <string name="use_proximity_option_summary" msgid="2857708859847261945">"Проверка на правописа: Използвайте алгоритъм за близост"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Да вибрира при натискане на клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при натискане на клавиш"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Изскачащ прозорец при натискане на клавиш"</string>
@@ -147,7 +144,7 @@
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Докоснете, за да поправите думите"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Докоснете въведените думи, за да ги поправите – само когато предложенията са видими"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема на клавиатурата"</string>
-    <string name="subtype_de_qwerty" msgid="3358900499589259491">"Немска „QWERTY“"</string>
+    <string name="subtype_de_qwerty" msgid="3358900499589259491">"немски, „QWERTY“"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"английски (Великобритания)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"английски (САЩ)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим за изучаване на използваемостта"</string>

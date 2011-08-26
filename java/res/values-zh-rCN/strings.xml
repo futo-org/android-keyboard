@@ -24,12 +24,9 @@
     <string name="english_ime_settings" msgid="6661589557206947774">"Android 键盘设置"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"输入选项"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Android 更正"</string>
-    <!-- no translation found for android_spell_checker_settings (5822324635435443689) -->
-    <skip />
-    <!-- no translation found for use_proximity_option_title (7469233942295924620) -->
-    <skip />
-    <!-- no translation found for use_proximity_option_summary (2857708859847261945) -->
-    <skip />
+    <string name="android_spell_checker_settings" msgid="5822324635435443689">"拼写检查设置"</string>
+    <string name="use_proximity_option_title" msgid="7469233942295924620">"使用邻近度数据"</string>
+    <string name="use_proximity_option_summary" msgid="2857708859847261945">"使用类似键盘的邻近度算法进行拼写检查"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"按键时振动"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"按键时播放音效"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"按键时显示弹出窗口"</string>
