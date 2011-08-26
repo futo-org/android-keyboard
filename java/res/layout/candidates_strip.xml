@@ -25,35 +25,6 @@
     <LinearLayout
         android:id="@+id/candidates_strip"
         android:orientation="horizontal"
-        android:layout_weight="1.0"
-        android:layout_width="0dp"
-        android:layout_height="match_parent" />
-    <LinearLayout
-        android:id="@+id/touch_to_save"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-    >
-        <Button
-            android:id="@+id/word_to_save"
-            android:layout_weight="1.0"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:textSize="@dimen/candidate_text_size"
-            android:singleLine="true"
-            android:ellipsize="middle"
-            style="?attr/suggestionBackgroundStyle" />
-        <include
-            layout="@layout/candidate_divider" />
-        <TextView
-            android:layout_weight="2.0"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:gravity="left|center_vertical"
-            android:text="@string/hint_add_to_dictionary"
-            android:textSize="@dimen/candidate_text_size"
-            android:background="@null" />
-    </LinearLayout>
+        android:layout_height="match_parent" />
 </merge>

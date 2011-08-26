@@ -76,13 +76,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     private final PopupWindow mPreviewPopup;
     private final TextView mPreviewText;
 
-    private final View mTouchToSave;
-    private final TextView mWordToSave;
-
     private Listener mListener;
     private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
     private boolean mShowingAutoCorrectionInverted;
-    private boolean mShowingAddToDictionary;
 
     private final SuggestionsStripParams mStripParams;
     private final SuggestionsPaneParams mPaneParams;
@@ -94,7 +90,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         private static final int MSG_HIDE_PREVIEW = 0;
         private static final int MSG_UPDATE_SUGGESTION = 1;
 
-        private static final long DELAY_HIDE_PREVIEW = 1000;
+        private static final long DELAY_HIDE_PREVIEW = 1300;
         private static final long DELAY_UPDATE_SUGGESTION = 300;
 
         public UiHandler(CandidateView outerInstance) {
@@ -274,12 +270,15 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         private static final int AUTO_CORRECT_INVERT = 0x04;
         private static final int VALID_TYPED_WORD_BOLD = 0x08;
 
-        private final TextPaint mPaint;
         private final int mSuggestionStripOption;
 
         private final ArrayList<CharSequence> mTexts = new ArrayList<CharSequence>();
 
         public boolean mMoreSuggestionsAvailable;
+
+        public final TextView mWordToSaveView;
+        private final TextView mHintToSaveView;
+        private final CharSequence mHintToSaveText;
 
         public SuggestionsStripParams(Context context, AttributeSet attrs, int defStyle,
                 List<TextView> words, List<View> dividers, List<TextView> infos) {
@@ -305,9 +304,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
             mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
 
-            mPaint = new TextPaint();
-            final float textSize = res.getDimension(R.dimen.candidate_text_size);
-            mPaint.setTextSize(textSize);
+            final LayoutInflater inflater = LayoutInflater.from(context);
+            mWordToSaveView = (TextView)inflater.inflate(R.layout.candidate_word, null);
+            mHintToSaveView = (TextView)inflater.inflate(R.layout.candidate_word, null);
+            mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
         }
 
         public int getTextColor() {
@@ -498,6 +498,33 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mMoreSuggestionsAvailable = false;
             return countInStrip;
         }
+
+        public void layoutAddToDictionaryHint(CharSequence word, ViewGroup stripView,
+                int stripWidth) {
+            final int width = stripWidth - mDividerWidth - mPadding * 2;
+
+            final TextView wordView = mWordToSaveView;
+            wordView.setTextColor(mColorTypedWord);
+            final int wordWidth = (int)(width * mCenterCandidateWeight);
+            final CharSequence text = getEllipsizedText(word, wordWidth, wordView.getPaint());
+            final float wordScaleX = wordView.getTextScaleX();
+            wordView.setTag(word);
+            wordView.setText(text);
+            wordView.setTextScaleX(wordScaleX);
+            stripView.addView(wordView);
+            setLayoutWeight(wordView, mCenterCandidateWeight, MATCH_PARENT);
+
+            stripView.addView(mDividers.get(0));
+
+            final TextView hintView = mHintToSaveView;
+            hintView.setTextColor(mColorAutoCorrect);
+            final int hintWidth = width - wordWidth;
+            final float hintScaleX = getTextScaleX(mHintToSaveText, hintWidth, hintView.getPaint());
+            hintView.setText(mHintToSaveText);
+            hintView.setTextScaleX(hintScaleX);
+            stripView.addView(hintView);
+            setLayoutWeight(hintView, 1.0f - mCenterCandidateWeight, MATCH_PARENT);
+        }
     }
 
     /**
@@ -517,7 +544,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         super(context, attrs);
         if (defStyle != R.attr.candidateViewStyle) {
             throw new IllegalArgumentException(
-                    "can't accept defStyle other than R.attr.candidayeViewStyle: defStyle="
+                    "can't accept defStyle other than R.attr.candidateViewStyle: defStyle="
                     + defStyle);
         }
         setBackgroundDrawable(LinearLayoutCompatUtils.getBackgroundDrawable(
@@ -546,13 +573,10 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mInfos.add((TextView)inflater.inflate(R.layout.candidate_info, null));
         }
 
-        mTouchToSave = findViewById(R.id.touch_to_save);
-        mWordToSave = (TextView)findViewById(R.id.word_to_save);
-        mWordToSave.setOnClickListener(this);
-
         mStripParams = new SuggestionsStripParams(context, attrs, defStyle, mWords, mDividers,
                 mInfos);
         mPaneParams = new SuggestionsPaneParams(mWords, mDividers, mInfos);
+        mStripParams.mWordToSaveView.setOnClickListener(this);
     }
 
     /**
@@ -634,6 +658,15 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             final ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams)lp;
             mlp.setMargins(mlp.leftMargin + dx, mlp.topMargin + dy, 0, 0);
         }
+    }
+
+    private static float getTextScaleX(CharSequence text, int maxWidth, TextPaint paint) {
+        paint.setTextScaleX(1.0f);
+        final int width = getTextWidth(text, paint);
+        if (width <= maxWidth) {
+            return 1.0f;
+        }
+        return maxWidth / (float)width;
     }
 
     private static CharSequence getEllipsizedText(CharSequence text, int maxWidth,
@@ -718,20 +751,21 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     public boolean isShowingAddToDictionaryHint() {
-        return mShowingAddToDictionary;
+        return mCandidatesStrip.getChildCount() > 0
+                && mCandidatesStrip.getChildAt(0) == mStripParams.mWordToSaveView;
     }
 
     public void showAddToDictionaryHint(CharSequence word) {
-        mWordToSave.setText(word);
-        mShowingAddToDictionary = true;
-        mCandidatesStrip.setVisibility(GONE);
-        mTouchToSave.setVisibility(VISIBLE);
+        clear();
+        mStripParams.layoutAddToDictionaryHint(word, mCandidatesStrip, getWidth());
     }
 
     public boolean dismissAddToDictionaryHint() {
-        if (!mShowingAddToDictionary) return false;
-        clear();
-        return true;
+        if (isShowingAddToDictionaryHint()) {
+            clear();
+            return true;
+        }
+        return false;
     }
 
     public SuggestedWords getSuggestions() {
@@ -739,10 +773,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     public void clear() {
-        mShowingAddToDictionary = false;
         mShowingAutoCorrectionInverted = false;
-        mTouchToSave.setVisibility(GONE);
-        mCandidatesStrip.setVisibility(VISIBLE);
         mCandidatesStrip.removeAllViews();
         mCandidatesPane.removeAllViews();
         closeCandidatesPane();
@@ -752,7 +783,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mPreviewPopup.dismiss();
     }
 
-    private void showPreview(int index, CharSequence word) {
+    private void showPreview(View view, CharSequence word) {
         if (TextUtils.isEmpty(word))
             return;
 
@@ -761,9 +792,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         previewText.setText(word);
         previewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
                 MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
-        View v = mWords.get(index);
         final int[] offsetInWindow = new int[2];
-        v.getLocationInWindow(offsetInWindow);
+        view.getLocationInWindow(offsetInWindow);
         final int posX = offsetInWindow[0];
         final int posY = offsetInWindow[1] - previewText.getMeasuredHeight();
         final PopupWindow previewPopup = mPreviewPopup;
@@ -778,7 +808,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private void addToDictionary(CharSequence word) {
         if (mListener.addWordToDictionary(word.toString())) {
-            showPreview(0, getContext().getString(R.string.added_word, word));
+            final CharSequence message = getContext().getString(R.string.added_word, word);
+            showPreview(mStripParams.mWordToSaveView, message);
         }
     }
 
@@ -793,8 +824,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     @Override
     public void onClick(View view) {
-        if (view == mWordToSave) {
-            addToDictionary(((TextView)view).getText());
+        if (view == mStripParams.mWordToSaveView) {
+            addToDictionary((CharSequence)view.getTag());
             clear();
             return;
         }
