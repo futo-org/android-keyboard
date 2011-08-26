@@ -64,6 +64,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
+    private final ViewGroup mCandidatesPlacer;
     private final ViewGroup mCandidatesStrip;
     private ViewGroup mCandidatesPane;
     private ViewGroup mCandidatesPaneContainer;
@@ -235,8 +236,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                     lastView = info;
                     info.measure(WRAP_CONTENT, WRAP_CONTENT);
                     final int infoWidth = info.getMeasuredWidth();
-                    FrameLayoutCompatUtils.placeViewAt(info, x - infoWidth, y, infoWidth,
-                            info.getMeasuredHeight());
+                    FrameLayoutCompatUtils.placeViewAt(
+                            info, x - infoWidth, y, infoWidth, info.getMeasuredHeight());
                 }
             }
             if (x != 0) {
@@ -388,7 +389,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             return word;
         }
 
-        public int layout(SuggestedWords suggestions, ViewGroup stripView, ViewGroup paneView,
+        public int layout(SuggestedWords suggestions, ViewGroup stripView, ViewGroup placer,
                 int stripWidth) {
             if (suggestions.isPunctuationSuggestions()) {
                 return layoutPunctuationSuggestions(suggestions, stripView);
@@ -405,6 +406,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                     final View divider = mDividers.get(pos);
                     // Add divider if this isn't the left most suggestion in candidate strip.
                     stripView.addView(divider);
+                    x += divider.getMeasuredWidth();
                 }
 
                 final CharSequence styled = mTexts.get(pos);
@@ -429,18 +431,19 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 word.setTextScaleX(scaleX);
                 stripView.addView(word);
                 setLayoutWeight(word, getCandidateWeight(index), MATCH_PARENT);
+                x += word.getMeasuredWidth();
 
                 if (DBG) {
                     final CharSequence debugInfo = getDebugInfo(suggestions, pos);
                     if (debugInfo != null) {
                         final TextView info = mInfos.get(pos);
                         info.setText(debugInfo);
-                        paneView.addView(info);
+                        placer.addView(info);
                         info.measure(WRAP_CONTENT, WRAP_CONTENT);
                         final int infoWidth = info.getMeasuredWidth();
                         final int y = info.getMeasuredHeight();
-                        FrameLayoutCompatUtils.placeViewAt(info, x, 0, infoWidth, y);
-                        x += infoWidth * 2;
+                        FrameLayoutCompatUtils.placeViewAt(
+                                info, x - infoWidth, y, infoWidth, info.getMeasuredHeight());
                     }
                 }
             }
@@ -559,6 +562,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
 
+        mCandidatesPlacer = (ViewGroup)findViewById(R.id.candidates_placer);
         mCandidatesStrip = (ViewGroup)findViewById(R.id.candidates_strip);
         for (int pos = 0; pos < MAX_SUGGESTIONS; pos++) {
             final TextView word = (TextView)inflater.inflate(R.layout.candidate_word, null);
@@ -612,7 +616,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
         final int width = getWidth();
         final int countInStrip = mStripParams.layout(
-                mSuggestions, mCandidatesStrip, mCandidatesPane, width);
+                mSuggestions, mCandidatesStrip, mCandidatesPlacer, width);
         mPaneParams.layout(
                 mSuggestions, mCandidatesPane, countInStrip, mStripParams.getTextColor(), width);
     }
@@ -774,6 +778,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     public void clear() {
         mShowingAutoCorrectionInverted = false;
+        mCandidatesPlacer.removeAllViews();
+        mCandidatesPlacer.addView(mCandidatesStrip);
         mCandidatesStrip.removeAllViews();
         mCandidatesPane.removeAllViews();
         closeCandidatesPane();
