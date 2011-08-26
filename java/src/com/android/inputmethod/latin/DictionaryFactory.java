@@ -83,9 +83,9 @@ public class DictionaryFactory {
         try {
             final Resources res = context.getResources();
             if (null != locale) {
-                final Locale savedLocale = Utils.setSystemLocale(res, locale);
+                final Locale savedLocale = LocaleUtils.setSystemLocale(res, locale);
                 afd = res.openRawResourceFd(resId);
-                Utils.setSystemLocale(res, savedLocale);
+                LocaleUtils.setSystemLocale(res, savedLocale);
             } else {
                 afd = res.openRawResourceFd(resId);
             }
@@ -145,7 +145,7 @@ public class DictionaryFactory {
      */
     public static boolean isDictionaryAvailable(Context context, Locale locale) {
         final Resources res = context.getResources();
-        final Locale saveLocale = Utils.setSystemLocale(res, locale);
+        final Locale saveLocale = LocaleUtils.setSystemLocale(res, locale);
 
         final int resourceId = Utils.getMainDictionaryResourceId(res);
         final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
@@ -156,14 +156,14 @@ public class DictionaryFactory {
             /* Um, what can we do here exactly? */
         }
 
-        Utils.setSystemLocale(res, saveLocale);
+        LocaleUtils.setSystemLocale(res, saveLocale);
         return hasDictionary;
     }
 
     // TODO: Do not use the size of the dictionary as an unique dictionary ID.
-    public static Long getDictionaryId(Context context, Locale locale) {
+    public static Long getDictionaryId(final Context context, final Locale locale) {
         final Resources res = context.getResources();
-        final Locale saveLocale = Utils.setSystemLocale(res, locale);
+        final Locale saveLocale = LocaleUtils.setSystemLocale(res, locale);
 
         final int resourceId = Utils.getMainDictionaryResourceId(res);
         final AssetFileDescriptor afd = res.openRawResourceFd(resourceId);
@@ -175,7 +175,7 @@ public class DictionaryFactory {
         } catch (java.io.IOException e) {
         }
 
-        Utils.setSystemLocale(res, saveLocale);
+        LocaleUtils.setSystemLocale(res, saveLocale);
         return size;
     }
 

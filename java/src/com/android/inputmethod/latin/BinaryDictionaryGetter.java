@@ -157,9 +157,9 @@ class BinaryDictionaryGetter {
     private static AssetFileAddress loadFallbackResource(final Context context,
             final int fallbackResId, final Locale locale) {
         final Resources res = context.getResources();
-        final Locale savedLocale = Utils.setSystemLocale(res, locale);
+        final Locale savedLocale = LocaleUtils.setSystemLocale(res, locale);
         final AssetFileDescriptor afd = res.openRawResourceFd(fallbackResId);
-        Utils.setSystemLocale(res, savedLocale);
+        LocaleUtils.setSystemLocale(res, savedLocale);
 
         if (afd == null) {
             Log.e(TAG, "Found the resource but cannot read it. Is it compressed? resId="

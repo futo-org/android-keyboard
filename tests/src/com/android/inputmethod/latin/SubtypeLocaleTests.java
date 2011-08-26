@@ -16,7 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.LocaleUtils;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -77,7 +77,7 @@ public class SubtypeLocaleTests extends AndroidTestCase {
         int failedCount = 0;
         for (final InputMethodSubtype subtype : mKeyboardSubtypes) {
             final String localeCode = subtype.getLocale();
-            final Locale locale = Utils.constructLocaleFromString(localeCode);
+            final Locale locale = LocaleUtils.constructLocaleFromString(localeCode);
             // The locale name which will be displayed on spacebar.  For example 'English (US)' or
             // 'Francais (Canada)'.  (c=\u008d)
             final String displayName = SubtypeLocale.getFullDisplayName(locale);

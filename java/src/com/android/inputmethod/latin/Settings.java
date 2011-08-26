@@ -128,8 +128,8 @@ public class Settings extends InputMethodSettingsActivity
             final Resources res = context.getResources();
             final Locale savedLocale;
             if (null != localeStr) {
-                final Locale keyboardLocale = Utils.constructLocaleFromString(localeStr);
-                savedLocale = Utils.setSystemLocale(res, keyboardLocale);
+                final Locale keyboardLocale = LocaleUtils.constructLocaleFromString(localeStr);
+                savedLocale = LocaleUtils.setSystemLocale(res, keyboardLocale);
             } else {
                 savedLocale = null;
             }
@@ -191,7 +191,7 @@ public class Settings extends InputMethodSettingsActivity
             mVoiceKeyEnabled = voiceMode != null && !voiceMode.equals(voiceModeOff);
             mVoiceKeyOnMain = voiceMode != null && voiceMode.equals(voiceModeMain);
 
-            Utils.setSystemLocale(res, savedLocale);
+            LocaleUtils.setSystemLocale(res, savedLocale);
         }
 
         public boolean isSuggestedPunctuation(int code) {

@@ -267,7 +267,7 @@ public class SubtypeSwitcher {
         // "en" --> language: en
         // "" --> the system locale
         if (!TextUtils.isEmpty(inputLocaleStr)) {
-            mInputLocale = Utils.constructLocaleFromString(inputLocaleStr);
+            mInputLocale = LocaleUtils.constructLocaleFromString(inputLocaleStr);
             mInputLocaleStr = inputLocaleStr;
         } else {
             mInputLocale = mSystemLocale;

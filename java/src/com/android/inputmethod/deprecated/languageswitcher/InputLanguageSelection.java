@@ -18,6 +18,7 @@ package com.android.inputmethod.deprecated.languageswitcher;
 
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.latin.DictionaryFactory;
+import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
@@ -155,7 +156,7 @@ public class InputLanguageSelection extends PreferenceActivity {
     private Pair<Long, Boolean> hasDictionaryOrLayout(Locale locale) {
         if (locale == null) return new Pair<Long, Boolean>(null, false);
         final Resources res = getResources();
-        final Locale saveLocale = Utils.setSystemLocale(res, locale);
+        final Locale saveLocale = LocaleUtils.setSystemLocale(res, locale);
         final Long dictionaryId = DictionaryFactory.getDictionaryId(this, locale);
         boolean hasLayout = false;
 
@@ -174,7 +175,7 @@ public class InputLanguageSelection extends PreferenceActivity {
         } catch (XmlPullParserException e) {
         } catch (IOException e) {
         }
-        Utils.setSystemLocale(res, saveLocale);
+        LocaleUtils.setSystemLocale(res, saveLocale);
         return new Pair<Long, Boolean>(dictionaryId, hasLayout);
     }
 

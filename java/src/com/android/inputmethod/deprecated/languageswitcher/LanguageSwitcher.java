@@ -18,9 +18,9 @@ package com.android.inputmethod.deprecated.languageswitcher;
 
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SharedPreferencesCompat;
-import com.android.inputmethod.latin.Utils;
 
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -126,7 +126,7 @@ public class LanguageSwitcher {
     private void constructLocales() {
         mLocales.clear();
         for (final String lang : mSelectedLanguageArray) {
-            final Locale locale = Utils.constructLocaleFromString(lang);
+            final Locale locale = LocaleUtils.constructLocaleFromString(lang);
             mLocales.add(locale);
         }
     }

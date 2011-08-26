@@ -33,6 +33,7 @@ import com.android.inputmethod.keyboard.internal.ModifierKeyState;
 import com.android.inputmethod.keyboard.internal.ShiftKeyState;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
+import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.Settings;
 import com.android.inputmethod.latin.SubtypeSwitcher;
@@ -258,11 +259,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         final SoftReference<LatinKeyboard> ref = mKeyboardCache.get(id);
         LatinKeyboard keyboard = (ref == null) ? null : ref.get();
         if (keyboard == null) {
-            final Locale savedLocale = Utils.setSystemLocale(mResources, id.mLocale);
+            final Locale savedLocale = LocaleUtils.setSystemLocale(mResources, id.mLocale);
             try {
                 keyboard = new LatinKeyboard.Builder(mThemeContext).load(id).build();
             } finally {
-                Utils.setSystemLocale(mResources, savedLocale);
+                LocaleUtils.setSystemLocale(mResources, savedLocale);
             }
             mKeyboardCache.put(id, new SoftReference<LatinKeyboard>(keyboard));
 
