@@ -23,11 +23,23 @@
 <spell-checker xmlns:android="http://schemas.android.com/apk/res/android"
         android:label="@string/spell_checker_service_name">
     <subtype
-            android:label="@string/subtype_en_US"
-            android:subtypeLocale="en_US"
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="en"
     />
     <subtype
-            android:label="@string/subtype_en_GB"
-            android:subtypeLocale="en_GB"
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="fr"
+    />
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="de"
+    />
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="it"
+    />
+    <subtype
+            android:label="@string/subtype_generic"
+            android:subtypeLocale="es"
     />
 </spell-checker>
