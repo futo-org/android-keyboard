@@ -22,9 +22,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <LinearLayout
-        android:id="@+id/candidates_strip"
-        android:orientation="horizontal"
+    <!-- Placer for debug information -->
+    <RelativeLayout
+        android:id="@+id/candidates_placer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+    >
+        <LinearLayout
+            android:id="@+id/candidates_strip"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </RelativeLayout>
 </merge>
