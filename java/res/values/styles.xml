@@ -29,7 +29,8 @@
         <item name="maxPopupKeyboardColumn">@integer/config_max_popup_keyboard_column</item>
     </style>
     <style name="LatinKeyboard">
-        <item name="autoCorrectionSpacebarLedEnabled">@bool/config_auto_correction_spacebar_led_enabled</item>
+        <item name="autoCorrectionSpacebarLedEnabled">@bool/config_auto_correction_spacebar_led_enabled
+        </item>
         <item name="spacebarTextColor">#FFC0C0C0</item>
         <item name="spacebarTextShadowColor">#80000000</item>
     </style>
@@ -66,7 +67,10 @@
         <item name="shadowRadius">2.75</item>
         <item name="backgroundDimAmount">0.5</item>
     </style>
-    <style name="PopupMiniKeyboardView" parent="KeyboardView">
+    <style
+        name="PopupMiniKeyboardView"
+        parent="KeyboardView"
+    >
         <item name="keyBackground">@drawable/btn_keyboard_key_popup</item>
         <item name="verticalCorrection">@dimen/mini_keyboard_vertical_correction</item>
     </style>
@@ -84,7 +88,10 @@
     <style name="SuggestionPreviewBackgroundStyle">
         <item name="android:background">@drawable/candidate_feedback_background</item>
     </style>
-    <style name="CandidateViewStyle" parent="SuggestionsStripBackgroundStyle">
+    <style
+        name="CandidateViewStyle"
+        parent="SuggestionsStripBackgroundStyle"
+    >
         <item name="suggestionStripOption">autoCorrectBold</item>
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
@@ -93,23 +100,35 @@
         <item name="centerCandidatePercentile">@integer/center_candidate_percentile</item>
     </style>
     <!-- Theme "Basic high contrast" -->
-    <style name="KeyboardView.HighContrast" parent="KeyboardView">
+    <style
+        name="KeyboardView.HighContrast"
+        parent="KeyboardView"
+    >
         <item name="android:background">@android:color/black</item>
         <item name="keyBackground">@drawable/btn_keyboard_key3</item>
     </style>
     <!-- Theme "Stone" -->
-    <style name="Keyboard.Stone" parent="Keyboard">
+    <style
+        name="Keyboard.Stone"
+        parent="Keyboard"
+    >
         <item name="keyboardHeight">@dimen/keyboardHeight_stone</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding_stone</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_stone</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap_stone</item>
         <item name="verticalGap">@fraction/key_bottom_gap_stone</item>
     </style>
-    <style name="LatinKeyboard.Stone" parent="LatinKeyboard">
+    <style
+        name="LatinKeyboard.Stone"
+        parent="LatinKeyboard"
+    >
         <item name="spacebarTextColor">#FF000000</item>
         <item name="spacebarTextShadowColor">#D0FFFFFF</item>
     </style>
-    <style name="KeyboardView.Stone" parent="KeyboardView">
+    <style
+        name="KeyboardView.Stone"
+        parent="KeyboardView"
+    >
         <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
         <item name="keyTextColor">#FF000000</item>
         <item name="keyTextInactivatedColor">#FF808080</item>
@@ -119,39 +138,63 @@
         <item name="keyUppercaseLetterActivatedColor">#CC000000</item>
         <item name="shadowColor">#FFFFFFFF</item>
     </style>
-    <style name="PopupMiniKeyboardView.Stone" parent="PopupMiniKeyboardView">
+    <style
+        name="PopupMiniKeyboardView.Stone"
+        parent="PopupMiniKeyboardView"
+    >
         <item name="keyBackground">@drawable/btn_keyboard_key_stone</item>
         <item name="keyTextColor">#FF000000</item>
         <item name="shadowColor">#FFFFFFFF</item>
     </style>
     <!-- Theme "Stone bold" -->
-    <style name="KeyboardView.Stone.Bold" parent="KeyboardView.Stone">
+    <style
+        name="KeyboardView.Stone.Bold"
+        parent="KeyboardView.Stone"
+    >
         <item name="keyTextStyle">bold</item>
     </style>
     <!-- Theme "Gingerbread" -->
-    <style name="Keyboard.Gingerbread" parent="Keyboard">
+    <style
+        name="Keyboard.Gingerbread"
+        parent="Keyboard"
+    >
         <item name="horizontalGap">@fraction/key_horizontal_gap_gb</item>
         <item name="verticalGap">@fraction/key_bottom_gap_gb</item>
     </style>
-    <style name="KeyboardView.Gingerbread" parent="KeyboardView">
+    <style
+        name="KeyboardView.Gingerbread"
+        parent="KeyboardView"
+    >
         <item name="android:background">@drawable/keyboard_dark_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_gingerbread</item>
         <item name="keyTextStyle">bold</item>
     </style>
-    <style name="PopupMiniKeyboardView.Gingerbread" parent="PopupMiniKeyboardView">
+    <style
+        name="PopupMiniKeyboardView.Gingerbread"
+        parent="PopupMiniKeyboardView"
+    >
         <item name="android:background">@null</item>
     </style>
     <!-- Theme "IceCreamSandwich" -->
-    <style name="Keyboard.IceCreamSandwich" parent="Keyboard" >
+    <style
+        name="Keyboard.IceCreamSandwich"
+        parent="Keyboard"
+    >
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding_ics</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_ics</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap_ics</item>
         <item name="verticalGap">@fraction/key_bottom_gap_ics</item>
     </style>
-    <style name="LatinKeyboard.IceCreamSandwich" parent="LatinKeyboard">
+    <style
+        name="LatinKeyboard.IceCreamSandwich"
+        parent="LatinKeyboard"
+    >
         <item name="disabledShortcutIcon">@drawable/sym_keyboard_voice_off_holo</item>
     </style>
-    <style name="KeyboardView.IceCreamSandwich" parent="KeyboardView">
+    <style
+        name="KeyboardView.IceCreamSandwich"
+        parent="KeyboardView"
+    >
         <item name="android:background">@drawable/keyboard_background_holo</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_ics</item>
         <item name="keyTextStyle">bold</item>
@@ -169,7 +212,10 @@
         <item name="shadowColor">#00000000</item>
         <item name="shadowRadius">0.0</item>
     </style>
-    <style name="PopupMiniKeyboardView.IceCreamSandwich" parent="PopupMiniKeyboardView">
+    <style
+        name="PopupMiniKeyboardView.IceCreamSandwich"
+        parent="PopupMiniKeyboardView"
+    >
         <item name="android:background">@null</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
     </style>
@@ -184,10 +230,15 @@
     <style name="SuggestionBackgroundStyle.IceCreamSandwich">
         <item name="android:background">@drawable/btn_candidate_ics</item>
     </style>
-    <style name="SuggestionPreviewBackgroundStyle.IceCreamSandwich">
-        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
+    <style
+        name="SuggestionPreviewBackgroundStyle.IceCreamSandwich"
+        parent="PopupMiniKeyboardPanelStyle.IceCreamSandwich"
+    >
     </style>
-    <style name="CandidateViewStyle.IceCreamSandwich" parent="SuggestionsStripBackgroundStyle.IceCreamSandwich">
+    <style
+        name="CandidateViewStyle.IceCreamSandwich"
+        parent="SuggestionsStripBackgroundStyle.IceCreamSandwich"
+    >
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <item name="colorTypedWord">#FFBCBEC0</item>
         <item name="colorAutoCorrect">#FF0099CC</item>
