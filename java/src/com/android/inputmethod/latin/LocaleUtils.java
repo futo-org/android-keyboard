@@ -16,7 +16,12 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.text.TextUtils;
+
+import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * A class to help with handling Locales in string form.
@@ -29,6 +34,10 @@ import android.text.TextUtils;
 public class LocaleUtils {
 
     private final static String TAG = LocaleUtils.class.getSimpleName();
+
+    private LocaleUtils() {
+        // Intentional empty constructor for utility class.
+    }
 
     // Locale match level constants.
     // A higher level of match is guaranteed to have a higher numerical value.
@@ -153,5 +162,47 @@ public class LocaleUtils {
      */
     public static boolean isMatch(int level) {
         return LOCALE_MATCH <= level;
+    }
+
+    /**
+     * Sets the system locale for this process.
+     *
+     * @param res the resources to use. Pass current resources.
+     * @param newLocale the locale to change to.
+     * @return the old locale.
+     */
+    public static Locale setSystemLocale(final Resources res, final Locale newLocale) {
+        final Configuration conf = res.getConfiguration();
+        final Locale saveLocale = conf.locale;
+        conf.locale = newLocale;
+        res.updateConfiguration(conf, res.getDisplayMetrics());
+        return saveLocale;
+    }
+
+    private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
+
+    /**
+     * Creates a locale from a string specification.
+     */
+    public static Locale constructLocaleFromString(final String localeStr) {
+        if (localeStr == null)
+            return null;
+        synchronized (sLocaleCache) {
+            if (sLocaleCache.containsKey(localeStr))
+                return sLocaleCache.get(localeStr);
+            Locale retval = null;
+            String[] localeParams = localeStr.split("_", 3);
+            if (localeParams.length == 1) {
+                retval = new Locale(localeParams[0]);
+            } else if (localeParams.length == 2) {
+                retval = new Locale(localeParams[0], localeParams[1]);
+            } else if (localeParams.length == 3) {
+                retval = new Locale(localeParams[0], localeParams[1], localeParams[2]);
+            }
+            if (retval != null) {
+                sLocaleCache.put(localeStr, retval);
+            }
+            return retval;
+        }
     }
 }

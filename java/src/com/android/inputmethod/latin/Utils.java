@@ -705,38 +705,6 @@ public class Utils {
         return (int) (dip * scale + 0.5);
     }
 
-    public static Locale setSystemLocale(Resources res, Locale newLocale) {
-        final Configuration conf = res.getConfiguration();
-        final Locale saveLocale = conf.locale;
-        conf.locale = newLocale;
-        res.updateConfiguration(conf, res.getDisplayMetrics());
-        return saveLocale;
-    }
-
-    private static final HashMap<String, Locale> sLocaleCache = new HashMap<String, Locale>();
-
-    public static Locale constructLocaleFromString(String localeStr) {
-        if (localeStr == null)
-            return null;
-        synchronized (sLocaleCache) {
-            if (sLocaleCache.containsKey(localeStr))
-                return sLocaleCache.get(localeStr);
-            Locale retval = null;
-            String[] localeParams = localeStr.split("_", 3);
-            if (localeParams.length == 1) {
-                retval = new Locale(localeParams[0]);
-            } else if (localeParams.length == 2) {
-                retval = new Locale(localeParams[0], localeParams[1]);
-            } else if (localeParams.length == 3) {
-                retval = new Locale(localeParams[0], localeParams[1], localeParams[2]);
-            }
-            if (retval != null) {
-                sLocaleCache.put(localeStr, retval);
-            }
-            return retval;
-        }
-    }
-
     /**
      * Remove duplicates from an array of strings.
      *
@@ -783,7 +751,7 @@ public class Utils {
     }
 
     public static String getMiddleDisplayLanguage(Locale locale) {
-        return toTitleCase((constructLocaleFromString(
+        return toTitleCase((LocaleUtils.constructLocaleFromString(
                 locale.getLanguage()).getDisplayLanguage(locale)), locale);
     }
 

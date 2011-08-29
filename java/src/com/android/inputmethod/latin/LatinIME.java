@@ -479,10 +479,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void initSuggest() {
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
-        final Locale keyboardLocale = Utils.constructLocaleFromString(localeStr);
+        final Locale keyboardLocale = LocaleUtils.constructLocaleFromString(localeStr);
 
         final Resources res = mResources;
-        final Locale savedLocale = Utils.setSystemLocale(res, keyboardLocale);
+        final Locale savedLocale = LocaleUtils.setSystemLocale(res, keyboardLocale);
         final ContactsDictionary oldContactsDictionary;
         if (mSuggest != null) {
             oldContactsDictionary = mSuggest.getContactsDictionary();
@@ -514,7 +514,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         updateCorrectionMode();
 
-        Utils.setSystemLocale(res, savedLocale);
+        LocaleUtils.setSystemLocale(res, savedLocale);
     }
 
     /**
@@ -551,7 +551,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     /* package private */ void resetSuggestMainDict() {
         final String localeStr = mSubtypeSwitcher.getInputLocaleStr();
-        final Locale keyboardLocale = Utils.constructLocaleFromString(localeStr);
+        final Locale keyboardLocale = LocaleUtils.constructLocaleFromString(localeStr);
         int mainDicResId = Utils.getMainDictionaryResourceId(mResources);
         mSuggest.resetMainDict(this, mainDicResId, keyboardLocale);
     }

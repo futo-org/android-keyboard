@@ -33,6 +33,7 @@ import com.android.inputmethod.latin.Dictionary.DataType;
 import com.android.inputmethod.latin.Dictionary.WordCallback;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
+import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.UserDictionary;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WordComposer;
@@ -139,7 +140,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private DictionaryPool getDictionaryPool(final String locale) {
         DictionaryPool pool = mDictionaryPools.get(locale);
         if (null == pool) {
-            final Locale localeObject = Utils.constructLocaleFromString(locale);
+            final Locale localeObject = LocaleUtils.constructLocaleFromString(locale);
             pool = new DictionaryPool(POOL_SIZE, this, localeObject);
             mDictionaryPools.put(locale, pool);
         }
@@ -172,7 +173,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         public void onCreate() {
             final String localeString = getLocale();
             mDictionaryPool = getDictionaryPool(localeString);
-            mLocale = Utils.constructLocaleFromString(localeString);
+            mLocale = LocaleUtils.constructLocaleFromString(localeString);
         }
 
         // Note : this must be reentrant
