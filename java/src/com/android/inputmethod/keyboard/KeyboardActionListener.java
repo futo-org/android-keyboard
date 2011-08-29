@@ -76,4 +76,21 @@ public interface KeyboardActionListener {
      * @return true if the request has been consumed, false otherwise.
      */
     public boolean onCustomRequest(int requestCode);
+
+    public static class Adapter implements KeyboardActionListener {
+        @Override
+        public void onPress(int primaryCode, boolean withSliding) {}
+        @Override
+        public void onRelease(int primaryCode, boolean withSliding) {}
+        @Override
+        public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {}
+        @Override
+        public void onTextInput(CharSequence text) {}
+        @Override
+        public void onCancelInput() {}
+        @Override
+        public boolean onCustomRequest(int requestCode) {
+            return false;
+        }
+    }
 }
