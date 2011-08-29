@@ -34,6 +34,7 @@ import com.android.inputmethod.latin.Dictionary.WordCallback;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.LocaleUtils;
+import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
 import com.android.inputmethod.latin.UserDictionary;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WordComposer;
@@ -156,7 +157,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         final String localeStr = locale.toString();
         Dictionary userDict = mUserDictionaries.get(localeStr);
         if (null == userDict) {
-            userDict = new UserDictionary(this, localeStr);
+            userDict = new SynchronouslyLoadedUserDictionary(this, localeStr);
             mUserDictionaries.put(localeStr, userDict);
         }
         dictionaryCollection.addDictionary(userDict);
