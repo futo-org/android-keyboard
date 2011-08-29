@@ -236,8 +236,7 @@ public class MiniKeyboard extends Keyboard {
         private static int getMaxKeyWidth(KeyboardView view, CharSequence[] popupCharacters,
                 int minKeyWidth) {
             Paint paint = null;
-            Rect bounds = null;
-            int maxWidth = 0;
+            int maxWidth = minKeyWidth;
             for (CharSequence popupSpec : popupCharacters) {
                 final CharSequence label = PopupCharactersParser.getLabel(popupSpec.toString());
                 // If the label is single letter, minKeyWidth is enough to hold
@@ -247,18 +246,15 @@ public class MiniKeyboard extends Keyboard {
                         paint = new Paint();
                         paint.setAntiAlias(true);
                     }
-                    final int labelSize = view.getDefaultLabelSizeAndSetPaint(paint);
-                    paint.setTextSize(labelSize);
-                    if (bounds == null)
-                        bounds = new Rect();
-                    paint.getTextBounds(label.toString(), 0, label.length(), bounds);
-                    if (maxWidth < bounds.width())
-                        maxWidth = bounds.width();
+                    final int width = (int)view.getDefaultLabelWidth(label, paint);
+                    if (maxWidth < width) {
+                        maxWidth = width;
+                    }
                 }
             }
             final int horizontalPadding = (int) view.getContext().getResources()
                     .getDimension(R.dimen.mini_keyboard_key_horizontal_padding);
-            return Math.max(minKeyWidth, maxWidth + horizontalPadding);
+            return maxWidth + horizontalPadding;
         }
 
         @Override

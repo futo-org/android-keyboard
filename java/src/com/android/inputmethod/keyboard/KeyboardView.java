@@ -681,15 +681,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    // This method is currently being used only by MiniKeyboardBuilder
-    public int getDefaultLabelSizeAndSetPaint(Paint paint) {
-        // For characters, use large font. For labels like "Done", use small font.
-        final int labelSize = mKeyDrawParams.mKeyLabelSize;
-        paint.setTextSize(labelSize);
-        paint.setTypeface(mKeyDrawParams.mKeyTextStyle);
-        return labelSize;
-    }
-
     private static final Rect sTextBounds = new Rect();
 
     private static float getCharHeight(Paint paint) {
@@ -731,6 +722,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static float getLabelWidth(CharSequence label, Paint paint) {
         paint.getTextBounds(label.toString(), 0, label.length(), sTextBounds);
         return sTextBounds.width();
+    }
+
+    public float getDefaultLabelWidth(CharSequence label, Paint paint) {
+        paint.setTextSize(mKeyDrawParams.mKeyLabelSize);
+        paint.setTypeface(mKeyDrawParams.mKeyTextStyle);
+        return getLabelWidth(label, paint);
     }
 
     private static void drawIcon(Canvas canvas, Drawable icon, int x, int y, int width,
