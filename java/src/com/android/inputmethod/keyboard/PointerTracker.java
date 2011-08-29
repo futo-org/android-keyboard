@@ -139,20 +139,8 @@ public class PointerTracker {
     private boolean mIgnoreModifierKey;
 
     // Empty {@link KeyboardActionListener}
-    private static final KeyboardActionListener EMPTY_LISTENER = new KeyboardActionListener() {
-        @Override
-        public void onPress(int primaryCode, boolean withSliding) {}
-        @Override
-        public void onRelease(int primaryCode, boolean withSliding) {}
-        @Override
-        public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {}
-        @Override
-        public void onTextInput(CharSequence text) {}
-        @Override
-        public void onCancelInput() {}
-        @Override
-        public boolean onCustomRequest(int requestCode) { return false; }
-    };
+    private static final KeyboardActionListener EMPTY_LISTENER =
+            new KeyboardActionListener.Adapter();
 
     public static void init(boolean hasDistinctMultitouch, Context context) {
         if (hasDistinctMultitouch) {

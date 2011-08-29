@@ -101,7 +101,8 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         public void cancelKeyTimers() {}
     };
 
-    private final KeyboardActionListener mMiniKeyboardListener = new KeyboardActionListener() {
+    private final KeyboardActionListener mMiniKeyboardListener =
+            new KeyboardActionListener.Adapter() {
         @Override
         public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
             mListener.onCodeInput(primaryCode, keyCodes, x, y);
@@ -125,8 +126,6 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         public void onRelease(int primaryCode, boolean withSliding) {
             mListener.onRelease(primaryCode, withSliding);
         }
-        @Override
-        public boolean onCustomRequest(int requestCode) { return false; }
     };
 
     public PopupMiniKeyboardView(Context context, AttributeSet attrs) {
