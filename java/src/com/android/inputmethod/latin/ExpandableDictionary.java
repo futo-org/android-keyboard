@@ -202,7 +202,11 @@ public class ExpandableDictionary extends Dictionary {
             // Currently updating contacts, don't return any results.
             if (mUpdatingDictionary) return;
         }
+        getWordsInner(codes, callback, proximityInfo);
+    }
 
+    protected final void getWordsInner(final WordComposer codes, final WordCallback callback,
+            final ProximityInfo proximityInfo) {
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         // Cache the codes so that we don't have to lookup an array list
@@ -223,8 +227,7 @@ public class ExpandableDictionary extends Dictionary {
             if (mRequiresReload) startDictionaryLoadingTaskLocked();
             if (mUpdatingDictionary) return false;
         }
-        final int freq = getWordFrequency(word);
-        return freq > -1;
+        return getWordFrequency(word) > -1;
     }
 
     /**
@@ -464,7 +467,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     /**
-     * Used only for testing purposes
+     * Used for testing purposes and in the spell checker
      * This function will wait for loading from database to be done
      */
     void waitForDictionaryLoading() {
@@ -475,6 +478,11 @@ public class ExpandableDictionary extends Dictionary {
                 //
             }
         }
+    }
+
+    protected final void blockingReloadDictionaryIfRequired() {
+        reloadDictionaryIfRequired();
+        waitForDictionaryLoading();
     }
 
     // Local to reverseLookUp, but do not allocate each time.
