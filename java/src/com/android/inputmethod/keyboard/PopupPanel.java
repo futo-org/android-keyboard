@@ -16,18 +16,27 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.view.View;
 import android.widget.PopupWindow;
 
 public interface PopupPanel extends PointerTracker.KeyEventHandler {
+    public interface Controller {
+        public boolean dismissPopupPanel();
+    }
+
+    public void setShifted(boolean shifted);
+
     /**
      * Show popup panel.
-     * @param parentKeyboardView the parent KeyboardView that has the parent key.
-     * @param parentKey the parent key that is the source of this popup panel
-     * @param tracker the pointer tracker that pressesd the parent key
+     * @param parentView the parent view of this popup panel
+     * @param controller the controller that can dismiss this popup panel
+     * @param pointX x coordinate of this popup panel
+     * @param pointY y coordinate of this popup panel
      * @param window PopupWindow to be used to show this popup panel
+     * @param listener the listener that will receive keyboard action from this popup panel.
      */
-    public void showPopupPanel(LatinKeyboardView parentKeyboardView, Key parentKey,
-            PointerTracker tracker, PopupWindow window);
+    public void showPopupPanel(View parentView, Controller controller, int pointX, int pointY,
+            PopupWindow window, KeyboardActionListener listener);
 
     /**
      * Translate X-coordinate of touch event to the local X-coordinate of this PopupPanel.

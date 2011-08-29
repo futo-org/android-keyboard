@@ -81,6 +81,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
     private int mOldPointerCount = 1;
     private int mOldKeyIndex;
 
+    private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
     protected KeyDetector mKeyDetector;
 
     // To detect double tap.
@@ -225,6 +226,8 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         a.recycle();
 
         final Resources res = getResources();
+        mConfigShowMiniKeyboardAtTouchedPoint = res.getBoolean(
+                R.bool.config_show_mini_keyboard_at_touched_point);
         final float keyHysteresisDistance = res.getDimension(R.dimen.key_hysteresis_distance);
         mKeyDetector = new KeyDetector(keyHysteresisDistance);
 
@@ -459,7 +462,13 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mPopupPanel = popupPanel;
         mPopupPanelPointerTrackerId = tracker.mPointerId;
 
-        popupPanel.showPopupPanel(this, parentKey, tracker, mPopupWindow);
+        final Keyboard keyboard = getKeyboard();
+        mPopupPanel.setShifted(keyboard.isShiftedOrShiftLocked());
+        final int pointX = (mConfigShowMiniKeyboardAtTouchedPoint) ? tracker.getLastX()
+                : parentKey.mX + parentKey.mWidth / 2;
+        final int pointY = parentKey.mY - keyboard.mVerticalGap;
+        popupPanel.showPopupPanel(
+                this, this, pointX, pointY, mPopupWindow, getKeyboardActionListener());
         final int translatedX = popupPanel.translateX(tracker.getLastX());
         final int translatedY = popupPanel.translateY(tracker.getLastY());
         tracker.onShowPopupPanel(translatedX, translatedY, SystemClock.uptimeMillis(), popupPanel);
