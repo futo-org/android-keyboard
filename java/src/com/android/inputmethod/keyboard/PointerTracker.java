@@ -283,7 +283,7 @@ public class PointerTracker {
         mListener.onCancelInput();
     }
 
-    public void setKeyDetectorInner(KeyDetector keyDetector) {
+    private void setKeyDetectorInner(KeyDetector keyDetector) {
         mKeyDetector = keyDetector;
         mKeyboard = keyDetector.getKeyboard();
         mKeys = mKeyboard.mKeys;

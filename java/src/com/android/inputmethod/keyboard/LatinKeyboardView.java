@@ -495,6 +495,9 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
+        if (getKeyboard() == null) {
+            return false;
+        }
         return mTouchScreenRegulator.onTouchEvent(me);
     }
 
