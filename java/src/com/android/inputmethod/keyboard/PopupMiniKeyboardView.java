@@ -36,12 +36,12 @@ import java.util.List;
  */
 public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     private final int[] mCoordinates = new int[2];
-    private final boolean mConfigShowMiniKeyboardAtTouchedPoint;
 
     private final KeyDetector mKeyDetector;
     private final int mVerticalCorrection;
 
-    private LatinKeyboardView mParentKeyboardView;
+    private Controller mController;
+    private KeyboardActionListener mListener;
     private int mOriginX;
     private int mOriginY;
 
@@ -101,30 +101,29 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         public void cancelKeyTimers() {}
     };
 
-    private final KeyboardActionListener mListner = new KeyboardActionListener() {
+    private final KeyboardActionListener mMiniKeyboardListener = new KeyboardActionListener() {
         @Override
         public void onCodeInput(int primaryCode, int[] keyCodes, int x, int y) {
-            mParentKeyboardView.getKeyboardActionListener()
-                    .onCodeInput(primaryCode, keyCodes, x, y);
+            mListener.onCodeInput(primaryCode, keyCodes, x, y);
         }
 
         @Override
         public void onTextInput(CharSequence text) {
-            mParentKeyboardView.getKeyboardActionListener().onTextInput(text);
+            mListener.onTextInput(text);
         }
 
         @Override
         public void onCancelInput() {
-            mParentKeyboardView.getKeyboardActionListener().onCancelInput();
+            mListener.onCancelInput();
         }
 
         @Override
         public void onPress(int primaryCode, boolean withSliding) {
-            mParentKeyboardView.getKeyboardActionListener().onPress(primaryCode, withSliding);
+            mListener.onPress(primaryCode, withSliding);
         }
         @Override
         public void onRelease(int primaryCode, boolean withSliding) {
-            mParentKeyboardView.getKeyboardActionListener().onRelease(primaryCode, withSliding);
+            mListener.onRelease(primaryCode, withSliding);
         }
         @Override
         public boolean onCustomRequest(int requestCode) { return false; }
@@ -144,8 +143,6 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         a.recycle();
 
         final Resources res = context.getResources();
-        mConfigShowMiniKeyboardAtTouchedPoint = res.getBoolean(
-                R.bool.config_show_mini_keyboard_at_touched_point);
         // Override default ProximityKeyDetector.
         mKeyDetector = new MiniKeyboardKeyDetector(res.getDimension(
                 R.dimen.mini_keyboard_slide_allowance));
@@ -179,7 +176,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
     @Override
     public KeyboardActionListener getKeyboardActionListener() {
-        return mListner;
+        return mMiniKeyboardListener;
     }
 
     @Override
@@ -200,34 +197,36 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
     }
 
     @Override
-    public void showPopupPanel(LatinKeyboardView parentKeyboardView, Key parentKey,
-            PointerTracker tracker, PopupWindow window) {
-        mParentKeyboardView = parentKeyboardView;
-        final View container = (View)getParent();
+    public void setShifted(boolean shifted) {
         final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
-        final Keyboard parentKeyboard = parentKeyboardView.getKeyboard();
-
-        parentKeyboardView.getLocationInWindow(mCoordinates);
-        final int pointX = (mConfigShowMiniKeyboardAtTouchedPoint) ? tracker.getLastX()
-                : parentKey.mX + parentKey.mWidth / 2;
-        final int pointY = parentKey.mY;
-        final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
-                + parentKeyboardView.getPaddingLeft();
-        final int x = wrapUp(Math.max(0, Math.min(miniKeyboardLeft,
-                parentKeyboardView.getWidth() - miniKeyboard.mOccupiedWidth))
-                - container.getPaddingLeft() + mCoordinates[0],
-                container.getMeasuredWidth(), 0, parentKeyboardView.getWidth());
-        final int y = pointY - parentKeyboard.mVerticalGap
-                - (container.getMeasuredHeight() - container.getPaddingBottom())
-                + parentKeyboardView.getPaddingTop() + mCoordinates[1];
-
-        if (miniKeyboard.setShifted(parentKeyboard.isShiftedOrShiftLocked())) {
+        if (miniKeyboard.setShifted(shifted)) {
             invalidateAllKeys();
         }
+    }
+
+    @Override
+    public void showPopupPanel(View parentView, Controller controller, int pointX, int pointY,
+            PopupWindow window, KeyboardActionListener listener) {
+        mController = controller;
+        mListener = listener;
+        final View container = (View)getParent();
+        final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
+
+        parentView.getLocationInWindow(mCoordinates);
+        final int miniKeyboardLeft = pointX - miniKeyboard.getDefaultCoordX()
+                + parentView.getPaddingLeft();
+        final int x = wrapUp(Math.max(0, Math.min(miniKeyboardLeft,
+                parentView.getWidth() - miniKeyboard.mOccupiedWidth))
+                - container.getPaddingLeft() + mCoordinates[0],
+                container.getMeasuredWidth(), 0, parentView.getWidth());
+        final int y = pointY
+                - (container.getMeasuredHeight() - container.getPaddingBottom())
+                + parentView.getPaddingTop() + mCoordinates[1];
+
         window.setContentView(container);
         window.setWidth(container.getMeasuredWidth());
         window.setHeight(container.getMeasuredHeight());
-        window.showAtLocation(parentKeyboardView, Gravity.NO_GRAVITY, x, y);
+        window.showAtLocation(parentView, Gravity.NO_GRAVITY, x, y);
 
         mOriginX = x + container.getPaddingLeft() - mCoordinates[0];
         mOriginY = y + container.getPaddingTop() - mCoordinates[1];
@@ -243,7 +242,7 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
     @Override
     public boolean dismissPopupPanel() {
-        return mParentKeyboardView.dismissPopupPanel();
+        return mController.dismissPopupPanel();
     }
 
     @Override

@@ -63,13 +63,12 @@ public class PointerTracker {
         public TimerProxy getTimerProxy();
     }
 
-    public interface DrawingProxy {
+    public interface DrawingProxy extends PopupPanel.Controller {
         public void invalidateKey(Key key);
         public TextView inflateKeyPreviewText();
         public void showKeyPreview(int keyIndex, PointerTracker tracker);
         public void cancelShowKeyPreview(PointerTracker tracker);
         public void dismissKeyPreview(PointerTracker tracker);
-        public boolean dismissPopupPanel();
     }
 
     public interface TimerProxy {
