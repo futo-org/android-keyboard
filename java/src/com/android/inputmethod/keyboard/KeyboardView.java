@@ -211,6 +211,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         private final float mKeyHintLetterRatio;
         private final float mKeyUppercaseLetterRatio;
         private final float mKeyHintLabelRatio;
+        private static final float UNDEFINED_RATIO = -1.0f;
 
         public final Rect mPadding = new Rect();
         public int mKeyLetterSize;
@@ -222,9 +223,21 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         public KeyDrawParams(TypedArray a) {
             mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
-            mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
+            if (a.hasValue(R.styleable.KeyboardView_keyLabelSize)) {
+                mKeyLetterRatio = UNDEFINED_RATIO;
+                mKeyLetterSize = a.getDimensionPixelSize(
+                        R.styleable.KeyboardView_keyLetterRatio, 0);
+            } else {
+                mKeyLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLetterRatio);
+            }
             mKeyLargeLetterRatio = getRatio(a, R.styleable.KeyboardView_keyLargeLetterRatio);
-            mKeyLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLabelRatio);
+            if (a.hasValue(R.styleable.KeyboardView_keyLabelSize)) {
+                mKeyLabelRatio = UNDEFINED_RATIO;
+                mKeyLabelSize = a.getDimensionPixelSize(
+                        R.styleable.KeyboardView_keyLabelRatio, 0);
+            } else {
+                mKeyLabelRatio = getRatio(a, R.styleable.KeyboardView_keyLabelRatio);
+            }
             mKeyHintLetterRatio = getRatio(a, R.styleable.KeyboardView_keyHintLetterRatio);
             mKeyUppercaseLetterRatio = getRatio(a,
                     R.styleable.KeyboardView_keyUppercaseLetterRatio);
@@ -253,9 +266,11 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         public void updateKeyHeight(int keyHeight) {
-            mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
+            if (mKeyLetterRatio >= 0.0f)
+                mKeyLetterSize = (int)(keyHeight * mKeyLetterRatio);
             mKeyLargeLetterSize = (int)(keyHeight * mKeyLargeLetterRatio);
-            mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
+            if (mKeyLabelRatio >= 0.0f)
+                mKeyLabelSize = (int)(keyHeight * mKeyLabelRatio);
             mKeyHintLetterSize = (int)(keyHeight * mKeyHintLetterRatio);
             mKeyUppercaseLetterSize = (int)(keyHeight * mKeyUppercaseLetterRatio);
             mKeyHintLabelSize = (int)(keyHeight * mKeyHintLabelRatio);

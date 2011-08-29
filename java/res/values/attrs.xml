@@ -38,11 +38,16 @@
              checkable+checked+pressed. -->
         <attr name="keyBackground" format="reference" />
 
+        <!-- Size of the text for one letter keys. If not defined, keyLetterRatio takes effect. -->
+        <attr name="keyLetterSize" format="float" />
+        <!-- Size of the text for keys with multiple letters. If not defined, keyLabelRatio takes
+             effect. -->
+        <attr name="keyLabelSize" format="float" />
         <!-- Size of the text for one letter keys, in the proportion of key height. -->
         <attr name="keyLetterRatio" format="float" />
         <!-- Large size of the text for one letter keys, in the proportion of key height. -->
         <attr name="keyLargeLetterRatio" format="float" />
-        <!-- Size of the text for keys with some text, in the proportion of key height. -->
+        <!-- Size of the text for keys with multiple letters, in the proportion of key height. -->
         <attr name="keyLabelRatio" format="float" />
         <!-- Size of the text for hint letter (= one character hint label), in the proportion of
              key height. -->
