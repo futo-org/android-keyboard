@@ -195,15 +195,15 @@ public class Key {
     /**
      * This constructor is being used only for key in popup mini keyboard.
      */
-    public Key(Resources res, KeyboardParams params, CharSequence popupCharacter, int x, int y,
-            int width, int height, int edgeFlags) {
+    public Key(Resources res, KeyboardParams params, CharSequence popupCharacter,
+           CharSequence hintLabel, int x, int y, int width, int height, int edgeFlags) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
         mVerticalGap = params.mVerticalGap;
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mHorizontalGap;
         mEdgeFlags = edgeFlags;
-        mHintLabel = null;
+        mHintLabel = hintLabel;
         mLabelOption = 0;
         mFunctional = false;
         mSticky = false;

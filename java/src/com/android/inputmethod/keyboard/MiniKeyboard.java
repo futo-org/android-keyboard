@@ -17,7 +17,6 @@
 package com.android.inputmethod.keyboard;
 
 import android.graphics.Paint;
-import android.graphics.Rect;
 
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
@@ -235,6 +234,8 @@ public class MiniKeyboard extends Keyboard {
 
         private static int getMaxKeyWidth(KeyboardView view, CharSequence[] popupCharacters,
                 int minKeyWidth) {
+            final int padding = (int) view.getContext().getResources()
+                    .getDimension(R.dimen.mini_keyboard_key_horizontal_padding);
             Paint paint = null;
             int maxWidth = minKeyWidth;
             for (CharSequence popupSpec : popupCharacters) {
@@ -246,15 +247,13 @@ public class MiniKeyboard extends Keyboard {
                         paint = new Paint();
                         paint.setAntiAlias(true);
                     }
-                    final int width = (int)view.getDefaultLabelWidth(label, paint);
+                    final int width = (int)view.getDefaultLabelWidth(label, paint) + padding;
                     if (maxWidth < width) {
                         maxWidth = width;
                     }
                 }
             }
-            final int horizontalPadding = (int) view.getContext().getResources()
-                    .getDimension(R.dimen.mini_keyboard_key_horizontal_padding);
-            return maxWidth + horizontalPadding;
+            return maxWidth;
         }
 
         @Override
@@ -263,7 +262,7 @@ public class MiniKeyboard extends Keyboard {
             for (int n = 0; n < mPopupCharacters.length; n++) {
                 final CharSequence label = mPopupCharacters[n];
                 final int row = n / params.mNumColumns;
-                final Key key = new Key(mResources, params, label, params.getX(n, row),
+                final Key key = new Key(mResources, params, label, null, params.getX(n, row),
                         params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight,
                         params.getRowFlags(row));
                 params.onAddKey(key);
