@@ -18,7 +18,7 @@
 */
 -->
 <resources>
-    <string-array name="sudden_jumping_touch_event_device_list">
+    <string-array name="sudden_jumping_touch_event_device_list" translatable="false">
         <!-- Nexus One -->
         <item>passion</item>
         <!-- Droid -->
