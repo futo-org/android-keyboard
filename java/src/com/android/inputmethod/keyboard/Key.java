@@ -26,10 +26,10 @@ import android.util.Xml;
 
 import com.android.inputmethod.keyboard.internal.KeyStyles;
 import com.android.inputmethod.keyboard.internal.KeyStyles.KeyStyle;
-import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
-import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
+import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
+import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
 import com.android.inputmethod.keyboard.internal.Row;
 import com.android.inputmethod.latin.R;
@@ -184,8 +184,8 @@ public class Key {
         sRtlParenthesisMap.put(right, left);
     }
 
-    public static int getRtlParenthesisCode(int code) {
-        if (sRtlParenthesisMap.containsKey(code)) {
+    public static int getRtlParenthesisCode(int code, boolean isRtl) {
+        if (isRtl && sRtlParenthesisMap.containsKey(code)) {
             return sRtlParenthesisMap.get(code);
         } else {
             return code;
@@ -195,27 +195,35 @@ public class Key {
     /**
      * This constructor is being used only for key in popup mini keyboard.
      */
-    public Key(Resources res, KeyboardParams params, CharSequence popupCharacter, int x, int y,
-            int width, int height, int edgeFlags) {
+    public Key(Resources res, KeyboardParams params, String popupSpec,
+            int x, int y, int width, int height, int edgeFlags) {
+        this(params, getRtlParenthesisCode(PopupCharactersParser.getCode(res, popupSpec),
+                params.mIsRtlKeyboard),
+                popupSpec, null, x, y, width, height, edgeFlags);
+    }
+
+    /**
+     * This constructor is being used only for key in popup suggestions pane.
+     */
+    public Key(KeyboardParams params, int code, String popupSpec, String hintLabel,
+            int x, int y, int width, int height, int edgeFlags) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
         mVerticalGap = params.mVerticalGap;
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mHorizontalGap;
         mEdgeFlags = edgeFlags;
-        mHintLabel = null;
+        mHintLabel = hintLabel;
         mLabelOption = 0;
         mFunctional = false;
         mSticky = false;
         mRepeatable = false;
         mPopupCharacters = null;
         mMaxPopupColumn = 0;
-        final String popupSpecification = popupCharacter.toString();
-        mLabel = PopupCharactersParser.getLabel(popupSpecification);
-        mOutputText = PopupCharactersParser.getOutputText(popupSpecification);
-        final int code = PopupCharactersParser.getCode(res, popupSpecification);
-        mCode = params.mIsRtlKeyboard ? getRtlParenthesisCode(code) : code;
-        mIcon = params.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpecification));
+        mLabel = PopupCharactersParser.getLabel(popupSpec);
+        mOutputText = PopupCharactersParser.getOutputText(popupSpec);
+        mCode = code;
+        mIcon = params.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpec));
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
         mY = y;
@@ -344,7 +352,7 @@ public class Key {
                     Keyboard.CODE_UNSPECIFIED);
             if (code == Keyboard.CODE_UNSPECIFIED && !TextUtils.isEmpty(mLabel)) {
                 final int firstChar = mLabel.charAt(0);
-                mCode = params.mIsRtlKeyboard ? getRtlParenthesisCode(firstChar) : firstChar;
+                mCode = getRtlParenthesisCode(firstChar, params.mIsRtlKeyboard);
             } else if (code != Keyboard.CODE_UNSPECIFIED) {
                 mCode = code;
             } else {

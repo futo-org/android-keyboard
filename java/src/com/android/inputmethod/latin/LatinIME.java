@@ -1708,8 +1708,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final int rawPrimaryCode = suggestion.charAt(0);
             // Maybe apply the "bidi mirrored" conversions for parentheses
             final LatinKeyboard keyboard = mKeyboardSwitcher.getLatinKeyboard();
-            final int primaryCode = keyboard.mIsRtlKeyboard
-                    ? Key.getRtlParenthesisCode(rawPrimaryCode) : rawPrimaryCode;
+            final int primaryCode = Key.getRtlParenthesisCode(
+                    rawPrimaryCode, keyboard.mIsRtlKeyboard);
 
             final CharSequence beforeText = ic != null ? ic.getTextBeforeCursor(1, 0) : "";
             final int toLeft = (ic == null || TextUtils.isEmpty(beforeText))

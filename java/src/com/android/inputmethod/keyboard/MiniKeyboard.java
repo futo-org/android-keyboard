@@ -262,7 +262,7 @@ public class MiniKeyboard extends Keyboard {
             for (int n = 0; n < mPopupCharacters.length; n++) {
                 final CharSequence label = mPopupCharacters[n];
                 final int row = n / params.mNumColumns;
-                final Key key = new Key(mResources, params, label, params.getX(n, row),
+                final Key key = new Key(mResources, params, label.toString(), params.getX(n, row),
                         params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight,
                         params.getRowFlags(row));
                 params.onAddKey(key);
