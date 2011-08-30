@@ -39,10 +39,10 @@
         <attr name="keyBackground" format="reference" />
 
         <!-- Size of the text for one letter keys. If not defined, keyLetterRatio takes effect. -->
-        <attr name="keyLetterSize" format="float" />
+        <attr name="keyLetterSize" format="dimension" />
         <!-- Size of the text for keys with multiple letters. If not defined, keyLabelRatio takes
              effect. -->
-        <attr name="keyLabelSize" format="float" />
+        <attr name="keyLabelSize" format="dimension" />
         <!-- Size of the text for one letter keys, in the proportion of key height. -->
         <attr name="keyLetterRatio" format="float" />
         <!-- Large size of the text for one letter keys, in the proportion of key height. -->
