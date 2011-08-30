@@ -197,8 +197,8 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
 
     @Override
     public void setShifted(boolean shifted) {
-        final MiniKeyboard miniKeyboard = (MiniKeyboard)getKeyboard();
-        if (miniKeyboard.setShifted(shifted)) {
+        final Keyboard keyboard = getKeyboard();
+        if (keyboard.setShifted(shifted)) {
             invalidateAllKeys();
         }
     }

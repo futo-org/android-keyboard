@@ -64,6 +64,15 @@ public class KeyboardParams {
 
     public int mMostCommonKeyWidth = 0;
 
+    protected void clearKeys() {
+        mKeys.clear();
+        mShiftKeys.clear();
+        mShiftLockKeys.clear();
+        mShiftedIcons.clear();
+        mUnshiftedIcons.clear();
+        clearHistogram();
+    }
+
     public void onAddKey(Key key) {
         mKeys.add(key);
         updateHistogram(key);
@@ -82,6 +91,12 @@ public class KeyboardParams {
 
     private int mMaxCount = 0;
     private final Map<Integer, Integer> mHistogram = new HashMap<Integer, Integer>();
+
+    private void clearHistogram() {
+        mMostCommonKeyWidth = 0;
+        mMaxCount = 0;
+        mHistogram.clear();
+    }
 
     private void updateHistogram(Key key) {
         final Integer width = key.mWidth + key.mHorizontalGap;

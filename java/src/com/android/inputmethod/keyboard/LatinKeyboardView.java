@@ -463,7 +463,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         mPopupPanelPointerTrackerId = tracker.mPointerId;
 
         final Keyboard keyboard = getKeyboard();
-        mPopupPanel.setShifted(keyboard.isShiftedOrShiftLocked());
+        popupPanel.setShifted(keyboard.isShiftedOrShiftLocked());
         final int pointX = (mConfigShowMiniKeyboardAtTouchedPoint) ? tracker.getLastX()
                 : parentKey.mX + parentKey.mWidth / 2;
         final int pointY = parentKey.mY - keyboard.mVerticalGap;
