@@ -223,7 +223,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         public KeyDrawParams(TypedArray a) {
             mKeyBackground = a.getDrawable(R.styleable.KeyboardView_keyBackground);
-            if (a.hasValue(R.styleable.KeyboardView_keyLabelSize)) {
+            if (a.hasValue(R.styleable.KeyboardView_keyLetterSize)) {
                 mKeyLetterRatio = UNDEFINED_RATIO;
                 mKeyLetterSize = a.getDimensionPixelSize(
                         R.styleable.KeyboardView_keyLetterRatio, 0);
