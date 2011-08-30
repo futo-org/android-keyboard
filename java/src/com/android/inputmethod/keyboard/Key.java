@@ -192,21 +192,30 @@ public class Key {
         }
     }
 
+    private static int getCode(Resources res, KeyboardParams params, String popupSpec) {
+        return getRtlParenthesisCode(
+                PopupCharactersParser.getCode(res, popupSpec), params.mIsRtlKeyboard);
+    }
+
+    private static Drawable getIcon(KeyboardParams params, String popupSpec) {
+        return params.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpec));
+    }
+
     /**
      * This constructor is being used only for key in popup mini keyboard.
      */
     public Key(Resources res, KeyboardParams params, String popupSpec,
             int x, int y, int width, int height, int edgeFlags) {
-        this(params, getRtlParenthesisCode(PopupCharactersParser.getCode(res, popupSpec),
-                params.mIsRtlKeyboard),
-                popupSpec, null, x, y, width, height, edgeFlags);
+        this(params, PopupCharactersParser.getLabel(popupSpec), null, getIcon(params, popupSpec),
+                getCode(res, params, popupSpec), PopupCharactersParser.getOutputText(popupSpec),
+                x, y, width, height, edgeFlags);
     }
 
     /**
      * This constructor is being used only for key in popup suggestions pane.
      */
-    public Key(KeyboardParams params, int code, String popupSpec, String hintLabel,
-            int x, int y, int width, int height, int edgeFlags) {
+    public Key(KeyboardParams params, CharSequence label, CharSequence hintLabel, Drawable icon,
+            int code, CharSequence outputText, int x, int y, int width, int height, int edgeFlags) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
         mVerticalGap = params.mVerticalGap;
@@ -220,10 +229,10 @@ public class Key {
         mRepeatable = false;
         mPopupCharacters = null;
         mMaxPopupColumn = 0;
-        mLabel = PopupCharactersParser.getLabel(popupSpec);
-        mOutputText = PopupCharactersParser.getOutputText(popupSpec);
+        mLabel = label;
+        mOutputText = outputText;
         mCode = code;
-        mIcon = params.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpec));
+        mIcon = icon;
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
         mY = y;
