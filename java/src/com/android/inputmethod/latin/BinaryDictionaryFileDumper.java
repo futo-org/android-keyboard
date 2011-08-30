@@ -25,12 +25,15 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -46,7 +49,9 @@ public class BinaryDictionaryFileDumper {
     /**
      * The size of the temporary buffer to copy files.
      */
-    static final int FILE_READ_BUFFER_SIZE = 1024;
+    private static final int FILE_READ_BUFFER_SIZE = 1024;
+    // TODO: make the following data common with the native code
+    private static final byte[] MAGIC_NUMBER = new byte[] { 0x78, (byte)0xB1 };
 
     private static final String DICTIONARY_PROJECTION[] = { "id" };
 
@@ -135,6 +140,7 @@ public class BinaryDictionaryFileDumper {
         for (int mode = MODE_MIN; mode <= MODE_MAX; ++mode) {
             InputStream originalSourceStream = null;
             InputStream inputStream = null;
+            File outputFile = null;
             FileOutputStream outputStream = null;
             AssetFileDescriptor afd = null;
             try {
@@ -144,7 +150,8 @@ public class BinaryDictionaryFileDumper {
                 if (null == afd) return null;
                 originalSourceStream = afd.createInputStream();
                 // Open output.
-                outputStream = new FileOutputStream(outputFileName);
+                outputFile = new File(outputFileName);
+                outputStream = new FileOutputStream(outputFile);
                 // Get the appropriate decryption method for this try
                 switch (mode) {
                     case COMPRESSED_CRYPTED_COMPRESSED:
@@ -171,7 +178,7 @@ public class BinaryDictionaryFileDumper {
                         inputStream = originalSourceStream;
                         break;
                     }
-                copyFileTo(inputStream, outputStream);
+                checkMagicAndCopyFileTo(new BufferedInputStream(inputStream), outputStream);
                 if (0 >= resolver.delete(wordListUri, null, null)) {
                     Log.e(TAG, "Could not have the dictionary pack delete a word list");
                 }
@@ -180,6 +187,12 @@ public class BinaryDictionaryFileDumper {
             } catch (Exception e) {
                 if (DEBUG) {
                     Log.i(TAG, "Can't open word list in mode " + mode + " : " + e);
+                }
+                if (null != outputFile) {
+                    // This may or may not fail. The file may not have been created if the
+                    // exception was thrown before it could be. Hence, both failure and
+                    // success are expected outcomes, so we don't check the return value.
+                    outputFile.delete();
                 }
                 // Try the next method.
             } finally {
@@ -234,12 +247,29 @@ public class BinaryDictionaryFileDumper {
     }
 
     /**
-     * Copies the data in an input stream to a target file.
+     * Copies the data in an input stream to a target file if the magic number matches.
+     *
+     * If the magic number does not match the expected value, this method throws an
+     * IOException. Other usual conditions for IOException or FileNotFoundException
+     * also apply.
+     *
      * @param input the stream to be copied.
      * @param outputFile an outputstream to copy the data to.
      */
-    private static void copyFileTo(final InputStream input, final FileOutputStream output)
-            throws FileNotFoundException, IOException {
+    private static void checkMagicAndCopyFileTo(final BufferedInputStream input,
+            final FileOutputStream output) throws FileNotFoundException, IOException {
+        // Check the magic number
+        final byte[] magicNumberBuffer = new byte[MAGIC_NUMBER.length];
+        final int readMagicNumberSize = input.read(magicNumberBuffer, 0, MAGIC_NUMBER.length);
+        if (readMagicNumberSize < MAGIC_NUMBER.length) {
+            throw new IOException("Less bytes to read than the magic number length");
+        }
+        if (!Arrays.equals(MAGIC_NUMBER, magicNumberBuffer)) {
+            throw new IOException("Wrong magic number for downloaded file");
+        }
+        output.write(MAGIC_NUMBER);
+
+        // Actually copy the file
         final byte[] buffer = new byte[FILE_READ_BUFFER_SIZE];
         for (int readBytes = input.read(buffer); readBytes >= 0; readBytes = input.read(buffer))
             output.write(buffer, 0, readBytes);
