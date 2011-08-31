@@ -18,7 +18,7 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_cyrillic_e">5,ё</string>
-    <string name="alternates_for_cyrillic_soft_sign">ъ</string>
-    <string name="alternates_for_cyrillic_ha">ъ</string>
+    <string name="more_keys_for_cyrillic_e">5,ё</string>
+    <string name="more_keys_for_cyrillic_soft_sign">ъ</string>
+    <string name="more_keys_for_cyrillic_ha">ъ</string>
 </resources>

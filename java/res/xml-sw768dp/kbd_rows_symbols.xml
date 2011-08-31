@@ -34,34 +34,34 @@
             latin:keyWidth="7.969%p" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_1"
-            latin:moreKeys="@string/alternates_for_symbols_1" />
+            latin:moreKeys="@string/more_keys_for_symbols_1" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_2"
-            latin:moreKeys="@string/alternates_for_symbols_2" />
+            latin:moreKeys="@string/more_keys_for_symbols_2" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_3"
-            latin:moreKeys="@string/alternates_for_symbols_3" />
+            latin:moreKeys="@string/more_keys_for_symbols_3" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_4"
-            latin:moreKeys="@string/alternates_for_symbols_4" />
+            latin:moreKeys="@string/more_keys_for_symbols_4" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_5"
-            latin:moreKeys="@string/alternates_for_symbols_5" />
+            latin:moreKeys="@string/more_keys_for_symbols_5" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_6"
-            latin:moreKeys="@string/alternates_for_symbols_6" />
+            latin:moreKeys="@string/more_keys_for_symbols_6" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_7"
-            latin:moreKeys="@string/alternates_for_symbols_7" />
+            latin:moreKeys="@string/more_keys_for_symbols_7" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_8"
-            latin:moreKeys="@string/alternates_for_symbols_8" />
+            latin:moreKeys="@string/more_keys_for_symbols_8" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_9"
-            latin:moreKeys="@string/alternates_for_symbols_9" />
+            latin:moreKeys="@string/more_keys_for_symbols_9" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_0"
-            latin:moreKeys="@string/alternates_for_symbols_0" />
+            latin:moreKeys="@string/more_keys_for_symbols_0" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
@@ -80,7 +80,7 @@
             latin:keyStyle="currencyKeyStyle" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_percent"
-            latin:moreKeys="@string/alternates_for_symbols_percent" />
+            latin:moreKeys="@string/more_keys_for_symbols_percent" />
         <Key
             latin:keyLabel="&amp;" />
         <Key
@@ -133,10 +133,10 @@
         </switch>
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_semicolon"
-            latin:moreKeys="@string/alternates_for_symbols_semicolon" />
+            latin:moreKeys="@string/more_keys_for_symbols_semicolon" />
         <Key
             latin:keyLabel="@string/keylabel_for_comma"
-            latin:moreKeys="@string/alternates_for_comma" />
+            latin:moreKeys="@string/more_keys_for_comma" />
         <Key
             latin:keyLabel="." />
         <Key
@@ -144,7 +144,7 @@
             latin:moreKeys="¡" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_question"
-            latin:moreKeys="@string/alternates_for_symbols_question" />
+            latin:moreKeys="@string/more_keys_for_symbols_question" />
         <Key
             latin:keyStyle="toMoreSymbolKeyStyle"
             latin:keyXPos="-13.750%p"
