@@ -332,11 +332,11 @@
     <!-- Title of the item to change the keyboard theme [CHAR LIMIT=20]-->
     <string name="keyboard_layout">Keyboard theme</string>
 
-    <!-- Description for German QWERTY keyboard subtype [CHAR LIMIT=35] -->
+    <!-- Description for German QWERTY keyboard subtype [CHAR LIMIT=22] -->
     <string name="subtype_de_qwerty">German QWERTY</string>
-    <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=35] -->
+    <!-- Description for English (United Kingdom) keyboard subtype [CHAR LIMIT=22] -->
     <string name="subtype_en_GB">English (UK)</string>
-    <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=35] -->
+    <!-- Description for English (United States) keyboard subtype [CHAR LIMIT=22] -->
     <string name="subtype_en_US">English (US)</string>
 
     <!-- Title of an option for usability study mode -->

@@ -138,7 +138,7 @@ public class SubtypeSwitcher {
         mEnabledLanguagesOfCurrentInputMethod.clear();
         mEnabledKeyboardSubtypesOfCurrentInputMethod.clear();
         for (InputMethodSubtypeCompatWrapper ims : mAllEnabledSubtypesOfCurrentInputMethod) {
-            final String locale = ims.getLocale();
+            final String locale = getSubtypeLocale(ims);
             final String mode = ims.getMode();
             mLocaleSplitter.setString(locale);
             if (mLocaleSplitter.hasNext()) {
@@ -167,7 +167,7 @@ public class SubtypeSwitcher {
             Log.d(TAG, "Update shortcut IME from : "
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
-                    + (mShortcutSubtype == null ? "<null>" : (mShortcutSubtype.getLocale()
+                    + (mShortcutSubtype == null ? "<null>" : (getSubtypeLocale(mShortcutSubtype)
                             + ", " + mShortcutSubtype.getMode())));
         }
         // TODO: Update an icon for shortcut IME
@@ -189,9 +189,15 @@ public class SubtypeSwitcher {
             Log.d(TAG, "Update shortcut IME to : "
                     + (mShortcutInputMethodInfo == null
                             ? "<null>" : mShortcutInputMethodInfo.getId()) + ", "
-                    + (mShortcutSubtype == null ? "<null>" : (mShortcutSubtype.getLocale()
+                    + (mShortcutSubtype == null ? "<null>" : (getSubtypeLocale(mShortcutSubtype)
                             + ", " + mShortcutSubtype.getMode())));
         }
+    }
+
+    private static String getSubtypeLocale(InputMethodSubtypeCompatWrapper subtype) {
+        final String keyboardLocale = subtype.getExtraValueOf(
+                LatinIME.SUBTYPE_EXTRA_VALUE_KEYBOARD_LOCALE);
+        return keyboardLocale != null ? keyboardLocale : subtype.getLocale();
     }
 
     // Update the current subtype. LatinIME.onCurrentInputMethodSubtypeChanged calls this function.
@@ -206,7 +212,7 @@ public class SubtypeSwitcher {
             newLocale = "en_US";
             newMode = KEYBOARD_MODE;
         } else {
-            newLocale = newSubtype.getLocale();
+            newLocale = getSubtypeLocale(newSubtype);
             newMode = newSubtype.getMode();
         }
         if (DBG) {
@@ -332,7 +338,7 @@ public class SubtypeSwitcher {
             final String imiPackageName = imi.getPackageName();
             if (DBG) {
                 Log.d(TAG, "Update icons of IME: " + imiPackageName + ","
-                        + subtype.getLocale() + "," + subtype.getMode());
+                        + getSubtypeLocale(subtype) + "," + subtype.getMode());
             }
             if (subtype != null) {
                 return pm.getDrawable(imiPackageName, subtype.getIconResId(),

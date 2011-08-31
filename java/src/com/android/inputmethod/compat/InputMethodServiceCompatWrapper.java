@@ -73,16 +73,17 @@ public class InputMethodServiceCompatWrapper extends InputMethodService {
     // This call is required to let LatinIME itself know a subtype changed
     // event when the API level is 10 or previous.
     @SuppressWarnings("unused")
-    public void notifyOnCurrentInputMethodSubtypeChanged(InputMethodSubtypeCompatWrapper subtype) {
+    public void notifyOnCurrentInputMethodSubtypeChanged(
+            InputMethodSubtypeCompatWrapper newSubtype) {
         // Do nothing when the API level is 11 or later
         // and FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES is not true
         if (CAN_HANDLE_ON_CURRENT_INPUT_METHOD_SUBTYPE_CHANGED && !InputMethodManagerCompatWrapper.
                 FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES) {
             return;
         }
-        if (subtype == null) {
-            subtype = mImm.getCurrentInputMethodSubtype();
-        }
+        final InputMethodSubtypeCompatWrapper subtype = (newSubtype == null)
+                ? mImm.getCurrentInputMethodSubtype()
+                : newSubtype;
         if (subtype != null) {
             if (!InputMethodManagerCompatWrapper.FORCE_ENABLE_VOICE_EVEN_WITH_NO_VOICE_SUBTYPES
                     && !subtype.isDummy()) return;

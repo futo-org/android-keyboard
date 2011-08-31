@@ -20,7 +20,7 @@
 <!-- The attributes in this XML file provide configuration information -->
 <!-- for the Input Method Manager. -->
 
-<!-- Keyboard: en_US, en_GB, ar, cs, da, de, de_ZZ, es, es_US, fi, fr, fr_CA, fr_CH, hr, hu, it, iw, nb, nl, pl, pt, ru, sr, sv, tr -->
+<!-- Keyboard: en_US, en_GB, ar, cs, da, de, de(QWERTY), es, es_US, fi, fr, fr_CA, fr_CH, hr, hu, it, iw, nb, nl, pl, pt, ru, sr, sv, tr -->
 <!-- TODO: use <lang>_keyboard icon instead of a common keyboard icon. -->
 <!-- If IME doesn't have an applicable subtype, the first subtype will be used as a default
      subtype.-->
@@ -64,9 +64,9 @@
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_de_qwerty"
-            android:imeSubtypeLocale="de_ZZ"
+            android:imeSubtypeLocale="de"
             android:imeSubtypeMode="keyboard"
-            android:imeSubtypeExtraValue="AsciiCapable"
+            android:imeSubtypeExtraValue="AsciiCapable,KeyboardLocale=de_ZZ"
     />
     <subtype android:icon="@drawable/ic_subtype_keyboard"
             android:label="@string/subtype_generic"
