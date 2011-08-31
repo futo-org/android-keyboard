@@ -336,7 +336,9 @@ public class Settings extends InputMethodSettingsActivity
                 R.string.auto_correction_threshold_mode_index_off);
         final String currentSetting = mAutoCorrectionThresholdPreference.getValue();
         mBigramSuggestion.setEnabled(!currentSetting.equals(autoCorrectionOff));
-        mBigramPrediction.setEnabled(!currentSetting.equals(autoCorrectionOff));
+        if (null != mBigramPrediction) {
+            mBigramPrediction.setEnabled(!currentSetting.equals(autoCorrectionOff));
+        }
     }
 
     public Activity getActivityInternal() {
