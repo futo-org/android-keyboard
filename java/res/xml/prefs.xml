@@ -91,23 +91,6 @@
             android:defaultValue="@string/prefs_suggestion_visibility_default_value" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:title="@string/ngram_category"
-        android:key="ngram_settings">
-        <CheckBoxPreference
-            android:key="bigram_suggestion"
-            android:title="@string/bigram_suggestion"
-            android:summary="@string/bigram_suggestion_summary"
-            android:persistent="true"
-            android:defaultValue="true" />
-        <CheckBoxPreference
-            android:key="bigram_prediction"
-            android:dependency="bigram_suggestion"
-            android:title="@string/bigram_prediction"
-            android:summary="@string/bigram_prediction_summary"
-            android:persistent="true"
-            android:defaultValue="false" />
-    </PreferenceCategory>
-    <PreferenceCategory
         android:title="@string/misc_category"
         android:key="misc_settings">
       <CheckBoxPreference
@@ -143,6 +126,20 @@
              android:summary="@string/use_contacts_dict_summary"
              android:persistent="true"
              android:defaultValue="true" />
+          <CheckBoxPreference
+             android:key="bigram_suggestion"
+             android:title="@string/bigram_suggestion"
+             android:summary="@string/bigram_suggestion_summary"
+             android:persistent="true"
+             android:defaultValue="true" />
+          <!-- TODO: evaluate results and revive this option. The code already supports it. -->
+          <!-- <CheckBoxPreference -->
+          <!--    android:key="bigram_prediction" -->
+          <!--    android:dependency="bigram_suggestion" -->
+          <!--    android:title="@string/bigram_prediction" -->
+          <!--    android:summary="@string/bigram_prediction_summary" -->
+          <!--    android:persistent="true" -->
+          <!--    android:defaultValue="false" /> -->
     </PreferenceScreen>
     <!-- <Preference
         android:title="Debug Settings"

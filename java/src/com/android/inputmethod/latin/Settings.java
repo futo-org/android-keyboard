@@ -73,7 +73,6 @@ public class Settings extends InputMethodSettingsActivity
     public static final String PREF_AUTO_CORRECTION_THRESHOLD = "auto_correction_threshold";
     public static final String PREF_DEBUG_SETTINGS = "debug_settings";
 
-    public static final String PREF_NGRAM_SETTINGS_KEY = "ngram_settings";
     public static final String PREF_BIGRAM_SUGGESTIONS = "bigram_suggestion";
     public static final String PREF_BIGRAM_PREDICTIONS = "bigram_prediction";
 
