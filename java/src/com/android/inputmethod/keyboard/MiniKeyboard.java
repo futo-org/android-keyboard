@@ -227,8 +227,8 @@ public class MiniKeyboard extends Keyboard {
             mPopupCharacters = parentKey.mPopupCharacters;
 
             final int keyWidth = getMaxKeyWidth(view, mPopupCharacters, mParams.mDefaultKeyWidth);
-            mParams.setParameters(mPopupCharacters.length, parentKey.mMaxPopupColumn, keyWidth,
-                    parentKeyboard.mDefaultRowHeight, parentKey.mX
+            mParams.setParameters(mPopupCharacters.length, parentKey.mMaxMiniKeyboardColumn,
+                    keyWidth, parentKeyboard.mDefaultRowHeight, parentKey.mX
                             + (mParams.mDefaultKeyWidth - keyWidth) / 2, view.getMeasuredWidth());
         }
 

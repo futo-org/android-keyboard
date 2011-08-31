@@ -35,7 +35,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -78,7 +77,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // Miscellaneous constants
     private static final int[] LONG_PRESSABLE_STATE_SET = { android.R.attr.state_long_pressable };
 
-    // XML attribute
+    // XML attributes
+    protected final float mVerticalCorrection;
+    protected final int mPopupLayout;
     private final float mBackgroundDimAmount;
 
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
@@ -340,6 +341,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mKeyPreviewLayoutId == 0) {
             mShowKeyPreviewPopup = false;
         }
+        mVerticalCorrection = a.getDimensionPixelOffset(
+                R.styleable.KeyboardView_verticalCorrection, 0);
+        mPopupLayout = a.getResourceId(R.styleable.KeyboardView_popupLayout, 0);
         mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
         a.recycle();
 

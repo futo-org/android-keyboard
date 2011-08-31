@@ -22,9 +22,9 @@
         <attr name="latinKeyboardStyle" format="reference" />
         <!-- KeyboardView style -->
         <attr name="keyboardViewStyle" format="reference" />
-        <!-- PopupMiniKeyboardView style -->
-        <attr name="popupMiniKeyboardViewStyle" format="reference" />
-        <attr name="popupMiniKeyboardPanelStyle" format="reference" />
+        <!-- MiniKeyboardView style -->
+        <attr name="miniKeyboardViewStyle" format="reference" />
+        <attr name="miniKeyboardPanelStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionsStripBackgroundStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
@@ -95,7 +95,7 @@
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
 
-        <!-- Layout resource for popup keyboards. -->
+        <!-- Layout resource for popup panel -->
         <attr name="popupLayout" format="reference" />
 
         <attr name="shadowColor" format="color" />
@@ -153,8 +153,8 @@
         <attr name="horizontalGap" format="dimension|fraction" />
         <!-- Default vertical gap between rows of keys. -->
         <attr name="verticalGap" format="dimension|fraction" />
-        <!-- Popup keyboard layout template -->
-        <attr name="popupKeyboardTemplate" format="reference" />
+        <!-- Popup panel layout template -->
+        <attr name="popupTemplate" format="reference" />
         <!-- Locale of the keyboard layout -->
         <attr name="keyboardLocale" format="string" />
         <!-- True if the keyboard is Right-To-Left -->
@@ -180,8 +180,8 @@
         <attr name="code" format="integer" />
         <!-- The characters to display in the popup keyboard. -->
         <attr name="popupCharacters" format="string" />
-        <!-- Maximum column of popup keyboard -->
-        <attr name="maxPopupKeyboardColumn" format="integer" />
+        <!-- Maximum column of mini keyboard -->
+        <attr name="maxMiniKeyboardColumn" format="integer" />
         <!-- Whether this is a functional key which has different key top than normal key. -->
         <attr name="isFunctional" format="boolean" />
         <!-- Whether this is a toggle key. -->

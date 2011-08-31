@@ -37,7 +37,7 @@
     <!-- This configuration is the index of the array {@link KeyboardSwitcher.KEYBOARD_THEMES}. -->
     <string name="config_default_keyboard_theme_id" translatable="false">5</string>
     <string name="config_text_size_of_language_on_spacebar" translatable="false">medium</string>
-    <integer name="config_max_popup_keyboard_column">5</integer>
+    <integer name="config_max_mini_keyboard_column">5</integer>
     <!--  Screen metrics for logging. 0 = "mdpi", 1 = "hdpi", 2 = "xlarge" -->
     <integer name="log_screen_metrics">2</integer>
 </resources>

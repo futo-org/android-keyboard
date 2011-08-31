@@ -255,10 +255,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             mParams.mIsRtlKeyboard = keyboardAttr.getBoolean(
                     R.styleable.Keyboard_isRtlKeyboard, false);
-            mParams.mPopupKeyboardResId = keyboardAttr.getResourceId(
-                    R.styleable.Keyboard_popupKeyboardTemplate, 0);
-            mParams.mMaxPopupColumn = keyAttr.getInt(
-                    R.styleable.Keyboard_Key_maxPopupKeyboardColumn, 5);
+            mParams.mPopupTemplateId = keyboardAttr.getResourceId(
+                    R.styleable.Keyboard_popupTemplate, 0);
+            mParams.mMaxMiniKeyboardColumn = keyAttr.getInt(
+                    R.styleable.Keyboard_Key_maxMiniKeyboardColumn, 5);
 
             mParams.mIconsSet.loadIcons(keyboardAttr);
         } finally {

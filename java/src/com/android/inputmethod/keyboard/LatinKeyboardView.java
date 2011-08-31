@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.os.Message;
 import android.os.SystemClock;
@@ -63,10 +62,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
     // Timing constants
     private final int mKeyRepeatInterval;
-
-    // XML attribute
-    private final float mVerticalCorrection;
-    private final int mPopupLayout;
 
     // Mini keyboard
     private PopupWindow mPopupWindow;
@@ -219,13 +214,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
 
         mTouchScreenRegulator = new SuddenJumpingTouchEventHandler(getContext(), this);
 
-        final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        mVerticalCorrection = a.getDimensionPixelOffset(
-                R.styleable.KeyboardView_verticalCorrection, 0);
-        mPopupLayout = a.getResourceId(R.styleable.KeyboardView_popupLayout, 0);
-        a.recycle();
-
         final Resources res = getResources();
         mConfigShowMiniKeyboardAtTouchedPoint = res.getBoolean(
                 R.bool.config_show_mini_keyboard_at_touched_point);
@@ -374,11 +362,11 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         if (container == null)
             throw new NullPointerException();
 
-        final PopupMiniKeyboardView miniKeyboardView =
-                (PopupMiniKeyboardView)container.findViewById(R.id.mini_keyboard_view);
+        final MiniKeyboardView miniKeyboardView =
+                (MiniKeyboardView)container.findViewById(R.id.mini_keyboard_view);
         final Keyboard parentKeyboard = getKeyboard();
         final Keyboard miniKeyboard = new MiniKeyboard.Builder(
-                this, parentKeyboard.mPopupKeyboardResId, parentKey, parentKeyboard).build();
+                this, parentKeyboard.mPopupTemplateId, parentKey, parentKeyboard).build();
         miniKeyboardView.setKeyboard(miniKeyboard);
         container.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
@@ -454,7 +442,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         if (mPopupWindow == null) {
             mPopupWindow = new PopupWindow(getContext());
             mPopupWindow.setBackgroundDrawable(null);
-            mPopupWindow.setAnimationStyle(R.style.PopupMiniKeyboardAnimation);
+            mPopupWindow.setAnimationStyle(R.style.MiniKeyboardAnimation);
             // Allow popup window to be drawn off the screen.
             mPopupWindow.setClippingEnabled(false);
         }

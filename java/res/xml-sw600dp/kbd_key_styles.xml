@@ -73,7 +73,7 @@
         latin:keyOutputText=":-) "
         latin:keyLabelOption="hasPopupHint"
         latin:popupCharacters="@string/alternates_for_smiley"
-        latin:maxPopupKeyboardColumn="5" />
+        latin:maxMiniKeyboardColumn="5" />
     <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
