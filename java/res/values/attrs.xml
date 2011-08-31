@@ -27,6 +27,7 @@
         <attr name="miniKeyboardPanelStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionsStripBackgroundStyle" format="reference" />
+        <attr name="suggestionsPaneViewStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
         <attr name="suggestionPreviewBackgroundStyle" format="reference" />
         <attr name="candidateViewStyle" format="reference" />

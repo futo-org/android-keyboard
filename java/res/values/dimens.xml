@@ -77,9 +77,11 @@
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
     <dimen name="candidate_strip_height">40dip</dimen>
-    <!-- candidate_strip_minimum_height =
-         key_preview_height_holo - key_preview_offset_holo + alpha -->
-    <dimen name="candidate_strip_minimum_height">100sp</dimen>
+    <dimen name="more_suggestions_key_horizontal_padding">12dip</dimen>
+    <dimen name="more_suggestions_row_height">40dip</dimen>
+    <dimen name="more_suggestions_slide_allowance">0.2in</dimen>
+    <fraction name="more_suggestions_info_ratio">12%</fraction>
+    <dimen name="candidate_strip_minimum_height">200sp</dimen>
     <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
     <dimen name="candidate_strip_padding">0dip</dimen>
     <dimen name="candidate_min_width">44dip</dimen>
