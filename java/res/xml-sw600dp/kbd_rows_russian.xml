@@ -36,7 +36,7 @@
             latin:keyLabel="к" />
         <Key
             latin:keyLabel="е"
-            latin:popupCharacters="@string/alternates_for_cyrillic_e" />
+            latin:moreKeys="@string/alternates_for_cyrillic_e" />
         <Key
             latin:keyLabel="н" />
         <Key
@@ -124,12 +124,12 @@
                     latin:keyLabel=","
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="!"
-                    latin:popupCharacters="!" />
+                    latin:moreKeys="!" />
                 <Key
                     latin:keyLabel="."
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="\?"
-                    latin:popupCharacters="\?" />
+                    latin:moreKeys="\?" />
             </default>
         </switch>
         <include

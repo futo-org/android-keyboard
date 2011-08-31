@@ -101,8 +101,8 @@ public class Keyboard {
 
     public final int mMostCommonKeyWidth;
 
-    /** Popup keyboard template */
-    public final int mPopupTemplateId;
+    /** More keys keyboard template */
+    public final int mMoreKeysTemplate;
 
     /** Maximum column for mini keyboard */
     public final int mMaxMiniKeyboardColumn;
@@ -130,7 +130,7 @@ public class Keyboard {
         mWidth = params.mWidth;
         mMostCommonKeyWidth = params.mMostCommonKeyWidth;
         mIsRtlKeyboard = params.mIsRtlKeyboard;
-        mPopupTemplateId = params.mPopupTemplateId;
+        mMoreKeysTemplate = params.mMoreKeysTemplate;
         mMaxMiniKeyboardColumn = params.mMaxMiniKeyboardColumn;
 
         mDefaultRowHeight = params.mDefaultRowHeight;

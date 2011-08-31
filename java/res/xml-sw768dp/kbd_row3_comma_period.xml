@@ -35,12 +35,12 @@
                 latin:keyLabel=","
                 latin:keyLabelOption="hasUppercaseLetter"
                 latin:keyHintLabel="!"
-                latin:popupCharacters="!" />
+                latin:moreKeys="!" />
             <Key
                 latin:keyLabel="."
                 latin:keyLabelOption="hasUppercaseLetter"
                 latin:keyHintLabel="\?"
-                latin:popupCharacters="\?" />
+                latin:moreKeys="\?" />
         </default>
     </switch>
 </merge>

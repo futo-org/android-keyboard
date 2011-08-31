@@ -38,19 +38,19 @@
             latin:keyLabel="|" />
         <Key
             latin:keyLabel="•"
-            latin:popupCharacters="♪,♥,♠,♦,♣" />
+            latin:moreKeys="♪,♥,♠,♦,♣" />
         <Key
             latin:keyLabel="√" />
         <Key
             latin:keyLabel="π"
-            latin:popupCharacters="Π" />
+            latin:moreKeys="Π" />
         <Key
             latin:keyLabel="÷" />
         <Key
             latin:keyLabel="×" />
         <Key
             latin:keyLabel="§"
-            latin:popupCharacters="¶" />
+            latin:moreKeys="¶" />
         <Key
             latin:keyLabel="Δ" />
         <Key
@@ -75,13 +75,13 @@
             latin:keyLabel="¥" />
         <Key
             latin:keyLabel="^"
-            latin:popupCharacters="↑,↓,←,→" />
+            latin:moreKeys="↑,↓,←,→" />
         <Key
             latin:keyLabel="°"
-            latin:popupCharacters="′,″" />
+            latin:moreKeys="′,″" />
         <Key
             latin:keyLabel="±"
-            latin:popupCharacters="∞" />
+            latin:moreKeys="∞" />
         <Key
             latin:keyLabel="{" />
         <Key

@@ -34,7 +34,7 @@
                     latin:keyWidth="15%p" />
                 <Key
                     latin:keyLabel="„"
-                    latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
+                    latin:moreKeys="“,”,„,‟,«,»,‘,’,‚,‛"
                     latin:keyStyle="functionalKeyStyle" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
@@ -55,7 +55,7 @@
                     latin:keyboardLayout="@xml/kbd_settings_or_tab" />
                 <Key
                     latin:keyLabel="„"
-                    latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛"
+                    latin:moreKeys="“,”,„,‟,«,»,‘,’,‚,‛"
                     latin:keyWidth="9.2%p"
                     latin:keyStyle="functionalKeyStyle" />
                 <Key

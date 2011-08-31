@@ -29,44 +29,44 @@
         <Key
             latin:keyLabel="q"
             latin:keyHintLabel="1"
-            latin:popupCharacters="@string/alternates_for_q"
+            latin:moreKeys="@string/alternates_for_q"
             latin:keyWidth="8.75%p" />
         <Key
             latin:keyLabel="w"
             latin:keyHintLabel="2"
-            latin:popupCharacters="@string/alternates_for_w" />
+            latin:moreKeys="@string/alternates_for_w" />
         <Key
             latin:keyLabel="e"
             latin:keyHintLabel="3"
-            latin:popupCharacters="@string/alternates_for_e" />
+            latin:moreKeys="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
             latin:keyHintLabel="4"
-            latin:popupCharacters="@string/alternates_for_r" />
+            latin:moreKeys="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
             latin:keyHintLabel="5"
-            latin:popupCharacters="@string/alternates_for_t" />
+            latin:moreKeys="@string/alternates_for_t" />
         <Key
             latin:keyLabel="y"
             latin:keyHintLabel="6"
-            latin:popupCharacters="@string/alternates_for_y" />
+            latin:moreKeys="@string/alternates_for_y" />
         <Key
             latin:keyLabel="u"
             latin:keyHintLabel="7"
-            latin:popupCharacters="@string/alternates_for_u" />
+            latin:moreKeys="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
             latin:keyHintLabel="8"
-            latin:popupCharacters="@string/alternates_for_i" />
+            latin:moreKeys="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
             latin:keyHintLabel="9"
-            latin:popupCharacters="@string/alternates_for_o" />
+            latin:moreKeys="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
             latin:keyHintLabel="0"
-            latin:popupCharacters="@string/alternates_for_p" />
+            latin:moreKeys="@string/alternates_for_p" />
         <Key
             latin:keyLabel="å"
             latin:keyWidth="fillRight" />
@@ -76,35 +76,35 @@
     >
         <Key
             latin:keyLabel="a"
-            latin:popupCharacters="@string/alternates_for_a"
+            latin:moreKeys="@string/alternates_for_a"
             latin:keyWidth="8.75%p" />
         <Key
             latin:keyLabel="s"
-            latin:popupCharacters="@string/alternates_for_s" />
+            latin:moreKeys="@string/alternates_for_s" />
         <Key
             latin:keyLabel="d"
-            latin:popupCharacters="@string/alternates_for_d" />
+            latin:moreKeys="@string/alternates_for_d" />
         <Key
             latin:keyLabel="f" />
         <Key
             latin:keyLabel="g"
-            latin:popupCharacters="@string/alternates_for_g" />
+            latin:moreKeys="@string/alternates_for_g" />
         <Key
             latin:keyLabel="h" />
         <Key
             latin:keyLabel="j" />
         <Key
             latin:keyLabel="k"
-            latin:popupCharacters="@string/alternates_for_k" />
+            latin:moreKeys="@string/alternates_for_k" />
         <Key
             latin:keyLabel="l"
-            latin:popupCharacters="@string/alternates_for_l" />
+            latin:moreKeys="@string/alternates_for_l" />
         <Key
             latin:keyLabel="@string/keylabel_for_scandinavia_row2_10"
-            latin:popupCharacters="@string/alternates_for_scandinavia_row2_10" />
+            latin:moreKeys="@string/alternates_for_scandinavia_row2_10" />
         <Key
             latin:keyLabel="@string/keylabel_for_scandinavia_row2_11"
-            latin:popupCharacters="@string/alternates_for_scandinavia_row2_11"
+            latin:moreKeys="@string/alternates_for_scandinavia_row2_11"
             latin:keyWidth="fillRight" />
     </Row>
     <include

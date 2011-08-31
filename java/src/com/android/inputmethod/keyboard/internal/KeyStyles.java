@@ -166,12 +166,12 @@ public class KeyStyles {
             readText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
             readText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
             readText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
-            readTextArray(keyAttr, R.styleable.Keyboard_Key_popupCharacters);
+            readTextArray(keyAttr, R.styleable.Keyboard_Key_moreKeys);
             readFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIcon);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIconPreview);
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted);
-            readInt(keyAttr, R.styleable.Keyboard_Key_maxMiniKeyboardColumn);
+            readInt(keyAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable);

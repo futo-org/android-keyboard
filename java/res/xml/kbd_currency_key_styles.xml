@@ -62,7 +62,7 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="€"
-                latin:popupCharacters="@string/alternates_for_currency_euro" />
+                latin:moreKeys="@string/alternates_for_currency_euro" />
         </case>
         <case
             latin:languageCode="ca|et|lb|mt|sla"
@@ -70,7 +70,7 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="€"
-                latin:popupCharacters="@string/alternates_for_currency_euro" />
+                latin:moreKeys="@string/alternates_for_currency_euro" />
         </case>
         <case
             latin:countryCode="AD|AT|BE|CY|EE|FI|FR|DE|GR|IE|IT|XK|LU|MT|MO|ME|NL|PT|SM|SK|SI|ES|VA"
@@ -78,7 +78,7 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="€"
-                latin:popupCharacters="@string/alternates_for_currency_euro" />
+                latin:moreKeys="@string/alternates_for_currency_euro" />
         </case>
         <case
             latin:languageCode="iw"
@@ -86,7 +86,7 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="₪"
-                latin:popupCharacters="@string/alternates_for_currency_general" />
+                latin:moreKeys="@string/alternates_for_currency_general" />
         </case>
         <!-- United Kingdom -->
         <case
@@ -95,13 +95,13 @@
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="£"
-                latin:popupCharacters="@string/alternates_for_currency_pound" />
+                latin:moreKeys="@string/alternates_for_currency_pound" />
         </case>
         <default>
             <key-style
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="$"
-                latin:popupCharacters="@string/alternates_for_currency_dollar" />
+                latin:moreKeys="@string/alternates_for_currency_dollar" />
         </default>
     </switch>
 </merge>

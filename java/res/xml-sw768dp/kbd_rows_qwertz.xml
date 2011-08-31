@@ -32,34 +32,34 @@
             latin:keyWidth="7.969%p" />
         <Key
             latin:keyLabel="q"
-            latin:popupCharacters="@string/alternates_for_q" />
+            latin:moreKeys="@string/alternates_for_q" />
         <Key
             latin:keyLabel="w"
-            latin:popupCharacters="@string/alternates_for_w" />
+            latin:moreKeys="@string/alternates_for_w" />
         <Key
             latin:keyLabel="e"
-            latin:popupCharacters="@string/alternates_for_e" />
+            latin:moreKeys="@string/alternates_for_e" />
         <Key
             latin:keyLabel="r"
-            latin:popupCharacters="@string/alternates_for_r" />
+            latin:moreKeys="@string/alternates_for_r" />
         <Key
             latin:keyLabel="t"
-            latin:popupCharacters="@string/alternates_for_t" />
+            latin:moreKeys="@string/alternates_for_t" />
         <Key
             latin:keyLabel="z"
-            latin:popupCharacters="@string/alternates_for_z" />
+            latin:moreKeys="@string/alternates_for_z" />
         <Key
             latin:keyLabel="u"
-            latin:popupCharacters="@string/alternates_for_u" />
+            latin:moreKeys="@string/alternates_for_u" />
         <Key
             latin:keyLabel="i"
-            latin:popupCharacters="@string/alternates_for_i" />
+            latin:moreKeys="@string/alternates_for_i" />
         <Key
             latin:keyLabel="o"
-            latin:popupCharacters="@string/alternates_for_o" />
+            latin:moreKeys="@string/alternates_for_o" />
         <Key
             latin:keyLabel="p"
-            latin:popupCharacters="@string/alternates_for_p" />
+            latin:moreKeys="@string/alternates_for_p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
@@ -75,20 +75,20 @@
             latin:keyWidth="13.829%p" />
         <Key
             latin:keyLabel="y"
-            latin:popupCharacters="@string/alternates_for_y" />
+            latin:moreKeys="@string/alternates_for_y" />
         <Key
             latin:keyLabel="x" />
         <Key
             latin:keyLabel="c"
-            latin:popupCharacters="@string/alternates_for_c" />
+            latin:moreKeys="@string/alternates_for_c" />
         <Key
             latin:keyLabel="v"
-            latin:popupCharacters="@string/alternates_for_v" />
+            latin:moreKeys="@string/alternates_for_v" />
         <Key
             latin:keyLabel="b" />
         <Key
             latin:keyLabel="n"
-            latin:popupCharacters="@string/alternates_for_n" />
+            latin:moreKeys="@string/alternates_for_n" />
         <Key
             latin:keyLabel="m" />
         <switch>
@@ -105,12 +105,12 @@
                     latin:keyLabel=","
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="!"
-                    latin:popupCharacters="!" />
+                    latin:moreKeys="!" />
                 <Key
                     latin:keyLabel="."
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="\?"
-                    latin:popupCharacters="\?" />
+                    latin:moreKeys="\?" />
             </default>
         </switch>
         <Key

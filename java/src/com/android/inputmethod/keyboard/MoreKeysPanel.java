@@ -19,36 +19,41 @@ package com.android.inputmethod.keyboard;
 import android.view.View;
 import android.widget.PopupWindow;
 
-public interface PopupPanel extends PointerTracker.KeyEventHandler {
+public interface MoreKeysPanel extends PointerTracker.KeyEventHandler {
     public interface Controller {
-        public boolean dismissPopupPanel();
+        public boolean dismissMoreKeysPanel();
     }
 
     public void setShifted(boolean shifted);
 
     /**
-     * Show popup panel.
-     * @param parentView the parent view of this popup panel
-     * @param controller the controller that can dismiss this popup panel
-     * @param pointX x coordinate of this popup panel
-     * @param pointY y coordinate of this popup panel
-     * @param window PopupWindow to be used to show this popup panel
-     * @param listener the listener that will receive keyboard action from this popup panel.
+     * Show more keys panel.
+     *
+     * @param parentView the parent view of this more keys panel
+     * @param controller the controller that can dismiss this more keys panel
+     * @param pointX x coordinate of this more keys panel
+     * @param pointY y coordinate of this more keys panel
+     * @param window PopupWindow to be used to show this more keys panel
+     * @param listener the listener that will receive keyboard action from this more keys panel.
      */
-    public void showPopupPanel(View parentView, Controller controller, int pointX, int pointY,
+    public void showMoreKeysPanel(View parentView, Controller controller, int pointX, int pointY,
             PopupWindow window, KeyboardActionListener listener);
 
     /**
-     * Translate X-coordinate of touch event to the local X-coordinate of this PopupPanel.
+     * Translate X-coordinate of touch event to the local X-coordinate of this
+     * {@link MoreKeysPanel}.
+     *
      * @param x the global X-coordinate
-     * @return the local X-coordinate to this PopupPanel
+     * @return the local X-coordinate to this {@link MoreKeysPanel}
      */
     public int translateX(int x);
 
     /**
-     * Translate Y-coordinate of touch event to the local Y-coordinate of this PopupPanel.
+     * Translate Y-coordinate of touch event to the local Y-coordinate of this
+     * {@link MoreKeysPanel}.
+     *
      * @param y the global Y-coordinate
-     * @return the local Y-coordinate to this PopupPanel
+     * @return the local Y-coordinate to this {@link MoreKeysPanel}
      */
     public int translateY(int y);
 }

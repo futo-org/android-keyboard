@@ -20,7 +20,7 @@ import android.graphics.Paint;
 
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
-import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
+import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
 import com.android.inputmethod.latin.R;
 
 public class MiniKeyboard extends Keyboard {
@@ -36,7 +36,7 @@ public class MiniKeyboard extends Keyboard {
     }
 
     public static class Builder extends KeyboardBuilder<Builder.MiniKeyboardParams> {
-        private final CharSequence[] mPopupCharacters;
+        private final CharSequence[] mMoreKeys;
 
         public static class MiniKeyboardParams extends KeyboardParams {
             /* package */int mTopRowAdjustment;
@@ -224,22 +224,22 @@ public class MiniKeyboard extends Keyboard {
             // mParams.mVerticalGap = parentKeyboard.mVerticalGap;
 
             mParams.mIsRtlKeyboard = parentKeyboard.mIsRtlKeyboard;
-            mPopupCharacters = parentKey.mPopupCharacters;
+            mMoreKeys = parentKey.mMoreKeys;
 
-            final int keyWidth = getMaxKeyWidth(view, mPopupCharacters, mParams.mDefaultKeyWidth);
-            mParams.setParameters(mPopupCharacters.length, parentKey.mMaxMiniKeyboardColumn,
+            final int keyWidth = getMaxKeyWidth(view, mMoreKeys, mParams.mDefaultKeyWidth);
+            mParams.setParameters(mMoreKeys.length, parentKey.mMaxMoreKeysColumn,
                     keyWidth, parentKeyboard.mDefaultRowHeight, parentKey.mX
                             + (mParams.mDefaultKeyWidth - keyWidth) / 2, view.getMeasuredWidth());
         }
 
-        private static int getMaxKeyWidth(KeyboardView view, CharSequence[] popupCharacters,
+        private static int getMaxKeyWidth(KeyboardView view, CharSequence[] moreKeys,
                 int minKeyWidth) {
             final int padding = (int) view.getContext().getResources()
                     .getDimension(R.dimen.mini_keyboard_key_horizontal_padding);
             Paint paint = null;
             int maxWidth = minKeyWidth;
-            for (CharSequence popupSpec : popupCharacters) {
-                final CharSequence label = PopupCharactersParser.getLabel(popupSpec.toString());
+            for (CharSequence moreKeySpec : moreKeys) {
+                final CharSequence label = MoreKeySpecParser.getLabel(moreKeySpec.toString());
                 // If the label is single letter, minKeyWidth is enough to hold
                 // the label.
                 if (label != null && label.length() > 1) {
@@ -259,10 +259,10 @@ public class MiniKeyboard extends Keyboard {
         @Override
         public MiniKeyboard build() {
             final MiniKeyboardParams params = mParams;
-            for (int n = 0; n < mPopupCharacters.length; n++) {
-                final String popupSpec = mPopupCharacters[n].toString();
+            for (int n = 0; n < mMoreKeys.length; n++) {
+                final String moreKeySpec = mMoreKeys[n].toString();
                 final int row = n / params.mNumColumns;
-                final Key key = new Key(mResources, params, popupSpec, params.getX(n, row),
+                final Key key = new Key(mResources, params, moreKeySpec, params.getX(n, row),
                         params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight,
                         params.getRowFlags(row));
                 params.onAddKey(key);

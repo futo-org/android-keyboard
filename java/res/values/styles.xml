@@ -21,12 +21,12 @@
         <item name="keyboardHeight">@dimen/keyboardHeight</item>
         <item name="maxKeyboardHeight">@fraction/maxKeyboardHeight</item>
         <item name="minKeyboardHeight">@fraction/minKeyboardHeight</item>
-        <item name="popupTemplate">@xml/kbd_mini_keyboard_template</item>
+        <item name="moreKeysTemplate">@xml/kbd_mini_keyboard_template</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap</item>
         <item name="verticalGap">@fraction/key_bottom_gap</item>
-        <item name="maxMiniKeyboardColumn">@integer/config_max_mini_keyboard_column</item>
+        <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
     </style>
     <style name="LatinKeyboard">
         <item name="autoCorrectionSpacebarLedEnabled">@bool/config_auto_correction_spacebar_led_enabled
@@ -61,7 +61,7 @@
         <item name="keyPreviewOffset">@dimen/key_preview_offset</item>
         <item name="keyPreviewHeight">@dimen/key_preview_height</item>
         <item name="keyPreviewTextRatio">@fraction/key_preview_text_ratio</item>
-        <item name="popupLayout">@layout/mini_keyboard</item>
+        <item name="moreKeysLayout">@layout/mini_keyboard</item>
         <item name="verticalCorrection">@dimen/keyboard_vertical_correction</item>
         <item name="shadowColor">#BB000000</item>
         <item name="shadowRadius">2.75</item>

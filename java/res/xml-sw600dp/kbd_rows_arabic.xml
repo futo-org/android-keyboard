@@ -36,7 +36,7 @@
             latin:keyLabel="ق" />
         <Key
             latin:keyLabel="ف"
-            latin:popupCharacters="ڤ" />
+            latin:moreKeys="ڤ" />
         <Key
             latin:keyLabel="غ" />
         <Key
@@ -45,14 +45,14 @@
              \u0647\u0640: ARABIC LETTER HEH + ARABIC TATWEEL -->
         <Key
             latin:keyLabel="ه"
-            latin:popupCharacters="\ufeeb|\u0647\u0640" />
+            latin:moreKeys="\ufeeb|\u0647\u0640" />
         <Key
             latin:keyLabel="خ" />
         <Key
             latin:keyLabel="ح" />
         <Key
             latin:keyLabel="ج"
-            latin:popupCharacters="چ" />
+            latin:moreKeys="چ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
@@ -70,7 +70,7 @@
             latin:keyLabel="ي" />
         <Key
             latin:keyLabel="ب"
-            latin:popupCharacters="پ" />
+            latin:moreKeys="پ" />
         <!-- \ufefb: ARABIC LIGATURE LAM WITH ALEF ISOLATED FORM
              \u0644: ARABIC LETTER LAM
              \u0627: ARABIC LETTER ALEF
@@ -82,13 +82,13 @@
              \u0622: ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
             latin:keyLabel="ل"
-            latin:popupCharacters="\ufefb|\u0644\u0627,\ufef7|\u0644\u0623,\ufef9|\u0644\u0625,\ufef5|\u0644\u0622" />
+            latin:moreKeys="\ufefb|\u0644\u0627,\ufef7|\u0644\u0623,\ufef9|\u0644\u0625,\ufef5|\u0644\u0622" />
         <!-- \u0623: ARABIC LETTER ALEF WITH HAMZA ABOVE
              \u0625: ARABIC LETTER ALEF WITH HAMZA BELOW
              \u0622: ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
             latin:keyLabel="ا"
-            latin:popupCharacters="\u0623,\u0625,\u0622" />
+            latin:moreKeys="\u0623,\u0625,\u0622" />
         <Key
             latin:keyLabel="ت" />
         <Key
@@ -97,7 +97,7 @@
             latin:keyLabel="م" />
         <Key
             latin:keyLabel="ك"
-            latin:popupCharacters="گ" />
+            latin:moreKeys="گ" />
         <Key
             latin:keyLabel="ط" />
         <Key
@@ -123,7 +123,7 @@
                     latin:keyLabel="-"
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="_"
-                    latin:popupCharacters="_" />
+                    latin:moreKeys="_" />
             </case>
             <case
                 latin:imeAction="actionSearch"
@@ -132,7 +132,7 @@
                     latin:keyLabel=":"
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="+"
-                    latin:popupCharacters="+" />
+                    latin:moreKeys="+" />
             </case>
             <default>
                 <Key
@@ -157,7 +157,7 @@
             latin:keyLabel="و" />
         <Key
             latin:keyLabel="ز"
-            latin:popupCharacters="ژ" />
+            latin:moreKeys="ژ" />
         <Key
             latin:keyLabel="ظ" />
         <Key

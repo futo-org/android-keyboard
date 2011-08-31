@@ -37,7 +37,7 @@
                 latin:keyLabel="-"
                 latin:keyLabelOption="hasUppercaseLetter"
                 latin:keyHintLabel="_"
-                latin:popupCharacters="_"
+                latin:moreKeys="_"
                 latin:keyXPos="-8.9%p"
                 latin:keyWidth="fillBoth" />
         </case>
@@ -48,7 +48,7 @@
                 latin:keyLabel=":"
                 latin:keyLabelOption="hasUppercaseLetter"
                 latin:keyHintLabel="+"
-                latin:popupCharacters="+"
+                latin:moreKeys="+"
                 latin:keyXPos="-8.9%p"
                 latin:keyWidth="fillBoth" />
         </case>

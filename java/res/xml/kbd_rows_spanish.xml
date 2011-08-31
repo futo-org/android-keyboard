@@ -30,28 +30,28 @@
     >
         <Key
             latin:keyLabel="a"
-            latin:popupCharacters="@string/alternates_for_a" />
+            latin:moreKeys="@string/alternates_for_a" />
         <Key
             latin:keyLabel="s"
-            latin:popupCharacters="@string/alternates_for_s" />
+            latin:moreKeys="@string/alternates_for_s" />
         <Key
             latin:keyLabel="d"
-            latin:popupCharacters="@string/alternates_for_d" />
+            latin:moreKeys="@string/alternates_for_d" />
         <Key
             latin:keyLabel="f" />
         <Key
             latin:keyLabel="g"
-            latin:popupCharacters="@string/alternates_for_g" />
+            latin:moreKeys="@string/alternates_for_g" />
         <Key
             latin:keyLabel="h" />
         <Key
             latin:keyLabel="j" />
         <Key
             latin:keyLabel="k"
-            latin:popupCharacters="@string/alternates_for_k" />
+            latin:moreKeys="@string/alternates_for_k" />
         <Key
             latin:keyLabel="l"
-            latin:popupCharacters="@string/alternates_for_l" />
+            latin:moreKeys="@string/alternates_for_l" />
         <Key
             latin:keyLabel="ñ" />
     </Row>

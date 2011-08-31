@@ -29,47 +29,47 @@
         <Key
             latin:keyLabel="й"
             latin:keyHintLabel="1"
-            latin:popupCharacters="1"
+            latin:moreKeys="1"
             latin:keyWidth="8.75%p" />
         <Key
             latin:keyLabel="ц"
             latin:keyHintLabel="2"
-            latin:popupCharacters="2" />
+            latin:moreKeys="2" />
         <Key
             latin:keyLabel="у"
             latin:keyHintLabel="3"
-            latin:popupCharacters="3" />
+            latin:moreKeys="3" />
         <Key
             latin:keyLabel="к"
             latin:keyHintLabel="4"
-            latin:popupCharacters="4" />
+            latin:moreKeys="4" />
         <Key
             latin:keyLabel="е"
             latin:keyHintLabel="5"
-            latin:popupCharacters="@string/alternates_for_cyrillic_e" />
+            latin:moreKeys="@string/alternates_for_cyrillic_e" />
         <Key
             latin:keyLabel="н"
             latin:keyHintLabel="6"
-            latin:popupCharacters="6" />
+            latin:moreKeys="6" />
         <Key
             latin:keyLabel="г"
             latin:keyHintLabel="7"
-            latin:popupCharacters="7" />
+            latin:moreKeys="7" />
         <Key
             latin:keyLabel="ш"
             latin:keyHintLabel="8"
-            latin:popupCharacters="8" />
+            latin:moreKeys="8" />
         <Key
             latin:keyLabel="щ"
             latin:keyHintLabel="9"
-            latin:popupCharacters="9" />
+            latin:moreKeys="9" />
         <Key
             latin:keyLabel="з"
             latin:keyHintLabel="0"
-            latin:popupCharacters="0" />
+            latin:moreKeys="0" />
         <Key
             latin:keyLabel="х"
-            latin:popupCharacters="@string/alternates_for_cyrillic_ha"
+            latin:moreKeys="@string/alternates_for_cyrillic_ha"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
@@ -120,7 +120,7 @@
             latin:keyLabel="т" />
         <Key
             latin:keyLabel="ь"
-            latin:popupCharacters="@string/alternates_for_cyrillic_soft_sign" />
+            latin:moreKeys="@string/alternates_for_cyrillic_soft_sign" />
         <Key
             latin:keyLabel="б" />
         <Key
