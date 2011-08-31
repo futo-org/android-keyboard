@@ -59,17 +59,17 @@
             latin:keyLabel="ד" />
         <Key
             latin:keyLabel="ג"
-            latin:popupCharacters="ג׳" />
+            latin:moreKeys="ג׳" />
         <Key
             latin:keyLabel="כ" />
         <Key
             latin:keyLabel="ע" />
         <Key
             latin:keyLabel="י"
-            latin:popupCharacters="ײַ" />
+            latin:moreKeys="ײַ" />
         <Key
             latin:keyLabel="ח"
-            latin:popupCharacters="ח׳" />
+            latin:moreKeys="ח׳" />
         <Key
             latin:keyLabel="ל" />
         <Key
@@ -96,7 +96,7 @@
                     latin:keyLabel="-"
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="_"
-                    latin:popupCharacters="_"
+                    latin:moreKeys="_"
                     latin:keyWidth="10.0%p" />
             </case>
             <case
@@ -106,7 +106,7 @@
                     latin:keyLabel=":"
                     latin:keyLabelOption="hasUppercaseLetter"
                     latin:keyHintLabel="+"
-                    latin:popupCharacters="+"
+                    latin:moreKeys="+"
                     latin:keyWidth="10.0%p" />
             </case>
             <default>
@@ -117,7 +117,7 @@
         </switch>
         <Key
             latin:keyLabel="ז"
-            latin:popupCharacters="ז׳" />
+            latin:moreKeys="ז׳" />
         <Key
             latin:keyLabel="ס" />
         <Key
@@ -130,13 +130,13 @@
             latin:keyLabel="מ" />
         <Key
             latin:keyLabel="צ"
-            latin:popupCharacters="צ׳" />
+            latin:moreKeys="צ׳" />
         <Key
             latin:keyLabel="ת"
-            latin:popupCharacters="ת׳" />
+            latin:moreKeys="ת׳" />
         <Key
             latin:keyLabel="ץ"
-            latin:popupCharacters="ץ׳" />
+            latin:moreKeys="ץ׳" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-10.400%p"

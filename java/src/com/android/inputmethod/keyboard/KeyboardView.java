@@ -79,7 +79,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // XML attributes
     protected final float mVerticalCorrection;
-    protected final int mPopupLayout;
+    protected final int mMoreKeysLayout;
     private final float mBackgroundDimAmount;
 
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
@@ -343,7 +343,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
         mVerticalCorrection = a.getDimensionPixelOffset(
                 R.styleable.KeyboardView_verticalCorrection, 0);
-        mPopupLayout = a.getResourceId(R.styleable.KeyboardView_popupLayout, 0);
+        mMoreKeysLayout = a.getResourceId(R.styleable.KeyboardView_moreKeysLayout, 0);
         mBackgroundDimAmount = a.getFloat(R.styleable.KeyboardView_backgroundDimAmount, 0.5f);
         a.recycle();
 
@@ -679,7 +679,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
 
         // Draw popup hint "..." at the bottom right corner of the key.
-        if ((key.hasPopupHint() && key.mPopupCharacters != null && key.mPopupCharacters.length > 0)
+        if ((key.hasPopupHint() && key.mMoreKeys != null && key.mMoreKeys.length > 0)
                 || key.needsSpecialPopupHint()) {
             paint.setTextSize(params.mKeyHintLetterSize);
             paint.setColor(params.mKeyHintLabelColor);
@@ -880,7 +880,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
         // Set the preview background state
         previewText.getBackground().setState(
-                key.mPopupCharacters != null ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
+                key.mMoreKeys != null ? LONG_PRESSABLE_STATE_SET : EMPTY_STATE_SET);
         previewText.setTextColor(params.mPreviewTextColor);
         FrameLayoutCompatUtils.placeViewAt(
                 previewText, previewX, previewY, previewWidth, previewHeight);
@@ -928,7 +928,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     }
 
     @Override
-    public boolean dismissPopupPanel() {
+    public boolean dismissMoreKeysPanel() {
         return false;
     }
 

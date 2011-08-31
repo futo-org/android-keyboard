@@ -30,34 +30,34 @@
     >
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_1"
-            latin:popupCharacters="@string/alternates_for_symbols_1" />
+            latin:moreKeys="@string/alternates_for_symbols_1" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_2"
-            latin:popupCharacters="@string/alternates_for_symbols_2" />
+            latin:moreKeys="@string/alternates_for_symbols_2" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_3"
-            latin:popupCharacters="@string/alternates_for_symbols_3" />
+            latin:moreKeys="@string/alternates_for_symbols_3" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_4"
-            latin:popupCharacters="@string/alternates_for_symbols_4" />
+            latin:moreKeys="@string/alternates_for_symbols_4" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_5"
-            latin:popupCharacters="@string/alternates_for_symbols_5" />
+            latin:moreKeys="@string/alternates_for_symbols_5" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_6"
-            latin:popupCharacters="@string/alternates_for_symbols_6" />
+            latin:moreKeys="@string/alternates_for_symbols_6" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_7"
-            latin:popupCharacters="@string/alternates_for_symbols_7" />
+            latin:moreKeys="@string/alternates_for_symbols_7" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_8"
-            latin:popupCharacters="@string/alternates_for_symbols_8" />
+            latin:moreKeys="@string/alternates_for_symbols_8" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_9"
-            latin:popupCharacters="@string/alternates_for_symbols_9" />
+            latin:moreKeys="@string/alternates_for_symbols_9" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_0"
-            latin:popupCharacters="@string/alternates_for_symbols_0" />
+            latin:moreKeys="@string/alternates_for_symbols_0" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-10.0%p"
@@ -73,24 +73,24 @@
             latin:keyStyle="currencyKeyStyle" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_percent"
-            latin:popupCharacters="@string/alternates_for_symbols_percent" />
+            latin:moreKeys="@string/alternates_for_symbols_percent" />
         <Key
             latin:keyLabel="&amp;" />
         <Key
             latin:keyLabel="*"
-            latin:popupCharacters="†,‡,★" />
+            latin:moreKeys="†,‡,★" />
         <Key
             latin:keyLabel="-"
-            latin:popupCharacters="_,–,—" />
+            latin:moreKeys="_,–,—" />
         <Key
             latin:keyLabel="+"
-            latin:popupCharacters="±" />
+            latin:moreKeys="±" />
         <Key
             latin:keyLabel="("
-            latin:popupCharacters="[,{,&lt;" />
+            latin:moreKeys="[,{,&lt;" />
         <Key
             latin:keyLabel=")"
-            latin:popupCharacters="],},&gt;" />
+            latin:moreKeys="],},&gt;" />
         <Key
             latin:keyStyle="returnKeyStyle"
             latin:keyXPos="-14.6%p"
@@ -104,20 +104,20 @@
             latin:keyWidth="10.0%p" />
         <Key
             latin:keyLabel="&lt;"
-            latin:popupCharacters="≤,«,‹" />
+            latin:moreKeys="≤,«,‹" />
         <Key
             latin:keyLabel="&gt;"
-            latin:popupCharacters="≥,»,›" />
+            latin:moreKeys="≥,»,›" />
         <Key
             latin:keyLabel="="
-            latin:popupCharacters="≠,≈" />
+            latin:moreKeys="≠,≈" />
         <switch>
             <case
                 latin:mode="url"
             >
                 <Key
                     latin:keyLabel="\'"
-                    latin:popupCharacters="‘,’,‚,‛" />
+                    latin:moreKeys="‘,’,‚,‛" />
             </case>
             <default>
                 <Key
@@ -126,18 +126,18 @@
         </switch>
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_semicolon"
-            latin:popupCharacters="@string/alternates_for_symbols_semicolon" />
+            latin:moreKeys="@string/alternates_for_symbols_semicolon" />
         <Key
             latin:keyLabel="@string/keylabel_for_comma"
-            latin:popupCharacters="@string/alternates_for_comma" />
+            latin:moreKeys="@string/alternates_for_comma" />
         <Key
             latin:keyLabel="." />
         <Key
             latin:keyLabel="!"
-            latin:popupCharacters="¡" />
+            latin:moreKeys="¡" />
         <Key
             latin:keyLabel="@string/keylabel_for_symbols_question"
-            latin:popupCharacters="@string/alternates_for_symbols_question" />
+            latin:moreKeys="@string/alternates_for_symbols_question" />
         <Key
             latin:keyLabel="/"
             latin:keyWidth="fillRight" />
@@ -157,10 +157,10 @@
             latin:keyXPos="30.750%p"
             latin:keyWidth="39.750%p" />
         <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
-        <!-- latin:popupCharacters="“,”,„,‟,«,»,‘,’,‚,‛" -->
+        <!-- latin:moreKeys="“,”,„,‟,«,»,‘,’,‚,‛" -->
         <Key
             latin:keyLabel="&quot;"
-            latin:popupCharacters="“,”,«,»,‘,’,‚,‛" />
+            latin:moreKeys="“,”,«,»,‘,’,‚,‛" />
         <Key
             latin:keyLabel="_" />
         <Spacer

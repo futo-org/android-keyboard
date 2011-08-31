@@ -30,20 +30,20 @@
             latin:visualInsetsRight="1%p" />
         <Key
             latin:keyLabel="z"
-            latin:popupCharacters="@string/alternates_for_z" />
+            latin:moreKeys="@string/alternates_for_z" />
         <Key
             latin:keyLabel="x" />
         <Key
             latin:keyLabel="c"
-            latin:popupCharacters="@string/alternates_for_c" />
+            latin:moreKeys="@string/alternates_for_c" />
         <Key
             latin:keyLabel="v"
-            latin:popupCharacters="@string/alternates_for_v" />
+            latin:moreKeys="@string/alternates_for_v" />
         <Key
             latin:keyLabel="b" />
         <Key
             latin:keyLabel="n"
-            latin:popupCharacters="@string/alternates_for_n" />
+            latin:moreKeys="@string/alternates_for_n" />
         <Key
             latin:keyLabel="m" />
         <Key

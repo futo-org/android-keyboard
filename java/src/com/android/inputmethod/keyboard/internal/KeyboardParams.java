@@ -49,7 +49,7 @@ public class KeyboardParams {
     public int mVerticalGap;
 
     public boolean mIsRtlKeyboard;
-    public int mPopupTemplateId;
+    public int mMoreKeysTemplate;
     public int mMaxMiniKeyboardColumn;
 
     public int GRID_WIDTH;

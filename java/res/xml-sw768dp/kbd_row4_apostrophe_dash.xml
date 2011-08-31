@@ -35,14 +35,14 @@
                 latin:keyLabel="/"
                 latin:keyLabelOption="hasUppercaseLetter"
                 latin:keyHintLabel=":"
-                latin:popupCharacters=":" />
+                latin:moreKeys=":" />
         </case>
         <default>
             <Key
                 latin:keyLabel="@string/keylabel_for_apostrophe"
                 latin:keyLabelOption="hasUppercaseLetter"
                 latin:keyHintLabel="@string/keyhintlabel_for_apostrophe"
-                latin:popupCharacters="@string/alternates_for_apostrophe" />
+                latin:moreKeys="@string/alternates_for_apostrophe" />
         </default>
     </switch>
     <switch>
@@ -57,7 +57,7 @@
                 latin:keyLabel="@string/keylabel_for_dash"
                 latin:keyLabelOption="hasUppercaseLetter"
                 latin:keyHintLabel="@string/keyhintlabel_for_dash"
-                latin:popupCharacters="@string/alternates_for_dash" />
+                latin:moreKeys="@string/alternates_for_dash" />
         </default>
     </switch>
 </merge>

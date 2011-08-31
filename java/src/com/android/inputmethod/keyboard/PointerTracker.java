@@ -63,7 +63,7 @@ public class PointerTracker {
         public TimerProxy getTimerProxy();
     }
 
-    public interface DrawingProxy extends PopupPanel.Controller {
+    public interface DrawingProxy extends MoreKeysPanel.Controller {
         public void invalidateKey(Key key);
         public TextView inflateKeyPreviewText();
         public void showKeyPreview(int keyIndex, PointerTracker tracker);
@@ -123,8 +123,8 @@ public class PointerTracker {
     // true if event is already translated to a key action.
     private boolean mKeyAlreadyProcessed;
 
-    // true if this pointer has been long-pressed and is showing a popup panel.
-    private boolean mIsShowingPopupPanel;
+    // true if this pointer has been long-pressed and is showing a more keys panel.
+    private boolean mIsShowingMoreKeysPanel;
 
     // true if this pointer is repeatable key
     private boolean mIsRepeatableKey;
@@ -572,9 +572,9 @@ public class PointerTracker {
         }
         final int keyIndex = onUpKey(keyX, keyY, eventTime);
         setReleasedKeyGraphics(keyIndex);
-        if (mIsShowingPopupPanel) {
-            mDrawingProxy.dismissPopupPanel();
-            mIsShowingPopupPanel = false;
+        if (mIsShowingMoreKeysPanel) {
+            mDrawingProxy.dismissMoreKeysPanel();
+            mIsShowingMoreKeysPanel = false;
         }
         if (mKeyAlreadyProcessed)
             return;
@@ -583,10 +583,10 @@ public class PointerTracker {
         }
     }
 
-    public void onShowPopupPanel(int x, int y, long eventTime, KeyEventHandler handler) {
+    public void onShowMoreKeysPanel(int x, int y, long eventTime, KeyEventHandler handler) {
         onLongPressed();
         onDownEvent(x, y, eventTime, handler);
-        mIsShowingPopupPanel = true;
+        mIsShowingMoreKeysPanel = true;
     }
 
     public void onLongPressed() {
@@ -615,9 +615,9 @@ public class PointerTracker {
         mDrawingProxy.cancelShowKeyPreview(this);
         setReleasedKeyGraphics(mKeyIndex);
         mIsInSlidingKeyInput = false;
-        if (mIsShowingPopupPanel) {
-            mDrawingProxy.dismissPopupPanel();
-            mIsShowingPopupPanel = false;
+        if (mIsShowingMoreKeysPanel) {
+            mDrawingProxy.dismissMoreKeysPanel();
+            mIsShowingMoreKeysPanel = false;
         }
     }
 

@@ -255,10 +255,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
             mParams.mIsRtlKeyboard = keyboardAttr.getBoolean(
                     R.styleable.Keyboard_isRtlKeyboard, false);
-            mParams.mPopupTemplateId = keyboardAttr.getResourceId(
-                    R.styleable.Keyboard_popupTemplate, 0);
+            mParams.mMoreKeysTemplate = keyboardAttr.getResourceId(
+                    R.styleable.Keyboard_moreKeysTemplate, 0);
             mParams.mMaxMiniKeyboardColumn = keyAttr.getInt(
-                    R.styleable.Keyboard_Key_maxMiniKeyboardColumn, 5);
+                    R.styleable.Keyboard_Key_maxMoreKeysColumn, 5);
 
             mParams.mIconsSet.loadIcons(keyboardAttr);
         } finally {
@@ -365,9 +365,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             checkEndTag(TAG_KEY, parser);
         } else {
             Key key = new Key(mResources, mParams, row, mCurrentX, mCurrentY, parser, mKeyStyles);
-            if (DEBUG) Log.d(TAG, String.format("<%s%s keyLabel=%s code=%d popupCharacters=%s />",
+            if (DEBUG) Log.d(TAG, String.format("<%s%s keyLabel=%s code=%d moreKeys=%s />",
                     TAG_KEY, (key.isEnabled() ? "" : " disabled"), key.mLabel, key.mCode,
-                    Arrays.toString(key.mPopupCharacters)));
+                    Arrays.toString(key.mMoreKeys)));
             checkEndTag(TAG_KEY, parser);
             mParams.onAddKey(key);
             endKey(key);

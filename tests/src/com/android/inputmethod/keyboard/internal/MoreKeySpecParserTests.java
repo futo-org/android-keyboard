@@ -22,7 +22,7 @@ import android.test.AndroidTestCase;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.latin.R;
 
-public class PopupCharactersParserTests extends AndroidTestCase {
+public class MoreKeySpecParserTests extends AndroidTestCase {
     private Resources mRes;
 
     private static final int ICON_SETTINGS_KEY = 5;
@@ -45,28 +45,28 @@ public class PopupCharactersParserTests extends AndroidTestCase {
         mCodeSettings = res.getInteger(codeId);
     }
 
-    private void assertParser(String message, String popupSpec, String expectedLabel,
+    private void assertParser(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
-        String actualLabel = PopupCharactersParser.getLabel(popupSpec);
+        String actualLabel = MoreKeySpecParser.getLabel(moreKeySpec);
         assertEquals(message + ": label:", expectedLabel, actualLabel);
 
-        String actualOutputText = PopupCharactersParser.getOutputText(popupSpec);
+        String actualOutputText = MoreKeySpecParser.getOutputText(moreKeySpec);
         assertEquals(message + ": ouptputText:", expectedOutputText, actualOutputText);
 
-        int actualIcon = PopupCharactersParser.getIconId(popupSpec);
+        int actualIcon = MoreKeySpecParser.getIconId(moreKeySpec);
         assertEquals(message + ": icon:", expectedIcon, actualIcon);
 
-        int actualCode = PopupCharactersParser.getCode(mRes, popupSpec);
+        int actualCode = MoreKeySpecParser.getCode(mRes, moreKeySpec);
         assertEquals(message + ": codes value:", expectedCode, actualCode);
     }
 
-    private void assertParserError(String message, String popupSpec, String expectedLabel,
+    private void assertParserError(String message, String moreKeySpec, String expectedLabel,
             String expectedOutputText, int expectedIcon, int expectedCode) {
         try {
-            assertParser(message, popupSpec, expectedLabel, expectedOutputText, expectedIcon,
+            assertParser(message, moreKeySpec, expectedLabel, expectedOutputText, expectedIcon,
                     expectedCode);
             fail(message);
-        } catch (PopupCharactersParser.PopupCharactersParserError pcpe) {
+        } catch (MoreKeySpecParser.MoreKeySpecParserError pcpe) {
             // success.
         }
     }

@@ -30,7 +30,7 @@ import com.android.inputmethod.keyboard.internal.KeyboardBuilder;
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
-import com.android.inputmethod.keyboard.internal.PopupCharactersParser;
+import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
 import com.android.inputmethod.keyboard.internal.Row;
 import com.android.inputmethod.latin.R;
 
@@ -90,10 +90,10 @@ public class Key {
     public final int mY;
     /** Text to output when pressed. This can be multiple characters, like ".com" */
     public final CharSequence mOutputText;
-    /** Popup characters */
-    public final CharSequence[] mPopupCharacters;
-    /** Popup keyboard maximum column number */
-    public final int mMaxMiniKeyboardColumn;
+    /** More keys */
+    public final CharSequence[] mMoreKeys;
+    /** More keys maximum column number */
+    public final int mMaxMoreKeysColumn;
 
     /**
      * Flags that specify the anchoring to edges of the keyboard for detecting touch events
@@ -192,22 +192,22 @@ public class Key {
         }
     }
 
-    private static int getCode(Resources res, KeyboardParams params, String popupSpec) {
+    private static int getCode(Resources res, KeyboardParams params, String moreKeySpec) {
         return getRtlParenthesisCode(
-                PopupCharactersParser.getCode(res, popupSpec), params.mIsRtlKeyboard);
+                MoreKeySpecParser.getCode(res, moreKeySpec), params.mIsRtlKeyboard);
     }
 
-    private static Drawable getIcon(KeyboardParams params, String popupSpec) {
-        return params.mIconsSet.getIcon(PopupCharactersParser.getIconId(popupSpec));
+    private static Drawable getIcon(KeyboardParams params, String moreKeySpec) {
+        return params.mIconsSet.getIcon(MoreKeySpecParser.getIconId(moreKeySpec));
     }
 
     /**
-     * This constructor is being used only for key in popup mini keyboard.
+     * This constructor is being used only for key in more keys keyboard.
      */
-    public Key(Resources res, KeyboardParams params, String popupSpec,
+    public Key(Resources res, KeyboardParams params, String moreKeySpec,
             int x, int y, int width, int height, int edgeFlags) {
-        this(params, PopupCharactersParser.getLabel(popupSpec), null, getIcon(params, popupSpec),
-                getCode(res, params, popupSpec), PopupCharactersParser.getOutputText(popupSpec),
+        this(params, MoreKeySpecParser.getLabel(moreKeySpec), null, getIcon(params, moreKeySpec),
+                getCode(res, params, moreKeySpec), MoreKeySpecParser.getOutputText(moreKeySpec),
                 x, y, width, height, edgeFlags);
     }
 
@@ -227,8 +227,8 @@ public class Key {
         mFunctional = false;
         mSticky = false;
         mRepeatable = false;
-        mPopupCharacters = null;
-        mMaxMiniKeyboardColumn = 0;
+        mMoreKeys = null;
+        mMaxMoreKeysColumn = 0;
         mLabel = label;
         mOutputText = outputText;
         mCode = code;
@@ -312,19 +312,19 @@ public class Key {
             mY = y;
             mWidth = keyWidth - mHorizontalGap;
 
-            final CharSequence[] popupCharacters = style.getTextArray(
-                    keyAttr, R.styleable.Keyboard_Key_popupCharacters);
-            // In Arabic symbol layouts, we'd like to keep digits in popup characters regardless of
-            // config_digit_popup_characters_enabled.
+            final CharSequence[] moreKeys = style.getTextArray(
+                    keyAttr, R.styleable.Keyboard_Key_moreKeys);
+            // In Arabic symbol layouts, we'd like to keep digits in more keys regardless of
+            // config_digit_more_keys_enabled.
             if (params.mId.isAlphabetKeyboard() && !res.getBoolean(
-                    R.bool.config_digit_popup_characters_enabled)) {
-                mPopupCharacters = PopupCharactersParser.filterOut(
-                        res, popupCharacters, PopupCharactersParser.DIGIT_FILTER);
+                    R.bool.config_digit_more_keys_enabled)) {
+                mMoreKeys = MoreKeySpecParser.filterOut(
+                        res, moreKeys, MoreKeySpecParser.DIGIT_FILTER);
             } else {
-                mPopupCharacters = popupCharacters;
+                mMoreKeys = moreKeys;
             }
-            mMaxMiniKeyboardColumn = style.getInt(keyboardAttr,
-                    R.styleable.Keyboard_Key_maxMiniKeyboardColumn,
+            mMaxMoreKeysColumn = style.getInt(keyboardAttr,
+                    R.styleable.Keyboard_Key_maxMoreKeysColumn,
                     params.mMaxMiniKeyboardColumn);
 
             mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);

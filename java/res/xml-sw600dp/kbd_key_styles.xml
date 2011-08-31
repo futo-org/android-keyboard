@@ -38,7 +38,7 @@
             <key-style
                 latin:styleName="f2PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
-                latin:popupCharacters="\@icon/3|\@integer/key_settings"
+                latin:moreKeys="\@icon/3|\@integer/key_settings"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>
@@ -72,8 +72,8 @@
         latin:keyLabel=":-)"
         latin:keyOutputText=":-) "
         latin:keyLabelOption="hasPopupHint"
-        latin:popupCharacters="@string/alternates_for_smiley"
-        latin:maxMiniKeyboardColumn="5" />
+        latin:moreKeys="@string/alternates_for_smiley"
+        latin:maxMoreKeysColumn="5" />
     <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
@@ -117,5 +117,5 @@
         latin:keyLabel="@string/keylabel_for_popular_domain"
         latin:keyLabelOption="fontNormal|hasPopupHint"
         latin:keyOutputText="@string/keylabel_for_popular_domain"
-        latin:popupCharacters="@string/alternates_for_popular_domain" />
+        latin:moreKeys="@string/alternates_for_popular_domain" />
 </merge>

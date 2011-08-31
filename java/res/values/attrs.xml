@@ -95,8 +95,8 @@
         <!-- Amount to offset the touch Y coordinate by, for bias correction. -->
         <attr name="verticalCorrection" format="dimension" />
 
-        <!-- Layout resource for popup panel -->
-        <attr name="popupLayout" format="reference" />
+        <!-- Layout resource for more keys panel -->
+        <attr name="moreKeysLayout" format="reference" />
 
         <attr name="shadowColor" format="color" />
         <attr name="shadowRadius" format="float" />
@@ -153,8 +153,8 @@
         <attr name="horizontalGap" format="dimension|fraction" />
         <!-- Default vertical gap between rows of keys. -->
         <attr name="verticalGap" format="dimension|fraction" />
-        <!-- Popup panel layout template -->
-        <attr name="popupTemplate" format="reference" />
+        <!-- More keys keyboard layout template -->
+        <attr name="moreKeysTemplate" format="reference" />
         <!-- Locale of the keyboard layout -->
         <attr name="keyboardLocale" format="string" />
         <!-- True if the keyboard is Right-To-Left -->
@@ -178,10 +178,10 @@
     <declare-styleable name="Keyboard_Key">
         <!-- The unicode value that this key outputs. -->
         <attr name="code" format="integer" />
-        <!-- The characters to display in the popup keyboard. -->
-        <attr name="popupCharacters" format="string" />
-        <!-- Maximum column of mini keyboard -->
-        <attr name="maxMiniKeyboardColumn" format="integer" />
+        <!-- The keys to display in the more keys keyboard. -->
+        <attr name="moreKeys" format="string" />
+        <!-- Maximum column of more keys keyboard -->
+        <attr name="maxMoreKeysColumn" format="integer" />
         <!-- Whether this is a functional key which has different key top than normal key. -->
         <attr name="isFunctional" format="boolean" />
         <!-- Whether this is a toggle key. -->

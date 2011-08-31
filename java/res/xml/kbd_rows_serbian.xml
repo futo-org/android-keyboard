@@ -29,43 +29,43 @@
         <Key
             latin:keyLabel="љ"
             latin:keyHintLabel="1"
-            latin:popupCharacters="1" />
+            latin:moreKeys="1" />
         <Key
             latin:keyLabel="њ"
             latin:keyHintLabel="2"
-            latin:popupCharacters="2" />
+            latin:moreKeys="2" />
         <Key
             latin:keyLabel="е"
             latin:keyHintLabel="3"
-            latin:popupCharacters="3" />
+            latin:moreKeys="3" />
         <Key
             latin:keyLabel="р"
             latin:keyHintLabel="4"
-            latin:popupCharacters="4" />
+            latin:moreKeys="4" />
         <Key
             latin:keyLabel="т"
             latin:keyHintLabel="5"
-            latin:popupCharacters="5" />
+            latin:moreKeys="5" />
         <Key
             latin:keyLabel="з"
             latin:keyHintLabel="6"
-            latin:popupCharacters="6" />
+            latin:moreKeys="6" />
         <Key
             latin:keyLabel="у"
             latin:keyHintLabel="7"
-            latin:popupCharacters="7" />
+            latin:moreKeys="7" />
         <Key
             latin:keyLabel="и"
             latin:keyHintLabel="8"
-            latin:popupCharacters="8" />
+            latin:moreKeys="8" />
         <Key
             latin:keyLabel="о"
             latin:keyHintLabel="9"
-            latin:popupCharacters="9" />
+            latin:moreKeys="9" />
         <Key
             latin:keyLabel="п"
             latin:keyHintLabel="0"
-            latin:popupCharacters="0" />
+            latin:moreKeys="0" />
         <Key
             latin:keyLabel="ш"
             latin:keyWidth="fillRight" />

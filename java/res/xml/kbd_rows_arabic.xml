@@ -29,47 +29,47 @@
         <Key
             latin:keyLabel="ض"
             latin:keyHintLabel="1"
-            latin:popupCharacters="1,١" />
+            latin:moreKeys="1,١" />
         <Key
             latin:keyLabel="ص"
             latin:keyHintLabel="2"
-            latin:popupCharacters="2,٢" />
+            latin:moreKeys="2,٢" />
         <Key
             latin:keyLabel="ق"
             latin:keyHintLabel="3"
-            latin:popupCharacters="3,٣" />
+            latin:moreKeys="3,٣" />
         <!-- \u06a4: ARABIC LETTER VEH -->
         <Key
             latin:keyLabel="ف"
             latin:keyHintLabel="4"
-            latin:popupCharacters="4,٤,\u06a4" />
+            latin:moreKeys="4,٤,\u06a4" />
         <Key
             latin:keyLabel="غ"
             latin:keyHintLabel="5"
-            latin:popupCharacters="5,٥" />
+            latin:moreKeys="5,٥" />
         <Key
             latin:keyLabel="ع"
             latin:keyHintLabel="6"
-            latin:popupCharacters="6,٦" />
+            latin:moreKeys="6,٦" />
         <!-- \ufeeb: ARABIC LETTER HEH INITIAL FORM
              \u0647\u0640: ARABIC LETTER HEH + ARABIC TATWEEL -->
         <Key
             latin:keyLabel="ه"
             latin:keyHintLabel="7"
-            latin:popupCharacters="7,٧,\ufeeb|\u0647\u0640" />
+            latin:moreKeys="7,٧,\ufeeb|\u0647\u0640" />
         <Key
             latin:keyLabel="خ"
             latin:keyHintLabel="8"
-            latin:popupCharacters="8,٨" />
+            latin:moreKeys="8,٨" />
         <Key
             latin:keyLabel="ح"
             latin:keyHintLabel="9"
-            latin:popupCharacters="9,٩" />
+            latin:moreKeys="9,٩" />
         <!-- \u0686: ARABIC LETTER TCHEH -->
         <Key
             latin:keyLabel="ج"
             latin:keyHintLabel="0"
-            latin:popupCharacters="0,٠,\u0686"
+            latin:moreKeys="0,٠,\u0686"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
@@ -83,10 +83,10 @@
              \u0649: ARABIC LETTER ALEF MAKSURA -->
         <Key
             latin:keyLabel="ي"
-            latin:popupCharacters="\u0626,\u0649" />
+            latin:moreKeys="\u0626,\u0649" />
         <Key
             latin:keyLabel="ب"
-            latin:popupCharacters="پ" />
+            latin:moreKeys="پ" />
         <!-- \ufefb: ARABIC LIGATURE LAM WITH ALEF ISOLATED FORM
              \u0644: ARABIC LETTER LAM
              \u0627: ARABIC LETTER ALEF
@@ -98,24 +98,24 @@
              \u0622: ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
             latin:keyLabel="ل"
-            latin:popupCharacters="\ufefb|\u0644\u0627,\ufef7|\u0644\u0623,\ufef9|\u0644\u0625,\ufef5|\u0644\u0622" />
+            latin:moreKeys="\ufefb|\u0644\u0627,\ufef7|\u0644\u0623,\ufef9|\u0644\u0625,\ufef5|\u0644\u0622" />
         <!-- \u0621: ARABIC LETTER HAMZA
              \u0623: ARABIC LETTER ALEF WITH HAMZA ABOVE
              \u0625: ARABIC LETTER ALEF WITH HAMZA BELOW
              \u0622: ARABIC LETTER ALEF WITH MADDA ABOVE -->
         <Key
             latin:keyLabel="ا"
-            latin:popupCharacters="\u0621,\u0623,\u0625,\u0622" />
+            latin:moreKeys="\u0621,\u0623,\u0625,\u0622" />
         <Key
             latin:keyLabel="ت"
-            latin:popupCharacters="ث" />
+            latin:moreKeys="ث" />
         <Key
             latin:keyLabel="ن" />
         <Key
             latin:keyLabel="م" />
         <Key
             latin:keyLabel="ك"
-            latin:popupCharacters="گ"
+            latin:moreKeys="گ"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
@@ -132,14 +132,14 @@
             latin:keyLabel="د" />
         <Key
             latin:keyLabel="ز"
-            latin:popupCharacters="ژ" />
+            latin:moreKeys="ژ" />
         <Key
             latin:keyLabel="ر" />
         <Key
             latin:keyLabel="ة" />
         <Key
             latin:keyLabel="و"
-            latin:popupCharacters="ؤ" />
+            latin:moreKeys="ؤ" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"

@@ -34,12 +34,12 @@
             latin:keyLabel="|" />
         <Key
             latin:keyLabel="•"
-            latin:popupCharacters="♪,♥,♠,♦,♣" />
+            latin:moreKeys="♪,♥,♠,♦,♣" />
         <Key
             latin:keyLabel="√" />
         <Key
             latin:keyLabel="π"
-            latin:popupCharacters="Π" />
+            latin:moreKeys="Π" />
         <Key
             latin:keyLabel="÷" />
         <Key
@@ -63,15 +63,15 @@
             latin:keyLabel="€" />
         <Key
             latin:keyLabel="°"
-            latin:popupCharacters="′,″" />
+            latin:moreKeys="′,″" />
         <Key
             latin:keyLabel="^"
-            latin:popupCharacters="↑,↓,←,→" />
+            latin:moreKeys="↑,↓,←,→" />
         <Key
             latin:keyLabel="_" />
         <Key
             latin:keyLabel="="
-            latin:popupCharacters="≠,≈,∞" />
+            latin:moreKeys="≠,≈,∞" />
         <Key
             latin:keyLabel="[" />
         <Key
@@ -93,15 +93,15 @@
             latin:keyLabel="©" />
         <Key
             latin:keyLabel="¶"
-            latin:popupCharacters="§" />
+            latin:moreKeys="§" />
         <Key
             latin:keyLabel="\\" />
         <Key
             latin:keyLabel="&lt;"
-            latin:popupCharacters="≤,«,‹" />
+            latin:moreKeys="≤,«,‹" />
         <Key
             latin:keyLabel="&gt;"
-            latin:popupCharacters="≥,»,›" />
+            latin:moreKeys="≥,»,›" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyWidth="fillRight"

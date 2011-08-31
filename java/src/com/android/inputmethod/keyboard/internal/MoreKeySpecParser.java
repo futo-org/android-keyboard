@@ -26,9 +26,9 @@ import com.android.inputmethod.latin.R;
 import java.util.ArrayList;
 
 /**
- * String parser of popupCharacters attribute of Key.
- * The string is comma separated texts each of which represents one popup key.
- * Each popup key text is one of the following:
+ * String parser of moreKeys attribute of Key.
+ * The string is comma separated texts each of which represents one "more key".
+ * Each "more key" specification is one of the following:
  * - A single letter (Letter)
  * - Label optionally followed by keyOutputText or code (keyLabel|keyOutputText).
  * - Icon followed by keyOutputText or code (@icon/icon_number|@integer/key_code)
@@ -37,8 +37,8 @@ import java.util.ArrayList;
  * Note that the character '@' and '\' are also parsed by XML parser and CSV parser as well.
  * See {@link KeyboardIconsSet} about icon_number.
  */
-public class PopupCharactersParser {
-    private static final String TAG = PopupCharactersParser.class.getSimpleName();
+public class MoreKeySpecParser {
+    private static final String TAG = MoreKeySpecParser.class.getSimpleName();
 
     private static final char ESCAPE = '\\';
     private static final String LABEL_END = "|";
@@ -46,24 +46,24 @@ public class PopupCharactersParser {
     private static final String PREFIX_ICON = PREFIX_AT + "icon/";
     private static final String PREFIX_CODE = PREFIX_AT + "integer/";
 
-    private PopupCharactersParser() {
+    private MoreKeySpecParser() {
         // Intentional empty constructor for utility class.
     }
 
-    private static boolean hasIcon(String popupSpec) {
-        if (popupSpec.startsWith(PREFIX_ICON)) {
-            final int end = indexOfLabelEnd(popupSpec, 0);
+    private static boolean hasIcon(String moreKeySpec) {
+        if (moreKeySpec.startsWith(PREFIX_ICON)) {
+            final int end = indexOfLabelEnd(moreKeySpec, 0);
             if (end > 0)
                 return true;
-            throw new PopupCharactersParserError("outputText or code not specified: " + popupSpec);
+            throw new MoreKeySpecParserError("outputText or code not specified: " + moreKeySpec);
         }
         return false;
     }
 
-    private static boolean hasCode(String popupSpec) {
-        final int end = indexOfLabelEnd(popupSpec, 0);
-        if (end > 0 && end + 1 < popupSpec.length()
-                && popupSpec.substring(end + 1).startsWith(PREFIX_CODE)) {
+    private static boolean hasCode(String moreKeySpec) {
+        final int end = indexOfLabelEnd(moreKeySpec, 0);
+        if (end > 0 && end + 1 < moreKeySpec.length()
+                && moreKeySpec.substring(end + 1).startsWith(PREFIX_CODE)) {
             return true;
         }
         return false;
@@ -85,81 +85,81 @@ public class PopupCharactersParser {
         return sb.toString();
     }
 
-    private static int indexOfLabelEnd(String popupSpec, int start) {
-        if (popupSpec.indexOf(ESCAPE, start) < 0) {
-            final int end = popupSpec.indexOf(LABEL_END, start);
+    private static int indexOfLabelEnd(String moreKeySpec, int start) {
+        if (moreKeySpec.indexOf(ESCAPE, start) < 0) {
+            final int end = moreKeySpec.indexOf(LABEL_END, start);
             if (end == 0)
-                throw new PopupCharactersParserError(LABEL_END + " at " + start + ": " + popupSpec);
+                throw new MoreKeySpecParserError(LABEL_END + " at " + start + ": " + moreKeySpec);
             return end;
         }
-        final int length = popupSpec.length();
+        final int length = moreKeySpec.length();
         for (int pos = start; pos < length; pos++) {
-            final char c = popupSpec.charAt(pos);
+            final char c = moreKeySpec.charAt(pos);
             if (c == ESCAPE && pos + 1 < length) {
                 pos++;
-            } else if (popupSpec.startsWith(LABEL_END, pos)) {
+            } else if (moreKeySpec.startsWith(LABEL_END, pos)) {
                 return pos;
             }
         }
         return -1;
     }
 
-    public static String getLabel(String popupSpec) {
-        if (hasIcon(popupSpec))
+    public static String getLabel(String moreKeySpec) {
+        if (hasIcon(moreKeySpec))
             return null;
-        final int end = indexOfLabelEnd(popupSpec, 0);
-        final String label = (end > 0) ? parseEscape(popupSpec.substring(0, end))
-                : parseEscape(popupSpec);
+        final int end = indexOfLabelEnd(moreKeySpec, 0);
+        final String label = (end > 0) ? parseEscape(moreKeySpec.substring(0, end))
+                : parseEscape(moreKeySpec);
         if (TextUtils.isEmpty(label))
-            throw new PopupCharactersParserError("Empty label: " + popupSpec);
+            throw new MoreKeySpecParserError("Empty label: " + moreKeySpec);
         return label;
     }
 
-    public static String getOutputText(String popupSpec) {
-        if (hasCode(popupSpec))
+    public static String getOutputText(String moreKeySpec) {
+        if (hasCode(moreKeySpec))
             return null;
-        final int end = indexOfLabelEnd(popupSpec, 0);
+        final int end = indexOfLabelEnd(moreKeySpec, 0);
         if (end > 0) {
-            if (indexOfLabelEnd(popupSpec, end + 1) >= 0)
-                    throw new PopupCharactersParserError("Multiple " + LABEL_END + ": "
-                            + popupSpec);
-            final String outputText = parseEscape(popupSpec.substring(end + LABEL_END.length()));
+            if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0)
+                    throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": "
+                            + moreKeySpec);
+            final String outputText = parseEscape(moreKeySpec.substring(end + LABEL_END.length()));
             if (!TextUtils.isEmpty(outputText))
                 return outputText;
-            throw new PopupCharactersParserError("Empty outputText: " + popupSpec);
+            throw new MoreKeySpecParserError("Empty outputText: " + moreKeySpec);
         }
-        final String label = getLabel(popupSpec);
+        final String label = getLabel(moreKeySpec);
         if (label == null)
-            throw new PopupCharactersParserError("Empty label: " + popupSpec);
+            throw new MoreKeySpecParserError("Empty label: " + moreKeySpec);
         // Code is automatically generated for one letter label. See {@link getCode()}.
         if (label.length() == 1)
             return null;
         return label;
     }
 
-    public static int getCode(Resources res, String popupSpec) {
-        if (hasCode(popupSpec)) {
-            final int end = indexOfLabelEnd(popupSpec, 0);
-            if (indexOfLabelEnd(popupSpec, end + 1) >= 0)
-                throw new PopupCharactersParserError("Multiple " + LABEL_END + ": " + popupSpec);
+    public static int getCode(Resources res, String moreKeySpec) {
+        if (hasCode(moreKeySpec)) {
+            final int end = indexOfLabelEnd(moreKeySpec, 0);
+            if (indexOfLabelEnd(moreKeySpec, end + 1) >= 0)
+                throw new MoreKeySpecParserError("Multiple " + LABEL_END + ": " + moreKeySpec);
             final int resId = getResourceId(res,
-                    popupSpec.substring(end + LABEL_END.length() + PREFIX_AT.length()));
+                    moreKeySpec.substring(end + LABEL_END.length() + PREFIX_AT.length()));
             final int code = res.getInteger(resId);
             return code;
         }
-        if (indexOfLabelEnd(popupSpec, 0) > 0)
+        if (indexOfLabelEnd(moreKeySpec, 0) > 0)
             return Keyboard.CODE_DUMMY;
-        final String label = getLabel(popupSpec);
+        final String label = getLabel(moreKeySpec);
         // Code is automatically generated for one letter label.
         if (label != null && label.length() == 1)
             return label.charAt(0);
         return Keyboard.CODE_DUMMY;
     }
 
-    public static int getIconId(String popupSpec) {
-        if (hasIcon(popupSpec)) {
-            int end = popupSpec.indexOf(LABEL_END, PREFIX_ICON.length() + 1);
-            final String iconId = popupSpec.substring(PREFIX_ICON.length(), end);
+    public static int getIconId(String moreKeySpec) {
+        if (hasIcon(moreKeySpec)) {
+            int end = moreKeySpec.indexOf(LABEL_END, PREFIX_ICON.length() + 1);
+            final String iconId = moreKeySpec.substring(PREFIX_ICON.length(), end);
             try {
                 return Integer.valueOf(iconId);
             } catch (NumberFormatException e) {
@@ -174,13 +174,13 @@ public class PopupCharactersParser {
         String packageName = res.getResourcePackageName(R.string.english_ime_name);
         int resId = res.getIdentifier(name, null, packageName);
         if (resId == 0)
-            throw new PopupCharactersParserError("Unknown resource: " + name);
+            throw new MoreKeySpecParserError("Unknown resource: " + name);
         return resId;
     }
 
     @SuppressWarnings("serial")
-    public static class PopupCharactersParserError extends RuntimeException {
-        public PopupCharactersParserError(String message) {
+    public static class MoreKeySpecParserError extends RuntimeException {
+        public MoreKeySpecParserError(String message) {
             super(message);
         }
     }
@@ -196,31 +196,31 @@ public class PopupCharactersParser {
         }
     };
 
-    public static CharSequence[] filterOut(Resources res, CharSequence[] popupCharacters,
+    public static CharSequence[] filterOut(Resources res, CharSequence[] moreKeys,
             CodeFilter filter) {
-        if (popupCharacters == null || popupCharacters.length < 1) {
+        if (moreKeys == null || moreKeys.length < 1) {
             return null;
         }
-        if (popupCharacters.length == 1
-                && filter.shouldFilterOut(getCode(res, popupCharacters[0].toString()))) {
+        if (moreKeys.length == 1
+                && filter.shouldFilterOut(getCode(res, moreKeys[0].toString()))) {
             return null;
         }
         ArrayList<CharSequence> filtered = null;
-        for (int i = 0; i < popupCharacters.length; i++) {
-            final CharSequence popupSpec = popupCharacters[i];
-            if (filter.shouldFilterOut(getCode(res, popupSpec.toString()))) {
+        for (int i = 0; i < moreKeys.length; i++) {
+            final CharSequence moreKeySpec = moreKeys[i];
+            if (filter.shouldFilterOut(getCode(res, moreKeySpec.toString()))) {
                 if (filtered == null) {
                     filtered = new ArrayList<CharSequence>();
                     for (int j = 0; j < i; j++) {
-                        filtered.add(popupCharacters[j]);
+                        filtered.add(moreKeys[j]);
                     }
                 }
             } else if (filtered != null) {
-                filtered.add(popupSpec);
+                filtered.add(moreKeySpec);
             }
         }
         if (filtered == null) {
-            return popupCharacters;
+            return moreKeys;
         }
         if (filtered.size() == 0) {
             return null;
