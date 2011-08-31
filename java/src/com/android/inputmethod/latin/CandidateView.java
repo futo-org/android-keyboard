@@ -59,8 +59,6 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     // The maximum number of suggestions available. See {@link Suggest#mPrefMaxSuggestions}.
     private static final int MAX_SUGGESTIONS = 18;
-    private static final int WRAP_CONTENT = ViewGroup.LayoutParams.WRAP_CONTENT;
-    private static final int MATCH_PARENT = ViewGroup.LayoutParams.MATCH_PARENT;
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
@@ -155,7 +153,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             final TextView word = words.get(0);
             final View divider = dividers.get(0);
             mPadding = word.getCompoundPaddingLeft() + word.getCompoundPaddingRight();
-            divider.measure(WRAP_CONTENT, MATCH_PARENT);
+            divider.measure(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mDividerWidth = divider.getMeasuredWidth();
             mDividerHeight = divider.getMeasuredHeight();
 
@@ -224,7 +223,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 lastView = word;
                 if (x == 0)
                     centeringFrom = word;
-                word.measure(WRAP_CONTENT,
+                word.measure(ViewGroup.LayoutParams.WRAP_CONTENT,
                         MeasureSpec.makeMeasureSpec(mCandidateStripHeight, MeasureSpec.EXACTLY));
                 final int width = word.getMeasuredWidth();
                 final int height = word.getMeasuredHeight();
@@ -234,7 +233,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 if (info != null) {
                     paneView.addView(info);
                     lastView = info;
-                    info.measure(WRAP_CONTENT, WRAP_CONTENT);
+                    info.measure(ViewGroup.LayoutParams.WRAP_CONTENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
                     final int infoWidth = info.getMeasuredWidth();
                     FrameLayoutCompatUtils.placeViewAt(
                             info, x - infoWidth, y, infoWidth, info.getMeasuredHeight());
@@ -430,7 +430,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 word.setText(text); // TextView.setText() resets text scale x to 1.0.
                 word.setTextScaleX(scaleX);
                 stripView.addView(word);
-                setLayoutWeight(word, getCandidateWeight(index), MATCH_PARENT);
+                setLayoutWeight(
+                        word, getCandidateWeight(index), ViewGroup.LayoutParams.MATCH_PARENT);
                 x += word.getMeasuredWidth();
 
                 if (DBG) {
@@ -439,7 +440,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                         final TextView info = mInfos.get(pos);
                         info.setText(debugInfo);
                         placer.addView(info);
-                        info.measure(WRAP_CONTENT, WRAP_CONTENT);
+                        info.measure(ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT);
                         final int infoWidth = info.getMeasuredWidth();
                         final int y = info.getMeasuredHeight();
                         FrameLayoutCompatUtils.placeViewAt(
@@ -515,7 +517,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             wordView.setText(text);
             wordView.setTextScaleX(wordScaleX);
             stripView.addView(wordView);
-            setLayoutWeight(wordView, mCenterCandidateWeight, MATCH_PARENT);
+            setLayoutWeight(wordView, mCenterCandidateWeight, ViewGroup.LayoutParams.MATCH_PARENT);
 
             stripView.addView(mDividers.get(0));
 
@@ -526,7 +528,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             hintView.setText(mHintToSaveText);
             hintView.setTextScaleX(hintScaleX);
             stripView.addView(hintView);
-            setLayoutWeight(hintView, 1.0f - mCenterCandidateWeight, MATCH_PARENT);
+            setLayoutWeight(
+                    hintView, 1.0f - mCenterCandidateWeight, ViewGroup.LayoutParams.MATCH_PARENT);
         }
     }
 
@@ -558,7 +561,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
         mPreviewPopup = new PopupWindow(context);
         mPreviewText = (TextView) inflater.inflate(R.layout.candidate_preview, null);
-        mPreviewPopup.setWindowLayoutMode(WRAP_CONTENT, WRAP_CONTENT);
+        mPreviewPopup.setWindowLayoutMode(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
 
@@ -796,8 +800,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         final TextView previewText = mPreviewText;
         previewText.setTextColor(mStripParams.mColorTypedWord);
         previewText.setText(word);
-        previewText.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        previewText.measure(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final int[] offsetInWindow = new int[2];
         view.getLocationInWindow(offsetInWindow);
         final int posX = offsetInWindow[0];

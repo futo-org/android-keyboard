@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.PopupWindow;
 
@@ -379,9 +380,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final Keyboard miniKeyboard = new MiniKeyboard.Builder(
                 this, parentKeyboard.mPopupKeyboardResId, parentKey, parentKeyboard).build();
         miniKeyboardView.setKeyboard(miniKeyboard);
-
-        container.measure(MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.AT_MOST),
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+        container.measure(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         return miniKeyboardView;
     }

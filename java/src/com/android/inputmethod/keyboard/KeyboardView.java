@@ -35,6 +35,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -121,9 +122,6 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private static final HashMap<Integer, Float> sTextWidthCache =
             new HashMap<Integer, Float>();
     private static final String KEY_LABEL_REFERENCE_CHAR = "M";
-
-    private static final int MEASURESPEC_UNSPECIFIED = MeasureSpec.makeMeasureSpec(
-            0, MeasureSpec.UNSPECIFIED);
 
     private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
 
@@ -859,7 +857,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
         previewText.setBackgroundDrawable(params.mPreviewBackground);
 
-        previewText.measure(MEASURESPEC_UNSPECIFIED, MEASURESPEC_UNSPECIFIED);
+        previewText.measure(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         final int previewWidth = Math.max(previewText.getMeasuredWidth(), keyDrawWidth
                 + previewText.getPaddingLeft() + previewText.getPaddingRight());
         final int previewHeight = params.mPreviewHeight;
