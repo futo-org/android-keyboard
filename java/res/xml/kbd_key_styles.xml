@@ -91,7 +91,7 @@
                 latin:keyOutputText=":-) "
                 latin:keyLabelOption="hasPopupHint"
                 latin:popupCharacters="@string/alternates_for_smiley"
-                latin:maxPopupKeyboardColumn="5"
+                latin:maxMiniKeyboardColumn="5"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
@@ -221,6 +221,6 @@
         latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
         latin:keyLabelOption="hasPopupHint"
         latin:popupCharacters="@string/alternates_for_punctuation"
-        latin:maxPopupKeyboardColumn="@integer/popup_keyboard_column_for_punctuation"
+        latin:maxMiniKeyboardColumn="@integer/mini_keyboard_column_for_punctuation"
         latin:parentStyle="functionalKeyStyle" />
 </merge>

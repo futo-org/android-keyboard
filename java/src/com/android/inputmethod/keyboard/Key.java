@@ -93,7 +93,7 @@ public class Key {
     /** Popup characters */
     public final CharSequence[] mPopupCharacters;
     /** Popup keyboard maximum column number */
-    public final int mMaxPopupColumn;
+    public final int mMaxMiniKeyboardColumn;
 
     /**
      * Flags that specify the anchoring to edges of the keyboard for detecting touch events
@@ -228,7 +228,7 @@ public class Key {
         mSticky = false;
         mRepeatable = false;
         mPopupCharacters = null;
-        mMaxPopupColumn = 0;
+        mMaxMiniKeyboardColumn = 0;
         mLabel = label;
         mOutputText = outputText;
         mCode = code;
@@ -323,9 +323,9 @@ public class Key {
             } else {
                 mPopupCharacters = popupCharacters;
             }
-            mMaxPopupColumn = style.getInt(keyboardAttr,
-                    R.styleable.Keyboard_Key_maxPopupKeyboardColumn,
-                    params.mMaxPopupColumn);
+            mMaxMiniKeyboardColumn = style.getInt(keyboardAttr,
+                    R.styleable.Keyboard_Key_maxMiniKeyboardColumn,
+                    params.mMaxMiniKeyboardColumn);
 
             mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
             mFunctional = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional, false);

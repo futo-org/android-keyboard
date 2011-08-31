@@ -19,8 +19,8 @@
         <item name="keyboardStyle">@style/Keyboard.Gingerbread</item>
         <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Gingerbread</item>
-        <item name="popupMiniKeyboardViewStyle">@style/PopupMiniKeyboardView.Gingerbread</item>
-        <item name="popupMiniKeyboardPanelStyle">@style/PopupMiniKeyboardPanelStyle</item>
+        <item name="miniKeyboardViewStyle">@style/MiniKeyboardView.Gingerbread</item>
+        <item name="miniKeyboardPanelStyle">@style/MiniKeyboardPanelStyle</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>

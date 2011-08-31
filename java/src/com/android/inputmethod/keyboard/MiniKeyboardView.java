@@ -34,7 +34,7 @@ import java.util.List;
  * A view that renders a virtual {@link MiniKeyboard}. It handles rendering of keys and detecting
  * key presses and touch movements.
  */
-public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
+public class MiniKeyboardView extends KeyboardView implements PopupPanel {
     private final int[] mCoordinates = new int[2];
 
     private final KeyDetector mKeyDetector;
@@ -128,11 +128,11 @@ public class PopupMiniKeyboardView extends KeyboardView implements PopupPanel {
         }
     };
 
-    public PopupMiniKeyboardView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.popupMiniKeyboardViewStyle);
+    public MiniKeyboardView(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.miniKeyboardViewStyle);
     }
 
-    public PopupMiniKeyboardView(Context context, AttributeSet attrs, int defStyle) {
+    public MiniKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         final TypedArray a = context.obtainStyledAttributes(

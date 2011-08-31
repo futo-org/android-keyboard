@@ -102,10 +102,10 @@ public class Keyboard {
     public final int mMostCommonKeyWidth;
 
     /** Popup keyboard template */
-    public final int mPopupKeyboardResId;
+    public final int mPopupTemplateId;
 
-    /** Maximum column for popup keyboard */
-    public final int mMaxPopupColumn;
+    /** Maximum column for mini keyboard */
+    public final int mMaxMiniKeyboardColumn;
 
     /** True if Right-To-Left keyboard */
     public final boolean mIsRtlKeyboard;
@@ -130,8 +130,8 @@ public class Keyboard {
         mWidth = params.mWidth;
         mMostCommonKeyWidth = params.mMostCommonKeyWidth;
         mIsRtlKeyboard = params.mIsRtlKeyboard;
-        mPopupKeyboardResId = params.mPopupKeyboardResId;
-        mMaxPopupColumn = params.mMaxPopupColumn;
+        mPopupTemplateId = params.mPopupTemplateId;
+        mMaxMiniKeyboardColumn = params.mMaxMiniKeyboardColumn;
 
         mDefaultRowHeight = params.mDefaultRowHeight;
         mVerticalGap = params.mVerticalGap;

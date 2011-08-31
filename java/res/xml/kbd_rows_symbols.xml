@@ -106,7 +106,7 @@
         <Key
             latin:keyLabel="&quot;"
             latin:popupCharacters="“,”,«,»"
-            latin:maxPopupKeyboardColumn="6" />
+            latin:maxMiniKeyboardColumn="6" />
         <Key
             latin:keyLabel="\'"
             latin:popupCharacters="‘,’,‚,‛" />

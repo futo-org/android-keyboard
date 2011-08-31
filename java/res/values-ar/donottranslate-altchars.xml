@@ -31,7 +31,7 @@
          \u064b: ARABIC FATHATAN
          \u064d: ARABIC KASRATAN -->
     <string name="alternates_for_punctuation">"\u060c,\u061b,\u061f,!,:,-,/,\',\",\u0651,\u0652,\u064c,\u0640,\u064f,\u064e,\u0650,\u064b,\u064d"</string>
-    <integer name="popup_keyboard_column_for_punctuation">9</integer>
+    <integer name="mini_keyboard_column_for_punctuation">9</integer>
     <string name="keyhintlabel_for_punctuation">\u064b</string>
     <string name="keylabel_for_symbols_1">"١"</string>
     <string name="keylabel_for_symbols_2">"٢"</string>
