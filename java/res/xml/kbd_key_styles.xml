@@ -33,7 +33,7 @@
             <key-style
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
-                latin:moreKeys="@string/alternates_for_f1"
+                latin:moreKeys="@string/more_keys_for_f1"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <!-- clobberSettingsKey="false -->
@@ -43,7 +43,7 @@
             <key-style
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
-                latin:moreKeys="@string/alternates_for_f1_settings"
+                latin:moreKeys="@string/more_keys_for_f1_settings"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <!-- clobberSettingsKey="false" hasSettingsKey="true" -->
@@ -53,7 +53,7 @@
             <key-style
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
-                latin:moreKeys="@string/alternates_for_f1_navigate"
+                latin:moreKeys="@string/more_keys_for_f1_navigate"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <!-- clobberSettingsKey="false" and hasSettingsKey="true" navigateAction="false" -->
@@ -61,7 +61,7 @@
             <key-style
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
-                latin:moreKeys="@string/alternates_for_f1"
+                latin:moreKeys="@string/more_keys_for_f1"
                 latin:parentStyle="functionalKeyStyle" />
         </default>
     </switch>
@@ -90,7 +90,7 @@
                 latin:keyLabel=":-)"
                 latin:keyOutputText=":-) "
                 latin:keyLabelOption="hasPopupHint"
-                latin:moreKeys="@string/alternates_for_smiley"
+                latin:moreKeys="@string/more_keys_for_smiley"
                 latin:maxMoreKeysColumn="5"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
@@ -220,7 +220,7 @@
         latin:keyLabel="."
         latin:keyHintLabel="@string/keyhintlabel_for_punctuation"
         latin:keyLabelOption="hasPopupHint"
-        latin:moreKeys="@string/alternates_for_punctuation"
+        latin:moreKeys="@string/more_keys_for_punctuation"
         latin:maxMoreKeysColumn="@integer/mini_keyboard_column_for_punctuation"
         latin:parentStyle="functionalKeyStyle" />
 </merge>

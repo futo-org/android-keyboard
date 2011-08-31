@@ -39,7 +39,7 @@
             latin:keyLabel="к" />
         <Key
             latin:keyLabel="е"
-            latin:moreKeys="@string/alternates_for_cyrillic_e" />
+            latin:moreKeys="@string/more_keys_for_cyrillic_e" />
         <Key
             latin:keyLabel="н" />
         <Key

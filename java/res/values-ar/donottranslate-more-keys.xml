@@ -30,7 +30,7 @@
          \u0650: ARABIC KASRA
          \u064b: ARABIC FATHATAN
          \u064d: ARABIC KASRATAN -->
-    <string name="alternates_for_punctuation">"\u060c,\u061b,\u061f,!,:,-,/,\',\",\u0651,\u0652,\u064c,\u0640,\u064f,\u064e,\u0650,\u064b,\u064d"</string>
+    <string name="more_keys_for_punctuation">"\u060c,\u061b,\u061f,!,:,-,/,\',\",\u0651,\u0652,\u064c,\u0640,\u064f,\u064e,\u0650,\u064b,\u064d"</string>
     <integer name="mini_keyboard_column_for_punctuation">9</integer>
     <string name="keyhintlabel_for_punctuation">\u064b</string>
     <string name="keylabel_for_symbols_1">"١"</string>
@@ -43,35 +43,35 @@
     <string name="keylabel_for_symbols_8">"٨"</string>
     <string name="keylabel_for_symbols_9">"٩"</string>
     <string name="keylabel_for_symbols_0">"٠"</string>
-    <string name="alternates_for_symbols_1">1,¹,½,⅓,¼,⅛</string>
-    <string name="alternates_for_symbols_2">2,²,⅔</string>
-    <string name="alternates_for_symbols_3">3,³,¾,⅜</string>
-    <string name="alternates_for_symbols_4">4,⁴</string>
-    <string name="alternates_for_symbols_5">5,⅝</string>
-    <string name="alternates_for_symbols_6">6</string>
-    <string name="alternates_for_symbols_7">7,⅞</string>
-    <string name="alternates_for_symbols_8">8</string>
-    <string name="alternates_for_symbols_9">9</string>
-    <string name="alternates_for_symbols_0">0,ⁿ,∅</string>
+    <string name="more_keys_for_symbols_1">1,¹,½,⅓,¼,⅛</string>
+    <string name="more_keys_for_symbols_2">2,²,⅔</string>
+    <string name="more_keys_for_symbols_3">3,³,¾,⅜</string>
+    <string name="more_keys_for_symbols_4">4,⁴</string>
+    <string name="more_keys_for_symbols_5">5,⅝</string>
+    <string name="more_keys_for_symbols_6">6</string>
+    <string name="more_keys_for_symbols_7">7,⅞</string>
+    <string name="more_keys_for_symbols_8">8</string>
+    <string name="more_keys_for_symbols_9">9</string>
+    <string name="more_keys_for_symbols_0">0,ⁿ,∅</string>
     <string name="keylabel_for_comma">\u060c</string>
     <string name="keylabel_for_f1">\u060c</string>
     <string name="keylabel_for_symbols_question">\u061f</string>
     <string name="keylabel_for_symbols_semicolon">\u061b</string>
     <!-- \u066a: ARABIC PERCENT SIGN -->
     <string name="keylabel_for_symbols_percent">\u066a</string>
-    <string name="alternates_for_comma">,</string>
-    <string name="alternates_for_f1">,</string>
+    <string name="more_keys_for_comma">,</string>
+    <string name="more_keys_for_f1">,</string>
     <!-- @icon/3 is iconSettingsKey -->
-    <string name="alternates_for_f1_settings">\\,,\@icon/3|\@integer/key_settings</string>
+    <string name="more_keys_for_f1_settings">\\,,\@icon/3|\@integer/key_settings</string>
     <!-- @icon/7 is iconTabKey -->
-    <string name="alternates_for_f1_navigate">\\,,\@icon/7|\@integer/key_tab</string>
-    <string name="alternates_for_symbols_question">\?,¿</string>
-    <string name="alternates_for_symbols_semicolon">;</string>
-    <string name="alternates_for_symbols_percent">%,‰</string>
+    <string name="more_keys_for_f1_navigate">\\,,\@icon/7|\@integer/key_tab</string>
+    <string name="more_keys_for_symbols_question">\?,¿</string>
+    <string name="more_keys_for_symbols_semicolon">;</string>
+    <string name="more_keys_for_symbols_percent">%,‰</string>
     <string name="keylabel_for_apostrophe">"،"</string>
     <string name="keylabel_for_dash">"."</string>
     <string name="keyhintlabel_for_apostrophe">"؟"</string>
     <string name="keyhintlabel_for_dash">"\u064b"</string>
-    <string name="alternates_for_apostrophe">"\u061f,\u061b,!,:,-,/,\',\""</string>
-    <string name="alternates_for_dash">"\u0651,\u0652,\u064c,\u0640,\u064f,\u064e,\u0650,\u064b,\u064d"</string>
+    <string name="more_keys_for_apostrophe">"\u061f,\u061b,!,:,-,/,\',\""</string>
+    <string name="more_keys_for_dash">"\u0651,\u0652,\u064c,\u0640,\u064f,\u064e,\u0650,\u064b,\u064d"</string>
 </resources>

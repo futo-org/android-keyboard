@@ -18,16 +18,16 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_a">ā,à,á,â,ä,æ,ã,å</string>
-    <string name="alternates_for_e">3,ē,è,é,ê,ë,ę,ė</string>
-    <string name="alternates_for_i">8,ī,î,ï,ì,í,į</string>
-    <string name="alternates_for_u">7,ū,û,ü,ù,ú</string>
-    <string name="alternates_for_s">š,ß,ś</string>
-    <string name="alternates_for_n">ņ,ñ,ń</string>
-    <string name="alternates_for_c">č,ç,ć</string>
-    <string name="alternates_for_r">4,ŗ</string>
-    <string name="alternates_for_z">ž,ź,ż</string>
-    <string name="alternates_for_k">ķ</string>
-    <string name="alternates_for_l">ļ,ł</string>
-    <string name="alternates_for_g">ģ</string>
+    <string name="more_keys_for_a">ā,à,á,â,ä,æ,ã,å</string>
+    <string name="more_keys_for_e">3,ē,è,é,ê,ë,ę,ė</string>
+    <string name="more_keys_for_i">8,ī,î,ï,ì,í,į</string>
+    <string name="more_keys_for_u">7,ū,û,ü,ù,ú</string>
+    <string name="more_keys_for_s">š,ß,ś</string>
+    <string name="more_keys_for_n">ņ,ñ,ń</string>
+    <string name="more_keys_for_c">č,ç,ć</string>
+    <string name="more_keys_for_r">4,ŗ</string>
+    <string name="more_keys_for_z">ž,ź,ż</string>
+    <string name="more_keys_for_k">ķ</string>
+    <string name="more_keys_for_l">ļ,ł</string>
+    <string name="more_keys_for_g">ģ</string>
 </resources>

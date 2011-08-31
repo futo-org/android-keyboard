@@ -46,7 +46,7 @@
         <Key
             latin:keyLabel="е"
             latin:keyHintLabel="5"
-            latin:moreKeys="@string/alternates_for_cyrillic_e" />
+            latin:moreKeys="@string/more_keys_for_cyrillic_e" />
         <Key
             latin:keyLabel="н"
             latin:keyHintLabel="6"
@@ -69,7 +69,7 @@
             latin:moreKeys="0" />
         <Key
             latin:keyLabel="х"
-            latin:moreKeys="@string/alternates_for_cyrillic_ha"
+            latin:moreKeys="@string/more_keys_for_cyrillic_ha"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
@@ -120,7 +120,7 @@
             latin:keyLabel="т" />
         <Key
             latin:keyLabel="ь"
-            latin:moreKeys="@string/alternates_for_cyrillic_soft_sign" />
+            latin:moreKeys="@string/more_keys_for_cyrillic_soft_sign" />
         <Key
             latin:keyLabel="б" />
         <Key

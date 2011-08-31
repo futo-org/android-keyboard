@@ -18,18 +18,18 @@
 */
 -->
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="alternates_for_a">á,ä,à,â,ã,ā</string>
-    <string name="alternates_for_e">3,é,ë</string>
-    <string name="alternates_for_i">8,í,ï</string>
-    <string name="alternates_for_o">9,ó,ô,ò,õ,œ,ō</string>
-    <string name="alternates_for_u">7,ú,ü,û,ù,ū</string>
-    <string name="alternates_for_s">ß,ś,š</string>
-    <string name="alternates_for_n">ñ,ń</string>
-    <string name="alternates_for_y">6,ý,ÿ</string>
-    <string name="alternates_for_d">ð</string>
-    <string name="alternates_for_l">ł</string>
+    <string name="more_keys_for_a">á,ä,à,â,ã,ā</string>
+    <string name="more_keys_for_e">3,é,ë</string>
+    <string name="more_keys_for_i">8,í,ï</string>
+    <string name="more_keys_for_o">9,ó,ô,ò,õ,œ,ō</string>
+    <string name="more_keys_for_u">7,ú,ü,û,ù,ū</string>
+    <string name="more_keys_for_s">ß,ś,š</string>
+    <string name="more_keys_for_n">ñ,ń</string>
+    <string name="more_keys_for_y">6,ý,ÿ</string>
+    <string name="more_keys_for_d">ð</string>
+    <string name="more_keys_for_l">ł</string>
     <string name="keylabel_for_scandinavia_row2_10">æ</string>
     <string name="keylabel_for_scandinavia_row2_11">ø</string>
-    <string name="alternates_for_scandinavia_row2_10">ä</string>
-    <string name="alternates_for_scandinavia_row2_11">ö</string>
+    <string name="more_keys_for_scandinavia_row2_10">ä</string>
+    <string name="more_keys_for_scandinavia_row2_11">ö</string>
 </resources>

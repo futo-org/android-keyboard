@@ -30,34 +30,34 @@
             latin:keyWidth="7.969%p" />
         <Key
             latin:keyLabel="q"
-            latin:moreKeys="@string/alternates_for_q" />
+            latin:moreKeys="@string/more_keys_for_q" />
         <Key
             latin:keyLabel="w"
-            latin:moreKeys="@string/alternates_for_w" />
+            latin:moreKeys="@string/more_keys_for_w" />
         <Key
             latin:keyLabel="e"
-            latin:moreKeys="@string/alternates_for_e" />
+            latin:moreKeys="@string/more_keys_for_e" />
         <Key
             latin:keyLabel="r"
-            latin:moreKeys="@string/alternates_for_r" />
+            latin:moreKeys="@string/more_keys_for_r" />
         <Key
             latin:keyLabel="t"
-            latin:moreKeys="@string/alternates_for_t" />
+            latin:moreKeys="@string/more_keys_for_t" />
         <Key
             latin:keyLabel="y"
-            latin:moreKeys="@string/alternates_for_y" />
+            latin:moreKeys="@string/more_keys_for_y" />
         <Key
             latin:keyLabel="u"
-            latin:moreKeys="@string/alternates_for_u" />
+            latin:moreKeys="@string/more_keys_for_u" />
         <Key
             latin:keyLabel="i"
-            latin:moreKeys="@string/alternates_for_i" />
+            latin:moreKeys="@string/more_keys_for_i" />
         <Key
             latin:keyLabel="o"
-            latin:moreKeys="@string/alternates_for_o" />
+            latin:moreKeys="@string/more_keys_for_o" />
         <Key
             latin:keyLabel="p"
-            latin:moreKeys="@string/alternates_for_p" />
+            latin:moreKeys="@string/more_keys_for_p" />
         <Key
             latin:keyStyle="deleteKeyStyle"
             latin:keyXPos="-9.219%p"
