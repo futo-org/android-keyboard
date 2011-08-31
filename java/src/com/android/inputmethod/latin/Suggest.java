@@ -371,24 +371,14 @@ public class Suggest implements Dictionary.WordCallback {
             // Apply quick fix only for the typed word.
             if (mQuickFixesEnabled) {
                 final String lowerCaseTypedWord = typedWordString.toLowerCase();
-                CharSequence tempAutoText = capitalizeWord(
-                        mIsAllUpperCase, mIsFirstCharCapitalized, AutoText.get(
-                                lowerCaseTypedWord, 0, lowerCaseTypedWord.length(), view));
-                // TODO: cleanup canAdd
                 // Is there an AutoText (also known as Quick Fixes) correction?
                 // Capitalize as needed
-                boolean canAdd = tempAutoText != null;
-                // Is that correction already the current prediction (or original word)?
-                canAdd &= !TextUtils.equals(tempAutoText, typedWord);
-                // Is that correction already the next predicted word?
-                if (canAdd && mSuggestions.size() > 0 && mCorrectionMode != CORRECTION_BASIC) {
-                    canAdd &= !TextUtils.equals(tempAutoText, mSuggestions.get(0));
-                }
-                if (canAdd) {
-                    if (DBG) {
-                        Log.d(TAG, "Auto corrected by AUTOTEXT.");
+                autoText = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized, AutoText.get(
+                        lowerCaseTypedWord, 0, lowerCaseTypedWord.length(), view));
+                if (DBG) {
+                    if (autoText != null) {
+                        Log.d(TAG, "Auto corrected by AUTOTEXT: " + typedWord + " -> " + autoText);
                     }
-                    autoText = tempAutoText;
                 }
             }
         }
