@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -38,7 +37,6 @@ public class MiniKeyboardView extends KeyboardView implements PopupPanel {
     private final int[] mCoordinates = new int[2];
 
     private final KeyDetector mKeyDetector;
-    private final int mVerticalCorrection;
 
     private Controller mController;
     private KeyboardActionListener mListener;
@@ -134,12 +132,6 @@ public class MiniKeyboardView extends KeyboardView implements PopupPanel {
 
     public MiniKeyboardView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-
-        final TypedArray a = context.obtainStyledAttributes(
-                attrs, R.styleable.KeyboardView, defStyle, R.style.KeyboardView);
-        mVerticalCorrection = a.getDimensionPixelOffset(
-                R.styleable.KeyboardView_verticalCorrection, 0);
-        a.recycle();
 
         final Resources res = context.getResources();
         // Override default ProximityKeyDetector.
