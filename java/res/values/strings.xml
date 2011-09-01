@@ -79,7 +79,7 @@
     <string name="auto_cap">Auto-capitalization</string>
 
     <!-- Option to configure dictionaries -->
-    <string name="configure_dictionaries_title">Configure dictionaries</string>
+    <string name="configure_dictionaries_title">Add-on dictionaries</string>
 
     <!-- Option to enable showing suggestions -->
     <string name="prefs_show_suggestions">Show correction suggestions</string>
@@ -285,7 +285,7 @@
     <string name="ok">OK</string>
 
     <!-- Preferences item for enabling speech input -->
-    <string name="voice_input">Voice input</string>
+    <string name="voice_input">Voice input key</string>
 
     <!-- Voice Input modes -->
     <!-- On settings screen, voice input pop-up menu option to show voice key on main keyboard [CHAR LIMIT=20] -->
@@ -312,7 +312,7 @@
     <string name="language_selection_title">Input languages</string>
 
     <!-- Preference for input language selection -->
-    <string name="select_language">Select input languages</string>
+    <string name="select_language">Input languages</string>
 
     <!-- Add to dictionary hint -->
     <string name="hint_add_to_dictionary">\u2190 Touch again to save</string>
