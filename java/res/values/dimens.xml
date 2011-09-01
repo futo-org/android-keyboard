@@ -76,19 +76,18 @@
     <dimen name="key_preview_height_ics">80sp</dimen>
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
-    <dimen name="candidate_strip_height">40dip</dimen>
+    <dimen name="suggestions_strip_height">40dip</dimen>
     <dimen name="more_suggestions_key_horizontal_padding">12dip</dimen>
     <dimen name="more_suggestions_row_height">40dip</dimen>
     <dimen name="more_suggestions_slide_allowance">0.2in</dimen>
     <fraction name="more_suggestions_info_ratio">12%</fraction>
-    <dimen name="candidate_strip_minimum_height">200sp</dimen>
-    <dimen name="candidate_strip_fading_edge_length">63dip</dimen>
-    <dimen name="candidate_strip_padding">0dip</dimen>
-    <dimen name="candidate_min_width">44dip</dimen>
-    <dimen name="candidate_padding">6dip</dimen>
-    <dimen name="candidate_text_size">18dip</dimen>
-    <integer name="candidate_count_in_strip">3</integer>
-    <integer name="center_candidate_percentile">36</integer>
+    <dimen name="suggestions_strip_minimum_height">200sp</dimen>
+    <dimen name="suggestions_strip_padding">0dip</dimen>
+    <dimen name="suggestion_min_width">44dip</dimen>
+    <dimen name="suggestion_padding">6dip</dimen>
+    <dimen name="suggestion_text_size">18dip</dimen>
+    <integer name="suggestions_count_in_strip">3</integer>
+    <integer name="center_suggestion_percentile">36</integer>
 
     <!-- If the screen height in landscape is larger than the below value, then the keyboard
          will not go into extract (fullscreen) mode. -->

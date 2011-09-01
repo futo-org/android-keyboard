@@ -43,10 +43,10 @@ public class MoreSuggestions extends Keyboard {
         private int mToPos;
 
         public static class MoreSuggestionsParam extends KeyboardParams {
-            private final int[] mWidths = new int[CandidateView.MAX_SUGGESTIONS];
-            private final int[] mRowNumbers = new int[CandidateView.MAX_SUGGESTIONS];
-            private final int[] mColumnOrders = new int[CandidateView.MAX_SUGGESTIONS];
-            private final int[] mNumColumnsInRow = new int[CandidateView.MAX_SUGGESTIONS];
+            private final int[] mWidths = new int[SuggestionsView.MAX_SUGGESTIONS];
+            private final int[] mRowNumbers = new int[SuggestionsView.MAX_SUGGESTIONS];
+            private final int[] mColumnOrders = new int[SuggestionsView.MAX_SUGGESTIONS];
+            private final int[] mNumColumnsInRow = new int[SuggestionsView.MAX_SUGGESTIONS];
             private static final int MAX_COLUMNS_IN_ROW = 3;
             private int mNumRows;
 
@@ -60,7 +60,7 @@ public class MoreSuggestions extends Keyboard {
 
                 int row = 0;
                 int pos = fromPos, rowStartPos = fromPos;
-                final int size = Math.min(suggestions.size(), CandidateView.MAX_SUGGESTIONS);
+                final int size = Math.min(suggestions.size(), SuggestionsView.MAX_SUGGESTIONS);
                 while (pos < size) {
                     final CharSequence word = suggestions.getWord(pos);
                     // TODO: Should take care of text x-scaling.

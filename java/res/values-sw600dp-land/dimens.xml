@@ -50,5 +50,5 @@
     <fraction name="key_hint_label_ratio">34%</fraction>
     <fraction name="key_uppercase_letter_ratio">29%</fraction>
 
-    <dimen name="candidate_strip_padding">40.0mm</dimen>
+    <dimen name="suggestions_strip_padding">40.0mm</dimen>
 </resources>

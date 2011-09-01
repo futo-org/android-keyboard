@@ -58,5 +58,5 @@
     <dimen name="key_preview_height_ics">26.5mm</dimen>
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
-    <dimen name="candidate_strip_padding">40.0mm</dimen>
+    <dimen name="suggestions_strip_padding">40.0mm</dimen>
 </resources>

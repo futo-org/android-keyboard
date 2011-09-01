@@ -119,15 +119,15 @@ public class AutoCorrection {
         if (wordComposer.size() > 1 && (correctionMode == Suggest.CORRECTION_FULL
                 || correctionMode == Suggest.CORRECTION_FULL_BIGRAM)
                 && typedWord != null && suggestions.size() > 0 && sortedScores.length > 0) {
-            final CharSequence autoCorrectionCandidate = suggestions.get(0);
-            final int autoCorrectionCandidateScore = sortedScores[0];
+            final CharSequence autoCorrectionSuggestion = suggestions.get(0);
+            final int autoCorrectionSuggestionScore = sortedScores[0];
             // TODO: when the normalized score of the first suggestion is nearly equals to
             //       the normalized score of the second suggestion, behave less aggressive.
             mNormalizedScore = Utils.calcNormalizedScore(
-                    typedWord,autoCorrectionCandidate, autoCorrectionCandidateScore);
+                    typedWord,autoCorrectionSuggestion, autoCorrectionSuggestionScore);
             if (DBG) {
-                Log.d(TAG, "Normalized " + typedWord + "," + autoCorrectionCandidate + ","
-                        + autoCorrectionCandidateScore + ", " + mNormalizedScore
+                Log.d(TAG, "Normalized " + typedWord + "," + autoCorrectionSuggestion + ","
+                        + autoCorrectionSuggestionScore + ", " + mNormalizedScore
                         + "(" + autoCorrectionThreshold + ")");
             }
             if (mNormalizedScore >= autoCorrectionThreshold) {

@@ -30,11 +30,11 @@
     <bool name="config_digit_more_keys_enabled">true</bool>
     <!-- Whether or not Popup on key press is enabled by default -->
     <bool name="config_default_popup_preview">true</bool>
-    <!-- Default value for bigram suggestion: while showing candidates for a word should we weigh
+    <!-- Default value for bigram suggestion: while showing suggestions for a word should we weigh
          in the previous word? -->
     <bool name="config_default_bigram_suggestions">true</bool>
     <!-- Default value for bigram prediction: after entering a word and a space only, should we look
-         at input history to suggest a hopefully helpful candidate for the next word? -->
+         at input history to suggest a hopefully helpful suggestions for the next word? -->
     <bool name="config_default_bigram_prediction">false</bool>
     <bool name="config_default_compat_recorrection_enabled">true</bool>
     <bool name="config_default_sound_enabled">false</bool>

@@ -88,21 +88,21 @@
         <item name="android:background">@drawable/keyboard_suggest_strip</item>
     </style>
     <style name="SuggestionBackgroundStyle">
-        <item name="android:background">@drawable/btn_candidate</item>
+        <item name="android:background">@drawable/btn_suggestion</item>
     </style>
     <style name="SuggestionPreviewBackgroundStyle">
-        <item name="android:background">@drawable/candidate_feedback_background</item>
+        <item name="android:background">@drawable/suggestion_feedback_background</item>
     </style>
     <style
-        name="CandidateViewStyle"
+        name="SuggestionsViewStyle"
         parent="SuggestionsStripBackgroundStyle"
     >
         <item name="suggestionStripOption">autoCorrectBold</item>
         <item name="colorTypedWord">#FFFFFFFF</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
-        <item name="candidateCountInStrip">@integer/candidate_count_in_strip</item>
-        <item name="centerCandidatePercentile">@integer/center_candidate_percentile</item>
+        <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
+        <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
     </style>
     <!-- Theme "Basic high contrast" -->
     <style
@@ -233,7 +233,7 @@
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
     </style>
     <style name="SuggestionBackgroundStyle.IceCreamSandwich">
-        <item name="android:background">@drawable/btn_candidate_ics</item>
+        <item name="android:background">@drawable/btn_suggestion_ics</item>
     </style>
     <style
         name="SuggestionPreviewBackgroundStyle.IceCreamSandwich"
@@ -246,15 +246,15 @@
     >
     </style>
     <style
-        name="CandidateViewStyle.IceCreamSandwich"
+        name="SuggestionsViewStyle.IceCreamSandwich"
         parent="SuggestionsStripBackgroundStyle.IceCreamSandwich"
     >
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
         <item name="colorTypedWord">#FFBCBEC0</item>
         <item name="colorAutoCorrect">#FF0099CC</item>
         <item name="colorSuggested">#FFA7A9AC</item>
-        <item name="candidateCountInStrip">@integer/candidate_count_in_strip</item>
-        <item name="centerCandidatePercentile">@integer/center_candidate_percentile</item>
+        <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
+        <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
     </style>
     <style name="MiniKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>

@@ -44,13 +44,6 @@
     <!-- Label for "switch to phone symbols" key.  Must be short to fit on key! -->
     <string name="label_to_phone_symbols_key">\uff0a\uff03</string>
 
-    <!-- Character for candidate divider (BOX DRAWINGS LIGHT VERTICAL) -->
-    <string name="label_candidate_divider">\u2502</string>
-    <!-- Character for expand candidates pane (BLACK DOWN-POINTING TRIANGLE) -->
-    <string name="label_expand_candidates_pane">\u25bc</string>
-    <!-- Character for close candidates pane (BLACK UP-POINTING TRIANGLE) -->
-    <string name="label_close_candidates_pane">\u25b2</string>
-
     <!--  Always show the suggestion strip -->
     <string name="prefs_suggestion_visibility_show_value">0</string>
     <!--  Show the suggestion strip only on portrait mode -->

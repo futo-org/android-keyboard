@@ -16,27 +16,27 @@
 
 package com.android.inputmethod.deprecated.recorrection;
 
-import com.android.inputmethod.compat.InputConnectionCompatUtils;
-import com.android.inputmethod.compat.SuggestionSpanUtils;
-import com.android.inputmethod.deprecated.VoiceProxy;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.latin.AutoCorrection;
-import com.android.inputmethod.latin.CandidateView;
-import com.android.inputmethod.latin.EditingUtils;
-import com.android.inputmethod.latin.LatinIME;
-import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.Settings;
-import com.android.inputmethod.latin.Suggest;
-import com.android.inputmethod.latin.SuggestedWords;
-import com.android.inputmethod.latin.TextEntryState;
-import com.android.inputmethod.latin.WordComposer;
-
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.text.TextUtils;
 import android.view.inputmethod.ExtractedText;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
+
+import com.android.inputmethod.compat.InputConnectionCompatUtils;
+import com.android.inputmethod.compat.SuggestionSpanUtils;
+import com.android.inputmethod.deprecated.VoiceProxy;
+import com.android.inputmethod.keyboard.KeyboardSwitcher;
+import com.android.inputmethod.latin.AutoCorrection;
+import com.android.inputmethod.latin.EditingUtils;
+import com.android.inputmethod.latin.LatinIME;
+import com.android.inputmethod.latin.R;
+import com.android.inputmethod.latin.Settings;
+import com.android.inputmethod.latin.Suggest;
+import com.android.inputmethod.latin.SuggestedWords;
+import com.android.inputmethod.latin.SuggestionsView;
+import com.android.inputmethod.latin.TextEntryState;
+import com.android.inputmethod.latin.WordComposer;
 
 import java.util.ArrayList;
 
@@ -107,7 +107,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
     }
 
     public void updateRecorrectionSelection(KeyboardSwitcher keyboardSwitcher,
-            CandidateView candidateView, int candidatesStart, int candidatesEnd,
+            SuggestionsView suggestionsView, int candidatesStart, int candidatesEnd,
             int newSelStart, int newSelEnd, int oldSelStart, int lastSelectionStart,
             int lastSelectionEnd, boolean hasUncommittedTypedChars) {
         if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED || !mRecorrectionEnabled) return;
@@ -127,7 +127,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
                 // If showing the "touch again to save" hint, do not replace it. Else,
                 // show the bigrams if we are at the end of the text, punctuation
                 // otherwise.
-                if (candidateView != null && !candidateView.isShowingAddToDictionaryHint()) {
+                if (suggestionsView != null && !suggestionsView.isShowingAddToDictionaryHint()) {
                     InputConnection ic = mService.getCurrentInputConnection();
                     if (null == ic || !TextUtils.isEmpty(ic.getTextAfterCursor(1, 0))) {
                         if (!mService.isShowingPunctuationList()) {
@@ -219,13 +219,13 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
     }
 
     public void fetchAndDisplayRecorrectionSuggestions(VoiceProxy voiceProxy,
-            CandidateView candidateView, Suggest suggest, KeyboardSwitcher keyboardSwitcher,
+            SuggestionsView suggestionsView, Suggest suggest, KeyboardSwitcher keyboardSwitcher,
             WordComposer word, boolean hasUncommittedTypedChars, int lastSelectionStart,
             int lastSelectionEnd, String wordSeparators) {
         if (!InputConnectionCompatUtils.RECORRECTION_SUPPORTED) return;
         if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED || !mRecorrectionEnabled) return;
         voiceProxy.setShowingVoiceSuggestions(false);
-        if (candidateView != null && candidateView.isShowingAddToDictionaryHint()) {
+        if (suggestionsView != null && suggestionsView.isShowingAddToDictionaryHint()) {
             return;
         }
         InputConnection ic = mService.getCurrentInputConnection();
@@ -260,7 +260,7 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
         if (SuggestionSpanUtils.SUGGESTION_SPAN_IS_SUPPORTED) return;
         if (force || TextEntryState.isRecorrecting()) {
             TextEntryState.onAbortRecorrection();
-            mService.setCandidatesViewShown(mService.isCandidateStripVisible());
+            mService.setCandidatesViewShown(mService.isSuggestionsStripVisible());
             mService.getCurrentInputConnection().finishComposingText();
             mService.clearSuggestions();
         }

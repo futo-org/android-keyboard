@@ -16,15 +16,7 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
-import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
-import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardId;
-
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.os.AsyncTask;
@@ -37,6 +29,13 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.inputmethod.EditorInfo;
 
+import com.android.inputmethod.compat.InputMethodInfoCompatWrapper;
+import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
+import com.android.inputmethod.compat.InputMethodSubtypeCompatWrapper;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
+import com.android.inputmethod.keyboard.Keyboard;
+import com.android.inputmethod.keyboard.KeyboardId;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,7 +46,6 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -175,21 +173,21 @@ public class Utils {
         // If user selected aggressive auto correction mode, there is no need to use the safety
         // net.
         if (suggest.isAggressiveAutoCorrectionMode()) return false;
-        CharSequence typedWord = suggestions.getWord(0);
+        final CharSequence typedWord = suggestions.getWord(0);
         // If the length of typed word is less than MINIMUM_SAFETY_NET_CHAR_LENGTH,
         // we should not use net because relatively edit distance can be big.
         if (typedWord.length() < MINIMUM_SAFETY_NET_CHAR_LENGTH) return false;
-        CharSequence candidateWord = suggestions.getWord(1);
+        final CharSequence suggestionWord = suggestions.getWord(1);
         final int typedWordLength = typedWord.length();
         final int maxEditDistanceOfNativeDictionary = typedWordLength < 5 ? 2 : typedWordLength / 2;
-        final int distance = Utils.editDistance(typedWord, candidateWord);
+        final int distance = Utils.editDistance(typedWord, suggestionWord);
         if (DBG) {
             Log.d(TAG, "Autocorrected edit distance = " + distance
                     + ", " + maxEditDistanceOfNativeDictionary);
         }
         if (distance > maxEditDistanceOfNativeDictionary) {
             if (DBG) {
-                Log.d(TAG, "Safety net: before = " + typedWord + ", after = " + candidateWord);
+                Log.d(TAG, "Safety net: before = " + typedWord + ", after = " + suggestionWord);
                 Log.w(TAG, "(Error) The edit distance of this correction exceeds limit. "
                         + "Turning off auto-correction.");
             }
@@ -717,7 +715,7 @@ public class Utils {
         // Don't cache suggestions.size(), since we may be removing items
         while (i < suggestions.size()) {
             final CharSequence cur = suggestions.get(i);
-            // Compare each candidate with each previous candidate
+            // Compare each suggestion with each previous suggestion
             for (int j = 0; j < i; j++) {
                 CharSequence previous = suggestions.get(j);
                 if (TextUtils.equals(cur, previous)) {

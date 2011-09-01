@@ -30,7 +30,7 @@
         <attr name="suggestionsPaneViewStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
         <attr name="suggestionPreviewBackgroundStyle" format="reference" />
-        <attr name="candidateViewStyle" format="reference" />
+        <attr name="suggestionsViewStyle" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">
@@ -112,7 +112,7 @@
         </attr>
     </declare-styleable>
 
-    <declare-styleable name="CandidateView">
+    <declare-styleable name="SuggestionsView">
         <attr name="suggestionStripOption" format="integer">
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />
@@ -122,8 +122,8 @@
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
         <attr name="colorSuggested" format="color" />
-        <attr name="candidateCountInStrip" format="integer" />
-        <attr name="centerCandidatePercentile" format="integer" />
+        <attr name="suggestionsCountInStrip" format="integer" />
+        <attr name="centerSuggestionPercentile" format="integer" />
     </declare-styleable>
 
     <declare-styleable name="Keyboard">

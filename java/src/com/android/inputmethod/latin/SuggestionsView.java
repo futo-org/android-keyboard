@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 The Android Open Source Project
+ * Copyright (C) 2011 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -57,7 +57,7 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CandidateView extends LinearLayout implements OnClickListener, OnLongClickListener {
+public class SuggestionsView extends LinearLayout implements OnClickListener, OnLongClickListener {
     public interface Listener {
         public boolean addWordToDictionary(String word);
         public void pickSuggestionManually(int index, CharSequence word);
@@ -68,8 +68,8 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private final ViewGroup mCandidatesPlacer;
-    private final ViewGroup mCandidatesStrip;
+    private final ViewGroup mSuggestionsPlacer;
+    private final ViewGroup mSuggestionsStrip;
     private View mKeyboardView;
 
     private final View mMoreSuggestionsContainer;
@@ -93,26 +93,26 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     private final UiHandler mHandler = new UiHandler(this);
 
-    private static class UiHandler extends StaticInnerHandlerWrapper<CandidateView> {
+    private static class UiHandler extends StaticInnerHandlerWrapper<SuggestionsView> {
         private static final int MSG_HIDE_PREVIEW = 0;
         private static final int MSG_UPDATE_SUGGESTION = 1;
 
         private static final long DELAY_HIDE_PREVIEW = 1300;
         private static final long DELAY_UPDATE_SUGGESTION = 300;
 
-        public UiHandler(CandidateView outerInstance) {
+        public UiHandler(SuggestionsView outerInstance) {
             super(outerInstance);
         }
 
         @Override
         public void dispatchMessage(Message msg) {
-            final CandidateView candidateView = getOuterInstance();
+            final SuggestionsView suggestionsView = getOuterInstance();
             switch (msg.what) {
             case MSG_HIDE_PREVIEW:
-                candidateView.hidePreview();
+                suggestionsView.hidePreview();
                 break;
             case MSG_UPDATE_SUGGESTION:
-                candidateView.updateSuggestions();
+                suggestionsView.updateSuggestions();
                 break;
             }
         }
@@ -142,16 +142,16 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         }
     }
 
-    private static class CandidateViewParams {
+    private static class SuggestionsViewParams {
         public final int mPadding;
         public final int mDividerWidth;
-        public final int mCandidateStripHeight;
+        public final int mSuggestionsStripHeight;
 
         protected final List<TextView> mWords;
         protected final List<View> mDividers;
         protected final List<TextView> mInfos;
 
-        protected CandidateViewParams(List<TextView> words, List<View> dividers,
+        protected SuggestionsViewParams(List<TextView> words, List<View> dividers,
                 List<TextView> infos) {
             mWords = words;
             mDividers = dividers;
@@ -165,22 +165,22 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mDividerWidth = divider.getMeasuredWidth();
 
             final Resources res = word.getResources();
-            mCandidateStripHeight = res.getDimensionPixelSize(R.dimen.candidate_strip_height);
+            mSuggestionsStripHeight = res.getDimensionPixelSize(R.dimen.suggestions_strip_height);
         }
     }
 
-    private static class SuggestionsStripParams extends CandidateViewParams {
-        private static final int DEFAULT_CANDIDATE_COUNT_IN_STRIP = 3;
-        private static final int DEFAULT_CENTER_CANDIDATE_PERCENTILE = 40;
+    private static class SuggestionsStripParams extends SuggestionsViewParams {
+        private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
+        private static final int DEFAULT_CENTER_SUGGESTION_PERCENTILE = 40;
         private static final int PUNCTUATIONS_IN_STRIP = 6;
 
         private final int mColorTypedWord;
         private final int mColorAutoCorrect;
-        private final int mColorSuggestedCandidate;
-        public final int mCandidateCountInStrip;
-        private final float mCenterCandidateWeight;
-        private final int mCenterCandidateIndex;
-        private final Drawable mMoreCandidateHint;
+        private final int mColorSuggested;
+        public final int mSuggestionsCountInStrip;
+        private final float mCenterSuggestionWeight;
+        private final int mCenterSuggestionIndex;
+        private final Drawable mMoreSuggestionsHint;
 
         private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
         private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
@@ -205,33 +205,33 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 List<TextView> words, List<View> dividers, List<TextView> infos) {
             super(words, dividers, infos);
             final TypedArray a = context.obtainStyledAttributes(
-                    attrs, R.styleable.CandidateView, defStyle, R.style.CandidateViewStyle);
-            mSuggestionStripOption = a.getInt(R.styleable.CandidateView_suggestionStripOption, 0);
-            mColorTypedWord = a.getColor(R.styleable.CandidateView_colorTypedWord, 0);
-            mColorAutoCorrect = a.getColor(R.styleable.CandidateView_colorAutoCorrect, 0);
-            mColorSuggestedCandidate = a.getColor(R.styleable.CandidateView_colorSuggested, 0);
-            mCandidateCountInStrip = a.getInt(
-                    R.styleable.CandidateView_candidateCountInStrip,
-                    DEFAULT_CANDIDATE_COUNT_IN_STRIP);
-            mCenterCandidateWeight = a.getInt(
-                    R.styleable.CandidateView_centerCandidatePercentile,
-                    DEFAULT_CENTER_CANDIDATE_PERCENTILE) / 100.0f;
+                    attrs, R.styleable.SuggestionsView, defStyle, R.style.SuggestionsViewStyle);
+            mSuggestionStripOption = a.getInt(R.styleable.SuggestionsView_suggestionStripOption, 0);
+            mColorTypedWord = a.getColor(R.styleable.SuggestionsView_colorTypedWord, 0);
+            mColorAutoCorrect = a.getColor(R.styleable.SuggestionsView_colorAutoCorrect, 0);
+            mColorSuggested = a.getColor(R.styleable.SuggestionsView_colorSuggested, 0);
+            mSuggestionsCountInStrip = a.getInt(
+                    R.styleable.SuggestionsView_suggestionsCountInStrip,
+                    DEFAULT_SUGGESTIONS_COUNT_IN_STRIP);
+            mCenterSuggestionWeight = a.getInt(
+                    R.styleable.SuggestionsView_centerSuggestionPercentile,
+                    DEFAULT_CENTER_SUGGESTION_PERCENTILE) / 100.0f;
             a.recycle();
 
-            mCenterCandidateIndex = mCandidateCountInStrip / 2;
+            mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
             final Resources res = context.getResources();
-            mMoreCandidateHint = res.getDrawable(R.drawable.more_suggestions_hint);
+            mMoreSuggestionsHint = res.getDrawable(R.drawable.more_suggestions_hint);
 
             mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
             mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
 
             final LayoutInflater inflater = LayoutInflater.from(context);
-            mWordToSaveView = (TextView)inflater.inflate(R.layout.candidate_word, null);
-            mHintToSaveView = (TextView)inflater.inflate(R.layout.candidate_word, null);
+            mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
+            mHintToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
         }
 
-        private CharSequence getStyledCandidateWord(SuggestedWords suggestions, int pos) {
+        private CharSequence getStyledSuggestionWord(SuggestedWords suggestions, int pos) {
             final CharSequence word = suggestions.getWord(pos);
             final boolean isAutoCorrect = pos == 1 && willAutoCorrect(suggestions);
             final boolean isTypedWordValid = pos == 0 && suggestions.mTypedWordValid;
@@ -259,24 +259,24 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             // TODO: This works for 3 suggestions. Revisit this algorithm when there are 5 or more
             // suggestions.
             final int centerPos = willAutoCorrect(suggestions) ? 1 : 0;
-            if (index == mCenterCandidateIndex) {
+            if (index == mCenterSuggestionIndex) {
                 return centerPos;
             } else if (index == centerPos) {
-                return mCenterCandidateIndex;
+                return mCenterSuggestionIndex;
             } else {
                 return index;
             }
         }
 
-        private int getCandidateTextColor(int index, SuggestedWords suggestions, int pos) {
+        private int getSuggestionTextColor(int index, SuggestedWords suggestions, int pos) {
             // TODO: Need to revisit this logic with bigram suggestions
-            final boolean isSuggestedCandidate = (pos != 0);
+            final boolean isSuggested = (pos != 0);
 
             final int color;
-            if (index == mCenterCandidateIndex && willAutoCorrect(suggestions)) {
+            if (index == mCenterSuggestionIndex && willAutoCorrect(suggestions)) {
                 color = mColorAutoCorrect;
-            } else if (isSuggestedCandidate) {
-                color = mColorSuggestedCandidate;
+            } else if (isSuggested) {
+                color = mColorSuggested;
             } else {
                 color = mColorTypedWord;
             }
@@ -312,7 +312,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 return;
             }
 
-            final int countInStrip = mCandidateCountInStrip;
+            final int countInStrip = mSuggestionsCountInStrip;
             setupTexts(suggestions, countInStrip);
             mMoreSuggestionsAvailable = (suggestions.size() > countInStrip);
             int x = 0;
@@ -321,34 +321,34 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
                 if (index != 0) {
                     final View divider = mDividers.get(pos);
-                    // Add divider if this isn't the left most suggestion in candidate strip.
+                    // Add divider if this isn't the left most suggestion in suggestions strip.
                     stripView.addView(divider);
                     x += divider.getMeasuredWidth();
                 }
 
                 final CharSequence styled = mTexts.get(pos);
                 final TextView word = mWords.get(pos);
-                if (index == mCenterCandidateIndex && mMoreSuggestionsAvailable) {
+                if (index == mCenterSuggestionIndex && mMoreSuggestionsAvailable) {
                     // TODO: This "more suggestions hint" should have nicely designed icon.
                     word.setCompoundDrawablesWithIntrinsicBounds(
-                            null, null, null, mMoreCandidateHint);
+                            null, null, null, mMoreSuggestionsHint);
                     // HACK: To align with other TextView that has no compound drawables.
-                    word.setCompoundDrawablePadding(-mMoreCandidateHint.getIntrinsicHeight());
+                    word.setCompoundDrawablePadding(-mMoreSuggestionsHint.getIntrinsicHeight());
                 } else {
                     word.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
                 }
 
-                // Disable this candidate if the suggestion is null or empty.
+                // Disable this suggestion if the suggestion is null or empty.
                 word.setEnabled(!TextUtils.isEmpty(styled));
-                word.setTextColor(getCandidateTextColor(index, suggestions, pos));
-                final int width = getCandidateWidth(index, stripWidth);
+                word.setTextColor(getSuggestionTextColor(index, suggestions, pos));
+                final int width = getSuggestionWidth(index, stripWidth);
                 final CharSequence text = getEllipsizedText(styled, width, word.getPaint());
                 final float scaleX = word.getTextScaleX();
                 word.setText(text); // TextView.setText() resets text scale x to 1.0.
                 word.setTextScaleX(scaleX);
                 stripView.addView(word);
                 setLayoutWeight(
-                        word, getCandidateWeight(index), ViewGroup.LayoutParams.MATCH_PARENT);
+                        word, getSuggestionWeight(index), ViewGroup.LayoutParams.MATCH_PARENT);
                 x += word.getMeasuredWidth();
 
                 if (DBG) {
@@ -368,19 +368,19 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             }
         }
 
-        private int getCandidateWidth(int index, int maxWidth) {
-            final int paddings = mPadding * mCandidateCountInStrip;
-            final int dividers = mDividerWidth * (mCandidateCountInStrip - 1);
+        private int getSuggestionWidth(int index, int maxWidth) {
+            final int paddings = mPadding * mSuggestionsCountInStrip;
+            final int dividers = mDividerWidth * (mSuggestionsCountInStrip - 1);
             final int availableWidth = maxWidth - paddings - dividers;
-            return (int)(availableWidth * getCandidateWeight(index));
+            return (int)(availableWidth * getSuggestionWeight(index));
         }
 
-        private float getCandidateWeight(int index) {
-            if (index == mCenterCandidateIndex) {
-                return mCenterCandidateWeight;
+        private float getSuggestionWeight(int index) {
+            if (index == mCenterSuggestionIndex) {
+                return mCenterSuggestionWeight;
             } else {
                 // TODO: Revisit this for cases of 5 or more suggestions
-                return (1.0f - mCenterCandidateWeight) / (mCandidateCountInStrip - 1);
+                return (1.0f - mCenterSuggestionWeight) / (mSuggestionsCountInStrip - 1);
             }
         }
 
@@ -388,7 +388,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             mTexts.clear();
             final int count = Math.min(suggestions.size(), countInStrip);
             for (int pos = 0; pos < count; pos++) {
-                final CharSequence styled = getStyledCandidateWord(suggestions, pos);
+                final CharSequence styled = getStyledSuggestionWord(suggestions, pos);
                 mTexts.add(styled);
             }
             for (int pos = count; pos < countInStrip; pos++) {
@@ -401,7 +401,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             final int countInStrip = Math.min(suggestions.size(), PUNCTUATIONS_IN_STRIP);
             for (int index = 0; index < countInStrip; index++) {
                 if (index != 0) {
-                    // Add divider if this isn't the left most suggestion in candidate strip.
+                    // Add divider if this isn't the left most suggestion in suggestions strip.
                     stripView.addView(mDividers.get(index));
                 }
 
@@ -413,7 +413,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
                 word.setTextScaleX(1.0f);
                 word.setCompoundDrawables(null, null, null, null);
                 stripView.addView(word);
-                setLayoutWeight(word, 1.0f, mCandidateStripHeight);
+                setLayoutWeight(word, 1.0f, mSuggestionsStripHeight);
             }
             mMoreSuggestionsAvailable = false;
         }
@@ -424,14 +424,14 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
             final TextView wordView = mWordToSaveView;
             wordView.setTextColor(mColorTypedWord);
-            final int wordWidth = (int)(width * mCenterCandidateWeight);
+            final int wordWidth = (int)(width * mCenterSuggestionWeight);
             final CharSequence text = getEllipsizedText(word, wordWidth, wordView.getPaint());
             final float wordScaleX = wordView.getTextScaleX();
             wordView.setTag(word);
             wordView.setText(text);
             wordView.setTextScaleX(wordScaleX);
             stripView.addView(wordView);
-            setLayoutWeight(wordView, mCenterCandidateWeight, ViewGroup.LayoutParams.MATCH_PARENT);
+            setLayoutWeight(wordView, mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
 
             stripView.addView(mDividers.get(0));
 
@@ -443,56 +443,56 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             hintView.setTextScaleX(hintScaleX);
             stripView.addView(hintView);
             setLayoutWeight(
-                    hintView, 1.0f - mCenterCandidateWeight, ViewGroup.LayoutParams.MATCH_PARENT);
+                    hintView, 1.0f - mCenterSuggestionWeight, ViewGroup.LayoutParams.MATCH_PARENT);
         }
     }
 
     /**
-     * Construct a CandidateView for showing suggested words for completion.
+     * Construct a {@link SuggestionsView} for showing suggested words for completion.
      * @param context
      * @param attrs
      */
-    public CandidateView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.candidateViewStyle);
+    public SuggestionsView(Context context, AttributeSet attrs) {
+        this(context, attrs, R.attr.suggestionsViewStyle);
     }
 
-    public CandidateView(Context context, AttributeSet attrs, int defStyle) {
+    public SuggestionsView(Context context, AttributeSet attrs, int defStyle) {
         // Note: Up to version 10 (Gingerbread) of the API, LinearLayout doesn't have 3-argument
         // constructor.
         // TODO: Call 3-argument constructor, super(context, attrs, defStyle), when we abandon
         // backward compatibility with the version 10 or earlier of the API.
         super(context, attrs);
-        if (defStyle != R.attr.candidateViewStyle) {
+        if (defStyle != R.attr.suggestionsViewStyle) {
             throw new IllegalArgumentException(
-                    "can't accept defStyle other than R.attr.candidateViewStyle: defStyle="
+                    "can't accept defStyle other than R.attr.suggestionsViewStyle: defStyle="
                     + defStyle);
         }
         setBackgroundDrawable(LinearLayoutCompatUtils.getBackgroundDrawable(
-                context, attrs, defStyle, R.style.CandidateViewStyle));
+                context, attrs, defStyle, R.style.SuggestionsViewStyle));
 
         final LayoutInflater inflater = LayoutInflater.from(context);
-        inflater.inflate(R.layout.candidates_strip, this);
+        inflater.inflate(R.layout.suggestions_strip, this);
 
         mPreviewPopup = new PopupWindow(context);
-        mPreviewText = (TextView) inflater.inflate(R.layout.candidate_preview, null);
+        mPreviewText = (TextView) inflater.inflate(R.layout.suggestion_preview, null);
         mPreviewPopup.setWindowLayoutMode(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
 
-        mCandidatesPlacer = (ViewGroup)findViewById(R.id.candidates_placer);
-        mCandidatesStrip = (ViewGroup)findViewById(R.id.candidates_strip);
+        mSuggestionsPlacer = (ViewGroup)findViewById(R.id.suggestions_placer);
+        mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         for (int pos = 0; pos < MAX_SUGGESTIONS; pos++) {
-            final TextView word = (TextView)inflater.inflate(R.layout.candidate_word, null);
+            final TextView word = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             word.setTag(pos);
             word.setOnClickListener(this);
             word.setOnLongClickListener(this);
             mWords.add(word);
-            final View divider = inflater.inflate(R.layout.candidate_divider, null);
+            final View divider = inflater.inflate(R.layout.suggestion_divider, null);
             divider.setTag(pos);
             divider.setOnClickListener(this);
             mDividers.add(divider);
-            mInfos.add((TextView)inflater.inflate(R.layout.candidate_info, null));
+            mInfos.add((TextView)inflater.inflate(R.layout.suggestion_info, null));
         }
 
         mStripParams = new SuggestionsStripParams(context, attrs, defStyle, mWords, mDividers,
@@ -534,7 +534,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
         if (mSuggestions.size() == 0)
             return;
 
-        mStripParams.layout(mSuggestions, mCandidatesStrip, mCandidatesPlacer, getWidth());
+        mStripParams.layout(mSuggestions, mSuggestionsStrip, mSuggestionsPlacer, getWidth());
     }
 
     private static CharSequence getDebugInfo(SuggestedWords suggestions, int pos) {
@@ -632,13 +632,13 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
     }
 
     public boolean isShowingAddToDictionaryHint() {
-        return mCandidatesStrip.getChildCount() > 0
-                && mCandidatesStrip.getChildAt(0) == mStripParams.mWordToSaveView;
+        return mSuggestionsStrip.getChildCount() > 0
+                && mSuggestionsStrip.getChildAt(0) == mStripParams.mWordToSaveView;
     }
 
     public void showAddToDictionaryHint(CharSequence word) {
         clear();
-        mStripParams.layoutAddToDictionaryHint(word, mCandidatesStrip, getWidth());
+        mStripParams.layoutAddToDictionaryHint(word, mSuggestionsStrip, getWidth());
     }
 
     public boolean dismissAddToDictionaryHint() {
@@ -655,9 +655,9 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
 
     public void clear() {
         mShowingAutoCorrectionInverted = false;
-        mCandidatesPlacer.removeAllViews();
-        mCandidatesPlacer.addView(mCandidatesStrip);
-        mCandidatesStrip.removeAllViews();
+        mSuggestionsPlacer.removeAllViews();
+        mSuggestionsPlacer.addView(mSuggestionsStrip);
+        mSuggestionsStrip.removeAllViews();
         mMoreSuggestionsWindow.dismiss();
     }
 
@@ -736,7 +736,7 @@ public class CandidateView extends LinearLayout implements OnClickListener, OnLo
             // TODO: Revise how we determine the height
             final int maxHeight = dm.heightPixels - mKeyboardView.getHeight() - getHeight() * 3;
             final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
-            builder.layout(mSuggestions, params.mCandidateCountInStrip, maxWidth, maxHeight);
+            builder.layout(mSuggestions, params.mSuggestionsCountInStrip, maxWidth, maxHeight);
             mMoreSuggestionsView.setKeyboard(builder.build());
             container.measure(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

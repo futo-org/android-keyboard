@@ -25,53 +25,32 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 >
-    <!-- On tablets, the candidate strip is centered with horizontal paddings on both sides because
-         width of the landscape mode is too long for the candidate strip. This LinearLayout is
-         required to hold the paddings. -->
+    <!-- On tablets, the suggestions strip is centered with horizontal paddings on both sides
+         because width of the landscape mode is too long for the suggestions strip. This
+         LinearLayout is required to hold the paddings. -->
     <LinearLayout
-        android:id="@+id/candidates_container"
+        android:id="@+id/suggestions_container"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/candidate_strip_minimum_height"
+        android:minHeight="@dimen/suggestions_strip_minimum_height"
         android:gravity="bottom"
     >
         <View
-            android:layout_width="@dimen/candidate_strip_padding"
-            android:layout_height="@dimen/candidate_strip_height"
+            android:layout_width="@dimen/suggestions_strip_padding"
+            android:layout_height="@dimen/suggestions_strip_height"
             style="?attr/suggestionsStripBackgroundStyle" />
-        <com.android.inputmethod.latin.CandidateView
-            android:id="@+id/candidates"
+        <com.android.inputmethod.latin.SuggestionsView
+            android:id="@+id/suggestions_view"
             android:layout_weight="1.0"
             android:layout_width="0dp"
-            android:layout_height="@dimen/candidate_strip_height"
+            android:layout_height="@dimen/suggestions_strip_height"
             android:gravity="center_vertical"
-            style="?attr/candidateViewStyle" />
+            style="?attr/suggestionsViewStyle" />
         <View
-            android:layout_width="@dimen/candidate_strip_padding"
-            android:layout_height="@dimen/candidate_strip_height"
+            android:layout_width="@dimen/suggestions_strip_padding"
+            android:layout_height="@dimen/suggestions_strip_height"
             style="?attr/suggestionsStripBackgroundStyle" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/candidates_pane_container"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        style="?attr/suggestionsStripBackgroundStyle"
-    >
-        <View
-            android:layout_width="@dimen/candidate_strip_padding"
-            android:layout_height="@dimen/candidate_strip_height" />
-        <FrameLayout
-            android:id="@+id/candidates_pane"
-            android:layout_weight="1.0"
-            android:layout_width="0dp"
-            android:layout_height="match_parent" />
-        <View
-            android:layout_width="@dimen/candidate_strip_padding"
-            android:layout_height="@dimen/candidate_strip_height" />
     </LinearLayout>
 
     <com.android.inputmethod.keyboard.LatinKeyboardView

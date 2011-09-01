@@ -18,20 +18,19 @@
 */
 -->
 
-<merge
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
->
-    <!-- Placer for debug information -->
-    <RelativeLayout
-        android:id="@+id/candidates_placer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-    >
-        <LinearLayout
-            android:id="@+id/candidates_strip"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </RelativeLayout>
-</merge>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:minWidth="@dimen/suggestion_min_width"
+    android:textSize="@dimen/suggestion_text_size"
+    android:gravity="center"
+    android:paddingLeft="@dimen/suggestion_padding"
+    android:paddingTop="0dp"
+    android:paddingRight="@dimen/suggestion_padding"
+    android:paddingBottom="0dp"
+    android:focusable="false"
+    android:clickable="false"
+    android:singleLine="true"
+    android:ellipsize="none"
+    style="?attr/suggestionBackgroundStyle" />

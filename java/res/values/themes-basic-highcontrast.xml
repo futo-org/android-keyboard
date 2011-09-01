@@ -25,6 +25,6 @@
         <item name="suggestionsPaneViewStyle">@style/SuggestionsPaneViewStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>
-        <item name="candidateViewStyle">@style/CandidateViewStyle</item>
+        <item name="suggestionsViewStyle">@style/SuggestionsViewStyle</item>
     </style>
 </resources>
