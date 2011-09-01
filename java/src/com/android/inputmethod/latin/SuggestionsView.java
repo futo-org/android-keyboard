@@ -50,6 +50,7 @@ import android.widget.TextView;
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
 import com.android.inputmethod.compat.LinearLayoutCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
+import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
 import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
@@ -70,7 +71,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
 
     private final ViewGroup mSuggestionsPlacer;
     private final ViewGroup mSuggestionsStrip;
-    private View mKeyboardView;
+    private KeyboardView mKeyboardView;
 
     private final View mMoreSuggestionsContainer;
     private final MoreSuggestionsView mMoreSuggestionsView;
@@ -515,7 +516,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
      */
     public void setListener(Listener listener, View inputView) {
         mListener = listener;
-        mKeyboardView = inputView.findViewById(R.id.keyboard_view);
+        mKeyboardView = (KeyboardView)inputView.findViewById(R.id.keyboard_view);
     }
 
     public void setSuggestions(SuggestedWords suggestions) {
@@ -658,7 +659,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
         mSuggestionsPlacer.removeAllViews();
         mSuggestionsPlacer.addView(mSuggestionsStrip);
         mSuggestionsStrip.removeAllViews();
-        mMoreSuggestionsWindow.dismiss();
+        dismissMoreSuggestions();
     }
 
     private void hidePreview() {
@@ -702,13 +703,13 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
             final int index = requestCode;
             final CharSequence word = mSuggestions.getWord(index);
             mListener.pickSuggestionManually(index, word);
-            mMoreSuggestionsView.dismissMoreKeysPanel();
+            dismissMoreSuggestions();
             return true;
         }
 
         @Override
         public void onCancelInput() {
-            mMoreSuggestionsView.dismissMoreKeysPanel();
+            dismissMoreSuggestions();
         }
     };
 
@@ -716,13 +717,18 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
             new MoreKeysPanel.Controller() {
         @Override
         public boolean dismissMoreKeysPanel() {
-            if (mMoreSuggestionsWindow.isShowing()) {
-                mMoreSuggestionsWindow.dismiss();
-                return true;
-            }
-            return false;
+            return dismissMoreSuggestions();
         }
     };
+
+    private boolean dismissMoreSuggestions() {
+        if (mMoreSuggestionsWindow.isShowing()) {
+            mMoreSuggestionsWindow.dismiss();
+            mKeyboardView.dimEntireKeyboard(false);
+            return true;
+        }
+        return false;
+    }
 
     @Override
     public boolean onLongClick(View view) {
@@ -754,7 +760,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
             tracker.onShowMoreKeysPanel(
                     translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
             view.setPressed(false);
-            // TODO: Should gray out the keyboard here as well?
+            mKeyboardView.dimEntireKeyboard(true);
             return true;
         }
         return false;
