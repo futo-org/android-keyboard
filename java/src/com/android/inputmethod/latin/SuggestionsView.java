@@ -89,7 +89,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
     private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
     private boolean mShowingAutoCorrectionInverted;
 
-    private final SuggestionsStripParams mStripParams;
+    private final SuggestionsViewParams mParams;
     private static final float MIN_TEXT_XSCALE = 0.70f;
 
     private final UiHandler mHandler = new UiHandler(this);
@@ -144,41 +144,22 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
     }
 
     private static class SuggestionsViewParams {
-        public final int mPadding;
-        public final int mDividerWidth;
-        public final int mSuggestionsStripHeight;
-
-        protected final List<TextView> mWords;
-        protected final List<View> mDividers;
-        protected final List<TextView> mInfos;
-
-        protected SuggestionsViewParams(List<TextView> words, List<View> dividers,
-                List<TextView> infos) {
-            mWords = words;
-            mDividers = dividers;
-            mInfos = infos;
-
-            final TextView word = words.get(0);
-            final View divider = dividers.get(0);
-            mPadding = word.getCompoundPaddingLeft() + word.getCompoundPaddingRight();
-            divider.measure(
-                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mDividerWidth = divider.getMeasuredWidth();
-
-            final Resources res = word.getResources();
-            mSuggestionsStripHeight = res.getDimensionPixelSize(R.dimen.suggestions_strip_height);
-        }
-    }
-
-    private static class SuggestionsStripParams extends SuggestionsViewParams {
         private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
         private static final int DEFAULT_CENTER_SUGGESTION_PERCENTILE = 40;
         private static final int PUNCTUATIONS_IN_STRIP = 6;
 
+        public final int mPadding;
+        public final int mDividerWidth;
+        public final int mSuggestionsStripHeight;
+        public final int mSuggestionsCountInStrip;
+
+        private final List<TextView> mWords;
+        private final List<View> mDividers;
+        private final List<TextView> mInfos;
+
         private final int mColorTypedWord;
         private final int mColorAutoCorrect;
         private final int mColorSuggested;
-        public final int mSuggestionsCountInStrip;
         private final float mCenterSuggestionWeight;
         private final int mCenterSuggestionIndex;
         private final Drawable mMoreSuggestionsHint;
@@ -202,9 +183,22 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
         private final TextView mHintToSaveView;
         private final CharSequence mHintToSaveText;
 
-        public SuggestionsStripParams(Context context, AttributeSet attrs, int defStyle,
+        public SuggestionsViewParams(Context context, AttributeSet attrs, int defStyle,
                 List<TextView> words, List<View> dividers, List<TextView> infos) {
-            super(words, dividers, infos);
+            mWords = words;
+            mDividers = dividers;
+            mInfos = infos;
+
+            final TextView word = words.get(0);
+            final View divider = dividers.get(0);
+            mPadding = word.getCompoundPaddingLeft() + word.getCompoundPaddingRight();
+            divider.measure(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mDividerWidth = divider.getMeasuredWidth();
+
+            final Resources res = word.getResources();
+            mSuggestionsStripHeight = res.getDimensionPixelSize(R.dimen.suggestions_strip_height);
+
             final TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.SuggestionsView, defStyle, R.style.SuggestionsViewStyle);
             mSuggestionStripOption = a.getInt(R.styleable.SuggestionsView_suggestionStripOption, 0);
@@ -220,7 +214,6 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
             a.recycle();
 
             mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
-            final Resources res = context.getResources();
             mMoreSuggestionsHint = res.getDrawable(R.drawable.more_suggestions_hint);
 
             mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
@@ -496,9 +489,8 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
             mInfos.add((TextView)inflater.inflate(R.layout.suggestion_info, null));
         }
 
-        mStripParams = new SuggestionsStripParams(context, attrs, defStyle, mWords, mDividers,
-                mInfos);
-        mStripParams.mWordToSaveView.setOnClickListener(this);
+        mParams = new SuggestionsViewParams(context, attrs, defStyle, mWords, mDividers, mInfos);
+        mParams.mWordToSaveView.setOnClickListener(this);
 
         mMoreSuggestionsContainer = inflater.inflate(R.layout.more_suggestions, null);
         mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
@@ -535,7 +527,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
         if (mSuggestions.size() == 0)
             return;
 
-        mStripParams.layout(mSuggestions, mSuggestionsStrip, mSuggestionsPlacer, getWidth());
+        mParams.layout(mSuggestions, mSuggestionsStrip, mSuggestionsPlacer, getWidth());
     }
 
     private static CharSequence getDebugInfo(SuggestedWords suggestions, int pos) {
@@ -624,7 +616,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
     }
 
     public void onAutoCorrectionInverted(CharSequence autoCorrectedWord) {
-        final CharSequence inverted = mStripParams.getInvertedText(autoCorrectedWord);
+        final CharSequence inverted = mParams.getInvertedText(autoCorrectedWord);
         if (inverted == null)
             return;
         final TextView tv = mWords.get(1);
@@ -634,12 +626,12 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
 
     public boolean isShowingAddToDictionaryHint() {
         return mSuggestionsStrip.getChildCount() > 0
-                && mSuggestionsStrip.getChildAt(0) == mStripParams.mWordToSaveView;
+                && mSuggestionsStrip.getChildAt(0) == mParams.mWordToSaveView;
     }
 
     public void showAddToDictionaryHint(CharSequence word) {
         clear();
-        mStripParams.layoutAddToDictionaryHint(word, mSuggestionsStrip, getWidth());
+        mParams.layoutAddToDictionaryHint(word, mSuggestionsStrip, getWidth());
     }
 
     public boolean dismissAddToDictionaryHint() {
@@ -671,7 +663,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
             return;
 
         final TextView previewText = mPreviewText;
-        previewText.setTextColor(mStripParams.mColorTypedWord);
+        previewText.setTextColor(mParams.mColorTypedWord);
         previewText.setText(word);
         previewText.measure(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -692,7 +684,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
     private void addToDictionary(CharSequence word) {
         if (mListener.addWordToDictionary(word.toString())) {
             final CharSequence message = getContext().getString(R.string.added_word, word);
-            showPreview(mStripParams.mWordToSaveView, message);
+            showPreview(mParams.mWordToSaveView, message);
         }
     }
 
@@ -732,7 +724,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
 
     @Override
     public boolean onLongClick(View view) {
-        final SuggestionsStripParams params = mStripParams;
+        final SuggestionsViewParams params = mParams;
         if (params.mMoreSuggestionsAvailable) {
             final int stripWidth = getWidth();
             final View container = mMoreSuggestionsContainer;
@@ -799,7 +791,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
 
     @Override
     public void onClick(View view) {
-        if (view == mStripParams.mWordToSaveView) {
+        if (view == mParams.mWordToSaveView) {
             addToDictionary((CharSequence)view.getTag());
             clear();
             return;
