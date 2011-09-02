@@ -243,14 +243,13 @@ public class Key {
      * parser.
      * @param res resources associated with the caller's context
      * @param params the keyboard building parameters.
-     * @param row the row that this key belongs to.
-     * @param x the x coordinate of the top-left
-     * @param y the y coordinate of the top-left
+     * @param row the row that this key belongs to. row's x-coordinate will be the right edge of
+     *        this key.
      * @param parser the XML parser containing the attributes for this key
      * @param keyStyles active key styles set
      */
-    public Key(Resources res, KeyboardParams params, Row row, int x, int y,
-            XmlResourceParser parser, KeyStyles keyStyles) {
+    public Key(Resources res, KeyboardParams params, Row row, XmlResourceParser parser,
+            KeyStyles keyStyles) {
 
         final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
@@ -284,6 +283,7 @@ public class Key {
             }
 
             final int keyboardWidth = params.mOccupiedWidth;
+            final int x = row.mCurrentX;
             int keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_keyXPos, keyboardWidth, x);
             if (keyXPos < 0) {
@@ -309,8 +309,11 @@ public class Key {
 
             // Horizontal gap is divided equally to both sides of the key.
             mX = keyXPos + mHorizontalGap / 2;
-            mY = y;
+            mY = row.mCurrentY;
             mWidth = keyWidth - mHorizontalGap;
+
+            // Update row to have x-coordinate of the right edge of this key.
+            row.mCurrentX = keyXPos + keyWidth;
 
             final CharSequence[] moreKeys = style.getTextArray(
                     keyAttr, R.styleable.Keyboard_Key_moreKeys);

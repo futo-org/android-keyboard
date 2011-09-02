@@ -35,7 +35,11 @@ public class Row {
     /** Default height of a key in this row. */
     public final int mRowHeight;
 
-    public Row(Resources res, KeyboardParams params, XmlResourceParser parser) {
+    public final int mCurrentY;
+    // Will be updated by {@link Key}'s constructor.
+    public int mCurrentX;
+
+    public Row(Resources res, KeyboardParams params, XmlResourceParser parser, int y) {
         final int keyboardWidth = params.mWidth;
         final int keyboardHeight = params.mHeight;
         TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
@@ -45,5 +49,8 @@ public class Row {
         mRowHeight = KeyboardBuilder.getDimensionOrFraction(a,
                 R.styleable.Keyboard_rowHeight, keyboardHeight, params.mDefaultRowHeight);
         a.recycle();
+
+        mCurrentY = y;
+        mCurrentX = 0;
     }
 }
