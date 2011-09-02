@@ -25,6 +25,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 >
+    <View
+        android:id="@+id/key_preview_backing"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/key_preview_backing_height" />
+
     <!-- On tablets, the suggestions strip is centered with horizontal paddings on both sides
          because width of the landscape mode is too long for the suggestions strip. This
          LinearLayout is required to hold the paddings. -->
@@ -33,8 +38,6 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/suggestions_view_minimum_height"
-        android:gravity="bottom"
     >
         <View
             android:layout_width="@dimen/suggestions_strip_padding"
