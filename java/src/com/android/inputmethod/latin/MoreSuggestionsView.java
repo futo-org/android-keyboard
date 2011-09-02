@@ -23,17 +23,15 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.PopupWindow;
 
-import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardView;
+import com.android.inputmethod.keyboard.MoreKeysDetector;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
-import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 
-import java.util.List;
 
 /**
  * A view that renders a virtual {@link MoreSuggestions}. It handles rendering of keys and detecting
@@ -48,51 +46,6 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     private KeyboardActionListener mListener;
     private int mOriginX;
     private int mOriginY;
-
-    private static class SuggestionsPaneKeyDetector extends KeyDetector {
-        private final int mSlideAllowanceSquare;
-        private final int mSlideAllowanceSquareTop;
-
-        public SuggestionsPaneKeyDetector(float slideAllowance) {
-            super(/* keyHysteresisDistance */0);
-            mSlideAllowanceSquare = (int)(slideAllowance * slideAllowance);
-            // Top slide allowance is slightly longer (sqrt(2) times) than other edges.
-            mSlideAllowanceSquareTop = mSlideAllowanceSquare * 2;
-        }
-
-        @Override
-        public boolean alwaysAllowsSlidingInput() {
-            return true;
-        }
-
-        @Override
-        protected int getMaxNearbyKeys() {
-            // No nearby key will be returned.
-            return 1;
-        }
-
-        @Override
-        public int getKeyIndexAndNearbyCodes(int x, int y, final int[] allCodes) {
-            final List<Key> keys = getKeyboard().mKeys;
-            final int touchX = getTouchX(x);
-            final int touchY = getTouchY(y);
-
-            int nearestIndex = NOT_A_KEY;
-            int nearestDist = (y < 0) ? mSlideAllowanceSquareTop : mSlideAllowanceSquare;
-            final int keyCount = keys.size();
-            for (int index = 0; index < keyCount; index++) {
-                final int dist = keys.get(index).squaredDistanceToEdge(touchX, touchY);
-                if (dist < nearestDist) {
-                    nearestIndex = index;
-                    nearestDist = dist;
-                }
-            }
-
-            if (allCodes != null && nearestIndex != NOT_A_KEY)
-                allCodes[0] = keys.get(nearestIndex).mCode;
-            return nearestIndex;
-        }
-    }
 
     private static final TimerProxy EMPTY_TIMER_PROXY = new TimerProxy.Adapter();
 
@@ -128,7 +81,7 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
 
         final Resources res = context.getResources();
         // Override default ProximityKeyDetector.
-        mKeyDetector = new SuggestionsPaneKeyDetector(res.getDimension(
+        mKeyDetector = new MoreKeysDetector(res.getDimension(
                 R.dimen.more_suggestions_slide_allowance));
         // Remove gesture detector on suggestions pane
         setKeyPreviewPopupEnabled(false, 0);
