@@ -19,6 +19,7 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -263,6 +264,15 @@ public class SubtypeSwitcher {
                 // as it is not the current input mode.
                 mVoiceInputWrapper.reset();
             }
+            final String packageName = mService.getPackageName();
+            int version = -1;
+            try {
+                version = mService.getPackageManager().getPackageInfo(
+                        packageName, 0).versionCode;
+            } catch (NameNotFoundException e) {
+            }
+            throw new RuntimeException("Unknown subtype mode: " + version + ", " + packageName
+                    + ", " + mVoiceInputWrapper);
         }
     }
 
