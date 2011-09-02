@@ -82,6 +82,8 @@ public class Settings extends InputMethodSettingsActivity
             "pref_key_preview_popup_dismiss_delay";
     public static final String PREF_KEY_USE_CONTACTS_DICT =
             "pref_key_use_contacts_dict";
+    public static final String PREF_KEY_ENABLE_SPAN_INSERT =
+            "enable_span_insert";
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
@@ -117,6 +119,7 @@ public class Settings extends InputMethodSettingsActivity
         // Prediction: use bigrams to predict the next word when there is no input for it yet
         public final boolean mBigramPredictionEnabled;
         public final boolean mUseContactsDict;
+        public final boolean mEnableSuggestionSpanInsertion;
 
         private final boolean mShowSettingsKey;
         private final boolean mVoiceKeyEnabled;
@@ -179,6 +182,8 @@ public class Settings extends InputMethodSettingsActivity
                     && isBigramPredictionEnabled(prefs, res);
             mAutoCorrectionThreshold = getAutoCorrectionThreshold(prefs, res);
             mUseContactsDict = prefs.getBoolean(Settings.PREF_KEY_USE_CONTACTS_DICT, true);
+            mEnableSuggestionSpanInsertion =
+                    prefs.getBoolean(Settings.PREF_KEY_ENABLE_SPAN_INSERT, true);
             final boolean defaultShowSettingsKey = res.getBoolean(
                     R.bool.config_default_show_settings_key);
             mShowSettingsKey = isShowSettingsKeyOption(res)

@@ -132,6 +132,12 @@
              android:summary="@string/bigram_suggestion_summary"
              android:persistent="true"
              android:defaultValue="true" />
+          <CheckBoxPreference
+             android:key="enable_span_insert"
+             android:title="@string/enable_span_insert"
+             android:summary="@string/enable_span_insert_summary"
+             android:persistent="true"
+             android:defaultValue="true" />
           <!-- TODO: evaluate results and revive this option. The code already supports it. -->
           <!-- <CheckBoxPreference -->
           <!--    android:key="bigram_prediction" -->
