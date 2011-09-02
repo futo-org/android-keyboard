@@ -34,6 +34,7 @@ import com.android.inputmethod.latin.Dictionary.WordCallback;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
 import com.android.inputmethod.latin.LocaleUtils;
+import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
 import com.android.inputmethod.latin.UserDictionary;
 import com.android.inputmethod.latin.Utils;
@@ -62,18 +63,38 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private Map<String, Dictionary> mUserDictionaries =
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
 
+    private double mTypoThreshold;
+
+    @Override public void onCreate() {
+        super.onCreate();
+        mTypoThreshold = Double.parseDouble(getString(R.string.spellchecker_typo_threshold_value));
+    }
+
     @Override
     public Session createSession() {
-        return new AndroidSpellCheckerSession();
+        return new AndroidSpellCheckerSession(this);
     }
 
     private static class SuggestionsGatherer implements WordCallback {
+        public static class Result {
+            public final String[] mSuggestions;
+            public final boolean mLooksLikeTypo;
+            public Result(final String[] gatheredSuggestions, final boolean looksLikeTypo) {
+                mSuggestions = gatheredSuggestions;
+                mLooksLikeTypo = looksLikeTypo;
+            }
+        }
+
         private final int DEFAULT_SUGGESTION_LENGTH = 16;
         private final ArrayList<CharSequence> mSuggestions;
         private final int[] mScores;
         private final int mMaxLength;
         private int mLength = 0;
-        private boolean mSeenSuggestions = false;
+
+        // The two following attributes are only ever filled if the requested max length
+        // is 0 (or less, which is treated the same).
+        private String mBestSuggestion = null;
+        private int mBestScore = Integer.MIN_VALUE; // As small as possible
 
         SuggestionsGatherer(final int maxLength) {
             mMaxLength = maxLength;
@@ -89,14 +110,26 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             // if it doesn't. See documentation for binarySearch.
             final int insertIndex = positionIndex >= 0 ? positionIndex : -positionIndex - 1;
 
-            mSeenSuggestions = true;
             if (mLength < mMaxLength) {
                 final int copyLen = mLength - insertIndex;
                 ++mLength;
                 System.arraycopy(mScores, insertIndex, mScores, insertIndex + 1, copyLen);
                 mSuggestions.add(insertIndex, new String(word, wordOffset, wordLength));
             } else {
-                if (insertIndex == 0) return true;
+                if (insertIndex == 0) {
+                    // If the maxLength is 0 (should never be less, but if it is, it's treated as 0)
+                    // then we need to keep track of the best suggestion in mBestScore and
+                    // mBestSuggestion. This is so that we know whether the best suggestion makes
+                    // the score cutoff, since we need to know that to return a meaningful
+                    // looksLikeTypo.
+                    if (0 >= mMaxLength) {
+                        if (score > mBestScore) {
+                            mBestScore = score;
+                            mBestSuggestion = new String(word, wordOffset, wordLength);
+                        }
+                    }
+                    return true;
+                }
                 System.arraycopy(mScores, 1, mScores, 0, insertIndex);
                 mSuggestions.add(insertIndex, new String(word, wordOffset, wordLength));
                 mSuggestions.remove(0);
@@ -106,20 +139,41 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             return true;
         }
 
-        public String[] getGatheredSuggestions() {
-            if (!mSeenSuggestions) return null;
-            if (0 == mLength) return EMPTY_STRING_ARRAY;
-
-            if (DBG) {
-                if (mLength != mSuggestions.size()) {
-                    Log.e(TAG, "Suggestion size is not the same as stored mLength");
+        public Result getResults(final CharSequence originalText, final double threshold) {
+            final String[] gatheredSuggestions;
+            final boolean looksLikeTypo;
+            if (0 == mLength) {
+                // Either we found no suggestions, or we found some BUT the max length was 0.
+                // If we found some mBestSuggestion will not be null. If it is null, then
+                // we found none, regardless of the max length.
+                if (null == mBestSuggestion) {
+                    gatheredSuggestions = null;
+                    looksLikeTypo = false;
+                } else {
+                    gatheredSuggestions = EMPTY_STRING_ARRAY;
+                    final double normalizedScore =
+                            Utils.calcNormalizedScore(originalText, mBestSuggestion, mBestScore);
+                    looksLikeTypo = (normalizedScore > threshold);
                 }
+            } else {
+                if (DBG) {
+                    if (mLength != mSuggestions.size()) {
+                        Log.e(TAG, "Suggestion size is not the same as stored mLength");
+                    }
+                }
+                Collections.reverse(mSuggestions);
+                Utils.removeDupes(mSuggestions);
+                // This returns a String[], while toArray() returns an Object[] which cannot be cast
+                // into a String[].
+                gatheredSuggestions = mSuggestions.toArray(EMPTY_STRING_ARRAY);
+
+                final int bestScore = mScores[0];
+                final CharSequence bestSuggestion = mSuggestions.get(0);
+                final double normalizedScore =
+                        Utils.calcNormalizedScore(originalText, bestSuggestion, bestScore);
+                looksLikeTypo = (normalizedScore > threshold);
             }
-            Collections.reverse(mSuggestions);
-            Utils.removeDupes(mSuggestions);
-            // This returns a String[], while toArray() returns an Object[] which cannot be cast
-            // into a String[].
-            return mSuggestions.toArray(EMPTY_STRING_ARRAY);
+            return new Result(gatheredSuggestions, looksLikeTypo);
         }
     }
 
@@ -164,16 +218,22 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         return new DictAndProximity(dictionaryCollection, proximityInfo);
     }
 
-    private class AndroidSpellCheckerSession extends Session {
+    private static class AndroidSpellCheckerSession extends Session {
         // Immutable, but need the locale which is not available in the constructor yet
-        DictionaryPool mDictionaryPool;
+        private DictionaryPool mDictionaryPool;
         // Likewise
-        Locale mLocale;
+        private Locale mLocale;
+
+        private final AndroidSpellCheckerService mService;
+
+        AndroidSpellCheckerSession(final AndroidSpellCheckerService service) {
+            mService = service;
+        }
 
         @Override
         public void onCreate() {
             final String localeString = getLocale();
-            mDictionaryPool = getDictionaryPool(localeString);
+            mDictionaryPool = mService.getDictionaryPool(localeString);
             mLocale = LocaleUtils.constructLocaleFromString(localeString);
         }
 
@@ -242,13 +302,14 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 return EMPTY_SUGGESTIONS_INFO;
             }
 
-            final String[] suggestions = suggestionsGatherer.getGatheredSuggestions();
+            final SuggestionsGatherer.Result result =
+                    suggestionsGatherer.getResults(text, mService.mTypoThreshold);
 
             final int flags =
                     (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
-                            | (null != suggestions
+                            | (result.mLooksLikeTypo
                                     ? SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO : 0);
-            return new SuggestionsInfo(flags, suggestions);
+            return new SuggestionsInfo(flags, result.mSuggestions);
         }
     }
 }
