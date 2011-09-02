@@ -60,7 +60,7 @@
 
     <dimen name="suggestions_strip_height">36dip</dimen>
     <dimen name="more_suggestions_row_height">36dip</dimen>
-    <dimen name="suggestions_view_minimum_height">160sp</dimen>
+    <dimen name="key_preview_backing_height">36dip</dimen>
     <!-- Amount of allowance for selecting keys in a mini popup keyboard by sliding finger. -->
     <!-- popup_key_height x 1.2 -->
     <dimen name="mini_keyboard_slide_allowance">0.336in</dimen>

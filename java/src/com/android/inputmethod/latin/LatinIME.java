@@ -157,6 +157,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private Settings.Values mSettingsValues;
 
+    private View mKeyPreviewBackingView;
     private View mSuggestionsContainer;
     private int mSuggestionsStripHeight;
     private SuggestionsView mSuggestionsView;
@@ -607,6 +608,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void setInputView(View view) {
         super.setInputView(view);
+        mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
         mSuggestionsContainer = view.findViewById(R.id.suggestions_container);
         mSuggestionsView = (SuggestionsView) view.findViewById(R.id.suggestions_view);
         if (mSuggestionsView != null)
@@ -945,12 +947,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     && (needsInputViewShown ? mKeyboardSwitcher.isInputViewShown() : true);
             if (isFullscreenMode()) {
                 // No need to have extra space to show the key preview.
-                mSuggestionsContainer.setMinimumHeight(0);
+                mKeyPreviewBackingView.setVisibility(View.GONE);
                 mSuggestionsContainer.setVisibility(
                         shouldShowSuggestions ? View.VISIBLE : View.GONE);
             } else {
                 // We must control the visibility of the suggestion strip in order to avoid clipped
                 // key previews, even when we don't show the suggestion strip.
+                mKeyPreviewBackingView.setVisibility(View.VISIBLE);
                 mSuggestionsContainer.setVisibility(
                         shouldShowSuggestions ? View.VISIBLE : View.INVISIBLE);
             }
@@ -967,15 +970,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView == null || mSuggestionsContainer == null)
             return;
-        final int containerHeight = mSuggestionsContainer.getHeight();
-        int touchY = containerHeight;
+        final int backingHeight = (mKeyPreviewBackingView.getVisibility() == View.GONE) ? 0
+                : mKeyPreviewBackingView.getHeight();
+        final int extraHeight = mSuggestionsContainer.getHeight() + backingHeight;
+        int touchY = extraHeight;
         // Need to set touchable region only if input view is being shown
         if (mKeyboardSwitcher.isInputViewShown()) {
             if (mSuggestionsContainer.getVisibility() == View.VISIBLE) {
                 touchY -= mSuggestionsStripHeight;
             }
             final int touchWidth = inputView.getWidth();
-            final int touchHeight = inputView.getHeight() + containerHeight
+            final int touchHeight = inputView.getHeight() + extraHeight
                     // Extend touchable region below the keyboard.
                     + EXTENDED_TOUCHABLE_REGION_HEIGHT;
             if (DEBUG) {
