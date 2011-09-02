@@ -426,8 +426,10 @@ public class Settings extends InputMethodSettingsActivity
         final boolean showBigramSuggestionsOption = res.getBoolean(
                 R.bool.config_enable_bigram_suggestions_option);
         if (!showBigramSuggestionsOption) {
-            textCorrectionGroup.removePreference(findPreference(PREF_BIGRAM_SUGGESTIONS));
-            textCorrectionGroup.removePreference(findPreference(PREF_BIGRAM_PREDICTIONS));
+            textCorrectionGroup.removePreference(mBigramSuggestion);
+            if (null != mBigramPrediction) {
+                textCorrectionGroup.removePreference(mBigramPrediction);
+            }
         }
 
         final boolean showUsabilityModeStudyOption = res.getBoolean(
