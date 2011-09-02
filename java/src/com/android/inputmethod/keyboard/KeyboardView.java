@@ -103,6 +103,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private ViewGroup mPreviewPlacer;
 
     // Drawing
+    /** True if the entire keyboard needs to be dimmed. */
+    private boolean mNeedsToDimBackground;
     /** Whether the keyboard bitmap buffer needs to be redrawn before it's blitted. **/
     private boolean mBufferNeedsUpdate;
     /** The dirty region in the keyboard bitmap */
@@ -481,8 +483,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
         }
 
-        // Overlay a dark rectangle to dim the keyboard
-        if (needsToDimKeyboard()) {
+        // Overlay a dark rectangle to dim the entire keyboard
+        if (mNeedsToDimBackground) {
             mPaint.setColor((int) (mBackgroundDimAmount * 0xFF) << 24);
             canvas.drawRect(0, 0, width, height, mPaint);
         }
@@ -491,8 +493,12 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDirtyRect.setEmpty();
     }
 
-    protected boolean needsToDimKeyboard() {
-        return false;
+    public void dimEntireKeyboard(boolean dimmed) {
+        final boolean needsRedrawing = mNeedsToDimBackground != dimmed;
+        mNeedsToDimBackground = dimmed;
+        if (needsRedrawing) {
+            invalidateAllKeys();
+        }
     }
 
     private static void onBufferDrawKey(final Key key, final Keyboard keyboard, final Canvas canvas,

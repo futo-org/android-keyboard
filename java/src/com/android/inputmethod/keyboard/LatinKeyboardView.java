@@ -373,11 +373,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         return miniKeyboardView;
     }
 
-    @Override
-    protected boolean needsToDimKeyboard() {
-        return mMoreKeysPanel != null;
-    }
-
     public void setSpacebarTextFadeFactor(float fadeFactor, LatinKeyboard oldKeyboard) {
         final Keyboard keyboard = getKeyboard();
         // We should not set text fade factor to the keyboard which does not display the language on
@@ -460,8 +455,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         final int translatedY = moreKeysPanel.translateY(tracker.getLastY());
         tracker.onShowMoreKeysPanel(
                 translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
-
-        invalidateAllKeys();
+        dimEntireKeyboard(true);
         return true;
     }
 
@@ -620,7 +614,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             mMoreKeysWindow.dismiss();
             mMoreKeysPanel = null;
             mMoreKeysPanelPointerTrackerId = -1;
-            invalidateAllKeys();
+            dimEntireKeyboard(false);
             return true;
         }
         return false;
