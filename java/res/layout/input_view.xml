@@ -33,7 +33,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/suggestions_strip_minimum_height"
+        android:minHeight="@dimen/suggestions_view_minimum_height"
         android:gravity="bottom"
     >
         <View

@@ -81,7 +81,7 @@
     <dimen name="more_suggestions_row_height">40dip</dimen>
     <dimen name="more_suggestions_slide_allowance">0.2in</dimen>
     <fraction name="more_suggestions_info_ratio">12%</fraction>
-    <dimen name="suggestions_strip_minimum_height">200sp</dimen>
+    <dimen name="suggestions_view_minimum_height">200sp</dimen>
     <dimen name="suggestions_strip_padding">0dip</dimen>
     <dimen name="suggestion_min_width">44dip</dimen>
     <dimen name="suggestion_padding">6dip</dimen>
