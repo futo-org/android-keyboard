@@ -31,7 +31,6 @@ import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
 import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
-import com.android.inputmethod.keyboard.internal.Row;
 import com.android.inputmethod.latin.R;
 
 import java.util.HashMap;
@@ -248,8 +247,8 @@ public class Key {
      * @param parser the XML parser containing the attributes for this key
      * @param keyStyles active key styles set
      */
-    public Key(Resources res, KeyboardParams params, Row row, XmlResourceParser parser,
-            KeyStyles keyStyles) {
+    public Key(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
+            XmlResourceParser parser, KeyStyles keyStyles) {
 
         final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);

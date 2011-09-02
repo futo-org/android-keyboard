@@ -135,6 +135,37 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private Key mRightEdgeKey = null;
     private final KeyStyles mKeyStyles = new KeyStyles();
 
+    /**
+     * Container for keys in the keyboard. All keys in a row are at the same Y-coordinate.
+     * Some of the key size defaults can be overridden per row from what the {@link Keyboard}
+     * defines.
+     */
+    public static class Row {
+        /** Default width of a key in this row. */
+        public final float mDefaultKeyWidth;
+        /** Default height of a key in this row. */
+        public final int mRowHeight;
+
+        public final int mCurrentY;
+        // Will be updated by {@link Key}'s constructor.
+        public float mCurrentX;
+
+        public Row(Resources res, KeyboardParams params, XmlResourceParser parser, int y) {
+            final int keyboardWidth = params.mWidth;
+            final int keyboardHeight = params.mHeight;
+            TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
+                    R.styleable.Keyboard);
+            mDefaultKeyWidth = KeyboardBuilder.getDimensionOrFraction(a,
+                    R.styleable.Keyboard_keyWidth, keyboardWidth, params.mDefaultKeyWidth);
+            mRowHeight = (int)KeyboardBuilder.getDimensionOrFraction(a,
+                    R.styleable.Keyboard_rowHeight, keyboardHeight, params.mDefaultRowHeight);
+            a.recycle();
+
+            mCurrentY = y;
+            mCurrentX = 0.0f;
+        }
+    }
+
     public KeyboardBuilder(Context context, KP params) {
         mContext = context;
         final Resources res = context.getResources();
