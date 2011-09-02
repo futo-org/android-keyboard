@@ -1807,9 +1807,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final InputConnection ic = getCurrentInputConnection();
         if (ic != null) {
             mVoiceProxy.rememberReplacedWord(bestWord, mSettingsValues.mWordSeparators);
-            SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
-            ic.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
-                    this, bestWord, suggestedWords), 1);
+            if (mSettingsValues.mEnableSuggestionSpanInsertion) {
+                final SuggestedWords suggestedWords = mSuggestionsView.getSuggestions();
+                ic.commitText(SuggestionSpanUtils.getTextWithSuggestionSpan(
+                        this, bestWord, suggestedWords), 1);
+            } else {
+                ic.commitText(bestWord, 1);
+            }
         }
         mRecorrection.saveRecorrectionSuggestion(mWordComposer, bestWord);
         mHasUncommittedTypedChars = false;
