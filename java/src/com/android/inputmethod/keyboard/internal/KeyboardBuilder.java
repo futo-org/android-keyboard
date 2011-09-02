@@ -128,7 +128,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     protected final Resources mResources;
     private final DisplayMetrics mDisplayMetrics;
 
-    private int mCurrentX = 0;
     private int mCurrentY = 0;
     private Row mCurrentRow = null;
     private boolean mLeftEdge;
@@ -314,7 +313,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 throw new IllegalAttribute(parser, "horizontalGap");
             if (a.hasValue(R.styleable.Keyboard_verticalGap))
                 throw new IllegalAttribute(parser, "verticalGap");
-            return new Row(mResources, mParams, parser);
+            return new Row(mResources, mParams, parser, mCurrentY);
         } finally {
             a.recycle();
         }
@@ -344,7 +343,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 if (TAG_ROW.equals(tag)) {
                     if (DEBUG) Log.d(TAG, String.format("</%s>", TAG_ROW));
                     if (!skip)
-                        endRow();
+                        endRow(row);
                     break;
                 } else if (TAG_CASE.equals(tag) || TAG_DEFAULT.equals(tag)
                         || TAG_MERGE.equals(tag)) {
@@ -364,7 +363,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         if (skip) {
             checkEndTag(TAG_KEY, parser);
         } else {
-            Key key = new Key(mResources, mParams, row, mCurrentX, mCurrentY, parser, mKeyStyles);
+            Key key = new Key(mResources, mParams, row, parser, mKeyStyles);
             if (DEBUG) Log.d(TAG, String.format("<%s%s keyLabel=%s code=%d moreKeys=%s />",
                     TAG_KEY, (key.isEnabled() ? "" : " disabled"), key.mLabel, key.mCode,
                     Arrays.toString(key.mMoreKeys)));
@@ -392,14 +391,14 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Key);
             int keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyXPos, keyboardWidth, mCurrentX);
+                    R.styleable.Keyboard_Key_keyXPos, keyboardWidth, row.mCurrentX);
             if (keyXPos < 0) {
                 // If keyXPos is negative, the actual x-coordinate will be display_width + keyXPos.
                 keyXPos += keyboardWidth;
             }
 
             checkEndTag(TAG_SPACER, parser);
-            setSpacer(keyXPos, keyWidth);
+            setSpacer(keyXPos, keyWidth, row);
         }
     }
 
@@ -655,28 +654,27 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void startRow(Row row) {
-        mCurrentX = 0;
-        setSpacer(mCurrentX, mParams.mHorizontalEdgesPadding);
+        row.mCurrentX = 0;
+        setSpacer(row.mCurrentX, mParams.mHorizontalEdgesPadding, row);
         mCurrentRow = row;
         mLeftEdge = true;
         mRightEdgeKey = null;
     }
 
-    private void endRow() {
+    private void endRow(Row row) {
         if (mCurrentRow == null)
             throw new InflateException("orphant end row tag");
         if (mRightEdgeKey != null) {
             mRightEdgeKey.addEdgeFlags(Keyboard.EDGE_RIGHT);
             mRightEdgeKey = null;
         }
-        setSpacer(mCurrentX, mParams.mHorizontalEdgesPadding);
+        setSpacer(row.mCurrentX, mParams.mHorizontalEdgesPadding, row);
         mCurrentY += mCurrentRow.mRowHeight;
         mCurrentRow = null;
         mTopEdge = false;
     }
 
     private void endKey(Key key) {
-        mCurrentX = key.mX - key.mHorizontalGap / 2 + key.mWidth + key.mHorizontalGap;
         if (mLeftEdge) {
             key.addEdgeFlags(Keyboard.EDGE_LEFT);
             mLeftEdge = false;
@@ -690,8 +688,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void endKeyboard() {
     }
 
-    private void setSpacer(int keyXPos, int width) {
-        mCurrentX = keyXPos + width;
+    private void setSpacer(int keyXPos, int width, Row row) {
+        row.mCurrentX = keyXPos + width;
         mLeftEdge = false;
         mRightEdgeKey = null;
     }
