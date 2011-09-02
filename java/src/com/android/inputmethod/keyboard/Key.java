@@ -253,126 +253,115 @@ public class Key {
 
         final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
-        int keyWidth;
-        try {
-            mHeight = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_rowHeight,
-                    params.mHeight, row.mRowHeight) - params.mVerticalGap;
-            mHorizontalGap = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_horizontalGap,
-                    params.mWidth, params.mHorizontalGap);
-            mVerticalGap = params.mVerticalGap;
-            keyWidth = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyWidth,
-                    params.mWidth, row.mDefaultKeyWidth);
-        } finally {
-            keyboardAttr.recycle();
-        }
+        mHeight = (int)KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
+                R.styleable.Keyboard_rowHeight, params.mHeight, row.mRowHeight)
+                - params.mVerticalGap;
+        final float horizontalGap = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
+                R.styleable.Keyboard_horizontalGap, params.mWidth, params.mHorizontalGap);
+        mVerticalGap = params.mVerticalGap;
+        float keyWidth = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
+                R.styleable.Keyboard_keyWidth, params.mWidth, row.mDefaultKeyWidth);
+        keyboardAttr.recycle();
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
-        try {
-            final KeyStyle style;
-            if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyStyle)) {
-                String styleName = keyAttr.getString(R.styleable.Keyboard_Key_keyStyle);
-                style = keyStyles.getKeyStyle(styleName);
-                if (style == null)
-                    throw new ParseException("Unknown key style: " + styleName, parser);
-            } else {
-                style = keyStyles.getEmptyKeyStyle();
-            }
 
-            final int keyboardWidth = params.mOccupiedWidth;
-            final int x = row.mCurrentX;
-            int keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyXPos, keyboardWidth, x);
-            if (keyXPos < 0) {
-                // If keyXPos is negative, the actual x-coordinate will be k + keyXPos.
-                keyXPos += keyboardWidth;
-                if (keyXPos < x) {
-                    // keyXPos shouldn't be less than x because drawable area for this key starts
-                    // at x. Or, this key will overlaps the adjacent key on its left hand side.
-                    keyXPos = x;
-                }
-            }
-            if (keyWidth == KEYWIDTH_FILL_RIGHT) {
-                // If keyWidth is zero, the actual key width will be determined to fill out the
-                // area up to the right edge of the keyboard.
-                keyWidth = keyboardWidth - keyXPos;
-            } else if (keyWidth <= KEYWIDTH_FILL_BOTH) {
-                // If keyWidth is negative, the actual key width will be determined to fill out the
-                // area between the nearest key on the left hand side and the right edge of the
-                // keyboard.
-                keyXPos = x;
-                keyWidth = keyboardWidth - keyXPos;
-            }
-
-            // Horizontal gap is divided equally to both sides of the key.
-            mX = keyXPos + mHorizontalGap / 2;
-            mY = row.mCurrentY;
-            mWidth = keyWidth - mHorizontalGap;
-
-            // Update row to have x-coordinate of the right edge of this key.
-            row.mCurrentX = keyXPos + keyWidth;
-
-            final CharSequence[] moreKeys = style.getTextArray(
-                    keyAttr, R.styleable.Keyboard_Key_moreKeys);
-            // In Arabic symbol layouts, we'd like to keep digits in more keys regardless of
-            // config_digit_more_keys_enabled.
-            if (params.mId.isAlphabetKeyboard() && !res.getBoolean(
-                    R.bool.config_digit_more_keys_enabled)) {
-                mMoreKeys = MoreKeySpecParser.filterOut(
-                        res, moreKeys, MoreKeySpecParser.DIGIT_FILTER);
-            } else {
-                mMoreKeys = moreKeys;
-            }
-            mMaxMoreKeysColumn = style.getInt(keyboardAttr,
-                    R.styleable.Keyboard_Key_maxMoreKeysColumn,
-                    params.mMaxMiniKeyboardColumn);
-
-            mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
-            mFunctional = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional, false);
-            mSticky = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky, false);
-            mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
-            mEdgeFlags = 0;
-
-            final KeyboardIconsSet iconsSet = params.mIconsSet;
-            mVisualInsetsLeft = KeyboardBuilder.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_visualInsetsLeft, keyboardWidth, 0);
-            mVisualInsetsRight = KeyboardBuilder.getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_visualInsetsRight, keyboardWidth, 0);
-            mPreviewIcon = iconsSet.getIcon(style.getInt(
-                    keyAttr, R.styleable.Keyboard_Key_keyIconPreview,
-                    KeyboardIconsSet.ICON_UNDEFINED));
-            mIcon = iconsSet.getIcon(style.getInt(
-                    keyAttr, R.styleable.Keyboard_Key_keyIcon,
-                    KeyboardIconsSet.ICON_UNDEFINED));
-            final int shiftedIconId = style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted,
-                    KeyboardIconsSet.ICON_UNDEFINED);
-            if (shiftedIconId != KeyboardIconsSet.ICON_UNDEFINED) {
-                final Drawable shiftedIcon = iconsSet.getIcon(shiftedIconId);
-                params.addShiftedIcon(this, shiftedIcon);
-            }
-            mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
-
-            mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
-            mLabelOption = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption, 0);
-            mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
-            // Choose the first letter of the label as primary code if not
-            // specified.
-            final int code = style.getInt(keyAttr, R.styleable.Keyboard_Key_code,
-                    Keyboard.CODE_UNSPECIFIED);
-            if (code == Keyboard.CODE_UNSPECIFIED && !TextUtils.isEmpty(mLabel)) {
-                final int firstChar = mLabel.charAt(0);
-                mCode = getRtlParenthesisCode(firstChar, params.mIsRtlKeyboard);
-            } else if (code != Keyboard.CODE_UNSPECIFIED) {
-                mCode = code;
-            } else {
-                mCode = Keyboard.CODE_DUMMY;
-            }
-        } finally {
-            keyAttr.recycle();
+        final KeyStyle style;
+        if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyStyle)) {
+            String styleName = keyAttr.getString(R.styleable.Keyboard_Key_keyStyle);
+            style = keyStyles.getKeyStyle(styleName);
+            if (style == null)
+                throw new ParseException("Unknown key style: " + styleName, parser);
+        } else {
+            style = keyStyles.getEmptyKeyStyle();
         }
+
+        final int keyboardWidth = params.mOccupiedWidth;
+        final float x = row.mCurrentX;
+        float keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
+                R.styleable.Keyboard_Key_keyXPos, keyboardWidth, x);
+        if (keyXPos < 0) {
+            // If keyXPos is negative, the actual x-coordinate will be keyboardWidth + keyXPos.
+            keyXPos += keyboardWidth;
+            if (keyXPos < x) {
+                // keyXPos shouldn't be less than x because drawable area for this key starts
+                // at x. Or, this key will overlaps the adjacent key on its left hand side.
+                keyXPos = x;
+            }
+        }
+        if (keyWidth == KEYWIDTH_FILL_RIGHT) {
+            // If keyWidth is zero, the actual key width will be determined to fill out the
+            // area up to the right edge of the keyboard.
+            keyWidth = keyboardWidth - keyXPos;
+        } else if (keyWidth <= KEYWIDTH_FILL_BOTH) {
+            // If keyWidth is negative, the actual key width will be determined to fill out the
+            // area between the nearest key on the left hand side and the right edge of the
+            // keyboard.
+            keyXPos = x;
+            keyWidth = keyboardWidth - keyXPos;
+        }
+
+        // Horizontal gap is divided equally to both sides of the key.
+        mX = (int) (keyXPos + horizontalGap / 2);
+        mY = row.mCurrentY;
+        mWidth = (int) (keyWidth - horizontalGap);
+        mHorizontalGap = (int) horizontalGap;
+        // Update row to have current x coordinate.
+        row.mCurrentX = keyXPos + keyWidth;
+
+        final CharSequence[] moreKeys = style.getTextArray(keyAttr,
+                R.styleable.Keyboard_Key_moreKeys);
+        // In Arabic symbol layouts, we'd like to keep digits in more keys regardless of
+        // config_digit_more_keys_enabled.
+        if (params.mId.isAlphabetKeyboard()
+                && !res.getBoolean(R.bool.config_digit_more_keys_enabled)) {
+            mMoreKeys = MoreKeySpecParser.filterOut(res, moreKeys, MoreKeySpecParser.DIGIT_FILTER);
+        } else {
+            mMoreKeys = moreKeys;
+        }
+        mMaxMoreKeysColumn = style.getInt(keyboardAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn,
+                params.mMaxMiniKeyboardColumn);
+
+        mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
+        mFunctional = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional, false);
+        mSticky = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky, false);
+        mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
+        mEdgeFlags = 0;
+
+        final KeyboardIconsSet iconsSet = params.mIconsSet;
+        mVisualInsetsLeft = (int) KeyboardBuilder.getDimensionOrFraction(keyAttr,
+                R.styleable.Keyboard_Key_visualInsetsLeft, keyboardWidth, 0);
+        mVisualInsetsRight = (int) KeyboardBuilder.getDimensionOrFraction(keyAttr,
+                R.styleable.Keyboard_Key_visualInsetsRight, keyboardWidth, 0);
+        mPreviewIcon = iconsSet.getIcon(style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED));
+        mIcon = iconsSet.getIcon(style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIcon,
+                KeyboardIconsSet.ICON_UNDEFINED));
+        final int shiftedIconId = style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted,
+                KeyboardIconsSet.ICON_UNDEFINED);
+        if (shiftedIconId != KeyboardIconsSet.ICON_UNDEFINED) {
+            final Drawable shiftedIcon = iconsSet.getIcon(shiftedIconId);
+            params.addShiftedIcon(this, shiftedIcon);
+        }
+        mHintLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyHintLabel);
+
+        mLabel = style.getText(keyAttr, R.styleable.Keyboard_Key_keyLabel);
+        mLabelOption = style.getFlag(keyAttr, R.styleable.Keyboard_Key_keyLabelOption, 0);
+        mOutputText = style.getText(keyAttr, R.styleable.Keyboard_Key_keyOutputText);
+        // Choose the first letter of the label as primary code if not
+        // specified.
+        final int code = style.getInt(keyAttr, R.styleable.Keyboard_Key_code,
+                Keyboard.CODE_UNSPECIFIED);
+        if (code == Keyboard.CODE_UNSPECIFIED && !TextUtils.isEmpty(mLabel)) {
+            final int firstChar = mLabel.charAt(0);
+            mCode = getRtlParenthesisCode(firstChar, params.mIsRtlKeyboard);
+        } else if (code != Keyboard.CODE_UNSPECIFIED) {
+            mCode = code;
+        } else {
+            mCode = Keyboard.CODE_DUMMY;
+        }
+
+        keyAttr.recycle();
     }
 
     public void addEdgeFlags(int flags) {

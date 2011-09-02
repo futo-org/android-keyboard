@@ -218,14 +218,14 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             final int displayHeight = mDisplayMetrics.heightPixels;
             final int keyboardHeight = (int)keyboardAttr.getDimension(
                     R.styleable.Keyboard_keyboardHeight, displayHeight / 2);
-            final int maxKeyboardHeight = getDimensionOrFraction(keyboardAttr,
+            final int maxKeyboardHeight = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_maxKeyboardHeight, displayHeight, displayHeight / 2);
-            int minKeyboardHeight = getDimensionOrFraction(keyboardAttr,
+            int minKeyboardHeight = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_minKeyboardHeight, displayHeight, displayHeight / 2);
             if (minKeyboardHeight < 0) {
                 // Specified fraction was negative, so it should be calculated against display
                 // width.
-                minKeyboardHeight = -getDimensionOrFraction(keyboardAttr,
+                minKeyboardHeight = -(int)getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_minKeyboardHeight, displayWidth, displayWidth / 2);
             }
             // Keyboard height will not exceed maxKeyboardHeight and will not be less than
@@ -233,9 +233,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             mParams.mOccupiedHeight = Math.max(
                     Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
             mParams.mOccupiedWidth = mParams.mId.mWidth;
-            mParams.mTopPadding = getDimensionOrFraction(keyboardAttr,
+            mParams.mTopPadding = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyboardTopPadding, mParams.mOccupiedHeight, 0);
-            mParams.mBottomPadding = getDimensionOrFraction(keyboardAttr,
+            mParams.mBottomPadding = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyboardBottomPadding, mParams.mOccupiedHeight, 0);
 
             final int height = mParams.mOccupiedHeight;
@@ -243,13 +243,13 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     - mParams.mHorizontalCenterPadding;
             mParams.mHeight = height;
             mParams.mWidth = width;
-            mParams.mDefaultKeyWidth = getDimensionOrFraction(keyboardAttr,
+            mParams.mDefaultKeyWidth = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyWidth, width, width / 10);
-            mParams.mDefaultRowHeight = getDimensionOrFraction(keyboardAttr,
+            mParams.mDefaultRowHeight = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight, height, height / 4);
-            mParams.mHorizontalGap = getDimensionOrFraction(keyboardAttr,
+            mParams.mHorizontalGap = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_horizontalGap, width, 0);
-            mParams.mVerticalGap = getDimensionOrFraction(keyboardAttr,
+            mParams.mVerticalGap = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_verticalGap, height, 0);
 
             mParams.mIsRtlKeyboard = keyboardAttr.getBoolean(
@@ -384,13 +384,13 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             if (keyboardAttr.hasValue(R.styleable.Keyboard_horizontalGap))
                 throw new IllegalAttribute(parser, "horizontalGap");
             final int keyboardWidth = mParams.mWidth;
-            final int keyWidth = getDimensionOrFraction(keyboardAttr, R.styleable.Keyboard_keyWidth,
-                    keyboardWidth, row.mDefaultKeyWidth);
+            final float keyWidth = getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyWidth, keyboardWidth, row.mDefaultKeyWidth);
             keyboardAttr.recycle();
 
             final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard_Key);
-            int keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
+            float keyXPos = getDimensionOrFraction(keyAttr,
                     R.styleable.Keyboard_Key_keyXPos, keyboardWidth, row.mCurrentX);
             if (keyXPos < 0) {
                 // If keyXPos is negative, the actual x-coordinate will be display_width + keyXPos.
@@ -688,24 +688,23 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void endKeyboard() {
     }
 
-    private void setSpacer(int keyXPos, int width, Row row) {
+    private void setSpacer(float keyXPos, float width, Row row) {
         row.mCurrentX = keyXPos + width;
         mLeftEdge = false;
         mRightEdgeKey = null;
     }
 
-    public static int getDimensionOrFraction(TypedArray a, int index, int base, int defValue) {
+    public static float getDimensionOrFraction(TypedArray a, int index, int base, float defValue) {
         final TypedValue value = a.peekValue(index);
         if (value == null)
             return defValue;
         if (isFractionValue(value)) {
-            // Round it to avoid values like 47.9999 from getting truncated
-            return Math.round(a.getFraction(index, base, base, defValue));
+            return a.getFraction(index, base, base, defValue);
         } else if (isDimensionValue(value)) {
-            return a.getDimensionPixelOffset(index, defValue);
+            return a.getDimension(index, defValue);
         } else if (isIntegerValue(value)) {
             // For enum value.
-            return a.getInt(index, defValue);
+            return a.getInt(index, 0);
         }
         return defValue;
     }

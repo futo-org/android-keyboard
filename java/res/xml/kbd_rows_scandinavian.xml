@@ -24,13 +24,12 @@
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
     <Row
-        latin:keyWidth="9.09%p"
+        latin:keyWidth="9.091%p"
     >
         <Key
             latin:keyLabel="q"
             latin:keyHintLabel="1"
-            latin:moreKeys="@string/more_keys_for_q"
-            latin:keyWidth="8.75%p" />
+            latin:moreKeys="@string/more_keys_for_q" />
         <Key
             latin:keyLabel="w"
             latin:keyHintLabel="2"
@@ -72,7 +71,7 @@
             latin:keyWidth="fillRight" />
     </Row>
     <Row
-        latin:keyWidth="9.09%p"
+        latin:keyWidth="9.091%p"
     >
         <Key
             latin:keyLabel="a"
