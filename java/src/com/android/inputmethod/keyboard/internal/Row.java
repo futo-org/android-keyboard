@@ -31,13 +31,13 @@ import com.android.inputmethod.latin.R;
  */
 public class Row {
     /** Default width of a key in this row. */
-    public final int mDefaultKeyWidth;
+    public final float mDefaultKeyWidth;
     /** Default height of a key in this row. */
     public final int mRowHeight;
 
     public final int mCurrentY;
     // Will be updated by {@link Key}'s constructor.
-    public int mCurrentX;
+    public float mCurrentX;
 
     public Row(Resources res, KeyboardParams params, XmlResourceParser parser, int y) {
         final int keyboardWidth = params.mWidth;
@@ -46,11 +46,11 @@ public class Row {
                 R.styleable.Keyboard);
         mDefaultKeyWidth = KeyboardBuilder.getDimensionOrFraction(a,
                 R.styleable.Keyboard_keyWidth, keyboardWidth, params.mDefaultKeyWidth);
-        mRowHeight = KeyboardBuilder.getDimensionOrFraction(a,
+        mRowHeight = (int)KeyboardBuilder.getDimensionOrFraction(a,
                 R.styleable.Keyboard_rowHeight, keyboardHeight, params.mDefaultRowHeight);
         a.recycle();
 
         mCurrentY = y;
-        mCurrentX = 0;
+        mCurrentX = 0.0f;
     }
 }
