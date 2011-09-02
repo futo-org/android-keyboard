@@ -41,8 +41,12 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"기본값"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"연락처 이름 추천"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"추천 및 수정에 주소록의 이름 사용"</string>
+    <!-- no translation found for enable_span_insert (7204653105667167620) -->
+    <skip />
+    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
-    <string name="configure_dictionaries_title" msgid="3758288002414557345">"사전 설정"</string>
+    <!-- outdated translation 3758288002414557345 -->     <string name="configure_dictionaries_title" msgid="4238652338556902049">"사전 설정"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"수정 제안 표시"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"글자를 입력하는 동안 추천 단어 표시"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
@@ -126,7 +130,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"도움말:"</b>" 다음 번에는 \'마침표\', \'쉼표\', \'물음표\'와 같은 구두점을 말해 보세요."</string>
     <string name="cancel" msgid="6830980399865683324">"취소"</string>
     <string name="ok" msgid="7898366843681727667">"확인"</string>
-    <string name="voice_input" msgid="2466640768843347841">"음성 입력"</string>
+    <!-- outdated translation 2466640768843347841 -->     <string name="voice_input" msgid="3583258583521397548">"음성 입력"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"기본 키보드"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"기호 키보드"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"사용 안함"</string>
@@ -136,7 +140,7 @@
     <string name="selectInputMethod" msgid="315076553378705821">"입력 방법 선택"</string>
     <string name="configure_input_method" msgid="373356270290742459">"입력 방법 설정"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"입력 언어"</string>
-    <string name="select_language" msgid="2573265881207142437">"입력 언어 선택"</string>
+    <!-- outdated translation 2573265881207142437 -->     <string name="select_language" msgid="3693815588777926848">"입력 언어 선택"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← 저장하려면 다시 터치하세요."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"사용자 의견 사용"</string>

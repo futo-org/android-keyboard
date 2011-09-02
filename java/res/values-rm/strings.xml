@@ -57,8 +57,12 @@
     <skip />
     <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
     <skip />
+    <!-- no translation found for enable_span_insert (7204653105667167620) -->
+    <skip />
+    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Maiusclas automaticas"</string>
-    <!-- no translation found for configure_dictionaries_title (3758288002414557345) -->
+    <!-- no translation found for configure_dictionaries_title (4238652338556902049) -->
     <skip />
     <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
     <skip />
@@ -197,7 +201,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754">"\""<b>"Commentari:"</b>" Empruvai la proxima giada d\'agiuntar segns d\'interpuncziun sco \"\"punct\"\", \"\"comma\"\" u \"\"segn da dumonda\"\" cun cumonds vocals.\""</string>
     <string name="cancel" msgid="6830980399865683324">"Interrumper"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Cumonds vocals"</string>
+    <!-- outdated translation 2466640768843347841 -->     <string name="voice_input" msgid="3583258583521397548">"Cumonds vocals"</string>
     <!-- no translation found for voice_input_modes_main_keyboard (3360660341121083174) -->
     <skip />
     <!-- no translation found for voice_input_modes_symbols_keyboard (7203213240786084067) -->
@@ -215,7 +219,7 @@
     <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Linguas da cumonds vocals"</string>
-    <!-- no translation found for select_language (2573265881207142437) -->
+    <!-- no translation found for select_language (3693815588777926848) -->
     <skip />
     <!-- outdated translation 8058519710062071085 -->     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Tippar danovamain per memorisar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
