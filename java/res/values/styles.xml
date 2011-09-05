@@ -68,6 +68,14 @@
         <item name="backgroundDimAmount">0.5</item>
     </style>
     <style
+        name="MiniKeyboard"
+        parent="Keyboard"
+    >
+        <item name="keyboardTopPadding">0dip</item>
+        <item name="keyboardBottomPadding">0dip</item>
+        <item name="horizontalGap">0dip</item>
+    </style>
+    <style
         name="MiniKeyboardView"
         parent="KeyboardView"
     >
@@ -146,6 +154,14 @@
         <item name="shadowColor">#FFFFFFFF</item>
     </style>
     <style
+        name="MiniKeyboard.Stone"
+        parent="Keyboard.Stone"
+    >
+        <item name="keyboardTopPadding">0dip</item>
+        <item name="keyboardBottomPadding">0dip</item>
+        <item name="horizontalGap">0dip</item>
+    </style>
+    <style
         name="MiniKeyboardView.Stone"
         parent="MiniKeyboardView"
     >
@@ -175,6 +191,14 @@
         <item name="android:background">@drawable/keyboard_dark_background</item>
         <item name="keyBackground">@drawable/btn_keyboard_key_gingerbread</item>
         <item name="keyTextStyle">bold</item>
+    </style>
+    <style
+        name="MiniKeyboard.Gingerbread"
+        parent="Keyboard.Gingerbread"
+    >
+        <item name="keyboardTopPadding">0dip</item>
+        <item name="keyboardBottomPadding">0dip</item>
+        <item name="horizontalGap">0dip</item>
     </style>
     <style
         name="MiniKeyboardView.Gingerbread"
@@ -220,6 +244,14 @@
         <item name="shadowRadius">0.0</item>
     </style>
     <style
+        name="MiniKeyboard.IceCreamSandwich"
+        parent="Keyboard.IceCreamSandwich"
+    >
+        <item name="keyboardTopPadding">0dip</item>
+        <item name="keyboardBottomPadding">0dip</item>
+        <item name="horizontalGap">0dip</item>
+    </style>
+    <style
         name="MiniKeyboardView.IceCreamSandwich"
         parent="MiniKeyboardView"
     >
@@ -227,7 +259,7 @@
         <item name="keyBackground">@drawable/btn_keyboard_key_popup_ics</item>
     </style>
     <style name="MiniKeyboardPanelStyle.IceCreamSandwich">
-        <item name="android:background">@drawable/btn_keyboard_key_popup_background_holo</item>
+        <item name="android:background">@drawable/keyboard_popup_panel_background_holo</item>
         <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_edges_padding_ics</item>
         <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_edges_padding_ics</item>
     </style>

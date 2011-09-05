@@ -123,7 +123,9 @@ public class MiniKeyboard extends Keyboard {
                 }
 
                 mWidth = mOccupiedWidth = mNumColumns * mDefaultKeyWidth;
-                mHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight + mVerticalGap;
+                // Need to subtract the bottom row's gutter only.
+                mHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight - mVerticalGap
+                        + mTopPadding + mBottomPadding;
             }
 
             // Return key position according to column count (0 is default).
@@ -209,20 +211,9 @@ public class MiniKeyboard extends Keyboard {
             super(view.getContext(), new MiniKeyboardParams());
             load(parentKeyboard.mId.cloneWithNewXml(mResources.getResourceEntryName(xmlId), xmlId));
 
-            // HACK: Current mini keyboard design totally relies on the 9-patch
-            // padding about horizontal
-            // and vertical key spacing. To keep the visual of mini keyboard as
-            // is, these hacks are
-            // needed to keep having the same horizontal and vertical key
-            // spacing.
-            mParams.mHorizontalGap = 0;
-            mParams.mVerticalGap = mParams.mTopPadding = parentKeyboard.mVerticalGap / 2;
-            // TODO: When we have correctly padded key background 9-patch
-            // drawables for mini keyboard,
-            // revert the above hacks and uncomment the following lines.
-            // mParams.mHorizontalGap = parentKeyboard.mHorizontalGap;
-            // mParams.mVerticalGap = parentKeyboard.mVerticalGap;
-
+            // TODO: Mini keyboard's vertical gap is currently calculated heuristically.
+            // Should revise the algorithm.
+            mParams.mVerticalGap = parentKeyboard.mVerticalGap / 2;
             mParams.mIsRtlKeyboard = parentKeyboard.mIsRtlKeyboard;
             mMoreKeys = parentKey.mMoreKeys;
 

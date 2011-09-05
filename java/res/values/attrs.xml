@@ -22,6 +22,8 @@
         <attr name="latinKeyboardStyle" format="reference" />
         <!-- KeyboardView style -->
         <attr name="keyboardViewStyle" format="reference" />
+        <!-- MiniKeyboard style -->
+        <attr name="miniKeyboardStyle" format="reference" />
         <!-- MiniKeyboardView style -->
         <attr name="miniKeyboardViewStyle" format="reference" />
         <attr name="miniKeyboardPanelStyle" format="reference" />
@@ -130,15 +132,15 @@
 
     <declare-styleable name="Keyboard">
         <!-- Default keyboard height -->
-        <attr name="keyboardHeight" format="dimension" />
+        <attr name="keyboardHeight" format="dimension|fraction" />
         <!-- Maximum keyboard height, in pixels or percentage of display height -->
         <attr name="maxKeyboardHeight" format="dimension|fraction" />
         <!-- Minimum keyboard height represented in pixels, percentage of display height if fraction
              is positive, or percentage of display width if fraction is negative. -->
         <attr name="minKeyboardHeight" format="dimension|fraction" />
         <!-- Keyboard top and bottom paddings. -->
-        <attr name="keyboardTopPadding" format="dimension" />
-        <attr name="keyboardBottomPadding" format="dimension" />
+        <attr name="keyboardTopPadding" format="dimension|fraction" />
+        <attr name="keyboardBottomPadding" format="dimension|fraction" />
         <!-- Default width of a key, in pixels or percentage of display width.
              If the value is zero, the actual key width will be determined to fill out the area up
              to the right edge of the keyboard.

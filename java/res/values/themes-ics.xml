@@ -19,6 +19,7 @@
         <item name="keyboardStyle">@style/Keyboard.IceCreamSandwich</item>
         <item name="latinKeyboardStyle">@style/LatinKeyboard.IceCreamSandwich</item>
         <item name="keyboardViewStyle">@style/KeyboardView.IceCreamSandwich</item>
+        <item name="miniKeyboardStyle">@style/MiniKeyboard.IceCreamSandwich</item>
         <item name="miniKeyboardViewStyle">@style/MiniKeyboardView.IceCreamSandwich</item>
         <item name="miniKeyboardPanelStyle">@style/MiniKeyboardPanelStyle.IceCreamSandwich</item>
         <item name="suggestionsStripBackgroundStyle">@style/SuggestionsStripBackgroundStyle.IceCreamSandwich</item>
