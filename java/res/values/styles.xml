@@ -79,19 +79,8 @@
         <item name="android:paddingLeft">@dimen/mini_keyboard_horizontal_edges_padding</item>
         <item name="android:paddingRight">@dimen/mini_keyboard_horizontal_edges_padding</item>
     </style>
-    <style
-        name="SuggestionsPaneViewStyle"
-        parent="MiniKeyboardView"
-    >
-    </style>
     <style name="SuggestionsStripBackgroundStyle">
         <item name="android:background">@drawable/keyboard_suggest_strip</item>
-    </style>
-    <style name="SuggestionBackgroundStyle">
-        <item name="android:background">@drawable/btn_suggestion</item>
-    </style>
-    <style name="SuggestionPreviewBackgroundStyle">
-        <item name="android:background">@drawable/suggestion_feedback_background</item>
     </style>
     <style
         name="SuggestionsViewStyle"
@@ -103,6 +92,17 @@
         <item name="colorSuggested">#FFFCAE00</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+    </style>
+    <style
+        name="MoreSuggestionsViewStyle"
+        parent="MiniKeyboardView"
+    >
+    </style>
+    <style name="SuggestionBackgroundStyle">
+        <item name="android:background">@drawable/btn_suggestion</item>
+    </style>
+    <style name="SuggestionPreviewBackgroundStyle">
+        <item name="android:background">@drawable/suggestion_feedback_background</item>
     </style>
     <!-- Theme "Basic high contrast" -->
     <style
@@ -232,19 +232,6 @@
     <style name="SuggestionsStripBackgroundStyle.IceCreamSandwich">
         <item name="android:background">@drawable/keyboard_suggest_strip_holo</item>
     </style>
-    <style name="SuggestionBackgroundStyle.IceCreamSandwich">
-        <item name="android:background">@drawable/btn_suggestion_ics</item>
-    </style>
-    <style
-        name="SuggestionPreviewBackgroundStyle.IceCreamSandwich"
-        parent="MiniKeyboardPanelStyle.IceCreamSandwich"
-    >
-    </style>
-    <style
-        name="SuggestionsPaneViewStyle.IceCreamSandwich"
-        parent="MiniKeyboardView.IceCreamSandwich"
-    >
-    </style>
     <style
         name="SuggestionsViewStyle.IceCreamSandwich"
         parent="SuggestionsStripBackgroundStyle.IceCreamSandwich"
@@ -255,6 +242,19 @@
         <item name="colorSuggested">#FFA7A9AC</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+    </style>
+    <style
+        name="MoreSuggestionsViewStyle.IceCreamSandwich"
+        parent="MiniKeyboardView.IceCreamSandwich"
+    >
+    </style>
+    <style name="SuggestionBackgroundStyle.IceCreamSandwich">
+        <item name="android:background">@drawable/btn_suggestion_ics</item>
+    </style>
+    <style
+        name="SuggestionPreviewBackgroundStyle.IceCreamSandwich"
+        parent="MiniKeyboardPanelStyle.IceCreamSandwich"
+    >
     </style>
     <style name="MiniKeyboardAnimation">
         <item name="android:windowEnterAnimation">@anim/mini_keyboard_fadein</item>

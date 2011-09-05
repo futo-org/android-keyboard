@@ -73,7 +73,7 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     };
 
     public MoreSuggestionsView(Context context, AttributeSet attrs) {
-        this(context, attrs, R.attr.suggestionsPaneViewStyle);
+        this(context, attrs, R.attr.moreSuggestionsViewStyle);
     }
 
     public MoreSuggestionsView(Context context, AttributeSet attrs, int defStyle) {
