@@ -45,10 +45,10 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.inputmethod.compat.FrameLayoutCompatUtils;
-import com.android.inputmethod.compat.LinearLayoutCompatUtils;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
@@ -58,7 +58,8 @@ import com.android.inputmethod.latin.SuggestedWords.SuggestedWordInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SuggestionsView extends LinearLayout implements OnClickListener, OnLongClickListener {
+public class SuggestionsView extends RelativeLayout implements OnClickListener,
+        OnLongClickListener {
     public interface Listener {
         public boolean addWordToDictionary(String word);
         public void pickSuggestionManually(int index, CharSequence word);
@@ -69,7 +70,6 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
 
     private static final boolean DBG = LatinImeLogger.sDBG;
 
-    private final ViewGroup mSuggestionsPlacer;
     private final ViewGroup mSuggestionsStrip;
     private KeyboardView mKeyboardView;
 
@@ -451,18 +451,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
     }
 
     public SuggestionsView(Context context, AttributeSet attrs, int defStyle) {
-        // Note: Up to version 10 (Gingerbread) of the API, LinearLayout doesn't have 3-argument
-        // constructor.
-        // TODO: Call 3-argument constructor, super(context, attrs, defStyle), when we abandon
-        // backward compatibility with the version 10 or earlier of the API.
-        super(context, attrs);
-        if (defStyle != R.attr.suggestionsViewStyle) {
-            throw new IllegalArgumentException(
-                    "can't accept defStyle other than R.attr.suggestionsViewStyle: defStyle="
-                    + defStyle);
-        }
-        setBackgroundDrawable(LinearLayoutCompatUtils.getBackgroundDrawable(
-                context, attrs, defStyle, R.style.SuggestionsViewStyle));
+        super(context, attrs, defStyle);
 
         final LayoutInflater inflater = LayoutInflater.from(context);
         inflater.inflate(R.layout.suggestions_strip, this);
@@ -474,7 +463,6 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
         mPreviewPopup.setContentView(mPreviewText);
         mPreviewPopup.setBackgroundDrawable(null);
 
-        mSuggestionsPlacer = (ViewGroup)findViewById(R.id.suggestions_placer);
         mSuggestionsStrip = (ViewGroup)findViewById(R.id.suggestions_strip);
         for (int pos = 0; pos < MAX_SUGGESTIONS; pos++) {
             final TextView word = (TextView)inflater.inflate(R.layout.suggestion_word, null);
@@ -527,7 +515,7 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
         if (mSuggestions.size() == 0)
             return;
 
-        mParams.layout(mSuggestions, mSuggestionsStrip, mSuggestionsPlacer, getWidth());
+        mParams.layout(mSuggestions, mSuggestionsStrip, this, getWidth());
     }
 
     private static CharSequence getDebugInfo(SuggestedWords suggestions, int pos) {
@@ -648,9 +636,9 @@ public class SuggestionsView extends LinearLayout implements OnClickListener, On
 
     public void clear() {
         mShowingAutoCorrectionInverted = false;
-        mSuggestionsPlacer.removeAllViews();
-        mSuggestionsPlacer.addView(mSuggestionsStrip);
         mSuggestionsStrip.removeAllViews();
+        removeAllViews();
+        addView(mSuggestionsStrip);
         dismissMoreSuggestions();
     }
 
