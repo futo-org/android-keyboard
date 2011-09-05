@@ -80,7 +80,7 @@
     <dimen name="more_suggestions_key_horizontal_padding">12dip</dimen>
     <dimen name="more_suggestions_row_height">40dip</dimen>
     <dimen name="more_suggestions_slide_allowance">0.2in</dimen>
-    <fraction name="more_suggestions_info_ratio">12%</fraction>
+    <fraction name="more_suggestions_info_ratio">18%</fraction>
     <dimen name="key_preview_backing_height">40dip</dimen>
     <dimen name="suggestions_strip_padding">0dip</dimen>
     <dimen name="suggestion_min_width">44dip</dimen>
