@@ -27,11 +27,11 @@
         <attr name="miniKeyboardPanelStyle" format="reference" />
         <!-- Suggestions strip style -->
         <attr name="suggestionsStripBackgroundStyle" format="reference" />
-        <attr name="suggestionsPaneViewStyle" format="reference" />
+        <attr name="suggestionsViewStyle" format="reference" />
+        <attr name="moreSuggestionsViewStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
         <attr name="suggestionPreviewBackgroundStyle" format="reference" />
-        <attr name="suggestionsViewStyle" format="reference" />
-    </declare-styleable>
+        </declare-styleable>
 
     <declare-styleable name="KeyboardView">
         <!-- Image for the key. This image needs to be a StateListDrawable, with the following
