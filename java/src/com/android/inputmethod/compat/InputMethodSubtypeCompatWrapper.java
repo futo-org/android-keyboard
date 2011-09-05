@@ -100,8 +100,7 @@ public final class InputMethodSubtypeCompatWrapper extends AbstractCompatWrapper
     public String getLocale() {
         if (mObj == null) return mDummyLocale;
         final String s = (String)CompatUtils.invoke(mObj, null, METHOD_getLocale);
-        if (TextUtils.isEmpty(s)) return DEFAULT_LOCALE;
-        return s;
+        return s != null ? s : DEFAULT_LOCALE;
     }
 
     public String getMode() {
