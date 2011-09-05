@@ -35,7 +35,6 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -146,12 +145,15 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     private static class SuggestionsViewParams {
         private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
         private static final int DEFAULT_CENTER_SUGGESTION_PERCENTILE = 40;
+        private static final int DEFAULT_MAX_MORE_SUGGESTIONS_ROW = 2;
         private static final int PUNCTUATIONS_IN_STRIP = 6;
 
         public final int mPadding;
         public final int mDividerWidth;
         public final int mSuggestionsStripHeight;
         public final int mSuggestionsCountInStrip;
+        public final int mMaxMoreSuggestionsRow;
+        public final float mMinMoreSuggestionsWidth;
 
         private final List<TextView> mWords;
         private final List<View> mDividers;
@@ -211,6 +213,11 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mCenterSuggestionWeight = a.getInt(
                     R.styleable.SuggestionsView_centerSuggestionPercentile,
                     DEFAULT_CENTER_SUGGESTION_PERCENTILE) / 100.0f;
+            mMaxMoreSuggestionsRow = a.getInt(
+                    R.styleable.SuggestionsView_maxMoreSuggestionsRow,
+                    DEFAULT_MAX_MORE_SUGGESTIONS_ROW);
+            mMinMoreSuggestionsWidth = getRatio(a,
+                    R.styleable.SuggestionsView_minMoreSuggestionsWidth);
             a.recycle();
 
             mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
@@ -223,6 +230,11 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
+        }
+
+        // Read fraction value in TypedArray as float.
+        private static float getRatio(TypedArray a, int index) {
+            return a.getFraction(index, 1000, 1000, 1) / 1000.0f;
         }
 
         private CharSequence getStyledSuggestionWord(SuggestedWords suggestions, int pos) {
@@ -718,11 +730,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final View container = mMoreSuggestionsContainer;
             final int maxWidth = stripWidth - container.getPaddingLeft()
                     - container.getPaddingRight();
-            final DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
-            // TODO: Revise how we determine the height
-            final int maxHeight = dm.heightPixels - mKeyboardView.getHeight() - getHeight() * 3;
             final MoreSuggestions.Builder builder = mMoreSuggestionsBuilder;
-            builder.layout(mSuggestions, params.mSuggestionsCountInStrip, maxWidth, maxHeight);
+            builder.layout(mSuggestions, params.mSuggestionsCountInStrip, maxWidth,
+                    (int)(maxWidth * params.mMinMoreSuggestionsWidth),
+                    params.mMaxMoreSuggestionsRow);
             mMoreSuggestionsView.setKeyboard(builder.build());
             container.measure(
                     ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

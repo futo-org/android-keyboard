@@ -59,4 +59,5 @@
     <dimen name="key_preview_offset_ics">0.05in</dimen>
 
     <dimen name="suggestions_strip_padding">40.0mm</dimen>
+    <fraction name="min_more_suggestions_width">50%</fraction>
 </resources>

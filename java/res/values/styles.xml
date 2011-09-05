@@ -92,6 +92,8 @@
         <item name="colorSuggested">#FFFCAE00</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+        <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
+        <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>
     <style
         name="MoreSuggestionsViewStyle"
@@ -242,6 +244,8 @@
         <item name="colorSuggested">#FFA7A9AC</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+        <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
+        <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>
     <style
         name="MoreSuggestionsViewStyle.IceCreamSandwich"

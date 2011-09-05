@@ -50,8 +50,8 @@ public class MoreSuggestions extends Keyboard {
             private static final int MAX_COLUMNS_IN_ROW = 3;
             private int mNumRows;
 
-            public int layout(SuggestedWords suggestions, int fromPos, int maxWidth, int maxHeight,
-                    KeyboardView view) {
+            public int layout(SuggestedWords suggestions, int fromPos, int maxWidth, int minWidth,
+                    int maxRow, KeyboardView view) {
                 clearKeys();
                 final Paint paint = new Paint();
                 paint.setAntiAlias(true);
@@ -68,7 +68,7 @@ public class MoreSuggestions extends Keyboard {
                     final int numColumn = pos - rowStartPos + 1;
                     if (numColumn > MAX_COLUMNS_IN_ROW
                             || !fitInWidth(rowStartPos, pos + 1, maxWidth / numColumn)) {
-                        if ((row + 1) * mDefaultRowHeight > maxHeight) {
+                        if ((row + 1) >= maxRow) {
                             break;
                         }
                         mNumColumnsInRow[row] = pos - rowStartPos;
@@ -81,7 +81,7 @@ public class MoreSuggestions extends Keyboard {
                 }
                 mNumColumnsInRow[row] = pos - rowStartPos;
                 mNumRows = row + 1;
-                mWidth = mOccupiedWidth = calcurateMaxRowWidth(fromPos, pos);
+                mWidth = mOccupiedWidth = Math.max(minWidth, calcurateMaxRowWidth(fromPos, pos));
                 mHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight + mVerticalGap;
                 return pos - fromPos;
             }
@@ -163,13 +163,14 @@ public class MoreSuggestions extends Keyboard {
         }
 
         public Builder layout(SuggestedWords suggestions, int fromPos, int maxWidth,
-                int maxHeight) {
+                int minWidth, int maxRow) {
             final Keyboard keyboard = KeyboardSwitcher.getInstance().getLatinKeyboard();
             final int xmlId = R.xml.kbd_suggestions_pane_template;
             load(keyboard.mId.cloneWithNewXml(mResources.getResourceEntryName(xmlId), xmlId));
             mParams.mVerticalGap = mParams.mTopPadding = keyboard.mVerticalGap / 2;
 
-            final int count = mParams.layout(suggestions, fromPos, maxWidth, maxHeight, mPaneView);
+            final int count = mParams.layout(suggestions, fromPos, maxWidth, minWidth, maxRow,
+                    mPaneView);
             mFromPos = fromPos;
             mToPos = fromPos + count;
             mSuggestions = suggestions;
