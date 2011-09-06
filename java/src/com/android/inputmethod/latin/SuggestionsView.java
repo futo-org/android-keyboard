@@ -154,6 +154,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         public final int mSuggestionsCountInStrip;
         public final int mMaxMoreSuggestionsRow;
         public final float mMinMoreSuggestionsWidth;
+        public final int mMoreSuggestionsBottomGap;
 
         private final List<TextView> mWords;
         private final List<View> mDividers;
@@ -222,6 +223,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
             mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
             mMoreSuggestionsHint = res.getDrawable(R.drawable.more_suggestions_hint);
+            mMoreSuggestionsBottomGap = res.getDimensionPixelOffset(
+                    R.dimen.more_suggestions_bottom_gap);
 
             mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
             mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
@@ -740,7 +743,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
             final MoreKeysPanel moreKeysPanel = mMoreSuggestionsView;
             final int pointX = stripWidth / 2;
-            final int pointY = 0;
+            final int pointY = -params.mMoreSuggestionsBottomGap;
             moreKeysPanel.showMoreKeysPanel(
                     this, mMoreSuggestionsController, pointX, pointY,
                     mMoreSuggestionsWindow, mMoreSuggestionsListener);
