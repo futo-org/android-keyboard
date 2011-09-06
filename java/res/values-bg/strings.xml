@@ -25,7 +25,7 @@
     <string name="english_ime_input_options" msgid="3909945612939668554">"Опции за въвеждане"</string>
     <string name="spell_checker_service_name" msgid="2003013122022285508">"Корекция на Android"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Настройки за проверка на правописа"</string>
-    <string name="use_proximity_option_title" msgid="7469233942295924620">"Данни за близост: Изп."</string>
+    <string name="use_proximity_option_title" msgid="7469233942295924620">"Използване на близост"</string>
     <string name="use_proximity_option_summary" msgid="2857708859847261945">"Проверка на правописа: Използвайте алгоритъм за близост"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Да вибрира при натискане на клавиш"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Звук при натискане на клавиш"</string>
@@ -41,8 +41,12 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"По подразбиране"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Предложения за контакти"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Използване на имена от „Контакти“ за предложения и поправки"</string>
+    <!-- no translation found for enable_span_insert (7204653105667167620) -->
+    <skip />
+    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
+    <skip />
     <string name="auto_cap" msgid="1719746674854628252">"Автоматично поставяне на главни букви"</string>
-    <string name="configure_dictionaries_title" msgid="3758288002414557345">"Конфигуриране на речници"</string>
+    <!-- outdated translation 3758288002414557345 -->     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Конфигуриране на речници"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показване на предложения за поправка"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Показване на предложения, докато пишете"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Винаги да се показва"</string>
@@ -126,7 +130,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Съвет:"</b>" Следващия път опитайте да произнесете знаците за пунктуация, напр. „точка“, „запетая“ или „въпросителен знак“."</string>
     <string name="cancel" msgid="6830980399865683324">"Отказ"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
-    <string name="voice_input" msgid="2466640768843347841">"Гласово въвеждане"</string>
+    <!-- outdated translation 2466640768843347841 -->     <string name="voice_input" msgid="3583258583521397548">"Гласово въвеждане"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На осн. клавиатура"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"На клав. на симв."</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Изкл."</string>
@@ -136,7 +140,7 @@
     <string name="selectInputMethod" msgid="315076553378705821">"Избор на метод на въвеждане"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Конфигуриране на въвеждането"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Входни езици"</string>
-    <string name="select_language" msgid="2573265881207142437">"Избор на езици за въвеждане"</string>
+    <!-- outdated translation 2573265881207142437 -->     <string name="select_language" msgid="3693815588777926848">"Избор на езици за въвеждане"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Докоснете отново, за да запазите"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Има достъп до речник"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Активиране на отзивите от потребителите"</string>
