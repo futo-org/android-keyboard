@@ -79,10 +79,8 @@ public class MiniKeyboardView extends KeyboardView implements MoreKeysPanel {
         super(context, attrs, defStyle);
 
         final Resources res = context.getResources();
-        // Override default ProximityKeyDetector.
-        mKeyDetector = new MoreKeysDetector(res.getDimension(
-                R.dimen.mini_keyboard_slide_allowance));
-        // Remove gesture detector on mini-keyboard
+        mKeyDetector = new MoreKeysDetector(
+                res.getDimension(R.dimen.mini_keyboard_slide_allowance));
         setKeyPreviewPopupEnabled(false, 0);
     }
 

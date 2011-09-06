@@ -503,6 +503,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         mMoreSuggestionsWindow.setWindowLayoutMode(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         mMoreSuggestionsWindow.setBackgroundDrawable(null);
+        final Resources res = context.getResources();
+        mMoreSuggestionsModalTolerance = res.getDimensionPixelOffset(
+                R.dimen.more_suggestions_modal_tolerance);
     }
 
     /**
@@ -747,12 +750,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             moreKeysPanel.showMoreKeysPanel(
                     this, mMoreSuggestionsController, pointX, pointY,
                     mMoreSuggestionsWindow, mMoreSuggestionsListener);
-            // TODO: Should figure out how to select the pointer tracker correctly.
-            final PointerTracker tracker = PointerTracker.getPointerTracker(0, moreKeysPanel);
-            final int translatedX = moreKeysPanel.translateX(tracker.getLastX());
-            final int translatedY = moreKeysPanel.translateY(tracker.getLastY());
-            tracker.onShowMoreKeysPanel(
-                    translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
+            mCheckingIfModalOrSlidingMode = true;
+            mOriginX = mLastX;
+            mOriginY = mLastY;
             view.setPressed(false);
             mKeyboardView.dimEntireKeyboard(true);
             return true;
@@ -760,9 +760,19 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         return false;
     }
 
+    // Working variables for onLongClick and dispatchTouchEvent.
+    private boolean mCheckingIfModalOrSlidingMode;
+    private int mLastX;
+    private int mLastY;
+    private int mOriginX;
+    private int mOriginY;
+    private final int mMoreSuggestionsModalTolerance;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent me) {
         if (!mMoreSuggestionsWindow.isShowing()) {
+            mLastX = (int)me.getX();
+            mLastY = (int)me.getY();
             return super.dispatchTouchEvent(me);
         }
 
@@ -777,6 +787,23 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         final int translatedX = moreKeysPanel.translateX(x);
         final int translatedY = moreKeysPanel.translateY(y);
 
+        if (mCheckingIfModalOrSlidingMode) {
+            final int deltaX = Math.abs(x - mOriginX);
+            final int deltaY = Math.abs(y - mOriginY);
+            if (deltaX >= mMoreSuggestionsModalTolerance
+                    || deltaY >= mMoreSuggestionsModalTolerance) {
+                // Decided to be in the sliding input mode
+                mCheckingIfModalOrSlidingMode = false;
+                tracker.onShowMoreKeysPanel(
+                        translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
+            } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
+                // Decided to be in the modal input mode
+                mCheckingIfModalOrSlidingMode = false;
+            }
+            return true;
+        }
+
+        // Process sliding motion events
         tracker.processMotionEvent(action, translatedX, translatedY, eventTime, moreKeysPanel);
         return true;
     }

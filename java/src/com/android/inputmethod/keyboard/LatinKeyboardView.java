@@ -438,8 +438,6 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
             mMoreKeysWindow = new PopupWindow(getContext());
             mMoreKeysWindow.setBackgroundDrawable(null);
             mMoreKeysWindow.setAnimationStyle(R.style.MiniKeyboardAnimation);
-            // Allow popup window to be drawn off the screen.
-            mMoreKeysWindow.setClippingEnabled(false);
         }
         mMoreKeysPanel = moreKeysPanel;
         mMoreKeysPanelPointerTrackerId = tracker.mPointerId;
