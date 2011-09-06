@@ -762,29 +762,19 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         if (!mMoreSuggestionsWindow.isShowing()) {
             return super.dispatchTouchEvent(me);
         }
+
+        final MoreKeysPanel moreKeysPanel = mMoreSuggestionsView;
         final int action = me.getAction();
         final long eventTime = me.getEventTime();
         final int index = me.getActionIndex();
         final int id = me.getPointerId(index);
-        final PointerTracker tracker = PointerTracker.getPointerTracker(id, mMoreSuggestionsView);
-        final int x = mMoreSuggestionsView.translateX((int)me.getX(index));
-        final int y = mMoreSuggestionsView.translateY((int)me.getY(index));
-        switch (action) {
-        case MotionEvent.ACTION_DOWN:
-        case MotionEvent.ACTION_POINTER_DOWN:
-            tracker.onDownEvent(x, y, eventTime, mMoreSuggestionsView);
-            break;
-        case MotionEvent.ACTION_UP:
-        case MotionEvent.ACTION_POINTER_UP:
-            tracker.onUpEvent(x, y, eventTime);
-            break;
-        case MotionEvent.ACTION_MOVE:
-            tracker.onMoveEvent(x, y, eventTime);
-            break;
-        case MotionEvent.ACTION_CANCEL:
-            tracker.onCancelEvent(x, y, eventTime);
-            break;
-        }
+        final PointerTracker tracker = PointerTracker.getPointerTracker(id, moreKeysPanel);
+        final int x = (int)me.getX(index);
+        final int y = (int)me.getY(index);
+        final int translatedX = moreKeysPanel.translateX(x);
+        final int translatedY = moreKeysPanel.translateY(y);
+
+        tracker.processMotionEvent(action, translatedX, translatedY, eventTime, moreKeysPanel);
         return true;
     }
 

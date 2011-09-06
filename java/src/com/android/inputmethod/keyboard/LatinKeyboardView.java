@@ -552,7 +552,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 mOldKeyIndex = tracker.getKeyIndexOn(lastX, lastY);
                 tracker.onUpEvent(lastX, lastY, eventTime);
             } else if (pointerCount == 1 && oldPointerCount == 1) {
-                processMotionEvent(tracker, action, x, y, eventTime, this);
+                tracker.processMotionEvent(action, x, y, eventTime, this);
             } else {
                 Log.w(TAG, "Unknown touch panel behavior: pointer count is " + pointerCount
                         + " (old " + oldPointerCount + ")");
@@ -575,30 +575,10 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                 tracker.onMoveEvent(px, py, eventTime);
             }
         } else {
-            processMotionEvent(getPointerTracker(id), action, x, y, eventTime, this);
+            getPointerTracker(id).processMotionEvent(action, x, y, eventTime, this);
         }
 
         return true;
-    }
-
-    private static void processMotionEvent(PointerTracker tracker, int action, int x, int y,
-            long eventTime, PointerTracker.KeyEventHandler handler) {
-        switch (action) {
-        case MotionEvent.ACTION_DOWN:
-        case MotionEvent.ACTION_POINTER_DOWN:
-            tracker.onDownEvent(x, y, eventTime, handler);
-            break;
-        case MotionEvent.ACTION_UP:
-        case MotionEvent.ACTION_POINTER_UP:
-            tracker.onUpEvent(x, y, eventTime);
-            break;
-        case MotionEvent.ACTION_MOVE:
-            tracker.onMoveEvent(x, y, eventTime);
-            break;
-        case MotionEvent.ACTION_CANCEL:
-            tracker.onCancelEvent(x, y, eventTime);
-            break;
-        }
     }
 
     @Override

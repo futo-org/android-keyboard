@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.widget.TextView;
 
 import com.android.inputmethod.keyboard.internal.PointerTrackerQueue;
@@ -396,6 +397,26 @@ public class PointerTracker {
         mUpTime = eventTime;
         mKeyIndex = KeyDetector.NOT_A_KEY;
         return onMoveKeyInternal(x, y);
+    }
+
+    public void processMotionEvent(int action, int x, int y, long eventTime,
+            KeyEventHandler handler) {
+        switch (action) {
+        case MotionEvent.ACTION_DOWN:
+        case MotionEvent.ACTION_POINTER_DOWN:
+            onDownEvent(x, y, eventTime, handler);
+            break;
+        case MotionEvent.ACTION_UP:
+        case MotionEvent.ACTION_POINTER_UP:
+            onUpEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_MOVE:
+            onMoveEvent(x, y, eventTime);
+            break;
+        case MotionEvent.ACTION_CANCEL:
+            onCancelEvent(x, y, eventTime);
+            break;
+        }
     }
 
     public void onDownEvent(int x, int y, long eventTime, KeyEventHandler handler) {
