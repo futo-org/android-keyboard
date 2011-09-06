@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.AttributeSet;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.PopupWindow;
 
@@ -29,7 +30,9 @@ import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.MoreKeysDetector;
 import com.android.inputmethod.keyboard.MoreKeysPanel;
+import com.android.inputmethod.keyboard.PointerTracker;
 import com.android.inputmethod.keyboard.PointerTracker.DrawingProxy;
+import com.android.inputmethod.keyboard.PointerTracker.KeyEventHandler;
 import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 
 
@@ -40,7 +43,8 @@ import com.android.inputmethod.keyboard.PointerTracker.TimerProxy;
 public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     private final int[] mCoordinates = new int[2];
 
-    private final KeyDetector mKeyDetector;
+    private final KeyDetector mModalPanelKeyDetector;
+    private final KeyDetector mSlidingPanelKeyDetector;
 
     private Controller mController;
     private KeyboardActionListener mListener;
@@ -80,10 +84,9 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
         super(context, attrs, defStyle);
 
         final Resources res = context.getResources();
-        // Override default ProximityKeyDetector.
-        mKeyDetector = new MoreKeysDetector(res.getDimension(
-                R.dimen.more_suggestions_slide_allowance));
-        // Remove gesture detector on suggestions pane
+        mModalPanelKeyDetector = new KeyDetector(/* keyHysteresisDistance */ 0);
+        mSlidingPanelKeyDetector = new MoreKeysDetector(
+                res.getDimension(R.dimen.more_suggestions_slide_allowance));
         setKeyPreviewPopupEnabled(false, 0);
     }
 
@@ -102,13 +105,14 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     @Override
     public void setKeyboard(Keyboard keyboard) {
         super.setKeyboard(keyboard);
-        mKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
+        mModalPanelKeyDetector.setKeyboard(keyboard, -getPaddingLeft(), -getPaddingTop());
+        mSlidingPanelKeyDetector.setKeyboard(keyboard, -getPaddingLeft(),
                 -getPaddingTop() + mVerticalCorrection);
     }
 
     @Override
     public KeyDetector getKeyDetector() {
-        return mKeyDetector;
+        return mSlidingPanelKeyDetector;
     }
 
     @Override
@@ -186,5 +190,40 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
     @Override
     public int translateY(int y) {
         return y - mOriginY;
+    }
+
+    private final KeyEventHandler mModalPanelKeyEventHandler = new KeyEventHandler() {
+        @Override
+        public KeyDetector getKeyDetector() {
+            return mModalPanelKeyDetector;
+        }
+
+        @Override
+        public KeyboardActionListener getKeyboardActionListener() {
+            return mSuggestionsPaneListener;
+        }
+
+        @Override
+        public DrawingProxy getDrawingProxy() {
+            return MoreSuggestionsView.this;
+        }
+
+        @Override
+        public TimerProxy getTimerProxy() {
+            return EMPTY_TIMER_PROXY;
+        }
+    };
+
+    @Override
+    public boolean onTouchEvent(MotionEvent me) {
+        final int action = me.getAction();
+        final long eventTime = me.getEventTime();
+        final int index = me.getActionIndex();
+        final int id = me.getPointerId(index);
+        final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
+        final int x = (int)me.getX(index);
+        final int y = (int)me.getY(index);
+        tracker.processMotionEvent(action, x, y, eventTime, mModalPanelKeyEventHandler);
+        return true;
     }
 }
