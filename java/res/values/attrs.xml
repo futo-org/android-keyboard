@@ -63,6 +63,8 @@
         <attr name="keyLabelHorizontalPadding" format="dimension" />
         <!-- Top and right padding of hint letter to the edge of the key.-->
         <attr name="keyHintLetterPadding" format="dimension" />
+        <!-- Bottom padding of popup hint letter "..." to the edge of the key.-->
+        <attr name="keyPopupHintLetterPadding" format="dimension" />
         <!-- Top and right padding of upper case letter to the edge of the key.-->
         <attr name="keyUppercaseLetterPadding" format="dimension" />
 

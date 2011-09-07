@@ -71,6 +71,7 @@
 
     <dimen name="key_label_horizontal_padding">4dip</dimen>
     <dimen name="key_hint_letter_padding">1dp</dimen>
+    <dimen name="key_popup_hint_letter_padding">2dp</dimen>
     <dimen name="key_uppercase_letter_padding">2dp</dimen>
 
     <dimen name="key_preview_height_ics">80sp</dimen>

@@ -58,6 +58,7 @@ import java.util.HashMap;
  * @attr ref R.styleable#KeyboardView_keyHintLabelRatio
  * @attr ref R.styleable#KeyboardView_keyLabelHorizontalPadding
  * @attr ref R.styleable#KeyboardView_keyHintLetterPadding
+ * @attr ref R.styleable#KeyboardView_keyPopupHintLetterPadding
  * @attr ref R.styleable#KeyboardView_keyUppercaseLetterPadding
  * @attr ref R.styleable#KeyboardView_keyTextStyle
  * @attr ref R.styleable#KeyboardView_keyPreviewLayout
@@ -198,6 +199,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         public final Typeface mKeyTextStyle;
         public final float mKeyLabelHorizontalPadding;
         public final float mKeyHintLetterPadding;
+        public final float mKeyPopupHintLetterPadding;
         public final float mKeyUppercaseLetterPadding;
         public final int mShadowColor;
         public final float mShadowRadius;
@@ -246,6 +248,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                     R.styleable.KeyboardView_keyLabelHorizontalPadding, 0);
             mKeyHintLetterPadding = a.getDimension(
                     R.styleable.KeyboardView_keyHintLetterPadding, 0);
+            mKeyPopupHintLetterPadding = a.getDimension(
+                    R.styleable.KeyboardView_keyPopupHintLetterPadding, 0);
             mKeyUppercaseLetterPadding = a.getDimension(
                     R.styleable.KeyboardView_keyUppercaseLetterPadding, 0);
             mKeyTextColor = a.getColor(R.styleable.KeyboardView_keyTextColor, 0xFF000000);
@@ -698,7 +702,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             paint.setTextAlign(Align.CENTER);
             final float hintX = keyWidth - params.mKeyHintLetterPadding
                     - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
-            final float hintY = keyHeight - params.mKeyHintLetterPadding;
+            final float hintY = keyHeight - params.mKeyPopupHintLetterPadding;
             canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
 
             if (debugShowAlign) {
