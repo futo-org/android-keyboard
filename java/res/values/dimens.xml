@@ -95,8 +95,9 @@
     <integer name="center_suggestion_percentile">36</integer>
 
     <!-- If the screen height in landscape is larger than the below value, then the keyboard
-         will not go into extract (fullscreen) mode. -->
-    <dimen name="max_height_for_fullscreen">2.5in</dimen>
+         will not go into extract (fullscreen) mode.
+         Current value is approximate to 7-inch tablet height - system navigation bar height. -->
+    <dimen name="max_height_for_fullscreen">500dip</dimen>
 
     <dimen name="key_hysteresis_distance">0.05in</dimen>
 </resources>

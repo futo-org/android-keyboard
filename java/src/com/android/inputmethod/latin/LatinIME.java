@@ -1003,12 +1003,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if ((imeOptions & EditorInfo.IME_FLAG_NO_EXTRACT_UI) != 0)
                 return false;
         }
+
         final Resources res = mResources;
-        DisplayMetrics dm = res.getDisplayMetrics();
-        float displayHeight = dm.heightPixels;
-        // If the display is more than X inches high, don't go to fullscreen mode
-        float dimen = res.getDimension(R.dimen.max_height_for_fullscreen);
-        if (displayHeight > dimen) {
+        final DisplayMetrics dm = res.getDisplayMetrics();
+        // If the display is more than X DIP high, don't go to fullscreen mode
+        final int threshold = res.getDimensionPixelSize(R.dimen.max_height_for_fullscreen);
+        if (dm.heightPixels >= threshold) {
             return false;
         } else {
             return super.onEvaluateFullscreenMode();
