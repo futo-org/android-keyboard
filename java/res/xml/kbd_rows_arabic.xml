@@ -28,48 +28,48 @@
     >
         <Key
             latin:keyLabel="ض"
-            latin:keyHintLabel="1"
-            latin:moreKeys="1,١" />
+            latin:keyHintLabel="١"
+            latin:moreKeys="١,1" />
         <Key
             latin:keyLabel="ص"
-            latin:keyHintLabel="2"
-            latin:moreKeys="2,٢" />
+            latin:keyHintLabel="٢"
+            latin:moreKeys="٢,2" />
         <Key
             latin:keyLabel="ق"
-            latin:keyHintLabel="3"
-            latin:moreKeys="3,٣" />
+            latin:keyHintLabel="٣"
+            latin:moreKeys="٣,3" />
         <!-- \u06a4: ARABIC LETTER VEH -->
         <Key
             latin:keyLabel="ف"
-            latin:keyHintLabel="4"
-            latin:moreKeys="4,٤,\u06a4" />
+            latin:keyHintLabel="٤"
+            latin:moreKeys="٤,4,\u06a4" />
         <Key
             latin:keyLabel="غ"
-            latin:keyHintLabel="5"
-            latin:moreKeys="5,٥" />
+            latin:keyHintLabel="٥"
+            latin:moreKeys="٥,5" />
         <Key
             latin:keyLabel="ع"
-            latin:keyHintLabel="6"
-            latin:moreKeys="6,٦" />
+            latin:keyHintLabel="٦"
+            latin:moreKeys="٦,6" />
         <!-- \ufeeb: ARABIC LETTER HEH INITIAL FORM
              \u0647\u0640: ARABIC LETTER HEH + ARABIC TATWEEL -->
         <Key
             latin:keyLabel="ه"
-            latin:keyHintLabel="7"
-            latin:moreKeys="7,٧,\ufeeb|\u0647\u0640" />
+            latin:keyHintLabel="٧"
+            latin:moreKeys="٧,7,\ufeeb|\u0647\u0640" />
         <Key
             latin:keyLabel="خ"
-            latin:keyHintLabel="8"
-            latin:moreKeys="8,٨" />
+            latin:keyHintLabel="٨"
+            latin:moreKeys="٨,8" />
         <Key
             latin:keyLabel="ح"
-            latin:keyHintLabel="9"
-            latin:moreKeys="9,٩" />
+            latin:keyHintLabel="٩"
+            latin:moreKeys="٩,9" />
         <!-- \u0686: ARABIC LETTER TCHEH -->
         <Key
             latin:keyLabel="ج"
-            latin:keyHintLabel="0"
-            latin:moreKeys="0,٠,\u0686"
+            latin:keyHintLabel="٠"
+            latin:moreKeys="٠,0,\u0686"
             latin:keyWidth="fillRight" />
     </Row>
     <Row
