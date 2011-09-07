@@ -580,8 +580,8 @@ public class Settings extends InputMethodSettingsActivity
                 // Get the current list of supported locales and check the current locale against
                 // that list, to decide whether to put a warning that voice input will not work in
                 // the current language as part of the pop-up confirmation dialog.
-                boolean localeSupported = SubtypeSwitcher.getInstance().isVoiceSupported(
-                        Locale.getDefault().toString());
+                boolean localeSupported = SubtypeSwitcher.isVoiceSupported(
+                        this, Locale.getDefault().toString());
 
                 final CharSequence message;
                 if (localeSupported) {

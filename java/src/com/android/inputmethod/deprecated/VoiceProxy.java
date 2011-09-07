@@ -717,8 +717,8 @@ public class VoiceProxy implements VoiceInput.UiListener {
         mHasUsedVoiceInputUnsupportedLocale =
                 sp.getBoolean(PREF_HAS_USED_VOICE_INPUT_UNSUPPORTED_LOCALE, false);
 
-        mLocaleSupportedForVoiceInput = SubtypeSwitcher.getInstance().isVoiceSupported(
-                SubtypeSwitcher.getInstance().getInputLocaleStr());
+        mLocaleSupportedForVoiceInput = SubtypeSwitcher.isVoiceSupported(
+                mService, SubtypeSwitcher.getInstance().getInputLocaleStr());
 
         final String voiceMode = sp.getString(PREF_VOICE_MODE,
                 mService.getString(R.string.voice_mode_main));

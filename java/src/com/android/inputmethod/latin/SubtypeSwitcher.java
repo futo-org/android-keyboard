@@ -539,14 +539,14 @@ public class SubtypeSwitcher {
     }
 
 
-    public boolean isVoiceSupported(String locale) {
+    public static boolean isVoiceSupported(Context context, String locale) {
         // Get the current list of supported locales and check the current locale against that
         // list. We cache this value so as not to check it every time the user starts a voice
         // input. Because this method is called by onStartInputView, this should mean that as
         // long as the locale doesn't change while the user is keeping the IME open, the
         // value should never be stale.
         String supportedLocalesString = VoiceProxy.getSupportedLocalesString(
-                mService.getContentResolver());
+                context.getContentResolver());
         List<String> voiceInputSupportedLocales = Arrays.asList(
                 supportedLocalesString.split("\\s+"));
         return voiceInputSupportedLocales.contains(locale);
