@@ -124,7 +124,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // This map caches key label text width in pixel as value and key label text size as map key.
     private static final HashMap<Integer, Float> sTextWidthCache =
             new HashMap<Integer, Float>();
-    private static final String KEY_LABEL_REFERENCE_CHAR = "M";
+    private static final char[] KEY_LABEL_REFERENCE_CHAR = { 'M' };
+    private static final char[] KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR = { '8' };
 
     private final DrawingHandler mDrawingHandler = new DrawingHandler(this);
 
@@ -545,8 +546,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             final int labelSize = key.selectTextSize(params.mKeyLetterSize,
                     params.mKeyLargeLetterSize, params.mKeyLabelSize, params.mKeyHintLabelSize);
             paint.setTextSize(labelSize);
-            final float labelCharHeight = getCharHeight(paint);
-            final float labelCharWidth = getCharWidth(paint);
+            final float labelCharHeight = getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint);
+            final float labelCharWidth = getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint);
 
             // Vertical label text alignment.
             final float baseline = centerY + labelCharHeight / 2;
@@ -634,20 +635,25 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             }
             paint.setColor(hintColor);
             paint.setTextSize(hintSize);
-            final float hintCharWidth = getCharWidth(paint);
             final float hintX, hintY;
             if (key.hasHintLabel()) {
+                // The hint label is placed just right of the key label. Used mainly on
+                // "phone number" layout.
                 // TODO: Generalize the following calculations.
-                hintX = positionX + hintCharWidth * 2;
-                hintY = centerY + getCharHeight(paint) / 2;
+                hintX = positionX + getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) * 2;
+                hintY = centerY + getCharHeight(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
                 paint.setTextAlign(Align.LEFT);
             } else if (key.hasUppercaseLetter()) {
-                hintX = keyWidth - params.mKeyUppercaseLetterPadding - hintCharWidth / 2;
-                hintY = -paint.ascent() + params.mKeyUppercaseLetterPadding;
+                // The hint label is placed at top-right corner of the key. Used mainly on tablet.
+                hintX = keyWidth - params.mKeyUppercaseLetterPadding
+                        - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
+                hintY = -paint.ascent();
                 paint.setTextAlign(Align.CENTER);
             } else { // key.hasHintLetter()
-                hintX = keyWidth - params.mKeyHintLetterPadding - hintCharWidth / 2;
-                hintY = -paint.ascent() + params.mKeyHintLetterPadding;
+                // The hint label is placed at top-right corner of the key. Used mainly on phone.
+                hintX = keyWidth - params.mKeyHintLetterPadding
+                        - getCharWidth(KEY_NUMERIC_HINT_LABEL_REFERENCE_CHAR, paint) / 2;
+                hintY = -paint.ascent();
                 paint.setTextAlign(Align.CENTER);
             }
             canvas.drawText(hint, 0, hint.length(), hintX, hintY, paint);
@@ -690,7 +696,8 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             paint.setTextSize(params.mKeyHintLetterSize);
             paint.setColor(params.mKeyHintLabelColor);
             paint.setTextAlign(Align.CENTER);
-            final float hintX = keyWidth - params.mKeyHintLetterPadding - getCharWidth(paint) / 2;
+            final float hintX = keyWidth - params.mKeyHintLetterPadding
+                    - getCharWidth(KEY_LABEL_REFERENCE_CHAR, paint) / 2;
             final float hintY = keyHeight - params.mKeyHintLetterPadding;
             canvas.drawText(POPUP_HINT_CHAR, hintX, hintY, paint);
 
@@ -704,37 +711,40 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     private static final Rect sTextBounds = new Rect();
 
-    private static float getCharHeight(Paint paint) {
+    private static int getCharGeometryCacheKey(char reference, Paint paint) {
         final int labelSize = (int)paint.getTextSize();
-        final Float cachedValue = sTextHeightCache.get(labelSize);
+        final Typeface face = paint.getTypeface();
+        final int codePointOffset = reference << 15;
+        if (face == Typeface.DEFAULT) {
+            return codePointOffset + labelSize;
+        } else if (face == Typeface.DEFAULT_BOLD) {
+            return codePointOffset + labelSize + 0x1000;
+        } else if (face == Typeface.MONOSPACE) {
+            return codePointOffset + labelSize + 0x2000;
+        } else {
+            return codePointOffset + labelSize;
+        }
+    }
+
+    private static float getCharHeight(char[] character, Paint paint) {
+        final Integer key = getCharGeometryCacheKey(character[0], paint);
+        final Float cachedValue = sTextHeightCache.get(key);
         if (cachedValue != null)
             return cachedValue;
 
-        paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, sTextBounds);
+        paint.getTextBounds(character, 0, 1, sTextBounds);
         final float height = sTextBounds.height();
-        sTextHeightCache.put(labelSize, height);
+        sTextHeightCache.put(key, height);
         return height;
     }
 
-    private static float getCharWidth(Paint paint) {
-        final int labelSize = (int)paint.getTextSize();
-        final Typeface face = paint.getTypeface();
-        final Integer key;
-        if (face == Typeface.DEFAULT) {
-            key = labelSize;
-        } else if (face == Typeface.DEFAULT_BOLD) {
-            key = labelSize + 1000;
-        } else if (face == Typeface.MONOSPACE) {
-            key = labelSize + 2000;
-        } else {
-            key = labelSize;
-        }
+    private static float getCharWidth(char[] character, Paint paint) {
+        final Integer key = getCharGeometryCacheKey(character[0], paint);
+        final Float cachedValue = sTextWidthCache.get(key);
+        if (cachedValue != null)
+            return cachedValue;
 
-        final Float cached = sTextWidthCache.get(key);
-        if (cached != null)
-            return cached;
-
-        paint.getTextBounds(KEY_LABEL_REFERENCE_CHAR, 0, 1, sTextBounds);
+        paint.getTextBounds(character, 0, 1, sTextBounds);
         final float width = sTextBounds.width();
         sTextWidthCache.put(key, width);
         return width;
