@@ -510,24 +510,26 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             Paint paint, KeyDrawParams params, boolean isManualTemporaryUpperCase) {
         final boolean debugShowAlign = LatinImeLogger.sVISUALDEBUG;
         // Draw key background.
-        final int bgWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight
-                + params.mPadding.left + params.mPadding.right;
-        final int bgHeight = key.mHeight + params.mPadding.top + params.mPadding.bottom;
-        final int bgX = -params.mPadding.left;
-        final int bgY = -params.mPadding.top;
-        final int[] drawableState = key.getCurrentDrawableState();
-        final Drawable background = params.mKeyBackground;
-        background.setState(drawableState);
-        final Rect bounds = background.getBounds();
-        if (bgWidth != bounds.right || bgHeight != bounds.bottom) {
-            background.setBounds(0, 0, bgWidth, bgHeight);
+        if (!key.isSpacer()) {
+            final int bgWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight
+                    + params.mPadding.left + params.mPadding.right;
+            final int bgHeight = key.mHeight + params.mPadding.top + params.mPadding.bottom;
+            final int bgX = -params.mPadding.left;
+            final int bgY = -params.mPadding.top;
+            final int[] drawableState = key.getCurrentDrawableState();
+            final Drawable background = params.mKeyBackground;
+            background.setState(drawableState);
+            final Rect bounds = background.getBounds();
+            if (bgWidth != bounds.right || bgHeight != bounds.bottom) {
+                background.setBounds(0, 0, bgWidth, bgHeight);
+            }
+            canvas.translate(bgX, bgY);
+            background.draw(canvas);
+            if (debugShowAlign) {
+                drawRectangle(canvas, 0, 0, bgWidth, bgHeight, 0x80c00000, new Paint());
+            }
+            canvas.translate(-bgX, -bgY);
         }
-        canvas.translate(bgX, bgY);
-        background.draw(canvas);
-        if (debugShowAlign) {
-            drawRectangle(canvas, 0, 0, bgWidth, bgHeight, 0x80c00000, new Paint());
-        }
-        canvas.translate(-bgX, -bgY);
 
         // Draw key top visuals.
         final int keyWidth = key.mWidth - key.mVisualInsetsLeft - key.mVisualInsetsRight;

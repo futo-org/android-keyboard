@@ -35,7 +35,7 @@
         </switch>
         <Spacer
             latin:keyXPos="15.157%p"
-            latin:keyWidth="fillRight" />
+            latin:keyWidth="0%p" />
         <switch>
             <case
                 latin:mode="url"

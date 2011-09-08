@@ -394,12 +394,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         if (skip) {
             checkEndTag(TAG_KEY, parser);
         } else {
-            Key key = new Key(mResources, mParams, row, parser, mKeyStyles);
+            final Key key = new Key(mResources, mParams, row, parser, mKeyStyles);
             if (DEBUG) Log.d(TAG, String.format("<%s%s keyLabel=%s code=%d moreKeys=%s />",
                     TAG_KEY, (key.isEnabled() ? "" : " disabled"), key.mLabel, key.mCode,
                     Arrays.toString(key.mMoreKeys)));
             checkEndTag(TAG_KEY, parser);
-            mParams.onAddKey(key);
             endKey(key);
         }
     }
@@ -409,27 +408,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         if (skip) {
             checkEndTag(TAG_SPACER, parser);
         } else {
+            final Key.Spacer spacer = new Key.Spacer(mResources, mParams, row, parser, mKeyStyles);
             if (DEBUG) Log.d(TAG, String.format("<%s />", TAG_SPACER));
-            final TypedArray keyboardAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                    R.styleable.Keyboard);
-            if (keyboardAttr.hasValue(R.styleable.Keyboard_horizontalGap))
-                throw new IllegalAttribute(parser, "horizontalGap");
-            final int keyboardWidth = mParams.mWidth;
-            final float keyWidth = getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyWidth, keyboardWidth, row.mDefaultKeyWidth);
-            keyboardAttr.recycle();
-
-            final TypedArray keyAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                    R.styleable.Keyboard_Key);
-            float keyXPos = getDimensionOrFraction(keyAttr,
-                    R.styleable.Keyboard_Key_keyXPos, keyboardWidth, row.mCurrentX);
-            if (keyXPos < 0) {
-                // If keyXPos is negative, the actual x-coordinate will be display_width + keyXPos.
-                keyXPos += keyboardWidth;
-            }
-
             checkEndTag(TAG_SPACER, parser);
-            setSpacer(keyXPos, keyWidth, row);
+            endKey(spacer);
         }
     }
 
@@ -686,7 +668,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     private void startRow(Row row) {
         row.mCurrentX = 0;
-        setSpacer(row.mCurrentX, mParams.mHorizontalEdgesPadding, row);
+        addEdgeSpace(mParams.mHorizontalEdgesPadding, row);
         mCurrentRow = row;
         mLeftEdge = true;
         mRightEdgeKey = null;
@@ -699,13 +681,14 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             mRightEdgeKey.addEdgeFlags(Keyboard.EDGE_RIGHT);
             mRightEdgeKey = null;
         }
-        setSpacer(row.mCurrentX, mParams.mHorizontalEdgesPadding, row);
+        addEdgeSpace(mParams.mHorizontalEdgesPadding, row);
         mCurrentY += mCurrentRow.mRowHeight;
         mCurrentRow = null;
         mTopEdge = false;
     }
 
     private void endKey(Key key) {
+        mParams.onAddKey(key);
         if (mLeftEdge) {
             key.addEdgeFlags(Keyboard.EDGE_LEFT);
             mLeftEdge = false;
@@ -719,8 +702,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void endKeyboard() {
     }
 
-    private void setSpacer(float keyXPos, float width, Row row) {
-        row.mCurrentX = keyXPos + width;
+    private void addEdgeSpace(float width, Row row) {
+        row.mCurrentX += width;
         mLeftEdge = false;
         mRightEdgeKey = null;
     }
@@ -733,9 +716,16 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             return a.getFraction(index, base, base, defValue);
         } else if (isDimensionValue(value)) {
             return a.getDimension(index, defValue);
-        } else if (isIntegerValue(value)) {
-            // For enum value.
-            return a.getInt(index, 0);
+        }
+        return defValue;
+    }
+
+    public static int getEnumValue(TypedArray a, int index, int defValue) {
+        final TypedValue value = a.peekValue(index);
+        if (value == null)
+            return defValue;
+        if (isIntegerValue(value)) {
+            return a.getInt(index, defValue);
         }
         return defValue;
     }

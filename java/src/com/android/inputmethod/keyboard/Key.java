@@ -115,9 +115,10 @@ public class Key {
     /** Whether this key needs to show the "..." popup hint for special purposes */
     private boolean mNeedsSpecialPopupHint;
 
-    // keyWidth constants
-    private static final int KEYWIDTH_FILL_RIGHT = 0;
-    private static final int KEYWIDTH_FILL_BOTH = -1;
+    // keyWidth enum constants
+    private static final int KEYWIDTH_NOT_ENUM = 0;
+    private static final int KEYWIDTH_FILL_RIGHT = -1;
+    private static final int KEYWIDTH_FILL_BOTH = -2;
 
     private final static int[] KEY_STATE_NORMAL_ON = {
         android.R.attr.state_checkable,
@@ -249,15 +250,17 @@ public class Key {
      */
     public Key(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
             XmlResourceParser parser, KeyStyles keyStyles) {
-
         final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
         mHeight = (int)KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
                 R.styleable.Keyboard_rowHeight, params.mHeight, row.mRowHeight)
                 - params.mVerticalGap;
-        final float horizontalGap = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                R.styleable.Keyboard_horizontalGap, params.mWidth, params.mHorizontalGap);
+        final float horizontalGap = isSpacer() ? 0
+                : KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
+                        R.styleable.Keyboard_horizontalGap, params.mWidth, params.mHorizontalGap);
         mVerticalGap = params.mVerticalGap;
+        final int widthType = KeyboardBuilder.getEnumValue(keyboardAttr,
+                R.styleable.Keyboard_keyWidth, KEYWIDTH_NOT_ENUM);
         float keyWidth = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
                 R.styleable.Keyboard_keyWidth, params.mWidth, row.mDefaultKeyWidth);
         keyboardAttr.recycle();
@@ -288,11 +291,11 @@ public class Key {
                 keyXPos = x;
             }
         }
-        if (keyWidth == KEYWIDTH_FILL_RIGHT) {
+        if (widthType == KEYWIDTH_FILL_RIGHT) {
             // If keyWidth is zero, the actual key width will be determined to fill out the
             // area up to the right edge of the keyboard.
             keyWidth = keyboardWidth - keyXPos;
-        } else if (keyWidth <= KEYWIDTH_FILL_BOTH) {
+        } else if (widthType == KEYWIDTH_FILL_BOTH) {
             // If keyWidth is negative, the actual key width will be determined to fill out the
             // area between the nearest key on the left hand side and the right edge of the
             // keyboard.
@@ -365,6 +368,10 @@ public class Key {
 
     public void addEdgeFlags(int flags) {
         mEdgeFlags |= flags;
+    }
+
+    public boolean isSpacer() {
+        return false;
     }
 
     public Typeface selectTypeface(Typeface defaultTypeface) {
@@ -558,5 +565,17 @@ public class Key {
             }
         }
         return states;
+    }
+
+    public static class Spacer extends Key {
+        public Spacer(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
+                XmlResourceParser parser, KeyStyles keyStyles) {
+            super(res, params, row, parser, keyStyles);
+        }
+
+        @Override
+        public boolean isSpacer() {
+            return true;
+        }
     }
 }
