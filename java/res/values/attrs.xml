@@ -150,8 +150,8 @@
              area between the nearest key on the left hand side and the right edge of the keyboard.
              -->
         <attr name="keyWidth" format="dimension|fraction|enum">
-            <enum name="fillRight" value="0" />
-            <enum name="fillBoth" value="-1" />
+            <enum name="fillRight" value="-1" />
+            <enum name="fillBoth" value="-2" />
         </attr>
         <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
              keyboard height. -->

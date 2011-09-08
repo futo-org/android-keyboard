@@ -122,6 +122,7 @@ public class ProximityInfo {
                 int count = 0;
                 for (int i = 0; i < keys.size(); i++) {
                     final Key key = keys.get(i);
+                    if (key.isSpacer()) continue;
                     if (key.squaredDistanceToEdge(centerX, centerY) < threshold)
                         indices[count++] = i;
                 }
