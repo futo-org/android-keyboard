@@ -16,7 +16,9 @@
 
 package com.android.inputmethod.latin;
 
+import android.content.res.Resources;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.Key;
@@ -49,14 +51,21 @@ public class MoreSuggestions extends Keyboard {
             private final int[] mNumColumnsInRow = new int[SuggestionsView.MAX_SUGGESTIONS];
             private static final int MAX_COLUMNS_IN_ROW = 3;
             private int mNumRows;
+            public Drawable mDivider;
+            public int mDividerWidth;
 
             public int layout(SuggestedWords suggestions, int fromPos, int maxWidth, int minWidth,
                     int maxRow, KeyboardView view) {
                 clearKeys();
                 final Paint paint = new Paint();
                 paint.setAntiAlias(true);
-                final int padding = (int) view.getContext().getResources()
-                        .getDimension(R.dimen.more_suggestions_key_horizontal_padding);
+                final Resources res = view.getContext().getResources();
+                mDivider = res.getDrawable(R.drawable.more_suggestions_divider);
+                // TODO: Drawable itself should has an alpha value.
+                mDivider.setAlpha(128);
+                mDividerWidth = mDivider.getIntrinsicWidth();
+                final int padding = (int) res.getDimension(
+                        R.dimen.more_suggestions_key_horizontal_padding);
 
                 int row = 0;
                 int pos = fromPos, rowStartPos = fromPos;
@@ -66,8 +75,10 @@ public class MoreSuggestions extends Keyboard {
                     // TODO: Should take care of text x-scaling.
                     mWidths[pos] = (int)view.getDefaultLabelWidth(word, paint) + padding;
                     final int numColumn = pos - rowStartPos + 1;
+                    final int columnWidth =
+                            (maxWidth - mDividerWidth * (numColumn - 1)) / numColumn;
                     if (numColumn > MAX_COLUMNS_IN_ROW
-                            || !fitInWidth(rowStartPos, pos + 1, maxWidth / numColumn)) {
+                            || !fitInWidth(rowStartPos, pos + 1, columnWidth)) {
                         if ((row + 1) >= maxRow) {
                             break;
                         }
@@ -98,13 +109,14 @@ public class MoreSuggestions extends Keyboard {
                 int maxRowWidth = 0;
                 int pos = startPos;
                 for (int row = 0; row < mNumRows; row++) {
-                    final int numColumn = mNumColumnsInRow[row];
+                    final int numColumnInRow = mNumColumnsInRow[row];
                     int maxKeyWidth = 0;
                     while (pos < endPos && mRowNumbers[pos] == row) {
                         maxKeyWidth = Math.max(maxKeyWidth, mWidths[pos]);
                         pos++;
                     }
-                    maxRowWidth = Math.max(maxRowWidth, maxKeyWidth * numColumn);
+                    maxRowWidth = Math.max(maxRowWidth,
+                            maxKeyWidth * numColumnInRow + mDividerWidth * (numColumnInRow - 1));
                 }
                 return maxRowWidth;
             }
@@ -115,15 +127,19 @@ public class MoreSuggestions extends Keyboard {
                 { 2, 0, 1},
             };
 
-            private int getColumnNumber(int pos) {
+            public int getNumColumnInRow(int pos) {
+                return mNumColumnsInRow[mRowNumbers[pos]];
+            }
+
+            public int getColumnNumber(int pos) {
                 final int columnOrder = mColumnOrders[pos];
-                final int numColumn = mNumColumnsInRow[mRowNumbers[pos]];
+                final int numColumn = getNumColumnInRow(pos);
                 return COLUMN_ORDER_TO_NUMBER[numColumn - 1][columnOrder];
             }
 
             public int getX(int pos) {
                 final int columnNumber = getColumnNumber(pos);
-                return columnNumber * getWidth(pos);
+                return columnNumber * (getWidth(pos) + mDividerWidth);
             }
 
             public int getY(int pos) {
@@ -132,9 +148,8 @@ public class MoreSuggestions extends Keyboard {
             }
 
             public int getWidth(int pos) {
-                final int row = mRowNumbers[pos];
-                final int numColumn = mNumColumnsInRow[row];
-                return mWidth / numColumn;
+                final int numColumnInRow = getNumColumnInRow(pos);
+                return (mWidth - mDividerWidth * (numColumnInRow - 1)) / numColumnInRow;
             }
 
             public int getFlags(int pos) {
@@ -146,11 +161,11 @@ public class MoreSuggestions extends Keyboard {
                 if (row == mNumRows - 1)
                     rowFlags |= Keyboard.EDGE_TOP;
 
-                final int numColumn = mNumColumnsInRow[row];
+                final int numColumnInRow = mNumColumnsInRow[row];
                 final int column = getColumnNumber(pos);
                 if (column == 0)
                     rowFlags |= Keyboard.EDGE_LEFT;
-                if (column == numColumn - 1)
+                if (column == numColumnInRow - 1)
                     rowFlags |= Keyboard.EDGE_RIGHT;
 
                 return rowFlags;
@@ -190,13 +205,23 @@ public class MoreSuggestions extends Keyboard {
         public MoreSuggestions build() {
             final MoreSuggestionsParam params = mParams;
             for (int pos = mFromPos; pos < mToPos; pos++) {
+                final int x = params.getX(pos);
+                final int y = params.getY(pos);
+                final int width = params.getWidth(pos);
                 final String word = mSuggestions.getWord(pos).toString();
                 final String info = getDebugInfo(mSuggestions, pos);
                 final int index = pos + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
-                        params, word, info, null, index, null, params.getX(pos), params.getY(pos),
-                        params.getWidth(pos), params.mDefaultRowHeight, params.getFlags(pos));
+                        params, word, info, null, index, null, x, y, width,
+                        params.mDefaultRowHeight, params.getFlags(pos));
                 params.onAddKey(key);
+                final int columnNumber = params.getColumnNumber(pos);
+                final int numColumnInRow = params.getNumColumnInRow(pos);
+                if (columnNumber < numColumnInRow - 1) {
+                    final Key.Spacer spacer = new Key.Spacer(params, params.mDivider, x + width, y,
+                            params.mDividerWidth, params.mDefaultRowHeight);
+                    params.onAddKey(spacer);
+                }
             }
             return new MoreSuggestions(params);
         }
