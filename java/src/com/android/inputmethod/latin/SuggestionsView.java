@@ -146,7 +146,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private static final int DEFAULT_SUGGESTIONS_COUNT_IN_STRIP = 3;
         private static final int DEFAULT_CENTER_SUGGESTION_PERCENTILE = 40;
         private static final int DEFAULT_MAX_MORE_SUGGESTIONS_ROW = 2;
-        private static final int PUNCTUATIONS_IN_STRIP = 6;
+        private static final int PUNCTUATIONS_IN_STRIP = 5;
 
         public final int mPadding;
         public final int mDividerWidth;
