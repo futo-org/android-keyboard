@@ -573,6 +573,13 @@ public class Key {
             super(res, params, row, parser, keyStyles);
         }
 
+        /**
+         * This constructor is being used only for divider in more keys keyboard.
+         */
+        public Spacer(KeyboardParams params, Drawable icon, int x, int y, int width, int height) {
+            super(params, null, null, icon, Keyboard.CODE_DUMMY, null, x, y, width, height, 0);
+        }
+
         @Override
         public boolean isSpacer() {
             return true;
