@@ -160,6 +160,9 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     if (mLength != mSuggestions.size()) {
                         Log.e(TAG, "Suggestion size is not the same as stored mLength");
                     }
+                    for (int i = mLength - 1; i >= 0; --i) {
+                        Log.i(TAG, "" + mScores[i] + " " + mSuggestions.get(i));
+                    }
                 }
                 Collections.reverse(mSuggestions);
                 Utils.removeDupes(mSuggestions);
@@ -167,11 +170,16 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 // into a String[].
                 gatheredSuggestions = mSuggestions.toArray(EMPTY_STRING_ARRAY);
 
-                final int bestScore = mScores[0];
+                final int bestScore = mScores[mLength - 1];
                 final CharSequence bestSuggestion = mSuggestions.get(0);
                 final double normalizedScore =
                         Utils.calcNormalizedScore(originalText, bestSuggestion, bestScore);
                 looksLikeTypo = (normalizedScore > threshold);
+                if (DBG) {
+                    Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
+                    Log.i(TAG, "Normalized score = " + normalizedScore + " (threshold " + threshold
+                            + ") => looksLikeTypo = " + looksLikeTypo);
+                }
             }
             return new Result(gatheredSuggestions, looksLikeTypo);
         }
@@ -304,6 +312,16 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
 
             final SuggestionsGatherer.Result result =
                     suggestionsGatherer.getResults(text, mService.mTypoThreshold);
+
+            if (DBG) {
+                Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
+                        + suggestionsLimit);
+                Log.i(TAG, "IsInDict = " + result.mLooksLikeTypo);
+                Log.i(TAG, "LooksLikeTypo = " + result.mLooksLikeTypo);
+                for (String suggestion : result.mSuggestions) {
+                    Log.i(TAG, suggestion);
+                }
+            }
 
             final int flags =
                     (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
