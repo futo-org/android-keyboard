@@ -757,10 +757,19 @@ public class Utils {
         return toTitleCase(locale.getLanguage(), locale);
     }
 
-    private static String toTitleCase(String s, Locale locale) {
+    public static String toTitleCase(String s, Locale locale) {
         if (s.length() <= 1) {
+            // TODO: is this really correct? Shouldn't this be s.toUpperCase()?
             return s;
         }
+        // TODO: fix the bugs below
+        // - This does not work for Greek, because it returns upper case instead of title case.
+        // - It does not work for Serbian, because it fails to account for the "lj" character,
+        // which should be "Lj" in title case and "LJ" in upper case.
+        // - It does not work for Dutch, because it fails to account for the "ij" digraph, which
+        // are two different characters but both should be capitalized as "IJ" as if they were
+        // a single letter.
+        // - It also does not work with unicode surrogate code points.
         return s.toUpperCase(locale).charAt(0) + s.substring(1);
     }
 }

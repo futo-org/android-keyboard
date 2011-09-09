@@ -55,6 +55,10 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static final boolean DBG = false;
     private static final int POOL_SIZE = 2;
 
+    private static final int CAPITALIZE_NONE = 0; // No caps, or mixed case
+    private static final int CAPITALIZE_FIRST = 1; // First only
+    private static final int CAPITALIZE_ALL = 2; // All caps
+
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
     private final static SuggestionsInfo EMPTY_SUGGESTIONS_INFO =
             new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
@@ -139,7 +143,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             return true;
         }
 
-        public Result getResults(final CharSequence originalText, final double threshold) {
+        public Result getResults(final CharSequence originalText, final double threshold,
+                final int capitalizeType, final Locale locale) {
             final String[] gatheredSuggestions;
             final boolean looksLikeTypo;
             if (0 == mLength) {
@@ -166,6 +171,19 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 }
                 Collections.reverse(mSuggestions);
                 Utils.removeDupes(mSuggestions);
+                if (CAPITALIZE_ALL == capitalizeType) {
+                    for (int i = 0; i < mSuggestions.size(); ++i) {
+                        // get(i) returns a CharSequence which is actually a String so .toString()
+                        // should return the same object.
+                        mSuggestions.set(i, mSuggestions.get(i).toString().toUpperCase(locale));
+                    }
+                } else if (CAPITALIZE_FIRST == capitalizeType) {
+                    for (int i = 0; i < mSuggestions.size(); ++i) {
+                        // Likewise
+                        mSuggestions.set(i, Utils.toTitleCase(mSuggestions.get(i).toString(),
+                                locale));
+                    }
+                }
                 // This returns a String[], while toArray() returns an Object[] which cannot be cast
                 // into a String[].
                 gatheredSuggestions = mSuggestions.toArray(EMPTY_STRING_ARRAY);
@@ -226,6 +244,25 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         return new DictAndProximity(dictionaryCollection, proximityInfo);
     }
 
+    // This method assumes the text is not empty or null.
+    private static int getCapitalizationType(String text) {
+        // If the first char is not uppercase, then the word is either all lower case,
+        // and in either case we return CAPITALIZE_NONE.
+        if (!Character.isUpperCase(text.codePointAt(0))) return CAPITALIZE_NONE;
+        final int len = text.codePointCount(0, text.length());
+        int capsCount = 1;
+        for (int i = 1; i < len; ++i) {
+            if (1 != capsCount && i != capsCount) break;
+            if (Character.isUpperCase(text.codePointAt(i))) ++capsCount;
+        }
+        // We know the first char is upper case. So we want to test if either everything
+        // else is lower case, or if everything else is upper case. If the string is
+        // exactly one char long, then we will arrive here with capsCount 1, and this is
+        // correct, too.
+        if (1 == capsCount) return CAPITALIZE_FIRST;
+        return (len == capsCount ? CAPITALIZE_ALL : CAPITALIZE_NONE);
+    }
+
     private static class AndroidSpellCheckerSession extends Session {
         // Immutable, but need the locale which is not available in the constructor yet
         private DictionaryPool mDictionaryPool;
@@ -276,31 +313,18 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                         WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
             }
 
+            final int capitalizeType = getCapitalizationType(text);
             boolean isInDict = true;
             try {
                 final DictAndProximity dictInfo = mDictionaryPool.take();
                 dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
                         dictInfo.mProximityInfo);
                 isInDict = dictInfo.mDictionary.isValidWord(text);
-                if (!isInDict && Character.isUpperCase(text.codePointAt(0))) {
-                    // If the first char is not uppercase, then the word is either all lower case,
-                    // in which case we already tested it, or mixed case, in which case we don't
-                    // want to test a lower-case version of it. Hence the test above.
-                    // Also note that by isEmpty() test at the top of the method codePointAt(0) is
-                    // guaranteed to be there.
-                    final int len = text.codePointCount(0, text.length());
-                    int capsCount = 1;
-                    for (int i = 1; i < len; ++i) {
-                        if (1 != capsCount && i != capsCount) break;
-                        if (Character.isUpperCase(text.codePointAt(i))) ++capsCount;
-                    }
-                    // We know the first char is upper case. So we want to test if either everything
-                    // else is lower case, or if everything else is upper case. If the string is
-                    // exactly one char long, then we will arrive here with capsCount 0, and this is
-                    // correct, too.
-                    if (1 == capsCount || len == capsCount) {
-                        isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
-                    }
+                if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
+                    // We want to test the word again if it's all caps or first caps only.
+                    // If it's fully down, we already tested it, if it's mixed case, we don't
+                    // want to test a lowercase version of it.
+                    isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
                 }
                 if (!mDictionaryPool.offer(dictInfo)) {
                     Log.e(TAG, "Can't re-insert a dictionary into its pool");
@@ -310,8 +334,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 return EMPTY_SUGGESTIONS_INFO;
             }
 
-            final SuggestionsGatherer.Result result =
-                    suggestionsGatherer.getResults(text, mService.mTypoThreshold);
+            final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(text,
+                    mService.mTypoThreshold, capitalizeType, mLocale);
 
             if (DBG) {
                 Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
