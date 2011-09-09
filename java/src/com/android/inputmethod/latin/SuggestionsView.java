@@ -728,6 +728,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         return false;
     }
 
+    public boolean handleBack() {
+        return dismissMoreSuggestions();
+    }
+
     @Override
     public boolean onLongClick(View view) {
         final SuggestionsViewParams params = mParams;

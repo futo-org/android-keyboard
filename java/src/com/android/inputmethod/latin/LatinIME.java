@@ -35,7 +35,6 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.PrintWriterPrinter;
 import android.util.Printer;
@@ -1011,8 +1010,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
         case KeyEvent.KEYCODE_BACK:
-            if (event.getRepeatCount() == 0 && mKeyboardSwitcher.getKeyboardView() != null) {
-                if (mKeyboardSwitcher.getKeyboardView().handleBack()) {
+            if (event.getRepeatCount() == 0) {
+                if (mSuggestionsView != null && mSuggestionsView.handleBack()) {
+                    return true;
+                }
+                final LatinKeyboardView keyboardView = mKeyboardSwitcher.getKeyboardView();
+                if (keyboardView != null && keyboardView.handleBack()) {
                     return true;
                 }
             }
