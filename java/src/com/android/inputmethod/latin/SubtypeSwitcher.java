@@ -258,7 +258,6 @@ public class SubtypeSwitcher {
                 triggerVoiceIME();
             }
         } else {
-            Log.w(TAG, "Unknown subtype mode: " + newMode);
             if (VOICE_MODE.equals(oldMode) && mVoiceInputWrapper != null) {
                 // We need to reset the voice input to release the resources and to reset its status
                 // as it is not the current input mode.
@@ -271,8 +270,14 @@ public class SubtypeSwitcher {
                         packageName, 0).versionCode;
             } catch (NameNotFoundException e) {
             }
-            throw new RuntimeException("Unknown subtype mode: " + version + ", " + packageName
-                    + ", " + mVoiceInputWrapper);
+            Log.w(TAG, "Unknown subtype mode: " + newMode + "," + version + ", " + packageName
+                    + ", " + mVoiceInputWrapper + ". IME is already changed to other IME.");
+            if (newSubtype != null) {
+                Log.w(TAG, "Subtype mode:" + newSubtype.getMode());
+                Log.w(TAG, "Subtype locale:" + newSubtype.getLocale());
+                Log.w(TAG, "Subtype extra value:" + newSubtype.getExtraValue());
+                Log.w(TAG, "Subtype is auxiliary:" + newSubtype.isAuxiliary());
+            }
         }
     }
 
