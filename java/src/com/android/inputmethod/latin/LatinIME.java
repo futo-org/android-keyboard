@@ -1872,14 +1872,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
-        final boolean selectedATypedWordAndItsInUserUnigramDic =
-                !selectedANotTypedWord && mUserUnigramDictionary.isValidWord(suggestion);
-        final boolean isValidWord = AutoCorrection.isValidWord(
-                mSuggest.getUnigramDictionaries(), suggestion, true);
-        final boolean needsToAddToUserUnigramDictionary = selectedATypedWordAndItsInUserUnigramDic
-                || !isValidWord;
-        if (needsToAddToUserUnigramDictionary) {
-            mUserUnigramDictionary.addWord(suggestion.toString(), frequencyDelta);
+        if (null != mSuggest && null != mUserUnigramDictionary) {
+            final boolean selectedATypedWordAndItsInUserUnigramDic =
+                    !selectedANotTypedWord && mUserUnigramDictionary.isValidWord(suggestion);
+            final boolean isValidWord = AutoCorrection.isValidWord(
+                    mSuggest.getUnigramDictionaries(), suggestion, true);
+            final boolean needsToAddToUserUnigramDictionary =
+                    selectedATypedWordAndItsInUserUnigramDic || !isValidWord;
+            if (needsToAddToUserUnigramDictionary) {
+                mUserUnigramDictionary.addWord(suggestion.toString(), frequencyDelta);
+            }
         }
 
         if (mUserBigramDictionary != null) {
