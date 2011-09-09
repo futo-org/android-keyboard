@@ -145,6 +145,13 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
         // Nothing to do with.
     }
 
+    private final View.OnTouchListener mMotionEventDelegate = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent me) {
+            return MoreSuggestionsView.this.dispatchTouchEvent(me);
+        }
+    };
+
     @Override
     public void showMoreKeysPanel(View parentView, Controller controller, int pointX, int pointY,
             PopupWindow window, KeyboardActionListener listener) {
@@ -163,6 +170,10 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + parentView.getPaddingTop() + mCoordinates[1];
 
+        container.setOnTouchListener(mMotionEventDelegate);
+        window.setInputMethodMode(PopupWindow.INPUT_METHOD_NOT_NEEDED);
+        window.setFocusable(true);
+        window.setOutsideTouchable(true);
         window.setContentView(container);
         window.setWidth(container.getMeasuredWidth());
         window.setHeight(container.getMeasuredHeight());
@@ -216,6 +227,19 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
             return EMPTY_TIMER_PROXY;
         }
     };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent me) {
+        final int x = (int)me.getX();
+        final int y = (int)me.getY();
+        final boolean inside = (x >= 0 && x < getWidth() && y >= 0 && y < getHeight());
+        if (inside) {
+            return super.dispatchTouchEvent(me);
+        } else {
+            dismissMoreKeysPanel();
+            return true;
+        }
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
