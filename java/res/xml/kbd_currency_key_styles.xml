@@ -25,9 +25,8 @@
         <case
             latin:passwordInput="true"
         >
-            <key-style
-                latin:styleName="currencyKeyStyle"
-                latin:keyLabel="$" />
+            <include
+                latin:keyboardLayout="@xml/kbd_currency_dollar_key_styles" />
         </case>
         <!-- Countries using Euro currency, 23 countries as for January 2011. -->
               1. Andorra (ca_AD, ca_ES)
@@ -54,31 +53,28 @@
              22. Spain (es_ES, ca_ES)
              23. Vatican City (it_VA)
         -->
+        <!-- Though Denmark and Turkey don't using Euro as their currencies, but having Euro sign on
+             the symbol keyboard might be useful.  Especially Danish krone (kr) and Turkish lira
+             (TL) can be represented by usual alphabet letters. -->
         <!-- Note: Some locales may not have country code, and it it supposed to indicate the
              country where the language originally/mainly spoken. -->
         <case
-            latin:localeCode="de|es|el|fi|fr|it|nl|sk|sl|pt_PT"
+            latin:localeCode="da|de|es|el|fi|fr|it|nl|sk|sl|pt_PT|tr"
         >
-            <key-style
-                latin:styleName="currencyKeyStyle"
-                latin:keyLabel="€"
-                latin:moreKeys="@string/more_keys_for_currency_euro" />
+            <include
+                latin:keyboardLayout="@xml/kbd_currency_euro_key_styles" />
         </case>
         <case
             latin:languageCode="ca|et|lb|mt|sla"
         >
-            <key-style
-                latin:styleName="currencyKeyStyle"
-                latin:keyLabel="€"
-                latin:moreKeys="@string/more_keys_for_currency_euro" />
+            <include
+                latin:keyboardLayout="@xml/kbd_currency_euro_key_styles" />
         </case>
         <case
             latin:countryCode="AD|AT|BE|CY|EE|FI|FR|DE|GR|IE|IT|XK|LU|MT|MO|ME|NL|PT|SM|SK|SI|ES|VA"
         >
-            <key-style
-                latin:styleName="currencyKeyStyle"
-                latin:keyLabel="€"
-                latin:moreKeys="@string/more_keys_for_currency_euro" />
+            <include
+                latin:keyboardLayout="@xml/kbd_currency_euro_key_styles" />
         </case>
         <case
             latin:languageCode="iw"
@@ -87,6 +83,19 @@
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="₪"
                 latin:moreKeys="@string/more_keys_for_currency_general" />
+            <key-style
+                latin:styleName="moreCurrency1KeyStyle"
+                latin:keyLabel="£" />
+            <key-style
+                latin:styleName="moreCurrency2KeyStyle"
+                latin:keyLabel="€" />
+            <key-style
+                latin:styleName="moreCurrency3KeyStyle"
+                latin:keyLabel="$"
+                latin:moreKeys="¢" />
+            <key-style
+                latin:styleName="moreCurrency4KeyStyle"
+                latin:keyLabel="¢" />
         </case>
         <!-- United Kingdom -->
         <case
@@ -96,12 +105,23 @@
                 latin:styleName="currencyKeyStyle"
                 latin:keyLabel="£"
                 latin:moreKeys="@string/more_keys_for_currency_pound" />
+            <key-style
+                latin:styleName="moreCurrency1KeyStyle"
+                latin:keyLabel="€" />
+            <key-style
+                latin:styleName="moreCurrency2KeyStyle"
+                latin:keyLabel="¥" />
+            <key-style
+                latin:styleName="moreCurrency3KeyStyle"
+                latin:keyLabel="$"
+                latin:moreKeys="¢" />
+            <key-style
+                latin:styleName="moreCurrency4KeyStyle"
+                latin:keyLabel="¢" />
         </case>
         <default>
-            <key-style
-                latin:styleName="currencyKeyStyle"
-                latin:keyLabel="$"
-                latin:moreKeys="@string/more_keys_for_currency_dollar" />
+            <include
+                latin:keyboardLayout="@xml/kbd_currency_dollar_key_styles" />
         </default>
     </switch>
 </merge>

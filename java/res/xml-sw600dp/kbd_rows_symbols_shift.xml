@@ -23,6 +23,8 @@
 >
     <include
         latin:keyboardLayout="@xml/kbd_key_styles" />
+    <include
+        latin:keyboardLayout="@xml/kbd_currency_key_styles" />
     <Row
         latin:keyWidth="9.0%p"
     >
@@ -61,11 +63,11 @@
             latin:keyLabel="£"
             latin:keyXPos="4.5%p" />
         <Key
-            latin:keyLabel="¢" />
+            latin:keyStyle="moreCurrency1KeyStyle" />
         <Key
-            latin:keyLabel="€" />
+            latin:keyStyle="moreCurrency2KeyStyle" />
         <Key
-            latin:keyLabel="¥" />
+            latin:keyStyle="moreCurrency3KeyStyle" />
         <Key
             latin:keyLabel="^"
             latin:moreKeys="↑,↓,←,→" />
