@@ -19,6 +19,12 @@
 -->
 
 <resources>
-    <!--  Screen metrics for logging. 0 = "mdpi", 1 = "hdpi", 2 = "xlarge" -->
+    <!--  Screen metrics for logging.
+            0 = "mdpi phone screen"
+            1 = "hdpi phone screen"
+            2 = "mdpi 11 inch tablet screen"
+            3 = "xhdpi phone screen?"
+            4 = ?
+    -->
     <integer name="log_screen_metrics">1</integer>
 </resources>
