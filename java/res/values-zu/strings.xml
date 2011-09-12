@@ -53,13 +53,10 @@
     <skip />
     <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
     <skip />
-    <!-- no translation found for enable_span_insert (7204653105667167620) -->
-    <skip />
-    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
-    <skip />
+    <string name="enable_span_insert" msgid="7204653105667167620">"Vumela ukulungiswa kabusha"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"Setha iziphakamiso zokulungisa kabusha"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Ukwenza ofeleba okuzenzakalelayo"</string>
-    <!-- no translation found for configure_dictionaries_title (4238652338556902049) -->
-    <skip />
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Faka izichazamazwi"</string>
     <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
     <skip />
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Bonisa amagama aphakamisiwe ngenkathi uthayipha"</string>
@@ -184,7 +181,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Isixwayiso: "</b>"Esikhathini esilandelayo, zama ukukhuluma izimpimiselo ezinjengo \"isikhathi, \"ikhefu\" noma \"uphawu lombuzo\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Khansela"</string>
     <string name="ok" msgid="7898366843681727667">"KULUNGILE"</string>
-    <!-- outdated translation 2466640768843347841 -->     <string name="voice_input" msgid="3583258583521397548">"Okufakwa ngezwi"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Inkinobho yokufaka izwi"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Kwikhibhodi eyisisekelo"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Ikhibhodi yezimpawu"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"VALIWE"</string>
@@ -195,8 +192,7 @@
     <!-- no translation found for configure_input_method (373356270290742459) -->
     <skip />
     <string name="language_selection_title" msgid="1651299598555326750">"Izilimi zokufakwayo"</string>
-    <!-- no translation found for select_language (3693815588777926848) -->
-    <skip />
+    <string name="select_language" msgid="3693815588777926848">"Izilimi zokufakwayo"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Thinta futhi ukulondoloza"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Isichazamazwi siyatholakala"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Vumela impendulo yomsebenzisi"</string>

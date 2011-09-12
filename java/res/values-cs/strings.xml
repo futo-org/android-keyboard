@@ -41,12 +41,10 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Výchozí"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Navrhovat jména kontaktů"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Použít jména ze seznamu kontaktů k návrhům a opravám"</string>
-    <!-- no translation found for enable_span_insert (7204653105667167620) -->
-    <skip />
-    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
-    <skip />
+    <string name="enable_span_insert" msgid="7204653105667167620">"Povolit opětovné opravy"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"Nastavit návrhy pro opětovné opravy"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Velká písmena automaticky"</string>
-    <!-- outdated translation 3758288002414557345 -->     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Konfigurovat slovníky"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Doplňkové slovníky"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Zobrazit návrhy oprav"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Zobrazovat navržená slova během psaní"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Vždy zobrazovat"</string>
@@ -130,7 +128,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Nápověda:"</b>" Příště zkuste vyslovit interpunkci, například „tečka“, „čárka“ nebo „otazník“."</string>
     <string name="cancel" msgid="6830980399865683324">"Zrušit"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
-    <!-- outdated translation 2466640768843347841 -->     <string name="voice_input" msgid="3583258583521397548">"Hlasový vstup"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Klíč hlasového vstupu"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Na hlavní klávesnici"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Na klávesnici se symb."</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Vypnuto"</string>
@@ -140,7 +138,7 @@
     <string name="selectInputMethod" msgid="315076553378705821">"Výběr metody zadávání dat"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Konfigurace metod vstupu"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Vstupní jazyky"</string>
-    <!-- outdated translation 2573265881207142437 -->     <string name="select_language" msgid="3693815588777926848">"Výběr jazyků vstupu"</string>
+    <string name="select_language" msgid="3693815588777926848">"Jazyky vstupu"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Dalším dotykem slovo uložíte"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"K dispozici je slovník"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktivovat zasílání statistik užívání a zpráv o selhání"</string>

@@ -41,12 +41,10 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"За умовчанням"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Пропон. імена контактів"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Використ. імена зі списку контактів для пропозицій і виправлень"</string>
-    <!-- no translation found for enable_span_insert (7204653105667167620) -->
-    <skip />
-    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
-    <skip />
+    <string name="enable_span_insert" msgid="7204653105667167620">"Увімкнути виправлення"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"Установити пропозиції для повторних виправлень"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Авто викор. вел. літер"</string>
-    <!-- outdated translation 3758288002414557345 -->     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Налаштувати словники"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Додані словники"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Показувати пропозиції виправлень"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Відображати пропоновані слова під час вводу"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Завжди показувати"</string>
@@ -130,7 +128,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Підказка:"</b>" наступного разу продикт. знаки пункт. такі як \"крапка\", \"кома\" чи \"знак пит\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Скасувати"</string>
     <string name="ok" msgid="7898366843681727667">"OK"</string>
-    <!-- outdated translation 2466640768843347841 -->     <string name="voice_input" msgid="3583258583521397548">"Голос. ввід"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Ключ голосового вводу"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"На основ. клавіатурі"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Символьна клавіатура"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Вимк."</string>
@@ -140,7 +138,7 @@
     <string name="selectInputMethod" msgid="315076553378705821">"Вибрати метод введення"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Налаштування методів введення"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Мови вводу"</string>
-    <!-- outdated translation 2573265881207142437 -->     <string name="select_language" msgid="3693815588777926848">"Вибрати мову введення"</string>
+    <string name="select_language" msgid="3693815588777926848">"Мови введення"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Торкн. ще, щоб збер."</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Словник доступний"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Увімк. відгуки корист."</string>
