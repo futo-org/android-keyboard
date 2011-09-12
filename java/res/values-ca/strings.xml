@@ -40,12 +40,10 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminat"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Suggereix noms contactes"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilitza els noms de Contactes per a suggeriments i correccions"</string>
-    <!-- no translation found for enable_span_insert (7204653105667167620) -->
-    <skip />
-    <!-- no translation found for enable_span_insert_summary (2947317657871394467) -->
-    <skip />
+    <string name="enable_span_insert" msgid="7204653105667167620">"Activa la capacitat de tornar a corregir"</string>
+    <string name="enable_span_insert_summary" msgid="2947317657871394467">"Estableix suggeriments per tornar a corregir"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Majúscules automàtiques"</string>
-    <!-- outdated translation 3758288002414557345 -->     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Configura diccionaris"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionaris complementaris"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostra els suggeriments de correcció"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Mostra paraules suggerides mentre s\'escriu"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostra sempre"</string>
@@ -128,7 +126,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Suggeriment:"</b>" La propera vegada, proveu de dir la puntuació, com ara \"punt\", \"coma\" o \"interrogant\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Cancel·la"</string>
     <string name="ok" msgid="7898366843681727667">"D\'acord"</string>
-    <!-- outdated translation 2466640768843347841 -->     <string name="voice_input" msgid="3583258583521397548">"Entrada de veu"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Clau de l\'entrada de veu"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"Al teclat principal"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"Al tecl. de símb."</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Desactivada"</string>
@@ -138,7 +136,7 @@
     <string name="selectInputMethod" msgid="315076553378705821">"Selecciona el mètode d\'entrada"</string>
     <string name="configure_input_method" msgid="373356270290742459">"Configura mètodes d\'entrada"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Idiomes d\'entrada"</string>
-    <!-- outdated translation 2573265881207142437 -->     <string name="select_language" msgid="3693815588777926848">"Selecciona l\'idioma d\'entrada"</string>
+    <string name="select_language" msgid="3693815588777926848">"Idiomes d\'entrada"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Torna a tocar per desar"</string>
     <string name="has_dictionary" msgid="6071847973466625007">"Diccionari disponible"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activa els comentaris de l\'usuari"</string>
