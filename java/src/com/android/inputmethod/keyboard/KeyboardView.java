@@ -91,6 +91,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     // TODO: Use resource parameter for this value.
     private static final float LABEL_ICON_MARGIN = 0.05f;
 
+    // The maximum key label width in the proportion to the key width.
+    private static final float MAX_LABEL_RATIO = 0.90f;
+
     // Main keyboard
     private Keyboard mKeyboard;
     private final KeyDrawParams mKeyDrawParams;
@@ -572,17 +575,21 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 paint.setTextAlign(Align.LEFT);
             } else if (key.hasLabelWithIconLeft() && icon != null) {
                 labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth()
-                        + (int)(LABEL_ICON_MARGIN * keyWidth);
+                        + LABEL_ICON_MARGIN * keyWidth;
                 positionX = centerX + labelWidth / 2;
                 paint.setTextAlign(Align.RIGHT);
             } else if (key.hasLabelWithIconRight() && icon != null) {
                 labelWidth = getLabelWidth(label, paint) + icon.getIntrinsicWidth()
-                        + (int)(LABEL_ICON_MARGIN * keyWidth);
+                        + LABEL_ICON_MARGIN * keyWidth;
                 positionX = centerX - labelWidth / 2;
                 paint.setTextAlign(Align.LEFT);
             } else {
                 positionX = centerX;
                 paint.setTextAlign(Align.CENTER);
+            }
+            if (key.needsXScale()) {
+                paint.setTextScaleX(
+                        Math.min(1.0f, (keyWidth * MAX_LABEL_RATIO) / getLabelWidth(label, paint)));
             }
 
             if (key.hasUppercaseLetter() && isManualTemporaryUpperCase) {
@@ -598,8 +605,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
                 paint.setColor(Color.TRANSPARENT);
             }
             canvas.drawText(label, 0, label.length(), positionX, baseline, paint);
-            // Turn off drop shadow
+            // Turn off drop shadow and reset x-scale.
             paint.setShadowLayer(0, 0, 0, 0);
+            paint.setTextScaleX(1.0f);
 
             if (icon != null) {
                 final int iconWidth = icon.getIntrinsicWidth();

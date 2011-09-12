@@ -41,6 +41,7 @@
         <Key
             latin:code="44"
             latin:keyLabel="@string/label_pause_key"
+            latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num1KeyStyle"
@@ -69,6 +70,7 @@
         <Key
             latin:code="59"
             latin:keyLabel="@string/label_wait_key"
+            latin:keyLabelOption="followKeyHintLabelRatio|autoXScale"
             latin:keyWidth="9.25%p" />
         <Key
             latin:keyStyle="num4KeyStyle"

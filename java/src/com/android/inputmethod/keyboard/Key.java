@@ -64,6 +64,7 @@ public class Key {
     private static final int LABEL_OPTION_HAS_HINT_LABEL = 0x800;
     private static final int LABEL_OPTION_WITH_ICON_LEFT = 0x1000;
     private static final int LABEL_OPTION_WITH_ICON_RIGHT = 0x2000;
+    private static final int LABEL_OPTION_AUTO_X_SCALE = 0x4000;
 
     /** Icon to display instead of a label. Icon takes precedence over a label */
     private Drawable mIcon;
@@ -437,6 +438,10 @@ public class Key {
 
     public boolean hasLabelWithIconRight() {
         return (mLabelOption & LABEL_OPTION_WITH_ICON_RIGHT) != 0;
+    }
+
+    public boolean needsXScale() {
+        return (mLabelOption & LABEL_OPTION_AUTO_X_SCALE) != 0;
     }
 
     public Drawable getIcon() {

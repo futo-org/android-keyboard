@@ -101,6 +101,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_go_key"
+                latin:keyLabelOption="autoXScale"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
@@ -110,6 +111,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_next_key"
+                latin:keyLabelOption="autoXScale"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
@@ -119,6 +121,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_done_key"
+                latin:keyLabelOption="autoXScale"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
@@ -128,6 +131,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_send_key"
+                latin:keyLabelOption="autoXScale"
                 latin:parentStyle="functionalKeyStyle" />
         </case>
         <case
