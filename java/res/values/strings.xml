@@ -52,9 +52,6 @@
     <!-- Category title for text prediction -->
     <string name="correction_category">Text correction</string>
 
-    <!-- Category title for ngrams  -->
-    <string name="ngram_category">Suggestions based on previous words</string>
-
     <!-- Category title for misc options  -->
     <string name="misc_category">Other options</string>
 

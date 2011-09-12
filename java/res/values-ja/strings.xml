@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"キー押下時ポップアップ"</string>
     <string name="general_category" msgid="1859088467017573195">"全般"</string>
     <string name="correction_category" msgid="2236750915056607613">"テキストの修正"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"前の語句に基づいた入力候補表示"</string>
     <string name="misc_category" msgid="6894192814868233453">"他のオプション"</string>
     <string name="advanced_settings" msgid="362895144495591463">"詳細設定"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"上級ユーザー向けオプション"</string>

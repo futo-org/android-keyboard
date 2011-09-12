@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Popup sa keypress"</string>
     <string name="general_category" msgid="1859088467017573195">"Pangkalahatan"</string>
     <string name="correction_category" msgid="2236750915056607613">"Pagwawasto ng teksto"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Mga suhestiyon batay sa mga nakaraang salita"</string>
     <string name="misc_category" msgid="6894192814868233453">"Iba pang mga pagpipilian"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Mga advanced na setting"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Mga pagpipilian para sa mga ekspertong user"</string>

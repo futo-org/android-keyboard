@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Povećanja na pritisak tipke"</string>
     <string name="general_category" msgid="1859088467017573195">"Općenito"</string>
     <string name="correction_category" msgid="2236750915056607613">"Ispravak teksta"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Prijedlozi na temelju prethodnih riječi"</string>
     <string name="misc_category" msgid="6894192814868233453">"Ostale opcije"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Napredne postavke"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Opcije za stručne korisnike"</string>

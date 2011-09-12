@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"按鍵時顯示彈出式視窗"</string>
     <string name="general_category" msgid="1859088467017573195">"一般設定"</string>
     <string name="correction_category" msgid="2236750915056607613">"文字修正"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"根據先前字詞產生的建議"</string>
     <string name="misc_category" msgid="6894192814868233453">"其他選項"</string>
     <string name="advanced_settings" msgid="362895144495591463">"進階設定"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"提供給專業使用者的選項"</string>

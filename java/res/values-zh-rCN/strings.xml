@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"按键时显示弹出窗口"</string>
     <string name="general_category" msgid="1859088467017573195">"常规"</string>
     <string name="correction_category" msgid="2236750915056607613">"文本更正"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"根据前面的字词提供建议"</string>
     <string name="misc_category" msgid="6894192814868233453">"其他选项"</string>
     <string name="advanced_settings" msgid="362895144495591463">"高级设置"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"适合专家级用户的选项"</string>

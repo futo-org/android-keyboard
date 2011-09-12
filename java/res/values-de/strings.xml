@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up bei Tastendruck"</string>
     <string name="general_category" msgid="1859088467017573195">"Allgemein"</string>
     <string name="correction_category" msgid="2236750915056607613">"Textkorrektur"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Vorschläge basieren auf bisherigen Wörtern"</string>
     <string name="misc_category" msgid="6894192814868233453">"Sonstige Optionen"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Erweiterte Einstellungen"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Optionen für Experten"</string>

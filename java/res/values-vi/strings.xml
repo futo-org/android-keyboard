@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Cửa sổ bật lên khi nhấn phím"</string>
     <string name="general_category" msgid="1859088467017573195">"Chung"</string>
     <string name="correction_category" msgid="2236750915056607613">"Sửa văn bản"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Đề xuất dựa trên các từ trước đó"</string>
     <string name="misc_category" msgid="6894192814868233453">"Tùy chọn khác"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Cài đặt nâng cao"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Tùy chọn cho người dùng chuyên gia"</string>

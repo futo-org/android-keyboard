@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"ป๊อปอัปเมื่อกดแป้น"</string>
     <string name="general_category" msgid="1859088467017573195">"ทั่วไป"</string>
     <string name="correction_category" msgid="2236750915056607613">"การแก้ไขข้อความ"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"ข้อเสนอแนะตามคำก่อนหน้านี้"</string>
     <string name="misc_category" msgid="6894192814868233453">"ตัวเลือกอื่นๆ"</string>
     <string name="advanced_settings" msgid="362895144495591463">"การตั้งค่าขั้นสูง"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"ตัวเลือกสำหรับผู้ใช้ที่มีความเชี่ยวชาญ"</string>

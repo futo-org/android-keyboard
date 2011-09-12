@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Εμφάνιση με το πάτημα πλήκτρου"</string>
     <string name="general_category" msgid="1859088467017573195">"Γενικά"</string>
     <string name="correction_category" msgid="2236750915056607613">"Διόρθωση κειμένου"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Προτάσεις που βασίζονται σε προηγούμενες λέξεις"</string>
     <string name="misc_category" msgid="6894192814868233453">"Άλλες επιλογές"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Σύνθετες ρυθμίσεις"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Επιλογές για έμπειρους χρήστες"</string>

@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Pop-up bij toetsaanslag"</string>
     <string name="general_category" msgid="1859088467017573195">"Algemeen"</string>
     <string name="correction_category" msgid="2236750915056607613">"Tekstcorrectie"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Suggesties op basis van eerdere woorden"</string>
     <string name="misc_category" msgid="6894192814868233453">"Andere opties"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Geavanceerde instellingen"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Opties voor ervaren gebruikers"</string>

@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Nospiežot taustiņu, parādīt uznirstošo izvēlni"</string>
     <string name="general_category" msgid="1859088467017573195">"Vispārīgi"</string>
     <string name="correction_category" msgid="2236750915056607613">"Teksta korekcija"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Ieteikumi, kuru pamatā ir iepriekšējie vārdi"</string>
     <string name="misc_category" msgid="6894192814868233453">"Citas opcijas"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Papildu iestatījumi"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Opcijas speciālistiem"</string>

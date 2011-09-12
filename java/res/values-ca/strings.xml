@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"Finestra emergent en prémer un botó"</string>
     <string name="general_category" msgid="1859088467017573195">"General"</string>
     <string name="correction_category" msgid="2236750915056607613">"Correcció de text"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"Suggeriments basats en paraules anteriors"</string>
     <string name="misc_category" msgid="6894192814868233453">"Altres opcions"</string>
     <string name="advanced_settings" msgid="362895144495591463">"Configuració avançada"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"Opcions per a usuaris experts"</string>

@@ -32,7 +32,6 @@
     <string name="popup_on_keypress" msgid="123894815723512944">"חלון קופץ בלחיצה על מקש"</string>
     <string name="general_category" msgid="1859088467017573195">"כללי"</string>
     <string name="correction_category" msgid="2236750915056607613">"תיקון טקסט"</string>
-    <string name="ngram_category" msgid="5337109164339320257">"הצעות המבוססות על מילים קודמות"</string>
     <string name="misc_category" msgid="6894192814868233453">"אפשרויות אחרות"</string>
     <string name="advanced_settings" msgid="362895144495591463">"הגדרות מתקדמות"</string>
     <string name="advanced_settings_summary" msgid="5193513161106637254">"אפשרויות עבור משתמשים מתקדמים"</string>
