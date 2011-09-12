@@ -82,7 +82,7 @@
         <item>0</item>
     </string-array>
     <!-- Threshold of the normalized score of the best suggestion for the spell checker to declare a word to be a typo -->
-    <string name="spellchecker_typo_threshold_value">0.11</string>
+    <string name="spellchecker_typo_threshold_value" translatable="false">0.11</string>
     <!--  Screen metrics for logging.
             0 = "mdpi phone screen"
             1 = "hdpi phone screen"
