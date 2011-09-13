@@ -293,7 +293,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 final int suggestionsLimit) {
             final String text = textInfo.getText();
 
-            if (TextUtils.isEmpty(text)) return EMPTY_SUGGESTIONS_INFO;
+            if (TextUtils.isEmpty(text) || text.length() <= 1) return EMPTY_SUGGESTIONS_INFO;
 
             final SuggestionsGatherer suggestionsGatherer =
                     new SuggestionsGatherer(suggestionsLimit);
