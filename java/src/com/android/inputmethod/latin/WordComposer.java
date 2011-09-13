@@ -33,14 +33,8 @@ public class WordComposer {
      */
     private ArrayList<int[]> mCodes;
 
-    private int mTypedLength;
     private int[] mXCoordinates;
     private int[] mYCoordinates;
-
-    /**
-     * The word chosen from the candidate list, until it is committed.
-     */
-    private String mPreferredWord;
 
     private StringBuilder mTypedWord;
 
@@ -57,7 +51,6 @@ public class WordComposer {
         final int N = BinaryDictionary.MAX_WORD_LENGTH;
         mCodes = new ArrayList<int[]>(N);
         mTypedWord = new StringBuilder(N);
-        mTypedLength = 0;
         mXCoordinates = new int[N];
         mYCoordinates = new int[N];
     }
@@ -68,14 +61,12 @@ public class WordComposer {
 
     public void init(WordComposer source) {
         mCodes = new ArrayList<int[]>(source.mCodes);
-        mPreferredWord = source.mPreferredWord;
         mTypedWord = new StringBuilder(source.mTypedWord);
-        mCapsCount = source.mCapsCount;
-        mAutoCapitalized = source.mAutoCapitalized;
-        mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
-        mTypedLength = source.mTypedLength;
         mXCoordinates = source.mXCoordinates;
         mYCoordinates = source.mYCoordinates;
+        mCapsCount = source.mCapsCount;
+        mIsFirstCharCapitalized = source.mIsFirstCharCapitalized;
+        mAutoCapitalized = source.mAutoCapitalized;
     }
 
     /**
@@ -83,19 +74,17 @@ public class WordComposer {
      */
     public void reset() {
         mCodes.clear();
-        mTypedLength = 0;
-        mIsFirstCharCapitalized = false;
-        mPreferredWord = null;
         mTypedWord.setLength(0);
         mCapsCount = 0;
+        mIsFirstCharCapitalized = false;
     }
 
     /**
      * Number of keystrokes in the composing word.
      * @return the number of keystrokes
      */
-    public int size() {
-        return mCodes.size();
+    public final int size() {
+        return mTypedWord.length();
     }
 
     /**
@@ -115,21 +104,28 @@ public class WordComposer {
         return mYCoordinates;
     }
 
+    private static boolean isFirstCharCapitalized(int index, int codePoint, boolean previous) {
+        if (index == 0) return Character.isUpperCase(codePoint);
+        return previous && Character.isLowerCase(codePoint);
+    }
+
     /**
      * Add a new keystroke, with codes[0] containing the pressed key's unicode and the rest of
      * the array containing unicode for adjacent keys, sorted by reducing probability/proximity.
      * @param codes the array of unicode values
      */
     public void add(int primaryCode, int[] codes, int x, int y) {
+        final int newIndex = size();
         mTypedWord.append((char) primaryCode);
         correctPrimaryJuxtapos(primaryCode, codes);
         mCodes.add(codes);
-        if (mTypedLength < BinaryDictionary.MAX_WORD_LENGTH) {
-            mXCoordinates[mTypedLength] = x;
-            mYCoordinates[mTypedLength] = y;
+        if (newIndex < BinaryDictionary.MAX_WORD_LENGTH) {
+            mXCoordinates[newIndex] = x;
+            mYCoordinates[newIndex] = y;
         }
-        ++mTypedLength;
-        if (Character.isUpperCase((char) primaryCode)) mCapsCount++;
+        mIsFirstCharCapitalized = isFirstCharCapitalized(
+                newIndex, primaryCode, mIsFirstCharCapitalized);
+        if (Character.isUpperCase(primaryCode)) mCapsCount++;
     }
 
     /**
@@ -151,16 +147,16 @@ public class WordComposer {
      * Delete the last keystroke as a result of hitting backspace.
      */
     public void deleteLast() {
-        final int codesSize = mCodes.size();
-        if (codesSize > 0) {
-            mCodes.remove(codesSize - 1);
-            final int lastPos = mTypedWord.length() - 1;
-            char last = mTypedWord.charAt(lastPos);
+        final int size = size();
+        if (size > 0) {
+            final int lastPos = size - 1;
+            char lastChar = mTypedWord.charAt(lastPos);
+            mCodes.remove(lastPos);
             mTypedWord.deleteCharAt(lastPos);
-            if (Character.isUpperCase(last)) mCapsCount--;
+            if (Character.isUpperCase(lastChar)) mCapsCount--;
         }
-        if (mTypedLength > 0) {
-            --mTypedLength;
+        if (size() == 0) {
+            mIsFirstCharCapitalized = false;
         }
     }
 
@@ -169,17 +165,12 @@ public class WordComposer {
      * @return the word that was typed so far
      */
     public CharSequence getTypedWord() {
-        int wordSize = mCodes.size();
-        if (wordSize == 0) {
+        if (size() == 0) {
             return null;
         }
         return mTypedWord;
     }
 
-    public void setFirstCharCapitalized(boolean capitalized) {
-        mIsFirstCharCapitalized = capitalized;
-    }
-    
     /**
      * Whether or not the user typed a capital letter as the first letter in the word
      * @return capitalization preference
@@ -194,22 +185,6 @@ public class WordComposer {
      */
     public boolean isAllUpperCase() {
         return (mCapsCount > 0) && (mCapsCount == size());
-    }
-
-    /**
-     * Stores the user's selected word, before it is actually committed to the text field.
-     * @param preferred
-     */
-    public void setPreferredWord(String preferred) {
-        mPreferredWord = preferred;
-    }
-    
-    /**
-     * Return the word chosen by the user, or the typed word if no other word was chosen.
-     * @return the preferred word
-     */
-    public CharSequence getPreferredWord() {
-        return mPreferredWord != null ? mPreferredWord : getTypedWord();
     }
 
     /**

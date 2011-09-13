@@ -1408,10 +1408,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         if (mHasUncommittedTypedChars) {
-            if (mComposingStringBuilder.length() == 0 && switcher.isAlphabetMode()
-                    && switcher.isShiftedOrShiftLocked()) {
-                mWordComposer.setFirstCharCapitalized(true);
-            }
             mComposingStringBuilder.append((char) code);
             mWordComposer.add(code, keyCodes, x, y);
             final InputConnection ic = getCurrentInputConnection();

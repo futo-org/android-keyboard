@@ -192,7 +192,6 @@ public class Recorrection implements SharedPreferences.OnSharedPreferenceChangeL
                         new int[] { touching.mWord.charAt(i) }, WordComposer.NOT_A_COORDINATE,
                         WordComposer.NOT_A_COORDINATE);
             }
-            foundWord.setFirstCharCapitalized(Character.isUpperCase(touching.mWord.charAt(0)));
         }
         // Found a match, show suggestions
         if (foundWord != null || alternatives != null) {
