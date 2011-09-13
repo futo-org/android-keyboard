@@ -230,10 +230,13 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent me) {
-        final int x = (int)me.getX();
-        final int y = (int)me.getY();
+        final int index = me.getActionIndex();
+        final int id = me.getPointerId(index);
+        final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
+        final int x = (int)me.getX(index);
+        final int y = (int)me.getY(index);
         final boolean inside = (x >= 0 && x < getWidth() && y >= 0 && y < getHeight());
-        if (inside) {
+        if (inside || tracker.isInSlidingKeyInput()) {
             return super.dispatchTouchEvent(me);
         } else {
             dismissMoreKeysPanel();
