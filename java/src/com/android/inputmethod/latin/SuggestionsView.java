@@ -792,11 +792,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         final int translatedY = moreKeysPanel.translateY(y);
 
         if (mCheckingIfModalOrSlidingMode) {
-            final int deltaX = Math.abs(x - mOriginX);
-            final int deltaY = Math.abs(y - mOriginY);
-            if (deltaX >= mMoreSuggestionsModalTolerance
-                    || deltaY >= mMoreSuggestionsModalTolerance) {
-                // Decided to be in the sliding input mode
+            if (Math.abs(x - mOriginX) >= mMoreSuggestionsModalTolerance
+                    || mOriginY - y >= mMoreSuggestionsModalTolerance) {
+                // Decided to be in the sliding input mode only when the touch point has been moved
+                // upward.
                 mCheckingIfModalOrSlidingMode = false;
                 tracker.onShowMoreKeysPanel(
                         translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
