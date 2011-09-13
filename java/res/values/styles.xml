@@ -96,11 +96,13 @@
         parent="SuggestionsStripBackgroundStyle"
     >
         <item name="suggestionStripOption">autoCorrectBold</item>
-        <item name="colorTypedWord">#FFFFFFFF</item>
+        <item name="colorTypedWord">@android:color/white</item>
         <item name="colorAutoCorrect">#FFFCAE00</item>
         <item name="colorSuggested">#FFFCAE00</item>
+        <item name="alphaObsoleted">50</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+        <item name="moreSuggestionsHint">@drawable/more_suggestions_hint</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>
@@ -272,11 +274,17 @@
         parent="SuggestionsStripBackgroundStyle.IceCreamSandwich"
     >
         <item name="suggestionStripOption">autoCorrectBold|validTypedWordBold</item>
-        <item name="colorTypedWord">#FFBCBEC0</item>
-        <item name="colorAutoCorrect">#FF0099CC</item>
-        <item name="colorSuggested">#FFA7A9AC</item>
+        <!-- android:color/holo_blue_light=#FF33B5E5 -->
+        <item name="colorTypedWord">@android:color/holo_blue_light</item>
+        <item name="colorAutoCorrect">@android:color/holo_blue_light</item>
+        <item name="colorSuggested">@android:color/holo_blue_light</item>
+        <item name="alphaTypedWord">85</item>
+        <item name="alphaAutoCorrect">100</item>
+        <item name="alphaSuggested">70</item>
+        <item name="alphaObsoleted">70</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
+        <item name="moreSuggestionsHint">@drawable/more_suggestions_hint_holo</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>

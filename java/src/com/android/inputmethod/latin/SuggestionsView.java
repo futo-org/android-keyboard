@@ -163,6 +163,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private final int mColorTypedWord;
         private final int mColorAutoCorrect;
         private final int mColorSuggested;
+        private final float mAlphaObsoleted;
         private final float mCenterSuggestionWeight;
         private final int mCenterSuggestionIndex;
         private final Drawable mMoreSuggestionsHint;
@@ -205,15 +206,26 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final TypedArray a = context.obtainStyledAttributes(
                     attrs, R.styleable.SuggestionsView, defStyle, R.style.SuggestionsViewStyle);
             mSuggestionStripOption = a.getInt(R.styleable.SuggestionsView_suggestionStripOption, 0);
-            mColorTypedWord = a.getColor(R.styleable.SuggestionsView_colorTypedWord, 0);
-            mColorAutoCorrect = a.getColor(R.styleable.SuggestionsView_colorAutoCorrect, 0);
-            mColorSuggested = a.getColor(R.styleable.SuggestionsView_colorSuggested, 0);
+            final float alphaTypedWord = getPercent(a,
+                    R.styleable.SuggestionsView_alphaTypedWord, 100);
+            final float alphaAutoCorrect = getPercent(a,
+                    R.styleable.SuggestionsView_alphaAutoCorrect, 100);
+            final float alphaSuggested = getPercent(a,
+                    R.styleable.SuggestionsView_alphaSuggested, 100);
+            mAlphaObsoleted = getPercent(a, R.styleable.SuggestionsView_alphaSuggested, 100);
+            mColorTypedWord = applyAlpha(
+                    a.getColor(R.styleable.SuggestionsView_colorTypedWord, 0), alphaTypedWord);
+            mColorAutoCorrect = applyAlpha(
+                    a.getColor(R.styleable.SuggestionsView_colorAutoCorrect, 0), alphaAutoCorrect);
+            mColorSuggested = applyAlpha(
+                    a.getColor(R.styleable.SuggestionsView_colorSuggested, 0), alphaSuggested);
             mSuggestionsCountInStrip = a.getInt(
                     R.styleable.SuggestionsView_suggestionsCountInStrip,
                     DEFAULT_SUGGESTIONS_COUNT_IN_STRIP);
-            mCenterSuggestionWeight = a.getInt(
+            mCenterSuggestionWeight = getPercent(a,
                     R.styleable.SuggestionsView_centerSuggestionPercentile,
-                    DEFAULT_CENTER_SUGGESTION_PERCENTILE) / 100.0f;
+                    DEFAULT_CENTER_SUGGESTION_PERCENTILE);
+            mMoreSuggestionsHint = a.getDrawable(R.styleable.SuggestionsView_moreSuggestionsHint);
             mMaxMoreSuggestionsRow = a.getInt(
                     R.styleable.SuggestionsView_maxMoreSuggestionsRow,
                     DEFAULT_MAX_MORE_SUGGESTIONS_ROW);
@@ -222,7 +234,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             a.recycle();
 
             mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
-            mMoreSuggestionsHint = res.getDrawable(R.drawable.more_suggestions_hint);
             mMoreSuggestionsBottomGap = res.getDimensionPixelOffset(
                     R.dimen.more_suggestions_bottom_gap);
 
@@ -233,6 +244,11 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
+        }
+
+        // Read integer value in TypedArray as percent.
+        private static float getPercent(TypedArray a, int index, int defValue) {
+            return a.getInt(index, defValue) / 100.0f;
         }
 
         // Read fraction value in TypedArray as float.
@@ -293,7 +309,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final SuggestedWordInfo info = (pos < suggestions.size())
                     ? suggestions.getInfo(pos) : null;
             if (info != null && info.isObsoleteSuggestedWord()) {
-                return applyAlpha(color, 0.5f);
+                return applyAlpha(color, mAlphaObsoleted);
             } else {
                 return color;
             }
