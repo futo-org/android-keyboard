@@ -25,16 +25,17 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.UserDictionary.Words;
+import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 
 public class UserDictionary extends ExpandableDictionary {
-    
+
     private static final String[] PROJECTION_QUERY = {
         Words.WORD,
         Words.FREQUENCY,
     };
-    
+
     private static final String[] PROJECTION_ADD = {
         Words._ID,
         Words.FREQUENCY,
@@ -42,10 +43,11 @@ public class UserDictionary extends ExpandableDictionary {
     };
 
     private ContentObserver mObserver;
-    private String mLocale;
+    final private String mLocale;
 
     public UserDictionary(Context context, String locale) {
         super(context, Suggest.DIC_USER);
+        if (null == locale) throw new NullPointerException(); // Catch the error earlier
         mLocale = locale;
         // Perform a managed query. The Activity will handle closing and re-querying the cursor
         // when needed.
@@ -73,9 +75,35 @@ public class UserDictionary extends ExpandableDictionary {
 
     @Override
     public void loadDictionaryAsync() {
+        // Split the locale. For example "en" => ["en"], "de_DE" => ["de", "DE"],
+        // "en_US_foo_bar_qux" => ["en", "US", "foo_bar_qux"] because of the limit of 3.
+        // This is correct for locale processing.
+        // For this example, we'll look at the "en_US_POSIX" case.
+        final String[] localeElements =
+                TextUtils.isEmpty(mLocale) ? new String[] {} : mLocale.split("_", 3);
+
+        final StringBuilder request = new StringBuilder("(locale is NULL)");
+        String localeSoFar = "";
+        // At start, localeElements = ["en", "US", "POSIX"] ; localeSoFar = "" ;
+        // and request = "(locale is NULL)"
+        for (int i = 0; i < localeElements.length; ++i) {
+            // i | localeSoFar    | localeElements
+            // 0 | ""             | ["en", "US", "POSIX"]
+            // 1 | "en_"          | ["en", "US", "POSIX"]
+            // 2 | "en_US_"       | ["en", "en_US", "POSIX"]
+            localeElements[i] = localeSoFar + localeElements[i];
+            localeSoFar = localeElements[i] + "_";
+            // i | request
+            // 0 | "(locale is NULL)"
+            // 1 | "(locale is NULL) or (locale=?)"
+            // 2 | "(locale is NULL) or (locale=?) or (locale=?)"
+            request.append(" or (locale=?)");
+        }
+        // At the end, localeElements = ["en", "en_US", "en_US_POSIX"]; localeSoFar = en_US_POSIX_"
+        // and request = "(locale is NULL) or (locale=?) or (locale=?) or (locale=?)"
         Cursor cursor = getContext().getContentResolver()
-                .query(Words.CONTENT_URI, PROJECTION_QUERY, "(locale IS NULL) or (locale=?)",
-                        new String[] { mLocale }, null);
+                .query(Words.CONTENT_URI, PROJECTION_QUERY, request.toString(),
+                        localeElements, null);
         addWords(cursor);
     }
 
