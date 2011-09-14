@@ -348,20 +348,6 @@ void UnigramDictionary::getSuggestionCandidates() {
     }
 }
 
-static const int TWO_31ST_DIV_2 = S_INT_MAX / 2;
-inline static void multiplyIntCapped(const int multiplier, int *base) {
-    const int temp = *base;
-    if (temp != S_INT_MAX) {
-        // Branch if multiplier == 2 for the optimization
-        if (multiplier == 2) {
-            *base = TWO_31ST_DIV_2 >= temp ? temp << 1 : S_INT_MAX;
-        } else {
-            const int tempRetval = temp * multiplier;
-            *base = tempRetval >= temp ? tempRetval : S_INT_MAX;
-        }
-    }
-}
-
 void UnigramDictionary::getMissingSpaceWords(
         const int inputLength, const int missingSpacePos, Correction *correction) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
