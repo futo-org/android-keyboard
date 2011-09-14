@@ -82,6 +82,8 @@
 
     <!-- Option to configure dictionaries -->
     <string name="configure_dictionaries_title">Add-on dictionaries</string>
+    <!-- Name of the main dictionary, as opposed to auxiliary dictionaries (medical/entertainment/sports...) -->
+    <string name="main_dictionary">Main dictionary</string>
 
     <!-- Option to enable showing suggestions -->
     <string name="prefs_show_suggestions">Show correction suggestions</string>
