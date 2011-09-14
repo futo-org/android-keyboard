@@ -282,6 +282,42 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             mLocale = LocaleUtils.constructLocaleFromString(localeString);
         }
 
+        /**
+         * Finds out whether a particular string should be filtered out of spell checking.
+         *
+         * This will loosely match URLs, numbers, symbols.
+         *
+         * @param text the string to evaluate.
+         * @return true if we should filter this text out, false otherwise
+         */
+        private boolean shouldFilterOut(final String text) {
+            if (TextUtils.isEmpty(text) || text.length() <= 1) return true;
+
+            // TODO: check if an equivalent processing can't be done more quickly with a
+            // compiled regexp.
+            // Filter by first letter
+            final int firstCodePoint = text.codePointAt(0);
+            // Filter out words that don't start with a letter or an apostrophe
+            if (!Character.isLetter(firstCodePoint)
+                    && '\'' != firstCodePoint) return true;
+
+            // Filter contents
+            final int length = text.length();
+            int letterCount = 0;
+            for (int i = 0; i < length; ++i) {
+                final int codePoint = text.codePointAt(i);
+                // Any word containing a '@' is probably an e-mail address
+                // Any word containing a '/' is probably either an ad-hoc combination of two
+                // words or a URI - in either case we don't want to spell check that
+                if ('@' == codePoint
+                        || '/' == codePoint) return true;
+                if (Character.isLetter(codePoint)) ++letterCount;
+            }
+            // Guestimate heuristic: perform spell checking if at least 3/4 of the characters
+            // in this word are letters
+            return (letterCount * 4 < length * 3);
+        }
+
         // Note : this must be reentrant
         /**
          * Gets a list of suggestions for a specific string. This returns a list of possible
@@ -293,7 +329,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 final int suggestionsLimit) {
             final String text = textInfo.getText();
 
-            if (TextUtils.isEmpty(text) || text.length() <= 1) return EMPTY_SUGGESTIONS_INFO;
+            if (shouldFilterOut(text)) return EMPTY_SUGGESTIONS_INFO;
 
             final SuggestionsGatherer suggestionsGatherer =
                     new SuggestionsGatherer(suggestionsLimit);
