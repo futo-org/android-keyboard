@@ -55,6 +55,8 @@ public class Settings extends InputMethodSettingsActivity
         DialogInterface.OnDismissListener, OnPreferenceClickListener {
     private static final String TAG = Settings.class.getSimpleName();
 
+    public static final boolean ENABLE_EXPERIMENTAL_SETTINGS = false;
+
     public static final String PREF_GENERAL_SETTINGS_KEY = "general_settings";
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
@@ -397,6 +399,8 @@ public class Settings extends InputMethodSettingsActivity
                 (PreferenceGroup) findPreference(PREF_GENERAL_SETTINGS_KEY);
         final PreferenceGroup textCorrectionGroup =
                 (PreferenceGroup) findPreference(PREF_CORRECTION_SETTINGS_KEY);
+        final PreferenceGroup miscSettings =
+                (PreferenceGroup) findPreference(PREF_MISC_SETTINGS_KEY);
 
         if (!Values.isShowSettingsKeyOption(res)) {
             generalSettings.removePreference(mShowSettingsKeyPreference);
@@ -437,12 +441,6 @@ public class Settings extends InputMethodSettingsActivity
             }
         }
 
-        final boolean showUsabilityModeStudyOption = res.getBoolean(
-                R.bool.config_enable_usability_study_mode_option);
-        if (!showUsabilityModeStudyOption) {
-            getPreferenceScreen().removePreference(findPreference(PREF_USABILITY_STUDY_MODE));
-        }
-
         mKeyPreviewPopupDismissDelay =
                 (ListPreference)findPreference(PREF_KEY_PREVIEW_POPUP_DISMISS_DELAY);
         final String[] entries = new String[] {
@@ -466,6 +464,15 @@ public class Settings extends InputMethodSettingsActivity
         final int number = context.getPackageManager().queryIntentActivities(intent, 0).size();
         if (0 >= number) {
             textCorrectionGroup.removePreference(dictionaryLink);
+        }
+
+        final boolean showUsabilityModeStudyOption = res.getBoolean(
+                R.bool.config_enable_usability_study_mode_option);
+        if (!showUsabilityModeStudyOption || !ENABLE_EXPERIMENTAL_SETTINGS) {
+            final Preference pref = findPreference(PREF_USABILITY_STUDY_MODE);
+            if (pref != null) {
+                miscSettings.removePreference(pref);
+            }
         }
     }
 
