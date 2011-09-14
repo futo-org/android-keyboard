@@ -327,67 +327,78 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         @Override
         public SuggestionsInfo onGetSuggestions(final TextInfo textInfo,
                 final int suggestionsLimit) {
-            final String text = textInfo.getText();
-
-            if (shouldFilterOut(text)) return EMPTY_SUGGESTIONS_INFO;
-
-            final SuggestionsGatherer suggestionsGatherer =
-                    new SuggestionsGatherer(suggestionsLimit);
-            final WordComposer composer = new WordComposer();
-            final int length = text.length();
-            for (int i = 0; i < length; ++i) {
-                final int character = text.codePointAt(i);
-                final int proximityIndex = SpellCheckerProximityInfo.getIndexOf(character);
-                final int[] proximities;
-                if (-1 == proximityIndex) {
-                    proximities = new int[] { character };
-                } else {
-                    proximities = Arrays.copyOfRange(SpellCheckerProximityInfo.PROXIMITY,
-                            proximityIndex, proximityIndex + SpellCheckerProximityInfo.ROW_SIZE);
-                }
-                composer.add(character, proximities,
-                        WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
-            }
-
-            final int capitalizeType = getCapitalizationType(text);
-            boolean isInDict = true;
             try {
-                final DictAndProximity dictInfo = mDictionaryPool.take();
-                dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
-                        dictInfo.mProximityInfo);
-                isInDict = dictInfo.mDictionary.isValidWord(text);
-                if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
-                    // We want to test the word again if it's all caps or first caps only.
-                    // If it's fully down, we already tested it, if it's mixed case, we don't
-                    // want to test a lowercase version of it.
-                    isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
+                final String text = textInfo.getText();
+
+                if (shouldFilterOut(text)) return EMPTY_SUGGESTIONS_INFO;
+
+                final SuggestionsGatherer suggestionsGatherer =
+                        new SuggestionsGatherer(suggestionsLimit);
+                final WordComposer composer = new WordComposer();
+                final int length = text.length();
+                for (int i = 0; i < length; ++i) {
+                    final int character = text.codePointAt(i);
+                    final int proximityIndex = SpellCheckerProximityInfo.getIndexOf(character);
+                    final int[] proximities;
+                    if (-1 == proximityIndex) {
+                        proximities = new int[] { character };
+                    } else {
+                        proximities = Arrays.copyOfRange(SpellCheckerProximityInfo.PROXIMITY,
+                                proximityIndex,
+                                proximityIndex + SpellCheckerProximityInfo.ROW_SIZE);
+                    }
+                    composer.add(character, proximities,
+                            WordComposer.NOT_A_COORDINATE, WordComposer.NOT_A_COORDINATE);
                 }
-                if (!mDictionaryPool.offer(dictInfo)) {
-                    Log.e(TAG, "Can't re-insert a dictionary into its pool");
+
+                final int capitalizeType = getCapitalizationType(text);
+                boolean isInDict = true;
+                try {
+                    final DictAndProximity dictInfo = mDictionaryPool.take();
+                    dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
+                            dictInfo.mProximityInfo);
+                    isInDict = dictInfo.mDictionary.isValidWord(text);
+                    if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
+                        // We want to test the word again if it's all caps or first caps only.
+                        // If it's fully down, we already tested it, if it's mixed case, we don't
+                        // want to test a lowercase version of it.
+                        isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
+                    }
+                    if (!mDictionaryPool.offer(dictInfo)) {
+                        Log.e(TAG, "Can't re-insert a dictionary into its pool");
+                    }
+                } catch (InterruptedException e) {
+                    // I don't think this can happen.
+                    return EMPTY_SUGGESTIONS_INFO;
                 }
-            } catch (InterruptedException e) {
-                // I don't think this can happen.
-                return EMPTY_SUGGESTIONS_INFO;
+
+                final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(text,
+                        mService.mTypoThreshold, capitalizeType, mLocale);
+
+                if (DBG) {
+                    Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
+                            + suggestionsLimit);
+                    Log.i(TAG, "IsInDict = " + result.mLooksLikeTypo);
+                    Log.i(TAG, "LooksLikeTypo = " + result.mLooksLikeTypo);
+                    for (String suggestion : result.mSuggestions) {
+                        Log.i(TAG, suggestion);
+                    }
+                }
+
+                final int flags =
+                        (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
+                                | (result.mLooksLikeTypo
+                                        ? SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO : 0);
+                return new SuggestionsInfo(flags, result.mSuggestions);
+            } catch (RuntimeException e) {
+                // Don't kill the keyboard if there is a bug in the spell checker
+                if (DBG) {
+                    throw e;
+                } else {
+                    Log.e(TAG, "Exception while spellcheking: " + e);
+                    return EMPTY_SUGGESTIONS_INFO;
+                }
             }
-
-            final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(text,
-                    mService.mTypoThreshold, capitalizeType, mLocale);
-
-            if (DBG) {
-                Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
-                        + suggestionsLimit);
-                Log.i(TAG, "IsInDict = " + result.mLooksLikeTypo);
-                Log.i(TAG, "LooksLikeTypo = " + result.mLooksLikeTypo);
-                for (String suggestion : result.mSuggestions) {
-                    Log.i(TAG, suggestion);
-                }
-            }
-
-            final int flags =
-                    (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
-                            | (result.mLooksLikeTypo
-                                    ? SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO : 0);
-            return new SuggestionsInfo(flags, result.mSuggestions);
         }
     }
 }
