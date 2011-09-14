@@ -429,6 +429,9 @@ inline static void multiplyIntCapped(const int multiplier, int *base) {
         if (multiplier == 2) {
             *base = TWO_31ST_DIV_2 >= temp ? temp << 1 : S_INT_MAX;
         } else {
+            // TODO: This overflow check gives a wrong answer when, for example,
+            //       temp = 2^16 + 1 and multiplier = 2^17 + 1.
+            //       Fix this behavior.
             const int tempRetval = temp * multiplier;
             *base = tempRetval >= temp ? tempRetval : S_INT_MAX;
         }
