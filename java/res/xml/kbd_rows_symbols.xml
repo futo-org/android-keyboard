@@ -101,8 +101,8 @@
         <Key
             latin:keyLabel="!"
             latin:moreKeys="¡" />
-        <!-- Note: DroidSans doesn't have double-high-reversed-quotation '\u201f' glyph. -->
-        <!-- latin:moreKeys="“,”,„,‟,«,»" -->
+        <!-- Note: Neither DroidSans nor Roboto have a glyph for ‟ Double high-reversed-9 quotation mark U+201F. -->
+            <!-- latin:moreKeys="“,”,„,‟,«,»" -->
         <Key
             latin:keyLabel="&quot;"
             latin:moreKeys="“,”,«,»"

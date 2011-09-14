@@ -32,9 +32,11 @@
                 <Key
                     latin:keyStyle="toAlphaKeyStyle"
                     latin:keyWidth="15%p" />
+                <!-- Note: Neither DroidSans nor Roboto have a glyph for ‟ Double high-reversed-9 quotation mark U+201F. -->
+                    <!-- latin:keyLabelOption="hasPopupHint" -->
+                    <!-- latin:moreKeys="‟" -->
                 <Key
                     latin:keyLabel="„"
-                    latin:moreKeys="“,”,„,‟,«,»,‘,’,‚,‛"
                     latin:keyStyle="functionalKeyStyle" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
@@ -53,9 +55,11 @@
                     latin:keyWidth="13.75%p" />
                 <include
                     latin:keyboardLayout="@xml/kbd_settings_or_tab" />
+                <!-- Note: Neither DroidSans nor Roboto have a glyph for ‟ Double high-reversed-9 quotation mark U+201F. -->
+                    <!-- latin:keyLabelOption="hasPopupHint" -->
+                    <!-- latin:moreKeys="‟" -->
                 <Key
                     latin:keyLabel="„"
-                    latin:moreKeys="“,”,„,‟,«,»,‘,’,‚,‛"
                     latin:keyWidth="9.2%p"
                     latin:keyStyle="functionalKeyStyle" />
                 <Key
