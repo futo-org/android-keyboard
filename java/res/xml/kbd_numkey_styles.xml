@@ -30,7 +30,7 @@
     <key-style
         latin:styleName="numFunctionalKeyStyle"
         latin:keyLabelOption="largeLetter|followKeyLetterRatio"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="numberKeyStyle"
         latin:keyLabelOption="alignLeftOfCenter|hasHintLabel"

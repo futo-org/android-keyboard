@@ -21,10 +21,6 @@
 <merge
     xmlns:latin="http://schemas.android.com/apk/res/com.android.inputmethod.latin"
 >
-    <!-- Base key style for the functional key -->
-    <key-style
-        latin:styleName="functionalKeyStyle"
-        latin:backgroundType="functional" />
     <!-- Base key style for the key which may have settings or tab key as popup key. -->
     <switch>
         <case
@@ -34,7 +30,7 @@
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_f1"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="functional" />
         </case>
         <!-- clobberSettingsKey="false -->
         <case
@@ -44,7 +40,7 @@
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_f1_settings"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="functional" />
         </case>
         <!-- clobberSettingsKey="false" hasSettingsKey="true" -->
         <case
@@ -54,7 +50,7 @@
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_f1_navigate"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="functional" />
         </case>
         <!-- clobberSettingsKey="false" and hasSettingsKey="true" navigateAction="false" -->
         <default>
@@ -62,7 +58,7 @@
                 latin:styleName="f1PopupStyle"
                 latin:keyLabelOption="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_f1"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="functional" />
         </default>
     </switch>
     <!-- Functional key styles -->
@@ -71,13 +67,13 @@
         latin:code="@integer/key_shift"
         latin:keyIcon="iconShiftKey"
         latin:keyIconShifted="iconShiftedShiftKey"
-        latin:parentStyle="functionalKeyStyle"
+        latin:backgroundType="functional"
         latin:isSticky="true" />
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="@integer/key_delete"
         latin:keyIcon="iconDeleteKey"
-        latin:parentStyle="functionalKeyStyle"
+        latin:backgroundType="functional"
         latin:isRepeatable="true" />
     <!-- Return key style -->
     <switch>
@@ -92,7 +88,7 @@
                 latin:keyLabelOption="hasPopupHint"
                 latin:moreKeys="@string/more_keys_for_smiley"
                 latin:maxMoreKeysColumn="5"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="functional" />
         </case>
         <case
             latin:imeAction="actionGo"
@@ -148,13 +144,13 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyIcon="iconReturnKey"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="functional" />
         </default>
     </switch>
     <key-style
         latin:styleName="spaceKeyStyle"
         latin:code="@integer/key_space"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="shortcutKeyStyle"
         latin:code="@integer/key_shortcut"
@@ -166,13 +162,13 @@
         latin:code="@integer/key_settings"
         latin:keyIcon="iconSettingsKey"
         latin:keyIconPreview="iconPreviewSettingsKey"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="tabKeyStyle"
         latin:code="@integer/key_tab"
         latin:keyIcon="iconTabKey"
         latin:keyIconPreview="iconPreviewTabKey"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:backgroundType="functional" />
     <!-- Note: This key style is not for functional tab key. This is used for the tab key which is
          laid out as normal letter key. -->
     <key-style
@@ -194,31 +190,31 @@
                 latin:keyIcon="iconShortcutForLabel"
                 latin:keyLabel="@string/label_to_symbol_with_microphone_key"
                 latin:keyLabelOption="withIconRight"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="functional" />
         </case>
         <default>
             <key-style
                 latin:styleName="toSymbolKeyStyle"
                 latin:code="@integer/key_switch_alpha_symbol"
                 latin:keyLabel="@string/label_to_symbol_key"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="functional" />
         </default>
     </switch>
     <key-style
         latin:styleName="toAlphaKeyStyle"
         latin:code="@integer/key_switch_alpha_symbol"
         latin:keyLabel="@string/label_to_alpha_key"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="toMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_more_symbol_key"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="backFromMoreSymbolKeyStyle"
         latin:code="@integer/key_shift"
         latin:keyLabel="@string/label_to_symbol_key"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="punctuationKeyStyle"
         latin:keyLabel="."
@@ -226,5 +222,5 @@
         latin:keyLabelOption="hasPopupHint"
         latin:moreKeys="@string/more_keys_for_punctuation"
         latin:maxMoreKeysColumn="@integer/mini_keyboard_column_for_punctuation"
-        latin:parentStyle="functionalKeyStyle" />
+        latin:backgroundType="functional" />
 </merge>
