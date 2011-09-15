@@ -107,6 +107,7 @@ public class Key {
     public final int mBackgroundType;
     public static final int BACKGROUND_TYPE_NORMAL = 0;
     public static final int BACKGROUND_TYPE_FUNCTIONAL = 1;
+    public static final int BACKGROUND_TYPE_ACTION = 2;
 
     /** Whether this key repeats itself when held down */
     public final boolean mRepeatable;
@@ -160,6 +161,17 @@ public class Key {
     // functional pressed state (with properties)
     private static final int[] KEY_STATE_FUNCTIONAL_PRESSED = {
             android.R.attr.state_single,
+            android.R.attr.state_pressed
+    };
+
+    // action normal state (with properties)
+    private static final int[] KEY_STATE_ACTIVE_NORMAL = {
+            android.R.attr.state_active
+    };
+
+    // action pressed state (with properties)
+    private static final int[] KEY_STATE_ACTIVE_PRESSED = {
+            android.R.attr.state_active,
             android.R.attr.state_pressed
     };
 
@@ -545,36 +557,24 @@ public class Key {
      */
     public int[] getCurrentDrawableState() {
         final boolean pressed = mPressed;
-        if (!mSticky && mBackgroundType == BACKGROUND_TYPE_FUNCTIONAL) {
-            if (pressed) {
-                return KEY_STATE_FUNCTIONAL_PRESSED;
+
+        // TODO: "Sticky" should be one of backgroundType.
+        if (mSticky) {
+            if (mHighlightOn) {
+                return pressed ? KEY_STATE_PRESSED_ON : KEY_STATE_NORMAL_ON;
             } else {
-                return KEY_STATE_FUNCTIONAL_NORMAL;
+                return pressed ? KEY_STATE_PRESSED_OFF : KEY_STATE_NORMAL_OFF;
             }
         }
 
-        int[] states = KEY_STATE_NORMAL;
-
-        if (mHighlightOn) {
-            if (pressed) {
-                states = KEY_STATE_PRESSED_ON;
-            } else {
-                states = KEY_STATE_NORMAL_ON;
-            }
-        } else {
-            if (mSticky) {
-                if (pressed) {
-                    states = KEY_STATE_PRESSED_OFF;
-                } else {
-                    states = KEY_STATE_NORMAL_OFF;
-                }
-            } else {
-                if (pressed) {
-                    states = KEY_STATE_PRESSED;
-                }
-            }
+        switch (mBackgroundType) {
+        case BACKGROUND_TYPE_FUNCTIONAL:
+            return pressed ? KEY_STATE_FUNCTIONAL_PRESSED : KEY_STATE_FUNCTIONAL_NORMAL;
+        case BACKGROUND_TYPE_ACTION:
+            return pressed ? KEY_STATE_ACTIVE_PRESSED : KEY_STATE_ACTIVE_NORMAL;
+        default: /* BACKGROUND_TYPE_NORMAL */
+            return pressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
         }
-        return states;
     }
 
     public static class Spacer extends Key {

@@ -198,6 +198,7 @@
             <!-- This should be aligned with Key.BACKGROUND_TYPE_* -->
             <enum name="normal" value="0" />
             <enum name="functional" value="1" />
+            <enum name="action" value="2" />
         </attr>
         <!-- Whether this is a toggle key. -->
         <attr name="isSticky" format="boolean" />
