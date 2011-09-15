@@ -102,7 +102,7 @@
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_go_key"
                 latin:keyLabelOption="autoXScale"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="action" />
         </case>
         <case
             latin:imeAction="actionNext"
@@ -112,7 +112,7 @@
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_next_key"
                 latin:keyLabelOption="autoXScale"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="action" />
         </case>
         <case
             latin:imeAction="actionDone"
@@ -122,7 +122,7 @@
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_done_key"
                 latin:keyLabelOption="autoXScale"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="action" />
         </case>
         <case
             latin:imeAction="actionSend"
@@ -132,7 +132,7 @@
                 latin:code="@integer/key_return"
                 latin:keyLabel="@string/label_send_key"
                 latin:keyLabelOption="autoXScale"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="action" />
         </case>
         <case
             latin:imeAction="actionSearch"
@@ -141,7 +141,7 @@
                 latin:styleName="returnKeyStyle"
                 latin:code="@integer/key_return"
                 latin:keyIcon="iconSearchKey"
-                latin:parentStyle="functionalKeyStyle" />
+                latin:backgroundType="action" />
         </case>
         <default>
             <key-style
