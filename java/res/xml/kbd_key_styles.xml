@@ -67,8 +67,7 @@
         latin:code="@integer/key_shift"
         latin:keyIcon="iconShiftKey"
         latin:keyIconShifted="iconShiftedShiftKey"
-        latin:backgroundType="functional"
-        latin:isSticky="true" />
+        latin:backgroundType="sticky" />
     <key-style
         latin:styleName="deleteKeyStyle"
         latin:code="@integer/key_delete"

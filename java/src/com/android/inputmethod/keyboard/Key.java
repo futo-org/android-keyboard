@@ -82,8 +82,6 @@ public class Key {
     /** The visual insets */
     public final int mVisualInsetsLeft;
     public final int mVisualInsetsRight;
-    /** Whether this key is sticky, i.e., a toggle key */
-    public final boolean mSticky;
     /** X coordinate of the key in the keyboard layout */
     public final int mX;
     /** Y coordinate of the key in the keyboard layout */
@@ -108,6 +106,7 @@ public class Key {
     public static final int BACKGROUND_TYPE_NORMAL = 0;
     public static final int BACKGROUND_TYPE_FUNCTIONAL = 1;
     public static final int BACKGROUND_TYPE_ACTION = 2;
+    public static final int BACKGROUND_TYPE_STICKY = 3;
 
     /** Whether this key repeats itself when held down */
     public final boolean mRepeatable;
@@ -125,55 +124,6 @@ public class Key {
     private static final int KEYWIDTH_NOT_ENUM = 0;
     private static final int KEYWIDTH_FILL_RIGHT = -1;
     private static final int KEYWIDTH_FILL_BOTH = -2;
-
-    private final static int[] KEY_STATE_NORMAL_ON = {
-        android.R.attr.state_checkable,
-        android.R.attr.state_checked
-    };
-
-    private final static int[] KEY_STATE_PRESSED_ON = {
-        android.R.attr.state_pressed,
-        android.R.attr.state_checkable,
-        android.R.attr.state_checked
-    };
-
-    private final static int[] KEY_STATE_NORMAL_OFF = {
-        android.R.attr.state_checkable
-    };
-
-    private final static int[] KEY_STATE_PRESSED_OFF = {
-        android.R.attr.state_pressed,
-        android.R.attr.state_checkable
-    };
-
-    private final static int[] KEY_STATE_NORMAL = {
-    };
-
-    private final static int[] KEY_STATE_PRESSED = {
-        android.R.attr.state_pressed
-    };
-
-    // functional normal state (with properties)
-    private static final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
-            android.R.attr.state_single
-    };
-
-    // functional pressed state (with properties)
-    private static final int[] KEY_STATE_FUNCTIONAL_PRESSED = {
-            android.R.attr.state_single,
-            android.R.attr.state_pressed
-    };
-
-    // action normal state (with properties)
-    private static final int[] KEY_STATE_ACTIVE_NORMAL = {
-            android.R.attr.state_active
-    };
-
-    // action pressed state (with properties)
-    private static final int[] KEY_STATE_ACTIVE_PRESSED = {
-            android.R.attr.state_active,
-            android.R.attr.state_pressed
-    };
 
     // RTL parenthesis character swapping map.
     private static final Map<Integer, Integer> sRtlParenthesisMap = new HashMap<Integer, Integer>();
@@ -242,7 +192,6 @@ public class Key {
         mHintLabel = hintLabel;
         mLabelOption = 0;
         mBackgroundType = BACKGROUND_TYPE_NORMAL;
-        mSticky = false;
         mRepeatable = false;
         mMoreKeys = null;
         mMaxMoreKeysColumn = 0;
@@ -344,7 +293,6 @@ public class Key {
         mBackgroundType = style.getInt(
                 keyAttr, R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
         mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
-        mSticky = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky, false);
         mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
         mEdgeFlags = 0;
 
@@ -386,6 +334,10 @@ public class Key {
 
     public void addEdgeFlags(int flags) {
         mEdgeFlags |= flags;
+    }
+
+    public boolean isSticky() {
+        return mBackgroundType == BACKGROUND_TYPE_STICKY;
     }
 
     public boolean isSpacer() {
@@ -550,6 +502,55 @@ public class Key {
         return dx * dx + dy * dy;
     }
 
+    private final static int[] KEY_STATE_NORMAL_HIGHLIGHT_ON = {
+        android.R.attr.state_checkable,
+        android.R.attr.state_checked
+    };
+
+    private final static int[] KEY_STATE_PRESSED_HIGHLIGHT_ON = {
+        android.R.attr.state_pressed,
+        android.R.attr.state_checkable,
+        android.R.attr.state_checked
+    };
+
+    private final static int[] KEY_STATE_NORMAL_HIGHLIGHT_OFF = {
+        android.R.attr.state_checkable
+    };
+
+    private final static int[] KEY_STATE_PRESSED_HIGHLIGHT_OFF = {
+        android.R.attr.state_pressed,
+        android.R.attr.state_checkable
+    };
+
+    private final static int[] KEY_STATE_NORMAL = {
+    };
+
+    private final static int[] KEY_STATE_PRESSED = {
+        android.R.attr.state_pressed
+    };
+
+    // functional normal state (with properties)
+    private static final int[] KEY_STATE_FUNCTIONAL_NORMAL = {
+            android.R.attr.state_single
+    };
+
+    // functional pressed state (with properties)
+    private static final int[] KEY_STATE_FUNCTIONAL_PRESSED = {
+            android.R.attr.state_single,
+            android.R.attr.state_pressed
+    };
+
+    // action normal state (with properties)
+    private static final int[] KEY_STATE_ACTIVE_NORMAL = {
+            android.R.attr.state_active
+    };
+
+    // action pressed state (with properties)
+    private static final int[] KEY_STATE_ACTIVE_PRESSED = {
+            android.R.attr.state_active,
+            android.R.attr.state_pressed
+    };
+
     /**
      * Returns the drawable state for the key, based on the current state and type of the key.
      * @return the drawable state of the key.
@@ -558,20 +559,17 @@ public class Key {
     public int[] getCurrentDrawableState() {
         final boolean pressed = mPressed;
 
-        // TODO: "Sticky" should be one of backgroundType.
-        if (mSticky) {
-            if (mHighlightOn) {
-                return pressed ? KEY_STATE_PRESSED_ON : KEY_STATE_NORMAL_ON;
-            } else {
-                return pressed ? KEY_STATE_PRESSED_OFF : KEY_STATE_NORMAL_OFF;
-            }
-        }
-
         switch (mBackgroundType) {
         case BACKGROUND_TYPE_FUNCTIONAL:
             return pressed ? KEY_STATE_FUNCTIONAL_PRESSED : KEY_STATE_FUNCTIONAL_NORMAL;
         case BACKGROUND_TYPE_ACTION:
             return pressed ? KEY_STATE_ACTIVE_PRESSED : KEY_STATE_ACTIVE_NORMAL;
+        case BACKGROUND_TYPE_STICKY:
+            if (mHighlightOn) {
+                return pressed ? KEY_STATE_PRESSED_HIGHLIGHT_ON : KEY_STATE_NORMAL_HIGHLIGHT_ON;
+            } else {
+                return pressed ? KEY_STATE_PRESSED_HIGHLIGHT_OFF : KEY_STATE_NORMAL_HIGHLIGHT_OFF;
+            }
         default: /* BACKGROUND_TYPE_NORMAL */
             return pressed ? KEY_STATE_PRESSED : KEY_STATE_NORMAL;
         }

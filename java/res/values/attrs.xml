@@ -199,9 +199,8 @@
             <enum name="normal" value="0" />
             <enum name="functional" value="1" />
             <enum name="action" value="2" />
+            <enum name="sticky" value="3" />
         </attr>
-        <!-- Whether this is a toggle key. -->
-        <attr name="isSticky" format="boolean" />
         <!-- Whether long-pressing on this key will make it repeat. -->
         <attr name="isRepeatable" format="boolean" />
         <!-- The string of characters to output when this key is pressed. -->

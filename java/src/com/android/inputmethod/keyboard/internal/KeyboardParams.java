@@ -78,7 +78,7 @@ public class KeyboardParams {
         updateHistogram(key);
         if (key.mCode == Keyboard.CODE_SHIFT) {
             mShiftKeys.add(key);
-            if (key.mSticky) {
+            if (key.isSticky()) {
                 mShiftLockKeys.add(key);
             }
         }

@@ -173,7 +173,6 @@ public class KeyStyles {
             readInt(keyAttr, R.styleable.Keyboard_Key_keyIconShifted);
             readInt(keyAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn);
             readInt(keyAttr, R.styleable.Keyboard_Key_backgroundType);
-            readBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable);
             readBoolean(keyAttr, R.styleable.Keyboard_Key_enabled);
         }
