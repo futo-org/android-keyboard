@@ -237,7 +237,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         final String localeStr = locale.toString();
         Dictionary userDict = mUserDictionaries.get(localeStr);
         if (null == userDict) {
-            userDict = new SynchronouslyLoadedUserDictionary(this, localeStr);
+            userDict = new SynchronouslyLoadedUserDictionary(this, localeStr, true);
             mUserDictionaries.put(localeStr, userDict);
         }
         dictionaryCollection.addDictionary(userDict);

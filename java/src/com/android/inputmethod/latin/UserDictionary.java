@@ -29,6 +29,8 @@ import android.text.TextUtils;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 
+import java.util.Arrays;
+
 public class UserDictionary extends ExpandableDictionary {
 
     private static final String[] PROJECTION_QUERY = {
@@ -44,11 +46,18 @@ public class UserDictionary extends ExpandableDictionary {
 
     private ContentObserver mObserver;
     final private String mLocale;
+    final private boolean mAlsoUseMoreRestrictiveLocales;
 
-    public UserDictionary(Context context, String locale) {
+    public UserDictionary(final Context context, final String locale) {
+        this(context, locale, false);
+    }
+
+    public UserDictionary(final Context context, final String locale,
+            final boolean alsoUseMoreRestrictiveLocales) {
         super(context, Suggest.DIC_USER);
         if (null == locale) throw new NullPointerException(); // Catch the error earlier
         mLocale = locale;
+        mAlsoUseMoreRestrictiveLocales = alsoUseMoreRestrictiveLocales;
         // Perform a managed query. The Activity will handle closing and re-querying the cursor
         // when needed.
         ContentResolver cres = context.getContentResolver();
@@ -81,12 +90,13 @@ public class UserDictionary extends ExpandableDictionary {
         // For this example, we'll look at the "en_US_POSIX" case.
         final String[] localeElements =
                 TextUtils.isEmpty(mLocale) ? new String[] {} : mLocale.split("_", 3);
+        final int length = localeElements.length;
 
         final StringBuilder request = new StringBuilder("(locale is NULL)");
         String localeSoFar = "";
         // At start, localeElements = ["en", "US", "POSIX"] ; localeSoFar = "" ;
         // and request = "(locale is NULL)"
-        for (int i = 0; i < localeElements.length; ++i) {
+        for (int i = 0; i < length; ++i) {
             // i | localeSoFar    | localeElements
             // 0 | ""             | ["en", "US", "POSIX"]
             // 1 | "en_"          | ["en", "US", "POSIX"]
@@ -101,9 +111,29 @@ public class UserDictionary extends ExpandableDictionary {
         }
         // At the end, localeElements = ["en", "en_US", "en_US_POSIX"]; localeSoFar = en_US_POSIX_"
         // and request = "(locale is NULL) or (locale=?) or (locale=?) or (locale=?)"
-        Cursor cursor = getContext().getContentResolver()
+
+        final String[] requestArguments;
+        // If length == 3, we already have all the arguments we need (common prefix is meaningless
+        // inside variants
+        if (mAlsoUseMoreRestrictiveLocales && length < 3) {
+            request.append(" or (locale like ?)");
+            // The following creates an array with one more (null) position
+            final String[] localeElementsWithMoreRestrictiveLocalesIncluded =
+                    Arrays.copyOf(localeElements, length + 1);
+            localeElementsWithMoreRestrictiveLocalesIncluded[length] =
+                    localeElements[length - 1] + "_%";
+            requestArguments = localeElementsWithMoreRestrictiveLocalesIncluded;
+            // If for example localeElements = ["en"]
+            // then requestArguments = ["en", "en_%"]
+            // and request = (locale is NULL) or (locale=?) or (locale like ?)
+            // If localeElements = ["en", "en_US"]
+            // then requestArguments = ["en", "en_US", "en_US_%"]
+        } else {
+            requestArguments = localeElements;
+        }
+        final Cursor cursor = getContext().getContentResolver()
                 .query(Words.CONTENT_URI, PROJECTION_QUERY, request.toString(),
-                        localeElements, null);
+                        requestArguments, null);
         addWords(cursor);
     }
 
