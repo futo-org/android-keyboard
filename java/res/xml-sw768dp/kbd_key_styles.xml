@@ -24,7 +24,7 @@
     <!-- Functional key styles -->
     <key-style
         latin:styleName="functionalKeyStyle"
-        latin:isFunctional="true" />
+        latin:backgroundType="functional" />
     <key-style
         latin:styleName="shiftKeyStyle"
         latin:code="@integer/key_shift"

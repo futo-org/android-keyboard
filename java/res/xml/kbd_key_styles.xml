@@ -24,7 +24,7 @@
     <!-- Base key style for the functional key -->
     <key-style
         latin:styleName="functionalKeyStyle"
-        latin:isFunctional="true" />
+        latin:backgroundType="functional" />
     <!-- Base key style for the key which may have settings or tab key as popup key. -->
     <switch>
         <case

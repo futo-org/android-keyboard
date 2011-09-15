@@ -102,8 +102,12 @@ public class Key {
      * {@link Keyboard#EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM}.
      */
     private int mEdgeFlags;
-    /** Whether this is a functional key which has different key top than normal key */
-    public final boolean mFunctional;
+
+    /** Background type that represents different key background visual than normal one. */
+    public final int mBackgroundType;
+    public static final int BACKGROUND_TYPE_NORMAL = 0;
+    public static final int BACKGROUND_TYPE_FUNCTIONAL = 1;
+
     /** Whether this key repeats itself when held down */
     public final boolean mRepeatable;
 
@@ -225,7 +229,7 @@ public class Key {
         mEdgeFlags = edgeFlags;
         mHintLabel = hintLabel;
         mLabelOption = 0;
-        mFunctional = false;
+        mBackgroundType = BACKGROUND_TYPE_NORMAL;
         mSticky = false;
         mRepeatable = false;
         mMoreKeys = null;
@@ -325,8 +329,9 @@ public class Key {
         mMaxMoreKeysColumn = style.getInt(keyboardAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn,
                 params.mMaxMiniKeyboardColumn);
 
+        mBackgroundType = style.getInt(
+                keyAttr, R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
         mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
-        mFunctional = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isFunctional, false);
         mSticky = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isSticky, false);
         mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
         mEdgeFlags = 0;
@@ -540,7 +545,7 @@ public class Key {
      */
     public int[] getCurrentDrawableState() {
         final boolean pressed = mPressed;
-        if (!mSticky && mFunctional) {
+        if (!mSticky && mBackgroundType == BACKGROUND_TYPE_FUNCTIONAL) {
             if (pressed) {
                 return KEY_STATE_FUNCTIONAL_PRESSED;
             } else {

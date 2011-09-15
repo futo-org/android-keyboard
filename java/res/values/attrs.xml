@@ -194,8 +194,11 @@
         <attr name="moreKeys" format="string" />
         <!-- Maximum column of more keys keyboard -->
         <attr name="maxMoreKeysColumn" format="integer" />
-        <!-- Whether this is a functional key which has different key top than normal key. -->
-        <attr name="isFunctional" format="boolean" />
+        <attr name="backgroundType" format="enum">
+            <!-- This should be aligned with Key.BACKGROUND_TYPE_* -->
+            <enum name="normal" value="0" />
+            <enum name="functional" value="1" />
+        </attr>
         <!-- Whether this is a toggle key. -->
         <attr name="isSticky" format="boolean" />
         <!-- Whether long-pressing on this key will make it repeat. -->
