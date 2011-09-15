@@ -164,11 +164,11 @@ public class WordComposer {
      * Returns the word as it was typed, without any correction applied.
      * @return the word that was typed so far
      */
-    public CharSequence getTypedWord() {
+    public String getTypedWord() {
         if (size() == 0) {
             return null;
         }
-        return mTypedWord;
+        return mTypedWord.toString();
     }
 
     /**
