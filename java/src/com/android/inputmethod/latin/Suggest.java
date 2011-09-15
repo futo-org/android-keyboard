@@ -306,12 +306,10 @@ public class Suggest implements Dictionary.WordCallback {
         Arrays.fill(mScores, 0);
 
         // Save a lowercase version of the original word
-        CharSequence typedWord = wordComposer.getTypedWord();
+        String typedWord = wordComposer.getTypedWord();
         if (typedWord != null) {
-            final String typedWordString = typedWord.toString();
-            typedWord = typedWordString;
             // Treating USER_TYPED as UNIGRAM suggestion for logging now.
-            LatinImeLogger.onAddSuggestedWord(typedWordString, Suggest.DIC_USER_TYPED,
+            LatinImeLogger.onAddSuggestedWord(typedWord, Suggest.DIC_USER_TYPED,
                     Dictionary.DataType.UNIGRAM);
         }
         mTypedWord = typedWord;
