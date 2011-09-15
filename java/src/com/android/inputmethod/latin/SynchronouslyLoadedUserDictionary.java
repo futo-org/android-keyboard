@@ -23,7 +23,12 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 public class SynchronouslyLoadedUserDictionary extends UserDictionary {
 
     public SynchronouslyLoadedUserDictionary(final Context context, final String locale) {
-        super(context, locale);
+        this(context, locale, false);
+    }
+
+    public SynchronouslyLoadedUserDictionary(final Context context, final String locale,
+            final boolean alsoUseMoreRestrictiveLocales) {
+        super(context, locale, alsoUseMoreRestrictiveLocales);
     }
 
     @Override
