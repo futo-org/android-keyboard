@@ -37,13 +37,13 @@
                     <!-- latin:moreKeys="‟" -->
                 <Key
                     latin:keyLabel="„"
-                    latin:keyStyle="functionalKeyStyle" />
+                    latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="50%p" />
                 <Key
                     latin:keyLabel="…"
-                    latin:keyStyle="functionalKeyStyle" />
+                    latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyWidth="fillRight" />
@@ -61,14 +61,14 @@
                 <Key
                     latin:keyLabel="„"
                     latin:keyWidth="9.2%p"
-                    latin:keyStyle="functionalKeyStyle" />
+                    latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="spaceKeyStyle"
                     latin:keyWidth="35.83%p" />
                 <Key
                     latin:keyLabel="…"
                     latin:keyWidth="9.2%p"
-                    latin:keyStyle="functionalKeyStyle" />
+                    latin:backgroundType="functional" />
                 <Key
                     latin:keyStyle="returnKeyStyle"
                     latin:keyWidth="fillRight" />
