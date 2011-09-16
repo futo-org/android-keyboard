@@ -19,8 +19,14 @@ package com.android.inputmethod.latin;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Align;
+import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.os.SystemClock;
@@ -167,6 +173,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private final float mCenterSuggestionWeight;
         private final int mCenterSuggestionIndex;
         private final Drawable mMoreSuggestionsHint;
+        private static final String MORE_SUGGESTIONS_HINT = "\u2026";
 
         private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
         private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
@@ -225,7 +232,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mCenterSuggestionWeight = getPercent(a,
                     R.styleable.SuggestionsView_centerSuggestionPercentile,
                     DEFAULT_CENTER_SUGGESTION_PERCENTILE);
-            mMoreSuggestionsHint = a.getDrawable(R.styleable.SuggestionsView_moreSuggestionsHint);
             mMaxMoreSuggestionsRow = a.getInt(
                     R.styleable.SuggestionsView_maxMoreSuggestionsRow,
                     DEFAULT_MAX_MORE_SUGGESTIONS_ROW);
@@ -233,6 +239,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                     R.styleable.SuggestionsView_minMoreSuggestionsWidth);
             a.recycle();
 
+            mMoreSuggestionsHint = getMoreSuggestionsHint(res,
+                    res.getDimension(R.dimen.more_suggestions_hint_text_size), mColorAutoCorrect);
             mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
             mMoreSuggestionsBottomGap = res.getDimensionPixelOffset(
                     R.dimen.more_suggestions_bottom_gap);
@@ -244,6 +252,23 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
             mHintToSaveText = context.getText(R.string.hint_add_to_dictionary);
+        }
+
+        private static Drawable getMoreSuggestionsHint(Resources res, float textSize, int color) {
+            final Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setTextAlign(Align.CENTER);
+            paint.setTextSize(textSize);
+            paint.setColor(color);
+            final Rect bounds = new Rect();
+            paint.getTextBounds(MORE_SUGGESTIONS_HINT, 0, 1, bounds);
+            final int width = Math.round(bounds.width() + 0.5f);
+            final int height = Math.round(bounds.height() + 0.5f);
+            final Bitmap buffer = Bitmap.createBitmap(
+                    width, (height * 3 / 2), Bitmap.Config.ARGB_8888);
+            final Canvas canvas = new Canvas(buffer);
+            canvas.drawText(MORE_SUGGESTIONS_HINT, width / 2, height, paint);
+            return new BitmapDrawable(res, buffer);
         }
 
         // Read integer value in TypedArray as percent.
