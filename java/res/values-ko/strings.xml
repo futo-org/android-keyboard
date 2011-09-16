@@ -44,6 +44,8 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"다시 수정하기 위한 추천사항 설정"</string>
     <string name="auto_cap" msgid="1719746674854628252">"자동 대문자화"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"사전 추가"</string>
+    <!-- no translation found for main_dictionary (4798763781818361168) -->
+    <skip />
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"수정 제안 표시"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"글자를 입력하는 동안 추천 단어 표시"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"항상 표시"</string>
