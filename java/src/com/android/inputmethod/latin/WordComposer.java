@@ -106,7 +106,7 @@ public class WordComposer {
 
     private static boolean isFirstCharCapitalized(int index, int codePoint, boolean previous) {
         if (index == 0) return Character.isUpperCase(codePoint);
-        return previous && Character.isLowerCase(codePoint);
+        return previous && !Character.isUpperCase(codePoint);
     }
 
     /**
