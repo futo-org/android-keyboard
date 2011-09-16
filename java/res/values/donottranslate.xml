@@ -31,6 +31,21 @@
     <!-- Word separator list is the union of all symbols except those that are not separators:
     magic_space_swapping_symbols | magic_space_stripping_symbols |
             magic_space_neutral_symbols \ symbols_excluded_from_word_separators -->
+    <!-- Symbol characters list that should switch back to the main layout -->
+    <!--  \u0022: Quotation mark (double quotation mark)
+          \u0027: Apostrophe (single quotation mark)
+          \u2018: Left single quotation mark
+          \u2019: Right single quotation mark
+          \u201a: Single low-9 quotation mark
+          \u201b: Single high-reversed-9 quotation mark
+          \u201c: Left double quotation mark
+          \u201d: Right double quotation mark
+          \u201e: Double low-9 quotation mark
+          \u201f: Double high-reversed-9 quotation mark
+          \u00ab: Left-pointing double angle quotation mark
+          \u00bb: Right-pointing double angle quotation mark  -->
+    <!-- string name="layout_switch_back_symbols">\u0022\u0027\u2018\u2019\u201a\u201b\u201c\u201d\u201e\u201f\u00ab\u00bb</string> -->
+    <string name="layout_switch_back_symbols"></string>
 
     <!-- Label for "switch to more symbol" modifier key.  Must be short to fit on key! -->
     <string name="label_to_more_symbol_key">= \\ &lt;</string>

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
@@ -96,6 +97,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private static final int SWITCH_STATE_CHORDING_ALPHA = 5;
     private static final int SWITCH_STATE_CHORDING_SYMBOL = 6;
     private int mSwitchState = SWITCH_STATE_ALPHA;
+
+    private static String mLayoutSwitchBackSymbols;
 
     private int mThemeIndex = -1;
     private Context mThemeContext;
@@ -204,6 +207,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mMainKeyboardId = getKeyboardId(editorInfo, false, false, settingsValues);
             mSymbolsKeyboardId = getKeyboardId(editorInfo, true, false, settingsValues);
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
+            mLayoutSwitchBackSymbols = mResources.getString(R.string.layout_switch_back_symbols);
             setKeyboard(getKeyboard(mSavedKeyboardState.getKeyboardId()));
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
@@ -661,24 +665,9 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         return c == Keyboard.CODE_SPACE || c == Keyboard.CODE_ENTER;
     }
 
-    private static boolean isQuoteCharacter(int c) {
-        // Apostrophe, quotation mark.
-        if (c == Keyboard.CODE_SINGLE_QUOTE || c == Keyboard.CODE_DOUBLE_QUOTE)
-            return true;
-        // \u2018: Left single quotation mark
-        // \u2019: Right single quotation mark
-        // \u201a: Single low-9 quotation mark
-        // \u201b: Single high-reversed-9 quotation mark
-        // \u201c: Left double quotation mark
-        // \u201d: Right double quotation mark
-        // \u201e: Double low-9 quotation mark
-        // \u201f: Double high-reversed-9 quotation mark
-        if (c >= '\u2018' && c <= '\u201f')
-            return true;
-        // \u00ab: Left-pointing double angle quotation mark
-        // \u00bb: Right-pointing double angle quotation mark
-        if (c == '\u00ab' || c == '\u00bb')
-            return true;
+    private static boolean isLayoutSwitchBackCharacter(int c) {
+        if (TextUtils.isEmpty(mLayoutSwitchBackSymbols)) return false;
+        if (mLayoutSwitchBackSymbols.indexOf(c) >= 0) return true;
         return false;
     }
 
@@ -736,7 +725,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
                 mSwitchState = SWITCH_STATE_SYMBOL;
             }
             // Snap back to alpha keyboard mode immediately if user types a quote character.
-            if (isQuoteCharacter(code)) {
+            if (isLayoutSwitchBackCharacter(code)) {
                 changeKeyboardMode();
             }
             break;
@@ -744,7 +733,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         case SWITCH_STATE_CHORDING_SYMBOL:
             // Snap back to alpha keyboard mode if user types one or more non-space/enter
             // characters followed by a space/enter or a quote character.
-            if (isSpaceCharacter(code) || isQuoteCharacter(code)) {
+            if (isSpaceCharacter(code) || isLayoutSwitchBackCharacter(code)) {
                 changeKeyboardMode();
             }
             break;
