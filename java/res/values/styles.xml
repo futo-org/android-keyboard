@@ -102,7 +102,6 @@
         <item name="alphaObsoleted">50</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
-        <item name="moreSuggestionsHint">@drawable/more_suggestions_hint</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>
@@ -284,7 +283,6 @@
         <item name="alphaObsoleted">70</item>
         <item name="suggestionsCountInStrip">@integer/suggestions_count_in_strip</item>
         <item name="centerSuggestionPercentile">@integer/center_suggestion_percentile</item>
-        <item name="moreSuggestionsHint">@drawable/more_suggestions_hint_holo</item>
         <item name="maxMoreSuggestionsRow">@integer/max_more_suggestions_row</item>
         <item name="minMoreSuggestionsWidth">@fraction/min_more_suggestions_width</item>
     </style>

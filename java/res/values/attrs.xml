@@ -132,7 +132,6 @@
         <attr name="alphaObsoleted" format="integer" />
         <attr name="suggestionsCountInStrip" format="integer" />
         <attr name="centerSuggestionPercentile" format="integer" />
-        <attr name="moreSuggestionsHint" format="reference" />
         <attr name="maxMoreSuggestionsRow" format="integer" />
         <attr name="minMoreSuggestionsWidth" format="float" />
     </declare-styleable>
