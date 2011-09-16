@@ -27,7 +27,7 @@
             />
 
     <ListPreference
-            android:key="pref_keyboard_layout_20100902"
+            android:key="pref_keyboard_layout_20110916"
             android:title="@string/keyboard_layout"
             android:persistent="true"
             android:entryValues="@array/keyboard_layout_modes_values"
