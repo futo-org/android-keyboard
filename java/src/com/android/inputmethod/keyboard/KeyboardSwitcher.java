@@ -182,7 +182,8 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private static int getKeyboardThemeIndex(Context context, SharedPreferences prefs) {
         final String defaultThemeId = context.getString(R.string.config_default_keyboard_theme_id);
-        final String themeId = prefs.getString(PREF_KEYBOARD_LAYOUT, defaultThemeId);
+        final String themeId = Settings.ENABLE_EXPERIMENTAL_SETTINGS
+                ? prefs.getString(PREF_KEYBOARD_LAYOUT, defaultThemeId) : defaultThemeId;
         try {
             final int themeIndex = Integer.valueOf(themeId);
             if (themeIndex >= 0 && themeIndex < KEYBOARD_THEMES.length)
