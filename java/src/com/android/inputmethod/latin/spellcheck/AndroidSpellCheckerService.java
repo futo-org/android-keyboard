@@ -60,8 +60,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static final int CAPITALIZE_ALL = 2; // All caps
 
     private final static String[] EMPTY_STRING_ARRAY = new String[0];
-    private final static SuggestionsInfo EMPTY_SUGGESTIONS_INFO =
+    private final static SuggestionsInfo NOT_IN_DICT_EMPTY_SUGGESTIONS =
             new SuggestionsInfo(0, EMPTY_STRING_ARRAY);
+    private final static SuggestionsInfo IN_DICT_EMPTY_SUGGESTIONS =
+            new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY,
+                    EMPTY_STRING_ARRAY);
     private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
     private Map<String, Dictionary> mUserDictionaries =
@@ -330,7 +333,12 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             try {
                 final String text = textInfo.getText();
 
-                if (shouldFilterOut(text)) return EMPTY_SUGGESTIONS_INFO;
+                if (shouldFilterOut(text)) {
+                    final DictAndProximity dictInfo = mDictionaryPool.takeOrGetNull();
+                    if (null == dictInfo) return NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                    return dictInfo.mDictionary.isValidWord(text) ? IN_DICT_EMPTY_SUGGESTIONS
+                            : NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                }
 
                 final SuggestionsGatherer suggestionsGatherer =
                         new SuggestionsGatherer(suggestionsLimit);
@@ -353,23 +361,19 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
 
                 final int capitalizeType = getCapitalizationType(text);
                 boolean isInDict = true;
-                try {
-                    final DictAndProximity dictInfo = mDictionaryPool.take();
-                    dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
-                            dictInfo.mProximityInfo);
-                    isInDict = dictInfo.mDictionary.isValidWord(text);
-                    if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
-                        // We want to test the word again if it's all caps or first caps only.
-                        // If it's fully down, we already tested it, if it's mixed case, we don't
-                        // want to test a lowercase version of it.
-                        isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
-                    }
-                    if (!mDictionaryPool.offer(dictInfo)) {
-                        Log.e(TAG, "Can't re-insert a dictionary into its pool");
-                    }
-                } catch (InterruptedException e) {
-                    // I don't think this can happen.
-                    return EMPTY_SUGGESTIONS_INFO;
+                final DictAndProximity dictInfo = mDictionaryPool.takeOrGetNull();
+                if (null == dictInfo) return NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
+                        dictInfo.mProximityInfo);
+                isInDict = dictInfo.mDictionary.isValidWord(text);
+                if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
+                    // We want to test the word again if it's all caps or first caps only.
+                    // If it's fully down, we already tested it, if it's mixed case, we don't
+                    // want to test a lowercase version of it.
+                    isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
+                }
+                if (!mDictionaryPool.offer(dictInfo)) {
+                    Log.e(TAG, "Can't re-insert a dictionary into its pool");
                 }
 
                 final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(text,
@@ -396,7 +400,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     throw e;
                 } else {
                     Log.e(TAG, "Exception while spellcheking: " + e);
-                    return EMPTY_SUGGESTIONS_INFO;
+                    return NOT_IN_DICT_EMPTY_SUGGESTIONS;
                 }
             }
         }
