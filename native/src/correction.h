@@ -119,8 +119,9 @@ private:
     int mTerminalInputIndex;
     int mTerminalOutputIndex;
     unsigned short mWord[MAX_WORD_LENGTH_INTERNAL];
+    // Edit distance calculation requires a buffer with (N+1)^2 length for the input length N.
     // Caveat: Do not create multiple tables per thread as this table eats up RAM a lot.
-    int mEditDistanceTable[MAX_WORD_LENGTH_INTERNAL * MAX_WORD_LENGTH_INTERNAL];
+    int mEditDistanceTable[(MAX_WORD_LENGTH_INTERNAL + 1) * (MAX_WORD_LENGTH_INTERNAL + 1)];
 
     CorrectionState mCorrectionStates[MAX_WORD_LENGTH_INTERNAL];
 
