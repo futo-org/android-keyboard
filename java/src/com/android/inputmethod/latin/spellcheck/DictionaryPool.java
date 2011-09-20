@@ -56,6 +56,15 @@ public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
         }
     }
 
+    // Convenience method
+    public DictAndProximity takeOrGetNull() {
+        try {
+            return take();
+        } catch (InterruptedException e) {
+            return null;
+        }
+    }
+
     public void close() {
         synchronized(this) {
             mClosed = true;
