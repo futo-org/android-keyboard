@@ -549,6 +549,21 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 R.dimen.more_suggestions_modal_tolerance);
     }
 
+    private final View.OnTouchListener mMoreSuggestionsCanceller = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent me) {
+            if (!mMoreSuggestionsWindow.isShowing()) return false;
+
+            switch (me.getAction()) {
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+                return mMoreSuggestionsView.dismissMoreKeysPanel();
+            default:
+                return true;
+            }
+        }
+    };
+
     /**
      * A connection back to the input method.
      * @param listener
@@ -764,6 +779,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         if (mMoreSuggestionsWindow.isShowing()) {
             mMoreSuggestionsWindow.dismiss();
             mKeyboardView.dimEntireKeyboard(false);
+            mKeyboardView.setOnTouchListener(null);
             return true;
         }
         return false;
@@ -795,18 +811,22 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             moreKeysPanel.showMoreKeysPanel(
                     this, mMoreSuggestionsController, pointX, pointY,
                     mMoreSuggestionsWindow, mMoreSuggestionsListener);
-            mCheckingIfModalOrSlidingMode = true;
+            mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
             mOriginX = mLastX;
             mOriginY = mLastY;
             view.setPressed(false);
             mKeyboardView.dimEntireKeyboard(true);
+            mKeyboardView.setOnTouchListener(mMoreSuggestionsCanceller);
             return true;
         }
         return false;
     }
 
     // Working variables for onLongClick and dispatchTouchEvent.
-    private boolean mCheckingIfModalOrSlidingMode;
+    private int mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_MODAL_MODE;
+    private static final int MORE_SUGGESTIONS_IN_MODAL_MODE = 0;
+    private static final int MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING = 1;
+    private static final int MORE_SUGGESTIONS_IN_SLIDING_MODE = 2;
     private int mLastX;
     private int mLastY;
     private int mOriginX;
@@ -815,7 +835,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent me) {
-        if (!mMoreSuggestionsWindow.isShowing()) {
+        if (!mMoreSuggestionsWindow.isShowing()
+                || mMoreSuggestionsMode == MORE_SUGGESTIONS_IN_MODAL_MODE) {
             mLastX = (int)me.getX();
             mLastY = (int)me.getY();
             return super.dispatchTouchEvent(me);
@@ -832,22 +853,22 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         final int translatedX = moreKeysPanel.translateX(x);
         final int translatedY = moreKeysPanel.translateY(y);
 
-        if (mCheckingIfModalOrSlidingMode) {
+        if (mMoreSuggestionsMode == MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING) {
             if (Math.abs(x - mOriginX) >= mMoreSuggestionsModalTolerance
                     || mOriginY - y >= mMoreSuggestionsModalTolerance) {
                 // Decided to be in the sliding input mode only when the touch point has been moved
                 // upward.
-                mCheckingIfModalOrSlidingMode = false;
+                mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_SLIDING_MODE;
                 tracker.onShowMoreKeysPanel(
                         translatedX, translatedY, SystemClock.uptimeMillis(), moreKeysPanel);
             } else if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_POINTER_UP) {
                 // Decided to be in the modal input mode
-                mCheckingIfModalOrSlidingMode = false;
+                mMoreSuggestionsMode = MORE_SUGGESTIONS_IN_MODAL_MODE;
             }
             return true;
         }
 
-        // Process sliding motion events
+        // MORE_SUGGESTIONS_IN_SLIDING_MODE
         tracker.processMotionEvent(action, translatedX, translatedY, eventTime, moreKeysPanel);
         return true;
     }
