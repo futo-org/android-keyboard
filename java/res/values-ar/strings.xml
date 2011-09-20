@@ -44,6 +44,8 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"تعيين اقتراحات لعمليات إعادة التصحيح"</string>
     <string name="auto_cap" msgid="1719746674854628252">"أحرف كبيرة تلقائيًا"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"القواميس الإضافية"</string>
+    <!-- no translation found for main_dictionary (4798763781818361168) -->
+    <skip />
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"عرض اقتراحات التصحيح"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"عرض الكلمات المقترحة أثناء الكتابة"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"عرض دومًا"</string>
