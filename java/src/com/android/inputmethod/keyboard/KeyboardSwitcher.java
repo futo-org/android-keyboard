@@ -32,6 +32,7 @@ import android.view.inputmethod.EditorInfo;
 import com.android.inputmethod.accessibility.AccessibleKeyboardViewProxy;
 import com.android.inputmethod.keyboard.internal.ModifierKeyState;
 import com.android.inputmethod.keyboard.internal.ShiftKeyState;
+import com.android.inputmethod.latin.InputView;
 import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.LocaleUtils;
@@ -62,7 +63,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private SubtypeSwitcher mSubtypeSwitcher;
     private SharedPreferences mPrefs;
 
-    private View mCurrentInputView;
+    private InputView mCurrentInputView;
     private LatinKeyboardView mKeyboardView;
     private LatinIME mInputMethodService;
     private String mPackageName;
@@ -230,6 +231,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     private void setKeyboard(final Keyboard keyboard) {
         final Keyboard oldKeyboard = mKeyboardView.getKeyboard();
         mKeyboardView.setKeyboard(keyboard);
+        mCurrentInputView.setKeyboardGeometry(keyboard.mTopPadding);
         mCurrentId = keyboard.mId;
         mSwitchState = getSwitchState(mCurrentId);
         updateShiftLockState(keyboard);
@@ -762,7 +764,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         for (int i = 0; i < Utils.GCUtils.GC_TRY_LOOP_MAX && tryGC; ++i) {
             try {
                 setContextThemeWrapper(mInputMethodService, newThemeIndex);
-                mCurrentInputView = LayoutInflater.from(mThemeContext).inflate(
+                mCurrentInputView = (InputView)LayoutInflater.from(mThemeContext).inflate(
                         R.layout.input_view, null);
                 tryGC = false;
             } catch (OutOfMemoryError e) {
