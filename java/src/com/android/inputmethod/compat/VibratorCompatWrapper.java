@@ -44,4 +44,8 @@ public class VibratorCompatWrapper {
             return false;
         return (Boolean) CompatUtils.invoke(mVibrator, true, METHOD_hasVibrator);
     }
+
+    public void vibrate(long milliseconds) {
+        mVibrator.vibrate(milliseconds);
+    }
 }

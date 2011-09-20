@@ -28,6 +28,7 @@ import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Debug;
 import android.os.Message;
 import android.os.SystemClock;
@@ -56,6 +57,7 @@ import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.SuggestionSpanUtils;
+import com.android.inputmethod.compat.VibratorCompatWrapper;
 import com.android.inputmethod.deprecated.LanguageSwitcherProxy;
 import com.android.inputmethod.deprecated.VoiceProxy;
 import com.android.inputmethod.deprecated.recorrection.Recorrection;
@@ -210,6 +212,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private AudioManager mAudioManager;
     private static float mFxVolume = -1.0f; // just a default value to be updated runtime
     private boolean mSilentModeOn; // System-wide current configuration
+
+    private VibratorCompatWrapper mVibrator;
+    private long mKeypressVibrationDuration = -1;
 
     // TODO: Move this flag to VoiceProxy
     private boolean mConfigurationChanging;
@@ -434,12 +439,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
         mRecorrection = Recorrection.getInstance();
+        mVibrator = VibratorCompatWrapper.getInstance(this);
         DEBUG = LatinImeLogger.sDBG;
-
-        loadSettings();
 
         final Resources res = getResources();
         mResources = res;
+
+        loadSettings();
 
         Utils.GCUtils.getInstance().reset();
         boolean tryGC = true;
@@ -481,6 +487,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSettingsValues = new Settings.Values(mPrefs, this, mSubtypeSwitcher.getInputLocaleStr());
         resetContactsDictionary(null == mSuggest ? null : mSuggest.getContactsDictionary());
         updateSoundEffectVolume();
+        updateKeypressVibrationDuration();
     }
 
     private void initSuggest() {
@@ -2062,6 +2069,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSilentModeOn = (mAudioManager.getRingerMode() != AudioManager.RINGER_MODE_NORMAL);
     }
 
+    private void updateKeypressVibrationDuration() {
+        final String[] durationPerHardwareList = mResources.getStringArray(
+                R.array.keypress_vibration_durations);
+        final String hardwarePrefix = Build.HARDWARE + ",";
+        for (final String element : durationPerHardwareList) {
+            if (element.startsWith(hardwarePrefix)) {
+                mKeypressVibrationDuration =
+                        Long.parseLong(element.substring(element.lastIndexOf(',') + 1));
+                break;
+            }
+        }
+    }
+
     private void playKeyClick(int primaryCode) {
         // if mAudioManager is null, we don't have the ringer state yet
         // mAudioManager will be set by updateRingerMode
@@ -2091,11 +2111,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (!mSettingsValues.mVibrateOn) {
             return;
         }
-        LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
-        if (inputView != null) {
-            inputView.performHapticFeedback(
-                    HapticFeedbackConstants.KEYBOARD_TAP,
-                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+        if (mKeypressVibrationDuration < 0) {
+            // Go ahead with the system default
+            LatinKeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
+            if (inputView != null) {
+                inputView.performHapticFeedback(
+                        HapticFeedbackConstants.KEYBOARD_TAP,
+                        HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+            }
+        } else if (mVibrator != null) {
+            mVibrator.vibrate(mKeypressVibrationDuration);
         }
     }
 
