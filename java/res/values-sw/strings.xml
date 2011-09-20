@@ -23,141 +23,91 @@
     <string name="english_ime_name" msgid="7252517407088836577">"Kibodi ya Android"</string>
     <string name="english_ime_settings" msgid="6661589557206947774">"Mipangilio ya kibodi ya Android"</string>
     <string name="english_ime_input_options" msgid="3909945612939668554">"Chaguo za uingizaji"</string>
-    <!-- no translation found for spell_checker_service_name (2003013122022285508) -->
-    <skip />
+    <string name="spell_checker_service_name" msgid="2003013122022285508">"Masahihisho ya Android"</string>
     <string name="android_spell_checker_settings" msgid="5822324635435443689">"Mipangilio ya kukagua sarufi"</string>
     <string name="use_proximity_option_title" msgid="7469233942295924620">"Tumia data ya ukaribu"</string>
     <string name="use_proximity_option_summary" msgid="2857708859847261945">"Tumia kibodi kama ukaribu wa algorithmu kwa ukaguzi wa sarufi"</string>
     <string name="vibrate_on_keypress" msgid="5258079494276955460">"Tetema unabofya kitufe"</string>
     <string name="sound_on_keypress" msgid="6093592297198243644">"Toa sauti unapobofya kitufe"</string>
     <string name="popup_on_keypress" msgid="123894815723512944">"Ibuka kitufe kinapobonyezwa"</string>
-    <!-- no translation found for general_category (1859088467017573195) -->
-    <skip />
-    <!-- no translation found for correction_category (2236750915056607613) -->
-    <skip />
-    <!-- no translation found for misc_category (6894192814868233453) -->
-    <skip />
-    <!-- no translation found for advanced_settings (362895144495591463) -->
-    <skip />
-    <!-- no translation found for advanced_settings_summary (5193513161106637254) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_delay (6213164897443068248) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_no_delay (2096123151571458064) -->
-    <skip />
-    <!-- no translation found for key_preview_popup_dismiss_default_delay (2166964333903906734) -->
-    <skip />
-    <!-- no translation found for use_contacts_dict (4435317977804180815) -->
-    <skip />
-    <!-- no translation found for use_contacts_dict_summary (6599983334507879959) -->
-    <skip />
+    <string name="general_category" msgid="1859088467017573195">"Kawaida"</string>
+    <string name="correction_category" msgid="2236750915056607613">"Marekebisho ya maandishi"</string>
+    <string name="misc_category" msgid="6894192814868233453">"Chaguo zingine"</string>
+    <string name="advanced_settings" msgid="362895144495591463">"Mipangilio mahiri"</string>
+    <string name="advanced_settings_summary" msgid="5193513161106637254">"Machaguo ya watumiaji wataalamu"</string>
+    <string name="key_preview_popup_dismiss_delay" msgid="6213164897443068248">"Kuchelewesha kutupa kitufe ibukizi"</string>
+    <string name="key_preview_popup_dismiss_no_delay" msgid="2096123151571458064">"Hakuna kuchelewa"</string>
+    <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Chaguo-msingi"</string>
+    <string name="use_contacts_dict" msgid="4435317977804180815">"Pendekeza majini ya Anwani"</string>
+    <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Tumia majina kutoka kwa Anwani kwa mapendekezo na marekebisho"</string>
     <string name="enable_span_insert" msgid="7204653105667167620">"Wezesha masahihisho mapya"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Weka mapendekezo kwa ajili ya kusahihisha upya"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Uwekaji wa herufi kubwa kiotomatiki"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Nyongeza za kamusi"</string>
-    <!-- no translation found for prefs_show_suggestions (8026799663445531637) -->
+    <!-- no translation found for main_dictionary (4798763781818361168) -->
     <skip />
+    <string name="prefs_show_suggestions" msgid="8026799663445531637">"Onyesha mapendekezo ya marekebisho"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Onyesha maneno yaliyopendekezwa wakati unachapa"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Onyesha kila wakati"</string>
     <string name="prefs_suggestion_visibility_show_only_portrait_name" msgid="3551821800439659812">"Onyesha kwenye hali wima"</string>
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"Ficha kila wakati"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"Onyesha kitufe cha mipangilio"</string>
     <string name="auto_correction" msgid="4979925752001319458">"Usahihishaji Kioto"</string>
-    <!-- outdated translation 6881047311475758267 -->     <string name="auto_correction_summary" msgid="5625751551134658006">"Sahihisha neno lililotangulia kiotomatiki"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"Kiaamba na kiakifishi hurekebisha maneno ambayo yamechapishwa vibaya"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"Zima"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"Ya wastani"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"Ya hima"</string>
-    <!-- no translation found for auto_correction_threshold_mode_very_aggeressive (3386782235540547678) -->
-    <skip />
-    <!-- outdated translation 1323347224043514969 -->     <string name="bigram_suggestion" msgid="2636414079905220518">"Mapendekezo ya Bigramu"</string>
+    <string name="auto_correction_threshold_mode_very_aggeressive" msgid="3386782235540547678">"Changamfu zaidi"</string>
+    <string name="bigram_suggestion" msgid="2636414079905220518">"Mapendekezo ya bigramu"</string>
     <string name="bigram_suggestion_summary" msgid="4383845146070101531">"Tumia neno la hapo awali ili kuboresha pendekezo"</string>
-    <!-- no translation found for bigram_prediction (8914273444762259739) -->
-    <skip />
-    <!-- no translation found for bigram_prediction_summary (1747261921174300098) -->
-    <skip />
+    <string name="bigram_prediction" msgid="8914273444762259739">"Udadisi wa bigramu"</string>
+    <string name="bigram_prediction_summary" msgid="1747261921174300098">"Tumia  neno la awali pia kwa udadisi"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Imehifadhiwa"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Nenda"</string>
     <string name="label_next_key" msgid="362972844525672568">"Ifuatayo"</string>
     <string name="label_done_key" msgid="2441578748772529288">"Kwisha"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Tuma"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
-    <!-- no translation found for label_to_symbol_key (8516904117128967293) -->
-    <skip />
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"? 123"</string>
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pumzisha"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Subiri"</string>
-    <!-- no translation found for spoken_current_text_is (2485723011272583845) -->
-    <skip />
-    <!-- no translation found for spoken_no_text_entered (7479685225597344496) -->
-    <skip />
-    <!-- no translation found for spoken_description_unknown (3197434010402179157) -->
-    <skip />
-    <!-- no translation found for spoken_description_shift (244197883292549308) -->
-    <skip />
-    <!-- no translation found for spoken_description_shift_shifted (954941524766465022) -->
-    <skip />
-    <!-- no translation found for spoken_description_caps_lock (5660626444912131764) -->
-    <skip />
-    <!-- no translation found for spoken_description_delete (8740376944276199801) -->
-    <skip />
-    <!-- no translation found for spoken_description_to_symbol (5486340107500448969) -->
-    <skip />
-    <!-- no translation found for spoken_description_to_alpha (23129338819771807) -->
-    <skip />
-    <!-- no translation found for spoken_description_to_numeric (591752092685161732) -->
-    <skip />
-    <!-- no translation found for spoken_description_settings (4627462689603838099) -->
-    <skip />
-    <!-- no translation found for spoken_description_tab (2667716002663482248) -->
-    <skip />
-    <!-- no translation found for spoken_description_space (2582521050049860859) -->
-    <skip />
-    <!-- no translation found for spoken_description_mic (615536748882611950) -->
-    <skip />
-    <!-- no translation found for spoken_description_smiley (2256309826200113918) -->
-    <skip />
-    <!-- no translation found for spoken_description_return (8178083177238315647) -->
-    <skip />
-    <!-- no translation found for spoken_description_comma (4970844442999724586) -->
-    <skip />
-    <!-- no translation found for spoken_description_period (5286614628077903945) -->
-    <skip />
-    <!-- no translation found for spoken_description_left_parenthesis (8524822120595052415) -->
-    <skip />
-    <!-- no translation found for spoken_description_right_parenthesis (1085757995851933164) -->
-    <skip />
-    <!-- no translation found for spoken_description_colon (4312420908484277077) -->
-    <skip />
-    <!-- no translation found for spoken_description_semicolon (37737920987155179) -->
-    <skip />
-    <!-- no translation found for spoken_description_exclamation_mark (2625684427460737157) -->
-    <skip />
-    <!-- no translation found for spoken_description_question_mark (7074097784255379666) -->
-    <skip />
-    <!-- no translation found for spoken_description_double_quote (5485320575389905967) -->
-    <skip />
-    <!-- no translation found for spoken_description_single_quote (4451320362665463938) -->
-    <skip />
-    <!-- no translation found for spoken_description_dot (40711082435231673) -->
-    <skip />
-    <!-- no translation found for spoken_description_square_root (190595160284757811) -->
-    <skip />
-    <!-- no translation found for spoken_description_pi (4554418247799952239) -->
-    <skip />
-    <!-- no translation found for spoken_description_delta (3607948313655721579) -->
-    <skip />
-    <!-- no translation found for spoken_description_trademark (475877774077871369) -->
-    <skip />
-    <!-- no translation found for spoken_description_care_of (7492800237237796530) -->
-    <skip />
-    <!-- no translation found for spoken_description_star (1009742725387231977) -->
-    <skip />
-    <!-- no translation found for spoken_description_pound (5530577649206922631) -->
-    <skip />
-    <!-- no translation found for spoken_description_ellipsis (1687670869947652062) -->
-    <skip />
-    <!-- no translation found for spoken_description_low_double_quote (3551394572784840975) -->
-    <skip />
+    <string name="spoken_current_text_is" msgid="2485723011272583845">"Maandishi ya sasa ni %s"</string>
+    <string name="spoken_no_text_entered" msgid="7479685225597344496">"Hakuna maandishi yaliyoingizwa"</string>
+    <string name="spoken_description_unknown" msgid="3197434010402179157">"Msimbo wa kitufe %d"</string>
+    <string name="spoken_description_shift" msgid="244197883292549308">"Badilisha"</string>
+    <string name="spoken_description_shift_shifted" msgid="954941524766465022">"Kuhamisha kumewezeshwa"</string>
+    <string name="spoken_description_caps_lock" msgid="5660626444912131764">"Herufi kubwa imewezeshwa"</string>
+    <string name="spoken_description_delete" msgid="8740376944276199801">"Futa"</string>
+    <string name="spoken_description_to_symbol" msgid="5486340107500448969">"Alama"</string>
+    <string name="spoken_description_to_alpha" msgid="23129338819771807">"Herufi"</string>
+    <string name="spoken_description_to_numeric" msgid="591752092685161732">"Namba"</string>
+    <string name="spoken_description_settings" msgid="4627462689603838099">"Mipangilio"</string>
+    <string name="spoken_description_tab" msgid="2667716002663482248">"Kichupo"</string>
+    <string name="spoken_description_space" msgid="2582521050049860859">"Nafasi"</string>
+    <string name="spoken_description_mic" msgid="615536748882611950">"Uingizaji sauti"</string>
+    <string name="spoken_description_smiley" msgid="2256309826200113918">"Uso wenye tabasamu"</string>
+    <string name="spoken_description_return" msgid="8178083177238315647">"Rudi"</string>
+    <string name="spoken_description_comma" msgid="4970844442999724586">"Koma"</string>
+    <string name="spoken_description_period" msgid="5286614628077903945">"Muda"</string>
+    <string name="spoken_description_left_parenthesis" msgid="8524822120595052415">"Mabano ya kushoto"</string>
+    <string name="spoken_description_right_parenthesis" msgid="1085757995851933164">"mabano ya kulia"</string>
+    <string name="spoken_description_colon" msgid="4312420908484277077">"Nukta mbili juu na chini"</string>
+    <string name="spoken_description_semicolon" msgid="37737920987155179">"Semikoloni"</string>
+    <string name="spoken_description_exclamation_mark" msgid="2625684427460737157">"Alama ya mshangao"</string>
+    <string name="spoken_description_question_mark" msgid="7074097784255379666">"Alama ya kiulizio"</string>
+    <string name="spoken_description_double_quote" msgid="5485320575389905967">"Nukuu mara mbili"</string>
+    <string name="spoken_description_single_quote" msgid="4451320362665463938">"Nukuu moja"</string>
+    <string name="spoken_description_dot" msgid="40711082435231673">"Nukta"</string>
+    <string name="spoken_description_square_root" msgid="190595160284757811">"Square root"</string>
+    <string name="spoken_description_pi" msgid="4554418247799952239">"Pi"</string>
+    <string name="spoken_description_delta" msgid="3607948313655721579">"Delta"</string>
+    <string name="spoken_description_trademark" msgid="475877774077871369">"Chapa ya Biashara"</string>
+    <string name="spoken_description_care_of" msgid="7492800237237796530">"Kwa ulinzi wa"</string>
+    <string name="spoken_description_star" msgid="1009742725387231977">"Nyota"</string>
+    <string name="spoken_description_pound" msgid="5530577649206922631">"Pauni"</string>
+    <string name="spoken_description_ellipsis" msgid="1687670869947652062">"Ellipsis"</string>
+    <string name="spoken_description_low_double_quote" msgid="3551394572784840975">"Nukuu  ya chini maradufu"</string>
     <string name="voice_warning_title" msgid="4419354150908395008">"Uingizaji wa sauti"</string>
     <string name="voice_warning_locale_not_supported" msgid="637923019716442333">"Uingizaji wa sauti hauhimiliwi kwa lugha yako kwa sasa, lakini inafanya kazi kwa Kiingereza."</string>
     <string name="voice_warning_may_not_understand" msgid="5596289095878251072">"Uingizaji wa sauti hutumia utambuaji wa usemi wa Google. "<a href="http://m.google.com/privacy">"Sera ya Faragha ya Simu za mkononi "</a>" hutumika."</string>
@@ -186,8 +136,7 @@
     <string name="voice_input_modes_summary_symbols_keyboard" msgid="5233725927281932391">"Maikrofoni kwenye kibodi ya ishara"</string>
     <string name="voice_input_modes_summary_off" msgid="63875609591897607">"Uingizaji sauti umelemazwa"</string>
     <string name="selectInputMethod" msgid="315076553378705821">"Chagua mtindo wa uingizaji"</string>
-    <!-- no translation found for configure_input_method (373356270290742459) -->
-    <skip />
+    <string name="configure_input_method" msgid="373356270290742459">"Sanidi mbinu za uingizaji"</string>
     <string name="language_selection_title" msgid="1651299598555326750">"Lugha za uingizaji"</string>
     <string name="select_language" msgid="3693815588777926848">"Lugha zinazoruhusiwa"</string>
     <string name="hint_add_to_dictionary" msgid="9006292060636342317">"← Gusa tena ili kuhifadhi"</string>
@@ -196,12 +145,9 @@
     <string name="prefs_description_log" msgid="5827825607258246003">"Saidia kuimarisha mbinu ya uingizaji wa kihariri, kwa kutuma takwimu za matumizi na ripoti za kuvurugika kwa Google kiotomatiki."</string>
     <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Gusa ili kurekebisha maneno"</string>
     <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Gusa maneno yaliyoingizwa ili kuyasahihisha, wakati mapendekezo yanaonekana tu"</string>
-    <!-- outdated translation 437433231038683666 -->     <string name="keyboard_layout" msgid="8451164783510487501">"Maandhari ya Kibodi"</string>
-    <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
-    <skip />
-    <!-- no translation found for subtype_en_GB (88170601942311355) -->
-    <skip />
-    <!-- no translation found for subtype_en_US (6160452336634534239) -->
-    <skip />
-    <!-- outdated translation 6937813623647419810 -->     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Hali ya Uchunguzi wa Utumizi"</string>
+    <string name="keyboard_layout" msgid="8451164783510487501">"Maandhari ya kibodi"</string>
+    <string name="subtype_de_qwerty" msgid="3358900499589259491">"QWERTY ya Kijerumani"</string>
+    <string name="subtype_en_GB" msgid="88170601942311355">"Kiingereza cha (Uingereza)"</string>
+    <string name="subtype_en_US" msgid="6160452336634534239">"Kiingereza cha (Marekani)"</string>
+    <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modi ya uchunguzi wa utumizi"</string>
 </resources>
