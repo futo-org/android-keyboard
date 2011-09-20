@@ -131,7 +131,7 @@ static void dumpWord(const unsigned short* word, const int length) {
 #endif // FLAG_DBG
 
 #ifndef U_SHORT_MAX
-#define U_SHORT_MAX 1 << 16
+#define U_SHORT_MAX 65535    // ((1 << 16) - 1)
 #endif
 #ifndef S_INT_MAX
 #define S_INT_MAX 2147483647 // ((1 << 31) - 1)
