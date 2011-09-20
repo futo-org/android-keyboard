@@ -158,7 +158,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private View mKeyPreviewBackingView;
     private View mSuggestionsContainer;
-    private int mSuggestionsStripHeight;
     private SuggestionsView mSuggestionsView;
     private Suggest mSuggest;
     private CompletionInfo[] mApplicationSpecifiedCompletions;
@@ -612,7 +611,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSuggestionsView = (SuggestionsView) view.findViewById(R.id.suggestions_view);
         if (mSuggestionsView != null)
             mSuggestionsView.setListener(this, view);
-        mSuggestionsStripHeight = (int)mResources.getDimension(R.dimen.suggestions_strip_height);
     }
 
     @Override
@@ -681,6 +679,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         if (mSuggestionsView != null)
             mSuggestionsView.clear();
+        // The EditorInfo might have a flag that affects fullscreen mode.
+        updateFullscreenMode();
         setSuggestionStripShownInternal(
                 isSuggestionsStripVisible(), /* needsInputViewShown */ false);
         // Delay updating suggestions because keyboard input view may not be shown at this point.
@@ -945,14 +945,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             final boolean shouldShowSuggestions = shown
                     && (needsInputViewShown ? mKeyboardSwitcher.isInputViewShown() : true);
             if (isFullscreenMode()) {
-                // No need to have extra space to show the key preview.
-                mKeyPreviewBackingView.setVisibility(View.GONE);
                 mSuggestionsContainer.setVisibility(
                         shouldShowSuggestions ? View.VISIBLE : View.GONE);
             } else {
-                // We must control the visibility of the suggestion strip in order to avoid clipped
-                // key previews, even when we don't show the suggestion strip.
-                mKeyPreviewBackingView.setVisibility(View.VISIBLE);
                 mSuggestionsContainer.setVisibility(
                         shouldShowSuggestions ? View.VISIBLE : View.INVISIBLE);
             }
@@ -971,12 +966,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         final int backingHeight = (mKeyPreviewBackingView.getVisibility() == View.GONE) ? 0
                 : mKeyPreviewBackingView.getHeight();
-        final int extraHeight = mSuggestionsContainer.getHeight() + backingHeight;
+        final int suggestionsHeight = (mSuggestionsContainer.getVisibility() == View.GONE) ? 0
+                : mSuggestionsContainer.getHeight();
+        final int extraHeight = backingHeight + suggestionsHeight;
         int touchY = extraHeight;
         // Need to set touchable region only if input view is being shown
         if (mKeyboardSwitcher.isInputViewShown()) {
             if (mSuggestionsContainer.getVisibility() == View.VISIBLE) {
-                touchY -= mSuggestionsStripHeight;
+                touchY -= suggestionsHeight;
             }
             final int touchWidth = inputView.getWidth();
             final int touchHeight = inputView.getHeight() + extraHeight
@@ -994,16 +991,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public boolean onEvaluateFullscreenMode() {
-        final EditorInfo ei = getCurrentInputEditorInfo();
-        if (ei != null) {
-            final int imeOptions = ei.imeOptions;
-            if (EditorInfoCompatUtils.hasFlagNoFullscreen(imeOptions))
-                return false;
-            if ((imeOptions & EditorInfo.IME_FLAG_NO_EXTRACT_UI) != 0)
-                return false;
-        }
+        return super.onEvaluateFullscreenMode()
+                && mResources.getBoolean(R.bool.config_use_fullscreen_mode);
+    }
 
-        return mResources.getBoolean(R.bool.config_use_fullscreen_mode);
+    @Override
+    public void updateFullscreenMode() {
+        super.updateFullscreenMode();
+
+        if (mKeyPreviewBackingView == null) return;
+        // In fullscreen mode, no need to have extra space to show the key preview.
+        // If not, we should have extra space above the keyboard to show the key preview.
+        mKeyPreviewBackingView.setVisibility(isFullscreenMode() ? View.GONE : View.VISIBLE);
     }
 
     @Override
