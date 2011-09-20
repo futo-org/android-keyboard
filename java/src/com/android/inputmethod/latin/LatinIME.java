@@ -209,7 +209,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private long mLastKeyTime;
 
     private AudioManager mAudioManager;
-    private static float mFxVolume = -1.0f; // just a default value to be updated runtime
+    private float mFxVolume = -1.0f; // default volume
     private boolean mSilentModeOn; // System-wide current configuration
 
     private VibratorCompatWrapper mVibrator;
@@ -2050,13 +2050,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     // update sound effect volume
     private void updateSoundEffectVolume() {
-        if (mAudioManager == null) {
-            mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            if (mAudioManager == null) return;
+        final String[] volumePerHardwareList = mResources.getStringArray(R.array.keypress_volumes);
+        final String hardwarePrefix = Build.HARDWARE + ",";
+        for (final String element : volumePerHardwareList) {
+            if (element.startsWith(hardwarePrefix)) {
+                mFxVolume = Float.parseFloat(element.substring(element.lastIndexOf(',') + 1));
+                break;
+            }
         }
-        // This aligns with the current media volume minus 6dB
-        mFxVolume = (float) mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
-                / (float) mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC) / 4.0f;
     }
 
     // update flags for silent mode
@@ -2090,17 +2091,20 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             }
         }
         if (isSoundOn()) {
-            int sound = AudioManager.FX_KEYPRESS_STANDARD;
+            final int sound;
             switch (primaryCode) {
-                case Keyboard.CODE_DELETE:
-                    sound = AudioManager.FX_KEYPRESS_DELETE;
-                    break;
-                case Keyboard.CODE_ENTER:
-                    sound = AudioManager.FX_KEYPRESS_RETURN;
-                    break;
-                case Keyboard.CODE_SPACE:
-                    sound = AudioManager.FX_KEYPRESS_SPACEBAR;
-                    break;
+            case Keyboard.CODE_DELETE:
+                sound = AudioManager.FX_KEYPRESS_DELETE;
+                break;
+            case Keyboard.CODE_ENTER:
+                sound = AudioManager.FX_KEYPRESS_RETURN;
+                break;
+            case Keyboard.CODE_SPACE:
+                sound = AudioManager.FX_KEYPRESS_SPACEBAR;
+                break;
+            default:
+                sound = AudioManager.FX_KEYPRESS_STANDARD;
+                break;
             }
             mAudioManager.playSoundEffect(sound, mFxVolume);
         }
