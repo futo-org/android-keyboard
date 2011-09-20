@@ -51,7 +51,7 @@ public class SuddenJumpingTouchEventHandler {
         mView = view;
         final String[] deviceList = context.getResources().getStringArray(
                 R.array.sudden_jumping_touch_event_device_list);
-        mNeedsSuddenJumpingHack = needsSuddenJumpingHack(Build.DEVICE, deviceList);
+        mNeedsSuddenJumpingHack = needsSuddenJumpingHack(Build.HARDWARE, deviceList);
     }
 
     private static boolean needsSuddenJumpingHack(String deviceName, String[] deviceList) {
