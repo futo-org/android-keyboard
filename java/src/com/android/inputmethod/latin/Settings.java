@@ -171,7 +171,8 @@ public class Settings extends InputMethodSettingsActivity
 
             // Get the settings preferences
             final boolean hasVibrator = VibratorCompatWrapper.getInstance(context).hasVibrator();
-            mVibrateOn = hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON, false);
+            mVibrateOn = hasVibrator && prefs.getBoolean(Settings.PREF_VIBRATE_ON,
+                    res.getBoolean(R.bool.config_default_vibration_enabled));
             mSoundOn = prefs.getBoolean(Settings.PREF_SOUND_ON,
                     res.getBoolean(R.bool.config_default_sound_enabled));
             mKeyPreviewPopupOn = isKeyPreviewPopupEnabled(prefs, res);
