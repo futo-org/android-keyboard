@@ -44,8 +44,7 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Vorschläge für Korrekturen festlegen"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Autom. Groß-/Kleinschr."</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Add-on-Wörterbücher"</string>
-    <!-- no translation found for main_dictionary (4798763781818361168) -->
-    <skip />
+    <string name="main_dictionary" msgid="4798763781818361168">"Hauptwörterbuch"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Änderungsvorschläge anzeigen"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Vorgeschlagene Wörter während des Tippens anzeigen"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Immer anzeigen"</string>
