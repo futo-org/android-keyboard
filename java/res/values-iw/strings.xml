@@ -44,6 +44,8 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"הגדר הצעות עבור תיקונים חוזרים"</string>
     <string name="auto_cap" msgid="1719746674854628252">"הפיכת אותיות לרישיות באופן אוטומטי"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"הוספת מילונים"</string>
+    <!-- no translation found for main_dictionary (4798763781818361168) -->
+    <skip />
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"הצג הצעות לתיקונים"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"הצג הצעות למילים בעת הקלדה"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"הצג תמיד"</string>

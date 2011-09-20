@@ -43,7 +43,9 @@
     <string name="enable_span_insert" msgid="7204653105667167620">"Activer la recorrection"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Définir des suggestions de recorrection"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Majuscules auto"</string>
-    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dictionnaires ajoutés"</string>
+    <string name="configure_dictionaries_title" msgid="4238652338556902049">"Dictionnaires complémentaires"</string>
+    <!-- no translation found for main_dictionary (4798763781818361168) -->
+    <skip />
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Afficher les suggestions de correction"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Afficher les suggestions de terme lors de la saisie"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Toujours afficher"</string>
@@ -62,14 +64,14 @@
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Utiliser le mot précédent pour la prédiction"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : enregistré"</string>
     <string name="label_go_key" msgid="1635148082137219148">"OK"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Suivant"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Suiv."</string>
     <string name="label_done_key" msgid="2441578748772529288">"OK"</string>
-    <string name="label_send_key" msgid="2815056534433717444">"Envoyer"</string>
+    <string name="label_send_key" msgid="2815056534433717444">"Envoi"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
     <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pause"</string>
-    <string name="label_wait_key" msgid="6402152600878093134">"Attente"</string>
+    <string name="label_wait_key" msgid="6402152600878093134">"Délai"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Le texte actuel est %s"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Aucun texte saisi"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Code touche %d"</string>

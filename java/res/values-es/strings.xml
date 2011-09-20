@@ -40,10 +40,12 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"Predeterminado"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Sugerir nombres contactos"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Utilizar nombres de contactos para sugerencias y correcciones"</string>
-    <string name="enable_span_insert" msgid="7204653105667167620">"Habilitar nuevas correcc"</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"Activar nuevas correcciones"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Establecer sugerencias para nuevas correcciones"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Mayúsculas automáticas"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Diccionarios complementarios"</string>
+    <!-- no translation found for main_dictionary (4798763781818361168) -->
+    <skip />
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Mostrar sugerencias de correcciones"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Muestra las palabras sugeridas mientras se escribe."</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Mostrar siempre"</string>
@@ -126,7 +128,7 @@
     <string name="voice_punctuation_hint" msgid="1611389463237317754"><b>"Sugerencia:"</b>" la próxima vez, prueba a indicar signos de puntuación como, por ejemplo, \"punto\", \"coma\" o \"signo de interrogación\"."</string>
     <string name="cancel" msgid="6830980399865683324">"Cancelar"</string>
     <string name="ok" msgid="7898366843681727667">"Aceptar"</string>
-    <string name="voice_input" msgid="3583258583521397548">"Clave de entrada de voz"</string>
+    <string name="voice_input" msgid="3583258583521397548">"Tecla de entrada de voz"</string>
     <string name="voice_input_modes_main_keyboard" msgid="3360660341121083174">"En teclado principal"</string>
     <string name="voice_input_modes_symbols_keyboard" msgid="7203213240786084067">"En teclado de símbolos"</string>
     <string name="voice_input_modes_off" msgid="3745699748218082014">"Desactivada"</string>
