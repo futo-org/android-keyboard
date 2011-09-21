@@ -618,6 +618,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         mSuggestionsView = (SuggestionsView) view.findViewById(R.id.suggestions_view);
         if (mSuggestionsView != null)
             mSuggestionsView.setListener(this, view);
+        if (LatinImeLogger.sVISUALDEBUG) {
+            mKeyPreviewBackingView.setBackgroundColor(0x10FF0000);
+        }
     }
 
     @Override
