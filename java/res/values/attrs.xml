@@ -118,10 +118,10 @@
 
     <declare-styleable name="SuggestionsView">
         <attr name="suggestionStripOption" format="integer">
+            <!-- This should be aligned with SuggestionsViewParams.AUTO_CORRECT_* and etc. -->
             <flag name="autoCorrectBold" value="0x01" />
             <flag name="autoCorrectUnderline" value="0x02" />
-            <flag name="autoCorrectInvert" value="0x04" />
-            <flag name="validTypedWordBold" value="0x08" />
+            <flag name="validTypedWordBold" value="0x04" />
         </attr>
         <attr name="colorTypedWord" format="color" />
         <attr name="colorAutoCorrect" format="color" />
