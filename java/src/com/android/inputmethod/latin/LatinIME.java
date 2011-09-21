@@ -1494,8 +1494,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (!TextUtils.isEmpty(typedWord) && !typedWord.equals(mBestWord)) {
                 InputConnectionCompatUtils.commitCorrection(
                         ic, mLastSelectionEnd - typedWord.length(), typedWord, mBestWord);
-                if (mSuggestionsView != null)
-                    mSuggestionsView.onAutoCorrectionInverted(mBestWord);
             }
         }
         if (Keyboard.CODE_SPACE == primaryCode) {

@@ -35,9 +35,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
-import android.text.style.BackgroundColorSpan;
 import android.text.style.CharacterStyle;
-import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
@@ -93,7 +91,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
     private Listener mListener;
     private SuggestedWords mSuggestions = SuggestedWords.EMPTY;
-    private boolean mShowingAutoCorrectionInverted;
 
     private final SuggestionsViewParams mParams;
     private static final float MIN_TEXT_XSCALE = 0.70f;
@@ -102,10 +99,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
     private static class UiHandler extends StaticInnerHandlerWrapper<SuggestionsView> {
         private static final int MSG_HIDE_PREVIEW = 0;
-        private static final int MSG_UPDATE_SUGGESTION = 1;
 
         private static final long DELAY_HIDE_PREVIEW = 1300;
-        private static final long DELAY_UPDATE_SUGGESTION = 300;
 
         public UiHandler(SuggestionsView outerInstance) {
             super(outerInstance);
@@ -117,9 +112,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             switch (msg.what) {
             case MSG_HIDE_PREVIEW:
                 suggestionsView.hidePreview();
-                break;
-            case MSG_UPDATE_SUGGESTION:
-                suggestionsView.updateSuggestions();
                 break;
             }
         }
@@ -133,19 +125,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             removeMessages(MSG_HIDE_PREVIEW);
         }
 
-        public void postUpdateSuggestions() {
-            cancelUpdateSuggestions();
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_SUGGESTION),
-                    DELAY_UPDATE_SUGGESTION);
-        }
-
-        public void cancelUpdateSuggestions() {
-            removeMessages(MSG_UPDATE_SUGGESTION);
-        }
-
         public void cancelAllMessages() {
             cancelHidePreview();
-            cancelUpdateSuggestions();
         }
     }
 
@@ -178,12 +159,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
         private static final CharacterStyle BOLD_SPAN = new StyleSpan(Typeface.BOLD);
         private static final CharacterStyle UNDERLINE_SPAN = new UnderlineSpan();
-        private final CharacterStyle mInvertedForegroundColorSpan;
-        private final CharacterStyle mInvertedBackgroundColorSpan;
         private static final int AUTO_CORRECT_BOLD = 0x01;
         private static final int AUTO_CORRECT_UNDERLINE = 0x02;
-        private static final int AUTO_CORRECT_INVERT = 0x04;
-        private static final int VALID_TYPED_WORD_BOLD = 0x08;
+        private static final int VALID_TYPED_WORD_BOLD = 0x04;
 
         private final int mSuggestionStripOption;
 
@@ -245,9 +223,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mCenterSuggestionIndex = mSuggestionsCountInStrip / 2;
             mMoreSuggestionsBottomGap = res.getDimensionPixelOffset(
                     R.dimen.more_suggestions_bottom_gap);
-
-            mInvertedForegroundColorSpan = new ForegroundColorSpan(mColorTypedWord ^ 0x00ffffff);
-            mInvertedBackgroundColorSpan = new BackgroundColorSpan(mColorTypedWord);
 
             final LayoutInflater inflater = LayoutInflater.from(context);
             mWordToSaveView = (TextView)inflater.inflate(R.layout.suggestion_word, null);
@@ -344,16 +319,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         private static int applyAlpha(final int color, final float alpha) {
             final int newAlpha = (int)(Color.alpha(color) * alpha);
             return Color.argb(newAlpha, Color.red(color), Color.green(color), Color.blue(color));
-        }
-
-        public CharSequence getInvertedText(CharSequence text) {
-            if ((mSuggestionStripOption & AUTO_CORRECT_INVERT) == 0)
-                return null;
-            final int len = text.length();
-            final Spannable word = new SpannableString(text);
-            word.setSpan(mInvertedBackgroundColorSpan, 0, len, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            word.setSpan(mInvertedForegroundColorSpan, 0, len, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            return word;
         }
 
         public void layout(SuggestedWords suggestions, ViewGroup stripView, ViewGroup placer,
@@ -577,21 +542,11 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     }
 
     public void setSuggestions(SuggestedWords suggestions) {
-        if (suggestions == null)
+        if (suggestions == null || suggestions.size() == 0)
             return;
-        mSuggestions = suggestions;
-        if (mShowingAutoCorrectionInverted) {
-            mHandler.postUpdateSuggestions();
-        } else {
-            updateSuggestions();
-        }
-    }
 
-    private void updateSuggestions() {
         clear();
-        if (mSuggestions.size() == 0)
-            return;
-
+        mSuggestions = suggestions;
         mParams.layout(mSuggestions, mSuggestionsStrip, this, getWidth());
     }
 
@@ -680,15 +635,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         }
     }
 
-    public void onAutoCorrectionInverted(CharSequence autoCorrectedWord) {
-        final CharSequence inverted = mParams.getInvertedText(autoCorrectedWord);
-        if (inverted == null)
-            return;
-        final TextView tv = mWords.get(1);
-        tv.setText(inverted);
-        mShowingAutoCorrectionInverted = true;
-    }
-
     public boolean isShowingAddToDictionaryHint() {
         return mSuggestionsStrip.getChildCount() > 0
                 && mSuggestionsStrip.getChildAt(0) == mParams.mWordToSaveView;
@@ -712,7 +658,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     }
 
     public void clear() {
-        mShowingAutoCorrectionInverted = false;
         mSuggestionsStrip.removeAllViews();
         removeAllViews();
         addView(mSuggestionsStrip);
