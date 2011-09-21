@@ -41,6 +41,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.text.style.UnderlineSpan;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -547,6 +548,8 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         final Resources res = context.getResources();
         mMoreSuggestionsModalTolerance = res.getDimensionPixelOffset(
                 R.dimen.more_suggestions_modal_tolerance);
+        mMoreSuggestionsSlidingDetector = new GestureDetector(
+                context, mMoreSuggestionsSlidingListener);
     }
 
     private final View.OnTouchListener mMoreSuggestionsCanceller = new View.OnTouchListener() {
@@ -791,6 +794,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
     @Override
     public boolean onLongClick(View view) {
+        return showMoreSuggestions();
+    }
+
+    private boolean showMoreSuggestions() {
         final SuggestionsViewParams params = mParams;
         if (params.mMoreSuggestionsAvailable) {
             final int stripWidth = getWidth();
@@ -814,9 +821,11 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mMoreSuggestionsMode = MORE_SUGGESTIONS_CHECKING_MODAL_OR_SLIDING;
             mOriginX = mLastX;
             mOriginY = mLastY;
-            view.setPressed(false);
             mKeyboardView.dimEntireKeyboard(true);
             mKeyboardView.setOnTouchListener(mMoreSuggestionsCanceller);
+            for (int i = 0; i < params.mSuggestionsCountInStrip; i++) {
+                mWords.get(i).setPressed(false);
+            }
             return true;
         }
         return false;
@@ -832,6 +841,18 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     private int mOriginX;
     private int mOriginY;
     private final int mMoreSuggestionsModalTolerance;
+    private final GestureDetector mMoreSuggestionsSlidingDetector;
+    private final GestureDetector.OnGestureListener mMoreSuggestionsSlidingListener =
+            new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onScroll(MotionEvent down, MotionEvent me, float deltaX, float deltaY) {
+            final float dy = me.getY() - down.getY();
+            if (deltaY > 0 && dy < 0) {
+                return showMoreSuggestions();
+            }
+            return false;
+        }
+    };
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent me) {
@@ -839,6 +860,9 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
                 || mMoreSuggestionsMode == MORE_SUGGESTIONS_IN_MODAL_MODE) {
             mLastX = (int)me.getX();
             mLastY = (int)me.getY();
+            if (mMoreSuggestionsSlidingDetector.onTouchEvent(me)) {
+                return true;
+            }
             return super.dispatchTouchEvent(me);
         }
 
