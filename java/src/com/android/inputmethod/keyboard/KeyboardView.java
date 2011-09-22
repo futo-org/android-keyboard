@@ -391,7 +391,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         mDirtyRect.set(0, 0, getWidth(), getHeight());
         mBufferNeedsUpdate = true;
         invalidateAllKeys();
-        final int keyHeight = keyboard.mDefaultRowHeight - keyboard.mVerticalGap;
+        final int keyHeight = keyboard.mMostCommonKeyHeight - keyboard.mVerticalGap;
         mKeyDrawParams.updateKeyHeight(keyHeight);
         mKeyPreviewDrawParams.updateKeyHeight(keyHeight);
     }

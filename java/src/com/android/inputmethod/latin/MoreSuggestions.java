@@ -92,8 +92,9 @@ public class MoreSuggestions extends Keyboard {
                 }
                 mNumColumnsInRow[row] = pos - rowStartPos;
                 mNumRows = row + 1;
-                mWidth = mOccupiedWidth = Math.max(minWidth, calcurateMaxRowWidth(fromPos, pos));
-                mHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight + mVerticalGap;
+                mBaseWidth = mOccupiedWidth = Math.max(
+                        minWidth, calcurateMaxRowWidth(fromPos, pos));
+                mBaseHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight + mVerticalGap;
                 return pos - fromPos;
             }
 
@@ -149,7 +150,7 @@ public class MoreSuggestions extends Keyboard {
 
             public int getWidth(int pos) {
                 final int numColumnInRow = getNumColumnInRow(pos);
-                return (mWidth - mDividerWidth * (numColumnInRow - 1)) / numColumnInRow;
+                return (mOccupiedWidth - mDividerWidth * (numColumnInRow - 1)) / numColumnInRow;
             }
 
             public int getFlags(int pos) {

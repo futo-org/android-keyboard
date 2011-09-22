@@ -90,15 +90,12 @@ public class Keyboard {
     /** Total width of the keyboard, including the padding and keys */
     public final int mOccupiedWidth;
 
-    public final int mHeight;
-    public final int mWidth;
-
-    /** Default row height */
-    public final int mDefaultRowHeight;
-
+    /** The padding above the keyboard */
+    public final int mTopPadding;
     /** Default gap between rows */
     public final int mVerticalGap;
 
+    public final int mMostCommonKeyHeight;
     public final int mMostCommonKeyWidth;
 
     /** More keys keyboard template */
@@ -126,14 +123,13 @@ public class Keyboard {
         mId = params.mId;
         mOccupiedHeight = params.mOccupiedHeight;
         mOccupiedWidth = params.mOccupiedWidth;
-        mHeight = params.mHeight;
-        mWidth = params.mWidth;
+        mMostCommonKeyHeight = params.mMostCommonKeyHeight;
         mMostCommonKeyWidth = params.mMostCommonKeyWidth;
         mIsRtlKeyboard = params.mIsRtlKeyboard;
         mMoreKeysTemplate = params.mMoreKeysTemplate;
         mMaxMiniKeyboardColumn = params.mMaxMiniKeyboardColumn;
 
-        mDefaultRowHeight = params.mDefaultRowHeight;
+        mTopPadding = params.mTopPadding;
         mVerticalGap = params.mVerticalGap;
 
         mKeys = Collections.unmodifiableList(params.mKeys);
