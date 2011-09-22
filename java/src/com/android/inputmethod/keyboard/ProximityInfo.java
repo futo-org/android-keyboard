@@ -65,7 +65,8 @@ public class ProximityInfo {
         spellCheckerProximityInfo.mNativeProximityInfo =
                 spellCheckerProximityInfo.setProximityInfoNative(
                         SpellCheckerProximityInfo.ROW_SIZE,
-                        480, 300, 10, 3, SpellCheckerProximityInfo.PROXIMITY);
+                        480, 300, 10, 3, SpellCheckerProximityInfo.PROXIMITY,
+                        0, null, null, null, null, null);
         return spellCheckerProximityInfo;
     }
 
@@ -74,7 +75,9 @@ public class ProximityInfo {
         Utils.loadNativeLibrary();
     }
     private native int setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
-            int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray);
+            int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray,
+            int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
+            int[] keyWidths, int[] keyHeights, int[] keyCharCodes);
     private native void releaseProximityInfoNative(int nativeProximityInfo);
 
     private final void setProximityInfo(int[][] gridNeighborKeyIndexes, int keyboardWidth,
@@ -88,8 +91,23 @@ public class ProximityInfo {
                         keys.get(gridNeighborKeyIndexes[i][j]).mCode;
             }
         }
+        final int keyCount = keys.size();
+        int[] keyXCoordinates = new int[keyCount];
+        int[] keyYCoordinates = new int[keyCount];
+        int[] keyWidths = new int[keyCount];
+        int[] keyHeights = new int[keyCount];
+        int[] keyCharCodes = new int[keyCount];
+        for (int i = 0; i < keyCount; ++i) {
+            final Key key = keys.get(i);
+            keyXCoordinates[i] = key.mX;
+            keyYCoordinates[i] = key.mY;
+            keyWidths[i] = key.mWidth;
+            keyHeights[i] = key.mHeight;
+            keyCharCodes[i] = key.mCode;
+        }
         mNativeProximityInfo = setProximityInfoNative(MAX_PROXIMITY_CHARS_SIZE,
-                keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, proximityCharsArray);
+                keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, proximityCharsArray,
+                keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes);
     }
 
     public int getNativeProximityInfo() {
