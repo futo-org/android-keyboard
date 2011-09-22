@@ -1001,8 +1001,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public boolean onEvaluateFullscreenMode() {
-        return super.onEvaluateFullscreenMode()
-                && mResources.getBoolean(R.bool.config_use_fullscreen_mode);
+        if (!super.onEvaluateFullscreenMode()) return false;
+
+        final EditorInfo ei = getCurrentInputEditorInfo();
+        if (ei != null) {
+            final int imeOptions = ei.imeOptions;
+            if ((imeOptions & EditorInfo.IME_FLAG_NO_EXTRACT_UI) != 0) {
+                return false;
+            }
+        }
+
+        return mResources.getBoolean(R.bool.config_use_fullscreen_mode);
     }
 
     @Override
