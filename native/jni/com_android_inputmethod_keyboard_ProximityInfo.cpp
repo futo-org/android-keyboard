@@ -30,10 +30,24 @@ namespace latinime {
 
 static jint latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
         jint maxProximityCharsSize, jint displayWidth, jint displayHeight, jint gridWidth,
-        jint gridHeight, jintArray proximityCharsArray) {
+        jint gridHeight, jintArray proximityCharsArray, jint keyCount,
+        jintArray keyXCoordinateArray, jintArray keyYCoordinateArray, jintArray keyWidthArray,
+        jintArray keyHeightArray, jintArray keyCharCodeArray) {
     jint* proximityChars = env->GetIntArrayElements(proximityCharsArray, NULL);
+    jint* keyXCoordinates = env->GetIntArrayElements(keyXCoordinateArray, NULL);
+    jint* keyYCoordinates = env->GetIntArrayElements(keyYCoordinateArray, NULL);
+    jint* keyWidths = env->GetIntArrayElements(keyWidthArray, NULL);
+    jint* keyHeights = env->GetIntArrayElements(keyHeightArray, NULL);
+    jint* keyCharCodes = env->GetIntArrayElements(keyCharCodeArray, NULL);
     ProximityInfo *proximityInfo = new ProximityInfo(maxProximityCharsSize, displayWidth,
-            displayHeight, gridWidth, gridHeight, (const uint32_t *)proximityChars);
+            displayHeight, gridWidth, gridHeight, (const uint32_t *)proximityChars,
+            keyCount, (const int32_t *)keyXCoordinates, (const int32_t *)keyYCoordinates,
+            (const int32_t *)keyWidths, (const int32_t *)keyHeights, (const int32_t *)keyCharCodes);
+    env->ReleaseIntArrayElements(keyCharCodeArray, keyCharCodes, 0);
+    env->ReleaseIntArrayElements(keyHeightArray, keyHeights, 0);
+    env->ReleaseIntArrayElements(keyWidthArray, keyWidths, 0);
+    env->ReleaseIntArrayElements(keyYCoordinateArray, keyYCoordinates, 0);
+    env->ReleaseIntArrayElements(keyXCoordinateArray, keyXCoordinates, 0);
     env->ReleaseIntArrayElements(proximityCharsArray, proximityChars, 0);
     return (jint)proximityInfo;
 }
@@ -45,7 +59,7 @@ static void latinime_Keyboard_release(JNIEnv *env, jobject object, jint proximit
 }
 
 static JNINativeMethod sKeyboardMethods[] = {
-    {"setProximityInfoNative", "(IIIII[I)I", (void*)latinime_Keyboard_setProximityInfo},
+    {"setProximityInfoNative", "(IIIII[II[I[I[I[I[I)I", (void*)latinime_Keyboard_setProximityInfo},
     {"releaseProximityInfoNative", "(I)V", (void*)latinime_Keyboard_release}
 };
 

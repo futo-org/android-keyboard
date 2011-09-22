@@ -35,7 +35,9 @@ public:
 
     ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
             const int keybaordHeight, const int gridWidth, const int gridHeight,
-            const uint32_t *proximityCharsArray);
+            const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
+            const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
+            const int32_t *keyCharCodes);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
     void setInputParams(const int* inputCodes, const int inputLength);
@@ -51,7 +53,14 @@ public:
     }
 
 private:
+    // The max number of the keys in one keyboard layout
+    static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
+    // The upper limit of the char code in TOUCH_POSITION_CORRECTION_GROUP
+    static const int MAX_GROUPED_CHAR_CODE = 127;
+
     int getStartIndexFromCoordinates(const int x, const int y) const;
+    void initializeCodeToGroup();
+    void initializeCodeToKeyIndex();
     const int MAX_PROXIMITY_CHARS_SIZE;
     const int KEYBOARD_WIDTH;
     const int KEYBOARD_HEIGHT;
@@ -59,10 +68,18 @@ private:
     const int GRID_HEIGHT;
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
+    const int KEY_COUNT;
     const int *mInputCodes;
     uint32_t *mProximityCharsArray;
+    int32_t mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int32_t mKeyYCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int32_t mKeyWidths[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int32_t mKeyHeights[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    int32_t mKeyCharCodes[MAX_KEY_COUNT_IN_A_KEYBOARD];
     int mInputLength;
     unsigned short mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
+    int mCodeToGroup[MAX_GROUPED_CHAR_CODE + 1];
+    int mCodeToKeyIndex[MAX_GROUPED_CHAR_CODE + 1];
 };
 
 } // namespace latinime
