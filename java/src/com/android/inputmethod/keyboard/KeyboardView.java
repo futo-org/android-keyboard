@@ -84,7 +84,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
     private final float mBackgroundDimAmount;
 
     // HORIZONTAL ELLIPSIS "...", character for popup hint.
-    private static final String POPUP_HINT_CHAR = "...";
+    private static final String POPUP_HINT_CHAR = "\u2026";
 
     // Margin between the label and the icon on a key that has both of them.
     // Specified by the fraction of the key width.
