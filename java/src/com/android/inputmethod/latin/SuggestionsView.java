@@ -237,7 +237,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             paint.setTextSize(textSize);
             paint.setColor(color);
             final Rect bounds = new Rect();
-            paint.getTextBounds(MORE_SUGGESTIONS_HINT, 0, 1, bounds);
+            paint.getTextBounds(MORE_SUGGESTIONS_HINT, 0, MORE_SUGGESTIONS_HINT.length(), bounds);
             final int width = Math.round(bounds.width() + 0.5f);
             final int height = Math.round(bounds.height() + 0.5f);
             final Bitmap buffer = Bitmap.createBitmap(
