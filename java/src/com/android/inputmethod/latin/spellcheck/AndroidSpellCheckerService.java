@@ -334,10 +334,19 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 final String text = textInfo.getText();
 
                 if (shouldFilterOut(text)) {
-                    final DictAndProximity dictInfo = mDictionaryPool.takeOrGetNull();
-                    if (null == dictInfo) return NOT_IN_DICT_EMPTY_SUGGESTIONS;
-                    return dictInfo.mDictionary.isValidWord(text) ? IN_DICT_EMPTY_SUGGESTIONS
-                            : NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                    DictAndProximity dictInfo = null;
+                    try {
+                        dictInfo = mDictionaryPool.takeOrGetNull();
+                        if (null == dictInfo) return NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                        return dictInfo.mDictionary.isValidWord(text) ? IN_DICT_EMPTY_SUGGESTIONS
+                                : NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                    } finally {
+                        if (null != dictInfo) {
+                            if (!mDictionaryPool.offer(dictInfo)) {
+                                Log.e(TAG, "Can't re-insert a dictionary into its pool");
+                            }
+                        }
+                    }
                 }
 
                 final SuggestionsGatherer suggestionsGatherer =
@@ -361,19 +370,25 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
 
                 final int capitalizeType = getCapitalizationType(text);
                 boolean isInDict = true;
-                final DictAndProximity dictInfo = mDictionaryPool.takeOrGetNull();
-                if (null == dictInfo) return NOT_IN_DICT_EMPTY_SUGGESTIONS;
-                dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
-                        dictInfo.mProximityInfo);
-                isInDict = dictInfo.mDictionary.isValidWord(text);
-                if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
-                    // We want to test the word again if it's all caps or first caps only.
-                    // If it's fully down, we already tested it, if it's mixed case, we don't
-                    // want to test a lowercase version of it.
-                    isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
-                }
-                if (!mDictionaryPool.offer(dictInfo)) {
-                    Log.e(TAG, "Can't re-insert a dictionary into its pool");
+                DictAndProximity dictInfo = null;
+                try {
+                    dictInfo = mDictionaryPool.takeOrGetNull();
+                    if (null == dictInfo) return NOT_IN_DICT_EMPTY_SUGGESTIONS;
+                    dictInfo.mDictionary.getWords(composer, suggestionsGatherer,
+                            dictInfo.mProximityInfo);
+                    isInDict = dictInfo.mDictionary.isValidWord(text);
+                    if (!isInDict && CAPITALIZE_NONE != capitalizeType) {
+                        // We want to test the word again if it's all caps or first caps only.
+                        // If it's fully down, we already tested it, if it's mixed case, we don't
+                        // want to test a lowercase version of it.
+                        isInDict = dictInfo.mDictionary.isValidWord(text.toLowerCase(mLocale));
+                    }
+                } finally {
+                    if (null != dictInfo) {
+                        if (!mDictionaryPool.offer(dictInfo)) {
+                            Log.e(TAG, "Can't re-insert a dictionary into its pool");
+                        }
+                    }
                 }
 
                 final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(text,
