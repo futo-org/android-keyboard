@@ -144,26 +144,95 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
      * defines.
      */
     public static class Row {
+        // keyWidth enum constants
+        private static final int KEYWIDTH_NOT_ENUM = 0;
+        private static final int KEYWIDTH_FILL_RIGHT = -1;
+        private static final int KEYWIDTH_FILL_BOTH = -2;
+
+        private final KeyboardParams mParams;
         /** Default width of a key in this row. */
         public final float mDefaultKeyWidth;
         /** Default height of a key in this row. */
         public final int mRowHeight;
 
-        public final int mCurrentY;
+        private final int mCurrentY;
         // Will be updated by {@link Key}'s constructor.
-        public float mCurrentX;
+        private float mCurrentX;
 
         public Row(Resources res, KeyboardParams params, XmlResourceParser parser, int y) {
-            TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
+            mParams = params;
+            TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard);
-            mDefaultKeyWidth = KeyboardBuilder.getDimensionOrFraction(a,
-                    R.styleable.Keyboard_keyWidth, params.mBaseWidth, params.mDefaultKeyWidth);
-            mRowHeight = (int)KeyboardBuilder.getDimensionOrFraction(a,
+            mRowHeight = (int)KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_rowHeight, params.mBaseHeight, params.mDefaultRowHeight);
-            a.recycle();
+            keyboardAttr.recycle();
+            TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
+                    R.styleable.Keyboard_Key);
+            mDefaultKeyWidth = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_Key_keyWidth, params.mBaseWidth, params.mDefaultKeyWidth);
+            keyAttr.recycle();
 
             mCurrentY = y;
             mCurrentX = 0.0f;
+        }
+
+        public void setXPos(float keyXPos) {
+            mCurrentX = keyXPos;
+        }
+
+        public void advanceXPos(float width) {
+            mCurrentX += width;
+        }
+
+        public int getKeyY() {
+            return mCurrentY;
+        }
+
+        public float getKeyX(TypedArray keyAttr) {
+            final int widthType = KeyboardBuilder.getEnumValue(keyAttr,
+                    R.styleable.Keyboard_Key_keyWidth, KEYWIDTH_NOT_ENUM);
+            if (widthType == KEYWIDTH_FILL_BOTH) {
+                // If keyWidth is fillBoth, the key width should start right after the nearest key
+                // on the left hand side.
+                return mCurrentX;
+            }
+
+            final int keyboardRightEdge = mParams.mOccupiedWidth - mParams.mHorizontalEdgesPadding;
+            if (keyAttr.hasValue(R.styleable.Keyboard_Key_keyXPos)) {
+                final float keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
+                        R.styleable.Keyboard_Key_keyXPos, mParams.mBaseWidth, 0);
+                if (keyXPos < 0) {
+                    // If keyXPos is negative, the actual x-coordinate will be
+                    // keyboardWidth + keyXPos.
+                    // keyXPos shouldn't be less than mCurrentX because drawable area for this key
+                    // starts at mCurrentX. Or, this key will overlaps the adjacent key on its left
+                    // hand side.
+                    return Math.max(keyXPos + keyboardRightEdge, mCurrentX);
+                } else {
+                    return keyXPos + mParams.mHorizontalEdgesPadding;
+                }
+            }
+            return mCurrentX;
+        }
+
+        public float getKeyWidth(TypedArray keyAttr, float keyXPos) {
+            final int widthType = KeyboardBuilder.getEnumValue(keyAttr,
+                    R.styleable.Keyboard_Key_keyWidth, KEYWIDTH_NOT_ENUM);
+            switch (widthType) {
+            case KEYWIDTH_FILL_RIGHT:
+            case KEYWIDTH_FILL_BOTH:
+                final int keyboardRightEdge =
+                        mParams.mOccupiedWidth - mParams.mHorizontalEdgesPadding;
+                // If keyWidth is fillRight, the actual key width will be determined to fill out the
+                // area up to the right edge of the keyboard.
+                // If keyWidth is fillBoth, the actual key width will be determined to fill out the
+                // area between the nearest key on the left hand side and the right edge of the
+                // keyboard.
+                return keyboardRightEdge - keyXPos;
+            default: // KEYWIDTH_NOT_ENUM
+                return KeyboardBuilder.getDimensionOrFraction(keyAttr,
+                        R.styleable.Keyboard_Key_keyWidth, mParams.mBaseWidth, mDefaultKeyWidth);
+            }
         }
     }
 
@@ -174,8 +243,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         mDisplayMetrics = res.getDisplayMetrics();
 
         mParams = params;
-        mParams.mHorizontalEdgesPadding = (int)res.getDimension(
-                R.dimen.keyboard_horizontal_edges_padding);
 
         mParams.GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         mParams.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
@@ -270,11 +337,13 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                     R.styleable.Keyboard_keyboardTopPadding, params.mOccupiedHeight, 0);
             params.mBottomPadding = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_keyboardBottomPadding, params.mOccupiedHeight, 0);
+            params.mHorizontalEdgesPadding = (int)getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyboardHorizontalEdgesPadding, mParams.mOccupiedWidth, 0);
 
             params.mBaseWidth = params.mOccupiedWidth - params.mHorizontalEdgesPadding * 2
                     - params.mHorizontalCenterPadding;
-            params.mDefaultKeyWidth = (int)getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyWidth, params.mBaseWidth,
+            params.mDefaultKeyWidth = (int)getDimensionOrFraction(keyAttr,
+                    R.styleable.Keyboard_Key_keyWidth, params.mBaseWidth,
                     params.mBaseWidth / DEFAULT_KEYBOARD_COLUMNS);
             params.mHorizontalGap = (int)getDimensionOrFraction(keyboardAttr,
                     R.styleable.Keyboard_horizontalGap, params.mBaseWidth, 0);
@@ -670,7 +739,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void startRow(Row row) {
-        row.mCurrentX = 0;
         addEdgeSpace(mParams.mHorizontalEdgesPadding, row);
         mCurrentRow = row;
         mLeftEdge = true;
@@ -685,7 +753,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             mRightEdgeKey = null;
         }
         addEdgeSpace(mParams.mHorizontalEdgesPadding, row);
-        mCurrentY += mCurrentRow.mRowHeight;
+        mCurrentY += row.mRowHeight;
         mCurrentRow = null;
         mTopEdge = false;
     }
@@ -706,7 +774,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private void addEdgeSpace(float width, Row row) {
-        row.mCurrentX += width;
+        row.advanceXPos(width);
         mLeftEdge = false;
         mRightEdgeKey = null;
     }

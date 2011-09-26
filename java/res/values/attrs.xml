@@ -144,19 +144,10 @@
         <!-- Minimum keyboard height represented in pixels, percentage of display height if fraction
              is positive, or percentage of display width if fraction is negative. -->
         <attr name="minKeyboardHeight" format="dimension|fraction" />
-        <!-- Keyboard top and bottom paddings. -->
+        <!-- Keyboard top, bottom, both horizontal edges paddings. -->
         <attr name="keyboardTopPadding" format="dimension|fraction" />
         <attr name="keyboardBottomPadding" format="dimension|fraction" />
-        <!-- Default width of a key, in pixels or percentage of display width.
-             If the value is zero, the actual key width will be determined to fill out the area up
-             to the right edge of the keyboard.
-             If the value is negative, the actual key width will be determined to fill out the
-             area between the nearest key on the left hand side and the right edge of the keyboard.
-             -->
-        <attr name="keyWidth" format="dimension|fraction|enum">
-            <enum name="fillRight" value="-1" />
-            <enum name="fillBoth" value="-2" />
-        </attr>
+        <attr name="keyboardHorizontalEdgesPadding" format="dimension|fraction" />
         <!-- Default height of a row (key height + vertical gap), in pixels or percentage of
              keyboard height. -->
         <attr name="rowHeight" format="dimension|fraction" />
@@ -258,6 +249,17 @@
         <!-- Visual insets -->
         <attr name="visualInsetsLeft" format="dimension|fraction" />
         <attr name="visualInsetsRight" format="dimension|fraction" />
+        <!-- Width of the key, in pixels or percentage of display width.
+             If the value is fillRight, the actual key width will be determined to fill out the area
+             up to the right edge of the keyboard.
+             If the value is fillBoth, the actual key width will be determined to fill out the
+             area between the nearest key on the left hand side and the right edge of the keyboard.
+             -->
+        <!-- This should be aligned with KeyboardBuilder.Row.KEYWIDTH_* -->
+        <attr name="keyWidth" format="dimension|fraction|enum">
+            <enum name="fillRight" value="-1" />
+            <enum name="fillBoth" value="-2" />
+        </attr>
         <!-- The X-coordinate of upper right corner of this key including horizontal gap.
              If the value is negative, the origin is the right edge of the keyboard. -->
         <attr name="keyXPos" format="dimension|fraction" />

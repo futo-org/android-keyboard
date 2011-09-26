@@ -25,7 +25,6 @@
     <!-- key_height + key_bottom_gap = popup_key_height -->
 <!--    <dimen name="key_height">0.260in</dimen>-->
     <dimen name="popup_key_height">0.280in</dimen>
-    <dimen name="keyboard_horizontal_edges_padding">0.0in</dimen>
 
     <fraction name="keyboard_top_padding">1.818%p</fraction>
     <fraction name="keyboard_bottom_padding">0.0%p</fraction>

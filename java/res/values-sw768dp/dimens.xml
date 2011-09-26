@@ -24,7 +24,6 @@
     <fraction name="maxKeyboardHeight">50%p</fraction>
     <fraction name="minKeyboardHeight">-35.0%p</fraction>
 
-    <dimen name="keyboard_horizontal_edges_padding">0.0mm</dimen>
     <fraction name="keyboard_top_padding">2.291%p</fraction>
     <fraction name="keyboard_bottom_padding">0.0%p</fraction>
 
