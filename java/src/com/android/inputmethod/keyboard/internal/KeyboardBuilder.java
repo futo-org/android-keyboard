@@ -123,6 +123,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private static final String TAG_DEFAULT = "default";
     public static final String TAG_KEY_STYLE = "key-style";
 
+    private static final int DEFAULT_KEYBOARD_COLUMNS = 10;
+    private static final int DEFAULT_KEYBOARD_ROWS = 4;
+
     protected final KP mParams;
     protected final Context mContext;
     protected final Resources mResources;
@@ -151,14 +154,12 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         public float mCurrentX;
 
         public Row(Resources res, KeyboardParams params, XmlResourceParser parser, int y) {
-            final int keyboardWidth = params.mWidth;
-            final int keyboardHeight = params.mHeight;
             TypedArray a = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard);
             mDefaultKeyWidth = KeyboardBuilder.getDimensionOrFraction(a,
-                    R.styleable.Keyboard_keyWidth, keyboardWidth, params.mDefaultKeyWidth);
+                    R.styleable.Keyboard_keyWidth, params.mBaseWidth, params.mDefaultKeyWidth);
             mRowHeight = (int)KeyboardBuilder.getDimensionOrFraction(a,
-                    R.styleable.Keyboard_rowHeight, keyboardHeight, params.mDefaultRowHeight);
+                    R.styleable.Keyboard_rowHeight, params.mBaseHeight, params.mDefaultRowHeight);
             a.recycle();
 
             mCurrentY = y;
@@ -259,38 +260,40 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 minKeyboardHeight = -(int)getDimensionOrFraction(keyboardAttr,
                         R.styleable.Keyboard_minKeyboardHeight, displayWidth, displayWidth / 2);
             }
+            final KeyboardParams params = mParams;
             // Keyboard height will not exceed maxKeyboardHeight and will not be less than
             // minKeyboardHeight.
-            mParams.mOccupiedHeight = Math.max(
+            params.mOccupiedHeight = Math.max(
                     Math.min(keyboardHeight, maxKeyboardHeight), minKeyboardHeight);
-            mParams.mOccupiedWidth = mParams.mId.mWidth;
-            mParams.mTopPadding = (int)getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyboardTopPadding, mParams.mOccupiedHeight, 0);
-            mParams.mBottomPadding = (int)getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyboardBottomPadding, mParams.mOccupiedHeight, 0);
+            params.mOccupiedWidth = params.mId.mWidth;
+            params.mTopPadding = (int)getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyboardTopPadding, params.mOccupiedHeight, 0);
+            params.mBottomPadding = (int)getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyboardBottomPadding, params.mOccupiedHeight, 0);
 
-            final int height = mParams.mOccupiedHeight;
-            final int width = mParams.mOccupiedWidth - mParams.mHorizontalEdgesPadding * 2
-                    - mParams.mHorizontalCenterPadding;
-            mParams.mHeight = height;
-            mParams.mWidth = width;
-            mParams.mDefaultKeyWidth = (int)getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_keyWidth, width, width / 10);
-            mParams.mDefaultRowHeight = (int)getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_rowHeight, height, height / 4);
-            mParams.mHorizontalGap = (int)getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_horizontalGap, width, 0);
-            mParams.mVerticalGap = (int)getDimensionOrFraction(keyboardAttr,
-                    R.styleable.Keyboard_verticalGap, height, 0);
+            params.mBaseWidth = params.mOccupiedWidth - params.mHorizontalEdgesPadding * 2
+                    - params.mHorizontalCenterPadding;
+            params.mDefaultKeyWidth = (int)getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_keyWidth, params.mBaseWidth,
+                    params.mBaseWidth / DEFAULT_KEYBOARD_COLUMNS);
+            params.mHorizontalGap = (int)getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_horizontalGap, params.mBaseWidth, 0);
+            params.mVerticalGap = (int)getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_verticalGap, params.mOccupiedHeight, 0);
+            params.mBaseHeight = params.mOccupiedHeight - params.mTopPadding
+                    - params.mBottomPadding + params.mVerticalGap;
+            params.mDefaultRowHeight = (int)getDimensionOrFraction(keyboardAttr,
+                    R.styleable.Keyboard_rowHeight, params.mBaseHeight,
+                    params.mBaseHeight / DEFAULT_KEYBOARD_ROWS);
 
-            mParams.mIsRtlKeyboard = keyboardAttr.getBoolean(
+            params.mIsRtlKeyboard = keyboardAttr.getBoolean(
                     R.styleable.Keyboard_isRtlKeyboard, false);
-            mParams.mMoreKeysTemplate = keyboardAttr.getResourceId(
+            params.mMoreKeysTemplate = keyboardAttr.getResourceId(
                     R.styleable.Keyboard_moreKeysTemplate, 0);
-            mParams.mMaxMiniKeyboardColumn = keyAttr.getInt(
+            params.mMaxMiniKeyboardColumn = keyAttr.getInt(
                     R.styleable.Keyboard_Key_maxMoreKeysColumn, 5);
 
-            mParams.mIconsSet.loadIcons(keyboardAttr);
+            params.mIconsSet.loadIcons(keyboardAttr);
         } finally {
             keyAttr.recycle();
             keyboardAttr.recycle();
