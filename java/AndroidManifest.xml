@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        coreApp="true"
         package="com.android.inputmethod.latin">
 
     <uses-permission android:name="android.permission.VIBRATE"/>
