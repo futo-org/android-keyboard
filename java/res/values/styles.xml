@@ -24,6 +24,7 @@
         <item name="moreKeysTemplate">@xml/kbd_mini_keyboard_template</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding</item>
+        <item name="keyboardHorizontalEdgesPadding">@fraction/keyboard_horizontal_edges_padding</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap</item>
         <item name="verticalGap">@fraction/key_bottom_gap</item>
         <item name="maxMoreKeysColumn">@integer/config_max_more_keys_column</item>
