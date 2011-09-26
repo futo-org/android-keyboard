@@ -23,7 +23,6 @@
     <dimen name="keyboardHeight">45.0mm</dimen>
     <fraction name="minKeyboardHeight">45%p</fraction>
 
-    <dimen name="keyboard_horizontal_edges_padding">0dp</dimen>
     <fraction name="keyboard_top_padding">2.444%p</fraction>
     <fraction name="keyboard_bottom_padding">0.0%p</fraction>
     <fraction name="key_bottom_gap">4.911%p</fraction>

@@ -120,11 +120,6 @@ public class Key {
     /** Whether this key needs to show the "..." popup hint for special purposes */
     private boolean mNeedsSpecialPopupHint;
 
-    // keyWidth enum constants
-    private static final int KEYWIDTH_NOT_ENUM = 0;
-    private static final int KEYWIDTH_FILL_RIGHT = -1;
-    private static final int KEYWIDTH_FILL_BOTH = -2;
-
     // RTL parenthesis character swapping map.
     private static final Map<Integer, Integer> sRtlParenthesisMap = new HashMap<Integer, Integer>();
 
@@ -216,21 +211,9 @@ public class Key {
      */
     public Key(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
             XmlResourceParser parser, KeyStyles keyStyles) {
-        final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.Keyboard);
-        mHeight = (int)KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                R.styleable.Keyboard_rowHeight, params.mBaseHeight, row.mRowHeight)
-                - params.mVerticalGap;
-        final float horizontalGap = isSpacer() ? 0
-                : KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                        R.styleable.Keyboard_horizontalGap, params.mBaseWidth,
-                        params.mHorizontalGap);
+        final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         mVerticalGap = params.mVerticalGap;
-        final int widthType = KeyboardBuilder.getEnumValue(keyboardAttr,
-                R.styleable.Keyboard_keyWidth, KEYWIDTH_NOT_ENUM);
-        float keyWidth = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                R.styleable.Keyboard_keyWidth, params.mBaseWidth, row.mDefaultKeyWidth);
-        keyboardAttr.recycle();
+        mHeight = row.mRowHeight - mVerticalGap;
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
@@ -245,38 +228,16 @@ public class Key {
             style = keyStyles.getEmptyKeyStyle();
         }
 
-        final int keyboardWidth = params.mOccupiedWidth;
-        final float x = row.mCurrentX;
-        float keyXPos = KeyboardBuilder.getDimensionOrFraction(keyAttr,
-                R.styleable.Keyboard_Key_keyXPos, keyboardWidth, x);
-        if (keyXPos < 0) {
-            // If keyXPos is negative, the actual x-coordinate will be keyboardWidth + keyXPos.
-            keyXPos += keyboardWidth;
-            if (keyXPos < x) {
-                // keyXPos shouldn't be less than x because drawable area for this key starts
-                // at x. Or, this key will overlaps the adjacent key on its left hand side.
-                keyXPos = x;
-            }
-        }
-        if (widthType == KEYWIDTH_FILL_RIGHT) {
-            // If keyWidth is zero, the actual key width will be determined to fill out the
-            // area up to the right edge of the keyboard.
-            keyWidth = keyboardWidth - keyXPos;
-        } else if (widthType == KEYWIDTH_FILL_BOTH) {
-            // If keyWidth is negative, the actual key width will be determined to fill out the
-            // area between the nearest key on the left hand side and the right edge of the
-            // keyboard.
-            keyXPos = x;
-            keyWidth = keyboardWidth - keyXPos;
-        }
+        final float keyXPos = row.getKeyX(keyAttr);
+        final float keyWidth = row.getKeyWidth(keyAttr, keyXPos);
 
         // Horizontal gap is divided equally to both sides of the key.
         mX = (int) (keyXPos + horizontalGap / 2);
-        mY = row.mCurrentY;
+        mY = row.getKeyY();
         mWidth = (int) (keyWidth - horizontalGap);
         mHorizontalGap = (int) horizontalGap;
         // Update row to have current x coordinate.
-        row.mCurrentX = keyXPos + keyWidth;
+        row.setXPos(keyXPos + keyWidth);
 
         final CharSequence[] moreKeys = style.getTextArray(keyAttr,
                 R.styleable.Keyboard_Key_moreKeys);
@@ -288,20 +249,20 @@ public class Key {
         } else {
             mMoreKeys = moreKeys;
         }
-        mMaxMoreKeysColumn = style.getInt(keyboardAttr, R.styleable.Keyboard_Key_maxMoreKeysColumn,
-                params.mMaxMiniKeyboardColumn);
+        mMaxMoreKeysColumn = style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_maxMoreKeysColumn, params.mMaxMiniKeyboardColumn);
 
-        mBackgroundType = style.getInt(
-                keyAttr, R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
+        mBackgroundType = style.getInt(keyAttr,
+                R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
         mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
         mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
         mEdgeFlags = 0;
 
         final KeyboardIconsSet iconsSet = params.mIconsSet;
         mVisualInsetsLeft = (int) KeyboardBuilder.getDimensionOrFraction(keyAttr,
-                R.styleable.Keyboard_Key_visualInsetsLeft, keyboardWidth, 0);
+                R.styleable.Keyboard_Key_visualInsetsLeft, params.mBaseWidth, 0);
         mVisualInsetsRight = (int) KeyboardBuilder.getDimensionOrFraction(keyAttr,
-                R.styleable.Keyboard_Key_visualInsetsRight, keyboardWidth, 0);
+                R.styleable.Keyboard_Key_visualInsetsRight, params.mBaseWidth, 0);
         mPreviewIcon = iconsSet.getIcon(style.getInt(keyAttr,
                 R.styleable.Keyboard_Key_keyIconPreview, KeyboardIconsSet.ICON_UNDEFINED));
         mIcon = iconsSet.getIcon(style.getInt(keyAttr, R.styleable.Keyboard_Key_keyIcon,
