@@ -122,9 +122,9 @@ public class MiniKeyboard extends Keyboard {
                     mTopRowAdjustment = -1;
                 }
 
-                mWidth = mOccupiedWidth = mNumColumns * mDefaultKeyWidth;
+                mBaseWidth = mOccupiedWidth = mNumColumns * mDefaultKeyWidth;
                 // Need to subtract the bottom row's gutter only.
-                mHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight - mVerticalGap
+                mBaseHeight = mOccupiedHeight = mNumRows * mDefaultRowHeight - mVerticalGap
                         + mTopPadding + mBottomPadding;
             }
 
@@ -219,7 +219,7 @@ public class MiniKeyboard extends Keyboard {
 
             final int keyWidth = getMaxKeyWidth(view, mMoreKeys, mParams.mDefaultKeyWidth);
             mParams.setParameters(mMoreKeys.length, parentKey.mMaxMoreKeysColumn,
-                    keyWidth, parentKeyboard.mDefaultRowHeight, parentKey.mX
+                    keyWidth, parentKeyboard.mMostCommonKeyHeight, parentKey.mX
                             + (mParams.mDefaultKeyWidth - keyWidth) / 2, view.getMeasuredWidth());
         }
 

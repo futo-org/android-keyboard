@@ -32,11 +32,13 @@ import java.util.Set;
 public class KeyboardParams {
     public KeyboardId mId;
 
+    /** Total height and width of the keyboard, including the paddings and keys */
     public int mOccupiedHeight;
     public int mOccupiedWidth;
 
-    public int mHeight;
-    public int mWidth;
+    /** Base height and width of the keyboard used to calculate rows' or keys' heights and widths */
+    public int mBaseHeight;
+    public int mBaseWidth;
 
     public int mTopPadding;
     public int mBottomPadding;
@@ -62,6 +64,7 @@ public class KeyboardParams {
     public final Map<Key, Drawable> mUnshiftedIcons = new HashMap<Key, Drawable>();
     public final KeyboardIconsSet mIconsSet = new KeyboardIconsSet();
 
+    public int mMostCommonKeyHeight = 0;
     public int mMostCommonKeyWidth = 0;
 
     protected void clearKeys() {
@@ -89,21 +92,39 @@ public class KeyboardParams {
         mShiftedIcons.put(key, icon);
     }
 
-    private int mMaxCount = 0;
-    private final Map<Integer, Integer> mHistogram = new HashMap<Integer, Integer>();
+    private int mMaxHeightCount = 0;
+    private int mMaxWidthCount = 0;
+    private final Map<Integer, Integer> mHeightHistogram = new HashMap<Integer, Integer>();
+    private final Map<Integer, Integer> mWidthHistogram = new HashMap<Integer, Integer>();
 
     private void clearHistogram() {
+        mMostCommonKeyHeight = 0;
+        mMaxHeightCount = 0;
+        mHeightHistogram.clear();
+
+        mMaxWidthCount = 0;
         mMostCommonKeyWidth = 0;
-        mMaxCount = 0;
-        mHistogram.clear();
+        mWidthHistogram.clear();
+    }
+
+    private static int updateHistogramCounter(Map<Integer, Integer> histogram, Integer key) {
+        final int count = (histogram.containsKey(key) ? histogram.get(key) : 0) + 1;
+        histogram.put(key, count);
+        return count;
     }
 
     private void updateHistogram(Key key) {
+        final Integer height = key.mHeight + key.mVerticalGap;
+        final int heightCount = updateHistogramCounter(mHeightHistogram, height);
+        if (heightCount > mMaxHeightCount) {
+            mMaxHeightCount = heightCount;
+            mMostCommonKeyHeight = height;
+        }
+
         final Integer width = key.mWidth + key.mHorizontalGap;
-        final int count = (mHistogram.containsKey(width) ? mHistogram.get(width) : 0) + 1;
-        mHistogram.put(width, count);
-        if (count > mMaxCount) {
-            mMaxCount = count;
+        final int widthCount = updateHistogramCounter(mWidthHistogram, width);
+        if (widthCount > mMaxWidthCount) {
+            mMaxWidthCount = widthCount;
             mMostCommonKeyWidth = width;
         }
     }

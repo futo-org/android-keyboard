@@ -219,16 +219,17 @@ public class Key {
         final TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
         mHeight = (int)KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                R.styleable.Keyboard_rowHeight, params.mHeight, row.mRowHeight)
+                R.styleable.Keyboard_rowHeight, params.mBaseHeight, row.mRowHeight)
                 - params.mVerticalGap;
         final float horizontalGap = isSpacer() ? 0
                 : KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                        R.styleable.Keyboard_horizontalGap, params.mWidth, params.mHorizontalGap);
+                        R.styleable.Keyboard_horizontalGap, params.mBaseWidth,
+                        params.mHorizontalGap);
         mVerticalGap = params.mVerticalGap;
         final int widthType = KeyboardBuilder.getEnumValue(keyboardAttr,
                 R.styleable.Keyboard_keyWidth, KEYWIDTH_NOT_ENUM);
         float keyWidth = KeyboardBuilder.getDimensionOrFraction(keyboardAttr,
-                R.styleable.Keyboard_keyWidth, params.mWidth, row.mDefaultKeyWidth);
+                R.styleable.Keyboard_keyWidth, params.mBaseWidth, row.mDefaultKeyWidth);
         keyboardAttr.recycle();
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
