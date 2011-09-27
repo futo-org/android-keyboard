@@ -217,7 +217,7 @@ public class FusionDictionary implements Iterable<Word> {
         int nodeIndex = findIndexOfChar(mRoot, word[charIndex]);
         while (CHARACTER_NOT_FOUND != nodeIndex) {
             currentGroup = currentNode.mData.get(nodeIndex);
-            differentCharIndex = compareArrays(currentGroup.mChars, word, charIndex) ;
+            differentCharIndex = compareArrays(currentGroup.mChars, word, charIndex);
             if (ARRAYS_ARE_EQUAL != differentCharIndex
                     && differentCharIndex < currentGroup.mChars.length) break;
             if (null == currentGroup.mChildren) break;
@@ -268,7 +268,7 @@ public class FusionDictionary implements Iterable<Word> {
                                     + new String(word, 0, word.length));
                         }
                         final CharGroup newGroup = new CharGroup(word,
-                                currentGroup.mBigrams, frequency);
+                                currentGroup.mBigrams, frequency, currentGroup.mChildren);
                         currentNode.mData.set(nodeIndex, newGroup);
                     }
                 } else {
