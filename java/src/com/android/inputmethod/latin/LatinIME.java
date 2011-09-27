@@ -241,7 +241,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
         private static final int MSG_START_ORIENTATION_CHANGE = 8;
         private static final int MSG_START_INPUT_VIEW = 9;
-        private static final int MSG_RESTORE_KEYBOARD_LAYOUT = 10;
+        private static final int MSG_DISPLAY_COMPLETIONS = 10;
+        private static final int MSG_RESTORE_KEYBOARD_LAYOUT = 11;
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
@@ -292,6 +293,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 break;
             case MSG_START_INPUT_VIEW:
                 latinIme.onStartInputView((EditorInfo)msg.obj, false);
+                break;
+            case MSG_DISPLAY_COMPLETIONS:
+                latinIme.onDisplayCompletions((CompletionInfo[])msg.obj);
                 break;
             case MSG_RESTORE_KEYBOARD_LAYOUT:
                 removeMessages(MSG_UPDATE_SHIFT_STATE);
@@ -412,6 +416,18 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // Postpone onStartInputView by ACCUMULATE_START_INPUT_VIEW_DELAY and see if
                 // orientation change has finished.
                 sendMessageDelayed(obtainMessage(MSG_START_INPUT_VIEW, attribute),
+                        ACCUMULATE_START_INPUT_VIEW_DELAY);
+                return true;
+            }
+            return false;
+        }
+
+        public boolean postDisplayCompletions(CompletionInfo[] applicationSpecifiedCompletions) {
+            if (hasMessages(MSG_START_INPUT_VIEW) || hasMessages(MSG_DISPLAY_COMPLETIONS)) {
+                removeMessages(MSG_DISPLAY_COMPLETIONS);
+                // Postpone onDisplayCompletions by ACCUMULATE_START_INPUT_VIEW_DELAY.
+                sendMessageDelayed(
+                        obtainMessage(MSG_DISPLAY_COMPLETIONS, applicationSpecifiedCompletions),
                         ACCUMULATE_START_INPUT_VIEW_DELAY);
                 return true;
             }
@@ -923,6 +939,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public void onDisplayCompletions(CompletionInfo[] applicationSpecifiedCompletions) {
+        if (mHandler.postDisplayCompletions(applicationSpecifiedCompletions)) {
+            return;
+        }
         if (DEBUG) {
             Log.i(TAG, "Received completions:");
             if (applicationSpecifiedCompletions != null) {
