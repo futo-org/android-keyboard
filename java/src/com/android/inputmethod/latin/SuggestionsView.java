@@ -862,7 +862,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     }
 
     @Override
-    public void onDetachedFromWindow() {
+    protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         mHandler.cancelAllMessages();
         hidePreview();
