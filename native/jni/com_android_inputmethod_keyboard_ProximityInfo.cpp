@@ -33,21 +33,21 @@ static jint latinime_Keyboard_setProximityInfo(JNIEnv *env, jobject object,
         jint gridHeight, jintArray proximityCharsArray, jint keyCount,
         jintArray keyXCoordinateArray, jintArray keyYCoordinateArray, jintArray keyWidthArray,
         jintArray keyHeightArray, jintArray keyCharCodeArray) {
-    jint* proximityChars = env->GetIntArrayElements(proximityCharsArray, NULL);
-    jint* keyXCoordinates = env->GetIntArrayElements(keyXCoordinateArray, NULL);
-    jint* keyYCoordinates = env->GetIntArrayElements(keyYCoordinateArray, NULL);
-    jint* keyWidths = env->GetIntArrayElements(keyWidthArray, NULL);
-    jint* keyHeights = env->GetIntArrayElements(keyHeightArray, NULL);
-    jint* keyCharCodes = env->GetIntArrayElements(keyCharCodeArray, NULL);
+    jint *proximityChars = env->GetIntArrayElements(proximityCharsArray, NULL);
+    jint *keyXCoordinates = safeGetIntArrayElements(env, keyXCoordinateArray);
+    jint *keyYCoordinates = safeGetIntArrayElements(env, keyYCoordinateArray);
+    jint *keyWidths = safeGetIntArrayElements(env, keyWidthArray);
+    jint *keyHeights = safeGetIntArrayElements(env, keyHeightArray);
+    jint *keyCharCodes = safeGetIntArrayElements(env, keyCharCodeArray);
     ProximityInfo *proximityInfo = new ProximityInfo(maxProximityCharsSize, displayWidth,
-            displayHeight, gridWidth, gridHeight, (const uint32_t *)proximityChars,
-            keyCount, (const int32_t *)keyXCoordinates, (const int32_t *)keyYCoordinates,
-            (const int32_t *)keyWidths, (const int32_t *)keyHeights, (const int32_t *)keyCharCodes);
-    env->ReleaseIntArrayElements(keyCharCodeArray, keyCharCodes, 0);
-    env->ReleaseIntArrayElements(keyHeightArray, keyHeights, 0);
-    env->ReleaseIntArrayElements(keyWidthArray, keyWidths, 0);
-    env->ReleaseIntArrayElements(keyYCoordinateArray, keyYCoordinates, 0);
-    env->ReleaseIntArrayElements(keyXCoordinateArray, keyXCoordinates, 0);
+            displayHeight, gridWidth, gridHeight, (const uint32_t*)proximityChars,
+            keyCount, (const int32_t*)keyXCoordinates, (const int32_t*)keyYCoordinates,
+            (const int32_t*)keyWidths, (const int32_t*)keyHeights, (const int32_t*)keyCharCodes);
+    safeReleaseIntArrayElements(env, keyCharCodeArray, keyCharCodes);
+    safeReleaseIntArrayElements(env, keyHeightArray, keyHeights);
+    safeReleaseIntArrayElements(env, keyWidthArray, keyWidths);
+    safeReleaseIntArrayElements(env, keyYCoordinateArray, keyYCoordinates);
+    safeReleaseIntArrayElements(env, keyXCoordinateArray, keyXCoordinates);
     env->ReleaseIntArrayElements(proximityCharsArray, proximityChars, 0);
     return (jint)proximityInfo;
 }
@@ -64,7 +64,7 @@ static JNINativeMethod sKeyboardMethods[] = {
 };
 
 int register_ProximityInfo(JNIEnv *env) {
-    const char* const kClassPathName = "com/android/inputmethod/keyboard/ProximityInfo";
+    const char *const kClassPathName = "com/android/inputmethod/keyboard/ProximityInfo";
     return registerNativeMethods(env, kClassPathName, sKeyboardMethods,
             sizeof(sKeyboardMethods) / sizeof(sKeyboardMethods[0]));
 }
