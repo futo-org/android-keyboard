@@ -26,6 +26,14 @@
 
 namespace latinime {
 
+inline void copyOrFillZero(void *to, const void *from, size_t size) {
+    if (from) {
+        memcpy(to, from, size);
+    } else {
+        memset(to, 0, size);
+    }
+}
+
 ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboardWidth,
         const int keyboardHeight, const int gridWidth, const int gridHeight,
         const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
@@ -43,16 +51,11 @@ ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboard
     }
     memcpy(mProximityCharsArray, proximityCharsArray, len * sizeof(mProximityCharsArray[0]));
 
-    if (KEY_COUNT > 0) {
-        if (DEBUG_PROXIMITY_INFO) {
-            LOGI("Create key coordinate array %d", keyCount);
-        }
-        memcpy(mKeyXCoordinates, keyXCoordinates, KEY_COUNT * sizeof(mKeyXCoordinates[0]));
-        memcpy(mKeyYCoordinates, keyYCoordinates, KEY_COUNT * sizeof(mKeyYCoordinates[0]));
-        memcpy(mKeyWidths, keyWidths, KEY_COUNT * sizeof(mKeyWidths[0]));
-        memcpy(mKeyHeights, keyHeights, KEY_COUNT * sizeof(mKeyHeights[0]));
-        memcpy(mKeyCharCodes, keyCharCodes, KEY_COUNT * sizeof(mKeyCharCodes[0]));
-    }
+    copyOrFillZero(mKeyXCoordinates, keyXCoordinates, KEY_COUNT * sizeof(mKeyXCoordinates[0]));
+    copyOrFillZero(mKeyYCoordinates, keyYCoordinates, KEY_COUNT * sizeof(mKeyYCoordinates[0]));
+    copyOrFillZero(mKeyWidths, keyWidths, KEY_COUNT * sizeof(mKeyWidths[0]));
+    copyOrFillZero(mKeyHeights, keyHeights, KEY_COUNT * sizeof(mKeyHeights[0]));
+    copyOrFillZero(mKeyCharCodes, keyCharCodes, KEY_COUNT * sizeof(mKeyCharCodes[0]));
 
     initializeCodeToGroup();
     initializeCodeToKeyIndex();

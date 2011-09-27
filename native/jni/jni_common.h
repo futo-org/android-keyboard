@@ -18,12 +18,28 @@
 #ifndef LATINIME_JNI_COMMON_H
 #define LATINIME_JNI_COMMON_H
 
+#include <stdlib.h>
+
 #include "jni.h"
 
 namespace latinime {
 
-int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* methods,
+int registerNativeMethods(JNIEnv *env, const char *className, JNINativeMethod *methods,
         int numMethods);
+
+inline jint *safeGetIntArrayElements(JNIEnv *env, jintArray jArray) {
+    if (jArray) {
+        return env->GetIntArrayElements(jArray, NULL);
+    } else {
+        return NULL;
+    }
+}
+
+inline void safeReleaseIntArrayElements(JNIEnv *env, jintArray jArray, jint *cArray) {
+    if (jArray) {
+        env->ReleaseIntArrayElements(jArray, cArray, 0);
+    }
+}
 
 } // namespace latinime
 
