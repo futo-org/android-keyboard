@@ -31,6 +31,7 @@ import java.util.Set;
 
 public class KeyboardParams {
     public KeyboardId mId;
+    public int mThemeId;
 
     /** Total height and width of the keyboard, including the paddings and keys */
     public int mOccupiedHeight;

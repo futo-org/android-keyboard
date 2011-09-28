@@ -275,10 +275,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
             if (DEBUG_CACHE) {
                 Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": "
-                        + ((ref == null) ? "LOAD" : "GCed") + " id=" + id);
+                        + ((ref == null) ? "LOAD" : "GCed") + " id=" + id
+                        + " theme=" + Keyboard.themeName(keyboard.mThemeId));
             }
         } else if (DEBUG_CACHE) {
-            Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id);
+            Log.d(TAG, "keyboard cache size=" + mKeyboardCache.size() + ": HIT  id=" + id
+                    + " theme=" + Keyboard.themeName(keyboard.mThemeId));
         }
 
         keyboard.onAutoCorrectionStateChanged(mIsAutoCorrectionActive);

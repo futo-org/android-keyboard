@@ -16,6 +16,7 @@
 
 <resources>
     <declare-styleable name="KeyboardTheme">
+        <attr name="themeId" format="integer" />
         <!-- Keyboard style -->
         <attr name="keyboardStyle" format="reference" />
         <!-- LatinKeyboard style -->

@@ -244,6 +244,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
         mParams = params;
 
+        final TypedArray a = context.obtainStyledAttributes(R.styleable.KeyboardTheme);
+        mParams.mThemeId = a.getInt(R.styleable.KeyboardTheme_themeId, 0);
+        a.recycle();
+
         mParams.GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         mParams.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
     }
