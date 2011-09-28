@@ -27,6 +27,7 @@ public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
     /** Number of key widths from current touch point to search for nearest keys. */
     private static float SEARCH_DISTANCE = 1.2f;
+    private static final int UNKNOWN_THEME = -1;
     private static final int[] EMPTY_INT_ARRAY = new int[0];
 
     private final int mGridWidth;
@@ -66,7 +67,7 @@ public class ProximityInfo {
                 spellCheckerProximityInfo.setProximityInfoNative(
                         SpellCheckerProximityInfo.ROW_SIZE,
                         480, 300, 10, 3, SpellCheckerProximityInfo.PROXIMITY,
-                        0, null, null, null, null, null);
+                        0, null, null, null, null, null, UNKNOWN_THEME);
         return spellCheckerProximityInfo;
     }
 
@@ -77,7 +78,7 @@ public class ProximityInfo {
     private native int setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
             int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray,
             int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
-            int[] keyWidths, int[] keyHeights, int[] keyCharCodes);
+            int[] keyWidths, int[] keyHeights, int[] keyCharCodes, int themeId);
     private native void releaseProximityInfoNative(int nativeProximityInfo);
 
     private final void setProximityInfo(int[][] gridNeighborKeyIndexes, int keyboardWidth,
@@ -97,6 +98,7 @@ public class ProximityInfo {
         int[] keyWidths = new int[keyCount];
         int[] keyHeights = new int[keyCount];
         int[] keyCharCodes = new int[keyCount];
+        final int themeId = 5;    // TODO: Use real theme id.
         for (int i = 0; i < keyCount; ++i) {
             final Key key = keys.get(i);
             keyXCoordinates[i] = key.mX;
@@ -107,7 +109,8 @@ public class ProximityInfo {
         }
         mNativeProximityInfo = setProximityInfoNative(MAX_PROXIMITY_CHARS_SIZE,
                 keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, proximityCharsArray,
-                keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes);
+                keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
+                themeId);
     }
 
     public int getNativeProximityInfo() {
