@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
@@ -86,20 +87,15 @@ public class Key {
     public final int mX;
     /** Y coordinate of the key in the keyboard layout */
     public final int mY;
+    /** Hit bounding box of the key */
+    public final Rect mHitBox = new Rect();
+
     /** Text to output when pressed. This can be multiple characters, like ".com" */
     public final CharSequence mOutputText;
     /** More keys */
     public final CharSequence[] mMoreKeys;
     /** More keys maximum column number */
     public final int mMaxMoreKeysColumn;
-
-    /**
-     * Flags that specify the anchoring to edges of the keyboard for detecting touch events
-     * that are just out of the boundary of the key. This is a bit mask of
-     * {@link Keyboard#EDGE_LEFT}, {@link Keyboard#EDGE_RIGHT},
-     * {@link Keyboard#EDGE_TOP} and {@link Keyboard#EDGE_BOTTOM}.
-     */
-    private int mEdgeFlags;
 
     /** Background type that represents different key background visual than normal one. */
     public final int mBackgroundType;
@@ -167,23 +163,22 @@ public class Key {
      * This constructor is being used only for key in more keys keyboard.
      */
     public Key(Resources res, KeyboardParams params, String moreKeySpec,
-            int x, int y, int width, int height, int edgeFlags) {
+            int x, int y, int width, int height) {
         this(params, MoreKeySpecParser.getLabel(moreKeySpec), null, getIcon(params, moreKeySpec),
                 getCode(res, params, moreKeySpec), MoreKeySpecParser.getOutputText(moreKeySpec),
-                x, y, width, height, edgeFlags);
+                x, y, width, height);
     }
 
     /**
      * This constructor is being used only for key in popup suggestions pane.
      */
     public Key(KeyboardParams params, CharSequence label, CharSequence hintLabel, Drawable icon,
-            int code, CharSequence outputText, int x, int y, int width, int height, int edgeFlags) {
+            int code, CharSequence outputText, int x, int y, int width, int height) {
         mHeight = height - params.mVerticalGap;
         mHorizontalGap = params.mHorizontalGap;
         mVerticalGap = params.mVerticalGap;
         mVisualInsetsLeft = mVisualInsetsRight = 0;
         mWidth = width - mHorizontalGap;
-        mEdgeFlags = edgeFlags;
         mHintLabel = hintLabel;
         mLabelOption = 0;
         mBackgroundType = BACKGROUND_TYPE_NORMAL;
@@ -197,6 +192,7 @@ public class Key {
         // Horizontal gap is divided equally to both sides of the key.
         mX = x + mHorizontalGap / 2;
         mY = y;
+        mHitBox.set(x, y, x + width + 1, y + height);
     }
 
     /**
@@ -212,8 +208,9 @@ public class Key {
     public Key(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
             XmlResourceParser parser, KeyStyles keyStyles) {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
+        final int keyHeight = row.mRowHeight;
         mVerticalGap = params.mVerticalGap;
-        mHeight = row.mRowHeight - mVerticalGap;
+        mHeight = keyHeight - mVerticalGap;
 
         final TypedArray keyAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Key);
@@ -230,12 +227,14 @@ public class Key {
 
         final float keyXPos = row.getKeyX(keyAttr);
         final float keyWidth = row.getKeyWidth(keyAttr, keyXPos);
+        final int keyYPos = row.getKeyY();
 
         // Horizontal gap is divided equally to both sides of the key.
         mX = (int) (keyXPos + horizontalGap / 2);
-        mY = row.getKeyY();
+        mY = keyYPos;
         mWidth = (int) (keyWidth - horizontalGap);
         mHorizontalGap = (int) horizontalGap;
+        mHitBox.set((int)keyXPos, keyYPos, (int)(keyXPos + keyWidth) + 1, keyYPos + keyHeight);
         // Update row to have current x coordinate.
         row.setXPos(keyXPos + keyWidth);
 
@@ -256,7 +255,6 @@ public class Key {
                 R.styleable.Keyboard_Key_backgroundType, BACKGROUND_TYPE_NORMAL);
         mRepeatable = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_isRepeatable, false);
         mEnabled = style.getBoolean(keyAttr, R.styleable.Keyboard_Key_enabled, true);
-        mEdgeFlags = 0;
 
         final KeyboardIconsSet iconsSet = params.mIconsSet;
         mVisualInsetsLeft = (int) KeyboardBuilder.getDimensionOrFraction(keyAttr,
@@ -294,8 +292,20 @@ public class Key {
         keyAttr.recycle();
     }
 
-    public void addEdgeFlags(int flags) {
-        mEdgeFlags |= flags;
+    public void markAsLeftEdge(KeyboardParams params) {
+        mHitBox.left = params.mHorizontalEdgesPadding;
+    }
+
+    public void markAsRightEdge(KeyboardParams params) {
+        mHitBox.right = params.mOccupiedWidth - params.mHorizontalEdgesPadding;
+    }
+
+    public void markAsTopEdge(KeyboardParams params) {
+        mHitBox.top = params.mTopPadding;
+    }
+
+    public void markAsBottomEdge(KeyboardParams params) {
+        mHitBox.bottom = params.mOccupiedHeight + params.mBottomPadding;
     }
 
     public boolean isSticky() {
@@ -427,23 +437,10 @@ public class Key {
      * @param y the y-coordinate of the point
      * @return whether or not the point falls on the key. If the key is attached to an edge, it will
      * assume that all points between the key and the edge are considered to be on the key.
+     * @see {@link #markAsLeftEdge(KeyboardParams)} etc.
      */
     public boolean isOnKey(int x, int y) {
-        final int left = mX - mHorizontalGap / 2;
-        final int right = left + mWidth + mHorizontalGap;
-        final int top = mY;
-        final int bottom = top + mHeight + mVerticalGap;
-        final int flags = mEdgeFlags;
-        if (flags == 0) {
-            return x >= left && x <= right && y >= top && y <= bottom;
-        }
-        final boolean leftEdge = (flags & Keyboard.EDGE_LEFT) != 0;
-        final boolean rightEdge = (flags & Keyboard.EDGE_RIGHT) != 0;
-        final boolean topEdge = (flags & Keyboard.EDGE_TOP) != 0;
-        final boolean bottomEdge = (flags & Keyboard.EDGE_BOTTOM) != 0;
-        // In order to mitigate rounding errors, we use (left <= x <= right) here.
-        return (x >= left || leftEdge) && (x <= right || rightEdge)
-                && (y >= top || topEdge) && (y <= bottom || bottomEdge);
+        return mHitBox.contains(x, y);
     }
 
     /**
@@ -547,7 +544,7 @@ public class Key {
          * This constructor is being used only for divider in more keys keyboard.
          */
         public Spacer(KeyboardParams params, Drawable icon, int x, int y, int width, int height) {
-            super(params, null, null, icon, Keyboard.CODE_DUMMY, null, x, y, width, height, 0);
+            super(params, null, null, icon, Keyboard.CODE_DUMMY, null, x, y, width, height);
         }
 
         @Override

@@ -47,11 +47,6 @@ import java.util.Set;
  * </pre>
  */
 public class Keyboard {
-    public static final int EDGE_LEFT = 0x01;
-    public static final int EDGE_RIGHT = 0x02;
-    public static final int EDGE_TOP = 0x04;
-    public static final int EDGE_BOTTOM = 0x08;
-
     /** Some common keys code.  These should be aligned with values/keycodes.xml */
     public static final int CODE_ENTER = '\n';
     public static final int CODE_TAB = '\t';

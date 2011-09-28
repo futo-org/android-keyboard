@@ -753,7 +753,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         if (mCurrentRow == null)
             throw new InflateException("orphant end row tag");
         if (mRightEdgeKey != null) {
-            mRightEdgeKey.addEdgeFlags(Keyboard.EDGE_RIGHT);
+            mRightEdgeKey.markAsRightEdge(mParams);
             mRightEdgeKey = null;
         }
         addEdgeSpace(mParams.mHorizontalEdgesPadding, row);
@@ -765,11 +765,11 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private void endKey(Key key) {
         mParams.onAddKey(key);
         if (mLeftEdge) {
-            key.addEdgeFlags(Keyboard.EDGE_LEFT);
+            key.markAsLeftEdge(mParams);
             mLeftEdge = false;
         }
         if (mTopEdge) {
-            key.addEdgeFlags(Keyboard.EDGE_TOP);
+            key.markAsTopEdge(mParams);
         }
         mRightEdgeKey = key;
     }
