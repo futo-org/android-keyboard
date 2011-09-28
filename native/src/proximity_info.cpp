@@ -43,7 +43,8 @@ ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboard
           KEYBOARD_HEIGHT(keyboardHeight), GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
-          KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)) {
+          KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)),
+          mInputXCoordinates(NULL), mInputYCoordinates(NULL) {
     const int len = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     mProximityCharsArray = new uint32_t[len];
     if (DEBUG_PROXIMITY_INFO) {
@@ -103,8 +104,11 @@ bool ProximityInfo::hasSpaceProximity(const int x, const int y) const {
 }
 
 // TODO: Calculate nearby codes here.
-void ProximityInfo::setInputParams(const int* inputCodes, const int inputLength) {
+void ProximityInfo::setInputParams(const int* inputCodes, const int inputLength,
+        const int* xCoordinates, const int* yCoordinates) {
     mInputCodes = inputCodes;
+    mInputXCoordinates = xCoordinates;
+    mInputYCoordinates = yCoordinates;
     mInputLength = inputLength;
     for (int i = 0; i < inputLength; ++i) {
         mPrimaryInputWord[i] = getPrimaryCharAt(i);
@@ -158,19 +162,37 @@ bool ProximityInfo::existsAdjacentProximityChars(const int index) const {
 ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(
         const int index, const unsigned short c, const bool checkProximityChars) const {
     const int *currentChars = getProximityCharsAt(index);
+    const int firstChar = currentChars[0];
     const unsigned short baseLowerC = Dictionary::toBaseLowerCase(c);
 
     // The first char in the array is what user typed. If it matches right away,
     // that means the user typed that same char for this pos.
-    if (currentChars[0] == baseLowerC || currentChars[0] == c)
-        return SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR;
+    if (firstChar == baseLowerC || firstChar == c) {
+        if (CALIBRATE_SCORE_BY_TOUCH_COORDINATES) {
+            const SweetSpotType result = calculateSweetSpotType(index, baseLowerC);
+            switch (result) {
+            case UNKNOWN:
+                return EQUIVALENT_CHAR_NORMAL;
+            case IN_SWEET_SPOT:
+                return EQUIVALENT_CHAR_STRONG;
+            case IN_NEUTRAL_AREA:
+                return EQUIVALENT_CHAR_NORMAL;
+            case OUT_OF_NEUTRAL_AREA:
+                return EQUIVALENT_CHAR_WEAK;
+            default:
+                assert(false);
+            }
+        } else {
+            return EQUIVALENT_CHAR_NORMAL;
+        }
+    }
 
     if (!checkProximityChars) return UNRELATED_CHAR;
 
     // If the non-accented, lowercased version of that first character matches c,
     // then we have a non-accented version of the accented character the user
     // typed. Treat it as a close char.
-    if (Dictionary::toBaseLowerCase(currentChars[0]) == baseLowerC)
+    if (Dictionary::toBaseLowerCase(firstChar) == baseLowerC)
         return NEAR_PROXIMITY_CHAR;
 
     // Not an exact nor an accent-alike match: search the list of close keys
@@ -183,6 +205,38 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(
 
     // Was not included, signal this as an unrelated character.
     return UNRELATED_CHAR;
+}
+
+inline float square(const float x) { return x * x; }
+
+ProximityInfo::SweetSpotType ProximityInfo::calculateSweetSpotType(
+        int index, unsigned short baseLowerC) const {
+    if (KEY_COUNT == 0 || !mInputXCoordinates || !mInputYCoordinates
+            || baseLowerC > MAX_CHAR_CODE) {
+        return UNKNOWN;
+    }
+    const int keyIndex = mCodeToKeyIndex[baseLowerC];
+    if (keyIndex < 0) {
+        return UNKNOWN;
+    }
+    const float sweetSpotRadius = mSweetSpotRadii[keyIndex];
+    if (sweetSpotRadius <= 0.0) {
+        return UNKNOWN;
+    }
+    const float sweetSpotCenterX = mSweetSpotCenterXs[keyIndex];
+    const float sweetSpotCenterY = mSweetSpotCenterXs[keyIndex];
+    const float inputX = (float)mInputXCoordinates[index];
+    const float inputY = (float)mInputYCoordinates[index];
+    const float squaredDistance =
+            square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
+    const float squaredSweetSpotRadius = square(sweetSpotRadius);
+    if (squaredDistance <= squaredSweetSpotRadius) {
+        return IN_SWEET_SPOT;
+    }
+    if (squaredDistance <= square(NEUTRAL_AREA_RADIUS_RATIO) * squaredSweetSpotRadius) {
+        return IN_NEUTRAL_AREA;
+    }
+    return OUT_OF_NEUTRAL_AREA;
 }
 
 bool ProximityInfo::sameAsTyped(const unsigned short *word, int length) const {

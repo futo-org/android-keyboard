@@ -165,6 +165,8 @@ static void dumpWord(const unsigned short* word, const int length) {
 
 #define KEYCODE_SPACE ' '
 
+#define CALIBRATE_SCORE_BY_TOUCH_COORDINATES false
+
 #define SUGGEST_WORDS_WITH_MISSING_CHARACTER true
 #define SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER true
 #define SUGGEST_WORDS_WITH_EXCESSIVE_CHARACTER true
@@ -203,5 +205,8 @@ static void dumpWord(const unsigned short* word, const int length) {
 
 #define min(a,b) ((a)<(b)?(a):(b))
 #define max(a,b) ((a)>(b)?(a):(b))
+
+// The ratio of neutral area radius to sweet spot radius.
+#define NEUTRAL_AREA_RADIUS_RATIO 1.3f
 
 #endif // LATINIME_DEFINES_H

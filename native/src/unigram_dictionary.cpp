@@ -238,8 +238,8 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     PROF_END(6);
 }
 
-void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
-        const int *ycoordinates, const int *codes, const int codesSize,
+void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int *xCoordinates,
+        const int *yCoordinates, const int *codes, const int codesSize,
         unsigned short *outWords, int *frequencies) {
     if (DEBUG_DICT) {
         LOGI("initSuggest");
@@ -247,7 +247,7 @@ void UnigramDictionary::initSuggestions(ProximityInfo *proximityInfo, const int 
     mFrequencies = frequencies;
     mOutputChars = outWords;
     mInputLength = codesSize;
-    proximityInfo->setInputParams(codes, codesSize);
+    proximityInfo->setInputParams(codes, codesSize, xCoordinates, yCoordinates);
     mProximityInfo = proximityInfo;
 }
 

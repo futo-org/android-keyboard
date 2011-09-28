@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard;
 import android.graphics.Rect;
 
 import com.android.inputmethod.keyboard.Key;
+import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
@@ -31,6 +32,8 @@ public class ProximityInfo {
     /** Number of key widths from current touch point to search for nearest keys. */
     private static float SEARCH_DISTANCE = 1.2f;
     private static final int[] EMPTY_INT_ARRAY = new int[0];
+    private static final String SUPPORT_TOUCH_POSITION_CORRECTION =
+            "SupportTouchPositionCorrection";
 
     private final int mKeyHeight;
     private final int mGridWidth;
@@ -120,8 +123,10 @@ public class ProximityInfo {
             keyCharCodes[i] = key.mCode;
         }
 
+        final SubtypeSwitcher switcher = SubtypeSwitcher.getInstance();
         final boolean hasTouchPositionCorrectionData =
-                mTouchPositionCorrectionXs != null
+                switcher.currentSubtypeContainsExtraValueKey(SUPPORT_TOUCH_POSITION_CORRECTION)
+                && mTouchPositionCorrectionXs != null
                 && mTouchPositionCorrectionYs != null
                 && mTouchPositionCorrectionRadii != null
                 && mTouchPositionCorrectionXs.length > 0
