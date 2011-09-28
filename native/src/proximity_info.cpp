@@ -38,12 +38,12 @@ ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboard
         const int keyboardHeight, const int gridWidth, const int gridHeight,
         const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
         const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
-        const int32_t *keyCharCodes)
+        const int32_t *keyCharCodes, int themeId)
         : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), KEYBOARD_WIDTH(keyboardWidth),
           KEYBOARD_HEIGHT(keyboardHeight), GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
-          KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)) {
+          KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)), THEME_ID(themeId) {
     const int len = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     mProximityCharsArray = new uint32_t[len];
     if (DEBUG_PROXIMITY_INFO) {

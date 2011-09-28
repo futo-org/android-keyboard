@@ -37,7 +37,7 @@ public:
             const int keybaordHeight, const int gridWidth, const int gridHeight,
             const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
             const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
-            const int32_t *keyCharCodes);
+            const int32_t *keyCharCodes, int themeId);
     ~ProximityInfo();
     bool hasSpaceProximity(const int x, const int y) const;
     void setInputParams(const int* inputCodes, const int inputLength);
@@ -69,6 +69,7 @@ private:
     const int CELL_WIDTH;
     const int CELL_HEIGHT;
     const int KEY_COUNT;
+    const int THEME_ID;
     const int *mInputCodes;
     uint32_t *mProximityCharsArray;
     int32_t mKeyXCoordinates[MAX_KEY_COUNT_IN_A_KEYBOARD];
