@@ -85,10 +85,10 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private static class SuggestionsGatherer implements WordCallback {
         public static class Result {
             public final String[] mSuggestions;
-            public final boolean mLooksLikeTypo;
-            public Result(final String[] gatheredSuggestions, final boolean looksLikeTypo) {
+            public final boolean mHasLikelySuggestions;
+            public Result(final String[] gatheredSuggestions, final boolean hasLikelySuggestions) {
                 mSuggestions = gatheredSuggestions;
-                mLooksLikeTypo = looksLikeTypo;
+                mHasLikelySuggestions = hasLikelySuggestions;
             }
         }
 
@@ -149,19 +149,19 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         public Result getResults(final CharSequence originalText, final double threshold,
                 final int capitalizeType, final Locale locale) {
             final String[] gatheredSuggestions;
-            final boolean looksLikeTypo;
+            final boolean hasLikelySuggestions;
             if (0 == mLength) {
                 // Either we found no suggestions, or we found some BUT the max length was 0.
                 // If we found some mBestSuggestion will not be null. If it is null, then
                 // we found none, regardless of the max length.
                 if (null == mBestSuggestion) {
                     gatheredSuggestions = null;
-                    looksLikeTypo = false;
+                    hasLikelySuggestions = false;
                 } else {
                     gatheredSuggestions = EMPTY_STRING_ARRAY;
                     final double normalizedScore =
                             Utils.calcNormalizedScore(originalText, mBestSuggestion, mBestScore);
-                    looksLikeTypo = (normalizedScore > threshold);
+                    hasLikelySuggestions = (normalizedScore > threshold);
                 }
             } else {
                 if (DBG) {
@@ -195,14 +195,14 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 final CharSequence bestSuggestion = mSuggestions.get(0);
                 final double normalizedScore =
                         Utils.calcNormalizedScore(originalText, bestSuggestion, bestScore);
-                looksLikeTypo = (normalizedScore > threshold);
+                hasLikelySuggestions = (normalizedScore > threshold);
                 if (DBG) {
                     Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
                     Log.i(TAG, "Normalized score = " + normalizedScore + " (threshold " + threshold
-                            + ") => looksLikeTypo = " + looksLikeTypo);
+                            + ") => hasLikelySuggestions = " + hasLikelySuggestions);
                 }
             }
-            return new Result(gatheredSuggestions, looksLikeTypo);
+            return new Result(gatheredSuggestions, hasLikelySuggestions);
         }
     }
 
@@ -349,6 +349,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     }
                 }
 
+                // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
                 final SuggestionsGatherer suggestionsGatherer =
                         new SuggestionsGatherer(suggestionsLimit);
                 final WordComposer composer = new WordComposer();
@@ -397,17 +398,18 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 if (DBG) {
                     Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
                             + suggestionsLimit);
-                    Log.i(TAG, "IsInDict = " + result.mLooksLikeTypo);
-                    Log.i(TAG, "LooksLikeTypo = " + result.mLooksLikeTypo);
+                    Log.i(TAG, "IsInDict = " + isInDict);
+                    Log.i(TAG, "LooksLikeTypo = " + (!isInDict));
+                    Log.i(TAG, "HasLikelySuggestions = " + result.mHasLikelySuggestions);
                     for (String suggestion : result.mSuggestions) {
                         Log.i(TAG, suggestion);
                     }
                 }
 
+                // TODO: actually use result.mHasLikelySuggestions
                 final int flags =
-                        (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY : 0)
-                                | (result.mLooksLikeTypo
-                                        ? SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO : 0);
+                        (isInDict ? SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY
+                                : SuggestionsInfo.RESULT_ATTR_LOOKS_LIKE_TYPO);
                 return new SuggestionsInfo(flags, result.mSuggestions);
             } catch (RuntimeException e) {
                 // Don't kill the keyboard if there is a bug in the spell checker
