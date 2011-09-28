@@ -193,13 +193,11 @@ public class MiniKeyboard extends Keyboard {
                 return (mNumRows - 1 - row) * mDefaultRowHeight + mTopPadding;
             }
 
-            public int getRowFlags(int row) {
-                int rowFlags = 0;
+            public void markAsEdgeKey(Key key, int row) {
                 if (row == 0)
-                    rowFlags |= Keyboard.EDGE_TOP;
+                    key.markAsTopEdge(this);
                 if (isTopRow(row))
-                    rowFlags |= Keyboard.EDGE_BOTTOM;
-                return rowFlags;
+                    key.markAsBottomEdge(this);
             }
 
             private boolean isTopRow(int rowCount) {
@@ -254,8 +252,8 @@ public class MiniKeyboard extends Keyboard {
                 final String moreKeySpec = mMoreKeys[n].toString();
                 final int row = n / params.mNumColumns;
                 final Key key = new Key(mResources, params, moreKeySpec, params.getX(n, row),
-                        params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight,
-                        params.getRowFlags(row));
+                        params.getY(row), params.mDefaultKeyWidth, params.mDefaultRowHeight);
+                params.markAsEdgeKey(key, row);
                 params.onAddKey(key);
             }
             return new MiniKeyboard(params);

@@ -153,23 +153,19 @@ public class MoreSuggestions extends Keyboard {
                 return (mOccupiedWidth - mDividerWidth * (numColumnInRow - 1)) / numColumnInRow;
             }
 
-            public int getFlags(int pos) {
-                int rowFlags = 0;
-
+            public void markAsEdgeKey(Key key, int pos) {
                 final int row = mRowNumbers[pos];
                 if (row == 0)
-                    rowFlags |= Keyboard.EDGE_BOTTOM;
+                    key.markAsBottomEdge(this);
                 if (row == mNumRows - 1)
-                    rowFlags |= Keyboard.EDGE_TOP;
+                    key.markAsTopEdge(this);
 
                 final int numColumnInRow = mNumColumnsInRow[row];
                 final int column = getColumnNumber(pos);
                 if (column == 0)
-                    rowFlags |= Keyboard.EDGE_LEFT;
+                    key.markAsLeftEdge(this);
                 if (column == numColumnInRow - 1)
-                    rowFlags |= Keyboard.EDGE_RIGHT;
-
-                return rowFlags;
+                    key.markAsRightEdge(this);
             }
         }
 
@@ -214,7 +210,8 @@ public class MoreSuggestions extends Keyboard {
                 final int index = pos + SUGGESTION_CODE_BASE;
                 final Key key = new Key(
                         params, word, info, null, index, null, x, y, width,
-                        params.mDefaultRowHeight, params.getFlags(pos));
+                        params.mDefaultRowHeight);
+                params.markAsEdgeKey(key, pos);
                 params.onAddKey(key);
                 final int columnNumber = params.getColumnNumber(pos);
                 final int numColumnInRow = params.getNumColumnInRow(pos);
