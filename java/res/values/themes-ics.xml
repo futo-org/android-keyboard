@@ -16,6 +16,7 @@
 
 <resources>
     <style name="KeyboardTheme.IceCreamSandwich" parent="KeyboardIcons.IceCreamSandwich">
+        <item name="themeId">5</item>
         <item name="keyboardStyle">@style/Keyboard.IceCreamSandwich</item>
         <item name="latinKeyboardStyle">@style/LatinKeyboard.IceCreamSandwich</item>
         <item name="keyboardViewStyle">@style/KeyboardView.IceCreamSandwich</item>

@@ -84,6 +84,7 @@ public class Keyboard {
     public static final int CODE_UNSPECIFIED = -99;
 
     public final KeyboardId mId;
+    public final int mThemeId;
 
     /** Total height of the keyboard, including the padding and keys */
     public final int mOccupiedHeight;
@@ -121,6 +122,7 @@ public class Keyboard {
 
     public Keyboard(KeyboardParams params) {
         mId = params.mId;
+        mThemeId = params.mThemeId;
         mOccupiedHeight = params.mOccupiedHeight;
         mOccupiedWidth = params.mOccupiedWidth;
         mMostCommonKeyHeight = params.mMostCommonKeyHeight;
@@ -237,5 +239,18 @@ public class Keyboard {
      */
     public int[] getNearestKeys(int x, int y) {
         return mProximityInfo.getNearestKeys(x, y);
+    }
+
+    public static String themeName(int themeId) {
+        // This should be aligned with theme-*.xml resource files' themeId attribute.
+        switch (themeId) {
+        case 0: return "Basic";
+        case 1: return "BasicHighContrast";
+        case 5: return "IceCreamSandwich";
+        case 6: return "Stone";
+        case 7: return "StoneBold";
+        case 8: return "GingerBread";
+        default: return null;
+        }
     }
 }
