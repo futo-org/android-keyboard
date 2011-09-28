@@ -1601,6 +1601,17 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             mKeyboardSwitcher.onAutoCorrectionStateChanged(
                     words.hasWordAboveAutoCorrectionScoreThreshold());
         }
+
+        // Put a blue underline to a word in TextView which will be auto-corrected.
+        final InputConnection ic = getCurrentInputConnection();
+        if (ic != null && Utils.willAutoCorrect(words)) {
+            final CharSequence textWithUnderline =
+                    SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
+                            this, mComposingStringBuilder);
+            if (!TextUtils.isEmpty(textWithUnderline)) {
+                ic.setComposingText(textWithUnderline, 1);
+            }
+        }
     }
 
     public void updateSuggestions() {

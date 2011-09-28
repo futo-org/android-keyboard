@@ -790,4 +790,8 @@ public class Utils {
         }
         return -1;
     }
+
+    public static boolean willAutoCorrect(SuggestedWords suggestions) {
+        return !suggestions.mTypedWordValid && suggestions.mHasMinimalSuggestion;
+    }
 }

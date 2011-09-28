@@ -260,7 +260,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
 
         private CharSequence getStyledSuggestionWord(SuggestedWords suggestions, int pos) {
             final CharSequence word = suggestions.getWord(pos);
-            final boolean isAutoCorrect = pos == 1 && willAutoCorrect(suggestions);
+            final boolean isAutoCorrect = pos == 1 && Utils.willAutoCorrect(suggestions);
             final boolean isTypedWordValid = pos == 0 && suggestions.mTypedWordValid;
             if (!isAutoCorrect && !isTypedWordValid)
                 return word;
@@ -278,14 +278,10 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             return spannedWord;
         }
 
-        private static boolean willAutoCorrect(SuggestedWords suggestions) {
-            return !suggestions.mTypedWordValid && suggestions.mHasMinimalSuggestion;
-        }
-
         private int getWordPosition(int index, SuggestedWords suggestions) {
             // TODO: This works for 3 suggestions. Revisit this algorithm when there are 5 or more
             // suggestions.
-            final int centerPos = willAutoCorrect(suggestions) ? 1 : 0;
+            final int centerPos = Utils.willAutoCorrect(suggestions) ? 1 : 0;
             if (index == mCenterSuggestionIndex) {
                 return centerPos;
             } else if (index == centerPos) {
@@ -300,7 +296,7 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             final boolean isSuggested = (pos != 0);
 
             final int color;
-            if (index == mCenterSuggestionIndex && willAutoCorrect(suggestions)) {
+            if (index == mCenterSuggestionIndex && Utils.willAutoCorrect(suggestions)) {
                 color = mColorAutoCorrect;
             } else if (isSuggested) {
                 color = mColorSuggested;
