@@ -35,9 +35,23 @@ inline jint *safeGetIntArrayElements(JNIEnv *env, jintArray jArray) {
     }
 }
 
+inline jfloat *safeGetFloatArrayElements(JNIEnv *env, jfloatArray jArray) {
+    if (jArray) {
+        return env->GetFloatArrayElements(jArray, NULL);
+    } else {
+        return NULL;
+    }
+}
+
 inline void safeReleaseIntArrayElements(JNIEnv *env, jintArray jArray, jint *cArray) {
     if (jArray) {
         env->ReleaseIntArrayElements(jArray, cArray, 0);
+    }
+}
+
+inline void safeReleaseFloatArrayElements(JNIEnv *env, jfloatArray jArray, jfloat *cArray) {
+    if (jArray) {
+        env->ReleaseFloatArrayElements(jArray, cArray, 0);
     }
 }
 
