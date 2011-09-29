@@ -30,6 +30,7 @@ import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -125,6 +126,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     private static final int DEFAULT_KEYBOARD_COLUMNS = 10;
     private static final int DEFAULT_KEYBOARD_ROWS = 4;
+
+    private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;
 
     protected final KP mParams;
     protected final Context mContext;
@@ -248,8 +251,60 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         mParams.mThemeId = a.getInt(R.styleable.KeyboardTheme_themeId, 0);
         a.recycle();
 
+        if (!setTouchPositionCorrectionData(context)) {
+            // In the regression test, setTouchPositionCorrectionData() fails
+            mParams.mTouchPositionCorrectionXs = null;
+            mParams.mTouchPositionCorrectionYs = null;
+            mParams.mTouchPositionCorrectionRadii = null;
+        }
+
         mParams.GRID_WIDTH = res.getInteger(R.integer.config_keyboard_grid_width);
         mParams.GRID_HEIGHT = res.getInteger(R.integer.config_keyboard_grid_height);
+    }
+
+    private boolean setTouchPositionCorrectionData(Context context) {
+        final TypedArray a = context.obtainStyledAttributes(R.styleable.KeyboardTheme);
+        final int resourceId = a.getResourceId(
+                R.styleable.KeyboardTheme_touchPositionCorrectionData, 0);
+        if (resourceId == 0) {
+            // In the regression test, we cannot use theme resources
+            // TODO: Fix this
+            return false;
+        }
+        final String[] data = context.getResources().getStringArray(resourceId);
+        a.recycle();
+        final int dataLength = data.length;
+        if (dataLength % TOUCH_POSITION_CORRECTION_RECORD_SIZE != 0) {
+            if (LatinImeLogger.sDBG) {
+                throw new RuntimeException("the size of touch position correction data is invalid");
+            }
+            return false;
+        }
+        final int length = dataLength / TOUCH_POSITION_CORRECTION_RECORD_SIZE;
+        mParams.mTouchPositionCorrectionXs = new float[length];
+        mParams.mTouchPositionCorrectionYs = new float[length];
+        mParams.mTouchPositionCorrectionRadii = new float[length];
+        try {
+            for (int i = 0; i < dataLength; ++i) {
+                final int type = i % TOUCH_POSITION_CORRECTION_RECORD_SIZE;
+                final int index = i / TOUCH_POSITION_CORRECTION_RECORD_SIZE;
+                final float value = Float.parseFloat(data[i]);
+                if (type == 0) {
+                    mParams.mTouchPositionCorrectionXs[index] = value;
+                } else if (type == 1) {
+                    mParams.mTouchPositionCorrectionYs[index] = value;
+                } else {
+                    mParams.mTouchPositionCorrectionRadii[index] = value;
+                }
+            }
+        } catch (NumberFormatException e) {
+            if (LatinImeLogger.sDBG) {
+                throw new RuntimeException(
+                        "the number format for touch position correction data is invalid");
+            }
+            return false;
+        }
+        return true;
     }
 
     public KeyboardBuilder<KP> load(KeyboardId id) {

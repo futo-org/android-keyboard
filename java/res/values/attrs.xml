@@ -34,7 +34,9 @@
         <attr name="moreSuggestionsViewStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
         <attr name="suggestionPreviewBackgroundStyle" format="reference" />
-        </declare-styleable>
+        <!-- Touch position correction -->
+        <attr name="touchPositionCorrectionData" format="reference" />
+    </declare-styleable>
 
     <declare-styleable name="KeyboardView">
         <!-- Image for the key. This image needs to be a StateListDrawable, with the following

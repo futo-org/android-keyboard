@@ -40,8 +40,13 @@ public class ProximityInfo {
     private final int mKeyboardHeight;
     private final int[][] mGridNeighbors;
 
-    ProximityInfo(
-            int gridWidth, int gridHeight, int minWidth, int height, int keyWidth, List<Key> keys) {
+    private final float[] mTouchPositionCorrectionXs;
+    private final float[] mTouchPositionCorrectionYs;
+    private final float[] mTouchPositionCorrectionRadii;
+
+    ProximityInfo(int gridWidth, int gridHeight, int minWidth, int height, int keyWidth,
+            List<Key> keys, float[] touchPositionCorrectionXs, float[] touchPositionCorrectionYs,
+            float[] touchPositionCorrectionRadii) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -49,6 +54,9 @@ public class ProximityInfo {
         mCellHeight = (height + mGridHeight - 1) / mGridHeight;
         mKeyboardMinWidth = minWidth;
         mKeyboardHeight = height;
+        mTouchPositionCorrectionXs = touchPositionCorrectionXs;
+        mTouchPositionCorrectionYs = touchPositionCorrectionYs;
+        mTouchPositionCorrectionRadii = touchPositionCorrectionRadii;
         mGridNeighbors = new int[mGridSize][];
         if (minWidth == 0 || height == 0) {
             // No proximity required. Keyboard might be mini keyboard.
@@ -58,7 +66,7 @@ public class ProximityInfo {
     }
 
     public static ProximityInfo createDummyProximityInfo() {
-        return new ProximityInfo(1, 1, 1, 1, 1, Collections.<Key>emptyList());
+        return new ProximityInfo(1, 1, 1, 1, 1, Collections.<Key>emptyList(), null, null, null);
     }
 
     public static ProximityInfo createSpellCheckerProximityInfo() {
