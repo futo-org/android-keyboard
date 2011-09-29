@@ -95,6 +95,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         private final int DEFAULT_SUGGESTION_LENGTH = 16;
         private final ArrayList<CharSequence> mSuggestions;
         private final int[] mScores;
+        private final String mOriginalText;
+        private final double mThreshold;
         private final int mMaxLength;
         private int mLength = 0;
 
@@ -103,7 +105,10 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         private String mBestSuggestion = null;
         private int mBestScore = Integer.MIN_VALUE; // As small as possible
 
-        SuggestionsGatherer(final int maxLength) {
+        SuggestionsGatherer(final String originalText, final double threshold,
+                final int maxLength) {
+            mOriginalText = originalText;
+            mThreshold = threshold;
             mMaxLength = maxLength;
             mSuggestions = new ArrayList<CharSequence>(maxLength + 1);
             mScores = new int[mMaxLength];
@@ -146,8 +151,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             return true;
         }
 
-        public Result getResults(final CharSequence originalText, final double threshold,
-                final int capitalizeType, final Locale locale) {
+        public Result getResults(final int capitalizeType, final Locale locale) {
             final String[] gatheredSuggestions;
             final boolean hasLikelySuggestions;
             if (0 == mLength) {
@@ -160,8 +164,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 } else {
                     gatheredSuggestions = EMPTY_STRING_ARRAY;
                     final double normalizedScore =
-                            Utils.calcNormalizedScore(originalText, mBestSuggestion, mBestScore);
-                    hasLikelySuggestions = (normalizedScore > threshold);
+                            Utils.calcNormalizedScore(mOriginalText, mBestSuggestion, mBestScore);
+                    hasLikelySuggestions = (normalizedScore > mThreshold);
                 }
             } else {
                 if (DBG) {
@@ -194,11 +198,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 final int bestScore = mScores[mLength - 1];
                 final CharSequence bestSuggestion = mSuggestions.get(0);
                 final double normalizedScore =
-                        Utils.calcNormalizedScore(originalText, bestSuggestion, bestScore);
-                hasLikelySuggestions = (normalizedScore > threshold);
+                        Utils.calcNormalizedScore(mOriginalText, bestSuggestion, bestScore);
+                hasLikelySuggestions = (normalizedScore > mThreshold);
                 if (DBG) {
                     Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
-                    Log.i(TAG, "Normalized score = " + normalizedScore + " (threshold " + threshold
+                    Log.i(TAG, "Normalized score = " + normalizedScore + " (threshold " + mThreshold
                             + ") => hasLikelySuggestions = " + hasLikelySuggestions);
                 }
             }
@@ -351,7 +355,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
 
                 // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
                 final SuggestionsGatherer suggestionsGatherer =
-                        new SuggestionsGatherer(suggestionsLimit);
+                        new SuggestionsGatherer(text, mService.mTypoThreshold, suggestionsLimit);
                 final WordComposer composer = new WordComposer();
                 final int length = text.length();
                 for (int i = 0; i < length; ++i) {
@@ -392,8 +396,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     }
                 }
 
-                final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(text,
-                        mService.mTypoThreshold, capitalizeType, mLocale);
+                final SuggestionsGatherer.Result result = suggestionsGatherer.getResults(
+                        capitalizeType, mLocale);
 
                 if (DBG) {
                     Log.i(TAG, "Spell checking results for " + text + " with suggestion limit "
