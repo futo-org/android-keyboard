@@ -70,11 +70,17 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private Map<String, Dictionary> mUserDictionaries =
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
 
-    private double mTypoThreshold;
+    // The threshold for a candidate to be offered as a suggestion.
+    private double mSuggestionThreshold;
+    // The threshold for a suggestion to be considered "likely".
+    private double mLikelyThreshold;
 
     @Override public void onCreate() {
         super.onCreate();
-        mTypoThreshold = Double.parseDouble(getString(R.string.spellchecker_typo_threshold_value));
+        mSuggestionThreshold =
+                Double.parseDouble(getString(R.string.spellchecker_suggestion_threshold_value));
+        mLikelyThreshold =
+                Double.parseDouble(getString(R.string.spellchecker_likely_threshold_value));
     }
 
     @Override
@@ -96,7 +102,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         private final ArrayList<CharSequence> mSuggestions;
         private final int[] mScores;
         private final String mOriginalText;
-        private final double mThreshold;
+        private final double mSuggestionThreshold;
+        private final double mLikelyThreshold;
         private final int mMaxLength;
         private int mLength = 0;
 
@@ -105,10 +112,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         private String mBestSuggestion = null;
         private int mBestScore = Integer.MIN_VALUE; // As small as possible
 
-        SuggestionsGatherer(final String originalText, final double threshold,
-                final int maxLength) {
+        SuggestionsGatherer(final String originalText, final double suggestionThreshold,
+                final double likelyThreshold, final int maxLength) {
             mOriginalText = originalText;
-            mThreshold = threshold;
+            mSuggestionThreshold = suggestionThreshold;
+            mLikelyThreshold = likelyThreshold;
             mMaxLength = maxLength;
             mSuggestions = new ArrayList<CharSequence>(maxLength + 1);
             mScores = new int[mMaxLength];
@@ -122,28 +130,42 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             // if it doesn't. See documentation for binarySearch.
             final int insertIndex = positionIndex >= 0 ? positionIndex : -positionIndex - 1;
 
+            if (insertIndex == 0 && mLength >= mMaxLength) {
+                // In the future, we may want to keep track of the best suggestion score even if
+                // we are asked for 0 suggestions. In this case, we can use the following
+                // (tested) code to keep it:
+                // If the maxLength is 0 (should never be less, but if it is, it's treated as 0)
+                // then we need to keep track of the best suggestion in mBestScore and
+                // mBestSuggestion. This is so that we know whether the best suggestion makes
+                // the score cutoff, since we need to know that to return a meaningful
+                // looksLikeTypo.
+                // if (0 >= mMaxLength) {
+                //     if (score > mBestScore) {
+                //         mBestScore = score;
+                //         mBestSuggestion = new String(word, wordOffset, wordLength);
+                //     }
+                // }
+                return true;
+            }
+
+            // Compute the normalized score and skip this word if it's normalized score does not
+            // make the threshold.
+            final String wordString = new String(word, wordOffset, wordLength);
+            final double normalizedScore =
+                    Utils.calcNormalizedScore(mOriginalText, wordString, score);
+            if (normalizedScore < mSuggestionThreshold) {
+                if (DBG) Log.i(TAG, wordString + " does not make the score threshold");
+                return true;
+            }
+
             if (mLength < mMaxLength) {
                 final int copyLen = mLength - insertIndex;
                 ++mLength;
                 System.arraycopy(mScores, insertIndex, mScores, insertIndex + 1, copyLen);
-                mSuggestions.add(insertIndex, new String(word, wordOffset, wordLength));
+                mSuggestions.add(insertIndex, wordString);
             } else {
-                if (insertIndex == 0) {
-                    // If the maxLength is 0 (should never be less, but if it is, it's treated as 0)
-                    // then we need to keep track of the best suggestion in mBestScore and
-                    // mBestSuggestion. This is so that we know whether the best suggestion makes
-                    // the score cutoff, since we need to know that to return a meaningful
-                    // looksLikeTypo.
-                    if (0 >= mMaxLength) {
-                        if (score > mBestScore) {
-                            mBestScore = score;
-                            mBestSuggestion = new String(word, wordOffset, wordLength);
-                        }
-                    }
-                    return true;
-                }
                 System.arraycopy(mScores, 1, mScores, 0, insertIndex);
-                mSuggestions.add(insertIndex, new String(word, wordOffset, wordLength));
+                mSuggestions.add(insertIndex, wordString);
                 mSuggestions.remove(0);
             }
             mScores[insertIndex] = score;
@@ -165,7 +187,7 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     gatheredSuggestions = EMPTY_STRING_ARRAY;
                     final double normalizedScore =
                             Utils.calcNormalizedScore(mOriginalText, mBestSuggestion, mBestScore);
-                    hasLikelySuggestions = (normalizedScore > mThreshold);
+                    hasLikelySuggestions = (normalizedScore > mLikelyThreshold);
                 }
             } else {
                 if (DBG) {
@@ -199,10 +221,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 final CharSequence bestSuggestion = mSuggestions.get(0);
                 final double normalizedScore =
                         Utils.calcNormalizedScore(mOriginalText, bestSuggestion, bestScore);
-                hasLikelySuggestions = (normalizedScore > mThreshold);
+                hasLikelySuggestions = (normalizedScore > mLikelyThreshold);
                 if (DBG) {
                     Log.i(TAG, "Best suggestion : " + bestSuggestion + ", score " + bestScore);
-                    Log.i(TAG, "Normalized score = " + normalizedScore + " (threshold " + mThreshold
+                    Log.i(TAG, "Normalized score = " + normalizedScore
+                            + " (threshold " + mLikelyThreshold
                             + ") => hasLikelySuggestions = " + hasLikelySuggestions);
                 }
             }
@@ -354,8 +377,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 }
 
                 // TODO: Don't gather suggestions if the limit is <= 0 unless necessary
-                final SuggestionsGatherer suggestionsGatherer =
-                        new SuggestionsGatherer(text, mService.mTypoThreshold, suggestionsLimit);
+                final SuggestionsGatherer suggestionsGatherer = new SuggestionsGatherer(text,
+                        mService.mSuggestionThreshold, mService.mLikelyThreshold, suggestionsLimit);
                 final WordComposer composer = new WordComposer();
                 final int length = text.length();
                 for (int i = 0; i < length; ++i) {
