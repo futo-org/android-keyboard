@@ -138,7 +138,7 @@ public class Keyboard {
 
         mProximityInfo = new ProximityInfo(
                 params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
-                mMostCommonKeyWidth, mKeys, params.mTouchPositionCorrectionXs,
+                mMostCommonKeyWidth, mMostCommonKeyHeight, mKeys, params.mTouchPositionCorrectionXs,
                 params.mTouchPositionCorrectionYs, params.mTouchPositionCorrectionRadii);
     }
 

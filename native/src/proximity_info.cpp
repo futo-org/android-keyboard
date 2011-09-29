@@ -20,7 +20,6 @@
 
 #define LOG_TAG "LatinIME: proximity_info.cpp"
 
-#include "defines_touch_position_correction.h"
 #include "dictionary.h"
 #include "proximity_info.h"
 
@@ -38,12 +37,13 @@ ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboard
         const int keyboardHeight, const int gridWidth, const int gridHeight,
         const uint32_t *proximityCharsArray, const int keyCount, const int32_t *keyXCoordinates,
         const int32_t *keyYCoordinates, const int32_t *keyWidths, const int32_t *keyHeights,
-        const int32_t *keyCharCodes, int themeId)
+        const int32_t *keyCharCodes, const float *sweetSpotCenterXs, const float *sweetSpotCenterYs,
+        const float *sweetSpotRadii)
         : MAX_PROXIMITY_CHARS_SIZE(maxProximityCharsSize), KEYBOARD_WIDTH(keyboardWidth),
           KEYBOARD_HEIGHT(keyboardHeight), GRID_WIDTH(gridWidth), GRID_HEIGHT(gridHeight),
           CELL_WIDTH((keyboardWidth + gridWidth - 1) / gridWidth),
           CELL_HEIGHT((keyboardHeight + gridHeight - 1) / gridHeight),
-          KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)), THEME_ID(themeId) {
+          KEY_COUNT(min(keyCount, MAX_KEY_COUNT_IN_A_KEYBOARD)) {
     const int len = GRID_WIDTH * GRID_HEIGHT * MAX_PROXIMITY_CHARS_SIZE;
     mProximityCharsArray = new uint32_t[len];
     if (DEBUG_PROXIMITY_INFO) {
@@ -56,33 +56,24 @@ ProximityInfo::ProximityInfo(const int maxProximityCharsSize, const int keyboard
     copyOrFillZero(mKeyWidths, keyWidths, KEY_COUNT * sizeof(mKeyWidths[0]));
     copyOrFillZero(mKeyHeights, keyHeights, KEY_COUNT * sizeof(mKeyHeights[0]));
     copyOrFillZero(mKeyCharCodes, keyCharCodes, KEY_COUNT * sizeof(mKeyCharCodes[0]));
+    copyOrFillZero(mSweetSpotCenterXs, sweetSpotCenterXs,
+            KEY_COUNT * sizeof(mSweetSpotCenterXs[0]));
+    copyOrFillZero(mSweetSpotCenterYs, sweetSpotCenterYs,
+            KEY_COUNT * sizeof(mSweetSpotCenterYs[0]));
+    copyOrFillZero(mSweetSpotRadii, sweetSpotRadii, KEY_COUNT * sizeof(mSweetSpotRadii[0]));
 
-    initializeCodeToGroup();
     initializeCodeToKeyIndex();
-}
-
-// Build the reversed look up table from the char code to the index in its group.
-// see TOUCH_POSITION_CORRECTION_GROUPS
-void ProximityInfo::initializeCodeToGroup() {
-    memset(mCodeToGroup, -1, (MAX_GROUPED_CHAR_CODE + 1) * sizeof(mCodeToGroup[0]));
-    for (int i = 0; i < CORRECTION_GROUP_COUNT; ++i) {
-        const char *group = TOUCH_POSITION_CORRECTION_GROUPS[i];
-        for (int j = 0; group[j]; ++j) {
-            const int code = group[j];
-            if (0 <= code && code <= MAX_GROUPED_CHAR_CODE)
-                mCodeToGroup[code] = i;
-        }
-    }
 }
 
 // Build the reversed look up table from the char code to the index in mKeyXCoordinates,
 // mKeyYCoordinates, mKeyWidths, mKeyHeights, mKeyCharCodes.
 void ProximityInfo::initializeCodeToKeyIndex() {
-    memset(mCodeToKeyIndex, -1, (MAX_GROUPED_CHAR_CODE + 1) * sizeof(mCodeToKeyIndex[0]));
+    memset(mCodeToKeyIndex, -1, (MAX_CHAR_CODE + 1) * sizeof(mCodeToKeyIndex[0]));
     for (int i = 0; i < KEY_COUNT; ++i) {
         const int code = mKeyCharCodes[i];
-        if (0 <= code && code <= MAX_GROUPED_CHAR_CODE)
+        if (0 <= code && code <= MAX_CHAR_CODE) {
             mCodeToKeyIndex[code] = i;
+        }
     }
 }
 
@@ -210,6 +201,6 @@ bool ProximityInfo::sameAsTyped(const unsigned short *word, int length) const {
 }
 
 const int ProximityInfo::MAX_KEY_COUNT_IN_A_KEYBOARD;
-const int ProximityInfo::MAX_GROUPED_CHAR_CODE;
+const int ProximityInfo::MAX_CHAR_CODE;
 
 } // namespace latinime
