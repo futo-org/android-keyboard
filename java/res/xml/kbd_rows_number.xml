@@ -36,6 +36,7 @@
                     latin:keyStyle="num2KeyStyle" />
                 <Key
                     latin:keyStyle="num3KeyStyle" />
+                <Spacer />
             </Row>
             <Row>
                 <Key
@@ -44,6 +45,7 @@
                     latin:keyStyle="num5KeyStyle" />
                 <Key
                     latin:keyStyle="num6KeyStyle" />
+                <Spacer />
             </Row>
             <Row>
                 <Key
