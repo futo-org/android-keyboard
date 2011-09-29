@@ -60,6 +60,7 @@ public class XmlDictInputOutput {
         final FusionDictionary mDictionary;
         int mState; // the state of the parser
         int mFreq; // the currently read freq
+        String mWord; // the current word
         final HashMap<String, ArrayList<WeightedString>> mBigramsMap;
 
         /**
@@ -72,6 +73,7 @@ public class XmlDictInputOutput {
                 HashMap<String, ArrayList<WeightedString>> bigrams) {
             mDictionary = dict;
             mBigramsMap = bigrams;
+            mWord = "";
             mState = START;
             mFreq = 0;
         }
@@ -80,6 +82,7 @@ public class XmlDictInputOutput {
         public void startElement(String uri, String localName, String qName, Attributes attrs) {
             if (WORD_TAG.equals(localName)) {
                 mState = WORD;
+                mWord = "";
                 for (int attrIndex = 0; attrIndex < attrs.getLength(); ++attrIndex) {
                     final String attrName = attrs.getLocalName(attrIndex);
                     if (FREQUENCY_ATTR.equals(attrName)) {
@@ -94,14 +97,19 @@ public class XmlDictInputOutput {
         @Override
         public void characters(char[] ch, int start, int length) {
             if (WORD == mState) {
-                final String word = String.copyValueOf(ch, start, length);
-                mDictionary.add(word, mFreq, mBigramsMap.get(word));
+                // The XML parser is free to return text in arbitrary chunks one after the
+                // other. In particular, this happens in some implementations when it finds
+                // an escape code like "&amp;".
+                mWord += String.copyValueOf(ch, start, length);
             }
         }
 
         @Override
         public void endElement(String uri, String localName, String qName) {
-            if (WORD == mState) mState = START;
+            if (WORD == mState) {
+                mDictionary.add(mWord, mFreq, mBigramsMap.get(mWord));
+                mState = START;
+            }
         }
     }
 
