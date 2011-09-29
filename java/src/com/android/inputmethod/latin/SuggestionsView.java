@@ -27,6 +27,7 @@ import android.graphics.Paint.Align;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.os.SystemClock;
@@ -506,31 +507,28 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
         mMoreSuggestionsView = (MoreSuggestionsView)mMoreSuggestionsContainer
                 .findViewById(R.id.more_suggestions_view);
         mMoreSuggestionsBuilder = new MoreSuggestions.Builder(mMoreSuggestionsView);
-        mMoreSuggestionsWindow = new PopupWindow(context);
-        mMoreSuggestionsWindow.setWindowLayoutMode(
+
+        final PopupWindow moreWindow = new PopupWindow(context);
+        moreWindow.setWindowLayoutMode(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        mMoreSuggestionsWindow.setBackgroundDrawable(null);
+        moreWindow.setBackgroundDrawable(new ColorDrawable(android.R.color.transparent));
+        moreWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NOT_NEEDED);
+        moreWindow.setFocusable(true);
+        moreWindow.setOutsideTouchable(true);
+        moreWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                mKeyboardView.dimEntireKeyboard(false);
+            }
+        });
+        mMoreSuggestionsWindow = moreWindow;
+
         final Resources res = context.getResources();
         mMoreSuggestionsModalTolerance = res.getDimensionPixelOffset(
                 R.dimen.more_suggestions_modal_tolerance);
         mMoreSuggestionsSlidingDetector = new GestureDetector(
                 context, mMoreSuggestionsSlidingListener);
     }
-
-    private final View.OnTouchListener mMoreSuggestionsCanceller = new View.OnTouchListener() {
-        @Override
-        public boolean onTouch(View view, MotionEvent me) {
-            if (!mMoreSuggestionsWindow.isShowing()) return false;
-
-            switch (me.getAction()) {
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_POINTER_UP:
-                return mMoreSuggestionsView.dismissMoreKeysPanel();
-            default:
-                return true;
-            }
-        }
-    };
 
     /**
      * A connection back to the input method.
@@ -726,8 +724,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
     private boolean dismissMoreSuggestions() {
         if (mMoreSuggestionsWindow.isShowing()) {
             mMoreSuggestionsWindow.dismiss();
-            mKeyboardView.dimEntireKeyboard(false);
-            mKeyboardView.setOnTouchListener(null);
             return true;
         }
         return false;
@@ -767,7 +763,6 @@ public class SuggestionsView extends RelativeLayout implements OnClickListener,
             mOriginX = mLastX;
             mOriginY = mLastY;
             mKeyboardView.dimEntireKeyboard(true);
-            mKeyboardView.setOnTouchListener(mMoreSuggestionsCanceller);
             for (int i = 0; i < params.mSuggestionsCountInStrip; i++) {
                 mWords.get(i).setPressed(false);
             }

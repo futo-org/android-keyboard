@@ -163,8 +163,6 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
                 - (container.getMeasuredHeight() - container.getPaddingBottom())
                 + parentView.getPaddingTop() + mCoordinates[1];
 
-        window.setInputMethodMode(PopupWindow.INPUT_METHOD_NOT_NEEDED);
-        window.setOutsideTouchable(true);
         window.setContentView(container);
         window.setWidth(container.getMeasuredWidth());
         window.setHeight(container.getMeasuredHeight());
@@ -219,22 +217,6 @@ public class MoreSuggestionsView extends KeyboardView implements MoreKeysPanel {
             return EMPTY_TIMER_PROXY;
         }
     };
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent me) {
-        final int index = me.getActionIndex();
-        final int id = me.getPointerId(index);
-        final PointerTracker tracker = PointerTracker.getPointerTracker(id, this);
-        final int x = (int)me.getX(index);
-        final int y = (int)me.getY(index);
-        final boolean inside = (x >= 0 && x < getWidth() && y >= 0 && y < getHeight());
-        if (inside || tracker.isInSlidingKeyInput()) {
-            return super.dispatchTouchEvent(me);
-        } else {
-            dismissMoreKeysPanel();
-            return true;
-        }
-    }
 
     @Override
     public boolean onTouchEvent(MotionEvent me) {
