@@ -16,6 +16,9 @@
 
 package com.android.inputmethod.keyboard;
 
+import android.graphics.Rect;
+
+import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 
@@ -27,9 +30,9 @@ public class ProximityInfo {
     public static final int MAX_PROXIMITY_CHARS_SIZE = 16;
     /** Number of key widths from current touch point to search for nearest keys. */
     private static float SEARCH_DISTANCE = 1.2f;
-    private static final int UNKNOWN_THEME = -1;
     private static final int[] EMPTY_INT_ARRAY = new int[0];
 
+    private final int mKeyHeight;
     private final int mGridWidth;
     private final int mGridHeight;
     private final int mGridSize;
@@ -45,8 +48,8 @@ public class ProximityInfo {
     private final float[] mTouchPositionCorrectionRadii;
 
     ProximityInfo(int gridWidth, int gridHeight, int minWidth, int height, int keyWidth,
-            List<Key> keys, float[] touchPositionCorrectionXs, float[] touchPositionCorrectionYs,
-            float[] touchPositionCorrectionRadii) {
+            int keyHeight, List<Key> keys, float[] touchPositionCorrectionXs,
+            float[] touchPositionCorrectionYs, float[] touchPositionCorrectionRadii) {
         mGridWidth = gridWidth;
         mGridHeight = gridHeight;
         mGridSize = mGridWidth * mGridHeight;
@@ -54,6 +57,7 @@ public class ProximityInfo {
         mCellHeight = (height + mGridHeight - 1) / mGridHeight;
         mKeyboardMinWidth = minWidth;
         mKeyboardHeight = height;
+        mKeyHeight = keyHeight;
         mTouchPositionCorrectionXs = touchPositionCorrectionXs;
         mTouchPositionCorrectionYs = touchPositionCorrectionYs;
         mTouchPositionCorrectionRadii = touchPositionCorrectionRadii;
@@ -66,7 +70,7 @@ public class ProximityInfo {
     }
 
     public static ProximityInfo createDummyProximityInfo() {
-        return new ProximityInfo(1, 1, 1, 1, 1, Collections.<Key>emptyList(), null, null, null);
+        return new ProximityInfo(1, 1, 1, 1, 1, 1, Collections.<Key>emptyList(), null, null, null);
     }
 
     public static ProximityInfo createSpellCheckerProximityInfo() {
@@ -75,7 +79,7 @@ public class ProximityInfo {
                 spellCheckerProximityInfo.setProximityInfoNative(
                         SpellCheckerProximityInfo.ROW_SIZE,
                         480, 300, 10, 3, SpellCheckerProximityInfo.PROXIMITY,
-                        0, null, null, null, null, null, UNKNOWN_THEME);
+                        0, null, null, null, null, null, null, null, null);
         return spellCheckerProximityInfo;
     }
 
@@ -86,7 +90,8 @@ public class ProximityInfo {
     private native int setProximityInfoNative(int maxProximityCharsSize, int displayWidth,
             int displayHeight, int gridWidth, int gridHeight, int[] proximityCharsArray,
             int keyCount, int[] keyXCoordinates, int[] keyYCoordinates,
-            int[] keyWidths, int[] keyHeights, int[] keyCharCodes, int themeId);
+            int[] keyWidths, int[] keyHeights, int[] keyCharCodes,
+            float[] sweetSpotCenterX, float[] sweetSpotCenterY, float[] sweetSpotRadii);
     private native void releaseProximityInfoNative(int nativeProximityInfo);
 
     private final void setProximityInfo(int[][] gridNeighborKeyIndexes, int keyboardWidth,
@@ -101,12 +106,11 @@ public class ProximityInfo {
             }
         }
         final int keyCount = keys.size();
-        int[] keyXCoordinates = new int[keyCount];
-        int[] keyYCoordinates = new int[keyCount];
-        int[] keyWidths = new int[keyCount];
-        int[] keyHeights = new int[keyCount];
-        int[] keyCharCodes = new int[keyCount];
-        final int themeId = 5;    // TODO: Use real theme id.
+        final int[] keyXCoordinates = new int[keyCount];
+        final int[] keyYCoordinates = new int[keyCount];
+        final int[] keyWidths = new int[keyCount];
+        final int[] keyHeights = new int[keyCount];
+        final int[] keyCharCodes = new int[keyCount];
         for (int i = 0; i < keyCount; ++i) {
             final Key key = keys.get(i);
             keyXCoordinates[i] = key.mX;
@@ -115,10 +119,51 @@ public class ProximityInfo {
             keyHeights[i] = key.mHeight;
             keyCharCodes[i] = key.mCode;
         }
+
+        final boolean hasTouchPositionCorrectionData =
+                mTouchPositionCorrectionXs != null
+                && mTouchPositionCorrectionYs != null
+                && mTouchPositionCorrectionRadii != null
+                && mTouchPositionCorrectionXs.length > 0
+                && mTouchPositionCorrectionYs.length > 0
+                && mTouchPositionCorrectionRadii.length > 0;
+        final float[] sweetSpotCenterXs =
+                hasTouchPositionCorrectionData ? new float[keyCount] : null;
+        final float[] sweetSpotCenterYs =
+                hasTouchPositionCorrectionData ? new float[keyCount] : null;
+        final float[] sweetSpotRadii =
+                hasTouchPositionCorrectionData ? new float[keyCount] : null;
+        if (hasTouchPositionCorrectionData) {
+            calculateSweetSpot(keys, sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
+        }
+
         mNativeProximityInfo = setProximityInfoNative(MAX_PROXIMITY_CHARS_SIZE,
                 keyboardWidth, keyboardHeight, mGridWidth, mGridHeight, proximityCharsArray,
                 keyCount, keyXCoordinates, keyYCoordinates, keyWidths, keyHeights, keyCharCodes,
-                themeId);
+                sweetSpotCenterXs, sweetSpotCenterYs, sweetSpotRadii);
+    }
+
+    private void calculateSweetSpot(List<Key> keys, float[] sweetSpotCenterXs,
+            float[] sweetSpotCenterYs, float[] sweetSpotRadii) {
+        final int keyCount = keys.size();
+        for (int i = 0; i < keyCount; ++i) {
+            final Key key = keys.get(i);
+            final Rect hitBox = key.mHitBox;
+            final int row = hitBox.top / mKeyHeight;
+            if (row < mTouchPositionCorrectionRadii.length) {
+                final float hitBoxCenterX = (hitBox.left + hitBox.right) * 0.5f;
+                final float hitBoxCenterY = (hitBox.top + hitBox.bottom) * 0.5f;
+                final float hitBoxWidth = hitBox.right - hitBox.left;
+                final float hitBoxHeight = hitBox.bottom - hitBox.top;
+                final float x = mTouchPositionCorrectionXs[row];
+                final float y = mTouchPositionCorrectionYs[row];
+                final float radius = mTouchPositionCorrectionRadii[row];
+                sweetSpotCenterXs[i] = hitBoxCenterX + x * hitBoxWidth;
+                sweetSpotCenterYs[i] = hitBoxCenterY + y * hitBoxHeight;
+                sweetSpotRadii[i] = radius
+                        * (float)Math.sqrt(hitBoxWidth * hitBoxWidth + hitBoxHeight * hitBoxHeight);
+            }
+        }
     }
 
     public int getNativeProximityInfo() {
