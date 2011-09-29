@@ -68,6 +68,10 @@ public class KeyboardParams {
     public int mMostCommonKeyHeight = 0;
     public int mMostCommonKeyWidth = 0;
 
+    public float[] mTouchPositionCorrectionXs;
+    public float[] mTouchPositionCorrectionYs;
+    public float[] mTouchPositionCorrectionRadii;
+
     protected void clearKeys() {
         mKeys.clear();
         mShiftKeys.clear();
