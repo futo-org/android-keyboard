@@ -1661,9 +1661,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(
                         autoCorrectionAvailable);
             } else {
-                final SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
-                if (previousSuggestions == mSettingsValues.mSuggestPuncList)
-                    return;
+                SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
+                if (previousSuggestions == mSettingsValues.mSuggestPuncList) {
+                    if (builder.size() == 0) {
+                        return;
+                    }
+                    previousSuggestions = SuggestedWords.EMPTY;
+                }
                 builder.addTypedWordAndPreviousSuggestions(typedWord, previousSuggestions);
             }
         }
