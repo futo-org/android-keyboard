@@ -132,7 +132,8 @@ void UnigramDictionary::getWordWithDigraphSuggestionsRec(ProximityInfo *proximit
         memcpy(codesDest, codesSrc, remainingBytes);
 
     getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codesBuffer,
-            (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, outWords, frequencies);
+            (codesDest - codesBuffer) / MAX_PROXIMITY_CHARS + codesRemain, outWords, frequencies,
+            flags);
 }
 
 int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
@@ -146,7 +147,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
                 codesSize, flags, codes, codesSize, 0, codesBuffer, outWords, frequencies);
     } else { // Normal processing
         getWordSuggestions(proximityInfo, xcoordinates, ycoordinates, codes, codesSize,
-                outWords, frequencies);
+                outWords, frequencies, flags);
     }
 
     PROF_START(20);
@@ -175,7 +176,7 @@ int UnigramDictionary::getSuggestions(ProximityInfo *proximityInfo, const int *x
 
 void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int *ycoordinates, const int *codes, const int codesSize,
-        unsigned short *outWords, int *frequencies) {
+        unsigned short *outWords, int *frequencies, const int flags) {
 
     PROF_OPEN;
     PROF_START(0);
@@ -187,9 +188,10 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
     mCorrection->initCorrection(mProximityInfo, mInputLength, maxDepth);
     PROF_END(0);
 
+    const bool useFullEditDistance = USE_FULL_EDIT_DISTANCE & flags;
     // TODO: remove
     PROF_START(1);
-    getSuggestionCandidates();
+    getSuggestionCandidates(useFullEditDistance);
     PROF_END(1);
 
     PROF_START(2);
@@ -212,7 +214,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
             if (DEBUG_DICT) {
                 LOGI("--- Suggest missing space characters %d", i);
             }
-            getMissingSpaceWords(mInputLength, i, mCorrection);
+            getMissingSpaceWords(mInputLength, i, mCorrection, useFullEditDistance);
         }
     }
     PROF_END(5);
@@ -231,7 +233,7 @@ void UnigramDictionary::getWordSuggestions(ProximityInfo *proximityInfo,
                         i, x, y, proximityInfo->hasSpaceProximity(x, y));
             }
             if (proximityInfo->hasSpaceProximity(x, y)) {
-                getMistypedSpaceWords(mInputLength, i, mCorrection);
+                getMistypedSpaceWords(mInputLength, i, mCorrection, useFullEditDistance);
             }
         }
     }
@@ -315,10 +317,10 @@ bool UnigramDictionary::addWord(unsigned short *word, int length, int frequency)
 static const char QUOTE = '\'';
 static const char SPACE = ' ';
 
-void UnigramDictionary::getSuggestionCandidates() {
+void UnigramDictionary::getSuggestionCandidates(const bool useFullEditDistance) {
     // TODO: Remove setCorrectionParams
     mCorrection->setCorrectionParams(0, 0, 0,
-            -1 /* spaceProximityPos */, -1 /* missingSpacePos */);
+            -1 /* spaceProximityPos */, -1 /* missingSpacePos */, useFullEditDistance);
     int rootPosition = ROOT_POS;
     // Get the number of children of root, then increment the position
     int childCount = Dictionary::getCount(DICT_ROOT, &rootPosition);
@@ -349,16 +351,20 @@ void UnigramDictionary::getSuggestionCandidates() {
 }
 
 void UnigramDictionary::getMissingSpaceWords(
-        const int inputLength, const int missingSpacePos, Correction *correction) {
+        const int inputLength, const int missingSpacePos, Correction *correction,
+        const bool useFullEditDistance) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
-            -1 /* transposedPos */, -1 /* spaceProximityPos */, missingSpacePos);
+            -1 /* transposedPos */, -1 /* spaceProximityPos */, missingSpacePos,
+            useFullEditDistance);
     getSplitTwoWordsSuggestion(inputLength, correction);
 }
 
 void UnigramDictionary::getMistypedSpaceWords(
-        const int inputLength, const int spaceProximityPos, Correction *correction) {
+        const int inputLength, const int spaceProximityPos, Correction *correction,
+        const bool useFullEditDistance) {
     correction->setCorrectionParams(-1 /* skipPos */, -1 /* excessivePos */,
-            -1 /* transposedPos */, spaceProximityPos, -1 /* missingSpacePos */);
+            -1 /* transposedPos */, spaceProximityPos, -1 /* missingSpacePos */,
+            useFullEditDistance);
     getSplitTwoWordsSuggestion(inputLength, correction);
 }
 

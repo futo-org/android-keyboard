@@ -78,7 +78,7 @@ private:
 
     void getWordSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
-            unsigned short *outWords, int *frequencies);
+            unsigned short *outWords, int *frequencies, const int flags);
     bool isDigraph(const int* codes, const int i, const int codesSize) const;
     void getWordWithDigraphSuggestionsRec(ProximityInfo *proximityInfo,
         const int *xcoordinates, const int* ycoordinates, const int *codesBuffer,
@@ -87,13 +87,13 @@ private:
     void initSuggestions(ProximityInfo *proximityInfo, const int *xcoordinates,
             const int *ycoordinates, const int *codes, const int codesSize,
             unsigned short *outWords, int *frequencies);
-    void getSuggestionCandidates();
+    void getSuggestionCandidates(const bool useFullEditDistance);
     bool addWord(unsigned short *word, int length, int frequency);
     void getSplitTwoWordsSuggestion(const int inputLength, Correction *correction);
-    void getMissingSpaceWords(
-            const int inputLength, const int missingSpacePos, Correction *correction);
-    void getMistypedSpaceWords(
-            const int inputLength, const int spaceProximityPos, Correction *correction);
+    void getMissingSpaceWords(const int inputLength, const int missingSpacePos,
+            Correction *correction, const bool useFullEditDistance);
+    void getMistypedSpaceWords(const int inputLength, const int spaceProximityPos,
+            Correction *correction, const bool useFullEditDistance);
     void onTerminal(const int freq, Correction *correction);
     bool needsToSkipCurrentNode(const unsigned short c,
             const int inputIndex, const int skipPos, const int depth);
@@ -122,7 +122,8 @@ private:
     // or something very bad (like, the apocalypse) will happen.
     // Please update both at the same time.
     enum {
-        REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1
+        REQUIRES_GERMAN_UMLAUT_PROCESSING = 0x1,
+        USE_FULL_EDIT_DISTANCE = 0x2
     };
     static const struct digraph_t { int first; int second; } GERMAN_UMLAUT_DIGRAPHS[];
 

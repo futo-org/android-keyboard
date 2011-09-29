@@ -25,8 +25,9 @@ public class Flag {
     public final int mMask;
     public final int mSource;
 
-    static private final int SOURCE_CONFIG = 1;
-    static private final int SOURCE_EXTRAVALUE = 2;
+    private static final int SOURCE_CONFIG = 1;
+    private static final int SOURCE_EXTRAVALUE = 2;
+    private static final int SOURCE_PARAM = 3;
 
     public Flag(int resourceId, int mask) {
         mName = null;
@@ -39,6 +40,13 @@ public class Flag {
         mName = name;
         mResource = 0;
         mSource = SOURCE_EXTRAVALUE;
+        mMask = mask;
+    }
+
+    public Flag(int mask) {
+        mName = null;
+        mResource = 0;
+        mSource = SOURCE_PARAM;
         mMask = mask;
     }
 
@@ -56,6 +64,9 @@ public class Flag {
                     if (switcher == null ||
                             switcher.currentSubtypeContainsExtraValueKey(entry.mName))
                         flags |= entry.mMask;
+                    break;
+                case Flag.SOURCE_PARAM:
+                    flags |= entry.mMask;
                     break;
             }
         }
