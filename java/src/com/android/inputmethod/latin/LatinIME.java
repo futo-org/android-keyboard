@@ -2099,16 +2099,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     private void updateKeypressVibrationDuration() {
-        final String[] durationPerHardwareList = mResources.getStringArray(
-                R.array.keypress_vibration_durations);
-        final String hardwarePrefix = Build.HARDWARE + ",";
-        for (final String element : durationPerHardwareList) {
-            if (element.startsWith(hardwarePrefix)) {
-                mKeypressVibrationDuration =
-                        Long.parseLong(element.substring(element.lastIndexOf(',') + 1));
-                break;
-            }
-        }
+        mKeypressVibrationDuration = Utils.getCurrentVibrationDuration(mPrefs, mResources);
     }
 
     private void playKeyClick(int primaryCode) {
