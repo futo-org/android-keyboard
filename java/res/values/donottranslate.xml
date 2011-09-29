@@ -165,4 +165,5 @@
     <!-- dictionary pack package name /settings activity (for shared prefs and settings) -->
     <string name="dictionary_pack_package_name">com.google.android.inputmethod.latin.dictionarypack</string>
     <string name="dictionary_pack_settings_activity">com.google.android.inputmethod.latin.dictionarypack.DictionarySettingsActivity</string>
+    <string name="settings_ms">ms</string>
 </resources>

@@ -343,4 +343,6 @@
 
     <!-- Title of an option for usability study mode -->
     <string name="prefs_usability_study_mode">Usability study mode</string>
+    <!-- Title of the settings for vibration duration -->
+    <string name="prefs_vibration_duration_settings">Vibration duration settings</string>
 </resources>

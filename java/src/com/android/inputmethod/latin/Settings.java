@@ -36,7 +36,10 @@ import android.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.android.inputmethod.compat.CompatUtils;
@@ -88,6 +91,9 @@ public class Settings extends InputMethodSettingsActivity
             "enable_span_insert";
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
+
+    public static final String PREF_VIBRATION_DURATION_SETTINGS =
+            "pref_vibration_duration_settings";
 
     // Dialog ids
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
@@ -335,6 +341,7 @@ public class Settings extends InputMethodSettingsActivity
     private boolean mVoiceOn;
 
     private AlertDialog mDialog;
+    private TextView mVibrationSettingsTextView;
 
     private boolean mOkClicked = false;
     private String mVoiceModeOff;
@@ -474,6 +481,19 @@ public class Settings extends InputMethodSettingsActivity
             if (pref != null) {
                 miscSettings.removePreference(pref);
             }
+        }
+
+        final PreferenceScreen vibrationSettingsPref =
+                (PreferenceScreen) findPreference(PREF_VIBRATION_DURATION_SETTINGS);
+        if (vibrationSettingsPref != null) {
+            vibrationSettingsPref.setOnPreferenceClickListener(
+                    new OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference arg0) {
+                            showVibrationSettingsDialog();
+                            return true;
+                        }
+                    });
         }
     }
 
@@ -620,5 +640,52 @@ public class Settings extends InputMethodSettingsActivity
             // agreed after the warning, we set the mOkClicked value to true.
             mVoicePreference.setValue(mVoiceModeOff);
         }
+    }
+
+    private void showVibrationSettingsDialog() {
+        final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
+        final Activity context = getActivityInternal();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.prefs_vibration_duration_settings);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                final int ms = Integer.valueOf(mVibrationSettingsTextView.getText().toString());
+                sp.edit().putInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, ms).apply();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel,  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        });
+        final View v = context.getLayoutInflater().inflate(
+                R.layout.vibration_settings_dialog, null);
+        final int currentMs = Utils.getCurrentVibrationDuration(
+                getPreferenceManager().getSharedPreferences(), getResources());
+        mVibrationSettingsTextView = (TextView)v.findViewById(R.id.vibration_value);
+        final SeekBar sb = (SeekBar)v.findViewById(R.id.vibration_settings);
+        sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+                final int tempMs = arg1;
+                mVibrationSettingsTextView.setText(String.valueOf(tempMs));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar arg0) {
+                final int tempMs = arg0.getProgress();
+                VibratorCompatWrapper.getInstance(context).vibrate(tempMs);
+            }
+        });
+        sb.setProgress(currentMs);
+        mVibrationSettingsTextView.setText(String.valueOf(currentMs));
+        builder.setView(v);
+        builder.create().show();
     }
 }
