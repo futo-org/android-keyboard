@@ -143,7 +143,8 @@ public class Keyboard {
 
         mProximityInfo = new ProximityInfo(
                 params.GRID_WIDTH, params.GRID_HEIGHT, mOccupiedWidth, mOccupiedHeight,
-                mMostCommonKeyWidth, mKeys);
+                mMostCommonKeyWidth, mKeys, params.mTouchPositionCorrectionXs,
+                params.mTouchPositionCorrectionYs, params.mTouchPositionCorrectionRadii);
     }
 
     public ProximityInfo getProximityInfo() {

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2011, The Android Open Source Project
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!--
+        An entry of the touch_position_correction word should be:
+        1. (float) (touch_center_x - key_center_x) / key_width
+        2. (float) (touch_center_y - key_center_y) / key_height
+        3. (float) sweet_spot_radius / (key_width^2 + key_height^2)
+     -->
+
+    <string-array
+        name="touch_position_correction_data_empty"
+        translatable="false"
+    >
+        <!-- empty -->
+    </string-array>
+
+    <string-array
+        name="touch_position_correction_data_gingerbread"
+        translatable="false"
+    >
+        <!-- First row -->
+        <item>0.0091285</item>
+        <item>0.1193203</item>
+        <item>0.1622607</item>
+
+        <!-- Second row -->
+        <item>-0.0233128</item>
+        <item>0.1379798</item>
+        <item>0.1585229</item>
+
+        <!-- Third row -->
+        <item>-0.0080185</item>
+        <item>0.1911477</item>
+        <item>0.1570948</item>
+    </string-array>
+
+    <string-array
+        name="touch_position_correction_data_ice_cream_sandwich"
+        translatable="false"
+    >
+        <!-- First row -->
+        <item>0.0038756</item>
+        <item>-0.0005677</item>
+        <item>0.1577026</item>
+
+        <!-- Second row -->
+        <item>-0.0236678</item>
+        <item>0.0381731</item>
+        <item>0.1529972</item>
+
+        <!-- Third row -->
+        <item>-0.0086827</item>
+        <item>0.0880847</item>
+        <item>0.1522819</item>
+    </string-array>
+</resources>
