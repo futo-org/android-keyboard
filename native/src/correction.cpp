@@ -62,7 +62,8 @@ void Correction::initCorrectionState(
 }
 
 void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
-        const int transposedPos, const int spaceProximityPos, const int missingSpacePos) {
+        const int transposedPos, const int spaceProximityPos, const int missingSpacePos,
+        const bool useFullEditDistance) {
     // TODO: remove
     mTransposedPos = transposedPos;
     mExcessivePos = excessivePos;
@@ -74,6 +75,7 @@ void Correction::setCorrectionParams(const int skipPos, const int excessivePos,
 
     mSpaceProximityPos = spaceProximityPos;
     mMissingSpacePos = missingSpacePos;
+    mUseFullEditDistance = useFullEditDistance;
 }
 
 void Correction::checkState() {
@@ -439,7 +441,7 @@ inline static void multiplyIntCapped(const int multiplier, int *base) {
 }
 
 inline static int powerIntCapped(const int base, const int n) {
-    if (n == 0) return 1;
+    if (n <= 0) return 1;
     if (base == 2) {
         return n < 31 ? 1 << n : S_INT_MAX;
     } else {
@@ -529,6 +531,8 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     const int excessiveCount = correction->mExcessiveCount + correction->mTransposedCount % 2;
     const int proximityMatchedCount = correction->mProximityCount;
     const bool lastCharExceeded = correction->mLastCharExceeded;
+    const bool useFullEditDistance = correction->mUseFullEditDistance;
+    const int outputLength = outputIndex + 1;
     if (skippedCount >= inputLength || inputLength == 0) {
         return -1;
     }
@@ -680,6 +684,12 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     // TODO: Do not use sameLength?
     if (sameLength) {
         multiplyIntCapped(fullWordMultiplier, &finalFreq);
+    }
+
+    if (useFullEditDistance && outputLength > inputLength + 1) {
+        const int diff = outputLength - inputLength - 1;
+        const int divider = diff < 31 ? 1 << diff : S_INT_MAX;
+        finalFreq = divider > finalFreq ? 1 : finalFreq / divider;
     }
 
     if (DEBUG_DICT_FULL) {

@@ -44,7 +44,7 @@ public:
 
     // TODO: remove
     void setCorrectionParams(const int skipPos, const int excessivePos, const int transposedPos,
-            const int spaceProximityPos, const int missingSpacePos);
+            const int spaceProximityPos, const int missingSpacePos, const bool useFullEditDistance);
     void checkState();
     bool initProcessState(const int index);
 
@@ -111,6 +111,7 @@ private:
     const int FULL_WORD_MULTIPLIER;
     const ProximityInfo *mProximityInfo;
 
+    bool mUseFullEditDistance;
     int mMaxEditDistance;
     int mMaxDepth;
     int mInputLength;
