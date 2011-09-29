@@ -106,15 +106,11 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
 
     private static final KeyboardSwitcher sInstance = new KeyboardSwitcher();
 
-    public class KeyboardLayoutState {
+    private class KeyboardLayoutState {
         private boolean mIsValid;
         private boolean mIsAlphabetMode;
         private boolean mIsShiftLocked;
         private boolean mIsShifted;
-
-        public boolean isValid() {
-            return mIsValid;
-        }
 
         public void save() {
             if (mCurrentId == null) {
@@ -210,14 +206,15 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
             mSymbolsShiftedKeyboardId = getKeyboardId(editorInfo, true, true, settingsValues);
             mLayoutSwitchBackSymbols = mResources.getString(R.string.layout_switch_back_symbols);
             setKeyboard(getKeyboard(mSavedKeyboardState.getKeyboardId()));
+            mSavedKeyboardState.restore();
         } catch (RuntimeException e) {
             Log.w(TAG, "loading keyboard failed: " + mMainKeyboardId, e);
             LatinImeLogger.logOnException(mMainKeyboardId.toString(), e);
         }
     }
 
-    public KeyboardLayoutState getKeyboardState() {
-        return mSavedKeyboardState;
+    public void saveKeyboardState() {
+        mSavedKeyboardState.save();
     }
 
     public void onFinishInputView() {

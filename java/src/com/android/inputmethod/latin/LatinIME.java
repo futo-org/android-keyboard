@@ -65,7 +65,6 @@ import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardActionListener;
 import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.KeyboardSwitcher.KeyboardLayoutState;
 import com.android.inputmethod.keyboard.KeyboardView;
 import com.android.inputmethod.keyboard.LatinKeyboard;
 import com.android.inputmethod.keyboard.LatinKeyboardView;
@@ -132,9 +131,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Key events coming any faster than this are long-presses.
     private static final int QUICK_PRESS = 200;
 
-    private static final int START_INPUT_VIEW_DELAY_WHEN_SCREEN_ORIENTATION_STARTED = 10;
-    private static final int ACCUMULATE_START_INPUT_VIEW_DELAY = 20;
-    private static final int RESTORE_KEYBOARD_STATE_DELAY = 500;
+    private static final int PENDING_IMS_CALLBACK_DURATION = 800;
 
     /**
      * The name of the scheme used by the Package Manager to warn of a new package installation,
@@ -239,10 +236,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 5;
         private static final int MSG_SPACE_TYPED = 6;
         private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
-        private static final int MSG_START_ORIENTATION_CHANGE = 8;
-        private static final int MSG_START_INPUT_VIEW = 9;
-        private static final int MSG_DISPLAY_COMPLETIONS = 10;
-        private static final int MSG_RESTORE_KEYBOARD_LAYOUT = 11;
+        private static final int MSG_PENDING_IMS_CALLBACK = 8;
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
@@ -290,16 +284,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                             latinIme.mSettingsValues.mFinalFadeoutFactorOfLanguageOnSpacebar,
                             (LatinKeyboard)msg.obj);
                 }
-                break;
-            case MSG_START_INPUT_VIEW:
-                latinIme.onStartInputView((EditorInfo)msg.obj, false);
-                break;
-            case MSG_DISPLAY_COMPLETIONS:
-                latinIme.onDisplayCompletions((CompletionInfo[])msg.obj);
-                break;
-            case MSG_RESTORE_KEYBOARD_LAYOUT:
-                removeMessages(MSG_UPDATE_SHIFT_STATE);
-                ((KeyboardLayoutState)msg.obj).restore();
                 break;
             }
         }
@@ -391,47 +375,89 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return hasMessages(MSG_SPACE_TYPED);
         }
 
-        public void postRestoreKeyboardLayout() {
-            final LatinIME latinIme = getOuterInstance();
-            final KeyboardLayoutState state = latinIme.mKeyboardSwitcher.getKeyboardState();
-            if (state.isValid()) {
-                removeMessages(MSG_RESTORE_KEYBOARD_LAYOUT);
-                sendMessageDelayed(
-                        obtainMessage(MSG_RESTORE_KEYBOARD_LAYOUT, state),
-                        RESTORE_KEYBOARD_STATE_DELAY);
-            }
-        }
+        // Working variables for the following methods.
+        private boolean mIsOrientationChanging;
+        private boolean mPendingSuccesiveImsCallback;
+        private boolean mHasPendingStartInput;
+        private boolean mHasPendingFinishInputView;
+        private boolean mHasPendingFinishInput;
 
         public void startOrientationChanging() {
-            sendMessageDelayed(obtainMessage(MSG_START_ORIENTATION_CHANGE),
-                    START_INPUT_VIEW_DELAY_WHEN_SCREEN_ORIENTATION_STARTED);
+            mIsOrientationChanging = true;
             final LatinIME latinIme = getOuterInstance();
-            latinIme.mKeyboardSwitcher.getKeyboardState().save();
-            postRestoreKeyboardLayout();
+            latinIme.mKeyboardSwitcher.saveKeyboardState();
         }
 
-        public boolean postStartInputView(EditorInfo attribute) {
-            if (hasMessages(MSG_START_ORIENTATION_CHANGE) || hasMessages(MSG_START_INPUT_VIEW)) {
-                removeMessages(MSG_START_INPUT_VIEW);
-                // Postpone onStartInputView by ACCUMULATE_START_INPUT_VIEW_DELAY and see if
-                // orientation change has finished.
-                sendMessageDelayed(obtainMessage(MSG_START_INPUT_VIEW, attribute),
-                        ACCUMULATE_START_INPUT_VIEW_DELAY);
-                return true;
-            }
-            return false;
+        private void resetPendingImsCallback() {
+            mHasPendingFinishInputView = false;
+            mHasPendingFinishInput = false;
+            mHasPendingStartInput = false;
         }
 
-        public boolean postDisplayCompletions(CompletionInfo[] applicationSpecifiedCompletions) {
-            if (hasMessages(MSG_START_INPUT_VIEW) || hasMessages(MSG_DISPLAY_COMPLETIONS)) {
-                removeMessages(MSG_DISPLAY_COMPLETIONS);
-                // Postpone onDisplayCompletions by ACCUMULATE_START_INPUT_VIEW_DELAY.
-                sendMessageDelayed(
-                        obtainMessage(MSG_DISPLAY_COMPLETIONS, applicationSpecifiedCompletions),
-                        ACCUMULATE_START_INPUT_VIEW_DELAY);
-                return true;
+        private void executePendingImsCallback(LatinIME latinIme, EditorInfo attribute,
+                boolean restarting) {
+            if (mHasPendingFinishInputView)
+                latinIme.onFinishInputViewInternal(mHasPendingFinishInput);
+            if (mHasPendingFinishInput)
+                latinIme.onFinishInputInternal();
+            if (mHasPendingStartInput)
+                latinIme.onStartInputInternal(attribute, restarting);
+            resetPendingImsCallback();
+        }
+
+        public void onStartInput(EditorInfo attribute, boolean restarting) {
+            if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
+                // Typically this is the second onStartInput after orientation changed.
+                mHasPendingStartInput = true;
+            } else {
+                if (mIsOrientationChanging && restarting) {
+                    // This is the first onStartInput after orientation changed.
+                    mIsOrientationChanging = false;
+                    mPendingSuccesiveImsCallback = true;
+                }
+                final LatinIME latinIme = getOuterInstance();
+                executePendingImsCallback(latinIme, attribute, restarting);
+                latinIme.onStartInputInternal(attribute, restarting);
             }
-            return false;
+        }
+
+        public void onStartInputView(EditorInfo attribute, boolean restarting) {
+             if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
+                 // Typically this is the second onStartInputView after orientation changed.
+                 resetPendingImsCallback();
+             } else {
+                 if (mPendingSuccesiveImsCallback) {
+                     // This is the first onStartInputView after orientation changed.
+                     mPendingSuccesiveImsCallback = false;
+                     resetPendingImsCallback();
+                     sendMessageDelayed(obtainMessage(MSG_PENDING_IMS_CALLBACK),
+                             PENDING_IMS_CALLBACK_DURATION);
+                 }
+                 final LatinIME latinIme = getOuterInstance();
+                 executePendingImsCallback(latinIme, attribute, restarting);
+                 latinIme.onStartInputViewInternal(attribute, restarting);
+             }
+        }
+
+        public void onFinishInputView(boolean finishingInput) {
+            if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
+                // Typically this is the first onFinishInputView after orientation changed.
+                mHasPendingFinishInputView = true;
+            } else {
+                final LatinIME latinIme = getOuterInstance();
+                latinIme.onFinishInputViewInternal(finishingInput);
+            }
+        }
+
+        public void onFinishInput() {
+            if (hasMessages(MSG_PENDING_IMS_CALLBACK)) {
+                // Typically this is the first onFinishInput after orientation changed.
+                mHasPendingFinishInput = true;
+            } else {
+                final LatinIME latinIme = getOuterInstance();
+                executePendingImsCallback(latinIme, null, false);
+                latinIme.onFinishInputInternal();
+            }
         }
     }
 
@@ -646,12 +672,31 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     }
 
     @Override
-    public void onStartInputView(EditorInfo attribute, boolean restarting) {
-        mHandler.postRestoreKeyboardLayout();
-        if (mHandler.postStartInputView(attribute)) {
-            return;
-        }
+    public void onStartInput(EditorInfo attribute, boolean restarting) {
+        mHandler.onStartInput(attribute, restarting);
+    }
 
+    @Override
+    public void onStartInputView(EditorInfo attribute, boolean restarting) {
+        mHandler.onStartInputView(attribute, restarting);
+    }
+
+    @Override
+    public void onFinishInputView(boolean finishingInput) {
+        mHandler.onFinishInputView(finishingInput);
+    }
+
+    @Override
+    public void onFinishInput() {
+        mHandler.onFinishInput();
+    }
+
+    private void onStartInputInternal(EditorInfo attribute, boolean restarting) {
+        super.onStartInput(attribute, restarting);
+    }
+
+    private void onStartInputViewInternal(EditorInfo attribute, boolean restarting) {
+        super.onStartInputView(attribute, restarting);
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         LatinKeyboardView inputView = switcher.getKeyboardView();
 
@@ -785,8 +830,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (inputView != null) inputView.closing();
     }
 
-    @Override
-    public void onFinishInput() {
+    private void onFinishInputInternal() {
         super.onFinishInput();
 
         LatinImeLogger.commit();
@@ -799,8 +843,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mUserBigramDictionary != null) mUserBigramDictionary.flushPendingWrites();
     }
 
-    @Override
-    public void onFinishInputView(boolean finishingInput) {
+    private void onFinishInputViewInternal(boolean finishingInput) {
         super.onFinishInputView(finishingInput);
         mKeyboardSwitcher.onFinishInputView();
         KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
@@ -939,9 +982,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public void onDisplayCompletions(CompletionInfo[] applicationSpecifiedCompletions) {
-        if (mHandler.postDisplayCompletions(applicationSpecifiedCompletions)) {
-            return;
-        }
         if (DEBUG) {
             Log.i(TAG, "Received completions:");
             if (applicationSpecifiedCompletions != null) {
