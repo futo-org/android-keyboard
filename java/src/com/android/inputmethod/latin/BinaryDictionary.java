@@ -61,6 +61,8 @@ public class BinaryDictionary extends Dictionary {
     public static final Flag FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING =
             new Flag(R.bool.config_require_umlaut_processing, 0x1);
 
+    public static final Flag FLAG_USE_FULL_EDIT_DISTANCE = new Flag(0x2);
+
     // Can create a new flag from extravalue :
     // public static final Flag FLAG_MYFLAG =
     //         new Flag("my_flag", 0x02);
