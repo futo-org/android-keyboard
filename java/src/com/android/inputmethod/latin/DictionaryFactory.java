@@ -34,7 +34,7 @@ public class DictionaryFactory {
     private static String TAG = DictionaryFactory.class.getSimpleName();
 
     /**
-     * Initializes a dictionary from a dictionary pack.
+     * Initializes a dictionary from a dictionary pack, with explicit flags.
      *
      * This searches for a content provider providing a dictionary pack for the specified
      * locale. If none is found, it falls back to using the resource passed as fallBackResId
@@ -42,10 +42,11 @@ public class DictionaryFactory {
      * @param context application context for reading resources
      * @param locale the locale for which to create the dictionary
      * @param fallbackResId the id of the resource to use as a fallback if no pack is found
+     * @param flagArray an array of flags to use
      * @return an initialized instance of DictionaryCollection
      */
-    public static DictionaryCollection createDictionaryFromManager(Context context, Locale locale,
-            int fallbackResId) {
+    public static DictionaryCollection createDictionaryFromManager(final Context context,
+            final Locale locale, final int fallbackResId, final Flag[] flagArray) {
         if (null == locale) {
             Log.e(TAG, "No locale defined for dictionary");
             return new DictionaryCollection(createBinaryDictionary(context, fallbackResId, locale));
@@ -57,7 +58,7 @@ public class DictionaryFactory {
         if (null != assetFileList) {
             for (final AssetFileAddress f : assetFileList) {
                 final BinaryDictionary binaryDictionary =
-                        new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength, null);
+                        new BinaryDictionary(context, f.mFilename, f.mOffset, f.mLength, flagArray);
                 if (binaryDictionary.isValidDictionary()) {
                     dictList.add(binaryDictionary);
                 }
@@ -68,6 +69,22 @@ public class DictionaryFactory {
         // explicitly disabled the main dictionary), so the following is okay. dictList is never
         // null, but if for some reason it is, DictionaryCollection handles it gracefully.
         return new DictionaryCollection(dictList);
+    }
+
+    /**
+     * Initializes a dictionary from a dictionary pack, with default flags.
+     *
+     * This searches for a content provider providing a dictionary pack for the specified
+     * locale. If none is found, it falls back to using the resource passed as fallBackResId
+     * as a dictionary.
+     * @param context application context for reading resources
+     * @param locale the locale for which to create the dictionary
+     * @param fallbackResId the id of the resource to use as a fallback if no pack is found
+     * @return an initialized instance of DictionaryCollection
+     */
+    public static DictionaryCollection createDictionaryFromManager(final Context context,
+            final Locale locale, final int fallbackResId) {
+        return createDictionaryFromManager(context, locale, fallbackResId, null);
     }
 
     /**
