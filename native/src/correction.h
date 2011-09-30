@@ -102,11 +102,6 @@ private:
     inline CorrectionType processSkipChar(
             const int32_t c, const bool isTerminal, const bool inputIndexIncremented);
 
-    // TODO: remove
-    inline void incrementProximityCount() {
-        ++mProximityCount;
-    }
-
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
     const ProximityInfo *mProximityInfo;
@@ -131,6 +126,9 @@ private:
     int mOutputIndex;
     int mInputIndex;
 
+    int mEquivalentCharStrongCount;
+    int mEquivalentCharNormalCount;
+    int mEquivalentCharWeakCount;
     int mProximityCount;
     int mExcessiveCount;
     int mTransposedCount;

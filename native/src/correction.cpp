@@ -115,6 +115,9 @@ bool Correction::initProcessState(const int outputIndex) {
     mInputIndex = mCorrectionStates[outputIndex].mInputIndex;
     mNeedsToTraverseAllNodes = mCorrectionStates[outputIndex].mNeedsToTraverseAllNodes;
 
+    mEquivalentCharStrongCount = mCorrectionStates[outputIndex].mEquivalentCharStrongCount;
+    mEquivalentCharNormalCount = mCorrectionStates[outputIndex].mEquivalentCharNormalCount;
+    mEquivalentCharWeakCount = mCorrectionStates[outputIndex].mEquivalentCharWeakCount;
     mProximityCount = mCorrectionStates[outputIndex].mProximityCount;
     mTransposedCount = mCorrectionStates[outputIndex].mTransposedCount;
     mExcessiveCount = mCorrectionStates[outputIndex].mExcessiveCount;
@@ -169,6 +172,9 @@ void Correction::incrementOutputIndex() {
     mCorrectionStates[mOutputIndex].mInputIndex = mInputIndex;
     mCorrectionStates[mOutputIndex].mNeedsToTraverseAllNodes = mNeedsToTraverseAllNodes;
 
+    mCorrectionStates[mOutputIndex].mEquivalentCharStrongCount = mEquivalentCharStrongCount;
+    mCorrectionStates[mOutputIndex].mEquivalentCharNormalCount = mEquivalentCharNormalCount;
+    mCorrectionStates[mOutputIndex].mEquivalentCharWeakCount = mEquivalentCharWeakCount;
     mCorrectionStates[mOutputIndex].mProximityCount = mProximityCount;
     mCorrectionStates[mOutputIndex].mTransposedCount = mTransposedCount;
     mCorrectionStates[mOutputIndex].mExcessiveCount = mExcessiveCount;
@@ -210,6 +216,12 @@ Correction::CorrectionType Correction::processSkipChar(
     }
 }
 
+inline bool isEquivalentChar(ProximityInfo::ProximityType type) {
+    // 'type ProximityInfo::EQUIVALENT_CHAR_WEAK' means that
+    // type == ..._WEAK or type == ..._NORMAL or type == ..._STRONG.
+    return type <= ProximityInfo::EQUIVALENT_CHAR_WEAK;
+}
+
 Correction::CorrectionType Correction::processCharAndCalcState(
         const int32_t c, const bool isTerminal) {
     const int correctionCount = (mSkippedCount + mExcessiveCount + mTransposedCount);
@@ -221,8 +233,9 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         bool incremented = false;
         if (mLastCharExceeded && mInputIndex == mInputLength - 1) {
             // TODO: Do not check the proximity if EditDistance exceeds the threshold
-            const int matchId = mProximityInfo->getMatchedProximityId(mInputIndex, c, true);
-            if (matchId == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+            const ProximityInfo::ProximityType matchId =
+                    mProximityInfo->getMatchedProximityId(mInputIndex, c, true);
+            if (isEquivalentChar(matchId)) {
                 mLastCharExceeded = false;
                 --mExcessiveCount;
             } else if (matchId == ProximityInfo::NEAR_PROXIMITY_CHAR) {
@@ -266,8 +279,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 
     bool secondTransposing = false;
     if (mTransposedCount % 2 == 1) {
-        if (mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
-                == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+        if (isEquivalentChar(mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false))) {
             ++mTransposedCount;
             secondTransposing = true;
         } else if (mCorrectionStates[mOutputIndex].mExceeding) {
@@ -288,8 +300,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 
     // TODO: Change the limit if we'll allow two or more proximity chars with corrections
     const bool checkProximityChars = noCorrectionsHappenedSoFar ||  mProximityCount == 0;
-    const int matchedProximityCharId = secondTransposing
-            ? ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR
+    const ProximityInfo::ProximityType matchedProximityCharId = secondTransposing
+            ? ProximityInfo::EQUIVALENT_CHAR_NORMAL
             : mProximityInfo->getMatchedProximityId(mInputIndex, c, checkProximityChars);
 
     if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
@@ -299,19 +311,18 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         // here refers to the previous state.
         if (canTryCorrection && mCorrectionStates[mOutputIndex].mProximityMatching
                 && mCorrectionStates[mOutputIndex].mExceeding
-                && mProximityInfo->getMatchedProximityId(mInputIndex, mWord[mOutputIndex], false)
-                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+                && isEquivalentChar(mProximityInfo->getMatchedProximityId(
+                        mInputIndex, mWord[mOutputIndex], false))) {
             // Conversion p->e
             ++mExcessiveCount;
             --mProximityCount;
         } else if (mInputIndex < mInputLength - 1 && mOutputIndex > 0 && mTransposedCount > 0
                 && !mCorrectionStates[mOutputIndex].mTransposing
                 && mCorrectionStates[mOutputIndex - 1].mTransposing
-                && mProximityInfo->getMatchedProximityId(
-                        mInputIndex, mWord[mOutputIndex - 1], false)
-                                == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR
-                && mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false)
-                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+                && isEquivalentChar(mProximityInfo->getMatchedProximityId(
+                        mInputIndex, mWord[mOutputIndex - 1], false))
+                && isEquivalentChar(
+                        mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false))) {
             // Conversion t->e
             // Example:
             // occaisional -> occa   sional
@@ -322,8 +333,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         } else if (mOutputIndex > 0 && mInputIndex > 0 && mTransposedCount > 0
                 && !mCorrectionStates[mOutputIndex].mTransposing
                 && mCorrectionStates[mOutputIndex - 1].mTransposing
-                && mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
-                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+                && isEquivalentChar(
+                        mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false))) {
             // Conversion t->s
             // Example:
             // chcolate -> chocolate
@@ -334,8 +345,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         } else if (canTryCorrection && mInputIndex > 0
                 && mCorrectionStates[mOutputIndex].mProximityMatching
                 && mCorrectionStates[mOutputIndex].mSkipping
-                && mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false)
-                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+                && isEquivalentChar(
+                        mProximityInfo->getMatchedProximityId(mInputIndex - 1, c, false))) {
             // Conversion p->s
             // Note: This logic tries saving cases like contrst --> contrast -- "a" is one of
             // proximity chars of "s", but it should rather be handled as a skipped char.
@@ -343,8 +354,8 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             --mProximityCount;
             return processSkipChar(c, isTerminal, false);
         } else if ((mExceeding || mTransposing) && mInputIndex - 1 < mInputLength
-                && mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false)
-                        == ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR) {
+                && isEquivalentChar(
+                        mProximityInfo->getMatchedProximityId(mInputIndex + 1, c, false))) {
             // 1.2. Excessive or transpose correction
             if (mTransposing) {
                 ++mTransposedCount;
@@ -364,14 +375,28 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             }
             return UNRELATED;
         }
-    } else if (secondTransposing
-            || ProximityInfo::SAME_OR_ACCENTED_OR_CAPITALIZED_CHAR == matchedProximityCharId) {
+    } else if (secondTransposing) {
         // If inputIndex is greater than mInputLength, that means there is no
         // proximity chars. So, we don't need to check proximity.
         mMatching = true;
+    } else if (isEquivalentChar(matchedProximityCharId)) {
+        mMatching = true;
+        switch (matchedProximityCharId) {
+        case ProximityInfo::EQUIVALENT_CHAR_STRONG:
+            ++mEquivalentCharStrongCount;
+            break;
+        case ProximityInfo::EQUIVALENT_CHAR_NORMAL:
+            ++mEquivalentCharNormalCount;
+            break;
+        case ProximityInfo::EQUIVALENT_CHAR_WEAK:
+            ++mEquivalentCharWeakCount;
+            break;
+        default:
+            assert(false);
+        }
     } else if (ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
         mProximityMatching = true;
-        incrementProximityCount();
+        ++mProximityCount;
     }
 
     mWord[mOutputIndex] = c;
