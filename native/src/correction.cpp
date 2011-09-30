@@ -555,6 +555,8 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     const int transposedCount = correction->mTransposedCount / 2;
     const int excessiveCount = correction->mExcessiveCount + correction->mTransposedCount % 2;
     const int proximityMatchedCount = correction->mProximityCount;
+    const int equivalentCharStrongCount = correction->mEquivalentCharStrongCount;
+    const int equivalentCharWeakCount = correction->mEquivalentCharWeakCount;
     const bool lastCharExceeded = correction->mLastCharExceeded;
     const bool useFullEditDistance = correction->mUseFullEditDistance;
     const int outputLength = outputIndex + 1;
@@ -662,6 +664,20 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
         }
         multiplyIntCapped(typedLetterMultiplier, &finalFreq);
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
+    }
+
+    for (int i = 0; i < equivalentCharStrongCount; ++i) {
+        if (DEBUG_DICT_FULL) {
+            LOGI("equivalent char strong");
+        }
+        multiplyRate(WORDS_WITH_EQUIVALENT_CHAR_STRONG_PROMOTION_RATE, &finalFreq);
+    }
+
+    for (int i = 0; i < equivalentCharWeakCount; ++i) {
+        if (DEBUG_DICT_FULL) {
+            LOGI("equivalent char weak");
+        }
+        multiplyRate(WORDS_WITH_EQUIVALENT_CHAR_WEAK_DEMOTION_RATE, &finalFreq);
     }
 
     const int errorCount = adjustedProximityMatchedCount > 0
