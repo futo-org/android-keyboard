@@ -28,11 +28,13 @@ import android.text.TextUtils;
 import com.android.inputmethod.compat.ArraysCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.ProximityInfo;
+import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
 import com.android.inputmethod.latin.Dictionary.DataType;
 import com.android.inputmethod.latin.Dictionary.WordCallback;
 import com.android.inputmethod.latin.DictionaryCollection;
 import com.android.inputmethod.latin.DictionaryFactory;
+import com.android.inputmethod.latin.Flag;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
@@ -65,6 +67,17 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private final static SuggestionsInfo IN_DICT_EMPTY_SUGGESTIONS =
             new SuggestionsInfo(SuggestionsInfo.RESULT_ATTR_IN_THE_DICTIONARY,
                     EMPTY_STRING_ARRAY);
+    private final static Flag[] USE_FULL_EDIT_DISTANCE_FLAG_ARRAY;
+    static {
+        // See BinaryDictionary.java for an explanation of these flags
+        // Specifially, ALL_CONFIG_FLAGS means that we want to consider all flags with the
+        // current dictionary configuration - for example, consider the UMLAUT flag
+        // so that it will be turned on for German dictionaries and off for others.
+        USE_FULL_EDIT_DISTANCE_FLAG_ARRAY = Arrays.copyOf(BinaryDictionary.ALL_CONFIG_FLAGS,
+                BinaryDictionary.ALL_CONFIG_FLAGS.length + 1);
+        USE_FULL_EDIT_DISTANCE_FLAG_ARRAY[BinaryDictionary.ALL_CONFIG_FLAGS.length] =
+                BinaryDictionary.FLAG_USE_FULL_EDIT_DISTANCE;
+    }
     private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
     private Map<String, Dictionary> mUserDictionaries =
@@ -263,7 +276,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         final Resources resources = getResources();
         final int fallbackResourceId = Utils.getMainDictionaryResourceId(resources);
         final DictionaryCollection dictionaryCollection =
-                DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId);
+                DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId,
+                        USE_FULL_EDIT_DISTANCE_FLAG_ARRAY);
         final String localeStr = locale.toString();
         Dictionary userDict = mUserDictionaries.get(localeStr);
         if (null == userDict) {
