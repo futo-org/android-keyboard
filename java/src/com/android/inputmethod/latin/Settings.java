@@ -328,6 +328,7 @@ public class Settings extends InputMethodSettingsActivity
     }
 
     private PreferenceScreen mInputLanguageSelection;
+    private PreferenceScreen mVibrationDurationSettingsPref;
     private ListPreference mVoicePreference;
     private CheckBoxPreference mShowSettingsKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
@@ -483,10 +484,10 @@ public class Settings extends InputMethodSettingsActivity
             }
         }
 
-        final PreferenceScreen vibrationSettingsPref =
+        mVibrationDurationSettingsPref =
                 (PreferenceScreen) findPreference(PREF_VIBRATION_DURATION_SETTINGS);
-        if (vibrationSettingsPref != null) {
-            vibrationSettingsPref.setOnPreferenceClickListener(
+        if (mVibrationDurationSettingsPref != null) {
+            mVibrationDurationSettingsPref.setOnPreferenceClickListener(
                     new OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
@@ -494,6 +495,7 @@ public class Settings extends InputMethodSettingsActivity
                             return true;
                         }
                     });
+            updateVibrationDurationSettingsSummary(prefs, res);
         }
     }
 
@@ -642,9 +644,18 @@ public class Settings extends InputMethodSettingsActivity
         }
     }
 
+    private void updateVibrationDurationSettingsSummary(SharedPreferences sp, Resources res) {
+        if (mVibrationDurationSettingsPref != null) {
+            mVibrationDurationSettingsPref.setSummary(
+                    Utils.getCurrentVibrationDuration(sp, res)
+                            + res.getString(R.string.settings_ms));
+        }
+    }
+
     private void showVibrationSettingsDialog() {
         final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
         final Activity context = getActivityInternal();
+        final Resources res = context.getResources();
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.prefs_vibration_duration_settings);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -652,6 +663,7 @@ public class Settings extends InputMethodSettingsActivity
             public void onClick(DialogInterface dialog, int whichButton) {
                 final int ms = Integer.valueOf(mVibrationSettingsTextView.getText().toString());
                 sp.edit().putInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, ms).apply();
+                updateVibrationDurationSettingsSummary(sp, res);
             }
         });
         builder.setNegativeButton(android.R.string.cancel,  new DialogInterface.OnClickListener() {
