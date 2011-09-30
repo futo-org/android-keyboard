@@ -61,16 +61,26 @@ public class BinaryDictionary extends Dictionary {
     public static final Flag FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING =
             new Flag(R.bool.config_require_umlaut_processing, 0x1);
 
+    // FULL_EDIT_DISTANCE is a flag that forces the dictionary to use full words
+    // when computing edit distance, instead of the default behavior of stopping
+    // the evaluation at the size the user typed.
     public static final Flag FLAG_USE_FULL_EDIT_DISTANCE = new Flag(0x2);
 
     // Can create a new flag from extravalue :
     // public static final Flag FLAG_MYFLAG =
     //         new Flag("my_flag", 0x02);
 
-    private static final Flag[] ALL_FLAGS = {
+    // ALL_CONFIG_FLAGS is a collection of flags that enable reading all flags from configuration.
+    // This is but a mask - it does not mean the flags will be on, only that the configuration
+    // will be read for this particular flag.
+    public static final Flag[] ALL_CONFIG_FLAGS = {
         // Here should reside all flags that trigger some special processing
         // These *must* match the definition in UnigramDictionary enum in
         // unigram_dictionary.h so please update both at the same time.
+        // Please note that flags created with a resource are of type CONFIG while flags
+        // created with a string are of type EXTRAVALUE. These behave like masks, and the
+        // actual value will be read from the configuration/extra value at run time for
+        // the configuration at dictionary creation time.
         FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING,
     };
 
@@ -93,7 +103,7 @@ public class BinaryDictionary extends Dictionary {
         // the Suggest class knows everything about every single dictionary.
         mDicTypeId = Suggest.DIC_MAIN;
         // TODO: Stop relying on the state of SubtypeSwitcher, get it as a parameter
-        mFlags = Flag.initFlags(null == flagArray ? ALL_FLAGS : flagArray, context,
+        mFlags = Flag.initFlags(null == flagArray ? ALL_CONFIG_FLAGS : flagArray, context,
                 SubtypeSwitcher.getInstance());
         loadDictionary(filename, offset, length);
     }
