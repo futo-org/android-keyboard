@@ -44,8 +44,7 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Setel saran untuk koreksi ulang"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Kapitalisasi otomatis"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Kamus pengaya"</string>
-    <!-- no translation found for main_dictionary (4798763781818361168) -->
-    <skip />
+    <string name="main_dictionary" msgid="4798763781818361168">"Kamus utama"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Tampilkan saran koreksi"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Tampilkan kata yang disarankan ketika mengetik"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Selalu tampilkan"</string>
@@ -150,4 +149,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Inggris (Inggris)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inggris (AS)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modus studi daya guna"</string>
+    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
+    <skip />
 </resources>

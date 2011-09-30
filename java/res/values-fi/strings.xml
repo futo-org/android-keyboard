@@ -44,8 +44,7 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Aseta korjausehdotuksia"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Automaattiset isot kirjaimet"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Lisäsanakirjat"</string>
-    <!-- no translation found for main_dictionary (4798763781818361168) -->
-    <skip />
+    <string name="main_dictionary" msgid="4798763781818361168">"Pääsanakirja"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Näytä korjausehdotukset"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Näytä sanaehdotukset kirjoitettaessa"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Näytä aina"</string>
@@ -64,7 +63,7 @@
     <string name="bigram_prediction_summary" msgid="1747261921174300098">"Käytä edellistä sanaa myös ennakointiin"</string>
     <string name="added_word" msgid="8993883354622484372">"<xliff:g id="WORD">%s</xliff:g> : Tallennettu"</string>
     <string name="label_go_key" msgid="1635148082137219148">"Siirry"</string>
-    <string name="label_next_key" msgid="362972844525672568">"Seuraava"</string>
+    <string name="label_next_key" msgid="362972844525672568">"Seur."</string>
     <string name="label_done_key" msgid="2441578748772529288">"Valmis"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Lähetä"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
@@ -150,4 +149,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"englanti (Iso-Britannia)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"englanti (Yhdysvallat)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Käytettävyystutkimustila"</string>
+    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
+    <skip />
 </resources>
