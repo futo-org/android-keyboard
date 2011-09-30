@@ -18,6 +18,7 @@ package com.android.inputmethod.deprecated;
 
 import com.android.inputmethod.compat.InputMethodManagerCompatWrapper;
 import com.android.inputmethod.compat.InputMethodServiceCompatWrapper;
+import com.android.inputmethod.compat.SharedPreferencesCompat;
 import com.android.inputmethod.deprecated.voice.FieldContext;
 import com.android.inputmethod.deprecated.voice.Hints;
 import com.android.inputmethod.deprecated.voice.SettingsUtil;
@@ -28,7 +29,6 @@ import com.android.inputmethod.latin.LatinIME;
 import com.android.inputmethod.latin.LatinIME.UIHandler;
 import com.android.inputmethod.latin.LatinImeLogger;
 import com.android.inputmethod.latin.R;
-import com.android.inputmethod.latin.SharedPreferencesCompat;
 import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.SuggestedWords;
 import com.android.inputmethod.latin.Utils;
