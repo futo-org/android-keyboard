@@ -44,8 +44,7 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"تعيين اقتراحات لعمليات إعادة التصحيح"</string>
     <string name="auto_cap" msgid="1719746674854628252">"أحرف كبيرة تلقائيًا"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"القواميس الإضافية"</string>
-    <!-- no translation found for main_dictionary (4798763781818361168) -->
-    <skip />
+    <string name="main_dictionary" msgid="4798763781818361168">"القاموس الرئيسي"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"عرض اقتراحات التصحيح"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"عرض الكلمات المقترحة أثناء الكتابة"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"عرض دومًا"</string>
@@ -68,7 +67,7 @@
     <string name="label_done_key" msgid="2441578748772529288">"تم"</string>
     <string name="label_send_key" msgid="2815056534433717444">"إرسال"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"أ ب ج"</string>
-    <string name="label_to_symbol_key" msgid="8516904117128967293">"٣٢١؟"</string>
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"؟123"</string>
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"٣٢١"</string>
     <string name="label_pause_key" msgid="181098308428035340">"توقف مؤقت"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"انتظار"</string>
@@ -150,4 +149,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"الإنجليزية (المملكة المتحدة)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"الإنجليزية (الولايات المتحدة)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"وضع سهولة الاستخدام"</string>
+    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
+    <skip />
 </resources>

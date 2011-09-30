@@ -44,8 +44,7 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Magtakda ng mga suhestyon para sa mga muling pagtatama"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Auto-capitalization"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Mga diksyunaryo na add-on"</string>
-    <!-- no translation found for main_dictionary (4798763781818361168) -->
-    <skip />
+    <string name="main_dictionary" msgid="4798763781818361168">"Pangunahing diksyunaryo"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Magpakita ng mga suhestiyon ng pagwawasto"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Ipakita ang mga iminumungkahing salita habang nagta-type"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Palaging ipakita"</string>
@@ -150,4 +149,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Ingles (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Ingles (Estados Unidos)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Study mode ng pagiging kapaki-pakinabang"</string>
+    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
+    <skip />
 </resources>

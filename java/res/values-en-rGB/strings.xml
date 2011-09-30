@@ -149,4 +149,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"English (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"English (US)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Usability study mode"</string>
+    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
+    <skip />
 </resources>

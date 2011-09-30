@@ -44,8 +44,7 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Tetapkan cadangan untuk pembetulan semula"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Huruf besar auto"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Kamus tambahan"</string>
-    <!-- no translation found for main_dictionary (4798763781818361168) -->
-    <skip />
+    <string name="main_dictionary" msgid="4798763781818361168">"Kamus utama"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Tunjukkan cadangan pembetulan"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Paparkan cadangan perkataan semasa menaip"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Sentiasa tunjukkan"</string>
@@ -68,8 +67,7 @@
     <string name="label_done_key" msgid="2441578748772529288">"Selesai"</string>
     <string name="label_send_key" msgid="2815056534433717444">"Hantar"</string>
     <string name="label_to_alpha_key" msgid="4793983863798817523">"ABC"</string>
-    <!-- no translation found for label_to_symbol_key (8516904117128967293) -->
-    <skip />
+    <string name="label_to_symbol_key" msgid="8516904117128967293">"?123"</string>
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Jeda"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Tnggu"</string>
@@ -151,4 +149,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Bahasa Inggeris (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Bahasa Inggeris (AS)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mod kajian kebolehgunaan"</string>
+    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
+    <skip />
 </resources>

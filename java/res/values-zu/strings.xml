@@ -44,8 +44,7 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Setha iziphakamiso zokulungisa kabusha"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Ukwenza ofeleba okuzenzakalelayo"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Faka izichazamazwi"</string>
-    <!-- no translation found for main_dictionary (4798763781818361168) -->
-    <skip />
+    <string name="main_dictionary" msgid="4798763781818361168">"Isichazamazwi sakho ngqangi"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"Bonisa ukusikesela kokulungisa"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"Bonisa amagama aphakamisiwe ngenkathi uthayipha"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"Bonisa njalo"</string>
@@ -150,4 +149,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"i-English(UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"i-English (US)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Imodi yesitadi yokusebenziseka"</string>
+    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
+    <skip />
 </resources>

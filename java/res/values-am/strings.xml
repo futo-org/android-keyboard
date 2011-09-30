@@ -44,8 +44,7 @@
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"ድጋሚ ለማስተካከል ጥቆማዎችን አዘጋጅ"</string>
     <string name="auto_cap" msgid="1719746674854628252">"ራስ-ሰር አቢይ ማድረግ"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"መዝገበ ቃላቶች ጨምር"</string>
-    <!-- no translation found for main_dictionary (4798763781818361168) -->
-    <skip />
+    <string name="main_dictionary" msgid="4798763781818361168">"ዋና መዝገበ ቃላት"</string>
     <string name="prefs_show_suggestions" msgid="8026799663445531637">"የማስተካከያ ጥቆማዎች አሳይ"</string>
     <string name="prefs_show_suggestions_summary" msgid="1583132279498502825">"እየተየብክ ተመራጭ ቃላትን አሳይ"</string>
     <string name="prefs_suggestion_visibility_show_name" msgid="3219916594067551303">"ሁልጊዜ አሳይ"</string>
@@ -53,7 +52,7 @@
     <string name="prefs_suggestion_visibility_hide_name" msgid="6309143926422234673">"ሁልጊዜ ደብቅ"</string>
     <string name="prefs_settings_key" msgid="4623341240804046498">"የቅንብሮች ቁልፍ አሳይ"</string>
     <string name="auto_correction" msgid="4979925752001319458">"በራስ ማስተካከል"</string>
-    <string name="auto_correction_summary" msgid="5625751551134658006">"የቦታቁልፍ እና ሥርዓተ ነጥብ በስህተት የተተየቡ ቃላትን  በራስሰር ያስተካክላሉ።"</string>
+    <string name="auto_correction_summary" msgid="5625751551134658006">"የቦታ ቁልፍ እና ሥርዓተ ነጥብ በስህተት የተተየቡ ቃላትን  በራስሰር ያስተካክላሉ።"</string>
     <string name="auto_correction_threshold_mode_off" msgid="8470882665417944026">"ውጪ"</string>
     <string name="auto_correction_threshold_mode_modest" msgid="8788366690620799097">"መጠነኛ"</string>
     <string name="auto_correction_threshold_mode_aggeressive" msgid="3524029103734923819">"ኃይለኛ"</string>
@@ -150,4 +149,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"እንግሊዘኛ (የታላቋ ብሪታንያ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"እንግሊዘኛ (ዩ.ኤስ)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"የተገልጋይነት ጥናት ሁነታ"</string>
+    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
+    <skip />
 </resources>
