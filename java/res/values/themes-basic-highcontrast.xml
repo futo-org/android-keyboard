@@ -16,8 +16,7 @@
 
 <resources>
     <style name="KeyboardTheme.HighContrast" parent="KeyboardIcons">
-        <item name="themeId">1</item>
-        <item name="keyboardStyle">@style/Keyboard</item>
+        <item name="keyboardStyle">@style/Keyboard.HighContrast</item>
         <item name="latinKeyboardStyle">@style/LatinKeyboard</item>
         <item name="keyboardViewStyle">@style/KeyboardView.HighContrast</item>
         <item name="miniKeyboardStyle">@style/MiniKeyboard</item>
@@ -28,6 +27,5 @@
         <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>
-        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_empty</item>
     </style>
 </resources>

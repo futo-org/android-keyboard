@@ -17,6 +17,8 @@
 <resources>
     <!-- Theme "Basic" -->
     <style name="Keyboard">
+        <item name="themeId">0</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_empty</item>
         <item name="rowHeight">25%p</item>
         <item name="keyboardHeight">@dimen/keyboardHeight</item>
         <item name="maxKeyboardHeight">@fraction/maxKeyboardHeight</item>
@@ -119,6 +121,12 @@
     </style>
     <!-- Theme "Basic high contrast" -->
     <style
+        name="Keyboard.HighContrast"
+        parent="Keyboard"
+    >
+        <item name="themeId">1</item>
+    </style>
+    <style
         name="KeyboardView.HighContrast"
         parent="KeyboardView"
     >
@@ -130,6 +138,7 @@
         name="Keyboard.Stone"
         parent="Keyboard"
     >
+        <item name="themeId">6</item>
         <item name="keyboardHeight">@dimen/keyboardHeight_stone</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding_stone</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_stone</item>
@@ -174,6 +183,12 @@
     </style>
     <!-- Theme "Stone bold" -->
     <style
+        name="Keyboard.Stone.Bold"
+        parent="Keyboard.Stone"
+    >
+        <item name="themeId">7</item>
+    </style>
+    <style
         name="KeyboardView.Stone.Bold"
         parent="KeyboardView.Stone"
     >
@@ -184,6 +199,8 @@
         name="Keyboard.Gingerbread"
         parent="Keyboard"
     >
+        <item name="themeId">8</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_gingerbread</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap_gb</item>
         <item name="verticalGap">@fraction/key_bottom_gap_gb</item>
     </style>
@@ -214,10 +231,12 @@
         name="Keyboard.IceCreamSandwich"
         parent="Keyboard"
     >
+        <item name="themeId">5</item>
         <item name="keyboardTopPadding">@fraction/keyboard_top_padding_ics</item>
         <item name="keyboardBottomPadding">@fraction/keyboard_bottom_padding_ics</item>
         <item name="horizontalGap">@fraction/key_horizontal_gap_ics</item>
         <item name="verticalGap">@fraction/key_bottom_gap_ics</item>
+        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_ice_cream_sandwich</item>
     </style>
     <style
         name="LatinKeyboard.IceCreamSandwich"
