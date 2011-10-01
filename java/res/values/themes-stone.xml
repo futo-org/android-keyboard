@@ -16,7 +16,6 @@
 
 <resources>
     <style name="KeyboardTheme.Stone" parent="KeyboardIcons.Black">
-        <item name="themeId">6</item>
         <item name="keyboardStyle">@style/Keyboard.Stone</item>
         <item name="latinKeyboardStyle">@style/LatinKeyboard.Stone</item>
         <item name="keyboardViewStyle">@style/KeyboardView.Stone</item>
@@ -28,6 +27,5 @@
         <item name="moreSuggestionsViewStyle">@style/MoreSuggestionsViewStyle</item>
         <item name="suggestionBackgroundStyle">@style/SuggestionBackgroundStyle</item>
         <item name="suggestionPreviewBackgroundStyle">@style/SuggestionPreviewBackgroundStyle</item>
-        <item name="touchPositionCorrectionData">@array/touch_position_correction_data_empty</item>
     </style>
 </resources>

@@ -16,7 +16,6 @@
 
 <resources>
     <declare-styleable name="KeyboardTheme">
-        <attr name="themeId" format="integer" />
         <!-- Keyboard style -->
         <attr name="keyboardStyle" format="reference" />
         <!-- LatinKeyboard style -->
@@ -34,8 +33,6 @@
         <attr name="moreSuggestionsViewStyle" format="reference" />
         <attr name="suggestionBackgroundStyle" format="reference" />
         <attr name="suggestionPreviewBackgroundStyle" format="reference" />
-        <!-- Touch position correction -->
-        <attr name="touchPositionCorrectionData" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="KeyboardView">
@@ -140,6 +137,9 @@
     </declare-styleable>
 
     <declare-styleable name="Keyboard">
+        <attr name="themeId" format="integer" />
+        <!-- Touch position correction -->
+        <attr name="touchPositionCorrectionData" format="reference" />
         <!-- Default keyboard height -->
         <attr name="keyboardHeight" format="dimension|fraction" />
         <!-- Maximum keyboard height, in pixels or percentage of display height -->
