@@ -895,20 +895,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 }
                 mComposingStringBuilder.setLength(0);
                 mHasUncommittedTypedChars = false;
-                if (isCursorTouchingWord()) {
-                    mHandler.cancelUpdateBigramPredictions();
-                    mHandler.postUpdateSuggestions();
-                } else {
-                    setPunctuationSuggestions();
-                }
                 TextEntryState.reset();
+                updateSuggestions();
                 final InputConnection ic = getCurrentInputConnection();
                 if (ic != null) {
                     ic.finishComposingText();
                 }
                 mVoiceProxy.setVoiceInputHighlighted(false);
-            } else if (!mHasUncommittedTypedChars && TextEntryState.isAcceptedDefault()) {
+            } else if (!mHasUncommittedTypedChars) {
                 TextEntryState.reset();
+                updateSuggestions();
             }
             mJustAddedMagicSpace = false; // The user moved the cursor.
             mJustReplacedDoubleSpace = false;
@@ -1653,6 +1649,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 && !mVoiceProxy.isVoiceInputHighlighted()) {
             return;
         }
+
+        mHandler.cancelUpdateSuggestions();
+        mHandler.cancelUpdateOldSuggestions();
+        mHandler.cancelUpdateBigramPredictions();
 
         if (!mHasUncommittedTypedChars) {
             setPunctuationSuggestions();
