@@ -259,9 +259,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         params.mTouchPositionCorrectionRadii = null;
 
         final TypedArray a = context.obtainStyledAttributes(
-                null, R.styleable.Keyboard, R.attr.keyboardStyle, R.style.Keyboard);
+                null, R.styleable.Keyboard, R.attr.keyboardStyle, 0);
         params.mThemeId = a.getInt(R.styleable.Keyboard_themeId, 0);
         final int resourceId = a.getResourceId(R.styleable.Keyboard_touchPositionCorrectionData, 0);
+        a.recycle();
         if (resourceId == 0) {
             if (LatinImeLogger.sDBG)
                 throw new RuntimeException("touchPositionCorrectionData is not defined");
@@ -269,7 +270,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
 
         final String[] data = context.getResources().getStringArray(resourceId);
-        a.recycle();
         final int dataLength = data.length;
         if (dataLength % TOUCH_POSITION_CORRECTION_RECORD_SIZE != 0) {
             if (LatinImeLogger.sDBG)
