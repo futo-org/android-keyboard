@@ -127,8 +127,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     private static final int DEFAULT_KEYBOARD_COLUMNS = 10;
     private static final int DEFAULT_KEYBOARD_ROWS = 4;
 
-    private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;
-
     protected final KP mParams;
     protected final Context mContext;
     protected final Resources mResources;
@@ -254,10 +252,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     }
 
     private static void setTouchPositionCorrectionData(Context context, KeyboardParams params) {
-        params.mTouchPositionCorrectionXs = null;
-        params.mTouchPositionCorrectionYs = null;
-        params.mTouchPositionCorrectionRadii = null;
-
         final TypedArray a = context.obtainStyledAttributes(
                 null, R.styleable.Keyboard, R.attr.keyboardStyle, 0);
         params.mThemeId = a.getInt(R.styleable.Keyboard_themeId, 0);
@@ -270,39 +264,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
 
         final String[] data = context.getResources().getStringArray(resourceId);
-        final int dataLength = data.length;
-        if (dataLength % TOUCH_POSITION_CORRECTION_RECORD_SIZE != 0) {
-            if (LatinImeLogger.sDBG)
-                throw new RuntimeException("the size of touch position correction data is invalid");
-            return;
-        }
-
-        final int length = dataLength / TOUCH_POSITION_CORRECTION_RECORD_SIZE;
-        params.mTouchPositionCorrectionXs = new float[length];
-        params.mTouchPositionCorrectionYs = new float[length];
-        params.mTouchPositionCorrectionRadii = new float[length];
-        try {
-            for (int i = 0; i < dataLength; ++i) {
-                final int type = i % TOUCH_POSITION_CORRECTION_RECORD_SIZE;
-                final int index = i / TOUCH_POSITION_CORRECTION_RECORD_SIZE;
-                final float value = Float.parseFloat(data[i]);
-                if (type == 0) {
-                    params.mTouchPositionCorrectionXs[index] = value;
-                } else if (type == 1) {
-                    params.mTouchPositionCorrectionYs[index] = value;
-                } else {
-                    params.mTouchPositionCorrectionRadii[index] = value;
-                }
-            }
-        } catch (NumberFormatException e) {
-            if (LatinImeLogger.sDBG) {
-                throw new RuntimeException(
-                        "the number format for touch position correction data is invalid");
-            }
-            params.mTouchPositionCorrectionXs = null;
-            params.mTouchPositionCorrectionYs = null;
-            params.mTouchPositionCorrectionRadii = null;
-        }
+        params.mTouchPositionCorrection.load(data);
     }
 
     public KeyboardBuilder<KP> load(KeyboardId id) {
@@ -317,6 +279,10 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             throw new RuntimeException(e);
         }
         return this;
+    }
+
+    public void setTouchPositionCorrectionEnabled(boolean enabled) {
+        mParams.mTouchPositionCorrection.setEnabled(enabled);
     }
 
     public Keyboard build() {
