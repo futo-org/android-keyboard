@@ -258,7 +258,8 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         params.mTouchPositionCorrectionYs = null;
         params.mTouchPositionCorrectionRadii = null;
 
-        final TypedArray a = context.obtainStyledAttributes(R.styleable.Keyboard);
+        final TypedArray a = context.obtainStyledAttributes(
+                null, R.styleable.Keyboard, R.attr.keyboardStyle, R.style.Keyboard);
         params.mThemeId = a.getInt(R.styleable.Keyboard_themeId, 0);
         final int resourceId = a.getResourceId(R.styleable.Keyboard_touchPositionCorrectionData, 0);
         if (resourceId == 0) {
