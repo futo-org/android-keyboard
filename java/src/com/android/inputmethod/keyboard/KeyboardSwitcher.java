@@ -264,7 +264,12 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
         if (keyboard == null) {
             final Locale savedLocale = LocaleUtils.setSystemLocale(mResources, id.mLocale);
             try {
-                keyboard = new LatinKeyboard.Builder(mThemeContext).load(id).build();
+                final LatinKeyboard.Builder builder = new LatinKeyboard.Builder(mThemeContext);
+                builder.load(id);
+                builder.setTouchPositionCorrectionEnabled(
+                        mSubtypeSwitcher.currentSubtypeContainsExtraValueKey(
+                                LatinIME.SUBTYPE_EXTRA_VALUE_SUPPORT_TOUCH_POSITION_CORRECTION));
+                keyboard = builder.build();
             } finally {
                 LocaleUtils.setSystemLocale(mResources, savedLocale);
             }

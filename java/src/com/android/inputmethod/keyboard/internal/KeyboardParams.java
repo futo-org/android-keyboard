@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.KeyboardId;
+import com.android.inputmethod.latin.LatinImeLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,9 +69,62 @@ public class KeyboardParams {
     public int mMostCommonKeyHeight = 0;
     public int mMostCommonKeyWidth = 0;
 
-    public float[] mTouchPositionCorrectionXs;
-    public float[] mTouchPositionCorrectionYs;
-    public float[] mTouchPositionCorrectionRadii;
+    public final TouchPositionCorrection mTouchPositionCorrection = new TouchPositionCorrection();
+
+    public static class TouchPositionCorrection {
+        private static final int TOUCH_POSITION_CORRECTION_RECORD_SIZE = 3;
+
+        public boolean mEnabled;
+        public float[] mXs;
+        public float[] mYs;
+        public float[] mRadii;
+
+        public void load(String[] data) {
+            final int dataLength = data.length;
+            if (dataLength % TOUCH_POSITION_CORRECTION_RECORD_SIZE != 0) {
+                if (LatinImeLogger.sDBG)
+                    throw new RuntimeException(
+                            "the size of touch position correction data is invalid");
+                return;
+            }
+
+            final int length = dataLength / TOUCH_POSITION_CORRECTION_RECORD_SIZE;
+            mXs = new float[length];
+            mYs = new float[length];
+            mRadii = new float[length];
+            try {
+                for (int i = 0; i < dataLength; ++i) {
+                    final int type = i % TOUCH_POSITION_CORRECTION_RECORD_SIZE;
+                    final int index = i / TOUCH_POSITION_CORRECTION_RECORD_SIZE;
+                    final float value = Float.parseFloat(data[i]);
+                    if (type == 0) {
+                        mXs[index] = value;
+                    } else if (type == 1) {
+                        mYs[index] = value;
+                    } else {
+                        mRadii[index] = value;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                if (LatinImeLogger.sDBG) {
+                    throw new RuntimeException(
+                            "the number format for touch position correction data is invalid");
+                }
+                mXs = null;
+                mYs = null;
+                mRadii = null;
+            }
+        }
+
+        public void setEnabled(boolean enabled) {
+            mEnabled = enabled;
+        }
+
+        public boolean isValid() {
+            return mEnabled && mXs != null && mYs != null && mRadii != null
+                && mXs.length > 0 && mYs.length > 0 && mRadii.length > 0;
+        }
+    }
 
     protected void clearKeys() {
         mKeys.clear();
