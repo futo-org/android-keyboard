@@ -189,6 +189,7 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define CORRECTION_COUNT_RATE_DEMOTION_RATE_BASE 45
 #define INPUT_EXCEEDS_OUTPUT_DEMOTION_RATE 70
 #define FIRST_CHAR_DIFFERENT_DEMOTION_RATE 96
+#define TWO_WORDS_CAPITALIZED_DEMOTION_RATE 50
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.

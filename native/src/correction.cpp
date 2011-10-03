@@ -15,6 +15,7 @@
  */
 
 #include <assert.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -89,8 +90,10 @@ void Correction::checkState() {
     }
 }
 
-int Correction::getFreqForSplitTwoWords(const int firstFreq, const int secondFreq) {
-    return Correction::RankingAlgorithm::calcFreqForSplitTwoWords(firstFreq, secondFreq, this);
+int Correction::getFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
+        const unsigned short *word) {
+    return Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
+            firstFreq, secondFreq, this, word);
 }
 
 int Correction::getFinalFreq(const int freq, unsigned short **word, int *wordLength) {
@@ -498,6 +501,16 @@ inline static int getQuoteCount(const unsigned short* word, const int length) {
     return quoteCount;
 }
 
+inline static bool isUpperCase(unsigned short c) {
+     if (c < sizeof(BASE_CHARS) / sizeof(BASE_CHARS[0])) {
+         c = BASE_CHARS[c];
+     }
+     if (isupper(c)) {
+         return true;
+     }
+     return false;
+}
+
 /* static */
 inline static int editDistance(
         int* editDistanceTable, const unsigned short* input,
@@ -749,7 +762,8 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
 
 /* static */
 int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
-        const int firstFreq, const int secondFreq, const Correction* correction) {
+        const int firstFreq, const int secondFreq, const Correction* correction,
+        const unsigned short *word) {
     const int spaceProximityPos = correction->mSpaceProximityPos;
     const int missingSpacePos = correction->mMissingSpacePos;
     if (DEBUG_DICT) {
@@ -761,10 +775,26 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
     const bool isSpaceProximity = spaceProximityPos >= 0;
     const int inputLength = correction->mInputLength;
     const int firstWordLength = isSpaceProximity ? spaceProximityPos : missingSpacePos;
-    const int secondWordLength = isSpaceProximity
-            ? (inputLength - spaceProximityPos - 1)
+    const int secondWordLength = isSpaceProximity ? (inputLength - spaceProximityPos - 1)
             : (inputLength - missingSpacePos);
     const int typedLetterMultiplier = correction->TYPED_LETTER_MULTIPLIER;
+
+    bool firstCapitalizedWordDemotion = false;
+    if (firstWordLength >= 2) {
+        firstCapitalizedWordDemotion = isUpperCase(word[0]);
+    }
+
+    bool secondCapitalizedWordDemotion = false;
+    if (secondWordLength >= 2) {
+        secondCapitalizedWordDemotion = isUpperCase(word[firstWordLength + 1]);
+    }
+
+    const bool capitalizedWordDemotion =
+            firstCapitalizedWordDemotion ^ secondCapitalizedWordDemotion;
+
+    if (DEBUG_DICT_FULL) {
+        LOGI("Two words: %c, %c, %d", word[0], word[firstWordLength + 1], capitalizedWordDemotion);
+    }
 
     if (firstWordLength == 0 || secondWordLength == 0) {
         return 0;
@@ -815,6 +845,11 @@ int Correction::RankingAlgorithm::calcFreqForSplitTwoWords(
     }
 
     multiplyRate(WORDS_WITH_MISSING_SPACE_CHARACTER_DEMOTION_RATE, &totalFreq);
+
+    if (capitalizedWordDemotion) {
+        multiplyRate(TWO_WORDS_CAPITALIZED_DEMOTION_RATE, &totalFreq);
+    }
+
     return totalFreq;
 }
 

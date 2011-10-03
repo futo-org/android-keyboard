@@ -431,7 +431,7 @@ void UnigramDictionary::getSplitTwoWordsSuggestion(
         word[i] = mWord[i - firstWordLength - 1];
     }
 
-    const int pairFreq = mCorrection->getFreqForSplitTwoWords(firstFreq, secondFreq);
+    const int pairFreq = mCorrection->getFreqForSplitTwoWords(firstFreq, secondFreq, word);
     if (DEBUG_DICT) {
         LOGI("Split two words:  %d, %d, %d, %d", firstFreq, secondFreq, pairFreq, inputLength);
     }
