@@ -81,7 +81,9 @@ private:
 
     int getStartIndexFromCoordinates(const int x, const int y) const;
     void initializeCodeToKeyIndex();
-    SweetSpotType calculateSweetSpotType(int index, unsigned short baseLowerC) const;
+    SweetSpotType calculateSweetSpotType(int index) const;
+    float calculateSquaredDistanceFromSweetSpotCenter(int keyIndex, int inputIndex) const;
+
     const int MAX_PROXIMITY_CHARS_SIZE;
     const int KEYBOARD_WIDTH;
     const int KEYBOARD_HEIGHT;
@@ -102,6 +104,7 @@ private:
     float mSweetSpotCenterXs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotCenterYs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
+    SweetSpotType mSweetSpotTypes[MAX_WORD_LENGTH_INTERNAL];
     int mInputLength;
     unsigned short mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
     int mCodeToKeyIndex[MAX_CHAR_CODE + 1];
