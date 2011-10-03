@@ -550,7 +550,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mSettingsValues.mAutoCorrectEnabled) {
             mSuggest.setAutoCorrectionThreshold(mSettingsValues.mAutoCorrectionThreshold);
         }
-        updateAutoTextEnabled();
 
         mUserDictionary = new UserDictionary(this, localeStr);
         mSuggest.setUserDictionary(mUserDictionary);
@@ -734,7 +733,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         loadSettings();
         updateCorrectionMode();
-        updateAutoTextEnabled();
         updateSuggestionVisibility(mPrefs, mResources);
 
         if (mSuggest != null && mSettingsValues.mAutoCorrectEnabled) {
@@ -1673,8 +1671,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
         // getSuggestedWordBuilder handles gracefully a null value of prevWord
         final SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
-                mKeyboardSwitcher.getKeyboardView(), wordComposer, prevWord,
-                mKeyboardSwitcher.getLatinKeyboard().getProximityInfo());
+                wordComposer, prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo());
 
         boolean autoCorrectionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = wordComposer.getTypedWord();
@@ -1907,9 +1904,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         final CharSequence prevWord = EditingUtils.getThisWord(getCurrentInputConnection(),
                 mSettingsValues.mWordSeparators);
-        SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(
-                mKeyboardSwitcher.getKeyboardView(), sEmptyWordComposer, prevWord,
-                mKeyboardSwitcher.getLatinKeyboard().getProximityInfo());
+        SuggestedWords.Builder builder = mSuggest.getSuggestedWordBuilder(sEmptyWordComposer,
+                prevWord, mKeyboardSwitcher.getLatinKeyboard().getProximityInfo());
 
         if (builder.size() > 0) {
             // Explicitly supply an empty typed word (the no-second-arg version of
@@ -2212,18 +2208,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (mSuggest != null) {
             mSuggest.setCorrectionMode(mCorrectionMode);
         }
-    }
-
-    private void updateAutoTextEnabled() {
-        if (mSuggest == null) return;
-        // We want to use autotext if the settings are asking for auto corrections, and if
-        // the input language is the same as the system language (because autotext will only
-        // work in the system language so if we are entering text in a different language we
-        // do not want it on).
-        // We used to look at the "quick fixes" option instead of mAutoCorrectEnabled, but
-        // this option was redundant and confusing and therefore removed.
-        mSuggest.setQuickFixesEnabled(mSettingsValues.mAutoCorrectEnabled
-                && SubtypeSwitcher.getInstance().isSystemLanguageSameAsInputLanguage());
     }
 
     private void updateSuggestionVisibility(final SharedPreferences prefs, final Resources res) {

@@ -50,7 +50,7 @@ public class AutoCorrection {
     public void updateAutoCorrectionStatus(Map<String, Dictionary> dictionaries,
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, int[] sortedScores,
             CharSequence typedWord, double autoCorrectionThreshold, int correctionMode,
-            CharSequence quickFixedWord, CharSequence whitelistedWord) {
+            CharSequence whitelistedWord) {
         if (hasAutoCorrectionForWhitelistedWord(whitelistedWord)) {
             mHasAutoCorrection = true;
             mAutoCorrectionWord = whitelistedWord;
@@ -58,9 +58,6 @@ public class AutoCorrection {
                 dictionaries, wordComposer, suggestions, typedWord, correctionMode)) {
             mHasAutoCorrection = true;
             mAutoCorrectionWord = typedWord;
-        } else if (hasAutoCorrectionForQuickFix(quickFixedWord)) {
-            mHasAutoCorrection = true;
-            mAutoCorrectionWord = quickFixedWord;
         } else if (hasAutoCorrectionForBinaryDictionary(wordComposer, suggestions, correctionMode,
                 sortedScores, typedWord, autoCorrectionThreshold)) {
             mHasAutoCorrection = true;
@@ -107,10 +104,6 @@ public class AutoCorrection {
         return wordComposer.size() > 1 && suggestions.size() > 0 && isValidWord
                 && (correctionMode == Suggest.CORRECTION_FULL
                 || correctionMode == Suggest.CORRECTION_FULL_BIGRAM);
-    }
-
-    private static boolean hasAutoCorrectionForQuickFix(CharSequence quickFixedWord) {
-        return quickFixedWord != null;
     }
 
     private boolean hasAutoCorrectionForBinaryDictionary(WordComposer wordComposer,

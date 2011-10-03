@@ -57,7 +57,7 @@ public class RecorrectionSuggestionEntries {
 
     private static SuggestedWords.Builder getTypedSuggestions(
             Suggest suggest, KeyboardSwitcher keyboardSwitcher, WordComposer word) {
-        return suggest.getSuggestedWordBuilder(keyboardSwitcher.getKeyboardView(), word, null,
+        return suggest.getSuggestedWordBuilder(word, null,
                 keyboardSwitcher.getLatinKeyboard().getProximityInfo());
     }
 }
