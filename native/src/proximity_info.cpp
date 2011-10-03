@@ -224,7 +224,7 @@ ProximityInfo::SweetSpotType ProximityInfo::calculateSweetSpotType(
         return UNKNOWN;
     }
     const float sweetSpotCenterX = mSweetSpotCenterXs[keyIndex];
-    const float sweetSpotCenterY = mSweetSpotCenterXs[keyIndex];
+    const float sweetSpotCenterY = mSweetSpotCenterYs[keyIndex];
     const float inputX = (float)mInputXCoordinates[index];
     const float inputY = (float)mInputYCoordinates[index];
     const float squaredDistance =
