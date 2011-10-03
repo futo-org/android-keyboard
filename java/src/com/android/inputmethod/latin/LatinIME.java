@@ -884,35 +884,34 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final boolean selectionChanged = (newSelStart != candidatesEnd
                 || newSelEnd != candidatesEnd) && mLastSelectionStart != newSelStart;
         final boolean candidatesCleared = candidatesStart == -1 && candidatesEnd == -1;
-        if (!mExpectingUpdateSelection
-                && ((mComposingStringBuilder.length() > 0 && mHasUncommittedTypedChars)
-                || mVoiceProxy.isVoiceInputHighlighted())
-                && (selectionChanged || candidatesCleared)) {
-            if (candidatesCleared) {
-                // If the composing span has been cleared, save the typed word in the history for
-                // recorrection before we reset the suggestions strip.  Then, we'll be able to show
-                // suggestions for recorrection right away.
-                mRecorrection.saveRecorrectionSuggestion(mWordComposer, mComposingStringBuilder);
-            }
-            mComposingStringBuilder.setLength(0);
-            mHasUncommittedTypedChars = false;
-            if (isCursorTouchingWord()) {
-                mHandler.cancelUpdateBigramPredictions();
-                mHandler.postUpdateSuggestions();
-            } else {
-                setPunctuationSuggestions();
-            }
-            TextEntryState.reset();
-            final InputConnection ic = getCurrentInputConnection();
-            if (ic != null) {
-                ic.finishComposingText();
-            }
-            mVoiceProxy.setVoiceInputHighlighted(false);
-        } else if (!mHasUncommittedTypedChars && !mExpectingUpdateSelection
-                && TextEntryState.isAcceptedDefault()) {
-            TextEntryState.reset();
-        }
         if (!mExpectingUpdateSelection) {
+            if (((mComposingStringBuilder.length() > 0 && mHasUncommittedTypedChars)
+                    || mVoiceProxy.isVoiceInputHighlighted())
+                    && (selectionChanged || candidatesCleared)) {
+                if (candidatesCleared) {
+                    // If the composing span has been cleared, save the typed word in the history
+                    // for recorrection before we reset the suggestions strip.  Then, we'll be able
+                    // to show suggestions for recorrection right away.
+                    mRecorrection.saveRecorrectionSuggestion(mWordComposer,
+                            mComposingStringBuilder);
+                }
+                mComposingStringBuilder.setLength(0);
+                mHasUncommittedTypedChars = false;
+                if (isCursorTouchingWord()) {
+                    mHandler.cancelUpdateBigramPredictions();
+                    mHandler.postUpdateSuggestions();
+                } else {
+                    setPunctuationSuggestions();
+                }
+                TextEntryState.reset();
+                final InputConnection ic = getCurrentInputConnection();
+                if (ic != null) {
+                    ic.finishComposingText();
+                }
+                mVoiceProxy.setVoiceInputHighlighted(false);
+            } else if (!mHasUncommittedTypedChars && TextEntryState.isAcceptedDefault()) {
+                TextEntryState.reset();
+            }
             mJustAddedMagicSpace = false; // The user moved the cursor.
             mJustReplacedDoubleSpace = false;
         }
