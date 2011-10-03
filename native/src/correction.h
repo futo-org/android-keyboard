@@ -73,7 +73,8 @@ public:
 
     bool needsToPrune() const;
 
-    int getFreqForSplitTwoWords(const int firstFreq, const int secondFreq);
+    int getFreqForSplitTwoWords(
+            const int firstFreq, const int secondFreq, const unsigned short *word);
     int getFinalFreq(const int freq, unsigned short **word, int* wordLength);
 
     CorrectionType processCharAndCalcState(const int32_t c, const bool isTerminal);
@@ -151,7 +152,7 @@ private:
         static int calculateFinalFreq(const int inputIndex, const int depth,
                 const int freq, int *editDistanceTable, const Correction* correction);
         static int calcFreqForSplitTwoWords(const int firstFreq, const int secondFreq,
-                const Correction* correction);
+                const Correction* correction, const unsigned short *word);
     };
 };
 } // namespace latinime
