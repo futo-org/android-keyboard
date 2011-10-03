@@ -24,7 +24,6 @@
     <bool name="config_default_show_settings_key">false</bool>
     <bool name="config_enable_show_voice_key_option">true</bool>
     <bool name="config_enable_show_popup_on_keypress_option">true</bool>
-    <bool name="config_enable_show_recorrection_option">false</bool>
     <bool name="config_enable_bigram_suggestions_option">true</bool>
     <bool name="config_enable_usability_study_mode_option">false</bool>
     <bool name="config_sliding_key_input_enabled">true</bool>
@@ -37,7 +36,6 @@
     <!-- Default value for bigram prediction: after entering a word and a space only, should we look
          at input history to suggest a hopefully helpful suggestions for the next word? -->
     <bool name="config_default_bigram_prediction">false</bool>
-    <bool name="config_default_compat_recorrection_enabled">true</bool>
     <bool name="config_default_sound_enabled">false</bool>
     <bool name="config_default_vibration_enabled">true</bool>
     <bool name="config_auto_correction_spacebar_led_enabled">true</bool>
