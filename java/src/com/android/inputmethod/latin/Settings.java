@@ -64,7 +64,6 @@ public class Settings extends InputMethodSettingsActivity
     public static final String PREF_VIBRATE_ON = "vibrate_on";
     public static final String PREF_SOUND_ON = "sound_on";
     public static final String PREF_KEY_PREVIEW_POPUP_ON = "popup_on";
-    public static final String PREF_RECORRECTION_ENABLED = "recorrection_enabled";
     public static final String PREF_AUTO_CAP = "auto_cap";
     public static final String PREF_SHOW_SETTINGS_KEY = "show_settings_key";
     public static final String PREF_VOICE_SETTINGS_KEY = "voice_mode";
@@ -433,12 +432,6 @@ public class Settings extends InputMethodSettingsActivity
                 R.bool.config_enable_show_popup_on_keypress_option);
         if (!showPopupOption) {
             generalSettings.removePreference(findPreference(PREF_KEY_PREVIEW_POPUP_ON));
-        }
-
-        final boolean showRecorrectionOption = res.getBoolean(
-                R.bool.config_enable_show_recorrection_option);
-        if (!showRecorrectionOption) {
-            generalSettings.removePreference(findPreference(PREF_RECORRECTION_ENABLED));
         }
 
         final boolean showBigramSuggestionsOption = res.getBoolean(

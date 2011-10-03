@@ -227,14 +227,13 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
         private static final int MSG_UPDATE_SUGGESTIONS = 0;
-        private static final int MSG_UPDATE_OLD_SUGGESTIONS = 1;
-        private static final int MSG_UPDATE_SHIFT_STATE = 2;
-        private static final int MSG_VOICE_RESULTS = 3;
-        private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 4;
-        private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 5;
-        private static final int MSG_SPACE_TYPED = 6;
-        private static final int MSG_SET_BIGRAM_PREDICTIONS = 7;
-        private static final int MSG_PENDING_IMS_CALLBACK = 8;
+        private static final int MSG_UPDATE_SHIFT_STATE = 1;
+        private static final int MSG_VOICE_RESULTS = 2;
+        private static final int MSG_FADEOUT_LANGUAGE_ON_SPACEBAR = 3;
+        private static final int MSG_DISMISS_LANGUAGE_ON_SPACEBAR = 4;
+        private static final int MSG_SPACE_TYPED = 5;
+        private static final int MSG_SET_BIGRAM_PREDICTIONS = 6;
+        private static final int MSG_PENDING_IMS_CALLBACK = 7;
 
         public UIHandler(LatinIME outerInstance) {
             super(outerInstance);
@@ -248,9 +247,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             switch (msg.what) {
             case MSG_UPDATE_SUGGESTIONS:
                 latinIme.updateSuggestions();
-                break;
-            case MSG_UPDATE_OLD_SUGGESTIONS:
-                // TODO: remove MSG_UPDATE_OLD_SUGGESTIONS message
                 break;
             case MSG_UPDATE_SHIFT_STATE:
                 switcher.updateShiftState();
@@ -294,16 +290,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         public boolean hasPendingUpdateSuggestions() {
             return hasMessages(MSG_UPDATE_SUGGESTIONS);
-        }
-
-        public void postUpdateOldSuggestions() {
-            removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
-            sendMessageDelayed(obtainMessage(MSG_UPDATE_OLD_SUGGESTIONS),
-                    getOuterInstance().mSettingsValues.mDelayUpdateOldSuggestions);
-        }
-
-        public void cancelUpdateOldSuggestions() {
-            removeMessages(MSG_UPDATE_OLD_SUGGESTIONS);
         }
 
         public void postUpdateShiftKeyState() {
@@ -838,7 +824,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (inputView != null) inputView.cancelAllMessages();
         // Remove pending messages related to update suggestions
         mHandler.cancelUpdateSuggestions();
-        mHandler.cancelUpdateOldSuggestions();
     }
 
     @Override
@@ -1533,7 +1518,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         if (Keyboard.CODE_SPACE == primaryCode) {
             if (!isCursorTouchingWord()) {
                 mHandler.cancelUpdateSuggestions();
-                mHandler.cancelUpdateOldSuggestions();
                 mHandler.postUpdateBigramPredictions();
             }
         } else {
@@ -1621,7 +1605,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
 
         mHandler.cancelUpdateSuggestions();
-        mHandler.cancelUpdateOldSuggestions();
         mHandler.cancelUpdateBigramPredictions();
 
         if (!mHasUncommittedTypedChars) {
