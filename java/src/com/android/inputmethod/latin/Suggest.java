@@ -17,10 +17,8 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.text.AutoText;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 
 import com.android.inputmethod.keyboard.ProximityInfo;
 
@@ -97,8 +95,6 @@ public class Suggest implements Dictionary.WordCallback {
 
     private static final int PREF_MAX_BIGRAMS = 60;
 
-    private boolean mQuickFixesEnabled;
-
     private double mAutoCorrectionThreshold;
     private int[] mScores = new int[mPrefMaxSuggestions];
     private int[] mBigramScores = new int[PREF_MAX_BIGRAMS];
@@ -160,6 +156,7 @@ public class Suggest implements Dictionary.WordCallback {
             final Locale locale) {
         mMainDict = null;
         new Thread("InitializeBinaryDictionary") {
+            @Override
             public void run() {
                 final Dictionary newMainDict = DictionaryFactory.createDictionaryFromManager(
                         context, locale, dictionaryResId);
@@ -168,11 +165,6 @@ public class Suggest implements Dictionary.WordCallback {
                 addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, newMainDict);
             }
         }.start();
-    }
-
-
-    public void setQuickFixesEnabled(boolean enabled) {
-        mQuickFixesEnabled = enabled;
     }
 
     public int getCorrectionMode() {
@@ -256,14 +248,13 @@ public class Suggest implements Dictionary.WordCallback {
     /**
      * Returns a object which represents suggested words that match the list of character codes
      * passed in. This object contents will be overwritten the next time this function is called.
-     * @param view a view for retrieving the context for AutoText
      * @param wordComposer contains what is currently being typed
      * @param prevWordForBigram previous word (used only for bigram)
      * @return suggested words object.
      */
-    public SuggestedWords getSuggestions(final View view, final WordComposer wordComposer,
+    public SuggestedWords getSuggestions(final WordComposer wordComposer,
             final CharSequence prevWordForBigram, final ProximityInfo proximityInfo) {
-        return getSuggestedWordBuilder(view, wordComposer, prevWordForBigram,
+        return getSuggestedWordBuilder(wordComposer, prevWordForBigram,
                 proximityInfo).build();
     }
 
@@ -295,7 +286,7 @@ public class Suggest implements Dictionary.WordCallback {
     }
 
     // TODO: cleanup dictionaries looking up and suggestions building with SuggestedWords.Builder
-    public SuggestedWords.Builder getSuggestedWordBuilder(final View view,
+    public SuggestedWords.Builder getSuggestedWordBuilder(
             final WordComposer wordComposer, CharSequence prevWordForBigram,
             final ProximityInfo proximityInfo) {
         LatinImeLogger.onStartSuggestion(prevWordForBigram);
@@ -336,6 +327,7 @@ public class Suggest implements Dictionary.WordCallback {
                     }
                 } else {
                     // Word entered: return only bigrams that match the first char of the typed word
+                    @SuppressWarnings("null")
                     final char currentChar = typedWord.charAt(0);
                     // TODO: Must pay attention to locale when changing case.
                     final char currentCharUpper = Character.toUpperCase(currentChar);
@@ -363,34 +355,14 @@ public class Suggest implements Dictionary.WordCallback {
                 dictionary.getWords(wordComposer, this, proximityInfo);
             }
         }
-        CharSequence autoText = null;
         final String typedWordString = typedWord == null ? null : typedWord.toString();
-        if (typedWord != null) {
-            // Apply quick fix only for the typed word.
-            if (mQuickFixesEnabled) {
-                final String lowerCaseTypedWord = typedWordString.toLowerCase();
-                // Is there an AutoText (also known as Quick Fixes) correction?
-                // Capitalize as needed
-                autoText = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized, AutoText.get(
-                        lowerCaseTypedWord, 0, lowerCaseTypedWord.length(), view));
-                if (DBG) {
-                    if (autoText != null) {
-                        Log.d(TAG, "Auto corrected by AUTOTEXT: " + typedWord + " -> " + autoText);
-                    }
-                }
-            }
-        }
 
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
                 mWhiteListDictionary.getWhiteListedWord(typedWordString));
 
         mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries, wordComposer,
                 mSuggestions, mScores, typedWord, mAutoCorrectionThreshold, mCorrectionMode,
-                autoText, whitelistedWord);
-
-        if (autoText != null) {
-            mSuggestions.add(0, autoText);
-        }
+                whitelistedWord);
 
         if (whitelistedWord != null) {
             mSuggestions.add(0, whitelistedWord);

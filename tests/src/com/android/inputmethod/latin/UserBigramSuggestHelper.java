@@ -58,7 +58,7 @@ public class UserBigramSuggestHelper extends SuggestHelper {
         flushUserBigrams();
         if (!TextUtils.isEmpty(previous) && !TextUtils.isEmpty(Character.toString(typed))) {
             WordComposer firstChar = createWordComposer(Character.toString(typed));
-            mSuggest.getSuggestions(null, firstChar, previous, mKeyboard.getProximityInfo());
+            mSuggest.getSuggestions(firstChar, previous, mKeyboard.getProximityInfo());
             boolean reloading = mUserBigram.reloadDictionaryIfRequired();
             if (reloading) mUserBigram.waitForDictionaryLoading();
             mUserBigram.getBigrams(firstChar, previous, mSuggest);
