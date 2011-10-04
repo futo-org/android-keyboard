@@ -32,9 +32,6 @@ import java.util.Locale;
  * dictionary pack.
  */
 public class LocaleUtils {
-
-    private final static String TAG = LocaleUtils.class.getSimpleName();
-
     private LocaleUtils() {
         // Intentional empty constructor for utility class.
     }

@@ -16,13 +16,9 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-import com.android.inputmethod.latin.R;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
-
-import java.util.List;
 
 /**
  * Spell checker preference screen.

@@ -30,7 +30,6 @@ import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
 import com.android.inputmethod.compat.AudioManagerCompatWrapper;
-import com.android.inputmethod.compat.EditorInfoCompatUtils;
 import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
 import com.android.inputmethod.keyboard.Key;

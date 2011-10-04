@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -27,7 +26,6 @@ import android.util.Log;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;

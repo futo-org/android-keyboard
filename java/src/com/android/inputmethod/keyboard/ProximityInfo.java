@@ -18,9 +18,7 @@ package com.android.inputmethod.keyboard;
 
 import android.graphics.Rect;
 
-import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.internal.KeyboardParams.TouchPositionCorrection;
-import com.android.inputmethod.latin.SubtypeSwitcher;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.spellcheck.SpellCheckerProximityInfo;
 

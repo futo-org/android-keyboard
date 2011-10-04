@@ -16,17 +16,15 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-import com.android.inputmethod.latin.R;
-
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
+
+import com.android.inputmethod.latin.R;
 
 /**
  * Preference screen.
  */
 public class SpellCheckerSettingsFragment extends PreferenceFragment {
-    private static final String TAG = SpellCheckerSettingsFragment.class.getSimpleName();
-
     /**
      * Empty constructor for fragment generation.
      */
