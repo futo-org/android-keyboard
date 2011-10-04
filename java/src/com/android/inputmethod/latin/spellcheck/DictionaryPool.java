@@ -16,14 +16,13 @@
 
 package com.android.inputmethod.latin.spellcheck;
 
-import android.content.Context;
-
 import java.util.Locale;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A blocking queue that creates dictionaries up to a certain limit as necessary.
  */
+@SuppressWarnings("serial")
 public class DictionaryPool extends LinkedBlockingQueue<DictAndProximity> {
     private final AndroidSpellCheckerService mService;
     private final int mMaxSize;

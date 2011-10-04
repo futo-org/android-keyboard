@@ -19,7 +19,6 @@ package com.android.inputmethod.latin.spellcheck;
 import com.android.inputmethod.keyboard.KeyDetector;
 import com.android.inputmethod.keyboard.ProximityInfo;
 
-import java.util.Map;
 import java.util.TreeMap;
 
 public class SpellCheckerProximityInfo {

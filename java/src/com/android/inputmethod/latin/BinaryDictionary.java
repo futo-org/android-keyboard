@@ -16,11 +16,9 @@
 
 package com.android.inputmethod.latin;
 
-import com.android.inputmethod.keyboard.Keyboard;
-import com.android.inputmethod.keyboard.KeyboardSwitcher;
-import com.android.inputmethod.keyboard.ProximityInfo;
-
 import android.content.Context;
+
+import com.android.inputmethod.keyboard.ProximityInfo;
 
 import java.util.Arrays;
 
@@ -41,7 +39,6 @@ public class BinaryDictionary extends Dictionary {
     public static final int MAX_WORD_LENGTH = 48;
     public static final int MAX_WORDS = 18;
 
-    @SuppressWarnings("unused")
     private static final String TAG = "BinaryDictionary";
     private static final int MAX_PROXIMITY_CHARS_SIZE = ProximityInfo.MAX_PROXIMITY_CHARS_SIZE;
     private static final int MAX_BIGRAMS = 60;
@@ -55,8 +52,6 @@ public class BinaryDictionary extends Dictionary {
     private final char[] mOutputChars_bigrams = new char[MAX_WORD_LENGTH * MAX_BIGRAMS];
     private final int[] mScores = new int[MAX_WORDS];
     private final int[] mBigramScores = new int[MAX_BIGRAMS];
-
-    private final KeyboardSwitcher mKeyboardSwitcher = KeyboardSwitcher.getInstance();
 
     public static final Flag FLAG_REQUIRES_GERMAN_UMLAUT_PROCESSING =
             new Flag(R.bool.config_require_umlaut_processing, 0x1);

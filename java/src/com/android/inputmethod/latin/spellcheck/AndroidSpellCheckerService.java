@@ -19,14 +19,12 @@ package com.android.inputmethod.latin.spellcheck;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.service.textservice.SpellCheckerService;
-import android.service.textservice.SpellCheckerService.Session;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.textservice.SuggestionsInfo;
 import android.view.textservice.TextInfo;
-import android.text.TextUtils;
 
 import com.android.inputmethod.compat.ArraysCompatUtils;
-import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.ProximityInfo;
 import com.android.inputmethod.latin.BinaryDictionary;
 import com.android.inputmethod.latin.Dictionary;
@@ -38,7 +36,6 @@ import com.android.inputmethod.latin.Flag;
 import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
-import com.android.inputmethod.latin.UserDictionary;
 import com.android.inputmethod.latin.Utils;
 import com.android.inputmethod.latin.WordComposer;
 
@@ -111,7 +108,6 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
             }
         }
 
-        private final int DEFAULT_SUGGESTION_LENGTH = 16;
         private final ArrayList<CharSequence> mSuggestions;
         private final int[] mScores;
         private final String mOriginalText;

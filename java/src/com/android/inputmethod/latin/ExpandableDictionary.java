@@ -17,7 +17,6 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
-import android.os.AsyncTask;
 
 import com.android.inputmethod.keyboard.Keyboard;
 import com.android.inputmethod.keyboard.ProximityInfo;
@@ -166,15 +165,14 @@ public class ExpandableDictionary extends Dictionary {
         // Does children have the current character?
         final int childrenLength = children.mLength;
         Node childNode = null;
-        boolean found = false;
         for (int i = 0; i < childrenLength; i++) {
-            childNode = children.mData[i];
-            if (childNode.mCode == c) {
-                found = true;
+            final Node node = children.mData[i];
+            if (node.mCode == c) {
+                childNode = node;
                 break;
             }
         }
-        if (!found) {
+        if (childNode == null) {
             childNode = new Node();
             childNode.mCode = c;
             childNode.mParent = parentNode;
@@ -206,7 +204,7 @@ public class ExpandableDictionary extends Dictionary {
     }
 
     protected final void getWordsInner(final WordComposer codes, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
+            @SuppressWarnings("unused") final ProximityInfo proximityInfo) {
         mInputLength = codes.size();
         if (mCodes.length < mInputLength) mCodes = new int[mInputLength][];
         // Cache the codes so that we don't have to lookup an array list
@@ -270,7 +268,7 @@ public class ExpandableDictionary extends Dictionary {
      */
     // TODO: Share this routine with the native code for BinaryDictionary
     protected void getWordsRec(NodeArray roots, final WordComposer codes, final char[] word,
-            final int depth, boolean completion, int snr, int inputIndex, int skipPos,
+            final int depth, final boolean completion, int snr, int inputIndex, int skipPos,
             WordCallback callback) {
         final int count = roots.mLength;
         final int codeSize = mInputLength;
@@ -278,9 +276,9 @@ public class ExpandableDictionary extends Dictionary {
         if (depth > mMaxDepth) {
             return;
         }
-        int[] currentChars = null;
+        final int[] currentChars;
         if (codeSize <= inputIndex) {
-            completion = true;
+            currentChars = null;
         } else {
             currentChars = mCodes[inputIndex];
         }
@@ -292,7 +290,7 @@ public class ExpandableDictionary extends Dictionary {
             final boolean terminal = node.mTerminal;
             final NodeArray children = node.mChildren;
             final int freq = node.mFrequency;
-            if (completion) {
+            if (completion || currentChars == null) {
                 word[depth] = c;
                 if (terminal) {
                     final int finalFreq;
@@ -307,7 +305,7 @@ public class ExpandableDictionary extends Dictionary {
                     }
                 }
                 if (children != null) {
-                    getWordsRec(children, codes, word, depth + 1, completion, snr, inputIndex,
+                    getWordsRec(children, codes, word, depth + 1, true, snr, inputIndex,
                             skipPos, callback);
                 }
             } else if ((c == Keyboard.CODE_SINGLE_QUOTE
@@ -412,15 +410,14 @@ public class ExpandableDictionary extends Dictionary {
         // Does children have the current character?
         final int childrenLength = children.mLength;
         Node childNode = null;
-        boolean found = false;
         for (int i = 0; i < childrenLength; i++) {
-            childNode = children.mData[i];
-            if (childNode.mCode == c) {
-                found = true;
+            final Node node = children.mData[i];
+            if (node.mCode == c) {
+                childNode = node;
                 break;
             }
         }
-        if (!found) {
+        if (childNode == null) {
             childNode = new Node();
             childNode.mCode = c;
             childNode.mParent = parentNode;

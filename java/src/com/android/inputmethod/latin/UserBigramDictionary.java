@@ -104,12 +104,12 @@ public class UserBigramDictionary extends ExpandableDictionary {
     private static class Bigram {
         public final String mWord1;
         public final String mWord2;
-        public final int frequency;
+        public final int mFrequency;
 
         Bigram(String word1, String word2, int frequency) {
             this.mWord1 = word1;
             this.mWord2 = word2;
-            this.frequency = frequency;
+            this.mFrequency = frequency;
         }
 
         @Override
@@ -190,7 +190,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
             // Nothing pending? Return
             if (mPendingWrites.isEmpty()) return;
             // Create a background thread to write the pending entries
-            new UpdateDbTask(getContext(), sOpenHelper, mPendingWrites, mLocale).execute();
+            new UpdateDbTask(sOpenHelper, mPendingWrites, mLocale).execute();
             // Create a new map for writing new entries into while the old one is written to db
             mPendingWrites = new HashSet<Bigram>();
         }
@@ -302,8 +302,8 @@ public class UserBigramDictionary extends ExpandableDictionary {
         private final DatabaseHelper mDbHelper;
         private final String mLocale;
 
-        public UpdateDbTask(Context context, DatabaseHelper openHelper,
-                HashSet<Bigram> pendingWrites, String locale) {
+        public UpdateDbTask(DatabaseHelper openHelper, HashSet<Bigram> pendingWrites,
+                String locale) {
             mMap = pendingWrites;
             mLocale = locale;
             mDbHelper = openHelper;
@@ -372,7 +372,7 @@ public class UserBigramDictionary extends ExpandableDictionary {
                 c.close();
 
                 // insert new frequency
-                db.insert(FREQ_TABLE_NAME, null, getFrequencyContentValues(pairId, bi.frequency));
+                db.insert(FREQ_TABLE_NAME, null, getFrequencyContentValues(pairId, bi.mFrequency));
             }
             checkPruneData(db);
             sUpdatingDB = false;

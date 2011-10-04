@@ -32,7 +32,7 @@ public class SynchronouslyLoadedUserDictionary extends UserDictionary {
     }
 
     @Override
-    public void getWords(final WordComposer codes, final WordCallback callback,
+    public synchronized void getWords(final WordComposer codes, final WordCallback callback,
             final ProximityInfo proximityInfo) {
         blockingReloadDictionaryIfRequired();
         getWordsInner(codes, callback, proximityInfo);
