@@ -116,6 +116,38 @@ void ProximityInfo::setInputParams(const int* inputCodes, const int inputLength,
     mPrimaryInputWord[inputLength] = 0;
 }
 
+inline float square(const float x) { return x * x; }
+
+ProximityInfo::SweetSpotType ProximityInfo::calculateSweetSpotType(
+        int index, unsigned short baseLowerC) const {
+    if (KEY_COUNT == 0 || !mInputXCoordinates || !mInputYCoordinates
+            || baseLowerC > MAX_CHAR_CODE) {
+        return UNKNOWN;
+    }
+    const int keyIndex = mCodeToKeyIndex[baseLowerC];
+    if (keyIndex < 0) {
+        return UNKNOWN;
+    }
+    const float sweetSpotRadius = mSweetSpotRadii[keyIndex];
+    if (sweetSpotRadius <= 0.0) {
+        return UNKNOWN;
+    }
+    const float sweetSpotCenterX = mSweetSpotCenterXs[keyIndex];
+    const float sweetSpotCenterY = mSweetSpotCenterYs[keyIndex];
+    const float inputX = (float)mInputXCoordinates[index];
+    const float inputY = (float)mInputYCoordinates[index];
+    const float squaredDistance =
+            square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
+    const float squaredSweetSpotRadius = square(sweetSpotRadius);
+    if (squaredDistance <= squaredSweetSpotRadius) {
+        return IN_SWEET_SPOT;
+    }
+    if (squaredDistance <= square(NEUTRAL_AREA_RADIUS_RATIO) * squaredSweetSpotRadius) {
+        return IN_NEUTRAL_AREA;
+    }
+    return OUT_OF_NEUTRAL_AREA;
+}
+
 inline const int* ProximityInfo::getProximityCharsAt(const int index) const {
     return mInputCodes + (index * MAX_PROXIMITY_CHARS_SIZE);
 }
@@ -205,38 +237,6 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(
 
     // Was not included, signal this as an unrelated character.
     return UNRELATED_CHAR;
-}
-
-inline float square(const float x) { return x * x; }
-
-ProximityInfo::SweetSpotType ProximityInfo::calculateSweetSpotType(
-        int index, unsigned short baseLowerC) const {
-    if (KEY_COUNT == 0 || !mInputXCoordinates || !mInputYCoordinates
-            || baseLowerC > MAX_CHAR_CODE) {
-        return UNKNOWN;
-    }
-    const int keyIndex = mCodeToKeyIndex[baseLowerC];
-    if (keyIndex < 0) {
-        return UNKNOWN;
-    }
-    const float sweetSpotRadius = mSweetSpotRadii[keyIndex];
-    if (sweetSpotRadius <= 0.0) {
-        return UNKNOWN;
-    }
-    const float sweetSpotCenterX = mSweetSpotCenterXs[keyIndex];
-    const float sweetSpotCenterY = mSweetSpotCenterYs[keyIndex];
-    const float inputX = (float)mInputXCoordinates[index];
-    const float inputY = (float)mInputYCoordinates[index];
-    const float squaredDistance =
-            square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
-    const float squaredSweetSpotRadius = square(sweetSpotRadius);
-    if (squaredDistance <= squaredSweetSpotRadius) {
-        return IN_SWEET_SPOT;
-    }
-    if (squaredDistance <= square(NEUTRAL_AREA_RADIUS_RATIO) * squaredSweetSpotRadius) {
-        return IN_NEUTRAL_AREA;
-    }
-    return OUT_OF_NEUTRAL_AREA;
 }
 
 bool ProximityInfo::sameAsTyped(const unsigned short *word, int length) const {
