@@ -618,8 +618,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
         final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_Case);
-        final TypedArray viewAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
-                R.styleable.KeyboardView);
         try {
             final boolean modeMatched = matchTypedValue(a,
                     R.styleable.Keyboard_Case_mode, id.mMode, KeyboardId.modeName(id.mMode));
@@ -676,7 +674,6 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
             return selected;
         } finally {
             a.recycle();
-            viewAttr.recycle();
         }
     }
 
