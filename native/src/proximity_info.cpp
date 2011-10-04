@@ -114,38 +114,51 @@ void ProximityInfo::setInputParams(const int* inputCodes, const int inputLength,
         mPrimaryInputWord[i] = getPrimaryCharAt(i);
     }
     mPrimaryInputWord[inputLength] = 0;
+    for (int i = 0; i < mInputLength; ++i) {
+        mSweetSpotTypes[i] = calculateSweetSpotType(i);
+    }
 }
 
 inline float square(const float x) { return x * x; }
 
-ProximityInfo::SweetSpotType ProximityInfo::calculateSweetSpotType(
-        int index, unsigned short baseLowerC) const {
-    if (KEY_COUNT == 0 || !mInputXCoordinates || !mInputYCoordinates
-            || baseLowerC > MAX_CHAR_CODE) {
+ProximityInfo::SweetSpotType ProximityInfo::calculateSweetSpotType(int index) const {
+    if (KEY_COUNT == 0 || !mInputXCoordinates || !mInputYCoordinates) {
+        // We do not have the coordinate data
+        return UNKNOWN;
+    }
+    const int currentChar = getPrimaryCharAt(index);
+    const unsigned short baseLowerC = Dictionary::toBaseLowerCase(currentChar);
+    if (baseLowerC > MAX_CHAR_CODE) {
         return UNKNOWN;
     }
     const int keyIndex = mCodeToKeyIndex[baseLowerC];
     if (keyIndex < 0) {
         return UNKNOWN;
     }
-    const float sweetSpotRadius = mSweetSpotRadii[keyIndex];
-    if (sweetSpotRadius <= 0.0) {
+    const float radius = mSweetSpotRadii[keyIndex];
+    if (radius <= 0.0) {
+        // When there are no calibration data for a key,
+        // the radius of the key is assigned to zero.
         return UNKNOWN;
     }
-    const float sweetSpotCenterX = mSweetSpotCenterXs[keyIndex];
-    const float sweetSpotCenterY = mSweetSpotCenterYs[keyIndex];
-    const float inputX = (float)mInputXCoordinates[index];
-    const float inputY = (float)mInputYCoordinates[index];
-    const float squaredDistance =
-            square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
-    const float squaredSweetSpotRadius = square(sweetSpotRadius);
-    if (squaredDistance <= squaredSweetSpotRadius) {
+    const float squaredRadius = square(radius);
+    const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(keyIndex, index);
+    if (squaredDistance <= squaredRadius) {
         return IN_SWEET_SPOT;
     }
-    if (squaredDistance <= square(NEUTRAL_AREA_RADIUS_RATIO) * squaredSweetSpotRadius) {
+    if (squaredDistance <= square(NEUTRAL_AREA_RADIUS_RATIO) * squaredRadius) {
         return IN_NEUTRAL_AREA;
     }
     return OUT_OF_NEUTRAL_AREA;
+}
+
+float ProximityInfo::calculateSquaredDistanceFromSweetSpotCenter(
+        int keyIndex, int inputIndex) const {
+    const float sweetSpotCenterX = mSweetSpotCenterXs[keyIndex];
+    const float sweetSpotCenterY = mSweetSpotCenterYs[keyIndex];
+    const float inputX = (float)mInputXCoordinates[inputIndex];
+    const float inputY = (float)mInputYCoordinates[inputIndex];
+    return square(inputX - sweetSpotCenterX) + square(inputY - sweetSpotCenterY);
 }
 
 inline const int* ProximityInfo::getProximityCharsAt(const int index) const {
@@ -201,8 +214,7 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(
     // that means the user typed that same char for this pos.
     if (firstChar == baseLowerC || firstChar == c) {
         if (CALIBRATE_SCORE_BY_TOUCH_COORDINATES) {
-            const SweetSpotType result = calculateSweetSpotType(index, baseLowerC);
-            switch (result) {
+            switch (mSweetSpotTypes[index]) {
             case UNKNOWN:
                 return EQUIVALENT_CHAR_NORMAL;
             case IN_SWEET_SPOT:
