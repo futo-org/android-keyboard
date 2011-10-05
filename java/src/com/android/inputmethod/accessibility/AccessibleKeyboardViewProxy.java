@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.inputmethodservice.InputMethodService;
-import android.media.AudioManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
@@ -29,8 +28,6 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.inputmethod.EditorInfo;
 
 import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
-import com.android.inputmethod.compat.AudioManagerCompatWrapper;
-import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
 import com.android.inputmethod.keyboard.Key;
 import com.android.inputmethod.keyboard.KeyDetector;
@@ -48,7 +45,6 @@ public class AccessibleKeyboardViewProxy {
     private FlickGestureDetector mGestureDetector;
     private LatinKeyboardView mView;
     private AccessibleKeyboardActionListener mListener;
-    private AudioManagerCompatWrapper mAudioManager;
 
     private int mScaledEdgeSlop;
     private int mLastHoverKeyIndex = KeyDetector.NOT_A_KEY;
@@ -82,26 +78,6 @@ public class AccessibleKeyboardViewProxy {
         mInputMethod = inputMethod;
         mGestureDetector = new KeyboardFlickGestureDetector(inputMethod);
         mScaledEdgeSlop = ViewConfiguration.get(inputMethod).getScaledEdgeSlop();
-
-        final AudioManager audioManager = (AudioManager) inputMethod
-                .getSystemService(Context.AUDIO_SERVICE);
-        mAudioManager = new AudioManagerCompatWrapper(audioManager);
-    }
-
-    /**
-     * @return {@code true} if the device should not speak text (eg. non-control) characters
-     */
-    private boolean shouldObscureInput() {
-        // Always speak if the user is listening through headphones.
-        if (mAudioManager.isWiredHeadsetOn() || mAudioManager.isBluetoothA2dpOn())
-            return false;
-
-        final EditorInfo info = mInputMethod.getCurrentInputEditorInfo();
-        if (info == null)
-            return false;
-
-        // Don't speak if the IME is connected to a password field.
-        return InputTypeCompatUtils.isPasswordInputType(info.inputType);
     }
 
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event,
@@ -118,7 +94,8 @@ public class AccessibleKeyboardViewProxy {
             if (key == null)
                 break;
 
-            final boolean shouldObscure = shouldObscureInput();
+            final EditorInfo info = mInputMethod.getCurrentInputEditorInfo();
+            final boolean shouldObscure = AccessibilityUtils.getInstance().shouldObscureInput(info);
             final CharSequence description = KeyCodeDescriptionMapper.getInstance()
                     .getDescriptionForKey(mView.getContext(), mView.getKeyboard(), key,
                             shouldObscure);

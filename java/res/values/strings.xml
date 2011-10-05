@@ -142,6 +142,9 @@
     <!-- Label for "Wait" key of phone number keyboard.  Must be short to fit on key! [CHAR LIMIT=5]-->
     <string name="label_wait_key">Wait</string>
 
+    <!-- Spoken description to let the user know that when typing in a password, they can plug in a headset in to hear spoken descriptions of the keys they type. [CHAR LIMIT=NONE] -->
+    <string name="spoken_use_headphones">Plug in a headset to hear password keys spoken aloud.</string>
+
     <!-- Spoken description for the currently entered text -->
     <string name="spoken_current_text_is">Current text is "%s"</string>
     <!-- Spoken description when there is no text entered -->
