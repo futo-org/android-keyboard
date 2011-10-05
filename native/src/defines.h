@@ -166,7 +166,7 @@ static void dumpWord(const unsigned short* word, const int length) {
 
 #define KEYCODE_SPACE ' '
 
-#define CALIBRATE_SCORE_BY_TOUCH_COORDINATES false
+#define CALIBRATE_SCORE_BY_TOUCH_COORDINATES true
 
 #define SUGGEST_WORDS_WITH_MISSING_CHARACTER true
 #define SUGGEST_WORDS_WITH_MISSING_SPACE_CHARACTER true
