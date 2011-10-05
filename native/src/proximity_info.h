@@ -27,14 +27,12 @@ class Correction;
 
 class ProximityInfo {
 public:
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2 = 10;
+
     // Used as a return value for character comparison
     typedef enum {
-        // Same char, possibly with different case or accent, and in the sweet spot of the char
-        EQUIVALENT_CHAR_STRONG,
-        // Same char, possibly with different case or accent, and in the outer sweet spot
-        EQUIVALENT_CHAR_NORMAL,
-        // Same char, possibly with different case or accent, and in the hit box of the char
-        EQUIVALENT_CHAR_WEAK,
+        // Same char, possibly with different case or accent
+        EQUIVALENT_CHAR,
         // It is a char located nearby on the keyboard
         NEAR_PROXIMITY_CHAR,
         // It is an unrelated char
@@ -57,31 +55,25 @@ public:
     bool existsAdjacentProximityChars(const int index) const;
     ProximityType getMatchedProximityId(
             const int index, const unsigned short c, const bool checkProximityChars) const;
+    int getNormalizedSquaredDistance(int index) const {
+        return mNormalizedSquaredDistance[index];
+    }
     bool sameAsTyped(const unsigned short *word, int length) const;
     const unsigned short* getPrimaryInputWord() const {
         return mPrimaryInputWord;
     }
 
 private:
+    static const int NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR =
+            1 << NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
     // The max number of the keys in one keyboard layout
     static const int MAX_KEY_COUNT_IN_A_KEYBOARD = 64;
     // The upper limit of the char code in mCodeToKeyIndex
     static const int MAX_CHAR_CODE = 127;
 
-    typedef enum {
-        // cannot figure out the sweet spot type
-        UNKNOWN,
-        // touch position is out of neutral area of the given char
-        OUT_OF_NEUTRAL_AREA,
-        // touch position is in the neutral area of the given char
-        IN_NEUTRAL_AREA,
-        // touch position is in the sweet spot of the given char
-        IN_SWEET_SPOT
-    } SweetSpotType;
-
     int getStartIndexFromCoordinates(const int x, const int y) const;
     void initializeCodeToKeyIndex();
-    SweetSpotType calculateSweetSpotType(int index) const;
+    float calculateNormalizedSquaredDistance(int index) const;
     float calculateSquaredDistanceFromSweetSpotCenter(int keyIndex, int inputIndex) const;
 
     const int MAX_PROXIMITY_CHARS_SIZE;
@@ -104,7 +96,7 @@ private:
     float mSweetSpotCenterXs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotCenterYs[MAX_KEY_COUNT_IN_A_KEYBOARD];
     float mSweetSpotRadii[MAX_KEY_COUNT_IN_A_KEYBOARD];
-    SweetSpotType mSweetSpotTypes[MAX_WORD_LENGTH_INTERNAL];
+    int mNormalizedSquaredDistance[MAX_WORD_LENGTH_INTERNAL];
     int mInputLength;
     unsigned short mPrimaryInputWord[MAX_WORD_LENGTH_INTERNAL];
     int mCodeToKeyIndex[MAX_CHAR_CODE + 1];

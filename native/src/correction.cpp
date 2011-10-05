@@ -118,9 +118,8 @@ bool Correction::initProcessState(const int outputIndex) {
     mInputIndex = mCorrectionStates[outputIndex].mInputIndex;
     mNeedsToTraverseAllNodes = mCorrectionStates[outputIndex].mNeedsToTraverseAllNodes;
 
-    mEquivalentCharStrongCount = mCorrectionStates[outputIndex].mEquivalentCharStrongCount;
-    mEquivalentCharNormalCount = mCorrectionStates[outputIndex].mEquivalentCharNormalCount;
-    mEquivalentCharWeakCount = mCorrectionStates[outputIndex].mEquivalentCharWeakCount;
+    mSumOfDistance = mCorrectionStates[outputIndex].mSumOfDistance;
+    mEquivalentCharCount = mCorrectionStates[outputIndex].mEquivalentCharCount;
     mProximityCount = mCorrectionStates[outputIndex].mProximityCount;
     mTransposedCount = mCorrectionStates[outputIndex].mTransposedCount;
     mExcessiveCount = mCorrectionStates[outputIndex].mExcessiveCount;
@@ -175,9 +174,8 @@ void Correction::incrementOutputIndex() {
     mCorrectionStates[mOutputIndex].mInputIndex = mInputIndex;
     mCorrectionStates[mOutputIndex].mNeedsToTraverseAllNodes = mNeedsToTraverseAllNodes;
 
-    mCorrectionStates[mOutputIndex].mEquivalentCharStrongCount = mEquivalentCharStrongCount;
-    mCorrectionStates[mOutputIndex].mEquivalentCharNormalCount = mEquivalentCharNormalCount;
-    mCorrectionStates[mOutputIndex].mEquivalentCharWeakCount = mEquivalentCharWeakCount;
+    mCorrectionStates[mOutputIndex].mSumOfDistance = mSumOfDistance;
+    mCorrectionStates[mOutputIndex].mEquivalentCharCount = mEquivalentCharCount;
     mCorrectionStates[mOutputIndex].mProximityCount = mProximityCount;
     mCorrectionStates[mOutputIndex].mTransposedCount = mTransposedCount;
     mCorrectionStates[mOutputIndex].mExcessiveCount = mExcessiveCount;
@@ -220,9 +218,7 @@ Correction::CorrectionType Correction::processSkipChar(
 }
 
 inline bool isEquivalentChar(ProximityInfo::ProximityType type) {
-    // 'type ProximityInfo::EQUIVALENT_CHAR_WEAK' means that
-    // type == ..._WEAK or type == ..._NORMAL or type == ..._STRONG.
-    return type <= ProximityInfo::EQUIVALENT_CHAR_WEAK;
+    return type == ProximityInfo::EQUIVALENT_CHAR;
 }
 
 Correction::CorrectionType Correction::processCharAndCalcState(
@@ -304,7 +300,7 @@ Correction::CorrectionType Correction::processCharAndCalcState(
     // TODO: Change the limit if we'll allow two or more proximity chars with corrections
     const bool checkProximityChars = noCorrectionsHappenedSoFar ||  mProximityCount == 0;
     const ProximityInfo::ProximityType matchedProximityCharId = secondTransposing
-            ? ProximityInfo::EQUIVALENT_CHAR_NORMAL
+            ? ProximityInfo::EQUIVALENT_CHAR
             : mProximityInfo->getMatchedProximityId(mInputIndex, c, checkProximityChars);
 
     if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
@@ -384,18 +380,14 @@ Correction::CorrectionType Correction::processCharAndCalcState(
         mMatching = true;
     } else if (isEquivalentChar(matchedProximityCharId)) {
         mMatching = true;
-        switch (matchedProximityCharId) {
-        case ProximityInfo::EQUIVALENT_CHAR_STRONG:
-            ++mEquivalentCharStrongCount;
-            break;
-        case ProximityInfo::EQUIVALENT_CHAR_NORMAL:
-            ++mEquivalentCharNormalCount;
-            break;
-        case ProximityInfo::EQUIVALENT_CHAR_WEAK:
-            ++mEquivalentCharWeakCount;
-            break;
-        default:
-            assert(false);
+        ++mEquivalentCharCount;
+        if (mSumOfDistance != NOT_A_DISTANCE) {
+            const int distance = mProximityInfo->getNormalizedSquaredDistance(mInputIndex);
+            if (distance != NOT_A_DISTANCE) {
+                mSumOfDistance += distance;
+            } else {
+                mSumOfDistance = NOT_A_DISTANCE;
+            }
         }
     } else if (ProximityInfo::NEAR_PROXIMITY_CHAR == matchedProximityCharId) {
         mProximityMatching = true;
@@ -568,8 +560,8 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
     const int transposedCount = correction->mTransposedCount / 2;
     const int excessiveCount = correction->mExcessiveCount + correction->mTransposedCount % 2;
     const int proximityMatchedCount = correction->mProximityCount;
-    const int equivalentCharStrongCount = correction->mEquivalentCharStrongCount;
-    const int equivalentCharWeakCount = correction->mEquivalentCharWeakCount;
+    const int mSumOfDistance = correction->mSumOfDistance;
+    const int mEquivalentCharCount = correction->mEquivalentCharCount;
     const bool lastCharExceeded = correction->mLastCharExceeded;
     const bool useFullEditDistance = correction->mUseFullEditDistance;
     const int outputLength = outputIndex + 1;
@@ -679,18 +671,37 @@ int Correction::RankingAlgorithm::calculateFinalFreq(const int inputIndex, const
         multiplyRate(WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE, &finalFreq);
     }
 
-    for (int i = 0; i < equivalentCharStrongCount; ++i) {
-        if (DEBUG_DICT_FULL) {
-            LOGI("equivalent char strong");
-        }
-        multiplyRate(WORDS_WITH_EQUIVALENT_CHAR_STRONG_PROMOTION_RATE, &finalFreq);
-    }
-
-    for (int i = 0; i < equivalentCharWeakCount; ++i) {
-        if (DEBUG_DICT_FULL) {
-            LOGI("equivalent char weak");
-        }
-        multiplyRate(WORDS_WITH_EQUIVALENT_CHAR_WEAK_DEMOTION_RATE, &finalFreq);
+    if (CALIBRATE_SCORE_BY_TOUCH_COORDINATES
+            && mEquivalentCharCount > 0 && mSumOfDistance != NOT_A_DISTANCE) {
+        // Let (x, y) be the coordinate of a user's touch, and let c be a key.
+        // Assuming users' touch distribution is gauss distribution, the conditional probability of
+        // the user touching (x, y) given he or she intends to hit c is:
+        //   p(x, y | c) = exp(-(x - m_x) / (2 * s^2)) / (sqrt(2 * pi) * s)
+        //               * exp(-(y - m_y) / (2 * s^2)) / (sqrt(2 * pi) * s)
+        // where (m_x, m_y) is a mean of touches of c, and s is a variance of touches of c.
+        // If user touches c1, c2, .., cn, the joint distribution is
+        //   p(x1, y1 | c1) * p(x2, y2 | c2) * ... * p(xn, yn | cn)
+        // We consider the logarithm of this value, that is
+        //     sum_i log p(x_i, y_i | c_i) + const
+        //   = sum_i ((x_i - m_x)^2 + (y_i - m_y)^2) / (2 * s^2) + const
+        // Thus, we use the sum of squared distance as a score of the word.
+        static const int UPPER = WORDS_WITH_EQUIVALENT_CHAR_STRONGEST_PROMOTION_RATE;
+        static const int LOWER = WORDS_WITH_EQUIVALENT_CHAR_WEAKEST_DEMOTION_RATE;
+        static const int MIDDLE = 100;
+        static const int SHIFT = ProximityInfo::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
+        const int expected = mEquivalentCharCount << SHIFT;
+        // factor is a function as described below:
+        // U\            .
+        //   \           .
+        // M  \          .
+        //     \         .
+        // L    \------- .
+        //  0 e
+        // (x-axis is mSumOfDistance, y-axis is rate,
+        //  and e, U, M, L are expected, UPPER, MIDDLE, LOWER respectively.
+        const int factor =
+                max((UPPER * expected - (UPPER - MIDDLE) * mSumOfDistance) / expected, LOWER);
+        multiplyRate(factor, &finalFreq);
     }
 
     const int errorCount = adjustedProximityMatchedCount > 0

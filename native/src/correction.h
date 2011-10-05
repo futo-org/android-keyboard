@@ -127,9 +127,8 @@ private:
     int mOutputIndex;
     int mInputIndex;
 
-    int mEquivalentCharStrongCount;
-    int mEquivalentCharNormalCount;
-    int mEquivalentCharWeakCount;
+    int mEquivalentCharCount;
+    int mSumOfDistance;
     int mProximityCount;
     int mExcessiveCount;
     int mTransposedCount;

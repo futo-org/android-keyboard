@@ -115,41 +115,42 @@ void ProximityInfo::setInputParams(const int* inputCodes, const int inputLength,
     }
     mPrimaryInputWord[inputLength] = 0;
     for (int i = 0; i < mInputLength; ++i) {
-        mSweetSpotTypes[i] = calculateSweetSpotType(i);
+        float normalizedSquaredDistance = calculateNormalizedSquaredDistance(i);
+        if (normalizedSquaredDistance >= 0.0f) {
+            mNormalizedSquaredDistance[i] =
+                (int)(normalizedSquaredDistance * NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR);
+        } else {
+            mNormalizedSquaredDistance[i] = NOT_A_DISTANCE;
+        }
     }
 }
 
 inline float square(const float x) { return x * x; }
 
-ProximityInfo::SweetSpotType ProximityInfo::calculateSweetSpotType(int index) const {
+float ProximityInfo::calculateNormalizedSquaredDistance(int index) const {
+    static const float NOT_A_DISTANCE_FLOAT = -1.0f;
     if (KEY_COUNT == 0 || !mInputXCoordinates || !mInputYCoordinates) {
         // We do not have the coordinate data
-        return UNKNOWN;
+        return NOT_A_DISTANCE_FLOAT;
     }
     const int currentChar = getPrimaryCharAt(index);
     const unsigned short baseLowerC = Dictionary::toBaseLowerCase(currentChar);
     if (baseLowerC > MAX_CHAR_CODE) {
-        return UNKNOWN;
+        return NOT_A_DISTANCE_FLOAT;
     }
     const int keyIndex = mCodeToKeyIndex[baseLowerC];
     if (keyIndex < 0) {
-        return UNKNOWN;
+        return NOT_A_DISTANCE_FLOAT;
     }
     const float radius = mSweetSpotRadii[keyIndex];
     if (radius <= 0.0) {
         // When there are no calibration data for a key,
         // the radius of the key is assigned to zero.
-        return UNKNOWN;
+        return NOT_A_DISTANCE;
     }
     const float squaredRadius = square(radius);
     const float squaredDistance = calculateSquaredDistanceFromSweetSpotCenter(keyIndex, index);
-    if (squaredDistance <= squaredRadius) {
-        return IN_SWEET_SPOT;
-    }
-    if (squaredDistance <= square(NEUTRAL_AREA_RADIUS_RATIO) * squaredRadius) {
-        return IN_NEUTRAL_AREA;
-    }
-    return OUT_OF_NEUTRAL_AREA;
+    return squaredDistance / squaredRadius;
 }
 
 float ProximityInfo::calculateSquaredDistanceFromSweetSpotCenter(
@@ -213,22 +214,7 @@ ProximityInfo::ProximityType ProximityInfo::getMatchedProximityId(
     // The first char in the array is what user typed. If it matches right away,
     // that means the user typed that same char for this pos.
     if (firstChar == baseLowerC || firstChar == c) {
-        if (CALIBRATE_SCORE_BY_TOUCH_COORDINATES) {
-            switch (mSweetSpotTypes[index]) {
-            case UNKNOWN:
-                return EQUIVALENT_CHAR_NORMAL;
-            case IN_SWEET_SPOT:
-                return EQUIVALENT_CHAR_STRONG;
-            case IN_NEUTRAL_AREA:
-                return EQUIVALENT_CHAR_NORMAL;
-            case OUT_OF_NEUTRAL_AREA:
-                return EQUIVALENT_CHAR_WEAK;
-            default:
-                assert(false);
-            }
-        } else {
-            return EQUIVALENT_CHAR_NORMAL;
-        }
+        return EQUIVALENT_CHAR;
     }
 
     if (!checkProximityChars) return UNRELATED_CHAR;
@@ -266,6 +252,8 @@ bool ProximityInfo::sameAsTyped(const unsigned short *word, int length) const {
     return true;
 }
 
+const int ProximityInfo::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR_LOG_2;
+const int ProximityInfo::NORMALIZED_SQUARED_DISTANCE_SCALING_FACTOR;
 const int ProximityInfo::MAX_KEY_COUNT_IN_A_KEYBOARD;
 const int ProximityInfo::MAX_CHAR_CODE;
 
