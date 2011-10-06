@@ -67,10 +67,10 @@ public class Suggest implements Dictionary.WordCallback {
     public static final int DIC_USER_UNIGRAM = 3;
     public static final int DIC_CONTACTS = 4;
     public static final int DIC_USER_BIGRAM = 5;
+    public static final int DIC_WHITELIST = 6;
     // If you add a type of dictionary, increment DIC_TYPE_LAST_ID
     // TODO: this value seems unused. Remove it?
-    public static final int DIC_TYPE_LAST_ID = 5;
-
+    public static final int DIC_TYPE_LAST_ID = 6;
     public static final String DICT_KEY_MAIN = "main";
     public static final String DICT_KEY_CONTACTS = "contacts";
     // User dictionary, the system-managed one.
@@ -360,7 +360,7 @@ public class Suggest implements Dictionary.WordCallback {
         final String typedWordString = typedWord == null ? null : typedWord.toString();
 
         CharSequence whitelistedWord = capitalizeWord(mIsAllUpperCase, mIsFirstCharCapitalized,
-                mWhiteListDictionary.getWhiteListedWord(typedWordString));
+                mWhiteListDictionary.getWhitelistedWord(typedWordString));
 
         mAutoCorrection.updateAutoCorrectionStatus(mUnigramDictionaries, wordComposer,
                 mSuggestions, mScores, typedWord, mAutoCorrectionThreshold, mCorrectionMode,

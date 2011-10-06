@@ -37,6 +37,7 @@ import com.android.inputmethod.latin.LocaleUtils;
 import com.android.inputmethod.latin.R;
 import com.android.inputmethod.latin.SynchronouslyLoadedUserDictionary;
 import com.android.inputmethod.latin.Utils;
+import com.android.inputmethod.latin.WhitelistDictionary;
 import com.android.inputmethod.latin.WordComposer;
 
 import java.util.ArrayList;
@@ -78,6 +79,8 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
     private Map<String, DictionaryPool> mDictionaryPools =
             Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
     private Map<String, Dictionary> mUserDictionaries =
+            Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+    private Map<String, Dictionary> mWhitelistDictionaries =
             Collections.synchronizedMap(new TreeMap<String, Dictionary>());
 
     // The threshold for a candidate to be offered as a suggestion.
@@ -253,10 +256,15 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
         mDictionaryPools = Collections.synchronizedMap(new TreeMap<String, DictionaryPool>());
         final Map<String, Dictionary> oldUserDictionaries = mUserDictionaries;
         mUserDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
+        final Map<String, Dictionary> oldWhitelistDictionaries = mWhitelistDictionaries;
+        mWhitelistDictionaries = Collections.synchronizedMap(new TreeMap<String, Dictionary>());
         for (DictionaryPool pool : oldPools.values()) {
             pool.close();
         }
         for (Dictionary dict : oldUserDictionaries.values()) {
+            dict.close();
+        }
+        for (Dictionary dict : oldWhitelistDictionaries.values()) {
             dict.close();
         }
         return false;
@@ -280,12 +288,18 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 DictionaryFactory.createDictionaryFromManager(this, locale, fallbackResourceId,
                         USE_FULL_EDIT_DISTANCE_FLAG_ARRAY);
         final String localeStr = locale.toString();
-        Dictionary userDict = mUserDictionaries.get(localeStr);
-        if (null == userDict) {
-            userDict = new SynchronouslyLoadedUserDictionary(this, localeStr, true);
-            mUserDictionaries.put(localeStr, userDict);
+        Dictionary userDictionary = mUserDictionaries.get(localeStr);
+        if (null == userDictionary) {
+            userDictionary = new SynchronouslyLoadedUserDictionary(this, localeStr, true);
+            mUserDictionaries.put(localeStr, userDictionary);
         }
-        dictionaryCollection.addDictionary(userDict);
+        dictionaryCollection.addDictionary(userDictionary);
+        Dictionary whitelistDictionary = mWhitelistDictionaries.get(localeStr);
+        if (null == whitelistDictionary) {
+            whitelistDictionary = new WhitelistDictionary(this, locale);
+            mWhitelistDictionaries.put(localeStr, whitelistDictionary);
+        }
+        dictionaryCollection.addDictionary(whitelistDictionary);
         return new DictAndProximity(dictionaryCollection, proximityInfo);
     }
 
