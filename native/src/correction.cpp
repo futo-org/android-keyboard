@@ -299,23 +299,41 @@ Correction::CorrectionType Correction::processCharAndCalcState(
 
     // TODO: Change the limit if we'll allow two or more proximity chars with corrections
     const bool checkProximityChars = noCorrectionsHappenedSoFar ||  mProximityCount == 0;
-    const ProximityInfo::ProximityType matchedProximityCharId = secondTransposing
+    ProximityInfo::ProximityType matchedProximityCharId = secondTransposing
             ? ProximityInfo::EQUIVALENT_CHAR
             : mProximityInfo->getMatchedProximityId(mInputIndex, c, checkProximityChars);
+
+    if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
+        if (canTryCorrection && mOutputIndex > 0
+                && mCorrectionStates[mOutputIndex].mProximityMatching
+                && mCorrectionStates[mOutputIndex].mExceeding
+                && isEquivalentChar(mProximityInfo->getMatchedProximityId(
+                        mInputIndex, mWord[mOutputIndex - 1], false))) {
+            if (DEBUG_CORRECTION) {
+                LOGI("CONVERSION p->e %c", mWord[mOutputIndex - 1]);
+            }
+            // Conversion p->e
+            // Example:
+            // wearth ->    earth
+            // px     -> (E)mmmmm
+            ++mExcessiveCount;
+            --mProximityCount;
+            mExcessivePos = mOutputIndex - 1;
+            ++mInputIndex;
+            // Here, we are doing something equivalent to matchedProximityCharId,
+            // but we already know that "excessive char correction" just happened
+            // so that we just need to check "mProximityCount == 0".
+            matchedProximityCharId =
+                    mProximityInfo->getMatchedProximityId(mInputIndex, c, mProximityCount == 0);
+        }
+    }
 
     if (ProximityInfo::UNRELATED_CHAR == matchedProximityCharId) {
         // TODO: Optimize
         // As the current char turned out to be an unrelated char,
         // we will try other correction-types. Please note that mCorrectionStates[mOutputIndex]
         // here refers to the previous state.
-        if (canTryCorrection && mCorrectionStates[mOutputIndex].mProximityMatching
-                && mCorrectionStates[mOutputIndex].mExceeding
-                && isEquivalentChar(mProximityInfo->getMatchedProximityId(
-                        mInputIndex, mWord[mOutputIndex], false))) {
-            // Conversion p->e
-            ++mExcessiveCount;
-            --mProximityCount;
-        } else if (mInputIndex < mInputLength - 1 && mOutputIndex > 0 && mTransposedCount > 0
+        if (mInputIndex < mInputLength - 1 && mOutputIndex > 0 && mTransposedCount > 0
                 && !mCorrectionStates[mOutputIndex].mTransposing
                 && mCorrectionStates[mOutputIndex - 1].mTransposing
                 && isEquivalentChar(mProximityInfo->getMatchedProximityId(
@@ -425,6 +443,11 @@ Correction::CorrectionType Correction::processCharAndCalcState(
             || isSameAsUserTypedLength) && isTerminal) {
         mTerminalInputIndex = mInputIndex - 1;
         mTerminalOutputIndex = mOutputIndex - 1;
+        if (DEBUG_CORRECTION) {
+            DUMP_WORD(mWord, mOutputIndex);
+            LOGI("ONTERMINAL(1): %d, %d, %d, %d, %c", mProximityCount, mSkippedCount,
+                    mTransposedCount, mExcessiveCount, c);
+        }
         return ON_TERMINAL;
     } else {
         return NOT_ON_TERMINAL;
