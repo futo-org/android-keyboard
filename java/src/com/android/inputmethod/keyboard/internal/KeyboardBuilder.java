@@ -19,7 +19,6 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.content.res.XmlResourceParser;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -160,7 +159,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         // Will be updated by {@link Key}'s constructor.
         private float mCurrentX;
 
-        public Row(Resources res, KeyboardParams params, XmlResourceParser parser, int y) {
+        public Row(Resources res, KeyboardParams params, XmlPullParser parser, int y) {
             mParams = params;
             TypedArray keyboardAttr = res.obtainAttributes(Xml.asAttributeSet(parser),
                     R.styleable.Keyboard);
@@ -291,7 +290,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     private void parseKeyboard(int resId) throws XmlPullParserException, IOException {
         if (DEBUG) Log.d(TAG, String.format("<%s> %s", TAG_KEYBOARD, mParams.mId));
-        final XmlResourceParser parser = mResources.getXml(resId);
+        final XmlPullParser parser = mResources.getXml(resId);
         int event;
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
@@ -311,7 +310,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
     public static String parseKeyboardLocale(
             Context context, int resId) throws XmlPullParserException, IOException {
         final Resources res = context.getResources();
-        final XmlResourceParser parser = res.getXml(resId);
+        final XmlPullParser parser = res.getXml(resId);
         if (parser == null) return "";
         int event;
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
@@ -329,7 +328,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return "";
     }
 
-    private void parseKeyboardAttributes(XmlResourceParser parser) {
+    private void parseKeyboardAttributes(XmlPullParser parser) {
         final int displayWidth = mDisplayMetrics.widthPixels;
         final TypedArray keyboardAttr = mContext.obtainStyledAttributes(
                 Xml.asAttributeSet(parser), R.styleable.Keyboard, R.attr.keyboardStyle,
@@ -392,7 +391,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private void parseKeyboardContent(XmlResourceParser parser, boolean skip)
+    private void parseKeyboardContent(XmlPullParser parser, boolean skip)
             throws XmlPullParserException, IOException {
         int event;
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
@@ -431,7 +430,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private Row parseRowAttributes(XmlResourceParser parser) {
+    private Row parseRowAttributes(XmlPullParser parser) {
         final TypedArray a = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard);
         try {
@@ -445,7 +444,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private void parseRowContent(XmlResourceParser parser, Row row, boolean skip)
+    private void parseRowContent(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         int event;
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
@@ -484,7 +483,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private void parseKey(XmlResourceParser parser, Row row, boolean skip)
+    private void parseKey(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         if (skip) {
             checkEndTag(TAG_KEY, parser);
@@ -498,7 +497,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private void parseSpacer(XmlResourceParser parser, Row row, boolean skip)
+    private void parseSpacer(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         if (skip) {
             checkEndTag(TAG_SPACER, parser);
@@ -510,17 +509,17 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private void parseIncludeKeyboardContent(XmlResourceParser parser, boolean skip)
+    private void parseIncludeKeyboardContent(XmlPullParser parser, boolean skip)
             throws XmlPullParserException, IOException {
         parseIncludeInternal(parser, null, skip);
     }
 
-    private void parseIncludeRowContent(XmlResourceParser parser, Row row, boolean skip)
+    private void parseIncludeRowContent(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         parseIncludeInternal(parser, row, skip);
     }
 
-    private void parseIncludeInternal(XmlResourceParser parser, Row row, boolean skip)
+    private void parseIncludeInternal(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         if (skip) {
             checkEndTag(TAG_INCLUDE, parser);
@@ -540,7 +539,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private void parseMerge(XmlResourceParser parser, Row row, boolean skip)
+    private void parseMerge(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         int event;
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
@@ -561,17 +560,17 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private void parseSwitchKeyboardContent(XmlResourceParser parser, boolean skip)
+    private void parseSwitchKeyboardContent(XmlPullParser parser, boolean skip)
             throws XmlPullParserException, IOException {
         parseSwitchInternal(parser, null, skip);
     }
 
-    private void parseSwitchRowContent(XmlResourceParser parser, Row row, boolean skip)
+    private void parseSwitchRowContent(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         parseSwitchInternal(parser, row, skip);
     }
 
-    private void parseSwitchInternal(XmlResourceParser parser, Row row, boolean skip)
+    private void parseSwitchInternal(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         if (DEBUG) Log.d(TAG, String.format("<%s> %s", TAG_SWITCH, mParams.mId));
         boolean selected = false;
@@ -598,7 +597,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private boolean parseCase(XmlResourceParser parser, Row row, boolean skip)
+    private boolean parseCase(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         final boolean selected = parseCaseCondition(parser);
         if (row == null) {
@@ -611,7 +610,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return selected;
     }
 
-    private boolean parseCaseCondition(XmlResourceParser parser) {
+    private boolean parseCaseCondition(XmlPullParser parser) {
         final KeyboardId id = mParams.mId;
         if (id == null)
             return true;
@@ -718,7 +717,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return false;
     }
 
-    private boolean parseDefault(XmlResourceParser parser, Row row, boolean skip)
+    private boolean parseDefault(XmlPullParser parser, Row row, boolean skip)
             throws XmlPullParserException, IOException {
         if (DEBUG) Log.d(TAG, String.format("<%s>", TAG_DEFAULT));
         if (row == null) {
@@ -729,7 +728,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return true;
     }
 
-    private void parseKeyStyle(XmlResourceParser parser, boolean skip) {
+    private void parseKeyStyle(XmlPullParser parser, boolean skip) {
         TypedArray keyStyleAttr = mResources.obtainAttributes(Xml.asAttributeSet(parser),
                 R.styleable.Keyboard_KeyStyle);
         TypedArray keyAttrs = mResources.obtainAttributes(Xml.asAttributeSet(parser),
@@ -746,7 +745,7 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         }
     }
 
-    private static void checkEndTag(String tag, XmlResourceParser parser)
+    private static void checkEndTag(String tag, XmlPullParser parser)
             throws XmlPullParserException, IOException {
         if (parser.next() == XmlPullParser.END_TAG && tag.equals(parser.getName()))
             return;
@@ -839,35 +838,35 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     @SuppressWarnings("serial")
     public static class ParseException extends InflateException {
-        public ParseException(String msg, XmlResourceParser parser) {
+        public ParseException(String msg, XmlPullParser parser) {
             super(msg + " at line " + parser.getLineNumber());
         }
     }
 
     @SuppressWarnings("serial")
     private static class IllegalStartTag extends ParseException {
-        public IllegalStartTag(XmlResourceParser parser, String parent) {
+        public IllegalStartTag(XmlPullParser parser, String parent) {
             super("Illegal start tag " + parser.getName() + " in " + parent, parser);
         }
     }
 
     @SuppressWarnings("serial")
     private static class IllegalEndTag extends ParseException {
-        public IllegalEndTag(XmlResourceParser parser, String parent) {
+        public IllegalEndTag(XmlPullParser parser, String parent) {
             super("Illegal end tag " + parser.getName() + " in " + parent, parser);
         }
     }
 
     @SuppressWarnings("serial")
     private static class IllegalAttribute extends ParseException {
-        public IllegalAttribute(XmlResourceParser parser, String attribute) {
+        public IllegalAttribute(XmlPullParser parser, String attribute) {
             super("Tag " + parser.getName() + " has illegal attribute " + attribute, parser);
         }
     }
 
     @SuppressWarnings("serial")
     private static class NonEmptyTag extends ParseException {
-        public NonEmptyTag(String tag, XmlResourceParser parser) {
+        public NonEmptyTag(String tag, XmlPullParser parser) {
             super(tag + " must be empty tag", parser);
         }
     }
