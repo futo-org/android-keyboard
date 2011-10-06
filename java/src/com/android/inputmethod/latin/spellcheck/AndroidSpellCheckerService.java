@@ -156,6 +156,11 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                 // }
                 return true;
             }
+            if (insertIndex >= mMaxLength) {
+                // We found a suggestion, but its score is too weak to be kept considering
+                // the suggestion limit.
+                return true;
+            }
 
             // Compute the normalized score and skip this word if it's normalized score does not
             // make the threshold.
