@@ -25,6 +25,7 @@ import com.android.inputmethod.keyboard.KeyboardId;
 import com.android.inputmethod.keyboard.LatinKeyboard;
 
 import java.io.File;
+import java.util.Locale;
 
 public class SuggestHelper {
     protected final Suggest mSuggest;
@@ -40,9 +41,10 @@ public class SuggestHelper {
         init();
     }
 
-    protected SuggestHelper(Context context, File dictionaryPath, long startOffset, long length,
-            KeyboardId keyboardId) {
-        mSuggest = new Suggest(context, dictionaryPath, startOffset, length, null);
+    protected SuggestHelper(final Context context, final File dictionaryPath,
+            final long startOffset, final long length, final KeyboardId keyboardId,
+            final Locale locale) {
+        mSuggest = new Suggest(context, dictionaryPath, startOffset, length, null, locale);
         mKeyboard = new LatinKeyboard.Builder(context).load(keyboardId).build();
         mKeyDetector = new KeyDetector(0);
         init();

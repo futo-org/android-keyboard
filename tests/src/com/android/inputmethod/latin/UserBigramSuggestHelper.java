@@ -29,11 +29,12 @@ public class UserBigramSuggestHelper extends SuggestHelper {
     private final Context mContext;
     private UserBigramDictionary mUserBigram;
 
-    public UserBigramSuggestHelper(Context context, File dictionaryPath, long startOffset,
-            long length, int userBigramMax, int userBigramDelete, KeyboardId keyboardId) {
-        super(context, dictionaryPath, startOffset, length, keyboardId);
+    public UserBigramSuggestHelper(final Context context, final File dictionaryPath,
+            final long startOffset, final long length, final int userBigramMax,
+            final int userBigramDelete, final KeyboardId keyboardId, final Locale locale) {
+        super(context, dictionaryPath, startOffset, length, keyboardId, locale);
         mContext = context;
-        mUserBigram = new UserBigramDictionary(context, null, Locale.US.toString(),
+        mUserBigram = new UserBigramDictionary(context, null, locale.toString(),
                 Suggest.DIC_USER);
         mUserBigram.setDatabaseMax(userBigramMax);
         mUserBigram.setDatabaseDelete(userBigramDelete);

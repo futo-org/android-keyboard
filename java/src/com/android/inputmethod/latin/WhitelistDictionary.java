@@ -17,6 +17,7 @@
 package com.android.inputmethod.latin;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -24,6 +25,7 @@ import android.util.Pair;
 import com.android.inputmethod.keyboard.ProximityInfo;
 
 import java.util.HashMap;
+import java.util.Locale;
 
 public class WhitelistDictionary extends Dictionary {
 
@@ -33,22 +35,13 @@ public class WhitelistDictionary extends Dictionary {
     private final HashMap<String, Pair<Integer, String>> mWhitelistWords =
             new HashMap<String, Pair<Integer, String>>();
 
-    private static final WhitelistDictionary sInstance = new WhitelistDictionary();
-
-    private WhitelistDictionary() {
-    }
-
-    public static WhitelistDictionary init(Context context) {
-        synchronized (sInstance) {
-            if (context != null) {
-                // Wordlist is initialized by the proper language in Suggestion.java#init
-                sInstance.initWordlist(
-                        context.getResources().getStringArray(R.array.wordlist_whitelist));
-            } else {
-                sInstance.mWhitelistWords.clear();
-            }
+    public WhitelistDictionary(final Context context, final Locale locale) {
+        final Resources res = context.getResources();
+        final Locale previousLocale = LocaleUtils.setSystemLocale(res, locale);
+        if (context != null) {
+            initWordlist(context.getResources().getStringArray(R.array.wordlist_whitelist));
         }
-        return sInstance;
+        LocaleUtils.setSystemLocale(res, previousLocale);
     }
 
     private void initWordlist(String[] wordlist) {
