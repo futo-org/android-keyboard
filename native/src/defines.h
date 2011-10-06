@@ -163,6 +163,9 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define NOT_VALID_WORD -99
 #define NOT_A_CHARACTER -1
 #define NOT_A_DISTANCE -1
+#define EQUIVALENT_CHAR_WITHOUT_DISTANCE_INFO -2
+#define PROXIMITY_CHAR_WITHOUT_DISTANCE_INFO -3
+#define NOT_A_INDEX -1
 
 #define KEYCODE_SPACE ' '
 
@@ -181,8 +184,6 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define WORDS_WITH_EXCESSIVE_CHARACTER_DEMOTION_RATE 75
 #define WORDS_WITH_EXCESSIVE_CHARACTER_OUT_OF_PROXIMITY_DEMOTION_RATE 75
 #define WORDS_WITH_TRANSPOSED_CHARACTERS_DEMOTION_RATE 60
-#define WORDS_WITH_EQUIVALENT_CHAR_STRONGEST_PROMOTION_RATE 110
-#define WORDS_WITH_EQUIVALENT_CHAR_WEAKEST_DEMOTION_RATE 90
 #define FULL_MATCHED_WORDS_PROMOTION_RATE 120
 #define WORDS_WITH_PROXIMITY_CHARACTER_DEMOTION_RATE 90
 #define WORDS_WITH_MATCH_SKIP_PROMOTION_RATE 105
@@ -191,6 +192,9 @@ static void dumpWord(const unsigned short* word, const int length) {
 #define INPUT_EXCEEDS_OUTPUT_DEMOTION_RATE 70
 #define FIRST_CHAR_DIFFERENT_DEMOTION_RATE 96
 #define TWO_WORDS_CAPITALIZED_DEMOTION_RATE 50
+#define ZERO_DISTANCE_PROMOTION_RATE 110
+#define NEUTRAL_SCORE_SQUARED_RADIUS 8.0f
+#define HALF_SCORE_SQUARED_RADIUS 32.0f
 
 // This should be greater than or equal to MAX_WORD_LENGTH defined in BinaryDictionary.java
 // This is only used for the size of array. Not to be used in c functions.

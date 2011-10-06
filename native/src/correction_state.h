@@ -29,7 +29,6 @@ struct CorrectionState {
     uint16_t mChildCount;
     uint8_t mInputIndex;
 
-    int32_t mSumOfDistance;
     uint8_t mEquivalentCharCount;
     uint8_t mProximityCount;
     uint8_t mTransposedCount;
@@ -65,7 +64,6 @@ inline static void initCorrectionState(CorrectionState *state, const int rootPos
     state->mExcessivePos = -1;
     state->mSkipPos = -1;
 
-    state->mSumOfDistance = 0;
     state->mEquivalentCharCount = 0;
     state->mProximityCount = 0;
     state->mTransposedCount = 0;
