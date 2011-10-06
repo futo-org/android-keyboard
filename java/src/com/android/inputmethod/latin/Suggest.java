@@ -113,14 +113,15 @@ public class Suggest implements Dictionary.WordCallback {
         initAsynchronously(context, dictionaryResId, locale);
     }
 
-    /* package for test */ Suggest(Context context, File dictionary, long startOffset, long length,
-            Flag[] flagArray) {
+    /* package for test */ Suggest(final Context context, final File dictionary,
+            final long startOffset, final long length, final Flag[] flagArray,
+            final Locale locale) {
         initSynchronously(null, DictionaryFactory.createDictionaryForTest(context, dictionary,
-                startOffset, length, flagArray));
+                startOffset, length, flagArray), locale);
     }
 
-    private void initWhitelistAndAutocorrectAndPool(final Context context) {
-        mWhiteListDictionary = WhitelistDictionary.init(context);
+    private void initWhitelistAndAutocorrectAndPool(final Context context, final Locale locale) {
+        mWhiteListDictionary = new WhitelistDictionary(context, locale);
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_WHITELIST, mWhiteListDictionary);
         mAutoCorrection = new AutoCorrection();
         StringBuilderPool.ensureCapacity(mPrefMaxSuggestions, getApproxMaxWordLength());
@@ -132,14 +133,15 @@ public class Suggest implements Dictionary.WordCallback {
 
         // TODO: read the whitelist and init the pool asynchronously too.
         // initPool should be done asynchronously now that the pool is thread-safe.
-        initWhitelistAndAutocorrectAndPool(context);
+        initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
-    private void initSynchronously(Context context, Dictionary mainDict) {
+    private void initSynchronously(final Context context, final Dictionary mainDict,
+            final Locale locale) {
         mMainDict = mainDict;
         addOrReplaceDictionary(mUnigramDictionaries, DICT_KEY_MAIN, mainDict);
         addOrReplaceDictionary(mBigramDictionaries, DICT_KEY_MAIN, mainDict);
-        initWhitelistAndAutocorrectAndPool(context);
+        initWhitelistAndAutocorrectAndPool(context, locale);
     }
 
     private void addOrReplaceDictionary(Map<String, Dictionary> dictionaries, String key,

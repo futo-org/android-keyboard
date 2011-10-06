@@ -33,10 +33,11 @@ public class UserBigramSuggestTests extends SuggestTestsBase {
     protected void setUp() throws Exception {
         super.setUp();
         final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
+        final Locale locale = Locale.US;
         mHelper = new UserBigramSuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
                 MAX_DATA, DELETE_DATA,
-                createKeyboardId(Locale.US, Configuration.ORIENTATION_PORTRAIT));
+                createKeyboardId(locale, Configuration.ORIENTATION_PORTRAIT), locale);
     }
 
     /************************** Tests ************************/

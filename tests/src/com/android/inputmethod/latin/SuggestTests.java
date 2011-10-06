@@ -30,9 +30,10 @@ public class SuggestTests extends SuggestTestsBase {
     protected void setUp() throws Exception {
         super.setUp();
         final AssetFileDescriptor dict = openTestRawResourceFd(R.raw.test);
+        final Locale locale = Locale.US;
         mHelper = new SuggestHelper(
                 getContext(), mTestPackageFile, dict.getStartOffset(), dict.getLength(),
-                createKeyboardId(Locale.US, Configuration.ORIENTATION_PORTRAIT));
+                createKeyboardId(locale, Configuration.ORIENTATION_PORTRAIT), locale);
         mHelper.setCorrectionMode(Suggest.CORRECTION_FULL_BIGRAM);
     }
 
