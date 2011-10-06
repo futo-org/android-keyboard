@@ -443,8 +443,10 @@ public class AndroidSpellCheckerService extends SpellCheckerService {
                     Log.i(TAG, "IsInDict = " + isInDict);
                     Log.i(TAG, "LooksLikeTypo = " + (!isInDict));
                     Log.i(TAG, "HasLikelySuggestions = " + result.mHasLikelySuggestions);
-                    for (String suggestion : result.mSuggestions) {
-                        Log.i(TAG, suggestion);
+                    if (null != result.mSuggestions) {
+                        for (String suggestion : result.mSuggestions) {
+                            Log.i(TAG, suggestion);
+                        }
                     }
                 }
 
