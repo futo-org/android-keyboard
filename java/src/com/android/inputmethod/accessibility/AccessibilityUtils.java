@@ -19,15 +19,19 @@ package com.android.inputmethod.accessibility;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
+import android.media.AudioManager;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.inputmethod.EditorInfo;
 
-import com.android.inputmethod.compat.AccessibilityEventCompatUtils;
 import com.android.inputmethod.compat.AccessibilityManagerCompatWrapper;
+import com.android.inputmethod.compat.AudioManagerCompatWrapper;
+import com.android.inputmethod.compat.InputTypeCompatUtils;
 import com.android.inputmethod.compat.MotionEventCompatUtils;
+import com.android.inputmethod.latin.R;
 
 public class AccessibilityUtils {
     private static final String TAG = AccessibilityUtils.class.getSimpleName();
@@ -37,8 +41,10 @@ public class AccessibilityUtils {
 
     private static final AccessibilityUtils sInstance = new AccessibilityUtils();
 
+    private Context mContext;
     private AccessibilityManager mAccessibilityManager;
     private AccessibilityManagerCompatWrapper mCompatManager;
+    private AudioManagerCompatWrapper mAudioManager;
 
     /*
      * Setting this constant to {@code false} will disable all keyboard
@@ -67,9 +73,14 @@ public class AccessibilityUtils {
     }
 
     private void initInternal(Context context, SharedPreferences prefs) {
+        mContext = context;
         mAccessibilityManager = (AccessibilityManager) context
                 .getSystemService(Context.ACCESSIBILITY_SERVICE);
         mCompatManager = new AccessibilityManagerCompatWrapper(mAccessibilityManager);
+
+        final AudioManager audioManager = (AudioManager) context
+                .getSystemService(Context.AUDIO_SERVICE);
+        mAudioManager = new AudioManagerCompatWrapper(audioManager);
     }
 
     /**
@@ -102,6 +113,22 @@ public class AccessibilityUtils {
     }
 
     /**
+     * @return {@code true} if the device should not speak text (eg.
+     *         non-control) characters
+     */
+    public boolean shouldObscureInput(EditorInfo attribute) {
+        if (attribute == null)
+            return false;
+
+        // Always speak if the user is listening through headphones.
+        if (mAudioManager.isWiredHeadsetOn() || mAudioManager.isBluetoothA2dpOn())
+            return false;
+
+        // Don't speak if the IME is connected to a password field.
+        return InputTypeCompatUtils.isPasswordInputType(attribute.inputType);
+    }
+
+    /**
      * Sends the specified text to the {@link AccessibilityManager} to be
      * spoken.
      *
@@ -117,7 +144,7 @@ public class AccessibilityUtils {
         // class. Instead, we're just forcing a fake AccessibilityEvent into
         // the screen reader to make it speak.
         final AccessibilityEvent event = AccessibilityEvent
-                .obtain(AccessibilityEventCompatUtils.TYPE_VIEW_HOVER_ENTER);
+                .obtain(AccessibilityEvent.TYPE_VIEW_FOCUSED);
 
         event.setPackageName(PACKAGE);
         event.setClassName(CLASS);
@@ -126,5 +153,19 @@ public class AccessibilityUtils {
         event.getText().add(text);
 
         mAccessibilityManager.sendAccessibilityEvent(event);
+    }
+
+    /**
+     * Handles speaking the "connect a headset to hear passwords" notification
+     * when connecting to a password field.
+     *
+     * @param attribute The input connection's editor info attribute.
+     * @param restarting Whether the connection is being restarted.
+     */
+    public void onStartInputViewInternal(EditorInfo attribute, boolean restarting) {
+        if (shouldObscureInput(attribute)) {
+            final CharSequence text = mContext.getText(R.string.spoken_use_headphones);
+            speak(text);
+        }
     }
 }

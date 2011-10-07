@@ -693,6 +693,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             return;
         }
 
+        // Forward this event to the accessibility utilities, if enabled.
+        final AccessibilityUtils accessUtils = AccessibilityUtils.getInstance();
+        if (accessUtils.isTouchExplorationEnabled()) {
+            accessUtils.onStartInputViewInternal(attribute, restarting);
+        }
+
         mSubtypeSwitcher.updateParametersOnStartInputView();
 
         TextEntryState.reset();
