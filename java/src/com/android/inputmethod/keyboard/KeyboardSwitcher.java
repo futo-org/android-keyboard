@@ -649,7 +649,7 @@ public class KeyboardSwitcher implements SharedPreferences.OnSharedPreferenceCha
     }
 
     public boolean isVibrateAndSoundFeedbackRequired() {
-        return mKeyboardView == null || !mKeyboardView.isInSlidingKeyInput();
+        return mKeyboardView != null && !mKeyboardView.isInSlidingKeyInput();
     }
 
     private int getPointerCount() {
