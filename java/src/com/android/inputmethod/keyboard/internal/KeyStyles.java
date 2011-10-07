@@ -17,11 +17,12 @@
 package com.android.inputmethod.keyboard.internal;
 
 import android.content.res.TypedArray;
-import android.content.res.XmlResourceParser;
 import android.util.Log;
 
 import com.android.inputmethod.keyboard.internal.KeyboardBuilder.ParseException;
 import com.android.inputmethod.latin.R;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -210,7 +211,7 @@ public class KeyStyles {
     }
 
     public void parseKeyStyleAttributes(TypedArray keyStyleAttr, TypedArray keyAttrs,
-            XmlResourceParser parser) {
+            XmlPullParser parser) {
         final String styleName = keyStyleAttr.getString(R.styleable.Keyboard_KeyStyle_styleName);
         if (DEBUG) Log.d(TAG, String.format("<%s styleName=%s />",
                 KeyboardBuilder.TAG_KEY_STYLE, styleName));
