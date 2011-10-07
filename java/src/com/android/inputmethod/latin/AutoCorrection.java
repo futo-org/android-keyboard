@@ -82,14 +82,16 @@ public class AutoCorrection {
         return false;
     }
 
-    public static boolean isValidWordForAutoCorrection(
+    public static boolean allowsToBeAutoCorrected(
             Map<String, Dictionary> dictionaries, CharSequence word, boolean ignoreCase) {
-        final Dictionary whiteList = dictionaries.get(Suggest.DICT_KEY_WHITELIST);
+        final WhitelistDictionary whitelistDictionary =
+                (WhitelistDictionary)dictionaries.get(Suggest.DICT_KEY_WHITELIST);
         // If "word" is in the whitelist dictionary, it should not be auto corrected.
-        if (whiteList != null && whiteList.isValidWord(word)) {
-            return false;
+        if (whitelistDictionary != null
+                && whitelistDictionary.shouldForciblyAutoCorrectFrom(word)) {
+            return true;
         }
-        return isValidWord(dictionaries, word, ignoreCase);
+        return !isValidWord(dictionaries, word, ignoreCase);
     }
 
     private static boolean hasAutoCorrectionForWhitelistedWord(CharSequence whiteListedWord) {
@@ -100,8 +102,8 @@ public class AutoCorrection {
             WordComposer wordComposer, ArrayList<CharSequence> suggestions, CharSequence typedWord,
             int correctionMode) {
         if (TextUtils.isEmpty(typedWord)) return false;
-        boolean isValidWord = isValidWordForAutoCorrection(dictionaries, typedWord, false);
-        return wordComposer.size() > 1 && suggestions.size() > 0 && isValidWord
+        boolean allowsAutoCorrect = allowsToBeAutoCorrected(dictionaries, typedWord, false);
+        return wordComposer.size() > 1 && suggestions.size() > 0 && !allowsAutoCorrect
                 && (correctionMode == Suggest.CORRECTION_FULL
                 || correctionMode == Suggest.CORRECTION_FULL_BIGRAM);
     }
