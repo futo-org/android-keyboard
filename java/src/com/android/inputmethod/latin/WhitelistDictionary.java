@@ -93,4 +93,20 @@ public class WhitelistDictionary extends Dictionary {
         if (TextUtils.isEmpty(word)) return false;
         return !TextUtils.isEmpty(getWhiteListedWord(word.toString()));
     }
+
+    // See LatinIME#updateSuggestions. This breaks in the (queer) case that the whitelist
+    // lists that word a should autocorrect to word b, and word c would autocorrect to
+    // an upper-cased version of a. In this case, the way this return value is used would
+    // remove the first candidate when the user typed the upper-cased version of A.
+    // Example : abc -> def  and  xyz -> Abc
+    // A user typing Abc would experience it being autocorrected to something else (not
+    // necessarily def).
+    // There is no such combination in the whitelist at the time and there probably won't
+    // ever be - it doesn't make sense. But still.
+    public boolean shouldForciblyAutoCorrectFrom(CharSequence word) {
+        if (TextUtils.isEmpty(word)) return false;
+        final String correction = getWhiteListedWord(word.toString());
+        if (TextUtils.isEmpty(correction)) return false;
+        return !correction.equals(word);
+    }
 }
