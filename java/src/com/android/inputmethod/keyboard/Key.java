@@ -18,7 +18,6 @@ package com.android.inputmethod.keyboard;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
-import android.content.res.XmlResourceParser;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
@@ -33,6 +32,8 @@ import com.android.inputmethod.keyboard.internal.KeyboardIconsSet;
 import com.android.inputmethod.keyboard.internal.KeyboardParams;
 import com.android.inputmethod.keyboard.internal.MoreKeySpecParser;
 import com.android.inputmethod.latin.R;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -206,7 +207,7 @@ public class Key {
      * @param keyStyles active key styles set
      */
     public Key(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
-            XmlResourceParser parser, KeyStyles keyStyles) {
+            XmlPullParser parser, KeyStyles keyStyles) {
         final float horizontalGap = isSpacer() ? 0 : params.mHorizontalGap;
         final int keyHeight = row.mRowHeight;
         mVerticalGap = params.mVerticalGap;
@@ -536,7 +537,7 @@ public class Key {
 
     public static class Spacer extends Key {
         public Spacer(Resources res, KeyboardParams params, KeyboardBuilder.Row row,
-                XmlResourceParser parser, KeyStyles keyStyles) {
+                XmlPullParser parser, KeyStyles keyStyles) {
             super(res, params, row, parser, keyStyles);
         }
 
