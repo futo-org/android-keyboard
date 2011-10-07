@@ -1635,11 +1635,16 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         boolean autoCorrectionAvailable = !mInputTypeNoAutoCorrect && mSuggest.hasAutoCorrection();
         final CharSequence typedWord = wordComposer.getTypedWord();
         // Here, we want to promote a whitelisted word if exists.
-        final boolean typedWordValid = AutoCorrection.isValidWordForAutoCorrection(
+        // TODO: Change this scheme - a boolean is not enough. A whitelisted word may be "valid"
+        // but still autocorrected from - in the case the whitelist only capitalizes the word.
+        // The whitelist should be case-insensitive, so it's not possible to be consistent with
+        // a boolean flag. Right now this is handled with a slight hack in
+        // WhitelistDictionary#shouldForciblyAutoCorrectFrom.
+        final boolean allowsToBeAutoCorrected = AutoCorrection.allowsToBeAutoCorrected(
                 mSuggest.getUnigramDictionaries(), typedWord, preferCapitalization());
         if (mCorrectionMode == Suggest.CORRECTION_FULL
                 || mCorrectionMode == Suggest.CORRECTION_FULL_BIGRAM) {
-            autoCorrectionAvailable |= typedWordValid;
+            autoCorrectionAvailable |= (!allowsToBeAutoCorrected);
         }
         // Don't auto-correct words with multiple capital letter
         autoCorrectionAvailable &= !wordComposer.isMostlyCaps();
@@ -1652,9 +1657,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         // need to clear the previous state when the user starts typing a word (i.e. typed word's
         // length == 1).
         if (typedWord != null) {
-            if (builder.size() > 1 || typedWord.length() == 1 || typedWordValid
+            if (builder.size() > 1 || typedWord.length() == 1 || (!allowsToBeAutoCorrected)
                     || mSuggestionsView.isShowingAddToDictionaryHint()) {
-                builder.setTypedWordValid(typedWordValid).setHasMinimalSuggestion(
+                builder.setTypedWordValid(!allowsToBeAutoCorrected).setHasMinimalSuggestion(
                         autoCorrectionAvailable);
             } else {
                 SuggestedWords previousSuggestions = mSuggestionsView.getSuggestions();
