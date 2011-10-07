@@ -175,6 +175,19 @@ public class SuggestedWords {
         public CharSequence getWord(int pos) {
             return mWords.get(pos);
         }
+
+        public String toString() {
+            // Pretty-print method to help debug
+            final StringBuilder sb = new StringBuilder("StringBuilder: mTypedWordValid = "
+                    + mTypedWordValid + " ; mHasMinimalSuggestion = " + mHasMinimalSuggestion
+                    + " ; mIsPunctuationSuggestions = " + mIsPunctuationSuggestions
+                    + " --- ");
+            for (CharSequence s : mWords) {
+                sb.append(s);
+                sb.append(" ; ");
+            }
+            return sb.toString();
+        }
     }
 
     public static class SuggestedWordInfo {
