@@ -27,7 +27,7 @@ import com.android.inputmethod.keyboard.ProximityInfo;
 import java.util.HashMap;
 import java.util.Locale;
 
-public class WhitelistDictionary extends Dictionary {
+public class WhitelistDictionary extends ExpandableDictionary {
 
     private static final boolean DBG = LatinImeLogger.sDBG;
     private static final String TAG = WhitelistDictionary.class.getSimpleName();
@@ -35,7 +35,9 @@ public class WhitelistDictionary extends Dictionary {
     private final HashMap<String, Pair<Integer, String>> mWhitelistWords =
             new HashMap<String, Pair<Integer, String>>();
 
+    // TODO: Conform to the async load contact of ExpandableDictionary
     public WhitelistDictionary(final Context context, final Locale locale) {
+        super(context, Suggest.DIC_WHITELIST);
         final Resources res = context.getResources();
         final Locale previousLocale = LocaleUtils.setSystemLocale(res, locale);
         if (context != null) {
@@ -61,6 +63,7 @@ public class WhitelistDictionary extends Dictionary {
                 if (before != null && after != null) {
                     mWhitelistWords.put(
                             before.toLowerCase(), new Pair<Integer, String>(score, after));
+                    addWord(after, score);
                 }
             }
         } catch (NumberFormatException e) {
@@ -70,28 +73,16 @@ public class WhitelistDictionary extends Dictionary {
         }
     }
 
-    public String getWhiteListedWord(String before) {
+    public String getWhitelistedWord(String before) {
         if (before == null) return null;
         final String lowerCaseBefore = before.toLowerCase();
         if(mWhitelistWords.containsKey(lowerCaseBefore)) {
             if (DBG) {
-                Log.d(TAG, "--- found whiteListedWord: " + lowerCaseBefore);
+                Log.d(TAG, "--- found whitelistedWord: " + lowerCaseBefore);
             }
             return mWhitelistWords.get(lowerCaseBefore).second;
         }
         return null;
-    }
-
-    // Not used for WhitelistDictionary.  We use getWhitelistedWord() in Suggest.java instead
-    @Override
-    public void getWords(final WordComposer composer, final WordCallback callback,
-            final ProximityInfo proximityInfo) {
-    }
-
-    @Override
-    public boolean isValidWord(CharSequence word) {
-        if (TextUtils.isEmpty(word)) return false;
-        return !TextUtils.isEmpty(getWhiteListedWord(word.toString()));
     }
 
     // See LatinIME#updateSuggestions. This breaks in the (queer) case that the whitelist
@@ -105,8 +96,11 @@ public class WhitelistDictionary extends Dictionary {
     // ever be - it doesn't make sense. But still.
     public boolean shouldForciblyAutoCorrectFrom(CharSequence word) {
         if (TextUtils.isEmpty(word)) return false;
-        final String correction = getWhiteListedWord(word.toString());
+        final String correction = getWhitelistedWord(word.toString());
         if (TextUtils.isEmpty(correction)) return false;
         return !correction.equals(word);
     }
+
+    // Leave implementation of getWords and isValidWord to the superclass.
+    // The words have been added to the ExpandableDictionary with addWord() inside initWordlist.
 }
