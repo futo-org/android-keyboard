@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Доступен словарь"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Включить отправку сведений"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Помогите усовершенствовать редактор способа ввода, разрешив отправку статистики и отчетов о сбоях в Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Исправление нажатием"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Нажмите на слово, чтобы исправить его (при наличии подсказок)"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Тема клавиатуры"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Немецкая клавиатура QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Английский (Великобритания)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Английский (США)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим проверки удобства использования"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Продолжительность вибросигнала"</string>
 </resources>

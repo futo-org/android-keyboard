@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Available ang diksyunaryo"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Paganahin ang feedback ng user"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Tumulong na pahusayin ang editor ng paraan ng pag-input na ito sa pamamagitan ng awtomatikong pagpapadala ng mga istatistika ng paggamit at mga ulat ng crash sa Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Pindutin upang itama ang mga salita"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Pindutin ang mga inilagay na salita upang iwasto ang mga ito, kapag nakikita lang ang mga suhestiyon"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema ng keyboard"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"German na QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Ingles (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Ingles (Estados Unidos)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Study mode ng pagiging kapaki-pakinabang"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Mga setting ng tagal ng vibration"</string>
 </resources>

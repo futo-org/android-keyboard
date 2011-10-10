@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Ordbok tilgjengelig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktiver brukertilbakemelding"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Ved å sende bruksstatistikk og programstopprapporter til Google automatisk, hjelper du oss med å gjøre redigeringsfunksjonen for denne inndatametoden enda bedre."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Trykk for å endre ord"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Når forslag er synlige, kan du trykke på ord du har skrevet inn, for å endre dem"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tastaturtema"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Tysk QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engelsk (Storbritannia)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engelsk (USA)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Nyttighetsmodus"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Innstillinger for vibrasjonsvarighet"</string>
 </resources>

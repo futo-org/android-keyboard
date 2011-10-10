@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"K dispozícii je slovník"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Povoliť spätnú väzbu od používateľov"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Automatickým zasielaním štatistík o využívaní editora metódy vstupu a správ o jeho zlyhaní do služby Google môžete prispieť k vylepšeniu tohto nástroja."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dotykom opravíte slová"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Dotykom zadaných slov tieto slová opravíte, musia však byť viditeľné návrhy"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Motív klávesnice"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Nemecká klávesnica QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglická klávesnica (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglická klávesnica (US)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Režim štúdie použiteľnosti"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Nastavenia dĺžky vibrovania"</string>
 </resources>

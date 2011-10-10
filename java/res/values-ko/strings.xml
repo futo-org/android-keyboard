@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"사전 사용 가능"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"사용자 의견 사용"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"사용 통계 및 충돌 보고서를 Google에 자동으로 전송하여 입력 방법 편집기의 개선에 도움을 줍니다."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"터치하여 단어 수정"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"입력한 단어를 터치하여 수정(추천 단어가 표시되는 경우에만)"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"키보드 테마"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"독일어 QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"영어(영국)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"영어(미국)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"가용성 연구 모드"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"진동 시간 설정"</string>
 </resources>
