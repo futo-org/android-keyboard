@@ -146,13 +146,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"دیکشنری موجود است"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"فعال کردن بازخورد کاربر"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"با ارسال خودکار آمارهای کاربرد و گزارش های خرابی به Google، به بهبود این ویرایشگر روش ورودی کمک کنید."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"برای تصحیح کلمات لمس کنید"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"فقط هنگامی که پیشنهادات قابل مشاهده هستند، برای تصحیح کلمات وارد شده آنها را لمس کنید"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"طرح زمینه صفحه کلید"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"QWERTY آلمانی"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"انگیسی (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"انگیسی (US)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"حالت بررسی قابلیت استفاده"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"تنظیمات مدت لرزش"</string>
 </resources>

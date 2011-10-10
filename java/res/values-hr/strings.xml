@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Rječnik je dostupan"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Omogući korisničke povratne informacije"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Pomozite u poboljšanju ovog urednika ulazne metode automatskim slanjem statistike upotrebe i padova Googleu."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Dodirnite za ispravak riječi"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Dodirnite unesene riječi da biste ih ispravili samo kada su prijedlozi vidljivi"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema tipkovnice"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"njemački QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engleski (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engleski (SAD)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Način studije upotrebljivosti"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Postavke trajanja vibracije"</string>
 </resources>

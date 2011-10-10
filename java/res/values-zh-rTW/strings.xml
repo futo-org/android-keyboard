@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"可使用字典"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"啟用使用者意見回饋"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"自動將使用統計資料和當機報告傳送給 Google，協助改善這個輸入法編輯器。"</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"輕觸此處可修正字詞"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"輕觸輸入的字詞即可加以修正 (出現建議時才適用)"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"鍵盤主題"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"德文 QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英文 (英式)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英文 (美式)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"使用性研究模式"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"震動持續時間設定"</string>
 </resources>

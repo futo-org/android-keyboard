@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Woordeboek beskikbaar"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktiveer gebruikerterugvoer"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Help hierdie invoermetode-redigeerder te verbeter deur gebruikstatistiek en omvalverslae outomaties na Google te stuur."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Raak om woorde reg te maak"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Raak ingevoerde woorde om hulle te korrigeer, net wanneer voorstelle sigbaar is"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Sleutelbordtema"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Duitse QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engels (VK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engels (VS)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Bruikbaarheidstudie-modus"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Vibrasie-tydsduurinstellings"</string>
 </resources>

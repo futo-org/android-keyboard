@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Van elérhető szótár"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Felhasználói visszajelzés engedélyezése"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Segíthet ennek a beviteli módszernek a javításában, ha engedélyezi a használati statisztikák és a hibajelentések elküldését a Google-nak."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Javítás a szavak megérintésével"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"A beírt szavakat csak akkor javíthatja ki megérintve, ha látszanak javaslatok"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Billentyűzettéma"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Német QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"angol (brit)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"angol (amerikai)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Használhatósági teszt"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Rezgés időtartamának beállítása"</string>
 </resources>

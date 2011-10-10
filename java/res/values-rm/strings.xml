@@ -223,10 +223,6 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Dicziunari disponibel"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Activar il feedback da l\'utilisader"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Gidai a meglierar quest editur da la metoda d\'endataziun cun trametter automaticamain datas statisticas davart l\'utilisaziun e rapports da collaps a Google."</string>
-    <!-- no translation found for prefs_enable_recorrection (4588408906649533582) -->
-    <skip />
-    <!-- no translation found for prefs_enable_recorrection_summary (5082041365862396329) -->
-    <skip />
     <!-- outdated translation 437433231038683666 -->     <string name="keyboard_layout" msgid="8451164783510487501">"Design da la tastatura"</string>
     <!-- no translation found for subtype_de_qwerty (3358900499589259491) -->
     <skip />
