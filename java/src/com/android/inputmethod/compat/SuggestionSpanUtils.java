@@ -24,18 +24,22 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Locale;
 
 public class SuggestionSpanUtils {
+    private static final String TAG = SuggestionSpanUtils.class.getSimpleName();
     // TODO: Use reflection to get field values
     public static final String ACTION_SUGGESTION_PICKED =
             "android.text.style.SUGGESTION_PICKED";
     public static final String SUGGESTION_SPAN_PICKED_AFTER = "after";
     public static final String SUGGESTION_SPAN_PICKED_BEFORE = "before";
     public static final String SUGGESTION_SPAN_PICKED_HASHCODE = "hashcode";
+    // TODO: Use the API constant after it gets public.
+    public static final int FLAG_AUTO_CORRECTION = 0x0004;
     public static final int SUGGESTION_MAX_SIZE = 5;
     public static final boolean SUGGESTION_SPAN_IS_SUPPORTED;
 
@@ -48,6 +52,25 @@ public class SuggestionSpanUtils {
     static {
         SUGGESTION_SPAN_IS_SUPPORTED =
                 CLASS_SuggestionSpan != null && CONSTRUCTOR_SuggestionSpan != null;
+    }
+
+    public static CharSequence getTextWithAutoCorrectionIndicatorUnderline(
+            Context context, CharSequence text) {
+        if (TextUtils.isEmpty(text) || CONSTRUCTOR_SuggestionSpan == null) {
+            return text;
+        }
+        final Spannable spannable = text instanceof Spannable
+                ? (Spannable) text : new SpannableString(text);
+        final Object[] args =
+                { context, null, new String[] {}, FLAG_AUTO_CORRECTION,
+                        (Class<?>) SuggestionSpanPickedNotificationReceiver.class };
+        final Object ss = CompatUtils.newInstance(CONSTRUCTOR_SuggestionSpan, args);
+        if (ss == null) {
+            Log.w(TAG, "Suggestion span was not created.");
+            return text;
+        }
+        spannable.setSpan(ss, 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannable;
     }
 
     public static CharSequence getTextWithSuggestionSpan(Context context,
