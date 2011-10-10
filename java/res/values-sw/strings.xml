@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Kamusi inapatikana"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Wezesha maoni ya watumiaji"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Saidia kuimarisha mbinu ya uingizaji wa kihariri, kwa kutuma takwimu za matumizi na ripoti za kuvurugika kwa Google kiotomatiki."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Gusa ili kurekebisha maneno"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Gusa maneno yaliyoingizwa ili kuyasahihisha, wakati mapendekezo yanaonekana tu"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Maandhari ya kibodi"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"QWERTY ya Kijerumani"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Kiingereza cha (Uingereza)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Kiingereza cha (Marekani)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modi ya uchunguzi wa utumizi"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Mipangilio ya muda wa kutetema"</string>
 </resources>

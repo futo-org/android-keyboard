@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Kamus tersedia"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Dayakan maklum balas pengguna"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Bantu memperbaik editor input ini dengan menghantar statistik penggunaan dan laporan runtuhan kepada Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Sentuh untuk membetulkan perkataan"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Sentuh perkataan yang dimasukkan untuk membetulkannya, hanya apabila cadangan boleh dilihat"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema papan kekunci"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"QWERTY Bahasa Jerman"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Bahasa Inggeris (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Bahasa Inggeris (AS)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Mod kajian kebolehgunaan"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Tetapan tempoh getaran"</string>
 </resources>

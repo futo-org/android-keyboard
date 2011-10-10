@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Žodynas galimas"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Įgalinti naudotojų atsiliepimus"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Padėkite patobulinti šią įvesties metodo redagavimo programą automatiškai „Google“ siųsdami naudojimo statistiką ir strigčių ataskaitas."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Jei norite ištais. žodž., paliesk."</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Jei norite ištaisyti įvestus žodžius, palieskite juos tik tada, kai matomi pasiūlymai"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Klaviatūros tema"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Vokiška QWERTY klaviatūra"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Anglų k. (JK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Anglų k. (JAV)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Tinkamumo tyrimo režimas"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Vibracijos trukmės nustatymai"</string>
 </resources>

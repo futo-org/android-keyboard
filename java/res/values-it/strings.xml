@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"Dizionario disponibile"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Attiva commenti degli utenti"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Aiuta a migliorare l\'editor del metodo di inserimento inviando automaticamente a Google statistiche sull\'utilizzo e segnalazioni sugli arresti anomali."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tocca per correggere"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tocca le parole inserite per correggerle, solo quando sono visibili i suggerimenti"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tema della tastiera"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"QWERTY tedesca"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Inglese (UK)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Inglese (USA)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modalità Studio sull\'usabilità"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Impostazioni durata vibrazione"</string>
 </resources>

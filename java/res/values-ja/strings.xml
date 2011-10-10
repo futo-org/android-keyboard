@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"辞書を利用できます"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"ユーザーフィードバックを有効にする"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"IMEの機能向上のため、使用統計状況やクラッシュレポートをGoogleに自動送信します。"</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"タップして語句を修正"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"候補が表示されているときのみ、入力した語句をタップして修正する"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"キーボードのテーマ"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"ドイツ語QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"英語（英国）"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"英語（米国）"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"使いやすさの研究モード"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"バイブレーションの長さの設定"</string>
 </resources>

@@ -142,13 +142,10 @@
     <string name="has_dictionary" msgid="6071847973466625007">"En ordlista är tillgänglig"</string>
     <string name="prefs_enable_log" msgid="6620424505072963557">"Aktivera synpunkter från användare"</string>
     <string name="prefs_description_log" msgid="5827825607258246003">"Du kan hjälpa till att förbättra inmatningsmetoden genom att automatiskt skicka användningsstatistik och felrapporter till Google."</string>
-    <string name="prefs_enable_recorrection" msgid="4588408906649533582">"Tryck om du vill korrigera ord"</string>
-    <string name="prefs_enable_recorrection_summary" msgid="5082041365862396329">"Tryck på skrivna ord om du vill korrigera dem, endast när förslag visas"</string>
     <string name="keyboard_layout" msgid="8451164783510487501">"Tangentbordstema"</string>
     <string name="subtype_de_qwerty" msgid="3358900499589259491">"Tyskt QWERTY"</string>
     <string name="subtype_en_GB" msgid="88170601942311355">"Engelskt (brittiskt)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Engelskt (amerikanskt)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Läge för studie av användbarhet"</string>
-    <!-- no translation found for prefs_vibration_duration_settings (3194657361314787870) -->
-    <skip />
+    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Inställningar för vibrationens varaktighet"</string>
 </resources>
