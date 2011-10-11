@@ -776,7 +776,7 @@ public class Utils {
     }
 
     public static int getCurrentVibrationDuration(SharedPreferences sp, Resources res) {
-        final int ms = sp.getInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, -1);
+        final int ms = sp.getInt(Settings.PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS, -1);
         if (ms >= 0) {
             return ms;
         }
@@ -789,6 +789,22 @@ public class Utils {
             }
         }
         return -1;
+    }
+
+    public static float getCurrentKeypressSoundVolume(SharedPreferences sp, Resources res) {
+        final float volume = sp.getFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, -1.0f);
+        if (volume >= 0) {
+            return volume;
+        }
+
+        final String[] volumePerHardwareList = res.getStringArray(R.array.keypress_volumes);
+        final String hardwarePrefix = Build.HARDWARE + ",";
+        for (final String element : volumePerHardwareList) {
+            if (element.startsWith(hardwarePrefix)) {
+                return Float.parseFloat(element.substring(element.lastIndexOf(',') + 1));
+            }
+        }
+        return -1.0f;
     }
 
     public static boolean willAutoCorrect(SuggestedWords suggestions) {
