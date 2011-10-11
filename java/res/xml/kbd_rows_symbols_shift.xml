@@ -36,7 +36,7 @@
             latin:keyLabel="|" />
         <Key
             latin:keyLabel="•"
-            latin:moreKeys="♪,♥,♠,♦,♣" />
+            latin:moreKeys="@string/more_keys_for_bullet" />
         <Key
             latin:keyLabel="√" />
         <Key
