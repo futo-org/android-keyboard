@@ -22,8 +22,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
-import com.android.inputmethod.keyboard.ProximityInfo;
-
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -40,9 +38,7 @@ public class WhitelistDictionary extends ExpandableDictionary {
         super(context, Suggest.DIC_WHITELIST);
         final Resources res = context.getResources();
         final Locale previousLocale = LocaleUtils.setSystemLocale(res, locale);
-        if (context != null) {
-            initWordlist(context.getResources().getStringArray(R.array.wordlist_whitelist));
-        }
+        initWordlist(res.getStringArray(R.array.wordlist_whitelist));
         LocaleUtils.setSystemLocale(res, previousLocale);
     }
 
