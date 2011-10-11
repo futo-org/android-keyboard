@@ -26,6 +26,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
@@ -91,9 +92,11 @@ public class Settings extends InputMethodSettingsActivity
 
     public static final String PREF_USABILITY_STUDY_MODE = "usability_study_mode";
 
-    public static final String PREF_VIBRATION_DURATION_SETTINGS =
+    public static final String PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS =
             "pref_vibration_duration_settings";
 
+    public static final String PREF_KEYPRESS_SOUND_VOLUME =
+            "pref_keypress_sound_volume";
     // Dialog ids
     private static final int VOICE_INPUT_CONFIRM_DIALOG = 0;
 
@@ -327,7 +330,8 @@ public class Settings extends InputMethodSettingsActivity
     }
 
     private PreferenceScreen mInputLanguageSelection;
-    private PreferenceScreen mVibrationDurationSettingsPref;
+    private PreferenceScreen mKeypressVibrationDurationSettingsPref;
+    private PreferenceScreen mKeypressSoundVolumeSettingsPref;
     private ListPreference mVoicePreference;
     private CheckBoxPreference mShowSettingsKeyPreference;
     private ListPreference mShowCorrectionSuggestionsPreference;
@@ -341,7 +345,8 @@ public class Settings extends InputMethodSettingsActivity
     private boolean mVoiceOn;
 
     private AlertDialog mDialog;
-    private TextView mVibrationSettingsTextView;
+    private TextView mKeypressVibrationDurationSettingsTextView;
+    private TextView mKeypressSoundVolumeSettingsTextView;
 
     private boolean mOkClicked = false;
     private String mVoiceModeOff;
@@ -477,19 +482,34 @@ public class Settings extends InputMethodSettingsActivity
             }
         }
 
-        mVibrationDurationSettingsPref =
-                (PreferenceScreen) findPreference(PREF_VIBRATION_DURATION_SETTINGS);
-        if (mVibrationDurationSettingsPref != null) {
-            mVibrationDurationSettingsPref.setOnPreferenceClickListener(
+        mKeypressVibrationDurationSettingsPref =
+                (PreferenceScreen) findPreference(PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS);
+        if (mKeypressVibrationDurationSettingsPref != null) {
+            mKeypressVibrationDurationSettingsPref.setOnPreferenceClickListener(
                     new OnPreferenceClickListener() {
                         @Override
                         public boolean onPreferenceClick(Preference arg0) {
-                            showVibrationSettingsDialog();
+                            showKeypressVibrationDurationSettingsDialog();
                             return true;
                         }
                     });
-            updateVibrationDurationSettingsSummary(prefs, res);
+            updateKeypressVibrationDurationSettingsSummary(prefs, res);
         }
+
+        mKeypressSoundVolumeSettingsPref =
+                (PreferenceScreen) findPreference(PREF_KEYPRESS_SOUND_VOLUME);
+        if (mKeypressSoundVolumeSettingsPref != null) {
+            mKeypressSoundVolumeSettingsPref.setOnPreferenceClickListener(
+                    new OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference arg0) {
+                            showKeypressSoundVolumeSettingDialog();
+                            return true;
+                        }
+                    });
+            updateKeypressSoundVolumeSummary(prefs, res);
+        }
+        refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, res);
     }
 
     @SuppressWarnings("unused")
@@ -537,6 +557,7 @@ public class Settings extends InputMethodSettingsActivity
         updateVoiceModeSummary();
         updateShowCorrectionSuggestionsSummary();
         updateKeyPreviewPopupDelaySummary();
+        refreshEnablingsOfKeypressSoundAndVibrationSettings(prefs, getResources());
     }
 
     @Override
@@ -637,26 +658,44 @@ public class Settings extends InputMethodSettingsActivity
         }
     }
 
-    private void updateVibrationDurationSettingsSummary(SharedPreferences sp, Resources res) {
-        if (mVibrationDurationSettingsPref != null) {
-            mVibrationDurationSettingsPref.setSummary(
+    private void refreshEnablingsOfKeypressSoundAndVibrationSettings(
+            SharedPreferences sp, Resources res) {
+        if (mKeypressVibrationDurationSettingsPref != null) {
+            final boolean hasVibrator = VibratorCompatWrapper.getInstance(this).hasVibrator();
+            final boolean vibrateOn = hasVibrator && sp.getBoolean(Settings.PREF_VIBRATE_ON,
+                    res.getBoolean(R.bool.config_default_vibration_enabled));
+            mKeypressVibrationDurationSettingsPref.setEnabled(vibrateOn);
+        }
+
+        if (mKeypressSoundVolumeSettingsPref != null) {
+            final boolean soundOn = sp.getBoolean(Settings.PREF_SOUND_ON,
+                    res.getBoolean(R.bool.config_default_sound_enabled));
+            mKeypressSoundVolumeSettingsPref.setEnabled(soundOn);
+        }
+    }
+
+    private void updateKeypressVibrationDurationSettingsSummary(
+            SharedPreferences sp, Resources res) {
+        if (mKeypressVibrationDurationSettingsPref != null) {
+            mKeypressVibrationDurationSettingsPref.setSummary(
                     Utils.getCurrentVibrationDuration(sp, res)
                             + res.getString(R.string.settings_ms));
         }
     }
 
-    private void showVibrationSettingsDialog() {
+    private void showKeypressVibrationDurationSettingsDialog() {
         final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
         final Activity context = getActivityInternal();
         final Resources res = context.getResources();
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.prefs_vibration_duration_settings);
+        builder.setTitle(R.string.prefs_keypress_vibration_duration_settings);
         builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                final int ms = Integer.valueOf(mVibrationSettingsTextView.getText().toString());
-                sp.edit().putInt(Settings.PREF_VIBRATION_DURATION_SETTINGS, ms).apply();
-                updateVibrationDurationSettingsSummary(sp, res);
+                final int ms = Integer.valueOf(
+                        mKeypressVibrationDurationSettingsTextView.getText().toString());
+                sp.edit().putInt(Settings.PREF_KEYPRESS_VIBRATION_DURATION_SETTINGS, ms).apply();
+                updateKeypressVibrationDurationSettingsSummary(sp, res);
             }
         });
         builder.setNegativeButton(android.R.string.cancel,  new DialogInterface.OnClickListener() {
@@ -669,13 +708,13 @@ public class Settings extends InputMethodSettingsActivity
                 R.layout.vibration_settings_dialog, null);
         final int currentMs = Utils.getCurrentVibrationDuration(
                 getPreferenceManager().getSharedPreferences(), getResources());
-        mVibrationSettingsTextView = (TextView)v.findViewById(R.id.vibration_value);
+        mKeypressVibrationDurationSettingsTextView = (TextView)v.findViewById(R.id.vibration_value);
         final SeekBar sb = (SeekBar)v.findViewById(R.id.vibration_settings);
         sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
                 final int tempMs = arg1;
-                mVibrationSettingsTextView.setText(String.valueOf(tempMs));
+                mKeypressVibrationDurationSettingsTextView.setText(String.valueOf(tempMs));
             }
 
             @Override
@@ -689,7 +728,67 @@ public class Settings extends InputMethodSettingsActivity
             }
         });
         sb.setProgress(currentMs);
-        mVibrationSettingsTextView.setText(String.valueOf(currentMs));
+        mKeypressVibrationDurationSettingsTextView.setText(String.valueOf(currentMs));
+        builder.setView(v);
+        builder.create().show();
+    }
+
+    private void updateKeypressSoundVolumeSummary(SharedPreferences sp, Resources res) {
+        if (mKeypressSoundVolumeSettingsPref != null) {
+            mKeypressSoundVolumeSettingsPref.setSummary(
+                    String.valueOf((int)(Utils.getCurrentKeypressSoundVolume(sp, res) * 100)));
+        }
+    }
+
+    private void showKeypressSoundVolumeSettingDialog() {
+        final AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        final SharedPreferences sp = getPreferenceManager().getSharedPreferences();
+        final Activity context = getActivityInternal();
+        final Resources res = context.getResources();
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.prefs_keypress_sound_volume_settings);
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                final float volume =
+                        ((float)Integer.valueOf(
+                                mKeypressSoundVolumeSettingsTextView.getText().toString())) / 100;
+                sp.edit().putFloat(Settings.PREF_KEYPRESS_SOUND_VOLUME, volume).apply();
+                updateKeypressSoundVolumeSummary(sp, res);
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel,  new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int whichButton) {
+                dialog.dismiss();
+            }
+        });
+        final View v = context.getLayoutInflater().inflate(
+                R.layout.sound_effect_volume_dialog, null);
+        final int currentVolumeInt = (int)(Utils.getCurrentKeypressSoundVolume(
+                getPreferenceManager().getSharedPreferences(), getResources()) * 100);
+        mKeypressSoundVolumeSettingsTextView =
+                (TextView)v.findViewById(R.id.sound_effect_volume_value);
+        final SeekBar sb = (SeekBar)v.findViewById(R.id.sound_effect_volume_bar);
+        sb.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar arg0, int arg1, boolean arg2) {
+                final int tempVolume = arg1;
+                mKeypressSoundVolumeSettingsTextView.setText(String.valueOf(tempVolume));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar arg0) {
+                final float tempVolume = ((float)arg0.getProgress()) / 100;
+                am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD, tempVolume);
+            }
+        });
+        sb.setProgress(currentVolumeInt);
+        mKeypressSoundVolumeSettingsTextView.setText(String.valueOf(currentVolumeInt));
         builder.setView(v);
         builder.create().show();
     }

@@ -121,7 +121,10 @@
                 android:defaultValue="true" />
             <PreferenceScreen
                 android:key="pref_vibration_duration_settings"
-                android:title="@string/prefs_vibration_duration_settings"/>
+                android:title="@string/prefs_keypress_vibration_duration_settings"/>
+            <PreferenceScreen
+                android:key="pref_keypress_sound_volume"
+                android:title="@string/prefs_keypress_sound_volume_settings" />
             <!-- TODO: evaluate results and revive this option. The code
                 already supports it. -->
             <!-- <CheckBoxPreference -->

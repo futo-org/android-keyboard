@@ -28,7 +28,6 @@ import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Debug;
 import android.os.Message;
 import android.os.SystemClock;
@@ -2097,16 +2096,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         }
     };
 
-    // update sound effect volume
+    // update keypress sound volume
     private void updateSoundEffectVolume() {
-        final String[] volumePerHardwareList = mResources.getStringArray(R.array.keypress_volumes);
-        final String hardwarePrefix = Build.HARDWARE + ",";
-        for (final String element : volumePerHardwareList) {
-            if (element.startsWith(hardwarePrefix)) {
-                mFxVolume = Float.parseFloat(element.substring(element.lastIndexOf(',') + 1));
-                break;
-            }
-        }
+        mFxVolume = Utils.getCurrentKeypressSoundVolume(mPrefs, mResources);
     }
 
     // update flags for silent mode
