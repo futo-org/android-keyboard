@@ -193,9 +193,7 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
                     // Detected a double tap on shift key. If we are in the ignoring double tap
                     // mode, it means we have already turned off caps lock in
                     // {@link KeyboardSwitcher#onReleaseShift} .
-                    final boolean ignoringDoubleTap = mKeyTimerHandler.isIgnoringDoubleTap();
-                    if (!ignoringDoubleTap)
-                        onDoubleTapShiftKey(tracker);
+                    onDoubleTapShiftKey(tracker, mKeyTimerHandler.isIgnoringDoubleTap());
                     return true;
                 }
                 // Otherwise these events should not be handled as double tap.
@@ -346,11 +344,14 @@ public class LatinKeyboardView extends KeyboardView implements PointerTracker.Ke
         return onLongPress(parentKey, tracker);
     }
 
-    private void onDoubleTapShiftKey(@SuppressWarnings("unused") PointerTracker tracker) {
+    private void onDoubleTapShiftKey(@SuppressWarnings("unused") PointerTracker tracker,
+            final boolean ignore) {
         // When shift key is double tapped, the first tap is correctly processed as usual tap. And
         // the second tap is treated as this double tap event, so that we need not mark tracker
         // calling setAlreadyProcessed() nor remove the tracker from mPointerQueue.
-        mKeyboardActionListener.onCodeInput(Keyboard.CODE_CAPSLOCK, null, 0, 0);
+        final int primaryCode = ignore ? Keyboard.CODE_HAPTIC_AND_AUDIO_FEEDBACK_ONLY
+                : Keyboard.CODE_CAPSLOCK;
+        mKeyboardActionListener.onCodeInput(primaryCode, null, 0, 0);
     }
 
     // This default implementation returns a more keys panel.

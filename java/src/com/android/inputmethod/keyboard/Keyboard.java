@@ -75,6 +75,7 @@ public class Keyboard {
     public static final int CODE_DELETE = -5;
     public static final int CODE_SETTINGS = -6;
     public static final int CODE_SHORTCUT = -7;
+    public static final int CODE_HAPTIC_AND_AUDIO_FEEDBACK_ONLY = -98;
     // Code value representing the code is not specified.
     public static final int CODE_UNSPECIFIED = -99;
 

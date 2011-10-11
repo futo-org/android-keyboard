@@ -1265,7 +1265,11 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             break;
         case Keyboard.CODE_CAPSLOCK:
             switcher.toggleCapsLock();
+            //$FALL-THROUGH$
+        case Keyboard.CODE_HAPTIC_AND_AUDIO_FEEDBACK_ONLY:
+            // Dummy code for haptic and audio feedbacks.
             vibrate();
+            playKeyClick(primaryCode);
             break;
         case Keyboard.CODE_SHORTCUT:
             mSubtypeSwitcher.switchToShortcutIME();
