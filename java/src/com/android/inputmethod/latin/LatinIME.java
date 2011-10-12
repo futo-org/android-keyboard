@@ -228,6 +228,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     // Keeps track of most recently inserted text (multi-character key) for reverting
     private CharSequence mEnteredText;
 
+    private final ComposingStateManager mComposingStateManager =
+            new ComposingStateManager();
+
     public final UIHandler mHandler = new UIHandler(this);
 
     public static class UIHandler extends StaticInnerHandlerWrapper<LatinIME> {
@@ -609,6 +612,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void onConfigurationChanged(Configuration conf) {
         mSubtypeSwitcher.onConfigurationChanged(conf);
+        mComposingStateManager.onFinishComposingText();
         // If orientation changed while predicting, commit the change
         if (mDisplayOrientation != conf.orientation) {
             mDisplayOrientation = conf.orientation;
@@ -880,6 +884,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 if (ic != null) {
                     ic.finishComposingText();
                 }
+                mComposingStateManager.onFinishComposingText();
                 mVoiceProxy.setVoiceInputHighlighted(false);
             } else if (!mHasUncommittedTypedChars) {
                 TextEntryState.reset();
@@ -1335,7 +1340,12 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
             if (length > 0) {
                 mComposingStringBuilder.delete(length - 1, length);
                 mWordComposer.deleteLast();
-                ic.setComposingText(mComposingStringBuilder, 1);
+                final CharSequence textWithUnderline =
+                        mComposingStateManager.isAutoCorrectionIndicatorOn()
+                                ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
+                                            this, mComposingStringBuilder)
+                                : mComposingStringBuilder;
+                ic.setComposingText(textWithUnderline, 1);
                 if (mComposingStringBuilder.length() == 0) {
                     mHasUncommittedTypedChars = false;
                 }
@@ -1426,6 +1436,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 mComposingStringBuilder.setLength(0);
                 mWordComposer.reset();
                 clearSuggestions();
+                mComposingStateManager.onFinishComposingText();
             }
         }
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
@@ -1457,8 +1468,14 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 // If it's the first letter, make note of auto-caps state
                 if (mWordComposer.size() == 1) {
                     mWordComposer.setAutoCapitalized(getCurrentAutoCapsState());
+                    mComposingStateManager.onStartComposingText();
                 }
-                ic.setComposingText(mComposingStringBuilder, 1);
+                final CharSequence textWithUnderline =
+                        mComposingStateManager.isAutoCorrectionIndicatorOn()
+                                ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
+                                        this, mComposingStringBuilder)
+                                : mComposingStringBuilder;
+                ic.setComposingText(textWithUnderline, 1);
             }
             mHandler.postUpdateSuggestions();
         } else {
@@ -1477,6 +1494,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private void handleSeparator(int primaryCode, int x, int y) {
         mVoiceProxy.handleSeparator();
+        mComposingStateManager.onFinishComposingText();
 
         // Should dismiss the "Touch again to save" message when handling separator
         if (mSuggestionsView != null && mSuggestionsView.dismissAddToDictionaryHint()) {
@@ -1614,12 +1632,19 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
         // Put a blue underline to a word in TextView which will be auto-corrected.
         final InputConnection ic = getCurrentInputConnection();
-        if (ic != null && Utils.willAutoCorrect(words)) {
-            final CharSequence textWithUnderline =
-                    SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
-                            this, mComposingStringBuilder);
-            if (!TextUtils.isEmpty(textWithUnderline)) {
-                ic.setComposingText(textWithUnderline, 1);
+        if (ic != null) {
+            final boolean oldAutoCorrectionIndicator =
+                    mComposingStateManager.isAutoCorrectionIndicatorOn();
+            final boolean newAutoCorrectionIndicator = Utils.willAutoCorrect(words);
+            if (oldAutoCorrectionIndicator != newAutoCorrectionIndicator) {
+                final CharSequence textWithUnderline = newAutoCorrectionIndicator
+                        ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
+                                this, mComposingStringBuilder)
+                        : mComposingStringBuilder;
+                if (!TextUtils.isEmpty(textWithUnderline)) {
+                    ic.setComposingText(textWithUnderline, 1);
+                }
+                mComposingStateManager.setAutoCorrectionIndicatorOn(newAutoCorrectionIndicator);
             }
         }
     }
@@ -1731,6 +1756,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     @Override
     public void pickSuggestionManually(int index, CharSequence suggestion) {
+        mComposingStateManager.onFinishComposingText();
         SuggestedWords suggestions = mSuggestionsView.getSuggestions();
         mVoiceProxy.flushAndLogAllTextModificationCounters(index, suggestion,
                 mSettingsValues.mWordSeparators);
@@ -2269,6 +2295,43 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 .setItems(items, listener)
                 .setTitle(title);
         showOptionDialogInternal(builder.create());
+    }
+
+    private static class ComposingStateManager {
+        private boolean mAutoCorrectionIndicatorOn;
+        private boolean mIsComposing;
+        public ComposingStateManager() {
+            mAutoCorrectionIndicatorOn = false;
+            mIsComposing = false;
+        }
+
+        private void onStartComposingText() {
+            if (!mIsComposing) {
+                if (LatinImeLogger.sDBG) {
+                    Log.i(TAG, "Start composing text.");
+                }
+                mAutoCorrectionIndicatorOn = false;
+                mIsComposing = true;
+            }
+        }
+
+        private void onFinishComposingText() {
+            if (mIsComposing) {
+                if (LatinImeLogger.sDBG) {
+                    Log.i(TAG, "Finish composing text.");
+                }
+                mAutoCorrectionIndicatorOn = false;
+                mIsComposing = false;
+            }
+        }
+
+        public boolean isAutoCorrectionIndicatorOn() {
+            return mAutoCorrectionIndicatorOn;
+        }
+
+        public void setAutoCorrectionIndicatorOn(boolean on) {
+            mAutoCorrectionIndicatorOn = on;
+        }
     }
 
     @Override
