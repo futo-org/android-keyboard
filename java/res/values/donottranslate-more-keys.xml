@@ -97,4 +97,6 @@
     <string name="more_keys_for_apostrophe">\"</string>
     <string name="more_keys_for_dash">_</string>
     <string name="more_keys_for_bullet">♪,♥,♠,♦,♣</string>
+    <string name="more_keys_for_star">†,‡,★</string>
+    <string name="more_keys_for_plus">±</string>
 </resources>
