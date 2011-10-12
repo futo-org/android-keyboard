@@ -215,10 +215,21 @@ public class MiniKeyboard extends Keyboard {
             mParams.mIsRtlKeyboard = parentKeyboard.mIsRtlKeyboard;
             mMoreKeys = parentKey.mMoreKeys;
 
-            final int keyWidth = getMaxKeyWidth(view, mMoreKeys, mParams.mDefaultKeyWidth);
-            mParams.setParameters(mMoreKeys.length, parentKey.mMaxMoreKeysColumn,
-                    keyWidth, parentKeyboard.mMostCommonKeyHeight, parentKey.mX
-                            + (mParams.mDefaultKeyWidth - keyWidth) / 2, view.getMeasuredWidth());
+            final int previewWidth = view.mKeyPreviewDrawParams.mPreviewBackgroundWidth;
+            final int previewHeight = view.mKeyPreviewDrawParams.mPreviewBackgroundHeight;
+            final int width, height;
+            // Use pre-computed width and height if these values are available and mini keyboard
+            // has only one key to mitigate visual flicker between key preview and mini keyboard.
+            if (view.isKeyPreviewPopupEnabled() && mMoreKeys.length == 1 && previewWidth > 0
+                    && previewHeight > 0) {
+                width = previewWidth;
+                height = previewHeight + mParams.mVerticalGap;
+            } else {
+                width = getMaxKeyWidth(view, parentKey.mMoreKeys, mParams.mDefaultKeyWidth);
+                height = parentKeyboard.mMostCommonKeyHeight;
+            }
+            mParams.setParameters(mMoreKeys.length, parentKey.mMaxMoreKeysColumn, width, height,
+                    parentKey.mX + (mParams.mDefaultKeyWidth - width) / 2, view.getMeasuredWidth());
         }
 
         private static int getMaxKeyWidth(KeyboardView view, CharSequence[] moreKeys,
