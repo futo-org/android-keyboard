@@ -52,11 +52,11 @@
             latin:keyHintLabel="٦"
             latin:moreKeys="٦,6" />
         <!-- \ufeeb: ARABIC LETTER HEH INITIAL FORM
-             \u0647\u0640: ARABIC LETTER HEH + ARABIC TATWEEL -->
+             \u0647\u0640: ARABIC LETTER HEH + Zero width joiner -->
         <Key
             latin:keyLabel="ه"
             latin:keyHintLabel="٧"
-            latin:moreKeys="٧,7,\ufeeb|\u0647\u0640" />
+            latin:moreKeys="٧,7,\ufeeb|\u0647\u200D" />
         <Key
             latin:keyLabel="خ"
             latin:keyHintLabel="٨"
