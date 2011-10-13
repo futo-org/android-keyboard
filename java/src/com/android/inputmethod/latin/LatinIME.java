@@ -159,6 +159,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
 
     private Settings.Values mSettingsValues;
 
+    private View mExtractArea;
     private View mKeyPreviewBackingView;
     private View mSuggestionsContainer;
     private SuggestionsView mSuggestionsView;
@@ -641,6 +642,8 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     @Override
     public void setInputView(View view) {
         super.setInputView(view);
+        mExtractArea = getWindow().getWindow().getDecorView()
+                .findViewById(android.R.id.extractArea);
         mKeyPreviewBackingView = view.findViewById(R.id.key_preview_backing);
         mSuggestionsContainer = view.findViewById(R.id.suggestions_container);
         mSuggestionsView = (SuggestionsView) view.findViewById(R.id.suggestions_view);
@@ -1004,11 +1007,15 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         final KeyboardView inputView = mKeyboardSwitcher.getKeyboardView();
         if (inputView == null || mSuggestionsContainer == null)
             return;
+        // In fullscreen mode, the height of the extract area managed by InputMethodService should
+        // be considered.
+        // See {@link android.inputmethodservice.InputMethodService#onComputeInsets}.
+        final int extractHeight = isFullscreenMode() ? mExtractArea.getHeight() : 0;
         final int backingHeight = (mKeyPreviewBackingView.getVisibility() == View.GONE) ? 0
                 : mKeyPreviewBackingView.getHeight();
         final int suggestionsHeight = (mSuggestionsContainer.getVisibility() == View.GONE) ? 0
                 : mSuggestionsContainer.getHeight();
-        final int extraHeight = backingHeight + suggestionsHeight;
+        final int extraHeight = extractHeight + backingHeight + suggestionsHeight;
         int touchY = extraHeight;
         // Need to set touchable region only if input view is being shown
         if (mKeyboardSwitcher.isInputViewShown()) {
@@ -1049,9 +1056,9 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
         super.updateFullscreenMode();
 
         if (mKeyPreviewBackingView == null) return;
-        // In fullscreen mode, no need to have extra space to show the key preview.
+        // In extract mode, no need to have extra space to show the key preview.
         // If not, we should have extra space above the keyboard to show the key preview.
-        mKeyPreviewBackingView.setVisibility(isFullscreenMode() ? View.GONE : View.VISIBLE);
+        mKeyPreviewBackingView.setVisibility(isExtractViewShown() ? View.GONE : View.VISIBLE);
     }
 
     @Override
