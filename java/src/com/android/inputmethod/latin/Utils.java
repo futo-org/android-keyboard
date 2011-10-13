@@ -167,7 +167,9 @@ public class Utils {
         throw new RuntimeException("Can not find input method id for " + packageName);
     }
 
-    public static boolean shouldBlockedBySafetyNetForAutoCorrection(SuggestedWords suggestions,
+    // TODO: Resolve the inconsistencies between the native auto correction algorithms and
+    // this safety net
+    public static boolean shouldBlockAutoCorrectionBySafetyNet(SuggestedWords suggestions,
             Suggest suggest) {
         // Safety net for auto correction.
         // Actually if we hit this safety net, it's actually a bug.
@@ -181,7 +183,8 @@ public class Utils {
         if (typedWord.length() < MINIMUM_SAFETY_NET_CHAR_LENGTH) return false;
         final CharSequence suggestionWord = suggestions.getWord(1);
         final int typedWordLength = typedWord.length();
-        final int maxEditDistanceOfNativeDictionary = typedWordLength < 5 ? 2 : typedWordLength / 2;
+        final int maxEditDistanceOfNativeDictionary =
+                (typedWordLength < 5 ? 2 : typedWordLength / 2) + 1;
         final int distance = Utils.editDistance(typedWord, suggestionWord);
         if (DBG) {
             Log.d(TAG, "Autocorrected edit distance = " + distance
@@ -189,8 +192,8 @@ public class Utils {
         }
         if (distance > maxEditDistanceOfNativeDictionary) {
             if (DBG) {
-                Log.d(TAG, "Safety net: before = " + typedWord + ", after = " + suggestionWord);
-                Log.w(TAG, "(Error) The edit distance of this correction exceeds limit. "
+                Log.e(TAG, "Safety net: before = " + typedWord + ", after = " + suggestionWord);
+                Log.e(TAG, "(Error) The edit distance of this correction exceeds limit. "
                         + "Turning off auto-correction.");
             }
             return true;
@@ -808,6 +811,7 @@ public class Utils {
     }
 
     public static boolean willAutoCorrect(SuggestedWords suggestions) {
-        return !suggestions.mTypedWordValid && suggestions.mHasMinimalSuggestion;
+        return !suggestions.mTypedWordValid && suggestions.mHasAutoCorrectionCandidate
+                && !suggestions.shouldBlockAutoCorrection();
     }
 }
