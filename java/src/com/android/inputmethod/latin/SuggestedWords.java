@@ -29,12 +29,13 @@ public class SuggestedWords {
 
     public final List<CharSequence> mWords;
     public final boolean mTypedWordValid;
-    public final boolean mHasMinimalSuggestion;
+    public final boolean mHasAutoCorrectionCandidate;
     public final boolean mIsPunctuationSuggestions;
     private final List<SuggestedWordInfo> mSuggestedWordInfoList;
+    private boolean mShouldBlockAutoCorrection;
 
     private SuggestedWords(List<CharSequence> words, boolean typedWordValid,
-            boolean hasMinimalSuggestion, boolean isPunctuationSuggestions,
+            boolean hasAutoCorrectionCandidate, boolean isPunctuationSuggestions,
             List<SuggestedWordInfo> suggestedWordInfoList) {
         if (words != null) {
             mWords = words;
@@ -42,9 +43,10 @@ public class SuggestedWords {
             mWords = Collections.emptyList();
         }
         mTypedWordValid = typedWordValid;
-        mHasMinimalSuggestion = hasMinimalSuggestion;
+        mHasAutoCorrectionCandidate = hasAutoCorrectionCandidate;
         mIsPunctuationSuggestions = isPunctuationSuggestions;
         mSuggestedWordInfoList = suggestedWordInfoList;
+        mShouldBlockAutoCorrection = false;
     }
 
     public int size() {
@@ -60,15 +62,23 @@ public class SuggestedWords {
     }
 
     public boolean hasAutoCorrectionWord() {
-        return mHasMinimalSuggestion && size() > 1 && !mTypedWordValid;
+        return mHasAutoCorrectionCandidate && size() > 1 && !mTypedWordValid;
     }
 
     public boolean hasWordAboveAutoCorrectionScoreThreshold() {
-        return mHasMinimalSuggestion && ((size() > 1 && !mTypedWordValid) || mTypedWordValid);
+        return mHasAutoCorrectionCandidate && ((size() > 1 && !mTypedWordValid) || mTypedWordValid);
     }
 
     public boolean isPunctuationSuggestions() {
         return mIsPunctuationSuggestions;
+    }
+
+    public void setShouldBlockAutoCorrection() {
+        mShouldBlockAutoCorrection = true;
+    }
+
+    public boolean shouldBlockAutoCorrection() {
+        return mShouldBlockAutoCorrection;
     }
 
     public static class Builder {
@@ -176,6 +186,7 @@ public class SuggestedWords {
             return mWords.get(pos);
         }
 
+        @Override
         public String toString() {
             // Pretty-print method to help debug
             final StringBuilder sb = new StringBuilder("StringBuilder: mTypedWordValid = "
