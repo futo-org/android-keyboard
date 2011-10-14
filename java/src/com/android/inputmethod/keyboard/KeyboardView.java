@@ -974,5 +974,9 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         if (mPreviewPlacer != null) {
             mPreviewPlacer.removeAllViews();
         }
+        if (mBuffer != null) {
+            mBuffer.recycle();
+            mBuffer = null;
+        }
     }
 }
