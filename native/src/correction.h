@@ -102,6 +102,7 @@ private:
     inline bool isQuote(const unsigned short c);
     inline CorrectionType processSkipChar(
             const int32_t c, const bool isTerminal, const bool inputIndexIncremented);
+    inline void addCharToCurrentWord(const int32_t c);
 
     const int TYPED_LETTER_MULTIPLIER;
     const int FULL_WORD_MULTIPLIER;
