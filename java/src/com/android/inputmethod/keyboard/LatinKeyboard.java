@@ -59,8 +59,8 @@ public class LatinKeyboard extends Keyboard {
     private final int mSpacebarTextColor;
     private final int mSpacebarTextShadowColor;
     private float mSpacebarTextFadeFactor = 0.0f;
-    private final HashMap<Integer, SoftReference<BitmapDrawable>> mSpaceDrawableCache =
-            new HashMap<Integer, SoftReference<BitmapDrawable>>();
+    private final HashMap<Integer, BitmapDrawable> mSpaceDrawableCache =
+            new HashMap<Integer, BitmapDrawable>();
     private final boolean mIsSpacebarTriggeringPopupByLongPress;
 
     /* Shortcut key and its icons if available */
@@ -249,13 +249,13 @@ public class LatinKeyboard extends Keyboard {
     private BitmapDrawable getSpaceDrawable(Locale locale, boolean isAutoCorrection) {
         final Integer hashCode = Arrays.hashCode(
                 new Object[] { locale, isAutoCorrection, mSpacebarTextFadeFactor });
-        final SoftReference<BitmapDrawable> ref = mSpaceDrawableCache.get(hashCode);
-        BitmapDrawable drawable = (ref == null) ? null : ref.get();
-        if (drawable == null) {
-            drawable = new BitmapDrawable(mRes, drawSpacebar(
-                    locale, isAutoCorrection, mSpacebarTextFadeFactor));
-            mSpaceDrawableCache.put(hashCode, new SoftReference<BitmapDrawable>(drawable));
+        final BitmapDrawable cached = mSpaceDrawableCache.get(hashCode);
+        if (cached != null) {
+            return cached;
         }
+        final BitmapDrawable drawable = new BitmapDrawable(mRes, drawSpacebar(
+                locale, isAutoCorrection, mSpacebarTextFadeFactor));
+        mSpaceDrawableCache.put(hashCode, drawable);
         return drawable;
     }
 
