@@ -100,7 +100,7 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
 
     // Key preview
     private final int mKeyPreviewLayoutId;
-    private final KeyPreviewDrawParams mKeyPreviewDrawParams;
+    protected final KeyPreviewDrawParams mKeyPreviewDrawParams;
     private boolean mShowKeyPreviewPopup = true;
     private final int mDelayBeforePreview;
     private int mDelayAfterPreview;
@@ -284,11 +284,13 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
         }
     }
 
-    private static class KeyPreviewDrawParams {
+    protected static class KeyPreviewDrawParams {
         // XML attributes.
         public final Drawable mPreviewBackground;
         public final Drawable mPreviewLeftBackground;
         public final Drawable mPreviewRightBackground;
+        public final int mPreviewBackgroundWidth;
+        public final int mPreviewBackgroundHeight;
         public final int mPreviewTextColor;
         public final int mPreviewOffset;
         public final int mPreviewHeight;
@@ -312,6 +314,10 @@ public class KeyboardView extends View implements PointerTracker.DrawingProxy {
             setAlpha(mPreviewBackground, PREVIEW_ALPHA);
             setAlpha(mPreviewLeftBackground, PREVIEW_ALPHA);
             setAlpha(mPreviewRightBackground, PREVIEW_ALPHA);
+            mPreviewBackgroundWidth = a.getDimensionPixelSize(
+                    R.styleable.KeyboardView_keyPreviewBackgroundWidth, 0);
+            mPreviewBackgroundHeight = a.getDimensionPixelSize(
+                    R.styleable.KeyboardView_keyPreviewBackgroundHeight, 0);
             mPreviewOffset = a.getDimensionPixelOffset(
                     R.styleable.KeyboardView_keyPreviewOffset, 0);
             mPreviewHeight = a.getDimensionPixelSize(
