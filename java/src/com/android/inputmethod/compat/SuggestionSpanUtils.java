@@ -69,7 +69,8 @@ public class SuggestionSpanUtils {
             Log.w(TAG, "Suggestion span was not created.");
             return text;
         }
-        spannable.setSpan(ss, 0, text.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(ss, 0, text.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE | Spanned.SPAN_COMPOSING);
         return spannable;
     }
 
