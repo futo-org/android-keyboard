@@ -230,7 +230,7 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
     private CharSequence mEnteredText;
 
     private final ComposingStateManager mComposingStateManager =
-            new ComposingStateManager();
+            ComposingStateManager.getInstance();
 
     public final UIHandler mHandler = new UIHandler(this);
 
@@ -1635,6 +1635,10 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                     mComposingStateManager.isAutoCorrectionIndicatorOn();
             final boolean newAutoCorrectionIndicator = Utils.willAutoCorrect(words);
             if (oldAutoCorrectionIndicator != newAutoCorrectionIndicator) {
+                if (LatinImeLogger.sDBG) {
+                    Log.d(TAG, "Flip the indicator. " + oldAutoCorrectionIndicator
+                            + " -> " + newAutoCorrectionIndicator);
+                }
                 final CharSequence textWithUnderline = newAutoCorrectionIndicator
                         ? SuggestionSpanUtils.getTextWithAutoCorrectionIndicatorUnderline(
                                 this, mComposingStringBuilder)
@@ -2298,43 +2302,6 @@ public class LatinIME extends InputMethodServiceCompatWrapper implements Keyboar
                 .setItems(items, listener)
                 .setTitle(title);
         showOptionDialogInternal(builder.create());
-    }
-
-    private static class ComposingStateManager {
-        private boolean mAutoCorrectionIndicatorOn;
-        private boolean mIsComposing;
-        public ComposingStateManager() {
-            mAutoCorrectionIndicatorOn = false;
-            mIsComposing = false;
-        }
-
-        private void onStartComposingText() {
-            if (!mIsComposing) {
-                if (LatinImeLogger.sDBG) {
-                    Log.i(TAG, "Start composing text.");
-                }
-                mAutoCorrectionIndicatorOn = false;
-                mIsComposing = true;
-            }
-        }
-
-        private void onFinishComposingText() {
-            if (mIsComposing) {
-                if (LatinImeLogger.sDBG) {
-                    Log.i(TAG, "Finish composing text.");
-                }
-                mAutoCorrectionIndicatorOn = false;
-                mIsComposing = false;
-            }
-        }
-
-        public boolean isAutoCorrectionIndicatorOn() {
-            return mAutoCorrectionIndicatorOn;
-        }
-
-        public void setAutoCorrectionIndicatorOn(boolean on) {
-            mAutoCorrectionIndicatorOn = on;
-        }
     }
 
     @Override
