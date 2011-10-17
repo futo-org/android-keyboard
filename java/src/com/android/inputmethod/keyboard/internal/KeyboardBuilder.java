@@ -19,6 +19,7 @@ package com.android.inputmethod.keyboard.internal;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
+import android.content.res.XmlResourceParser;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -268,14 +269,17 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
 
     public KeyboardBuilder<KP> load(KeyboardId id) {
         mParams.mId = id;
+        final XmlResourceParser parser = mResources.getXml(id.getXmlId());
         try {
-            parseKeyboard(id.getXmlId());
+            parseKeyboard(parser);
         } catch (XmlPullParserException e) {
             Log.w(TAG, "keyboard XML parse error: " + e);
             throw new IllegalArgumentException(e);
         } catch (IOException e) {
             Log.w(TAG, "keyboard XML parse error: " + e);
             throw new RuntimeException(e);
+        } finally {
+            parser.close();
         }
         return this;
     }
@@ -288,9 +292,9 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
         return new Keyboard(mParams);
     }
 
-    private void parseKeyboard(int resId) throws XmlPullParserException, IOException {
+    private void parseKeyboard(XmlResourceParser parser)
+            throws XmlPullParserException, IOException {
         if (DEBUG) Log.d(TAG, String.format("<%s> %s", TAG_KEYBOARD, mParams.mId));
-        final XmlPullParser parser = mResources.getXml(resId);
         int event;
         while ((event = parser.next()) != XmlPullParser.END_DOCUMENT) {
             if (event == XmlPullParser.START_TAG) {
@@ -535,7 +539,12 @@ public class KeyboardBuilder<KP extends KeyboardParams> {
                 throw new ParseException("No keyboardLayout attribute in <include/>", parser);
             if (DEBUG) Log.d(TAG, String.format("<%s keyboardLayout=%s />",
                     TAG_INCLUDE, mResources.getResourceEntryName(keyboardLayout)));
-            parseMerge(mResources.getLayout(keyboardLayout), row, skip);
+            final XmlResourceParser parserForInclude = mResources.getXml(keyboardLayout);
+            try {
+                parseMerge(parserForInclude, row, skip);
+            } finally {
+                parserForInclude.close();
+            }
         }
     }
 
