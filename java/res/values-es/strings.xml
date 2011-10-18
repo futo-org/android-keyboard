@@ -71,6 +71,7 @@
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Pausa"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Espera"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Conecta un auricular para escuchar las contraseñas en voz alta."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"El texto actual es %s."</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"No se ha introducido texto."</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Código del teclado: %d"</string>
@@ -147,5 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"inglés (Reino Unido)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"inglés (EE.UU.)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Modo de estudio de usabilidad"</string>
-    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Ajustes de duración de vibración"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Ajustes de duración de vibración al pulsar tecla"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Ajustes de volumen de sonido al pulsar tecla"</string>
 </resources>

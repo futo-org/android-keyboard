@@ -71,6 +71,7 @@
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"ላፍታ አቁም"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"ቆይ"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"የይለፍቃል ቁልፎች ጮክ በለው ሲነገሩ ለመስማት የጆሮ ማዳመጫ ሰካ::"</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"የአሁኑ ፅሁፍ %s ነው"</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"ምንም ፅሁፍ አልገባም"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"የቁልፍ ኮድ%d"</string>
@@ -147,5 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"እንግሊዘኛ (የታላቋ ብሪታንያ)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"እንግሊዘኛ (ዩ.ኤስ)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"የተገልጋይነት ጥናት ሁነታ"</string>
-    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"በቅንጅቶች ወቅት ንዝረት"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"ቁልፍ ተጫን በቅንጅቶች ወቅት ንዝረት"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"ቁልፍ ተጫን የድምጽ መጠን ቅንጅቶች"</string>
 </resources>

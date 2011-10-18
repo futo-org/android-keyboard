@@ -40,7 +40,7 @@
     <string name="key_preview_popup_dismiss_default_delay" msgid="2166964333903906734">"По умолчанию"</string>
     <string name="use_contacts_dict" msgid="4435317977804180815">"Подсказки имен контактов"</string>
     <string name="use_contacts_dict_summary" msgid="6599983334507879959">"Подсказки и исправления на основе имен из контактов"</string>
-    <string name="enable_span_insert" msgid="7204653105667167620">"Включить исправления"</string>
+    <string name="enable_span_insert" msgid="7204653105667167620">"Автоисправление"</string>
     <string name="enable_span_insert_summary" msgid="2947317657871394467">"Показывать варианты исправления"</string>
     <string name="auto_cap" msgid="1719746674854628252">"Заглавные автоматически"</string>
     <string name="configure_dictionaries_title" msgid="4238652338556902049">"Дополнительные словари"</string>
@@ -71,6 +71,7 @@
     <string name="label_to_symbol_with_microphone_key" msgid="9035925553010061906">"123"</string>
     <string name="label_pause_key" msgid="181098308428035340">"Пауза"</string>
     <string name="label_wait_key" msgid="6402152600878093134">"Ждать"</string>
+    <string name="spoken_use_headphones" msgid="896961781287283493">"Подключите гарнитуру, чтобы услышать пароль."</string>
     <string name="spoken_current_text_is" msgid="2485723011272583845">"Введенный текст: %s."</string>
     <string name="spoken_no_text_entered" msgid="7479685225597344496">"Текст не введен"</string>
     <string name="spoken_description_unknown" msgid="3197434010402179157">"Код клавиши:%d"</string>
@@ -147,5 +148,6 @@
     <string name="subtype_en_GB" msgid="88170601942311355">"Английский (Великобритания)"</string>
     <string name="subtype_en_US" msgid="6160452336634534239">"Английский (США)"</string>
     <string name="prefs_usability_study_mode" msgid="1261130555134595254">"Режим проверки удобства использования"</string>
-    <string name="prefs_vibration_duration_settings" msgid="3194657361314787870">"Продолжительность вибросигнала"</string>
+    <string name="prefs_keypress_vibration_duration_settings" msgid="1829950405285211668">"Настройки вибросигнала при нажатии клавиш"</string>
+    <string name="prefs_keypress_sound_volume_settings" msgid="5875933757082305040">"Настройки громкости звука при нажатии клавиш"</string>
 </resources>
